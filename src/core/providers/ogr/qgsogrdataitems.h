@@ -99,7 +99,7 @@ class CORE_EXPORT QgsOgrDataCollectionItem : public QgsDataCollectionItem
 };
 
 //! Provider for OGR root data item
-class CORE_EXPORT QgsOgrDataItemProvider : public QgsDataItemProvider
+class QgsOgrDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "OGR" ); }

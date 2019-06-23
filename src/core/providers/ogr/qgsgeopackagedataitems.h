@@ -142,7 +142,7 @@ class CORE_EXPORT QgsGeoPackageRootItem : public QgsDataCollectionItem
 
 
 //! Provider for geopackage data item
-class CORE_EXPORT QgsGeoPackageDataItemProvider : public QgsDataItemProvider
+class QgsGeoPackageDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "GPKG" ); }
