@@ -42,6 +42,11 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   mEllipsoidal->hide();
 
   // Initialize unit combo box
+  // Add a configuration button
+  QPushButton *cb = new QPushButton( tr( "&Configuration" ) );
+  buttonBox->addButton( cb, QDialogButtonBox::ActionRole );
+  connect( cb, &QAbstractButton::clicked, this, &Qgs3DMeasureDialog::openConfigTab );
+
   repopulateComboBoxUnits();
 
   // Choose unit
@@ -51,6 +56,8 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
 
   QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
+
+  updateSettings();
 
   qInfo() << "3D Measure Dialog created";
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
@@ -73,7 +80,7 @@ void Qgs3DMeasureDialog::restorePosition()
   restoreGeometry( settings.value( QStringLiteral( "Windows/3DMeasure/geometry" ) ).toByteArray() );
   int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
   resize( width(), wh );
-//    updateUi();
+  updateUi();
 }
 
 void Qgs3DMeasureDialog::addPoint()
@@ -289,6 +296,24 @@ void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
   e->accept();
 }
 
+void Qgs3DMeasureDialog::updateSettings()
+{
+  QgsSettings settings;
+
+  mDecimalPlaces = settings.value( QStringLiteral( "qgis/3Dmeasure/decimalplaces" ), "3" ).toInt();
+  QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
+  mCanvasUnits = canvas2D->mapUnits();
+
+  // Configure QgsDistanceArea
+  mDistanceUnits = QgsProject::instance()->distanceUnits();
+  mMapDistanceUnits = QgsProject::instance()->crs().mapUnits();
+  mDa.setSourceCrs( canvas2D->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+
+  mDa.setEllipsoid( GEO_NONE );
+
+
+}
+
 void Qgs3DMeasureDialog::unitsChanged( int index )
 {
   mDistanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
@@ -352,4 +377,9 @@ QString Qgs3DMeasureDialog::formatDistance( double distance, bool convertUnits )
 void Qgs3DMeasureDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) );
+}
+
+void Qgs3DMeasureDialog::openConfigTab()
+{
+  QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageMapTools" ) );
 }

@@ -63,6 +63,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Close event
     void closeEvent( QCloseEvent *e ) override;
 
+    //! When any external settings change
+    void updateSettings();
+
   private slots:
     void unitsChanged( int index );
 
@@ -83,6 +86,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Indicates whether we need to convert units.
     bool mConvertToDisplayUnits = true;
 
+    //! Current unit for input values
+    QgsUnitTypes::DistanceUnit mCanvasUnits = QgsUnitTypes::DistanceUnknownUnit;
+
     //! Current unit for distance values
     QgsUnitTypes::DistanceUnit mDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
 
@@ -98,6 +104,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QString formatDistance( double distance, bool convertUnits = true ) const;
 
     void showHelp();
+
+    //! Open configuration tab
+    void openConfigTab();
 };
 
 #endif // QGS3DMEASUREDIALOG_H
