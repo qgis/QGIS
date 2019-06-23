@@ -138,7 +138,8 @@ void QgsWelcomePage::templateProjectItemActivated( const QModelIndex &index )
 {
   if ( index.data( QgsProjectListItemDelegate::NativePathRole ).isNull() )
     QgisApp::instance()->newProject();
-  QgisApp::instance()->fileNewFromTemplate( index.data( QgsProjectListItemDelegate::NativePathRole ).toString() );
+  else
+    QgisApp::instance()->fileNewFromTemplate( index.data( QgsProjectListItemDelegate::NativePathRole ).toString() );
 }
 
 void QgsWelcomePage::versionInfoReceived()
