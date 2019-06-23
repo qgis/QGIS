@@ -3940,6 +3940,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     else if ( context->indexOfScope( "Symbol scope" ) != -1 )
     {
       qDebug() << "not counted";
+      qDebug() << context->variable( "symbol_id" ).toString();
       ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
       hasFids = true;
     }
