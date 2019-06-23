@@ -101,7 +101,7 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         uri = postgis.uri_from_name(connection)
         sql = self.parameterAsString(parameters, self.SQL, context)
         sql = sql.replace('\n', ' ')
-        uri.setDataSource("", "(" + sql + ")", geom_field, "", id_field)
+        uri.setDataSource("", "(" + sql.rstrip(';') + ")", geom_field, "", id_field)
 
         vlayer = QgsVectorLayer(uri.uri(), "layername", "postgres")
 
