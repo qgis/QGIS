@@ -4601,7 +4601,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
     QString qml, errorMsg;
-    QgsProviderRegistry::instance()->loadStyle( mProviderKey, mDataSource, errorMsg );
+    qml = QgsProviderRegistry::instance()->loadStyle( mProviderKey, mDataSource, errorMsg );
     if ( !qml.isEmpty() )
     {
       QDomDocument myDocument( QStringLiteral( "qgis" ) );
