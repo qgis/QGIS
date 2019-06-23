@@ -47,6 +47,7 @@ class TestQgsDistanceArea: public QObject
     void emptyPolygon();
     void regression14675();
     void regression16820();
+    void distance3D();
 
 };
 
@@ -399,6 +400,19 @@ void TestQgsDistanceArea::regression16820()
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))" ) ).release() );
   //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
   QGSCOMPARENEAR( calc.measureArea( geom ), 43.3280029296875, 0.2 );
+}
+
+void TestQgsDistanceArea::distance3D()
+{
+  QgsDistanceArea calc;
+  calc.setEllipsoid( QStringLiteral( "NONE" ) );
+  QVector<QgsPoint> points;
+  points << QgsPoint( 0, 0, 0 )
+         << QgsPoint( 1, 2, 2 )
+         << QgsPoint( 4, 6, 2 );
+  QCOMPARE( calc.measureLine3D( points ), 8.0 );
+  QCOMPARE( calc.measureLine3D( QgsPoint( 0, 0, 0 ), QgsPoint( 3, 4, 0 ) ), 5.0 );
+  QCOMPARE( calc.measureLine3D( QgsPoint( 1, 2 ), QgsPoint( 4, 6 ) ), 5.0 );
 }
 
 QGSTEST_MAIN( TestQgsDistanceArea )
