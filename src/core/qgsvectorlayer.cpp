@@ -3921,7 +3921,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   QgsFeatureIds ids;
   if ( fids )
   {
-    qDebug()<<'fids';
+    qDebug() << 'fids';
     ids = *fids;
     hasFids = true;
   }
@@ -3970,8 +3970,10 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
   if ( hasFids )
+  {
     qDebug() << "set filter";
     c.setFidsFilter( ids );
+  }
   c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
