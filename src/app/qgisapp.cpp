@@ -5573,6 +5573,7 @@ bool QgisApp::fileNewFromTemplate( const QString &fileName )
     return false; //cancel pressed
   }
 
+  MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
   QgsDebugMsg( QStringLiteral( "loading project template: %1" ).arg( fileName ) );
   if ( addProject( fileName ) )
   {
