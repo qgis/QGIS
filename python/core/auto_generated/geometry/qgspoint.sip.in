@@ -185,13 +185,6 @@ Returns the point as a QPointF.
 .. versionadded:: 2.14
 %End
 
-    QString toString( int precision = -1 ) const;
-%Docstring
-Returns a string representation of the point (x, y, z, m) with a preset ``precision``.
-The format is either (x, y), Z(x, y, z), M(x, y, m), or ZM(x, y, z, m)
-If  ``precision`` is -1, then a default precision will be used.
-%End
-
     double distance( double x, double y ) const;
 %Docstring
 Returns the distance between this point and a specified x, y coordinate. In certain

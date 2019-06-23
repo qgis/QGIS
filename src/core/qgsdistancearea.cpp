@@ -386,8 +386,6 @@ double QgsDistanceArea::measureLine3D( const QgsPoint &p1, const QgsPoint &p2 ) 
   {
     QgsPoint pp1 = p1, pp2 = p2;
 
-    QgsDebugMsgLevel( QStringLiteral( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
-
     QgsDebugMsgLevel( QStringLiteral( "Cartesian calculation on canvas coordinates" ), 4 );
     result = p2.distance3D( p1 );
   }
