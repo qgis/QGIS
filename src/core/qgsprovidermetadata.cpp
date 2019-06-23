@@ -74,11 +74,11 @@ QString QgsProviderMetadata::filters( FilterType )
   return QString();
 }
 
-QgsDataProvider *QgsProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
   if ( mCreateFunction )
   {
-    return mCreateFunction( *uri, options );
+    return mCreateFunction( uri, options );
   }
   return nullptr;
 }

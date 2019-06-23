@@ -1226,9 +1226,9 @@ QList<QgsDataItemProvider *> QgsAmsProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsAmsProvider( *uri, options );
+  return new QgsAmsProvider( uri, options );
 }
 
 QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )

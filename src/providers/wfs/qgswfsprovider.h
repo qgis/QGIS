@@ -199,7 +199,7 @@ class QgsWfsProviderMetadata: public QgsProviderMetadata
     QgsWfsProviderMetadata();
     void initProvider() override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
-    QgsWFSProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsWFSProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
 
 #ifdef HAVE_GUI

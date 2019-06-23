@@ -246,7 +246,7 @@ class QgsMssqlProviderMetadata: public QgsProviderMetadata
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
       const QMap<QString, QVariant> *options ) override;
-    QgsMssqlProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     virtual QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
 

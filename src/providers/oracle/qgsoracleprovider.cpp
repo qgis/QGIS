@@ -3044,10 +3044,10 @@ QString  QgsOracleProvider::description() const
 
 
 QgsOracleProvider *QgsOracleProviderMetadata::createProvider(
-  const QString *uri,
+  const QString &uri,
   const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsOracleProvider( *uri, options );
+  return new QgsOracleProvider( uri, options );
 }
 
 QList< QgsDataItemProvider * > *QgsOracleProviderMetadata::dataItemProviders() const

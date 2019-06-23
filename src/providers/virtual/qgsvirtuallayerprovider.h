@@ -129,7 +129,7 @@ class QgsVirtualLayerProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsVirtualLayerProviderMetadata();
-    QgsVirtualLayerProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
 
 #ifdef HAVE_GUI

@@ -1146,9 +1146,9 @@ QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri )
   return components;
 }
 
-QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsDelimitedTextProvider( *uri, options );
+  return new QgsDelimitedTextProvider( uri, options );
 }
 
 #ifdef HAVE_GUI

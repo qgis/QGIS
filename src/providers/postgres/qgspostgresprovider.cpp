@@ -4614,9 +4614,9 @@ bool QgsPostgresProvider::hasMetadata() const
   return hasMetadata;
 }
 
-QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsPostgresProvider( *uri, options );
+  return new QgsPostgresProvider( uri, options );
 }
 
 QList< QgsDataItemProvider * > QgsPostgresProviderMetadata::dataItemProviders() const

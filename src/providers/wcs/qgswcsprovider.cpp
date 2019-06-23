@@ -1642,9 +1642,9 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
   return mimes;
 }
 
-QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWcsProvider( *uri, options );
+  return new QgsWcsProvider( uri, options );
 }
 
 // ----------

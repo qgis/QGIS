@@ -97,7 +97,7 @@ class QgsAfsProviderMetadata: public QgsProviderMetadata
     QgsAfsProviderMetadata();
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) override;
-    QgsAfsProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 
 };
 

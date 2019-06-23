@@ -5540,10 +5540,10 @@ QVariantMap QgsSpatiaLiteProviderMetadata::decodeUri( const QString &uri )
 }
 
 QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
-  const QString *uri,
+  const QString &uri,
   const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsSpatiaLiteProvider( *uri, options );
+  return new QgsSpatiaLiteProvider( uri, options );
 }
 
 

@@ -1722,9 +1722,9 @@ QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
   return list;
 }
 
-QgsDb2Provider *QgsDb2ProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDb2Provider *QgsDb2ProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsDb2Provider( *uri, options );
+  return new QgsDb2Provider( uri, options );
 }
 
 QgsDb2ProviderMetadata::QgsDb2ProviderMetadata()

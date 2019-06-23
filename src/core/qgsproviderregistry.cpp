@@ -347,7 +347,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
     return nullptr;
   }
 
-  return metadata->createProvider( &dataSource, options );
+  return metadata->createProvider( dataSource, options );
 }
 
 int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const

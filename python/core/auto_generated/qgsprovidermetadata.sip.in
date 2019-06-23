@@ -105,11 +105,11 @@ Suitable for use in a QFileDialog.getOpenFileNames() call.
 .. versionadded:: 3.10
 %End
 
-    virtual QgsDataProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) /Factory/;
+    virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) /Factory/;
 %Docstring
 Class factory to return a pointer to a newly created QgsDataProvider object
 
-.. versionadded:: 3.0
+.. versionadded:: 3.10
 %End
 
 

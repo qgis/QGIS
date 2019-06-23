@@ -46,9 +46,9 @@ QgsOwsProviderMetadata::QgsOwsProviderMetadata():
 {
 }
 
-QgsOwsProvider *QgsOwsProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsOwsProvider *QgsOwsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsOwsProvider( *uri, options );
+  return new QgsOwsProvider( uri, options );
 }
 
 QList<QgsDataItemProvider *> QgsOwsProviderMetadata::dataItemProviders() const

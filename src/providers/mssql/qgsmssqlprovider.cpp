@@ -2010,9 +2010,9 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
  * Class factory to return a pointer to a newly created
  * QgsMssqlProvider object
  */
-QgsMssqlProvider *QgsMssqlProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsMssqlProvider *QgsMssqlProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsMssqlProvider( *uri, options );
+  return new QgsMssqlProvider( uri, options );
 }
 
 QList<QgsDataItemProvider *> QgsMssqlProviderMetadata::dataItemProviders() const

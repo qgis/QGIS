@@ -644,10 +644,10 @@ QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
 }
 
 QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
-  const QString *uri,
+  const QString &uri,
   const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsVirtualLayerProvider( *uri, options );
+  return new QgsVirtualLayerProvider( uri, options );
 }
 
 

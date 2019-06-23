@@ -3356,9 +3356,9 @@ QStringList QgsOgrProviderUtils::wildcards()
  * Class factory to return a pointer to a newly created
  * QgsOgrProvider object
  */
-QgsOgrProvider *QgsOgrProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsOgrProvider *QgsOgrProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsOgrProvider( *uri, options );
+  return new QgsOgrProvider( uri, options );
 }
 
 /**

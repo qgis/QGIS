@@ -438,7 +438,7 @@ class QgsWcsProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsWcsProviderMetadata();
-    QgsWcsProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
 

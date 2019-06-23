@@ -2090,9 +2090,9 @@ QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri )
 }
 
 
-QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsGdalProvider( *uri, options );
+  return new QgsGdalProvider( uri, options );
 }
 
 /**

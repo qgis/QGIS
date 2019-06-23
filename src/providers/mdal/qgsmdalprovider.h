@@ -119,7 +119,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
   public:
     QgsMdalProviderMetadata();
     QString filters( FilterType type ) override;
-    QgsMdalProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
 

@@ -337,7 +337,7 @@ class QgsGdalProviderMetadata: public QgsProviderMetadata
   public:
     QgsGdalProviderMetadata();
     QVariantMap decodeUri( const QString &uri ) override;
-    QgsGdalProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsGdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QgsGdalProvider *createRasterDataProvider(
       const QString &uri,
       const QString &format,

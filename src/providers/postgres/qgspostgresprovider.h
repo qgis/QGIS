@@ -541,7 +541,7 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsPostgresProviderMetadata();
-    QgsDataProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
         const QgsCoordinateReferenceSystem &srs,

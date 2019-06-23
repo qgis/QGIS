@@ -1290,10 +1290,10 @@ class QgsGrassProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsGrassProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
-    QgsGrassProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override
+    QgsGrassProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override
     {
       Q_UNUSED( options );
-      return new QgsGrassProvider( *uri );
+      return new QgsGrassProvider( uri );
     }
     QList< QgsDataItemProvider * > dataItemProviders() const override
     {

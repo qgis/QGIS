@@ -178,7 +178,7 @@ class QgsDb2ProviderMetadata: public QgsProviderMetadata
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
       const QMap<QString, QVariant> *options ) override;
-    QgsDb2Provider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsDb2Provider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
 
 #ifdef HAVE_GUI

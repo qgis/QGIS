@@ -154,9 +154,9 @@ class CORE_EXPORT QgsProviderMetadata
 
     /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
-     * \since QGIS 3.0
+     * \since QGIS 3.10
      */
-    virtual QgsDataProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
+    virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
 
     /**
      * Creates new empty vector layer

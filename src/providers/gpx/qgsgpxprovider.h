@@ -121,7 +121,7 @@ class QgsGpxProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsGpxProviderMetadata();
-    QgsDataProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
 
 #endif

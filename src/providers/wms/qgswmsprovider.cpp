@@ -3532,9 +3532,9 @@ void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64
   emit statusChanged( msg );
 }
 
-QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWmsProvider( *uri, options );
+  return new QgsWmsProvider( uri, options );
 }
 
 // -----------------

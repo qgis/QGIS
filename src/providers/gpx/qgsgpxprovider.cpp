@@ -537,9 +537,9 @@ QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
   return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
 }
 
-QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsGPXProvider( *uri, options );
+  return new QgsGPXProvider( uri, options );
 }
 
 

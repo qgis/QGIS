@@ -541,9 +541,9 @@ QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int
 
 /*----------------------------------------------------------------------------------------------*/
 
-QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsMdalProvider( *uri, options );
+  return new QgsMdalProvider( uri, options );
 }
 
 QList<QgsDataItemProvider *> QgsMdalProviderMetadata::dataItemProviders() const
