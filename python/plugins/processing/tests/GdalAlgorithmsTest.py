@@ -2854,6 +2854,15 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdaladdo',
                  source + ' ' + '-r nearest 2 4 8 16 32 64'])
 
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'EXTRA': '--config COMPRESS_OVERVIEW JPEG'}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest --config COMPRESS_OVERVIEW JPEG 2 4 8 16'])
+
             # without advanced params
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
