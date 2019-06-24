@@ -61,6 +61,16 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
      */
     void setCurrentAlignment( Qt::Alignment alignment );
 
+    /**
+     * Sets the \a text and \a icon to use for a particular \a alignment option,
+     * replacing the default text or icon.
+     *
+     * If \a text or \a icon is not specified, they will not be changed from the default.
+     *
+     * \note This must be called after first filtering the available alignment options via setAvailableAlignments().
+     */
+    void customiseAlignmentDisplay( Qt::Alignment alignment, const QString &text = QString(), const QIcon &icon = QIcon() );
+
   signals:
 
     /**
