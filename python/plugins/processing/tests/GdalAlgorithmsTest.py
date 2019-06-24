@@ -2517,6 +2517,15 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
                  ])
 
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'EXTRA': '-v -tileIndex tindex.shp',
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -v -tileIndex tindex.shp -targetDir {} '.format(outdir) +
+                 source])
+
     def testWarp(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
