@@ -18,6 +18,8 @@
 #ifndef QGSSERVERFEATUREID_H
 #define QGSSERVERFEATUREID_H
 
+#define SIP_NO_FILE
+
 #include <QString>
 #include <QHash>
 
