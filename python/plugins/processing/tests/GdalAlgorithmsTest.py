@@ -424,7 +424,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         translate_alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-            # with no NODATA value
+            # without NODATA value
             self.assertEqual(
                 translate_alg.getConsoleCommands({'INPUT': source,
                                                   'OUTPUT': outdir + '/check.jpg'}, context, feedback),
@@ -529,6 +529,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-of GTiff ' +
                  source + ' ' +
                  outdir + '/check.tif'])
+
+            # additional parameters
+            self.assertEqual(
+                translate_alg.getConsoleCommands({'INPUT': source,
+                                                  'EXTRA': '-strict -unscale -epo',
+                                                  'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-of JPEG -strict -unscale -epo ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
 
     def testClipRasterByExtent(self):
         context = QgsProcessingContext()
