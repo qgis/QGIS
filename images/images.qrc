@@ -765,6 +765,8 @@
         <file>themes/default/mIconAlignJustify.svg</file>
         <file>themes/default/mIconAlignLeft.svg</file>
         <file>themes/default/mIconAlignRight.svg</file>
+        <file>themes/default/mIconArrangeSymbolsLeft.svg</file>
+        <file>themes/default/mIconArrangeSymbolsRight.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

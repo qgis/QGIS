@@ -76,10 +76,23 @@ Default implementation does nothing. *
 
     struct ItemContext
     {
+      ItemContext();
+
       QgsRenderContext *context;
       QPainter *painter;
-      QPointF point;
-      double labelXOffset;
+
+ QPointF point;
+
+ double labelXOffset;
+
+      double top;
+
+      double columnLeft;
+
+      double columnRight;
+
+      double maxSiblingSymbolWidth;
+
     };
 
     struct ItemMetrics

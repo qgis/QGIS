@@ -48,16 +48,22 @@ void QgsLegendStyle::setMargin( double margin )
 
 void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const
 {
-  if ( elem.isNull() ) return;
+  if ( elem.isNull() )
+    return;
 
   QDomElement styleElem = doc.createElement( QStringLiteral( "style" ) );
 
   styleElem.setAttribute( QStringLiteral( "name" ), name );
+  styleElem.setAttribute( QStringLiteral( "alignment" ), QString::number( mAlignment ) );
 
-  if ( !qgsDoubleNear( mMarginMap[Top], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginTop" ), QString::number( mMarginMap[Top] ) );
-  if ( !qgsDoubleNear( mMarginMap[Bottom], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginBottom" ), QString::number( mMarginMap[Bottom] ) );
-  if ( !qgsDoubleNear( mMarginMap[Left], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginLeft" ), QString::number( mMarginMap[Left] ) );
-  if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginRight" ), QString::number( mMarginMap[Right] ) );
+  if ( !qgsDoubleNear( mMarginMap[Top], 0.0 ) )
+    styleElem.setAttribute( QStringLiteral( "marginTop" ), QString::number( mMarginMap[Top] ) );
+  if ( !qgsDoubleNear( mMarginMap[Bottom], 0.0 ) )
+    styleElem.setAttribute( QStringLiteral( "marginBottom" ), QString::number( mMarginMap[Bottom] ) );
+  if ( !qgsDoubleNear( mMarginMap[Left], 0.0 ) )
+    styleElem.setAttribute( QStringLiteral( "marginLeft" ), QString::number( mMarginMap[Left] ) );
+  if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) )
+    styleElem.setAttribute( QStringLiteral( "marginRight" ), QString::number( mMarginMap[Right] ) );
 
   styleElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "styleFont" ) ) );
 
@@ -78,6 +84,8 @@ void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc )
   mMarginMap[Bottom] = elem.attribute( QStringLiteral( "marginBottom" ), QStringLiteral( "0" ) ).toDouble();
   mMarginMap[Left] = elem.attribute( QStringLiteral( "marginLeft" ), QStringLiteral( "0" ) ).toDouble();
   mMarginMap[Right] = elem.attribute( QStringLiteral( "marginRight" ), QStringLiteral( "0" ) ).toDouble();
+
+  mAlignment = static_cast< Qt::Alignment >( elem.attribute( QStringLiteral( "alignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
 }
 
 QString QgsLegendStyle::styleName( Style s )

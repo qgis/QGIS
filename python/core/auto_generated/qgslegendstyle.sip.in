@@ -60,6 +60,24 @@ The font for this style.
 Sets all margins
 %End
 
+    Qt::Alignment alignment() const;
+%Docstring
+Returns the alignment for the legend component.
+
+.. seealso:: :py:func:`setAlignment`
+
+.. versionadded:: 3.10
+%End
+
+    void setAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the alignment for the legend component.
+
+.. seealso:: :py:func:`alignment`
+
+.. versionadded:: 3.10
+%End
+
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
 
     void readXml( const QDomElement &elem, const QDomDocument &doc );
