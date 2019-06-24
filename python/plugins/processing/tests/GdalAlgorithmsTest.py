@@ -2684,6 +2684,28 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outsource])
 
+            # creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_fillnodata.py',
+                 '-md 10 -b 1 -of GTiff -co COMPRESS=JPEG -co JPEG_QUALITY=75 ' +
+                 source + ' ' +
+                 outsource])
+
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'EXTRA': '-q',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_fillnodata.py',
+                 '-md 10 -b 1 -of GTiff -q ' +
+                 source + ' ' +
+                 outsource])
+
     def testOffsetCurve(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
