@@ -1290,6 +1290,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['gdalinfo',
              '-stats "' + source + '"'])
 
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False,
+                                    'EXTRA': '-proj4 -listmdd -checksum'}, context, feedback),
+            ['gdalinfo',
+             '-proj4 -listmdd -checksum "' + source + '"'])
+
     def testGdalTindex(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
