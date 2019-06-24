@@ -43,6 +43,7 @@ from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
 from processing.algs.gdal.buildvrt import buildvrt
 from processing.algs.gdal.hillshade import hillshade
 from processing.algs.gdal.aspect import aspect
+from processing.algs.gdal.ColorRelief import ColorRelief
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.ogrinfo import ogrinfo
 from processing.algs.gdal.OffsetCurve import OffsetCurve
@@ -2161,6 +2162,92 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  'aspect ' +
                  source + ' ' +
                  outdir + '/check.tif -of GTiff -b 1 -q'])
+
+    def testColorRelief(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        colorTable = os.path.join(testDataPath, 'colors.txt')
+        alg = ColorRelief()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'COLOR_TABLE': colorTable,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'color-relief ' +
+                 source + ' ' +
+                 colorTable + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1'])
+
+            # paths with space
+            source_with_space = os.path.join(testDataPath, 'raster with spaces.tif')
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source_with_space,
+                                        'BAND': 1,
+                                        'COLOR_TABLE': colorTable,
+                                        'OUTPUT': outdir + '/check out.tif'}, context, feedback),
+                ['gdaldem',
+                 'color-relief ' +
+                 '"' + source_with_space + '" ' +
+                 colorTable + ' ' +
+                 '"{}/check out.tif" -of GTiff -b 1'.format(outdir)])
+
+            # compute edges
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'COLOR_TABLE': colorTable,
+                                        'COMPUTE_EDGES': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'color-relief ' +
+                 source + ' ' +
+                 colorTable + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -compute_edges'])
+
+            # with custom matching mode
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'COLOR_TABLE': colorTable,
+                                        'MATCH_MODE': 1,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'color-relief ' +
+                 source + ' ' +
+                 colorTable + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -nearest_color_entry'])
+
+            # with creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'COLOR_TABLE': colorTable,
+                                        'MATCH_MODE': 1,
+                                        'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'color-relief ' +
+                 source + ' ' +
+                 colorTable + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -nearest_color_entry -co COMPRESS=JPEG -co JPEG_QUALITY=75'])
+
+            # with additional parameter
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'COLOR_TABLE': colorTable,
+                                        'EXTRA': '-alpha -q',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'color-relief ' +
+                 source + ' ' +
+                 colorTable + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -alpha -q'])
 
     def testProximity(self):
         context = QgsProcessingContext()
