@@ -576,6 +576,30 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            # with creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTENT': extent,
+                                        'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                        'DATA_TYPE': 0,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-projwin 0.0 0.0 0.0 0.0 -of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            # with additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTENT': extent,
+                                        'EXTRA': '-s_srs EPSG:4326 -tps -tr 0.1 0.1',
+                                        'DATA_TYPE': 0,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-projwin 0.0 0.0 0.0 0.0 -of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
     def testClipRasterByMask(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
