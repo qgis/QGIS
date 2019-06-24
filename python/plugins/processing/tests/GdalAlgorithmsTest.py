@@ -1390,6 +1390,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            # with additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_grid',
+                 '-l points -a average:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 -ot Float32 -of JPEG -z_multiply 1.5 -outsize 1754 1394 ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
     def testGridDataMetrics(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
