@@ -31,8 +31,9 @@ QgsDataSourceUri::QgsDataSourceUri()
   // do nothing
 }
 
-QgsDataSourceUri::QgsDataSourceUri( QString uri )
+QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 {
+  QString uri = u;
   int i = 0;
   while ( i < uri.length() )
   {

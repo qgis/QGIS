@@ -331,8 +331,6 @@ QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const
 
 void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 

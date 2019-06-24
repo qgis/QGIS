@@ -162,6 +162,7 @@ struct _LayerRef
    * found, NULLPTR is returned.
    * \see resolve()
    * \see layerMatchesSource()
+   * \see resolveByIdOrNameOnly()
    */
   TYPE *resolveWeakly( const QgsProject *project )
   {
@@ -186,6 +187,52 @@ struct _LayerRef
     }
     return nullptr;
   }
+
+  /**
+   * Resolves the map layer by attempting to find a matching layer
+   * in a \a project using a weak match.
+   *
+   * First, the layer is attempted to match to project layers using the
+   * layer's ID (calling this method implicitly calls resolve()).
+   *
+   * Failing a match by layer ID, the layer will be matched by using
+   * the weak references to layer public source, layer name and data
+   * provider contained in this layer reference.
+   *
+   * Failing a match by weak reference, the layer will be matched by using
+   * the name only.
+   *
+   * If a matching layer is found, this reference will be updated to match
+   * the found layer and the layer will be returned. If no matching layer is
+   * found, NULLPTR is returned.
+   * \see resolve()
+   * \see layerMatchesSource()
+   * \see resolveWeakly()
+   * \since QGIS 3.8
+   */
+  TYPE *resolveByIdOrNameOnly( const QgsProject *project )
+  {
+    // first try by matching by layer ID, or weakly by source, name and provider
+    if ( resolveWeakly( project ) )
+      return layer;
+
+    // fallback to checking by name only
+    if ( project && !name.isEmpty() )
+    {
+      const QList<QgsMapLayer *> layers = project->mapLayersByName( name );
+      for ( QgsMapLayer *l : layers )
+      {
+        if ( TYPE *tl = qobject_cast< TYPE *>( l ) )
+        {
+          setLayer( tl );
+          return tl;
+        }
+      }
+    }
+    return nullptr;
+  }
+
+
 };
 
 typedef _LayerRef<QgsMapLayer> QgsMapLayerRef;

@@ -17,6 +17,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/raster
@@ -219,6 +220,7 @@ SET(TESTS
  testqgsmimedatautils.cpp
  testqgsofflineediting.cpp
  testqgstranslateproject.cpp
+ testqobjectuniqueptr.cpp
    )
 
 IF(WITH_QTWEBKIT)

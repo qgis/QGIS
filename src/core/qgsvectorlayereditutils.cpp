@@ -352,9 +352,10 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
       mLayer->changeGeometry( feat.id(), featureGeom );
 
       //insert new features
-      for ( int i = 0; i < newGeometries.size(); ++i )
+      QgsAttributeMap attributeMap = feat.attributes().toMap();
+      for ( const QgsGeometry &geom : qgis::as_const( newGeometries ) )
       {
-        QgsFeature f = QgsVectorLayerUtils::createFeature( mLayer, newGeometries.at( i ), feat.attributes().toMap() );
+        QgsFeature f = QgsVectorLayerUtils::createFeature( mLayer, geom, attributeMap );
         mLayer->addFeature( f );
       }
 

@@ -12,7 +12,6 @@ qgis_sip_uptodate
 
 # Need a local postgres installation
 PyQgsAuthManagerPKIPostgresTest
-PyQgsAuthManagerPasswordPostgresTest
 PyQgsAuthManagerOgrPostgresTest
 PyQgsDbManagerPostgis
 

@@ -274,7 +274,7 @@ void QgsMssqlProvider::loadMetadata()
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
-  if ( !query.exec( QStringLiteral( "select f_geometry_column, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName, mTableName ) ) )
+  if ( !query.exec( QStringLiteral( "select f_geometry_column, srid, geometry_type, coord_dimension from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName, mTableName ) ) )
   {
     QgsDebugMsg( query.lastError().text() );
   }
@@ -282,7 +282,13 @@ void QgsMssqlProvider::loadMetadata()
   {
     mGeometryColName = query.value( 0 ).toString();
     mSRId = query.value( 1 ).toInt();
-    mWkbType = getWkbType( query.value( 2 ).toString() );
+    QString detectedType = query.value( 2 ).toString();
+    QString dim = query.value( 3 ).toString();
+    if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
+      detectedType += QLatin1String( "Z" );
+    else if ( dim == QLatin1String( "4" ) )
+      detectedType += QLatin1String( "ZM" );
+    mWkbType = getWkbType( detectedType );
   }
 }
 
@@ -348,7 +354,7 @@ void QgsMssqlProvider::loadFields()
       {
         mGeometryColName = colName;
         mGeometryColType = sqlTypeName;
-        mParser.IsGeography = sqlTypeName == QLatin1String( "geography" );
+        mParser.mIsGeography = sqlTypeName == QLatin1String( "geography" );
       }
       else
       {
@@ -758,7 +764,6 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     return;
   }
 
-  QgsGeometry geom;
   if ( !readAllGeography && query.next() )
   {
     mExtent.setXMinimum( query.value( 0 ).toDouble() );
@@ -772,11 +777,10 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   while ( query.next() )
   {
     QByteArray ar = query.value( 0 ).toByteArray();
-    unsigned char *wkb = mParser.ParseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
-    if ( wkb )
+    std::unique_ptr<QgsAbstractGeometry> geom = mParser.parseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
+    if ( geom )
     {
-      geom.fromWkb( wkb, mParser.GetWkbLen() );
-      QgsRectangle rect = geom.boundingBox();
+      QgsRectangle rect = geom->boundingBox();
 
       if ( rect.xMinimum() < mExtent.xMinimum() )
         mExtent.setXMinimum( rect.xMinimum() );
@@ -787,7 +791,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       if ( rect.yMaximum() > mExtent.yMaximum() )
         mExtent.setYMaximum( rect.yMaximum() );
 
-      mWkbType = geom.wkbType();
+      mWkbType = geom->wkbType();
       mSRId = mParser.GetSRSId();
     }
   }
@@ -1066,6 +1070,11 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           // SQL Server so we have to remove it first.
           wkt = geom.asWkt();
           wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
+          // if we have M value only, we need to insert null-s for the Z value
+          if ( QgsWkbTypes::hasM( geom.wkbType() ) && !QgsWkbTypes::hasZ( geom.wkbType() ) )
+          {
+            wkt.replace( QRegExp( "(?=\\s[0-9+-.]+[,)])" ), QStringLiteral( " NULL" ) );
+          }
         }
         query.addBindValue( wkt );
       }
@@ -1666,9 +1675,6 @@ bool QgsMssqlProvider::convertField( QgsField &field )
 
 void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim )
 {
-  if ( QgsWkbTypes::hasZ( wkbType ) )
-    dim = 3;
-
   QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
 
   if ( flatType == QgsWkbTypes::Point )
@@ -1683,10 +1689,39 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QStr
     geometryType = QStringLiteral( "MULTILINESTRING" );
   else if ( flatType == QgsWkbTypes::MultiPolygon )
     geometryType = QStringLiteral( "MULTIPOLYGON" );
+  else if ( flatType == QgsWkbTypes::GeometryCollection )
+    geometryType = QStringLiteral( "GEOMETRYCOLLECTION" );
+  else if ( flatType == QgsWkbTypes::CircularString )
+    geometryType = QStringLiteral( "CIRCULARSTRING" );
+  else if ( flatType == QgsWkbTypes::CompoundCurve )
+    geometryType = QStringLiteral( "COMPOUNDCURVE" );
+  else if ( flatType == QgsWkbTypes::CurvePolygon )
+    geometryType = QStringLiteral( "CURVEPOLYGON" );
   else if ( flatType == QgsWkbTypes::Unknown )
     geometryType = QStringLiteral( "GEOMETRY" );
   else
+  {
     dim = 0;
+    return;
+  }
+
+  if ( QgsWkbTypes::hasZ( wkbType ) && QgsWkbTypes::hasM( wkbType ) )
+  {
+    dim = 4;
+  }
+  else if ( QgsWkbTypes::hasZ( wkbType ) )
+  {
+    dim = 3;
+  }
+  else if ( QgsWkbTypes::hasM( wkbType ) )
+  {
+    geometryType += QLatin1String( "M" );
+    dim = 3;
+  }
+  else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )
+  {
+    dim = 3;
+  }
 }
 
 QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType )

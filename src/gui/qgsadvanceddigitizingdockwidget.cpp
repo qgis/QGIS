@@ -42,6 +42,7 @@
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
   , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toDouble() )
 {
   setupUi( this );
@@ -670,6 +671,17 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   e->setMapPoint( point );
 
   mSnapMatch = context.snappingUtils->snapToMap( point );
+
+  if ( mSnapMatch.isValid() )
+  {
+    mSnapIndicator->setMatch( mSnapMatch );
+    mSnapIndicator->setVisible( true );
+  }
+  else
+  {
+    mSnapIndicator->setVisible( false );
+  }
+
   /*
    * Constraints are applied in 2D, they are always called when using the tool
    * but they do not take into account if when you snap on a vertex it has
@@ -1148,6 +1160,7 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
   }
 
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::removePreviousPoint()
@@ -1158,6 +1171,7 @@ void QgsAdvancedDigitizingDockWidget::removePreviousPoint()
   int i = pointsCount() > 1 ? 1 : 0;
   mCadPointList.removeAt( i );
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::clearPoints()
@@ -1166,6 +1180,7 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
   mSnappedSegment.clear();
 
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &point )
@@ -1179,6 +1194,7 @@ void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &poin
   {
     mCadPointList[0] = point;
   }
+  updateCadPaintItem();
 }
 
 

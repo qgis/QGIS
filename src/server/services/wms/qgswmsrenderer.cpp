@@ -1194,7 +1194,7 @@ namespace QgsWms
             QString layerName = queryLayer;
 
             //check if the layer is given a different name for GetFeatureInfo output
-            QHash<QString, QString>::const_iterator layerAliasIt = layerAliasMap.find( layerName );
+            QHash<QString, QString>::const_iterator layerAliasIt = layerAliasMap.constFind( layerName );
             if ( layerAliasIt != layerAliasMap.constEnd() )
             {
               layerName = layerAliasIt.value();

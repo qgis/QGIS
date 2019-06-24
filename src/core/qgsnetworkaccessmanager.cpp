@@ -37,6 +37,7 @@
 #include <QNetworkReply>
 #include <QThreadStorage>
 #include <QAuthenticator>
+#include <QStandardPaths>
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -601,8 +602,8 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
-    cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
-  qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toULongLong();
+    cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
+  qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toLongLong();
   newcache->setCacheDirectory( cacheDirectory );
   newcache->setMaximumCacheSize( cacheSize );
   QgsDebugMsgLevel( QStringLiteral( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ), 4 );

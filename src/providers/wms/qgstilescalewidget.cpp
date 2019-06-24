@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsdockwidget.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 #include "layertree/qgslayertreeview.h"
 
 #include <QMainWindow>
@@ -35,6 +36,7 @@ QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
   connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgsTileScaleWidget::scaleChanged );
@@ -47,17 +49,18 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   mSlider->setDisabled( true );
 
   QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rl || rl->providerType() != QLatin1String( "wms" ) || !rl->dataProvider() )
+  if ( !rl || !rl->dataProvider() )
     return;
 
-  QVariant res = rl->dataProvider()->property( "resolutions" );
+  const QList< double > resolutions = rl->dataProvider()->nativeResolutions();
+  if ( resolutions.isEmpty() )
+    return;
 
   mResolutions.clear();
-  const auto constToList = res.toList();
-  for ( const QVariant &r : constToList )
+  for ( const double res : resolutions )
   {
-    QgsDebugMsg( QStringLiteral( "found resolution: %1" ).arg( r.toDouble() ) );
-    mResolutions << r.toDouble();
+    QgsDebugMsg( QStringLiteral( "found resolution: %1" ).arg( res ) );
+    mResolutions << res;
   }
 
   if ( mResolutions.isEmpty() )
@@ -87,7 +90,9 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 
   int i;
   for ( i = 0; i < mResolutions.size() && mResolutions.at( i ) < mupp; i++ )
+  {
     QgsDebugMsg( QStringLiteral( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ) );
+  }
 
   if ( i == mResolutions.size() ||
        ( i > 0 && mResolutions.at( i ) - mupp > mupp - mResolutions.at( i - 1 ) ) )

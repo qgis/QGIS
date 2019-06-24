@@ -118,6 +118,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
+    //! copy constructor
+    explicit QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsWcsProvider() override;
 

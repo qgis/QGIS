@@ -442,7 +442,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   for ( QgsFeature3DHandler *handler : handlers.values() )
     handler->finalize( entity, context );
 
-  qDeleteAll( handlers.values() );
+  qDeleteAll( handlers );
 
   return entity;
 

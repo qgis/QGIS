@@ -1022,7 +1022,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     // we need to set pen width to 1,
     // since on retina displays
     // pen.setWidth(0) <=> pen.width = 0.5
-    // see https://issues.qgis.org/issues/15984
+    // see https://github.com/qgis/QGIS/issues/23900
     pen.setWidth( 1 );
     painter.setPen( pen );
     painter.setBrush( Qt::NoBrush );

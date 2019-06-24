@@ -61,7 +61,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
 void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  const QgsVectorLayerAndAttributeModel *m = dynamic_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
+  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
   if ( !m )
     return;
 
@@ -558,7 +558,7 @@ void QgsDxfExportDialog::deSelectAll()
 
 QList< QgsDxfExport::DxfLayer > QgsDxfExportDialog::layers() const
 {
-  const QgsVectorLayerAndAttributeModel *model = dynamic_cast< const QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  const QgsVectorLayerAndAttributeModel *model = qobject_cast< const QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
   Q_ASSERT( model );
   return model->layers();
 }

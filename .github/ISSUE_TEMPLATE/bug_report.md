@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a bug report to help us improve QGIS.
 title: ''
-labels: 'Bug report'
+labels: 'Bug'
 assignees: ''
 
 ---
@@ -30,17 +30,9 @@ If the issue concerns a **third party plugin**, then it **cannot** be fixed by t
 3. Scroll down to '....'
 4. See error -->
 
+**QGIS and OS versions**
 
-**Desktop environment (please complete the following information):**
-
- - OS and version:
-
-**QGIS version**
-
-*Please add information available in QGIS menu help/about*
-
-  - QGIS Version: [e.g. 3.4.5]
-  - Full library versions:
+<!-- In the QGIS menu help/about, click in the dialog, Ctrl+A and then Ctrl+C. Finally paste here -->
 
 **Additional context**
 

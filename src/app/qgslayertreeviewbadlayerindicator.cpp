@@ -42,7 +42,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( QgsLayerTree::toLayer( node )->layer() );
+  QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
 
   if ( !layer )
     return;

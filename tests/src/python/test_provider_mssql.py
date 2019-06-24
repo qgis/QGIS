@@ -58,10 +58,16 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 
         cls.conn = QSqlDatabase.addDatabase('QODBC')
         cls.conn.setDatabaseName('testsqlserver')
-        if 'QGIS_MSSQLTEST_DB' in os.environ:
-            cls.conn.setDatabaseName('QGIS_MSSQLTEST_DB')
-        cls.conn.setUserName('SA')
-        cls.conn.setPassword('<YourStrong!Passw0rd>')
+        if 'QGIS_MSSQLTEST_DB2' in os.environ:
+            print(os.environ['QGIS_MSSQLTEST_DB2'])
+            cls.conn.setDatabaseName(os.environ['QGIS_MSSQLTEST_DB2'])
+        elif 'QGIS_MSSQLTEST_DB' in os.environ:
+            print(os.environ['QGIS_MSSQLTEST_DB'])
+            cls.conn.setDatabaseName(os.environ['QGIS_MSSQLTEST_DB'])
+        else:
+            cls.conn.setUserName('SA')
+            cls.conn.setPassword('<YourStrong!Passw0rd>')
+
         assert cls.conn.open(), cls.conn.lastError().text()
 
         # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
@@ -350,6 +356,28 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
                                     [3, 3, 'test2', NULL]])
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['MultiPoint ((1 2),(3 4))', '', 'MultiPoint ((7 8))'])
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    def testCurveGeometries(self):
+        geomtypes = ['CompoundCurveM', 'CurvePolygonM', 'CircularStringM', 'CompoundCurveZM', 'CurvePolygonZM', 'CircularStringZM', 'CompoundCurveZ', 'CurvePolygonZ', 'CircularStringZ', 'CompoundCurve', 'CurvePolygon', 'CircularString']
+        geoms = ['CompoundCurveM ((0 -23.43778 10, 0 23.43778 10),CircularStringM (0 23.43778 10, -45 33.43778 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularStringM (-90 -23.43778 10, -45 -23.43778 10, 0 -23.43778 10))', 'CurvePolygonM (CompoundCurveM ((0 -23.43778 10, 0 -15.43778 10, 0 23.43778 10),CircularStringM (0 23.43778 10, -45 100 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularStringM (-90 -23.43778 10, -45 -16.43778 10, 0 -23.43778 10)),CompoundCurveM (CircularStringM (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))', 'CircularStringM (0 0 10, 0.14644660940672 0.35355339059327 10, 0.5 0.5 10, 0.85355339059327 0.35355339059327 10, 1 0 10, 0.85355339059327 -0.35355339059327 10, 0.5 -0.5 10, 0.14644660940672 -0.35355339059327 10, 0 0 10)', 'CompoundCurveZM ((0 -23.43778 2 10, 0 23.43778 2 10),CircularStringZM (0 23.43778 2 10, -45 33.43778 2 10, -90 23.43778 2 10),(-90 23.43778 2 10, -90 -23.43778 2 10),CircularStringZM (-90 -23.43778 2 10, -45 -23.43778 2 10, 0 -23.43778 2 10))', 'CurvePolygonZM (CompoundCurveZM ((0 -23.43778 5 10, 0 -15.43778 8 10, 0 23.43778 6 10),CircularStringZM (0 23.43778 6 10, -45 100 6 10, -90 23.43778 6 10),(-90 23.43778 6 10, -90 -23.43778 5 10),CircularStringZM (-90 -23.43778 5 10, -45 -16.43778 5 10, 0 -23.43778 5 10)),CompoundCurveZM (CircularStringZM (-30 0 10 10, -48 -12 10 10, -60 0 10 10, -48 -6 10 10, -30 0 10 10)))', 'CircularStringZM (0 0 1 10, 0.14644660940672 0.35355339059327 1 10, 0.5 0.5 1 10, 0.85355339059327 0.35355339059327 1 10, 1 0 1 10, 0.85355339059327 -0.35355339059327 1 10, 0.5 -0.5 1 10, 0.14644660940672 -0.35355339059327 1 10, 0 0 1 10)', 'CompoundCurveZ ((0 -23.43778 2, 0 23.43778 2),CircularStringZ (0 23.43778 2, -45 33.43778 2, -90 23.43778 2),(-90 23.43778 2, -90 -23.43778 2),CircularStringZ (-90 -23.43778 2, -45 -23.43778 2, 0 -23.43778 2))', 'CurvePolygonZ (CompoundCurveZ ((0 -23.43778 5, 0 -15.43778 8, 0 23.43778 6),CircularStringZ (0 23.43778 6, -45 100 6, -90 23.43778 6),(-90 23.43778 6, -90 -23.43778 5),CircularStringZ (-90 -23.43778 5, -45 -16.43778 5, 0 -23.43778 5)),CompoundCurveZ (CircularStringZ (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))', 'CircularStringZ (0 0 1, 0.14644660940672 0.35355339059327 1, 0.5 0.5 1, 0.85355339059327 0.35355339059327 1, 1 0 1, 0.85355339059327 -0.35355339059327 1, 0.5 -0.5 1, 0.14644660940672 -0.35355339059327 1, 0 0 1)', 'CompoundCurve ((0 -23.43778, 0 23.43778),CircularString (0 23.43778, -45 33.43778, -90 23.43778),(-90 23.43778, -90 -23.43778),CircularString (-90 -23.43778, -45 -23.43778, 0 -23.43778))', 'CurvePolygon (CompoundCurve ((0 -23.43778, 0 -15.43778, 0 23.43778),CircularString (0 23.43778, -45 100, -90 23.43778),(-90 23.43778, -90 -23.43778),CircularString (-90 -23.43778, -45 -16.43778, 0 -23.43778)),CompoundCurve (CircularString (-30 0, -48 -12, -60 0, -48 -6, -30 0)))', 'CircularString (0 0, 0.14644660940672 0.35355339059327, 0.5 0.5, 0.85355339059327 0.35355339059327, 1 0, 0.85355339059327 -0.35355339059327, 0.5 -0.5, 0.14644660940672 -0.35355339059327, 0 0)']
+        for idx, t in enumerate(geoms):
+            f = QgsFeature()
+            g = QgsGeometry.fromWkt(t)
+            f.setGeometry(g)
+            layer = QgsVectorLayer(geomtypes[idx] + "?crs=epsg:4326", "addfeat", "memory")
+            pr = layer.dataProvider()
+            pr.addFeatures([f])
+            uri = self.dbconn + ' table="qgis_test"."new_table_curvegeom_' + str(idx) + '" sql='
+            error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:4326'))
+            self.assertEqual(error, QgsVectorLayerExporter.NoError)
+            new_layer = QgsVectorLayer(uri, 'new', 'mssql')
+            self.assertTrue(new_layer.isValid())
+            self.assertEqual(new_layer.wkbType(), g.wkbType())
+            self.assertEqual(new_layer.crs().authid(), 'EPSG:4326')
+            result_geoms = [f.geometry().asWkt(14) for f in new_layer.getFeatures()]
+            self.assertEqual(result_geoms, [t])
+            self.execSQLCommand('DROP TABLE IF EXISTS [qgis_test].[new_table_curvegeom_{}]'.format(str(idx)))
 
     def testInsertPolygonInMultiPolygon(self):
         layer = QgsVectorLayer("MultiPolygon?crs=epsg:4326&field=id:integer", "addfeat", "memory")

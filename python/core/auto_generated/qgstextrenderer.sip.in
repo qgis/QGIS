@@ -1422,6 +1422,24 @@ Sets the line height for text.
 .. seealso:: :py:func:`lineHeight`
 %End
 
+    QColor previewBackgroundColor() const;
+%Docstring
+Returns the background color for text previews.
+
+.. seealso:: :py:func:`setPreviewBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void setPreviewBackgroundColor( const QColor &color );
+%Docstring
+Sets the background ``color`` that text will be rendered on for previews.
+
+.. seealso:: :py:func:`previewBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
 Reads settings from a layer's custom properties (for QGIS 2.x projects).
@@ -1502,6 +1520,18 @@ was not found on the system this will return the name of the replacement
 font.
 
 .. seealso:: :py:func:`fontFound`
+%End
+
+    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
+%Docstring
+Returns a pixmap preview for a text ``format``.
+
+:param format: text format
+:param size: target pixmap size
+:param previewText: text to render in preview, or empty for default text
+:param padding: space between icon edge and color ramp
+
+.. versionadded:: 3.10
 %End
 
 };

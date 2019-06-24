@@ -72,6 +72,9 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertEqual(m.rowCount(), 1)
         self.assertEqual(m.data(m.index(0, 0)), 'l1')
 
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+
     def testFilterGeometryType(self):
         """ test filtering by geometry type """
         QgsProject.instance().clear()
@@ -93,23 +96,48 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertEqual(m.rowCount(), 1)
         self.assertEqual(m.data(m.index(0, 0)), 'layer 2')
 
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
+
         m.setFilters(QgsMapLayerProxyModel.PointLayer)
         self.assertEqual(m.rowCount(), 1)
         self.assertEqual(m.data(m.index(0, 0)), 'layer 1')
+
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
 
         m.setFilters(QgsMapLayerProxyModel.LineLayer)
         self.assertEqual(m.rowCount(), 1)
         self.assertEqual(m.data(m.index(0, 0)), 'layer 4')
 
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertTrue(m.acceptsLayer(l4))
+
         m.setFilters(QgsMapLayerProxyModel.NoGeometry)
         self.assertEqual(m.rowCount(), 1)
         self.assertEqual(m.data(m.index(0, 0)), 'layer 3')
+
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+        self.assertTrue(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
 
         m.setFilters(QgsMapLayerProxyModel.HasGeometry)
         self.assertEqual(m.rowCount(), 3)
         self.assertEqual(m.data(m.index(0, 0)), 'layer 1')
         self.assertEqual(m.data(m.index(1, 0)), 'layer 2')
         self.assertEqual(m.data(m.index(2, 0)), 'layer 4')
+
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertTrue(m.acceptsLayer(l4))
 
         m.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.assertEqual(m.rowCount(), 4)
@@ -118,11 +146,26 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(2, 0)), 'layer 3')
         self.assertEqual(m.data(m.index(3, 0)), 'layer 4')
 
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+        self.assertTrue(m.acceptsLayer(l3))
+        self.assertTrue(m.acceptsLayer(l4))
+
         m.setFilters(QgsMapLayerProxyModel.PluginLayer)
         self.assertEqual(m.rowCount(), 0)
 
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
+
         m.setFilters(QgsMapLayerProxyModel.RasterLayer)
         self.assertEqual(m.rowCount(), 0)
+
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
 
     def testFilterString(self):
         """ test filtering by string"""
@@ -146,6 +189,11 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(0, 0)), 'final layer')
         self.assertEqual(m.data(m.index(1, 0)), 'layer 1')
         self.assertEqual(m.data(m.index(2, 0)), 'lAyEr 2')
+
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertTrue(m.acceptsLayer(l4))
 
         m.setFilterString('')
         self.assertEqual(m.rowCount(), 4)
@@ -173,31 +221,66 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(2, 0)), 'layer 1')
         self.assertEqual(m.data(m.index(3, 0)), 'lAyEr 2')
 
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+        self.assertTrue(m.acceptsLayer(l3))
+        self.assertTrue(m.acceptsLayer(l4))
+
         m.setExceptedLayerList([l1, l3])
         self.assertEqual(m.rowCount(), 2)
         self.assertEqual(m.data(m.index(0, 0)), 'final layer')
         self.assertEqual(m.data(m.index(1, 0)), 'lAyEr 2')
+
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertTrue(m.acceptsLayer(l4))
 
         m.setExceptedLayerIds([l2.id(), l4.id()])
         self.assertEqual(m.rowCount(), 2)
         self.assertEqual(m.data(m.index(0, 0)), 'another')
         self.assertEqual(m.data(m.index(1, 0)), 'layer 1')
 
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+        self.assertTrue(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
+
         m.setLayerWhitelist([l1])
         self.assertEqual(m.rowCount(), 1)
         self.assertEqual(m.data(m.index(0, 0)), 'layer 1')
 
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
+
         m.setExceptedLayerIds([])
         self.assertEqual(m.rowCount(), 1)
         self.assertEqual(m.data(m.index(0, 0)), 'layer 1')
+
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+        self.assertFalse(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
 
         m.setLayerWhitelist([l2, l3])
         self.assertEqual(m.rowCount(), 2)
         self.assertEqual(m.data(m.index(0, 0)), 'another')
         self.assertEqual(m.data(m.index(1, 0)), 'lAyEr 2')
 
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+        self.assertTrue(m.acceptsLayer(l3))
+        self.assertFalse(m.acceptsLayer(l4))
+
         m.setLayerWhitelist([])
         self.assertEqual(m.rowCount(), 4)
+
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+        self.assertTrue(m.acceptsLayer(l3))
+        self.assertTrue(m.acceptsLayer(l4))
 
 
 if __name__ == '__main__':

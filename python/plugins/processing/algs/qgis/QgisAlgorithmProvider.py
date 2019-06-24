@@ -48,6 +48,7 @@ from .Aggregate import Aggregate
 from .Aspect import Aspect
 from .BasicStatistics import BasicStatisticsForField
 from .CheckValidity import CheckValidity
+from .Climb import Climb
 from .ConcaveHull import ConcaveHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
@@ -84,7 +85,6 @@ from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
-from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PointsFromPolygons import PointsFromPolygons
@@ -159,6 +159,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Aspect(),
                 BasicStatisticsForField(),
                 CheckValidity(),
+                Climb(),
                 ConcaveHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
@@ -195,7 +196,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 NearestNeighbourAnalysis(),
                 Orthogonalize(),
                 PointDistance(),
-                PointsAlongGeometry(),
                 PointsDisplacement(),
                 PointsFromLines(),
                 PointsFromPolygons(),

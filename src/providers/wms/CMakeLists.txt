@@ -3,7 +3,6 @@ SET (WMS_SRCS
   qgswmsprovider.cpp
   qgswmsconnection.cpp
   qgswmsdataitems.cpp
-  qgstilecache.cpp
   qgsxyzconnection.cpp
 )
 SET (WMS_MOC_HDRS

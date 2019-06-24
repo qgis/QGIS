@@ -69,8 +69,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void resetProjectDefault();
     void browseTemplateFolder();
     void resetTemplateFolder();
-    //! Slot called when user chooses to change the project wide projection.
-    void leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     //! Slot called when user chooses to change the default 'on the fly' projection.
     void leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -237,7 +235,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void saveMinMaxLimits( QComboBox *cbox, const QString &name );
     void setZoomFactorValue();
     double zoomFactorValue();
-    QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
 

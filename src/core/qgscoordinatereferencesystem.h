@@ -781,16 +781,23 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for getting number of user CRS already in db
     long getRecordCount();
 
+#if PROJ_VERSION_MAJOR>=6
+    bool loadFromAuthCode( const QString &auth, const QString &code );
+#endif
+
     /**
      * Initialize the CRS object by looking up CRS database in path given in db argument,
      * using first CRS entry where expression = 'value'
      */
     bool loadFromDatabase( const QString &db, const QString &expression, const QString &value );
 
+#if PROJ_VERSION_MAJOR<6 // not used for proj >= 6.0
     static bool loadIds( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
+
     //! Update datum shift definitions from GDAL data. Used by syncDb()
     static bool syncDatumTransform( const QString &dbPath );
+#endif
 
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 

@@ -53,7 +53,7 @@ modified.
 
  * NetCDF
  * GRIB
- * 2DM 
+ * 2DM
  * [Other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats)
 
 ## Note
@@ -64,9 +64,7 @@ installation document in `qgis/doc/index.html`. The installation document is
 also available as PDF in the same directory.
 
 ## Help us
-Please submit bug reports using the [QGIS bug tracker](https://issues.qgis.org/).
-When reporting a bug, either login or, if you don't have a qgis trac, provide
-an email address where we can request additional information.
+Please submit bug reports using the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
 
 ## Support
 You can get support in the following ways:

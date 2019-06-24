@@ -41,6 +41,8 @@ class QgsLayerTreeView;
  */
 class QgsLayerTreeViewProxyStyle : public QgsProxyStyle
 {
+    Q_OBJECT
+
   public:
     explicit QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeView );
 

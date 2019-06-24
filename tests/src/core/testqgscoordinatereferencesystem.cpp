@@ -85,6 +85,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void projectEPSG25833();
     void geoCcsDescription();
     void geographicCrsAuthId();
+    void noProj();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -701,7 +702,7 @@ void TestQgsCoordinateReferenceSystem::ellipsoidAcronym()
   myCrs.createFromSrid( GEOSRID );
   QString myAcronym = myCrs.ellipsoidAcronym();
   debugPrint( myCrs );
-  QVERIFY( myAcronym == "WGS84" );
+  QCOMPARE( myAcronym, QStringLiteral( "WGS84" ) );
 }
 void TestQgsCoordinateReferenceSystem::toWkt()
 {
@@ -969,6 +970,26 @@ void TestQgsCoordinateReferenceSystem::geographicCrsAuthId()
   crs.createFromString( QStringLiteral( "EPSG:3825" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3825" ) );
   QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:3824" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::noProj()
+{
+#if PROJ_VERSION_MAJOR>=6
+  // test a crs which cannot be represented by a proj string
+  QgsCoordinateReferenceSystem crs( "EPSG:2218" );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:2218" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"Scoresbysund 1952 / Greenland zone 5 east\",GEOGCS[\"Scoresbysund 1952\",DATUM[\"Scoresbysund_1952\",SPHEROID[\"International 1924\",6378388,297,AUTHORITY[\"EPSG\",\"7022\"]],AUTHORITY[\"EPSG\",\"6195\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4195\"]],PROJECTION[\"Lambert_Conic_Conformal_(West_Orientated)\"],PARAMETER[\"Latitude of natural origin\",70.5],PARAMETER[\"Longitude of natural origin\",-24],PARAMETER[\"Scale factor at natural origin\",1],PARAMETER[\"False easting\",0],PARAMETER[\"False northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AUTHORITY[\"EPSG\",\"2218\"]]" ) );
+  crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "ESRI:54091" );
+  QCOMPARE( crs.authid(), QStringLiteral( "ESRI:54091" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"WGS_1984_Peirce_quincuncial_North_Pole_diamond\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Peirce_Quincuncial\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",0],PARAMETER[\"Scale_Factor\",1],PARAMETER[\"Latitude_Of_Origin\",90],PARAMETER[\"Option\",1],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"ESRI\",\"54091\"]]" ) );
+  crs = QgsCoordinateReferenceSystem( "EPSG:22300" );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:22300" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"Carthage (Paris) / Tunisia Mining Grid\",GEOGCS[\"Carthage (Paris)\",DATUM[\"Carthage_Paris\",SPHEROID[\"Clarke 1880 (IGN)\",6378249.2,293.466021293627,AUTHORITY[\"EPSG\",\"7011\"]],AUTHORITY[\"EPSG\",\"6816\"]],PRIMEM[\"Paris\",2.33722916999999,AUTHORITY[\"EPSG\",\"8903\"]],UNIT[\"grad\",0.0157079632679489,AUTHORITY[\"EPSG\",\"9105\"]],AUTHORITY[\"EPSG\",\"4816\"]],PROJECTION[\"Tunisia_Mapping_Grid\"],PARAMETER[\"latitude_of_origin\",36.5964],PARAMETER[\"central_meridian\",7.83445],PARAMETER[\"false_easting\",270],PARAMETER[\"false_northing\",360],UNIT[\"kilometre\",1000,AUTHORITY[\"EPSG\",\"9036\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"22300\"]]" ) );  //#spellok
+#endif
+
 }
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"

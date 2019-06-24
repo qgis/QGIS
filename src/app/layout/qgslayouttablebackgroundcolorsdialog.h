@@ -42,14 +42,13 @@ class QgsLayoutTableBackgroundColorsDialog: public QDialog, private Ui::QgsLayou
      */
     QgsLayoutTableBackgroundColorsDialog( QgsLayoutTable *table, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
-    ~QgsLayoutTableBackgroundColorsDialog() override;
-
   private slots:
 
     void apply();
 
     void buttonBox_accepted();
     void buttonBox_rejected();
+    void showHelp();
 
   private:
 

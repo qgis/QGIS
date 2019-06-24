@@ -611,7 +611,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       catch ( const QgsException &e )
       {
         Q_UNUSED( e )
-        // See https://issues.qgis.org/issues/12634
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
     }
@@ -662,19 +662,23 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       catch ( const QgsException &e )
       {
         Q_UNUSED( e )
-        // See https://issues.qgis.org/issues/12634
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         continue;
       }
     }
 
-    SpatialIndex::Region r( rect2region( f.geometry().boundingBox() ) );
-    dataList << new RTree::Data( 0, nullptr, r, f.id() );
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
+    {
+      SpatialIndex::Region r( rect2region( bbox ) );
+      dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
-    if ( mGeoms.contains( f.id() ) )
-      delete mGeoms.take( f.id() );
-    mGeoms[f.id()] = new QgsGeometry( f.geometry() );
-    ++indexedCount;
+      if ( mGeoms.contains( f.id() ) )
+        delete mGeoms.take( f.id() );
+      mGeoms[f.id()] = new QgsGeometry( f.geometry() );
+      ++indexedCount;
+    }
 
     if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
     {
@@ -771,14 +775,14 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       catch ( const QgsException &e )
       {
         Q_UNUSED( e )
-        // See https://issues.qgis.org/issues/12634
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         return;
       }
     }
 
-    QgsRectangle bbox = f.geometry().boundingBox();
-    if ( !bbox.isNull() )
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
     {
       SpatialIndex::Region r( rect2region( bbox ) );
       mRTree->insertData( 0, nullptr, r, f.id() );
@@ -872,7 +876,7 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   }
 
   MatchList mlist = pointInPolygon( point );
-  if ( mlist.count() && mlist.at( 0 ).isValid() )
+  if ( !mlist.isEmpty() && mlist.at( 0 ).isValid() )
   {
     return mlist.at( 0 );
   }

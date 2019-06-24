@@ -1,9 +1,15 @@
 version: '3'
 services:
   postgres:
-    image: kartoza/postgis:9.5-2.2
+    build:
+      dockerfile: Dockerfile-postgis
+      context: ../../../tests/testdata
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
+# The following files are added in Dockerfile-postgis
+      - SSL_CERT_FILE=/etc/ssl/certs/postgres_cert.crt
+      - SSL_KEY_FILE=/etc/ssl/private/postgres_key.key
+      - SSL_CA_FILE=/etc/ssl/certs/issuer_ca_cert.pem
 
   mssql:
     image: microsoft/mssql-server-linux:2017-latest

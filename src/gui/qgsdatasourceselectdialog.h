@@ -58,7 +58,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
      */
     QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = nullptr,
                                bool setFilterByLayerType = false,
-                               const QgsMapLayerType &layerType = QgsMapLayerType::VectorLayer,
+                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
                                QWidget *parent = nullptr );
 
 
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
      * \note the description will be displayed at the bottom of the dialog
      * \since 3.8
      */
-    void setDescription( const QString description );
+    void setDescription( const QString &description );
 
     /**
      * Returns the (possibly invalid) uri of the selected data source
@@ -97,6 +97,8 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
 
     //! Triggered when a layer is selected in the browser
     void onLayerSelected( const QModelIndex &index );
+
+    void itemDoubleClicked( const QModelIndex &index );
 
   private:
 

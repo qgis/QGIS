@@ -20,6 +20,9 @@ Alias /@package@/ @osgeo4w@/apps/@package@/bin/
 <Directory "@osgeo4w@/apps/@package@/bin/">
     SetHandler fcgid-script
     Options ExecCGI
-    Order allow,deny
-    Allow from all
+    # Order/Allow is for Apache 2.2
+    #Order allow,deny
+    #Allow from all
+    # Require is for Apache 2.4
+    Require all granted
 </Directory>

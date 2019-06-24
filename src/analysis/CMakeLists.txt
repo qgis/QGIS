@@ -80,6 +80,8 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmarrayoffsetlines.cpp
   processing/qgsalgorithmpolygonstolines.cpp
   processing/qgsalgorithmpointonsurface.cpp
+  processing/qgsalgorithmpointtolayer.cpp
+  processing/qgsalgorithmpointsalonggeometry.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp

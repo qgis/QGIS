@@ -266,6 +266,13 @@ Adds point to the CAD point list
 .. versionadded:: 3.0
 %End
 
+    void removePreviousPoint();
+%Docstring
+Remove previous point in the CAD point list
+
+.. versionadded:: 3.8
+%End
+
     void setPoints( const QList<QgsPointXY> &points );
 %Docstring
 Configures list of current CAD points

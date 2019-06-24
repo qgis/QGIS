@@ -381,7 +381,7 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
   double C = ( x1 - cx ) * ( x1 - cx ) + ( y1 - cy ) * ( y1 - cy ) - radius * radius;
 
   double det = B * B - 4 * A * C;
-  if ( A <= 0.0000001 || det < 0 )
+  if ( A <= 0.000000000001 || det < 0 )
     // Should never happen, No real solutions.
     return;
 

@@ -293,7 +293,8 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
          .arg( tr( "Is vector" ) )
          .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
 
-  for ( auto it = gmeta.extraOptions().constBegin(); it != gmeta.extraOptions().constEnd(); ++it )
+  const auto options = gmeta.extraOptions();
+  for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
   {
     msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
   }

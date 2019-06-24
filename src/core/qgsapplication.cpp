@@ -51,6 +51,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
+#include "qgsprojutils.h"
 #include "qgsvaliditycheckregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
@@ -90,6 +91,11 @@
 #include <ogr_api.h>
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
+
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#endif
+
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
@@ -210,6 +216,8 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
   qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
   qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+  qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
+  qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
 
   ( void ) resolvePkgPath();
 
@@ -294,6 +302,24 @@ void QgsApplication::init( QString profileFolder )
     }
   }
   ABISYM( mSystemEnvVars ) = systemEnvVarMap;
+
+#if PROJ_VERSION_MAJOR>=6
+  // append local user-writable folder as a proj search path
+  QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
+  currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
+  char **newPaths = new char *[currentProjSearchPaths.length()];
+  for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
+  {
+    newPaths[i] = CPLStrdup( currentProjSearchPaths.at( i ).toUtf8().constData() );
+  }
+  proj_context_set_search_paths( nullptr, currentProjSearchPaths.count(), newPaths );
+  for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
+  {
+    CPLFree( newPaths[i] );
+  }
+  delete [] newPaths;
+#endif
+
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
@@ -1002,7 +1028,7 @@ QString QgsApplication::userLoginName()
 
   if ( GetUserName( ( TCHAR * )name, &size ) )
   {
-    sUserName = QString( name );
+    sUserName = QString::fromLocal8Bit( name );
   }
 
 #elif QT_CONFIG(process)
@@ -1038,7 +1064,7 @@ QString QgsApplication::userFullName()
   //note - this only works for accounts connected to domain
   if ( GetUserNameEx( NameDisplay, ( TCHAR * )name, &size ) )
   {
-    sUserFullName = QString( name );
+    sUserFullName = QString::fromLocal8Bit( name );
   }
 
   //fall back to login name
@@ -1207,7 +1233,9 @@ void QgsApplication::exitQgis()
 
   delete QgsProject::instance();
 
-  delete QgsProviderRegistry::instance();
+  // avoid creating instance just to delete it!
+  if ( QgsProviderRegistry::exists() )
+    delete QgsProviderRegistry::instance();
 
   // invalidate coordinate cache while the PROJ context held by the thread-locale
   // QgsProjContextStore object is still alive. Otherwise if this later object

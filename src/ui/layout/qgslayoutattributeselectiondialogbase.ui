@@ -254,7 +254,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -277,32 +277,6 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections>

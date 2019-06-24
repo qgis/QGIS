@@ -62,7 +62,7 @@ class SelectByExpression(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterExpression(self.EXPRESSION,
                                                            self.tr('Expression'), parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
-                                                     self.tr('Modify current selection by'), self.methods, 0))
+                                                     self.tr('Modify current selection by'), self.methods, defaultValue=0))
 
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 

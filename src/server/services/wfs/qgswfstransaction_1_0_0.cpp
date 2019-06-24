@@ -370,7 +370,7 @@ namespace QgsWfs
         QDomElement geometryElem = action.geometryElement;
         // get field information
         QgsFields fields = provider->fields();
-        QMap<QString, int> fieldMap = provider->fieldNameMap();
+        const QMap<QString, int> fieldMap = provider->fieldNameMap();
         QMap<QString, int>::const_iterator fieldMapIt;
         QString fieldName;
         bool conversionSuccess;
@@ -731,7 +731,7 @@ namespace QgsWfs
 
       // Get Layer Field Information
       QgsFields fields = provider->fields();
-      QMap<QString, int> fieldMap = provider->fieldNameMap();
+      const QMap<QString, int> fieldMap = provider->fieldNameMap();
       QMap<QString, int>::const_iterator fieldMapIt;
 
       for ( int i = 0; i < featureNodeList.count(); i++ )

@@ -135,6 +135,7 @@ class RandomPointsPolygons(QgisAlgorithm):
 
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         current_progress = 0
+        pointId = 0
         for current, f in enumerate(source.getFeatures()):
             if feedback.isCanceled():
                 break
@@ -190,12 +191,13 @@ class RandomPointsPolygons(QgisAlgorithm):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)
                     f.setFields(fields)
-                    f.setAttribute('id', nPoints)
+                    f.setAttribute('id', pointId)
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                     index.addFeature(f)
                     points[nPoints] = p
                     nPoints += 1
+                    pointId += 1
                     feedback.setProgress(current_progress + int(nPoints * feature_total))
                 nIterations += 1
 

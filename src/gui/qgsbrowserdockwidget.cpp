@@ -156,7 +156,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     mPropertiesWidgetHeight = settings.value( settingsSection() + "/propertiesWidgetHeight" ).toFloat();
     QList<int> sizes = mSplitter->sizes();
     int total = sizes.value( 0 ) + sizes.value( 1 );
-    int height = static_cast<int>( total ) * mPropertiesWidgetHeight;
+    int height = static_cast<int>( total * mPropertiesWidgetHeight );
     sizes.clear();
     sizes << total - height << height;
     mSplitter->setSizes( sizes );
@@ -253,7 +253,7 @@ void QgsBrowserDockWidget::addFavorite()
   if ( !item )
     return;
 
-  QgsDirectoryItem *dirItem = dynamic_cast<QgsDirectoryItem *>( item );
+  QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item );
   if ( !dirItem )
     return;
 

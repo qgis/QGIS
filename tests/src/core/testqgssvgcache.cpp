@@ -128,8 +128,8 @@ void TestQgsSvgCache::threadSafePicture()
   // returns a detached copy which is safe to use across threads
 
   // refs:
-  // https://issues.qgis.org/issues/17077
-  // https://issues.qgis.org/issues/17089
+  // https://github.com/qgis/QGIS/issues/24976
+  // https://github.com/qgis/QGIS/issues/24988
 
   QgsSvgCache cache;
   QString svgPath = TEST_DATA_DIR + QStringLiteral( "/sample_svg.svg" );

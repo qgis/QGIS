@@ -491,13 +491,27 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // Cache unique values
       if ( hasUniqueConstraint && ! uniqueValueCaches.contains( idx ) )
-        uniqueValueCaches[ idx ] = layer->uniqueValues( idx );
+      {
+        // If the layer is filtered, get unique values from an unfiltered clone
+        if ( ! layer->subsetString().isEmpty() )
+        {
+          std::unique_ptr<QgsVectorLayer> unfilteredClone { layer->clone( ) };
+          unfilteredClone->setSubsetString( QString( ) );
+          uniqueValueCaches[ idx ] = unfilteredClone->uniqueValues( idx );
+        }
+        else
+        {
+          uniqueValueCaches[ idx ] = layer->uniqueValues( idx );
+        }
+      }
 
       // 2. client side default expression
       // note - deliberately not using else if!
+      QgsDefaultValue defaultValueDefinition = layer->defaultValueDefinition( idx );
       if ( ( v.isNull() || ( hasUniqueConstraint
-                             && uniqueValueCaches[ idx ].contains( v ) ) )
-           && layer->defaultValueDefinition( idx ).isValid() )
+                             && uniqueValueCaches[ idx ].contains( v ) )
+             || defaultValueDefinition.applyOnUpdate() )
+           && defaultValueDefinition.isValid() )
       {
         // client side default expression set - takes precedence over all. Why? Well, this is the only default
         // which QGIS users have control over, so we assume that they're deliberately overriding any

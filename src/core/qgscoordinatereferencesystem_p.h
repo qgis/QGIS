@@ -76,8 +76,8 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mAxisInverted( other.mAxisInverted )
     {
 #if PROJ_VERSION_MAJOR>=6
-      if ( mIsValid && mPj.get() )
-        mPj.reset( proj_clone( QgsProjContext::get(), mPj.get() ) );
+      if ( mIsValid && other.mPj )
+        mPj.reset( proj_clone( QgsProjContext::get(), other.mPj.get() ) );
 #else
       if ( mIsValid )
       {

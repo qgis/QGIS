@@ -694,7 +694,7 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
   QgsRasterDataProvider *destProvider = destProviderIn;
   if ( !destProvider )
   {
-    destProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mOutputProviderKey, filename, providerOptions ) );
+    destProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mOutputProviderKey, filename, providerOptions ) );
     if ( !destProvider || !destProvider->isValid() )
     {
       delete destProvider;

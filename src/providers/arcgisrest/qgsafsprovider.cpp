@@ -145,6 +145,24 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );
+
+    if ( fieldDataMap.contains( QStringLiteral( "domain" ) ) && fieldDataMap.value( QStringLiteral( "domain" ) ).toMap().value( QStringLiteral( "type" ) ).toString() == QStringLiteral( "codedValue" ) )
+    {
+      const QVariantList values = fieldDataMap.value( QStringLiteral( "domain" ) ).toMap().value( QStringLiteral( "codedValues" ) ).toList();
+      QVariantList valueConfig;
+      valueConfig.reserve( values.count() );
+      for ( const QVariant &v : values )
+      {
+        const QVariantMap value = v.toMap();
+        QVariantMap config;
+        config[ value.value( QStringLiteral( "name" ) ).toString() ] = value.value( QStringLiteral( "code" ) );
+        valueConfig.append( config );
+      }
+      QVariantMap editorConfig;
+      editorConfig.insert( QStringLiteral( "map" ), valueConfig );
+      field.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), editorConfig ) );
+    }
+
     mSharedData->mFields.append( field );
   }
   if ( objectIdFieldName.isEmpty() )
@@ -156,8 +174,16 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   mSharedData->mGeometryType = QgsArcGisRestUtils::mapEsriGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
   if ( mSharedData->mGeometryType == QgsWkbTypes::Unknown )
   {
-    appendError( QgsErrorMessage( tr( "Failed to determine geometry type" ), QStringLiteral( "AFSProvider" ) ) );
-    return;
+    if ( layerData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+    {
+      // it's possible to connect to ImageServers as a feature service, to view tile boundaries
+      mSharedData->mGeometryType = QgsWkbTypes::Polygon;
+    }
+    else
+    {
+      appendError( QgsErrorMessage( tr( "Failed to determine geometry type" ), QStringLiteral( "AFSProvider" ) ) );
+      return;
+    }
   }
   mSharedData->mGeometryType = QgsWkbTypes::zmType( mSharedData->mGeometryType, hasZ, hasM );
 

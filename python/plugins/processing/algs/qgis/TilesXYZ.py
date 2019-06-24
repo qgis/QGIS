@@ -43,7 +43,8 @@ from qgis.core import (QgsProcessingException,
                        QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
-                       QgsMapRendererCustomPainterJob)
+                       QgsMapRendererCustomPainterJob,
+                       QgsLabelingEngineSettings)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -129,6 +130,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
     ZOOM_MAX = 'ZOOM_MAX'
     DPI = 'DPI'
     TILE_FORMAT = 'TILE_FORMAT'
+    QUALITY = 'QUALITY'
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT, self.tr('Extent')))
@@ -152,6 +154,11 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                      self.tr('Tile format'),
                                                      self.formats,
                                                      defaultValue=0))
+        self.addParameter(QgsProcessingParameterNumber(self.QUALITY,
+                                                       self.tr('Quality (JPG only)'),
+                                                       minValue=1,
+                                                       maxValue=100,
+                                                       defaultValue=75))
 
     def prepareAlgorithm(self, parameters, context, feedback):
         project = context.project()
@@ -167,8 +174,13 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
         dpi = self.parameterAsInt(parameters, self.DPI, context)
         self.tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
-        tile_width = 256
-        tile_height = 256
+        quality = self.parameterAsInt(parameters, self.QUALITY, context)
+        try:
+            tile_width = self.parameterAsInt(parameters, self.TILE_WIDTH, context)
+            tile_height = self.parameterAsInt(parameters, self.TILE_HEIGHT, context)
+        except AttributeError:
+            tile_width = 256
+            tile_height = 256
 
         wgs_crs = QgsCoordinateReferenceSystem('EPSG:4326')
         dest_crs = QgsCoordinateReferenceSystem('EPSG:3857')
@@ -184,6 +196,11 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         settings.setOutputDpi(dpi)
         if self.tile_format == 'PNG':
             settings.setBackgroundColor(QColor(Qt.transparent))
+
+        # disable partial labels (they would be cut at the edge of tiles)
+        labeling_engine_settings = settings.labelingEngineSettings()
+        labeling_engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        settings.setLabelingEngineSettings(labeling_engine_settings)
 
         self.wgs_extent = src_to_wgs.transformBoundingBox(extent)
         self.wgs_extent = [self.wgs_extent.xMinimum(), self.wgs_extent.yMinimum(), self.wgs_extent.xMaximum(),
@@ -201,7 +218,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 
         tile_params = {
             'format': self.tile_format,
-            'quality': 75,
+            'quality': quality,
             'width': tile_width,
             'height': tile_height,
             'min_zoom': self.min_zoom,
@@ -221,17 +238,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                 extent = QgsRectangle(*metatile.extent())
                 settings.setExtent(wgs_to_dest.transformBoundingBox(extent))
                 settings.setOutputSize(size)
-
-                if hasattr(settings, 'setLabelBoundaryGeometry'):
-                    label_area = QgsRectangle(settings.extent())
-                    lab_buffer = label_area.width() * (lab_buffer_px / size.width())
-                    label_area.set(
-                        label_area.xMinimum() + lab_buffer,
-                        label_area.yMinimum() + lab_buffer,
-                        label_area.xMaximum() - lab_buffer,
-                        label_area.yMaximum() - lab_buffer
-                    )
-                    settings.setLabelBoundaryGeometry(QgsGeometry.fromRect(label_area))
 
                 image = QImage(size, QImage.Format_ARGB32_Premultiplied)
                 image.fill(Qt.transparent)
@@ -282,11 +288,10 @@ class MBTilesWriter:
         self.min_zoom = tile_params.get('min_zoom')
         self.max_zoom = tile_params.get('max_zoom')
         tile_format = tile_params['format']
+        options = []
         if tile_format == 'JPG':
             tile_format = 'JPEG'
             options = ['QUALITY=%s' % tile_params.get('quality', 75)]
-        else:
-            options = ['ZLEVEL=8']
         driver = gdal.GetDriverByName('MBTiles')
         ds = driver.Create(self.filename, 1, 1, 1, options=['TILE_FORMAT=%s' % tile_format] + options)
         ds = None
@@ -405,13 +410,13 @@ LEAFLET_TEMPLATE = '''
    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
    crossorigin=""></script>
   <style type="text/css">
-    #map{{
-       left: 10px;
-       right: 10px;
-       top: 10px;
-       bottom: 10px;
-       width: 600px;
-       height: 400px;
+    body {{
+       margin: 0;
+       padding: 0;
+    }}
+    html, body, #map{{
+       width: 100%;
+       height: 100%;
     }}
   </style>
 </head>
@@ -458,9 +463,21 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
     TMS_CONVENTION = 'TMS_CONVENTION'
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
     OUTPUT_HTML = 'OUTPUT_HTML'
+    TILE_WIDTH = 'TILE_WIDTH'
+    TILE_HEIGHT = 'TILE_HEIGHT'
 
     def initAlgorithm(self, config=None):
         super(TilesXYZAlgorithmDirectory, self).initAlgorithm()
+        self.addParameter(QgsProcessingParameterNumber(self.TILE_WIDTH,
+                                                       self.tr('Tile width'),
+                                                       minValue=1,
+                                                       maxValue=4096,
+                                                       defaultValue=256))
+        self.addParameter(QgsProcessingParameterNumber(self.TILE_HEIGHT,
+                                                       self.tr('Tile height'),
+                                                       minValue=1,
+                                                       maxValue=4096,
+                                                       defaultValue=256))
         self.addParameter(QgsProcessingParameterBoolean(self.TMS_CONVENTION,
                                                         self.tr('Use inverted tile Y axis (TMS convention)'),
                                                         defaultValue=False,

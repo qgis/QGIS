@@ -112,11 +112,12 @@ QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QSt
 
 json QgsMultiSurface::asJsonObject( int precision ) const
 {
-  json coordinates { json::array( ) };
+  json polygons( json::array( ) );
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {
+      json coordinates( json::array( ) );
       std::unique_ptr< QgsPolygon >polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
@@ -131,12 +132,13 @@ json QgsMultiSurface::asJsonObject( int precision ) const
         interiorLineString->points( interiorPts );
         coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision ) );
       }
+      polygons.push_back( coordinates );
     }
   }
   return
   {
     {  "type",  "MultiPolygon" },
-    {  "coordinates", coordinates }
+    {  "coordinates", polygons }
   };
 }
 

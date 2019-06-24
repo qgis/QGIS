@@ -875,7 +875,7 @@ class TestQgsGeometry(unittest.TestCase):
         """Test we can simplify a complex geometry.
 
         Note: there is a ticket related to this issue here:
-        https://issues.qgis.org/issues/4189
+        https://github.com/qgis/QGIS/issues/14164
 
         Backstory: Ole Nielson pointed out an issue to me
         (Tim Sutton) where simplify ftools was dropping
@@ -1985,6 +1985,31 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = geometry.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
+        # collect some geometries which are already multipart
+        geometries = [QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), QgsGeometry.fromWkt('MultiLineString((2 2, 3 3),(4 4, 5 5))')]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiLineString ((0 0, 1 1),(2 2, 3 3),(4 4, 5 5))"
+        wkt = geometry.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        geometries = [QgsGeometry.fromWkt('MultiLineString((2 2, 3 3),(4 4, 5 5))'), QgsGeometry.fromWkt('LineString( 0 0, 1 1)')]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiLineString ((2 2, 3 3),(4 4, 5 5),(0 0, 1 1))"
+        wkt = geometry.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        geometries = [QgsGeometry.fromWkt('Polygon((100 100, 101 100, 101 101, 100 100))'), QgsGeometry.fromWkt('MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((2 0, 3 0, 3 1, 2 1, 2 0)))')]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiPolygon (((100 100, 101 100, 101 101, 100 100)),((0 0, 1 0, 1 1, 0 1, 0 0)),((2 0, 3 0, 3 1, 2 1, 2 0)))"
+        wkt = geometry.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        geometries = [QgsGeometry.fromWkt('MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((2 0, 3 0, 3 1, 2 1, 2 0)))'), QgsGeometry.fromWkt('Polygon((100 100, 101 100, 101 101, 100 100))')]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((2 0, 3 0, 3 1, 2 1, 2 0)),((100 100, 101 100, 101 101, 100 100)))"
+        wkt = geometry.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
         # test empty list
         geometries = []
         geometry = QgsGeometry.collectGeometry(geometries)
@@ -2285,7 +2310,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "convertToType failed: from multiline to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
     def testRegression13053(self):
-        """ See https://issues.qgis.org/issues/13053 """
+        """ See https://github.com/qgis/QGIS/issues/21125 """
         p = QgsGeometry.fromWkt('MULTIPOLYGON(((62.0 18.0, 62.0 19.0, 63.0 19.0, 63.0 18.0, 62.0 18.0)), ((63.0 19.0, 63.0 20.0, 64.0 20.0, 64.0 19.0, 63.0 19.0)))')
         assert p is not None
 
@@ -2294,7 +2319,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "testRegression13053 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
     def testRegression13055(self):
-        """ See https://issues.qgis.org/issues/13055
+        """ See https://github.com/qgis/QGIS/issues/21127
             Testing that invalid WKT with z values but not using PolygonZ is still parsed
             by QGIS.
         """
@@ -2306,7 +2331,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "testRegression13055 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
     def testRegression13274(self):
-        """ See https://issues.qgis.org/issues/13274
+        """ See https://github.com/qgis/QGIS/issues/21334
             Testing that two combined linestrings produce another line string if possible
         """
         a = QgsGeometry.fromWkt('LineString (0 0, 1 0)')
@@ -2325,7 +2350,7 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = g.asWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
-        # Test reshape a geometry involving the first/last vertex (https://issues.qgis.org/issues/14443)
+        # Test reshape a geometry involving the first/last vertex (https://github.com/qgis/QGIS/issues/22422)
         g.reshapeGeometry(QgsLineString([QgsPoint(0.5, 1), QgsPoint(0, 0.5)]))
 
         expWkt = 'Polygon ((0 0.5, 0 0, 1 0, 1 0.5, 0.5 1, 0 0.5))'

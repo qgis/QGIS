@@ -217,7 +217,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
   else if ( mComboBox )
   {
     // findData fails to tell a 0 from a NULL
-    // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+    // See: "Value relation, value 0 = NULL" - https://github.com/qgis/QGIS/issues/27803
     int idx = -1; // default to not found
     for ( int i = 0; i < mComboBox->count(); i++ )
     {
@@ -299,9 +299,10 @@ int QgsValueRelationWidgetWrapper::columnCount() const
   return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
 }
 
+
 QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
 {
-  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( config().value( QStringLiteral( "Layer" ) ).toString() );
+  const QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config(), QgsProject::instance() );
   if ( layer )
   {
     QgsFields fields = layer->fields();

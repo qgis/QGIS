@@ -344,7 +344,7 @@ Content-Type: text/xml; charset=utf-8
     <BoundingBox maxy="5.60603e+06" maxx="913215" miny="5.60601e+06" CRS="EPSG:3857" minx="913205"/>
     <BoundingBox maxy="8.20355" maxx="44.9015" miny="8.20346" CRS="EPSG:4326" minx="44.9014"/>
     <TreeName>groupwithoutshortname</TreeName>
-    <Layer geometryType="Point" queryable="0" displayField="id" visible="1">
+    <Layer geometryType="Point" queryable="0" displayField="name" visible="1">
      <Name>testlayer3</Name>
      <Title>testlayer3</Title>
      <CRS>CRS:84</CRS>

@@ -19,7 +19,7 @@ originally part of the larger QgsRasterLayer class
  ***************************************************************************/
 
 // Threshold for treating values as exact match.
-// Set to 0.0 to support displaying small values (https://issues.qgis.org/issues/12581)
+// Set to 0.0 to support displaying small values (https://github.com/qgis/QGIS/issues/20706)
 #define DOUBLE_DIFF_THRESHOLD 0.0 // 0.0000001
 
 #include "qgslogger.h"
@@ -437,7 +437,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   {
     // Assign the color of the higher class for every pixel between two class breaks.
     // NOTE: The implementation has always been different than the documentation,
-    //       which said lower class before, see https://issues.qgis.org/issues/13995
+    //       which said lower class before, see https://github.com/qgis/QGIS/issues/22009
     if ( overflow )
     {
       return false;

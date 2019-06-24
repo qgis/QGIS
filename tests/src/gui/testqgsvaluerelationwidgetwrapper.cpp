@@ -53,6 +53,7 @@ class TestQgsValueRelationWidgetWrapper : public QObject
     void testWithJsonInGPKG();
     void testWithJsonInSpatialite();
     void testWithJsonInSpatialiteTextFk();
+    void testMatchLayerName();
 };
 
 void TestQgsValueRelationWidgetWrapper::initTestCase()
@@ -329,7 +330,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
 void TestQgsValueRelationWidgetWrapper::testZeroIndexInRelatedTable()
 {
   // findData fails to tell a 0 from a NULL
-  // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+  // See: "Value relation, value 0 = NULL" - https://github.com/qgis/QGIS/issues/27803
 
   // create a vector layer
   QgsVectorLayer vl1( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
@@ -918,6 +919,59 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->checkState(), Qt::Unchecked );
+
+}
+
+void TestQgsValueRelationWidgetWrapper::testMatchLayerName()
+{
+  // create a vector layer
+  QgsVectorLayer vl1( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl2( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &vl1, false, false );
+  QgsProject::instance()->addMapLayer( &vl2, false, false );
+
+  // insert some features
+  QgsFeature f1( vl1.fields() );
+  f1.setAttribute( QStringLiteral( "pk" ), 0 );  // !!! Notice: pk 0
+  f1.setAttribute( QStringLiteral( "province" ), 123 );
+  f1.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Some Place By The River" ) );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0 ))" ) ) );
+  QVERIFY( f1.isValid() );
+  QgsFeature f2( vl1.fields() );
+  f2.setAttribute( QStringLiteral( "pk" ), 2 );
+  f2.setAttribute( QStringLiteral( "province" ), 245 );
+  f2.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Dreamland By The Clouds" ) );
+  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 1 0, 1 1, 2 1, 2 0, 1 0 ))" ) ) );
+  QVERIFY( f2.isValid() );
+  QVERIFY( vl1.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
+
+  QgsFeature f3( vl2.fields() );
+  f3.setAttribute( QStringLiteral( "fk_province" ), 123 );
+  f3.setAttribute( QStringLiteral( "fk_municipality" ), QStringLiteral( "0" ) );
+  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 0.5 0.5)" ) ) );
+  QVERIFY( f3.isValid() );
+  QVERIFY( f3.geometry().isGeosValid() );
+  QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
+
+  // build a value relation widget wrapper for municipality
+  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QStringLiteral( "fk_municipality" ) ), nullptr, nullptr );
+  QVariantMap cfg_municipality;
+  cfg_municipality.insert( QStringLiteral( "Layer" ), QStringLiteral( "wrong_id_here_hope_name_is_good" ) );
+  cfg_municipality.insert( QStringLiteral( "LayerName" ), vl1.name() );
+  cfg_municipality.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
+  cfg_municipality.insert( QStringLiteral( "Value" ), QStringLiteral( "municipality" ) );
+  cfg_municipality.insert( QStringLiteral( "AllowMulti" ), false );
+  cfg_municipality.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_municipality.insert( QStringLiteral( "AllowNull" ), true );
+  cfg_municipality.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_municipality.insert( QStringLiteral( "UseCompleter" ), false );
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.widget();
+  w_municipality.setEnabled( true );
+
+  w_municipality.setValue( 0 );
+  QCOMPARE( w_municipality.mComboBox->currentIndex(), 1 );
+  QCOMPARE( w_municipality.mComboBox->currentText(), QStringLiteral( "Some Place By The River" ) );
 
 }
 

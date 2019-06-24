@@ -201,6 +201,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingguiregistry.cpp
+  processing/qgsprocessingmaplayercombobox.cpp
   processing/qgsprocessingmatrixparameterdialog.cpp
   processing/qgsprocessingmodelerparameterwidget.cpp
   processing/qgsprocessingmultipleselectiondialog.cpp
@@ -294,6 +295,7 @@ SET(QGIS_GUI_SRCS
   qgshelp.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
+  qgslabelinggui.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslimitedrandomcolorrampdialog.cpp
@@ -372,6 +374,7 @@ SET(QGIS_GUI_SRCS
   qgsslider.cpp
   qgssnapindicator.cpp
   qgssnaptogridcanvasitem.cpp
+  qgsstyleitemslistwidget.cpp
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
@@ -469,10 +472,12 @@ SET(QGIS_GUI_MOC_HDRS
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
+  qgsgui.h
   qgshistogramwidget.h
   qgshighlight.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
+  qgslabelinggui.h
   qgslistwidget.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h
@@ -550,6 +555,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgssnaptogridcanvasitem.h
   qgssqlcomposerdialog.h
   qgsstatusbar.h
+  qgsstyleitemslistwidget.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
@@ -751,6 +757,7 @@ SET(QGIS_GUI_MOC_HDRS
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingmaplayercombobox.h
   processing/qgsprocessingmatrixparameterdialog.h
   processing/qgsprocessingmodelerparameterwidget.h
   processing/qgsprocessingmultipleselectiondialog.h
@@ -791,7 +798,6 @@ SET(QGIS_GUI_HDRS
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsgeometryrubberband.h
-  qgsgui.h
   qgsguiutils.h
   qgshelp.h
   qgshighlight.h
@@ -959,6 +965,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar

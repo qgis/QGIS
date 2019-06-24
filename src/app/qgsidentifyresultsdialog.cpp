@@ -1295,8 +1295,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 
       int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
-      QList<QgsMapLayerAction *>::const_iterator actionIt;
-      for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
+      for ( auto actionIt = registeredActions.constBegin(); actionIt != registeredActions.constEnd(); ++actionIt )
       {
         if ( ( *actionIt )->isEnabledOnlyWhenEditable() )
           continue;

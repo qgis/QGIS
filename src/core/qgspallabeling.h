@@ -79,11 +79,31 @@ class QgsExpressionContext;
 class CORE_EXPORT QgsLabelPosition
 {
   public:
-    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString() )
+
+    /**
+     * Constructor for QgsLabelPosition.
+     * \param id associated feature ID
+     * \param r label rotation in degrees clockwise
+     * \param corners corner points of label bounding box, in map units
+     * \param rect label bounding box, in map units
+     * \param w width of label, in map units
+     * \param h height of label, in map units
+     * \param layer ID of associated map layer
+     * \param labeltext text rendered for label
+     * \param labelfont font used to render label
+     * \param upside_down TRUE if label is upside down
+     * \param diagram TRUE if label is a diagram
+     * \param pinned TRUE if label has pinned placement
+     * \param providerId ID of associated label provider
+     * \param labelGeometry polygon geometry of label boundary
+     */
+    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
+                      const QgsGeometry &labelGeometry = QgsGeometry() )
       : featureId( id )
       , rotation( r )
       , cornerPoints( corners )
       , labelRect( rect )
+      , labelGeometry( labelGeometry )
       , width( w )
       , height( h )
       , layerID( layer )
@@ -98,19 +118,69 @@ class CORE_EXPORT QgsLabelPosition
     //! Constructor for QgsLabelPosition
     QgsLabelPosition() = default;
 
+    /**
+     * ID of feature associated with this label.
+     */
     QgsFeatureId featureId = FID_NULL;
+
+    /**
+     * Rotation of label, in degrees clockwise.
+     */
     double rotation = 0;
+
     QVector< QgsPointXY > cornerPoints;
     QgsRectangle labelRect;
+
+    /**
+     * A polygon geometry representing the label's bounds in map coordinates.
+     * \since QGIS 3.4.9
+     */
+    QgsGeometry labelGeometry;
+
+    /**
+     * Width of label bounding box, in map units.
+     */
     double width = 0;
+
+    /**
+     * Heeght of label bounding box, in map units.
+     */
     double height = 0;
+
+    /**
+     * ID of associated map layer.
+     */
     QString layerID;
+
+    /**
+     * String shown in label.
+     */
     QString labelText;
+
+    /**
+     * Font which the label is rendered using.
+     */
     QFont labelFont;
+
+    /**
+     * TRUE if label is upside down.
+     */
     bool upsideDown = false;
+
+    /**
+     * TRUE if label is a diagram.
+     */
     bool isDiagram = false;
+
+    /**
+     * TRUE if label position has been pinned.
+     */
     bool isPinned = false;
-    //! \since QGIS 2.14
+
+    /**
+     * ID of the associated label provider.
+     * \since QGIS 2.14
+     */
     QString providerID;
 };
 
@@ -351,6 +421,7 @@ class CORE_EXPORT QgsPalLayerSettings
       RepeatDistanceUnit = 86,
       Priority = 87,
       PredefinedPositionOrder = 91,
+      LinePlacementOptions = 99, //!< Line placement flags
 
       // rendering
       ScaleVisibility = 23,
@@ -420,7 +491,10 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     QgsExpression *getLabelExpression();
 
-    QColor previewBkgrdColor;
+    /**
+     * \deprecated since QGIS 3.10. Use QgsTextFormat::previewBackgroundColor() instead.
+     */
+    Q_DECL_DEPRECATED QColor previewBkgrdColor = Qt::white;
 
     //! Substitution collection for automatic text substitution with labels
     QgsStringReplacementCollection substitutions;
@@ -778,6 +852,12 @@ class CORE_EXPORT QgsPalLayerSettings
     bool geometryGeneratorEnabled = false;
 
     /**
+     * Geometry type of layers associated with these settings.
+     * \since QGIS 3.10
+     */
+    QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
+
+    /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
      */
@@ -804,13 +884,13 @@ class CORE_EXPORT QgsPalLayerSettings
      * Read settings from a DOM element
      * \since QGIS 2.12
      */
-    void readXml( QDomElement &elem, const QgsReadWriteContext &context );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /**
      * Write settings into a DOM element
      * \since QGIS 2.12
      */
-    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Returns a reference to the label's property collection, used for data defined overrides.
@@ -851,6 +931,16 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
+
+    /**
+    * Returns a pixmap preview for label \a settings.
+    * \param settings label settings
+    * \param size target pixmap size
+    * \param previewText text to render in preview, or empty for default text
+    * \param padding space between icon edge and color ramp
+    * \since QGIS 3.10
+    */
+    static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );
 
     // temporary stuff: set when layer gets prepared or labeled
     const QgsFeature *mCurFeat = nullptr;
@@ -988,12 +1078,18 @@ class CORE_EXPORT QgsLabelingResults
     //! Returns infos about labels within a given (map) rectangle
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 
+    /**
+     * Sets the map \a settings associated with the labeling run.
+     * \since QGIS 3.4.8
+     */
+    void setMapSettings( const QgsMapSettings &settings );
+
   private:
 #ifdef SIP_RUN
     QgsLabelingResults( const QgsLabelingResults & );
 #endif
 
-    QgsLabelSearchTree *mLabelSearchTree = nullptr;
+    std::unique_ptr< QgsLabelSearchTree > mLabelSearchTree;
 
     friend class QgsPalLabeling;
     friend class QgsVectorLayerLabelProvider;
@@ -1023,10 +1119,11 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
      * \param clipGeometry geometry to clip features to, if applicable
+     * \param mergeLines TRUE if touching lines from this layer will be merged and treated as single features during labeling
      * \returns prepared geometry
      * \since QGIS 2.9
      */
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() ) SIP_FACTORY;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) SIP_FACTORY;
 
     /**
      * Checks whether a geometry requires preparation before registration with PAL
@@ -1034,10 +1131,11 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
      * \param clipGeometry geometry to clip features to, if applicable
+     * \param mergeLines TRUE if touching lines from this layer will be merged and treated as single features during labeling
      * \returns TRUE if geometry requires preparation
      * \since QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
+    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
 
     /**
      * Splits a \a text string to a list of separate lines, using a specified wrap character (\a wrapCharacter).

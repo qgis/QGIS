@@ -56,6 +56,7 @@ class TestQgsLayoutTable : public QObject
     void attributeTableFilterFeatures(); //test filtering attribute table rows
     void attributeTableSetAttributes(); //test subset of attributes in table
     void attributeTableVisibleOnly(); //test displaying only visible attributes
+    void attributeTableInsideAtlasOnly();
     void attributeTableRender(); //test rendering attribute table
     void manualColumnWidth(); //test setting manual column widths
     void attributeTableEmpty(); //test empty modes for attribute table
@@ -342,6 +343,75 @@ void TestQgsLayoutTable::attributeTableVisibleOnly()
   expectedRows.append( row );
   row.clear();
   row << QStringLiteral( "Jet" ) << QStringLiteral( "180" ) << QStringLiteral( "3" ) << QStringLiteral( "1" ) << QStringLiteral( "0" ) << QStringLiteral( "1" );
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( table, expectedRows );
+
+  // with rotation
+  map->setMapRotation( 90 );
+  expectedRows.clear();
+  row.clear();
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "90" ) << QStringLiteral( "3" ) << QStringLiteral( "2" ) << QStringLiteral( "0" ) << QStringLiteral( "2" );
+  expectedRows.append( row );
+  compareTable( table, expectedRows );
+}
+
+void TestQgsLayoutTable::attributeTableInsideAtlasOnly()
+{
+  //test displaying only visible attributes inside the atlas feature
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setVectorLayer( mVectorLayer );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setExtent( QgsRectangle( -95.537, 32.736, -84.389, 42.2920 ) );
+  l.addLayoutItem( map );
+
+  table->setMap( map );
+  table->setFilterToAtlasFeature( true );
+
+  // no atlas feature
+  QVector<QStringList> expectedRows;
+  compareTable( table, expectedRows );
+
+  //setup atlas
+  std::unique_ptr< QgsVectorLayer > atlasLayer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:3857" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
+  QVERIFY( atlasLayer->isValid() );
+  QgsGeometry atlasGeom( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((-8863916.31126776337623596 4621257.48816855065524578, -9664269.45078738406300545 5097056.938785120844841, -10049249.44194872118532658 3765399.75924854446202517, -8985488.94005555473268032 3458599.17133777122944593, -8863916.31126776337623596 4621257.48816855065524578))" ) ) );
+  QgsFeature f;
+  f.setGeometry( atlasGeom );
+  atlasLayer->dataProvider()->addFeature( f );
+  l.reportContext().setLayer( atlasLayer.get() );
+
+  QgsFeatureIterator it = atlasLayer->getFeatures();
+  it.nextFeature( f );
+  l.reportContext().setFeature( f );
+
+  QStringList row;
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "0" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "90" ) << QStringLiteral( "3" ) << QStringLiteral( "1" ) << QStringLiteral( "0" ) << QStringLiteral( "1" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "340" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( table, expectedRows );
+
+  // combination of atlas and map extent visibility
+  table->setDisplayOnlyVisibleFeatures( true );
+  expectedRows.clear();
+  row.clear();
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "90" ) << QStringLiteral( "3" ) << QStringLiteral( "1" ) << QStringLiteral( "0" ) << QStringLiteral( "1" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "340" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
   expectedRows.append( row );
 
   //retrieve rows and check
@@ -1444,7 +1514,7 @@ void TestQgsLayoutTable::wrappedText()
 
   QFont f;
   QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
-  QString wrapText = t->wrappedText( sourceText, 100 /*columnWidth*/, f );
+  QString wrapText = t->wrappedText( sourceText, 101 /*columnWidth*/, f );
   //there should be no line break before the last word (bug #20546)
   QVERIFY( !wrapText.endsWith( "\naliqua" ) );
 }

@@ -39,61 +39,120 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
   QString errorTitle, errorMessage;
 
   const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
-  const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( QStringLiteral( "url" ) ), authcfg, errorTitle, errorMessage );
-  if ( serviceInfoMap.isEmpty() )
+  const QString baseUrl = connection.uri().param( QStringLiteral( "url" ) );
+  const QString referer = connection.uri().param( QStringLiteral( "referer" ) );
+  QgsStringMap headers;
+  if ( ! referer.isEmpty() )
+    headers[ QStringLiteral( "Referer" )] = referer;
+
+  bool hasPopulatedImageFormats = false;
+  std::function< bool( const QString &, QStandardItem * )> visitItemsRecursive;
+  visitItemsRecursive = [this, &hasPopulatedImageFormats, &visitItemsRecursive, baseUrl, authcfg, headers, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem ) -> bool
   {
+    const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage, headers );
+
+    if ( serviceInfoMap.isEmpty() )
+    {
+      return false;
+    }
+
+    if ( !hasPopulatedImageFormats )
+    {
+      const QString supportedFormats = serviceInfoMap[QStringLiteral( "supportedImageFormatTypes" )].toString();
+      if ( !supportedFormats.isEmpty() )
+      {
+        populateImageEncodings( supportedFormats.split( ',' ) );
+        hasPopulatedImageFormats = true;
+      }
+    }
+
+    bool res = true;
+
+    QgsArcGisRestUtils::visitFolderItems( [ =, &res ]( const QString & name, const QString & url )
+    {
+      QStandardItem *nameItem = new QStandardItem( name );
+      nameItem->setToolTip( url );
+      if ( parentItem )
+        parentItem->appendRow( QList<QStandardItem *>() << nameItem );
+      else
+        mModel->appendRow( QList<QStandardItem *>() << nameItem );
+
+      if ( !visitItemsRecursive( url, nameItem ) )
+        res = false;
+    }, serviceInfoMap, baseUrl );
+
+    QgsArcGisRestUtils::visitServiceItems(
+      [ =, &res]( const QString & name, const QString & url )
+    {
+      QStandardItem *nameItem = new QStandardItem( name );
+      nameItem->setToolTip( url );
+      if ( parentItem )
+        parentItem->appendRow( QList<QStandardItem *>() << nameItem );
+      else
+        mModel->appendRow( QList<QStandardItem *>() << nameItem );
+
+      if ( !visitItemsRecursive( url, nameItem ) )
+        res = false;
+    }, serviceInfoMap, baseUrl, QgsArcGisRestUtils::Raster );
+
+    QMap< QString, QList<QStandardItem *> > layerItems;
+    QMap< QString, QString > parents;
+
+    QgsArcGisRestUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool, const QString & authid, const QString & )
+    {
+      if ( !parentLayerId.isEmpty() )
+        parents.insert( layerId, parentLayerId );
+
+      // insert the typenames, titles and abstracts into the tree view
+      QStandardItem *idItem = new QStandardItem( layerId );
+      bool ok = false;
+      int idInt = layerId.toInt( &ok );
+      if ( ok )
+      {
+        // force display role to be int value, so that sorting works correctly
+        idItem->setData( idInt, Qt::DisplayRole );
+      }
+      idItem->setData( url, UrlRole );
+      idItem->setData( layerId, IdRole );
+      idItem->setData( true, IsLayerRole );
+      QStandardItem *nameItem = new QStandardItem( name );
+      QStandardItem *abstractItem = new QStandardItem( description );
+      abstractItem->setToolTip( description );
+      QStandardItem *filterItem = new QStandardItem();
+
+      mAvailableCRS[name] = QList<QString>()  << authid;
+
+      layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
+    }, serviceInfoMap, baseItemUrl, QgsArcGisRestUtils::Raster );
+
+    // create layer groups
+    for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
+    {
+      const QString id = it.key();
+      QList<QStandardItem *> row = it.value();
+      const QString parentId = parents.value( id );
+      QList<QStandardItem *> parentRow;
+      if ( !parentId.isEmpty() )
+        parentRow = layerItems.value( parentId );
+      if ( !parentRow.isEmpty() )
+      {
+        parentRow.at( 0 )->appendRow( row );
+      }
+      else
+      {
+        if ( parentItem )
+          parentItem->appendRow( row );
+        else
+          mModel->appendRow( row );
+      }
+    }
+
+    return res;
+  };
+
+  if ( !visitItemsRecursive( baseUrl, nullptr ) )
     QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
-    return false;
-  }
 
-  populateImageEncodings( serviceInfoMap[QStringLiteral( "supportedImageFormatTypes" )].toString().split( ',' ) );
-
-  QStringList layerErrors;
-  const QVariantList layersList = serviceInfoMap[QStringLiteral( "layers" )].toList();
-  for ( const QVariant &layerInfo : layersList )
-  {
-    QVariantMap layerInfoMap = layerInfo.toMap();
-    if ( !layerInfoMap[QStringLiteral( "id" )].isValid() )
-    {
-      continue;
-    }
-
-    // Get layer info
-    QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(),
-                            authcfg, errorTitle, errorMessage );
-    if ( layerData.isEmpty() )
-    {
-      layerErrors.append( QStringLiteral( "Layer %1: %2 - %3" ).arg( layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage ) );
-      continue;
-    }
-    // insert the typenames, titles and abstracts into the tree view
-    QStandardItem *idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
-    idItem->setData( true, IsLayerRole );
-    bool ok = false;
-    int idInt = layerData[QStringLiteral( "id" )].toInt( &ok );
-    if ( ok )
-    {
-      // force display role to be int value, so that sorting works correctly
-      idItem->setData( idInt, Qt::DisplayRole );
-    }
-    QStandardItem *nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
-    QStandardItem *abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
-    abstractItem->setToolTip( layerData[QStringLiteral( "description" )].toString() );
-
-    QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( serviceInfoMap[QStringLiteral( "spatialReference" )].toMap() );
-    if ( !crs.isValid() )
-    {
-      layerErrors.append( tr( "Layer %1: unable to parse spatial reference" ).arg( layerInfoMap[QStringLiteral( "id" )].toString() ) );
-      continue;
-    }
-    mAvailableCRS[layerData[QStringLiteral( "name" )].toString()] = QList<QString>()  << crs.authid();
-
-    mModel->appendRow( QList<QStandardItem *>() << idItem << nameItem << abstractItem );
-  }
-  if ( !layerErrors.isEmpty() )
-  {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to query some layers:\n%1" ).arg( layerErrors.join( QStringLiteral( "\n" ) ) ) );
-  }
   return true;
 }
 
@@ -101,10 +160,14 @@ QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
     const QString &layerTitle, const QString & /*layerName*/,
     const QString &crs,
     const QString & /*filter*/,
-    const QgsRectangle & /*bBox*/ ) const
+    const QgsRectangle & /*bBox*/, const QString &layerId ) const
 {
   QgsDataSourceUri ds = connection.uri();
-  ds.setParam( QStringLiteral( "layer" ), layerTitle );
+  QString url = layerTitle;
+  QString trimmedUrl = layerId.isEmpty() ? url : url.left( url.length() - 1 - layerId.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
+  ds.removeParam( QStringLiteral( "url" ) );
+  ds.setParam( QStringLiteral( "url" ), trimmedUrl );
+  ds.setParam( QStringLiteral( "layer" ), layerId );
   ds.setParam( QStringLiteral( "crs" ), crs );
   ds.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
   return ds.uri();

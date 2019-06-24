@@ -23,6 +23,7 @@
 #include "qgsogrhelperfunctions.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <ogr_api.h>
 #include <cpl_error.h>
@@ -33,13 +34,14 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsNewOgrConnection::btnConnect_clicked );
   Q_NOWARN_DEPRECATED_PUSH
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::showHelp );
   Q_NOWARN_DEPRECATED_POP
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
 
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
@@ -78,12 +80,6 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   mAuthSettingsDatabase->setDataprovider( QStringLiteral( "ogr" ) );
   mAuthSettingsDatabase->showStoreCheckboxes( true );
-}
-
-QgsNewOgrConnection::~QgsNewOgrConnection()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ), saveGeometry() );
 }
 
 void QgsNewOgrConnection::testConnection()

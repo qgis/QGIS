@@ -24,6 +24,12 @@
 
 class QgsCoordinateReferenceSystem;
 
+#if PROJ_VERSION_MAJOR>=6
+#ifndef SIP_RUN
+struct PJconsts;
+typedef struct PJconsts PJ;
+#endif
+#endif
 
 /**
  * Contains methods and classes relating the datum transformations.
@@ -143,6 +149,8 @@ class CORE_EXPORT QgsDatumTransform
 
     /**
      * Contains information about a coordinate transformation operation.
+     *
+     * \note Only used in builds based on on Proj >= 6.0
      * \since QGIS 3.8
      */
     struct TransformDetails
@@ -224,6 +232,19 @@ class CORE_EXPORT QgsDatumTransform
      * \deprecated Not used for builds based on Proj >= 6.0
     */
     Q_DECL_DEPRECATED static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId ) SIP_DEPRECATED;
+
+#ifndef SIP_RUN
+#if PROJ_VERSION_MAJOR >= 6
+
+    /**
+     * Returns the transform details for a Proj coordinate operation \a op.
+     *
+     * \note Requires Proj 6.0 or later
+     * \since QGIS 3.8
+     */
+    static QgsDatumTransform::TransformDetails transformDetailsFromPj( PJ *op );
+#endif
+#endif
 
   private:
 

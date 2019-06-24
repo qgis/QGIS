@@ -45,44 +45,19 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
   proj_operation_factory_context_set_spatial_criterion( pjContext,   operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
 
-  PJ_OBJ_LIST *ops = proj_create_operations( pjContext, source.projObject(), destination.projObject(), operationContext );
-  int count = proj_list_get_count( ops );
-  for ( int i = 0; i < count; ++i )
+  if ( PJ_OBJ_LIST *ops = proj_create_operations( pjContext, source.projObject(), destination.projObject(), operationContext ) )
   {
-    QgsProjUtils::proj_pj_unique_ptr op( proj_list_get( pjContext, ops, i ) );
-    if ( !op )
-      continue;
-
-    TransformDetails details;
-    details.proj = QString( proj_as_proj_string( pjContext, op.get(), PJ_PROJ_5, nullptr ) );
-    details.name = QString( proj_get_name( op.get() ) );
-    details.accuracy = proj_coordoperation_get_accuracy( pjContext, op.get() );
-    details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op.get() );
-
-    for ( int j = 0; j < proj_coordoperation_get_grid_used_count( pjContext, op.get() ); ++j )
+    int count = proj_list_get_count( ops );
+    for ( int i = 0; i < count; ++i )
     {
-      const char *shortName = nullptr;
-      const char *fullName = nullptr;
-      const char *packageName = nullptr;
-      const char *url = nullptr;
-      int directDownload = 0;
-      int openLicense = 0;
-      int isAvailable = 0;
-      proj_coordoperation_get_grid_used( pjContext, op.get(), j, &shortName, &fullName, &packageName, &url, &directDownload, &openLicense, &isAvailable );
-      GridDetails gridDetails;
-      gridDetails.shortName = QString( shortName );
-      gridDetails.fullName = QString( fullName );
-      gridDetails.packageName = QString( packageName );
-      gridDetails.url = QString( url );
-      gridDetails.directDownload = directDownload;
-      gridDetails.openLicense = openLicense;
-      gridDetails.isAvailable = isAvailable;
+      QgsProjUtils::proj_pj_unique_ptr op( proj_list_get( pjContext, ops, i ) );
+      if ( !op )
+        continue;
 
-      details.grids.append( gridDetails );
+      res.push_back( transformDetailsFromPj( op.get() ) );
     }
-    res.push_back( details );
+    proj_list_destroy( ops );
   }
-  proj_list_destroy( ops );
   proj_operation_factory_context_destroy( operationContext );
 #endif
   return res;
@@ -329,3 +304,46 @@ QgsDatumTransform::TransformInfo QgsDatumTransform::datumTransformInfo( int datu
 
   return info;
 }
+
+#if PROJ_VERSION_MAJOR >= 6
+QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( PJ *op )
+{
+  PJ_CONTEXT *pjContext = QgsProjContext::get();
+  TransformDetails details;
+  if ( !op )
+    return details;
+
+  QgsProjUtils::proj_pj_unique_ptr normalized( proj_normalize_for_visualization( pjContext, op ) );
+  if ( normalized )
+    details.proj = QString( proj_as_proj_string( pjContext, normalized.get(), PJ_PROJ_5, nullptr ) );
+
+  if ( details.proj.isEmpty() )
+    details.proj = QString( proj_as_proj_string( pjContext, op, PJ_PROJ_5, nullptr ) );
+  details.name = QString( proj_get_name( op ) );
+  details.accuracy = proj_coordoperation_get_accuracy( pjContext, op );
+  details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op );
+
+  for ( int j = 0; j < proj_coordoperation_get_grid_used_count( pjContext, op ); ++j )
+  {
+    const char *shortName = nullptr;
+    const char *fullName = nullptr;
+    const char *packageName = nullptr;
+    const char *url = nullptr;
+    int directDownload = 0;
+    int openLicense = 0;
+    int isAvailable = 0;
+    proj_coordoperation_get_grid_used( pjContext, op, j, &shortName, &fullName, &packageName, &url, &directDownload, &openLicense, &isAvailable );
+    GridDetails gridDetails;
+    gridDetails.shortName = QString( shortName );
+    gridDetails.fullName = QString( fullName );
+    gridDetails.packageName = QString( packageName );
+    gridDetails.url = QString( url );
+    gridDetails.directDownload = directDownload;
+    gridDetails.openLicense = openLicense;
+    gridDetails.isAvailable = isAvailable;
+
+    details.grids.append( gridDetails );
+  }
+  return details;
+}
+#endif

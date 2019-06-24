@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest a feature idea for QGIS.
 title: ''
-labels: 'Feature request'
+labels: 'Feature Request'
 assignees: ''
 
 ---

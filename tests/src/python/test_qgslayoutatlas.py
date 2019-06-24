@@ -366,7 +366,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
             self.assertEqual(self.atlas.currentFilename(), expected)
         self.atlas.endRender()
 
-        # using feature attribute (refs https://issues.qgis.org/issues/19552)
+        # using feature attribute (refs https://github.com/qgis/QGIS/issues/27379)
 
         self.atlas.setFilenameExpression("'output_' || attribute(@atlas_feature,'NAME_1')")
         expected = ['output_Basse-Normandie',

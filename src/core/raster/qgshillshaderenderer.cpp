@@ -577,8 +577,6 @@ double QgsHillshadeRenderer::calcFirstDerY( double x11, double x21, double x31, 
 
 void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 

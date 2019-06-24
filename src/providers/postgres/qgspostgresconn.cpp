@@ -27,11 +27,14 @@
 #include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"
 #include "qgssettings.h"
+#include "qgsjsonutils.h"
 
 #include <QApplication>
 #include <QThread>
 
 #include <climits>
+
+#include <nlohmann/json.hpp>
 
 // for htonl
 #ifdef Q_OS_WIN
@@ -107,7 +110,7 @@ QString QgsPostgresResult::PQfname( int col )
   return QString::fromUtf8( ::PQfname( mRes, col ) );
 }
 
-int QgsPostgresResult::PQftable( int col )
+Oid QgsPostgresResult::PQftable( int col )
 {
   Q_ASSERT( mRes );
   return ::PQftable( mRes, col );
@@ -119,7 +122,7 @@ int QgsPostgresResult::PQftablecol( int col )
   return ::PQftablecol( mRes, col );
 }
 
-int QgsPostgresResult::PQftype( int col )
+Oid QgsPostgresResult::PQftype( int col )
 {
   Q_ASSERT( mRes );
   return ::PQftype( mRes, col );
@@ -157,7 +160,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   if ( shared )
   {
     // sharing connection between threads is not safe
-    // See https://issues.qgis.org/issues/13141
+    // See https://github.com/qgis/QGIS/issues/21205
     Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
 
     if ( connections.contains( conninfo ) )
@@ -992,7 +995,6 @@ static QString doubleQuotedMapValue( const QString &v )
 
 static QString quotedMap( const QVariantMap &map )
 {
-  //to store properly it should be decided if it's a hstore or a json/jsonb field here...
   QString ret;
   for ( QVariantMap::const_iterator i = map.constBegin(); i != map.constEnd(); ++i )
   {
@@ -1055,6 +1057,14 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
     default:
       return quotedString( value.toString() );
   }
+}
+
+QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
+{
+  if ( value.isNull() || !value.isValid() )
+    return QStringLiteral( "null" );
+  const auto j { QgsJsonUtils::jsonFromVariant( value ) };
+  return quotedString( QString::fromStdString( j.dump() ) );
 }
 
 PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool retry ) const
@@ -1344,7 +1354,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       if ( mSwapEndian )
         oid = ntohs( oid );
       /* cast to signed 16bit
-       * See https://issues.qgis.org/issues/14262 */
+       * See https://github.com/qgis/QGIS/issues/22258 */
       oid = ( qint16 )oid;
       break;
 
@@ -1394,7 +1404,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       if ( mSwapEndian )
         oid = ntohl( oid );
       /* cast to signed 32bit
-       * See https://issues.qgis.org/issues/14262 */
+       * See https://github.com/qgis/QGIS/issues/22258 */
       oid = ( qint32 )oid;
       break;
   }

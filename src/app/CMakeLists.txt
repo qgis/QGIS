@@ -13,6 +13,7 @@ SET(QGIS_APP_SRCS
   qgsalignrasterdialog.cpp
   qgsappauthrequesthandler.cpp
   qgsappbrowserproviders.cpp
+  qgsappcoordinateoperationhandlers.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
   qgsaddattrdialog.cpp
@@ -51,7 +52,6 @@ SET(QGIS_APP_SRCS
   qgsfeatureaction.cpp
   qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
-  qgslabelinggui.cpp
   qgslabelingwidget.cpp
   qgslayercapabilitiesmodel.cpp
   qgslayertreeviewindicatorprovider.cpp
@@ -64,6 +64,7 @@ SET(QGIS_APP_SRCS
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
+  qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
@@ -72,9 +73,10 @@ SET(QGIS_APP_SRCS
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
+  qgstemplateprojectsmodel.cpp
   qgsvectorlayerloadstyledialog.cpp
   qgsversioninfo.cpp
-  qgswelcomepageitemsmodel.cpp
+  qgsrecentprojectsitemsmodel.cpp
   qgswelcomepage.cpp
 
   qgsmaptooladdfeature.cpp
@@ -255,6 +257,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsaddattrdialog.h
   qgsalignrasterdialog.h
   qgsappbrowserproviders.h
+  qgsappcoordinateoperationhandlers.h
   qgsappscreenshots.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
@@ -289,7 +292,6 @@ SET (QGIS_APP_MOC_HDRS
   qgshtmlannotationdialog.h
   qgsidentifyresultsdialog.h
   qgslabelengineconfigdialog.h
-  qgslabelinggui.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgslayercapabilitiesmodel.h
@@ -304,15 +306,17 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaplayerstyleguiutils.h
   qgsmapsavedialog.h
   qgspuzzlewidget.h
+  qgsprojectlistitemdelegate.h
   qgsrulebasedlabelingwidget.h
   qgssnappinglayertreemodel.h
   qgssnappingwidget.h
   qgsstatusbarcoordinateswidget.h
   qgsstatusbarmagnifierwidget.h
   qgsstatusbarscalewidget.h
+  qgstemplateprojectsmodel.h
   qgsvectorlayerloadstyledialog.h
   qgsversioninfo.h
-  qgswelcomepageitemsmodel.h
+  qgsrecentprojectsitemsmodel.h
   qgswelcomepage.h
 
   qgsmaptooladdfeature.h
@@ -685,6 +689,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/locator
+  ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar

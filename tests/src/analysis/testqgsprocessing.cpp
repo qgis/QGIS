@@ -1686,14 +1686,14 @@ void TestQgsProcessing::createFeatureSink()
   // no extension, should default to shp
   destination = QDir::tempPath() + "/create_feature_sink2";
   prevDest = QDir::tempPath() + "/create_feature_sink2.gpkg";
-  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Point25D, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
   QVERIFY( sink.get() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(1 2 3)" ) ) );
   QVERIFY( sink->addFeature( f ) );
   QCOMPARE( destination, prevDest );
   sink.reset( nullptr );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
-  QCOMPARE( layer->wkbType(), QgsWkbTypes::Point25D );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::PointZ );
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 2 );
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "fid" ) );
@@ -6535,6 +6535,8 @@ void TestQgsProcessing::generateIteratingDestination()
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "ape.shp", 1, context ).toString(), QStringLiteral( "ape_1.shp" ) );
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "ape.shp", 2, context ).toString(), QStringLiteral( "ape_2.shp" ) );
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "/home/bif.o/ape.shp", 2, context ).toString(), QStringLiteral( "/home/bif.o/ape_2.shp" ) );
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( QgsProcessing::TEMPORARY_OUTPUT, 2, context ).toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT ), 2, context ).toString(), QgsProcessing::TEMPORARY_OUTPUT );
 
   QgsProject p;
   QgsProcessingOutputLayerDefinition def;
@@ -6551,6 +6553,15 @@ void TestQgsProcessing::generateIteratingDestination()
   QVERIFY( res.canConvert<QgsProcessingOutputLayerDefinition>() );
   fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( res );
   QCOMPARE( fromVar.sink.staticValue().toString(), QStringLiteral( "ape_2.shp" ) );
+  QCOMPARE( fromVar.destinationProject, &p );
+
+  QgsProcessingOutputLayerDefinition def2;
+  def2.sink = QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT );
+  def2.destinationProject = &p;
+  res = QgsProcessingUtils::generateIteratingDestination( def2, 2, context );
+  QVERIFY( res.canConvert<QgsProcessingOutputLayerDefinition>() );
+  fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( res );
+  QCOMPARE( fromVar.sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QCOMPARE( fromVar.destinationProject, &p );
 }
 

@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmemoryproviderutils.h"
+#include "qgsgui.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -50,9 +51,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   : QDialog( parent, fl )
 {
   setupUi( this );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Point );
@@ -70,12 +69,6 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   connect( mGeometryTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewMemoryLayerDialog::geometryTypeChanged );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsNewMemoryLayerDialog::showHelp );
   geometryTypeChanged( mGeometryTypeBox->currentIndex() );
-}
-
-QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/NewMemoryLayer/geometry" ), saveGeometry() );
 }
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const

@@ -114,19 +114,6 @@ namespace pal
       void setArrangement( QgsPalLayerSettings::Placement arrangement ) { mArrangement = arrangement; }
 
       /**
-       * Returns the layer's arrangement flags.
-       * \see setArrangementFlags
-       */
-      LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
-
-      /**
-       * Sets the layer's arrangement flags.
-       * \param flags arrangement flags
-       * \see arrangementFlags
-       */
-      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
-
-      /**
        * \brief Sets whether the layer is currently active.
        *
        * Active means "is currently displayed or used as obstacles". When a layer is
@@ -290,7 +277,7 @@ namespace pal
 
       //! Optional flags used for some placement methods
       QgsPalLayerSettings::Placement mArrangement;
-      LineArrangementFlags mArrangementFlags;
+
       LabelMode mMode;
       bool mMergeLines;
 
@@ -304,8 +291,7 @@ namespace pal
       //obstacle r-tree
       RTree<FeaturePart *, double, 2, double, 8, 4> *mObstacleIndex;
 
-      QHash< QString, QLinkedList<FeaturePart *>* > mConnectedHashtable;
-      QStringList mConnectedTexts;
+      QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
       QMutex mMutex;

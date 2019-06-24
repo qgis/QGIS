@@ -20,6 +20,7 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
+#include "qgsgui.h"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
@@ -27,10 +28,9 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   , mPixelCoords( pixelCoords )
 {
   setupUi( this );
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapCoordsDialog::buttonBox_accepted );
+  QgsGui::enableAutoGeometryRestore( this );
 
-  QgsSettings s;
-  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ) ).toByteArray() );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapCoordsDialog::buttonBox_accepted );
 
   setAttribute( Qt::WA_DeleteOnClose );
 
@@ -46,7 +46,8 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   mToolEmitPoint = new QgsGeorefMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
 
-  mMinimizeWindowCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), QStringLiteral( "1" ) ).toBool() );
+  QgsSettings settings;
+  mMinimizeWindowCheckBox->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), QStringLiteral( "1" ) ).toBool() );
 
   connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
 
@@ -64,7 +65,6 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
   delete mToolEmitPoint;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), mMinimizeWindowCheckBox->isChecked() );
 }
 

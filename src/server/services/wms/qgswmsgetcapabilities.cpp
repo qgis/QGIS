@@ -36,6 +36,7 @@
 #include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterdataprovider.h"
 
 
 namespace QgsWms
@@ -125,7 +126,7 @@ namespace QgsWms
 
     if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
     {
-      QgsMessageLog::logMessage( QStringLiteral( "WMS capabilities document not found in cache" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "WMS capabilities document not found in cache" ), QStringLiteral( "Server" ) );
 
       doc = getCapabilities( serverIface, project, version, request, projectSettings );
 
@@ -148,12 +149,12 @@ namespace QgsWms
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Set WMS capabilities document in cache" ) );
+        QgsMessageLog::logMessage( QStringLiteral( "Set WMS capabilities document in cache" ), QStringLiteral( "Server" ) );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Found WMS capabilities document in cache" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Found WMS capabilities document in cache" ), QStringLiteral( "Server" ) );
     }
 
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
@@ -1072,6 +1073,20 @@ namespace QgsWms
                   // or the CRS extent otherwise
                   extent = vl->crs().bounds();
                 }
+                // If CRS is different transform it to layer's CRS
+                else if ( vl->crs() != project->crs() )
+                {
+                  try
+                  {
+                    QgsCoordinateTransform ct( project->crs(), vl->crs(), project->transformContext() );
+                    extent = ct.transform( extent );
+                  }
+                  catch ( QgsCsException &cse )
+                  {
+                    QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( vl->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+                    continue;
+                  }
+                }
               }
             }
 
@@ -1358,8 +1373,9 @@ namespace QgsWms
         {
           wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
         }
-        catch ( const QgsCsException & )
+        catch ( const QgsCsException &cse )
         {
+          QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
           wgs84BoundingRect = QgsRectangle();
         }
       }
@@ -1453,7 +1469,7 @@ namespace QgsWms
         }
         catch ( QgsCsException &cse )
         {
-          Q_UNUSED( cse )
+          QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
           return;
         }
       }
@@ -1566,8 +1582,9 @@ namespace QgsWms
       {
         BBox = t.transformBoundingBox( BBox );
       }
-      catch ( const QgsCsException & )
+      catch ( const QgsCsException &cse )
       {
+        QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
         BBox = QgsRectangle();
       }
 
@@ -1826,8 +1843,9 @@ namespace QgsWms
             QVariant wmsPublishDataSourceUrl = currentLayer->customProperty( QStringLiteral( "WMSPublishDataSourceUrl" ), false );
             if ( wmsPublishDataSourceUrl.toBool() )
             {
-              QList< QVariant > resolutionList = provider->property( "resolutions" ).toList();
-              bool tiled = resolutionList.size() > 0;
+              bool tiled = qobject_cast< const QgsRasterDataProvider * >( provider )
+                           ? !qobject_cast< const QgsRasterDataProvider * >( provider )->nativeResolutions().isEmpty()
+                           : false;
 
               QDomElement dataSourceElem = doc.createElement( tiled ? QStringLiteral( "WMTSDataSource" ) : QStringLiteral( "WMSDataSource" ) );
               QDomText dataSourceUri = doc.createTextNode( provider->dataSourceUri() );

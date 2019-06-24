@@ -36,7 +36,7 @@ QString QgsPackageAlgorithm::displayName() const
 
 QStringList QgsPackageAlgorithm::tags() const
 {
-  return QObject::tr( "geopackage,collect,merge,combine" ).split( ',' );
+  return QObject::tr( "geopackage,collect,merge,combine,styles" ).split( ',' );
 }
 
 QString QgsPackageAlgorithm::group() const
@@ -145,7 +145,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
       case QgsMapLayerType::RasterLayer:
       {
         //not supported
-        feedback->pushDebugInfo( QObject::tr( "Raster layers are not currently supported." ) );
+        feedback->pushDebugInfo( QObject::tr( "Packaging raster layers is not supported." ) );
         errored = true;
         break;
       }
@@ -182,6 +182,20 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   options.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
   options.fileEncoding = context.defaultEncoding();
   options.feedback = feedback;
+
+  // remove any existing FID field, let this be completely recreated
+  // since many layer sources have fid fields which are not compatible with gpkg requirements
+  QgsFields fields = layer->fields();
+  const int fidIndex = fields.lookupField( QStringLiteral( "fid" ) );
+
+  options.attributes = fields.allAttributesList();
+  if ( fidIndex >= 0 )
+    options.attributes.removeAll( fidIndex );
+  if ( options.attributes.isEmpty() )
+  {
+    // fid was the only field
+    options.skipAttributeCreation = true;
+  }
 
   QString error;
   QString newFilename;

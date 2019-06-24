@@ -2135,6 +2135,8 @@ tests:
       ZOOM_MAX: 3
       TILE_FORMAT: 0     # png
       TMS_CONVENTION: false
+      TILE_WIDTH: 256
+      TILE_HEIGHT: 256
 
     results:
       OUTPUT_DIRECTORY:

@@ -28,6 +28,7 @@
 #include "qgsmessagebaritem.h"
 #include "qgspointxy.h"
 #include "qgspointlocator.h"
+#include "qgssnapindicator.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
@@ -285,6 +286,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \since QGIS 3.0
      */
     void addPoint( const QgsPointXY &point );
+
+    /**
+     * Remove previous point in the CAD point list
+     * \since QGIS 3.8
+     */
+    void removePreviousPoint();
 
     /**
      * Configures list of current CAD points
@@ -660,8 +667,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     //! update the current point in the CAD point list
     void updateCurrentPoint( const QgsPointXY &point );
-    //! remove previous point in the CAD point list
-    void removePreviousPoint();
+
 
     /**
      * filters key press
@@ -697,6 +703,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
+    //! Snapping indicator
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     CadCapacities mCapacities = nullptr;
 

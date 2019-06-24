@@ -38,6 +38,7 @@ class TestQgsJsonUtils : public QObject
   private slots:
     void testStringList();
     void testJsonArray();
+    void testParseJson();
     void testIntList();
     void testDoubleList();
     void testExportAttributesJson_data();
@@ -77,7 +78,8 @@ void TestQgsJsonUtils::testJsonArray()
   QCOMPARE( QgsJsonUtils::parseArray( R"([1.234567,2.00003e+4,-3.01234e-02])" ), QVariantList() << 1.234567 << 2.00003e+4 << -3.01234e-2 );
   // Strings
   QCOMPARE( QgsJsonUtils::parseArray( R"(["one", "two", "three"])" ), QVariantList() << "one" << "two" << "three" );
-  QCOMPARE( QgsJsonUtils::parseArray( R"(["one,comma", "two[]brackets", "three\"escaped"])" ), QVariantList() << "one,comma" << "two[]brackets" << "three\"escaped" );
+  // VC++ doesn't like \" in raw strings
+  QCOMPARE( QgsJsonUtils::parseArray( "[\"one,comma\", \"two[]brackets\", \"three\\\"escaped\"]" ), QVariantList() << "one,comma" << "two[]brackets" << "three\"escaped" );
   // Nested (not implemented: discard deeper levels)
   //QCOMPARE( QgsJsonUtils::parseArray( R"([1.0,[2.0,5.0],3.0])" ), QVariantList() << 1.0 << 3.0 );
   // Mixed types
@@ -90,6 +92,8 @@ void TestQgsJsonUtils::testJsonArray()
   // Empty
   QCOMPARE( QgsJsonUtils::parseArray( R"([])", QVariant::Int ), QVariantList() );
   QCOMPARE( QgsJsonUtils::parseArray( "", QVariant::Int ), QVariantList() );
+  // Booleans
+  QCOMPARE( QgsJsonUtils::parseArray( "[true,false]", QVariant::Bool ), QVariantList() << true << false );
   // Nulls
   for ( const QVariant &value : QgsJsonUtils::parseArray( R"([null, null])" ) )
   {
@@ -103,6 +107,32 @@ void TestQgsJsonUtils::testJsonArray()
     QVERIFY( value.isValid() );
     QCOMPARE( value, QVariant( QVariant::Type::Double ) );
   }
+}
+
+void TestQgsJsonUtils::testParseJson()
+{
+  QStringList tests {{
+      "null",
+      "false",
+      "true",
+      "123",
+      "123.45",
+      R"j("a string")j",
+      "[1,2,3.4,null]",
+      R"j({"_bool":true,"_double":1234.45,"_int":123,"_list":[1,2,3.4,null],"_null":null,"_object":{"int":123}})j",
+    }};
+
+  for ( const auto &testJson : tests )
+  {
+    const auto parsed { QgsJsonUtils::parseJson( testJson ) };
+    QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( parsed ).dump() ), testJson );
+  }
+
+  // Test empty string: null
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "" ) ) ).dump() ), QString( "null" ) );
+  // invalid json -> null
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "invalid json" ) ) ).dump() ), QString( "null" ) );
+
 }
 
 void TestQgsJsonUtils::testIntList()
@@ -139,7 +169,7 @@ void TestQgsJsonUtils::testDoubleList()
 
 void TestQgsJsonUtils::testExportAttributesJson_data()
 {
-  QTest::addColumn<JsonAlgs>( "JsonAlgs" );
+  QTest::addColumn<JsonAlgs>( "jsonAlg" );
   QTest::newRow( "Use json" ) << JsonAlgs::Json;
   QTest::newRow( "Use old string concat" ) << JsonAlgs::String;
 }
@@ -147,17 +177,17 @@ void TestQgsJsonUtils::testExportAttributesJson_data()
 void TestQgsJsonUtils::testExportAttributesJson()
 {
 
-  QFETCH( enum JsonAlgs, JsonAlgs );
+  QFETCH( enum JsonAlgs, jsonAlg );
 
   QgsVectorLayer vl { QStringLiteral( "Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
   QgsFeature feature { vl.fields() };
   feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
 
-  if ( JsonAlgs == JsonAlgs::Json )  // 0.0022
+  if ( jsonAlg == JsonAlgs::Json )  // 0.0022
   {
     QBENCHMARK
     {
-      json j { QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) };
+      json j( QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) );
       QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral( R"raw({"flddbl":2.0,"fldint":1,"fldtxt":"a value"})raw" ) );
     }
   }
@@ -188,7 +218,7 @@ void TestQgsJsonUtils::testExportFeatureJson()
                             ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
                             ",\"type\":\"Feature\"}" ) };
 
-  const auto j { exporter.exportFeatureToJsonObject( feature ) };
+  const auto j( exporter.exportFeatureToJsonObject( feature ) );
   QCOMPARE( QString::fromStdString( j.dump() ),  expectedJson );
   const auto json { exporter.exportFeature( feature ) };
   QCOMPARE( json, expectedJson );

@@ -604,7 +604,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   //mBandCount = 0;
 
-  mDataProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options ) );
+  mDataProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options ) );
   if ( !mDataProvider )
   {
     //QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
@@ -1567,8 +1567,6 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
   myRasterViewPort->mDrawnExtent = myExtent;
   myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
   myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
-  myRasterViewPort->mSrcDatumTransform = -1;
-  myRasterViewPort->mDestDatumTransform = -1;
 
   QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
 
@@ -2036,6 +2034,22 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
       }
     }
   }
+  else if ( providerType() == "wms" )
+  {
+    // handle relative paths to XYZ tiles
+    QgsDataSourceUri uri;
+    uri.setEncodedUri( src );
+    QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
+    if ( srcUrl.isLocalFile() )
+    {
+      // relative path will become "file:./x.txt"
+      QString relSrcUrl = context.pathResolver().writePath( srcUrl.toLocalFile() );
+      uri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+      uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+      src = uri.encodedUri();
+      handled = true;
+    }
+  }
 
   if ( !handled )
     src = context.pathResolver().writePath( src );
@@ -2124,6 +2138,19 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
       // in QgsRasterLayer::readXml
     }
     // <<< BACKWARD COMPATIBILITY < 1.9
+
+    // handle relative paths to XYZ tiles
+    QgsDataSourceUri uri;
+    uri.setEncodedUri( src );
+    QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
+    if ( srcUrl.isLocalFile() )  // file-based URL? convert to relative path
+    {
+      QString absSrcUrl = context.pathResolver().readPath( srcUrl.toLocalFile() );
+      uri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+      uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+      src = uri.encodedUri();
+    }
+
   }
   else
   {

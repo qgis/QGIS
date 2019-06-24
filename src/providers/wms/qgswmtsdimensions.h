@@ -38,8 +38,6 @@ class QgsWmtsDimensions : public QDialog, private Ui::QgsWmtsDimensionsBase
     //! Constructor
     QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
-    ~QgsWmtsDimensions() override;
-
     void selectedDimensions( QHash<QString, QString> &dims );
 
 };

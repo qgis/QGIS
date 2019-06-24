@@ -31,12 +31,15 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 #include <QEventLoop>
 #include <QNetworkRequest>
 #include "qgsblockingnetworkrequest.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QImageReader>
 
 QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldType )
 {
@@ -436,17 +439,16 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QStri
   QString wkid = crs.indexOf( QLatin1String( ":" ) ) >= 0 ? crs.split( ':' )[1] : QString();
   queryUrl.addQueryItem( QStringLiteral( "inSR" ), wkid );
   queryUrl.addQueryItem( QStringLiteral( "outSR" ), wkid );
-  QString outFields = fetchAttributes.join( QStringLiteral( "," ) );
-  if ( fetchGeometry )
-  {
-    queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "true" ) );
-    queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
-  }
+
+  queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), fetchGeometry ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+
+  QString outFields;
+  if ( fetchAttributes.isEmpty() )
+    outFields = QStringLiteral( "*" );
   else
-  {
-    queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "false" ) );
-    queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
-  }
+    outFields = fetchAttributes.join( ',' );
+  queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
+
   queryUrl.addQueryItem( QStringLiteral( "returnM" ), fetchM ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   queryUrl.addQueryItem( QStringLiteral( "returnZ" ), fetchZ ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   if ( !filterRect.isNull() )
@@ -488,7 +490,7 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
   return ids;
 }
 
-QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
+QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback, QString *contentType )
 {
   QUrl url = parseUrl( u );
 
@@ -516,6 +518,8 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authc
   }
 
   const QgsNetworkReplyContent content = networkRequest.reply();
+  if ( contentType )
+    *contentType = content.rawHeader( "Content-Type" );
   return content.content();
 }
 
@@ -1122,10 +1126,23 @@ QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
     mReply->deleteLater();
 }
 
-void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allowCache )
+void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache, const QgsStringMap &headers )
 {
   mResult = result;
   QNetworkRequest request( url );
+
+  for ( auto it = headers.constBegin(); it != headers.constEnd(); ++it )
+  {
+    request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+  }
+
+  if ( !authCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, authCfg ) )
+  {
+    const QString error = tr( "network request update failed for authentication config" );
+    emit failed( QStringLiteral( "Network" ), error );
+    return;
+  }
+
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
   if ( allowCache )
   {
@@ -1167,8 +1184,10 @@ void QgsArcGisAsyncQuery::handleReply()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject *parent )
+QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsStringMap &requestHeaders, QObject *parent )
   : QObject( parent )
+  , mAuthCfg( authcfg )
+  , mRequestHeaders( requestHeaders )
 {
 }
 
@@ -1182,6 +1201,19 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
     QNetworkRequest request( urls[i] );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
     QgsSetRequestInitiatorId( request, QString::number( i ) );
+
+    for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
+    {
+      request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+    }
+    if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+    {
+      const QString error = tr( "network request update failed for authentication config" );
+      mErrors.append( error );
+      QgsMessageLog::logMessage( error, tr( "Network" ) );
+      continue;
+    }
+
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
     if ( allowCache )
     {
@@ -1269,7 +1301,7 @@ void QgsArcGisRestUtils::visitFolderItems( const std::function< void( const QStr
   }
 }
 
-void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter )
 {
   QString base( baseUrl );
   bool baseChecked = false;
@@ -1281,7 +1313,11 @@ void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QSt
   {
     const QVariantMap serviceMap = service.toMap();
     const QString serviceType = serviceMap.value( QStringLiteral( "type" ) ).toString();
-    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
+    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "ImageServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
+      continue;
+
+    // If the requested service type is raster, do not show vector-only services
+    if ( serviceType == QLatin1String( "FeatureServer" ) && filter == QgsArcGisRestUtils::Raster )
       continue;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
@@ -1296,9 +1332,35 @@ void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QSt
   }
 }
 
-void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl )
+void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter )
 {
   const QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
+
+  QString format = QStringLiteral( "jpg" );
+  bool found = false;
+  const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
+  for ( const QString &encoding : supportedImageFormatTypes )
+  {
+    for ( const QByteArray &fmt : supportedFormats )
+    {
+      if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
+      {
+        format = encoding;
+        found = true;
+        break;
+      }
+    }
+    if ( found )
+      break;
+  }
+  const QStringList capabilities = serviceData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
+
+  // If the requested layer type is vector, do not show raster-only layers (i.e. non query-able layers)
+  const bool serviceMayHaveQueryCapability = capabilities.contains( QStringLiteral( "Query" ) ) ||
+      serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
+  if ( filter == QgsArcGisRestUtils::Vector && !serviceMayHaveQueryCapability )
+    return;
 
   const QVariantList layerInfoList = serviceData.value( QStringLiteral( "layers" ) ).toList();
   for ( const QVariant &layerInfo : layerInfoList )
@@ -1311,11 +1373,18 @@ void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString
 
     if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
     {
-      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString() );
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString(), format );
     }
     else
     {
-      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid );
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid, format );
     }
+  }
+
+  if ( serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+  {
+    const QString name = serviceData.value( QStringLiteral( "name" ) ).toString();
+    const QString description = serviceData.value( QStringLiteral( "description" ) ).toString();
+    visitor( 0, 0, name, description, parentUrl, false, authid, format );
   }
 }

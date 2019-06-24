@@ -261,7 +261,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
     {
 
       // get custom highlight widget in user added pages
-      QMap<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets = QMap<QWidget *, QgsOptionsDialogHighlightWidget *>();
+      QMap<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets;
       QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
       if ( opw )
       {

@@ -86,6 +86,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
 
   // can be embedded in vector layer properties

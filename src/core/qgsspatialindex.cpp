@@ -379,6 +379,10 @@ bool QgsSpatialIndex::featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsF
 
   id = f.id();
   rect = f.geometry().boundingBox();
+
+  if ( !rect.isFinite() )
+    return false;
+
   return true;
 }
 

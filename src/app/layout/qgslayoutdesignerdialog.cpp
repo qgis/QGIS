@@ -42,6 +42,7 @@
 #include "qgsrendercontext.h"
 #include "qgsmessagebar.h"
 #include "qgsmessageviewer.h"
+#include "qgshelp.h"
 #include "qgsgui.h"
 #include "qgsfeedback.h"
 #include "qgslayoutitemguiregistry.h"
@@ -966,7 +967,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
 
   QObject *obj = dynamic_cast< QObject * >( mMasterLayout );
   if ( obj )
-    connect( obj, &QObject::destroyed, [ = ]
+    connect( obj, &QObject::destroyed, this, [ = ]
   {
     this->close();
     QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
@@ -4093,6 +4094,12 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   Ui::QgsSvgExportOptionsDialog options;
   options.setupUi( &dialog );
 
+  connect( options.buttonBox, &QDialogButtonBox::helpRequested, this, [ & ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
+  }
+         );
+
   options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
 
@@ -4175,6 +4182,12 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   QDialog dialog( this );
   Ui::QgsPdfExportOptionsDialog options;
   options.setupUi( &dialog );
+
+  connect( options.buttonBox, &QDialogButtonBox::helpRequested, this, [ & ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
+  }
+         );
 
   options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );

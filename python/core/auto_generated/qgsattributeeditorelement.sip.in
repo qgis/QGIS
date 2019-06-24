@@ -56,7 +56,7 @@ layer.
 %Docstring
 Constructor
 
-:param type: The type of the new element. Should never
+:param type: The type of the new element.
 :param name:
 :param parent:
 %End

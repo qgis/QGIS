@@ -116,7 +116,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
   if ( ( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
   {
-    // This fixes https://issues.qgis.org/issues/16492
+    // This fixes https://github.com/qgis/QGIS/issues/24398
     QgsFeatureRequest request( fid );
     request.setFlags( QgsFeatureRequest::NoGeometry );
     request.setNoAttributes();

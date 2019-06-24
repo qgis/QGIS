@@ -30,6 +30,12 @@ class APP_EXPORT QgsFirstRunDialog : public QDialog, private Ui::QgsFirstRunDial
 
     bool migrateSettings();
 
+    /**
+     * Hides the migration checkboxes
+     */
+    void hideMigration();
+
+
   signals:
 
   public slots:

@@ -43,7 +43,6 @@ void QgsVectorLayerDiagramProvider::init()
   mName = mLayerId;
   mPriority = 1 - mSettings.priority() / 10.0; // convert 0..10 --> 1..0
   mPlacement = QgsPalLayerSettings::Placement( mSettings.placement() );
-  mLinePlacementFlags = mSettings.linePlacementFlags();
 }
 
 
@@ -102,7 +101,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
   // features are pre-rotated but not scaled/translated,
   // so we only disable rotation here. Ideally, they'd be
   // also pre-scaled/translated, as suggested here:
-  // https://issues.qgis.org/issues/11856
+  // https://github.com/qgis/QGIS/issues/20071
   QgsMapToPixel xform = context.mapToPixel();
   xform.setMapRotation( 0, 0, 0 );
 #else

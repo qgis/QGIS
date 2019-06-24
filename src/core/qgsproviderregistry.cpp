@@ -291,6 +291,11 @@ void QgsProviderRegistry::clean()
   mProviders.clear();
 }
 
+bool QgsProviderRegistry::exists()
+{
+  return static_cast< bool >( sInstance );
+}
+
 QgsProviderRegistry::~QgsProviderRegistry()
 {
   clean();

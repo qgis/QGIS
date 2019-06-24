@@ -368,12 +368,100 @@ std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
   return qgis::make_unique< QgsLineString>( x, y, z, m, wkbType == QgsWkbTypes::LineString25D );
 }
 
+QgsWkbTypes::Type QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType )
+{
+  switch ( ogrGeomType )
+  {
+    case wkbUnknown: return QgsWkbTypes::Type::Unknown;
+    case wkbPoint: return QgsWkbTypes::Type::Point;
+    case wkbLineString: return QgsWkbTypes::Type::LineString;
+    case wkbPolygon: return QgsWkbTypes::Type::Polygon;
+    case wkbMultiPoint: return QgsWkbTypes::Type::MultiPoint;
+    case wkbMultiLineString: return QgsWkbTypes::Type::MultiLineString;
+    case wkbMultiPolygon: return QgsWkbTypes::Type::MultiPolygon;
+    case wkbGeometryCollection: return QgsWkbTypes::Type::GeometryCollection;
+    case wkbCircularString: return QgsWkbTypes::Type::CircularString;
+    case wkbCompoundCurve: return QgsWkbTypes::Type::CompoundCurve;
+    case wkbCurvePolygon: return QgsWkbTypes::Type::CurvePolygon;
+    case wkbMultiCurve: return QgsWkbTypes::Type::MultiCurve;
+    case wkbMultiSurface: return QgsWkbTypes::Type::MultiSurface;
+    case wkbCurve: return QgsWkbTypes::Type::Unknown; // not an actual concrete type
+    case wkbSurface: return QgsWkbTypes::Type::Unknown; // not an actual concrete type
+    case wkbPolyhedralSurface: return QgsWkbTypes::Type::Unknown; // no actual matching
+    case wkbTIN: return QgsWkbTypes::Type::Unknown; // no actual matching
+    case wkbTriangle: return QgsWkbTypes::Type::Triangle;
+
+    case wkbNone: return QgsWkbTypes::Type::NoGeometry;
+    case wkbLinearRing: return QgsWkbTypes::Type::LineString; // approximate match
+
+    case wkbCircularStringZ: return QgsWkbTypes::Type::CircularStringZ;
+    case wkbCompoundCurveZ: return QgsWkbTypes::Type::CompoundCurveZ;
+    case wkbCurvePolygonZ: return QgsWkbTypes::Type::CurvePolygonZ;
+    case wkbMultiCurveZ: return QgsWkbTypes::Type::MultiCurveZ;
+    case wkbMultiSurfaceZ: return QgsWkbTypes::Type::MultiSurfaceZ;
+    case wkbCurveZ: return QgsWkbTypes::Type::Unknown; // not an actual concrete type
+    case wkbSurfaceZ: return QgsWkbTypes::Type::Unknown; // not an actual concrete type
+    case wkbPolyhedralSurfaceZ: return QgsWkbTypes::Type::Unknown; // no actual matching
+    case wkbTINZ: return QgsWkbTypes::Type::Unknown; // no actual matching
+    case wkbTriangleZ: return QgsWkbTypes::Type::TriangleZ;
+
+    case wkbPointM: return QgsWkbTypes::Type::PointM;
+    case wkbLineStringM: return QgsWkbTypes::Type::LineStringM;
+    case wkbPolygonM: return QgsWkbTypes::Type::PolygonM;
+    case wkbMultiPointM: return QgsWkbTypes::Type::MultiPointM;
+    case wkbMultiLineStringM: return QgsWkbTypes::Type::MultiLineStringM;
+    case wkbMultiPolygonM: return QgsWkbTypes::Type::MultiPolygonM;
+    case wkbGeometryCollectionM: return QgsWkbTypes::Type::GeometryCollectionM;
+    case wkbCircularStringM: return QgsWkbTypes::Type::CircularStringM;
+    case wkbCompoundCurveM: return QgsWkbTypes::Type::CompoundCurveM;
+    case wkbCurvePolygonM: return QgsWkbTypes::Type::CurvePolygonM;
+    case wkbMultiCurveM: return QgsWkbTypes::Type::MultiCurveM;
+    case wkbMultiSurfaceM: return QgsWkbTypes::Type::MultiSurfaceM;
+    case wkbCurveM: return QgsWkbTypes::Type::Unknown; // not an actual concrete type
+    case wkbSurfaceM: return QgsWkbTypes::Type::Unknown; // not an actual concrete type
+    case wkbPolyhedralSurfaceM: return QgsWkbTypes::Type::Unknown; // no actual matching
+    case wkbTINM: return QgsWkbTypes::Type::Unknown; // no actual matching
+    case wkbTriangleM: return QgsWkbTypes::Type::TriangleM;
+
+    case wkbPointZM: return QgsWkbTypes::Type::PointZM;
+    case wkbLineStringZM: return QgsWkbTypes::Type::LineStringZM;
+    case wkbPolygonZM: return QgsWkbTypes::Type::PolygonZM;
+    case wkbMultiPointZM: return QgsWkbTypes::Type::MultiPointZM;
+    case wkbMultiLineStringZM: return QgsWkbTypes::Type::MultiLineStringZM;
+    case wkbMultiPolygonZM: return QgsWkbTypes::Type::MultiPolygonZM;
+    case wkbGeometryCollectionZM: return QgsWkbTypes::Type::GeometryCollectionZM;
+    case wkbCircularStringZM: return QgsWkbTypes::Type::CircularStringZM;
+    case wkbCompoundCurveZM: return QgsWkbTypes::Type::CompoundCurveZM;
+    case wkbCurvePolygonZM: return QgsWkbTypes::Type::CurvePolygonZM;
+    case wkbMultiCurveZM: return QgsWkbTypes::Type::MultiCurveZM;
+    case wkbMultiSurfaceZM: return QgsWkbTypes::Type::MultiSurfaceZM;
+    case wkbCurveZM: return QgsWkbTypes::Type::Unknown; // not an actual concrete type
+    case wkbSurfaceZM: return QgsWkbTypes::Type::Unknown; // not an actual concrete type
+    case wkbPolyhedralSurfaceZM: return QgsWkbTypes::Type::Unknown; // no actual matching
+    case wkbTINZM: return QgsWkbTypes::Type::Unknown; // no actual matching
+    case wkbTriangleZM: return QgsWkbTypes::Type::TriangleZM;
+
+    case wkbPoint25D: return QgsWkbTypes::Type::PointZ;
+    case wkbLineString25D: return QgsWkbTypes::Type::LineStringZ;
+    case wkbPolygon25D: return QgsWkbTypes::Type::PolygonZ;
+    case wkbMultiPoint25D: return QgsWkbTypes::Type::MultiPointZ;
+    case wkbMultiLineString25D: return QgsWkbTypes::Type::MultiLineStringZ;
+    case wkbMultiPolygon25D: return QgsWkbTypes::Type::MultiPolygonZ;
+    case wkbGeometryCollection25D: return QgsWkbTypes::Type::GeometryCollectionZ;
+  }
+
+  // should not reach that point normally
+  return QgsWkbTypes::Type::Unknown;
+}
+
 QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 {
   if ( !geom )
     return QgsGeometry();
 
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+  const auto ogrGeomType = OGR_G_GetGeometryType( geom );
+  QgsWkbTypes::Type wkbType = ogrGeometryTypeToQgsWkbType( ogrGeomType );
+
   // optimised case for some geometry classes, avoiding wkb conversion on OGR/QGIS sides
   // TODO - extend to other classes!
   switch ( QgsWkbTypes::flatType( wkbType ) )
@@ -394,6 +482,19 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   };
 
   // Fallback to inefficient WKB conversions
+
+  if ( wkbFlatten( wkbType ) == wkbGeometryCollection )
+  {
+    // Shapefile MultiPatch can be reported as GeometryCollectionZ of TINZ
+    if ( OGR_G_GetGeometryCount( geom ) >= 1 &&
+         wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geom, 0 ) ) ) == wkbTIN )
+    {
+      auto newGeom = OGR_G_ForceToMultiPolygon( OGR_G_Clone( geom ) );
+      auto ret = ogrGeometryToQgsGeometry( newGeom );
+      OGR_G_DestroyGeometry( newGeom );
+      return ret;
+    }
+  }
 
   // get the wkb representation
   int memorySize = OGR_G_WkbSize( geom );

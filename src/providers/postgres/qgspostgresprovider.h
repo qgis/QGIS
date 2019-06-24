@@ -445,6 +445,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     static QString quotedIdentifier( const QString &ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }
+    static QString quotedJsonValue( const QVariant &value ) { return QgsPostgresConn::quotedJsonValue( value ); }
 
     friend class QgsPostgresFeatureSource;
 
@@ -486,7 +487,7 @@ class QgsPostgresUtils
 
     // We shift negative 32bit integers to above the max 32bit
     // positive integer to support the whole range of int32 values
-    // See https://issues.qgis.org/issues/14262
+    // See https://github.com/qgis/QGIS/issues/22258
     static qint64 int32pk_to_fid( qint32 x )
     {
       return x >= 0 ? x : x + INT32PK_OFFSET;

@@ -522,7 +522,7 @@ void QgsFieldCalculator::setPrecisionMinMax()
   bool precisionIsEnabled = minPrecType < maxPrecType;
   mOutputFieldPrecisionSpinBox->setEnabled( precisionIsEnabled );
   // Do not set min/max if it's disabled or we'll loose the default value,
-  // see https://issues.qgis.org/issues/19050 - QGIS saves integer field when
+  // see https://github.com/qgis/QGIS/issues/26880 - QGIS saves integer field when
   // I create a new real field through field calculator (Update field works as intended)
   if ( precisionIsEnabled )
   {

@@ -420,8 +420,6 @@ QList<int> QgsMultiBandColorRenderer::usesBands() const
 
 void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 

@@ -447,7 +447,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       break;
     }
 
-    QList<QVariant> resolutions;
+    mNativeResolutions.clear();
     if ( mCaps.mTileMatrixSets.contains( mSettings.mTileMatrixSetId ) )
     {
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
@@ -456,7 +456,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       const auto constKeys = keys;
       for ( double key : constKeys )
       {
-        resolutions << key;
+        mNativeResolutions << key;
       }
       if ( !mTileMatrixSet->tileMatrices.empty() )
       {
@@ -469,8 +469,6 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       QgsDebugMsg( QStringLiteral( "Expected tile matrix set '%1' not found." ).arg( mSettings.mTileMatrixSetId ) );
       mTileMatrixSet = nullptr;
     }
-
-    setProperty( "resolutions", resolutions );
 
     if ( !mTileLayer || !mTileMatrixSet )
     {
@@ -567,7 +565,7 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
                 ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
                 r.rect.width() / cr,
                 r.rect.height() / cr );
-    otherResTiles << TileImage( dst, localImage );
+    otherResTiles << TileImage( dst, localImage, false );
 
     // see if there are any missing rects that are completely covered by this tile
     const auto constMissingRects = missingRects;
@@ -784,12 +782,13 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       if ( QgsTileCache::tile( r.url, localImage ) )
       {
         double cr = viewExtent.width() / image->width();
-
         QRectF dst( ( r.rect.left() - viewExtent.xMinimum() ) / cr,
                     ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
                     r.rect.width() / cr,
                     r.rect.height() / cr );
-        tileImages << TileImage( dst, localImage );
+        // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
+        bool disableSmoothing = ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
+        tileImages << TileImage( dst, localImage, !disableSmoothing );
       }
       else
       {
@@ -851,7 +850,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     const auto constTileImages = tileImages;
     for ( const TileImage &ti : constTileImages )
     {
-      if ( mSettings.mSmoothPixmapTransform )
+      if ( ti.smooth && mSettings.mSmoothPixmapTransform )
         p.setRenderHint( QPainter::SmoothPixmapTransform, true );
       p.drawImage( ti.rect, ti.img );
 
@@ -2300,11 +2299,8 @@ QString QgsWmsProvider::htmlMetadata()
                         tr( "Bottom" ),
                         tr( "Right" ) );
 
-      const auto constToList = property( "resolutions" ).toList();
-      for ( const QVariant &res : constToList )
+      for ( const double key : mNativeResolutions )
       {
-        double key = res.toDouble();
-
         QgsWmtsTileMatrix &tm = mTileMatrixSet->tileMatrices[ key ];
 
         double tw = key * tm.tileWidth;
@@ -3235,6 +3231,11 @@ bool QgsWmsProvider::renderInPreview( const QgsDataProvider::PreviewContext &con
   return QgsRasterDataProvider::renderInPreview( context );
 }
 
+QList<double> QgsWmsProvider::nativeResolutions() const
+{
+  return mNativeResolutions;
+}
+
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
 {
   QVector<QgsWmsSupportedFormat> formats;
@@ -3949,9 +3950,12 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       if ( !myLocalImage.isNull() )
       {
         QPainter p( mImage );
-        if ( mSmoothPixmapTransform )
+        // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
+        const bool disableSmoothing = ( qgsDoubleNear( dst.width(), myLocalImage.width(), 2 ) && qgsDoubleNear( dst.height(), myLocalImage.height(), 2 ) );
+        if ( !disableSmoothing && mSmoothPixmapTransform )
           p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
+        p.end();
 #if 0
         myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
         p.drawRect( dst ); // show tile bounds

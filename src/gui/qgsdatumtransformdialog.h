@@ -51,6 +51,9 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 
       //! Destination transform ID
       int destinationTransformId = -1;
+
+      //! Proj coordinate operation description, for Proj >= 6.0 builds only
+      QString proj;
     };
 
     /**
@@ -68,6 +71,8 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                      QWidget *parent = nullptr );
 
+    // TODO QGIS 4.0 - remove selectedDatumTransform
+
     /**
      * Constructor for QgsDatumTransformDialog.
      */
@@ -78,7 +83,8 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                              bool forceChoice = true,
                              QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
                              QWidget *parent = nullptr,
-                             Qt::WindowFlags f = nullptr );
+                             Qt::WindowFlags f = nullptr,
+                             const QString &selectedProj = QString() );
     ~QgsDatumTransformDialog() override;
 
     void accept() override;
@@ -97,10 +103,17 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
+
+    enum Roles
+    {
+      TransformIdRole = Qt::UserRole + 1,
+      ProjRole,
+    };
+
     bool gridShiftTransformation( const QString &itemText ) const;
     //! Returns FALSE if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
     bool testGridShiftFileAvailability( QTableWidgetItem *item ) const;
-    void load( QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ) );
+    void load( QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ), const QString &selectedProj = QString() );
     void setOKButtonEnabled();
 
     /**
@@ -124,7 +137,11 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      */
     void applyDefaultTransform();
 
+#if PROJ_VERSION_MAJOR>=6
+    QList< QgsDatumTransform::TransformDetails > mDatumTransforms;
+#else
     QList< QgsDatumTransform::TransformPair > mDatumTransforms;
+#endif
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
     std::unique_ptr< QgsTemporaryCursorRestoreOverride > mPreviousCursorOverride;

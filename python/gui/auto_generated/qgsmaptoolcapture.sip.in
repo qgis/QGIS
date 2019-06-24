@@ -94,6 +94,14 @@ Clean a temporary rubberband
 convenient method to clean members
 %End
 
+    QgsRubberBand *takeRubberBand() /Factory/;
+%Docstring
+Returns the rubberBand currently owned by this map tool and
+transfers ownership to the caller.
+
+.. versionadded:: 3.8
+%End
+
   protected:
 
 

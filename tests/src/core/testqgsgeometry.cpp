@@ -13927,66 +13927,64 @@ void TestQgsGeometry::multiSurface()
 
   //as JSON
   QgsMultiSurface exportC;
-  ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 ) << QgsPoint( QgsWkbTypes::Point, 3, 13 ) << QgsPoint( QgsWkbTypes::Point, 7, 17 ) ) ;
+  QgsLineString lineRing;
+  lineRing.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 ) << QgsPoint( QgsWkbTypes::Point, 7, 13 )  << QgsPoint( QgsWkbTypes::Point, 3, 13 ) << QgsPoint( QgsWkbTypes::Point, 7, 17 ) ) ;
   part.clear();
-  part.setExteriorRing( ring.clone() );
+  part.setExteriorRing( lineRing.clone() );
   exportC.addGeometry( part.clone() );
-  ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27, 37 ) << QgsPoint( QgsWkbTypes::Point, 43, 43 )  << QgsPoint( QgsWkbTypes::Point, 27, 37 ) ) ;
+  lineRing.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27, 37 ) << QgsPoint( QgsWkbTypes::Point, 27, 43 ) << QgsPoint( QgsWkbTypes::Point, 43, 43 )  << QgsPoint( QgsWkbTypes::Point, 27, 37 ) ) ;
   part.clear();
-  part.setExteriorRing( ring.clone() );
+  part.setExteriorRing( lineRing.clone() );
   exportC.addGeometry( part.clone() );
 
   // GML document for compare
   QDomDocument doc( "gml" );
 
   // as GML2
-  QString expectedSimpleGML2( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 7,17</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 27,37</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>" ) );
+  QString expectedSimpleGML2( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 7,13 3,13 7,17</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 27,43 43,43 27,37</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>" ) );
   QString res = elemToString( exportC.asGml2( doc, 1 ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
   QString expectedGML2empty( QStringLiteral( "<MultiPolygon xmlns=\"gml\"/>" ) );
   QGSCOMPAREGML( elemToString( QgsMultiSurface().asGml2( doc ) ), expectedGML2empty );
 
   //as GML3
-  QString expectedSimpleGML3( QStringLiteral( "<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 17</posList></ArcString></segments></Curve></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 27 37</posList></ArcString></segments></Curve></exterior></Polygon></surfaceMember></MultiSurface>" ) );
+
+  QString expectedSimpleGML3( QStringLiteral( "<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 7 13 3 13 7 17</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 27 43 43 43 27 37</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>" ) );
   res = elemToString( exportC.asGml3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
   QString expectedGML3empty( QStringLiteral( "<MultiSurface xmlns=\"gml\"/>" ) );
   QGSCOMPAREGML( elemToString( QgsMultiSurface().asGml3( doc ) ), expectedGML3empty );
 
   // as JSON
-  QString expectedSimpleJson( "{\"coordinates\":[[[7.0,17.0],[7.0,17.0]],[[27.0,37.0],[27.0,37.0]]],\"type\":\"MultiPolygon\"}" );
+  QString expectedSimpleJson( "{\"coordinates\":[[[[7.0,17.0],[7.0,13.0],[3.0,13.0],[7.0,17.0]]],[[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]]]],\"type\":\"MultiPolygon\"}" );
   res = exportC.asJson( 1 );
   QCOMPARE( res, expectedSimpleJson );
 
-  ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 17, 27 ) << QgsPoint( QgsWkbTypes::Point, 18, 28 )  << QgsPoint( QgsWkbTypes::Point, 17, 27 ) ) ;
-  part.addInteriorRing( ring.clone() );
+  lineRing.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 17, 27 ) << QgsPoint( QgsWkbTypes::Point, 17, 28 ) << QgsPoint( QgsWkbTypes::Point, 18, 28 )  << QgsPoint( QgsWkbTypes::Point, 17, 27 ) ) ;
+  part.addInteriorRing( lineRing.clone() );
   exportC.addGeometry( part.clone() );
 
-  QString expectedJsonWithRings( "{\"coordinates\":[[[7.0,17.0],[7.0,17.0]],[[27.0,37.0],[27.0,37.0]],[[27.0,37.0],[27.0,37.0]],[[17.0,27.0],[17.0,27.0]]],\"type\":\"MultiPolygon\"}" );
+  QString expectedJsonWithRings( "{\"coordinates\":[[[[7.0,17.0],[7.0,13.0],[3.0,13.0],[7.0,17.0]]],[[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]]],[[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]],[[17.0,27.0],[17.0,28.0],[18.0,28.0],[17.0,27.0]]]],\"type\":\"MultiPolygon\"}" );
   res = exportC.asJson( 1 );
   QCOMPARE( res, expectedJsonWithRings );
 
   QgsMultiSurface exportFloat;
-  ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7 / 3.0, 17 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 3 / 5.0, 13 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 7 / 3.0, 17 / 3.0 ) ) ;
+  lineRing.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0.1234, 0.1234 ) << QgsPoint( QgsWkbTypes::Point, 0.1234, 1.2344 ) << QgsPoint( QgsWkbTypes::Point, 1.2344, 1.2344 ) << QgsPoint( QgsWkbTypes::Point, 0.1234, 0.1234 ) ) ;
   part.clear();
-  part.setExteriorRing( ring.clone() );
-  exportFloat.addGeometry( part.clone() );
-  ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27 / 3.0, 37 / 9.0 ) << QgsPoint( QgsWkbTypes::Point, 43 / 41.0, 43 / 42.0 ) << QgsPoint( QgsWkbTypes::Point, 27 / 3.0, 37 / 9.0 ) ) ;
-  part.clear();
-  part.setExteriorRing( ring.clone() );
+  part.setExteriorRing( lineRing.clone() );
   exportFloat.addGeometry( part.clone() );
 
-  QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[[[2.333,5.667],[2.333,5.667]],[[9.0,4.111],[9.0,4.111]]],\"type\":\"MultiPolygon\"}" ) );
+  QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[[[[0.123,0.123],[0.123,1.234],[1.234,1.234],[0.123,0.123]]]],\"type\":\"MultiPolygon\"}" ) );
   res = exportFloat.asJson( 3 );
   QCOMPARE( res, expectedJsonPrec3 );
 
   // as GML2
-  QString expectedGML2prec3( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2.333,5.667 2.333,5.667</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">9,4.111 9,4.111</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>" ) );
+  QString expectedGML2prec3( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.123,0.123 0.123,1.234 1.234,1.234 0.123,0.123</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>" ) );
   res = elemToString( exportFloat.asGml2( doc, 3 ) );
   QGSCOMPAREGML( res, expectedGML2prec3 );
 
   //as GML3
-  QString expectedGML3prec3( QStringLiteral( "<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 5.667 0.6 4.333 2.333 5.667</posList></ArcString></segments></Curve></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">9 4.111 1.049 1.024 9 4.111</posList></ArcString></segments></Curve></exterior></Polygon></surfaceMember></MultiSurface>" ) );
+  QString expectedGML3prec3( QStringLiteral( "<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.123 0.123 0.123 1.234 1.234 1.234 0.123 0.123</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>" ) );
   res = elemToString( exportFloat.asGml3( doc, 3 ) );
   QCOMPARE( res, expectedGML3prec3 );
 
@@ -16904,7 +16902,7 @@ QString TestQgsGeometry::elemToString( const QDomElement &elem ) const
 void TestQgsGeometry::wkbInOut()
 {
   // Premature end of WKB
-  // See https://issues.qgis.org/issues/14182
+  // See https://github.com/qgis/QGIS/issues/22184
   const char *hexwkb = "0102000000EF0000000000000000000000000000000000000000000000000000000000000000000000";
   int size;
   unsigned char *wkb = hex2bytes( hexwkb, &size );

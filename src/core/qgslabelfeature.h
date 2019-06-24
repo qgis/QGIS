@@ -22,6 +22,7 @@
 #include "geos_c.h"
 #include "qgsgeos.h"
 #include "qgsmargins.h"
+#include "pal.h"
 
 namespace pal
 {
@@ -335,6 +336,19 @@ class CORE_EXPORT QgsLabelFeature
     void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
 
     /**
+     * Returns the feature's arrangement flags.
+     * \see setArrangementFlags
+     */
+    pal::LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
+
+    /**
+     * Sets the feature's arrangement flags.
+     * \param flags arrangement flags
+     * \see arrangementFlags
+     */
+    void setArrangementFlags( pal::LineArrangementFlags flags ) { mArrangementFlags = flags; }
+
+    /**
      * Text of the label
      *
      * Used also if "merge connected lines to avoid duplicate labels" is enabled
@@ -411,6 +425,8 @@ class CORE_EXPORT QgsLabelFeature
     QString mLabelText;
     //! extra information for curved labels (may be NULLPTR)
     pal::LabelInfo *mInfo = nullptr;
+
+    pal::LineArrangementFlags mArrangementFlags = nullptr;
 
   private:
 
