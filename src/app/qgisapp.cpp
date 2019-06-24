@@ -843,6 +843,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgisApp::showMapCanvas );
 
+  mCentralContainer->setCurrentIndex( mProjOpen ? 0 : 1 );
+
   // a bar to warn the user with non-blocking messages
   startProfile( QStringLiteral( "Message bar" ) );
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -1491,32 +1493,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mCentralContainer->setCurrentIndex( 0 );
   } );
-
-  // As the last thing set the welcome page and restore dock and panel visibility
-
-  connect( mCentralContainer, &QStackedWidget::currentChanged, this, [ this ]( int index )
-  {
-    QgsSettings settings;
-
-    if ( index == 1 ) // welcomepage
-    {
-      if ( settings.value( QStringLiteral( "UI/allWidgetsVisible" ), true ).toBool() )
-      {
-        toggleReducedView( false );
-        settings.setValue( QStringLiteral( "UI/widgetsHiddenForWelcomePage" ), true );
-      }
-    }
-    else
-    {
-      if ( settings.value( QStringLiteral( "UI/widgetsHiddenForWelcomePage" ), false ).toBool() && !QgsSettings().value( QStringLiteral( "UI/allWidgetsVisible" ), true ).toBool() )
-      {
-        toggleReducedView( true );
-      }
-      settings.setValue( QStringLiteral( "UI/widgetsHiddenForWelcomePage" ), false );
-    }
-  } );
-
-  mCentralContainer->setCurrentIndex( 1 );
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -6824,8 +6800,8 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
         }
       }
 
-      menuBar()->setVisible( false );
-      statusBar()->setVisible( false );
+      this->menuBar()->setVisible( false );
+      this->statusBar()->setVisible( false );
 
       settings.setValue( QStringLiteral( "UI/hiddenToolBarsActive" ), toolBarsActive );
     }
@@ -6880,8 +6856,8 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
         toolBar->setVisible( true );
       }
     }
-    menuBar()->setVisible( true );
-    statusBar()->setVisible( true );
+    this->menuBar()->setVisible( true );
+    this->statusBar()->setVisible( true );
 
     settings.remove( QStringLiteral( "UI/hiddenToolBarsActive" ) );
     settings.remove( QStringLiteral( "UI/hiddenDocksTitle" ) );
