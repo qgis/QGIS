@@ -87,8 +87,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
   connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
 
-  mLastLayer = nullptr;
-
   mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
   mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
@@ -296,9 +294,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   // Qt::UTC  1 Coordinated Universal Time, replaces Greenwich Mean Time.
   // SKIP this one: Qt::OffsetFromUTC  2 An offset in seconds from Coordinated Universal Time.
   // Qt::TimeZone 3 A named time zone using a specific set of Daylight Savings rules.
-  mCboTimestampFormat->addItem( tr( "Local time" ), Qt::TimeSpec::LocalTime );
+  mCboTimestampFormat->addItem( tr( "Local Time" ), Qt::TimeSpec::LocalTime );
   mCboTimestampFormat->addItem( tr( "UTC" ), Qt::TimeSpec::UTC );
-  mCboTimestampFormat->addItem( tr( "Time zone" ), Qt::TimeSpec::TimeZone );
+  mCboTimestampFormat->addItem( tr( "Time Zone" ), Qt::TimeSpec::TimeZone );
   mCboTimestampFormat->setCurrentIndex( mySettings.value( QStringLiteral( "gps/timeStampFormat" ), Qt::LocalTime ).toInt() );
   connect( mCboTimestampFormat, qgis::overload< int >::of( &QComboBox::currentIndexChanged ),
            this, &QgsGpsInformationWidget::timestampFormatChanged );
@@ -965,7 +963,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   if ( idx != -1 )
   {
     QVariant ts { timestamp( vlayer, idx ) };
-    if ( ts.isValid() && idx != -1 )
+    if ( ts.isValid() )
     {
       attrMap[ idx ] = ts;
     }
@@ -1127,7 +1125,8 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
     delete f;
     connectGpsSlot();
   } // layerWKBType == QgsWkbTypes::Point
-  mMapCanvas->refresh();  // NOTE: canceling feature add refreshes canvas, OK does not; this may change, however, so do it anyway
+
+  vlayer->triggerRepaint();
 
   // force focus back to GPS window/ Add Feature button for ease of use by keyboard
   activateWindow();
@@ -1329,7 +1328,7 @@ void QgsGpsInformationWidget::updateTimeZones()
 QVariant QgsGpsInformationWidget::timestamp( QgsVectorLayer *vlayer, int idx )
 {
   QVariant value;
-  if ( idx != -1 && ! mCboTimestampField->currentText().isEmpty() )
+  if ( idx != -1 )
   {
     QDateTime time( QDate( 1900 + mLastNmeaTime.year, mLastNmeaTime.mon + 1, mLastNmeaTime.day ),
                     QTime( mLastNmeaTime.hour, mLastNmeaTime.min, mLastNmeaTime.sec, mLastNmeaTime.msec ) );
@@ -1361,16 +1360,17 @@ QVariant QgsGpsInformationWidget::timestamp( QgsVectorLayer *vlayer, int idx )
       // Do nothing: we are already in UTC
     }
 
-    if ( idx != -1 )
+    // Only string and datetime fields are supported
+    switch ( vlayer->fields().at( idx ).type() )
     {
-      if ( vlayer->fields().at( idx ).type() == QVariant::String )
-      {
+      case QVariant::String:
         value = time.toString( Qt::DateFormat::ISODate );
-      }
-      else // Datetime
-      {
+        break;
+      case QVariant::DateTime:
         value = time;
-      }
+        break;
+      default:
+        break;
     }
   }
   return value;

@@ -30,10 +30,6 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
   mSize = 16;
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
   mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
-  if ( ! mSvg.isValid() )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "GPS marker not found!" ), QStringLiteral( "GPS" ), Qgis::Warning );
-  }
 }
 
 void QgsGpsMarker::setSize( int size )
@@ -53,7 +49,7 @@ void QgsGpsMarker::setCenter( const QgsPointXY &point )
     }
     catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
-      QgsMessageLog::logMessage( QObject::tr( "Erorr transforming the map center point: %1" ).arg( e.what() ), QStringLiteral( "GPS" ), Qgis::Warning );
+      QgsMessageLog::logMessage( QObject::tr( "Error transforming the map center point: %1" ).arg( e.what() ), QStringLiteral( "GPS" ), Qgis::Warning );
       return;
     }
   }

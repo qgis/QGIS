@@ -1,5 +1,5 @@
 /***************************************************************************
-    testqgsgpsinformationwidget->cpp
+    testqgsgpsinformationwidget.cpp
      --------------------------
     Date                 : 2019-06-19
     Copyright            : (C) 2019 by Alessandro Pasotti
@@ -44,11 +44,11 @@ class TestQgsGpsInformationWidget : public QObject
   private:
     std::unique_ptr<QgsGpsInformationWidget> prepareWidget();
     QDateTime _testWrite( QgsVectorLayer *vlayer, QgsGpsInformationWidget *widget, const QString &fieldName, Qt::TimeSpec timeSpec, bool commit = false );
-    QgsVectorLayer *tempLayer;
-    QgsVectorLayer *tempLayerString;
-    QgsVectorLayer *tempLayerDateTime;
-    QgsVectorLayer *tempLayerLineString;
-    QgsVectorLayer *tempGpkgLayerPointString;
+    QgsVectorLayer *tempLayer = nullptr;
+    QgsVectorLayer *tempLayerString = nullptr;
+    QgsVectorLayer *tempLayerDateTime = nullptr;
+    QgsVectorLayer *tempLayerLineString = nullptr;
+    QgsVectorLayer *tempGpkgLayerPointString = nullptr;
     QgisApp *mQgisApp = nullptr;
 };
 
