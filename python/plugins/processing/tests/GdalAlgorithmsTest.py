@@ -3093,10 +3093,6 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             # defaults
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
-                                        'THRESHOLD': 10,
-                                        'EIGHT_CONNECTEDNESS': False,
-                                        'NO_MASK': False,
-                                        'MASK_LAYER': None,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_sieve.py',
                  '-st 10 -4 -of GTiff ' +
@@ -3108,8 +3104,6 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands({'INPUT': source,
                                         'THRESHOLD': 16,
                                         'EIGHT_CONNECTEDNESS': True,
-                                        'NO_MASK': False,
-                                        'MASK_LAYER': None,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_sieve.py',
                  '-st 16 -8 -of GTiff ' +
@@ -3119,10 +3113,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             # without default mask layer
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
-                                        'THRESHOLD': 10,
-                                        'EIGHT_CONNECTEDNESS': False,
                                         'NO_MASK': True,
-                                        'MASK_LAYER': None,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_sieve.py',
                  '-st 10 -4 -nomask -of GTiff ' +
@@ -3132,15 +3123,22 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             # defaults with external validity mask
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
-                                        'THRESHOLD': 10,
-                                        'EIGHT_CONNECTEDNESS': False,
-                                        'NO_MASK': False,
                                         'MASK_LAYER': mask,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_sieve.py',
                  '-st 10 -4 -mask ' +
                  mask +
                  ' -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-q',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 10 -4 -of GTiff -q ' +
                  source + ' ' +
                  outsource])
 
