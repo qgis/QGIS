@@ -42,6 +42,7 @@ from processing.algs.gdal.GridLinear import GridLinear
 from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
 from processing.algs.gdal.buildvrt import buildvrt
 from processing.algs.gdal.hillshade import hillshade
+from processing.algs.gdal.aspect import aspect
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.ogrinfo import ogrinfo
 from processing.algs.gdal.OffsetCurve import OffsetCurve
@@ -1991,6 +1992,128 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  'hillshade ' +
                  source + ' ' +
                  outdir + '/check.tif -of GTiff -b 1 -z 5.0 -s 2.0 -alt 20.0 -multidirectional'])
+
+    def testAspect(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = aspect()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'TRIG_ANGLE': False,
+                                        'ZERO_FLAT': False,
+                                        'COMPUTE_EDGES': False,
+                                        'ZEVENBERGEN': False,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'aspect ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1'])
+
+            # paths with space
+            source_with_space = os.path.join(testDataPath, 'raster with spaces.tif')
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source_with_space,
+                                        'BAND': 1,
+                                        'TRIG_ANGLE': False,
+                                        'ZERO_FLAT': False,
+                                        'COMPUTE_EDGES': False,
+                                        'ZEVENBERGEN': False,
+                                        'OUTPUT': outdir + '/check out.tif'}, context, feedback),
+                ['gdaldem',
+                 'aspect ' +
+                 '"' + source_with_space + '" ' +
+                 '"{}/check out.tif" -of GTiff -b 1'.format(outdir)])
+
+            # compute edges
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'TRIG_ANGLE': False,
+                                        'ZERO_FLAT': False,
+                                        'COMPUTE_EDGES': True,
+                                        'ZEVENBERGEN': False,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'aspect ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -compute_edges'])
+
+            # with ZEVENBERGEN
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'TRIG_ANGLE': False,
+                                        'ZERO_FLAT': False,
+                                        'COMPUTE_EDGES': False,
+                                        'ZEVENBERGEN': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'aspect ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -alg ZevenbergenThorne'])
+
+            # with ZERO_FLAT
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'TRIG_ANGLE': False,
+                                        'ZERO_FLAT': True,
+                                        'COMPUTE_EDGES': False,
+                                        'ZEVENBERGEN': False,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'aspect ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -zero_for_flat'])
+
+            # with TRIG_ANGLE
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'TRIG_ANGLE': True,
+                                        'ZERO_FLAT': False,
+                                        'COMPUTE_EDGES': False,
+                                        'ZEVENBERGEN': False,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'aspect ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -trigonometric'])
+
+            # with creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'TRIG_ANGLE': False,
+                                        'ZERO_FLAT': False,
+                                        'COMPUTE_EDGES': False,
+                                        'ZEVENBERGEN': False,
+                                        'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'aspect ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -co COMPRESS=JPEG -co JPEG_QUALITY=75'])
+
+            # with additional parameter
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'TRIG_ANGLE': False,
+                                        'ZERO_FLAT': False,
+                                        'COMPUTE_EDGES': False,
+                                        'ZEVENBERGEN': False,
+                                        'EXTRA': '-q',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'aspect ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -q'])
 
     def testProximity(self):
         context = QgsProcessingContext()
