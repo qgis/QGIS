@@ -3234,8 +3234,6 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 alg.getConsoleCommands({'SPECTRAL': spectral,
                                         'PANCHROMATIC': panchrom,
-                                        'RESAMPLING': 2,
-                                        'OPTIONS': '',
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_pansharpen.py',
                  panchrom + ' ' +
@@ -3249,13 +3247,25 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands({'SPECTRAL': spectral,
                                         'PANCHROMATIC': panchrom,
                                         'RESAMPLING': 4,
-                                        'OPTIONS': '',
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_pansharpen.py',
                  panchrom + ' ' +
                  spectral + ' ' +
                  outsource + ' ' +
                  '-r lanczos -of GTiff'
+                 ])
+
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'SPECTRAL': spectral,
+                                        'PANCHROMATIC': panchrom,
+                                        'EXTRA': '-bitdepth 12 -threads ALL_CPUS',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_pansharpen.py',
+                 panchrom + ' ' +
+                 spectral + ' ' +
+                 outsource + ' ' +
+                 '-r cubic -of GTiff -bitdepth 12 -threads ALL_CPUS'
                  ])
 
 
