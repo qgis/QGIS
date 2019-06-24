@@ -139,6 +139,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
       attemptResize( newSize );
     }
   }
+
   QgsLayoutItem::paint( painter, itemStyle, pWidget );
 }
 
@@ -366,6 +367,16 @@ void QgsLayoutItemLegend::setSymbolWidth( double w )
   mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) );
 }
 
+void QgsLayoutItemLegend::setSymbolAlignment( Qt::AlignmentFlag alignment )
+{
+  mSettings.setSymbolAlignment( alignment );
+}
+
+Qt::AlignmentFlag QgsLayoutItemLegend::symbolAlignment() const
+{
+  return mSettings.symbolAlignment();
+}
+
 double QgsLayoutItemLegend::symbolHeight() const
 {
   return mSettings.symbolSize().height();
@@ -488,6 +499,10 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
 
   legendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
   legendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
+
+  legendElem.setAttribute( QStringLiteral( "symbolAlignment" ), mSettings.symbolAlignment() );
+
+  legendElem.setAttribute( QStringLiteral( "symbolAlignment" ), mSettings.symbolAlignment() );
   legendElem.setAttribute( QStringLiteral( "lineSpacing" ), QString::number( mSettings.lineSpacing() ) );
 
   legendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterStroke() );
@@ -577,6 +592,8 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setColumnSpace( itemElem.attribute( QStringLiteral( "columnSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
 
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
+  mSettings.setSymbolAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "symbolAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() ) );
+
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
   mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );
 
@@ -776,7 +793,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
 
   if ( mMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {
-    int dpi = mLayout->renderContext().dpi();
+    double dpi = mLayout->renderContext().dpi();
 
     QgsRectangle requestRectangle = mMap->requestedExtent();
 

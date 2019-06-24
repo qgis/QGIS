@@ -168,8 +168,6 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLayerTreeModelLegendNode::ItemContext ctx;
     ctx.painter = painter.get();
-    ctx.labelXOffset = 0;
-    ctx.point = QPointF();
     nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
     painter->end();
 

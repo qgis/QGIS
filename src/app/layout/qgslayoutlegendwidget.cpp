@@ -70,7 +70,10 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   setupUi( this );
   connect( mWrapCharLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mWrapCharLineEdit_textChanged );
   connect( mTitleLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mTitleLineEdit_textChanged );
-  connect( mTitleAlignCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendWidget::mTitleAlignCombo_currentIndexChanged );
+  connect( mTitleAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::titleAlignmentChanged );
+  connect( mGroupAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::groupAlignmentChanged );
+  connect( mSubgroupAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::subgroupAlignmentChanged );
+  connect( mItemAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::itemAlignmentChanged );
   connect( mColumnCountSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnCountSpinBox_valueChanged );
   connect( mSplitLayerCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mSplitLayerCheckBox_toggled );
   connect( mEqualColumnWidthCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mEqualColumnWidthCheckBox_toggled );
@@ -110,6 +113,16 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mGroupFontButton->setMode( QgsFontButton::ModeQFont );
   mLayerFontButton->setMode( QgsFontButton::ModeQFont );
   mItemFontButton->setMode( QgsFontButton::ModeQFont );
+
+  mTitleAlignCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
+  mGroupAlignCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
+  mSubgroupAlignCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
+  mItemAlignCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
+
+  mArrangementCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignRight );
+  connect( mArrangementCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::arrangementChanged );
+  mArrangementCombo->customiseAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsLeft.svg" ) ) );
+  mArrangementCombo->customiseAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsRight.svg" ) ) );
 
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
@@ -168,11 +181,13 @@ void QgsLayoutLegendWidget::setGuiElements()
     return;
   }
 
-  int alignment = mLegend->titleAlignment() == Qt::AlignLeft ? 0 : mLegend->titleAlignment() == Qt::AlignHCenter ? 1 : 2;
-
   blockAllSignals( true );
   mTitleLineEdit->setText( mLegend->title() );
-  mTitleAlignCombo->setCurrentIndex( alignment );
+  whileBlocking( mTitleAlignCombo )->setCurrentAlignment( mLegend->titleAlignment() );
+  whileBlocking( mGroupAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::Group ).alignment() );
+  whileBlocking( mSubgroupAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::Subgroup ).alignment() );
+  whileBlocking( mItemAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::SymbolLabel ).alignment() );
+  whileBlocking( mArrangementCombo )->setCurrentAlignment( mLegend->symbolAlignment() );
   mFilterByMapToolButton->setChecked( mLegend->legendFilterByMapEnabled() );
   mColumnCountSpinBox->setValue( mLegend->columnCount() );
   mSplitLayerCheckBox->setChecked( mLegend->splitLayer() );
@@ -240,13 +255,58 @@ void QgsLayoutLegendWidget::mTitleLineEdit_textChanged( const QString &text )
   }
 }
 
-void QgsLayoutLegendWidget::mTitleAlignCombo_currentIndexChanged( int index )
+void QgsLayoutLegendWidget::titleAlignmentChanged()
 {
   if ( mLegend )
   {
-    Qt::AlignmentFlag alignment = index == 0 ? Qt::AlignLeft : index == 1 ? Qt::AlignHCenter : Qt::AlignRight;
+    Qt::AlignmentFlag alignment = static_cast< Qt::AlignmentFlag >( static_cast< int  >( mTitleAlignCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
     mLegend->beginCommand( tr( "Change Title Alignment" ) );
     mLegend->setTitleAlignment( alignment );
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsLayoutLegendWidget::groupAlignmentChanged()
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Group Alignment" ) );
+    mLegend->rstyle( QgsLegendStyle::Group ).setAlignment( mGroupAlignCombo->currentAlignment() );
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsLayoutLegendWidget::subgroupAlignmentChanged()
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Subgroup Alignment" ) );
+    mLegend->rstyle( QgsLegendStyle::Subgroup ).setAlignment( mSubgroupAlignCombo->currentAlignment() );
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsLayoutLegendWidget::itemAlignmentChanged()
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Item Alignment" ) );
+    mLegend->rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( mItemAlignCombo->currentAlignment() );
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsLayoutLegendWidget::arrangementChanged()
+{
+  if ( mLegend )
+  {
+    Qt::AlignmentFlag alignment = static_cast< Qt::AlignmentFlag >( static_cast< int  >( mArrangementCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
+    mLegend->beginCommand( tr( "Change Legend Arrangement" ) );
+    mLegend->setSymbolAlignment( alignment );
     mLegend->update();
     mLegend->endCommand();
   }
@@ -1053,7 +1113,7 @@ void QgsLayoutLegendWidget::setCurrentNodeStyleFromAction()
   if ( !a || !mItemTreeView->currentNode() )
     return;
 
-  QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), ( QgsLegendStyle::Style ) a->data().toInt() );
+  QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), static_cast< QgsLegendStyle::Style >( a->data().toInt() ) );
   mLegend->updateFilterByMap();
 }
 
@@ -1175,7 +1235,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
     QAction *action = menu->addAction( QgsLegendStyle::styleLabel( style ), mWidget, &QgsLayoutLegendWidget::setCurrentNodeStyleFromAction );
     action->setCheckable( true );
     action->setChecked( currentStyle == style );
-    action->setData( ( int ) style );
+    action->setData( static_cast< int >( style ) );
   }
 
   return menu;
