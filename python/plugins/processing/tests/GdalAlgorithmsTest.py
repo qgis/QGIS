@@ -1507,7 +1507,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-            # with no NODATA value
+            # without NODATA value
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
@@ -1533,6 +1533,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=12:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdal_grid',
+                 '-l points -a invdistnn:power=2.0:smothing=0.0:radius=1.0:max_points=12:min_points=0:nodata=0.0 ' +
+                 '-ot Float32 -of GTiff -z_multiply 1.5 -outsize 1754 1394 ' +
+                 source + ' ' +
+                 outdir + '/check.tif'])
 
     def testGridLinear(self):
         context = QgsProcessingContext()
