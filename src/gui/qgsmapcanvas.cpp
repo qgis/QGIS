@@ -1538,19 +1538,28 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
 void QgsMapCanvas::resizeEvent( QResizeEvent *e )
 {
   QGraphicsView::resizeEvent( e );
-  mResizeTimer->start( 500 );
+  mResizeTimer->start( 500 ); // in charge of refreshing canvas
 
+  double oldScale = mSettings.scale();
   QSize lastSize = viewport()->size();
-
   mSettings.setOutputSize( lastSize );
 
   mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
 
   moveCanvasContents( true );
 
-  updateScale();
-
-  //refresh();
+  if ( mScaleLocked )
+  {
+    double scaleFactor = oldScale / mSettings.scale();
+    QgsRectangle r = mSettings.extent();
+    QgsPointXY center = r.center();
+    r.scale( scaleFactor, &center );
+    mSettings.setExtent( r );
+  }
+  else
+  {
+    updateScale();
+  }
 
   emit extentsChanged();
 }
