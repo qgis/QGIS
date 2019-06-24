@@ -66,8 +66,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   mColormapTreeWidget->setColumnWidth( ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6.6 );
   mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
   mColormapTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested, this, [ = ]( QPoint ) { contextMenu->exec( QCursor::pos() ); }
-         );
+  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested, this, [ = ]( QPoint ) { contextMenu->exec( QCursor::pos() ); } );
 
   QString defaultPalette = settings.value( QStringLiteral( "Raster/defaultPalette" ), "" ).toString();
   btnColorRamp->setColorRampFromName( defaultPalette );
@@ -89,7 +88,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   resetClassifyButton();
 
   connect( mClassificationModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorRampShaderWidget::classify );
-  connect( mClassifyButton, &QPushButton::clicked, this, &QgsColorRampShaderWidget::applyColorRamp );
+  connect( mClassifyButton, &QPushButton::clicked, this, &QgsColorRampShaderWidget::classify );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
@@ -318,7 +317,6 @@ void QgsColorRampShaderWidget::classify()
                                       mRasterDataProvider );
   colorRampShader->setClip( mClipCheckBox->isChecked() );
 
-
   mColormapTreeWidget->clear();
 
   const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader->colorRampItemList();
@@ -334,7 +332,6 @@ void QgsColorRampShaderWidget::classify()
              this, &QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited );
   }
   mClipCheckBox->setChecked( colorRampShader->clip() );
-
 
   autoLabel();
   emit widgetChanged();
@@ -370,7 +367,30 @@ void QgsColorRampShaderWidget::applyColorRamp()
     mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( QgsColorRampShader::EqualInterval ) );
   }
 
-  classify();
+  int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+  if ( topLevelItemCount > 0 )
+  {
+    // if the list values has been customized, maintain pre-existing values
+    QTreeWidgetItem *currentItem = nullptr;
+    for ( int i = 0; i < topLevelItemCount; ++i )
+    {
+      currentItem = mColormapTreeWidget->topLevelItem( i );
+      if ( !currentItem )
+      {
+        continue;
+      }
+
+      double value = currentItem->text( ValueColumn ).toDouble();
+      double position = ( value - mMin ) / ( mMax - mMin );
+      currentItem->setData( ColorColumn, Qt::EditRole, ramp->color( position ) );
+    }
+
+    emit widgetChanged();
+  }
+  else
+  {
+    classify();
+  }
 }
 
 void QgsColorRampShaderWidget::populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems )
@@ -408,7 +428,6 @@ void QgsColorRampShaderWidget::mLoadFromBandButton_clicked()
   {
     QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 has no entries." ).arg( mBand ) );
   }
-
   loadMinimumMaximumFromTree();
   emit widgetChanged();
 }
