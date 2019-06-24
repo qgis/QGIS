@@ -64,6 +64,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mRecentProjectsListView->setResizeMode( QListView::Adjust );
   mRecentProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mRecentProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForProjects );
+  mRecentProjectsListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
 
   mRecentProjectsModel = new QgsRecentProjectItemsModel( mRecentProjectsListView );
   mRecentProjectsListView->setModel( mRecentProjectsModel );
@@ -87,6 +88,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mTemplateProjectsListView = new QListView();
   mTemplateProjectsListView->setResizeMode( QListView::Adjust );
   mTemplateProjectsListView->setModel( mTemplateProjectsModel );
+  mTemplateProjectsListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   QgsProjectListItemDelegate *templateProjectsDelegate = new QgsProjectListItemDelegate( mTemplateProjectsListView );
   templateProjectsDelegate->setShowPath( false );
   mTemplateProjectsListView->setItemDelegate( templateProjectsDelegate );
