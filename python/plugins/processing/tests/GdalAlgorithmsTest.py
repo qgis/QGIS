@@ -1408,7 +1408,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-            # with no NODATA value
+            # without NODATA value
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
@@ -1434,6 +1434,25 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-l points -a minimum:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+            # non-default datametrics
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'METRIC': 4,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_grid',
+                 '-l points -a average_distance:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 -ot Float32 -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-z_multiply 1.5 -outsize 1754 1394',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdal_grid',
+                 '-l points -a minimum:radius1=0.0:radius2=0.0:angle=0.0:min_points=0:nodata=0.0 ' +
+                 '-ot Float32 -of GTiff -z_multiply 1.5 -outsize 1754 1394 ' +
+                 source + ' ' +
+                 outdir + '/check.tif'])
 
     def testGridInverseDistance(self):
         context = QgsProcessingContext()
