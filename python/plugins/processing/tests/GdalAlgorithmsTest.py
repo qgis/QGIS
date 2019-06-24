@@ -64,6 +64,7 @@ from processing.algs.gdal.polygonize import polygonize
 from processing.algs.gdal.pansharp import pansharp
 from processing.algs.gdal.merge import merge
 from processing.algs.gdal.nearblack import nearblack
+from processing.algs.gdal.slope import slope
 
 from processing.tools.system import isWindows
 
@@ -2281,6 +2282,78 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  'aspect ' +
                  source + ' ' +
                  outdir + '/check.tif -of GTiff -b 1 -q'])
+
+    def testSlope(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = slope()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'slope ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -s 1.0'])
+
+            # compute edges
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'COMPUTE_EDGES': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'slope ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -s 1.0 -compute_edges'])
+
+            # with ZEVENBERGEN
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'ZEVENBERGEN': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'slope ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -s 1.0 -alg ZevenbergenThorne'])
+
+            # custom ratio
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'SCALE': 2.0,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'slope ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -s 2.0'])
+
+            # with creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'slope ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -s 1.0 -co COMPRESS=JPEG -co JPEG_QUALITY=75'])
+
+            # with additional parameter
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'EXTRA': '-q',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdaldem',
+                 'slope ' +
+                 source + ' ' +
+                 outdir + '/check.jpg -of JPEG -b 1 -s 1.0 -q'])
 
     def testColorRelief(self):
         context = QgsProcessingContext()
