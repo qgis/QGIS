@@ -36,6 +36,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   availableWidgetsWidgetLayout->addWidget( mAvailableWidgetsTree );
   availableWidgetsWidgetLayout->setMargin( 0 );
   mAvailableWidgetsWidget->setLayout( availableWidgetsWidgetLayout );
+  mAvailableWidgetsTree->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mAvailableWidgetsTree->setHeaderLabels( QStringList() << tr( "Available Widgets" ) );
   mAvailableWidgetsTree->setType( DnDTree::Type::Drag );
 
@@ -153,6 +154,7 @@ void QgsAttributesFormProperties::initFormLayoutTree()
   mFormLayoutTree->clear();
   mFormLayoutTree->setSortingEnabled( false );
   mFormLayoutTree->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mFormLayoutTree->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mFormLayoutTree->setAcceptDrops( true );
   mFormLayoutTree->setDragDropMode( QAbstractItemView::DragDrop );
 
