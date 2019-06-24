@@ -63,6 +63,7 @@ from processing.algs.gdal.gdal2xyz import gdal2xyz
 from processing.algs.gdal.polygonize import polygonize
 from processing.algs.gdal.pansharp import pansharp
 from processing.algs.gdal.merge import merge
+from processing.algs.gdal.nearblack import nearblack
 
 from processing.tools.system import isWindows
 
@@ -2735,6 +2736,50 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                               '-a_nodata -9999 -ot Float32 -of GTiff ' +
                               '-o ' + outdir + '/check.tif ' +
                               '--optfile mergeInputFiles.txt'])
+
+    def testNearblack(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = nearblack()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['nearblack',
+                 source + ' -of GTiff -o ' + outdir + '/check.tif ' +
+                 '-near 15'])
+
+            # search white pixels
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'WHITE': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['nearblack',
+                 source + ' -of GTiff -o ' + outdir + '/check.tif ' +
+                 '-near 15 -white'])
+
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-nb 5 -setalpha',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['nearblack',
+                 source + ' -of GTiff -o ' + outdir + '/check.tif ' +
+                 '-near 15 -nb 5 -setalpha'])
+
+            # additional parameters and creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
+                                        'EXTRA': '-nb 5 -setalpha',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['nearblack',
+                 source + ' -of GTiff -o ' + outdir + '/check.tif ' +
+                 '-near 15 -co COMPRESS=JPEG -co JPEG_QUALITY=75 -nb 5 -setalpha'])
 
     def testRearrangeBands(self):
         context = QgsProcessingContext()
