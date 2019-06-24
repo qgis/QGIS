@@ -45,7 +45,6 @@ class TestQgsOverlayExpression: public QObject
     TestQgsOverlayExpression() = default;
 
   private:
-    QgsVectorLayer *mPolysLayer = nullptr;
     QgsVectorLayer *mRectanglesLayer = nullptr;
 
   private slots:
@@ -55,6 +54,7 @@ class TestQgsOverlayExpression: public QObject
     void cleanupTestCase();
 
     void testIntersect();
+    void testIntersect_data();
 };
 
 
@@ -65,18 +65,12 @@ void TestQgsOverlayExpression::initTestCase()
   QgsApplication::initQgis();
 
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
-  QString polysFileName = testDataDir + "polys.shp";
-  QFileInfo polysFileInfo( polysFileName );
-  mPolysLayer = new QgsVectorLayer( polysFileInfo.filePath(),
-                                    QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
-  QgsProject::instance()->addMapLayer( mPolysLayer );
 
-  QString rectanglesFileName = testDataDir + "rectangles.shp";
+  QString rectanglesFileName = testDataDir + QStringLiteral( "rectangles.shp" );
   QFileInfo rectanglesFileInfo( rectanglesFileName );
   mRectanglesLayer = new QgsVectorLayer( rectanglesFileInfo.filePath(),
                                          QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( mRectanglesLayer );
-
 }
 
 void TestQgsOverlayExpression::cleanupTestCase()
@@ -86,19 +80,33 @@ void TestQgsOverlayExpression::cleanupTestCase()
 
 void TestQgsOverlayExpression::testIntersect()
 {
+  QFETCH( QString, expression );
+  QFETCH( QString, geometry );
+  QFETCH( QVariant, expectedResult );
+
   QgsExpressionContext context;
-
-  QgsExpression expression( "geometry_overlay_intersects('rectangles')" );
-
-  expression.prepare( &context );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
 
   QgsFeature feat;
-  mPolysLayer->getFeatures().nextFeature( feat );
-
+  feat.setGeometry( QgsGeometry::fromWkt( geometry ) );
   context.setFeature( feat );
-  const QVariant result = expression.evaluate( &context );
 
-  QVERIFY( result.toBool() );
+  QgsExpression exp( expression );
+  exp.prepare( &context );
+  const QVariant result = exp.evaluate( &context );
+
+  QCOMPARE( result, expectedResult );
+}
+
+void TestQgsOverlayExpression::testIntersect_data()
+{
+  //test passing named parameters to functions
+  QTest::addColumn<QString>( "expression" );
+  QTest::addColumn<QString>( "geometry" );
+  QTest::addColumn<QVariant>( "expectedResult" );
+
+  QTest::newRow( "intersect" ) << "geometry_overlay_intersects('rectangles')" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariant( true );
+  QTest::newRow( "intersect" ) << "geometry_overlay_intersects('rectangles')" << "POLYGON((10 0, 5 0, 5 5, 10 5, 10 0))" << QVariant( false );
 }
 
 QGSTEST_MAIN( TestQgsOverlayExpression )

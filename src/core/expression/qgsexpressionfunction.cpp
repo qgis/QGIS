@@ -5653,37 +5653,54 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  FEAT_FROM_CONTEXT( context, feat )
-
+  // First parameter is the overlay layer
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
   ENSURE_NO_EVAL_ERROR
   QVariant layerValue = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
 
-  QgsGeometry geom = feat.geometry();
-  const QVariant expressionValue = values.at( 1 ); // TODO: Add expression support
+  // Second parameter is the subexpression (invalid QVariant for boolean)
+  node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
+  ENSURE_NO_EVAL_ERROR
+  QString subExpression = node->dump();
 
   QgsSpatialIndex spatialIndex;
   std::shared_ptr<QgsVectorLayer> cachedTarget;
 
-  // TODO proper cache key
-  if ( !context->hasCachedValue( "targetLayerFeatures" ) )
-  {
-    QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( layerValue, parent );
-    if ( layer )
-    {
-      QgsFeatureRequest request; // TODO only required attributes
-      cachedTarget.reset( layer->materialize( request ) );
-      spatialIndex = QgsSpatialIndex( cachedTarget->getFeatures() );
-      // context->setCachedValue( "targetLayerIndex", QVariant::fromValue( spatialIndex ) );
-      // context->setCachedValue( "targetLayerFeatures", QVariant::fromValue( cachedTarget ) );
-    }
-  }
-
-  if ( !cachedTarget )
+  QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( layerValue, parent );
+  if ( !layer ) // No layer, no joy
   {
     parent->setEvalErrorString( QObject::tr( "Layer '%1' could not be loaded." ).arg( layerValue.toString() ) );
+    return QVariant();
   }
+
+  const QString cacheBase { QStringLiteral( "%1:%2" ).arg( layer->id(), subExpression ) };
+  const QString cacheLayer { QStringLiteral( "ovrlaylyr:%1" ).arg( cacheBase ) };
+  const QString cacheIndex { QStringLiteral( "ovrlayidx:%1" ).arg( cacheBase ) };
+
+  if ( !context->hasCachedValue( cacheLayer ) )
+  {
+    QgsFeatureRequest request; // TODO only required attributes
+    cachedTarget.reset( layer->materialize( request ) );
+    context->setCachedValue( cacheLayer, QVariant::fromValue( cachedTarget ) );
+  }
+  else
+  {
+    cachedTarget = context->cachedValue( cacheLayer ).value<std::shared_ptr<QgsVectorLayer>>();
+  }
+
+  if ( !context->hasCachedValue( cacheIndex ) )
+  {
+    spatialIndex = QgsSpatialIndex( cachedTarget->getFeatures() );
+    context->setCachedValue( cacheIndex, QVariant::fromValue( spatialIndex ) );
+  }
+  else
+  {
+    spatialIndex = context->cachedValue( cacheIndex ).value<QgsSpatialIndex>();
+  }
+
+  FEAT_FROM_CONTEXT( context, feat )
+  const QgsGeometry geom = feat.geometry();
 
   const QList<QgsFeatureId> targetFeatureIds = spatialIndex.intersects( geom.boundingBox() );
   bool found = false;
