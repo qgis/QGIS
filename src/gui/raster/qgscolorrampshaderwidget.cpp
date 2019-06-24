@@ -257,7 +257,6 @@ void QgsColorRampShaderWidget::setUnitFromLabels()
   {
     mUnitLineEdit->setText( unit );
   }
-  autoLabel();
 }
 
 
@@ -327,7 +326,7 @@ void QgsColorRampShaderWidget::classify()
     QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
     newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
     newItem->setData( ColorColumn, Qt::EditRole, it->color );
-    newItem->setText( LabelColumn, it->label );
+    newItem->setText( LabelColumn, QString() ); // Labels will be populated in autoLabel()
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
     connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
              this, &QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited );
@@ -409,8 +408,6 @@ void QgsColorRampShaderWidget::populateColormapTreeWidget( const QList<QgsColorR
              this, &QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited );
   }
   setUnitFromLabels();
-
-  autoLabel();
   emit widgetChanged();
 }
 
@@ -671,6 +668,7 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
              this, &QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited );
   }
   setUnitFromLabels();
+
   mClipCheckBox->setChecked( colorRampShader.clip() );
   mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( colorRampShader.classificationMode() ) );
   mNumberOfEntriesSpinBox->setValue( colorRampShader.colorRampItemList().count() ); // some default
