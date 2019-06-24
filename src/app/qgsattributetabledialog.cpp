@@ -1169,7 +1169,7 @@ void QgsAttributeTableDialog::showContextMenu( QgsActionMenu *menu, const QgsFea
 {
   if ( mLayer->isEditable() )
   {
-    QAction *qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete Feature" ) );
+    QAction *qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelectedFeatures.svg" ) ),  tr( "Delete Feature" ) );
     connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
   }
 }
