@@ -289,7 +289,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mCboDistanceThreshold->setCurrentText( mySettings.value( QStringLiteral( "gps/distanceThreshold" ), 0 ).toString() );
 
   // Timestamp
-
+  mCboTimestampField->setAllowEmptyFieldName( true );
+  mCboTimestampField->setFilters( QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::DateTime );
   // Qt::LocalTime  0 Locale dependent time (Timezones and Daylight Savings Time).
   // Qt::UTC  1 Coordinated Universal Time, replaces Greenwich Mean Time.
   // SKIP this one: Qt::OffsetFromUTC  2 An offset in seconds from Coordinated Universal Time.
@@ -1400,20 +1401,9 @@ void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *map
   mPopulatingFields = true;
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
   mGboxTimestamp->setEnabled( false );
-  mCboTimestampField->clear();
-  // Empty option by default
-  mCboTimestampField->addItem( QString() );
   if ( vlayer )
   {
-    // Search for suitable fields
-    const auto fields { vlayer->fields() };
-    for ( const auto &f : fields )
-    {
-      if ( f.type() == QVariant::String || f.type() == QVariant::DateTime )
-      {
-        mCboTimestampField->addItem( f.name() );
-      }
-    }
+    mCboTimestampField->setLayer( mapLayer );
     if ( mCboTimestampField->count() > 1 )
     {
       mGboxTimestamp->setEnabled( true );
