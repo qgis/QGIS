@@ -2376,7 +2376,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-            # with no NODATA value
+            # without NODATA value
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'BAND': 1,
@@ -2403,6 +2403,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_proximity.py',
                  '-srcband 1 -distunits PIXEL -nodata 0.0 -ot Float32 -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'EXTRA': '-dstband 2 -values 3,4,12',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_proximity.py',
+                 '-srcband 1 -distunits PIXEL -ot Float32 -of JPEG -dstband 2 -values 3,4,12 ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
