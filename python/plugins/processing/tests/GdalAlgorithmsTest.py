@@ -2147,6 +2147,17 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.tif -of GTiff -b 1 -z 5.0 -s 2.0 -alt 20.0 -multidirectional'])
 
+            # defaults with additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'EXTRA': '-q',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'hillshade ' +
+                 source + ' ' +
+                 outdir + '/check.tif -of GTiff -b 1 -z 1.0 -s 1.0 -az 315.0 -alt 45.0 -q'])
+
     def testAspect(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
