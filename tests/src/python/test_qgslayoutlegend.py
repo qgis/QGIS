@@ -448,7 +448,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         group = legend.model().rootGroup().addGroup("Group [% 1 + 5 %] [% @layout_name %]")
         layer_tree_layer = group.addLayer(point_layer)
         counterTask = point_layer.countSymbolFeatures()
-        counterTask.waitForFinished()
+        counterTask.waitForFinished() #does this even work?
         layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
         QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
         legend.model().refreshLayerLegend(layer_tree_layer)
@@ -469,6 +469,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker(
             'composer_legend_symbol_expression', layout)
         checker.setControlPathPrefix("composer_legend")
+        sleep(4)
         result, message = checker.testLayout()
         self.assertTrue(result, message)
 
