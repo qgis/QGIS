@@ -3219,6 +3219,19 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-b 1 -f "GPKG" check DN'
                  ])
 
+            # additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'DN',
+                                        'EXTRA': '-nomask -q',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-b 1 -f "GPKG" -nomask -q check DN'
+                 ])
+
     def testGdalPansharpen(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
