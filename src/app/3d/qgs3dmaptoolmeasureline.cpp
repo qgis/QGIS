@@ -138,7 +138,7 @@ void Qgs3DMapToolMeasureLine::activate()
 
   // Add layer to canvas
   qInfo() << "Current layer: " << mCanvas->map()->layers();
-  mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
+  //mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 
   qInfo() << "Current layer after adding: " << mCanvas->map()->layers();
@@ -160,6 +160,8 @@ void Qgs3DMapToolMeasureLine::deactivate()
   mMeasurementLayer->deleteFeature( mMeasurementFeature->id() );
   mMeasurementLayer->commitChanges();
   mMeasurementLine->clear();
+
+  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
 
@@ -245,6 +247,8 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
   mMeasurementLayer->commitChanges();
 
   mDialog->addPoint();
+
+  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 
 void Qgs3DMapToolMeasureLine::restart()
@@ -259,6 +263,8 @@ void Qgs3DMapToolMeasureLine::restart()
   qInfo() << "Current line: " << newMeasurementLine->asWkt();
   mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
   mMeasurementLayer->commitChanges();
+
+  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 
 void Qgs3DMapToolMeasureLine::undo()
@@ -285,6 +291,8 @@ void Qgs3DMapToolMeasureLine::undo()
     qInfo() << "Current line: " << newMeasurementLine->asWkt();
     mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
     mMeasurementLayer->commitChanges();
+
+    mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 
     mDialog->removeLastPoint();
   }
