@@ -649,6 +649,29 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-ot Float32 -of JPEG -cutline ' +
                  mask + ' -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
+            # with creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'MASK': mask,
+                                        'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-of JPEG -cutline ' +
+                 mask + ' -crop_to_cutline -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+            # with multothreading and additional parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'MASK': mask,
+                                        'MULTITHREADING': True,
+                                        'EXTRA': '-nosrcalpha -wm 2048 -nomd',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-of JPEG -cutline ' +
+                 mask + ' -crop_to_cutline -multi -nosrcalpha -wm 2048 -nomd ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
 
     def testContour(self):
         context = QgsProcessingContext()
