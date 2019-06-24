@@ -717,16 +717,45 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-b 1 -a elev -i 5.0 -snodata 0.0 -f "GPKG" ' +
                  source + ' ' +
                  outdir + '/check.gpkg'])
-            # fixed level contours
+            # with CREATE_3D
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'BAND': 1,
-                                        'FIELD_NAME': 'elev',
-                                        'INTERVAL': 0,
+                                        'CREATE_3D': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['gdal_contour',
+                 '-b 1 -a ELEV -i 10.0 -3d -f "ESRI Shapefile" ' +
+                 source + ' ' +
+                 outdir + '/check.shp'])
+            # with IGNORE_NODATA and OFFSET
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'IGNORE_NODATA': True,
+                                        'OFFSET': 100,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['gdal_contour',
+                 '-b 1 -a ELEV -i 10.0 -inodata -off 100.0 -f "ESRI Shapefile" ' +
+                 source + ' ' +
+                 outdir + '/check.shp'])
+            # with additional command line parameters
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'EXTRA': '-e 3 -amin MIN_H',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['gdal_contour',
+                 '-b 1 -a ELEV -i 10.0 -f "ESRI Shapefile" -e 3 -amin MIN_H ' +
+                 source + ' ' +
+                 outdir + '/check.shp'])
+            # obsolete OPTIONS param
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
                                         'OPTIONS': '-fl 100 125 150 200',
                                         'OUTPUT': outdir + '/check.shp'}, context, feedback),
                 ['gdal_contour',
-                 '-b 1 -a elev -i 0.0 -fl 100 125 150 200 -f "ESRI Shapefile" ' +
+                 '-b 1 -a ELEV -i 10.0 -f "ESRI Shapefile" -fl 100 125 150 200 ' +
                  source + ' ' +
                  outdir + '/check.shp'])
 
