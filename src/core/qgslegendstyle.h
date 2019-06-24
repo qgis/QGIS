@@ -80,6 +80,22 @@ class CORE_EXPORT QgsLegendStyle
     //! Sets all margins
     void setMargin( double margin );
 
+    /**
+     * Returns the alignment for the legend component.
+     *
+     * \see setAlignment()
+     * \since QGIS 3.10
+     */
+    Qt::Alignment alignment() const { return mAlignment; }
+
+    /**
+     * Sets the alignment for the legend component.
+     *
+     * \see alignment()
+     * \since QGIS 3.10
+     */
+    void setAlignment( Qt::Alignment alignment ) { mAlignment = alignment; }
+
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
 
     void readXml( const QDomElement &elem, const QDomDocument &doc );
@@ -97,6 +113,8 @@ class CORE_EXPORT QgsLegendStyle
     QFont mFont;
     //! Space around element
     QMap<Side, double> mMarginMap;
+
+    Qt::Alignment mAlignment = Qt::AlignLeft;
 };
 
 #endif

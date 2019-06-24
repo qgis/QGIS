@@ -86,14 +86,56 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     struct ItemContext
     {
+      Q_NOWARN_DEPRECATED_PUSH     //because of deprecated members
+      ItemContext() = default;
+      Q_NOWARN_DEPRECATED_POP
+
       //! Render context, if available
       QgsRenderContext *context = nullptr;
       //! Painter
       QPainter *painter = nullptr;
-      //! Top-left corner of the legend item
-      QPointF point;
-      //! offset from the left side where label should start
-      double labelXOffset;
+
+      /**
+       * Top-left corner of the legend item.
+       * \deprecated Use top, columnLeft, columnRight instead.
+       */
+      Q_DECL_DEPRECATED QPointF point;
+
+      /**
+       * Offset from the left side where label should start.
+       * \deprecated use columnLeft, columnRight instead.
+       */
+      Q_DECL_DEPRECATED double labelXOffset = 0.0;
+
+      /**
+       * Top y-position of legend item.
+       * \since QGIS 3.10
+       */
+      double top = 0.0;
+
+      /**
+       * Left side of current legend column. This should be used when determining
+       * where to render legend item content, correctly respecting the symbol and text
+       * alignment from the legend settings.
+       * \since QGIS 3.10
+       */
+      double columnLeft = 0.0;
+
+      /**
+       * Right side of current legend column. This should be used when determining
+       * where to render legend item content, correctly respecting the symbol and text
+       * alignment from the legend settings.
+       * \since QGIS 3.10
+       */
+      double columnRight = 0.0;
+
+      /**
+       * Largest symbol width, considering all other sibling legend components associated with
+       * the current component.
+       * \since QGIS 3.10
+       */
+      double maxSiblingSymbolWidth = 0.0;
+
     };
 
     struct ItemMetrics

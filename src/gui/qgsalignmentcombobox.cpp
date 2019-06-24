@@ -48,6 +48,18 @@ void QgsAlignmentComboBox::setCurrentAlignment( Qt::Alignment alignment )
     setCurrentIndex( index );
 }
 
+void QgsAlignmentComboBox::customiseAlignmentDisplay( Qt::Alignment alignment, const QString &text, const QIcon &icon )
+{
+  const int index = findData( QVariant( alignment ) );
+  if ( index >= 0 )
+  {
+    if ( !text.isEmpty() )
+      setItemText( index, text );
+    if ( !icon.isNull() )
+      setItemIcon( index, icon );
+  }
+}
+
 void QgsAlignmentComboBox::populate()
 {
   Qt::Alignment prevAlign = currentAlignment();
