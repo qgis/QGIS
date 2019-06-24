@@ -5654,8 +5654,14 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   FEAT_FROM_CONTEXT( context, feat )
+
+  QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
+  ENSURE_NO_EVAL_ERROR
+  QVariant layerValue = node->eval( parent, context );
+  ENSURE_NO_EVAL_ERROR
+
   QgsGeometry geom = feat.geometry();
-  QVariant layerValue = values.at( 0 );
+  const QVariant expressionValue = values.at( 1 ); // TODO: Add expression support
 
   QgsSpatialIndex spatialIndex;
   std::shared_ptr<QgsVectorLayer> cachedTarget;
@@ -5664,26 +5670,30 @@ static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsE
   if ( !context->hasCachedValue( "targetLayerFeatures" ) )
   {
     QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( layerValue, parent );
+    if ( layer )
+    {
+      QgsFeatureRequest request; // TODO only required attributes
+      cachedTarget.reset( layer->materialize( request ) );
+      spatialIndex = QgsSpatialIndex( cachedTarget->getFeatures() );
+      // context->setCachedValue( "targetLayerIndex", QVariant::fromValue( spatialIndex ) );
+      // context->setCachedValue( "targetLayerFeatures", QVariant::fromValue( cachedTarget ) );
+    }
+  }
 
-    QgsFeatureRequest request; // TODO only required attributes
-    cachedTarget.reset( layer->materialize( request ) );
-    spatialIndex = QgsSpatialIndex( cachedTarget->getFeatures() );
-    // context->setCachedValue( "targetLayerIndex", QVariant::fromValue( spatialIndex ) );
-    // context->setCachedValue( "targetLayerFeatures", QVariant::fromValue( cachedTarget ) );
+  if ( !cachedTarget )
+  {
+    parent->setEvalErrorString( QObject::tr( "Layer '%1' could not be loaded." ).arg( layerValue.toString() ) );
   }
 
   const QList<QgsFeatureId> targetFeatureIds = spatialIndex.intersects( geom.boundingBox() );
   bool found = false;
-  if ( !targetFeatureIds.empty() )
+  for ( QgsFeatureId id : targetFeatureIds )
   {
-    for ( QgsFeatureId id : targetFeatureIds )
+    QgsFeature feat = cachedTarget->getFeature( id );
+    if ( feat.geometry().intersects( geom ) )
     {
-      QgsFeature feat = cachedTarget->getFeature( id );
-      if ( feat.geometry().intersects( geom ) )
-      {
-        found = true;
-        break;
-      }
+      found = true;
+      break;
     }
   }
   return QVariant( found );
@@ -6060,7 +6070,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     QgsStaticExpressionFunction *fcnGeomOverlayIntersectsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_intersects" ), QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true ),
         fcnGeomOverlayIntersects, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     functions << fcnGeomOverlayIntersectsFunc;
 
