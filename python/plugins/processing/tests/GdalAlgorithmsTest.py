@@ -62,6 +62,7 @@ from processing.algs.gdal.sieve import sieve
 from processing.algs.gdal.gdal2xyz import gdal2xyz
 from processing.algs.gdal.polygonize import polygonize
 from processing.algs.gdal.pansharp import pansharp
+from processing.algs.gdal.merge import merge
 
 from processing.tools.system import isWindows
 
@@ -2679,6 +2680,61 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+
+    def testMerge(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = [os.path.join(testDataPath, 'dem1.tif'), os.path.join(testDataPath, 'dem1.tif')]
+        alg = merge()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # this algorithm creates temporary text file with input layers
+            # so we strip its path, leaving only filename
+            cmd = alg.getConsoleCommands({'INPUT': source,
+                                          'OUTPUT': outdir + '/check.tif'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('--optfile') + 10] + t[t.find('mergeInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdal_merge.py',
+                              '-ot Float32 -of GTiff ' +
+                              '-o ' + outdir + '/check.tif ' +
+                              '--optfile mergeInputFiles.txt'])
+            # separate
+            cmd = alg.getConsoleCommands({'INPUT': source,
+                                          'SEPARATE': True,
+                                          'OUTPUT': outdir + '/check.tif'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('--optfile') + 10] + t[t.find('mergeInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdal_merge.py',
+                              '-separate -ot Float32 -of GTiff ' +
+                              '-o ' + outdir + '/check.tif ' +
+                              '--optfile mergeInputFiles.txt'])
+
+            # assign nodata
+            cmd = alg.getConsoleCommands({'INPUT': source,
+                                          'EXTRA': '-tap -ps 0.1 0.1',
+                                          'OUTPUT': outdir + '/check.tif'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('--optfile') + 10] + t[t.find('mergeInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdal_merge.py',
+                              '-ot Float32 -of GTiff -tap -ps 0.1 0.1 ' +
+                              '-o ' + outdir + '/check.tif ' +
+                              '--optfile mergeInputFiles.txt'])
+
+            # additional parameters
+            cmd = alg.getConsoleCommands({'INPUT': source,
+                                          'NODATA_OUTPUT': -9999,
+                                          'OUTPUT': outdir + '/check.tif'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('--optfile') + 10] + t[t.find('mergeInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdal_merge.py',
+                              '-a_nodata -9999 -ot Float32 -of GTiff ' +
+                              '-o ' + outdir + '/check.tif ' +
+                              '--optfile mergeInputFiles.txt'])
 
     def testRearrangeBands(self):
         context = QgsProcessingContext()
