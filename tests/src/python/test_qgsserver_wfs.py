@@ -533,6 +533,14 @@ class TestQgsServerWFS(QgsServerTestBase):
                 self.assertTrue(b'<TotalUpdated>0</TotalUpdated>' in body)
             self.assertTrue(b'<Message>NOT NULL constraint error on layer \'cdb_lines\', field \'name\'</Message>' in body, body)
 
+    def test_describeFeatureTypeGeometryless(self):
+        """Test DescribeFeatureType with geometryless tables - bug GH-30381"""
+
+        project_file = "test_project_geometryless_gh30381.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0',
+                                 reference_base_name='wfs_describeFeatureType_1_1_0_geometryless',
+                                 project_file=project_file)
+
 
 if __name__ == '__main__':
     unittest.main()
