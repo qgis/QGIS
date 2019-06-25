@@ -64,10 +64,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
   public:
 
+    // TODO QGIS 4: (re)move DataCapability as this enum is really meant for data items rather than data providers
+
     /**
      * Used in browser model to understand which items for which providers should be populated
-     *
-     * TODO: remove in QGIS 4 as this enum is really meant for data items rather than data providers!
      */
     enum DataCapability
     {
