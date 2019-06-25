@@ -1541,11 +1541,12 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
     def parentValueChanged(self, wrapper):
         value = wrapper.parameterValue()
-        if value in self.parent_file_based_layers:
+        if isinstance(value, str) and value in self.parent_file_based_layers:
             self.setLayer(self.parent_file_based_layers[value])
         else:
             self.setLayer(value)
-            self.parent_file_based_layers[value] = self._layer
+            if isinstance(value, str):
+                self.parent_file_based_layers[value] = self._layer
 
     def setLayer(self, layer):
         if isinstance(layer, QgsProcessingFeatureSourceDefinition):
