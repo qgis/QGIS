@@ -31,24 +31,37 @@ Constructor for provider gui metadata
 
     virtual ~QgsProviderGuiMetadata();
 
-    virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders();
-%Docstring
-Returns data item gui providers
-%End
-
     virtual void registerGui( QMainWindow *widget );
 %Docstring
-Assigns parent to widget
+Called during GUI initialization - allows provider to do its internal initialization
+of GUI components, possibly making use of the passed pointer to the QGIS main window.
 %End
 
-    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders();
+    virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders() /Factory/;
+%Docstring
+Returns data item gui providers
+
+.. note::
+
+   Ownership of created data item gui providers is passed to the caller.
+%End
+
+    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() /Factory/;
 %Docstring
 Returns project storage gui providers
+
+.. note::
+
+   Ownership of created project storage gui providers is passed to the caller.
 %End
 
-    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders();
+    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders() /Factory/;
 %Docstring
 Returns source select providers
+
+.. note::
+
+   Ownership of created source select providers is passed to the caller.
 %End
 
     QString key() const;

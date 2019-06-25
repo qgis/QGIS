@@ -587,22 +587,25 @@ QList<QgsSourceSelectProvider *> QgsMdalProviderGuiMetadata::sourceSelectProvide
 
 QString QgsMdalProviderMetadata::filters( FilterType type )
 {
-  if ( type == QgsProviderMetadata::FilterType::FilterMesh )
+  switch ( type )
   {
-    QString fileMeshFiltersString;
-    QString fileMeshDatasetFiltersString;
-    QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
-    return fileMeshFiltersString;
+    case QgsProviderMetadata::FilterType::FilterMesh:
+    {
+      QString fileMeshFiltersString;
+      QString fileMeshDatasetFiltersString;
+      QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
+      return fileMeshFiltersString;
+    }
+    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+    {
+      QString fileMeshFiltersString;
+      QString fileMeshDatasetFiltersString;
+      QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
+      return fileMeshDatasetFiltersString;
+    }
+    default:
+      return QString();
   }
-  else if ( type == QgsProviderMetadata::FilterType::FilterMeshDataset )
-  {
-    QString fileMeshFiltersString;
-    QString fileMeshDatasetFiltersString;
-    QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
-    return fileMeshDatasetFiltersString;
-  }
-  else
-    return QString();
 }
 
 #endif

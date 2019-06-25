@@ -21,7 +21,7 @@ QgsProviderGuiRegistry is not usually directly created, but rather accessed thro
 :py:func:`QgsGui.providerGuiRegistry()`
 
 setPluginPath() should be called (once) to load dynamic providers. Static providers are
-loaded in constructopr
+loaded in constructor.
 
 .. versionadded:: 3.10
 %End
@@ -50,25 +50,35 @@ Returns metadata of the provider or ``None`` if not found
 
     void registerGuis( QMainWindow *widget );
 %Docstring
-Calls registerGui function of all providers
+Called during GUI initialization - allows providers to do its internal initialization
+of GUI components, possibly making use of the passed pointer to the QGIS main window.
 %End
 
-    virtual const QList<QgsDataItemGuiProvider *> dataItemGuiProviders( const QString &providerKey );
+    virtual const QList<QgsDataItemGuiProvider *> dataItemGuiProviders( const QString &providerKey ) /Factory/;
 %Docstring
 Returns all data item gui providers registered in provider with ``providerKey``
-Caller receiver ownership of created data item providers
+
+.. note::
+
+   Ownership of created data item providers is passed to the caller.
 %End
 
-    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders( const QString &providerKey );
+    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders( const QString &providerKey ) /Factory/;
 %Docstring
 Returns all source select providers registered in provider with ``providerKey``
-Caller receiver ownership of created data item providers
+
+.. note::
+
+   Ownership of created source select providers is passed to the caller.
 %End
 
-    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders( const QString &providerKey );
+    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders( const QString &providerKey ) /Factory/;
 %Docstring
 Returns all project storage gui providers registered in provider with ``providerKey``
-Caller receiver ownership of created data item providers
+
+.. note::
+
+   Ownership of created project storage gui providers is passed to the caller.
 %End
 
 

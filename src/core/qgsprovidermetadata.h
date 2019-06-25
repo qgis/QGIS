@@ -187,7 +187,10 @@ class CORE_EXPORT QgsProviderMetadata
     virtual QList<QPair<QString, QString> > pyramidResamplingMethods();
 
     /**
-     * Decodes URI
+     * Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+     * \param uri uri string
+     * \returns map containing components. Standard components include "path", "layerName", "url".
+     * \note this function may not be supported by all providers, an empty map will be returned in such case
      * \since QGIS 3.10
      */
     virtual QVariantMap decodeUri( const QString &uri );
@@ -195,9 +198,10 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns data item providers. Caller is responsible for ownership of the item providers
      * \see QgsProviderGuiMetadata::dataItemGuiProviders()
+     * \note Ownership of created data item providers is passed to the caller.
      * \since QGIS 3.10
      */
-    virtual QList< QgsDataItemProvider * > dataItemProviders() const;
+    virtual QList< QgsDataItemProvider * > dataItemProviders() const SIP_FACTORY;
 
     /**
      * Lists stored layer styles in the provider defined by \a uri

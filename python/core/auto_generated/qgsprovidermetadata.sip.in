@@ -138,16 +138,28 @@ Returns pyramid resampling methods available for provider
 
     virtual QVariantMap decodeUri( const QString &uri );
 %Docstring
-Decodes URI
+Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+
+:param uri: uri string
+
+:return: map containing components. Standard components include "path", "layerName", "url".
+
+.. note::
+
+   this function may not be supported by all providers, an empty map will be returned in such case
 
 .. versionadded:: 3.10
 %End
 
-    virtual QList< QgsDataItemProvider * > dataItemProviders() const;
+    virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;
 %Docstring
 Returns data item providers. Caller is responsible for ownership of the item providers
 
 .. seealso:: :py:func:`QgsProviderGuiMetadata.dataItemGuiProviders`
+
+.. note::
+
+   Ownership of created data item providers is passed to the caller.
 
 .. versionadded:: 3.10
 %End

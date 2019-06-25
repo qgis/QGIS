@@ -3015,17 +3015,18 @@ bool QgsGdalProvider::remove()
 */
 QString QgsGdalProviderMetadata::filters( FilterType type )
 {
-  if ( type == QgsProviderMetadata::FilterType::FilterRaster )
+  switch ( type )
   {
-    QString fileFiltersString;
-    QStringList exts;
-    QStringList wildcards;
-    buildSupportedRasterFileFilterAndExtensions( fileFiltersString, exts, wildcards );
-    return fileFiltersString;
-  }
-  else
-  {
-    return QString();
+    case QgsProviderMetadata::FilterType::FilterRaster:
+    {
+      QString fileFiltersString;
+      QStringList exts;
+      QStringList wildcards;
+      buildSupportedRasterFileFilterAndExtensions( fileFiltersString, exts, wildcards );
+      return fileFiltersString;
+    }
+    default:
+      return QString();
   }
 }
 
@@ -3190,7 +3191,7 @@ GDALRasterBandH QgsGdalProvider::getBand( int bandNo ) const
 //   see ticket #284
 QList<QPair<QString, QString> > QgsGdalProviderMetadata::pyramidResamplingMethods()
 {
-  QList<QPair<QString, QString> > methods;
+  static QList<QPair<QString, QString> > methods;
 
   if ( methods.isEmpty() )
   {

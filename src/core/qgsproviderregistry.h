@@ -181,10 +181,11 @@ class CORE_EXPORT QgsProviderRegistry
     Q_DECL_DEPRECATED QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None ) SIP_DEPRECATED;
 
     /**
-      * Returns list of data item providers of the provider
-      * \since QGIS 3.10
-      */
-    QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const;
+     * Returns list of data item providers of the provider
+     * \note Ownership of created data item providers is passed to the caller.
+     * \since QGIS 3.10
+     */
+    QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const SIP_FACTORY;
 
     /**
      * Lists stored layer styles in the provider defined by \a providerKey and \a uri

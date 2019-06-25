@@ -42,7 +42,7 @@ class QgsProjectStorageGuiProvider;
  * QgsGui::providerGuiRegistry().
  *
  * setPluginPath() should be called (once) to load dynamic providers. Static providers are
- * loaded in constructopr
+ * loaded in constructor.
  *
  * \since QGIS 3.10
 */
@@ -62,26 +62,29 @@ class GUI_EXPORT QgsProviderGuiRegistry
     //! Returns metadata of the provider or NULLPTR if not found
     const QgsProviderGuiMetadata *providerMetadata( const QString &providerKey ) const;
 
-    //! Calls registerGui function of all providers
+    /**
+     * Called during GUI initialization - allows providers to do its internal initialization
+     * of GUI components, possibly making use of the passed pointer to the QGIS main window.
+     */
     void registerGuis( QMainWindow *widget );
 
     /**
      * Returns all data item gui providers registered in provider with \a providerKey
-     * Caller receiver ownership of created data item providers
+     * \note Ownership of created data item providers is passed to the caller.
      */
-    virtual const QList<QgsDataItemGuiProvider *> dataItemGuiProviders( const QString &providerKey );
+    virtual const QList<QgsDataItemGuiProvider *> dataItemGuiProviders( const QString &providerKey ) SIP_FACTORY;
 
     /**
      * Returns all source select providers registered in provider with \a providerKey
-     * Caller receiver ownership of created data item providers
+     * \note Ownership of created source select providers is passed to the caller.
      */
-    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders( const QString &providerKey );
+    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders( const QString &providerKey ) SIP_FACTORY;
 
     /**
      * Returns all project storage gui providers registered in provider with \a providerKey
-     * Caller receiver ownership of created data item providers
+     * \note Ownership of created project storage gui providers is passed to the caller.
      */
-    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders( const QString &providerKey );
+    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders( const QString &providerKey ) SIP_FACTORY;
 
     //! Type for data provider metadata associative container
     SIP_SKIP typedef std::map<QString, QgsProviderGuiMetadata *> GuiProviders;

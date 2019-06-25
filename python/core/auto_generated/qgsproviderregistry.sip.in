@@ -152,9 +152,13 @@ responsible for deleting the returned widget.
 .. deprecated:: QGIS 3.10 - use QgsGui.providerGuiRegistry()->createDataSourceWidget() instead
 %End
 
-    QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const;
+    QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const /Factory/;
 %Docstring
 Returns list of data item providers of the provider
+
+.. note::
+
+   Ownership of created data item providers is passed to the caller.
 
 .. versionadded:: 3.10
 %End

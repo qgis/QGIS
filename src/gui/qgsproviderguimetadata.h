@@ -45,17 +45,29 @@ class GUI_EXPORT QgsProviderGuiMetadata
 
     virtual ~QgsProviderGuiMetadata();
 
-    //! Returns data item gui providers
-    virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders();
-
-    //! Assigns parent to widget
+    /**
+     * Called during GUI initialization - allows provider to do its internal initialization
+     * of GUI components, possibly making use of the passed pointer to the QGIS main window.
+     */
     virtual void registerGui( QMainWindow *widget );
 
-    //! Returns project storage gui providers
-    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders();
+    /**
+     * Returns data item gui providers
+     * \note Ownership of created data item gui providers is passed to the caller.
+     */
+    virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders() SIP_FACTORY;
 
-    //! Returns source select providers
-    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders();
+    /**
+     * Returns project storage gui providers
+     * \note Ownership of created project storage gui providers is passed to the caller.
+     */
+    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() SIP_FACTORY;
+
+    /**
+     * Returns source select providers
+     * \note Ownership of created source select providers is passed to the caller.
+     */
+    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders() SIP_FACTORY;
 
     //! Returns unique provider key
     QString key() const;

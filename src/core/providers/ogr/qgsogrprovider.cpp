@@ -6608,13 +6608,12 @@ QgsOgrProviderMetadata::QgsOgrProviderMetadata()
 
 QString QgsOgrProviderMetadata::filters( FilterType type )
 {
-  if ( type == QgsProviderMetadata::FilterType::FilterVector )
+  switch ( type )
   {
-    return QgsOgrProviderUtils::fileVectorFilters();
-  }
-  else
-  {
-    return QString();
+    case QgsProviderMetadata::FilterType::FilterVector:
+      return QgsOgrProviderUtils::fileVectorFilters();
+    default:
+      return QString();
   }
 }
 
