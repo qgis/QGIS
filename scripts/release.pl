@@ -150,15 +150,13 @@ my $relbranch = "release-${newmajor}_${newminor}";
 my $ltrtag = $doltr ? "ltr-${newmajor}_${newminor}" : "";
 my $reltag = "final-${newmajor}_${newminor}_${newpatch}";
 
-unless( $dopoint ) {
-	unless( $skipts ) {
-		print "Pulling transifex translations...\n";
-		run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
-		run( "git add i18n/*.ts", "adding translations failed" );
-		run( "git commit -n -a -m \"translation update for $release from transifex\"", "could not commit translation updates" );
-	} else {
-		print "TRANSIFEX UPDATE SKIPPED!\n";
-	}
+unless( $skipts ) {
+	print "Pulling transifex translations...\n";
+	run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
+	run( "git add i18n/*.ts", "adding translations failed" );
+	run( "git commit -n -a -m \"translation update for $version from transifex\"", "could not commit translation updates" );
+} else {
+	print "TRANSIFEX UPDATE SKIPPED!\n";
 }
 
 print "Updating changelog...\n";
