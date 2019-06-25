@@ -188,7 +188,7 @@ void QgsProviderRegistry::init()
     QgsProviderMetadata *meta = it->second;
 
     // now get vector file filters, if any
-    QString fileVectorFilters = meta->filters( QgsProviderMetadata::FilterVector );
+    QString fileVectorFilters = meta->filters( QgsProviderMetadata::FilterType::FilterVector );
     if ( !fileVectorFilters.isEmpty() )
     {
       mVectorFileFilters += fileVectorFilters;
@@ -196,7 +196,7 @@ void QgsProviderRegistry::init()
     }
 
     // now get raster file filters, if any
-    QString fileRasterFilters = meta->filters( QgsProviderMetadata::FilterRaster );
+    QString fileRasterFilters = meta->filters( QgsProviderMetadata::FilterType::FilterRaster );
     if ( !fileRasterFilters.isEmpty() )
     {
       QgsDebugMsg( "raster filters: " + fileRasterFilters );
@@ -205,7 +205,7 @@ void QgsProviderRegistry::init()
     }
 
     // now get mesh file filters, if any
-    QString fileMeshFilters = meta->filters( QgsProviderMetadata::FilterMesh );
+    QString fileMeshFilters = meta->filters( QgsProviderMetadata::FilterType::FilterMesh );
     if ( !fileMeshFilters.isEmpty() )
     {
       mMeshFileFilters += fileMeshFilters;
@@ -213,7 +213,7 @@ void QgsProviderRegistry::init()
 
     }
 
-    QString fileMeshDatasetFilters = meta->filters( QgsProviderMetadata::FilterMeshDataset );
+    QString fileMeshDatasetFilters = meta->filters( QgsProviderMetadata::FilterType::FilterMeshDataset );
     if ( !fileMeshDatasetFilters.isEmpty() )
     {
       mMeshDatasetFileFilters += fileMeshDatasetFilters;
