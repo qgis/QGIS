@@ -713,13 +713,6 @@ class Table(DbItemObject):
         geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
         uniqueCol = self.getValidQgisUniqueFields(True) if self.isView else None
         uri.setDataSource(schema, self.name, geomCol if geomCol else None, None, uniqueCol.name if uniqueCol else "")
-        uri.setSrid(str(self.srid))
-        for f in self.fields():
-            if f.primaryKey:
-                uri.setKeyColumn(f.name)
-                break
-        uri.setWkbType(QgsWkbTypes.parseType(self.geomType))
-
         return uri
 
     def mimeUri(self):
@@ -989,6 +982,16 @@ class VectorTable(Table):
         from .info_model import VectorTableInfo
 
         return VectorTableInfo(self)
+
+    def uri(self):
+        uri = super().uri()
+        uri.setSrid(str(self.srid))
+        for f in self.fields():
+            if f.primaryKey:
+                uri.setKeyColumn(f.name)
+                break
+        uri.setWkbType(QgsWkbTypes.parseType(self.geomType))
+        return uri
 
     def hasSpatialIndex(self, geom_column=None):
         geom_column = geom_column if geom_column is not None else self.geomColumn

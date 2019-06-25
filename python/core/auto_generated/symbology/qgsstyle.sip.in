@@ -15,14 +15,64 @@
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
+typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
+
+typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
+
 
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
-enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolFavoriteId };
-enum TagTable { TagId, TagName };
-enum TagmapTable { TagmapTagId, TagmapSymbolId };
-enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampFavoriteId };
-enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
+
+enum SymbolTable
+{
+  SymbolId,
+  SymbolName,
+  SymbolXML,
+  SymbolFavoriteId,
+};
+
+enum TagTable
+{
+  TagId,
+  TagName,
+};
+
+enum TagmapTable
+{
+  TagmapTagId,
+  TagmapSymbolId,
+};
+
+enum ColorrampTable
+{
+  ColorrampId,
+  ColorrampName,
+  ColorrampXML,
+  ColorrampFavoriteId,
+};
+
+enum TextFormatTable
+{
+  TextFormatId,
+  TextFormatName,
+  TextFormatXML,
+  TextFormatFavoriteId,
+};
+
+enum LabelSettingsTable
+{
+  LabelSettingsId,
+  LabelSettingsName,
+  LabelSettingsXML,
+  LabelSettingsFavoriteId,
+};
+
+enum SmartgroupTable
+{
+  SmartgroupId,
+  SmartgroupName,
+  SmartgroupXML,
+};
 
 class QgsStyle : QObject
 {
@@ -43,7 +93,9 @@ Constructor for QgsStyle.
       SymbolEntity,
       TagEntity,
       ColorrampEntity,
-      SmartgroupEntity
+      SmartgroupEntity,
+      TextFormatEntity,
+      LabelSettingsEntity,
     };
 
     bool addSymbol( const QString &name, QgsSymbol *symbol /Transfer/, bool update = false );
@@ -74,6 +126,36 @@ Adds a color ramp to the style. Calling this method takes the ramp's ownership.
 :param update: set to ``True`` when the style DB has to be updated, by default it is ``False``
 
 :return: success status of the operation
+%End
+
+    bool addTextFormat( const QString &name, const QgsTextFormat &format, bool update = false );
+%Docstring
+Adds a text ``format`` with the specified ``name`` to the style.
+
+If ``update`` is set to ``True``, the style DB will be automatically updated with the new text format.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding a text format with the name of existing one replaces it.
+
+.. versionadded:: 3.10
+%End
+
+    bool addLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool update = false );
+%Docstring
+Adds label ``settings`` with the specified ``name`` to the style.
+
+If ``update`` is set to ``True``, the style DB will be automatically updated with the new text format.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding label settings with the name of existing ones replaces them.
+
+.. versionadded:: 3.10
 %End
 
     int addTag( const QString &tagName );
@@ -126,7 +208,7 @@ takes responsibility for deleting the returned object.
 Returns count of color ramps
 %End
 
-    QStringList colorRampNames();
+    QStringList colorRampNames() const;
 %Docstring
 Returns a list of names of color ramps
 %End
@@ -140,6 +222,73 @@ Returns a const pointer to a symbol (doesn't create new instance)
 %Docstring
 Returns the id in the style database for the given colorramp name
 returns 0 if not found
+%End
+
+    QgsTextFormat textFormat( const QString &name ) const;
+%Docstring
+Returns the text format with the specified ``name``.
+
+.. versionadded:: 3.10
+%End
+
+    int textFormatCount() const;
+%Docstring
+Returns count of text formats in the style.
+
+.. versionadded:: 3.10
+%End
+
+    QStringList textFormatNames() const;
+%Docstring
+Returns a list of names of text formats in the style.
+
+.. versionadded:: 3.10
+%End
+
+    int textFormatId( const QString &name );
+%Docstring
+Returns the ID in the style database for the given text format by ``name``.
+Returns 0 if the text format was not found.
+
+.. versionadded:: 3.10
+%End
+
+    QgsPalLayerSettings labelSettings( const QString &name ) const;
+%Docstring
+Returns the label settings with the specified ``name``.
+
+.. versionadded:: 3.10
+%End
+
+    QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
+%Docstring
+Returns the layer geometry type corresponding to the label settings
+with the specified ``name``, or QgsWkbTypes.UnknownGeometry
+if matching label settings are not present.
+
+.. versionadded:: 3.10
+%End
+
+    int labelSettingsCount() const;
+%Docstring
+Returns count of label settings in the style.
+
+.. versionadded:: 3.10
+%End
+
+    QStringList labelSettingsNames() const;
+%Docstring
+Returns a list of names of label settings in the style.
+
+.. versionadded:: 3.10
+%End
+
+    int labelSettingsId( const QString &name );
+%Docstring
+Returns the ID in the style database for the given label settings by ``name``.
+Returns 0 if the label settings were not found.
+
+.. versionadded:: 3.10
 %End
 
     static QgsStyle *defaultStyle();
@@ -213,7 +362,7 @@ Returns a const pointer to a symbol (doesn't create new instance)
 Returns count of symbols in style
 %End
 
-    QStringList symbolNames();
+    QStringList symbolNames() const;
 %Docstring
 Returns a list of names of symbols
 %End
@@ -230,6 +379,13 @@ Returns the DB id for the given tag name
     int smartgroupId( const QString &smartgroup );
 %Docstring
 Returns the DB id for the given smartgroup name
+%End
+
+    QStringList allNames( StyleEntity type ) const;
+%Docstring
+Returns a list of the names of all existing entities of the specified ``type``.
+
+.. versionadded:: 3.10
 %End
 
     QStringList symbolsOfFavorite( StyleEntity type ) const;
@@ -322,6 +478,58 @@ Removes color ramp from style (and delete it)
 Changes ramp's name
 %End
 
+    bool saveTextFormat( const QString &name, const QgsTextFormat &format, bool favorite, const QStringList &tags );
+%Docstring
+Adds a text ``format`` to the database.
+
+:param name: is the name of the text format
+:param format: text format to save
+:param favorite: is a boolean value to specify whether the text format should be added to favorites
+:param tags: is a list of tags that are associated with the text format
+
+:return: returns the success state of the save operation
+%End
+
+    bool removeTextFormat( const QString &name );
+%Docstring
+Removes a text format from the style.
+
+.. versionadded:: 3.10
+%End
+
+    bool renameTextFormat( const QString &oldName, const QString &newName );
+%Docstring
+Changes a text format's name.
+
+.. versionadded:: 3.10
+%End
+
+    bool saveLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool favorite, const QStringList &tags );
+%Docstring
+Adds label ``settings`` to the database.
+
+:param name: is the name of the label settings
+:param settings: label settings to save
+:param favorite: is a boolean value to specify whether the label settings should be added to favorites
+:param tags: is a list of tags that are associated with the label settings
+
+:return: returns the success state of the save operation
+%End
+
+    bool removeLabelSettings( const QString &name );
+%Docstring
+Removes label settings from the style.
+
+.. versionadded:: 3.10
+%End
+
+    bool renameLabelSettings( const QString &oldName, const QString &newName );
+%Docstring
+Changes a label setting's name.
+
+.. versionadded:: 3.10
+%End
+
     bool createDatabase( const QString &filename );
 %Docstring
 Creates an on-disk database
@@ -409,6 +617,14 @@ Returns the tags associated with the symbol
 :return: A QStringList of the tags that have been applied to that symbol/colorramp
 %End
 
+    bool isFavorite( StyleEntity type, const QString &name );
+%Docstring
+Returns ``True`` if the symbol with matching ``type`` and ``name`` is
+marked as a favorite.
+
+.. versionadded:: 3.10
+%End
+
     bool symbolHasTag( StyleEntity type, const QString &symbol, const QString &tag );
 %Docstring
 Returns whether a given tag is associated with the symbol
@@ -430,7 +646,7 @@ Returns the tag name for the given id
 Returns the smart groups map with id as key and name as value
 %End
 
-    QStringList smartgroupNames();
+    QStringList smartgroupNames() const;
 %Docstring
 Returns the smart groups list
 %End
@@ -577,6 +793,93 @@ name or tag changes.
 .. seealso:: :py:func:`rampAdded`
 
 .. versionadded:: 3.4
+%End
+
+
+    void textFormatRenamed( const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever a text format has been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`symbolRenamed`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatAdded( const QString &name );
+%Docstring
+Emitted whenever a text format has been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`textFormatRemoved`
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatRemoved( const QString &name );
+%Docstring
+Emitted whenever a text format has been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`textFormatAdded`
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatChanged( const QString &name );
+%Docstring
+Emitted whenever a text format's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`textFormatAdded`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsRenamed( const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever label settings have been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`symbolRenamed`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsAdded( const QString &name );
+%Docstring
+Emitted whenever label settings have been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`labelSettingsRemoved`
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsRemoved( const QString &name );
+%Docstring
+Emitted whenever label settings have been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`labelSettingsAdded`
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsChanged( const QString &name );
+%Docstring
+Emitted whenever a label setting's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`labelSettingsAdded`
+
+.. versionadded:: 3.10
 %End
 
 };

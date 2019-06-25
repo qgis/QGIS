@@ -122,8 +122,8 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
                                  '',
                                  'getschemaextension')
 
-    def wms_request_compare_project(self, request, extra=None, reference_file=None):
-        projectPath = self.testdata_path + "test_project.qgs"
+    def wms_request_compare_project(self, request, extra=None, reference_file=None, project_name="test_project.qgs"):
+        projectPath = self.testdata_path + project_name
         assert os.path.exists(projectPath), "Project file not found: " + projectPath
 
         project = QgsProject()
@@ -148,6 +148,10 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         """WMS GetCapabilities without map parameter"""
         self.wms_request_compare_project('GetCapabilities')
         # reference_file='getcapabilities_without_map_param' could be the right response
+
+    def test_wms_getcapabilities_project_empty_layer(self):
+        """WMS GetCapabilities with empty layer different CRS: wrong bbox - Regression GH 30264"""
+        self.wms_request_compare_project('GetCapabilities', reference_file='wms_getcapabilities_empty_layer', project_name='bug_gh30264_empty_layer_wrong_bbox.qgs')
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""

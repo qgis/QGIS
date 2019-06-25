@@ -421,6 +421,7 @@ class CORE_EXPORT QgsPalLayerSettings
       RepeatDistanceUnit = 86,
       Priority = 87,
       PredefinedPositionOrder = 91,
+      LinePlacementOptions = 99, //!< Line placement flags
 
       // rendering
       ScaleVisibility = 23,
@@ -490,7 +491,10 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     QgsExpression *getLabelExpression();
 
-    QColor previewBkgrdColor;
+    /**
+     * \deprecated since QGIS 3.10. Use QgsTextFormat::previewBackgroundColor() instead.
+     */
+    Q_DECL_DEPRECATED QColor previewBkgrdColor = Qt::white;
 
     //! Substitution collection for automatic text substitution with labels
     QgsStringReplacementCollection substitutions;
@@ -848,6 +852,12 @@ class CORE_EXPORT QgsPalLayerSettings
     bool geometryGeneratorEnabled = false;
 
     /**
+     * Geometry type of layers associated with these settings.
+     * \since QGIS 3.10
+     */
+    QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
+
+    /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
      */
@@ -874,13 +884,13 @@ class CORE_EXPORT QgsPalLayerSettings
      * Read settings from a DOM element
      * \since QGIS 2.12
      */
-    void readXml( QDomElement &elem, const QgsReadWriteContext &context );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /**
      * Write settings into a DOM element
      * \since QGIS 2.12
      */
-    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Returns a reference to the label's property collection, used for data defined overrides.
@@ -921,6 +931,16 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
+
+    /**
+    * Returns a pixmap preview for label \a settings.
+    * \param settings label settings
+    * \param size target pixmap size
+    * \param previewText text to render in preview, or empty for default text
+    * \param padding space between icon edge and color ramp
+    * \since QGIS 3.10
+    */
+    static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );
 
     // temporary stuff: set when layer gets prepared or labeled
     const QgsFeature *mCurFeat = nullptr;

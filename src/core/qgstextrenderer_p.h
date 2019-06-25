@@ -225,6 +225,7 @@ class QgsTextSettingsPrivate : public QSharedData
       , opacity( other.opacity )
       , blendMode( other.blendMode )
       , multilineHeight( other.multilineHeight )
+      , previewBackgroundColor( other.previewBackgroundColor )
     {
     }
 
@@ -237,6 +238,7 @@ class QgsTextSettingsPrivate : public QSharedData
     double opacity = 1.0;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
     double multilineHeight = 1.0 ; //0.0 to 10.0, leading between lines as multiplyer of line height
+    QColor previewBackgroundColor = Qt::white;
 
 };
 

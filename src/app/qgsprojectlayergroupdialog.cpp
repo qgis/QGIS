@@ -21,6 +21,7 @@
 #include "qgslayertreeutils.h"
 #include "qgssettings.h"
 #include "qgsziputils.h"
+#include "qgsgui.h"
 
 #include <QDomDocument>
 #include <QFileDialog>
@@ -48,6 +49,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   , mRootGroup( new QgsLayerTree )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
   mTreeView->setModel( model );
@@ -74,21 +76,13 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   }
 
   connect( mProjectFileWidget, &QgsFileWidget::fileChanged, this, &QgsProjectLayerGroupDialog::changeProjectFile );
-
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
-
-  restoreGeometry( settings.value( QStringLiteral( "Windows/EmbedLayer/geometry" ) ).toByteArray() );
-
-
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
 }
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/EmbedLayer/geometry" ), saveGeometry() );
-
   delete mRootGroup;
 }
 

@@ -28,8 +28,10 @@
 #include "qgssettings.h"
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
+#include "qgsstylesavedialog.h"
 
 #include <QButtonGroup>
+#include <QMessageBox>
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
@@ -519,7 +521,8 @@ void QgsTextFormatWidget::initWidget()
           << mCheckBoxSubstituteText
           << mGeometryGeneratorGroupBox
           << mGeometryGenerator
-          << mGeometryGeneratorType;
+          << mGeometryGeneratorType
+          << mLinePlacementFlagsDDBtn;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
@@ -536,6 +539,11 @@ void QgsTextFormatWidget::initWidget()
     lblFontPreview->setMapUnits( mMapCanvas->mapSettings().mapUnits() );
     mPreviewScaleComboBox->setScale( mMapCanvas->mapSettings().scale() );
   }
+
+  mTextFormatsListWidget->setStyle( QgsStyle::defaultStyle() );
+  mTextFormatsListWidget->setEntityType( QgsStyle::TextFormatEntity );
+  connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsTextFormatWidget::setFormatFromStyle );
+  connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsTextFormatWidget::saveFormat );
 }
 
 void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
@@ -545,6 +553,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
   {
     case Labeling:
       toggleDDButtons( true );
+      mTextFormatsListWidget->setEntityTypes( QList< QgsStyle::StyleEntity >() << QgsStyle::TextFormatEntity << QgsStyle::LabelSettingsEntity );
       break;
 
     case Text:
@@ -786,6 +795,9 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mShadowColorBtn->setColor( shadow.color() );
   mShadowBlendCmbBx->setBlendMode( shadow.blendMode() );
 
+  mPreviewBackgroundBtn->setColor( format.previewBackgroundColor() );
+  mPreviewBackgroundBtn->setDefaultColor( format.previewBackgroundColor() );
+  setPreviewBackground( format.previewBackgroundColor() );
 }
 
 QgsTextFormatWidget::~QgsTextFormatWidget()
@@ -808,6 +820,7 @@ QgsTextFormat QgsTextFormatWidget::format() const
   format.setSizeUnit( mFontSizeUnitWidget->unit() );
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
   format.setLineHeight( mFontLineHeightSpinBox->value() );
+  format.setPreviewBackgroundColor( mPreviewBackgroundColor );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -976,6 +989,8 @@ void QgsTextFormatWidget::scrollPreview()
 
 void QgsTextFormatWidget::setPreviewBackground( const QColor &color )
 {
+  mPreviewBackgroundColor = color;
+
   scrollArea_mPreview->widget()->setStyleSheet( QStringLiteral( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
       QString::number( color.green() ),
       QString::number( color.blue() ) ) );
@@ -1359,6 +1374,73 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
   //mShapeStrokeWidthUnitWidget->setEnabled( validSVG && strokeWidthParam );
   //mShapeStrokeUnitsDDBtn->setEnabled( validSVG && strokeWidthParam );
   mShapeSVGUnitsLabel->setEnabled( validSVG && strokeWidthParam );
+}
+
+void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
+{
+  switch ( type )
+  {
+    case QgsStyle::SymbolEntity:
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+      return;
+
+    case QgsStyle::TextFormatEntity:
+    {
+      if ( !QgsStyle::defaultStyle()->textFormatNames().contains( name ) )
+        return;
+
+      QgsTextFormat newFormat = QgsStyle::defaultStyle()->textFormat( name );
+      setFormat( newFormat );
+      break;
+    }
+
+    case QgsStyle::LabelSettingsEntity:
+    {
+      if ( !QgsStyle::defaultStyle()->labelSettingsNames().contains( name ) )
+        return;
+
+      QgsTextFormat newFormat = QgsStyle::defaultStyle()->labelSettings( name ).format();
+      setFormat( newFormat );
+      break;
+    }
+  }
+}
+
+void QgsTextFormatWidget::saveFormat()
+{
+  QgsStyle *style = QgsStyle::defaultStyle();
+  if ( !style )
+    return;
+
+  QgsStyleSaveDialog saveDlg( this );
+  saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
+  if ( !saveDlg.exec() )
+    return;
+
+  if ( saveDlg.name().isEmpty() )
+    return;
+
+  // check if there is no format with same name
+  if ( style->textFormatNames().contains( saveDlg.name() ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save Text Format" ),
+                                    tr( "Format with name '%1' already exists. Overwrite?" )
+                                    .arg( saveDlg.name() ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+    style->removeTextFormat( saveDlg.name() );
+  }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  QgsTextFormat newFormat = format();
+  style->addTextFormat( saveDlg.name(), newFormat );
+  style->saveTextFormat( saveDlg.name(), newFormat, saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsTextFormatWidget::mShapeSVGSelectorBtn_clicked()

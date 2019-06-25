@@ -56,6 +56,9 @@ class TestQgsOgcUtils : public QObject
     void testExpressionFromOgcFilter();
     void testExpressionFromOgcFilter_data();
 
+    void testExpressionFromOgcFilterWithLongLong();
+    void testExpressionFromOgcFilterWithLongLong_data();
+
     void testExpressionFromOgcFilterWFS20();
     void testExpressionFromOgcFilterWFS20_data();
 
@@ -307,7 +310,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
-  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, QgsOgcUtils::FILTER_FES_2_0, &layer ) );
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, QgsOgcUtils::FILTER_FES_2_0, &layer ) );
   QVERIFY( expr.get() );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
@@ -451,7 +454,57 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
-  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
+  QVERIFY( expr.get() );
+
+  qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toAscii().data() );
+
+  if ( expr->hasParserError() )
+    qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
+  QVERIFY( !expr->hasParserError() );
+
+  QCOMPARE( dumpText, expr->expression() );
+}
+
+void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong_data()
+{
+  QTest::addColumn<QString>( "xmlText" );
+  QTest::addColumn<QString>( "dumpText" );
+  QTest::newRow( "Literal less than" ) << QString(
+                                         "<Filter><And>"
+                                         "<PropertyIsGreaterThan>"
+                                         "<PropertyName>id</PropertyName>"
+                                         "<Literal>1</Literal>"
+                                         "</PropertyIsGreaterThan>"
+                                         "<PropertyIsLessThan>"
+                                         "<PropertyName>id</PropertyName>"
+                                         "<Literal>3</Literal>"
+                                         "</PropertyIsLessThan>"
+                                         "</And></Filter>" )
+                                       << QStringLiteral( "id > 1 AND id < 3" );
+}
+
+void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong()
+{
+  QFETCH( QString, xmlText );
+  QFETCH( QString, dumpText );
+
+  QDomDocument doc;
+
+  QVERIFY( doc.setContent( xmlText, true ) );
+  QDomElement rootElem = doc.documentElement();
+
+  QgsVectorLayer layer( "Point?crs=epsg:4326", "temp", "memory" );
+
+  QgsField longlongField( QStringLiteral( "id" ), QVariant::LongLong );
+
+  QList<QgsField> fields;
+  fields.append( longlongField );
+  layer.dataProvider()->addAttributes( fields );
+  layer.updateFields();
+
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );

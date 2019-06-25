@@ -742,19 +742,19 @@ void TestQgsLayoutMap::labelBlockingRegions()
 
   QList<QgsLabelBlockingRegion> regions = map->createLabelBlockingRegions( map->mapSettings( map->extent(), map->rect().size(), 300, false ) );
   QCOMPARE( regions.count(), 2 );
-  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1950 2975, 2200 2975, 2200 2475, 1950 2475, 1950 2975))" ) );
-  QCOMPARE( regions.at( 1 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875))" ) );
+  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1950 2975, 2200 2975, 2200 2475, 1950 2475, 1950 2975, 1950 2975))" ) );
+  QCOMPARE( regions.at( 1 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875, 2450 2875))" ) );
   map->setLabelMargin( QgsLayoutMeasurement( 2, QgsUnitTypes::LayoutCentimeters ) );
   regions = map->createLabelBlockingRegions( map->mapSettings( map->extent(), map->rect().size(), 300, false ) );
   QCOMPARE( regions.count(), 2 );
-  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1900 3025, 2250 3025, 2250 2425, 1900 2425, 1900 3025))" ) );
-  QCOMPARE( regions.at( 1 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2400 2925, 2750 2925, 2750 2325, 2400 2325, 2400 2925))" ) );
+  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1950 2975, 2200 2975, 2200 2475, 1950 2475, 1950 2975, 1950 2975))" ) );
+  QCOMPARE( regions.at( 1 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875, 2450 2875))" ) );
 
   map2->setRotation( 45 );
   regions = map->createLabelBlockingRegions( map->mapSettings( map->extent(), map->rect().size(), 300, false ) );
   QCOMPARE( regions.count(), 2 );
-  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1950 3046, 2197 2798, 1773 2374, 1526 2621, 1950 3046))" ) );
-  QCOMPARE( regions.at( 1 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2400 2925, 2750 2925, 2750 2325, 2400 2325, 2400 2925))" ) );
+  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1950 2975, 2127 2798, 1773 2445, 1596 2621, 1950 2975, 1950 2975))" ) );
+  QCOMPARE( regions.at( 1 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875, 2450 2875))" ) );
 
   regions = map2->createLabelBlockingRegions( map2->mapSettings( map2->extent(), map2->rect().size(), 300, false ) );
   QVERIFY( regions.isEmpty() );
@@ -763,7 +763,7 @@ void TestQgsLayoutMap::labelBlockingRegions()
   map2->setVisibility( false );
   regions = map->createLabelBlockingRegions( map->mapSettings( map->extent(), map->rect().size(), 300, false ) );
   QCOMPARE( regions.count(), 1 );
-  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2400 2925, 2750 2925, 2750 2325, 2400 2325, 2400 2925))" ) );
+  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875, 2450 2875))" ) );
 
 }
 

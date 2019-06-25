@@ -20,16 +20,19 @@
 #include <Qt3DRender/QRenderCapture>
 #include <QMouseEvent>
 
+
 #include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmaptool.h"
 #include "qgswindow3dengine.h"
-
+#include "qgs3dnavigationwidget.h"
+#include "qgssettings.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
+  QgsSettings setting;
   mEngine = new QgsWindow3DEngine;
 
   connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
@@ -39,10 +42,15 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   } );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
+  mNavigationWidget = new Qgs3DNavigationWidget( this );
 
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setMargin( 0 );
   hLayout->addWidget( mContainer, 1 );
+  hLayout->addWidget( mNavigationWidget );
+  this->setOnScreenNavigationVisibility(
+    setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
+  );
 
   mEngine->window()->setCursor( Qt::OpenHandCursor );
 }
@@ -82,6 +90,17 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   mMap = map;
 
   resetView();
+
+  // Connect the camera to the navigation widget.
+  QObject::connect(
+    this->cameraController(),
+    &QgsCameraController::cameraChanged,
+    mNavigationWidget,
+    [ = ]
+  {
+    mNavigationWidget->updateFromCamera();
+  }
+  );
 }
 
 QgsCameraController *Qgs3DMapCanvas::cameraController()
@@ -159,4 +178,12 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
       break;
   }
   return false;
+}
+
+
+void Qgs3DMapCanvas::setOnScreenNavigationVisibility( bool visibility )
+{
+  mNavigationWidget->setVisible( visibility );
+  QgsSettings setting;
+  setting.setValue( QStringLiteral( "/3D/navigationWidget/visibility" ), visibility, QgsSettings::Gui );
 }

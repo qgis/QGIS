@@ -28,6 +28,9 @@
 #include "gmath.h"
 #include "info.h"
 
+// for sqrt
+#include <math.h>
+
 #define KNOTS_TO_KMH 1.852
 
 QgsNmeaConnection::QgsNmeaConnection( QIODevice *device )
@@ -126,6 +129,13 @@ void QgsNmeaConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
         }
+        else if ( substring.startsWith( QLatin1String( "$GPGST" ) ) )
+        {
+          QgsDebugMsg( substring );
+          processGstSentence( ba.data(), ba.length() );
+          mStatus = GPSDataReceived;
+          QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
+        }
         emit nmeaSentenceReceived( substring );  // added to be able to save raw data
       }
     }
@@ -155,6 +165,23 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     mLastGPSInformation.elevation = result.elv;
     mLastGPSInformation.quality = result.sig;
     mLastGPSInformation.satellitesUsed = result.satinuse;
+  }
+}
+
+void QgsNmeaConnection::processGstSentence( const char *data, int len )
+{
+  nmeaGPGST result;
+  if ( nmea_parse_GPGST( data, len, &result ) )
+  {
+    //update mLastGPSInformation
+    double sig_lat = result.sig_lat;
+    double sig_lon = result.sig_lon;
+    double sig_alt = result.sig_alt;
+
+    // Horizontal RMS
+    mLastGPSInformation.hacc = sqrt( ( pow( sig_lat, 2 ) + pow( sig_lon, 2 ) ) / 2.0 );
+    // Vertical RMS
+    mLastGPSInformation.vacc = sig_alt;
   }
 }
 

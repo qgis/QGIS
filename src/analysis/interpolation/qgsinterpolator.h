@@ -19,6 +19,7 @@
 #define QGSINTERPOLATOR_H
 
 #include <QVector>
+#include <QList>
 #include "qgis_sip.h"
 #include "qgis_analysis.h"
 

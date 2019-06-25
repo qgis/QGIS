@@ -307,12 +307,16 @@ void QgsApplication::init( QString profileFolder )
   // append local user-writable folder as a proj search path
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
-  const char **newPaths = new const char *[currentProjSearchPaths.length()];
+  char **newPaths = new char *[currentProjSearchPaths.length()];
   for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
   {
-    newPaths[i] = currentProjSearchPaths.at( i ).toUtf8().constData();
+    newPaths[i] = CPLStrdup( currentProjSearchPaths.at( i ).toUtf8().constData() );
   }
   proj_context_set_search_paths( nullptr, currentProjSearchPaths.count(), newPaths );
+  for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
+  {
+    CPLFree( newPaths[i] );
+  }
   delete [] newPaths;
 #endif
 
@@ -1024,7 +1028,7 @@ QString QgsApplication::userLoginName()
 
   if ( GetUserName( ( TCHAR * )name, &size ) )
   {
-    sUserName = QString( name );
+    sUserName = QString::fromLocal8Bit( name );
   }
 
 #elif QT_CONFIG(process)
@@ -1060,7 +1064,7 @@ QString QgsApplication::userFullName()
   //note - this only works for accounts connected to domain
   if ( GetUserNameEx( NameDisplay, ( TCHAR * )name, &size ) )
   {
-    sUserFullName = QString( name );
+    sUserFullName = QString::fromLocal8Bit( name );
   }
 
   //fall back to login name

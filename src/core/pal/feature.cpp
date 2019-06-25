@@ -598,7 +598,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
   double distanceLineToLabel = getLabelDistance();
-  LineArrangementFlags flags = mLF->layer()->arrangementFlags();
+  LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
     flags = FLAG_ON_LINE; // default flag
 
@@ -772,27 +772,29 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
         bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
         bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
 
-        double placementCost = 0.0;
         if ( belowLine )
         {
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
           {
-            lPos.append( new LabelPosition( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
-            placementCost += 0.001;
+            const double candidateCost = cost + ( reversed ? 0 : 0.001 );
+            lPos.append( new LabelPosition( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
           }
         }
         if ( aboveLine )
         {
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
           {
-            lPos.append( new LabelPosition( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
-            placementCost += 0.001;
+            const double candidateCost = cost + ( !reversed ? 0 : 0.001 ); // no extra cost for above line placements
+            lPos.append( new LabelPosition( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
           }
         }
         if ( flags & FLAG_ON_LINE )
         {
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
-            lPos.append( new LabelPosition( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
+          {
+            const double candidateCost = cost + 0.002;
+            lPos.append( new LabelPosition( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
+          }
         }
       }
       else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
@@ -823,7 +825,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
   double angle;
   double cost;
 
-  LineArrangementFlags flags = mLF->layer()->arrangementFlags();
+  LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
     flags = FLAG_ON_LINE; // default flag
 
@@ -925,17 +927,26 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
       if ( aboveLine )
       {
         if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
-          positions.append( new LabelPosition( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
+        {
+          const double candidateCost = cost + ( !reversed ? 0 : 0.001 ); // no extra cost for above line placements
+          positions.append( new LabelPosition( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
+        }
       }
       if ( belowLine )
       {
         if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
-          positions.append( new LabelPosition( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
+        {
+          const double candidateCost = cost + ( !reversed ? 0.001 : 0 );
+          positions.append( new LabelPosition( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
+        }
       }
       if ( flags & FLAG_ON_LINE )
       {
         if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
-          positions.append( new LabelPosition( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
+        {
+          const double candidateCost = cost + 0.002;
+          positions.append( new LabelPosition( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
+        }
       }
     }
     else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
@@ -1184,7 +1195,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   QLinkedList<LabelPosition *> positions;
   double delta = std::max( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
-  pal::LineArrangementFlags flags = mLF->layer()->arrangementFlags();
+  pal::LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
     flags = FLAG_ON_LINE; // default flag
 

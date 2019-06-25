@@ -47,7 +47,6 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
      * New dialog constructor.
      */
     QgsNewMemoryLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewMemoryLayerDialog() override;
 
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;

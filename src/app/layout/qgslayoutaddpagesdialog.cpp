@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgslayoutpagecollection.h"
+#include "qgshelp.h"
 
 QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -53,6 +54,8 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
 
   connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutAddPagesDialog::showHelp );
 }
 
 void QgsLayoutAddPagesDialog::setLayout( QgsLayout *layout )
@@ -157,4 +160,9 @@ void QgsLayoutAddPagesDialog::setToCustomSize()
   mPageOrientationComboBox->setEnabled( false );
   mLockAspectRatio->setEnabled( true );
   mSizeUnitsComboBox->setEnabled( true );
+}
+
+void QgsLayoutAddPagesDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#working-with-the-page-properties" ) );
 }

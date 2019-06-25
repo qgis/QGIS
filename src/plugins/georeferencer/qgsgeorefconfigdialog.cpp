@@ -18,16 +18,16 @@
 #include "qgssettings.h"
 #include "qgsgeorefconfigdialog.h"
 #include "qgis.h"
+#include "qgsgui.h"
 
 QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGeorefConfigDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGeorefConfigDialog::buttonBox_rejected );
-
-  QgsSettings s;
-  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/ConfigWindow/geometry" ) ).toByteArray() );
 
   mPaperSizeComboBox->addItem( tr( "A5 (148x210 mm)" ), QSizeF( 148, 210 ) );
   mPaperSizeComboBox->addItem( tr( "A4 (210x297 mm)" ), QSizeF( 210, 297 ) );
@@ -56,12 +56,6 @@ QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
   mPaperSizeComboBox->addItem( tr( "Arch E1 (30x42 inches)" ), QSizeF( 762, 1066.8 ) );
 
   readSettings();
-}
-
-QgsGeorefConfigDialog::~QgsGeorefConfigDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/ConfigWindow/geometry" ), saveGeometry() );
 }
 
 void QgsGeorefConfigDialog::changeEvent( QEvent *e )

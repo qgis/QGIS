@@ -46,6 +46,7 @@ class TestQgsLabelingEngine : public QObject
     void testRuleBased();
     void zOrder(); //test that labels are stacked correctly
     void testEncodeDecodePositionOrder();
+    void testEncodeDecodeLinePlacement();
     void testSubstitutions();
     void testCapitalization();
     void testParticipatingLayers();
@@ -58,6 +59,7 @@ class TestQgsLabelingEngine : public QObject
     void testCurvedLabelsWithTinySegments();
     void testCurvedLabelCorrectLinePlacement();
     void testCurvedLabelNegativeDistance();
+    void testParallelPlacementPreferAbove();
     void testLabelBoundary();
     void testLabelBlockingRegion();
     void testLabelRotationWithReprojection();
@@ -480,6 +482,21 @@ void TestQgsLabelingEngine::testEncodeDecodePositionOrder()
   expected << QgsPalLayerSettings::TopRight << QgsPalLayerSettings::BottomSlightlyRight
            << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopMiddle;
   QCOMPARE( decoded, expected );
+}
+
+void TestQgsLabelingEngine::testEncodeDecodeLinePlacement()
+{
+  QString encoded = QgsLabelingUtils::encodeLinePlacementFlags( pal::FLAG_ABOVE_LINE | pal::FLAG_ON_LINE );
+  QVERIFY( !encoded.isEmpty() );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( encoded ), pal::FLAG_ABOVE_LINE | pal::FLAG_ON_LINE );
+  encoded = QgsLabelingUtils::encodeLinePlacementFlags( pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
+  QVERIFY( !encoded.isEmpty() );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( encoded ), pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
+
+  //test decoding with a messy string
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,," ) ), pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,BL,  al" ) ), pal::FLAG_ON_LINE | pal::FLAG_ABOVE_LINE | pal::FLAG_BELOW_LINE | pal::FLAG_MAP_ORIENTATION );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,BL, LO,  al" ) ), pal::FLAG_ON_LINE | pal::FLAG_ABOVE_LINE | pal::FLAG_BELOW_LINE );
 }
 
 void TestQgsLabelingEngine::testSubstitutions()
@@ -1156,6 +1173,58 @@ void TestQgsLabelingEngine::testCurvedLabelNegativeDistance()
 
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_curved_negative_distance" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testParallelPlacementPreferAbove()
+{
+  // given the choice of above or below placement, labels should always be placed above
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::Line;
+  settings.placementFlags = QgsPalLayerSettings::AboveLine | QgsPalLayerSettings::BelowLine | QgsPalLayerSettings::MapOrientation;
+  settings.labelPerPart = false;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  //engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_prefer_above" ), img, 20 ) );
 }
 
 void TestQgsLabelingEngine::testLabelBoundary()

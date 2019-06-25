@@ -150,15 +150,13 @@ my $relbranch = "release-${newmajor}_${newminor}";
 my $ltrtag = $doltr ? "ltr-${newmajor}_${newminor}" : "";
 my $reltag = "final-${newmajor}_${newminor}_${newpatch}";
 
-unless( $dopoint ) {
-	unless( $skipts ) {
-		print "Pulling transifex translations...\n";
-		run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
-		run( "git add i18n/*.ts", "adding translations failed" );
-		run( "git commit -n -a -m \"translation update for $release from transifex\"", "could not commit translation updates" );
-	} else {
-		print "TRANSIFEX UPDATE SKIPPED!\n";
-	}
+unless( $skipts ) {
+	print "Pulling transifex translations...\n";
+	run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
+	run( "git add i18n/*.ts", "adding translations failed" );
+	run( "git commit -n -a -m \"translation update for $version from transifex\"", "could not commit translation updates" );
+} else {
+	print "TRANSIFEX UPDATE SKIPPED!\n";
 }
 
 print "Updating changelog...\n";
@@ -166,7 +164,7 @@ run( "scripts/create_changelog.sh", "create_changelog.sh failed" );
 run( "perl -i -pe 's#<releases>#<releases>\n    <release version=\"$newmajor.$newminor.$newpatch\" date=\"" . strftime("%Y-%m-%d", localtime) . "\" />#' linux/org.qgis.qgis.appdata.xml.in", "appdata update failed" );
 
 unless( $dopoint ) {
-	my $v = ($doltr && ($major>3 || ($major==3 && $minor>=4))) ? "$newmajor.$newminor-LTR" : "$newmajor.$newminor.0";
+	my $v = ($doltr && ($major>3 || ($major==3 && $minor>=4))) ? "$newmajor.$newminor-LTR" : "$newmajor.$newminor";
 	run( "scripts/update-news.pl $v '$newreleasename'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
 
 	run( "git commit -n -a -m \"changelog and news update for $release\"", "could not commit changelog and news update" );

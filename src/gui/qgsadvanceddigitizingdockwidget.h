@@ -28,6 +28,7 @@
 #include "qgsmessagebaritem.h"
 #include "qgspointxy.h"
 #include "qgspointlocator.h"
+#include "qgssnapindicator.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
@@ -702,6 +703,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
+    //! Snapping indicator
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     CadCapacities mCapacities = nullptr;
 

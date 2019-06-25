@@ -1847,4 +1847,24 @@ tests:
         name: expected/polygon_from_extent_rounded_2.gml
         type: vector
 
+  - algorithm: native:pointtolayer
+    name: Test (native:pointtolayer)
+    params:
+      INPUT: 1000000.000000,1550000.000000 [EPSG:3857]
+    results:
+      OUTPUT:
+        name: expected/point_to_layer.gml
+        type: vector
+
+  - algorithm: qgis:climbalongline
+    name: Climb line layer with DTM
+    params:
+      INPUT:
+        name: custom/climb_line.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/climb_layer_result.shp
+        type: vector
+
 # See ../README.md for a description of the file format

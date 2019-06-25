@@ -19,6 +19,7 @@
 #include "qgstextlabelfeature.h"
 #include "qgsunittypes.h"
 #include "qgsexception.h"
+#include "qgsapplication.h"
 
 #include <list>
 
@@ -37,6 +38,7 @@
 #include <QFontMetrics>
 #include <QTime>
 #include <QPainter>
+#include <QDesktopWidget>
 
 #include "diagram/qgsdiagram.h"
 #include "qgsdiagramrenderer.h"
@@ -209,6 +211,11 @@ void QgsPalLayerSettings::initPropertyDefinitions()
                             "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
                             "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ), origin )
     },
+    {
+      QgsPalLayerSettings::LinePlacementOptions, QgsPropertyDefinition( "LinePlacementFlags", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line placement options" ),  QObject::tr( "Comma separated list of placement options<br>" )
+          + QStringLiteral( "[<b>OL</b>=On line|<b>AL</b>=Above line|<b>BL</b>=Below line|<br>"
+                            "<b>LO</b>=Respect line orientation]" ), origin )
+    },
     { QgsPalLayerSettings::PositionX, QgsPropertyDefinition( "PositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::PositionY, QgsPropertyDefinition( "PositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::Hali, QgsPropertyDefinition( "Hali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Horizontal alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>]", origin ) },
@@ -233,6 +240,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
   };
 }
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings()
 {
   initPropertyDefinitions();
@@ -241,7 +249,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   isExpression = false;
   fieldIndex = 0;
 
-  previewBkgrdColor = Qt::white;
   useSubstitutions = false;
 
   // text formatting
@@ -297,13 +304,16 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacleType = PolygonInterior;
   zIndex = 0.0;
 }
+Q_NOWARN_DEPRECATED_POP
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
   : fieldIndex( 0 )
   , mDataDefinedProperties( s.mDataDefinedProperties )
 {
   *this = s;
 }
+Q_NOWARN_DEPRECATED_POP
 
 QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &s )
 {
@@ -317,7 +327,9 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   // text style
   fieldName = s.fieldName;
   isExpression = s.isExpression;
+  Q_NOWARN_DEPRECATED_PUSH
   previewBkgrdColor = s.previewBkgrdColor;
+  Q_NOWARN_DEPRECATED_POP
   substitutions = s.substitutions;
   useSubstitutions = s.useSubstitutions;
 
@@ -386,6 +398,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   geometryGenerator = s.geometryGenerator;
   geometryGeneratorEnabled = s.geometryGeneratorEnabled;
   geometryGeneratorType = s.geometryGeneratorType;
+  layerType = s.layerType;
 
   return *this;
 }
@@ -643,7 +656,9 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   // text style
   fieldName = layer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
   isExpression = layer->customProperty( QStringLiteral( "labeling/isExpression" ) ).toBool();
+  Q_NOWARN_DEPRECATED_PUSH
   previewBkgrdColor = QColor( layer->customProperty( QStringLiteral( "labeling/previewBkgrdColor" ), QVariant( "#ffffff" ) ).toString() );
+  Q_NOWARN_DEPRECATED_POP
   QDomDocument doc( QStringLiteral( "substitutions" ) );
   doc.setContent( layer->customProperty( QStringLiteral( "labeling/substitutions" ) ).toString() );
   QDomElement replacementElem = doc.firstChildElement( QStringLiteral( "substitutions" ) );
@@ -847,7 +862,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   }
 }
 
-void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext &context )
+void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   // text style
   QDomElement textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
@@ -855,7 +870,9 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   isExpression = textStyleElem.attribute( QStringLiteral( "isExpression" ) ).toInt();
 
   mFormat.readXml( elem, context );
+  Q_NOWARN_DEPRECATED_PUSH
   previewBkgrdColor = QColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QStringLiteral( "#ffffff" ) ) );
+  Q_NOWARN_DEPRECATED_POP
   substitutions.readXml( textStyleElem.firstChildElement( QStringLiteral( "substitutions" ) ) );
   useSubstitutions = textStyleElem.attribute( QStringLiteral( "useSubstitutions" ) ).toInt();
 
@@ -988,6 +1005,8 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
   geometryGeneratorType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::PointGeometry );
 
+  layerType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "layerType" ) ), QgsWkbTypes::UnknownGeometry );
+
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
 
@@ -1068,14 +1087,13 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
 
 
 
-QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context )
+QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement textStyleElem = mFormat.writeXml( doc, context );
 
   // text style
   textStyleElem.setAttribute( QStringLiteral( "fieldName" ), fieldName );
   textStyleElem.setAttribute( QStringLiteral( "isExpression" ), isExpression );
-  textStyleElem.setAttribute( QStringLiteral( "previewBkgrdColor" ), previewBkgrdColor.name() );
   QDomElement replacementElem = doc.createElement( QStringLiteral( "substitutions" ) );
   substitutions.writeXml( replacementElem, doc );
   textStyleElem.appendChild( replacementElem );
@@ -1127,6 +1145,8 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), metaEnum.valueToKey( geometryGeneratorType ) );
 
+  placementElem.setAttribute( QStringLiteral( "layerType" ), metaEnum.valueToKey( layerType ) );
+
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
   renderingElem.setAttribute( QStringLiteral( "drawLabels" ), drawLabels );
@@ -1159,6 +1179,112 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   elem.appendChild( renderingElem );
   elem.appendChild( ddElem );
   return elem;
+}
+
+QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText, int padding )
+{
+  // for now, just use format
+  QgsTextFormat tempFormat = settings.format();
+  QPixmap pixmap( size );
+  pixmap.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &pixmap );
+
+  painter.setRenderHint( QPainter::Antialiasing );
+
+  QRect rect( 0, 0, size.width(), size.height() );
+
+  // shameless eye candy - use a subtle gradient when drawing background
+  painter.setPen( Qt::NoPen );
+  QColor background1 = tempFormat.previewBackgroundColor();
+  if ( ( background1.lightnessF() < 0.7 ) )
+  {
+    background1 = background1.darker( 125 );
+  }
+  else
+  {
+    background1 = background1.lighter( 125 );
+  }
+  QColor background2 = tempFormat.previewBackgroundColor();
+  QLinearGradient linearGrad( QPointF( 0, 0 ), QPointF( 0, rect.height() ) );
+  linearGrad.setColorAt( 0, background1 );
+  linearGrad.setColorAt( 1, background2 );
+  painter.setBrush( QBrush( linearGrad ) );
+  if ( size.width() > 30 )
+  {
+    painter.drawRoundedRect( rect, 6, 6 );
+  }
+  else
+  {
+    // don't use rounded rect for small previews
+    painter.drawRect( rect );
+  }
+  painter.setBrush( Qt::NoBrush );
+  painter.setPen( Qt::NoPen );
+  padding += 1; // move text away from background border
+
+  QgsRenderContext context;
+  QgsMapToPixel newCoordXForm;
+  newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
+  context.setMapToPixel( newCoordXForm );
+
+  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+  context.setUseAdvancedEffects( true );
+  context.setPainter( &painter );
+
+  // slightly inset text to account for buffer/background
+  double xtrans = 0;
+  if ( tempFormat.buffer().enabled() )
+    xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+  if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
+    xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+
+  double ytrans = 0.0;
+  if ( tempFormat.buffer().enabled() )
+    ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+  if ( tempFormat.background().enabled() )
+    ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+
+  const QStringList text = QStringList() << ( previewText.isEmpty() ? QObject::tr( "Aa" ) : previewText );
+  const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, QgsTextRenderer::Rect );
+  QRectF textRect = rect;
+  textRect.setLeft( xtrans + padding );
+  textRect.setWidth( rect.width() - xtrans - 2 * padding );
+
+  if ( textRect.width() > 2000 )
+    textRect.setWidth( 2000 - 2 * padding );
+
+  const double bottom = textRect.height() / 2 + textHeight / 2;
+  textRect.setTop( bottom - textHeight );
+  textRect.setBottom( bottom );
+
+  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
+
+  if ( size.width() > 30 )
+  {
+    // draw a label icon
+    const double iconWidth = QFontMetricsF( QFont() ).width( 'X' ) * Qgis::UI_SCALE_FACTOR;
+
+    QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ).paint( &painter, QRect(
+          rect.width() - iconWidth * 3, rect.height() - iconWidth * 3,
+          iconWidth * 2, iconWidth * 2 ), Qt::AlignRight | Qt::AlignBottom );
+  }
+
+  // draw border on top of text
+  painter.setBrush( Qt::NoBrush );
+  painter.setPen( QPen( tempFormat.previewBackgroundColor().darker( 150 ), 0 ) );
+  if ( size.width() > 30 )
+  {
+    painter.drawRoundedRect( rect, 6, 6 );
+  }
+  else
+  {
+    // don't use rounded rect for small previews
+    painter.drawRect( rect );
+  }
+
+  painter.end();
+  return pixmap;
 }
 
 bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const
@@ -2082,6 +2208,15 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     ( *labelFeature )->setHasFixedQuadrant( true );
   }
+
+  pal::LineArrangementFlags featureArrangementFlags = static_cast< pal::LineArrangementFlags >( placementFlags );
+  context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodeLinePlacementFlags( featureArrangementFlags ) );
+  const QString dataDefinedLineArrangement = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::LinePlacementOptions, context.expressionContext() );
+  if ( !dataDefinedLineArrangement.isEmpty() )
+  {
+    featureArrangementFlags = QgsLabelingUtils::decodeLinePlacementFlags( dataDefinedLineArrangement );
+  }
+  ( *labelFeature )->setArrangementFlags( featureArrangementFlags );
 
   // data defined z-index?
   context.expressionContext().setOriginalValueVariable( zIndex );

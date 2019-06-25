@@ -140,15 +140,12 @@ RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
 RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 RUN locale-gen
 
-
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
 # OTB: download and install otb packages for QGIS tests
 RUN curl -k https://orfeo-toolbox.org/qgis/OTB-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
 
-ENV CC=/usr/lib/ccache/clang
-ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"
