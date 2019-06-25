@@ -6138,6 +6138,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     QgsStaticExpressionFunction *fcnGeomOverlayIntersectsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_intersects" ), QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+        // TODO: filter param
+        // TODO: limit param
         fcnGeomOverlayIntersects, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
     // The current feature is accessed for the geometry, so this should not be cached
@@ -6146,6 +6148,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     QgsStaticExpressionFunction *fcnTestGeomOverlayIntersectsFunc = new QgsStaticExpressionFunction( QStringLiteral( "test_geometry_overlay_intersects" ), QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+        // TODO: filter param
+        // TODO: limit param
         fcnTestGeomOverlayIntersects, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnTestGeomOverlayIntersectsFunc->setIsStatic( false );
