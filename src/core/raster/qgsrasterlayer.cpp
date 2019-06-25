@@ -754,26 +754,29 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   QgsHueSaturationFilter *hueSaturationFilter = new QgsHueSaturationFilter();
   mPipe.set( hueSaturationFilter );
 
-  //resampler (must be after renderer)
+  // resampler (must be after renderer)
   QgsRasterResampleFilter *resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
 
-  QgsSettings settings;
-  QString resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
-  if ( resampling == QStringLiteral( "bilinear" ) )
+  if ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintBenefitsFromResampling )
   {
-    resampleFilter->setZoomedInResampler( new QgsBilinearRasterResampler() );
+    QgsSettings settings;
+    QString resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
+    if ( resampling == QStringLiteral( "bilinear" ) )
+    {
+      resampleFilter->setZoomedInResampler( new QgsBilinearRasterResampler() );
+    }
+    else if ( resampling == QStringLiteral( "cubic" ) )
+    {
+      resampleFilter->setZoomedInResampler( new QgsCubicRasterResampler() );
+    }
+    resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
+    if ( resampling == QStringLiteral( "bilinear" ) )
+    {
+      resampleFilter->setZoomedOutResampler( new QgsBilinearRasterResampler() );
+    }
+    resampleFilter->setMaxOversampling( settings.value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
   }
-  else if ( resampling == QStringLiteral( "cubic" ) )
-  {
-    resampleFilter->setZoomedInResampler( new QgsCubicRasterResampler() );
-  }
-  resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
-  if ( resampling == QStringLiteral( "bilinear" ) )
-  {
-    resampleFilter->setZoomedOutResampler( new QgsBilinearRasterResampler() );
-  }
-  resampleFilter->setMaxOversampling( settings.value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
 
   // projector (may be anywhere in pipe)
   QgsRasterProjector *projector = new QgsRasterProjector;
