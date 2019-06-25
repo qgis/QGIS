@@ -187,7 +187,7 @@ bool QgsFontButton::event( QEvent *e )
         fontSize = mFont.pointSizeF();
         break;
     }
-    toolTip = QStringLiteral( "<b>%1</b><br>%2<br>Size: %3" ).arg( text(), mFormat.font().family() ).arg( fontSize );
+    toolTip = QStringLiteral( "<b>%1</b><br>%2<br>Size: %3" ).arg( text(), mMode == ModeTextRenderer ? mFormat.font().family() : mFont.family() ).arg( fontSize );
     QToolTip::showText( helpEvent->globalPos(), toolTip );
   }
   return QToolButton::event( e );
