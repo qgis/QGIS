@@ -33,6 +33,7 @@ from qgis.core import (QgsProcessingContext,
 from qgis.testing import (start_app,
                           unittest)
 
+import AlgorithmsTestBase
 from processing.algs.gdal.AssignProjection import AssignProjection
 from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
 from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
@@ -70,7 +71,7 @@ from processing.algs.gdal.slope import slope
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGdalRasterAlgorithms(unittest.TestCase):
+class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
@@ -83,6 +84,9 @@ class TestGdalRasterAlgorithms(unittest.TestCase):
     def tearDownClass(cls):
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
+
+    def test_definition_file(self):
+        return 'gdal_algorithm_raster_tests.yaml'
 
     def testAssignProjection(self):
         context = QgsProcessingContext()
@@ -2383,6 +2387,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase):
                               '-resolution average -separate -r nearest -overwrite -optim RASTER -vrtnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
+
 
 if __name__ == '__main__':
     nose2.main()

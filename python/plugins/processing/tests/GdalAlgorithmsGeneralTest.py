@@ -42,7 +42,6 @@ from qgis.core import (QgsProcessingContext,
 from qgis.testing import (start_app,
                           unittest)
 
-import AlgorithmsTestBase
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
@@ -50,7 +49,7 @@ from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGdalAlgorithms(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -63,9 +62,6 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     def tearDownClass(cls):
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
-
-    def test_definition_file(self):
-        return 'gdal_algorithm_tests.yaml'
 
     def testCommandName(self):
         # Test that algorithms report a valid commandName

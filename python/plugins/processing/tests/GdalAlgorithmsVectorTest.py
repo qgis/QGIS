@@ -34,6 +34,7 @@ from qgis.core import (QgsProcessingContext,
 from qgis.testing import (start_app,
                           unittest)
 
+import AlgorithmsTestBase
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.ogrinfo import ogrinfo
 from processing.algs.gdal.Buffer import Buffer
@@ -46,7 +47,7 @@ from processing.algs.gdal.PointsAlongLines import PointsAlongLines
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGdalVectorAlgorithms(unittest.TestCase):
+class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
@@ -59,6 +60,9 @@ class TestGdalVectorAlgorithms(unittest.TestCase):
     def tearDownClass(cls):
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
+
+    def test_definition_file(self):
+        return 'gdal_algorithm_vector_tests.yaml'
 
     def testOgr2Ogr(self):
         context = QgsProcessingContext()
