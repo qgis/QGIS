@@ -50,6 +50,8 @@ email                : tim at linfiniti.com
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
 
 #include <cmath>
 #include <cstdio>
@@ -755,6 +757,23 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   //resampler (must be after renderer)
   QgsRasterResampleFilter *resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
+
+  QgsSettings settings;
+  QString resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
+  if ( resampling == QStringLiteral( "bilinear" ) )
+  {
+    resampleFilter->setZoomedInResampler( new QgsBilinearRasterResampler() );
+  }
+  else if ( resampling == QStringLiteral( "cubic" ) )
+  {
+    resampleFilter->setZoomedInResampler( new QgsCubicRasterResampler() );
+  }
+  resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
+  if ( resampling == QStringLiteral( "bilinear" ) )
+  {
+    resampleFilter->setZoomedOutResampler( new QgsBilinearRasterResampler() );
+  }
+  resampleFilter->setMaxOversampling( settings.value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
 
   // projector (may be anywhere in pipe)
   QgsRasterProjector *projector = new QgsRasterProjector;

@@ -2470,7 +2470,7 @@
                  <layout class="QVBoxLayout" name="verticalLayout_10">
                   <item>
                    <widget class="QWidget" name="widget" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_19">
+                    <layout class="QGridLayout" name="gridLayout_35">
                      <property name="leftMargin">
                       <number>0</number>
                      </property>
@@ -2483,71 +2483,106 @@
                      <property name="bottomMargin">
                       <number>0</number>
                      </property>
-                     <item>
+                     <item row="0" column="0">
                       <widget class="QLabel" name="label_21">
                        <property name="text">
                         <string>RGB band selection</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
-                      <spacer name="horizontalSpacer_19">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>15</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
+                     <item row="0" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayoutRGB">
+                       <item>
+                        <widget class="QLabel" name="label_22">
+                         <property name="text">
+                          <string>Red band</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSpinBox" name="spnRed"/>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_23">
+                         <property name="text">
+                          <string>Green band</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSpinBox" name="spnGreen"/>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_24">
+                         <property name="text">
+                          <string>Blue band</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSpinBox" name="spnBlue"/>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_20">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
                      </item>
-                     <item>
-                      <widget class="QLabel" name="label_22">
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="lbldefaultZoomedInResampling">
                        <property name="text">
-                        <string>Red band</string>
+                        <string>Zoomed in resampling</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
-                      <widget class="QSpinBox" name="spnRed"/>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="mZoomedInResamplingComboBox"/>
                      </item>
-                     <item>
-                      <widget class="QLabel" name="label_23">
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="lbldefaultZoomedInResampling">
                        <property name="text">
-                        <string>Green band</string>
+                        <string>Zoomed out resampling</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
-                      <widget class="QSpinBox" name="spnGreen"/>
+                     <item row="2" column="1">
+                      <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
                      </item>
-                     <item>
-                      <widget class="QLabel" name="label_24">
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="lbldefaultOversampling">
                        <property name="text">
-                        <string>Blue band</string>
+                        <string>Oversampling</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
-                      <widget class="QSpinBox" name="spnBlue"/>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_20">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
+                     <item row="3" column="1">
+                      <layout class="QHBoxLayout" name="horizontalLayoutOversampling">
+                       <item>
+                        <widget class="QDoubleSpinBox" name="spnOversampling"/>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_25">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </widget>
@@ -5650,6 +5685,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>spnRed</tabstop>
   <tabstop>spnGreen</tabstop>
   <tabstop>spnBlue</tabstop>
+  <tabstop>mZoomedInResamplingComboBox</tabstop>
+  <tabstop>mZoomedOutResamplingComboBox</tabstop>
+  <tabstop>spnOversampling</tabstop>
   <tabstop>cboxContrastEnhancementAlgorithmSingleBand</tabstop>
   <tabstop>cboxContrastEnhancementLimitsSingleBand</tabstop>
   <tabstop>cboxContrastEnhancementAlgorithmMultiBandSingleByte</tabstop>
