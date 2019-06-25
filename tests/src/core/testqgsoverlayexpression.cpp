@@ -53,8 +53,11 @@ class TestQgsOverlayExpression: public QObject
 
     void cleanupTestCase();
 
-    void testIntersect();
-    void testIntersect_data();
+    void testOverlay();
+    void testOverlay_data();
+
+    void testOverlayExpression();
+    void testOverlayExpression_data();
 };
 
 
@@ -78,11 +81,11 @@ void TestQgsOverlayExpression::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsOverlayExpression::testIntersect()
+void TestQgsOverlayExpression::testOverlay()
 {
   QFETCH( QString, expression );
   QFETCH( QString, geometry );
-  QFETCH( QVariant, expectedResult );
+  QFETCH( bool, expectedResult );
 
   QgsExpressionContext context;
   context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
@@ -92,23 +95,58 @@ void TestQgsOverlayExpression::testIntersect()
   context.setFeature( feat );
 
   QgsExpression exp( expression );
-  exp.prepare( &context );
+  QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
   const QVariant result = exp.evaluate( &context );
 
-  QCOMPARE( result, expectedResult );
+  QCOMPARE( result.toBool(), expectedResult );
 }
 
-void TestQgsOverlayExpression::testIntersect_data()
+void TestQgsOverlayExpression::testOverlay_data()
 {
   //test passing named parameters to functions
   QTest::addColumn<QString>( "expression" );
   QTest::addColumn<QString>( "geometry" );
-  QTest::addColumn<QVariant>( "expectedResult" );
+  QTest::addColumn<bool>( "expectedResult" );
 
-  QTest::newRow( "intersect" ) << "geometry_overlay_intersects('rectangles')" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariant( true );
-  QTest::newRow( "intersect" ) << "geometry_overlay_intersects('rectangles')" << "POLYGON((10 0, 5 0, 5 5, 10 5, 10 0))" << QVariant( false );
+  QTest::newRow( "intersect" ) << "test_geometry_overlay_intersects('rectangles')" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << true;
+  QTest::newRow( "intersect no match" ) << "test_geometry_overlay_intersects('rectangles')" << "POLYGON((10 0, 5 0, 5 5, 10 5, 10 0))" << false;
 }
 
+
+void TestQgsOverlayExpression::testOverlayExpression()
+{
+  QFETCH( QString, expression );
+  QFETCH( QString, geometry );
+  QFETCH( QVariantList, expectedResult );
+
+  QgsExpressionContext context;
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+
+  QgsFeature feat;
+  feat.setGeometry( QgsGeometry::fromWkt( geometry ) );
+  context.setFeature( feat );
+
+  QgsExpression exp( expression );
+  QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
+  const QVariantList result = exp.evaluate( &context ).value<QVariantList>();
+
+  QCOMPARE( result.count(), expectedResult.count() );
+
+  for ( int i = 0; i < expectedResult.count(); i++ )
+  {
+    QCOMPARE( result.at( i ).value<QgsGeometry>().asWkt( 2 ), expectedResult.at( i ).value<QgsGeometry>().asWkt( 2 ) );
+  }
+}
+
+void TestQgsOverlayExpression::testOverlayExpression_data()
+{
+  //test passing named parameters to functions
+  QTest::addColumn<QString>( "expression" );
+  QTest::addColumn<QString>( "geometry" );
+  QTest::addColumn<QVariantList>( "expectedResult" );
+
+  QTest::newRow( "intersect" ) << "geometry_overlay_intersects('rectangles', $geometry)" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QgsGeometry::fromWkt( "MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))" ) };
+}
 QGSTEST_MAIN( TestQgsOverlayExpression )
 
 #include "testqgsoverlayexpression.moc"
