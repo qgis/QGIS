@@ -55,6 +55,7 @@ class buildvrt(GdalAlgorithm):
     ASSIGN_CRS = 'ASSIGN_CRS'
     RESAMPLING = 'RESAMPLING'
     SRC_NODATA = 'SRC_NODATA'
+    EXTRA = 'EXTRA'
 
     def __init__(self):
         super().__init__()
@@ -131,6 +132,13 @@ class buildvrt(GdalAlgorithm):
         src_nodata_param.setFlags(src_nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(src_nodata_param)
 
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
+
         self.addParameter(ParameterVrtDestination(self.OUTPUT, QCoreApplication.translate("ParameterVrtDestination", 'Virtual')))
 
     def name(self):
@@ -171,6 +179,10 @@ class buildvrt(GdalAlgorithm):
         if self.SRC_NODATA in parameters and parameters[self.SRC_NODATA] not in (None, ''):
             nodata = self.parameterAsString(parameters, self.SRC_NODATA, context)
             arguments.append('-srcnodata "{}"'.format(nodata))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         # Always write input files to a text file in case there are many of them and the
         # length of the command will be longer then allowed in command prompt

@@ -1084,162 +1084,127 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
-
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'RESOLUTION': 2,
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution lowest', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
-
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'SEPARATE': False,
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-separate', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
-
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'PROJ_DIFFERENCE': True,
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-allow_projection_difference', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
-
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'ADD_ALPHA': True,
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
-
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'ASSIGN_CRS': 'EPSG:3111',
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertIn('-a_srs EPSG:3111', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
+            # defaults
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -r nearest ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
+            # custom resolution
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'RESOLUTION': 2,
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution lowest -separate -r nearest ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
+            # single layer
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'SEPARATE': False,
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -r nearest ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
+            # projection difference
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'PROJ_DIFFERENCE': True,
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -allow_projection_difference -r nearest ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
+            # add alpha band
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'ADD_ALPHA': True,
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -addalpha -r nearest ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
+            # assign CRS
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'ASSIGN_CRS': 'EPSG:3111',
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -a_srs EPSG:3111 -r nearest ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
 
             custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'ASSIGN_CRS': custom_crs,
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertIn('-a_srs EPSG:20936', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'ASSIGN_CRS': custom_crs,
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -a_srs EPSG:20936 -r nearest ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
+            # source NODATA
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'SRC_NODATA': '-9999',
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -r nearest -srcnodata "-9999" ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
 
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'RESAMPLING': 4,
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r lanczos', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'SRC_NODATA': '-9999 9999',
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -r nearest -srcnodata "-9999 9999" ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
 
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'SRC_NODATA': '-9999',
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-srcnodata "-9999"', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
-
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'SRC_NODATA': '-9999 9999',
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertIn('-srcnodata "-9999 9999"', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
-
-            commands = alg.getConsoleCommands({'LAYERS': [source],
-                                               'SRC_NODATA': '',
-                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
-            self.assertEqual(len(commands), 2)
-            self.assertEqual(commands[0], 'gdalbuildvrt')
-            self.assertIn('-resolution average', commands[1])
-            self.assertIn('-separate', commands[1])
-            self.assertNotIn('-allow_projection_difference', commands[1])
-            self.assertNotIn('-add_alpha', commands[1])
-            self.assertNotIn('-a_srs', commands[1])
-            self.assertIn('-r nearest', commands[1])
-            self.assertNotIn('-srcnodata', commands[1])
-            self.assertIn('-input_file_list', commands[1])
-            self.assertIn(outdir + '/test.vrt', commands[1])
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'SRC_NODATA': '',
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -r nearest ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
+            # additional parameters
+            cmd = alg.getConsoleCommands({'INPUT': [source],
+                                          'EXTRA': '-overwrite -optim RASTER -vrtnodata -9999',
+                                          'OUTPUT': outdir + '/check.vrt'}, context, feedback)
+            t = cmd[1]
+            cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
+            self.assertEqual(cmd,
+                             ['gdalbuildvrt',
+                              '-resolution average -separate -r nearest -overwrite -optim RASTER -vrtnodata -9999 ' +
+                              '-input_file_list buildvrtInputFiles.txt ' +
+                              outdir + '/check.vrt'])
 
     def testGdalInfo(self):
         context = QgsProcessingContext()
