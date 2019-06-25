@@ -135,12 +135,12 @@ class CORE_EXPORT QgsProviderMetadata
      * Type of file filters
      * \since QGIS 3.10
      */
-    enum FilterType
+    enum class FilterType
     {
-      VectorFilter = 1,
-      RasterFilter,
-      MeshFilter,
-      MeshDatasetFilter
+      FilterVector = 1,
+      FilterRaster,
+      FilterMesh,
+      FilterMeshDataset
     };
 
     /**

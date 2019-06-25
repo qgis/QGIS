@@ -3015,7 +3015,7 @@ bool QgsGdalProvider::remove()
 */
 QString QgsGdalProviderMetadata::filters( FilterType type )
 {
-  if ( type == QgsProviderMetadata::RasterFilter )
+  if ( type == QgsProviderMetadata::FilterType::FilterRaster )
   {
     QString fileFiltersString;
     QStringList exts;

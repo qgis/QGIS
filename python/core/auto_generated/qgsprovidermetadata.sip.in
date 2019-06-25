@@ -88,12 +88,12 @@ Cleanup the provider
 .. versionadded:: 3.10
 %End
 
-    enum FilterType
+    enum class FilterType
     {
-      VectorFilter,
-      RasterFilter,
-      MeshFilter,
-      MeshDatasetFilter
+      FilterVector,
+      FilterRaster,
+      FilterMesh,
+      FilterMeshDataset
     };
 
     virtual QString filters( FilterType type );

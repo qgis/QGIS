@@ -587,14 +587,14 @@ QList<QgsSourceSelectProvider *> QgsMdalProviderGuiMetadata::sourceSelectProvide
 
 QString QgsMdalProviderMetadata::filters( FilterType type )
 {
-  if ( type == QgsProviderMetadata::MeshFilter )
+  if ( type == QgsProviderMetadata::FilterType::FilterMesh )
   {
     QString fileMeshFiltersString;
     QString fileMeshDatasetFiltersString;
     QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
     return fileMeshFiltersString;
   }
-  else if ( type == QgsProviderMetadata::MeshDatasetFilter )
+  else if ( type == QgsProviderMetadata::FilterType::FilterMeshDataset )
   {
     QString fileMeshFiltersString;
     QString fileMeshDatasetFiltersString;

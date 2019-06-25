@@ -6608,7 +6608,7 @@ QgsOgrProviderMetadata::QgsOgrProviderMetadata()
 
 QString QgsOgrProviderMetadata::filters( FilterType type )
 {
-  if ( type == QgsProviderMetadata::VectorFilter )
+  if ( type == QgsProviderMetadata::FilterType::FilterVector )
   {
     return QgsOgrProviderUtils::fileVectorFilters();
   }
