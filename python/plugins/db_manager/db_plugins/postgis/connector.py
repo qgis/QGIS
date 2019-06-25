@@ -74,7 +74,7 @@ class PostGisDBConnector(DBConnector):
             for i in range(3):
                 (ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
                 if not ok:
-                    raise ConnectionError(QCoreApplication.translate('db_manager', 'Could not connect to database as user {}').format(user=username))
+                    raise ConnectionError(QCoreApplication.translate('db_manager', 'Could not connect to database as user {user}').format(user=username))
 
                 if username:
                     uri.setUsername(username)
