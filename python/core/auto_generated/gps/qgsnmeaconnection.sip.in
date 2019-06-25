@@ -59,6 +59,11 @@ process VTG sentence
 %Docstring
 process GSA sentence
 %End
+    void processGstSentence( const char *data, int len );
+%Docstring
+process GST sentence
+%End
+
 };
 
 /************************************************************************

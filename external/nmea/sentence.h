@@ -30,7 +30,8 @@ enum nmeaPACKTYPE
   GPGSA   = 0x0002,   //!< GSA - GPS receiver operating mode, SVs used for navigation, and DOP values.
   GPGSV   = 0x0004,   //!< GSV - Number of SVs in view, PRN numbers, elevation, azimuth & SNR values.
   GPRMC   = 0x0008,   //!< RMC - Recommended Minimum Specific GPS/TRANSIT Data.
-  GPVTG   = 0x0010    //!< VTG - Actual track made good and speed over ground.
+  GPVTG   = 0x0010,   //!< VTG - Actual track made good and speed over ground.
+  GPGST   = 0x0012    //!< GST - GPS Pseudorange Noise Statistics
 };
 
 /**
@@ -54,6 +55,22 @@ typedef struct _nmeaGPGGA
   int     dgps_sid;   //!< DGPS station ID number
 
 } nmeaGPGGA;
+
+/**
+ * GST packet information structure (GPS Pseudorange Noise Statistics)
+ */
+typedef struct _nmeaGPGST
+{
+  nmeaTIME utc;       //!< UTC of position fix
+  double  rms_pr;     //!< RMS value of the pseudorange residuals;
+  double  err_major;  //!< Error ellipse semi-major axis 1 sigma error, in meters
+  double  err_minor;  //!< Error ellipse semi-minor axis 1 sigma error, in meters
+  double  err_ori;    //!< Error ellipse orientation, degrees from true north
+  double  sig_lat;    //!< Latitude 1 sigma error, in meters
+  double  sig_lon;    //!< Longitude 1 sigma error, in meters
+  double  sig_alt;    //!< Height 1 sigma error, in meters
+
+} nmeaGPGST;
 
 /**
  * GSA packet information structure (Satellite status)
@@ -117,6 +134,7 @@ typedef struct _nmeaGPVTG
 } nmeaGPVTG;
 
 void nmea_zero_GPGGA( nmeaGPGGA *pack );
+void nmea_zero_GPGST( nmeaGPGST *pack );
 void nmea_zero_GPGSA( nmeaGPGSA *pack );
 void nmea_zero_GPGSV( nmeaGPGSV *pack );
 void nmea_zero_GPRMC( nmeaGPRMC *pack );

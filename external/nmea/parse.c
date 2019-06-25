@@ -134,24 +134,30 @@ int nmea_pack_type( const char *buff, int buff_sz )
     "GPRMC",
     "GPVTG",
     "GNRMC",
+    "GPGST",
   };
+
+  // BUFFER_SIZE = size(P_HEADS) - 1;
+  int buffer_size = 6;
 
   NMEA_ASSERT( buff );
 
-  if ( buff_sz < 5 )
+  if ( buff_sz < buffer_size )
     return GPNON;
-  else if ( 0 == memcmp( buff, P_HEADS[0], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[0], buffer_size ) )
     return GPGGA;
-  else if ( 0 == memcmp( buff, P_HEADS[1], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[1], buffer_size ) )
     return GPGSA;
-  else if ( 0 == memcmp( buff, P_HEADS[2], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[2], buffer_size ) )
     return GPGSV;
-  else if ( 0 == memcmp( buff, P_HEADS[3], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[3], buffer_size ) )
     return GPRMC;
-  else if ( 0 == memcmp( buff, P_HEADS[4], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[4], buffer_size ) )
     return GPVTG;
-  else if ( 0 == memcmp( buff, P_HEADS[5], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[5], buffer_size ) )
     return GPRMC;
+  else if ( 0 == memcmp( buff, P_HEADS[6], buffer_size ) )
+    return GPGST;
 
   return GPNON;
 }
@@ -207,6 +213,7 @@ int nmea_find_tail( const char *buff, int buff_sz, int *res_crc )
   return nread;
 }
 
+
 /**
  * \brief Parse GGA packet from buffer.
  * @param buff a constant character pointer of packet buffer.
@@ -238,6 +245,42 @@ int nmea_parse_GPGGA( const char *buff, int buff_sz, nmeaGPGGA *pack )
   if ( 0 != _nmea_parse_time( &time_buff[0], ( int )strlen( &time_buff[0] ), &( pack->utc ) ) )
   {
     nmea_error( "GPGGA time parse error!" );
+    return 0;
+  }
+
+  return 1;
+}
+
+/**
+ * \brief Parse GST packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
+{
+  char time_buff[NMEA_TIMEPARSE_BUF];
+
+  NMEA_ASSERT( buff && pack );
+
+  memset( pack, 0, sizeof( nmeaGPGST ) );
+
+  nmea_trace_buff( buff, buff_sz );
+
+  if ( 8 != nmea_scanf( buff, buff_sz,
+                        "$GPGST,%s,%f,%f,%f,%f,%f,%f,%f*",
+                        &( time_buff[0] ),
+                        &( pack->rms_pr ), &( pack->err_major ), &( pack->err_minor ), &( pack->err_ori ),
+                        &( pack->sig_lat ), &( pack->sig_lon ), &( pack->sig_alt ) ) )
+  {
+    nmea_error( "GPGST parse error!" );
+    return 0;
+  }
+
+  if ( 0 != _nmea_parse_time( &time_buff[0], ( int )strlen( &time_buff[0] ), &( pack->utc ) ) )
+  {
+    nmea_error( "GPGST time parse error!" );
     return 0;
   }
 
@@ -424,6 +467,29 @@ void nmea_GPGGA2info( nmeaGPGGA *pack, nmeaINFO *info )
   info->lat = ( ( pack->ns == 'N' ) ? pack->lat : -( pack->lat ) );
   info->lon = ( ( pack->ew == 'E' ) ? pack->lon : -( pack->lon ) );
   info->smask |= GPGGA;
+}
+
+/**
+ * \brief Fill nmeaINFO structure by GST packet data.
+ * @param pack a pointer of packet structure.
+ * @param info a pointer of summary information structure.
+ */
+void nmea_GPGST2info( nmeaGPGST *pack, nmeaINFO *info )
+{
+  NMEA_ASSERT( pack && info );
+
+  info->utc.hour = pack->utc.hour;
+  info->utc.min = pack->utc.min;
+  info->utc.sec = pack->utc.sec;
+  info->utc.msec = pack->utc.msec;
+  info->rms_pr = pack->rms_pr;
+  info->err_major = pack->err_major;
+  info->err_minor = pack->err_minor;
+  info->err_ori = pack->err_ori;
+  info->sig_lat = pack->sig_lat;
+  info->sig_lon = pack->sig_lon;
+  info->sig_alt = pack->sig_alt;
+  info->smask |= GPGST;
 }
 
 /**
