@@ -815,6 +815,11 @@ void QgsGraduatedSymbolRendererWidget::refreshRanges( bool reset )
     return;
 
   mModel->updateSymbology( reset );
+
+  disconnectUpdateHandlers();
+  spinGraduatedClasses->setValue( mRenderer->ranges().count() );
+  connectUpdateHandlers();
+
   emit widgetChanged();
 }
 
