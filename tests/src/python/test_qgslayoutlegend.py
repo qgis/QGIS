@@ -395,8 +395,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label3 = legendnodes[2].evaluateLabel()
         count.waitForFinished()
         self.assertEqual(label1, '0')
-        #self.assertEqual(label2, '5')
-        #self.assertEqual(label3, '12')
+        self.assertEqual(label2, '5')
+        self.assertEqual(label3, '12')
 
         legendlayer.setLabelExpression("Concat(@symbol_label, @symbol_id)")
 
@@ -448,7 +448,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         group = legend.model().rootGroup().addGroup("Group [% 1 + 5 %] [% @layout_name %]")
         layer_tree_layer = group.addLayer(point_layer)
         counterTask = point_layer.countSymbolFeatures()
-        counterTask.waitForFinished() #does this even work?
+        counterTask.waitForFinished() # does this even work?
         layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
         QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
         legend.model().refreshLayerLegend(layer_tree_layer)

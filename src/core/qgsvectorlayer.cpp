@@ -693,7 +693,7 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   if ( !mSymbolFeatureCounted )
     return -1;
 
-  return mFeatureCounter->featureCount( legendKey );//mSymbolFeatureCountMap.value()
+  return mSymbolFeatureCountMap.value( legendKey );
 }
 
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
