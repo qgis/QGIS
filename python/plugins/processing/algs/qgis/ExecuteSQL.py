@@ -152,6 +152,9 @@ class ExecuteSQL(QgisAlgorithm):
         if not vLayer.isValid():
             raise QgsProcessingException(vLayer.dataProvider().error().message())
 
+        if vLayer.wkbType() == QgsWkbTypes.Unknown:
+            raise QgsProcessingException(self.tr("Cannot find geometry field"))
+
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                vLayer.fields(), vLayer.wkbType() if geometry_type != 1 else 1, vLayer.crs())
         if sink is None:
