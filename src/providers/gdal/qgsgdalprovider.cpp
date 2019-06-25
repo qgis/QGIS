@@ -1379,6 +1379,11 @@ QString QgsGdalProvider::description() const
   return PROVIDER_DESCRIPTION;
 }
 
+QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilities() const
+{
+  return QgsRasterDataProvider::ProviderHintBenefitsFromResampling;
+}
+
 // This is used also by global isValidRasterFileName
 QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
 {

@@ -99,6 +99,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString name() const override;
     QString description() const override;
+    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
     QgsCoordinateReferenceSystem crs() const override;
     QgsRectangle extent() const override;
     bool isValid() const override;
