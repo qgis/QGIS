@@ -113,6 +113,9 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void itemAlignmentChanged();
     void arrangementChanged();
 
+    void spaceBelowSubGroupHeadingChanged( double space );
+    void spaceBelowGroupHeadingChanged( double space );
+
   private:
     QgsLayoutLegendWidget() = delete;
     void blockAllSignals( bool b );
