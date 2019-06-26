@@ -3142,6 +3142,7 @@ QString QgsVectorLayer::displayExpression() const
     // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
     // but adding hardcoded localized variants of the strings is encouraged.
     static QStringList sCandidates{ QStringLiteral( "name" ),
+                                    QStringLiteral( "title" ),
                                     QStringLiteral( "heibt" ),
                                     QStringLiteral( "desc" ),
                                     QStringLiteral( "nom" ),
