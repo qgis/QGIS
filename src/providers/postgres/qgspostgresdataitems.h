@@ -18,6 +18,7 @@
 #include <QMainWindow>
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
 
 #include "qgspostgresconn.h"
 #include "qgsmimedatautils.h"
@@ -137,6 +138,17 @@ class QgsPGLayerItem : public QgsLayerItem
 
   private:
     QgsPostgresLayerProperty mLayerProperty;
+};
+
+//! Provider for Postgres data item
+class QgsPostgresDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "PostGIS" ); }
+
+    int capabilities() const override { return QgsDataProvider::Database; }
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSPOSTGRESDATAITEMS_H

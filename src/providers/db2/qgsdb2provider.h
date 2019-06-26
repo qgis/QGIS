@@ -26,6 +26,11 @@
 #include <QtSql>
 #include <QMutex>
 
+#include "qgsprovidermetadata.h"
+#ifdef HAVE_GUI
+#include "qgsproviderguimetadata.h"
+#endif
+
 /**
  * \class QgsDb2Provider
  * \brief Data provider for DB2 server.
@@ -158,5 +163,31 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     friend class QgsDb2FeatureSource;
 };
+
+class QgsDb2ProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsDb2ProviderMetadata();
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options ) override;
+    QgsDb2Provider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+};
+
+#ifdef HAVE_GUI
+class QgsDb2ProviderGuiMetadata: public QgsProviderGuiMetadata
+{
+  public:
+    QgsDb2ProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+};
+#endif
 
 #endif

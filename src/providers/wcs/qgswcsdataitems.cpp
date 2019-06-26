@@ -271,13 +271,7 @@ void QgsWCSRootItem::newConnection()
 #endif
 
 // ---------------------------------------------------------------------------
-
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::Net;
-}
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
+QgsDataItem *QgsWcsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   QgsDebugMsg( "thePath = " + path );
   if ( path.isEmpty() )
@@ -299,10 +293,3 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   return nullptr;
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsWCSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsWCSSourceSelect( parent, fl, widgetMode );
-}
-#endif

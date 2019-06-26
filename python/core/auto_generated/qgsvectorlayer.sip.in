@@ -815,7 +815,7 @@ Lists all the style in db split into related to the layer and not related to
 :param names: the list in which will be stored the style names
 :param msgError:
 
-:return: - the number of styles related to current layer
+:return: - the number of styles related to current layer (-1 on not implemented)
          - descriptions: the list in which will be stored the style descriptions
 
 .. note::

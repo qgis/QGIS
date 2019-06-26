@@ -21,7 +21,7 @@
 #include "qgis_gui.h"
 #include "qgsmaplayer.h"
 #include "qgsmimedatautils.h"
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsbrowserproxymodel.h"
 
 #include <QObject>
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
      * \param layerType sets the layer type filter, this is in effect only if filtering by layer type is also active
      * \param parent the object
      */
-    QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = nullptr,
+    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = nullptr,
                                bool setFilterByLayerType = false,
                                QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
                                QWidget *parent = nullptr );
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     void refreshModel( const QModelIndex &index );
 
     QgsBrowserProxyModel mBrowserProxyModel;
-    std::unique_ptr<QgsBrowserModel> mBrowserModel;
+    std::unique_ptr<QgsBrowserGuiModel> mBrowserModel;
     bool mOwnModel = true;
     QgsMimeDataUtils::Uri mUri;
     QLabel *mDescriptionLabel = nullptr;

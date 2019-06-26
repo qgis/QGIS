@@ -34,7 +34,6 @@ SET (AFS_SRCS
   qgsafsdataitems.cpp
   qgsafsfeatureiterator.cpp
   qgsafsprovider.cpp
-  qgsafsproviderextern.cpp
   qgsafsshareddata.cpp
 )
 SET (AFS_MOC_HDRS
@@ -89,7 +88,6 @@ SET (AMS_SRCS
   qgsarcgisrestutils.cpp
   qgsamsdataitems.cpp
   qgsamsprovider.cpp
-  qgsamsproviderextern.cpp
 )
 SET (AMS_MOC_HDRS
   qgsarcgisrestutils.h

@@ -242,7 +242,7 @@ class TestProjectDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "project_test" ); }
-    int capabilities() override { return QgsDataProvider::File; }
+    int capabilities() const override { return QgsDataProvider::File; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
     {
       QFileInfo fileInfo( path );

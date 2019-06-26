@@ -18,6 +18,7 @@
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
+#include "qgsdataitemprovider.h"
 
 class QgsOWSConnectionItem : public QgsDataCollectionItem
 {
@@ -63,6 +64,17 @@ class QgsOWSRootItem : public QgsDataCollectionItem
 
     void newConnection();
 #endif
+};
+
+//! Provider for OWS data item
+class QgsOwsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "OWS" ); }
+
+    int capabilities() const override { return QgsDataProvider::Net; }
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSOWSDATAITEMS_H

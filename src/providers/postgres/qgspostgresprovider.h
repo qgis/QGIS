@@ -23,6 +23,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgspostgresconn.h"
 #include "qgsfields.h"
+#include "qgsprovidermetadata.h"
 #include <memory>
 
 class QgsFeature;
@@ -534,6 +535,29 @@ class QgsPostgresSharedData
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
     QMap<int, bool> mFieldSupportsEnumValues;        // map field index to bool flag supports enum values
+};
+
+class QgsPostgresProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsPostgresProviderMetadata();
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
+        const QgsCoordinateReferenceSystem &srs,
+        bool overwrite,
+        QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
+        const QMap<QString, QVariant> *options ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
+                    const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids,
+                    QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    bool deleteStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    QgsTransaction *createTransaction( const QString &connString ) override;
+    void initProvider() override;
+    void cleanupProvider() override;
 };
 
 // clazy:excludeall=qstring-allocations

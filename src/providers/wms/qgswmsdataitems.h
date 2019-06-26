@@ -120,7 +120,7 @@ class QgsWmsDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "WMS" ); }
 
-    int capabilities() override { return QgsDataProvider::Net; }
+    int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 
@@ -176,7 +176,7 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "XYZ Tiles" ); }
 
-    int capabilities() override { return QgsDataProvider::Net; }
+    int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
     {

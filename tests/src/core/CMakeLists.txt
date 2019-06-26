@@ -20,6 +20,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
+  ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
+  ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/core/providers/meshmemory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
@@ -221,18 +224,17 @@ SET(TESTS
  testqgsofflineediting.cpp
  testqgstranslateproject.cpp
  testqobjectuniqueptr.cpp
-   )
+)
 
 IF(WITH_QTWEBKIT)
-  SET(TESTS ${TESTS}
-        )
+  SET(TESTS ${TESTS})
 ENDIF(WITH_QTWEBKIT)
 
 
 IF(HAVE_OPENCL)
   SET(TESTS ${TESTS}
     testqgsopenclutils.cpp
-        )
+     )
 ENDIF(HAVE_OPENCL)
 
 

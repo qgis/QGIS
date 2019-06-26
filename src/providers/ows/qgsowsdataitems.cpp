@@ -18,10 +18,10 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
+#include "qgsdataitemprovider.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
-#include "qgsowssourceselect.h"
 #endif
 
 #include "qgsapplication.h"
@@ -46,40 +46,49 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
   Q_FOREACH ( const QString &key, QStringList() << "wms" << "WFS" << "wcs" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
-    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
-    if ( !library )
+    const QList<QgsDataItemProvider *> providerList = QgsProviderRegistry::instance()->dataItemProviders( key );
+    if ( providerList.isEmpty() )
     {
-      QgsDebugMsg( "Cannot get provider " + key );
-      continue;
-    }
-
-    dataItem_t *dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
-    if ( !dItem )
-    {
-      QgsDebugMsg( library->fileName() + " does not have dataItem" );
+      QgsDebugMsg( key + " does not have dataItemProviders" );
       continue;
     }
 
     QString path = key.toLower() + ":/" + name();
     QgsDebugMsg( "path = " + path );
-    QgsDataItem *item = dItem( path, this );  // empty path -> top level
-    if ( !item )
+
+    QVector<QgsDataItem *> items;
+    for ( QgsDataItemProvider *pr : providerList )
     {
-      QgsDebugMsg( QStringLiteral( "Connection not found by provider" ) );
+      if ( !pr->name().startsWith( key ) )
+        continue;
+
+      items = pr->createDataItems( path, this );
+      if ( !items.isEmpty() )
+      {
+        break;
+      }
+    }
+
+    if ( items.isEmpty() )
+    {
+      QgsDebugMsg( key + " does not have any data items" );
       continue;
     }
 
-    item->populate( true ); // populate in foreground - this is already run in a thread
+    for ( QgsDataItem *item : qgis::as_const( items ) )
+    {
+      item->populate( true ); // populate in foreground - this is already run in a thread
 
-    layerCount += item->rowCount();
-    if ( item->rowCount() > 0 )
-    {
-      QgsDebugMsg( "Add new item : " + item->name() );
-      serviceItems.insert( item, key );
-    }
-    else
-    {
-      //delete item;
+      layerCount += item->rowCount();
+      if ( item->rowCount() > 0 )
+      {
+        QgsDebugMsg( "Add new item : " + item->name() );
+        serviceItems.insert( item, key );
+      }
+      else
+      {
+        //delete item;
+      }
     }
   }
 
@@ -256,26 +265,11 @@ void QgsOWSRootItem::newConnection()
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
 
-QGISEXTERN int dataCapabilities()
-{
-  return QgsDataProvider::Net;
-}
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
+QgsDataItem *QgsOwsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
   {
     return new QgsOWSRootItem( parentItem, QStringLiteral( "OWS" ), QStringLiteral( "ows:" ) );
   }
-  return nullptr;
-}
-
-//QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
-QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  Q_UNUSED( parent )
-  Q_UNUSED( fl )
-  Q_UNUSED( widgetMode )
-  //return new QgsOWSSourceSelect( parent, fl, widgetMode );
   return nullptr;
 }

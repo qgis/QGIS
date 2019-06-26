@@ -30,13 +30,17 @@ email                : a.furieri@lqt.it
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
 #include "qgsfeedback.h"
+#include "qgsspatialitedataitems.h"
 
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"
 
+#include "qgsprovidermetadata.h"
+
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
 #include "qgsspatialitesourceselect.h"
+#include "qgsproviderguimetadata.h"
 #endif
 
 #include <QMessageBox>
@@ -5525,7 +5529,7 @@ void QgsSpatiaLiteProvider::invalidateConnections( const QString &connection )
   QgsSpatiaLiteConnPool::instance()->invalidateConnections( connection );
 }
 
-QGISEXTERN QVariantMap decodeUri( const QString &uri )
+QVariantMap QgsSpatiaLiteProviderMetadata::decodeUri( const QString &uri )
 {
   QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
@@ -5535,169 +5539,36 @@ QGISEXTERN QVariantMap decodeUri( const QString &uri )
   return components;
 }
 
-/**
- * Class factory to return a pointer to a newly created
- * QgsSpatiaLiteProvider object
- */
-QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
+  const QString &uri,
+  const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsSpatiaLiteProvider( *uri, options );
+  return new QgsSpatiaLiteProvider( uri, options );
 }
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
-{
-  return SPATIALITE_KEY;
-}
 
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return SPATIALITE_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
-QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
+QgsVectorLayerExporter::ExportError QgsSpatiaLiteProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
   const QMap<QString, QVariant> *options )
 {
   return QgsSpatiaLiteProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           oldToNewAttrIdxMap, errorMessage, options
+           &oldToNewAttrIdxMap, &errorMessage, options
          );
 }
 
-// -------------
-
-
-static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause )
+bool QgsSpatiaLiteProviderMetadata::createDb( const QString &dbPath, QString &errCause )
 {
-  // attempting to perform self-initialization for a newly created DB
-  if ( !sqlite_handle )
-    return false;
-
-  // checking if this DB is really empty
-  char **results = nullptr;
-  int rows, columns;
-  int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, nullptr );
-  if ( ret != SQLITE_OK )
-    return false;
-
-  int count = 0;
-  if ( rows >= 1 )
-  {
-    for ( int i = 1; i <= rows; i++ )
-      count = atoi( results[( i * columns ) + 0] );
-  }
-
-  sqlite3_free_table( results );
-
-  if ( count > 0 )
-    return false;
-
-  const bool above41 = QgsSpatiaLiteProvider::versionIsAbove( sqlite_handle, 4, 1 );
-
-  // all right, it's empty: proceeding to initialize
-  char *errMsg = nullptr;
-  ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", nullptr, nullptr, &errMsg );
-  if ( ret != SQLITE_OK )
-  {
-    errCause = QObject::tr( "Unable to initialize SpatialMetadata:\n" );
-    errCause += QString::fromUtf8( errMsg );
-    sqlite3_free( errMsg );
-    return false;
-  }
-  spatial_ref_sys_init( sqlite_handle, 0 );
-  return true;
-}
-
-QGISEXTERN bool createDb( const QString &dbPath, QString &errCause )
-{
-  QgsDebugMsg( QStringLiteral( "creating a new db" ) );
-
-  QFileInfo fullPath = QFileInfo( dbPath );
-  QDir path = fullPath.dir();
-  QgsDebugMsg( QStringLiteral( "making this dir: %1" ).arg( path.absolutePath() ) );
-
-  // Must be sure there is destination directory ~/.qgis
-  QDir().mkpath( path.absolutePath() );
-
-  // creating/opening the new database
-  spatialite_database_unique_ptr database;
-  int ret = database.open_v2( dbPath, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
-  if ( ret )
-  {
-    // an error occurred
-    errCause = QObject::tr( "Could not create a new database\n" );
-    errCause += database.errorMessage();
-    return false;
-  }
-  // activating Foreign Key constraints
-  char *errMsg = nullptr;
-  ret = sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, &errMsg );
-  if ( ret != SQLITE_OK )
-  {
-    errCause = QObject::tr( "Unable to activate FOREIGN_KEY constraints [%1]" ).arg( errMsg );
-    sqlite3_free( errMsg );
-    return false;
-  }
-  bool init_res = ::initializeSpatialMetadata( database.get(), errCause );
-
-  return init_res;
+  return SpatiaLiteUtils::createDb( dbPath, errCause );
 }
 
 // -------------
-
-QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause )
-{
-  QgsDebugMsg( "deleting layer " + tableName );
-
-  QgsSqliteHandle *hndl = QgsSqliteHandle::openDb( dbPath );
-  if ( !hndl )
-  {
-    errCause = QObject::tr( "Connection to database failed" );
-    return false;
-  }
-  sqlite3 *sqlite_handle = hndl->handle();
-  int ret;
-  if ( !gaiaDropTable( sqlite_handle, tableName.toUtf8().constData() ) )
-  {
-    // unexpected error
-    errCause = QObject::tr( "Unable to delete table %1\n" ).arg( tableName );
-    QgsSqliteHandle::closeDb( hndl );
-    return false;
-  }
-
-  // TODO: remove spatial indexes?
-  // run VACUUM to free unused space and compact the database
-  ret = sqlite3_exec( sqlite_handle, "VACUUM", nullptr, nullptr, nullptr );
-  if ( ret != SQLITE_OK )
-  {
-    QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
-  }
-
-  QgsSqliteHandle::closeDb( hndl );
-
-  return true;
-}
 
 QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes() const
 {
@@ -5782,9 +5653,9 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                           const QString &styleName, const QString &styleDescription,
-                           const QString &uiFileContent, bool useAsDefault, QString &errCause )
+bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+    const QString &styleName, const QString &styleDescription,
+    const QString &uiFileContent, bool useAsDefault, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
@@ -5963,7 +5834,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
 }
 
 
-QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
+QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
@@ -6021,8 +5892,8 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   return style;
 }
 
-QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString &errCause )
+int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names,
+    QStringList &descriptions, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
@@ -6128,7 +5999,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
-QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &errCause )
+QString QgsSpatiaLiteProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
@@ -6170,7 +6041,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   return style;
 }
 
-QGISEXTERN void cleanupProvider()
+void QgsSpatiaLiteProviderMetadata::cleanupProvider()
 {
   QgsSpatiaLiteConnPool::cleanupInstance();
   QgsSqliteHandle::closeAll();
@@ -6193,14 +6064,39 @@ class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+QgsSpatiaLiteProviderGuiMetadata::QgsSpatiaLiteProviderGuiMetadata():
+  QgsProviderGuiMetadata( SPATIALITE_KEY )
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+}
 
-  *providers
-      << new QgsSpatialiteSourceSelectProvider;
-
+QList<QgsSourceSelectProvider *> QgsSpatiaLiteProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsSpatialiteSourceSelectProvider;
   return providers;
+}
+#endif
+
+QgsSpatiaLiteProviderMetadata::QgsSpatiaLiteProviderMetadata():
+  QgsProviderMetadata( SPATIALITE_KEY, SPATIALITE_DESCRIPTION )
+{
+}
+
+QList< QgsDataItemProvider * > QgsSpatiaLiteProviderMetadata::dataItemProviders() const
+{
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsSpatiaLiteDataItemProvider;
+  return providers;
+}
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsSpatiaLiteProviderMetadata();
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
+{
+  return new QgsSpatiaLiteProviderGuiMetadata();
 }
 #endif

@@ -1722,58 +1722,37 @@ QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
   return list;
 }
 
-QGISEXTERN QgsDb2Provider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDb2Provider *QgsDb2ProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsDb2Provider( *uri, options );
+  return new QgsDb2Provider( uri, options );
 }
 
-QGISEXTERN bool isProvider()
+QgsDb2ProviderMetadata::QgsDb2ProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
-  return true;
+
 }
 
-QGISEXTERN QString description()
+QList< QgsDataItemProvider * > QgsDb2ProviderMetadata::dataItemProviders() const
 {
-  return PROVIDER_DESCRIPTION;
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsDb2DataItemProvider;
+  return providers;
 }
 
-QGISEXTERN QString providerKey()
-{
-  return PROVIDER_KEY;
-}
-
-QGISEXTERN int dataCapabilities()
-{
-  return QgsDataProvider::Database;
-}
-
-#ifdef HAVE_GUI
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsDb2SourceSelect( parent, fl, widgetMode );
-}
-#endif
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
-  Q_UNUSED( path )
-  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; data item detected." ) );
-  return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
-}
-
-
-QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
+QgsVectorLayerExporter::ExportError QgsDb2ProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage )
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
+  const QMap<QString, QVariant> * )
 {
   return QgsDb2Provider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           oldToNewAttrIdxMap, errorMessage
+           &oldToNewAttrIdxMap, &errorMessage
          );
 }
 
@@ -1792,7 +1771,7 @@ class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    QString providerKey() const override { return QStringLiteral( "DB2" ); }
+    QString providerKey() const override { return PROVIDER_KEY; }
     QString text() const override { return QObject::tr( "DB2" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
@@ -1802,15 +1781,28 @@ class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+QgsDb2ProviderGuiMetadata::QgsDb2ProviderGuiMetadata()
+  : QgsProviderGuiMetadata( PROVIDER_KEY )
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+}
 
-  *providers
-      << new QgsDb2SourceSelectProvider;
-
+QList<QgsSourceSelectProvider *> QgsDb2ProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsDb2SourceSelectProvider;
   return providers;
 }
 
+#endif
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsDb2ProviderMetadata();
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
+{
+  return new QgsDb2ProviderGuiMetadata();
+}
 #endif

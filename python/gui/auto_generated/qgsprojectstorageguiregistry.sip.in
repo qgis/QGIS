@@ -1,0 +1,77 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprojectstorageguiregistry.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsProjectStorageGuiRegistry
+{
+%Docstring
+A registry / canonical manager of GUI parts of project storage backends.
+
+QgsProjectStorageGuiRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsGui.projectStorageGuiRegistry()`
+
+.. seealso:: :py:class:`QgsProjectStorageRegistry`
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstorageguiregistry.h"
+%End
+  public:
+    QgsProjectStorageGuiRegistry();
+    ~QgsProjectStorageGuiRegistry();
+
+
+    QgsProjectStorageGuiProvider *projectStorageFromType( const QString &type );
+%Docstring
+Returns storage implementation if the storage type matches one. Returns ``None`` otherwise (it is a normal file)
+%End
+
+    QgsProjectStorageGuiProvider *projectStorageFromUri( const QString &uri );
+%Docstring
+Returns storage implementation if the URI matches one. Returns ``None`` otherwise (it is a normal file)
+%End
+
+    QList<QgsProjectStorageGuiProvider *> projectStorages() const;
+%Docstring
+Returns a list of registered project storage implementations
+%End
+
+    void registerProjectStorage( QgsProjectStorageGuiProvider *storage /Transfer/ );
+%Docstring
+Registers a storage backend and takes ownership of it
+%End
+
+    void unregisterProjectStorage( QgsProjectStorageGuiProvider *storage );
+%Docstring
+Unregisters a storage backend and destroys its instance
+%End
+
+    void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+%Docstring
+Initializes the registry. The registry needs to be passed explicitly
+(instead of using singleton) because this gets called from QgsGui constructor.
+%End
+
+  private:
+    QgsProjectStorageGuiRegistry( const QgsProjectStorageGuiRegistry &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprojectstorageguiregistry.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

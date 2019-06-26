@@ -4490,57 +4490,17 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
-  if ( !myLib )
-  {
-    msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
-    return -1;
-  }
-  listStyles_t *listStylesExternalMethod = reinterpret_cast< listStyles_t * >( cast_to_fptr( myLib->resolve( "listStyles" ) ) );
-
-  if ( !listStylesExternalMethod )
-  {
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "listStyles" ) );
-    return -1;
-  }
-
-  return listStylesExternalMethod( mDataSource, ids, names, descriptions, msgError );
+  return QgsProviderRegistry::instance()->listStyles( mProviderKey, mDataSource, ids, names, descriptions, msgError );
 }
 
 QString QgsVectorLayer::getStyleFromDatabase( const QString &styleId, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
-  if ( !myLib )
-  {
-    msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
-    return QString();
-  }
-  getStyleById_t *getStyleByIdMethod = reinterpret_cast< getStyleById_t * >( cast_to_fptr( myLib->resolve( "getStyleById" ) ) );
-
-  if ( !getStyleByIdMethod )
-  {
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "getStyleById" ) );
-    return QString();
-  }
-
-  return getStyleByIdMethod( mDataSource, styleId, msgError );
+  return QgsProviderRegistry::instance()->getStyleById( mProviderKey, mDataSource, styleId, msgError );
 }
 
 bool QgsVectorLayer::deleteStyleFromDatabase( const QString &styleId, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
-  if ( !myLib )
-  {
-    msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
-    return false;
-  }
-  deleteStyleById_t *deleteStyleByIdMethod = reinterpret_cast< deleteStyleById_t * >( cast_to_fptr( myLib->resolve( "deleteStyleById" ) ) );
-  if ( !deleteStyleByIdMethod )
-  {
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "deleteStyleById" ) );
-    return false;
-  }
-  return deleteStyleByIdMethod( mDataSource, styleId, msgError );
+  return QgsProviderRegistry::instance()->deleteStyleById( mProviderKey, mDataSource, styleId, msgError );
 }
 
 
@@ -4549,20 +4509,6 @@ void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &de
 {
 
   QString sldStyle, qmlStyle;
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
-  if ( !myLib )
-  {
-    msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
-    return;
-  }
-  saveStyle_t *saveStyleExternalMethod = reinterpret_cast< saveStyle_t * >( cast_to_fptr( myLib->resolve( "saveStyle" ) ) );
-
-  if ( !saveStyleExternalMethod )
-  {
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "saveStyle" ) );
-    return;
-  }
-
   QDomDocument qmlDocument, sldDocument;
   QgsReadWriteContext context;
   exportNamedStyle( qmlDocument, msgError, context );
@@ -4579,8 +4525,9 @@ void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &de
   }
   sldStyle = sldDocument.toString();
 
-  saveStyleExternalMethod( mDataSource, qmlStyle, sldStyle, name,
-                           description, uiFileContent, useAsDefault, msgError );
+  QgsProviderRegistry::instance()->saveStyle( mProviderKey,
+      mDataSource, qmlStyle, sldStyle, name,
+      description, uiFileContent, useAsDefault, msgError );
 }
 
 
@@ -4657,25 +4604,16 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
   QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
-    if ( myLib )
+    QString qml, errorMsg;
+    qml = QgsProviderRegistry::instance()->loadStyle( mProviderKey, mDataSource, errorMsg );
+    if ( !qml.isEmpty() )
     {
-      loadStyle_t *loadStyleExternalMethod = reinterpret_cast< loadStyle_t * >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );
-      if ( loadStyleExternalMethod )
-      {
-        QString qml, errorMsg;
-        qml = loadStyleExternalMethod( mDataSource, errorMsg );
-        if ( !qml.isEmpty() )
-        {
-          QDomDocument myDocument( QStringLiteral( "qgis" ) );
-          myDocument.setContent( qml );
-          resultFlag = importNamedStyle( myDocument, errorMsg );
-          return QObject::tr( "Loaded from Provider" );
-        }
-      }
+      QDomDocument myDocument( QStringLiteral( "qgis" ) );
+      myDocument.setContent( qml );
+      resultFlag = importNamedStyle( myDocument, errorMsg );
+      return QObject::tr( "Loaded from Provider" );
     }
   }
-
   return QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
 }
 

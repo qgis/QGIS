@@ -32,6 +32,11 @@
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 
+#include "qgsprovidermetadata.h"
+#ifdef HAVE_GUI
+#include "qgsproviderguimetadata.h"
+#endif
+
 #include <QString>
 #include <QStringList>
 #include <QDomElement>
@@ -429,6 +434,22 @@ class QgsWcsDownloadHandler : public QObject
     static int sErrors; // this should be ideally per-provider...?
 };
 
+class QgsWcsProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsWcsProviderMetadata();
+    QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+};
+
+#ifdef HAVE_GUI
+class QgsWcsProviderGuiMetadata: public QgsProviderGuiMetadata
+{
+  public:
+    QgsWcsProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+};
+#endif
 
 #endif
 

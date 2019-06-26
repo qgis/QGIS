@@ -18,6 +18,7 @@
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgswcscapabilities.h"
+#include "qgsdataitemprovider.h"
 
 class QgsWCSConnectionItem : public QgsDataCollectionItem
 {
@@ -82,6 +83,17 @@ class QgsWCSRootItem : public QgsDataCollectionItem
     void onConnectionsChanged();
     void newConnection();
 #endif
+};
+
+//! Provider for WCS root data item
+class QgsWcsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "WCS" ); }
+
+    int capabilities() const override { return QgsDataProvider::Net; }
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSWCSDATAITEMS_H

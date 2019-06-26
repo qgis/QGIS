@@ -43,6 +43,7 @@
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsogrprovider.h"
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
@@ -256,19 +257,9 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   QString ext = fi.suffix();
   QString driver = QgsVectorFileWriter::driverForExtension( ext );
 
-  QLibrary ogrLib( QgsProviderRegistry::instance()->library( QStringLiteral( "ogr" ) ) );
-  if ( !ogrLib.load() )
-  {
-    return false;
-  }
-  typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type, const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem &, QString & );
-  createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( ogrLib.resolve( "createEmptyDataSource" ) );
-  if ( !createEmptyDataSource )
-  {
-    return false;
-  }
   QString createError;
-  if ( !createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs(), createError ) )
+  bool success = QgsOgrProviderUtils::createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs(), createError );
+  if ( !success )
   {
     return false;
   }

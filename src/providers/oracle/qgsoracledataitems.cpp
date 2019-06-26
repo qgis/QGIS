@@ -27,7 +27,94 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 
-QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause );
+bool deleteLayer( const QString &uri, QString &errCause )
+{
+  QgsDebugMsg( "deleting layer " + uri );
+
+  QgsDataSourceUri dsUri( uri );
+  QString ownerName = dsUri.schema();
+  QString tableName = dsUri.table();
+  QString geometryCol = dsUri.geometryColumn();
+
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  if ( ownerName != conn->currentUser() )
+  {
+    errCause = QObject::tr( "%1 not owner of the table %2." )
+               .arg( ownerName )
+               .arg( tableName );
+    conn->disconnect();
+    return false;
+  }
+
+  QSqlQuery qry( *conn );
+
+  // check the geometry column count
+  if ( !QgsOracleProvider::exec( qry, QString( "SELECT count(*)"
+                                 " FROM user_tab_columns"
+                                 " WHERE table_name=? AND data_type='SDO_GEOMETRY' AND data_type_owner='MDSYS'" ),
+                                 QVariantList() << tableName )
+       || !qry.next() )
+  {
+    errCause = QObject::tr( "Unable to determine number of geometry columns of layer %1.%2: \n%3" )
+               .arg( ownerName )
+               .arg( tableName )
+               .arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+
+  int count = qry.value( 0 ).toInt();
+
+  QString dropTable;
+  QString cleanView;
+  QVariantList args;
+  if ( !geometryCol.isEmpty() && count > 1 )
+  {
+    // the table has more geometry columns, drop just the geometry column
+    dropTable = QString( "ALTER TABLE %1 DROP COLUMN %2" )
+                .arg( QgsOracleConn::quotedIdentifier( tableName ) )
+                .arg( QgsOracleConn::quotedIdentifier( geometryCol ) );
+    cleanView = QString( "DELETE FROM mdsys.user_sdo_geom_metadata WHERE table_name=? AND column_name=?" );
+    args << tableName << geometryCol;
+  }
+  else
+  {
+    // drop the table
+    dropTable = QString( "DROP TABLE %1" )
+                .arg( QgsOracleConn::quotedIdentifier( tableName ) );
+    cleanView = QString( "DELETE FROM mdsys.user_sdo_geom_metadata WHERE table_name=%1" );
+    args << tableName;
+  }
+
+  if ( !QgsOracleProvider::exec( qry, dropTable, QVariantList() ) )
+  {
+    errCause = QObject::tr( "Unable to delete layer %1.%2: \n%3" )
+               .arg( ownerName )
+               .arg( tableName )
+               .arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+
+  if ( !QgsOracleProvider::exec( qry, cleanView, args ) )
+  {
+    errCause = QObject::tr( "Unable to clean metadata %1.%2: \n%3" )
+               .arg( ownerName )
+               .arg( tableName )
+               .arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+
+  conn->disconnect();
+  return true;
+}
 
 // ---------------------------------------------------------------------------
 QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -496,7 +583,8 @@ void QgsOracleRootItem::newConnection()
 
 QMainWindow *QgsOracleRootItem::sMainWindow = nullptr;
 
-QGISEXTERN void registerGui( QMainWindow *mainWindow )
+QgsDataItem *QgsOracleDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
-  QgsOracleRootItem::sMainWindow = mainWindow;
+  Q_UNUSED( pathIn )
+  return new QgsOracleRootItem( parentItem, "Oracle", "oracle:" );
 }

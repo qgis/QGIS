@@ -25,7 +25,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagelog.h"
 #include "qgsnewnamedialog.h"
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsbrowserdockwidget_p.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgsrasterlayer.h"
@@ -495,7 +495,10 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths )
       QgsMessageLog::logMessage( tr( "Item with path %1 no longer exists." ).arg( itemPath ) );
       return;
     }
-    if ( !item->deleteLayer() )
+    Q_NOWARN_DEPRECATED_PUSH
+    bool res = item->deleteLayer();
+    Q_NOWARN_DEPRECATED_POP
+    if ( !res )
       QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
   }
 }

@@ -586,3 +586,10 @@ QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
 
   return layerItem;
 }
+
+QgsDataItem *QgsDb2DataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn );
+  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; data item detected." ) );
+  return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
+}

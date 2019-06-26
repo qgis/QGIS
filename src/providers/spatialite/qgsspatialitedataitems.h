@@ -16,6 +16,7 @@
 #define QGSSPATIALITEDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
 
 class QgsSLLayerItem : public QgsLayerItem
 {
@@ -77,5 +78,20 @@ class QgsSLRootItem : public QgsDataCollectionItem
     void createDatabase();
 };
 
+namespace SpatiaLiteUtils
+{
+  bool createDb( const QString &dbPath, QString &errCause );
+}
+
+//! Provider for SpatiaLite root data item
+class QgsSpatiaLiteDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "SPATIALITE" ); }
+
+    int capabilities() const override { return QgsDataProvider::Database; }
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+};
 
 #endif // QGSSPATIALITEDATAITEMS_H
