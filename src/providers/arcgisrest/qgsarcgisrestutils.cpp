@@ -1381,6 +1381,15 @@ void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString
     }
   }
 
+  // Add root MapServer as layer
+  if ( serviceData.contains( QStringLiteral( "supportedImageFormatTypes" ) ) )
+  {
+    const QString name = QStringLiteral( "(%1)" ).arg( QObject::tr( "All layers" ) );
+    const QString description = serviceData.value( QStringLiteral( "Comments" ) ).toString();
+    visitor( 0, 0, name, description, parentUrl, false, authid, format );
+  }
+
+  // Add root ImageServer as layer
   if ( serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
   {
     const QString name = serviceData.value( QStringLiteral( "name" ) ).toString();
