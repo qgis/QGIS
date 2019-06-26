@@ -49,14 +49,6 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 
-#ifdef HAVE_GUI
-#include "qgswmssourceselect.h"
-#include "qgssourceselectprovider.h"
-#include "qgstilescalewidget.h"
-#include "qgsproviderguimetadata.h"
-#endif
-
-
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -80,8 +72,8 @@
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WMS provider")
 #define QGS_ERROR(message) QgsError(message,"WMS provider")
 
-static QString WMS_KEY = QStringLiteral( "wms" );
-static QString WMS_DESCRIPTION = QStringLiteral( "OGC Web Map Service version 1.3 data provider" );
+QString QgsWmsProvider::WMS_KEY = QStringLiteral( "wms" );
+QString QgsWmsProvider::WMS_DESCRIPTION = QStringLiteral( "OGC Web Map Service version 1.3 data provider" );
 
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
@@ -4228,44 +4220,11 @@ void QgsCachedImageFetcher::start()
 }
 
 
-#ifdef HAVE_GUI
-
-//! Provider for WMS layers source select
-class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "wms" ); }
-    QString text() const override { return QStringLiteral( "WMS/WMTS" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsWMSSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsWmsProviderGuiMetadata(): QgsProviderGuiMetadata( WMS_KEY ) {}
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsWmsSourceSelectProvider;
-      return providers;
-    }
-
-    void registerGui( QMainWindow *widget ) override
-    {
-      QgsTileScaleWidget::showTileScale( widget );
-    }
-};
-#endif
+// -----------------------
 
 
 QgsWmsProviderMetadata::QgsWmsProviderMetadata()
-  : QgsProviderMetadata( WMS_KEY, WMS_DESCRIPTION )
+  : QgsProviderMetadata( QgsWmsProvider::WMS_KEY, QgsWmsProvider::WMS_DESCRIPTION )
 {
 }
 
@@ -4284,10 +4243,3 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsWmsProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsWmsProviderGuiMetadata();
-}
-#endif
