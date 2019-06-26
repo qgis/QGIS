@@ -26,7 +26,7 @@ from builtins import range
 
 from functools import cmp_to_key
 
-from qgis.PyQt.QtCore import QRegExp, QFile
+from qgis.PyQt.QtCore import QRegExp, QFile, QCoreApplication
 from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri
 
 from ..connector import DBConnector
@@ -74,7 +74,7 @@ class PostGisDBConnector(DBConnector):
             for i in range(3):
                 (ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
                 if not ok:
-                    raise ConnectionError(e)
+                    raise ConnectionError(QCoreApplication.translate('db_manager', 'Could not connect to database as user {user}').format(user=username))
 
                 if username:
                     uri.setUsername(username)
