@@ -3440,8 +3440,6 @@ void QgsCentroidFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 
 void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( rings );
-
   if ( !mPointOnAllParts )
   {
     const QgsFeature *feature = context.feature();
@@ -3475,7 +3473,7 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<Q
 
   if ( mPointOnAllParts || ( context.geometryPartNum() == mBiggestPartIndex ) )
   {
-    QPointF centroid = mPointOnSurface ? QgsSymbolLayerUtils::polygonPointOnSurface( points ) : QgsSymbolLayerUtils::polygonCentroid( points );
+    QPointF centroid = mPointOnSurface ? QgsSymbolLayerUtils::polygonPointOnSurface( points, rings ) : QgsSymbolLayerUtils::polygonCentroid( points );
     mMarker->renderPoint( centroid, context.feature(), context.renderContext(), -1, context.selected() );
   }
 }

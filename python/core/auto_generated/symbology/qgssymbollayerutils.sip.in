@@ -661,9 +661,9 @@ Determines an SVG symbol's name from its ``path``.
 Calculate the centroid point of a QPolygonF
 %End
 
-    static QPointF polygonPointOnSurface( const QPolygonF &points );
+    static QPointF polygonPointOnSurface( const QPolygonF &points, QList<QPolygonF> *rings = 0 );
 %Docstring
-Calculate a point within of a QPolygonF
+Calculate a point on the surface of a QPolygonF
 %End
 
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
