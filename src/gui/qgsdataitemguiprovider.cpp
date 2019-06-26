@@ -15,6 +15,8 @@
 
 #include "qgsdataitemguiprovider.h"
 
+#include "qgsdataitem.h"
+
 //
 // QgsDataItemGuiContext
 //
@@ -60,4 +62,14 @@ bool QgsDataItemGuiProvider::acceptDrop( QgsDataItem *, QgsDataItemGuiContext )
 bool QgsDataItemGuiProvider::handleDrop( QgsDataItem *, QgsDataItemGuiContext, const QMimeData *, Qt::DropAction )
 {
   return false;
+}
+
+void QgsDataItemGuiProvider::setItemForAction( QAction *action, QgsDataItem *item )
+{
+  action->setData( QVariant::fromValue( QPointer< QgsDataItem >( item ) ) );
+}
+
+QPointer<QgsDataItem> QgsDataItemGuiProvider::itemFromAction( QAction *action )
+{
+  return action ? action->data().value<QPointer< QgsDataItem >>() : QPointer<QgsDataItem>();
 }

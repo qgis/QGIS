@@ -23,6 +23,7 @@
 #include <QMimeData>
 #include <QString>
 #include <QMenu>
+#include <QPointer>
 
 class QgsDataItem;
 class QgsMessageBar;
@@ -163,6 +164,15 @@ class GUI_EXPORT QgsDataItemGuiProvider
      * \since QGIS 3.10
      */
     virtual bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action );
+
+    //
+    // utility functions
+    //
+
+    //! Helper function to stuff pointer to QgsDataItem into QAction - useful when creating actions for context menu
+    SIP_SKIP static void setItemForAction( QAction *action, QgsDataItem *item );
+    //! Helper function to get pointer to QgsDataItem out of QAction - useful in slots of context menu actions
+    SIP_SKIP static QPointer<QgsDataItem> itemFromAction( QAction *action );
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H
