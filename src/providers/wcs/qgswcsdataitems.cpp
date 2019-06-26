@@ -21,7 +21,6 @@
 
 #ifdef HAVE_GUI
 #include "qgswcssourceselect.h"
-#include "qgsnewhttpconnection.h"
 #endif
 
 #include <QFileInfo>
@@ -80,41 +79,6 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
 
   return ( mPath == o->mPath && mName == o->mName );
 }
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsWCSConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsWCSConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsWCSConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsWCSConnectionItem::editConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "qgis/connections-wcs/" ), mName );
-
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refreshConnections();
-  }
-}
-
-void QgsWCSConnectionItem::deleteConnection()
-{
-  QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), mName );
-  // the parent should be updated
-  mParent->refreshConnections();
-}
-#endif
 
 
 // ---------------------------------------------------------------------------
@@ -235,17 +199,6 @@ QVector<QgsDataItem *>QgsWCSRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWCSRootItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsWCSRootItem::newConnection );
-  lst.append( actionNew );
-
-  return lst;
-}
-
 
 QWidget *QgsWCSRootItem::paramWidget()
 {
@@ -259,15 +212,6 @@ void QgsWCSRootItem::onConnectionsChanged()
   refresh();
 }
 
-void QgsWCSRootItem::newConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "qgis/connections-wcs/" ) );
-
-  if ( nc.exec() )
-  {
-    refreshConnections();
-  }
-}
 #endif
 
 // ---------------------------------------------------------------------------
