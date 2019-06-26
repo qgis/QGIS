@@ -27,7 +27,7 @@
 #include <QMenu>
 
 QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
-  QgsBrowserModel *browserModel,
+  QgsBrowserGuiModel *browserModel,
   bool setFilterByLayerType,
   QgsMapLayerType layerType,
   QWidget *parent )
@@ -35,7 +35,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
 {
   if ( ! browserModel )
   {
-    mBrowserModel = qgis::make_unique<QgsBrowserModel>();
+    mBrowserModel = qgis::make_unique<QgsBrowserGuiModel>();
     mBrowserModel->initialize();
     mOwnModel = true;
   }
@@ -132,7 +132,7 @@ void QgsDataSourceSelectDialog::showEvent( QShowEvent *e )
   {
     QModelIndexList items = mBrowserProxyModel.match(
                               mBrowserProxyModel.index( 0, 0 ),
-                              QgsBrowserModel::PathRole,
+                              QgsBrowserGuiModel::PathRole,
                               QVariant::fromValue( lastSelectedPath ),
                               1,
                               Qt::MatchRecursive );
@@ -277,7 +277,7 @@ void QgsDataSourceSelectDialog::onLayerSelected( const QModelIndex &index )
         isLayerCompatible = true;
         mUri = layerItem->mimeUri();
         // Store last viewed item
-        QgsSettings().setValue( QStringLiteral( "datasourceSelectLastSelectedItem" ),  mBrowserProxyModel.data( index, QgsBrowserModel::PathRole ).toString(), QgsSettings::Section::Gui );
+        QgsSettings().setValue( QStringLiteral( "datasourceSelectLastSelectedItem" ),  mBrowserProxyModel.data( index, QgsBrowserGuiModel::PathRole ).toString(), QgsSettings::Section::Gui );
       }
     }
   }

@@ -258,12 +258,12 @@ bool QgsPostgresProjectStorage::readProjectStorageMetadata( const QString &uri, 
 
 #include "qgspostgresprojectstoragedialog.h"
 
-QString QgsPostgresProjectStorage::visibleName()
+QString QgsPostgresProjectStorageGuiProvider::visibleName()
 {
   return QObject::tr( "PostgreSQL" );
 }
 
-QString QgsPostgresProjectStorage::showLoadGui()
+QString QgsPostgresProjectStorageGuiProvider::showLoadGui()
 {
   QgsPostgresProjectStorageDialog dlg( false );
   if ( !dlg.exec() )
@@ -272,7 +272,7 @@ QString QgsPostgresProjectStorage::showLoadGui()
   return dlg.currentProjectUri();
 }
 
-QString QgsPostgresProjectStorage::showSaveGui()
+QString QgsPostgresProjectStorageGuiProvider::showSaveGui()
 {
   QgsPostgresProjectStorageDialog dlg( true );
   if ( !dlg.exec() )

@@ -28,6 +28,7 @@
 #include "qgswmsprovider.h"
 #include "qgswmsconnection.h"
 #include "qgscoordinatetransform.h"
+#include "qgswmsdataitems.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
@@ -51,6 +52,8 @@
 #ifdef HAVE_GUI
 #include "qgswmssourceselect.h"
 #include "qgssourceselectprovider.h"
+#include "qgstilescalewidget.h"
+#include "qgsproviderguimetadata.h"
 #endif
 
 
@@ -3529,42 +3532,10 @@ void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64
   emit statusChanged( msg );
 }
 
-
-
-/**
- * Class factory to return a pointer to a newly created
- * QgsWmsProvider object
- */
-QGISEXTERN QgsWmsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWmsProvider( *uri, options );
+  return new QgsWmsProvider( uri, options );
 }
-
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
-{
-  return WMS_KEY;
-}
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return WMS_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
 
 // -----------------
 
@@ -4274,15 +4245,49 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+  public:
+    QgsWmsProviderGuiMetadata(): QgsProviderGuiMetadata( WMS_KEY ) {}
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
+    {
+      QList<QgsSourceSelectProvider *> providers;
+      providers << new QgsWmsSourceSelectProvider;
+      return providers;
+    }
 
-  *providers
-      << new QgsWmsSourceSelectProvider;
+    void registerGui( QMainWindow *widget ) override
+    {
+      QgsTileScaleWidget::showTileScale( widget );
+    }
+};
+#endif
+
+
+QgsWmsProviderMetadata::QgsWmsProviderMetadata()
+  : QgsProviderMetadata( WMS_KEY, WMS_DESCRIPTION )
+{
+}
+
+QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
+{
+  QList<QgsDataItemProvider *> providers;
+
+  providers
+      << new QgsWmsDataItemProvider
+      << new QgsXyzTileDataItemProvider;
 
   return providers;
 }
-#endif
 
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsWmsProviderMetadata();
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
+{
+  return new QgsWmsProviderGuiMetadata();
+}
+#endif

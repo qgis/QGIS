@@ -700,7 +700,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapLayersByName()
      * \see mapLayers()
      */
-    QgsMapLayer *mapLayer( const QString &layerId ) const;
+    Q_INVOKABLE QgsMapLayer *mapLayer( const QString &layerId ) const;
 
 #ifndef SIP_RUN
 

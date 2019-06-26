@@ -349,20 +349,3 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
 
   return items;
 }
-
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsWFSSourceSelect( parent, fl, widgetMode );
-}
-#endif
-
-QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
-{
-  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
-
-  *providers << new QgsWfsDataItemProvider;
-
-  return providers;
-}

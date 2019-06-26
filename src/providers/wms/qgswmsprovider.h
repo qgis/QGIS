@@ -24,6 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkreplyparser.h"
 #include "qgswmscapabilities.h"
+#include "qgsprovidermetadata.h"
 
 #include <QString>
 #include <QStringList>
@@ -567,6 +568,14 @@ class QgsWmsStatistics
 };
 
 Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
+
+class QgsWmsProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsWmsProviderMetadata();
+    QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+};
 
 #endif
 

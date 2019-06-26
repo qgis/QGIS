@@ -67,8 +67,6 @@ SET_TARGET_PROPERTIES(${QGIS_QUICK_APP_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
 TARGET_COMPILE_DEFINITIONS(${QGIS_QUICK_APP_NAME} PRIVATE "-DQT_NO_FOREACH")
 ADD_DEPENDENCIES(${QGIS_QUICK_APP_NAME}
     qgis_quick_plugin
-    ogrprovider
-    gdalprovider
     spatialiteprovider
     virtuallayerprovider)
 

@@ -131,6 +131,7 @@ class QgsLayerStylingWidget;
 class QgsDiagramProperties;
 class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
+class QgsBrowserGuiModel;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
 class QgsLayoutQptDropHandler;
@@ -942,7 +943,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Returns the shared application browser model.
      */
-    QgsBrowserModel *browserModel();
+    QgsBrowserGuiModel *browserModel();
 
     /*
      * Change data source for \a layer, a data source selection dialog
@@ -1987,6 +1988,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
 
+    //! Tries to save the current project to project storage at given URI
+    void saveProjectToProjectStorage( const QString &uri );
+
     //! Create the option dialog
     QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
 
@@ -2313,7 +2317,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QTimer mRenderProgressBarTimer;
     QMetaObject::Connection mRenderProgressBarTimerConnection;
 
-    QgsBrowserModel *mBrowserModel = nullptr;
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
 
     void setupDuplicateFeaturesAction();
 

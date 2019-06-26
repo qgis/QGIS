@@ -29,8 +29,6 @@
 #include "qgslayermetadata.h"
 #include "qgserror.h"
 
-typedef int dataCapabilities_t(); // SIP_SKIP
-
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 
@@ -66,6 +64,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
   public:
 
+    // TODO QGIS 4: (re)move DataCapability as this enum is really meant for data items rather than data providers
+
+    /**
+     * Used in browser model to understand which items for which providers should be populated
+     */
     enum DataCapability
     {
       NoDataCapabilities  = 0,
@@ -74,7 +77,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       Database            = 1 << 2,
       Net                 = 1 << 3  // Internet source
     };
-    Q_ENUM( DataCapability )
+    Q_DECLARE_FLAGS( DataCapabilities, DataCapability )
 
     /**
      * Properties are used to pass custom configuration options into data providers.

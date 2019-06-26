@@ -3885,32 +3885,41 @@ QPointF QgsSymbolLayerUtils::polygonCentroid( const QPolygonF &points )
   return QPointF( cx, cy );
 }
 
-QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points )
+QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, QList<QPolygonF> *rings )
 {
   QPointF centroid = QgsSymbolLayerUtils::polygonCentroid( points );
 
-  // check if centroid inside in polygon
-  if ( !QgsSymbolLayerUtils::pointInPolygon( points, centroid ) )
+  if ( ( rings && rings->count() > 0 ) || !pointInPolygon( points, centroid ) )
   {
     unsigned int i, pointCount = points.count();
-
     QgsPolylineXY polyline( pointCount );
     for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( points[i].x(), points[i].y() );
-
     QgsGeometry geom = QgsGeometry::fromPolygonXY( QgsPolygonXY() << polyline );
     if ( !geom.isNull() )
     {
-      QgsGeometry pointOnSurfaceGeom = geom.pointOnSurface();
+      if ( rings )
+      {
+        QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
+        for ( ; ringIt != rings->constEnd(); ++ringIt )
+        {
+          pointCount = ( *ringIt ).count();
+          QgsPolylineXY polyline( pointCount );
+          for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( ( *ringIt )[i].x(), ( *ringIt )[i].y() );
+          geom.addRing( polyline );
+        }
+      }
 
+      QgsGeometry pointOnSurfaceGeom = geom.pointOnSurface();
       if ( !pointOnSurfaceGeom.isNull() )
       {
         QgsPointXY point = pointOnSurfaceGeom.asPoint();
-
-        return QPointF( point.x(), point.y() );
+        centroid.setX( point.x() );
+        centroid.setY( point.y() );
       }
     }
   }
-  return centroid;
+
+  return QPointF( centroid.x(), centroid.y() );
 }
 
 bool QgsSymbolLayerUtils::pointInPolygon( const QPolygonF &points, QPointF point )

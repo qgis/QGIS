@@ -50,7 +50,7 @@ class CORE_EXPORT QgsDataItemProvider
     virtual QString name() = 0;
 
     //! Returns combination of flags from QgsDataProvider::DataCapabilities
-    virtual int capabilities() = 0;
+    virtual int capabilities() const = 0;
 
     /**
      * Create a new instance of QgsDataItem (or NULLPTR) for given path and parent item.

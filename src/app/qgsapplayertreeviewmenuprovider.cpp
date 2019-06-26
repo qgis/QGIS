@@ -42,7 +42,6 @@
 #include "qgsxmlutils.h"
 
 
-
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
   , mCanvas( canvas )

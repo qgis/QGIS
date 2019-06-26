@@ -5,6 +5,7 @@ ENDIF(NOT WIN32)
 
 SET(QGIS_APP_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/time.c
 
   qgisapp.cpp
   qgisappinterface.cpp

@@ -61,6 +61,12 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
  * QgsBrowserModel models are not initially populated and use a deferred initialization
  * approach. After constructing a QgsBrowserModel, a call must be made
  * to initialize() in order to populate the model.
+ *
+ * \note Since QGIS 3.10 it is recommended to use QgsBrowserGuiModel from GUI library.
+ * Implementation of data items used from QgsBrowserModel should not trigger any GUI
+ * operations such as opening of widgets/dialogs or showing message boxes. Such actions
+ * should be implemented in a new QgsDataItemGuiProvider subclass which is used
+ * by QgsBrowserGuiModel (but not by QgsBrowserModel).
  */
 class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 {

@@ -38,7 +38,7 @@ or directory being inspected, parent item is a valid QgsDirectoryItem
 Human-readable name of the provider name
 %End
 
-    virtual int capabilities() = 0;
+    virtual int capabilities() const = 0;
 %Docstring
 Returns combination of flags from QgsDataProvider.DataCapabilities
 %End

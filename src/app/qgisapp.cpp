@@ -79,9 +79,11 @@
 #include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsgeometryvalidationservice.h"
+#include "qgssourceselectproviderregistry.h"
+#include "qgssourceselectprovider.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -269,8 +271,11 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsprojectlayergroupdialog.h"
 #include "qgsprojectproperties.h"
 #include "qgsprojectstorage.h"
+#include "qgsprojectstorageguiprovider.h"
+#include "qgsprojectstorageguiregistry.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsproviderregistry.h"
+#include "qgsproviderguiregistry.h"
 #include "qgspythonrunner.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsquerybuilder.h"
@@ -1046,7 +1051,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
   endProfile();
 
-  mBrowserModel = new QgsBrowserModel( this );
+  mBrowserModel = new QgsBrowserGuiModel( this );
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   mBrowserWidget->setMessageBar( mInfoBar );
@@ -1428,7 +1433,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerShortcuts( QStringLiteral( "Ctrl+Alt+]" ), QStringLiteral( "mAttributeTableNextEditedFeature" ), tr( "Edit next feature in attribute table" ) );
   registerShortcuts( QStringLiteral( "Ctrl+Alt+}" ), QStringLiteral( "mAttributeTableLastEditedFeature" ), tr( "Edit last feature in attribute table" ) );
 
-  QgsProviderRegistry::instance()->registerGuis( this );
+  QgsGui::providerGuiRegistry()->registerGuis( this );
 
   setupLayoutManagerConnections();
 
@@ -1897,7 +1902,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
   }
 }
 
-QgsBrowserModel *QgisApp::browserModel()
+QgsBrowserGuiModel *QgisApp::browserModel()
 {
   return mBrowserModel;
 }
@@ -5356,7 +5361,7 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
 void QgisApp::addVirtualLayer()
 {
   // show the virtual layer dialog
-  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "virtual" ), this ) );
+  QDialog *dts = dynamic_cast<QDialog *>( QgsGui::sourceSelectProviderRegistry()->createSelectionWidget( QStringLiteral( "virtual" ), this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded ) );
   if ( !dts )
   {
     QMessageBox::warning( this, tr( "Add Virtual Layer" ), tr( "Cannot get virtual layer select dialog from provider." ) );
@@ -14492,7 +14497,6 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
 {
   menu->clear();
-  const QList<QgsProjectStorage *> storages = QgsApplication::projectStorageRegistry()->projectStorages();
 
   if ( saving )
   {
@@ -14543,9 +14547,40 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
     } );
   }
 
+  const QList<QgsProjectStorageGuiProvider *> storageGuiProviders = QgsGui::projectStorageGuiRegistry()->projectStorages();
+  for ( QgsProjectStorageGuiProvider *storageGuiProvider : storageGuiProviders )
+  {
+    QString name = storageGuiProvider->visibleName();
+    if ( name.isEmpty() )
+      continue;
+    QAction *action = menu->addAction( name + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
+    if ( saving )
+    {
+      connect( action, &QAction::triggered, this, [this, storageGuiProvider]
+      {
+        QString uri = storageGuiProvider->showSaveGui();
+        if ( !uri.isEmpty() )
+          saveProjectToProjectStorage( uri );
+      } );
+    }
+    else
+    {
+      connect( action, &QAction::triggered, this, [this, storageGuiProvider]
+      {
+        QString uri = storageGuiProvider->showLoadGui();
+        if ( !uri.isEmpty() )
+          addProject( uri );
+      } );
+    }
+  }
+
+  // support legacy API (before 3.10 core and gui related functions were mixed together in QgsProjectStorage)
+  const QList<QgsProjectStorage *> storages = QgsApplication::projectStorageRegistry()->projectStorages();
   for ( QgsProjectStorage *storage : storages )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     QString name = storage->visibleName();
+    Q_NOWARN_DEPRECATED_POP
     if ( name.isEmpty() )
       continue;
     QAction *action = menu->addAction( name + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
@@ -14553,47 +14588,54 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
     {
       connect( action, &QAction::triggered, this, [this, storage]
       {
+        Q_NOWARN_DEPRECATED_PUSH
         QString uri = storage->showSaveGui();
+        Q_NOWARN_DEPRECATED_POP
         if ( !uri.isEmpty() )
-        {
-          QgsProject::instance()->setFileName( uri );
-          if ( QgsProject::instance()->write() )
-          {
-            setTitleBarText_( *this ); // update title bar
-            mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( uri ), 5000 );
-            // add this to the list of recently used project files
-            saveRecentProjectPath();
-            mProjectLastModified = QgsProject::instance()->lastModified();
-          }
-          else
-          {
-            QMessageBox msgbox;
-
-            msgbox.setWindowTitle( tr( "Save Project" ) );
-            msgbox.setText( QgsProject::instance()->error() );
-            msgbox.setIcon( QMessageBox::Icon::Critical );
-            msgbox.addButton( QMessageBox::Cancel );
-            msgbox.addButton( QMessageBox::Save );
-            msgbox.setButtonText( QMessageBox::Save, tr( "Save as Local File" ) );
-            msgbox.setDefaultButton( QMessageBox::Cancel );
-            msgbox.exec();
-
-            if ( msgbox.result() == QMessageBox::Save )
-            {
-              fileSaveAs();
-            }
-          }
-        }
+          saveProjectToProjectStorage( uri );
       } );
     }
     else
     {
       connect( action, &QAction::triggered, this, [this, storage]
       {
+        Q_NOWARN_DEPRECATED_PUSH
         QString uri = storage->showLoadGui();
+        Q_NOWARN_DEPRECATED_POP
         if ( !uri.isEmpty() )
           addProject( uri );
       } );
+    }
+  }
+}
+
+void QgisApp::saveProjectToProjectStorage( const QString &uri )
+{
+  QgsProject::instance()->setFileName( uri );
+  if ( QgsProject::instance()->write() )
+  {
+    setTitleBarText_( *this ); // update title bar
+    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( uri ), 5000 );
+    // add this to the list of recently used project files
+    saveRecentProjectPath();
+    mProjectLastModified = QgsProject::instance()->lastModified();
+  }
+  else
+  {
+    QMessageBox msgbox;
+
+    msgbox.setWindowTitle( tr( "Save Project" ) );
+    msgbox.setText( QgsProject::instance()->error() );
+    msgbox.setIcon( QMessageBox::Icon::Critical );
+    msgbox.addButton( QMessageBox::Cancel );
+    msgbox.addButton( QMessageBox::Save );
+    msgbox.setButtonText( QMessageBox::Save, tr( "Save as Local File" ) );
+    msgbox.setDefaultButton( QMessageBox::Cancel );
+    msgbox.exec();
+
+    if ( msgbox.result() == QMessageBox::Save )
+    {
+      fileSaveAs();
     }
   }
 }

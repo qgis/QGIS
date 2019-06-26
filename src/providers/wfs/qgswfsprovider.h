@@ -28,6 +28,11 @@
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsdatasourceuri.h"
 
+#include "qgsprovidermetadata.h"
+#ifdef HAVE_GUI
+#include "qgsproviderguimetadata.h"
+#endif
+
 class QgsRectangle;
 class QgsWFSSharedData;
 
@@ -187,5 +192,23 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     bool processSQL( const QString &sqlString, QString &errorMsg, QString &warningMsg );
 };
+
+class QgsWfsProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsWfsProviderMetadata();
+    void initProvider() override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QgsWFSProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+};
+
+#ifdef HAVE_GUI
+class QgsWfsProviderGuiMetadata: public QgsProviderGuiMetadata
+{
+  public:
+    QgsWfsProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+};
+#endif
 
 #endif /* QGSWFSPROVIDER_H */
