@@ -443,6 +443,14 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
     tmpPath.chop( 3 );
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
+
+// GDAL 3.1 Shapefile driver directly handles .shp.zip files
+  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) &&
+       GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
+  {
+    suffix = QStringLiteral( "shp.zip" );
+  }
+
   // extract basename with extension
   info.setFile( path );
   QString name = info.fileName();
@@ -551,7 +559,8 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   static QStringList sSkipFastTrackExtensions { QStringLiteral( "xlsx" ),
       QStringLiteral( "ods" ),
       QStringLiteral( "csv" ),
-      QStringLiteral( "nc" ) };
+      QStringLiteral( "nc" ),
+      QStringLiteral( "shp.zip" ) };
 
   // Fast track: return item without testing if:
   // scanExtSetting or zipfile and scan zip == "Basic scan"
