@@ -43,6 +43,9 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setEditTriggers( EditKeyPressed );
   setExpandsOnDoubleClick( false ); // normally used for other actions
 
+  // If vertically scrolling by item, legend graphics can get clipped
+  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
 
