@@ -45,7 +45,7 @@
 #include <QPainter>
 #include <QNetworkCacheMetaData>
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mapserver" );
+static const QString TEXT_PROVIDER_KEY = QStringLiteral( "arcgismapserver" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS MapServer data provider" );
 
 //! a helper class for ordering tile requests according to the distance from view center
