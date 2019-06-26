@@ -18,6 +18,7 @@
 #include "qgswcssourceselect.h"
 #include "qgssourceselectprovider.h"
 #include "qgsproviderguimetadata.h"
+#include "qgswcsdataitemguiprovider.h"
 
 
 //! Provider for WCS layers source select
@@ -53,7 +54,8 @@ class QgsWcsProviderGuiMetadata: public QgsProviderGuiMetadata
 
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
     {
-      return QList<QgsDataItemGuiProvider *>();
+      return QList<QgsDataItemGuiProvider *>()
+             << new QgsWcsDataItemGuiProvider;
     }
 };
 
