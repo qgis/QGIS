@@ -48,6 +48,7 @@ class retile(GdalAlgorithm):
     FORMAT = 'FORMAT'
     RESAMPLING = 'RESAMPLING'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     DATA_TYPE = 'DATA_TYPE'
     DELIMITER = 'DELIMITER'
     ONLY_PYRAMIDS = 'ONLY_PYRAMIDS'
@@ -113,6 +114,11 @@ class retile(GdalAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         params.append(options_param)
+
+        params.append(QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True))
 
         params.append(QgsProcessingParameterEnum(self.DATA_TYPE,
                                                  self.tr('Output data type'),
@@ -183,6 +189,10 @@ class retile(GdalAlgorithm):
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         if self.parameterAsBoolean(parameters, self.DIR_FOR_ROW, context):
             arguments.append('-pyramidOnly')
