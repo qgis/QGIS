@@ -32,6 +32,7 @@ SET (WFS_MOC_HDRS
 
 IF (WITH_GUI)
   SET(WFS_SRCS ${WFS_SRCS}
+    qgswfsprovidergui.cpp
     qgswfssourceselect.cpp
     qgswfsnewconnection.cpp
   )

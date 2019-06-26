@@ -35,11 +35,6 @@
 #include "qgswfsutils.h"
 #include "qgssettings.h"
 
-#ifdef HAVE_GUI
-#include "qgswfssourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
-
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDomNodeList>
@@ -53,8 +48,9 @@
 
 #include <cfloat>
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "WFS" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
+const QString QgsWFSProvider::WFS_PROVIDER_KEY = QStringLiteral( "WFS" );
+const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
+
 
 QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities::Capabilities &caps )
   : QgsVectorDataProvider( uri, options )
@@ -1577,12 +1573,12 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
 
 QString QgsWFSProvider::name() const
 {
-  return TEXT_PROVIDER_KEY;
+  return WFS_PROVIDER_KEY;
 }
 
 QString QgsWFSProvider::description() const
 {
-  return TEXT_PROVIDER_DESCRIPTION;
+  return WFS_PROVIDER_DESCRIPTION;
 }
 
 QgsVectorDataProvider::Capabilities QgsWFSProvider::capabilities() const
@@ -1901,47 +1897,11 @@ QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-#ifdef HAVE_GUI
-
-//! Provider for WFS layers source select
-class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "WFS" ); }
-    QString text() const override { return QObject::tr( "WFS" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsWFSSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-QgsWfsProviderGuiMetadata::QgsWfsProviderGuiMetadata():
-  QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsWfsProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsWfsSourceSelectProvider;
-  return providers;
-}
-#endif
 
 QgsWfsProviderMetadata::QgsWfsProviderMetadata():
-  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION ) {}
+  QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsWfsProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsWfsProviderGuiMetadata();
-}
-#endif
