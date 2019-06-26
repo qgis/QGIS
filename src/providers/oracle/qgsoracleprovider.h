@@ -374,12 +374,12 @@ class QgsOracleProviderMetadata: public QgsProviderMetadata
     void cleanupProvider();
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
         const QgsFields &fields, QgsWkbTypes::Type wkbType,
-        const QgsCoordinateReferenceSystem *srs, bool overwrite,
+        const QgsCoordinateReferenceSystem &srs, bool overwrite,
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
         const QMap<QString, QVariant> *options ) override;
 
     QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
-    QList<QgsDataItemProvider *> *dataItemProviders() const override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
 
 #ifdef HAVE_GUI

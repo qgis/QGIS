@@ -3050,10 +3050,10 @@ QgsOracleProvider *QgsOracleProviderMetadata::createProvider(
   return new QgsOracleProvider( uri, options );
 }
 
-QList< QgsDataItemProvider * > *QgsOracleProviderMetadata::dataItemProviders() const
+QList< QgsDataItemProvider * > QgsOracleProviderMetadata::dataItemProviders() const
 {
-  QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
-  *providers << new QgsOracleDataItemProvider;
+  QList< QgsDataItemProvider * > providers;
+  providers << new QgsOracleDataItemProvider;
   return providers;
 }
 
@@ -3062,14 +3062,14 @@ QList< QgsDataItemProvider * > *QgsOracleProviderMetadata::dataItemProviders() c
 QgsVectorLayerExporter::ExportError QgsOracleProviderMetadata::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
-    const QgsCoordinateReferenceSystem *srs,
+    const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> &oldToNewAttrIdxMap,
     QString &errorMessage,
     const QMap<QString, QVariant> *options )
 {
   return QgsOracleProvider::createEmptyLayer(
-           uri, fields, wkbType, srs, overwrite,
+           uri, fields, wkbType, &srs, overwrite,
            &oldToNewAttrIdxMap, &errorMessage, options
          );
 }
