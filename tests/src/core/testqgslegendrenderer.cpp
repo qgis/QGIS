@@ -131,6 +131,8 @@ class TestQgsLegendRenderer : public QObject
     void testCenterAlignTextRightAlignSymbol();
     void testRightAlignTextRightAlignSymbol();
 
+    void testGroupHeadingSpacing();
+
     void testMapUnits();
     void testTallSymbol();
     void testLineSpacing();
@@ -421,6 +423,28 @@ void TestQgsLegendRenderer::testRightAlignTextRightAlignSymbol()
   settings.setColumnCount( 2 );
   _renderLegend( QStringLiteral( "legend_two_cols_right_align_symbol_right_align_text" ), &legendModel, settings );
   QVERIFY( _verifyImage( QStringLiteral( "legend_two_cols_right_align_symbol_right_align_text" ), mReport ) );
+}
+
+void TestQgsLegendRenderer::testGroupHeadingSpacing()
+{
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+  settings.rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Top, 5 );
+  settings.rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Bottom, 17 );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, 13 );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Bottom, 9 );
+  settings.setSymbolAlignment( Qt::AlignRight );
+  _setStandardTestFont( settings );
+  _renderLegend( QStringLiteral( "legend_group_heading_spacing" ), &legendModel, settings );
+  QVERIFY( _verifyImage( QStringLiteral( "legend_group_heading_spacing" ), mReport ) );
+
 }
 
 void TestQgsLegendRenderer::testRightAlignText()

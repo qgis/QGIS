@@ -83,7 +83,9 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mWmsLegendHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mWmsLegendHeightSpinBox_valueChanged );
   connect( mTitleSpaceBottomSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mTitleSpaceBottomSpinBox_valueChanged );
   connect( mGroupSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mGroupSpaceSpinBox_valueChanged );
+  connect( mSpaceBelowGroupHeadingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceBelowGroupHeadingChanged );
   connect( mLayerSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mLayerSpaceSpinBox_valueChanged );
+  connect( mSpaceBelowSubgroupHeadingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceBelowSubGroupHeadingChanged );
   connect( mSymbolSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSymbolSpaceSpinBox_valueChanged );
   connect( mIconLabelSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
   connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutLegendWidget::mFontColorButton_colorChanged );
@@ -123,6 +125,9 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mArrangementCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::arrangementChanged );
   mArrangementCombo->customiseAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsLeft.svg" ) ) );
   mArrangementCombo->customiseAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsRight.svg" ) ) );
+
+  mSpaceBelowGroupHeadingSpinBox->setClearValue( 0 );
+  mSpaceBelowSubgroupHeadingSpinBox->setClearValue( 0 );
 
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
@@ -198,7 +203,9 @@ void QgsLayoutLegendWidget::setGuiElements()
   mWmsLegendHeightSpinBox->setValue( mLegend->wmsLegendHeight() );
   mTitleSpaceBottomSpinBox->setValue( mLegend->style( QgsLegendStyle::Title ).margin( QgsLegendStyle::Bottom ) );
   mGroupSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).margin( QgsLegendStyle::Top ) );
+  mSpaceBelowGroupHeadingSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).margin( QgsLegendStyle::Bottom ) );
   mLayerSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Subgroup ).margin( QgsLegendStyle::Top ) );
+  mSpaceBelowSubgroupHeadingSpinBox->setValue( mLegend->style( QgsLegendStyle::Subgroup ).margin( QgsLegendStyle::Bottom ) );
   // We keep Symbol and SymbolLabel Top in sync for now
   mSymbolSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Top ) );
   mIconLabelSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left ) );
@@ -422,11 +429,23 @@ void QgsLayoutLegendWidget::mGroupSpaceSpinBox_valueChanged( double d )
   }
 }
 
+void QgsLayoutLegendWidget::spaceBelowGroupHeadingChanged( double space )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Group Space" ), QgsLayoutItem::UndoLegendGroupSpace );
+    mLegend->rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Bottom, space );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
 void QgsLayoutLegendWidget::mLayerSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
-    mLegend->beginCommand( tr( "Change Layer Space" ), QgsLayoutItem::UndoLegendLayerSpace );
+    mLegend->beginCommand( tr( "Change Subgroup Space" ), QgsLayoutItem::UndoLegendLayerSpace );
     mLegend->rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, d );
     mLegend->adjustBoxSize();
     mLegend->update();
@@ -502,6 +521,18 @@ void QgsLayoutLegendWidget::itemFontChanged()
   {
     mLegend->beginCommand( tr( "Change Item Font" ), QgsLayoutItem::UndoLegendItemFont );
     mLegend->setStyleFont( QgsLegendStyle::SymbolLabel, mItemFontButton->currentFont() );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsLayoutLegendWidget::spaceBelowSubGroupHeadingChanged( double space )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Subgroup Space" ), QgsLayoutItem::UndoLegendLayerSpace );
+    mLegend->rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Bottom, space );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
