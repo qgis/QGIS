@@ -728,6 +728,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, mRequestHeaders, feedback, &contentType );
         if ( !mError.isEmpty() )
         {
+          p.end();
           mCachedImage = QImage();
           if ( feedback )
             feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
@@ -736,6 +737,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         else if ( contentType.startsWith( QLatin1String( "application/json" ) ) )
         {
           // if we get a JSON response, something went wrong (e.g. authentication error)
+          p.end();
           mCachedImage = QImage();
 
           QJsonParseError err;
