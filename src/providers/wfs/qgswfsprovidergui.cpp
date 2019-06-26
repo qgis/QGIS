@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswfsprovider.h"
+#include "qgswfsdataitemguiprovider.h"
 #include "qgswfssourceselect.h"
 #include "qgssourceselectprovider.h"
 #include "qgsproviderguimetadata.h"
@@ -52,7 +53,8 @@ class QgsWfsProviderGuiMetadata: public QgsProviderGuiMetadata
 
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
     {
-      return QList<QgsDataItemGuiProvider *>();
+      return QList<QgsDataItemGuiProvider *>()
+             << new QgsWfsDataItemGuiProvider;
     }
 
 };

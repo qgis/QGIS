@@ -30,7 +30,6 @@
 #include "qgsstyle.h"
 
 #ifdef HAVE_GUI
-#include "qgsnewhttpconnection.h"
 #include "qgswfssourceselect.h"
 #endif
 
@@ -172,42 +171,6 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
   return layers;
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsWfsConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsWfsConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsWfsConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsWfsConnectionItem::editConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, mName );
-  nc.setWindowTitle( tr( "Modify WFS Connection" ) );
-
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refreshConnections();
-  }
-}
-
-void QgsWfsConnectionItem::deleteConnection()
-{
-  QgsWfsConnection::deleteConnection( mName );
-  // the parent should be updated
-  mParent->refreshConnections();
-}
-#endif
-
 
 //
 // QgsWfsRootItem
@@ -236,16 +199,6 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWfsRootItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsWfsRootItem::newConnection );
-  lst.append( actionNew );
-
-  return lst;
-}
 
 QWidget *QgsWfsRootItem::paramWidget()
 {
@@ -259,16 +212,6 @@ void QgsWfsRootItem::onConnectionsChanged()
   refresh();
 }
 
-void QgsWfsRootItem::newConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
-  nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
-
-  if ( nc.exec() )
-  {
-    refreshConnections();
-  }
-}
 #endif
 
 
