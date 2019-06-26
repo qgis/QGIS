@@ -18,6 +18,7 @@
 #include "qgssourceselectprovider.h"
 #include "qgstilescalewidget.h"
 #include "qgsproviderguimetadata.h"
+#include "qgswmsdataitemguiproviders.h"
 
 
 //! Provider for WMS layers source select
@@ -45,6 +46,13 @@ class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
       QList<QgsSourceSelectProvider *> providers;
       providers << new QgsWmsSourceSelectProvider;
       return providers;
+    }
+
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
+    {
+      return QList<QgsDataItemGuiProvider *>()
+             << new QgsWmsDataItemGuiProvider
+             << new QgsXyzDataItemGuiProvider;
     }
 
     void registerGui( QMainWindow *widget ) override
