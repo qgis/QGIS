@@ -3921,26 +3921,21 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   QgsFeatureIds ids;
   if ( fids )
   {
-    qDebug() << 'fids';
     ids = *fids;
     hasFids = true;
   }
   else if ( context )
   {
-    if ( context->indexOfScope( "Symbol scope" ) != -1 && mSymbolFeatureCounted )
+/*     if (context->indexOfScope("Symbol scope") != -1 && mSymbolFeatureCounted)
     {
-      qDebug() << "counted";
-      if ( mFeatureCounter )
+      if (mFeatureCounter)
       {
-        qDebug() << "counter";
-        ids = mFeatureCounter->featureIds( context->variable( "symbol_id" ).toString() );
+        ids = mFeatureCounter->featureIds(context->variable("symbol_id").toString());
         hasFids = true;
       }
-    }
-    else if ( context->indexOfScope( "Symbol scope" ) != -1 )
+    }else */
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
     {
-      qDebug() << "not counted";
-      qDebug() << context->variable( "symbol_id" ).toString();
       ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
       hasFids = true;
     }
@@ -3972,7 +3967,6 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   QgsAggregateCalculator c( this );
   if ( hasFids )
   {
-    qDebug() << "set filter";
     c.setFidsFilter( ids );
   }
   c.setParameters( parameters );
