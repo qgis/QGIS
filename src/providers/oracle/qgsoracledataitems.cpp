@@ -17,6 +17,8 @@
 #include "qgsoracletablemodel.h"
 #include "qgsoraclenewconnection.h"
 #include "qgsoraclecolumntypethread.h"
+#include "qgsoracleprovider.h"
+
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
@@ -26,6 +28,7 @@
 
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QSqlError>
 
 bool deleteLayer( const QString &uri, QString &errCause )
 {

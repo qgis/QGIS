@@ -2614,10 +2614,10 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
-  const QgsCoordinateReferenceSystem *srs,
+  const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
   const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( wkbType )
@@ -2633,8 +2633,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
   if ( !conn )
   {
-    if ( errorMessage )
-      *errorMessage = QObject::tr( "Connection to database failed" );
+    errorMessage = QObject::tr( "Connection to database failed" );
     return QgsVectorLayerExporter::ErrConnectionFailed;
   }
 
@@ -2645,8 +2644,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
   if ( ownerName.isEmpty() )
   {
-    if ( errorMessage )
-      *errorMessage = QObject::tr( "No owner name found" );
+    errorMessage = QObject::tr( "No owner name found" );
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
@@ -2744,7 +2742,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
     // TODO: make precision configurable
     QString diminfo;
-    if ( srs->isGeographic() )
+    if ( srs.isGeographic() )
     {
       diminfo = "mdsys.sdo_dim_array("
                 "mdsys.sdo_dim_element('Longitude', -180, 180, 0.001),"
@@ -2760,7 +2758,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     }
 
     int srid = 0;
-    QStringList parts = srs->authid().split( ":" );
+    QStringList parts = srs.authid().split( ":" );
     if ( parts.size() == 2 )
     {
       // apparently some EPSG codes don't have the auth_name setup in cs_srs
@@ -2780,7 +2778,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     {
       QgsDebugMsg( QStringLiteral( "%1:%2 not found in mdsys.cs_srs - trying WKT" ).arg( parts[0] ).arg( parts[1] ) );
 
-      QString wkt = srs->toWkt();
+      QString wkt = srs.toWkt();
       if ( !exec( qry, QStringLiteral( "SELECT srid FROM mdsys.cs_srs WHERE wktext=?" ), QVariantList() << wkt ) )
       {
         throw OracleException( tr( "Could not lookup WKT." ), qry );
@@ -2804,7 +2802,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
         if ( !exec( qry, QStringLiteral( "INSERT"
                                          " INTO sdo_coord_ref_system(srid,coord_ref_sys_name,coord_ref_sys_kind,legacy_wktext,is_valid,is_legacy,information_source)"
                                          " VALUES (?,?,?,?,'TRUE','TRUE','GDAL/OGR via QGIS')" ),
-                    QVariantList() << srid << srs->description() << ( srs->isGeographic() ? "GEOGRAPHIC2D" : "PROJECTED" ) << wkt ) )
+                    QVariantList() << srid << srs.description() << ( srs.isGeographic() ? "GEOGRAPHIC2D" : "PROJECTED" ) << wkt ) )
         {
           throw OracleException( tr( "CRS not found and could not be created." ), qry );
         }
@@ -2824,10 +2822,9 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   }
   catch ( OracleException &e )
   {
-    if ( errorMessage )
-      *errorMessage = QObject::tr( "Creation of data source %1 failed: \n%2" )
-                      .arg( ownerTableName )
-                      .arg( e.errorMessage() );
+    errorMessage = QObject::tr( "Creation of data source %1 failed: \n%2" )
+                   .arg( ownerTableName )
+                   .arg( e.errorMessage() );
 
     if ( db.rollback() )
     {
@@ -2860,8 +2857,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri(), providerOptions );
   if ( !provider->isValid() )
   {
-    if ( errorMessage )
-      *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( ownerTableName );
+    errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( ownerTableName );
 
     delete provider;
     return QgsVectorLayerExporter::ErrInvalidLayer;
@@ -2870,7 +2866,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   QgsDebugMsg( QStringLiteral( "layer loaded" ) );
 
   // add fields to the layer
-  oldToNewAttrIdxMap->clear();
+  oldToNewAttrIdxMap.clear();
 
   if ( fields.size() > 0 )
   {
@@ -2902,8 +2898,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
         if ( j == 3 )
         {
-          if ( errorMessage )
-            *errorMessage = QObject::tr( "Field name clash found (%1 not remappable)" ).arg( fld.name() );
+          errorMessage = QObject::tr( "Field name clash found (%1 not remappable)" ).arg( fld.name() );
 
           delete provider;
           return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
@@ -2926,7 +2921,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
       if ( fld.name() == primaryKey )
       {
-        oldToNewAttrIdxMap->insert( i, 0 );
+        oldToNewAttrIdxMap.insert( i, 0 );
         continue;
       }
 
@@ -2938,8 +2933,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
       if ( !convertField( fld ) )
       {
-        if ( errorMessage )
-          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
+        errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
         delete provider;
         return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
@@ -2951,14 +2945,12 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
                    .arg( fld.length() ).arg( fld.precision() ) );
 
       flist.append( fld );
-      if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( i, offset++ );
+      oldToNewAttrIdxMap.insert( i, offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
     {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Creation of fields failed" );
+      errorMessage = QObject::tr( "Creation of fields failed" );
 
       delete provider;
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
@@ -3050,11 +3042,9 @@ QgsOracleProvider *QgsOracleProviderMetadata::createProvider(
   return new QgsOracleProvider( uri, options );
 }
 
-QList< QgsDataItemProvider * > *QgsOracleProviderMetadata::dataItemProviders() const
+QList< QgsDataItemProvider * > QgsOracleProviderMetadata::dataItemProviders() const
 {
-  QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
-  *providers << new QgsOracleDataItemProvider;
-  return providers;
+  return QList< QgsDataItemProvider * >() << new QgsOracleDataItemProvider;
 }
 
 // ---------------------------------------------------------------------------
@@ -3062,7 +3052,7 @@ QList< QgsDataItemProvider * > *QgsOracleProviderMetadata::dataItemProviders() c
 QgsVectorLayerExporter::ExportError QgsOracleProviderMetadata::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
-    const QgsCoordinateReferenceSystem *srs,
+    const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> &oldToNewAttrIdxMap,
     QString &errorMessage,
@@ -3070,7 +3060,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProviderMetadata::createEmptyLayer(
 {
   return QgsOracleProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           &oldToNewAttrIdxMap, &errorMessage, options
+           oldToNewAttrIdxMap, errorMessage, options
          );
 }
 
@@ -3498,14 +3488,9 @@ QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
 
 }
 
-QList<QgsSourceSelectProvider *> *QgsOracleProviderGuiMetadata::sourceSelectProviders()
+QList<QgsSourceSelectProvider *> QgsOracleProviderGuiMetadata::sourceSelectProviders()
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsOracleSourceSelectProvider;
-
-  return providers;
+  return QList<QgsSourceSelectProvider *>() << new QgsOracleSourceSelectProvider;
 }
 
 void QgsOracleProviderGuiMetadata::registerGui( QMainWindow *mainWindow )
