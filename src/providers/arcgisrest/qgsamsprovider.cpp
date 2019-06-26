@@ -194,11 +194,12 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   mServiceInfo = QgsArcGisRestUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
 
   QString layerUrl;
-  if ( mServiceInfo.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+  if ( dataSource.param( QStringLiteral( "layer" ) ).isEmpty() )
   {
     layerUrl = serviceUrl;
     mLayerInfo = mServiceInfo;
-    mImageServer = true;
+    if ( mServiceInfo.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+      mImageServer = true;
   }
   else
   {
@@ -206,7 +207,15 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
     mLayerInfo = QgsArcGisRestUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
   }
 
-  const QVariantMap extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
+  QVariantMap extentData;
+  if ( mLayerInfo.contains( QStringLiteral( "extent" ) ) )
+  {
+    extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
+  }
+  else
+  {
+    extentData = mLayerInfo.value( QStringLiteral( "fullExtent" ) ).toMap();
+  }
   mExtent.setXMinimum( extentData[QStringLiteral( "xmin" )].toDouble() );
   mExtent.setYMinimum( extentData[QStringLiteral( "ymin" )].toDouble() );
   mExtent.setXMaximum( extentData[QStringLiteral( "xmax" )].toDouble() );
