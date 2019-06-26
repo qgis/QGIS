@@ -605,8 +605,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
 
-    //! Calculate a point within of a QPolygonF
-    static QPointF polygonPointOnSurface( const QPolygonF &points );
+    //! Calculate a point on the surface of a QPolygonF
+    static QPointF polygonPointOnSurface( const QPolygonF &points, QList<QPolygonF> *rings = nullptr );
 
     //! Calculate whether a point is within of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
