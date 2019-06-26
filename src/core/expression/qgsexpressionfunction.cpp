@@ -5729,7 +5729,10 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
 // Intersect functions:
 
-static QVariant intersectOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly )
+typedef bool ( QgsGeometry::*t_relationFunction )( const QgsGeometry &geometry ) const;
+
+template <t_relationFunction T>
+static QVariant intersectFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly )
 {
   const QList<QgsFeatureId> targetFeatureIds = spatialIndex.intersects( geometry.boundingBox() );
   bool found = false;
@@ -5737,7 +5740,7 @@ static QVariant intersectOverlay( QgsExpression &subExp, QgsExpressionContext &s
   for ( QgsFeatureId id : targetFeatureIds )
   {
     QgsFeature feat = cachedTarget->getFeature( id );
-    if ( feat.geometry().intersects( geometry ) )
+    if ( ( feat.geometry().*T )( geometry ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
       found = true;
 
@@ -5758,12 +5761,12 @@ static QVariant intersectOverlay( QgsExpression &subExp, QgsExpressionContext &s
 
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, false, intersectOverlay );
+  return executeGeomOverlay( values, context, parent, false, intersectFilteredOverlay<&QgsGeometry::intersects> );
 }
 
 static QVariant fcnTestGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, true, intersectOverlay );
+  return executeGeomOverlay( values, context, parent, true, intersectFilteredOverlay<&QgsGeometry::intersects> );
 }
 
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
