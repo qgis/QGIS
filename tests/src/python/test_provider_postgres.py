@@ -1109,7 +1109,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().hasMetadata())
         self.assertTrue("key='pk'" in vl.source())
 
-
     def testCheckPkUnicityOnView(self):
         # vector layer based on view
 
