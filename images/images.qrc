@@ -761,6 +761,10 @@
         <file>themes/default/mActionTiltUp.svg</file>
         <file>north_arrows/layout_default_north_arrow.svg</file>
         <file>themes/default/mActionDeleteSelectedFeatures.svg</file>
+        <file>themes/default/mIconAlignCenter.svg</file>
+        <file>themes/default/mIconAlignJustify.svg</file>
+        <file>themes/default/mIconAlignLeft.svg</file>
+        <file>themes/default/mIconAlignRight.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
