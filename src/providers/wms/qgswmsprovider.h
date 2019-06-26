@@ -115,6 +115,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   public:
 
+    static QString WMS_KEY;
+    static QString WMS_DESCRIPTION;
+
     /**
      * Constructor for the provider.
      *
