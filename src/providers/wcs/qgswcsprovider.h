@@ -33,9 +33,6 @@
 #include "qgsapplication.h"
 
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 #include <QString>
 #include <QStringList>
@@ -113,6 +110,9 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     Q_OBJECT
 
   public:
+
+    static QString WCS_KEY;
+    static QString WCS_DESCRIPTION;
 
     /**
      * Constructor for the provider.
@@ -441,15 +441,6 @@ class QgsWcsProviderMetadata: public QgsProviderMetadata
     QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
-
-#ifdef HAVE_GUI
-class QgsWcsProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsWcsProviderGuiMetadata();
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 #endif
 

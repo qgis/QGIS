@@ -33,11 +33,6 @@
 #include "qgsexception.h"
 #include "qgswcsdataitems.h"
 
-#ifdef HAVE_GUI
-#include "qgswcssourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
-
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -59,8 +54,8 @@
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
 #define QGS_ERROR(message) QgsError(message,"WCS provider")
 
-static QString WCS_KEY = QStringLiteral( "wcs" );
-static QString WCS_DESCRIPTION = QStringLiteral( "OGC Web Coverage Service version 1.0/1.1 data provider" );
+QString QgsWcsProvider::WCS_KEY = QStringLiteral( "wcs" );
+QString QgsWcsProvider::WCS_DESCRIPTION = QStringLiteral( "OGC Web Coverage Service version 1.0/1.1 data provider" );
 
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
@@ -1956,36 +1951,6 @@ void QgsWcsDownloadHandler::canceled()
   }
 }
 
-#ifdef HAVE_GUI
-
-//! Provider for WCS layers source select
-class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "wcs" ); }
-    QString text() const override { return QObject::tr( "WCS" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsWCSSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QgsWcsProviderGuiMetadata::QgsWcsProviderGuiMetadata()
-  : QgsProviderGuiMetadata( WCS_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsWcsProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsWcsSourceSelectProvider;
-  return providers;
-}
-#endif
 
 QList< QgsDataItemProvider * > QgsWcsProviderMetadata::dataItemProviders() const
 {
@@ -1995,15 +1960,9 @@ QList< QgsDataItemProvider * > QgsWcsProviderMetadata::dataItemProviders() const
 }
 
 QgsWcsProviderMetadata::QgsWcsProviderMetadata():
-  QgsProviderMetadata( WCS_KEY, WCS_DESCRIPTION ) {}
+  QgsProviderMetadata( QgsWcsProvider::WCS_KEY, QgsWcsProvider::WCS_DESCRIPTION ) {}
+
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsWcsProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsWcsProviderGuiMetadata();
-}
-#endif
