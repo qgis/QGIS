@@ -53,6 +53,7 @@ class TestQgsCentroidFillSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void centroidFillSymbol();
+    void centroidFillSymbolPointOnSurface();
     void centroidFillSymbolPartBiggest();
 
   private:
@@ -132,11 +133,18 @@ void TestQgsCentroidFillSymbol::centroidFillSymbol()
   QVERIFY( imageCheck( "symbol_centroidfill" ) );
 }
 
+void TestQgsCentroidFillSymbol::centroidFillSymbolPointOnSurface()
+{
+  mCentroidFill->setPointOnSurface( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_point_on_surface" ) );
+  mCentroidFill->setPointOnSurface( false );
+}
+
 void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 {
   mCentroidFill->setPointOnAllParts( false );
-
   QVERIFY( imageCheck( "symbol_centroidfill_part_biggest" ) );
+  mCentroidFill->setPointOnAllParts( true );
 }
 
 //
