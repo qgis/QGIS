@@ -3921,11 +3921,13 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   QgsFeatureIds ids;
   if ( fids )
   {
+    qDebug() << "got fids";
     ids = *fids;
     hasFids = true;
   }
   else if ( context )
   {
+    qDebug() << QVariant( context->indexOfScope( "Symbol scope" ) ).toString();
     /*     if (context->indexOfScope("Symbol scope") != -1 && mSymbolFeatureCounted)
         {
           if (mFeatureCounter)
@@ -3934,9 +3936,9 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
             hasFids = true;
           }
         }else */
-    if ( context->indexOfScope( "Symbol scope" ) != -1 && mSymbolFeatureCounted)
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
     {
-      qDebug() << context->variable( "symbol_id" ).toString();
+      qDebug() << context->variable( "symbol_id" ).toString() << QVariant(mSymbolFeatureCounted).toString();
       ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
       hasFids = true;
     }
