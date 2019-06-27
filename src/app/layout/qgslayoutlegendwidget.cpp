@@ -121,8 +121,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
 
   mArrangementCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignRight );
   connect( mArrangementCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::arrangementChanged );
-  mArrangementCombo->customiseAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsLeft.svg" ) ) );
-  mArrangementCombo->customiseAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsRight.svg" ) ) );
+  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsLeft.svg" ) ) );
+  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsRight.svg" ) ) );
 
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );

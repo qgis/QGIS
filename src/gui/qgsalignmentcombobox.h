@@ -69,7 +69,7 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
      *
      * \note This must be called after first filtering the available alignment options via setAvailableAlignments().
      */
-    void customiseAlignmentDisplay( Qt::Alignment alignment, const QString &text = QString(), const QIcon &icon = QIcon() );
+    void customizeAlignmentDisplay( Qt::Alignment alignment, const QString &text = QString(), const QIcon &icon = QIcon() );
 
   signals:
 
