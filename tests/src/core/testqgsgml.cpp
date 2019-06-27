@@ -57,6 +57,7 @@ class TestQgsGML : public QObject
     void testMultiPolygonGML2();
     void testPointGML3();
     void testPointGML3_EPSG_4326();
+    void testPointGML3_uri_EPSG_4326();
     void testPointGML3_urn_EPSG_4326();
     void testPointGML3_EPSG_4326_honour_EPSG();
     void testPointGML3_EPSG_4326_honour_EPSG_invert();
@@ -435,6 +436,34 @@ void TestQgsGML::testPointGML3_EPSG_4326()
                                    "<myns:mygeom>"
                                    "<gml:Point srsName='EPSG:4326'>"
                                    "<gml:pos>2 49</gml:pos>"
+                                   "</gml:Point>"
+                                   "</myns:mygeom>"
+                                   "</myns:mytypename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( gmlParser.getEPSGCode(), 4326 );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].second, QString( "mytypename.1" ) );
+  QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 2, 49 ) );
+  delete features[0].first;
+}
+
+void TestQgsGML::testPointGML3_uri_EPSG_4326()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename gml:id='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:Point srsName='http://www.opengis.net/def/crs/EPSG/0/4326'>"
+                                   "<gml:pos>49 2</gml:pos>"
                                    "</gml:Point>"
                                    "</myns:mygeom>"
                                    "</myns:mytypename>"

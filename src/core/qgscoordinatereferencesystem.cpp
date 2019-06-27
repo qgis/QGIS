@@ -366,15 +366,20 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   QString wmsCrs = crs;
 
-  QRegExp re( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
-  if ( re.exactMatch( wmsCrs ) )
+  QRegExp re_uri( "http://www\\.opengis\\.net/def/crs/([^/]+).+/(\\d+)", Qt::CaseInsensitive );
+  QRegExp re_urn( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
+  if ( re_uri.exactMatch( wmsCrs ) )
   {
-    wmsCrs = re.cap( 1 ) + ':' + re.cap( 2 );
+    wmsCrs = re_uri.cap( 1 ) + ':' + re_uri.cap( 2 );
+  }
+  else if ( re_urn.exactMatch( wmsCrs ) )
+  {
+    wmsCrs = re_urn.cap( 1 ) + ':' + re_urn.cap( 2 );
   }
   else
   {
-    re.setPattern( QStringLiteral( "(user|custom|qgis):(\\d+)" ) );
-    if ( re.exactMatch( wmsCrs ) && createFromSrsId( re.cap( 2 ).toInt() ) )
+    re_urn.setPattern( QStringLiteral( "(user|custom|qgis):(\\d+)" ) );
+    if ( re_urn.exactMatch( wmsCrs ) && createFromSrsId( re_urn.cap( 2 ).toInt() ) )
     {
       sOgcLock.lockForWrite();
       sOgcCache.insert( crs, *this );
