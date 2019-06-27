@@ -62,7 +62,7 @@ class TestQgsBinaryWidget(unittest.TestCase):
         self.assertEqual(widget.value(), bin_val2)
 
         widget.setValue(NULL)
-        self.assertEqual(widget.value(), NULL)
+        self.assertEqual(widget.value(), QByteArray())
 
 
 if __name__ == '__main__':
