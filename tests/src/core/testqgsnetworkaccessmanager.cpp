@@ -208,6 +208,12 @@ void TestQgsNetworkAccessManager::testProxyExcludeList()
   manager2.setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << "" );
   // empty strings MUST be filtered from this list - otherwise they match all hosts!
   QCOMPARE( manager2.excludeList(), QStringList() << QStringLiteral( "intranet" ) );
+
+  // check that when we query an exclude URL, the returned proxy is no proxy
+  QgsNetworkAccessManager::instance()->setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << "" );
+  QList<QNetworkProxy> proxies = QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( QNetworkProxyQuery( QUrl( "intranet/mystuff" ) ) );
+  QCOMPARE( proxies.count(), 1 );
+  QCOMPARE( proxies.at( 0 ).type(),  QNetworkProxy::NoProxy );
 }
 
 void TestQgsNetworkAccessManager::fetchEmptyUrl()
