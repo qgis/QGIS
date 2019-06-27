@@ -339,7 +339,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   {
     QgsTextFormat format = tmpLyr.format();
 
-    if ( tmpLyr.format().background().enabled() )
+    if ( tmpLyr.format().background().enabled() && tmpLyr.format().background().type() != QgsTextBackgroundSettings::ShapeMarkerSymbol ) // background shadows not compatible with marker symbol backgrounds
     {
       format.shadow().setShadowPlacement( QgsTextShadowSettings::ShadowShape );
     }

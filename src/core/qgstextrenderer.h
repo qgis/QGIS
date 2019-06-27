@@ -34,6 +34,7 @@ class QgsTextShadowSettingsPrivate;
 class QgsTextSettingsPrivate;
 class QgsVectorLayer;
 class QgsPaintEffect;
+class QgsMarkerSymbol;
 
 /**
  * \class QgsTextBufferSettings
@@ -252,7 +253,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
       ShapeSquare, //!< Square - buffered sizes only
       ShapeEllipse, //!< Ellipse
       ShapeCircle, //!< Circle
-      ShapeSVG //!< SVG file
+      ShapeSVG, //!< SVG file
+      ShapeMarkerSymbol, //!< Marker symbol
     };
 
     /**
@@ -326,6 +328,24 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see svgFile()
      */
     void setSvgFile( const QString &file );
+
+    /**
+     * Returns the marker symbol to be rendered in the background. Ownership remains with
+     * the background settings.
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeMarkerSymbol.
+     * \see setMarkerSymbol()
+     * \since QGIS 3.10
+     */
+    QgsMarkerSymbol *markerSymbol() const;
+
+    /**
+     * Sets the current marker \a symbol for the background shape. Ownership is transferred
+     * to the background settings.
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeMarkerSymbol.
+     * \see markerSymbol()
+     * \since QGIS 3.10
+     */
+    void setMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the method used to determine the size of the background shape (e.g., fixed size or buffer

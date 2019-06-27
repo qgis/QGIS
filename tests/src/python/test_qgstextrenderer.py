@@ -26,7 +26,8 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsRenderContext,
                        QgsRectangle,
                        QgsRenderChecker,
-                       QgsBlurEffect)
+                       QgsBlurEffect,
+                       QgsMarkerSymbol)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen, QFontMetricsF)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir, QSize)
 from qgis.PyQt.QtXml import QDomDocument
@@ -135,6 +136,11 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setStrokeWidth(7)
         s.setStrokeWidthUnit(QgsUnitTypes.RenderPoints)
         s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
+
+        marker = QgsMarkerSymbol()
+        marker.setColor(QColor(100, 112, 134))
+        s.setMarkerSymbol(marker)
+
         return s
 
     def checkBackgroundSettings(self, s):
@@ -162,6 +168,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.strokeWidth(), 7)
         self.assertEqual(s.strokeWidthUnit(), QgsUnitTypes.RenderPoints)
         self.assertEqual(s.strokeWidthMapUnitScale(), QgsMapUnitScale(25, 26))
+        self.assertEqual(s.markerSymbol().color().name(), '#647086')
 
     def testBackgroundGettersSetters(self):
         s = self.createBackgroundSettings()
@@ -927,6 +934,75 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
         format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
         assert self.checkRender(format, 'background_svg_buffer_mm', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundMarkerFixedPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
+        format.background().setSize(QSizeF(60, 80))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_marker_fixed_pixels', QgsTextRenderer.Background)
+
+    def testDrawBackgroundMarkerFixedMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
+        format.background().setSize(QSizeF(20, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_marker_fixed_mapunits', QgsTextRenderer.Background)
+
+    def testDrawBackgroundMarkerFixedMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
+        format.background().setSize(QSizeF(30, 30))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_marker_fixed_mm', QgsTextRenderer.Background)
+
+    def testDrawBackgroundMarkerBufferPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
+        format.background().setSize(QSizeF(30, 30))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_marker_buffer_pixels', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundMarkerBufferMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
+        format.background().setSize(QSizeF(4, 4))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_marker_buffer_mapunits', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundMarkerBufferMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
+        format.background().setSize(QSizeF(10, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_marker_buffer_mm', QgsTextRenderer.Background,
                                 rect=QRectF(100, 100, 100, 100))
 
     def testDrawBackgroundRotationFixed(self):

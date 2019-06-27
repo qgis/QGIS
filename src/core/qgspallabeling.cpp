@@ -2865,6 +2865,10 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
       {
         shpkind = QgsTextBackgroundSettings::ShapeSVG;
       }
+      else if ( skind.compare( QLatin1String( "marker" ), Qt::CaseInsensitive ) == 0 )
+      {
+        shpkind = QgsTextBackgroundSettings::ShapeMarkerSymbol;
+      }
       shapeKind = shpkind;
       dataDefinedValues.insert( QgsPalLayerSettings::ShapeKind, QVariant( static_cast< int >( shpkind ) ) );
     }
@@ -2930,7 +2934,16 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   {
     skip = true;
   }
+  if ( shapeKind == QgsTextBackgroundSettings::ShapeMarkerSymbol
+       && ( !background.markerSymbol()
+            || ( background.markerSymbol()
+                 && shpSizeType == QgsTextBackgroundSettings::SizeFixed
+                 && ddShpSizeX == 0.0 ) ) )
+  {
+    skip = true;
+  }
   if ( shapeKind != QgsTextBackgroundSettings::ShapeSVG
+       && shapeKind != QgsTextBackgroundSettings::ShapeMarkerSymbol
        && shpSizeType == QgsTextBackgroundSettings::SizeFixed
        && ( ddShpSizeX == 0.0 || ddShpSizeY == 0.0 ) )
   {

@@ -110,6 +110,7 @@ void QgsSymbolButton::showSettingsDialog()
   if ( panel && panel->dockMode() )
   {
     QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), mLayer, nullptr );
+    d->setPanelTitle( mDialogTitle );
     d->setContext( symbolContext );
     connect( d, &QgsPanelWidget::widgetChanged, this, &QgsSymbolButton::updateSymbolFromWidget );
     connect( d, &QgsPanelWidget::panelAccepted, this, &QgsSymbolButton::cleanUpSymbolSelector );

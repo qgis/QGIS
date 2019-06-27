@@ -268,7 +268,8 @@ Container for settings relating to a text background object.
       ShapeSquare,
       ShapeEllipse,
       ShapeCircle,
-      ShapeSVG
+      ShapeSVG,
+      ShapeMarkerSymbol,
     };
 
     enum SizeType
@@ -344,6 +345,34 @@ QgsTextBackgroundSettings.ShapeSVG. The path must be absolute.
 :param file: Absolute SVG file path
 
 .. seealso:: :py:func:`svgFile`
+%End
+
+    QgsMarkerSymbol *markerSymbol() const;
+%Docstring
+Returns the marker symbol to be rendered in the background. Ownership remains with
+the background settings.
+
+.. note::
+
+   This is only used when the type() is QgsTextBackgroundSettings.ShapeMarkerSymbol.
+
+.. seealso:: :py:func:`setMarkerSymbol`
+
+.. versionadded:: 3.10
+%End
+
+    void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+%Docstring
+Sets the current marker ``symbol`` for the background shape. Ownership is transferred
+to the background settings.
+
+.. note::
+
+   This is only used when the type() is QgsTextBackgroundSettings.ShapeMarkerSymbol.
+
+.. seealso:: :py:func:`markerSymbol`
+
+.. versionadded:: 3.10
 %End
 
     SizeType sizeType() const;
