@@ -49,7 +49,7 @@ Sets the current ``alignment`` choice.
 .. seealso:: :py:func:`currentAlignment`
 %End
 
-    void customiseAlignmentDisplay( Qt::Alignment alignment, const QString &text = QString(), const QIcon &icon = QIcon() );
+    void customizeAlignmentDisplay( Qt::Alignment alignment, const QString &text = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Sets the ``text`` and ``icon`` to use for a particular ``alignment`` option,
 replacing the default text or icon.
