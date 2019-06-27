@@ -1586,6 +1586,8 @@ QgisApp::~QgisApp()
   mBrowserModel = nullptr;
   delete mGeometryValidationDock;
   mGeometryValidationDock = nullptr;
+  delete mSnappingUtils;
+  mSnappingUtils = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
