@@ -38,6 +38,7 @@
 #endif
 
 #include <cstring>
+#include <QFontMetrics>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkRequest>
@@ -147,7 +148,9 @@ void QgsAmsLegendFetcher::handleFinished()
     int padding = 5;
     int vpadding = 1;
     int imageSize = 20;
-    int textWidth = 175;
+    int textWidth = 0;
+    QFont font;
+    QFontMetrics fm( font );
 
     typedef QPair<QString, QImage> LegendEntry_t;
     QSize maxImageSize( 0, 0 );
@@ -155,6 +158,7 @@ void QgsAmsLegendFetcher::handleFinished()
     {
       maxImageSize.setWidth( std::max( maxImageSize.width(), legendEntry.second.width() ) );
       maxImageSize.setHeight( std::max( maxImageSize.height(), legendEntry.second.height() ) );
+      textWidth = std::max( textWidth, fm.width( legendEntry.first ) + 10 );
     }
     double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 :
                          std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
