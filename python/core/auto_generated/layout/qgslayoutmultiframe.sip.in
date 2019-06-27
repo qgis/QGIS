@@ -278,6 +278,9 @@ Returns the multiframe display name.
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
 
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
     void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
 %Docstring
 Starts new undo command for this item.

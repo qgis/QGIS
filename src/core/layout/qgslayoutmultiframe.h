@@ -288,6 +288,8 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
+    QgsExpressionContext createExpressionContext() const override;
+
     /**
      * Starts new undo command for this item.
      * The \a commandText should be a capitalized, imperative tense description (e.g. "Add Map Item").
