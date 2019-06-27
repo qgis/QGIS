@@ -1,0 +1,14 @@
+{
+  "name": "attributes",
+  "type": "function",
+  "description": "Returns a map containing all attributes from a feature, with field names as map keys.",
+  "variants": [
+    { "variant": "Variant 1",
+        "variant_description": "Returns a map of all attributes from the current feature.",
+        "examples": [ { "expression":"attributes()['name']", "returns":"value stored in 'name' attribute for the current feature"}] },
+    { "variant": "Variant 2",
+        "variant_description": "Allows the target feature to be specified.",
+        "arguments": [ {"arg":"feature","description":"a feature"}],
+        "examples": [ { "expression":"attributes( @atlas_feature )['name']", "returns":"value stored in 'name' attribute for the current atlas feature"}] }
+   ]
+}
