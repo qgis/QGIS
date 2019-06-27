@@ -17,6 +17,7 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
+#include "qgsspatialitedataitemguiprovider.h"
 #include "qgsspatialitesourceselect.h"
 #include "qgsspatialiteprovider.h"
 
@@ -54,7 +55,8 @@ class QgsSpatiaLiteProviderGuiMetadata: public QgsProviderGuiMetadata
 
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
     {
-      return QList<QgsDataItemGuiProvider *>();
+      return QList<QgsDataItemGuiProvider *>()
+             << new QgsSpatiaLiteDataItemGuiProvider;
     }
 };
 

@@ -318,14 +318,14 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
                                   " do you want to remove it from the project and delete it?" ).arg( item->name(),
                                       layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       {
-        return true;
+        return false;
       }
     }
     else if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
                                      QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( item->name() ),
                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     {
-      return true;
+      return false;
     }
 
     if ( ! layersList.isEmpty() )
@@ -363,7 +363,7 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
   }
   else
   {
-    return true;
+    return false;
   }
 }
 
