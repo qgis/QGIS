@@ -910,7 +910,7 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
     d->paintEffect->saveProperties( doc, backgroundElem );
 
   if ( d->markerSymbol )
-    backgroundElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker" ), d->markerSymbol.get(), doc, context ) );
+    backgroundElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "markerSymbol" ), d->markerSymbol.get(), doc, context ) );
 
   return backgroundElem;
 }
@@ -2230,7 +2230,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         return;
 
       double sizeOut = 0.0;
-      // only one size used for SVG sizing/scaling (no use of shapeSize.y() or Y field in gui)
+      // only one size used for SVG/marker symbol sizing/scaling (no use of shapeSize.y() or Y field in gui)
       if ( background.sizeType() == QgsTextBackgroundSettings::SizeFixed )
       {
         sizeOut = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
