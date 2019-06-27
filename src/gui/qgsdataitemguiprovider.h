@@ -23,7 +23,6 @@
 #include <QMimeData>
 #include <QString>
 #include <QMenu>
-#include <QPointer>
 
 class QgsDataItem;
 class QgsMessageBar;
@@ -164,7 +163,6 @@ class GUI_EXPORT QgsDataItemGuiProvider
      * \since QGIS 3.10
      */
     virtual bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action );
-
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H

@@ -146,7 +146,6 @@ drop, and to prevent the default drop behavior for items.
 
 .. versionadded:: 3.10
 %End
-
 };
 
 /************************************************************************

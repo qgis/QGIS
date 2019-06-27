@@ -15,8 +15,6 @@
 
 #include "qgsdataitemguiprovider.h"
 
-#include "qgsdataitem.h"
-
 //
 // QgsDataItemGuiContext
 //
