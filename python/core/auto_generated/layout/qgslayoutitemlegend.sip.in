@@ -289,7 +289,7 @@ Only Qt.AlignLeft or Qt.AlignRight are supported values.
 
 .. seealso:: :py:func:`symbolAlignment`
 
-.. versionadded:: 3.10.0
+.. versionadded:: 3.10
 %End
 
     Qt::AlignmentFlag symbolAlignment() const;
@@ -300,7 +300,7 @@ Only Qt.AlignLeft or Qt.AlignRight are supported values.
 
 .. seealso:: :py:func:`setSymbolAlignment`
 
-.. versionadded:: 3.10.0
+.. versionadded:: 3.10
 %End
 
     double symbolHeight() const;

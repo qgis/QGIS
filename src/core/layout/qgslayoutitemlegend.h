@@ -272,7 +272,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * Only Qt::AlignLeft or Qt::AlignRight are supported values.
      *
      * \see symbolAlignment()
-     * \since QGIS 3.10.0
+     * \since QGIS 3.10
      */
     void setSymbolAlignment( Qt::AlignmentFlag alignment );
 
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * Only Qt::AlignLeft or Qt::AlignRight are supported values.
      *
      * \see setSymbolAlignment()
-     * \since QGIS 3.10.0
+     * \since QGIS 3.10
      */
     Qt::AlignmentFlag symbolAlignment() const;
 
