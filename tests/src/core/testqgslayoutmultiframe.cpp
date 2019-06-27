@@ -26,6 +26,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsreadwritecontext.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -51,6 +52,7 @@ class TestQgsLayoutMultiFrame : public QObject
     void deleteFrame();
     void writeReadXml();
     void noPageNoCrash();
+    void variables();
 
   private:
     QgsLayout *mLayout = nullptr;
@@ -649,6 +651,31 @@ void TestQgsLayoutMultiFrame::noPageNoCrash()
   html->setResizeMode( QgsLayoutMultiFrame::RepeatUntilFinished );
   html->recalculateFrameSizes();
   QCOMPARE( html->frameCount(), 1 );
+}
+
+void TestQgsLayoutMultiFrame::variables()
+{
+  QgsLayout l( QgsProject::instance() );
+
+  QgsLayoutItemHtml *html = new QgsLayoutItemHtml( &l );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::multiFrameScope( html ) );
+  int before = scope->variableCount();
+
+  QgsExpressionContextUtils::setLayoutMultiFrameVariable( html, QStringLiteral( "var" ), 5 );
+  scope.reset( QgsExpressionContextUtils::multiFrameScope( html ) );
+  QCOMPARE( scope->variableCount(), before + 1 );
+  QCOMPARE( scope->variable( QStringLiteral( "var" ) ).toInt(), 5 );
+
+  QVariantMap vars;
+  vars.insert( QStringLiteral( "var2" ), 7 );
+  QgsExpressionContextUtils::setLayoutMultiFrameVariables( html, vars );
+  scope.reset( QgsExpressionContextUtils::multiFrameScope( html ) );
+  QCOMPARE( scope->variableCount(), before + 1 );
+  QVERIFY( !scope->hasVariable( QStringLiteral( "var" ) ) );
+  QCOMPARE( scope->variable( QStringLiteral( "var2" ) ).toInt(), 7 );
+
+  QgsExpressionContext context = html->createExpressionContext();
+  QCOMPARE( context.variable( QStringLiteral( "var2" ) ).toInt(), 7 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMultiFrame )
