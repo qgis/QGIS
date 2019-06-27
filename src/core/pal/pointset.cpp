@@ -135,17 +135,15 @@ void PointSet::createGeosGeom() const
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
   for ( int i = 0; i < nbPoints; ++i )
   {
-    // GEOS doesn't supports nan coordinates
-    GEOSCoordSeq_setX_r( geosctxt, coord, i, std::isnan( x[i] ) ? 0 : x[i] );
-    GEOSCoordSeq_setY_r( geosctxt, coord, i, std::isnan( y[i] ) ? 0 : y[i] );
+    GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
+    GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
   }
 
   //close ring if needed
   if ( needClose )
   {
-    // GEOS doesn't supports nan coordinates
-    GEOSCoordSeq_setX_r( geosctxt, coord, nbPoints, std::isnan( x[0] ) ? 0 : x[0] );
-    GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, std::isnan( y[0] ) ? 0 : y[0] );
+    GEOSCoordSeq_setX_r( geosctxt, coord, nbPoints, x[0] );
+    GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, y[0] );
   }
 
   switch ( type )
