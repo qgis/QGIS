@@ -45,7 +45,7 @@
 #include <QPainter>
 #include <QNetworkCacheMetaData>
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mapserver" );
+static const QString TEXT_PROVIDER_KEY = QStringLiteral( "arcgismapserver" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS MapServer data provider" );
 
 //! a helper class for ordering tile requests according to the distance from view center
@@ -194,11 +194,12 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   mServiceInfo = QgsArcGisRestUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
 
   QString layerUrl;
-  if ( mServiceInfo.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+  if ( dataSource.param( QStringLiteral( "layer" ) ).isEmpty() )
   {
     layerUrl = serviceUrl;
     mLayerInfo = mServiceInfo;
-    mImageServer = true;
+    if ( mServiceInfo.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+      mImageServer = true;
   }
   else
   {
@@ -206,7 +207,15 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
     mLayerInfo = QgsArcGisRestUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
   }
 
-  const QVariantMap extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
+  QVariantMap extentData;
+  if ( mLayerInfo.contains( QStringLiteral( "extent" ) ) )
+  {
+    extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
+  }
+  else
+  {
+    extentData = mLayerInfo.value( QStringLiteral( "fullExtent" ) ).toMap();
+  }
   mExtent.setXMinimum( extentData[QStringLiteral( "xmin" )].toDouble() );
   mExtent.setYMinimum( extentData[QStringLiteral( "ymin" )].toDouble() );
   mExtent.setXMaximum( extentData[QStringLiteral( "xmax" )].toDouble() );
@@ -719,6 +728,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, mRequestHeaders, feedback, &contentType );
         if ( !mError.isEmpty() )
         {
+          p.end();
           mCachedImage = QImage();
           if ( feedback )
             feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
@@ -727,6 +737,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         else if ( contentType.startsWith( QLatin1String( "application/json" ) ) )
         {
           // if we get a JSON response, something went wrong (e.g. authentication error)
+          p.end();
           mCachedImage = QImage();
 
           QJsonParseError err;

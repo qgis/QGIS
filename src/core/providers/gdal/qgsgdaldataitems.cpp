@@ -158,6 +158,12 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     scanExtSetting = true;
   }
 
+  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
+  {
+    // .shp.zip are vector datasets
+    return nullptr;
+  }
+
   // get suffix, removing .gz if present
   QString tmpPath = path; //path used for testing, not for layer creation
   if ( is_vsigzip )

@@ -2548,7 +2548,7 @@
                       <widget class="QComboBox" name="mZoomedInResamplingComboBox"/>
                      </item>
                      <item row="2" column="0">
-                      <widget class="QLabel" name="lbldefaultZoomedInResampling">
+                      <widget class="QLabel" name="lbldefaultZoomedOutResampling">
                        <property name="text">
                         <string>Zoomed out resampling</string>
                        </property>

@@ -164,6 +164,15 @@ Returns list of indicators associated with a particular layer tree node.
 .. versionadded:: 3.2
 %End
 
+    int layerMarkWidth() const;
+%Docstring
+Returns width of contextual menu mark, at right of layer node items.
+
+.. seealso:: :py:func:`setLayerMarkWidth`
+
+.. versionadded:: 3.8
+%End
+
 
 
   public slots:
@@ -184,6 +193,15 @@ Enhancement of QTreeView.expandAll() that also records expanded state in layer t
 Enhancement of QTreeView.collapseAll() that also records expanded state in layer tree nodes
 
 .. versionadded:: 2.18
+%End
+
+    void setLayerMarkWidth( int width );
+%Docstring
+Set width of contextual menu mark, at right of layer node items.
+
+.. seealso:: :py:func:`layerMarkWidth`
+
+.. versionadded:: 3.8
 %End
 
   signals:
@@ -208,6 +226,9 @@ Emitted when a current layer is changed
     virtual void dropEvent( QDropEvent *event );
 
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
@@ -220,6 +241,7 @@ Emitted when a current layer is changed
     void onModelReset();
 
   protected:
+
 
 };
 

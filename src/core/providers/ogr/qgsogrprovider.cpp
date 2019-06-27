@@ -2384,6 +2384,9 @@ bool QgsOgrProvider::createSpatialIndex()
     QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
     mOgrOrigLayer->ExecuteSQLNoReturn( sql );
 
+    if ( !mFilePath.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
+      return true;
+
     QFileInfo fi( mFilePath );     // to get the base name
     //find out, if the .qix file is there
     return QFileInfo::exists( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".qix" ) );
@@ -2876,8 +2879,11 @@ QString createFilters( const QString &type )
       }
       else if ( driverName.startsWith( QLatin1String( "ESRI" ) ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), QStringLiteral( "*.shp" ) );
+        QString exts = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSIONS, "" );
+        sFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), exts.contains( "shz" ) ? QStringLiteral( "*.shp *.shz *.shp.zip" ) : QStringLiteral( "*.shp" ) );
         sExtensions << QStringLiteral( "shp" ) << QStringLiteral( "dbf" );
+        if ( exts.contains( "shz" ) )
+          sExtensions << QStringLiteral( "shz" ) << QStringLiteral( "shp.zip" );
       }
       else if ( driverName.startsWith( QObject::tr( "FMEObjects Gateway" ) ) )
       {
@@ -3390,7 +3396,8 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
 
   if ( driverName == QLatin1String( "ESRI Shapefile" ) )
   {
-    if ( !uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
+    if ( !uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) &&
+         !uri.endsWith( QLatin1String( ".shz" ), Qt::CaseInsensitive ) )
     {
       errorMessage = QObject::tr( "URI %1 doesn't end with .shp" ).arg( uri );
       QgsDebugMsg( errorMessage );
@@ -3572,17 +3579,21 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
 
   if ( driverName == QLatin1String( "ESRI Shapefile" ) )
   {
-    QString layerName = uri.left( uri.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
-    QFile prjFile( layerName + ".qpj" );
-    if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    int index = uri.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive );
+    if ( index > 0 )
     {
-      QTextStream prjStream( &prjFile );
-      prjStream << myWkt.toLocal8Bit().data() << endl;
-      prjFile.close();
-    }
-    else
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Couldn't create file %1.qpj" ).arg( layerName ), QObject::tr( "OGR" ) );
+      QString layerName = uri.left( index );
+      QFile prjFile( layerName + ".qpj" );
+      if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+      {
+        QTextStream prjStream( &prjFile );
+        prjStream << myWkt.toLocal8Bit().data() << endl;
+        prjFile.close();
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Couldn't create file %1.qpj" ).arg( layerName ), QObject::tr( "OGR" ) );
+      }
     }
   }
 
@@ -3610,17 +3621,21 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
   {
-    QString layerName = mFilePath.left( mFilePath.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
-    QFile prjFile( layerName + ".qpj" );
-    if ( prjFile.open( QIODevice::ReadOnly ) )
+    int index = mFilePath.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive );
+    if ( index > 0 )
     {
-      QTextStream prjStream( &prjFile );
-      QString myWktString = prjStream.readLine();
-      prjFile.close();
+      QString layerName = mFilePath.left( index );
+      QFile prjFile( layerName + ".qpj" );
+      if ( prjFile.open( QIODevice::ReadOnly ) )
+      {
+        QTextStream prjStream( &prjFile );
+        QString myWktString = prjStream.readLine();
+        prjFile.close();
 
-      srs = QgsCoordinateReferenceSystem::fromWkt( myWktString.toUtf8().constData() );
-      if ( srs.isValid() )
-        return srs;
+        srs = QgsCoordinateReferenceSystem::fromWkt( myWktString.toUtf8().constData() );
+        if ( srs.isValid() )
+          return srs;
+      }
     }
   }
 
@@ -4805,7 +4820,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
   GDALDriverH driver = GDALGetDatasetDriver( hDS );
   QString driverName = GDALGetDriverShortName( driver );
-  ds->canBeShared = canDriverShareSameDatasetAmongLayers( driverName );
+  ds->canBeShared = canDriverShareSameDatasetAmongLayers( driverName, updateMode, dsName );
 
   QgsOgrLayerUniquePtr layer = QgsOgrLayer::CreateForLayer(
                                  ident, layerName, ds, hLayer );
@@ -5232,7 +5247,7 @@ QgsOgrProviderUtils::DatasetWithLayers *QgsOgrProviderUtils::createDatasetWithLa
 
   GDALDriverH driver = GDALGetDatasetDriver( hDS );
   QString driverName = GDALGetDriverShortName( driver );
-  ds->canBeShared = canDriverShareSameDatasetAmongLayers( driverName );
+  ds->canBeShared = canDriverShareSameDatasetAmongLayers( driverName, updateMode, dsName );
 
   layer = QgsOgrLayer::CreateForLayer(
             ident, layerName, ds, hLayer );
@@ -5422,6 +5437,20 @@ void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *&ds )
 bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName )
 {
   return driverName != QStringLiteral( "OSM" );
+}
+
+bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName,
+    bool updateMode,
+    const QString &dsName )
+{
+  // For .shp.zip with multiple layers, in update mode, we want that each
+  // layer has its own dataset, so that when its gets closed and reopened,
+  // the .shp.zip is updated. Otherwise if we share the same dataset, the .shp.zip
+  // would only be updated when all layers are unloaded, and thus readers will see
+  // an outdated version of the .shp.zip. This works only if editing operations are
+  // done separately on layers (which is how it works from the GUI)
+  return canDriverShareSameDatasetAmongLayers( driverName ) &&
+         !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
 

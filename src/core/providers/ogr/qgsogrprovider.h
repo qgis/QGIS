@@ -522,6 +522,11 @@ class CORE_EXPORT QgsOgrProviderUtils
 
     //! Whether a driver can share the same dataset handle among different layers
     static bool canDriverShareSameDatasetAmongLayers( const QString &driverName );
+
+    //! Whether a driver can share the same dataset handle among different layers
+    static bool canDriverShareSameDatasetAmongLayers( const QString &driverName,
+        bool updateMode,
+        const QString &dsName );
 };
 
 
