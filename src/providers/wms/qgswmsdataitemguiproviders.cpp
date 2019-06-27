@@ -24,6 +24,7 @@
 #include "qgsmanageconnectionsdialog.h"
 
 #include <QFileDialog>
+#include <QMessageBox>
 
 
 void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
@@ -69,6 +70,10 @@ void QgsWmsDataItemGuiProvider::deleteConnection()
 {
   QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
   if ( !item )
+    return;
+
+  if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
   QgsWMSConnection::deleteConnection( item->name() );
@@ -149,6 +154,10 @@ void QgsXyzDataItemGuiProvider::deleteConnection()
 {
   QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
   if ( !item )
+    return;
+
+  if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
   QgsXyzConnectionUtils::deleteConnection( item->name() );
