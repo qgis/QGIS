@@ -266,11 +266,11 @@ class CORE_EXPORT QgsPointXY
     bool operator!=( const QgsPointXY &other ) const
     {
       if ( isEmpty() && other.isEmpty() )
-        return true;
+        return false;
       if ( isEmpty() && !other.isEmpty() )
-        return false;
+        return true;
       if ( ! isEmpty() && other.isEmpty() )
-        return false;
+        return true;
 
       bool equal = true;
       equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
