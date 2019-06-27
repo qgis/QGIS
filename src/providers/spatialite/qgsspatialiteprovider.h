@@ -37,9 +37,6 @@ extern "C"
 #include <set>
 
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 class QgsFeature;
 class QgsField;
@@ -62,6 +59,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString SPATIALITE_KEY;
+    static const QString SPATIALITE_DESCRIPTION;
+
     //! Import a vector layer into the database
     static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
@@ -406,15 +407,6 @@ class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
     bool createDb( const QString &dbPath, QString &errCause ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
-
-#ifdef HAVE_GUI
-class QgsSpatiaLiteProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsSpatiaLiteProviderGuiMetadata();
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 // clazy:excludeall=qstring-allocations
 

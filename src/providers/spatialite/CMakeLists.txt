@@ -24,6 +24,7 @@ SET(SPATIALITE_MOC_HDRS
 
 IF (WITH_GUI)
   SET(SPATIALITE_SRCS ${SPATIALITE_SRCS}
+    qgsspatialiteprovidergui.cpp
     qgsspatialitesourceselect.cpp
   )
   SET(SPATIALITE_MOC_HDRS ${SPATIALITE_MOC_HDRS}
