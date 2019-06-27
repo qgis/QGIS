@@ -1484,7 +1484,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             return self.combo.value()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.value()
+            return self.widget.getValue()
         else:
             def validator(v):
                 return bool(v) or self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional
