@@ -1602,6 +1602,36 @@ class TestQgsExpression: public QObject
       QCOMPARE( v.toString(), QString( "test value" ) );
     }
 
+    void eval_feature_attributes()
+    {
+      QgsFeature f( 100 );
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "col1" ) ) );
+      fields.append( QgsField( QStringLiteral( "second_column" ), QVariant::Int ) );
+      f.setFields( fields, true );
+      f.setAttribute( QStringLiteral( "col1" ), QStringLiteral( "test value" ) );
+      f.setAttribute( QStringLiteral( "second_column" ), 5 );
+      QgsExpression exp( QStringLiteral( "attributes()['col1']" ) );
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+      QVariant v = exp.evaluate( &context );
+      QCOMPARE( v.toString(), QString( "test value" ) );
+      QgsExpression exp2( QStringLiteral( "attributes()['second_column']" ) );
+      v = exp2.evaluate( &context );
+      QCOMPARE( v.toInt(), 5 );
+
+      QgsExpression exp3( QStringLiteral( "attributes($currentfeature)['col1']" ) );
+      v = exp.evaluate( &context );
+      QCOMPARE( v.toString(), QString( "test value" ) );
+      QgsExpression exp4( QStringLiteral( "attributes($currentfeature)['second_column']" ) );
+      v = exp4.evaluate( &context );
+      QCOMPARE( v.toInt(), 5 );
+
+      QgsExpression exp5( QStringLiteral( "attributes('a')" ) );
+      v = exp5.evaluate( &context );
+      QVERIFY( v.isNull() );
+      QVERIFY( exp5.hasEvalError() );
+    }
+
     void eval_get_feature_data()
     {
       QTest::addColumn<QString>( "string" );

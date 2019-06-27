@@ -1394,6 +1394,7 @@ static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *co
 
   return context->feature();
 }
+
 static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsFeature feature;
@@ -1415,6 +1416,28 @@ static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionCon
   }
 
   return feature.attribute( attr );
+}
+
+static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsFeature feature;
+  QString attr;
+  if ( values.size() == 0 || values.at( 0 ).isNull() )
+  {
+    feature = context->feature();
+  }
+  else
+  {
+    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+  }
+
+  const QgsFields fields = feature.fields();
+  QVariantMap result;
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    result.insert( fields.at( i ).name(), feature.attribute( i ) );
+  }
+  return result;
 }
 
 static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5488,7 +5511,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnGetFeature, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "QgsExpressionUtils::getFeature" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "get_feature_by_id" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "feature_id" ) ),
-                                            fcnGetFeatureById, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false );
+                                            fcnGetFeatureById, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false )
+        << new QgsStaticExpressionFunction( QStringLiteral( "attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true ),
+                                            fcnAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
 
     QgsStaticExpressionFunction *isSelectedFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "is_selected" ),
