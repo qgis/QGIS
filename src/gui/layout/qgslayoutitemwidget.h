@@ -299,7 +299,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
     bool mFreezeWidthSpin = false;
     bool mFreezeHeightSpin = false;
     bool mFreezePageSpin = false;
-
+    bool mBlockVariableUpdates = false;
 //    void changeItemTransparency( int value );
     void changeItemPosition();
     void changeItemReference( QgsLayoutItem::ReferencePoint point );
