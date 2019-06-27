@@ -228,6 +228,14 @@ void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.authid(), QString( "EPSG:4326" ) );
 
+  myCrs.createFromOgcWmsCrs( QStringLiteral( "http://www.opengis.net/def/crs/EPSG/0/4326" ) );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.authid(), QString( "EPSG:4326" ) );
+
+  myCrs.createFromOgcWmsCrs( QStringLiteral( "urn:ogc:def:crs:EPSG::4326" ) );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.authid(), QString( "EPSG:4326" ) );
+
   myCrs.createFromOgcWmsCrs( QStringLiteral( "i am not a CRS" ) );
   QVERIFY( !myCrs.isValid() );
 }
