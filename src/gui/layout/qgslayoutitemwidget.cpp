@@ -215,11 +215,13 @@ void QgsLayoutItemPropertiesWidget::updateVariables()
   if ( !mItem )
     return;
 
+  mBlockVariableUpdates = true;
   QgsExpressionContext context = mItem->createExpressionContext();
   mVariableEditor->setContext( &context );
   int editableIndex = context.indexOfScope( tr( "Layout Item" ) );
   if ( editableIndex >= 0 )
     mVariableEditor->setEditableScopeIndex( editableIndex );
+  mBlockVariableUpdates = false;
 }
 
 QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item )
@@ -295,7 +297,11 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayoutItemPropertiesWidget::opacityChanged );
 
   updateVariables();
-  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsLayoutItemPropertiesWidget::variablesChanged );
+  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, [ = ]
+  {
+    if ( !mBlockVariableUpdates )
+      QgsLayoutItemPropertiesWidget::variablesChanged();
+  } );
   // listen out for variable edits
   connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
   connect( item->layout()->project(), &QgsProject::customVariablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
@@ -698,6 +704,8 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
   setValuesForGuiPositionElements();
   setValuesForGuiNonPositionElements();
   populateDataDefinedButtons();
+
+  updateVariables();
 }
 
 void QgsLayoutItemPropertiesWidget::mBlendModeCombo_currentIndexChanged( int index )
