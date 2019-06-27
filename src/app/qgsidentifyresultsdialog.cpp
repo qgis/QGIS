@@ -80,7 +80,8 @@
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsidentifymenu.h"
-
+#include "qgsjsonutils.h"
+#include <nlohmann/json.hpp>
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -907,9 +908,13 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
             formattedValue =  QLocale().toString( val, 'f', 0 );
           }
         }
-        else
+        else if ( ! formattedValue.isEmpty() )
         {
           isString = true;
+        }
+        else
+        {
+          formattedValue = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump() );
         }
       }
       QTreeWidgetItem *attrItem = new QTreeWidgetItem( { fields.at( i ).name(), formattedValue } );
