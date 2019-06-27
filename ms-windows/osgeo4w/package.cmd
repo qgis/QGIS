@@ -301,13 +301,11 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/esritokenauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/geonodeprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/db2provider.dll" ^
-	"apps/%PACKAGENAME%/plugins/ogrprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/owsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/pkcs12authmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/pkipathsauthmethod.dll" ^
