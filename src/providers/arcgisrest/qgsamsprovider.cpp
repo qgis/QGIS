@@ -146,11 +146,20 @@ void QgsAmsLegendFetcher::handleFinished()
   if ( !legendEntries.isEmpty() )
   {
     int padding = 5;
-    int vpadding = 1;
     int imageSize = 20;
-    int textWidth = 0;
-    QFont font;
+
+    QgsSettings settings;
+    QFont font = qApp->font();
+    int fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), font.pointSize() ).toInt();
+    font.setPointSize( fontSize );
+    QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), font.family() ).toString();
+    font.setFamily( fontFamily );
     QFontMetrics fm( font );
+    int textWidth = 0;
+    int textHeight = fm.ascent();
+
+    int verticalSize = std::max( imageSize, textHeight );
+    int verticalPadding = 1;
 
     typedef QPair<QString, QImage> LegendEntry_t;
     QSize maxImageSize( 0, 0 );
@@ -163,15 +172,16 @@ void QgsAmsLegendFetcher::handleFinished()
     double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 :
                          std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
 
-    mLegendImage = QImage( imageSize + padding + textWidth, vpadding + legendEntries.size() * ( imageSize + vpadding ), QImage::Format_ARGB32 );
+    mLegendImage = QImage( imageSize + padding + textWidth, verticalPadding + legendEntries.size() * ( verticalSize + verticalPadding ), QImage::Format_ARGB32 );
     mLegendImage.fill( Qt::transparent );
     QPainter painter( &mLegendImage );
+    painter.setFont( font );
     int i = 0;
     for ( const LegendEntry_t &legendEntry : qgis::as_const( legendEntries ) )
     {
       QImage symbol = legendEntry.second.scaled( legendEntry.second.width() * scaleFactor, legendEntry.second.height() * scaleFactor, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-      painter.drawImage( 0, vpadding + i * ( imageSize + vpadding ) + ( imageSize - symbol.height() ), symbol );
-      painter.drawText( imageSize + padding, vpadding + i * ( imageSize + vpadding ), textWidth, imageSize, Qt::AlignLeft | Qt::AlignVCenter, legendEntry.first );
+      painter.drawImage( 0, verticalPadding + i * ( verticalSize + verticalPadding ) + ( verticalSize - symbol.height() ), symbol );
+      painter.drawText( imageSize + padding, verticalPadding + i * ( verticalSize + verticalPadding ), textWidth, verticalSize, Qt::AlignLeft | Qt::AlignVCenter, legendEntry.first );
       ++i;
     }
   }
