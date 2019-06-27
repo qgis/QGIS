@@ -163,7 +163,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
-  if ( parts.second.compare( QLatin1String( "EMPTY" ) ) == 0 )
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
     return true;
 
   QRegularExpression rx( QStringLiteral( "\\s" ) );
