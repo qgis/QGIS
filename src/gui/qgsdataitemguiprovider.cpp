@@ -63,13 +63,3 @@ bool QgsDataItemGuiProvider::handleDrop( QgsDataItem *, QgsDataItemGuiContext, c
 {
   return false;
 }
-
-void QgsDataItemGuiProvider::setItemForAction( QAction *action, QgsDataItem *item )
-{
-  action->setData( QVariant::fromValue( QPointer< QgsDataItem >( item ) ) );
-}
-
-QPointer<QgsDataItem> QgsDataItemGuiProvider::itemFromAction( QAction *action )
-{
-  return action ? action->data().value<QPointer< QgsDataItem >>() : QPointer<QgsDataItem>();
-}

@@ -28,31 +28,24 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
   if ( QgsWfsRootItem *rootItem = qobject_cast< QgsWfsRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
-    setItemForAction( actionNew, rootItem );
-    connect( actionNew, &QAction::triggered, this, &QgsWfsDataItemGuiProvider::newConnection );
+    connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
   }
 
   if ( QgsWfsConnectionItem *connItem = qobject_cast< QgsWfsConnectionItem * >( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit…" ), this );
-    setItemForAction( actionEdit, connItem );
-    connect( actionEdit, &QAction::triggered, this, &QgsWfsDataItemGuiProvider::editConnection );
+    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
     QAction *actionDelete = new QAction( tr( "Delete" ), this );
-    setItemForAction( actionDelete, connItem );
-    connect( actionDelete, &QAction::triggered, this, &QgsWfsDataItemGuiProvider::deleteConnection );
+    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
   }
 }
 
-void QgsWfsDataItemGuiProvider::newConnection()
+void QgsWfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
   nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
 
@@ -62,12 +55,8 @@ void QgsWfsDataItemGuiProvider::newConnection()
   }
 }
 
-void QgsWfsDataItemGuiProvider::editConnection()
+void QgsWfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, item->name() );
   nc.setWindowTitle( tr( "Modify WFS Connection" ) );
 
@@ -78,12 +67,8 @@ void QgsWfsDataItemGuiProvider::editConnection()
   }
 }
 
-void QgsWfsDataItemGuiProvider::deleteConnection()
+void QgsWfsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;

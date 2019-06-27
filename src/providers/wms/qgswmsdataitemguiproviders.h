@@ -28,10 +28,10 @@ class QgsWmsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
-  private slots:
-    void editConnection();
-    void deleteConnection();
-    void newConnection();
+  private:
+    static void editConnection( QgsDataItem *item );
+    static void deleteConnection( QgsDataItem *item );
+    static void newConnection( QgsDataItem *item );
 
 };
 
@@ -46,12 +46,12 @@ class QgsXyzDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
-  private slots:
-    void editConnection();
-    void deleteConnection();
-    void newConnection();
-    void saveXyzTilesServers();
-    void loadXyzTilesServers();
+  private:
+    static void editConnection( QgsDataItem *item );
+    static void deleteConnection( QgsDataItem *item );
+    static void newConnection( QgsDataItem *item );
+    static void saveXyzTilesServers();
+    static void loadXyzTilesServers( QgsDataItem *item );
 
 };
 
