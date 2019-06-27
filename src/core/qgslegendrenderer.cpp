@@ -133,6 +133,8 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
 
   setColumns( atomList );
 
+  QMap< int, double > maxColumnWidths;
+  qreal maxEqualColumnWidth = 0;
   // another iteration -- this one is required to calculate the maximum item width for each
   // column. Unfortunately, we can't trust the atom widths at this stage, as they are minimal widths
   // only. When actually rendering a symbol node, the text is aligned according to the WIDEST
@@ -140,8 +142,6 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   // until now. BUUUUUUUUUUUUT. Because everything sucks, we can't even start the actual render of items
   // at the same time we calculate this -- legend items REQUIRE the REAL width of the columns in order to
   // correctly align right or center-aligned symbols/text. Bah -- A triple iteration it is!
-  QMap< int, double > maxColumnWidths;
-  qreal maxEqualColumnWidth = 0;
   // temporarily remove painter from context -- we don't need to actually draw anything yet. But we DO need
   // to send the full render context so that an expression context is available during the size calculation
   QPainter *prevPainter = context ? context->painter() : nullptr;
@@ -150,17 +150,18 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   for ( const LegendComponentGroup &atom : qgis::as_const( atomList ) )
   {
     const QSizeF actualSize = drawGroup( atom, context, ColumnContext() );
-    if ( mSettings.equalColumnWidth() )
-    {
-      maxEqualColumnWidth = std::max( actualSize.width(), maxEqualColumnWidth );
-    }
-    else
-    {
-      maxColumnWidths[ atom.column ] = std::max( actualSize.width(), maxColumnWidths.value( atom.column, 0 ) );
-    }
+    maxEqualColumnWidth = std::max( actualSize.width(), maxEqualColumnWidth );
+    maxColumnWidths[ atom.column ] = std::max( actualSize.width(), maxColumnWidths.value( atom.column, 0 ) );
   }
   if ( context )
     context->setPainter( prevPainter );
+
+  if ( mSettings.columnCount()  < 2 )
+  {
+    // single column - use the full available width
+    maxEqualColumnWidth = std::max( maxEqualColumnWidth, mLegendSize.width() - 2 * mSettings.boxSpace() );
+    maxColumnWidths[ 0 ] = maxEqualColumnWidth;
+  }
 
   //calculate size of title
   QSizeF titleSize = drawTitle();
@@ -174,7 +175,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   int column = -1;
   ColumnContext columnContext;
   columnContext.left = mSettings.boxSpace();
-  columnContext.right = mLegendSize.width() - mSettings.boxSpace();
+  columnContext.right = std::max( mLegendSize.width() - mSettings.boxSpace(), mSettings.boxSpace() );
   double currentY = columnTop;
 
   for ( const LegendComponentGroup &atom : qgis::as_const( atomList ) )
@@ -576,10 +577,12 @@ QSizeF QgsLegendRenderer::drawGroupInternal( const LegendComponentGroup &atom, Q
         {
           currentY += mSettings.style( s ).margin( QgsLegendStyle::Top );
         }
+        QSizeF groupSize;
         if ( context )
-          drawGroupTitle( groupItem, context, columnContext, currentY );
+          groupSize = drawGroupTitle( groupItem, context, columnContext, currentY );
         else
-          drawGroupTitle( groupItem, columnContext, painter, currentY );
+          groupSize = drawGroupTitle( groupItem, columnContext, painter, currentY );
+        size.rwidth() = std::max( groupSize.width(), size.width() );
       }
     }
     else if ( QgsLayerTreeLayer *layerItem = qobject_cast<QgsLayerTreeLayer *>( nucleon.item ) )
@@ -591,10 +594,12 @@ QSizeF QgsLegendRenderer::drawGroupInternal( const LegendComponentGroup &atom, Q
         {
           currentY += mSettings.style( s ).margin( QgsLegendStyle::Top );
         }
+        QSizeF subGroupSize;
         if ( context )
-          drawLayerTitle( layerItem, context, columnContext, currentY );
+          subGroupSize = drawLayerTitle( layerItem, context, columnContext, currentY );
         else
-          drawLayerTitle( layerItem, columnContext, painter, currentY );
+          subGroupSize = drawLayerTitle( layerItem, columnContext, painter, currentY );
+        size.rwidth() = std::max( subGroupSize.width(), size.width() );
       }
     }
     else if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( nucleon.item ) )
