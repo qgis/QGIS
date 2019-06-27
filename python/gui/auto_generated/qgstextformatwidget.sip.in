@@ -12,7 +12,7 @@
 
 
 
-class QgsTextFormatWidget : QWidget, protected Ui::QgsTextFormatWidgetBase
+class QgsTextFormatWidget : QWidget, QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
 %Docstring
 A widget for customizing text formatting settings.
@@ -110,6 +110,9 @@ Controls whether data defined alignment buttons are enabled.
 
 :param enable: set to ``True`` to enable alignment controls
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
 
   protected slots:

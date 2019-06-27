@@ -64,11 +64,6 @@ class QgsTextBufferSettingsPrivate : public QSharedData
     {
     }
 
-    ~QgsTextBufferSettingsPrivate()
-    {
-      delete paintEffect;
-    }
-
     bool enabled = false;
     double size = 1;
     QgsUnitTypes::RenderUnit sizeUnit = QgsUnitTypes::RenderMillimeters;
@@ -78,7 +73,7 @@ class QgsTextBufferSettingsPrivate : public QSharedData
     bool fillBufferInterior = false;
     Qt::PenJoinStyle joinStyle = Qt::RoundJoin;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
-    QgsPaintEffect *paintEffect = nullptr;
+    std::unique_ptr< QgsPaintEffect > paintEffect;
 };
 
 
@@ -121,12 +116,8 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
       , strokeWidthMapUnitScale( other.strokeWidthMapUnitScale )
       , joinStyle( other.joinStyle )
       , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
+      , markerSymbol( other.markerSymbol ? other.markerSymbol->clone() : nullptr )
     {
-    }
-
-    ~QgsTextBackgroundSettingsPrivate()
-    {
-      delete paintEffect;
     }
 
     bool enabled = false;
@@ -152,7 +143,8 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
     QgsUnitTypes::RenderUnit strokeWidthUnits = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale strokeWidthMapUnitScale;
     Qt::PenJoinStyle joinStyle = Qt::BevelJoin;
-    QgsPaintEffect *paintEffect = nullptr;
+    std::unique_ptr< QgsPaintEffect > paintEffect;
+    std::unique_ptr< QgsMarkerSymbol > markerSymbol;
 };
 
 

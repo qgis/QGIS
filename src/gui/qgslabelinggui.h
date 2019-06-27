@@ -27,7 +27,7 @@
 
 ///@cond PRIVATE
 
-class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 {
     Q_OBJECT
 

@@ -46,7 +46,7 @@ class QgsCharacterSelectorDialog;
  * \since QGIS 3.0
  */
 
-class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextFormatWidgetBase
+class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
     Q_OBJECT
     Q_PROPERTY( QgsTextFormat format READ format )
@@ -121,6 +121,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      * \param enable set to TRUE to enable alignment controls
      */
     void enableDataDefinedAlignment( bool enable );
+
+    QgsExpressionContext createExpressionContext() const override;
 
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
@@ -222,6 +224,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
+    void updateAvailableShadowPositions();
 
 };
 
