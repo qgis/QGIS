@@ -32,6 +32,7 @@ class QgsLayoutItem;
 class QgsProcessingAlgorithm;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingContext;
+class QgsLayoutMultiFrame;
 
 /**
  * \ingroup core
@@ -250,6 +251,33 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \since QGIS 3.0
      */
     static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
+
+    /**
+     * Creates a new scope which contains variables and functions relating to a QgsLayoutMultiFrame.
+     * \see setLayoutMultiFrameVariable()
+     * \see setLayoutMultiFrameVariables()
+     * \since QGIS 3.10
+     */
+    static QgsExpressionContextScope *multiFrameScope( const QgsLayoutMultiFrame *frame ) SIP_FACTORY;
+
+    /**
+     * Sets a layout multi \a frame context variable, with the given \a name and \a value.
+     * This variable will be contained within scopes retrieved via
+     * multiFrameScope().
+     * \see setLayoutItemVariables()
+     * \see multiFrameScope()
+     * \since QGIS 3.10
+     */
+    static void setLayoutMultiFrameVariable( QgsLayoutMultiFrame *frame, const QString &name, const QVariant &value );
+
+    /**
+     * Sets all layout multiframe context variables for an \a frame. Existing variables will be removed and replaced
+     * with the \a variables specified.
+     * \see setLayoutMultiFrameVariable()
+     * \see multiFrameScope()
+     * \since QGIS 3.10
+     */
+    static void setLayoutMultiFrameVariables( QgsLayoutMultiFrame *frame, const QVariantMap &variables );
 
     /**
      * Helper function for creating an expression context which contains just a feature and fields

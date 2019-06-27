@@ -28,6 +28,7 @@
 #include "qgsexpressionutils.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutmultiframe.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
@@ -731,6 +732,67 @@ void QgsExpressionContextUtils::setLayoutItemVariables( QgsLayoutItem *item, con
 
   item->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
   item->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
+}
+
+QgsExpressionContextScope *QgsExpressionContextUtils::multiFrameScope( const QgsLayoutMultiFrame *frame )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Multiframe Item" ) );
+  if ( !frame )
+    return scope;
+
+  //add variables defined in layout item properties
+  const QStringList variableNames = frame->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  const QStringList variableValues = frame->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+
+  int varIndex = 0;
+  for ( const QString &variableName : variableNames )
+  {
+    if ( varIndex >= variableValues.length() )
+    {
+      break;
+    }
+
+    QVariant varValue = variableValues.at( varIndex );
+    varIndex++;
+    scope->setVariable( variableName, varValue );
+  }
+
+  return scope;
+}
+
+void QgsExpressionContextUtils::setLayoutMultiFrameVariable( QgsLayoutMultiFrame *frame, const QString &name, const QVariant &value )
+{
+  if ( !frame )
+    return;
+
+  //write variable to layout multiframe
+  QStringList variableNames = frame->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  QStringList variableValues = frame->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+
+  variableNames << name;
+  variableValues << value.toString();
+
+  frame->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
+  frame->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
+}
+
+void QgsExpressionContextUtils::setLayoutMultiFrameVariables( QgsLayoutMultiFrame *frame, const QVariantMap &variables )
+{
+  if ( !frame )
+    return;
+
+  QStringList variableNames;
+  QStringList variableValues;
+
+  QVariantMap::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
+  {
+    variableNames << it.key();
+    variableValues << it.value().toString();
+  }
+
+  frame->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
+  frame->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
 }
 
 QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields )

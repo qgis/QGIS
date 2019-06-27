@@ -285,6 +285,42 @@ with the ``variables`` specified.
 .. versionadded:: 3.0
 %End
 
+    static QgsExpressionContextScope *multiFrameScope( const QgsLayoutMultiFrame *frame ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutMultiFrame`.
+
+.. seealso:: :py:func:`setLayoutMultiFrameVariable`
+
+.. seealso:: :py:func:`setLayoutMultiFrameVariables`
+
+.. versionadded:: 3.10
+%End
+
+    static void setLayoutMultiFrameVariable( QgsLayoutMultiFrame *frame, const QString &name, const QVariant &value );
+%Docstring
+Sets a layout multi ``frame`` context variable, with the given ``name`` and ``value``.
+This variable will be contained within scopes retrieved via
+multiFrameScope().
+
+.. seealso:: :py:func:`setLayoutItemVariables`
+
+.. seealso:: :py:func:`multiFrameScope`
+
+.. versionadded:: 3.10
+%End
+
+    static void setLayoutMultiFrameVariables( QgsLayoutMultiFrame *frame, const QVariantMap &variables );
+%Docstring
+Sets all layout multiframe context variables for an ``frame``. Existing variables will be removed and replaced
+with the ``variables`` specified.
+
+.. seealso:: :py:func:`setLayoutMultiFrameVariable`
+
+.. seealso:: :py:func:`multiFrameScope`
+
+.. versionadded:: 3.10
+%End
+
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields );
 %Docstring
 Helper function for creating an expression context which contains just a feature and fields
