@@ -29,11 +29,13 @@ QgsPointXY::QgsPointXY( const QgsPointXY &p )
 {
   mX = p.x();
   mY = p.y();
+  mIsEmpty = p.isEmpty();
 }
 
 QgsPointXY::QgsPointXY( const QgsPoint &point )
   : mX( point.x() )
   , mY( point.y() )
+  , mIsEmpty( point.isEmpty() )
 {
 }
 
@@ -116,9 +118,4 @@ double QgsPointXY::sqrDistToSegment( double x1, double y1, double x2, double y2,
     return 0.0;
   }
   return dist;
-}
-
-bool QgsPointXY::isEmpty() const
-{
-  return std::isnan( mX ) || std::isnan( mY );
 }

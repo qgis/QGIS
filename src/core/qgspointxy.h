@@ -62,6 +62,7 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY( double x, double y )
       : mX( x )
       , mY( y )
+      , mIsEmpty( false )
     {}
 
     /**
@@ -72,6 +73,7 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY( QPointF point )
       : mX( point.x() )
       , mY( point.y() )
+      , mIsEmpty( false )
     {}
 
     /**
@@ -82,6 +84,7 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY( QPoint point )
       : mX( point.x() )
       , mY( point.y() )
+      , mIsEmpty( false )
     {}
 
     /**
@@ -104,6 +107,7 @@ class CORE_EXPORT QgsPointXY
     void setX( double x )
     {
       mX = x;
+      mIsEmpty = false;
     }
 
     /**
@@ -113,6 +117,7 @@ class CORE_EXPORT QgsPointXY
     void setY( double y )
     {
       mY = y;
+      mIsEmpty = false;
     }
 
     //! Sets the x and y value of the point
@@ -120,6 +125,7 @@ class CORE_EXPORT QgsPointXY
     {
       mX = x;
       mY = y;
+      mIsEmpty = false;
     }
 
     /**
@@ -147,9 +153,6 @@ class CORE_EXPORT QgsPointXY
      */
     QPointF toQPointF() const
     {
-      if ( isEmpty() ) // special case
-        return QPointF();
-
       return QPointF( mX, mY );
     }
 
@@ -222,10 +225,13 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY project( double distance, double bearing ) const;
 
     /**
-     * Returns TRUE if the geometry is empty (x and y are NaN).
-     * \since QGIS 3.4.6
+     * Returns TRUE if the geometry is empty.
+     * Unlike QgsPoint, this class is also used to retrieve graphical coordinates like QPointF.
+     * It therefore has the default coordinates (0.0).
+     * A QgsPointXY is considered empty, when the coordinates have not been explicitly filled in.
+     * \since QGIS 3.10
      */
-    bool isEmpty() const;
+    bool isEmpty() const { return mIsEmpty; }
 
     /**
      * Compares this point with another point with a fuzzy tolerance
@@ -364,10 +370,13 @@ class CORE_EXPORT QgsPointXY
   private:
 
     //! x coordinate
-    double mX = std::numeric_limits<double>::quiet_NaN();
+    double mX = 0; //std::numeric_limits<double>::quiet_NaN();
 
     //! y coordinate
-    double mY = std::numeric_limits<double>::quiet_NaN();
+    double mY = 0; //std::numeric_limits<double>::quiet_NaN();
+
+    //! is point empty?
+    bool mIsEmpty = true;
 
     friend uint qHash( const QgsPointXY &pnt );
 
