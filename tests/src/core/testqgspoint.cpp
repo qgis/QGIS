@@ -88,6 +88,11 @@ void TestQgsPointXY::equality()
   QVERIFY( point4 != point1 );
   QVERIFY( !( point4 == point3 ) );
   QVERIFY( point4 != point3 );
+
+  QVERIFY( QgsPointXY() != point1 );
+  QVERIFY( QgsPointXY() != QgsPointXY( 0, 0 ) );
+  QVERIFY( point1 != QgsPointXY() );
+  QVERIFY( QgsPointXY( 0, 0 ) != QgsPointXY() );
 }
 
 void TestQgsPointXY::gettersSetters()
