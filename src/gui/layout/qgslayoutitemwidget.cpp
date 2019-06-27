@@ -21,6 +21,7 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslayoutframe.h"
 
 #include <QButtonGroup>
 
@@ -224,9 +225,16 @@ void QgsLayoutItemPropertiesWidget::updateVariables()
   mBlockVariableUpdates = true;
   QgsExpressionContext context = mItem->createExpressionContext();
   mVariableEditor->setContext( &context );
-  int editableIndex = context.indexOfScope( tr( "Layout Item" ) );
-  if ( editableIndex >= 0 )
-    mVariableEditor->setEditableScopeIndex( editableIndex );
+
+  // here, we prefer to make the multiframe's scope the editable one. That's because most expressions are evaluated
+  // on the multiframe subclass level, not on a frame-by-frame basis. Ideally both would be editable, but for now let's go
+  // with the most useful one.
+  const int multiFrameScopeIndex = context.indexOfScope( tr( "Multiframe Item" ) );
+  const int itemScopeIndex = context.indexOfScope( tr( "Layout Item" ) );
+  if ( multiFrameScopeIndex >= 0 )
+    mVariableEditor->setEditableScopeIndex( multiFrameScopeIndex );
+  else if ( itemScopeIndex >= 0 )
+    mVariableEditor->setEditableScopeIndex( itemScopeIndex );
   mBlockVariableUpdates = false;
 }
 
@@ -415,7 +423,17 @@ void QgsLayoutItemPropertiesWidget::variablesChanged()
   if ( !mItem )
     return;
 
-  QgsExpressionContextUtils::setLayoutItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
+  if ( QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( mItem ) )
+  {
+    if ( QgsLayoutMultiFrame *mf = frame->multiFrame() )
+    {
+      QgsExpressionContextUtils::setLayoutMultiFrameVariables( mf, mVariableEditor->variablesInActiveScope() );
+    }
+  }
+  else
+  {
+    QgsExpressionContextUtils::setLayoutItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
+  }
 }
 
 QgsLayoutItem::ReferencePoint QgsLayoutItemPropertiesWidget::positionMode() const
