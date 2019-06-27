@@ -1674,21 +1674,21 @@ double QgsGeometry::hausdorffDistanceDensify( const QgsGeometry &geom, double de
 
 QgsAbstractGeometry::vertex_iterator QgsGeometry::vertices_begin() const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || d->geometry.get()->isEmpty() )
     return QgsAbstractGeometry::vertex_iterator();
   return d->geometry->vertices_begin();
 }
 
 QgsAbstractGeometry::vertex_iterator QgsGeometry::vertices_end() const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || d->geometry.get()->isEmpty() )
     return QgsAbstractGeometry::vertex_iterator();
   return d->geometry->vertices_end();
 }
 
 QgsVertexIterator QgsGeometry::vertices() const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || d->geometry.get()->isEmpty() )
     return QgsVertexIterator();
   return QgsVertexIterator( d->geometry.get() );
 }

@@ -483,6 +483,13 @@ void TestQgsGeometry::vertexIterator()
   QVERIFY( it2.hasNext() );
   QCOMPARE( it2.next(), QgsPoint( 3, 4 ) );
   QVERIFY( !it2.hasNext() );
+
+  QgsGeometry emptyGeom = QgsGeometry::fromWkt( "LINESTRING EMPTY" );
+  QgsVertexIterator it3 = emptyGeom.vertices();
+  QVERIFY( !it3.hasNext() );
+  emptyGeom = QgsGeometry::fromWkt( "POINT EMPTY" );
+  QgsVertexIterator it4 = emptyGeom.vertices();
+  QVERIFY( !it4.hasNext() );
 }
 
 void TestQgsGeometry::partIterator()
