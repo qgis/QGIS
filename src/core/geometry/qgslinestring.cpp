@@ -381,7 +381,7 @@ QString QgsLineString::asWkt( int precision ) const
   QString wkt = wktTypeStr() + ' ';
 
   if ( isEmpty() )
-    wkt += "EMPTY";
+    wkt += QStringLiteral( "EMPTY" );
   else
   {
     QgsPointSequence pts;
