@@ -188,7 +188,7 @@ void TestQgsPointXY::toString()
   mReport += "<p>" + mPoint3.toString( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toString( 2 )  +  "</p>";
   QCOMPARE( mPoint1.toString( 2 ), QString( "20.00,-20.00" ) );
-  QCOMPARE( QgsPointXY().toString( 2 ), QString( "infinite,infinite" ) );
+  QCOMPARE( QgsPointXY().toString( 2 ), QString( "0.00,0.00" ) );
 }
 
 void TestQgsPointXY::asWkt()
@@ -376,16 +376,26 @@ void TestQgsPointXY::isEmpty()
 {
   QgsPointXY pointEmpty;
   QVERIFY( pointEmpty.isEmpty() );
-  QVERIFY( std::isnan( pointEmpty.x() ) );
-  QVERIFY( std::isnan( pointEmpty.y() ) );
+  QCOMPARE( pointEmpty.x(), 0.0 );
+  QCOMPARE( pointEmpty.y(), 0.0 );
   pointEmpty.setX( 7 );
+  QVERIFY( ! pointEmpty.isEmpty() );
+  QCOMPARE( pointEmpty.x(), 7.0 );
+  QCOMPARE( pointEmpty.y(), 0.0 );
+  pointEmpty = QgsPointXY();
   QVERIFY( pointEmpty.isEmpty() );
-  QVERIFY( ! std::isnan( pointEmpty.x() ) );
-  QVERIFY( std::isnan( pointEmpty.y() ) );
+  QCOMPARE( pointEmpty.x(), 0.0 );
+  QCOMPARE( pointEmpty.y(), 0.0 );
   pointEmpty.setY( 4 );
   QVERIFY( ! pointEmpty.isEmpty() );
-  QVERIFY( ! std::isnan( pointEmpty.x() ) );
-  QVERIFY( ! std::isnan( pointEmpty.y() ) );
+  QCOMPARE( pointEmpty.x(), 0.0 );
+  QCOMPARE( pointEmpty.y(), 4.0 );
+
+  QVERIFY( QgsPointXY( QgsPoint() ).isEmpty() );
+  // "can't" be empty
+  QVERIFY( ! QgsPointXY( QPoint() ).isEmpty() );
+  QVERIFY( ! QgsPointXY( QPointF() ).isEmpty() );
 }
+
 QGSTEST_MAIN( TestQgsPointXY )
 #include "testqgspoint.moc"

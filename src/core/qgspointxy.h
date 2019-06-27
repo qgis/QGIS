@@ -248,16 +248,16 @@ class CORE_EXPORT QgsPointXY
     //! equality operator
     bool operator==( const QgsPointXY &other )
     {
-      bool equal = true;
-      if ( std::isnan( other.x() ) || std::isnan( mX ) )
-        equal &= std::isnan( other.x() ) && std::isnan( mX ) ;
-      else
-        equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+      if ( isEmpty() && other.isEmpty() )
+        return true;
+      if ( isEmpty() && !other.isEmpty() )
+        return false;
+      if ( ! isEmpty() && other.isEmpty() )
+        return false;
 
-      if ( std::isnan( other.y() ) || std::isnan( mY ) )
-        equal &= std::isnan( other.y() ) && std::isnan( mY ) ;
-      else
-        equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
+      bool equal = true;
+      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+      equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
 
       return equal;
     }
@@ -265,16 +265,16 @@ class CORE_EXPORT QgsPointXY
     //! Inequality operator
     bool operator!=( const QgsPointXY &other ) const
     {
-      bool equal = true;
-      if ( std::isnan( other.x() ) || std::isnan( mX ) )
-        equal &= std::isnan( other.x() ) && std::isnan( mX ) ;
-      else
-        equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+      if ( isEmpty() && other.isEmpty() )
+        return true;
+      if ( isEmpty() && !other.isEmpty() )
+        return false;
+      if ( ! isEmpty() && other.isEmpty() )
+        return false;
 
-      if ( std::isnan( other.y() ) || std::isnan( mY ) )
-        equal &= std::isnan( other.y() ) && std::isnan( mY ) ;
-      else
-        equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
+      bool equal = true;
+      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+      equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
 
       return !equal;
     }
@@ -293,6 +293,7 @@ class CORE_EXPORT QgsPointXY
       {
         mX = other.x();
         mY = other.y();
+        mIsEmpty = other.isEmpty();
       }
 
       return *this;
