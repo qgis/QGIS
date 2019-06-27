@@ -242,12 +242,12 @@ class CORE_EXPORT QgsLegendRenderer
      * The \a group is drawn with the space above it, so that the first groups in a column are all
      * aligned to the same line regardless of their style top spacing.
     */
-    QSizeF drawGroup( const LegendComponentGroup &group, const ColumnContext &columnContext, QPainter *painter = nullptr, double top = 0 );
+    QSizeF drawGroup( const LegendComponentGroup &group, ColumnContext columnContext, QPainter *painter = nullptr, double top = 0 );
 
     /**
      * Draws the symbol of a given symbol QgsLayerTreeModelLegendNode.
      */
-    LegendComponent drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, const ColumnContext &columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0, double maxSiblingSymbolWidth = 0 );
+    LegendComponent drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, ColumnContext columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0, double maxSiblingSymbolWidth = 0 );
 
     /**
      * Draws the title of a layer, given a QgsLayerTreeLayer, and a destination \a painter.
@@ -256,13 +256,13 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * The \a painter may be NULLPTR, in which case on the size is calculated and no painting is attempted.
      */
-    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, const ColumnContext &columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0 );
+    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, ColumnContext columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0 );
 
     /**
      * Draws a group item.
      * Returns the size of the title.
      */
-    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, const ColumnContext &columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0 );
+    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, ColumnContext columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0 );
 
     /**
      * Renders a group item in a \a json object.
@@ -296,12 +296,12 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * If \a context is NULLPTR, no painting will be attempted, but the required size will still be calculated and returned.
     */
-    QSizeF drawGroup( const LegendComponentGroup &group, QgsRenderContext *rendercontext, const ColumnContext &columnContext, double top = 0 );
+    QSizeF drawGroup( const LegendComponentGroup &group, QgsRenderContext *rendercontext, ColumnContext columnContext, double top = 0 );
 
     /**
      * Draws the symbol of a given symbol QgsLayerTreeModelLegendNode, using the specified render \a context.
      */
-    LegendComponent drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, const ColumnContext &columnContext, double top, double maxSiblingSymbolWidth = 0 );
+    LegendComponent drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, ColumnContext columnContext, double top, double maxSiblingSymbolWidth = 0 );
 
     /**
      * Draws the title of a layer, given a QgsLayerTreeLayer, and a destination render \a context.
@@ -310,14 +310,14 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * The \a context may be NULLPTR, in which case on the size is calculated and no painting is attempted.
      */
-    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, const ColumnContext &columnContext, double top = 0 );
+    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, ColumnContext columnContext, double top = 0 );
 
     /**
      * Draws a group's title, using the specified render \a context.
      *
      * Returns the size of the title.
      */
-    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *context, const ColumnContext &columnContext = ColumnContext(), double top = 0 );
+    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *context, ColumnContext columnContext = ColumnContext(), double top = 0 );
 
     /**
      * Returns the style of the given \a node.
@@ -332,10 +332,10 @@ class CORE_EXPORT QgsLegendRenderer
 
 #endif
     QSizeF drawTitleInternal( QgsRenderContext *context, QPainter *painter, double top, Qt::AlignmentFlag halignment, double legendWidth );
-    QSizeF drawGroupInternal( const LegendComponentGroup &group, QgsRenderContext *context, const ColumnContext &columnContext, QPainter *painter, double top );
-    QgsLegendRenderer::LegendComponent drawSymbolItemInternal( QgsLayerTreeModelLegendNode *symbolItem, const ColumnContext &columnContext, QgsRenderContext *context, QPainter *painter, double top, double maxSiblingSymbolWidth );
-    QSizeF drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, const ColumnContext &columnContext, QgsRenderContext *context, QPainter *painter, double top );
-    QSizeF drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, const ColumnContext &columnContext,  QgsRenderContext *context, QPainter *painter, double top );
+    QSizeF drawGroupInternal( const LegendComponentGroup &group, QgsRenderContext *context, ColumnContext columnContext, QPainter *painter, double top );
+    QgsLegendRenderer::LegendComponent drawSymbolItemInternal( QgsLayerTreeModelLegendNode *symbolItem, ColumnContext columnContext, QgsRenderContext *context, QPainter *painter, double top, double maxSiblingSymbolWidth );
+    QSizeF drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, ColumnContext columnContext, QgsRenderContext *context, QPainter *painter, double top );
+    QSizeF drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, ColumnContext columnContext,  QgsRenderContext *context, QPainter *painter, double top );
     QSizeF paintAndDetermineSizeInternal( QgsRenderContext *context, QPainter *painter );
 
     void widthAndOffsetForTitleText( const Qt::AlignmentFlag halignment, double legendWidth, double &width, double &offset );
