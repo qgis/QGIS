@@ -17578,7 +17578,7 @@ void TestQgsGeometry::emptyJson()
   expected = QStringLiteral( "{\"coordinates\":[],\"type\":\"MultiPolygon\"}" );
   QCOMPARE( QgsMultiSurface().asJson(), expected );
 
-  expected = QStringLiteral( "{\"type\": \"Point\", \"coordinates\": [nan, nan]}" ); // should be [] TODO: fix JSON output
+  expected = QStringLiteral( "{\"coordinates\":[],\"type\":\"Point\"}" );
   QCOMPARE( QgsPoint().asJson(), expected );
 
   expected = QStringLiteral( "{\"coordinates\":[],\"type\":\"Polygon\"}" );

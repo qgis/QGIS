@@ -292,11 +292,16 @@ json QgsPoint::asJsonObject( int precision ) const
   json j
   {
     { "type", "Point" },
-    { "coordinates", { qgsRound( mX, precision ), qgsRound( mY, precision ) } },
+    { "coordinates", json::array() },
   };
-  if ( is3D() )
+  if ( ! isEmpty() )
   {
-    j["coordinates"].push_back( qgsRound( mZ, precision ) );
+    j["coordinates"].push_back( qgsRound( mX, precision ) );
+    j["coordinates"].push_back( qgsRound( mY, precision ) );
+    if ( is3D() )
+    {
+      j["coordinates"].push_back( qgsRound( mZ, precision ) );
+    }
   }
   return j;
 }
