@@ -29,7 +29,7 @@
 
 QgsLegendStyle::QgsLegendStyle()
 {
-  //get default composer font from settings
+  //get default layout font from settings
   QgsSettings settings;
   QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
@@ -112,12 +112,18 @@ QString QgsLegendStyle::styleName( Style s )
 
 QgsLegendStyle::Style QgsLegendStyle::styleFromName( const QString &styleName )
 {
-  if ( styleName == QLatin1String( "hidden" ) ) return Hidden;
-  else if ( styleName == QLatin1String( "title" ) ) return Title;
-  else if ( styleName == QLatin1String( "group" ) ) return Group;
-  else if ( styleName == QLatin1String( "subgroup" ) ) return Subgroup;
-  else if ( styleName == QLatin1String( "symbol" ) ) return Symbol;
-  else if ( styleName == QLatin1String( "symbolLabel" ) ) return SymbolLabel;
+  if ( styleName == QLatin1String( "hidden" ) )
+    return Hidden;
+  else if ( styleName == QLatin1String( "title" ) )
+    return Title;
+  else if ( styleName == QLatin1String( "group" ) )
+    return Group;
+  else if ( styleName == QLatin1String( "subgroup" ) )
+    return Subgroup;
+  else if ( styleName == QLatin1String( "symbol" ) )
+    return Symbol;
+  else if ( styleName == QLatin1String( "symbolLabel" ) )
+    return SymbolLabel;
   return Undefined;
 }
 
