@@ -32,31 +32,24 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
   if ( QgsWMSConnectionItem *connItem = qobject_cast< QgsWMSConnectionItem * >( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit…" ), this );
-    setItemForAction( actionEdit, connItem );
-    connect( actionEdit, &QAction::triggered, this, &QgsWmsDataItemGuiProvider::editConnection );
+    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
     QAction *actionDelete = new QAction( tr( "Delete" ), this );
-    setItemForAction( actionDelete, connItem );
-    connect( actionDelete, &QAction::triggered, this, &QgsWmsDataItemGuiProvider::deleteConnection );
+    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
   }
 
   if ( QgsWMSRootItem *wmsRootItem = qobject_cast< QgsWMSRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
-    setItemForAction( actionNew, wmsRootItem );
-    connect( actionNew, &QAction::triggered, this, &QgsWmsDataItemGuiProvider::newConnection );
+    connect( actionNew, &QAction::triggered, this, [wmsRootItem] { newConnection( wmsRootItem ); } );
     menu->addAction( actionNew );
   }
 }
 
-void QgsWmsDataItemGuiProvider::editConnection()
+void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "qgis/connections-wms/" ), item->name() );
 
   if ( nc.exec() )
@@ -66,12 +59,8 @@ void QgsWmsDataItemGuiProvider::editConnection()
   }
 }
 
-void QgsWmsDataItemGuiProvider::deleteConnection()
+void QgsWmsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
@@ -81,12 +70,8 @@ void QgsWmsDataItemGuiProvider::deleteConnection()
   item->parent()->refreshConnections();
 }
 
-void QgsWmsDataItemGuiProvider::newConnection()
+void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QgsNewHttpConnection nc( nullptr );
 
   if ( nc.exec() )
@@ -104,41 +89,32 @@ void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
   if ( QgsXyzLayerItem *layerItem = qobject_cast< QgsXyzLayerItem * >( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit…" ), this );
-    setItemForAction( actionEdit, layerItem );
-    connect( actionEdit, &QAction::triggered, this, &QgsXyzDataItemGuiProvider::editConnection );
+    connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
     QAction *actionDelete = new QAction( tr( "Delete" ), this );
-    setItemForAction( actionDelete, layerItem );
-    connect( actionDelete, &QAction::triggered, this, &QgsXyzDataItemGuiProvider::deleteConnection );
+    connect( actionDelete, &QAction::triggered, this, [layerItem] { deleteConnection( layerItem ); } );
     menu->addAction( actionDelete );
   }
 
   if ( QgsXyzTileRootItem *rootItem = qobject_cast< QgsXyzTileRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
-    setItemForAction( actionNew, rootItem );
-    connect( actionNew, &QAction::triggered, this, &QgsXyzDataItemGuiProvider::newConnection );
+    connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
 
-    QAction *saveXyzTilesServers = new QAction( tr( "Save Connections…" ), this );
-    setItemForAction( saveXyzTilesServers, rootItem );
-    connect( saveXyzTilesServers, &QAction::triggered, this, &QgsXyzDataItemGuiProvider::saveXyzTilesServers );
-    menu->addAction( saveXyzTilesServers );
+    QAction *actionSaveXyzTilesServers = new QAction( tr( "Save Connections…" ), this );
+    connect( actionSaveXyzTilesServers, &QAction::triggered, this, [] { saveXyzTilesServers(); } );
+    menu->addAction( actionSaveXyzTilesServers );
 
-    QAction *loadXyzTilesServers = new QAction( tr( "Load Connections…" ), this );
-    setItemForAction( loadXyzTilesServers, rootItem );
-    connect( loadXyzTilesServers, &QAction::triggered, this, &QgsXyzDataItemGuiProvider::loadXyzTilesServers );
-    menu->addAction( loadXyzTilesServers );
+    QAction *actionLoadXyzTilesServers = new QAction( tr( "Load Connections…" ), this );
+    connect( actionLoadXyzTilesServers, &QAction::triggered, this, [rootItem] { loadXyzTilesServers( rootItem ); } );
+    menu->addAction( actionLoadXyzTilesServers );
   }
 }
 
-void QgsXyzDataItemGuiProvider::editConnection()
+void QgsXyzDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QgsXyzConnectionDialog dlg;
   dlg.setConnection( QgsXyzConnectionUtils::connection( item->name() ) );
   if ( !dlg.exec() )
@@ -150,12 +126,8 @@ void QgsXyzDataItemGuiProvider::editConnection()
   item->parent()->refreshConnections();
 }
 
-void QgsXyzDataItemGuiProvider::deleteConnection()
+void QgsXyzDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
@@ -165,12 +137,8 @@ void QgsXyzDataItemGuiProvider::deleteConnection()
   item->parent()->refreshConnections();
 }
 
-void QgsXyzDataItemGuiProvider::newConnection()
+void QgsXyzDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QgsXyzConnectionDialog dlg;
   if ( !dlg.exec() )
     return;
@@ -185,12 +153,8 @@ void QgsXyzDataItemGuiProvider::saveXyzTilesServers()
   dlg.exec();
 }
 
-void QgsXyzDataItemGuiProvider::loadXyzTilesServers()
+void QgsXyzDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )

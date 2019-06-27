@@ -27,31 +27,24 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
   if ( QgsWCSRootItem *rootItem = qobject_cast< QgsWCSRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
-    setItemForAction( actionNew, rootItem );
-    connect( actionNew, &QAction::triggered, this, &QgsWcsDataItemGuiProvider::newConnection );
+    connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
   }
 
   if ( QgsWCSConnectionItem *connItem = qobject_cast< QgsWCSConnectionItem * >( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit…" ), this );
-    setItemForAction( actionEdit, connItem );
-    connect( actionEdit, &QAction::triggered, this, &QgsWcsDataItemGuiProvider::editConnection );
+    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
     QAction *actionDelete = new QAction( tr( "Delete" ), this );
-    setItemForAction( actionDelete, connItem );
-    connect( actionDelete, &QAction::triggered, this, &QgsWcsDataItemGuiProvider::deleteConnection );
+    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
   }
 }
 
-void QgsWcsDataItemGuiProvider::newConnection()
+void QgsWcsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "qgis/connections-wcs/" ) );
 
   if ( nc.exec() )
@@ -60,12 +53,8 @@ void QgsWcsDataItemGuiProvider::newConnection()
   }
 }
 
-void QgsWcsDataItemGuiProvider::editConnection()
+void QgsWcsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "qgis/connections-wcs/" ), item->name() );
 
   if ( nc.exec() )
@@ -75,12 +64,8 @@ void QgsWcsDataItemGuiProvider::editConnection()
   }
 }
 
-void QgsWcsDataItemGuiProvider::deleteConnection()
+void QgsWcsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  QPointer< QgsDataItem > item = itemFromAction( qobject_cast<QAction *>( sender() ) );
-  if ( !item )
-    return;
-
   if ( QMessageBox::question( nullptr, tr( "Delete Connection" ), tr( "Are you sure you want to delete the connection “%1”?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
