@@ -83,7 +83,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
         if ( !exclude.trimmed().isEmpty() && url.startsWith( exclude ) )
         {
           QgsDebugMsgLevel( QStringLiteral( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ), 4 );
-          return QList<QNetworkProxy>() << QNetworkProxy();
+          return QList<QNetworkProxy>() << QNetworkProxy( QNetworkProxy::NoProxy );
         }
       }
 
