@@ -553,53 +553,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mKeepBaseUnitCheckBox->setChecked( false );
   }
 
-  // ***** 3D measurement settings *****
-
-
-  // set decimal places of the 3D measure tool
-  int decimalPlaces3D = mSettings->value( QStringLiteral( "/qgis/3Dmeasure/decimalplaces" ), "3" ).toInt();
-  m3DDecimalPlacesSpinBox->setRange( 0, 12 );
-  m3DDecimalPlacesSpinBox->setValue( decimalPlaces3D );
-
-  // set if base unit of 3D measure tool should be changed
-  bool baseUnit3D = mSettings->value( QStringLiteral( "qgis/3Dmeasure/keepbaseunit" ), true ).toBool();
-  if ( baseUnit3D )
-  {
-    m3DKeepBaseUnitCheckBox->setChecked( true );
-  }
-  else
-  {
-    m3DKeepBaseUnitCheckBox->setChecked( false );
-  }
-
-  // Set the units for 3D measuring
-  m3DDistanceUnitsComboBox->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
-  m3DDistanceUnitsComboBox->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
-  m3DDistanceUnitsComboBox->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
-  m3DDistanceUnitsComboBox->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
-  m3DDistanceUnitsComboBox->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
-  m3DDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), QgsUnitTypes::DistanceNauticalMiles );
-  m3DDistanceUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
-  m3DDistanceUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
-  m3DDistanceUnitsComboBox->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
-  m3DDistanceUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
-
-  bool ok3D = false;
-  QgsUnitTypes::DistanceUnit distanceUnits3D = QgsUnitTypes::decodeDistanceUnit( mSettings->value( QStringLiteral( "/qgis/3Dmeasure/displayunits" ) ).toString(), &ok3D );
-  if ( !ok3D )
-    distanceUnits3D = QgsUnitTypes::DistanceMeters;
-  m3DDistanceUnitsComboBox->setCurrentIndex( m3DDistanceUnitsComboBox->findData( distanceUnits3D ) );
-
-  // set the default color for the 3D measure tool
-  int red3D = mSettings->value( QStringLiteral( "/qgis/default_3d_measure_color_red" ), 0 ).toInt();
-  int green3D = mSettings->value( QStringLiteral( "/qgis/default_3d_measure_color_green" ), 128 ).toInt();
-  int blue3D = mSettings->value( QStringLiteral( "/qgis/default_3d_measure_color_blue" ), 255 ).toInt();
-  pbn3DMeasureColor->setColor( QColor( red3D, green3D, blue3D ) );
-  pbn3DMeasureColor->setColorDialogTitle( tr( "Set 3D Measuring Tool Color" ) );
-  pbn3DMeasureColor->setContext( QStringLiteral( "gui" ) );
-  pbn3DMeasureColor->setDefaultColor( QColor( 0, 128, 255 ) );
-
-
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( mSettings->value( QStringLiteral( "qgis/iconSize" ), QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
@@ -1642,23 +1595,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_red" ), myColor.red() );
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_green" ), myColor.green() );
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_blue" ), myColor.blue() );
-
-  // ***** 3D measurement settings *****
-
-  int decimalPlaces3D = m3DDecimalPlacesSpinBox->value();
-  mSettings->setValue( QStringLiteral( "/qgis/3Dmeasure/decimalplaces" ), decimalPlaces3D );
-
-  bool baseUnit3D = m3DKeepBaseUnitCheckBox->isChecked();
-  mSettings->setValue( QStringLiteral( "/qgis/3Dmeasure/keepbaseunit" ), baseUnit3D );
-
-  //set the default color for the 3D measure tool
-  myColor = pbn3DMeasureColor->color();
-  mSettings->setValue( QStringLiteral( "/qgis/default_3d_measure_color_red" ), myColor.red() );
-  mSettings->setValue( QStringLiteral( "/qgis/default_3d_measure_color_green" ), myColor.green() );
-  mSettings->setValue( QStringLiteral( "/qgis/default_3d_measure_color_blue" ), myColor.blue() );
-
-  QgsUnitTypes::DistanceUnit distanceUnit3D = static_cast< QgsUnitTypes::DistanceUnit >( m3DDistanceUnitsComboBox->currentData().toInt() );
-  mSettings->setValue( QStringLiteral( "/qgis/3Dmeasure/displayunits" ), QgsUnitTypes::encodeUnit( distanceUnit3D ) );
 
   mSettings->setValue( QStringLiteral( "/qgis/zoom_factor" ), zoomFactorValue() );
 
