@@ -1381,8 +1381,8 @@ void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString
     }
   }
 
-  // Add root MapServer as layer when multiple layers are listed
-  if ( layerInfoList.count() > 1 && serviceData.contains( QStringLiteral( "supportedImageFormatTypes" ) ) )
+  // Add root MapServer as raster layer when multiple layers are listed
+  if ( filter != QgsArcGisRestUtils::Vector && layerInfoList.count() > 1 && serviceData.contains( QStringLiteral( "supportedImageFormatTypes" ) ) )
   {
     const QString name = QStringLiteral( "(%1)" ).arg( QObject::tr( "All layers" ) );
     const QString description = serviceData.value( QStringLiteral( "Comments" ) ).toString();
