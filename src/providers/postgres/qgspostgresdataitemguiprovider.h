@@ -31,6 +31,11 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
+    bool deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context ) override;
+
+    bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+    bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
+
   private:
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );

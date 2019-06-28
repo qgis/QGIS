@@ -235,11 +235,6 @@ void QgsPGConnectionItem::refreshSchema( const QString &schema )
   }
 }
 
-bool QgsPGConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  return handleDrop( data, QString() );
-}
-
 bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
@@ -336,34 +331,6 @@ QString QgsPGLayerItem::comments() const
 {
   return mLayerProperty.tableComment;
 }
-
-#ifdef HAVE_GUI
-
-bool QgsPGLayerItem::deleteLayer()
-{
-  QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
-
-  if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),
-                              QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return true;
-
-  QString errCause;
-  bool res = QgsPostgresUtils::deleteLayer( mUri, errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ) );
-    if ( mParent )
-      mParent->refresh();
-  }
-  return true;
-}
-
-#endif
 
 QString QgsPGLayerItem::createUri()
 {
