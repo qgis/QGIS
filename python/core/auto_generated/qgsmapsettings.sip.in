@@ -76,6 +76,25 @@ since the given extent may be expanded in order to fit the aspect ratio
 of output size. Use visibleExtent() to get the resulting extent.
 %End
 
+    double extentBuffer() const;
+%Docstring
+Returns the buffer in map units to use around the visible extent for rendering
+symbols whose corresponding geometries are outside the visible extent.
+
+.. seealso:: :py:func:`setExtentBuffer`
+
+.. versionadded:: 3.10
+%End
+
+    void setExtentBuffer( double buffer );
+%Docstring
+Sets the buffer in map units to use around the visible extent for rendering
+symbols whose corresponding geometries are outside the visible extent. This
+is useful when using tiles to avoid cut symbols at tile boundaries.
+
+.. versionadded:: 3.10
+%End
+
     QSize outputSize() const;
 %Docstring
 Returns the size of the resulting map image

@@ -1578,6 +1578,62 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Group_Layer_Order")
 
+    def test_wms_getmap_tile_buffer(self):
+        """Test the implementation of tile_map_edge_buffer from mapserver."""
+
+        # Check without tiled parameters (default is false)
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "310187,6163153,324347,6177313",
+            "CRS": "EPSG:3857",
+            "WIDTH": "512",
+            "HEIGHT": "512",
+            "LAYERS": "wms_tile_buffer_data",
+            "FORMAT": "image/png"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Tiled_False")
+
+        # Check with tiled=false
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "310187,6163153,324347,6177313",
+            "CRS": "EPSG:3857",
+            "WIDTH": "512",
+            "HEIGHT": "512",
+            "LAYERS": "wms_tile_buffer_data",
+            "FORMAT": "image/png",
+            "TILED": "false"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Tiled_False")
+
+        # Check with tiled=true
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "310187,6163153,324347,6177313",
+            "CRS": "EPSG:3857",
+            "WIDTH": "512",
+            "HEIGHT": "512",
+            "LAYERS": "wms_tile_buffer_data",
+            "FORMAT": "image/png",
+            "TILED": "true"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Tiled_True")
+
 
 if __name__ == '__main__':
     unittest.main()

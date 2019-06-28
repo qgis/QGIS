@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgswmsutils.h"
 #include "qgsjsonutils.h"
 #include "qgswmsrenderer.h"
@@ -1027,6 +1026,9 @@ namespace QgsWms
     }
 
     mapSettings.setExtent( mapExtent );
+
+    // set the extent buffer
+    mapSettings.setExtentBuffer( mContext.mapTileBuffer( paintDevice->width() ) );
 
     /* Define the background color
      * Transparent or colored

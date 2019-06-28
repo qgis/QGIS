@@ -24,7 +24,6 @@
 using namespace QgsWms;
 
 const double OGC_PX_M = 0.00028; // OGC reference pixel size in meter
-
 QgsWmsRenderContext::QgsWmsRenderContext( const QgsProject *project, QgsServerInterface *interface )
   : mProject( project )
   , mInterface( interface )
@@ -130,6 +129,18 @@ int QgsWmsRenderContext::imageQuality() const
   }
 
   return imageQuality;
+}
+
+int QgsWmsRenderContext::tileBuffer() const
+{
+  int tileBuffer = 0;
+
+  if ( mParameters.tiledAsBool() )
+  {
+    tileBuffer = QgsServerProjectUtils::wmsTileBuffer( *mProject );
+  }
+
+  return tileBuffer;
 }
 
 int QgsWmsRenderContext::precision() const
@@ -636,6 +647,26 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
   }
 
   return true;
+}
+
+double QgsWmsRenderContext::mapTileBuffer( const int mapWidth ) const
+{
+  double buffer;
+  if ( mFlags & UseTileBuffer )
+  {
+    const QgsRectangle extent = mParameters.bboxAsRectangle();
+    if ( !mParameters.bbox().isEmpty() && extent.isEmpty() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    mParameters[QgsWmsParameter::BBOX] );
+    }
+    buffer = tileBuffer() * ( extent.width() / mapWidth );
+  }
+  else
+  {
+    buffer = 0;
+  }
+  return buffer;
 }
 
 QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const

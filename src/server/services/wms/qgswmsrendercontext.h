@@ -47,7 +47,8 @@ namespace QgsWms
         AddQueryLayers         = 0x80,
         UseWfsLayersOnly       = 0x100,
         AddExternalLayers      = 0x200,
-        UseSrcWidthHeight      = 0x400
+        UseSrcWidthHeight      = 0x400,
+        UseTileBuffer          = 0x800
       };
       Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -149,6 +150,13 @@ namespace QgsWms
       int imageQuality() const;
 
       /**
+       * Returns the tile buffer value to use for rendering according to the
+       * current configuration.
+       * \since QGIS 3.10
+       */
+      int tileBuffer() const;
+
+      /**
        * Returns the precision to use according to the current configuration.
        */
       int precision() const;
@@ -199,6 +207,12 @@ namespace QgsWms
        * \since QGIS 3.8
        */
       QMap<QString, QList<QgsMapLayer *> > layerGroups() const;
+
+      /**
+       * Returns the tile buffer in geographical units for the given map width in pixels.
+       * \since QGIS 3.10
+       */
+      double mapTileBuffer( int mapWidth ) const;
 
       /**
        * Returns the size (in pixels) of the map to render, according to width
