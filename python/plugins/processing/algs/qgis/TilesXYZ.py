@@ -46,7 +46,9 @@ from qgis.core import (QgsProcessingException,
                        QgsMapRendererCustomPainterJob,
                        QgsLabelingEngineSettings)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-
+import threading
+from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import cpu_count
 
 # TMS functions taken from https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/ #spellok
 def tms(ytile, zoom):
@@ -172,103 +174,132 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.layers = [l for l in project.layerTreeRoot().layerOrder() if l in visible_layers]
         return True
 
+    def render_single_tile(self, metatile ):
+        if self.feedback.isCanceled():
+            return
+            # Haven't found a better way to break than to make all the new threads return instantly
+
+        if "Dummy" in threading.current_thread().name: # single thread testing
+          specific_settings = list(self.settings_dict.values())[0]
+        else: 
+          try:
+            # guess we're not the only one using TPE in QGIS, cannot assume 0_#, it's sometimes 3 or 4_#
+            specific_settings = self.settings_dict[threading.current_thread().name[-1]] # last number only
+          except:
+            print("Exception! our threads don't match with our settings! ")
+
+        size = QSize(self.tile_width * metatile.rows(), self.tile_height * metatile.columns())
+        self.extent = QgsRectangle(*metatile.extent())
+        specific_settings.setExtent(self.wgs_to_dest.transformBoundingBox(self.extent))
+        specific_settings.setOutputSize(size)
+
+        image = QImage(size, QImage.Format_ARGB32_Premultiplied)
+        image.fill(Qt.transparent)
+        dpm = specific_settings.outputDpi() / 25.4 * 1000
+        image.setDotsPerMeterX(dpm)
+        image.setDotsPerMeterY(dpm)
+        painter = QPainter(image)
+        job = QgsMapRendererCustomPainterJob(specific_settings, painter)
+        job.renderSynchronously()
+        painter.end()
+
+        for r, c, tile in metatile.tiles:
+            tile_img = image.copy(self.tile_width * r, self.tile_height * c, self.tile_width, self.tile_height)
+            self.writer.write_tile(tile, tile_img)
+
+        self.progress += 1
+        self.feedback.setProgress(100 * (self.progress / self.metatiles_total))
+
     def generate(self, writer, parameters, context, feedback):
         feedback.setProgress(1)
-
-        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
-        self.min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
-        self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
-        dpi = self.parameterAsInt(parameters, self.DPI, context)
-        self.tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
-        quality = self.parameterAsInt(parameters, self.QUALITY, context)
-        self.metatilesize = self.parameterAsInt(parameters, self.METATILESIZE, context)
-        try:
-            tile_width = self.parameterAsInt(parameters, self.TILE_WIDTH, context)
-            tile_height = self.parameterAsInt(parameters, self.TILE_HEIGHT, context)
-        except AttributeError:
-            tile_width = 256
-            tile_height = 256
+        self.feedback = feedback
 
         wgs_crs = QgsCoordinateReferenceSystem('EPSG:4326')
         dest_crs = QgsCoordinateReferenceSystem('EPSG:3857')
 
+        self.extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+        self.min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
+        self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
+        self.tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
+        self.quality = self.parameterAsInt(parameters, self.QUALITY, context)
+        dpi          = self.parameterAsInt(parameters, self.DPI, context)
+        self.metatilesize = self.parameterAsInt(parameters, self.METATILESIZE, context)
+        try:
+            self.tile_width = self.parameterAsInt(parameters, self.TILE_WIDTH, context)
+            self.tile_height = self.parameterAsInt(parameters, self.TILE_HEIGHT, context)
+        except AttributeError:
+            self.tile_width = 256
+            self.tile_height = 256
+
         project = context.project()
-        src_to_wgs = QgsCoordinateTransform(project.crs(), wgs_crs, context.transformContext())
-        wgs_to_dest = QgsCoordinateTransform(wgs_crs, dest_crs, context.transformContext())
+        self.src_to_wgs = QgsCoordinateTransform(project.crs(), wgs_crs, context.transformContext())
+        self.wgs_to_dest = QgsCoordinateTransform(wgs_crs, dest_crs, context.transformContext())
 
-        settings = QgsMapSettings()
-        settings.setOutputImageFormat(QImage.Format_ARGB32_Premultiplied)
-        settings.setDestinationCrs(dest_crs)
-        settings.setLayers(self.layers)
-        settings.setOutputDpi(dpi)
-        if self.tile_format == 'PNG':
-            settings.setBackgroundColor(QColor(Qt.transparent))
+        #self.max_threads = 4
+        
+        self.max_threads = cpu_count()
+        # without re-writing, we need a different settings for each thread to stop async errors
+        # naming doesn't always line up, but the last number does
+        #self.settings_dict = {'ThreadPoolExecutor-o_' + str(i): QgsMapSettings() for i in range(self.max_threads)}
+        self.settings_dict = {str(i): QgsMapSettings() for i in range(self.max_threads)}
+        for thread in self.settings_dict:
+            self.settings_dict[thread].setOutputImageFormat(QImage.Format_ARGB32_Premultiplied)
+            self.settings_dict[thread].setDestinationCrs(dest_crs)
+            self.settings_dict[thread].setLayers(self.layers)
+            self.settings_dict[thread].setOutputDpi(dpi)
+            if self.tile_format == 'PNG':
+                self.settings_dict[thread].setBackgroundColor(QColor(Qt.transparent))
 
-        # disable partial labels (they would be cut at the edge of tiles)
-        labeling_engine_settings = settings.labelingEngineSettings()
-        labeling_engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
-        settings.setLabelingEngineSettings(labeling_engine_settings)
+            labeling_engine_settings = self.settings_dict[thread].labelingEngineSettings()
+            labeling_engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+            self.settings_dict[thread].setLabelingEngineSettings(labeling_engine_settings)
+        print(self.settings_dict)
 
-        self.wgs_extent = src_to_wgs.transformBoundingBox(extent)
+        self.wgs_extent = self.src_to_wgs.transformBoundingBox(self.extent)
         self.wgs_extent = [self.wgs_extent.xMinimum(), self.wgs_extent.yMinimum(), self.wgs_extent.xMaximum(),
                            self.wgs_extent.yMaximum()]
 
         metatiles_by_zoom = {}
-        metatiles_count = 0
+        self.metatiles_total = 0
+        all_metatiles = []
         for zoom in range(self.min_zoom, self.max_zoom + 1):
             metatiles = get_metatiles(self.wgs_extent, zoom, self.metatilesize)
             metatiles_by_zoom[zoom] = metatiles
-            metatiles_count += len(metatiles)
+            all_metatiles += metatiles
+            self.metatiles_total += len(metatiles)
 
         lab_buffer_px = 100
-        progress = 0
+        self.progress = 0
 
         tile_params = {
             'format': self.tile_format,
-            'quality': quality,
-            'width': tile_width,
-            'height': tile_height,
+            'quality': self.quality,
+            'width': self.tile_width,
+            'height': self.tile_height,
             'min_zoom': self.min_zoom,
             'max_zoom': self.max_zoom,
             'extent': self.wgs_extent,
         }
-        writer.set_parameters(tile_params)
+        self.writer = writer
+        self.writer.set_parameters(tile_params)
 
-        for zoom in range(self.min_zoom, self.max_zoom + 1):
-            feedback.pushConsoleInfo('Generating tiles for zoom level: %s' % zoom)
+        feedback.pushConsoleInfo('Using %s CPU Threads:' % cpu_count() )
+        feedback.pushConsoleInfo('Pushing all tiles at once: %s tiles!' % len(all_metatiles) )
+        with ThreadPoolExecutor(max_workers=self.max_threads) as threadPool:
+          threadPool.map(self.render_single_tile, all_metatiles)
+        
+        # this slows TPE down a bit, once the job pool for a zoom is < 3, we have idle threads until that zoom is done, so there will be a lag per zoom
+        #  not to mention, we create a new thread pool per zoom, so some added overhead
+        #for zoom in range(self.min_zoom, self.max_zoom + 1):
+            #feedback.pushConsoleInfo('Pushing zoom files for zoom level: %s ' % zoom )
 
-            for i, metatile in enumerate(metatiles_by_zoom[zoom]):
-                if feedback.isCanceled():
-                    break
-
-                size = QSize(tile_width * metatile.rows(), tile_height * metatile.columns())
-                extent = QgsRectangle(*metatile.extent())
-                settings.setExtent(wgs_to_dest.transformBoundingBox(extent))
-                settings.setOutputSize(size)
-
-                image = QImage(size, QImage.Format_ARGB32_Premultiplied)
-                image.fill(Qt.transparent)
-                dpm = settings.outputDpi() / 25.4 * 1000
-                image.setDotsPerMeterX(dpm)
-                image.setDotsPerMeterY(dpm)
-                painter = QPainter(image)
-                job = QgsMapRendererCustomPainterJob(settings, painter)
-                job.renderSynchronously()
-                painter.end()
-
-                # For analysing metatiles (labels, etc.)
-                # metatile_dir = os.path.join(output_dir, str(zoom))
-                # os.makedirs(metatile_dir, exist_ok=True)
-                # image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
-
-                for r, c, tile in metatile.tiles:
-                    tile_img = image.copy(tile_width * r, tile_height * c, tile_width, tile_height)
-                    writer.write_tile(tile, tile_img)
-
-                progress += 1
-                feedback.setProgress(100 * (progress / metatiles_count))
-
-        writer.close()
+            # multithreading: create one worker job per tile, then give it as a sum to the executor
+            #with ThreadPoolExecutor(max_workers=self.max_threads) as threadPool:
+              #threadPool.map(self.render_single_tile, metatiles_by_zoom[zoom])
+            #for i, metatile in enumerate(metatiles_by_zoom[zoom]): # single threadding test
+                #self.render_single_tile(metatile)
+            
+        self.writer.close()
 
     def checkParameterValues(self, parameters, context):
         min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
@@ -277,7 +308,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             return False, self.tr('Invalid zoom levels range.')
 
         return super().checkParameterValues(parameters, context)
-
 
 ########################################################################
 # MBTiles
