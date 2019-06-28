@@ -71,6 +71,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
   private slots:
     void onTerrainPicked( Qt3DRender::QPickEvent *event );
     void onTerrainEntityChanged();
+    void handleClick( Qt3DRender::QPickEvent *event, const QgsVector3D &worldIntersection );
 
   private:
     std::unique_ptr<Qgs3DMapToolMeasureLinePickHandler> mPickHandler;
