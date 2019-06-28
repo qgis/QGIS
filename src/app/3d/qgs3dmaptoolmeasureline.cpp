@@ -58,8 +58,13 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mLineSymbol->setRenderAsSimpleLines( true );
   mLineSymbol->setWidth( 4 );
   mLineSymbol->setAltitudeClamping( Qgs3DTypes::AltClampAbsolute );
+
   QgsPhongMaterialSettings phongMaterial;
-  phongMaterial.setAmbient( Qt::yellow );
+  QgsSettings settings;
+  int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
+  int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
+  int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
+  phongMaterial.setAmbient( QColor( myRed, myGreen, myBlue, 100 ) );
   mLineSymbol->setMaterial( phongMaterial );
 
   mLineSymbolRenderer = new QgsVectorLayer3DRenderer( mLineSymbol );
