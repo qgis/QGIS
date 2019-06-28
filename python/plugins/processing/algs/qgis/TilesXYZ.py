@@ -51,6 +51,8 @@ from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import cpu_count
 
 # TMS functions taken from https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/ #spellok
+
+
 def tms(ytile, zoom):
     n = 2.0 ** zoom
     ytile = n - ytile - 1
@@ -65,8 +67,9 @@ def deg2num(lat_deg, lon_deg, zoom):
     ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
     return (xtile, ytile)
 
-
 # Math functions taken from https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames #spellok
+
+
 def num2deg(xtile, ytile, zoom):
     n = 2.0 ** zoom
     lon_deg = xtile / n * 360.0 - 180.0
@@ -174,19 +177,19 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.layers = [l for l in project.layerTreeRoot().layerOrder() if l in visible_layers]
         return True
 
-    def render_single_tile(self, metatile ):
+    def render_single_tile(self, metatile):
         if self.feedback.isCanceled():
             return
             # Haven't found a better way to break than to make all the new threads return instantly
 
         if "Dummy" in threading.current_thread().name: # single thread testing
-          specific_settings = list(self.settings_dict.values())[0]
-        else: 
-          try:
-            # guess we're not the only one using TPE in QGIS, cannot assume 0_#, it's sometimes 3 or 4_#
-            specific_settings = self.settings_dict[threading.current_thread().name[-1]] # last number only
-          except:
-            print("Exception! our threads don't match with our settings! ")
+            specific_settings = list(self.settings_dict.values())[0]
+        else:
+            try:
+                # guess we're not the only one using TPE in QGIS, cannot assume 0_#, it's sometimes 3 or 4_#
+                specific_settings = self.settings_dict[threading.current_thread().name[-1]] # last number only
+            except:
+                print("Exception! our threads don't match with our settings! ")
 
         size = QSize(self.tile_width * metatile.rows(), self.tile_height * metatile.columns())
         self.extent = QgsRectangle(*metatile.extent())
@@ -222,7 +225,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
         self.tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
         self.quality = self.parameterAsInt(parameters, self.QUALITY, context)
-        dpi          = self.parameterAsInt(parameters, self.DPI, context)
+        dpi = self.parameterAsInt(parameters, self.DPI, context)
         self.metatilesize = self.parameterAsInt(parameters, self.METATILESIZE, context)
         try:
             self.tile_width = self.parameterAsInt(parameters, self.TILE_WIDTH, context)
@@ -236,7 +239,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.wgs_to_dest = QgsCoordinateTransform(wgs_crs, dest_crs, context.transformContext())
 
         #self.max_threads = 4
-        
+
         self.max_threads = cpu_count()
         # without re-writing, we need a different settings for each thread to stop async errors
         # naming doesn't always line up, but the last number does
@@ -283,11 +286,11 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.writer = writer
         self.writer.set_parameters(tile_params)
 
-        feedback.pushConsoleInfo('Using %s CPU Threads:' % cpu_count() )
-        feedback.pushConsoleInfo('Pushing all tiles at once: %s tiles!' % len(all_metatiles) )
+        feedback.pushConsoleInfo('Using %s CPU Threads:' % cpu_count())
+        feedback.pushConsoleInfo('Pushing all tiles at once: %s tiles!' % len(all_metatiles))
         with ThreadPoolExecutor(max_workers=self.max_threads) as threadPool:
-          threadPool.map(self.render_single_tile, all_metatiles)
-        
+            threadPool.map(self.render_single_tile, all_metatiles)
+
         # this slows TPE down a bit, once the job pool for a zoom is < 3, we have idle threads until that zoom is done, so there will be a lag per zoom
         #  not to mention, we create a new thread pool per zoom, so some added overhead
         #for zoom in range(self.min_zoom, self.max_zoom + 1):
@@ -295,10 +298,10 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 
             # multithreading: create one worker job per tile, then give it as a sum to the executor
             #with ThreadPoolExecutor(max_workers=self.max_threads) as threadPool:
-              #threadPool.map(self.render_single_tile, metatiles_by_zoom[zoom])
+            #threadPool.map(self.render_single_tile, metatiles_by_zoom[zoom])
             #for i, metatile in enumerate(metatiles_by_zoom[zoom]): # single threadding test
-                #self.render_single_tile(metatile)
-            
+            #self.render_single_tile(metatile)
+
         self.writer.close()
 
     def checkParameterValues(self, parameters, context):
@@ -312,6 +315,8 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 ########################################################################
 # MBTiles
 ########################################################################
+
+
 class MBTilesWriter:
     def __init__(self, filename):
         base_dir = os.path.dirname(filename)
