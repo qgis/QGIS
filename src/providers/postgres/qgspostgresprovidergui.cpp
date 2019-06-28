@@ -21,6 +21,7 @@
 #include "qgspostgresdataitems.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgspostgresprojectstoragedialog.h"
+#include "qgspostgresdataitemguiprovider.h"
 
 
 //! Provider for postgres source select
@@ -87,7 +88,8 @@ class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
 
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
     {
-      return QList<QgsDataItemGuiProvider *>();
+      return QList<QgsDataItemGuiProvider *>()
+             << new QgsPostgresDataItemGuiProvider;
     }
 
     QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override
