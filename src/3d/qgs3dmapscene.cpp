@@ -52,8 +52,6 @@
 
 #include "qgslinematerial_p.h"
 
-#include <qdebug.h>
-
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )

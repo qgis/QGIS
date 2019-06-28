@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDebug>
-
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 #include <QKeyEvent>
@@ -54,13 +52,12 @@ void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer
     }
 
     // Left button, keep addinng point
-    qInfo() << "handlePickOnVectorLayer" ;
     QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates(
                               QgsVector3D( worldIntersection.x(),
                                            worldIntersection.y(),
                                            worldIntersection.z() ), mMeasureLineTool->mCanvas->map()->origin() );
     QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
-    qInfo() << "Coord (handlePickOnVectorLayer): " << pt.x() << " " << pt.y() << " " << pt.z();
+    QgsDebugMsg( QStringLiteral( "Loading profiles path from global config at %1, %2, %3" ).arg( pt.x() ).arg( pt.y() ).arg( pt.z() ) );
 
     mMeasureLineTool->mDone = false;
     mMeasureLineTool->addPoint( pt );
@@ -69,12 +66,12 @@ void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer
   else if ( event->button() == Qt3DRender::QPickEvent::RightButton )
   {
     // Finish measurement
-    qInfo() << "Finish measurement";
+    QgsDebugMsg( "Finish measurement" );
     mMeasureLineTool->mDone = true;
   }
   else if ( event->button() == Qt3DRender::QPickEvent::MiddleButton )
   {
-    qInfo() << "Undo - middle button";
+    QgsDebugMsg( "Undo - middle button" );
     mMeasureLineTool->undo();
 
   }
@@ -83,7 +80,6 @@ void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
-  qInfo() << "Constructed";
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolMeasureLine::onTerrainEntityChanged );
   mPickHandler.reset( new Qgs3DMapToolMeasureLinePickHandler( this ) );
 
@@ -91,9 +87,9 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mLineSymbol = new QgsLine3DSymbol;
   mLineSymbol->setRenderAsSimpleLines( true );
   mLineSymbol->setWidth( 4 );
+  mLineSymbol->setAltitudeClamping( Qgs3DTypes::AltClampAbsolute );
   QgsPhongMaterialSettings phongMaterial;
   phongMaterial.setAmbient( Qt::yellow );
-  phongMaterial.setDiffuse( Qt::green );
   mLineSymbol->setMaterial( phongMaterial );
 
   mLineSymbolRenderer = new QgsVectorLayer3DRenderer( mLineSymbol );
@@ -108,7 +104,6 @@ Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
 
 void Qgs3DMapToolMeasureLine::activate()
 {
-  qInfo() << "Measure line activated";
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
   {
     connect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolMeasureLine::onTerrainPicked );
@@ -137,11 +132,8 @@ void Qgs3DMapToolMeasureLine::activate()
   setMeasurementLayerRenderer( mMeasurementLayer );
 
   // Add layer to canvas
-  qInfo() << "Current layer: " << mCanvas->map()->layers();
   //mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
-
-  qInfo() << "Current layer after adding: " << mCanvas->map()->layers();
 
   // Show dialog
   mDialog->show();
@@ -149,7 +141,6 @@ void Qgs3DMapToolMeasureLine::activate()
 
 void Qgs3DMapToolMeasureLine::deactivate()
 {
-  qInfo() << "Measure line deactivated";
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
   {
     disconnect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolMeasureLine::onTerrainPicked );
@@ -171,7 +162,6 @@ void Qgs3DMapToolMeasureLine::deactivate()
 
 void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
 {
-  qInfo() << "onTerrainPicked";
   if ( event->button() == Qt3DRender::QPickEvent::LeftButton )
   {
     if ( mDone )
@@ -183,7 +173,7 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
     QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
                             worldIntersection.y(),
                             worldIntersection.z() ), mCanvas->map()->origin() );
-    qInfo() << "Coord (onTerrainPicked): " << mapCoords.x() << " " << mapCoords.y() << " " << mapCoords.z();
+    QgsDebugMsg( QStringLiteral( "Coord (onTerrainPicked): %1, %2, %3" ).arg( mapCoords.x() ).arg( mapCoords.y() ).arg( mapCoords.z() ) );
 
     mDone = false;
     addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
@@ -192,12 +182,12 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
   else if ( event->button() == Qt3DRender::QPickEvent::RightButton )
   {
     // Finish measurement
-    qInfo() << "Finish measurement";
+    QgsDebugMsg( QStringLiteral( "Finish measurement" ) );
     mDone = true;
   }
   else if ( event->button() == Qt3DRender::QPickEvent::MiddleButton )
   {
-    qInfo() << "Undo - middle button";
+    QgsDebugMsg( QStringLiteral( "Undo - middle button" ) );
     undo();
   }
 
@@ -208,7 +198,6 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
 
 void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
 {
-  qInfo() << "onTerrainEntityChanged";
   // no need to disconnect from the previous entity: it has been destroyed
   // start listening to the new terrain entity
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
@@ -233,7 +222,6 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
   }
 
   QgsPoint addedPoint( point );
-  qInfo() << "Is 3D point? " << addedPoint.is3D();
 
   // Append point
   mPoints.append( addedPoint );
@@ -242,7 +230,7 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
 
   mMeasurementLayer->startEditing();
   QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
-  qInfo() << "Current line: " << newMeasurementLine->asWkt();
+  QgsDebugMsg( QStringLiteral( "Current line: %s" ).arg( newMeasurementLine->asWkt() ) );
   mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
   mMeasurementLayer->commitChanges();
 
@@ -260,7 +248,7 @@ void Qgs3DMapToolMeasureLine::restart()
 
   mMeasurementLayer->startEditing();
   QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
-  qInfo() << "Current line: " << newMeasurementLine->asWkt();
+  QgsDebugMsg( QStringLiteral( "Current line: %s" ).arg( newMeasurementLine->asWkt() ) );
   mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
   mMeasurementLayer->commitChanges();
 
@@ -269,8 +257,7 @@ void Qgs3DMapToolMeasureLine::restart()
 
 void Qgs3DMapToolMeasureLine::undo()
 {
-
-  qInfo() << "Removing last point.";
+  QgsDebugMsg( QStringLiteral( "Removing last point." ) );
   if ( mPoints.empty() )
   {
     return;
@@ -288,7 +275,6 @@ void Qgs3DMapToolMeasureLine::undo()
 
     mMeasurementLayer->startEditing();
     QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
-    qInfo() << "Current line: " << newMeasurementLine->asWkt();
     mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
     mMeasurementLayer->commitChanges();
 
