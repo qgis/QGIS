@@ -28,6 +28,7 @@ SET(PG_MOC_HDRS
 
 IF (WITH_GUI)
   SET(PG_SRCS ${PG_SRCS}
+    qgspostgresprovidergui.cpp
     qgspgsourceselect.cpp
     qgspgnewconnection.cpp
     qgspostgresprojectstoragedialog.cpp

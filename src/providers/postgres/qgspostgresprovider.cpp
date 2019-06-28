@@ -45,14 +45,11 @@
 
 #include "qgspostgresprovider.h"
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#include "qgspgsourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 
-const QString POSTGRES_KEY = QStringLiteral( "postgres" );
-const QString POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
+
+const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
+const QString QgsPostgresProvider::POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
+
 static const QString EDITOR_WIDGET_STYLES_TABLE = QStringLiteral( "qgis_editor_widget_styles" );
 
 inline qint64 PKINT2FID( qint32 x )
@@ -5015,49 +5012,6 @@ void QgsPostgresProviderMetadata::cleanupProvider()
 }
 
 
-#ifdef HAVE_GUI
-
-//! Provider for postgres source select
-class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spellok
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "postgres" ); }
-    QString text() const override { return QObject::tr( "PostgreSQL" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsPgSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsPostgresProviderGuiMetadata():
-      QgsProviderGuiMetadata( POSTGRES_KEY )
-    {
-    }
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsPostgresSourceSelectProvider;  //#spellok
-      return providers;
-    }
-    QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override
-    {
-      QList<QgsProjectStorageGuiProvider *> providers;
-      providers << new QgsPostgresProjectStorageGuiProvider;
-      return providers;
-    }
-    void registerGui( QMainWindow *mainWindow ) override
-    {
-      QgsPGRootItem::sMainWindow = mainWindow;
-    }
-};
-#endif
-
 // ----------
 
 void QgsPostgresSharedData::addFeaturesCounted( long diff )
@@ -5175,17 +5129,13 @@ void QgsPostgresSharedData::setFieldSupportsEnumValues( int index, bool isSuppor
   mFieldSupportsEnumValues[ index ] = isSupported;
 }
 
-QgsPostgresProviderMetadata::QgsPostgresProviderMetadata():
-  QgsProviderMetadata( POSTGRES_KEY, POSTGRES_DESCRIPTION ) {}
+
+QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
+  : QgsProviderMetadata( QgsPostgresProvider::POSTGRES_KEY, QgsPostgresProvider::POSTGRES_DESCRIPTION )
+{
+}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsPostgresProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsPostgresProviderGuiMetadata();
-}
-#endif
