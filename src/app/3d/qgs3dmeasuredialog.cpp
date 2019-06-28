@@ -19,7 +19,6 @@
 #include "qgsproject.h"
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dmaptoolmeasureline.h"
-#include "qdebug.h"
 #include "qgsmapcanvas.h"
 #include "qgisapp.h"
 
@@ -59,10 +58,12 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 
   updateSettings();
 
-  qInfo() << "3D Measure Dialog created";
+  // Remove Help button until we have proper documentation for it
+  buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Help ) );
+
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMeasureDialog::unitsChanged );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &Qgs3DMeasureDialog::showHelp );
+//  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &Qgs3DMeasureDialog::showHelp );
   connect( canvas2D, &QgsMapCanvas::destinationCrsChanged, this, &Qgs3DMeasureDialog::crsChanged );
 }
 
@@ -86,7 +87,7 @@ void Qgs3DMeasureDialog::restorePosition()
 void Qgs3DMeasureDialog::addPoint()
 {
   int numPoints = mTool->points().size();
-  qInfo() << "Add point. Current num points: " << numPoints;
+  QgsDebugMsg( QStringLiteral( "Add point. Current num points: " ).arg( numPoints ) );
   if ( numPoints > 1 )
   {
     if ( !mTool->done() )
@@ -112,14 +113,7 @@ double Qgs3DMeasureDialog::lastDistance()
 {
   QgsPoint lastPoint = mTool->points().rbegin()[0];
   QgsPoint secondLastPoint = mTool->points().rbegin()[1];
-  // Euclidean distance
-  qInfo() << "Last line " << lastPoint.x() << lastPoint.y() << lastPoint.z();
-  qInfo() << "Last line " << secondLastPoint.x() << secondLastPoint.y() << secondLastPoint.z();
-  return qSqrt(
-           ( lastPoint.x() - secondLastPoint.x() ) * ( lastPoint.x() - secondLastPoint.x() ) +
-           ( lastPoint.y() - secondLastPoint.y() ) * ( lastPoint.y() - secondLastPoint.y() ) +
-           ( lastPoint.z() - secondLastPoint.z() ) * ( lastPoint.z() - secondLastPoint.z() )
-         );
+  return lastPoint.distance3D( secondLastPoint );
 }
 
 void Qgs3DMeasureDialog::updateUi()
