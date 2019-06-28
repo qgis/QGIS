@@ -28,8 +28,9 @@ class QgsMeshLayer;
  * Widget for selection of active dataset group from tree view.
  * Also selects the active scalar and vector dataset by slider
  *
- * At the moment, it is not possible to select different vector and
- * scalar dataset
+ * User can choose different scalar and vector dataset.
+ * Time slider is deactivated when no dataset is selected or
+ * when all selected datasets are non-temporal.
  */
 class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui::QgsMeshRendererActiveDatasetWidgetBase
 {
@@ -87,6 +88,9 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
   private:
     //! Loops through all dataset groups and finds the maximum number of datasets
     void setTimeRange();
+
+    //! Enables/Disables time controls depending on whether the selected datasets are time varying
+    void enableTimeControls();
 
     void updateMetadata();
 
