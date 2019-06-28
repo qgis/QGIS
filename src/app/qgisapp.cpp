@@ -794,6 +794,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Creating map canvas" ) );
   mMapCanvas = new QgsMapCanvas( centralWidget );
   mMapCanvas->setObjectName( QStringLiteral( "theMapCanvas" ) );
+
+  // before anything, let's freeze canvas redraws
+  QgsCanvasRefreshBlocker refreshBlocker;
+
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
 
   if ( settings.value( QStringLiteral( "qgis/main_canvas_preview_jobs" ) ).isNull() )
@@ -938,7 +942,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::createStatusBar, this, QStringLiteral( "Status bar" ) );
   functionProfile( &QgisApp::createCanvasTools, this, QStringLiteral( "Create canvas tools" ) );
 
-  mMapCanvas->freeze();
   applyDefaultSettingsToCanvas( mMapCanvas );
 
   functionProfile( &QgisApp::initLayerTreeView, this, QStringLiteral( "Init Layer tree view" ) );
@@ -1329,7 +1332,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   QgsGui::setWindowManager( new QgsAppWindowManager() );
 
-  mMapCanvas->freeze( false );
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
 
   QShortcut *zoomInShortCut = new QShortcut( QKeySequence( tr( "Ctrl++" ) ), this );
@@ -1505,7 +1507,7 @@ QgisApp::QgisApp()
   mInternalClipboard = new QgsClipboard;
   mMapCanvas = new QgsMapCanvas();
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
-  mMapCanvas->freeze();
+  QgsCanvasRefreshBlocker refreshBlocker;
   mLayerTreeView = new QgsLayerTreeView( this );
   QgsLayerTreeModel *model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
   mLayerTreeView->setModel( model );
@@ -1521,6 +1523,9 @@ QgisApp::QgisApp()
 
 QgisApp::~QgisApp()
 {
+  // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
+  mFreezeCount = 1000000;
+
   delete mInternalClipboard;
   delete mQgisInterface;
   delete mStyleSheetBuilder;
@@ -1692,7 +1697,7 @@ void QgisApp::dropEvent( QDropEvent *event )
 
   connect( timer, &QTimer::timeout, this, [this, timer, files, lst]
   {
-    freezeCanvases();
+    QgsCanvasRefreshBlocker refreshBlocker;
 
     for ( const QString &file : qgis::as_const( files ) )
     {
@@ -1717,9 +1722,6 @@ void QgisApp::dropEvent( QDropEvent *event )
     {
       handleDropUriList( lst );
     }
-
-    freezeCanvases( false );
-    refreshMapCanvas();
 
     timer->deleteLater();
   } );
@@ -3872,14 +3874,13 @@ void QgisApp::closeMapCanvas( const QString &name )
 
 void QgisApp::closeAdditionalMapCanvases()
 {
-  freezeCanvases( true ); // closing docks may cause canvases to resize, and we don't want a map refresh occurring
+  QgsCanvasRefreshBlocker refreshBlocker; // closing docks may cause canvases to resize, and we don't want a map refresh occurring
   const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
   for ( QgsMapCanvasDockWidget *w : dockWidgets )
   {
     w->close();
     delete w;
   }
-  freezeCanvases( false );
 }
 
 void QgisApp::closeAdditional3DMapCanvases()
@@ -4632,7 +4633,8 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
 bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, const bool guiWarning )
 {
-  bool wasfrozen = mMapCanvas->isFrozen();
+  QgsCanvasRefreshBlocker refreshBlocker;
+
   QList<QgsMapLayer *> layersToAdd;
   QList<QgsMapLayer *> addedLayers;
   QgsSettings settings;
@@ -4702,8 +4704,6 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
     }
     if ( ! layer )
     {
-      freezeCanvases( false );
-
       // Let render() do its own cursor management
       //      QApplication::restoreOverrideCursor();
 
@@ -4787,14 +4787,6 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
   }
   activateDeactivateLayerRelatedActions( activeLayer() );
 
-  // Only update the map if we frozen in this method
-  // Let the caller do it otherwise
-  if ( !wasfrozen )
-  {
-    freezeCanvases( false );
-    refreshMapCanvas();
-  }
-
   return true;
 }
 
@@ -4806,7 +4798,7 @@ QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName
 
 QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &baseName, const QString &providerKey, const bool guiWarning )
 {
-  bool wasfrozen = mMapCanvas->isFrozen();
+  QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
 
   QString base( baseName );
@@ -4834,9 +4826,6 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
     return nullptr;
   }
 
-  // Register this layer with the layers registry
-  freezeCanvases();
-
   QgsProject::instance()->addMapLayer( layer.get() );
 
   askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs() );
@@ -4847,13 +4836,6 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
 
   activateDeactivateLayerRelatedActions( activeLayer() );
 
-  // Only update the map if we frozen in this method
-  // Let the caller do it otherwise
-  if ( !wasfrozen )
-  {
-    freezeCanvases( false );
-    refreshMapCanvas();
-  }
   return layer.release();
 }
 
@@ -5301,11 +5283,10 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
     // no layers to add so bail out, but
     // allow mMapCanvas to handle events
     // first
-    freezeCanvases( false );
     return;
   }
 
-  freezeCanvases( true );
+  QgsCanvasRefreshBlocker refreshBlocker;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -5322,7 +5303,6 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
 
     if ( ! layer )
     {
-      freezeCanvases( false );
       QApplication::restoreOverrideCursor();
 
       // XXX insert meaningful whine to the user here
@@ -5358,10 +5338,6 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
     l->loadDefaultStyle( ok );
     l->loadDefaultMetadata( ok );
   }
-
-  // draw the map
-  freezeCanvases( false );
-  refreshMapCanvas();
 
   QApplication::restoreOverrideCursor();
 }
@@ -5429,10 +5405,14 @@ void QgisApp::fileExit()
     return;
   }
 
+  QgsCanvasRefreshBlocker refreshBlocker;
   if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
   {
     closeProject();
     userProfileManager()->setDefaultFromActive();
+
+    // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
+    mFreezeCount = 1000000;
     qApp->exit( 0 );
   }
 }
@@ -5475,6 +5455,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   QgsSettings settings;
 
   MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+  QgsCanvasRefreshBlocker refreshBlocker;
   closeProject();
 
   QgsProject *prj = QgsProject::instance();
@@ -5514,8 +5495,6 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // emit signal so listeners know we have a new project
   emit newProject();
 
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
   mMapCanvas->clearExtentHistory();
   mMapCanvas->setRotation( 0.0 );
   mScaleWidget->updateScales();
@@ -5994,6 +5973,7 @@ void QgisApp::enableProjectMacros()
 
 bool QgisApp::addProject( const QString &projectFile )
 {
+  QgsCanvasRefreshBlocker refreshBlocker;
 
   bool returnCode = false;
   std::unique_ptr< QgsProjectDirtyBlocker > dirtyBlocker = qgis::make_unique< QgsProjectDirtyBlocker >( QgsProject::instance() );
@@ -6046,8 +6026,6 @@ bool QgisApp::addProject( const QString &projectFile )
     }
     else
     {
-      mMapCanvas->freeze( false );
-      mMapCanvas->refresh();
       returnCode = false;
     }
   }
@@ -6141,9 +6119,6 @@ bool QgisApp::addProject( const QString &projectFile )
 
     if ( autoSetupOnFirstLayer )
       mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
-
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
 
     mStatusBar->showMessage( tr( "Project loaded" ), 3000 );
     returnCode = true;
@@ -6475,6 +6450,7 @@ void QgisApp::runScript( const QString &filePath )
 
 void QgisApp::openProject( const QString &fileName )
 {
+  QgsCanvasRefreshBlocker refreshBlocker;
   if ( checkTasksDependOnProject() )
     return;
 
@@ -6739,6 +6715,7 @@ void QgisApp::removeAllFromOverview()
 
 void QgisApp::toggleFullScreen()
 {
+  QgsCanvasRefreshBlocker refreshBlocker;
   if ( mFullScreenMode )
   {
     if ( mPrevScreenModeMaximized )
@@ -6748,12 +6725,8 @@ void QgisApp::toggleFullScreen()
       // showMaxmized() is a work-around. Turn off rendering for this as it
       // would otherwise cause two re-renders of the map, which can take a
       // long time.
-      bool wasFrozen = mapCanvas()->isFrozen();
-      freezeCanvases();
       showNormal();
       showMaximized();
-      if ( !wasFrozen )
-        freezeCanvases( false );
       mPrevScreenModeMaximized = false;
     }
     else
@@ -8886,8 +8859,7 @@ void QgisApp::selectByRadius()
 void QgisApp::deselectAll()
 {
   // Turn off rendering to improve speed.
-  bool wasFrozen = mMapCanvas->isFrozen();
-  freezeCanvases();
+  QgsCanvasRefreshBlocker refreshBlocker;
 
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
@@ -8898,11 +8870,6 @@ void QgisApp::deselectAll()
 
     vl->removeSelection();
   }
-
-  // Turn on rendering (if it was on previously)
-  if ( !wasFrozen )
-    freezeCanvases( false );
-  refreshMapCanvas();
 }
 
 void QgisApp::invertSelection()
@@ -9152,13 +9119,10 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString &layerName )
 
   layer->setName( layerNameCopy );
 
-  freezeCanvases();
+  QgsCanvasRefreshBlocker refreshBlocker;
 
   QgsVectorLayer *result = layer.get();
   QgsProject::instance()->addMapLayer( layer.release() );
-
-  freezeCanvases( false );
-  refreshMapCanvas();
 
   return result;
 }
@@ -9562,9 +9526,10 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         break;
 
       case QMessageBox::Discard:
+      {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        freezeCanvases();
+        QgsCanvasRefreshBlocker refreshBlocker;
         if ( !vlayer->rollBack() )
         {
           visibleMessageBar()->pushMessage( tr( "Error" ),
@@ -9572,12 +9537,12 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
                                             Qgis::Critical );
           res = false;
         }
-        freezeCanvases( false );
 
         vlayer->triggerRepaint();
 
         QApplication::restoreOverrideCursor();
         break;
+      }
 
       default:
         break;
@@ -9585,9 +9550,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   }
   else //layer not modified
   {
-    freezeCanvases();
+    QgsCanvasRefreshBlocker refreshBlocker;
     vlayer->rollBack();
-    freezeCanvases( false );
     res = true;
     vlayer->triggerRepaint();
   }
@@ -9642,7 +9606,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
   if ( vlayer == activeLayer() && leaveEditable )
     mSaveRollbackInProgress = true;
 
-  freezeCanvases();
+  QgsCanvasRefreshBlocker refreshBlocker;
   if ( !vlayer->rollBack( !leaveEditable ) )
   {
     mSaveRollbackInProgress = false;
@@ -9653,7 +9617,6 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
                                 vlayer->name(),
                                 vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
   }
-  freezeCanvases( false );
 
   if ( leaveEditable )
   {
@@ -10078,7 +10041,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     return;
   }
 
-  freezeCanvases();
+  QgsCanvasRefreshBlocker refreshBlocker;
   QgsMapLayer *dupLayer = nullptr;
   QgsMapLayer *newSelection = nullptr;
   QString layerDupName, unSppType;
@@ -10195,8 +10158,6 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
   if ( newSelection )
     setActiveLayer( newSelection );
 
-  freezeCanvases( false );
-
   // display errors in message bar after duplication of layers
   for ( QgsMessageBarItem *msgBar : qgis::as_const( msgBars ) )
   {
@@ -10224,7 +10185,7 @@ void QgisApp::setLayerScaleVisibility()
   }
   if ( dlg->exec() )
   {
-    freezeCanvases();
+    QgsCanvasRefreshBlocker refreshBlocker;
     const auto constLayers = layers;
     for ( QgsMapLayer *layer : constLayers )
     {
@@ -10232,8 +10193,6 @@ void QgisApp::setLayerScaleVisibility()
       layer->setMaximumScale( dlg->maximumScale() );
       layer->setMinimumScale( dlg->minimumScale() );
     }
-    freezeCanvases( false );
-    refreshMapCanvas();
   }
   delete dlg;
 }
@@ -10320,10 +10279,8 @@ void QgisApp::setProjectCrsFromLayer()
   }
 
   QgsCoordinateReferenceSystem crs = mLayerTreeView->currentLayer()->crs();
-  mMapCanvas->freeze();
+  QgsCanvasRefreshBlocker refreshBlocker;
   QgsProject::instance()->setCrs( crs );
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
 }
 
 
@@ -11112,10 +11069,9 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
 QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, const QString &name, const QString &providerKey, const bool guiWarning )
 {
-  bool wasfrozen = mMapCanvas->isFrozen();
   QgsSettings settings;
 
-  freezeCanvases();
+  QgsCanvasRefreshBlocker refreshBlocker;
 
   QString baseName = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( name ) : name;
 
@@ -11198,16 +11154,7 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
     }
 
     delete layer;
-    freezeCanvases( false );
     return nullptr;
-  }
-
-  // Only update the map if we frozen in this method
-  // Let the caller do it otherwise
-  if ( !wasfrozen )
-  {
-    freezeCanvases( false );
-    refreshMapCanvas();
   }
 
 // Let render() do its own cursor management
@@ -11219,7 +11166,7 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
 
 void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
 {
-  freezeCanvases();
+  QgsCanvasRefreshBlocker refreshBlocker;
 
   if ( mapLayer->isValid() )
   {
@@ -11235,10 +11182,6 @@ void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
     QString msg = tr( "The layer is not a valid layer and can not be added to the map" );
     visibleMessageBar()->pushMessage( tr( "Layer is not valid" ), msg, Qgis::Critical, messageTimeout() );
   }
-
-  // draw the map
-  freezeCanvases( false );
-  refreshMapCanvas();
 }
 
 void QgisApp::embedLayers()
@@ -11247,7 +11190,7 @@ void QgisApp::embedLayers()
   QgsProjectLayerGroupDialog d( this );
   if ( d.exec() == QDialog::Accepted && d.isValid() )
   {
-    freezeCanvases();
+    QgsCanvasRefreshBlocker refreshBlocker;
 
     QString projectFile = d.selectedProjectFile();
 
@@ -11278,12 +11221,6 @@ void QgisApp::embedLayers()
         if ( selId == id )
           QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes );
       }
-    }
-
-    freezeCanvases( false );
-    if ( !groups.isEmpty() || !layerIds.isEmpty() )
-    {
-      refreshMapCanvas();
     }
   }
 }
@@ -11503,7 +11440,7 @@ bool QgisApp::saveDirty()
   }
 
   QMessageBox::StandardButton answer( QMessageBox::Discard );
-  freezeCanvases();
+  QgsCanvasRefreshBlocker refreshBlocker;
 
   //QgsDebugMsg(QString("Layer count is %1").arg(mMapCanvas->layerCount()));
   //QgsDebugMsg(QString("Project is %1dirty").arg( QgsProject::instance()->isDirty() ? "" : "not "));
@@ -11530,8 +11467,6 @@ bool QgisApp::saveDirty()
         answer = QMessageBox::Cancel;
     }
   }
-
-  freezeCanvases( false );
 
   if ( answer == QMessageBox::Cancel )
     return false;
@@ -11650,6 +11585,8 @@ bool QgisApp::checkTasksDependOnProject()
 
 void QgisApp::closeProject()
 {
+  QgsCanvasRefreshBlocker refreshBlocker;
+
   // unload the project macros before changing anything
   if ( mTrustedMacros )
   {
@@ -11673,11 +11610,9 @@ void QgisApp::closeProject()
   removeAnnotationItems();
 
   // clear out any stuff from project
-  mMapCanvas->freeze( true );
   mMapCanvas->setLayers( QList<QgsMapLayer *>() );
   mMapCanvas->clearCache();
   mOverviewCanvas->setLayers( QList<QgsMapLayer *>() );
-  mMapCanvas->freeze( false );
 
   // Avoid unnecessary layer changed handling for each layer removed - instead,
   // defer the handling until we've removed all layers
@@ -13260,11 +13195,12 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   const QString &uri, const QString &name, const QString &providerKey,
   bool guiWarning, bool guiUpdate )
 {
+  std::unique_ptr< QgsCanvasRefreshBlocker > refreshBlocker;
   if ( guiUpdate )
   {
     // let the user know we're going to possibly be taking a while
     // QApplication::setOverrideCursor( Qt::WaitCursor );
-    freezeCanvases();
+    refreshBlocker = qgis::make_unique< QgsCanvasRefreshBlocker >();
   }
 
   QgsSettings settings;
@@ -13325,9 +13261,6 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
 
   if ( !ok )
   {
-    if ( guiUpdate )
-      freezeCanvases( false );
-
     // don't show the gui warning if we are loading from command line
     if ( guiWarning )
     {
@@ -13342,21 +13275,12 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
     }
   }
 
-  if ( guiUpdate )
-  {
-    // draw the map
-    freezeCanvases( false );
-    refreshMapCanvas();
-    // Let render() do its own cursor management
-    //    QApplication::restoreOverrideCursor();
-  }
-
   if ( layer )
     layer->loadDefaultMetadata( ok );
 
   return layer;
 
-} // QgisApp::addRasterLayer
+}
 
 
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
@@ -13382,11 +13306,10 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
     // no files selected so bail out, but
     // allow mMapCanvas to handle events
     // first
-    freezeCanvases( false );;
     return false;
   }
 
-  freezeCanvases();
+  QgsCanvasRefreshBlocker refreshBlocker;
 
   // this is messy since some files in the list may be rasters and others may
   // be ogr layers. We'll set returnValue to false if one or more layers fail
@@ -13461,15 +13384,12 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
     }
   }
 
-  freezeCanvases( false );
-  refreshMapCanvas();
-
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
 
   return returnValue;
 
-}// QgisApp::addRasterLayer()
+}
 
 
 
