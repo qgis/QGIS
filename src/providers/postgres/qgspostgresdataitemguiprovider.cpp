@@ -98,6 +98,55 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   }
 }
 
+
+bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext )
+{
+  if ( QgsPGLayerItem *layerItem = qobject_cast< QgsPGLayerItem * >( item ) )
+  {
+    const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
+    QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
+
+    if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),
+                                QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( layerInfo.schemaName, layerInfo.tableName ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return false;
+
+    QString errCause;
+    bool res = QgsPostgresUtils::deleteLayer( layerItem->uri(), errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errCause );
+      return false;
+    }
+    else
+    {
+      QMessageBox::information( nullptr, tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ) );
+      if ( layerItem->parent() )
+        layerItem->parent()->refresh();
+      return true;
+    }
+  }
+  return false;
+}
+
+bool QgsPostgresDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( qobject_cast< QgsPGConnectionItem * >( item ) )
+    return true;
+
+  return false;
+}
+
+bool QgsPostgresDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction )
+{
+  if ( QgsPGConnectionItem *connItem = qobject_cast< QgsPGConnectionItem * >( item ) )
+  {
+    return connItem->handleDrop( data, QString() );
+  }
+  return false;
+}
+
+
 void QgsPostgresDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
   QgsPgNewConnection nc( nullptr );

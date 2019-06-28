@@ -61,9 +61,6 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
-    bool acceptDrop() override { return true; }
-    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
-
     bool handleDrop( const QMimeData *data, const QString &toSchema );
 
   signals:
@@ -107,11 +104,6 @@ class QgsPGLayerItem : public QgsLayerItem
     QString comments() const override;
 
     const QgsPostgresLayerProperty &layerInfo() const { return mLayerProperty; }
-
-  public slots:
-#ifdef HAVE_GUI
-    bool deleteLayer() override;
-#endif
 
   private:
     QgsPostgresLayerProperty mLayerProperty;
