@@ -20,9 +20,6 @@
 
 #include "qgsdatasourceuri.h"
 
-#ifdef HAVE_GUI
-#include "qgsprojectstorageguiprovider.h"
-#endif
 
 //! Stores information parsed from postgres project URI
 typedef struct
@@ -58,16 +55,5 @@ class QgsPostgresProjectStorage : public QgsProjectStorage
     static QgsPostgresProjectUri decodeUri( const QString &uri );
 };
 
-
-#ifdef HAVE_GUI
-class QgsPostgresProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
-{
-  public:
-    QString type() override { return QStringLiteral( "postgresql" ); }
-    QString visibleName() override;
-    QString showLoadGui() override;
-    QString showSaveGui() override;
-};
-#endif
 
 #endif // QGSPOSTGRESPROJECTSTORAGE_H
