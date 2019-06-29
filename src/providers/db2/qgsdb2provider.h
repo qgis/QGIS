@@ -27,9 +27,6 @@
 #include <QMutex>
 
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 /**
  * \class QgsDb2Provider
@@ -40,6 +37,10 @@ class QgsDb2Provider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString DB2_PROVIDER_KEY;
+    static const QString DB2_PROVIDER_DESCRIPTION;
+
     explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsDb2Provider() override;
@@ -180,14 +181,5 @@ class QgsDb2ProviderMetadata: public QgsProviderMetadata
       const QMap<QString, QVariant> *options ) override;
     QgsDb2Provider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
-
-#ifdef HAVE_GUI
-class QgsDb2ProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsDb2ProviderGuiMetadata();
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 #endif
