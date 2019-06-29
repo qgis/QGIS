@@ -26,13 +26,9 @@
 #include "qgscredentials.h"
 #include "qgsapplication.h"
 
-#ifdef HAVE_GUI
-#include "qgsdb2sourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 
-static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
-static const QString PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
+const QString QgsDb2Provider::DB2_PROVIDER_KEY = QStringLiteral( "DB2" );
+const QString QgsDb2Provider::DB2_PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
 
 int QgsDb2Provider::sConnectionId = 0;
 QMutex QgsDb2Provider::sMutex{ QMutex::Recursive };
@@ -1706,12 +1702,12 @@ bool QgsDb2Provider::convertField( QgsField &field )
 
 QString QgsDb2Provider::name() const
 {
-  return PROVIDER_KEY;
+  return DB2_PROVIDER_KEY;
 }
 
 QString QgsDb2Provider::description() const
 {
-  return PROVIDER_DESCRIPTION;
+  return DB2_PROVIDER_DESCRIPTION;
 }
 
 QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
@@ -1728,7 +1724,7 @@ QgsDb2Provider *QgsDb2ProviderMetadata::createProvider( const QString &uri, cons
 }
 
 QgsDb2ProviderMetadata::QgsDb2ProviderMetadata()
-  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+  : QgsProviderMetadata( QgsDb2Provider::DB2_PROVIDER_KEY, QgsDb2Provider::DB2_PROVIDER_DESCRIPTION )
 {
 
 }
@@ -1764,45 +1760,8 @@ QString QgsDb2Provider::dbConnectionName( const QString &name )
   return QStringLiteral( "%1:0x%2" ).arg( name ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
 }
 
-#ifdef HAVE_GUI
-
-//! Provider for DB2 source select
-class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return PROVIDER_KEY; }
-    QString text() const override { return QObject::tr( "DB2" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsDb2SourceSelect( parent, fl, widgetMode );
-    }
-};
-
-QgsDb2ProviderGuiMetadata::QgsDb2ProviderGuiMetadata()
-  : QgsProviderGuiMetadata( PROVIDER_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsDb2ProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsDb2SourceSelectProvider;
-  return providers;
-}
-
-#endif
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsDb2ProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsDb2ProviderGuiMetadata();
-}
-#endif
