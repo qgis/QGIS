@@ -17,7 +17,6 @@
 #include "qgsgeonodedataitems.h"
 #include "qgsproviderregistry.h"
 #include "qgsnewhttpconnection.h"
-#include "qgsgeonodenewconnection.h"
 #include "qgsgeonoderequest.h"
 
 typedef QList<QgsDataItemProvider *> *dataItemProviders_t();
@@ -66,26 +65,6 @@ QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
   return services;
 }
 
-QList<QAction *> QgsGeoNodeConnectionItem::actions( QWidget *parent )
-{
-  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsGeoNodeConnectionItem::editConnection );
-  connect( actionDelete, &QAction::triggered, this, &QgsGeoNodeConnectionItem::deleteConnection );
-  return QList<QAction *>() << actionEdit << actionDelete;
-}
-
-void QgsGeoNodeConnectionItem::editConnection()
-{
-  QgsGeoNodeNewConnection nc( nullptr, mConnection->connectionName() );
-  nc.setWindowTitle( tr( "Modify GeoNode connection" ) );
-
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refresh();
-  }
-}
 
 QgsGeoNodeServiceItem::QgsGeoNodeServiceItem( QgsDataItem *parent, QgsGeoNodeConnection *conn, QString serviceName, QString path )
   : QgsDataCollectionItem( parent, serviceName, path )
@@ -229,23 +208,6 @@ QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
     connections.append( conn );
   }
   return connections;
-}
-
-QList<QAction *> QgsGeoNodeRootItem::actions( QWidget *parent )
-{
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsGeoNodeRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
-}
-
-void QgsGeoNodeRootItem::newConnection()
-{
-  QgsGeoNodeNewConnection nc( nullptr );
-
-  if ( nc.exec() )
-  {
-    refresh();
-  }
 }
 
 
