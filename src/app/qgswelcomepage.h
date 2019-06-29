@@ -13,16 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSWELCOMEDIALOG_H
-#define QGSWELCOMEDIALOG_H
+#ifndef QGSWELCOMEPAGE_H
+#define QGSWELCOMEPAGE_H
 
 #include <QWidget>
 #include <QTextBrowser>
+#include <QStandardItemModel>
+#include <QFileSystemWatcher>
 
-#include "qgswelcomepageitemsmodel.h"
+#include "qgsrecentprojectsitemsmodel.h"
 
 class QgsVersionInfo;
 class QListView;
+class QLabel;
 
 class QgsWelcomePage : public QWidget
 {
@@ -33,7 +36,7 @@ class QgsWelcomePage : public QWidget
 
     ~QgsWelcomePage() override;
 
-    void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects );
+    void setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects );
 
   signals:
     void projectRemoved( int row );
@@ -41,15 +44,22 @@ class QgsWelcomePage : public QWidget
     void projectUnpinned( int row );
 
   private slots:
-    void itemActivated( const QModelIndex &index );
+    void recentProjectItemActivated( const QModelIndex &index );
+    void templateProjectItemActivated( const QModelIndex &index );
     void versionInfoReceived();
     void showContextMenuForProjects( QPoint point );
+    void showContextMenuForTemplates( QPoint point );
 
   private:
-    QgsWelcomePageItemsModel *mModel = nullptr;
+    void updateRecentProjectsVisibility();
+
+    QgsRecentProjectItemsModel *mRecentProjectsModel = nullptr;
     QTextBrowser *mVersionInformation = nullptr;
     QgsVersionInfo *mVersionInfo = nullptr;
     QListView *mRecentProjectsListView = nullptr;
+    QLabel *mRecentProjectsTitle = nullptr;
+    QListView *mTemplateProjectsListView = nullptr;
+    QStandardItemModel *mTemplateProjectsModel = nullptr;
 };
 
-#endif // QGSWELCOMEDIALOG_H
+#endif // QGSWELCOMEPAGE_H

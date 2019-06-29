@@ -16,6 +16,7 @@
 #include "qgssublayersdialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QTableWidgetItem>
 #include <QPushButton>
@@ -47,6 +48,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   , mName( name )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   if ( providerType == QgsSublayersDialog::Ogr )
   {
@@ -75,9 +77,6 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   connect( button, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
   // connect( pbnSelectNone, SIGNAL( pressed() ), SLOT( layersTable->selectNone() ) );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( "/Windows/" + mName + "SubLayers/geometry" ).toByteArray() );
-
   // Checkbox about adding sublayers to a group
   mCheckboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ), this );
   buttonBox->addButton( mCheckboxAddToGroup, QDialogButtonBox::ActionRole );
@@ -87,7 +86,6 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
 QgsSublayersDialog::~QgsSublayersDialog()
 {
   QgsSettings settings;
-  settings.setValue( "/Windows/" + mName + "SubLayers/geometry", saveGeometry() );
   settings.setValue( "/Windows/" + mName + "SubLayers/headerState",
                      layersTable->header()->saveState() );
 }

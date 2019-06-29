@@ -37,7 +37,6 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QLibrary>
 
 #include <spatialite.h>
 
@@ -305,28 +304,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
   if ( !newDb.exists() )
   {
     QString errCause;
-    bool res = false;
-
-    QString spatialite_lib = QgsProviderRegistry::instance()->library( QStringLiteral( "spatialite" ) );
-    QLibrary *myLib = new QLibrary( spatialite_lib );
-    bool loaded = myLib->load();
-    if ( loaded )
-    {
-      QgsDebugMsg( QStringLiteral( "SpatiaLite provider loaded" ) );
-
-      typedef bool ( *createDbProc )( const QString &, QString & );
-      createDbProc createDbPtr = ( createDbProc ) cast_to_fptr( myLib->resolve( "createDb" ) );
-      if ( createDbPtr )
-      {
-        res = createDbPtr( dbPath, errCause );
-      }
-      else
-      {
-        errCause = QStringLiteral( "Resolving createDb(...) failed" );
-      }
-    }
-    delete myLib;
-
+    bool res = QgsProviderRegistry::instance()->createDb( QStringLiteral( "spatialite" ), dbPath, errCause );
     if ( !res )
     {
       QMessageBox::warning( nullptr, tr( "SpatiaLite Database" ), errCause );

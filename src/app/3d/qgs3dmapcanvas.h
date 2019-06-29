@@ -30,6 +30,7 @@ class Qgs3DMapTool;
 class QgsWindow3DEngine;
 class QgsCameraController;
 class QgsPointXY;
+class Qgs3DNavigationWidget;
 
 
 class Qgs3DMapCanvas : public QWidget
@@ -72,6 +73,11 @@ class Qgs3DMapCanvas : public QWidget
      */
     Qgs3DMapTool *mapTool() const { return mMapTool; }
 
+    /**
+     * Set the visibility of on-screen navigation widget.
+     */
+    void setOnScreenNavigationVisibility( bool visibility );
+
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
     void savedAsImage( QString fileName );
@@ -95,6 +101,9 @@ class Qgs3DMapCanvas : public QWidget
 
     //! Active map tool that receives events (if NULLPTR then mouse/keyboard events are used for camera manipulation)
     Qgs3DMapTool *mMapTool = nullptr;
+
+    //! On-Screen Navigation widget.
+    Qgs3DNavigationWidget *mNavigationWidget = nullptr;
 };
 
 #endif // QGS3DMAPCANVAS_H

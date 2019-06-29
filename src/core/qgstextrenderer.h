@@ -34,6 +34,7 @@ class QgsTextShadowSettingsPrivate;
 class QgsTextSettingsPrivate;
 class QgsVectorLayer;
 class QgsPaintEffect;
+class QgsMarkerSymbol;
 
 /**
  * \class QgsTextBufferSettings
@@ -252,7 +253,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
       ShapeSquare, //!< Square - buffered sizes only
       ShapeEllipse, //!< Ellipse
       ShapeCircle, //!< Circle
-      ShapeSVG //!< SVG file
+      ShapeSVG, //!< SVG file
+      ShapeMarkerSymbol, //!< Marker symbol
     };
 
     /**
@@ -326,6 +328,24 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see svgFile()
      */
     void setSvgFile( const QString &file );
+
+    /**
+     * Returns the marker symbol to be rendered in the background. Ownership remains with
+     * the background settings.
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeMarkerSymbol.
+     * \see setMarkerSymbol()
+     * \since QGIS 3.10
+     */
+    QgsMarkerSymbol *markerSymbol() const;
+
+    /**
+     * Sets the current marker \a symbol for the background shape. Ownership is transferred
+     * to the background settings.
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeMarkerSymbol.
+     * \see markerSymbol()
+     * \since QGIS 3.10
+     */
+    void setMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the method used to determine the size of the background shape (e.g., fixed size or buffer
@@ -1202,6 +1222,20 @@ class CORE_EXPORT QgsTextFormat
     void setLineHeight( double height );
 
     /**
+     * Returns the background color for text previews.
+     * \see setPreviewBackgroundColor()
+     * \since QGIS 3.10
+     */
+    QColor previewBackgroundColor() const;
+
+    /**
+     * Sets the background \a color that text will be rendered on for previews.
+     * \see previewBackgroundColor()
+     * \since QGIS 3.10
+     */
+    void setPreviewBackgroundColor( const QColor &color );
+
+    /**
      * Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
      */
@@ -1271,6 +1305,16 @@ class CORE_EXPORT QgsTextFormat
      * \see fontFound()
      */
     QString resolvedFontFamily() const { return mTextFontFamily; }
+
+    /**
+    * Returns a pixmap preview for a text \a format.
+    * \param format text format
+    * \param size target pixmap size
+    * \param previewText text to render in preview, or empty for default text
+    * \param padding space between icon edge and color ramp
+    * \since QGIS 3.10
+    */
+    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
 
   private:
 

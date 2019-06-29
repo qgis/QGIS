@@ -286,8 +286,6 @@ class QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::QgsLayoutAt
   public:
     QgsLayoutAttributeSelectionDialog( QgsLayoutItemAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    ~QgsLayoutAttributeSelectionDialog() override;
-
   private slots:
     void mRemoveColumnPushButton_clicked();
     void mAddColumnPushButton_clicked();
@@ -299,6 +297,7 @@ class QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::QgsLayoutAt
     void mRemoveSortColumnPushButton_clicked();
     void mSortColumnUpPushButton_clicked();
     void mSortColumnDownPushButton_clicked();
+    void showHelp();
 
   private:
     QgsLayoutItemAttributeTable *mTable = nullptr;

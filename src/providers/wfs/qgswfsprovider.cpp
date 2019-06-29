@@ -24,7 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
-
+#include "qgswfsdataitems.h"
 #include "qgswfsconstants.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsprovider.h"
@@ -34,11 +34,6 @@
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 #include "qgssettings.h"
-
-#ifdef HAVE_GUI
-#include "qgswfssourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 
 #include <QDomDocument>
 #include <QMessageBox>
@@ -53,8 +48,9 @@
 
 #include <cfloat>
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "WFS" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
+const QString QgsWFSProvider::WFS_PROVIDER_KEY = QStringLiteral( "WFS" );
+const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
+
 
 QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities::Capabilities &caps )
   : QgsVectorDataProvider( uri, options )
@@ -1577,12 +1573,12 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
 
 QString QgsWFSProvider::name() const
 {
-  return TEXT_PROVIDER_KEY;
+  return WFS_PROVIDER_KEY;
 }
 
 QString QgsWFSProvider::description() const
 {
-  return TEXT_PROVIDER_DESCRIPTION;
+  return WFS_PROVIDER_DESCRIPTION;
 }
 
 QgsVectorDataProvider::Capabilities QgsWFSProvider::capabilities() const
@@ -1876,22 +1872,12 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QGISEXTERN QgsWFSProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWFSProvider( *uri, options );
+  return new QgsWFSProvider( uri, options );
 }
 
-QGISEXTERN QString providerKey()
-{
-  return TEXT_PROVIDER_KEY;
-}
-
-QGISEXTERN QString description()
-{
-  return TEXT_PROVIDER_DESCRIPTION;
-}
-
-QGISEXTERN bool isProvider()
+void QgsWfsProviderMetadata::initProvider()
 {
   // This function should normally be called just once, but better check
   // so as to avoid doing twice the initial cleanup of the temporary cache
@@ -1902,35 +1888,20 @@ QGISEXTERN bool isProvider()
     QgsWFSUtils::init();
     sFirstTime = false;
   }
-
-  return true;
 }
 
-#ifdef HAVE_GUI
-
-//! Provider for WFS layers source select
-class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
+QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
 {
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "WFS" ); }
-    QString text() const override { return QObject::tr( "WFS" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsWFSSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsWfsSourceSelectProvider;
-
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsWfsDataItemProvider;
   return providers;
 }
-#endif
+
+
+QgsWfsProviderMetadata::QgsWfsProviderMetadata():
+  QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsWfsProviderMetadata();
+}

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAdvancedDigitizingCanvasItem : QgsMapCanvasItem
 {
 %Docstring
@@ -24,8 +25,6 @@ The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CA
 
     virtual void paint( QPainter *painter );
 
-
-  protected:
 
 };
 

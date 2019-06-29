@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1030</width>
+    <width>1033</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1030</width>
-     <height>22</height>
+     <width>1033</width>
+     <height>24</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -943,7 +943,7 @@
   <action name="mActionDeleteSelected">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDeleteSelectedFeatures.svg</normaloff>:/images/themes/default/mActionDeleteSelectedFeatures.svg</iconset>
    </property>
    <property name="text">
     <string>Delete Selected</string>

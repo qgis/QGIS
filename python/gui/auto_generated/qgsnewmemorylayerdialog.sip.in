@@ -31,7 +31,6 @@ Runs the dialog and creates a new memory layer
 %Docstring
 New dialog constructor.
 %End
-    ~QgsNewMemoryLayerDialog();
 
     QgsWkbTypes::Type selectedType() const;
 %Docstring

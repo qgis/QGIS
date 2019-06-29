@@ -18,6 +18,7 @@
 
 #include "qgsinbuiltdataitemproviders.h"
 #include "qgsdataitem.h"
+#include "qgsdataitemguiproviderregistry.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
@@ -25,7 +26,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagelog.h"
 #include "qgsnewnamedialog.h"
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsbrowserdockwidget_p.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgsrasterlayer.h"
@@ -344,7 +345,7 @@ QString QgsLayerItemGuiProvider::name()
   return QStringLiteral( "layer_item" );
 }
 
-void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext )
+void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
   if ( item->type() != QgsDataItem::Layer )
     return;
@@ -412,7 +413,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     QAction *deleteAction = new QAction( deleteText, menu );
     connect( deleteAction, &QAction::triggered, this, [ = ]
     {
-      deleteLayers( selectedDeletableItemPaths );
+      deleteLayers( selectedDeletableItemPaths, context );
     } );
     menu->addAction( deleteAction );
   }
@@ -484,7 +485,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
     QgisApp::instance()->handleDropUriList( layerUriList );
 }
 
-void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths )
+void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths, QgsDataItemGuiContext context )
 {
   for ( const QString &itemPath : itemPaths )
   {
@@ -495,8 +496,28 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths )
       QgsMessageLog::logMessage( tr( "Item with path %1 no longer exists." ).arg( itemPath ) );
       return;
     }
-    if ( !item->deleteLayer() )
-      QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
+
+    // first try to use the new API - through QgsDataItemGuiProvider. If that fails, try to use the legacy API...
+    bool usedNewApi = false;
+    const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
+    for ( QgsDataItemGuiProvider *provider : providers )
+    {
+      if ( provider->deleteLayer( item, context ) )
+      {
+        usedNewApi = true;
+        break;
+      }
+    }
+
+    if ( !usedNewApi )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      bool res = item->deleteLayer();
+      Q_NOWARN_DEPRECATED_POP
+
+      if ( !res )
+        QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
+    }
   }
 }
 

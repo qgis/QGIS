@@ -19,6 +19,7 @@
 #include "qgsdb2tablemodel.h"
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
 
 class QgsDb2RootItem;
 class QgsDb2Connection;
@@ -170,3 +171,11 @@ class QgsDb2LayerItem : public QgsLayerItem
     QgsDb2LayerProperty mLayerProperty;
 };
 
+//! Provider for DB2 data items
+class QgsDb2DataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "DB2" ); }
+    int capabilities() const override { return QgsDataProvider::Database; }
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+};

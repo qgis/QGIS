@@ -19,7 +19,10 @@
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewindicator.h"
 
+#include <QBrush>
 #include <QHelpEvent>
+#include <QMenu>
+#include <QPen>
 #include <QToolTip>
 
 /// @cond PRIVATE
@@ -33,7 +36,7 @@ QgsLayerTreeViewProxyStyle::QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeVi
 
 QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, const QStyleOption *option, const QWidget *widget ) const
 {
-  if ( element == SE_ItemViewItemText || element == SE_LayerTreeItemIndicator )
+  if ( element == SE_LayerTreeItemIndicator )
   {
     if ( const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>( option ) )
     {
@@ -42,17 +45,12 @@ QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, co
         int count = mLayerTreeView->indicators( node ).count();
         if ( count )
         {
+          QRect vpr = mLayerTreeView->viewport()->rect();
           QRect r = QProxyStyle::subElementRect( SE_ItemViewItemText, option, widget );
           int indiWidth = r.height() * count;
-          int textWidth = r.width() - indiWidth;
-          if ( element == SE_LayerTreeItemIndicator )
-          {
-            return QRect( r.left() + textWidth, r.top(), indiWidth, r.height() );
-          }
-          else if ( element == SE_ItemViewItemText )
-          {
-            return QRect( r.left(), r.top(), textWidth, r.height() );
-          }
+          int spacing = r.height() / 10;
+          int vpIndiWidth = vpr.width() - indiWidth - spacing - mLayerTreeView->layerMarkWidth();
+          return QRect( vpIndiWidth, r.top(), indiWidth, r.height() );
         }
       }
     }
@@ -80,12 +78,23 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   if ( !node )
     return;
 
+  QStyleOptionViewItem opt = option;
+  initStyleOption( &opt, index );
+
+  QRect tRect = mLayerTreeView->style()->subElementRect( QStyle::SE_ItemViewItemText, &opt, mLayerTreeView );
+  int tPadding = tRect.height() / 10;
+
+  // Draw layer context menu mark
+  QRect mRect( mLayerTreeView->viewport()->rect().right() - mLayerTreeView->layerMarkWidth(), tRect.top() + tPadding, mLayerTreeView->layerMarkWidth(), tRect.height() - tPadding * 2 );
+  QBrush pb = painter->brush();
+  QPen pp = painter->pen();
+  painter->setPen( QPen( Qt::NoPen ) );
+  painter->setBrush( QBrush( opt.palette.mid() ) );
+  painter->drawRect( mRect );
+
   const QList<QgsLayerTreeViewIndicator *> indicators = mLayerTreeView->indicators( node );
   if ( indicators.isEmpty() )
     return;
-
-  QStyleOptionViewItem opt = option;
-  initStyleOption( &opt, index );
 
   QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
   int spacing = indRect.height() / 10;
@@ -95,6 +104,8 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   for ( QgsLayerTreeViewIndicator *indicator : indicators )
   {
     QRect rect( x + spacing, indRect.top() + spacing, h - spacing * 2, h - spacing * 2 );
+    // Add a little more padding so the icon does not look misaligned to background
+    QRect iconRect( x + spacing * 2, indRect.top() + spacing * 2, h - spacing * 4, h - spacing * 4 );
     x += h;
 
     QIcon::Mode mode = QIcon::Normal;
@@ -103,7 +114,17 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
     else if ( opt.state & QStyle::State_Selected )
       mode = QIcon::Selected;
 
-    indicator->icon().paint( painter, rect, Qt::AlignCenter, mode );
+    // Draw indicator background, for when floating over text content
+    qreal bradius = spacing;
+    QBrush pb = painter->brush();
+    QPen pp = painter->pen();
+    painter->setBrush( opt.palette.midlight() );
+    painter->setPen( QPen( QBrush( opt.palette.mid() ), 0.25 ) );
+    painter->drawRoundedRect( rect, bradius, bradius );
+    painter->setBrush( pb );
+    painter->setPen( pp );
+
+    indicator->icon().paint( painter, iconRect, Qt::AlignCenter, mode );
   }
 }
 

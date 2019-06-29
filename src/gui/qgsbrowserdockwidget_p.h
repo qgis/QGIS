@@ -43,7 +43,7 @@
 #include "qgsdockwidget.h"
 #include <QSortFilterProxyModel>
 
-class QgsBrowserModel;
+class QgsBrowserGuiModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;

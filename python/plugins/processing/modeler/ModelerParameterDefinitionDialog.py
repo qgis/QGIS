@@ -356,6 +356,13 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.requiredCheck.setChecked(not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
         self.verticalLayout.addWidget(self.requiredCheck)
 
+        self.advancedCheck = QCheckBox()
+        self.advancedCheck.setText(self.tr('Advanced'))
+        self.advancedCheck.setChecked(False)
+        if self.param is not None:
+            self.advancedCheck.setChecked(self.param.flags() & QgsProcessingParameterDefinition.FlagAdvanced)
+        self.verticalLayout.addWidget(self.advancedCheck)
+
         # If child algorithm output is mandatory, disable checkbox
         if isinstance(self.param, QgsProcessingDestinationParameter):
             provider_name, child_name, output_name = self.param.name().split(':')
@@ -365,6 +372,9 @@ class ModelerParameterDefinitionDialog(QDialog):
             if not (param_def.flags() & QgsProcessingParameterDefinition.FlagOptional):
                 self.requiredCheck.setEnabled(False)
                 self.requiredCheck.setChecked(True)
+
+            self.advancedCheck.setEnabled(False)
+            self.advancedCheck.setChecked(False)
 
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Horizontal)
@@ -576,6 +586,11 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)
         else:
             self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.FlagOptional)
+
+        if self.advancedCheck.isChecked():
+            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        else:
+            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.FlagAdvanced)
 
         settings = QgsSettings()
         settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())

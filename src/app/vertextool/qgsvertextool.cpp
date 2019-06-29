@@ -281,12 +281,16 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
   mFeatureBandMarkers = new QgsRubberBand( canvas );
   mFeatureBandMarkers->setIcon( QgsRubberBand::ICON_CIRCLE );
   mFeatureBandMarkers->setColor( color );
-  mFeatureBandMarkers->setIconSize( QgsGuiUtils::scaleIconSize( 8 ) );
+  mFeatureBandMarkers->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+  mFeatureBandMarkers->setBrushStyle( Qt::NoBrush );
+  mFeatureBandMarkers->setIconSize( QgsGuiUtils::scaleIconSize( 6 ) );
   mFeatureBandMarkers->setVisible( false );
 
   mVertexBand = new QgsRubberBand( canvas );
   mVertexBand->setIcon( QgsRubberBand::ICON_CIRCLE );
   mVertexBand->setColor( color );
+  mVertexBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+  mVertexBand->setBrushStyle( Qt::NoBrush );
   mVertexBand->setIconSize( QgsGuiUtils::scaleIconSize( 15 ) );
   mVertexBand->setVisible( false );
 
@@ -1376,9 +1380,8 @@ void QgsVertexTool::updateLockedFeatureVertices()
         QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
         marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
         marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
-        marker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
+        marker->setPenWidth( QgsGuiUtils::scaleIconSize( 2 ) );
         marker->setColor( Qt::red );
-        marker->setFillColor( Qt::red );
         marker->setCenter( toMapCoordinates( mLockedFeature->layer(), vertex->point() ) );
         mLockedFeatureVerticesMarkers.append( marker );
       }
@@ -2341,9 +2344,8 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
-    marker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
+    marker->setPenWidth( QgsGuiUtils::scaleIconSize( 2 ) );
     marker->setColor( Qt::blue );
-    marker->setFillColor( Qt::blue );
     marker->setCenter( toMapCoordinates( vertex.layer, geom.vertexAt( vertex.vertexId ) ) );
     mSelectedVerticesMarkers.append( marker );
     return true;

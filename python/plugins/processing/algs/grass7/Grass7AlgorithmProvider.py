@@ -40,9 +40,8 @@ pluginPath = os.path.normpath(os.path.join(
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
 
-    # Subclasses of `Grass7AlgorithmProvider` should override `descriptionFolder`
-    # and set its value to their own description folder.
     descriptionFolder = Grass7Utils.grassDescriptionPath()
+    activateSetting = "ACTIVATE_GRASS7"
 
     def __init__(self):
         super().__init__()
@@ -50,8 +49,9 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GRASS7',
-                                            self.tr('Activate'), True))
+        if self.activateSetting:
+            ProcessingConfig.addSetting(Setting(self.name(), self.activateSetting,
+                                                self.tr('Activate'), True))
         if isMac():
             ProcessingConfig.addSetting(Setting(
                 self.name(),
@@ -83,7 +83,8 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return True
 
     def unload(self):
-        ProcessingConfig.removeSetting('ACTIVATE_GRASS7')
+        if self.activateSetting:
+            ProcessingConfig.removeSetting(self.activateSetting)
         if isMac():
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
@@ -92,10 +93,13 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
 
     def isActive(self):
-        return ProcessingConfig.getSetting('ACTIVATE_GRASS7')
+        if self.activateSetting:
+            return ProcessingConfig.getSetting(self.activateSetting)
+        return True
 
     def setActive(self, active):
-        ProcessingConfig.setSettingValue('ACTIVATE_GRASS7', active)
+        if self.activateSetting:
+            ProcessingConfig.setSettingValue(self.activateSetting, active)
 
     def createAlgsList(self):
         algs = []

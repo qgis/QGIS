@@ -1559,7 +1559,7 @@ QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const
   return mapTransform;
 }
 
-QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings &mapSettings ) const
+QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings & ) const
 {
   const QTransform mapTransform = layoutToMapCoordsTransform();
   QList< QgsLabelBlockingRegion > blockers;
@@ -1572,9 +1572,6 @@ QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( cons
     QPolygonF itemRectInMapCoordinates = mapTransform.map( item->mapToScene( item->rect() ) );
     itemRectInMapCoordinates.append( itemRectInMapCoordinates.at( 0 ) ); //close polygon
     QgsGeometry blockingRegion = QgsGeometry::fromQPolygonF( itemRectInMapCoordinates );
-    const double labelMargin = mLayout->convertToLayoutUnits( mEvaluatedLabelMargin );
-    const double labelMarginInMapUnits = labelMargin / rect().width() * mapSettings.extent().width();
-    blockingRegion = blockingRegion.buffer( labelMarginInMapUnits, 0, QgsGeometry::CapSquare, QgsGeometry::JoinStyleMiter, 2 );
     blockers << QgsLabelBlockingRegion( blockingRegion );
   }
   return blockers;

@@ -18,12 +18,17 @@
 #ifndef QGSDELIMITEDTEXTPROVIDER_H
 #define QGSDELIMITEDTEXTPROVIDER_H
 
+#include <QStringList>
+
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdelimitedtextfile.h"
 #include "qgsfields.h"
 
-#include <QStringList>
+#include "qgsprovidermetadata.h"
+#ifdef HAVE_GUI
+#include "qgsproviderguimetadata.h"
+#endif
 
 class QgsFeature;
 class QgsField;
@@ -280,5 +285,22 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;
 };
+
+class QgsDelimitedTextProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsDelimitedTextProviderMetadata();
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QVariantMap decodeUri( const QString &uri ) override;
+};
+
+#ifdef HAVE_GUI
+class QgsDelimitedTextProviderGuiMetadata: public QgsProviderGuiMetadata
+{
+  public:
+    QgsDelimitedTextProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+};
+#endif
 
 #endif

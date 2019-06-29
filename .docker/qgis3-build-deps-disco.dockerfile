@@ -127,11 +127,8 @@ RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
 RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 RUN locale-gen
 
-
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
-ENV CC=/usr/lib/ccache/clang
-ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"

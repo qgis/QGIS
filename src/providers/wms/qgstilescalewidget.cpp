@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsdockwidget.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 #include "layertree/qgslayertreeview.h"
 
 #include <QMainWindow>
@@ -35,6 +36,7 @@ QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
   connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgsTileScaleWidget::scaleChanged );

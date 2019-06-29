@@ -37,6 +37,7 @@ class TestQgsOfflineEditing : public QObject
   private:
     QgsOfflineEditing *mOfflineEditing = nullptr;
     QgsVectorLayer *mpLayer = nullptr;
+    QgsVectorLayer *gpkgLayer = nullptr;
     QString offlineDataPath;
     QString offlineDbFile;
     QStringList layerIds;
@@ -52,6 +53,7 @@ class TestQgsOfflineEditing : public QObject
 
     void createSpatialiteAndSynchronizeBack();
     void createGeopackageAndSynchronizeBack();
+    void removeConstraintsOnDefaultValues();
 };
 
 void TestQgsOfflineEditing::initTestCase()
@@ -91,6 +93,15 @@ void TestQgsOfflineEditing::init()
   numberOfFields = mpLayer->fields().size();
 
   layerIds.append( mpLayer->id() );
+
+  //same with gpkg
+  QFile::copy( myFileName + "/points_gpkg.gpkg", myTempDirName + "/points_gpkg.gpkg" );
+  QString myTempFileNameGpgk = myTempDirName + "/points_gpkg.gpkg";
+  QFileInfo myMapFileInfoGpkg( myTempFileNameGpgk );
+  gpkgLayer = new QgsVectorLayer( myMapFileInfoGpkg.filePath() + "|layername=points_gpkg", "points_gpkg", QStringLiteral( "ogr" ) );
+
+  QgsProject::instance()->addMapLayer( gpkgLayer );
+  layerIds.append( gpkgLayer->id() );
 }
 
 void TestQgsOfflineEditing::cleanup()
@@ -115,7 +126,7 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   //convert
   mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite );
 
-  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayers().first() );
+  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points (offline)" ) ).first() );
   QCOMPARE( mpLayer->name(), QStringLiteral( "points (offline)" ) );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   //check LayerTreeNode showFeatureCount property
@@ -127,7 +138,7 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   //synchronize back
   mOfflineEditing->synchronize();
 
-  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayers().first() );
+  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points" ) ).first() );
   QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
@@ -157,7 +168,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   //convert
   mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
 
-  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayers().first() );
+  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points (offline)" ) ).first() );
   QCOMPARE( mpLayer->name(), QStringLiteral( "points (offline)" ) );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   //comparing with the number +1 because GPKG created an fid
@@ -189,7 +200,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   //synchronize back
   mOfflineEditing->synchronize();
 
-  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayers().first() );
+  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points" ) ).first() );
   QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
   QCOMPARE( mpLayer->dataProvider()->featureCount(), numberOfFeatures + 1 );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
@@ -214,6 +225,43 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   mpLayer->dataProvider()->deleteFeatures( idsToClean );
   QCOMPARE( mpLayer->dataProvider()->featureCount(), numberOfFeatures );
 }
+
+
+void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
+{
+  offlineDbFile = "TestQgsOfflineEditing.gpkg";
+  QCOMPARE( gpkgLayer->name(), QStringLiteral( "points_gpkg" ) );
+  QString name = gpkgLayer->name();
+
+  //check constraints (not null and unique)
+  QgsFieldConstraints constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );
+  QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
+
+  //convert
+  mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
+
+  gpkgLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points_gpkg (offline)" ) ).first() );
+  QCOMPARE( gpkgLayer->name(), QStringLiteral( "points_gpkg (offline)" ) );
+
+  name = gpkgLayer->name();
+  //check constraints (unique but not not null)
+  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  QVERIFY( !( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull ) );
+  QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
+
+  //synchronize back
+  mOfflineEditing->synchronize();
+
+  gpkgLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points_gpkg" ) ).first() );
+
+  name = gpkgLayer->name();
+  //check constraints (not null and unique)
+  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );
+  QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
+}
+
 
 QGSTEST_MAIN( TestQgsOfflineEditing )
 #include "testqgsofflineediting.moc"

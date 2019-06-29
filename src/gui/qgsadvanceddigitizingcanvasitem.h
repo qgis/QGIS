@@ -20,7 +20,7 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgis_gui.h"
-#include "qgssnapindicator.h"
+
 
 class QgsAdvancedDigitizingDockWidget;
 
@@ -35,17 +35,13 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 
     void paint( QPainter *painter ) override;
 
-  protected:
+  private:
     QPen mLockedPen;
     QPen mConstruction1Pen;
     QPen mConstruction2Pen;
     QPen mSnapPen;
     QPen mSnapLinePen;
     QPen mCursorPen;
-    //! Snapping indicators
-    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
-
-  private:
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
 };
 

@@ -80,6 +80,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmarrayoffsetlines.cpp
   processing/qgsalgorithmpolygonstolines.cpp
   processing/qgsalgorithmpointonsurface.cpp
+  processing/qgsalgorithmpointtolayer.cpp
   processing/qgsalgorithmpointsalonggeometry.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
@@ -352,6 +353,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/providers/meshmemory
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression

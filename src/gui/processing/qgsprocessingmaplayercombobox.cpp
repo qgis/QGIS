@@ -195,6 +195,11 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
   if ( !found )
   {
     const QString string = val.toString();
+    if ( mUseSelectionCheckBox )
+    {
+      mUseSelectionCheckBox->setChecked( false );
+      mUseSelectionCheckBox->setEnabled( false );
+    }
     if ( !string.isEmpty() )
     {
       mBlockChangedSignal++;

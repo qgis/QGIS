@@ -470,13 +470,3 @@ QgsGeoNodeConnection QgsGeoNodeSourceSelect::currentConnection() const
 {
   return QgsGeoNodeConnection( cmbConnections->currentText() );
 }
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsGeoNodeSourceSelectProvider;
-
-  return providers;
-}

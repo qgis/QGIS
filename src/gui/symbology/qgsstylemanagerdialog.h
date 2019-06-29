@@ -386,6 +386,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! Menu for the "Add item" toolbutton when in all symbols mode
     QMenu *mMenuBtnAddItemAll = nullptr;
 
+    //! Menu for the "Add item" toolbutton when in label settings mode
+    QMenu *mMenuBtnAddItemLabelSettings = nullptr;
+
     QAction *mActionCopyToDefault = nullptr;
 
     int mBlockGroupUpdates = 0;
@@ -394,6 +397,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool mFavoritesGroupVisible = true;
     bool mSmartGroupVisible = true;
     QString mBaseName;
+
+    bool addTextFormat();
+    bool editTextFormat();
+
+    bool addLabelSettings( QgsWkbTypes::GeometryType type );
+    bool editLabelSettings();
 
     friend class QgsStyleExportImportDialog;
 };

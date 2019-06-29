@@ -20,6 +20,7 @@
 #include "qgsgeometrychecker.h"
 #include "qgsfeaturepool.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QCloseEvent>
 #include <QVBoxLayout>
@@ -30,9 +31,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   mIface = iface;
 
   setWindowTitle( tr( "Check Geometries" ) );
-
-  QgsSettings s;
-  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ) ).toByteArray() );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mTabWidget = new QTabWidget();
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close | QDialogButtonBox::Help, Qt::Horizontal );
@@ -50,12 +49,6 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsGeometryCheckerDialog::showHelp );
   connect( dynamic_cast< QgsGeometryCheckerSetupTab * >( mTabWidget->widget( 0 ) ), &QgsGeometryCheckerSetupTab::checkerStarted, this, &QgsGeometryCheckerDialog::onCheckerStarted );
   connect( dynamic_cast< QgsGeometryCheckerSetupTab * >( mTabWidget->widget( 0 ) ), &QgsGeometryCheckerSetupTab::checkerFinished, this, &QgsGeometryCheckerDialog::onCheckerFinished );
-}
-
-QgsGeometryCheckerDialog::~QgsGeometryCheckerDialog()
-{
-  QgsSettings s;
-  s.setValue( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ), saveGeometry() );
 }
 
 void QgsGeometryCheckerDialog::onCheckerStarted( QgsGeometryChecker *checker )

@@ -28,6 +28,7 @@
 #include "qgswmsprovider.h"
 #include "qgswmsconnection.h"
 #include "qgscoordinatetransform.h"
+#include "qgswmsdataitems.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
@@ -47,12 +48,6 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
-
-#ifdef HAVE_GUI
-#include "qgswmssourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
-
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -77,8 +72,8 @@
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WMS provider")
 #define QGS_ERROR(message) QgsError(message,"WMS provider")
 
-static QString WMS_KEY = QStringLiteral( "wms" );
-static QString WMS_DESCRIPTION = QStringLiteral( "OGC Web Map Service version 1.3 data provider" );
+QString QgsWmsProvider::WMS_KEY = QStringLiteral( "wms" );
+QString QgsWmsProvider::WMS_DESCRIPTION = QStringLiteral( "OGC Web Map Service version 1.3 data provider" );
 
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
@@ -3529,42 +3524,10 @@ void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64
   emit statusChanged( msg );
 }
 
-
-
-/**
- * Class factory to return a pointer to a newly created
- * QgsWmsProvider object
- */
-QGISEXTERN QgsWmsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWmsProvider( *uri, options );
+  return new QgsWmsProvider( uri, options );
 }
-
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
-{
-  return WMS_KEY;
-}
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return WMS_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
 
 // -----------------
 
@@ -4257,32 +4220,26 @@ void QgsCachedImageFetcher::start()
 }
 
 
-#ifdef HAVE_GUI
+// -----------------------
 
-//! Provider for WMS layers source select
-class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
+
+QgsWmsProviderMetadata::QgsWmsProviderMetadata()
+  : QgsProviderMetadata( QgsWmsProvider::WMS_KEY, QgsWmsProvider::WMS_DESCRIPTION )
 {
-  public:
+}
 
-    QString providerKey() const override { return QStringLiteral( "wms" ); }
-    QString text() const override { return QStringLiteral( "WMS/WMTS" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsWMSSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+  QList<QgsDataItemProvider *> providers;
 
-  *providers
-      << new QgsWmsSourceSelectProvider;
+  providers
+      << new QgsWmsDataItemProvider
+      << new QgsXyzTileDataItemProvider;
 
   return providers;
 }
-#endif
 
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsWmsProviderMetadata();
+}

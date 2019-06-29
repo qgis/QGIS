@@ -19,7 +19,7 @@ import osgeo.gdal
 import osgeo.ogr
 import sys
 
-from qgis.core import QgsSettings, QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsWkbTypes
+from qgis.core import QgsApplication, QgsSettings, QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsWkbTypes
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -712,6 +712,107 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.MultiPolygonZ)
         self.assertEqual(f.geometry().constGet().asWkt(),
                          'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 -1 0, 1 -1 0, 0 0 0)),((0 0 0, 1 -1 0, 1 0 0, 0 0 0)))')
+
+    def testShzSupport(self):
+        ''' Test support for single layer compressed shapefiles (.shz) '''
+
+        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 1, 0):
+            return
+
+        tmpfile = os.path.join(self.basetestpath, 'testShzSupport.shz')
+        ds = osgeo.ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('testShzSupport', geom_type=osgeo.ogr.wkbPoint)
+        lyr.CreateField(osgeo.ogr.FieldDefn('attr', osgeo.ogr.OFTInteger))
+        f = osgeo.ogr.Feature(lyr.GetLayerDefn())
+        f.SetField('attr', 1)
+        f.SetGeometry(osgeo.ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        f = next(vl.getFeatures())
+        assert f['attr'] == 1
+        self.assertEqual(f.geometry().constGet().asWkt(), 'Point (0 0)')
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeAttributeValue(f.id(), 0, -1))
+        self.assertTrue(vl.commitChanges())
+
+        f = next(vl.getFeatures())
+        assert f['attr'] == -1
+
+        # Check DataItem
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+        item = ogrprovider.createDataItem(tmpfile, None)
+        self.assertTrue(item.uri().endswith('testShzSupport.shz'))
+
+    def testShpZipSupport(self):
+        ''' Test support for multi layer compressed shapefiles (.shp.zip) '''
+
+        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 1, 0):
+            return
+
+        tmpfile = os.path.join(self.basetestpath, 'testShpZipSupport.shp.zip')
+        ds = osgeo.ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('layer1', geom_type=osgeo.ogr.wkbPoint)
+        lyr.CreateField(osgeo.ogr.FieldDefn('attr', osgeo.ogr.OFTInteger))
+        f = osgeo.ogr.Feature(lyr.GetLayerDefn())
+        f.SetField('attr', 1)
+        f.SetGeometry(osgeo.ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        lyr = ds.CreateLayer('layer2', geom_type=osgeo.ogr.wkbMultiLineString)
+        lyr.CreateField(osgeo.ogr.FieldDefn('attr', osgeo.ogr.OFTInteger))
+        f = osgeo.ogr.Feature(lyr.GetLayerDefn())
+        f.SetField('attr', 2)
+        f.SetGeometry(osgeo.ogr.CreateGeometryFromWkt('LINESTRING(0 0,1 1)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl1 = QgsVectorLayer(tmpfile + '|layername=layer1', 'test', 'ogr')
+        vl2 = QgsVectorLayer(tmpfile + '|layername=layer2', 'test', 'ogr')
+        self.assertTrue(vl1.isValid())
+        self.assertTrue(vl2.isValid())
+        self.assertEqual(vl1.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl2.wkbType(), QgsWkbTypes.MultiLineString)
+        f1 = next(vl1.getFeatures())
+        f2 = next(vl2.getFeatures())
+        assert f1['attr'] == 1
+        self.assertEqual(f1.geometry().constGet().asWkt(), 'Point (0 0)')
+        assert f2['attr'] == 2
+        self.assertEqual(f2.geometry().constGet().asWkt(), 'MultiLineString ((0 0, 1 1))')
+
+        self.assertTrue(vl1.startEditing())
+        self.assertTrue(vl2.startEditing())
+        self.assertTrue(vl1.changeAttributeValue(f1.id(), 0, -1))
+        self.assertTrue(vl2.changeAttributeValue(f2.id(), 0, -2))
+        self.assertTrue(vl1.commitChanges())
+        self.assertTrue(vl2.commitChanges())
+
+        f = next(vl1.getFeatures())
+        assert f['attr'] == -1
+
+        f = next(vl2.getFeatures())
+        assert f['attr'] == -2
+
+        # Check DataItem
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+        item = ogrprovider.createDataItem(tmpfile, None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        uris = sorted([children[i].uri() for i in range(2)])
+        self.assertIn('testShpZipSupport.shp.zip|layername=layer1', uris[0])
+        self.assertIn('testShpZipSupport.shp.zip|layername=layer2', uris[1])
+
+        gdalprovider = next(provider for provider in registry.providers() if provider.name() == 'GDAL')
+        item = gdalprovider.createDataItem(tmpfile, None)
+        assert not item
 
 
 if __name__ == '__main__':

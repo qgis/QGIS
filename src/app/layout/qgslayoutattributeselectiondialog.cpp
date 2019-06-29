@@ -21,7 +21,9 @@
 #include "qgsfieldexpressionwidget.h"
 #include "qgsdoublespinbox.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 #include "qgslayouttablecolumn.h"
+#include "qgshelp.h"
 
 #include <QCheckBox>
 #include <QDialogButtonBox>
@@ -885,6 +887,8 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( mRemoveColumnPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mRemoveColumnPushButton_clicked );
   connect( mAddColumnPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mAddColumnPushButton_clicked );
   connect( mColumnUpPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mColumnUpPushButton_clicked );
@@ -895,9 +899,7 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
   connect( mRemoveSortColumnPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked );
   connect( mSortColumnUpPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mSortColumnUpPushButton_clicked );
   connect( mSortColumnDownPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mSortColumnDownPushButton_clicked );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/AttributeSelectionDialog/geometry" ) ).toByteArray() );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutAttributeSelectionDialog::showHelp );
 
   if ( mTable )
   {
@@ -931,12 +933,6 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
 
   mOrderComboBox->insertItem( 0, tr( "Ascending" ) );
   mOrderComboBox->insertItem( 1, tr( "Descending" ) );
-}
-
-QgsLayoutAttributeSelectionDialog::~QgsLayoutAttributeSelectionDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/AttributeSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsLayoutAttributeSelectionDialog::mRemoveColumnPushButton_clicked()
@@ -1030,6 +1026,11 @@ void QgsLayoutAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked()
   mColumnModel->setColumnAsUnsorted( column );
   //set next row as selected
   mSortColumnTableView->selectRow( rowToRemove );
+}
+
+void QgsLayoutAttributeSelectionDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_attribute_table.html" ) );
 }
 
 void QgsLayoutAttributeSelectionDialog::mSortColumnUpPushButton_clicked()

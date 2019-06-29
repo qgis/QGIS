@@ -118,16 +118,9 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
   while ( !skipProvider )
   {
     const QString &key = mServiceName != QStringLiteral( "WFS" ) ? QStringLiteral( "wms" ) : mServiceName;
-    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
-    if ( !library )
-    {
-      skipProvider = true;
-      continue;
-    }
 
-    dataItemProviders_t *dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
-    dataItem_t *dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
-    if ( !dItem && !dataItemProvidersFn )
+    const QList<QgsDataItemProvider *> providerList = QgsProviderRegistry::instance()->dataItemProviders( key );
+    if ( providerList.isEmpty() )
     {
       skipProvider = true;
       continue;
@@ -136,8 +129,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     QString path = pathPrefix + mName;
 
     QVector<QgsDataItem *> items;
-    QList<QgsDataItemProvider *> *providerList = dataItemProvidersFn();
-    for ( QgsDataItemProvider *pr : qgis::as_const( *providerList ) )
+    for ( QgsDataItemProvider *pr : providerList )
     {
       if ( !pr->name().startsWith( mServiceName ) )
         continue;
@@ -277,13 +269,4 @@ QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem( const QString &path, Qg
   }
 
   return nullptr;
-}
-
-QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
-{
-  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
-
-  *providers << new QgsGeoNodeDataItemProvider();
-
-  return providers;
 }

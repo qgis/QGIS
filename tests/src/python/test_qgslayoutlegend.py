@@ -10,7 +10,7 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '24/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.PyQt.QtCore import QRectF, QEventLoop
+from qgis.PyQt.QtCore import QRectF, QDir, QEventLoop
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsPrintLayout,
@@ -53,8 +53,18 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
     def setUpClass(cls):
         cls.item_class = QgsLayoutItemLegend
 
+    def setUp(self):
+        self.report = "<h1>Python QgsLayoutItemLegend Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
+        QgsProject.instance().removeAllMapLayers()
+
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().clear()
@@ -90,6 +100,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_mapunits', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         # resize with non-top-left reference point
@@ -147,6 +158,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_size_content', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
@@ -190,6 +202,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_noresize', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
@@ -233,6 +246,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_noresize_crop', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
@@ -356,6 +370,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_expressions', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])

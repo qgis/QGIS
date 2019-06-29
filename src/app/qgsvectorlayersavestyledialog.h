@@ -40,7 +40,6 @@ class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayer
     };
 
     explicit QgsVectorLayerSaveStyleDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
-    ~QgsVectorLayerSaveStyleDialog() override;
 
     SaveToDbSettings saveToDbSettings() const;
     QString outputFilePath() const;

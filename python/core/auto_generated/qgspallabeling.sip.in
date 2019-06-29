@@ -275,6 +275,7 @@ class QgsPalLayerSettings
       RepeatDistanceUnit,
       Priority,
       PredefinedPositionOrder,
+      LinePlacementOptions,
 
       // rendering
       ScaleVisibility,
@@ -327,7 +328,7 @@ Returns the labeling property definitions.
 Returns the QgsExpression for this label settings. May be ``None`` if isExpression is ``False``.
 %End
 
-    QColor previewBkgrdColor;
+ QColor previewBkgrdColor;
 
     QgsStringReplacementCollection substitutions;
     bool useSubstitutions;
@@ -443,6 +444,8 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     bool geometryGeneratorEnabled;
 
+    QgsWkbTypes::GeometryType layerType;
+
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0 );
 %Docstring
 Calculates the space required to render the provided ``text`` in map units.
@@ -461,14 +464,14 @@ Register a feature for labeling.
                      in Python bindings.
 %End
 
-    void readXml( QDomElement &elem, const QgsReadWriteContext &context );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
 Read settings from a DOM element
 
 .. versionadded:: 2.12
 %End
 
-    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Write settings into a DOM element
 
@@ -516,6 +519,18 @@ Sets the label text formatting settings, e.g., font settings, buffer settings, e
 .. seealso:: :py:func:`format`
 
 .. versionadded:: 3.0
+%End
+
+    static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );
+%Docstring
+Returns a pixmap preview for label ``settings``.
+
+:param settings: label settings
+:param size: target pixmap size
+:param previewText: text to render in preview, or empty for default text
+:param padding: space between icon edge and color ramp
+
+.. versionadded:: 3.10
 %End
 
     const QgsFeature *mCurFeat;

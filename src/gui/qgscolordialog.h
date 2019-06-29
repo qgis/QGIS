@@ -114,11 +114,6 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
 
     bool mAllowOpacity = true;
 
-    /**
-     * Saves all dialog and widget settings
-     */
-    void saveSettings();
-
 };
 
 #endif // #ifndef QGSCOLORDIALOG_H
