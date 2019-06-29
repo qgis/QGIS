@@ -24,13 +24,9 @@
 #include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
 
-#ifdef HAVE_GUI
-#include "qgsafssourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
+const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
+const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
 
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options )
   : QgsVectorDataProvider( uri, options )
@@ -311,12 +307,12 @@ QgsRectangle QgsAfsProvider::extent() const
 
 QString QgsAfsProvider::name() const
 {
-  return TEXT_PROVIDER_KEY;
+  return AFS_PROVIDER_KEY;
 }
 
 QString QgsAfsProvider::description() const
 {
-  return TEXT_PROVIDER_DESCRIPTION;
+  return AFS_PROVIDER_DESCRIPTION;
 }
 
 QString QgsAfsProvider::dataComment() const
@@ -348,7 +344,7 @@ bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
 
 
 QgsAfsProviderMetadata::QgsAfsProviderMetadata():
-  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  QgsProviderMetadata( QgsAfsProvider::AFS_PROVIDER_KEY, QgsAfsProvider::AFS_PROVIDER_DESCRIPTION )
 {
 }
 
@@ -377,52 +373,7 @@ QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, cons
 }
 
 
-#ifdef HAVE_GUI
-//! Provider for AFS layers source select
-class QgsAfsSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return TEXT_PROVIDER_KEY; }
-    QString text() const override { return QObject::tr( "ArcGIS Feature Server" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsAfsSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QgsAfsProviderGuiMetadata::QgsAfsProviderGuiMetadata()
-  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsAfsProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsAfsSourceSelectProvider;
-  return providers;
-}
-
-QList<QgsDataItemGuiProvider *> QgsAfsProviderGuiMetadata::dataItemGuiProviders()
-{
-  QList<QgsDataItemGuiProvider *> providers;
-  providers << new QgsAfsItemGuiProvider();
-  return providers;
-}
-#endif
-
-
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsAfsProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsAfsProviderGuiMetadata();
-}
-#endif

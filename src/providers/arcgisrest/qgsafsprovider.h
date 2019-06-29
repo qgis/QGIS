@@ -28,9 +28,6 @@
 #include "qgslayermetadata.h"
 
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
@@ -40,6 +37,9 @@ class QgsAfsProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString AFS_PROVIDER_KEY;
+    static const QString AFS_PROVIDER_DESCRIPTION;
 
     QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
@@ -100,15 +100,5 @@ class QgsAfsProviderMetadata: public QgsProviderMetadata
     QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 
 };
-
-#ifdef HAVE_GUI
-class QgsAfsProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsAfsProviderGuiMetadata();
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 #endif // QGSAFSPROVIDER_H
