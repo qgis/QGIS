@@ -34,14 +34,12 @@ class QgsAmsRootItem : public QgsDataCollectionItem
     QVariant sortKey() const override { return 12; }
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
     void onConnectionsChanged();
-    void newConnection();
 #endif
 };
 
@@ -54,16 +52,6 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
     QString url() const;
-#ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
-#endif
-
-  public slots:
-#ifdef HAVE_GUI
-    void editConnection();
-    void deleteConnection();
-    void refreshConnection();
-#endif
 
   private:
     QString mConnName;
