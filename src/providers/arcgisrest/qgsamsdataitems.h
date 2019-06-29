@@ -22,10 +22,6 @@
 #include "qgswkbtypes.h"
 #include "qgsdataitemprovider.h"
 
-#ifdef HAVE_GUI
-#include "qgsdataitemguiprovider.h"
-#endif
-
 
 class QgsAmsRootItem : public QgsDataCollectionItem
 {
@@ -124,26 +120,5 @@ class QgsAmsDataItemProvider : public QgsDataItemProvider
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
-
-
-#ifdef HAVE_GUI
-
-class QgsAmsItemGuiProvider : public QObject, public QgsDataItemGuiProvider
-{
-    Q_OBJECT
-
-  public:
-
-    QgsAmsItemGuiProvider() = default;
-
-    QString name() override;
-
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
-
-
-};
-
-#endif
 
 #endif // QGSAMSDATAITEMS_H
