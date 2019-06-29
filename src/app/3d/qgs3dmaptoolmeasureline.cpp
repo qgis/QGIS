@@ -111,6 +111,7 @@ void Qgs3DMapToolMeasureLine::activate()
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 
   // Show dialog
+  mDialog->updateSettings();
   mDialog->show();
 }
 

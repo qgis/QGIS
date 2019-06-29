@@ -21,6 +21,8 @@
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgsmapcanvas.h"
 #include "qgisapp.h"
+#include "qgs3dmapsettings.h"
+
 
 Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
@@ -54,17 +56,11 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   else
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
 
-  QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
-
-  updateSettings();
-
   // Remove Help button until we have proper documentation for it
   buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Help ) );
 
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMeasureDialog::unitsChanged );
-//  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &Qgs3DMeasureDialog::showHelp );
-  connect( canvas2D, &QgsMapCanvas::destinationCrsChanged, this, &Qgs3DMeasureDialog::crsChanged );
 }
 
 void Qgs3DMeasureDialog::saveWindowLocation()
@@ -122,9 +118,8 @@ void Qgs3DMeasureDialog::updateUi()
   QString toolTip = tr( "The calculations are based on:" );
 
   mConvertToDisplayUnits = true;
-  QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
 
-  if ( mCartesian->isChecked() || !canvas2D->mapSettings().destinationCrs().isValid() )
+  if ( mCartesian->isChecked() || !mTool->canvas()->map()->crs().isValid() )
   {
     toolTip += "<br> * ";
     if ( mCartesian->isChecked() )
@@ -140,22 +135,22 @@ void Qgs3DMeasureDialog::updateUi()
     }
     mDa.setEllipsoid( GEO_NONE );
   }
-  else if ( canvas2D->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+  else if ( mTool->canvas()->map()->crs().mapUnits() == QgsUnitTypes::DistanceDegrees
             && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
   {
     //both source and destination units are degrees
     toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
-                 canvas2D->mapSettings().destinationCrs().description() );
+                 mTool->canvas()->map()->crs().description() );
     mDa.setEllipsoid( GEO_NONE );
     mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
   }
   else
   {
     QgsUnitTypes::DistanceUnit resultUnit = QgsUnitTypes::DistanceUnknownUnit;
-    resultUnit = canvas2D->mapSettings().destinationCrs().mapUnits();
+    resultUnit = mTool->canvas()->map()->crs().mapUnits();
     toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
     toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-               canvas2D->mapSettings().destinationCrs().description() );
+               mTool->canvas()->map()->crs().description() );
     setWindowTitle( tr( "Measure" ) );
 
     if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
@@ -294,18 +289,14 @@ void Qgs3DMeasureDialog::updateSettings()
 {
   QgsSettings settings;
 
-  mDecimalPlaces = settings.value( QStringLiteral( "qgis/3Dmeasure/decimalplaces" ), "3" ).toInt();
-  QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
-  mCanvasUnits = canvas2D->mapUnits();
+  mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
 
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
   mMapDistanceUnits = QgsProject::instance()->crs().mapUnits();
-  mDa.setSourceCrs( canvas2D->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+  mDa.setSourceCrs( mTool->canvas()->map()->crs(), QgsProject::instance()->transformContext() );
 
   mDa.setEllipsoid( GEO_NONE );
-
-
 }
 
 void Qgs3DMeasureDialog::unitsChanged( int index )
@@ -325,25 +316,6 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
   updateUi();
 }
 
-void Qgs3DMeasureDialog::crsChanged()
-{
-  QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
-  if ( !canvas2D->mapSettings().destinationCrs().isValid() )
-  {
-    mUnitsCombo->setEnabled( false );
-
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
-  }
-  else
-  {
-    mUnitsCombo->setEnabled( true );
-  }
-
-  mTable->clear();
-  mTotal = 0.;
-  updateUi();
-}
-
 double Qgs3DMeasureDialog::convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const
 {
   return mDa.convertLengthMeasurement( length, toUnit );
@@ -352,7 +324,7 @@ double Qgs3DMeasureDialog::convertLength( double length, QgsUnitTypes::DistanceU
 QString Qgs3DMeasureDialog::formatDistance( double distance, bool convertUnits ) const
 {
   QgsSettings settings;
-  bool baseUnit = settings.value( QStringLiteral( "qgis/3Dmeasure/keepbaseunit" ), true ).toBool();
+  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );
