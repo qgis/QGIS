@@ -29,16 +29,6 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
-#ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
-#endif
-
-  public slots:
-#ifdef HAVE_GUI
-    void editConnection();
-    void deleteConnection();
-#endif
-
   private:
     void replacePath( QgsDataItem *item, QString before, QString after );
 };
@@ -53,17 +43,6 @@ class QgsOWSRootItem : public QgsDataCollectionItem
 
     QVariant sortKey() const override { return 11; }
 
-#ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
-    QWidget *paramWidget() override;
-#endif
-
-  public slots:
-#ifdef HAVE_GUI
-    void onConnectionsChanged();
-
-    void newConnection();
-#endif
 };
 
 //! Provider for OWS data item
