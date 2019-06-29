@@ -22,11 +22,6 @@
 
 #ifdef HAVE_GUI
 #include "qgsamssourceselect.h"
-#include "qgsnewhttpconnection.h"
-#include <QMenu>
-#include <QAction>
-#include <QDesktopServices>
-#include <QMessageBox>
 #endif
 
 #include <QImageReader>
@@ -53,14 +48,6 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsAmsRootItem::actions( QWidget *parent )
-{
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsAmsRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
-}
-
-
 QWidget *QgsAmsRootItem::paramWidget()
 {
   QgsAmsSourceSelect *select = new QgsAmsSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
@@ -71,17 +58,6 @@ QWidget *QgsAmsRootItem::paramWidget()
 void QgsAmsRootItem::onConnectionsChanged()
 {
   refresh();
-}
-
-void QgsAmsRootItem::newConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Create a New ArcGIS Map Server Connection" ) );
-
-  if ( nc.exec() )
-  {
-    refreshConnections();
-  }
 }
 #endif
 
@@ -191,64 +167,6 @@ QString QgsAmsConnectionItem::url() const
   const QgsOwsConnection connection( QStringLiteral( "ARCGISMAPSERVER" ), mConnName );
   return connection.uri().param( QStringLiteral( "url" ) );
 }
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsAmsConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
-  connect( actionRefresh, &QAction::triggered, this, &QgsAmsConnectionItem::refreshConnection );
-  lst.append( actionRefresh );
-
-  QAction *separator = new QAction( parent );
-  separator->setSeparator( true );
-  lst.append( separator );
-
-  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsAmsConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete Connection…" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsAmsConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsAmsConnectionItem::editConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName, QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Modify ArcGIS Map Server Connection" ) );
-
-  if ( nc.exec() )
-  {
-    refresh();
-    if ( mParent )
-      mParent->refreshConnections();
-  }
-}
-
-void QgsAmsConnectionItem::deleteConnection()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsOwsConnection::deleteConnection( QStringLiteral( "arcgismapserver" ), mName );
-  if ( mParent )
-    mParent->refreshConnections();
-}
-
-void QgsAmsConnectionItem::refreshConnection()
-{
-  refresh();
-  // the parent should be updated
-  if ( mParent )
-    mParent->refreshConnections();
-}
-#endif
 
 
 QgsAmsFolderItem::QgsAmsFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers )

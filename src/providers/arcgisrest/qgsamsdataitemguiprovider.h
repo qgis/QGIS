@@ -35,6 +35,11 @@ class QgsAmsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
+  private:
+    static void newConnection( QgsDataItem *item );
+    static void editConnection( QgsDataItem *item );
+    static void deleteConnection( QgsDataItem *item );
+    static void refreshConnection( QgsDataItem *item );
 };
 
 
