@@ -816,6 +816,13 @@ Evaluates the parameter with matching ``name`` to a print layout item, taken fro
 .. versionadded:: 3.8
 %End
 
+    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a color, or returns an invalid color if the parameter was not set.
+
+.. versionadded:: 3.10
+%End
+
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 %Docstring
 Returns a user-friendly string to use as an error when a source parameter could

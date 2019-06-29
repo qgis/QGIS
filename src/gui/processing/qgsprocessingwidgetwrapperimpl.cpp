@@ -40,6 +40,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
+#include "qgscolorbutton.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -2388,6 +2389,106 @@ QString QgsProcessingPointWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingPointWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingColorWidgetWrapper
+//
+
+QgsProcessingColorWidgetWrapper::QgsProcessingColorWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingColorWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      mColorButton = new QgsColorButton( nullptr );
+
+      if ( colorParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mColorButton->setShowNull( true );
+
+      mColorButton->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mColorButton, &QgsColorButton::colorChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      return mColorButton;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingColorWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mColorButton )
+  {
+    if ( !value.isValid() ||
+         ( value.type() == QVariant::String && value.toString().isEmpty() )
+         || ( value.type() == QVariant::Color && !value.value< QColor >().isValid() ) )
+      mColorButton->setToNull();
+    else
+    {
+      const QColor c = QgsProcessingParameters::parameterAsColor( parameterDefinition(), value, context );
+      if ( !c.isValid() && mColorButton->showNull() )
+        mColorButton->setToNull();
+      else
+        mColorButton->setColor( c );
+    }
+  }
+}
+
+QVariant QgsProcessingColorWidgetWrapper::widgetValue() const
+{
+  if ( mColorButton )
+    return mColorButton->isNull() ? QVariant() : mColorButton->color();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingColorWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterColor::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingColorWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingColorWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingColorWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "color style string, e.g. #ff0000 or 255,0,0" );
+}
+
+QString QgsProcessingColorWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterColor::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingColorWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingColorWidgetWrapper( parameter, type );
 }
 
 ///@endcond PRIVATE
