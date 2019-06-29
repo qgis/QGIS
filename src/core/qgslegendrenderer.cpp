@@ -644,9 +644,6 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItemInternal( Qg
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
       : ( painter ? &ctx : nullptr ) );
 
-  if ( layerScope )
-    delete context->expressionContext().popScope();
-
   LegendComponent component;
   component.item = symbolItem;
   component.symbolSize = im.symbolSize;
