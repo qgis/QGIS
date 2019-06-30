@@ -190,25 +190,6 @@ class CORE_EXPORT QgsDistanceArea
     double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 
     /**
-     * Measures the length of a line with multiple segments in 3D.
-     * Support cartesian calculation only.
-     * \param points list of points in line
-     * \returns length of line. The units for the returned length can be retrieved by calling lengthUnits3D().
-     * \see lengthUnits3D()
-     */
-    double measureLine3D( const QVector<QgsPoint> &points ) const;
-
-    /**
-     * Measures the distance between two points in 3D.
-     * Support cartesian calculation only.
-     * \param p1 start of line
-     * \param p2 end of line
-     * \returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
-     * \see lengthUnits()
-     */
-    double measureLine3D( const QgsPoint &p1, const QgsPoint &p2 ) const;
-
-    /**
      * Calculates the distance from one point with distance in meters and azimuth (direction)
      * When the sourceCrs() is geographic, computeSpheroidProject() will be called
      * otherwise QgsPoint.project() will be called after QgsUnitTypes::fromUnitToUnitFactor() has been applied to the distance
@@ -230,11 +211,6 @@ class CORE_EXPORT QgsDistanceArea
      * \since QGIS 2.14
      */
     QgsUnitTypes::DistanceUnit lengthUnits() const;
-
-    /**
-     * Returns the units of distance for length calculations made by this object in 3D.
-     */
-    QgsUnitTypes::DistanceUnit lengthUnits3D() const;
 
     /**
      * Returns the units of area for areal calculations made by this object.
