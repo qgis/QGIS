@@ -2418,7 +2418,13 @@ QWidget *QgsProcessingColorWidgetWrapper::createWidget()
       if ( colorParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
         mColorButton->setShowNull( true );
 
+      mColorButton->setAllowOpacity( colorParam->opacityEnabled() );
       mColorButton->setToolTip( parameterDefinition()->toolTip() );
+      mColorButton->setColorDialogTitle( parameterDefinition()->description() );
+      if ( colorParam->defaultValue().value< QColor >().isValid() )
+      {
+        mColorButton->setDefaultColor( colorParam->defaultValue().value< QColor >() );
+      }
 
       connect( mColorButton, &QgsColorButton::colorChanged, this, [ = ]
       {

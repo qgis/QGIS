@@ -3034,6 +3034,7 @@ void TestProcessingGui::testColorWrapper()
     QCOMPARE( wrapper.widgetValue().value< QColor >().name(),  QStringLiteral( "#ff0000" ) );
     QCOMPARE( static_cast< QgsColorButton * >( wrapper.wrappedWidget() )->color(),  QColor( 255, 0, 0 ) );
     QVERIFY( !static_cast< QgsColorButton * >( wrapper.wrappedWidget() )->showNull() );
+    QVERIFY( static_cast< QgsColorButton * >( wrapper.wrappedWidget() )->allowOpacity() );
     wrapper.setWidgetValue( QColor(), context );
     QCOMPARE( spy.count(), 2 );
     QVERIFY( !wrapper.widgetValue().value< QColor >().isValid() );
@@ -3056,10 +3057,14 @@ void TestProcessingGui::testColorWrapper()
     static_cast< QgsColorButton * >( wrapper.wrappedWidget() )->setColor( QColor( 0, 255, 0 ) );
     QCOMPARE( spy.count(), 3 );
 
+    // with opacity
+    wrapper.setWidgetValue( QColor( 255, 0, 0, 100 ), context );
+    QCOMPARE( wrapper.widgetValue().value< QColor >(), QColor( 255, 0, 0, 100 ) );
+
     delete w;
 
     // with null
-    QgsProcessingParameterColor param2( QStringLiteral( "c2" ), QStringLiteral( "c2" ), QColor( 10, 20, 30 ), true );
+    QgsProcessingParameterColor param2( QStringLiteral( "c2" ), QStringLiteral( "c2" ), QColor( 10, 20, 30 ), true, true );
 
     QgsProcessingColorWidgetWrapper wrapper2( &param2, type );
     w = wrapper2.createWrappedWidget( context );
@@ -3070,6 +3075,13 @@ void TestProcessingGui::testColorWrapper()
     wrapper2.setWidgetValue( QColor( 255, 0, 255 ), context );
     QCOMPARE( wrapper2.widgetValue().value< QColor >().name(), QStringLiteral( "#ff00ff" ) );
 
+    // no opacity
+    QgsProcessingParameterColor param3( QStringLiteral( "c2" ), QStringLiteral( "c2" ), QColor( 10, 20, 30 ), false, true );
+
+    QgsProcessingColorWidgetWrapper wrapper3( &param3, type );
+    w = wrapper3.createWrappedWidget( context );
+    wrapper3.setWidgetValue( QColor( 255, 0, 0, 100 ), context );
+    QCOMPARE( wrapper3.widgetValue().value< QColor >(), QColor( 255, 0, 0 ) );
   };
 
   // standard wrapper

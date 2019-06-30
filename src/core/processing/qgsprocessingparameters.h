@@ -2860,7 +2860,10 @@ class CORE_EXPORT QgsProcessingParameterLayoutItem : public QgsProcessingParamet
  * \class QgsProcessingParameterColor
  * \ingroup core
  * A color parameter for processing algorithms.
-  * \since QGIS 3.10
+ *
+ * QgsProcessingParameterColor should be evaluated by calling QgsProcessingAlgorithm::parameterAsColor().
+ *
+ * \since QGIS 3.10
  */
 class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDefinition
 {
@@ -2868,8 +2871,11 @@ class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDef
 
     /**
      * Constructor for QgsProcessingParameterColor.
+     *
+     * If \a opacityEnabled is TRUE, then users will have the option of varying color opacity.
      */
     QgsProcessingParameterColor( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                 bool opacityEnabled = true,
                                  bool optional = false );
 
     /**
@@ -2882,11 +2888,34 @@ class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDef
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Returns TRUE if the parameter allows opacity control.
+     *
+     * The default behavior is to allow users to set opacity for the color.
+     * \see setOpacityEnabled()
+     */
+    bool opacityEnabled() const;
+
+    /**
+     * Sets whether the parameter allows opacity control.
+     *
+     * The default behavior is to allow users to set opacity for the color.
+     *
+     * \see opacityEnabled()
+     */
+    void setOpacityEnabled( bool enabled );
 
     /**
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterColor *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    bool mAllowOpacity = true;
 
 };
 
