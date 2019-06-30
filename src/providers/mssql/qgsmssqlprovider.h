@@ -30,9 +30,6 @@
 #include <QtSql/QSqlError>
 
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 class QgsFeature;
 class QgsField;
@@ -55,6 +52,10 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString MSSQL_PROVIDER_KEY;
+    static const QString MSSQL_PROVIDER_DESCRIPTION;
+
     explicit QgsMssqlProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsMssqlProvider() override;
@@ -249,14 +250,5 @@ class QgsMssqlProviderMetadata: public QgsProviderMetadata
     QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     virtual QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
-
-#ifdef HAVE_GUI
-class QgsMssqlProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsMssqlProviderGuiMetadata();
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 #endif // QGSMSSQLPROVIDER_H
