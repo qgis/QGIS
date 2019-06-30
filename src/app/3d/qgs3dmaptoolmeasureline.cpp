@@ -127,6 +127,7 @@ void Qgs3DMapToolMeasureLine::activate()
 
 void Qgs3DMapToolMeasureLine::deactivate()
 {
+  restart();
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
   {
     disconnect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolMeasureLine::onTerrainPicked );
