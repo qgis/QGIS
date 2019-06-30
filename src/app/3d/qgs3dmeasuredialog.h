@@ -43,11 +43,8 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Add new point
     void addPoint();
 
-    //! Get last distance
+    //! Get last distance in map distance unit
     double lastDistance();
-
-    //! update UI
-    void updateUi();
 
     //! Populating unit combo box
     void repopulateComboBoxUnits();
@@ -72,35 +69,25 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   private:
     Qgs3DMapToolMeasureLine *mTool;
 
-    //! Total length
+    //! Total length in map distance unit
     double mTotal = 0.0;
 
     //! Number of decimal places we want.
     int mDecimalPlaces = 3;
 
-    //! Indicates whether the user chose "Map units" instead of directly selecting a unit
-    bool mUseMapUnits = true;
+    //! Distance unit of the map
+    QgsUnitTypes::DistanceUnit mMapDistanceUnit  = QgsUnitTypes::DistanceUnknownUnit;
 
-    //! Indicates whether we need to convert units.
-    bool mConvertToDisplayUnits = true;
+    //! Distance unit of the displayed value
+    QgsUnitTypes::DistanceUnit mDisplayedDistanceUnit  = QgsUnitTypes::DistanceUnknownUnit;
 
-    //! Current unit for input values
-    QgsUnitTypes::DistanceUnit mCanvasUnits = QgsUnitTypes::DistanceUnknownUnit;
-
-    //! Current unit for distance values
-    QgsUnitTypes::DistanceUnit mDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
-
-    //! Current map unit for distance values
-    QgsUnitTypes::DistanceUnit mMapDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
-
-    //! Our measurement object
-    QgsDistanceArea mDa;
-
+    //! Convert from mMapDistanceUnit to mDisplayedDistanceUnit
     double convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const;
 
     //! formats distance to most appropriate units
-    QString formatDistance( double distance, bool convertUnits = true ) const;
+    QString formatDistance( double distance ) const;
 
+    //! Show the help page of the 3D measurement tool
     void showHelp();
 
     //! Open configuration tab
