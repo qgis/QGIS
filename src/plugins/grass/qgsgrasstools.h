@@ -49,8 +49,6 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
                    QWidget *parent = nullptr, const char *name = nullptr, Qt::WindowFlags f = nullptr );
 
 
-    ~QgsGrassTools() override;
-
     //! Append item to model or parent
     void appendItem( QStandardItemModel *treeModel, QStandardItem *parent, QStandardItem *item );
 
@@ -76,12 +74,6 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
 
     //! Close event
     void closeEvent( QCloseEvent *e ) override;
-
-    //! Restore window position
-    void restorePosition();
-
-    //! Save window position
-    void saveWindowLocation();
 
     //! Close mapset and save it to project
     void closeMapset();
@@ -145,7 +137,7 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
 };
 
 
-// TODO: searching acros the tree is taken from QgsDockBrowserTreeView -> create common base class
+// TODO: searching across the tree is taken from QgsDockBrowserTreeView -> create common base class
 class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT

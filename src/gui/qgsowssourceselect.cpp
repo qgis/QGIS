@@ -37,6 +37,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -59,6 +60,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( mNewButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mNewButton_clicked );
   connect( mEditButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mEditButton_clicked );
   connect( mDeleteButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mDeleteButton_clicked );
@@ -115,17 +117,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   // set up the WMS connections we already know about
   populateConnectionList();
-
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
-  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
-}
-
-QgsOWSSourceSelect::~QgsOWSSourceSelect()
-{
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
-  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 void QgsOWSSourceSelect::refresh()

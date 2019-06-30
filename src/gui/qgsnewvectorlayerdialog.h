@@ -74,7 +74,6 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      * New dialog constructor.
      */
     QgsNewVectorLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewVectorLayerDialog() override;
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
     //! Appends the chosen attribute names and types to at

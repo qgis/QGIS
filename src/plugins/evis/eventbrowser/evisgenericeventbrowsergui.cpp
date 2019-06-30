@@ -36,6 +36,7 @@
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
+#include "qgsgui.h"
 
 #include <QMessageBox>
 #include <QTreeWidgetItem>
@@ -56,6 +57,8 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
   , mInterface( interface )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( buttonboxOptions, &QDialogButtonBox::clicked, this, &eVisGenericEventBrowserGui::buttonboxOptions_clicked );
   connect( chkboxApplyPathRulesToDocs, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged );
   connect( cboxEventImagePathField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged );
@@ -79,9 +82,6 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
   connect( pbtnResetUseOnlyFilenameData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetUseOnlyFilenameData_clicked );
   connect( rbtnManualCompassOffset, &QRadioButton::toggled, this, &eVisGenericEventBrowserGui::rbtnManualCompassOffset_toggled );
   connect( tableFileTypeAssociations, &QTableWidget::cellDoubleClicked, this, &eVisGenericEventBrowserGui::tableFileTypeAssociations_cellDoubleClicked );
-
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "eVis/browser-geometry" ) ).toByteArray() );
 
   if ( initBrowser() )
   {
@@ -146,9 +146,6 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapC
  */
 eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "eVis/browser-geometry" ), saveGeometry() );
-
   //Clean up, disconnect the highlighting routine and refresh the canvas to clear highlighting symbol
   if ( mCanvas )
   {

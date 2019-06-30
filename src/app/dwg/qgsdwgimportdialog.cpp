@@ -48,12 +48,14 @@
 #include "qgsguiutils.h"
 #include "qgsfilewidget.h"
 #include "qgsmessagebar.h"
+#include "qgsgui.h"
 
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   mDatabaseFileWidget->setStorageMode( QgsFileWidget::SaveFile );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDwgImportDialog::buttonBox_accepted );
@@ -86,8 +88,6 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
   pbLoadDatabase_clicked();
   updateUI();
-
-  restoreGeometry( s.value( QStringLiteral( "/Windows/DwgImport/geometry" ) ).toByteArray() );
 }
 
 QgsDwgImportDialog::~QgsDwgImportDialog()
@@ -96,7 +96,6 @@ QgsDwgImportDialog::~QgsDwgImportDialog()
   s.setValue( QStringLiteral( "/DwgImport/lastExpandInserts" ), cbExpandInserts->isChecked() );
   s.setValue( QStringLiteral( "/DwgImport/lastMergeLayers" ), cbMergeLayers->isChecked() );
   s.setValue( QStringLiteral( "/DwgImport/lastUseCurves" ), cbUseCurves->isChecked() );
-  s.setValue( QStringLiteral( "/Windows/DwgImport/geometry" ), saveGeometry() );
 }
 
 void QgsDwgImportDialog::updateUI()

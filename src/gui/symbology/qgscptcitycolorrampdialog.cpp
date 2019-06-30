@@ -22,6 +22,7 @@
 #include "qgsdialog.h"
 #include "qgssymbollayerutils.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QPushButton>
 #include <QTextEdit>
@@ -42,6 +43,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
   , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( mTreeView, &QTreeView::clicked, this, &QgsCptCityColorRampDialog::mTreeView_clicked );
   connect( mListWidget, &QListWidget::itemClicked, this, &QgsCptCityColorRampDialog::mListWidget_itemClicked );
   connect( mListWidget, &QListWidget::itemSelectionChanged, this, &QgsCptCityColorRampDialog::mListWidget_itemSelectionChanged );
@@ -53,7 +55,6 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/CptCityColorRampV2Dialog/geometry" ) ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 250 << 550 );
   mSplitter->restoreState( settings.value( QStringLiteral( "Windows/CptCityColorRampV2Dialog/splitter" ) ).toByteArray() );
 
@@ -453,7 +454,6 @@ void QgsCptCityColorRampDialog::onFinished()
 {
   // save settings
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/CptCityColorRampV2Dialog/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/CptCityColorRampV2Dialog/splitter" ), mSplitter->saveState() );
 }
 

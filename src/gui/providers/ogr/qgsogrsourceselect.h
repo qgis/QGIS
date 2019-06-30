@@ -50,7 +50,6 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
 
   public:
     QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    ~QgsOgrSourceSelect() override;
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();
     //! Opens a dialog to select a directory datasource*/
