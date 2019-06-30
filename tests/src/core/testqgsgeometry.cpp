@@ -3757,6 +3757,13 @@ void TestQgsGeometry::lineString()
   //endPoint
   QCOMPARE( l19.endPoint(), QgsPoint( QgsWkbTypes::PointZM, 15, 10, 6, 7 ) );
 
+  //test 3d length
+  l19.clear();
+  l19.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 0 )
+                 << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 2 )
+                 << QgsPoint( QgsWkbTypes::PointZ, 4, 6, 2 ) );
+  QCOMPARE( l19.length3D(), 8.0 );
+
   //bad start/end points. Test that this doesn't crash.
   l19.clear();
   QCOMPARE( l19.startPoint(), QgsPoint() );

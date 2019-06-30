@@ -415,6 +415,7 @@ segment in the line.
 
     virtual double length() const;
 
+    double length3D() const;
     virtual QgsPoint startPoint() const;
 
     virtual QgsPoint endPoint() const;

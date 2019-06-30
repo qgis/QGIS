@@ -38,7 +38,7 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   // Only support for cartesian
   mCartesian->setChecked( true );
 
-  // Hide ellipsoidal and cartesian radio button
+  // Hide ellipsoidal and cartesian radio button (not needed)
   mCartesian->hide();
   mEllipsoidal->hide();
 
@@ -231,7 +231,8 @@ void Qgs3DMeasureDialog::updateUi()
     b = false;
   }
 
-  mTotal = mDa.measureLine3D( mTool->points() );
+  QgsLineString measureLine( mTool->points() );
+  mTotal = measureLine.length3D();
   mTable->show(); // Show the table with items
   editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
 }
@@ -318,6 +319,7 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
 
 double Qgs3DMeasureDialog::convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const
 {
+
   return mDa.convertLengthMeasurement( length, toUnit );
 }
 

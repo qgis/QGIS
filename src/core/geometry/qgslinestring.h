@@ -564,6 +564,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //curve interface
     double length() const override;
+    double length3D() const;
     QgsPoint startPoint() const override;
     QgsPoint endPoint() const override;
 
