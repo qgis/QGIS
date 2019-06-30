@@ -87,12 +87,12 @@ void Qgs3DMapToolMeasureLine::activate()
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
 
   // Initialize the measurement line
-  mMeasurementLine = new QgsLineString();
-  mMeasurementLine->addZValue();
+  QgsLineString *measurementLine = new QgsLineString();
+  measurementLine->addZValue();
 
   // Initialize measurement feature
-  mMeasurementFeature = new QgsFeature( QgsFeatureId( 1 ) );
-  mMeasurementFeature->setGeometry( QgsGeometry( mMeasurementLine ) );
+  QgsFeature *measurementFeature = new QgsFeature( QgsFeatureId( 1 ) );
+  measurementFeature->setGeometry( QgsGeometry( measurementLine ) );
 
   // Initialize the line layer
   QString mapCRS = mCanvas->map()->crs().authid();
@@ -100,11 +100,11 @@ void Qgs3DMapToolMeasureLine::activate()
 
   // Add feature to layer
   mMeasurementLayer->startEditing();
-  mMeasurementLayer->addFeature( *mMeasurementFeature );
+  mMeasurementLayer->addFeature( *measurementFeature );
   mMeasurementLayer->commitChanges();
 
   // Set style
-  setMeasurementLayerRenderer( mMeasurementLayer );
+  setMeasurementLayerRenderer();
 
   // Add layer to canvas
   //mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
@@ -124,9 +124,8 @@ void Qgs3DMapToolMeasureLine::deactivate()
 
   // Delete previouse line
   mMeasurementLayer->startEditing();
-  mMeasurementLayer->deleteFeature( mMeasurementFeature->id() );
+  mMeasurementLayer->deleteFeature( 1 );
   mMeasurementLayer->commitChanges();
-  mMeasurementLine->clear();
 
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 
@@ -181,10 +180,21 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
   }
 }
 
-void Qgs3DMapToolMeasureLine::setMeasurementLayerRenderer( QgsVectorLayer *layer )
+void Qgs3DMapToolMeasureLine::setMeasurementLayerRenderer()
 {
-  layer->setRenderer3D( mLineSymbolRenderer );
-  mLineSymbolRenderer->setLayer( layer );
+  mMeasurementLayer->setRenderer3D( mLineSymbolRenderer );
+  mLineSymbolRenderer->setLayer( mMeasurementLayer );
+}
+
+void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
+{
+  QgsLineString *line = new QgsLineString( mPoints );
+  QgsGeometry *lineGeometry = new QgsGeometry( line );
+
+  mMeasurementLayer->startEditing();
+  mMeasurementLayer->changeGeometry( 1, *lineGeometry );
+  mMeasurementLayer->commitChanges();
+  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 
 
@@ -198,36 +208,16 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
 
   QgsPoint addedPoint( point );
 
-  // Append point
   mPoints.append( addedPoint );
-
-  mMeasurementLine->addVertex( addedPoint );
-
-  mMeasurementLayer->startEditing();
-  QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
-  QgsDebugMsg( QStringLiteral( "Current line: %s" ).arg( newMeasurementLine->asWkt() ) );
-  mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
-  mMeasurementLayer->commitChanges();
-
+  updateMeasurementLayer();
   mDialog->addPoint();
-
-  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 
 void Qgs3DMapToolMeasureLine::restart()
 {
   mPoints.clear();
-
   mDone = true;
-  mMeasurementLine->clear();
-
-  mMeasurementLayer->startEditing();
-  QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
-  QgsDebugMsg( QStringLiteral( "Current line: %s" ).arg( newMeasurementLine->asWkt() ) );
-  mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
-  mMeasurementLayer->commitChanges();
-
-  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
+  updateMeasurementLayer();
 }
 
 void Qgs3DMapToolMeasureLine::undo()
@@ -246,15 +236,7 @@ void Qgs3DMapToolMeasureLine::undo()
   else
   {
     mPoints.removeLast();
-    mMeasurementLine->deleteVertex( QgsVertexId( 0, 0, mMeasurementLine->numPoints() - 1 ) );
-
-    mMeasurementLayer->startEditing();
-    QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
-    mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
-    mMeasurementLayer->commitChanges();
-
-    mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
-
+    updateMeasurementLayer();
     mDialog->removeLastPoint();
   }
 }
