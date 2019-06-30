@@ -43,6 +43,8 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
     Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
+    Qgs3DMapToolMeasureLine *measurementLineTool() { return  mMapToolMeasureLine; }
+
   private slots:
     void resetView();
     void configure();

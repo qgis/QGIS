@@ -60,6 +60,9 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     //! Returns reference to array of the points
     QVector<QgsPoint> points() const;
 
+    //! Update values from settings
+    void updateSettings();
+
     void activate() override;
     void deactivate() override;
 
@@ -88,9 +91,6 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     //! Update line layer
     void updateMeasurementLayer();
-
-    //! Update values from settings
-    void updateSettings();
 
     //! Dialog
     Qgs3DMeasureDialog *mDialog = nullptr;
