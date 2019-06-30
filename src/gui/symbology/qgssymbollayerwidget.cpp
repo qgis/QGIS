@@ -3319,6 +3319,7 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   }
   widgetChar->blockSignals( false );
   whileBlocking( mCharLineEdit )->setText( mLayer->character() );
+  mCharLineEdit->setFont( layerFont );
 
   //block
   whileBlocking( spinOffsetX )->setValue( mLayer->offset().x() );
@@ -3368,6 +3369,7 @@ void QgsFontMarkerSymbolLayerWidget::setFontFamily( const QFont &font )
 {
   mLayer->setFontFamily( font.family() );
   widgetChar->setFont( font );
+  mCharLineEdit->setFont( font );
   emit changed();
 }
 
@@ -3428,9 +3430,7 @@ void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
 
 void QgsFontMarkerSymbolLayerWidget::setCharacter( QChar chr )
 {
-  mLayer->setCharacter( chr );
-  whileBlocking( mCharLineEdit )->setText( chr );
-  emit changed();
+  mCharLineEdit->insert( chr );
 }
 
 void QgsFontMarkerSymbolLayerWidget::setOffset()
