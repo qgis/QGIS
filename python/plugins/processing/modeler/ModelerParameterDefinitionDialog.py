@@ -79,6 +79,49 @@ from processing.modeler.exceptions import UndefinedParameterException
 
 class ModelerParameterDefinitionDialog(QDialog):
 
+    @staticmethod
+    def use_legacy_dialog(param=None, paramType=None):
+        if paramType in (parameters.PARAMETER_BOOLEAN,
+                         parameters.PARAMETER_TABLE_FIELD,
+                         parameters.PARAMETER_BAND,
+                         parameters.PARAMETER_LAYOUTITEM,
+                         parameters.PARAMETER_VECTOR,
+                         parameters.PARAMETER_TABLE,
+                         parameters.PARAMETER_MULTIPLE,
+                         parameters.PARAMETER_NUMBER,
+                         parameters.PARAMETER_DISTANCE,
+                         parameters.PARAMETER_SCALE,
+                         parameters.PARAMETER_EXPRESSION,
+                         parameters.PARAMETER_STRING,
+                         parameters.PARAMETER_FILE,
+                         parameters.PARAMETER_POINT,
+                         parameters.PARAMETER_CRS,
+                         parameters.PARAMETER_ENUM,
+                         parameters.PARAMETER_MATRIX):
+            return True
+        elif isinstance(param, (QgsProcessingParameterBoolean,
+                                QgsProcessingParameterField,
+                                QgsProcessingParameterBand,
+                                QgsProcessingParameterLayoutItem,
+                                QgsProcessingParameterFeatureSource,
+                                QgsProcessingParameterVectorLayer,
+                                QgsProcessingParameterMultipleLayers,
+                                QgsProcessingParameterNumber,
+                                QgsProcessingParameterDistance,
+                                QgsProcessingParameterScale,
+                                QgsProcessingParameterExpression,
+                                QgsProcessingParameterString,
+                                QgsProcessingParameterFile,
+                                QgsProcessingParameterPoint,
+                                QgsProcessingParameterCrs,
+                                QgsProcessingParameterEnum,
+                                QgsProcessingParameterMatrix,
+                                QgsProcessingDestinationParameter)):
+            return True
+
+        # yay, use new API!
+        return False
+
     def __init__(self, alg, paramType=None, param=None):
         self.alg = alg
         self.paramType = paramType
