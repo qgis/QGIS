@@ -3055,6 +3055,8 @@ class QgsProcessingParameterColor : QgsProcessingParameterDefinition
 %Docstring
 A color parameter for processing algorithms.
 
+QgsProcessingParameterColor should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsColor()`
+
 .. versionadded:: 3.10
 %End
 
@@ -3064,9 +3066,12 @@ A color parameter for processing algorithms.
   public:
 
     QgsProcessingParameterColor( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                 bool opacityEnabled = true,
                                  bool optional = false );
 %Docstring
 Constructor for QgsProcessingParameterColor.
+
+If ``opacityEnabled`` is ``True``, then users will have the option of varying color opacity.
 %End
 
     static QString typeName();
@@ -3084,6 +3089,28 @@ Returns the type name for the parameter class.
 
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    bool opacityEnabled() const;
+%Docstring
+Returns ``True`` if the parameter allows opacity control.
+
+The default behavior is to allow users to set opacity for the color.
+
+.. seealso:: :py:func:`setOpacityEnabled`
+%End
+
+    void setOpacityEnabled( bool enabled );
+%Docstring
+Sets whether the parameter allows opacity control.
+
+The default behavior is to allow users to set opacity for the color.
+
+.. seealso:: :py:func:`opacityEnabled`
+%End
 
     static QgsProcessingParameterColor *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
