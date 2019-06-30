@@ -75,6 +75,9 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mDialog->restorePosition();
 
   mIsAlreadyActivated = false;
+
+  // Update scale if the terrain vertical scale changed
+  connect( mCanvas->map(), &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapToolMeasureLine::updateMeasurementLayer );
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -188,7 +191,26 @@ void Qgs3DMapToolMeasureLine::setMeasurementLayerRenderer()
 
 void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
 {
-  QgsLineString *line = new QgsLineString( mPoints );
+  double verticalScale = canvas()->map()->terrainVerticalScale();
+  QgsLineString *line;
+  if ( verticalScale != 1.0 )
+  {
+    QVector<QgsPoint> descaledPoints;
+    QVector<QgsPoint>::const_iterator it;
+    QgsPoint point;
+    for ( it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
+    {
+      point = *it;
+      descaledPoints.append(
+        QgsPoint( it->x(), it->y(), it->z() / verticalScale )
+      );
+    }
+    line = new QgsLineString( descaledPoints );
+  }
+  else
+  {
+    line = new QgsLineString( mPoints );
+  }
   QgsGeometry *lineGeometry = new QgsGeometry( line );
 
   QgsGeometryMap geometryMap;
