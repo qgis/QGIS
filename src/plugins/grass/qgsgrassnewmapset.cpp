@@ -29,6 +29,7 @@
 #include "qgslocalec.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include "cpl_conv.h"
 #include "ogr_srs_api.h"
@@ -71,6 +72,8 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   QgsDebugMsg( "QgsGrassNewMapset()" );
 
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( mDatabaseButton, &QPushButton::clicked, this, &QgsGrassNewMapset::mDatabaseButton_clicked );
   connect( mDatabaseLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mDatabaseLineEdit_returnPressed );
   connect( mDatabaseLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mDatabaseLineEdit_textChanged );
@@ -145,14 +148,10 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   // FINISH
   mOpenNewMapsetCheckBox->setChecked( settings.value( QStringLiteral( "GRASS/newMapsetWizard/openMapset" ), true ).toBool() );
   connect( this, &QWizard::currentIdChanged, this, &QgsGrassNewMapset::pageSelected );
-
-  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsGrassNewMapset/geometry" ) ).toByteArray() );
 }
 
 QgsGrassNewMapset::~QgsGrassNewMapset()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/QgsGrassNewMapset/geometry" ), saveGeometry() );
   sRunning = false;
 }
 /*************************** DATABASE *******************************/

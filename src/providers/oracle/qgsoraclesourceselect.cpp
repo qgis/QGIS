@@ -30,6 +30,7 @@ email                : jef at norbit dot de
 #include "qgsoraclecolumntypethread.h"
 #include "qgssettings.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -170,6 +171,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleSourceSelect::showHelp );
 
@@ -228,7 +230,6 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/OracleSourceSelect/geometry" ) ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
@@ -436,7 +437,6 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )

@@ -339,14 +339,7 @@ QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString &settingsS
   , mSettingsSection( settingsSection )
 {
   setupUi( this );
-  QgsSettings settings;
-  restoreGeometry( settings.value( mSettingsSection + "/propertiesDialog/geometry" ).toByteArray() );
-}
-
-QgsBrowserPropertiesDialog::~QgsBrowserPropertiesDialog()
-{
-  QgsSettings settings;
-  settings.setValue( mSettingsSection + "/propertiesDialog/geometry", saveGeometry() );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 }
 
 void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item )

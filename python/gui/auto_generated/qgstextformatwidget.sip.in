@@ -170,8 +170,6 @@ Constructor for QgsTextFormatDialog.
 :param fl: window flags for dialog
 %End
 
-    ~QgsTextFormatDialog();
-
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.

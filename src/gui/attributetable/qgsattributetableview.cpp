@@ -39,8 +39,7 @@
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QTableView( parent )
 {
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
@@ -278,8 +277,6 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
   Q_UNUSED( e )
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
 }
 
 void QgsAttributeTableView::mousePressEvent( QMouseEvent *event )
