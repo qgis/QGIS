@@ -534,10 +534,12 @@ bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantLi
   {
     if ( retryCount != 0 )
     {
-      // If the connection has been closed
-      // Try again N times in case of timeout
+      // If the connection has been closed try again N times in case of timeout
       // ORA-12170: TNS:Connect timeout occurred
-      if ( mQry.lastError().number() == 12170 )
+      // Or if  there is a problem with the network connectivity try again N times
+      // ORA-03114: Not Connected to Oracle
+      if ( mQry.lastError().number() == 12170 ||
+           mQry.lastError().number() == 3114 )
       {
         // restart connection
         mConnection->reconnect();
