@@ -53,22 +53,6 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolMeasureLine::onTerrainEntityChanged );
   mPickHandler.reset( new Qgs3DMapToolMeasureLinePickHandler( this ) );
 
-  // Line style
-  mLineSymbol = new QgsLine3DSymbol;
-  mLineSymbol->setRenderAsSimpleLines( true );
-  mLineSymbol->setWidth( 4 );
-  mLineSymbol->setAltitudeClamping( Qgs3DTypes::AltClampAbsolute );
-
-  QgsPhongMaterialSettings phongMaterial;
-  QgsSettings settings;
-  int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
-  int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
-  int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
-  phongMaterial.setAmbient( QColor( myRed, myGreen, myBlue, 100 ) );
-  mLineSymbol->setMaterial( phongMaterial );
-
-  mLineSymbolRenderer = new QgsVectorLayer3DRenderer( mLineSymbol );
-
   // Dialog
   mDialog = new Qgs3DMeasureDialog( this );
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
@@ -94,6 +78,7 @@ void Qgs3DMapToolMeasureLine::activate()
   if ( mIsAlreadyActivated )
   {
     restart();
+    updateSettings();
   }
   else
   {
@@ -113,11 +98,9 @@ void Qgs3DMapToolMeasureLine::activate()
     mMeasurementLayer->commitChanges();
 
     // Set style
-    setMeasurementLayerRenderer();
-
-    // Add layer to canvas
-    mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
+    updateSettings();
     mIsAlreadyActivated = true;
+//    updateSettings();
   }
 
   // Show dialog
@@ -217,6 +200,27 @@ void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
   QgsGeometryMap geometryMap;
   geometryMap.insert( 1, *lineGeometry );
   mMeasurementLayer->dataProvider()->changeGeometryValues( geometryMap );
+  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
+}
+
+void Qgs3DMapToolMeasureLine::updateSettings()
+{
+  // Line style
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setRenderAsSimpleLines( true );
+  lineSymbol->setWidth( 4 );
+  lineSymbol->setAltitudeClamping( Qgs3DTypes::AltClampAbsolute );
+
+  QgsPhongMaterialSettings phongMaterial;
+  QgsSettings settings;
+  int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
+  int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
+  int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
+  phongMaterial.setAmbient( QColor( myRed, myGreen, myBlue, 100 ) );
+  lineSymbol->setMaterial( phongMaterial );
+
+  mLineSymbolRenderer = new QgsVectorLayer3DRenderer( lineSymbol );
+  setMeasurementLayerRenderer();
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 

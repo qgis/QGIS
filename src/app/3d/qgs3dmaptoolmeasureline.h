@@ -74,7 +74,6 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     friend class Qgs3DMapToolMeasureLinePickHandler;
 
     QgsVectorLayer *mMeasurementLayer = nullptr;
-    QgsLine3DSymbol *mLineSymbol = nullptr;
     QgsVectorLayer3DRenderer *mLineSymbolRenderer = nullptr;
     bool mIsAlreadyActivated;
 
@@ -89,6 +88,9 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     //! Update line layer
     void updateMeasurementLayer();
+
+    //! Update values from settings
+    void updateSettings();
 
     //! Dialog
     Qgs3DMeasureDialog *mDialog = nullptr;
