@@ -48,13 +48,9 @@
 #include "qgsmssqldataitems.h"
 #include "qgsmssqlfeatureiterator.h"
 
-#ifdef HAVE_GUI
-#include "qgsmssqlsourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mssql" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial data provider" );
+const QString QgsMssqlProvider::MSSQL_PROVIDER_KEY = QStringLiteral( "mssql" );
+const QString QgsMssqlProvider::MSSQL_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial data provider" );
 int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &options )
@@ -1548,7 +1544,7 @@ QString QgsMssqlProvider::subsetString() const
 
 QString  QgsMssqlProvider::name() const
 {
-  return TEXT_PROVIDER_KEY;
+  return MSSQL_PROVIDER_KEY;
 }
 
 bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
@@ -1595,7 +1591,7 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 
 QString  QgsMssqlProvider::description() const
 {
-  return TEXT_PROVIDER_DESCRIPTION;
+  return MSSQL_PROVIDER_DESCRIPTION;
 }
 
 QgsAttributeList QgsMssqlProvider::pkAttributeIndexes() const
@@ -2323,8 +2319,9 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
   }
   return numberOfRelatedStyles;
 }
+
 QgsMssqlProviderMetadata::QgsMssqlProviderMetadata():
-  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  QgsProviderMetadata( QgsMssqlProvider::MSSQL_PROVIDER_KEY, QgsMssqlProvider::MSSQL_PROVIDER_DESCRIPTION )
 {
 }
 
@@ -2361,45 +2358,7 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, QString styl
 }
 
 
-#ifdef HAVE_GUI
-
-//! Provider for msssql raster source select
-class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "mssql" ); }
-    QString text() const override { return QObject::tr( "MSSQL" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 30; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsMssqlSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-QgsMssqlProviderGuiMetadata::QgsMssqlProviderGuiMetadata():
-  QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsMssqlProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsMssqlSourceSelectProvider;
-  return providers;
-}
-
-#endif
-
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsMssqlProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsMssqlProviderGuiMetadata();
-}
-#endif
