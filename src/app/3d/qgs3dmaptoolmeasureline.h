@@ -76,6 +76,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     QgsVectorLayer *mMeasurementLayer = nullptr;
     QgsLine3DSymbol *mLineSymbol = nullptr;
     QgsVectorLayer3DRenderer *mLineSymbolRenderer = nullptr;
+    bool mIsAlreadyActivated;
 
 
     //! Store points

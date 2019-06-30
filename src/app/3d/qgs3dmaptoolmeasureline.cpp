@@ -73,6 +73,8 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mDialog = new Qgs3DMeasureDialog( this );
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
+
+  mIsAlreadyActivated = false;
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -86,29 +88,34 @@ void Qgs3DMapToolMeasureLine::activate()
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
 
-  // Initialize the measurement line
-  QgsLineString *measurementLine = new QgsLineString();
-  measurementLine->addZValue();
+  if ( mIsAlreadyActivated )
+  {
+    restart();
+  }
+  else
+  {
+    QgsLineString *measurementLine = new QgsLineString();
+    measurementLine->addZValue();
 
-  // Initialize measurement feature
-  QgsFeature *measurementFeature = new QgsFeature( QgsFeatureId( 1 ) );
-  measurementFeature->setGeometry( QgsGeometry( measurementLine ) );
+    QgsFeature *measurementFeature = new QgsFeature( QgsFeatureId( 1 ) );
+    measurementFeature->setGeometry( QgsGeometry( measurementLine ) );
 
-  // Initialize the line layer
-  QString mapCRS = mCanvas->map()->crs().authid();
-  mMeasurementLayer = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=" ) + mapCRS, QStringLiteral( "Measurement" ), QStringLiteral( "memory" ) );
+    // Initialize the line layer
+    QString mapCRS = mCanvas->map()->crs().authid();
+    mMeasurementLayer = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=" ) + mapCRS, QStringLiteral( "Measurement" ), QStringLiteral( "memory" ) );
 
-  // Add feature to layer
-  mMeasurementLayer->startEditing();
-  mMeasurementLayer->addFeature( *measurementFeature );
-  mMeasurementLayer->commitChanges();
+    // Add feature to layer
+    mMeasurementLayer->startEditing();
+    mMeasurementLayer->addFeature( *measurementFeature );
+    mMeasurementLayer->commitChanges();
 
-  // Set style
-  setMeasurementLayerRenderer();
+    // Set style
+    setMeasurementLayerRenderer();
 
-  // Add layer to canvas
-  //mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
-  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
+    // Add layer to canvas
+    mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
+    mIsAlreadyActivated = true;
+  }
 
   // Show dialog
   mDialog->updateSettings();
@@ -121,13 +128,6 @@ void Qgs3DMapToolMeasureLine::deactivate()
   {
     disconnect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolMeasureLine::onTerrainPicked );
   }
-
-  // Delete previouse line
-  mMeasurementLayer->startEditing();
-  mMeasurementLayer->deleteFeature( 1 );
-  mMeasurementLayer->commitChanges();
-
-  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
 
