@@ -21,6 +21,7 @@
 
 #define SIP_NO_FILE
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsmaptool.h"
 
 #include <QAbstractButton>

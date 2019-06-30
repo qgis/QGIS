@@ -86,7 +86,9 @@ from qgis.gui import (QgsMessageBar,
                       QgsFilterLineEdit,
                       QgsProcessingToolboxTreeView,
                       QgsProcessingToolboxProxyModel,
-                      QgsVariableEditorWidget)
+                      QgsProcessingParameterDefinitionDialog,
+                      QgsVariableEditorWidget,
+                      QgsProcessingParameterWidgetContext)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -96,6 +98,7 @@ from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.dataobjects import createContext
 from qgis.utils import iface
 
 
@@ -787,18 +790,59 @@ class ModelerDialog(BASE, WIDGET):
         param = item.data(0, Qt.UserRole)
         self.addInputOfType(param)
 
+    def create_widget_context(self):
+        """
+        Returns a new widget context for use in the model editor
+        """
+        widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
+        if iface is not None:
+            widget_context.setMapCanvas(iface.mapCanvas())
+        widget_context.setModel(self.model)
+        return widget_context
+
+    def autogenerate_parameter_name(self, parameter):
+        """
+        Automatically generates and sets a new parameter's name, based on the parameter's
+        description and ensuring that it is unique for the model.
+        """
+        validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        safeName = ''.join(c for c in parameter.description() if c in validChars)
+        name = safeName.lower()
+        i = 2
+        while self.model.parameterDefinition(name):
+            name = safeName.lower() + str(i)
+            i += 1
+        parameter.setName(safeName)
+
     def addInputOfType(self, paramType, pos=None):
-        dlg = ModelerParameterDefinitionDialog(self.model, paramType)
-        dlg.exec_()
-        if dlg.param is not None:
+        new_param = None
+        if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
+            dlg = ModelerParameterDefinitionDialog(self.model, paramType)
+            if dlg.exec_():
+                new_param = dlg.param
+        else:
+            # yay, use new API!
+            context = createContext()
+            widget_context = self.create_widget_context()
+            dlg = QgsProcessingParameterDefinitionDialog(type=paramType,
+                                                         context=context,
+                                                         widgetContext=widget_context,
+                                                         algorithm=self.model)
+            if dlg.exec_():
+                new_param = dlg.createParameter()
+                self.autogenerate_parameter_name(new_param)
+
+        if new_param is not None:
             if pos is None:
                 pos = self.getPositionForParameterItem()
             if isinstance(pos, QPoint):
                 pos = QPointF(pos)
-            component = QgsProcessingModelParameter(dlg.param.name())
-            component.setDescription(dlg.param.name())
+            component = QgsProcessingModelParameter(new_param.name())
+            component.setDescription(new_param.name())
             component.setPosition(pos)
-            self.model.addModelParameter(dlg.param, component)
+            self.model.addModelParameter(new_param, component)
             self.repaintModel()
             # self.view.ensureVisible(self.scene.getLastParameterItem())
             self.hasChanged = True
