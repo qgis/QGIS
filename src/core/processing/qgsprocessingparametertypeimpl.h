@@ -1667,7 +1667,7 @@ class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParamete
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: string representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" )
-             << QObject::tr( "QColor" )
+             << QStringLiteral( "QColor" )
              << QStringLiteral( "QgsProperty" );
     }
 
