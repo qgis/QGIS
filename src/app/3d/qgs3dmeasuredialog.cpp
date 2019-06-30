@@ -76,10 +76,7 @@ void Qgs3DMeasureDialog::restorePosition()
 
 void Qgs3DMeasureDialog::addPoint()
 {
-  QgsUnitTypes::DistanceUnit canvasDistanceUnit = mTool->canvas()->map()->crs().mapUnits();
-  QgsDebugMsg( QStringLiteral( "Canvas map units %1" ).arg( QgsUnitTypes::toString( canvasDistanceUnit ) ) );
   int numPoints = mTool->points().size();
-  QgsDebugMsg( QStringLiteral( "Add point. Current num points: %1" ).arg( numPoints ) );
   if ( numPoints > 1 )
   {
     if ( !mTool->done() )

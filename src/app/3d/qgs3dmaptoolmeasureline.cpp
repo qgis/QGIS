@@ -157,12 +157,10 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
   else if ( event->button() == Qt3DRender::QPickEvent::RightButton )
   {
     // Finish measurement
-    QgsDebugMsg( QStringLiteral( "Finish measurement" ) );
     mDone = true;
   }
   else if ( event->button() == Qt3DRender::QPickEvent::MiddleButton )
   {
-    QgsDebugMsg( QStringLiteral( "Undo - middle button" ) );
     undo();
   }
 }
@@ -249,7 +247,6 @@ void Qgs3DMapToolMeasureLine::restart()
 
 void Qgs3DMapToolMeasureLine::undo()
 {
-  QgsDebugMsg( QStringLiteral( "Removing last point." ) );
   if ( mPoints.empty() )
   {
     return;
