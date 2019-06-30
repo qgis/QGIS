@@ -191,9 +191,9 @@ void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
   QgsLineString *line = new QgsLineString( mPoints );
   QgsGeometry *lineGeometry = new QgsGeometry( line );
 
-  mMeasurementLayer->startEditing();
-  mMeasurementLayer->changeGeometry( 1, *lineGeometry );
-  mMeasurementLayer->commitChanges();
+  QgsGeometryMap geometryMap;
+  geometryMap.insert( 1, *lineGeometry );
+  mMeasurementLayer->dataProvider()->changeGeometryValues( geometryMap );
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 
