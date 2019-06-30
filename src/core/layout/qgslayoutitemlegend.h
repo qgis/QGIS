@@ -267,6 +267,26 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setSymbolWidth( double width );
 
     /**
+     * Sets the \a alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see symbolAlignment()
+     * \since QGIS 3.10
+     */
+    void setSymbolAlignment( Qt::AlignmentFlag alignment );
+
+    /**
+     * Returns the alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see setSymbolAlignment()
+     * \since QGIS 3.10
+     */
+    Qt::AlignmentFlag symbolAlignment() const;
+
+    /**
      * Returns the legend symbol height.
      * \see setSymbolHeight()
      */

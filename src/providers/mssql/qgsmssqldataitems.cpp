@@ -829,3 +829,9 @@ void QgsMssqlRootItem::newConnection()
   }
 }
 #endif
+
+QgsDataItem *QgsMssqlDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn )
+  return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
+}

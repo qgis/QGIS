@@ -36,6 +36,8 @@ extern "C"
 #include <fstream>
 #include <set>
 
+#include "qgsprovidermetadata.h"
+
 class QgsFeature;
 class QgsField;
 
@@ -57,6 +59,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString SPATIALITE_KEY;
+    static const QString SPATIALITE_DESCRIPTION;
+
     //! Import a vector layer into the database
     static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
@@ -376,6 +382,30 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     friend class QgsSpatiaLiteFeatureSource;
 
+};
+
+class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsSpatiaLiteProviderMetadata();
+
+    void cleanupProvider() override;
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                    const QString &styleName, const QString &styleDescription,
+                    const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names,
+                    QStringList &descriptions, QString &errCause ) override;
+    QVariantMap decodeUri( const QString &uri ) override;
+    QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+
+    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields,
+        QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs,
+        bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
+        const QMap<QString, QVariant> *options ) override;
+    bool createDb( const QString &dbPath, QString &errCause ) override;
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
 
 // clazy:excludeall=qstring-allocations

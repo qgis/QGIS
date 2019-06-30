@@ -564,6 +564,7 @@ class TestQgsProcessing: public QObject
     void parameterBand();
     void parameterLayout();
     void parameterLayoutItem();
+    void parameterColor();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -6260,6 +6261,155 @@ void TestQgsProcessing::parameterLayoutItem()
   QCOMPARE( fromCode->parentLayoutParameterName(), def->parentLayoutParameterName() );
   QCOMPARE( fromCode->itemType(), def->itemType() );
 
+}
+
+void TestQgsProcessing::parameterColor()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterColor > def( new QgsProcessingParameterColor( "non_optional", QString(), QString(), true, false ) );
+  QVERIFY( def->opacityEnabled() );
+  def->setOpacityEnabled( false );
+  QVERIFY( !def->opacityEnabled() );
+  def->setOpacityEnabled( true );
+
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "#ff0000" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "bbbbbbbbbbbbbbbbbbbb" ) );
+  QVERIFY( def->checkValueIsAcceptable( QColor( 255, 0, 0 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // string
+  QVariantMap params;
+  params.insert( "non_optional", QString( "xxx" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsColor( def.get(), params, context ).isValid() );
+  params.insert( "non_optional", QString( "#ff0000" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsColor( def.get(), params, context ).name(), QString( "#ff0000" ) );
+  params.insert( "non_optional", QString( "rgba(255,0,0,0.1" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsColor( def.get(), params, context ).name(), QString( "#ff0000" ) );
+  params.insert( "non_optional", QColor( 255, 255, 0 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsColor( def.get(), params, context ).name(), QString( "#ffff00" ) );
+  params.insert( "non_optional", QColor( 255, 255, 0, 100 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsColor( def.get(), params, context ), QColor( 255, 255, 0, 100 ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "#ff0000" ), context ), QStringLiteral( "QColor(255, 0, 0)" ) );
+  QCOMPARE( def->valueAsPythonString( QColor(), context ), QStringLiteral( "QColor()" ) );
+  QCOMPARE( def->valueAsPythonString( QColor( 255, 0, 0 ), context ), QStringLiteral( "QColor(255, 0, 0)" ) );
+  QCOMPARE( def->valueAsPythonString( QColor( 255, 0, 0, 100 ), context ), QStringLiteral( "QColor(255, 0, 0, 100)" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterColor('non_optional', '', opacityEnabled=True, defaultValue=None)" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=color withopacity" ) );
+  std::unique_ptr< QgsProcessingParameterColor > fromCode( dynamic_cast< QgsProcessingParameterColor * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QVERIFY( fromCode->opacityEnabled() );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterColor fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QVERIFY( fromMap.opacityEnabled() );
+  def.reset( dynamic_cast< QgsProcessingParameterColor *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterColor *>( def.get() ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterColor * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=color withopacity None" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QVERIFY( !fromCode->defaultValue().isValid() );
+  QVERIFY( fromCode->opacityEnabled() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterColor * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=color #aabbcc" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "#aabbcc" ) );
+  QVERIFY( !fromCode->opacityEnabled() );
+
+  def->setDefaultValue( QColor( 10, 20, 30 ) );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterColor('non_optional', '', opacityEnabled=True, defaultValue=QColor(10, 20, 30))" ) );
+
+  def->setOpacityEnabled( false );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterColor('non_optional', '', opacityEnabled=False, defaultValue=QColor(10, 20, 30))" ) );
+  def->setOpacityEnabled( true );
+
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterColor * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QVERIFY( fromCode->opacityEnabled() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterColor * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=color 'my val'" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "my val" ) );
+  QVERIFY( !fromCode->opacityEnabled() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterColor * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=color withopacity \"my val\"" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "my val" ) );
+  QVERIFY( fromCode->opacityEnabled() );
+
+  // optional
+  def.reset( new QgsProcessingParameterColor( "optional", QString(), QString( "#ff00ff" ), false, true ) );
+  QVERIFY( def->checkValueIsAcceptable( "#ff0000" ) );
+  QVERIFY( def->checkValueIsAcceptable( QColor( 255, 0, 0 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->opacityEnabled() );
+
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsColor( def.get(), params, context ).name(), QString( "#ff00ff" ) );
+  params.insert( "optional",  QColor() ); //invalid color should not result in default value
+  QVERIFY( !QgsProcessingParameters::parameterAsColor( def.get(), params, context ).isValid() );
+  params.insert( "optional",  QString() ); //empty string should not result in default value
+  QVERIFY( !QgsProcessingParameters::parameterAsColor( def.get(), params, context ).isValid() );
+
+  // not opacity enabled, should be stripped off
+  params.insert( "optional", QColor( 255, 255, 0, 100 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsColor( def.get(), params, context ), QColor( 255, 255, 0 ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterColor('optional', '', optional=True, opacityEnabled=False, defaultValue=QColor(255, 0, 255))" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional color #ff00ff" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterColor * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QVERIFY( !fromCode->opacityEnabled() );
+
+  // not optional, valid default!
+  def.reset( new QgsProcessingParameterColor( "non_optional", QString(), QString( "#ff00ff" ), true, false ) );
+  QVERIFY( def->checkValueIsAcceptable( "#dddddd" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be valid, falls back to valid default
 }
 
 void TestQgsProcessing::checkParamValues()

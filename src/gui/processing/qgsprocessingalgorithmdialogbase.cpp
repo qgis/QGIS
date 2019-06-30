@@ -450,6 +450,12 @@ void QgsProcessingAlgorithmDialogBase::copyLogToClipboard()
 
 void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
 {
+  if ( !mHelpCollapsed )
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "/Processing/dialogBaseSplitter" ), splitter->saveState() );
+  }
+
   QDialog::closeEvent( e );
 
   if ( !mAlgorithmTask )

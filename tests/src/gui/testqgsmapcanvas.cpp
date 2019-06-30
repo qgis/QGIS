@@ -304,7 +304,10 @@ void TestQgsMapCanvas::testMagnificationScale()
 void TestQgsMapCanvas::testScaleLockCanvasResize()
 {
   QSize prevSize = mCanvas->size();
+
   mCanvas->resize( 600, 400 );
+  QgsApplication::sendPostedEvents( mCanvas );
+  mCanvas->resizeEvent( nullptr );
   QCOMPARE( mCanvas->width(), 600 );
   QCOMPARE( mCanvas->height(), 400 );
 
@@ -313,6 +316,8 @@ void TestQgsMapCanvas::testScaleLockCanvasResize()
   mCanvas->setScaleLocked( true );
 
   mCanvas->resize( 300, 200 );
+  QgsApplication::sendPostedEvents( mCanvas );
+  mCanvas->resizeEvent( nullptr );
   QCOMPARE( mCanvas->width(), 300 );
   QCOMPARE( mCanvas->height(), 200 );
 
@@ -322,6 +327,8 @@ void TestQgsMapCanvas::testScaleLockCanvasResize()
   mCanvas->setScaleLocked( false );
   mCanvas->setMagnificationFactor( 1.0 );
   mCanvas->resize( prevSize );
+  QgsApplication::sendPostedEvents( mCanvas );
+  mCanvas->resizeEvent( nullptr );
 }
 
 void TestQgsMapCanvas::testZoomByWheel()

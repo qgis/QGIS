@@ -1,0 +1,93 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproviderguiregistry.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsProviderGuiRegistry
+{
+%Docstring
+A registry / canonical manager of GUI parts of data providers.
+
+QgsProviderGuiRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsGui.providerGuiRegistry()`
+
+setPluginPath() should be called (once) to load dynamic providers. Static providers are
+loaded in constructor.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsproviderguiregistry.h"
+%End
+  public:
+
+    QgsProviderGuiRegistry( const QString &pluginPath );
+%Docstring
+Creates registry and loads static provider plugins
+%End
+
+    virtual ~QgsProviderGuiRegistry();
+
+    QStringList providerList() const;
+%Docstring
+Returns list of available providers by their keys
+%End
+
+    const QgsProviderGuiMetadata *providerMetadata( const QString &providerKey ) const;
+%Docstring
+Returns metadata of the provider or ``None`` if not found
+%End
+
+    void registerGuis( QMainWindow *widget );
+%Docstring
+Called during GUI initialization - allows providers to do its internal initialization
+of GUI components, possibly making use of the passed pointer to the QGIS main window.
+%End
+
+    virtual const QList<QgsDataItemGuiProvider *> dataItemGuiProviders( const QString &providerKey ) /Factory/;
+%Docstring
+Returns all data item gui providers registered in provider with ``providerKey``
+
+.. note::
+
+   Ownership of created data item providers is passed to the caller.
+%End
+
+    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders( const QString &providerKey ) /Factory/;
+%Docstring
+Returns all source select providers registered in provider with ``providerKey``
+
+.. note::
+
+   Ownership of created source select providers is passed to the caller.
+%End
+
+    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders( const QString &providerKey ) /Factory/;
+%Docstring
+Returns all project storage gui providers registered in provider with ``providerKey``
+
+.. note::
+
+   Ownership of created project storage gui providers is passed to the caller.
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproviderguiregistry.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

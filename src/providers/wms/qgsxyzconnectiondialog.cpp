@@ -15,11 +15,13 @@
 
 #include "qgsxyzconnectiondialog.h"
 #include "qgsxyzconnection.h"
+#include "qgsgui.h"
 
 QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   // Behavior for min and max zoom checkbox
   connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );

@@ -14,61 +14,191 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgslinestring.h"
-#include "qgsmaptoolreshape.h"
-#include "qgisapp.h"
 
-class TestQgsMapToolReshape : public QObject
+#include "qgisapp.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapcanvassnappingutils.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
+#include "qgsmaptoolreshape.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsmapmouseevent.h"
+#include "testqgsmaptoolutils.h"
+
+
+/**
+ * \ingroup UnitTests
+ * This is a unit test for the vertex tool
+ */
+class TestQgsMapToolReshape: public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolReshape() = default;
+    TestQgsMapToolReshape();
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
+    void testReshapeZ();
     void reshapeWithBindingLine();
 
   private:
     QgisApp *mQgisApp = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMapToolReshape *mCaptureTool = nullptr;
+    QgsVectorLayer *mLayerLineZ = nullptr;
+    QgsVectorLayer *mLayerPointZ = nullptr;
+    QgsVectorLayer *mLayerPolygonZ = nullptr;
 };
 
+TestQgsMapToolReshape::TestQgsMapToolReshape() = default;
+
+
+//runs before all tests
 void TestQgsMapToolReshape::initTestCase()
 {
+  qDebug() << "TestMapToolCapture::initTestCase()";
+  // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  // Set up the QgsSettings environment
+  // Set up the QSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
-  QgsApplication::showSettings();
-
-  // enforce C locale because the tests expect it
-  // (decimal separators / thousand separators)
-  QLocale::setDefault( QLocale::c() );
-
   mQgisApp = new QgisApp();
+
+  mCanvas = new QgsMapCanvas();
+
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+
+  mCanvas->setFrameStyle( QFrame::NoFrame );
+  mCanvas->resize( 512, 512 );
+  mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
+  mCanvas->show(); // to make the canvas resize
+  mCanvas->hide();
+
+  // make testing layers
+  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:3946" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZ );
+
+  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:3946" ), QStringLiteral( "point Z" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPointZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZ );
+
+  mLayerPolygonZ = new QgsVectorLayer( QStringLiteral( "PolygonZ?crs=EPSG:3946" ), QStringLiteral( "polygon Z" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPolygonZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPolygonZ );
+
+  mLayerLineZ->startEditing();
+  QString wkt1 = "LineStringZ (0 0 0, 1 1 0, 1 2 0)";
+  QString wkt2 = "LineStringZ (2 1 5, 3 3 5)";
+  QgsFeature f1;
+  f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
+  QgsFeature f2;
+  f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
+
+  QgsFeatureList flist;
+  flist << f1 << f2;
+  mLayerLineZ->dataProvider()->addFeatures( flist );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long )2 );
+  QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt1 );
+  QCOMPARE( mLayerLineZ->getFeature( 2 ).geometry().asWkt(), wkt2 );
+
+  mLayerPointZ->startEditing();
+  QString wkt3 = "PointZ (5 5 5)";
+  QgsFeature f3;
+  f3.setGeometry( QgsGeometry::fromWkt( wkt3 ) );
+  QString wkt4 = "PointZ (6 6 6)";
+  QgsFeature f4;
+  f4.setGeometry( QgsGeometry::fromWkt( wkt4 ) );
+
+  QgsFeatureList flistPoint;
+  flistPoint << f3 << f4;
+  mLayerPointZ->dataProvider()->addFeatures( flistPoint );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPointZ->getFeature( 1 ).geometry().asWkt(), wkt3 );
+  QCOMPARE( mLayerPointZ->getFeature( 2 ).geometry().asWkt(), wkt4 );
+
+  mLayerPolygonZ->startEditing();
+  QString wkt5 = "PolygonZ ((7 5 4, 3 2 1, 0 1 2, 7 5 4))";
+  QgsFeature f5;
+  f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
+  QgsFeatureList flistPolygon;
+  flistPolygon << f5;
+  mLayerPolygonZ->dataProvider()->addFeatures( flistPolygon );
+  QCOMPARE( mLayerPolygonZ->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPolygonZ->getFeature( 1 ).geometry().asWkt(), wkt5 );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setTolerance( 100 );
+  cfg.setType( QgsSnappingConfig::VertexAndSegment );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLineZ << mLayerPointZ << mLayerPolygonZ );
+  mCanvas->setCurrentLayer( mLayerLineZ );
+
+  // create the tool
+  mCaptureTool = new QgsMapToolReshape( mCanvas );
+  mCanvas->setMapTool( mCaptureTool );
+
+  QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
+  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 }
 
+//runs after all tests
 void TestQgsMapToolReshape::cleanupTestCase()
 {
+  delete mCaptureTool;
+  delete mCanvas;
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolReshape::init()
+void TestQgsMapToolReshape::testReshapeZ()
 {
-}
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
-void TestQgsMapToolReshape::cleanup()
-{
+  // test with default Z value = 333
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  // snap on a linestringz layer
+  utils.mouseClick( 1, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 2, 1, Qt::RightButton );
+
+  QString wkt = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5)";
+  QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt );
+
+  // snap on a pointz layer
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 5, 5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 6, 6, Qt::RightButton );
+
+  QString wkt2 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6)";
+  QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt2 );
+
+  // snap on a polygonz layer
+  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 7, 5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 3, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 3, 2, Qt::RightButton );
+
+  QString wkt3 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6, 7 5 4, 3 2 1)";
+  QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt3 );
+  mLayerLineZ->undoStack()->undo();
+
 }
 
 void TestQgsMapToolReshape::reshapeWithBindingLine()
@@ -138,6 +268,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
 
   vl->rollBack();
 }
+
 
 QGSTEST_MAIN( TestQgsMapToolReshape )
 #include "testqgsmaptoolreshape.moc"

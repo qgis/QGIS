@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Tuesday May 07, 2019
+Friday June 21, 2019
 
 
-Last Updated: Tuesday May 07, 2019
-Last Change : Tuesday May 07, 2019
+Last Updated: Friday June 21, 2019
+Last Change : Friday June 21, 2019
 
 
   1. Introduction
@@ -169,8 +169,8 @@ of Ubuntu. This is not activated by default, so you need to activate it:
 1. Edit your /etc/apt/sources.list file.
 2. Uncomment all the lines starting with "deb"
 
-Also you will need to be running Ubuntu 'precise' or higher in order for
-all dependencies to be met.
+Also you will need a recent enough distribution in order for all dependencies
+to be met. The supported distributions are listed in the following section.
 
 Now update your local sources database:
 
@@ -1100,6 +1100,9 @@ is required.
 
   5. Building on MacOS X
   ======================
+
+This document is outdated and there is currently no up to date documentation for building on mac.
+You might want to consider to read an approach using Homebrew although not up to date either: https://github.com/qgis/QGIS/mac/development.md
 
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.

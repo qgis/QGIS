@@ -18,7 +18,8 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsTextFormat,
                        QgsUnitTypes,
                        QgsMapUnitScale,
-                       QgsBlurEffect)
+                       QgsBlurEffect,
+                       QgsMarkerSymbol)
 from qgis.gui import (QgsTextFormatWidget, QgsTextFormatDialog)
 from qgis.PyQt.QtGui import (QColor, QPainter)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
@@ -84,6 +85,11 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setStrokeWidthUnit(QgsUnitTypes.RenderMapUnits)
         s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
         s.setPaintEffect(QgsBlurEffect.create({'blur_level': '6.0', 'blur_unit': QgsUnitTypes.encodeUnit(QgsUnitTypes.RenderMillimeters), 'enabled': '1'}))
+
+        marker = QgsMarkerSymbol()
+        marker.setColor(QColor(100, 112, 134))
+        s.setMarkerSymbol(marker)
+
         return s
 
     def checkBackgroundSettings(self, s):
@@ -165,6 +171,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setOpacity(0.5)
         s.setBlendMode(QPainter.CompositionMode_Difference)
         s.setLineHeight(5)
+        s.setPreviewBackgroundColor(QColor(100, 150, 200))
         return s
 
     def checkTextFormat(self, s):
@@ -181,6 +188,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_Difference)
         self.assertEqual(s.lineHeight(), 5)
+        self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
 
     def testSettings(self):
         # test that widget correctly sets and returns matching settings

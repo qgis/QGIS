@@ -1,6 +1,6 @@
 
 SET (WCS_SRCS
-  ../gdal/qgsgdalproviderbase.cpp
+  ../../core/providers/gdal/qgsgdalproviderbase.cpp
   qgswcsprovider.cpp
   qgswcscapabilities.cpp
   qgswcsdataitems.cpp
@@ -14,9 +14,12 @@ SET (WCS_MOC_HDRS
 
 IF (WITH_GUI)
   SET(WCS_SRCS ${WCS_SRCS}
+    qgswcsprovidergui.cpp
+    qgswcsdataitemguiprovider.cpp
     qgswcssourceselect.cpp
   )
   SET(WCS_MOC_HDRS ${WCS_MOC_HDRS}
+    qgswcsdataitemguiprovider.h
     qgswcssourceselect.h
   )
 ENDIF ()
@@ -32,7 +35,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/providers/gdal
+  ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
   ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core

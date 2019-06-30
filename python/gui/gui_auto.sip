@@ -5,6 +5,9 @@
 %Include auto_generated/qgsdetaileditemdata.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
 %Include auto_generated/qgsgeometryrubberband.sip
+%Include auto_generated/qgsproviderguimetadata.sip
+%Include auto_generated/qgsproviderguiregistry.sip
+%Include auto_generated/qgsprojectstorageguiregistry.sip
 %Include auto_generated/qgshelp.sip
 %Include auto_generated/qgshighlight.sip
 %Include auto_generated/qgsmapcanvasitem.sip
@@ -23,6 +26,7 @@
 %Include auto_generated/qgssourceselectprovider.sip
 %Include auto_generated/qgssourceselectproviderregistry.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
+%Include auto_generated/qgsprojectstorageguiprovider.sip
 %Include auto_generated/attributetable/qgsfeaturemodel.sip
 %Include auto_generated/auth/qgsauthauthoritieseditor.sip
 %Include auto_generated/auth/qgsauthcertificateinfo.sip
@@ -55,6 +59,7 @@
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip
 %Include auto_generated/qgsadvanceddigitizingfloater.sip
 %Include auto_generated/qgsaggregatetoolbutton.sip
+%Include auto_generated/qgsalignmentcombobox.sip
 %Include auto_generated/qgsattributedialog.sip
 %Include auto_generated/qgsattributeform.sip
 %Include auto_generated/qgsattributeformeditorwidget.sip
@@ -62,6 +67,7 @@
 %Include auto_generated/qgsattributeformwidget.sip
 %Include auto_generated/qgsattributetypeloaddialog.sip
 %Include auto_generated/qgsblendmodecombobox.sip
+%Include auto_generated/qgsbrowserguimodel.sip
 %Include auto_generated/qgsbrowsertreeview.sip
 %Include auto_generated/qgsbusyindicatordialog.sip
 %Include auto_generated/qgscharacterselectordialog.sip
@@ -204,6 +210,7 @@
 %Include auto_generated/qgsslider.sip
 %Include auto_generated/qgssnaptogridcanvasitem.sip
 %Include auto_generated/qgsstatusbar.sip
+%Include auto_generated/qgsstyleitemslistwidget.sip
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip
 %Include auto_generated/qgssymbolbutton.sip

@@ -131,6 +131,7 @@ class QgsLayerStylingWidget;
 class QgsDiagramProperties;
 class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
+class QgsBrowserGuiModel;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
 class QgsLayoutQptDropHandler;
@@ -149,7 +150,7 @@ class QgsNetworkRequestParameters;
 #include "qgsconfig.h"
 #include "qgspointxy.h"
 #include "qgsmimedatautils.h"
-#include "qgswelcomepageitemsmodel.h"
+#include "qgsrecentprojectsitemsmodel.h"
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsmaplayeractionregistry.h"
@@ -942,7 +943,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Returns the shared application browser model.
      */
-    QgsBrowserModel *browserModel();
+    QgsBrowserGuiModel *browserModel();
 
     /*
      * Change data source for \a layer, a data source selection dialog
@@ -1063,6 +1064,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void triggerCrashHandler();
 
+    //! Create a new file from a template project
+    bool fileNewFromTemplate( const QString &fileName );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -1091,6 +1095,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void transactionGroupCommitError( const QString &error );
 
     void onSnappingConfigChanged();
+
+    void generateProjectAttachedFiles( QgsStringMap &files );
 
     /**
      * Triggers validation of the specified \a crs.
@@ -1315,8 +1321,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileOpenAfterLaunch();
     //! After project read, set any auto-opened project as successful
     void fileOpenedOKAfterLaunch();
-    //! Create a new file from a template project
-    bool fileNewFromTemplate( const QString &fileName );
     void fileNewFromTemplateAction( QAction *qAction );
     void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
@@ -1764,6 +1768,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activeLayerChanged( QgsMapLayer *layer );
 
   private:
+    void createPreviewImage( const QString &path );
     void startProfile( const QString &name );
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
@@ -1983,6 +1988,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
 
+    //! Tries to save the current project to project storage at given URI
+    void saveProjectToProjectStorage( const QString &uri );
+
     //! Create the option dialog
     QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
 
@@ -2166,7 +2174,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
-    QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
+    QList<QgsRecentProjectItemsModel::RecentProjectData> mRecentProjects;
 
     //! Currently open layout designer dialogs
     QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;
@@ -2309,7 +2317,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QTimer mRenderProgressBarTimer;
     QMetaObject::Connection mRenderProgressBarTimerConnection;
 
-    QgsBrowserModel *mBrowserModel = nullptr;
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
 
     void setupDuplicateFeaturesAction();
 
@@ -2325,6 +2333,48 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
     QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
+
+    class QgsCanvasRefreshBlocker
+    {
+      public:
+
+        QgsCanvasRefreshBlocker()
+        {
+          if ( QgisApp::instance()->mFreezeCount++ == 0 )
+          {
+            // going from unfrozen to frozen, so freeze canvases
+            QgisApp::instance()->freezeCanvases( true );
+          }
+        }
+        QgsCanvasRefreshBlocker( const QgsCanvasRefreshBlocker &other ) = delete;
+        QgsCanvasRefreshBlocker &operator=( const QgsCanvasRefreshBlocker &other ) = delete;
+
+        void release()
+        {
+          if ( mReleased )
+            return;
+
+          mReleased = true;
+          if ( --QgisApp::instance()->mFreezeCount == 0 )
+          {
+            // going from frozen to unfrozen, so unfreeze canvases
+            QgisApp::instance()->freezeCanvases( false );
+            QgisApp::instance()->refreshMapCanvas();
+          }
+        }
+
+        ~QgsCanvasRefreshBlocker()
+        {
+          if ( !mReleased )
+            release();
+        }
+
+      private:
+
+        bool mReleased = false;
+    };
+    int mFreezeCount = 0;
+    friend class QgsCanvasRefreshBlocker;
 
     friend class TestQgisAppPython;
     friend class QgisAppInterface;

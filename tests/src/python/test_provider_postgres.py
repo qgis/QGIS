@@ -1101,6 +1101,14 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl2.extent(), originalExtent)
 
+    def testDeterminePkey(self):
+        """Test primary key auto-determination"""
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 type=POLYGON table="qgis_test"."authors" sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().hasMetadata())
+        self.assertTrue("key='pk'" in vl.source())
+
     def testCheckPkUnicityOnView(self):
         # vector layer based on view
 

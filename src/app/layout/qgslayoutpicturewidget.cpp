@@ -130,7 +130,7 @@ void QgsLayoutPictureWidget::mPictureBrowseButton_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( nullptr, QStringLiteral( "Select File" ), QStringLiteral( "Error, file does not exist or is not readable." ) );
+    QMessageBox::critical( nullptr, tr( "Select File" ), tr( "Error, file does not exist or is not readable." ) );
     return;
   }
 

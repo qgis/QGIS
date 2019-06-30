@@ -44,16 +44,14 @@ class CORE_EXPORT QgsLegendSettings
     QString title() const { return mTitle; }
 
     /**
-     * Returns the alignment of the legend title
-     * \returns Qt::AlignmentFlag for the legend title
-     * \see setTitleAlignment
+     * Returns the alignment of the legend title.
+     * \see setTitleAlignment()
      */
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
 
     /**
-     * Sets the alignment of the legend title
-     * \param alignment Text alignment for drawing the legend title
-     * \see titleAlignment
+     * Sets the \a alignment of the legend title.
+     * \see titleAlignment()
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
@@ -108,6 +106,26 @@ class CORE_EXPORT QgsLegendSettings
 
     QSizeF symbolSize() const {return mSymbolSize;}
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
+
+    /**
+     * Sets the \a alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see symbolAlignment()
+     * \since QGIS 3.10
+     */
+    void setSymbolAlignment( Qt::AlignmentFlag alignment ) { mSymbolAlignment = alignment; }
+
+    /**
+     * Returns the alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see setSymbolAlignment()
+     * \since QGIS 3.10
+     */
+    Qt::AlignmentFlag symbolAlignment() const { return mSymbolAlignment; }
 
     /**
      * Returns whether a stroke will be drawn around raster symbol items.
@@ -327,6 +345,9 @@ class CORE_EXPORT QgsLegendSettings
 
     //! Font color for layers, overrides font color
     QColor mLayerFontColor;
+
+    //! Symbol alignment
+    Qt::AlignmentFlag mSymbolAlignment = Qt::AlignLeft;
 };
 
 

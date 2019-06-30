@@ -29,74 +29,135 @@
 
 /**
  * \ingroup core
- * Composer legend components style
+ * Contains detailed styling information relating to how a layout legend should be rendered.
  */
 class CORE_EXPORT QgsLegendStyle
 {
   public:
+
+    //! Component of legends which can be styled
     enum Style
     {
       Undefined, //!< Should not happen, only if corrupted project file
       Hidden, //!< Special style, item is hidden including margins around
-      Title,
-      Group,
-      Subgroup, //!< Layer
-      Symbol, //!< Symbol without label
-      SymbolLabel
+      Title, //!< Legend title
+      Group, //!< Legend group title
+      Subgroup, //!< Legend subgroup title
+      Symbol, //!< Symbol icon (excluding label)
+      SymbolLabel, //!< Symbol label (excluding icon)
     };
 
-    //! Margin side
+    // TODO QGIS 4.0 - use Qt enum instead
+
+    //! Margin sides
     enum Side
     {
-      Top = 0,
-      Bottom = 1,
-      Left = 2,
-      Right = 3
+      Top = 0, //!< Top side
+      Bottom = 1, //!< Bottom side
+      Left = 2, //!< Left side
+      Right = 3, //!< Right side
     };
 
     QgsLegendStyle();
 
     /**
-     * The font for this style.
+     * Returns the font used for rendering this legend component.
+     * \see setFont()
      */
     QFont font() const { return mFont; }
 
     /**
-     * The font for this style.
+     * Sets the \a font used for rendering this legend component.
+     * \see font()
      */
     void setFont( const QFont &font ) { mFont = font; }
 
     /**
-     * Modifiable reference to font.
+     * Returns a modifiable reference to the component's font.
      *
      * \see setFont()
      * \note Not available in Python bindings
      */
     SIP_SKIP QFont &rfont() { return mFont; }
 
+    /**
+     * Returns the margin (in mm) for the specified \a side of the component.
+     *
+     * \note Not all legend components respect all margin side settings!
+     *
+     * \see setMargin()
+     */
     double margin( Side side ) { return mMarginMap.value( side ); }
+
+    /**
+     * Sets the \a margin (in mm) for the specified \a side of the component.
+     *
+     * \note Not all legend components respect all margin side settings!
+     *
+     * \see margin()
+     */
     void setMargin( Side side, double margin ) { mMarginMap[side] = margin; }
 
-    //! Sets all margins
+    /**
+     * Sets all margin sides to the same \a margin size (in mm).
+     * \see margin()
+     */
     void setMargin( double margin );
 
+    /**
+     * Returns the alignment for the legend component.
+     *
+     * \see setAlignment()
+     * \since QGIS 3.10
+     */
+    Qt::Alignment alignment() const { return mAlignment; }
+
+    /**
+     * Sets the alignment for the legend component.
+     *
+     * \see alignment()
+     * \since QGIS 3.10
+     */
+    void setAlignment( Qt::Alignment alignment ) { mAlignment = alignment; }
+
+    /**
+     * Writes the component's style definition to an XML element.
+     * \see readXml()
+     */
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
 
+    /**
+     * Reads the component's style definition from an XML element.
+     * \see writeXml()
+     */
     void readXml( const QDomElement &elem, const QDomDocument &doc );
 
-    //! Gets name for style, used in project file
+    /**
+     * Returns the name for a style component as a string.
+     *
+     * This is a non-localised version, for internal use.
+     *
+     * \see styleFromName()
+     * \see styleLabel()
+     */
     static QString styleName( Style s );
 
-    //! Gets style from name, used in project file
+    /**
+     * Returns the style from name string.
+     * \see styleName()
+     */
     static Style styleFromName( const QString &styleName );
 
-    //! Gets style label, translated, used in UI
+    /**
+     * Returns a translated string representing a style component, for use in UI.
+     * \see styleName()
+     */
     static QString styleLabel( Style s );
 
   private:
     QFont mFont;
-    //! Space around element
     QMap<Side, double> mMarginMap;
+    Qt::Alignment mAlignment = Qt::AlignLeft;
 };
 
 #endif

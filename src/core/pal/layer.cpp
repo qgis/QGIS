@@ -51,7 +51,6 @@ Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLay
   , mDisplayAll( displayAll )
   , mCentroidInside( false )
   , mArrangement( arrangement )
-  , mArrangementFlags( nullptr )
   , mMode( LabelPerFeature )
   , mMergeLines( false )
   , mUpsidedownLabels( Upright )

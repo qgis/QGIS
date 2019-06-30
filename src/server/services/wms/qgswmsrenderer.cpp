@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgswmsutils.h"
 #include "qgsjsonutils.h"
 #include "qgswmsrenderer.h"
@@ -51,6 +50,7 @@
 #include "qgsmaprendererjobproxy.h"
 #include "qgswmsserviceexception.h"
 #include "qgsserverprojectutils.h"
+#include "qgsserverfeatureid.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgswkbtypes.h"
 #include "qgsannotationmanager.h"
@@ -167,8 +167,6 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLayerTreeModelLegendNode::ItemContext ctx;
     ctx.painter = painter.get();
-    ctx.labelXOffset = 0;
-    ctx.point = QPointF();
     nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
     painter->end();
 
@@ -1029,6 +1027,9 @@ namespace QgsWms
 
     mapSettings.setExtent( mapExtent );
 
+    // set the extent buffer
+    mapSettings.setExtentBuffer( mContext.mapTileBuffer( paintDevice->width() ) );
+
     /* Define the background color
      * Transparent or colored
      */
@@ -1504,7 +1505,7 @@ namespace QgsWms
       else
       {
         QDomElement featureElement = infoDocument.createElement( QStringLiteral( "Feature" ) );
-        featureElement.setAttribute( QStringLiteral( "id" ), FID_TO_STRING( feature.id() ) );
+        featureElement.setAttribute( QStringLiteral( "id" ), QgsServerFeatureId::getServerFid( feature, layer->dataProvider()->pkAttributeIndexes() ) );
         layerElement.appendChild( featureElement );
 
         //read all attribute values from the feature

@@ -27,7 +27,7 @@
 #include "qgis_gui.h"
 #include <QSortFilterProxyModel>
 
-class QgsBrowserModel;
+class QgsBrowserGuiModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
       * \param browserModel instance of the (shared) browser model
       * \param parent parent widget
       */
-    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBrowserDockWidget() override;
 
     /**
@@ -183,7 +183,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     QgsDataItemGuiContext createContext();
 
     QgsDockBrowserTreeView *mBrowserView = nullptr;
-    QgsBrowserModel *mModel = nullptr;
+    QgsBrowserGuiModel *mModel = nullptr;
     QgsBrowserProxyModel *mProxyModel = nullptr;
     QString mInitPath;
     bool mPropertiesWidgetEnabled;

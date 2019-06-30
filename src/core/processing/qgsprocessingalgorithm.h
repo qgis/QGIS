@@ -807,6 +807,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsLayoutItem *parameterAsLayoutItem( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsPrintLayout *layout );
 
     /**
+     * Evaluates the parameter with matching \a name to a color, or returns an invalid color if the parameter was not set.
+     *
+     * \since QGIS 3.10
+     */
+    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
      * Returns a user-friendly string to use as an error when a source parameter could
      * not be loaded.
      *

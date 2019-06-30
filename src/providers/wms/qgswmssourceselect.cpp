@@ -37,6 +37,7 @@
 #include "qgswmscapabilities.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -58,6 +59,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnNew, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnNew_clicked );
   connect( btnEdit, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnEdit_clicked );
   connect( btnDelete, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnDelete_clicked );
@@ -144,17 +147,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   // set up the WMS connections we already know about
   populateConnectionList();
 
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
-  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
-QgsWMSSourceSelect::~QgsWMSSourceSelect()
-{
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
-  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
-}
 
 void QgsWMSSourceSelect::refresh()
 {

@@ -111,6 +111,8 @@ matrix:
         - TRIGGER_PYQGIS_DOC=FALSE
         - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
+        - CC=/usr/lib/ccache/clang
+        - CXX=/usr/lib/ccache/clang++
 
       ##########################################################
       # DISCO DOCKER BUILD ON CRON OR TAG
@@ -126,6 +128,8 @@ matrix:
         - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_disco"
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-disco.dockerfile
         - INSTALL_LIBSECCOMP=TRUE
+        - CC=/usr/lib/ccache/gcc
+        - CXX=/usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
 
 
 

@@ -50,6 +50,8 @@ class TestQgsDxfExport : public QObject
     void testMTextEscapeSpaces();
     void testText();
     void testGeometryGeneratorExport();
+    void testCurveExport();
+    void testCurveExport_data();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
@@ -455,9 +457,142 @@ void TestQgsDxfExport::testGeometryGeneratorExport()
   QVERIFY( fileContainsText( file, "HATCH" ) );
 }
 
+void TestQgsDxfExport::testCurveExport()
+{
+  QFETCH( QString, wkt );
+  QFETCH( QString, wktType );
+  QFETCH( QString, dxfText );
+
+  QgsDxfExport d;
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( wktType, QString(), QStringLiteral( "memory" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( wkt );
+  QgsFeature f;
+  f.setGeometry( g );
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+
+  QString file = getTempFileName( wktType );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  dxfFile.close();
+
+  QVERIFY( fileContainsText( file, dxfText ) );
+}
+
+void TestQgsDxfExport::testCurveExport_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+  QTest::addColumn<QString>( "wktType" );
+  QTest::addColumn<QString>( "dxfText" );
+
+  // curved segment
+  QTest::newRow( "circular string" )
+      << QStringLiteral( "CompoundCurve (CircularString (220236.7836819862422999 150406.56493463439983316, 220237.85162031010258943 150412.10612405074061826, 220242.38532074165414087 150409.6075513684481848))" )
+      << QStringLiteral( "CircularString" )
+      << QStringLiteral( "SECTION\n"
+                         "  2\n"
+                         "ENTITIES\n"
+                         "  0\n"
+                         "LWPOLYLINE\n"
+                         "  5\n"
+                         "82\n"
+                         "  8\n"
+                         "0\n"
+                         "100\n"
+                         "AcDbEntity\n"
+                         "100\n"
+                         "AcDbPolyline\n"
+                         "  6\n"
+                         "CONTINUOUS\n"
+                         "420\n"
+                         "     0\n"
+                         " 90\n"
+                         "     2\n"
+                         " 70\n"
+                         "     2\n"
+                         " 43\n"
+                         "-1.0\n"
+                         " 10\n"
+                         "220236.7836819862422999\n"
+                         " 20\n"
+                         "150406.56493463439983316\n"
+                         " 42\n"
+                         "-1.37514344818771517\n"
+                         " 10\n"
+                         "220242.38532074165414087\n"
+                         " 20\n"
+                         "150409.6075513684481848\n"
+                         "  0\n"
+                         "ENDSEC" );
+
+  // Contains straight and curved segments
+  QTest::newRow( "mixed curve polygon" )
+      << QStringLiteral( "CurvePolygon (CompoundCurve ((-1.58053402239448748 0.39018087855297157, -1.49267872523686473 0.39362618432385876, -1.24806201550387597 0.65719207579672689),CircularString (-1.24806201550387597 0.65719207579672689, -0.63479758828596045 0.49870801033591727, -0.61584840654608097 0.32644272179155898),(-0.61584840654608097 0.32644272179155898, -1.58053402239448748 0.39018087855297157)))" )
+      << QStringLiteral( "CurvePolygon" )
+      << QStringLiteral( "SECTION\n"
+                         "  2\n"
+                         "ENTITIES\n"
+                         "  0\n"
+                         "LWPOLYLINE\n"
+                         "  5\n"
+                         "82\n"
+                         "  8\n"
+                         "0\n"
+                         "100\n"
+                         "AcDbEntity\n"
+                         "100\n"
+                         "AcDbPolyline\n"
+                         "  6\n"
+                         "CONTINUOUS\n"
+                         "420\n"
+                         "     0\n"
+                         " 90\n"
+                         "     5\n"
+                         " 70\n"
+                         "     3\n"
+                         " 43\n"
+                         "-1.0\n"
+                         " 10\n"
+                         "-1.58053402239448748\n"
+                         " 20\n"
+                         "0.39018087855297157\n"
+                         " 10\n"
+                         "-1.49267872523686473\n"
+                         " 20\n"
+                         "0.39362618432385876\n"
+                         " 10\n"
+                         "-1.24806201550387597\n"
+                         " 20\n"
+                         "0.65719207579672689\n"
+                         " 42\n"
+                         "-0.69027811746778556\n"
+                         " 10\n"
+                         "-0.61584840654608097\n"
+                         " 20\n"
+                         "0.32644272179155898\n"
+                         " 10\n"
+                         "-1.58053402239448748\n"
+                         " 20\n"
+                         "0.39018087855297157\n"
+                         "  0\n"
+                         "ENDSEC" );
+
+}
+
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text ) const
 {
-  QStringList searchLines = text.split( '\n' );
+  const QStringList searchLines = text.split( '\n' );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
     return false;

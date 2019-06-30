@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -32,7 +33,7 @@ QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *p
   connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
 
   connect( mClipToContentGroupBox, &QGroupBox::toggled, this, &QgsLayoutImageExportOptionsDialog::clipToContentsToggled );
-
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutImageExportOptionsDialog::showHelp );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -184,4 +185,9 @@ void QgsLayoutImageExportOptionsDialog::clipToContentsToggled( bool state )
     whileBlocking( mWidthSpinBox )->setValue( mImageSize.width() * mResolutionSpinBox->value() / 25.4 );
     whileBlocking( mHeightSpinBox )->setValue( mImageSize.height() * mResolutionSpinBox->value() / 25.4 );
   }
+}
+
+void QgsLayoutImageExportOptionsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
 }

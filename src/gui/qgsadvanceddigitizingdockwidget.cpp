@@ -42,6 +42,7 @@
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
   , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toDouble() )
 {
   setupUi( this );
@@ -670,6 +671,17 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   e->setMapPoint( point );
 
   mSnapMatch = context.snappingUtils->snapToMap( point );
+
+  if ( mSnapMatch.isValid() )
+  {
+    mSnapIndicator->setMatch( mSnapMatch );
+    mSnapIndicator->setVisible( true );
+  }
+  else
+  {
+    mSnapIndicator->setVisible( false );
+  }
+
   /*
    * Constraints are applied in 2D, they are always called when using the tool
    * but they do not take into account if when you snap on a vertex it has

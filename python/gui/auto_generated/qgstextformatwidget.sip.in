@@ -12,7 +12,7 @@
 
 
 
-class QgsTextFormatWidget : QWidget, protected Ui::QgsTextFormatWidgetBase
+class QgsTextFormatWidget : QWidget, QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
 %Docstring
 A widget for customizing text formatting settings.
@@ -111,6 +111,9 @@ Controls whether data defined alignment buttons are enabled.
 :param enable: set to ``True`` to enable alignment controls
 %End
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
 
   protected slots:
 
@@ -122,6 +125,18 @@ Updates line placement options to reflect current state of widget
     void updatePlacementWidgets();
 %Docstring
 Updates label placement options to reflect current state of widget
+%End
+
+    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+%Docstring
+Sets the current text settings from a style entry.
+
+.. versionadded:: 3.10
+%End
+
+    virtual void saveFormat();
+%Docstring
+Saves the current text settings to a style entry.
 %End
 
 };

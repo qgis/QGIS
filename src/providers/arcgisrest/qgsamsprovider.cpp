@@ -32,18 +32,18 @@
 #include "qgstilecache.h"
 #include "qgsstringutils.h"
 
-#ifdef HAVE_GUI
-#include "qgsamssourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
-
 #include <cstring>
+#include <QFontMetrics>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QPainter>
 #include <QNetworkCacheMetaData>
+
+const QString QgsAmsProvider::AMS_PROVIDER_KEY = QStringLiteral( "arcgismapserver" );
+const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS MapServer data provider" );
+
 
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest
@@ -142,9 +142,20 @@ void QgsAmsLegendFetcher::handleFinished()
   if ( !legendEntries.isEmpty() )
   {
     int padding = 5;
-    int vpadding = 1;
     int imageSize = 20;
-    int textWidth = 175;
+
+    QgsSettings settings;
+    QFont font = qApp->font();
+    int fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), font.pointSize() ).toInt();
+    font.setPointSize( fontSize );
+    QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), font.family() ).toString();
+    font.setFamily( fontFamily );
+    QFontMetrics fm( font );
+    int textWidth = 0;
+    int textHeight = fm.ascent();
+
+    int verticalSize = std::max( imageSize, textHeight );
+    int verticalPadding = 1;
 
     typedef QPair<QString, QImage> LegendEntry_t;
     QSize maxImageSize( 0, 0 );
@@ -152,19 +163,21 @@ void QgsAmsLegendFetcher::handleFinished()
     {
       maxImageSize.setWidth( std::max( maxImageSize.width(), legendEntry.second.width() ) );
       maxImageSize.setHeight( std::max( maxImageSize.height(), legendEntry.second.height() ) );
+      textWidth = std::max( textWidth, fm.width( legendEntry.first ) + 10 );
     }
     double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 :
                          std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
 
-    mLegendImage = QImage( imageSize + padding + textWidth, vpadding + legendEntries.size() * ( imageSize + vpadding ), QImage::Format_ARGB32 );
+    mLegendImage = QImage( imageSize + padding + textWidth, verticalPadding + legendEntries.size() * ( verticalSize + verticalPadding ), QImage::Format_ARGB32 );
     mLegendImage.fill( Qt::transparent );
     QPainter painter( &mLegendImage );
+    painter.setFont( font );
     int i = 0;
     for ( const LegendEntry_t &legendEntry : qgis::as_const( legendEntries ) )
     {
       QImage symbol = legendEntry.second.scaled( legendEntry.second.width() * scaleFactor, legendEntry.second.height() * scaleFactor, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-      painter.drawImage( 0, vpadding + i * ( imageSize + vpadding ) + ( imageSize - symbol.height() ), symbol );
-      painter.drawText( imageSize + padding, vpadding + i * ( imageSize + vpadding ), textWidth, imageSize, Qt::AlignLeft | Qt::AlignVCenter, legendEntry.first );
+      painter.drawImage( 0, verticalPadding + i * ( verticalSize + verticalPadding ) + ( verticalSize - symbol.height() ), symbol );
+      painter.drawText( imageSize + padding, verticalPadding + i * ( verticalSize + verticalPadding ), textWidth, verticalSize, Qt::AlignLeft | Qt::AlignVCenter, legendEntry.first );
       ++i;
     }
   }
@@ -191,11 +204,12 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   mServiceInfo = QgsArcGisRestUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
 
   QString layerUrl;
-  if ( mServiceInfo.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+  if ( dataSource.param( QStringLiteral( "layer" ) ).isEmpty() )
   {
     layerUrl = serviceUrl;
     mLayerInfo = mServiceInfo;
-    mImageServer = true;
+    if ( mServiceInfo.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+      mImageServer = true;
   }
   else
   {
@@ -203,7 +217,15 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
     mLayerInfo = QgsArcGisRestUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
   }
 
-  const QVariantMap extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
+  QVariantMap extentData;
+  if ( mLayerInfo.contains( QStringLiteral( "extent" ) ) )
+  {
+    extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
+  }
+  else
+  {
+    extentData = mLayerInfo.value( QStringLiteral( "fullExtent" ) ).toMap();
+  }
   mExtent.setXMinimum( extentData[QStringLiteral( "xmin" )].toDouble() );
   mExtent.setYMinimum( extentData[QStringLiteral( "ymin" )].toDouble() );
   mExtent.setXMaximum( extentData[QStringLiteral( "xmax" )].toDouble() );
@@ -316,6 +338,10 @@ QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities
 {
   return QgsRasterDataProvider::ReadLayerMetadata;
 }
+
+QString QgsAmsProvider::name() const { return AMS_PROVIDER_KEY; }
+
+QString QgsAmsProvider::description() const { return AMS_PROVIDER_DESCRIPTION; }
 
 QStringList QgsAmsProvider::subLayerStyles() const
 {
@@ -712,6 +738,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, mRequestHeaders, feedback, &contentType );
         if ( !mError.isEmpty() )
         {
+          p.end();
           mCachedImage = QImage();
           if ( feedback )
             feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
@@ -720,6 +747,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         else if ( contentType.startsWith( QLatin1String( "application/json" ) ) )
         {
           // if we get a JSON response, something went wrong (e.g. authentication error)
+          p.end();
           mCachedImage = QImage();
 
           QJsonParseError err;
@@ -1205,54 +1233,36 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   connect( reply, &QNetworkReply::finished, this, &QgsAmsTiledImageDownloadHandler::tileReplyFinished );
 }
 
-#ifdef HAVE_GUI
 
-//! Provider for AMS layers source select
-class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
+
+QgsAmsProviderMetadata::QgsAmsProviderMetadata()
+  : QgsProviderMetadata( QgsAmsProvider::AMS_PROVIDER_KEY, QgsAmsProvider::AMS_PROVIDER_DESCRIPTION )
 {
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
-    QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsAmsSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsAmsSourceSelectProvider;
-
-  return providers;
 }
-#endif
 
-
-QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
+QList<QgsDataItemProvider *> QgsAmsProviderMetadata::dataItemProviders() const
 {
-  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
-
-  *providers
-      << new QgsAmsDataItemProvider;
-
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsAmsDataItemProvider;
   return providers;
 }
 
-#ifdef HAVE_GUI
-QGISEXTERN QList<QgsDataItemGuiProvider *> *dataItemGuiProviders()
+QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  QList<QgsDataItemGuiProvider *> *providers = new QList<QgsDataItemGuiProvider *>();
-
-  *providers
-      << new QgsAmsItemGuiProvider();
-
-  return providers;
+  return new QgsAmsProvider( uri, options );
 }
-#endif
+
+QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
+{
+  QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
+
+  QVariantMap components;
+  components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  return components;
+}
+
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsAmsProviderMetadata();
+}

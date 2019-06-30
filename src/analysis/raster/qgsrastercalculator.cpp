@@ -183,8 +183,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     //read / write line by line
     QMap<QString, QgsRasterBlock * > _rasterData;
     // Cast to float
-    std::vector<float> castedResult;
-    castedResult.reserve( static_cast<size_t>( mNumOutputColumns ) );
+    std::vector<float> castedResult( static_cast<size_t>( mNumOutputColumns ), 0 );
     auto rowHeight = mOutputRectangle.height() / mNumOutputRows;
     for ( size_t row = 0; row < static_cast<size_t>( mNumOutputRows ); ++row )
     {
@@ -232,11 +231,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
       if ( calcNode->calculate( _rasterData, resultMatrix, 0 ) )
       {
-        // write scanline to the dataset
-        for ( size_t i = 0; i < static_cast<size_t>( mNumOutputColumns ); i++ )
-        {
-          castedResult[i] = static_cast<float>( resultMatrix.data()[i] );
-        }
+        std::copy( resultMatrix.data(), resultMatrix.data() + mNumOutputColumns, castedResult.begin() );
         if ( GDALRasterIO( outputRasterBand, GF_Write, 0, row, mNumOutputColumns, 1, castedResult.data(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
           QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );

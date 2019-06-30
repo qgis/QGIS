@@ -3319,6 +3319,7 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   }
   widgetChar->blockSignals( false );
   whileBlocking( mCharLineEdit )->setText( mLayer->character() );
+  mCharPreview->setFont( layerFont );
 
   //block
   whileBlocking( spinOffsetX )->setValue( mLayer->offset().x() );
@@ -3368,6 +3369,7 @@ void QgsFontMarkerSymbolLayerWidget::setFontFamily( const QFont &font )
 {
   mLayer->setFontFamily( font.family() );
   widgetChar->setFont( font );
+  mCharPreview->setFont( font );
   emit changed();
 }
 
@@ -3398,6 +3400,8 @@ void QgsFontMarkerSymbolLayerWidget::setAngle( double angle )
 
 void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
 {
+  mCharPreview->setText( text );
+
   if ( text.isEmpty() )
     return;
 
@@ -3408,7 +3412,10 @@ void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
     bool ok = false;
     unsigned int value = text.toUInt( &ok, 0 );
     if ( ok )
+    {
       character = QChar( value );
+      mCharPreview->setText( character );
+    }
   }
 
   if ( character != mLayer->character() )
@@ -3428,8 +3435,15 @@ void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
 
 void QgsFontMarkerSymbolLayerWidget::setCharacter( QChar chr )
 {
+  if ( mLayer->character().length() > 1 || QGuiApplication::keyboardModifiers() & Qt::ControlModifier )
+  {
+    mCharLineEdit->insert( chr );
+    return;
+  }
+
   mLayer->setCharacter( chr );
   whileBlocking( mCharLineEdit )->setText( chr );
+  mCharPreview->setText( chr );
   emit changed();
 }
 

@@ -183,6 +183,20 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   options.fileEncoding = context.defaultEncoding();
   options.feedback = feedback;
 
+  // remove any existing FID field, let this be completely recreated
+  // since many layer sources have fid fields which are not compatible with gpkg requirements
+  QgsFields fields = layer->fields();
+  const int fidIndex = fields.lookupField( QStringLiteral( "fid" ) );
+
+  options.attributes = fields.allAttributesList();
+  if ( fidIndex >= 0 )
+    options.attributes.removeAll( fidIndex );
+  if ( options.attributes.isEmpty() )
+  {
+    // fid was the only field
+    options.skipAttributeCreation = true;
+  }
+
   QString error;
   QString newFilename;
   QString newLayer;

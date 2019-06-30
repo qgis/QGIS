@@ -33,6 +33,7 @@
 #include "qgsapplication.h"
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
+#include "qgssymbollayerutils.h"
 #include <functional>
 
 
@@ -1562,6 +1563,53 @@ QgsLayoutItem *QgsProcessingParameters::parameterAsLayoutItem( const QgsProcessi
     return nullptr;
 }
 
+QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QColor();
+
+  return parameterAsColor( definition, parameters.value( definition->name() ), context );
+}
+
+QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QColor();
+
+  QVariant val = value;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    val = val.value< QgsProperty >().value( context.expressionContext(), definition->defaultValue() );
+  }
+  if ( val.type() == QVariant::Color )
+  {
+    QColor c = val.value< QColor >();
+    if ( const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor * >( definition ) )
+      if ( !colorParam->opacityEnabled() )
+        c.setAlpha( 255 );
+    return c;
+  }
+
+  QString colorText = parameterAsString( definition, value, context );
+  if ( colorText.isEmpty() && !( definition->flags() & QgsProcessingParameterDefinition::FlagOptional ) )
+  {
+    if ( definition->defaultValue().type() == QVariant::Color )
+      return definition->defaultValue().value< QColor >();
+    else
+      colorText = definition->defaultValue().toString();
+  }
+
+  if ( colorText.isEmpty() )
+    return QColor();
+
+  bool containsAlpha = false;
+  QColor c = QgsSymbolLayerUtils::parseColorWithAlpha( colorText, containsAlpha );
+  if ( const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor * >( definition ) )
+    if ( c.isValid() && !colorParam->opacityEnabled() )
+      c.setAlpha( 255 );
+  return c;
+}
+
 QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
 {
   QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
@@ -1621,6 +1669,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterLayout( name ) );
   else if ( type == QgsProcessingParameterLayoutItem::typeName() )
     def.reset( new QgsProcessingParameterLayoutItem( name ) );
+  else if ( type == QgsProcessingParameterColor::typeName() )
+    def.reset( new QgsProcessingParameterColor( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
@@ -1713,6 +1763,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterLayout::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "layoutitem" ) )
     return QgsProcessingParameterLayoutItem::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "color" ) )
+    return QgsProcessingParameterColor::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -5584,4 +5636,149 @@ int QgsProcessingParameterLayoutItem::itemType() const
 void QgsProcessingParameterLayoutItem::setItemType( int type )
 {
   mItemType = type;
+}
+
+//
+// QgsProcessingParameterColor
+//
+
+QgsProcessingParameterColor::QgsProcessingParameterColor( const QString &name, const QString &description, const QVariant &defaultValue, bool opacityEnabled, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mAllowOpacity( opacityEnabled )
+{
+
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterColor::clone() const
+{
+  return new QgsProcessingParameterColor( *this );
+}
+
+QString QgsProcessingParameterColor::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() || value.isNull() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert< QColor >() && !value.value< QColor >().isValid() )
+    return QStringLiteral( "QColor()" );
+
+  if ( value.canConvert< QColor >() )
+  {
+    QColor c = value.value< QColor >();
+    if ( !mAllowOpacity || c.alpha() == 255 )
+      return QStringLiteral( "QColor(%1, %2, %3)" ).arg( c.red() ).arg( c.green() ).arg( c.blue() );
+    else
+      return QStringLiteral( "QColor(%1, %2, %3, %4)" ).arg( c.red() ).arg( c.green() ).arg( c.blue() ).arg( c.alpha() );
+  }
+
+  QString s = value.toString();
+  return QgsProcessingUtils::stringToPythonLiteral( s );
+}
+
+QString QgsProcessingParameterColor::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "color " );
+
+  if ( mAllowOpacity )
+    code += QStringLiteral( "withopacity " );
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterColor::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterColor('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      code += QStringLiteral( ", opacityEnabled=%1" ).arg( mAllowOpacity ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+bool QgsProcessingParameterColor::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() && ( mDefault.isValid() && ( !mDefault.toString().isEmpty() || mDefault.value< QColor >().isValid() ) ) )
+    return true;
+
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.type() == QVariant::Color )
+  {
+    return true;
+  }
+  else if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  bool containsAlpha = false;
+  return QgsSymbolLayerUtils::parseColorWithAlpha( input.toString(), containsAlpha ).isValid();
+}
+
+QVariantMap QgsProcessingParameterColor::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "opacityEnabled" ), mAllowOpacity );
+  return map;
+}
+
+bool QgsProcessingParameterColor::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mAllowOpacity = map.value( QStringLiteral( "opacityEnabled" ) ).toBool();
+  return true;
+}
+
+bool QgsProcessingParameterColor::opacityEnabled() const
+{
+  return mAllowOpacity;
+}
+
+void QgsProcessingParameterColor::setOpacityEnabled( bool enabled )
+{
+  mAllowOpacity = enabled;
+}
+
+QgsProcessingParameterColor *QgsProcessingParameterColor::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString def = definition;
+
+  bool allowOpacity = false;
+  if ( def.startsWith( QLatin1String( "withopacity" ), Qt::CaseInsensitive ) )
+  {
+    allowOpacity = true;
+    def = def.mid( 12 );
+  }
+
+  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+    def = def.mid( 1 );
+  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
+    def.chop( 1 );
+
+  QVariant defaultValue = def;
+  if ( def == QStringLiteral( "None" ) )
+    defaultValue = QVariant();
+
+  return new QgsProcessingParameterColor( name, description, defaultValue, allowOpacity, isOptional );
 }

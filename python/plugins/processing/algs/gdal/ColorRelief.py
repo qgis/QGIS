@@ -44,6 +44,7 @@ class ColorRelief(GdalAlgorithm):
     COLOR_TABLE = 'COLOR_TABLE'
     MATCH_MODE = 'MATCH_MODE'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -69,16 +70,23 @@ class ColorRelief(GdalAlgorithm):
                                                      self.tr('Matching mode'),
                                                      options=[i[0] for i in self.modes],
                                                      defaultValue=2))
+
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         options_param.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Color relief')))
 
@@ -119,6 +127,16 @@ class ColorRelief(GdalAlgorithm):
         if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        arguments.append(self.modes[self.parameterAsEnum(parameters, self.MATCH_MODE, context)][1])
+        mode = self.modes[self.parameterAsEnum(parameters, self.MATCH_MODE, context)][1]
+        if mode != '':
+            arguments.append(mode)
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

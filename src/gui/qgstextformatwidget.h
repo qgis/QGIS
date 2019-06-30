@@ -46,7 +46,7 @@ class QgsCharacterSelectorDialog;
  * \since QGIS 3.0
  */
 
-class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextFormatWidgetBase
+class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
     Q_OBJECT
     Q_PROPERTY( QgsTextFormat format READ format )
@@ -122,6 +122,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      */
     void enableDataDefinedAlignment( bool enable );
 
+    QgsExpressionContext createExpressionContext() const override;
+
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
     //! Quadrant button group
@@ -147,12 +149,24 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     //! Updates label placement options to reflect current state of widget
     void updatePlacementWidgets();
 
+    /**
+     * Sets the current text settings from a style entry.
+     * \since QGIS 3.10
+     */
+    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+
+    /**
+     * Saves the current text settings to a style entry.
+     */
+    virtual void saveFormat();
+
   private:
     Mode mWidgetMode = Text;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
     std::unique_ptr< QgsPaintEffect > mBufferEffect;
     std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
+    QColor mPreviewBackgroundColor;
 
     QFontDatabase mFontDB;
 
@@ -210,6 +224,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
+    void updateAvailableShadowPositions();
+
 };
 
 

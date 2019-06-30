@@ -37,6 +37,8 @@ within a QgsStyle database.
       TypeRole,
       TagRole,
       SymbolTypeRole,
+      IsFavoriteRole,
+      LayerTypeRole,
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
@@ -125,6 +127,7 @@ Sets the style entity type ``filter``.
 .. seealso:: :py:func:`entityFilter`
 %End
 
+
     bool entityFilterEnabled() const;
 %Docstring
 Returns ``True`` if filtering by entity type is enabled.
@@ -189,6 +192,24 @@ no effect on non-symbol entities (i.e. color ramps).
 .. seealso:: :py:func:`symbolTypeFilterEnabled`
 
 .. seealso:: :py:func:`setSymbolType`
+%End
+
+    QgsWkbTypes::GeometryType layerType() const;
+%Docstring
+Returns the layer type filter, or QgsWkbTypes.UnknownGeometry if no
+layer type filter is present.
+
+This setting has no effect on non-label settings entities (i.e. color ramps).
+
+.. seealso:: :py:func:`setLayerType`
+%End
+
+    void setLayerType( QgsWkbTypes::GeometryType type );
+%Docstring
+Sets the layer ``type`` filter. Set ``type`` to QgsWkbTypes.UnknownGeometry if no
+layer type filter is desired.
+
+.. seealso:: :py:func:`layerType`
 %End
 
     void setTagId( int id );

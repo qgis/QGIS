@@ -21,6 +21,7 @@
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
 
 
 QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )
@@ -44,16 +45,9 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
 
   connect( mForm, &QgsAttributeForm::closed, this, &QWidget::close );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/SelectByForm/geometry" ) ).toByteArray() );
+  QgsGui::enableAutoGeometryRestore( this );
 
   setWindowTitle( tr( "Select Features by Value" ) );
-}
-
-QgsSelectByFormDialog::~QgsSelectByFormDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SelectByForm/geometry" ), saveGeometry() );
 }
 
 void QgsSelectByFormDialog::setMessageBar( QgsMessageBar *messageBar )

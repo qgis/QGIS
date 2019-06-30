@@ -119,17 +119,17 @@ class CORE_EXPORT QgsLegendRenderer
 #ifndef SIP_RUN
 
     /**
-     * A legend Nucleon is either a group title, a layer title or a layer child item.
+     * A legend component is either a group title, a layer title or a layer child item.
      *
-     * E.g. a layer title nucleon is just the layer's title, it does not
-     * include all of that layer's subitems. Similarly, a group's title nucleon is just
+     * E.g. a layer title component is just the layer's title, it does not
+     * include all of that layer's subitems. Similarly, a group's title component is just
      * the group title, and does not include the actual content of that group.
      */
-    class Nucleon
+    class LegendComponent
     {
       public:
-        //! Constructor for Nuclean
-        Nucleon() = default;
+
+        LegendComponent() = default;
 
         QObject *item = nullptr;
 
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsLegendRenderer
         //! Label size, not including any preset padding space around the label
         QSizeF labelSize;
 
-        //! Nucleon size
+        //! Component size
         QSizeF size;
 
         /**
@@ -149,12 +149,18 @@ class CORE_EXPORT QgsLegendRenderer
          * within the same legend column.
          */
         double labelXOffset = 0.0;
+
+        /**
+         * Largest symbol width, considering all other sibling components associated with
+         * this component.
+         */
+        double maxSiblingSymbolWidth = 0.0;
     };
 
     /**
-     * An Atom is indivisible set of legend Nucleons (i.e. it is indivisible into more columns).
+     * An component group is an indivisible set of legend components (i.e. it is indivisible into more columns).
      *
-     * An Atom may consist of one or more Nucleon(s), depending on the layer splitting mode:
+     * A group may consist of one or more component(s), depending on the layer splitting mode:
      *
      *  1) no layer split: [group_title ...] layer_title layer_item [layer_item ...]
      *  2) layer split:    [group_title ...] layer_title layer_item
@@ -165,18 +171,36 @@ class CORE_EXPORT QgsLegendRenderer
      * and it would not be logical to leave a group or layer title at the bottom of a column,
      * separated from the actual content of that group or layer.
      */
-    class Atom
+    class LegendComponentGroup
     {
       public:
 
-        //! List of child Nucleons belonging to this Atom.
-        QList<Nucleon> nucleons;
+        //! List of child components belonging to this group.
+        QList<LegendComponent> components;
 
-        //! Atom size, including internal spacing between Nucleons, but excluding any padding space around the Atom itself.
+        //! Group size, including internal spacing between components, but excluding any padding space around the group itself.
         QSizeF size = QSizeF( 0, 0 );
 
         //! Corresponding column index
         int column = 0;
+    };
+
+    /**
+     * Contains contextual information about the current column being rendered
+     */
+    class ColumnContext
+    {
+      public:
+
+        ColumnContext()
+          : left( 0 )
+          , right( 0 )
+        {}
+
+        //! Left edge of column
+        double left = 0;
+        //! Right edge of column
+        double right = 0;
     };
 
     /**
@@ -188,15 +212,15 @@ class CORE_EXPORT QgsLegendRenderer
     QSizeF paintAndDetermineSize( QPainter *painter = nullptr );
 
     /**
-     * Returns a list of Atoms for the specified \a parentGroup, respecting the current layer's
+     * Returns a list of component groups for the specified \a parentGroup, respecting the current layer's
      * splitting settings.
      */
-    QList<Atom> createAtomList( QgsLayerTreeGroup *parentGroup, bool splitLayer );
+    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, bool splitLayer );
 
     /**
-     * Divides a list of Atoms into columns, and sets the column index for each atom in the list.
+     * Divides a list of component groups into columns, and sets the column index for each group in the list.
      */
-    void setColumns( QList<Atom> &atomList );
+    void setColumns( QList<LegendComponentGroup> &groupList );
 
     /**
      * Draws a title in the legend using the title font and the specified alignment settings.
@@ -205,25 +229,25 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * If \a painter is NULLPTR, no painting will be attempted, but the required size will still be calculated and returned.
      */
-    QSizeF drawTitle( QPainter *painter = nullptr, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
+    QSizeF drawTitle( QPainter *painter = nullptr, double top = 0, Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
     /**
-     * Returns the calculated padding space required above the given \a atom.
+     * Returns the calculated padding space required above the given component \a group.
      */
-    double spaceAboveAtom( const Atom &atom );
+    double spaceAboveGroup( const LegendComponentGroup &group );
 
     /**
-     * Draws an \a atom and return its actual size.
+     * Draws a component \a group and return its actual size.
      *
-     * The \a atom is drawn with the space above it, so that the first atoms in column are all
+     * The \a group is drawn with the space above it, so that the first groups in a column are all
      * aligned to the same line regardless of their style top spacing.
     */
-    QSizeF drawAtom( const Atom &atom, QPainter *painter = nullptr, QPointF point = QPointF() );
+    QSizeF drawGroup( const LegendComponentGroup &group, ColumnContext columnContext, QPainter *painter = nullptr, double top = 0 );
 
     /**
      * Draws the symbol of a given symbol QgsLayerTreeModelLegendNode.
      */
-    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QPainter *painter = nullptr, QPointF point = QPointF(), double labelXOffset = 0 );
+    LegendComponent drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, ColumnContext columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0, double maxSiblingSymbolWidth = 0 );
 
     /**
      * Draws the title of a layer, given a QgsLayerTreeLayer, and a destination \a painter.
@@ -232,13 +256,13 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * The \a painter may be NULLPTR, in which case on the size is calculated and no painting is attempted.
      */
-    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QPainter *painter = nullptr, QPointF point = QPointF() );
+    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, ColumnContext columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0 );
 
     /**
      * Draws a group item.
      * Returns the size of the title.
      */
-    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );
+    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, ColumnContext columnContext = ColumnContext(), QPainter *painter = nullptr, double top = 0 );
 
     /**
      * Renders a group item in a \a json object.
@@ -262,22 +286,22 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * If \a context is NULLPTR, no painting will be attempted, but the required size will still be calculated and returned.
      */
-    QSizeF drawTitle( QgsRenderContext *context, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
+    QSizeF drawTitle( QgsRenderContext *context, double top, Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
     /**
-     * Draws an \a atom and return its actual size, using the specified render \a context.
+     * Draws an \a group and return its actual size, using the specified render \a context.
      *
-     * The \a atom is drawn with the space above it, so that the first atoms in column are all
+     * The \a group is drawn with the space above it, so that the first groups in a column are all
      * aligned to the same line regardless of their style top spacing.
      *
      * If \a context is NULLPTR, no painting will be attempted, but the required size will still be calculated and returned.
     */
-    QSizeF drawAtom( const Atom &atom, QgsRenderContext *rendercontext, QPointF point = QPointF() );
+    QSizeF drawGroup( const LegendComponentGroup &group, QgsRenderContext *rendercontext, ColumnContext columnContext, double top = 0 );
 
     /**
      * Draws the symbol of a given symbol QgsLayerTreeModelLegendNode, using the specified render \a context.
      */
-    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, QPointF point = QPointF(), double labelXOffset = 0 );
+    LegendComponent drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, ColumnContext columnContext, double top, double maxSiblingSymbolWidth = 0 );
 
     /**
      * Draws the title of a layer, given a QgsLayerTreeLayer, and a destination render \a context.
@@ -286,21 +310,20 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * The \a context may be NULLPTR, in which case on the size is calculated and no painting is attempted.
      */
-    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, QPointF point = QPointF() );
+    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, ColumnContext columnContext, double top = 0 );
 
     /**
      * Draws a group's title, using the specified render \a context.
      *
      * Returns the size of the title.
      */
-    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *context, QPointF point = QPointF() );
+    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *context, ColumnContext columnContext = ColumnContext(), double top = 0 );
 
     /**
      * Returns the style of the given \a node.
      */
     QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node );
 
-  private:
     QgsLayerTreeModel *mLegendModel = nullptr;
 
     QgsLegendSettings mSettings;
@@ -308,12 +331,14 @@ class CORE_EXPORT QgsLegendRenderer
     QSizeF mLegendSize;
 
 #endif
-    QSizeF drawTitleInternal( QgsRenderContext *context, QPainter *painter, QPointF point, Qt::AlignmentFlag halignment, double legendWidth );
-    QSizeF drawAtomInternal( const Atom &atom, QgsRenderContext *context, QPainter *painter, QPointF point );
-    QgsLegendRenderer::Nucleon drawSymbolItemInternal( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, QPainter *painter, QPointF point, double labelXOffset );
-    QSizeF drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, QPainter *painter, QPointF point );
-    QSizeF drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *context, QPainter *painter, QPointF point );
+    QSizeF drawTitleInternal( QgsRenderContext *context, QPainter *painter, double top, Qt::AlignmentFlag halignment, double legendWidth );
+    QSizeF drawGroupInternal( const LegendComponentGroup &group, QgsRenderContext *context, ColumnContext columnContext, QPainter *painter, double top );
+    QgsLegendRenderer::LegendComponent drawSymbolItemInternal( QgsLayerTreeModelLegendNode *symbolItem, ColumnContext columnContext, QgsRenderContext *context, QPainter *painter, double top, double maxSiblingSymbolWidth );
+    QSizeF drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, ColumnContext columnContext, QgsRenderContext *context, QPainter *painter, double top );
+    QSizeF drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, ColumnContext columnContext,  QgsRenderContext *context, QPainter *painter, double top );
     QSizeF paintAndDetermineSizeInternal( QgsRenderContext *context, QPainter *painter );
+
+    void widthAndOffsetForTitleText( const Qt::AlignmentFlag halignment, double legendWidth, double &width, double &offset );
 };
 
 #endif // QGSLEGENDRENDERER_H

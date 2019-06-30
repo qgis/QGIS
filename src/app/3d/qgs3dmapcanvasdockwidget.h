@@ -53,6 +53,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void cameraControl();
     void identify();
     void measureLine();
+    void toggleNavigationWidget( bool visibility );
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();

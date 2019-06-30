@@ -1009,7 +1009,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             return self.combo.value()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.value()
+            return self.widget.getValue()
         else:
             def validator(v):
                 if not bool(v):
@@ -1484,7 +1484,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             return self.combo.value()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.value()
+            return self.widget.getValue()
         else:
             def validator(v):
                 return bool(v) or self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional
@@ -1541,11 +1541,12 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
     def parentValueChanged(self, wrapper):
         value = wrapper.parameterValue()
-        if value in self.parent_file_based_layers:
+        if isinstance(value, str) and value in self.parent_file_based_layers:
             self.setLayer(self.parent_file_based_layers[value])
         else:
             self.setLayer(value)
-            self.parent_file_based_layers[value] = self._layer
+            if isinstance(value, str):
+                self.parent_file_based_layers[value] = self._layer
 
     def setLayer(self, layer):
         if isinstance(layer, QgsProcessingFeatureSourceDefinition):
