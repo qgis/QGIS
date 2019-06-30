@@ -502,18 +502,6 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   return layerItem;
 }
 
-bool QgsPGSchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  QgsPGConnectionItem *conn = qobject_cast<QgsPGConnectionItem *>( parent() );
-  if ( !conn )
-    return false;
-
-  bool result = conn->handleDrop( data, mName );
-  if ( result )
-    refresh();
-
-  return result;
-}
 
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
