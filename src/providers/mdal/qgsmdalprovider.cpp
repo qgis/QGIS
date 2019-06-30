@@ -23,13 +23,9 @@
 #include "qgsapplication.h"
 #include "qgsmdaldataitems.h"
 
-#ifdef HAVE_GUI
-#include "qgssourceselectprovider.h"
-#include "qgsmdalsourceselect.h"
-#endif
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mdal" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
+const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
+const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
 
 bool QgsMdalProvider::isValid() const
 {
@@ -38,12 +34,12 @@ bool QgsMdalProvider::isValid() const
 
 QString QgsMdalProvider::name() const
 {
-  return TEXT_PROVIDER_KEY;
+  return MDAL_PROVIDER_KEY;
 }
 
 QString QgsMdalProvider::description() const
 {
-  return TEXT_PROVIDER_DESCRIPTION;
+  return MDAL_PROVIDER_DESCRIPTION;
 }
 
 QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
@@ -553,38 +549,6 @@ QList<QgsDataItemProvider *> QgsMdalProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-
-#ifdef HAVE_GUI
-//! Provider for mdal mesh source select
-class QgsMdalMeshSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "mdal" ); }
-    QString text() const override { return QObject::tr( "Mesh" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 22; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMeshLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsMdalSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-QgsMdalProviderGuiMetadata::QgsMdalProviderGuiMetadata()
-  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsMdalProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-
-  providers
-      << new QgsMdalMeshSourceSelectProvider;
-
-  return providers;
-}
-
 QString QgsMdalProviderMetadata::filters( FilterType type )
 {
   switch ( type )
@@ -608,20 +572,11 @@ QString QgsMdalProviderMetadata::filters( FilterType type )
   }
 }
 
-#endif
-
 QgsMdalProviderMetadata::QgsMdalProviderMetadata():
-  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  QgsProviderMetadata( QgsMdalProvider::MDAL_PROVIDER_KEY, QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION )
 {}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsMdalProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsMdalProviderGuiMetadata();
-}
-#endif
