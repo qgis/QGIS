@@ -133,6 +133,8 @@ bool QgsPostgresDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemG
 {
   if ( qobject_cast< QgsPGConnectionItem * >( item ) )
     return true;
+  if ( qobject_cast< QgsPGSchemaItem * >( item ) )
+    return true;
 
   return false;
 }
@@ -142,6 +144,14 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemG
   if ( QgsPGConnectionItem *connItem = qobject_cast< QgsPGConnectionItem * >( item ) )
   {
     return connItem->handleDrop( data, QString() );
+  }
+  else if ( QgsPGSchemaItem *schemaItem = qobject_cast< QgsPGSchemaItem * >( item ) )
+  {
+    QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( schemaItem->parent() );
+    if ( !connItem )
+      return false;
+
+    return connItem->handleDrop( data, schemaItem->name() );
   }
   return false;
 }

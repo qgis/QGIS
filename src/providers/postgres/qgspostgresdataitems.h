@@ -81,9 +81,6 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    bool acceptDrop() override { return true; }
-    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
-
     QString connectionName() const { return mConnectionName; }
 
   private:
