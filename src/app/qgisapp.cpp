@@ -10066,11 +10066,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( selectedLyr );
       // TODO: add other layer types that can be duplicated
       // currently memory and plugin layers are skipped
-      if ( vlayer && vlayer->storageType() == QLatin1String( "Memory storage" ) )
-      {
-        unSppType = tr( "Memory layer" );
-      }
-      else if ( vlayer )
+      if ( vlayer )
       {
         if ( vlayer->auxiliaryLayer() )
           vlayer->auxiliaryLayer()->save();

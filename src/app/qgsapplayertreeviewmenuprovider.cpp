@@ -241,10 +241,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( allEditsAction->isEnabled() )
           menu->addAction( allEditsAction );
 
-        // disable duplication of memory layers
-        if ( vlayer->storageType() == QLatin1String( "Memory storage" ) && mView->selectedLayerNodes().count() == 1 )
-          duplicateLayersAction->setEnabled( false );
-
         if ( vlayer->dataProvider()->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
