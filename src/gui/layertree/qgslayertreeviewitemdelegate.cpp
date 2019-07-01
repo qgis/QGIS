@@ -89,7 +89,15 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   QBrush pb = painter->brush();
   QPen pp = painter->pen();
   painter->setPen( QPen( Qt::NoPen ) );
-  painter->setBrush( QBrush( opt.palette.mid() ) );
+  QBrush b = QBrush( opt.palette.mid() );
+  QColor bc = b.color();
+  // mix mid color with base color for a less dominant, yet still opaque, version of the color
+  const QColor baseColor = opt.palette.base().color();
+  bc.setRed( static_cast< int >( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
+  bc.setGreen( static_cast< int >( bc.green() * 0.3 + baseColor.green() * 0.7 ) );
+  bc.setBlue( static_cast< int >( bc.blue() * 0.3 + baseColor.blue() * 0.7 ) );
+  b.setColor( bc );
+  painter->setBrush( b );
   painter->drawRect( mRect );
   painter->setBrush( pb );
   painter->setPen( pp );
@@ -120,7 +128,13 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
     qreal bradius = spacing;
     QBrush pb = painter->brush();
     QPen pp = painter->pen();
-    painter->setBrush( opt.palette.midlight() );
+    QBrush b = QBrush( opt.palette.midlight() );
+    QColor bc = b.color();
+    bc.setRed( static_cast< int >( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
+    bc.setGreen( static_cast< int >( bc.green() * 0.3 + baseColor.green() * 0.7 ) );
+    bc.setBlue( static_cast< int >( bc.blue() * 0.3 + baseColor.blue() * 0.7 ) );
+    b.setColor( bc );
+    painter->setBrush( b );
     painter->setPen( QPen( QBrush( opt.palette.mid() ), 0.25 ) );
     painter->drawRoundedRect( rect, bradius, bradius );
     painter->setBrush( pb );
@@ -145,8 +159,6 @@ bool QgsLayerTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstractItemVi
 {
   if ( event && event->type() == QEvent::ToolTip )
   {
-    QHelpEvent *he = static_cast<QHelpEvent *>( event );
-
     QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
     if ( node )
     {
@@ -159,15 +171,15 @@ bool QgsLayerTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstractItemVi
 
         QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
 
-        if ( indRect.contains( he->pos() ) )
+        if ( indRect.contains( event->pos() ) )
         {
-          int indicatorIndex = ( he->pos().x() - indRect.left() ) / indRect.height();
+          int indicatorIndex = ( event->pos().x() - indRect.left() ) / indRect.height();
           if ( indicatorIndex >= 0 && indicatorIndex < indicators.count() )
           {
             const QString tooltip = indicators[indicatorIndex]->toolTip();
             if ( !tooltip.isEmpty() )
             {
-              QToolTip::showText( he->globalPos(), tooltip, view );
+              QToolTip::showText( event->globalPos(), tooltip, view );
               return true;
             }
           }
