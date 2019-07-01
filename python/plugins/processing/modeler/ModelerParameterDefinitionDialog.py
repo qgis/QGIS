@@ -54,14 +54,11 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterString,
                        QgsProcessingParameterExpression,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBand,
-                       QgsProcessingParameterLayout,
-                       QgsProcessingParameterLayoutItem,
                        QgsProcessingDestinationParameter,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFileDestination,
@@ -82,7 +79,6 @@ class ModelerParameterDefinitionDialog(QDialog):
     def use_legacy_dialog(param=None, paramType=None):
         if paramType in (parameters.PARAMETER_TABLE_FIELD,
                          parameters.PARAMETER_BAND,
-                         parameters.PARAMETER_LAYOUTITEM,
                          parameters.PARAMETER_VECTOR,
                          parameters.PARAMETER_TABLE,
                          parameters.PARAMETER_MULTIPLE,
@@ -98,7 +94,6 @@ class ModelerParameterDefinitionDialog(QDialog):
             return True
         elif isinstance(param, (QgsProcessingParameterField,
                                 QgsProcessingParameterBand,
-                                QgsProcessingParameterLayoutItem,
                                 QgsProcessingParameterFeatureSource,
                                 QgsProcessingParameterVectorLayer,
                                 QgsProcessingParameterMultipleLayers,
@@ -206,20 +201,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
                         if self.param.parentLayerParameterName() == definition.name():
-                            self.parentCombo.setCurrentIndex(idx)
-                    idx += 1
-            self.verticalLayout.addWidget(self.parentCombo)
-        elif self.paramType == parameters.PARAMETER_LAYOUTITEM or \
-                isinstance(self.param, QgsProcessingParameterLayoutItem):
-            self.verticalLayout.addWidget(QLabel(self.tr('Parent layout')))
-            self.parentCombo = QComboBox()
-            idx = 0
-            for param in list(self.alg.parameterComponents().values()):
-                definition = self.alg.parameterDefinition(param.parameterName())
-                if isinstance(definition, (QgsProcessingParameterLayout)):
-                    self.parentCombo.addItem(definition.description(), definition.name())
-                    if self.param is not None:
-                        if self.param.parentLayoutParameterName() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -451,14 +432,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 return
             parent = self.parentCombo.currentData()
             self.param = QgsProcessingParameterBand(name, description, None, parent)
-        elif (self.paramType == parameters.PARAMETER_LAYOUTITEM or
-              isinstance(self.param, QgsProcessingParameterLayoutItem)):
-            if self.parentCombo.currentIndex() < 0:
-                QMessageBox.warning(self, self.tr('Unable to define parameter'),
-                                    self.tr('Wrong or missing parameter values'))
-                return
-            parent = self.parentCombo.currentData()
-            self.param = QgsProcessingParameterLayoutItem(name, description, None, parent)
         elif (self.paramType == parameters.PARAMETER_MAP_LAYER or
               isinstance(self.param, QgsProcessingParameterMapLayer)):
             self.param = QgsProcessingParameterMapLayer(

@@ -17,6 +17,7 @@
 
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
+#include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprojectionselectionwidget.h"
 #include "qgsprocessingmatrixparameterdialog.h"
@@ -2009,6 +2010,58 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutWidgetWrapper::c
 // QgsProcessingLayoutItemWidgetWrapper
 //
 
+
+QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Parent layout" ) ) );
+
+  mParentLayoutComboBox = new QComboBox();
+  QString initialParent;
+  if ( const QgsProcessingParameterLayoutItem *itemParam = dynamic_cast<const QgsProcessingParameterLayoutItem *>( definition ) )
+    initialParent = itemParam->parentLayoutParameterName();
+
+  bool foundParent = false;
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( const QgsProcessingParameterLayout *definition = dynamic_cast< const QgsProcessingParameterLayout * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayoutComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayoutComboBox->setCurrentIndex( mParentLayoutComboBox->count() - 1 );
+          foundParent = true;
+        }
+      }
+    }
+  }
+
+  if ( mParentLayoutComboBox->count() == 0 && !initialParent.isEmpty() )
+  {
+    // if no parent candidates found, we just add the existing one as a placeholder
+    mParentLayoutComboBox->addItem( initialParent, initialParent );
+    mParentLayoutComboBox->setCurrentIndex( mParentLayoutComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( mParentLayoutComboBox );
+  setLayout( vlayout );
+}
+QgsProcessingParameterDefinition *QgsProcessingLayoutItemParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterLayoutItem >( name, description, QVariant(), mParentLayoutComboBox->currentData().toString() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
 QgsProcessingLayoutItemWidgetWrapper::QgsProcessingLayoutItemWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -2168,6 +2221,11 @@ QString QgsProcessingLayoutItemWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutItemWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingLayoutItemWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingLayoutItemWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingLayoutItemParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 //
