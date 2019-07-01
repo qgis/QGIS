@@ -601,6 +601,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual bool hasMetadata() const { return true; }
 
+    /**
+     * Handles any post-clone operations required after this vector data provider was cloned
+     * from the \a source provider.
+     *
+     * \since QGIS 3.8.1
+     */
+    virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
+
   signals:
 
     /**

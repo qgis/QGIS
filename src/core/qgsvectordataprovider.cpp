@@ -841,3 +841,8 @@ QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLaye
 {
   return QList<QgsRelation>();
 }
+
+void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * )
+{
+
+}
