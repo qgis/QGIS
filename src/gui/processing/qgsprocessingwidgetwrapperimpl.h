@@ -159,6 +159,7 @@ class GUI_EXPORT QgsProcessingStringParameterDefinitionWidget : public QgsProces
   private:
 
     QLineEdit *mDefaultLineEdit = nullptr;
+    QCheckBox *mMultiLineCheckBox = nullptr;
 
 };
 
