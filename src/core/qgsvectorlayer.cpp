@@ -217,6 +217,10 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     options.transformContext = mDataProvider->transformContext();
   }
   QgsVectorLayer *layer = new QgsVectorLayer( source(), name(), mProviderKey, options );
+  if ( mDataProvider && layer->dataProvider() )
+  {
+    layer->dataProvider()->handlePostCloneOperations( mDataProvider );
+  }
   QgsMapLayer::clone( layer );
 
   QList<QgsVectorLayerJoinInfo> joins = vectorJoins();

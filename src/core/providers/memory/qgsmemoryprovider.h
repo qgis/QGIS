@@ -78,6 +78,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     void updateExtents() override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
   private:
     // Coordinate reference system
