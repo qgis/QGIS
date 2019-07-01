@@ -122,6 +122,8 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget: public QWidget
     QCheckBox *mRequiredCheckBox = nullptr;
     QCheckBox *mAdvancedCheckBox = nullptr;
 
+    friend class QgsProcessingParameterDefinitionDialog;
+
 };
 
 /**
@@ -164,6 +166,9 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog: public QDialog
      * The \a name parameter specifies the name for the newly created parameter.
      */
     QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
+
+  public slots:
+    void accept() override;
 
   private:
 

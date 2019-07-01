@@ -142,6 +142,10 @@ Returns a new instance of a parameter definition, using the current settings def
 The ``name`` parameter specifies the name for the newly created parameter.
 %End
 
+  public slots:
+    virtual void accept();
+
+
 };
 
 

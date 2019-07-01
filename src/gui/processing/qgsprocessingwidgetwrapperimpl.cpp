@@ -1888,8 +1888,6 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingEnumWidgetWrapper::cre
   return new QgsProcessingEnumWidgetWrapper( parameter, type );
 }
 
-
-
 //
 // QgsProcessingLayoutWidgetWrapper
 //

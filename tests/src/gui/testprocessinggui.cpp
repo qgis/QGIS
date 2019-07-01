@@ -3206,7 +3206,7 @@ void TestProcessingGui::testColorWrapper()
   QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
-  QCOMPARE( static_cast< QgsProcessingParameterColor * >( def.get() )->defaultValue().value< QColor >(), QColor( 255, 0, 0 ) );
+  QCOMPARE( static_cast< QgsProcessingParameterColor * >( def.get() )->defaultValue().value< QColor >(), QColor( 255, 0, 0 ) ); // (no opacity!)
   QVERIFY( !static_cast< QgsProcessingParameterColor * >( def.get() )->opacityEnabled() );
 }
 
