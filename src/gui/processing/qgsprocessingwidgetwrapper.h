@@ -471,7 +471,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
      * associated with the parameter.
      *
-     * If a factory subclass returns NULLPTR for this method (i.e. as the base class implemention does),
+     * If a factory subclass returns NULLPTR for this method (i.e. as the base class implementation does),
      * it indicates that the parameter type cannot be configured via GUI. In this case the parameter
      * type will not be configurable when users add it as an input to their graphical models.
      *
