@@ -28,6 +28,7 @@
 #include <QCheckBox>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QMessageBox>
 
 QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &,
     const QgsProcessingParameterWidgetContext &,
@@ -146,4 +147,15 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( 
 QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionDialog::createParameter( const QString &name ) const
 {
   return mWidget->createParameter( name );
+}
+
+void QgsProcessingParameterDefinitionDialog::accept()
+{
+  if ( mWidget->mDescriptionLineEdit->text().isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Unable to define parameter" ),
+                          tr( "Invalid parameter name" ) );
+    return;
+  }
+  QDialog::accept();
 }
