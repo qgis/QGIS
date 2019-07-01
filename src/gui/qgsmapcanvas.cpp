@@ -513,7 +513,7 @@ void QgsMapCanvas::refresh()
 
   // schedule a refresh
   mRefreshTimer->start( 1 );
-} // refresh
+}
 
 void QgsMapCanvas::refreshMap()
 {
