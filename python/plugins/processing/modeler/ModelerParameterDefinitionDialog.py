@@ -90,7 +90,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_DISTANCE,
                          parameters.PARAMETER_SCALE,
                          parameters.PARAMETER_EXPRESSION,
-                         parameters.PARAMETER_STRING,
                          parameters.PARAMETER_FILE,
                          parameters.PARAMETER_POINT,
                          parameters.PARAMETER_CRS,
@@ -107,7 +106,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 QgsProcessingParameterDistance,
                                 QgsProcessingParameterScale,
                                 QgsProcessingParameterExpression,
-                                QgsProcessingParameterString,
                                 QgsProcessingParameterFile,
                                 QgsProcessingParameterPoint,
                                 QgsProcessingParameterCrs,
@@ -326,13 +324,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
-        elif (self.paramType == parameters.PARAMETER_STRING or
-              isinstance(self.param, QgsProcessingParameterString)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultTextBox = QLineEdit()
-            if self.param is not None:
-                self.defaultTextBox.setText(self.param.defaultValue())
-            self.verticalLayout.addWidget(self.defaultTextBox)
         elif (self.paramType == parameters.PARAMETER_FILE or
               isinstance(self.param, QgsProcessingParameterFile)):
             self.verticalLayout.addWidget(QLabel(self.tr('Type')))
@@ -541,10 +532,6 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param = QgsProcessingParameterExpression(name, description,
                                                           str(self.defaultEdit.expression()),
                                                           parent)
-        elif (self.paramType == parameters.PARAMETER_STRING or
-              isinstance(self.param, QgsProcessingParameterString)):
-            self.param = QgsProcessingParameterString(name, description,
-                                                      str(self.defaultTextBox.text()))
         elif (self.paramType == parameters.PARAMETER_EXTENT or
               isinstance(self.param, QgsProcessingParameterExtent)):
             self.param = QgsProcessingParameterExtent(name, description)
