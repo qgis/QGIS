@@ -42,7 +42,7 @@ class Qgs3DMapToolMeasureLinePickHandler : public Qgs3DMapScenePickHandler
     Qgs3DMapToolMeasureLine *mMeasureLineTool = nullptr;
 };
 
-void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection, Qt3DRender::QPickEvent *event )
+void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer *, QgsFeatureId, const QVector3D &worldIntersection, Qt3DRender::QPickEvent *event )
 {
   mMeasureLineTool->handleClick( event, worldIntersection );
 }
