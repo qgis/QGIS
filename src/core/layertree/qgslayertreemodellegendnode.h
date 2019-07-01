@@ -374,7 +374,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
   private:
     void updateLabel();
 
-    QString injectSymbolId( QString expression );
+    QString injectSymbolId( const QString &expression );
 
   private:
     QgsLegendSymbolItem mItem;
