@@ -75,8 +75,21 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      * Returns the network reply. Ownership is not transferred.
      *
      * May return NULLPTR if the request has not yet completed.
+     *
+     * \warning This should only be accessed from a slot connected directly to
+     * the QgsNetworkContentFetcherTask::fetched() signal.
      */
     QNetworkReply *reply();
+
+    /**
+     * Returns the fetched content as a string
+     *
+     * \warning This should only be accessed from a slot connected directly to
+     * the QgsNetworkContentFetcherTask::fetched() signal.
+     *
+     * \since QGIS 3.10
+     */
+    QString contentAsString() const;
 
   signals:
 

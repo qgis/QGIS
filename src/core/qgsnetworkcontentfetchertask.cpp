@@ -73,3 +73,8 @@ QNetworkReply *QgsNetworkContentFetcherTask::reply()
 {
   return mFetcher ? mFetcher->reply() : nullptr;
 }
+
+QString QgsNetworkContentFetcherTask::contentAsString() const
+{
+  return mFetcher ? mFetcher->contentAsString() : QString();
+}
