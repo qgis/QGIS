@@ -788,6 +788,25 @@ class GUI_EXPORT QgsProcessingPointWidgetWrapper : public QgsAbstractProcessingP
     friend class TestProcessingGui;
 };
 
+
+class GUI_EXPORT QgsProcessingColorParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+  public:
+
+    QgsProcessingColorParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const override;
+
+  private:
+
+    QgsColorButton *mDefaultColorButton = nullptr;
+    QCheckBox *mAllowOpacity = nullptr;
+
+};
+
 class GUI_EXPORT QgsProcessingColorWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {
     Q_OBJECT
@@ -800,6 +819,11 @@ class GUI_EXPORT QgsProcessingColorWidgetWrapper : public QgsAbstractProcessingP
     // QgsProcessingParameterWidgetFactoryInterface
     QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
 
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
