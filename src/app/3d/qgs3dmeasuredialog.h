@@ -23,7 +23,6 @@
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dmapcanvas.h"
 #include "qgsunittypes.h"
-#include "qgsdistancearea.h"
 
 
 class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase

@@ -36,9 +36,9 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   connect( newButton, &QAbstractButton::clicked, this, &Qgs3DMeasureDialog::restart );
 
   // Remove/Hide unused features/options from 2D line measurement
-  // Only support for cartesian
+  // Only support for Cartesian
   mCartesian->setChecked( true );
-  // Hide ellipsoidal and cartesian radio button (not needed)
+  // Hide ellipsoidal and Cartesian radio button (not needed)
   mCartesian->hide();
   mEllipsoidal->hide();
   groupBox->hide();

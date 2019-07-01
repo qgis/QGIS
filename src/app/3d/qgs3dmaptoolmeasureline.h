@@ -24,7 +24,6 @@
 #include "qgsline3dsymbol.h"
 #include "qgspoint.h"
 #include "qgsvectorlayer3drenderer.h"
-//#include "qgs3dmeasuredialog.h"
 
 #include <memory>
 

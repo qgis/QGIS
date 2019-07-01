@@ -127,7 +127,6 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
   handleClick( event, event->worldIntersection() );
 }
 
-
 void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
 {
   // no need to disconnect from the previous entity: it has been destroyed
@@ -221,7 +220,6 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   setMeasurementLayerRenderer();
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
-
 
 void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
 {

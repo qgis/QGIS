@@ -497,7 +497,7 @@ void Qgs3DMapScene::onRenderersChanged()
   qDeleteAll( mRenderersEntities.values() );
   mRenderersEntities.clear();
 
-  // re-add entites from new set of renderers
+  // re-add entities from new set of renderers
   const QList<QgsAbstract3DRenderer *> renderers = mMap.renderers();
   for ( const QgsAbstract3DRenderer *renderer : renderers )
   {
