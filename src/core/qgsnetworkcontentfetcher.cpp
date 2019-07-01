@@ -113,6 +113,11 @@ void QgsNetworkContentFetcher::cancel()
   }
 }
 
+bool QgsNetworkContentFetcher::wasCanceled() const
+{
+  return mIsCanceled;
+}
+
 QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 {
   //QTextCodec::codecForHtml fails to detect "<meta charset="utf-8"/>" type tags

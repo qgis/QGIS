@@ -173,6 +173,7 @@ SET(TESTS
  testqgsmeshlayerrenderer.cpp
  testqgsnetworkaccessmanager.cpp
  testqgsnetworkcontentfetcher.cpp
+ testqgsnewsfeedparser.cpp
  testqgsogcutils.cpp
  testqgsogrutils.cpp
  testqgspagesizeregistry.cpp
