@@ -41,7 +41,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessing,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterExtent,
@@ -81,8 +80,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
     @staticmethod
     def use_legacy_dialog(param=None, paramType=None):
-        if paramType in (parameters.PARAMETER_BOOLEAN,
-                         parameters.PARAMETER_TABLE_FIELD,
+        if paramType in (parameters.PARAMETER_TABLE_FIELD,
                          parameters.PARAMETER_BAND,
                          parameters.PARAMETER_LAYOUTITEM,
                          parameters.PARAMETER_VECTOR,
@@ -99,8 +97,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_ENUM,
                          parameters.PARAMETER_MATRIX):
             return True
-        elif isinstance(param, (QgsProcessingParameterBoolean,
-                                QgsProcessingParameterField,
+        elif isinstance(param, (QgsProcessingParameterField,
                                 QgsProcessingParameterBand,
                                 QgsProcessingParameterLayoutItem,
                                 QgsProcessingParameterFeatureSource,
@@ -153,15 +150,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         if isinstance(self.param, QgsProcessingParameterDefinition):
             self.nameTextBox.setText(self.param.description())
 
-        if self.paramType == parameters.PARAMETER_BOOLEAN or \
-                isinstance(self.param, QgsProcessingParameterBoolean):
-            self.state = QCheckBox()
-            self.state.setText(self.tr('Checked'))
-            self.state.setChecked(False)
-            if self.param is not None:
-                self.state.setChecked(bool(self.param.defaultValue()))
-            self.verticalLayout.addWidget(self.state)
-        elif self.paramType == parameters.PARAMETER_TABLE_FIELD or \
+        if self.paramType == parameters.PARAMETER_TABLE_FIELD or \
                 isinstance(self.param, QgsProcessingParameterField):
             self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
             self.parentCombo = QComboBox()
@@ -449,11 +438,8 @@ class ModelerParameterDefinitionDialog(QDialog):
                 i += 1
         else:
             name = self.param.name()
-        if (self.paramType == parameters.PARAMETER_BOOLEAN or
-                isinstance(self.param, QgsProcessingParameterBoolean)):
-            self.param = QgsProcessingParameterBoolean(name, description, self.state.isChecked())
-        elif (self.paramType == parameters.PARAMETER_TABLE_FIELD or
-              isinstance(self.param, QgsProcessingParameterField)):
+        if (self.paramType == parameters.PARAMETER_TABLE_FIELD or
+                isinstance(self.param, QgsProcessingParameterField)):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
