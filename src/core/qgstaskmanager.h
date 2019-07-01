@@ -88,6 +88,13 @@ class CORE_EXPORT QgsTask : public QObject
     Flags flags() const { return mFlags; }
 
     /**
+     * Sets the task's \a description. This must be called before adding the task to a QgsTaskManager,
+     * changing the description after queuing the task has no effect.
+     * \since QGIS 3.10
+     */
+    void setDescription( const QString &description );
+
+    /**
      * Returns TRUE if the task can be canceled.
      */
     bool canCancel() const { return mFlags & CanCancel; }

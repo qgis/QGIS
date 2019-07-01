@@ -1,0 +1,117 @@
+/***************************************************************************
+    qgsnewsfeedparser.h
+    -------------------
+    begin                : July 2019
+    copyright            : (C) 2019 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSNEWSFEEDPARSER_H
+#define QGSNEWSFEEDPARSER_H
+
+#include "qgis_core.h"
+#include <QObject>
+#include <QUrl>
+
+class QgsNetworkContentFetcher;
+
+/**
+ * \ingroup core
+ * Parser for published QGIS news feeds.
+ *
+ * This class is designed to work with the specialised QGIS news feed API. See
+ * https://github.com/elpaso/qgis-feed.
+ *
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsNewsFeedParser : public QObject
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Represents a single entry from a news feed.
+     */
+    class Entry
+    {
+      public:
+
+        //! Unique entry identifier
+        int key = 0;
+
+        //! Entry title
+        QString title;
+
+        //! Optional URL for image associated with entry
+        QString imageUrl;
+
+        //! HTML content of news entry
+        QString content;
+
+        //! Optional URL link for entry
+        QUrl link;
+
+        //! TRUE if entry is "sticky" and should always be shown at the top
+        bool sticky = false;
+    };
+
+    /**
+     * Constructor for QgsNewsFeedParser, parsing the specified \a feedUrl.
+     *
+     * The optional \a authcfg argument can be used to specify an authentication
+     * configuration to use when connecting to the feed.
+     */
+    QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg = QString() );
+
+    /**
+     * Returns a list of existing entries in the feed.
+     */
+    QList< QgsNewsFeedParser::Entry > entries() const;
+
+  public slots:
+
+    /**
+     * Fetches new entries from the feed's URL.
+     * \see fetched()
+     */
+    void fetch();
+
+  signals:
+
+    /**
+     * Emitted when \a entries have fetched from the feed.
+     *
+     * \see fetch()
+     */
+    void fetched( const QList< QgsNewsFeedParser::Entry > &entries );
+
+  private slots:
+
+    void onFetch( const QString &content );
+
+  private:
+
+    QString mBaseUrl;
+    QUrl mFeedUrl;
+    QString mAuthCfg;
+    uint mFetchStartTime = 0;
+    QString mSettingsKey;
+
+    QList< Entry > mEntries;
+
+    void readStoredEntries();
+    Entry readEntryFromSettings( int key ) const;
+    void storeEntryInSettings( const Entry &entry );
+    static QString keyForFeed( const QString &baseUrl );
+
+    friend class TestQgsNewsFeedParser;
+
+};
+
+#endif // QGSNEWSFEEDPARSER_H

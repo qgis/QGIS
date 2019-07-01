@@ -75,6 +75,13 @@ Cancels any ongoing request.
 .. versionadded:: 3.2
 %End
 
+    bool wasCanceled() const;
+%Docstring
+Returns ``True`` if the fetching was canceled.
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void finished();
