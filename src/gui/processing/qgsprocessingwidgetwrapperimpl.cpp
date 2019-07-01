@@ -374,12 +374,18 @@ QgsProcessingStringParameterDefinitionWidget::QgsProcessingStringParameterDefini
   if ( const QgsProcessingParameterString *stringParam = dynamic_cast<const QgsProcessingParameterString *>( definition ) )
     mDefaultLineEdit->setText( QgsProcessingParameters::parameterAsString( stringParam, stringParam->defaultValue(), context ) );
   vlayout->addWidget( mDefaultLineEdit );
+
+  mMultiLineCheckBox = new QCheckBox( tr( "Multiline input" ) );
+  if ( const QgsProcessingParameterString *stringParam = dynamic_cast<const QgsProcessingParameterString *>( definition ) )
+    mMultiLineCheckBox->setChecked( stringParam->multiLine() );
+  vlayout->addWidget( mMultiLineCheckBox );
+
   setLayout( vlayout );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingStringParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  auto param = qgis::make_unique< QgsProcessingParameterString >( name, description, mDefaultLineEdit->text() );
+  auto param = qgis::make_unique< QgsProcessingParameterString >( name, description, mDefaultLineEdit->text(), mMultiLineCheckBox->isChecked() );
   param->setFlags( flags );
   return param.release();
 }
