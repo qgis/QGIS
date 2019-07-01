@@ -2025,7 +2025,6 @@ QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParamet
   if ( const QgsProcessingParameterLayoutItem *itemParam = dynamic_cast<const QgsProcessingParameterLayoutItem *>( definition ) )
     initialParent = itemParam->parentLayoutParameterName();
 
-  bool foundParent = false;
   if ( widgetContext.model() )
   {
     // populate combo box with other model input choices
@@ -2038,7 +2037,6 @@ QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParamet
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
         {
           mParentLayoutComboBox->setCurrentIndex( mParentLayoutComboBox->count() - 1 );
-          foundParent = true;
         }
       }
     }
@@ -2518,6 +2516,47 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointWidgetWrapper::cr
 // QgsProcessingColorWidgetWrapper
 //
 
+
+QgsProcessingColorParameterDefinitionWidget::QgsProcessingColorParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultColorButton = new QgsColorButton();
+  mDefaultColorButton->setShowNull( true );
+  mAllowOpacity = new QCheckBox( tr( "Allow opacity control" ) );
+
+  if ( const QgsProcessingParameterColor *colorParam = dynamic_cast<const QgsProcessingParameterColor *>( definition ) )
+  {
+    const QColor c = QgsProcessingParameters::parameterAsColor( colorParam, colorParam->defaultValue(), context );
+    if ( !c.isValid() )
+      mDefaultColorButton->setToNull();
+    else
+      mDefaultColorButton->setColor( c );
+    mAllowOpacity->setChecked( colorParam->opacityEnabled() );
+  }
+  else
+  {
+    mDefaultColorButton->setToNull();
+    mAllowOpacity->setChecked( true );
+  }
+
+  vlayout->addWidget( mDefaultColorButton );
+  vlayout->addWidget( mAllowOpacity );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingColorParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterColor >( name, description, mDefaultColorButton->color(), mAllowOpacity->isChecked() );
+  param->setFlags( flags );
+  return param.release();
+}
+
 QgsProcessingColorWidgetWrapper::QgsProcessingColorWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -2615,6 +2654,11 @@ QString QgsProcessingColorWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingColorWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingColorWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingColorWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingColorParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 ///@endcond PRIVATE
