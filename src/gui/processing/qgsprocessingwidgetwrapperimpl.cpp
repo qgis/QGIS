@@ -44,6 +44,7 @@
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
@@ -57,6 +58,31 @@
 //
 // QgsProcessingBooleanWidgetWrapper
 //
+
+
+QgsProcessingBooleanParameterDefinitionWidget::QgsProcessingBooleanParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mDefaultCheckBox = new QCheckBox( tr( "Checked" ) );
+  if ( const QgsProcessingParameterBoolean *boolParam = dynamic_cast<const QgsProcessingParameterBoolean *>( definition ) )
+    mDefaultCheckBox->setChecked( QgsProcessingParameters::parameterAsBool( boolParam, boolParam->defaultValue(), context ) );
+  else
+    mDefaultCheckBox->setChecked( false );
+  vlayout->addWidget( mDefaultCheckBox );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingBooleanParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterBoolean >( name, description, mDefaultCheckBox->isChecked() );
+  param->setFlags( flags );
+  return param.release();
+}
+
 
 QgsProcessingBooleanWidgetWrapper::QgsProcessingBooleanWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
@@ -189,6 +215,11 @@ QString QgsProcessingBooleanWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBooleanWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingBooleanWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingBooleanWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingBooleanParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 
