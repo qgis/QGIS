@@ -102,6 +102,8 @@ class ModelerScene(QGraphicsScene):
             parent_name = None
             if hasattr(parameter_def, 'parentLayerParameterName') and parameter_def.parentLayerParameterName():
                 parent_name = parameter_def.parentLayerParameterName()
+            if hasattr(parameter_def, 'parentLayoutParameterName') and parameter_def.parentLayoutParameterName():
+                parent_name = parameter_def.parentLayoutParameterName()
             elif hasattr(parameter_def, 'parentParameterName') and parameter_def.parentParameterName():
                 parent_name = parameter_def.parentParameterName()
             if parent_name:
