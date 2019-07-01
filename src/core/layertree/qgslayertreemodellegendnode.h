@@ -374,6 +374,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
   private:
     void updateLabel();
 
+    QString injectSymbolId( QString expression );
+
   private:
     QgsLegendSymbolItem mItem;
     mutable QPixmap mPixmap; // cached symbol preview

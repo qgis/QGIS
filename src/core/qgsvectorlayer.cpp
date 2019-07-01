@@ -3916,7 +3916,7 @@ QVariant QgsVectorLayer::maximumValue( int index ) const
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
-                                    bool *ok, QgsFeatureIds *fids ) const
+                                    bool *ok, QString *symbolId ) const
 {
   if ( ok )
     *ok = false;
@@ -3927,29 +3927,11 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   }
   bool hasFids = false;
   QgsFeatureIds ids;
-  if ( fids )
+  if ( symbolId )
   {
-    qDebug() << "got fids";
-    ids = *fids;
+    if ( ! *symbolId.isEmpty() )
+    ids = mSymbolIdMap.value( *symbolId, QgsFeatureIds() );
     hasFids = true;
-  }
-  else if ( context )
-  {
-    qDebug() << QVariant( context->indexOfScope( "Symbol scope" ) ).toString();
-    /*     if (context->indexOfScope("Symbol scope") != -1 && mSymbolFeatureCounted)
-        {
-          if (mFeatureCounter)
-          {
-            ids = mFeatureCounter->featureIds(context->variable("symbol_id").toString());
-            hasFids = true;
-          }
-        }else */
-    if ( context->indexOfScope( "Symbol scope" ) != -1 )
-    {
-      qDebug() << context->variable( "symbol_id" ).toString() << QVariant( mSymbolFeatureCounted ).toString();
-      ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
-      hasFids = true;
-    }
   }
 
 
@@ -3963,7 +3945,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     if ( origin == QgsFields::OriginProvider )
     {
       bool providerOk = false;
-      QVariant val = mDataProvider->aggregate( aggregate, attrIndex, parameters, context, providerOk, fids );
+      QVariant val = mDataProvider->aggregate( aggregate, attrIndex, parameters, context, providerOk, &ids );
       if ( providerOk )
       {
         qDebug() << "provider";
