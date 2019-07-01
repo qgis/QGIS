@@ -91,6 +91,8 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   painter->setPen( QPen( Qt::NoPen ) );
   painter->setBrush( QBrush( opt.palette.mid() ) );
   painter->drawRect( mRect );
+  painter->setBrush( pb );
+  painter->setPen( pp );
 
   const QList<QgsLayerTreeViewIndicator *> indicators = mLayerTreeView->indicators( node );
   if ( indicators.isEmpty() )
