@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QDir>
 #include <QPushButton>
@@ -139,6 +140,11 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
 #endif
   mLabelSrcDescription->clear();
   mLabelDstDescription->clear();
+
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
+  } );
 
   load( selectedDatumTransforms, selectedProj );
 }
