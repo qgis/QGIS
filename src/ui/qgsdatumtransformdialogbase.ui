@@ -112,12 +112,9 @@
    <item row="4" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QCheckBox" name="mMakeDefaultCheckBox">
-       <property name="toolTip">
-        <string>If checked, the selected transformation will become the default choice in all new projects</string>
-       </property>
+      <widget class="QCheckBox" name="mHideDeprecatedCheckBox">
        <property name="text">
-        <string>Make default</string>
+        <string>Hide deprecated transformations</string>
        </property>
       </widget>
      </item>
@@ -135,9 +132,12 @@
       </spacer>
      </item>
      <item>
-      <widget class="QCheckBox" name="mHideDeprecatedCheckBox">
+      <widget class="QCheckBox" name="mMakeDefaultCheckBox">
+       <property name="toolTip">
+        <string>If checked, the selected transformation will become the default choice in all new projects</string>
+       </property>
        <property name="text">
-        <string>Hide deprecated transformations</string>
+        <string>Make default</string>
        </property>
       </widget>
      </item>
@@ -217,8 +217,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>mDatumTransformTableWidget</tabstop>
-  <tabstop>mMakeDefaultCheckBox</tabstop>
   <tabstop>mHideDeprecatedCheckBox</tabstop>
+  <tabstop>mMakeDefaultCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
