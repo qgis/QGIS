@@ -36,16 +36,16 @@ using namespace inja;
 namespace QgsWfs3
 {
 
-  QMap<contentTypes, QString> sContentTypeMime = [ ]() -> QMap<contentTypes, QString>
+  QMap<contentType, QString> sContentTypeMime = [ ]() -> QMap<contentType, QString>
   {
-    QMap<contentTypes, QString> map;
-    map[contentTypes::JSON] = QStringLiteral( "application/json" );
-    map[contentTypes::GEOJSON] = QStringLiteral( "application/vnd.geo+json" );
-    map[contentTypes::HTML] = QStringLiteral( "text/html" );
-    map[contentTypes::XML] = QStringLiteral( "application/xml" );
-    map[contentTypes::GML] = QStringLiteral( "application/gml+xml" );
-    map[contentTypes::OPENAPI3] = QStringLiteral( "application/openapi+json;version=3.0" );
-    Q_ASSERT( map.count() == QMetaEnum::fromType<QgsWfs3::contentTypes>().keyCount() );
+    QMap<contentType, QString> map;
+    map[contentType::JSON] = QStringLiteral( "application/json" );
+    map[contentType::GEOJSON] = QStringLiteral( "application/vnd.geo+json" );
+    map[contentType::HTML] = QStringLiteral( "text/html" );
+    map[contentType::XML] = QStringLiteral( "application/xml" );
+    map[contentType::GML] = QStringLiteral( "application/gml+xml" );
+    map[contentType::OPENAPI3] = QStringLiteral( "application/openapi+json;version=3.0" );
+    Q_ASSERT( map.count() == QMetaEnum::fromType<QgsWfs3::contentType>().keyCount() );
     return map;
   }();
 
@@ -84,19 +84,19 @@ namespace QgsWfs3
     return metaEnum.valueToKey( rel );
   }
 
-  QString Api::contentTypeToString( const contentTypes &ct )
+  QString Api::contentTypeToString( const contentType &ct )
   {
-    static QMetaEnum metaEnum = QMetaEnum::fromType<contentTypes>();
+    static QMetaEnum metaEnum = QMetaEnum::fromType<contentType>();
     return metaEnum.valueToKey( ct );
   }
 
-  std::string Api::contentTypeToStdString( const contentTypes &ct )
+  std::string Api::contentTypeToStdString( const contentType &ct )
   {
-    static QMetaEnum metaEnum = QMetaEnum::fromType<contentTypes>();
+    static QMetaEnum metaEnum = QMetaEnum::fromType<contentType>();
     return metaEnum.valueToKey( ct );
   }
 
-  QString Api::contentTypeToExtension( const contentTypes &ct )
+  QString Api::contentTypeToExtension( const contentType &ct )
   {
     return contentTypeToString( ct ).toLower();
   }
@@ -108,16 +108,16 @@ namespace QgsWfs3
 
     switch ( contentType )
     {
-      case QgsWfs3::contentTypes::HTML:
+      case QgsWfs3::contentType::HTML:
         htmlDump( data, response );
         break;
-      case QgsWfs3::contentTypes::GEOJSON:
-      case QgsWfs3::contentTypes::JSON:
-      case QgsWfs3::contentTypes::OPENAPI3:
+      case QgsWfs3::contentType::GEOJSON:
+      case QgsWfs3::contentType::JSON:
+      case QgsWfs3::contentType::OPENAPI3:
         jsonDump( data, response, sContentTypeMime.value( contentType ) );
         break;
-      case QgsWfs3::contentTypes::GML:
-      case QgsWfs3::contentTypes::XML:
+      case QgsWfs3::contentType::GML:
+      case QgsWfs3::contentType::XML:
         throw QgsServerApiNotImplementedError( QStringLiteral( "Requested content type is not yet implemented" ) );
     }
   }
@@ -134,6 +134,7 @@ namespace QgsWfs3
 
   void Handler::htmlDump( const json &data, QgsServerResponse *response ) const
   {
+    response->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html" ) );
     auto path { templatePath() };
     if ( ! QFile::exists( path ) )
     {
@@ -186,8 +187,25 @@ namespace QgsWfs3
     return resourcesPath() + QDir().separator() + QStringLiteral( "static" );
   }
 
-  contentTypes Handler::contentTypeFromRequest( const QgsServerRequest *request ) const
+  contentType Handler::contentTypeFromRequest( const QgsServerRequest *request ) const
   {
+    // First file extension ...
+    const auto extension { QFileInfo( request->url().path() ).completeSuffix().toUpper() };
+    if ( ! extension.isEmpty() )
+    {
+      static QMetaEnum metaEnum { QMetaEnum::fromType<contentType>() };
+      auto ok { false };
+      const auto ct  { metaEnum.keyToValue( extension.toLocal8Bit().constData(), &ok ) };
+      if ( ok )
+      {
+        return static_cast<contentType>( ct );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported extension: %1" ).arg( extension ), QStringLiteral( "Server" ), Qgis::Warning );
+      }
+    }
+    // ... then "Accept" ...
     const auto accept { request->header( QStringLiteral( "Accept" ) ) };
     if ( ! accept.isEmpty() )
     {
@@ -201,22 +219,7 @@ namespace QgsWfs3
         QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported content type in Accept header: %1" ).arg( accept ), QStringLiteral( "Server" ), Qgis::Warning );
       }
     }
-    const auto extension { QFileInfo( request->url().path() ).completeSuffix().toUpper() };
-    if ( ! extension.isEmpty() )
-    {
-      static QMetaEnum metaEnum { QMetaEnum::fromType<contentTypes>() };
-      auto ok { false };
-      const auto ct  { metaEnum.keyToValue( extension.toLocal8Bit().constData(), &ok ) };
-      if ( ok )
-      {
-        return static_cast<contentTypes>( ct );
-      }
-      else
-      {
-        QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported extension: %1" ).arg( extension ), QStringLiteral( "Server" ), Qgis::Warning );
-      }
-    }
-    // Fallback to default
+    // ... fallback to default
     return mimeType;
   }
 
@@ -301,15 +304,22 @@ namespace QgsWfs3
 
   QString contentTypeForAccept( const QString &accept )
   {
-    for ( const auto &ct : sContentTypeMime )
+    QString result;
+    for ( const auto &ct : qgis::as_const( sContentTypeMime ) )
     {
       if ( accept.contains( ct ) )
       {
-        return ct;
+        result = ct;
+        break;
       }
     }
-    return QString();
+    return result;
   }
 
+  QString Api::mimeType( const contentType &contentType )
+  {
+    return sContentTypeMime.value( contentType, QString() );
+
+  }
 
 } // namespace QgsWfs3

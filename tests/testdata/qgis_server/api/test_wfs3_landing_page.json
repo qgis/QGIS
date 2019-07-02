@@ -6,7 +6,7 @@ Content-Type: application/json
       "href": "http://server.qgis.org/wfs3",
       "rel": "self",
       "title": "Landing page",
-      "type": "text/html"
+      "type": "application/json"
     },
     {
       "href": "http://server.qgis.org/wfs3/collections",
@@ -21,7 +21,7 @@ Content-Type: application/json
       "type": "application/json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/api",
+      "href": "http://server.qgis.org/wfs3/api.openapi3",
       "rel": "service",
       "title": "API definition",
       "type": "application/openapi+json;version=3.0"

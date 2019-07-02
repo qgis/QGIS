@@ -34,7 +34,7 @@ APIHandler::APIHandler()
   description = "The API definition";
   linkTitle = "API definition";
   linkType = QgsWfs3::rel::service;
-  mimeType = QgsWfs3::contentTypes::OPENAPI3;
+  mimeType = QgsWfs3::contentType::OPENAPI3;
   landingPageRootLink = QStringLiteral( "api" );
 }
 
@@ -57,7 +57,7 @@ LandingPageHandler::LandingPageHandler()
                 "statements and the metadata about the feature data in this dataset.";
   linkTitle = "Landing page";
   linkType = QgsWfs3::rel::self;
-  mimeType = QgsWfs3::contentTypes::HTML;
+  mimeType = QgsWfs3::contentType::JSON;
 }
 
 void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -78,9 +78,9 @@ void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiCon
   {
     data["links"].push_back(
     {
-      { "href", h->href( api, context->request(), "/" + h->landingPageRootLink )},
+      { "href", h->href( api, context->request(), "/" + h->landingPageRootLink, QgsWfs3::Api::contentTypeToExtension( h->mimeType ) )},
       { "rel", QgsWfs3::Api::relToString( h->linkType ) },
-      { "type", QgsWfs3::sContentTypeMime.value( h->mimeType ).toStdString() },
+      { "type", QgsWfs3::Api::mimeType( h->mimeType ).toStdString() },
       { "title", h->linkTitle },
     } );
   }
@@ -97,14 +97,24 @@ ConformanceHandler::ConformanceHandler()
   description = "List all requirements classes specified in a standard (e.g., WFS 3.0 "
                 "Part 1: Core) that the server conforms to";
   linkType = QgsWfs3::rel::conformance;
-  mimeType = QgsWfs3::contentTypes::JSON;
+  mimeType = QgsWfs3::contentType::JSON;
   landingPageRootLink = QStringLiteral( "conformance" );
 }
 
 void ConformanceHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
 {
-  // TODO
-  Handler::handleRequest( api, context );
+  json data
+  {
+    {
+      "conformsTo", { "http://www.opengis.net/spec/wfs-1/3.0/req/core",
+        "http://www.opengis.net/spec/wfs-1/3.0/req/oas30",
+        "http://www.opengis.net/spec/wfs-1/3.0/req/html",
+        "http://www.opengis.net/spec/wfs-1/3.0/req/gmlsf2",
+        "http://www.opengis.net/spec/wfs-1/3.0/req/geojson"
+      }
+    }
+  };
+  write( data, context->request(), context->response() );
 }
 
 CollectionsHandler::CollectionsHandler()
@@ -115,7 +125,7 @@ CollectionsHandler::CollectionsHandler()
   summary = "describe the feature collections in the dataset";
   description = "Metadata about the feature collections shared by this API.";
   linkType = QgsWfs3::rel::data;
-  mimeType = QgsWfs3::contentTypes::JSON;
+  mimeType = QgsWfs3::contentType::JSON;
   landingPageRootLink = QStringLiteral( "collections" );
 }
 
@@ -126,12 +136,12 @@ void CollectionsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiCon
     {
       "links", {
         {
-          { "href", href( api, context->request() ) },
+          { "href", href( api, context->request(), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::JSON ) ) },
           { "rel", QgsWfs3::Api::relToString( linkType ) },
           { "title", "this document as JSON" }
         },
         {
-          { "href", href( api, context->request(), QString(), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentTypes::HTML ) ) },
+          { "href", href( api, context->request(), QString(), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) ) },
           { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::alternate ) },
           { "title", "this document as HTML" }
         },
@@ -177,10 +187,16 @@ void CollectionsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiCon
         {
           "links", {
             {
-              { "href", href( api, context->request(), QStringLiteral( "/%1/items" ).arg( shortName ) )  },
+              { "href", href( api, context->request(), QStringLiteral( "/%1/items" ).arg( shortName ), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::JSON ) )  },
               { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
-              { "type", "application/geo+json" },
+              { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::GEOJSON ).toStdString() },
               { "title", title + " as GeoJSON" }
+            },
+            {
+              { "href", href( api, context->request(), QStringLiteral( "/%1/items" ).arg( shortName ), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) )  },
+              { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
+              { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::HTML ).toStdString()  },
+              { "title", title + " as HTML" }
             }/* TODO: not sure what these "concepts" are about, neither if they are mandatory
             {
               { "href", href( api, context->request(), QStringLiteral( "/%1/concepts" ).arg( shortName ) )  },
@@ -205,7 +221,7 @@ DescribeCollectionHandler::DescribeCollectionHandler()
   summary = "describe the feature collections in the dataset";
   description = "Metadata about the feature collections shared by this API.";
   linkType = QgsWfs3::rel::data;
-  mimeType = QgsWfs3::contentTypes::JSON;
+  mimeType = QgsWfs3::contentType::JSON;
 }
 
 void DescribeCollectionHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -248,9 +264,15 @@ void DescribeCollectionHandler::handleRequest( const QgsWfs3::Api *api, QgsServe
     {
       "links", {
         {
-          { "href", href( api, context->request(), QStringLiteral( "/%1/items" ).arg( shortName ) )  },
+          { "href", href( api, context->request(), QStringLiteral( "/%1/items" ).arg( shortName ), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::JSON ) )  },
           { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
-          { "type", "application/geo+json" },
+          { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::JSON ).toStdString() },
+          { "title", title }
+        },
+        {
+          { "href", href( api, context->request(), QStringLiteral( "/%1/items" ).arg( shortName ), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) )  },
+          { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
+          { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::HTML ).toStdString() },
           { "title", title }
         }
         /* TODO: not sure what these "concepts" are about, neither if they are mandatory
@@ -277,9 +299,10 @@ CollectionsItemsHandler::CollectionsItemsHandler()
   description = "Every feature in a dataset belongs to a collection. A dataset may "
                 "consist of multiple feature collections. A feature collection is often a "
                 "collection of features of a similar type, based on a common schema. "
-                "Use content negotiation to request HTML or GeoJSON.";
+                "Use content negotiation or specify a file extension to request HTML (.html) "
+                "or GeoJSON (.json).";
   linkType = QgsWfs3::rel::data;
-  mimeType =  QgsWfs3::contentTypes::JSON;
+  mimeType =  QgsWfs3::contentType::JSON;
 }
 
 void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -380,10 +403,10 @@ CollectionsFeatureHandler::CollectionsFeatureHandler()
   path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+)(\.json|\.html)?$)re" ) );
   operationId = "getFeature";
   linkTitle = "Retrieve a feature";
-  summary = "retrieve a feature; use content negotiation to request HTML or GeoJSON";
+  summary = "retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)";
   description = "";
   linkType = QgsWfs3::rel::data;
-  mimeType = QgsWfs3::contentTypes::JSON;
+  mimeType = QgsWfs3::contentType::JSON;
 }
 
 void CollectionsFeatureHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -432,7 +455,7 @@ StaticHandler::StaticHandler()
   summary = "Serves static files";
   description = "";
   linkType = QgsWfs3::rel::data;
-  mimeType = QgsWfs3::contentTypes::JSON;
+  mimeType = QgsWfs3::contentType::JSON;
 }
 
 void StaticHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const

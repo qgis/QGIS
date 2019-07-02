@@ -50,7 +50,7 @@ namespace QgsWfs3
   Q_ENUM_NS( rel )
 
   //! Media types used for content negotiation, insert more specific first
-  enum contentTypes
+  enum contentType
   {
     GEOJSON,
     OPENAPI3, //! "application/openapi+json;version=3.0"
@@ -59,11 +59,11 @@ namespace QgsWfs3
     GML,
     XML
   };
-  Q_ENUM_NS( contentTypes )
+  Q_ENUM_NS( contentType )
 
 
   //! Stores content type strings
-  extern QMap<contentTypes, QString> sContentTypeMime;
+  extern QMap<contentType, QString> sContentTypeMime;
 
   /**
    * Looks for the first contentType match in accept and returns it's mime type,
@@ -98,7 +98,7 @@ namespace QgsWfs3
     QString landingPageRootLink = "";
 
     //! Default response content type in case the client did not specify it
-    contentTypes mimeType = contentTypes::JSON;
+    contentType mimeType = contentType::JSON;
 
     /**
      * Writes \a data to the \a response stream, contentType it is calculated from the \a request
@@ -143,11 +143,11 @@ namespace QgsWfs3
     /**
      * Returns the requested content type from the \a request
      *
-     * "Accept" header is examined first, if it's not set the path extension
-     * will be checked for known mime types, fallback to the default content type
-     * of the handler if none of the above matches.
+     * The path file extension is examined first and checked for known mime types,
+     * the "Accept" HTTP header is examined next.
+     * Fallback to the default content type of the handler if none of the above matches.
      */
-    contentTypes contentTypeFromRequest( const QgsServerRequest *request ) const;
+    contentType contentTypeFromRequest( const QgsServerRequest *request ) const;
 
     /**
      * Returns the layer identified by \a collectionId from the given \a context
@@ -161,7 +161,7 @@ namespace QgsWfs3
   /**
    * \ingroup server
    * \class QgsWfs3::Api
-   * \brief OGC web service specialized for WFS3
+   * \brief OGC web service for WFS3
    * \since QGIS 3.10
    */
   class Api: public QgsServerApi
@@ -194,12 +194,16 @@ namespace QgsWfs3
 
       static std::string relToString( const QgsWfs3::rel &rel );
 
-      static QString contentTypeToString( const contentTypes &ct );
+      static QString contentTypeToString( const contentType &ct );
 
-      static std::string contentTypeToStdString( const contentTypes &ct );
+      static std::string contentTypeToStdString( const contentType &ct );
 
-      static QString contentTypeToExtension( const contentTypes &ct );
+      static QString contentTypeToExtension( const contentType &ct );
 
+      /**
+       * Returns the mime-type for the \a contentType or an empty string if not found
+       */
+      static QString mimeType( const contentType &contentType );
 
     private:
 

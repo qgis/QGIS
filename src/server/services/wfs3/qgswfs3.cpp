@@ -30,7 +30,7 @@ class QgsWfs3Module: public QgsServiceModule
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsg( QStringLiteral( "QgsWfs3Module::registerSelf called" ) );
-      registry.registerApi( new  QgsWfs3::Api( serverIface ) );
+      registry.registerApi( new QgsWfs3::Api( serverIface ) );
     }
 };
 

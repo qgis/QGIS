@@ -117,6 +117,13 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   setUrl( url );
   setMethod( method );
 
+  // Get accept header for content-type negotiation
+  const char *accept = getenv( "HTTP_ACCEPT" );
+  if ( accept )
+  {
+    setHeader( QStringLiteral( "Accept" ), accept );
+  }
+
   // Output debug infos
   Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   if ( logLevel <= Qgis::Info )
@@ -189,6 +196,7 @@ void QgsFcgiServerRequest::printRequestInfos()
     QStringLiteral( "REMOTE_IDENT" ),
     QStringLiteral( "CONTENT_TYPE" ),
     QStringLiteral( "AUTH_TYPE" ),
+    QStringLiteral( "HTTP_ACCEPT" ),
     QStringLiteral( "HTTP_USER_AGENT" ),
     QStringLiteral( "HTTP_PROXY" ),
     QStringLiteral( "NO_PROXY" ),

@@ -96,6 +96,8 @@ class QgsServerAPITest(QgsServerTestBase):
     #regenerate_reference = True
 
     def dump(self, response):
+        """Returns the response body as str"""
+
         result = []
         for n, v in response.headers().items():
             if n == 'Content-Length':
@@ -111,10 +113,10 @@ class QgsServerAPITest(QgsServerTestBase):
         result = bytes(response.body()).decode('utf8') if reference_file.endswith('html') else self.dump(response)
         path = unitTestDataPath('qgis_server') + '/api/' + reference_file
         if self.regenerate_reference:
-            f = open(path, 'w+')
+            f = open(path.encode('utf8'), 'w+', encoding='utf8')
             f.write(result)
             f.close()
-            print("Reference file %s regenerated!" % path)
+            print("Reference file %s regenerated!" % path.encode('utf8'))
 
         def __normalize_json(content):
             reference_content = content.split('\n')
@@ -122,11 +124,19 @@ class QgsServerAPITest(QgsServerTestBase):
             headers_content = '\n'.join(reference_content[:reference_content.index('') + 1])
             return headers_content + '\n' + json_content
 
-        with open(path, 'r') as f:
+        with open(path.encode('utf8'), 'r', encoding='utf8') as f:
             if reference_file.endswith('json'):
                 self.assertEqual(__normalize_json(result), __normalize_json(f.read()))
             else:
                 self.assertEqual(f.read(), result)
+
+        return response
+
+    def compareContentType(self, url, headers, content_type):
+        request = QgsBufferServerRequest(url, headers=headers)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, QgsProject())
+        self.assertEqual(response.headers()['Content-Type'], content_type)
 
     @classmethod
     def setUpClass(cls):
@@ -134,7 +144,7 @@ class QgsServerAPITest(QgsServerTestBase):
         cls.maxDiff = None
 
     def test_api(self):
-        """Test API registeri"""
+        """Test API registering"""
 
         api = API(self.server.serverInterface())
         self.server.serverInterface().serviceRegistry().registerApi(api)
@@ -200,6 +210,21 @@ class QgsServerAPITest(QgsServerTestBase):
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3')
         self.compareApi(request, None, 'test_wfs3_landing_page.html')
 
+    def test_content_type_negotiation(self):
+        """Test content-type negotiation and conflicts"""
+
+        # Default: json
+        self.compareContentType('http://server.qgis.org/wfs3', {}, 'application/json')
+        # Explicit request
+        self.compareContentType('http://server.qgis.org/wfs3', {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}, 'text/html')
+        self.compareContentType('http://server.qgis.org/wfs3', {'Accept': 'application/json'}, 'application/json')
+        # File suffix
+        self.compareContentType('http://server.qgis.org/wfs3.json', {}, 'application/json')
+        self.compareContentType('http://server.qgis.org/wfs3.html', {}, 'text/html')
+        # File extension must take precedence over Accept header
+        self.compareContentType('http://server.qgis.org/wfs3.html', {'Accept': 'application/json'}, 'text/html')
+        self.compareContentType('http://server.qgis.org/wfs3.json', {'Accept': 'text/html'}, 'application/json')
+
     def test_wfs3_landing_page_json(self):
         """Test WFS3 API landing page in JSON format"""
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3.json')
@@ -220,12 +245,11 @@ class QgsServerAPITest(QgsServerTestBase):
 
     def test_wfs3_collections_empty(self):
         """Test WFS3 collections API"""
+
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections')
         self.compareApi(request, None, 'test_wfs3_collections_empty.json')
-
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections.json')
         self.compareApi(request, None, 'test_wfs3_collections_empty.json')
-
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections.html')
         self.compareApi(request, None, 'test_wfs3_collections_empty.html')
 
@@ -242,6 +266,17 @@ class QgsServerAPITest(QgsServerTestBase):
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         self.compareApi(request, project, 'test_wfs3_collections_project.html')
+
+    def test_wfs3_collections_content_type(self):
+        """Test WFS3 API collections in html format with Accept header"""
+
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections')
+        request.setHeader('Accept', 'text/html')
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.headers()['Content-Type'], 'text/html')
 
     def test_wfs3_collection_items(self):
         """Test WFS3 API items"""

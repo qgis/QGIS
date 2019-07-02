@@ -1,0 +1,17 @@
+<!-- template for the WFS3 API requirement classes -->
+{% include "header.html" %}
+<div class="container">
+    <h1>QGIS Server</h1>
+
+
+    <h2>Conformance Classes</h2>
+
+    <ul>
+    {% for link in conformsTo %}
+        <li>{{ link }}</li>
+    {% endfor %}
+    </ul>
+
+
+</div>
+{% include "footer.html" %}
