@@ -29,6 +29,7 @@
 
 #if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
+#include <proj.h>
 #endif
 
 bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent )
@@ -113,6 +114,8 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
 #if PROJ_VERSION_MAJOR>=6
   // proj 6 doesn't provide deprecated operations
   mHideDeprecatedCheckBox->setVisible( false );
+
+  mLabelDstDescription->hide();
 #else
   QgsSettings settings;
   mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), true ).toBool() );
@@ -172,7 +175,41 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
       preferredInitialRow = row;
     }
 
-    const QString toolTipString = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( transform.name, transform.proj );
+
+#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+    QStringList opText;
+    for ( const QgsDatumTransform::SingleOperationDetails &singleOpDetails : transform.operationDetails )
+    {
+      QString text;
+      if ( !singleOpDetails.scope.isEmpty() )
+      {
+        text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), singleOpDetails.scope );
+      }
+      if ( !singleOpDetails.remarks.isEmpty() )
+      {
+        if ( !text.isEmpty() )
+          text += QStringLiteral( "<br>" );
+        text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), singleOpDetails.remarks );
+      }
+
+      if ( !text.isEmpty() )
+      {
+        opText.append( text );
+      }
+    }
+
+    if ( opText.count() > 1 )
+    {
+      for ( int k = 0; k < opText.count(); ++k )
+        opText[k] = QStringLiteral( "<li>%1</li>" ).arg( opText.at( k ) );
+    }
+
+    const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
+                                  + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() ) +
+                                  QStringLiteral( "<p><code>%2</code></p>" ).arg( transform.proj );
+#else
+    const QString toolTipString = QStringLiteral( "<b>%1</b><p><code>%2</code></p>" ).arg( transform.name, transform.proj );
+#endif
     item->setToolTip( toolTipString );
     if ( itemDisabled )
     {
