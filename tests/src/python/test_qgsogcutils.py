@@ -98,6 +98,27 @@ class TestQgsOgcUtils(unittest.TestCase):
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'id > 2 AND id < 4')
 
+        # Literals are Scientific notation 15e-01 and 35e-01
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>id</ogc:PropertyName>
+                  <ogc:Literal>15e-01</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThan>
+                  <ogc:PropertyName>id</ogc:PropertyName>
+                  <ogc:Literal>35e-01</ogc:Literal>
+                </ogc:PropertyIsLessThan>
+              </ogc:And>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id > 2 AND id < 4')
+
     def test_expressionFromOgcFilterWithLonglong(self):
         """
         Test expressionFromOgcFilter with LongLong type field
@@ -158,6 +179,27 @@ class TestQgsOgcUtils(unittest.TestCase):
                 <ogc:PropertyIsLessThan>
                   <ogc:PropertyName>id</ogc:PropertyName>
                   <ogc:Literal>3.5</ogc:Literal>
+                </ogc:PropertyIsLessThan>
+              </ogc:And>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id > 2 AND id < 4')
+
+        # Literals are Scientific notation 15e-01 and 35e-01
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>id</ogc:PropertyName>
+                  <ogc:Literal>15e-01</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThan>
+                  <ogc:PropertyName>id</ogc:PropertyName>
+                  <ogc:Literal>35e-01</ogc:Literal>
                 </ogc:PropertyIsLessThan>
               </ogc:And>
             </ogc:Filter>
@@ -239,6 +281,27 @@ class TestQgsOgcUtils(unittest.TestCase):
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'id > 1.5 AND id < 3.5')
 
+        # Literals are Scientific notation 15e-01 and 35e-01
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>id</ogc:PropertyName>
+                  <ogc:Literal>15e-01</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThan>
+                  <ogc:PropertyName>id</ogc:PropertyName>
+                  <ogc:Literal>35e-01</ogc:Literal>
+                </ogc:PropertyIsLessThan>
+              </ogc:And>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id > 1.5 AND id < 3.5')
+
     def test_expressionFromOgcFilterWithString(self):
         """
         Test expressionFromOgcFilter with String type field
@@ -309,6 +372,27 @@ class TestQgsOgcUtils(unittest.TestCase):
 
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'id > \'1.5\' AND id < \'3.5\'')
+
+        # Literals are Scientific notation 15e-01 and 35e-01
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>id</ogc:PropertyName>
+                  <ogc:Literal>15e-01</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThan>
+                  <ogc:PropertyName>id</ogc:PropertyName>
+                  <ogc:Literal>35e-01</ogc:Literal>
+                </ogc:PropertyIsLessThan>
+              </ogc:And>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id > \'15e-01\' AND id < \'35e-01\'')
 
 
 if __name__ == '__main__':
