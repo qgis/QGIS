@@ -569,6 +569,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Returns the length in 3D world of the line string.
      * If it is not a 3D line string, return its 2D length.
      * \see length()
+     * \since QGIS 3.10
      */
     double length3D() const;
     QgsPoint startPoint() const override;

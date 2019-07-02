@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>6</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>606</width>
-                <height>888</height>
+                <width>843</width>
+                <height>915</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1085,8 +1085,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>596</width>
-                <height>1087</height>
+                <width>543</width>
+                <height>1094</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1621,8 +1621,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>614</width>
-                <height>418</height>
+                <width>555</width>
+                <height>369</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1813,8 +1813,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>548</width>
-                <height>730</height>
+                <width>500</width>
+                <height>747</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2143,8 +2143,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>737</width>
-                <height>1023</height>
+                <width>674</width>
+                <height>1052</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2929,8 +2929,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>526</width>
-                <height>307</height>
+                <width>506</width>
+                <height>314</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3240,8 +3240,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>829</height>
+                <width>613</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3503,6 +3503,13 @@
                   <string>Zooming</string>
                  </property>
                  <layout class="QGridLayout" name="_8">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>Zoom factor</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="1">
                    <widget class="QgsSpinBox" name="spinZoomFactor">
                     <property name="toolTip">
@@ -3526,13 +3533,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                     <property name="showClearButton" stdset="0">
                      <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_3">
-                    <property name="text">
-                     <string>Zoom factor</string>
                     </property>
                    </widget>
                   </item>
@@ -3684,8 +3684,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>165</width>
-                <height>269</height>
+                <width>154</width>
+                <height>271</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3852,8 +3852,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>573</width>
-                <height>849</height>
+                <width>843</width>
+                <height>873</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4461,8 +4461,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>512</width>
-                <height>557</height>
+                <width>473</width>
+                <height>606</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4730,8 +4730,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>453</width>
-                <height>386</height>
+                <width>415</width>
+                <height>392</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4899,8 +4899,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>675</width>
-                <height>720</height>
+                <width>616</width>
+                <height>736</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5401,8 +5401,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -5513,12 +5513,6 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -5528,6 +5522,12 @@ p, li { white-space: pre-wrap; }
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

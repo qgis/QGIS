@@ -58,8 +58,6 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 
-  mIsAlreadyActivated = false;
-
   // Update scale if the terrain vertical scale changed
   connect( mCanvas->map(), &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapToolMeasureLine::updateMeasurementLayer );
 }
@@ -85,8 +83,8 @@ void Qgs3DMapToolMeasureLine::activate()
     QgsLineString *measurementLine = new QgsLineString();
     measurementLine->addZValue();
 
-    QgsFeature *measurementFeature = new QgsFeature( QgsFeatureId( 1 ) );
-    measurementFeature->setGeometry( QgsGeometry( measurementLine ) );
+    QgsFeature measurementFeature( QgsFeatureId( 1 ) );
+    measurementFeature.setGeometry( QgsGeometry( measurementLine ) );
 
     // Initialize the line layer
     QString mapCRS = mCanvas->map()->crs().authid();
@@ -94,13 +92,12 @@ void Qgs3DMapToolMeasureLine::activate()
 
     // Add feature to layer
     mMeasurementLayer->startEditing();
-    mMeasurementLayer->addFeature( *measurementFeature );
+    mMeasurementLayer->addFeature( measurementFeature );
     mMeasurementLayer->commitChanges();
 
     // Set style
     updateSettings();
     mIsAlreadyActivated = true;
-//    updateSettings();
   }
 
   // Show dialog
@@ -192,10 +189,10 @@ void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
   {
     line = new QgsLineString( mPoints );
   }
-  QgsGeometry *lineGeometry = new QgsGeometry( line );
+  QgsGeometry lineGeometry( line );
 
   QgsGeometryMap geometryMap;
-  geometryMap.insert( 1, *lineGeometry );
+  geometryMap.insert( 1, lineGeometry );
   mMeasurementLayer->dataProvider()->changeGeometryValues( geometryMap );
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
