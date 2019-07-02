@@ -147,6 +147,7 @@ ADD_PYTHON_TEST(PyQgsNetworkContentFetcherTask test_qgsnetworkcontentfetchertask
 ADD_PYTHON_TEST(PyQgsNullSymbolRenderer test_qgsnullsymbolrenderer.py)
 ADD_PYTHON_TEST(PyQgsNewGeoPackageLayerDialog test_qgsnewgeopackagelayerdialog.py)
 ADD_PYTHON_TEST(PyQgsNoApplication test_qgsnoapplication.py)
+ADD_PYTHON_TEST(PyQgsOgcUtils test_qgsogcutils.py)
 ADD_PYTHON_TEST(PyQgsOGRProviderGpkg test_provider_ogr_gpkg.py)
 ADD_PYTHON_TEST(PyQgsOGRProviderSqlite test_provider_ogr_sqlite.py)
 ADD_PYTHON_TEST(PyQgsOpacityWidget test_qgsopacitywidget.py)
