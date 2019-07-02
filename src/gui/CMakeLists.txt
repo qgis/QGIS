@@ -985,6 +985,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods

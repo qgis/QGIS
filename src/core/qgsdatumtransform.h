@@ -148,6 +148,21 @@ class CORE_EXPORT QgsDatumTransform
     };
 
     /**
+     * Contains information about a single coordinate operation.
+     *
+     * \note Only used in builds based on on Proj >= 6.2
+     * \since QGIS 3.10
+     */
+    struct SingleOperationDetails
+    {
+      //! Scope of operation, from EPSG registry database
+      QString scope;
+
+      //! Remarks for operation, from EPSG registry database
+      QString remarks;
+    };
+
+    /**
      * Contains information about a coordinate transformation operation.
      *
      * \note Only used in builds based on on Proj >= 6.0
@@ -174,6 +189,14 @@ class CORE_EXPORT QgsDatumTransform
        * Contains a list of transform grids used by the operation.
        */
       QList< QgsDatumTransform::GridDetails > grids;
+
+      /**
+       * Contains information about the single operation steps used in the transform operation.
+       *
+       * \note Only used in builds based on on Proj >= 6.2
+       * \since QGIS 3.10
+       */
+      QList< QgsDatumTransform::SingleOperationDetails > operationDetails;
     };
 
     /**
