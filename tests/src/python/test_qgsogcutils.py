@@ -394,6 +394,49 @@ class TestQgsOgcUtils(unittest.TestCase):
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'id > \'15e-01\' AND id < \'35e-01\'')
 
+    def test_expressionFromOgcFilterWithAndOrPropertyIsLike(self):
+        """
+        Test expressionFromOgcFilter with And, Or and PropertyIsLike with wildCard
+        """
+
+        vl = QgsVectorLayer('Point', 'vl', 'memory')
+        vl.dataProvider().addAttributes([QgsField('id', QVariant.LongLong), QgsField('THEME', QVariant.String), QgsField('PROGRAMME', QVariant.String)])
+        vl.updateFields()
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:And>
+                <ogc:PropertyIsLike escape="\\" wildCard="%" singleChar="_">
+                  <ogc:PropertyName>THEME</ogc:PropertyName>
+                  <ogc:Literal>%Phytoplancton total%</ogc:Literal>
+                </ogc:PropertyIsLike>
+                <ogc:Or>
+                  <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+                    <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                    <ogc:Literal>REPHY;*</ogc:Literal>
+                  </ogc:PropertyIsLike>
+                  <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+                    <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                    <ogc:Literal>*;REPHY</ogc:Literal>
+                  </ogc:PropertyIsLike>
+                  <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+                    <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                    <ogc:Literal>*;REPHY;*</ogc:Literal>
+                  </ogc:PropertyIsLike>
+                  <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+                    <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                    <ogc:Literal>^REPHY$</ogc:Literal>
+                  </ogc:PropertyIsLike>
+                </ogc:Or>
+              </ogc:And>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'THEME LIKE \'%Phytoplancton total%\' AND (PROGRAMME ILIKE \'REPHY;%\' OR PROGRAMME ILIKE \'%;REPHY\' OR PROGRAMME ILIKE \'%;REPHY;%\' OR PROGRAMME ILIKE \'^REPHY$\')')
+
 
 if __name__ == '__main__':
     unittest.main()
