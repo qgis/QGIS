@@ -210,9 +210,15 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
         opText[k] = QStringLiteral( "<li>%1</li>" ).arg( opText.at( k ) );
     }
 
+    const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
+    const QColor active = palette().color( QPalette::Active, QPalette::Text );
+
+    const QColor codeColor( static_cast< int >( active.red() * 0.6 + disabled.red() * 0.4 ),
+                            static_cast< int >( active.green() * 0.6 + disabled.green() * 0.4 ),
+                            static_cast< int >( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
     const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
                                   + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() ) +
-                                  QStringLiteral( "<p><code>%2</code></p>" ).arg( transform.proj );
+                                  QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
 #else
     const QString toolTipString = QStringLiteral( "<b>%1</b><p><code>%2</code></p>" ).arg( transform.name, transform.proj );
 #endif
