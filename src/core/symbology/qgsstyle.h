@@ -900,4 +900,175 @@ class CORE_EXPORT QgsStyle : public QObject
     Q_DISABLE_COPY( QgsStyle )
 };
 
+/**
+ * \class QgsStyleEntityInterface
+ * \ingroup core
+ * An interface for entities which can be placed in a QgsStyle database.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleEntityInterface
+{
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->type() )
+    {
+      case QgsStyle::SymbolEntity:
+        sipType = sipType_QgsStyleSymbolEntity;
+        break;
+
+      case QgsStyle::ColorrampEntity:
+        sipType = sipType_QgsStyleColorRampEntity;
+        break;
+
+      case QgsStyle::TextFormatEntity:
+        sipType = sipType_QgsStyleTextFormatEntity;
+        break;
+
+      case QgsStyle::LabelSettingsEntity:
+        sipType = sipType_QgsStyleLabelSettingsEntity;
+        break;
+
+      case QgsStyle::SmartgroupEntity:
+      case QgsStyle::TagEntity:
+        sipType = 0;
+        break;
+    }
+    SIP_END
+#endif
+
+  public:
+
+    virtual ~QgsStyleEntityInterface() = default;
+
+    /**
+     * Returns the type of style entity.
+     */
+    virtual QgsStyle::StyleEntity type() const = 0;
+
+};
+
+/**
+ * \class QgsStyleSymbolEntity
+ * \ingroup core
+ * A symbol entity for QgsStyle databases.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleSymbolEntity, with the specified \a symbol.
+     *
+     * Ownership of \a symbol is NOT transferred.
+     */
+    QgsStyleSymbolEntity( const QgsSymbol *symbol )
+      : mSymbol( symbol )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+    /**
+     * Returns the entity's symbol.
+     */
+    const QgsSymbol *symbol() const { return mSymbol; }
+
+  private:
+
+    const QgsSymbol *mSymbol = nullptr;
+
+};
+
+/**
+ * \class QgsStyleColorRampEntity
+ * \ingroup core
+ * A color ramp entity for QgsStyle databases.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleColorRampEntity, with the specified color \a ramp.
+     *
+     * Ownership of \a ramp is NOT transferred.
+     */
+    QgsStyleColorRampEntity( const QgsColorRamp *ramp )
+      : mRamp( ramp )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+    /**
+     * Returns the entity's color ramp.
+     */
+    const QgsColorRamp *ramp() const { return mRamp; }
+
+  private:
+
+    const QgsColorRamp *mRamp = nullptr;
+};
+
+/**
+ * \class QgsStyleTextFormatEntity
+ * \ingroup core
+ * A text format entity for QgsStyle databases.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleTextFormatEntity, with the specified text \a format.
+     */
+    QgsStyleTextFormatEntity( const QgsTextFormat &format )
+      : mFormat( format )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+    /**
+     * Returns the entity's text format.
+     */
+    QgsTextFormat format() const { return mFormat; }
+
+  private:
+
+    QgsTextFormat mFormat;
+
+};
+
+/**
+ * \class QgsStyleLabelSettingsEntity
+ * \ingroup core
+ * A label settings entity for QgsStyle databases.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleLabelSettingsEntity, with the specified label \a settings.
+     */
+    QgsStyleLabelSettingsEntity( const QgsPalLayerSettings &settings )
+      : mSettings( settings )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+
+    /**
+     * Returns the entity's label settings.
+     */
+    const QgsPalLayerSettings &settings() const { return mSettings; }
+
+  private:
+
+    QgsPalLayerSettings mSettings;
+};
+
 #endif

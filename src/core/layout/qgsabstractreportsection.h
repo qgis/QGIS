@@ -312,6 +312,17 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      */
     virtual void reloadSettings();
 
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the report.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
   protected:
 
     //! Report sub-sections

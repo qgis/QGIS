@@ -46,6 +46,7 @@ class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
 class QgsProject;
+class QgsStyleEntityVisitorInterface;
 
 class QDomDocument;
 class QKeyEvent;
@@ -1139,6 +1140,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     static QString generateId( const QString &layerName );
 
+    /**
+     * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
+     * with the layer.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   public slots:
 

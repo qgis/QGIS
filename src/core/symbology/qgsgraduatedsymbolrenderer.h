@@ -158,6 +158,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     QString classAttribute() const { return mAttrName; }
     void setClassAttribute( const QString &attr ) { mAttrName = attr; }

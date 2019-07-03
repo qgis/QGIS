@@ -76,46 +76,15 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     void stopRender( QgsRenderContext &context ) override;
 
     QString dump() const override;
-
-    //! Proxy that will call this method on the embedded renderer.
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool filterNeedsGeometry() const override;
-    //! Proxy that will call this method on the embedded renderer.
     QgsFeatureRenderer::Capabilities capabilities() override;
-
-    /**
-     * Proxy that will call this method on the embedded renderer.
-     */
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
-
-    /**
-     * Proxy that will call this method on the embedded renderer.
-     */
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
-
-    /**
-     * Proxy that will call this method on the embedded renderer.
-     */
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
-
-    /**
-     * Proxy that will call this method on the embedded renderer.
-     */
     QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
-
-    /**
-     * Proxy that will call this method on the embedded renderer.
-     */
     QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
-
-    /**
-     * Proxy that will call this method on the embedded renderer.
-     */
     QgsLegendSymbolList legendSymbolItems() const override;
-
-    /**
-     * Proxy that will call this method on the embedded renderer.
-     */
     bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     //! Creates a renderer out of an XML, for loading
@@ -131,6 +100,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString &key ) override;
     void checkLegendSymbolItem( const QString &key, bool state = true ) override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     //! \returns TRUE if the geometries are to be preprocessed (merged with an union) before rendering.
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }

@@ -23,6 +23,7 @@
 #include "qgslayoututils.h"
 #include "qgsreadwritecontext.h"
 #include "qgssvgcache.h"
+#include "qgsstyleentityvisitor.h"
 #include <QSvgRenderer>
 #include <limits>
 #include <QGraphicsPathItem>
@@ -386,6 +387,18 @@ void QgsLayoutItemPolyline::setArrowHeadStrokeWidth( double width )
   mArrowHeadStrokeWidth = width;
   updateBoundingRect();
   update();
+}
+
+bool QgsLayoutItemPolyline::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mPolylineStyleSymbol )
+  {
+    QgsStyleSymbolEntity entity( mPolylineStyleSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, uuid(), displayName() ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsLayoutItemPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const

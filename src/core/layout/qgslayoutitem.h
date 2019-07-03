@@ -33,7 +33,7 @@ class QgsLayout;
 class QPainter;
 class QgsLayoutItemGroup;
 class QgsLayoutEffect;
-
+class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -862,6 +862,17 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     bool shouldDrawItem() const;
 
     QgsExpressionContext createExpressionContext() const override;
+
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the layout item.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   public slots:
 

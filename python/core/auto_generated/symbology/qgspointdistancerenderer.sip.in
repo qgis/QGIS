@@ -107,6 +107,8 @@ Constructor for QgsPointDistanceRenderer.
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
     void setLabelAttributeName( const QString &name );
 %Docstring

@@ -73,6 +73,7 @@ class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
+class QgsStyleEntityVisitorInterface;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -2194,6 +2195,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   signals:
 

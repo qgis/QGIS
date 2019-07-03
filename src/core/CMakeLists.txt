@@ -1183,6 +1183,7 @@ SET(QGIS_CORE_HDRS
   symbology/qgsheatmaprenderer.h
   symbology/qgsinvertedpolygonrenderer.h
   symbology/qgsnullsymbolrenderer.h
+  symbology/qgsstyleentityvisitor.h
   symbology/qgssymbollayer.h
   symbology/qgssymbollayerregistry.h
   symbology/qgssymbollayerutils.h

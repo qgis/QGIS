@@ -32,6 +32,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -1340,6 +1341,35 @@ void QgsLayoutItemMap::removeLabelBlockingItem( QgsLayoutItem *item )
 bool QgsLayoutItemMap::isLabelBlockingItem( QgsLayoutItem *item ) const
 {
   return mBlockingLabelItems.contains( item );
+}
+
+bool QgsLayoutItemMap::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::LayoutItem, uuid(), displayName() ) ) )
+    return true;
+
+  if ( mOverviewStack )
+  {
+    for ( int i = 0; i < mOverviewStack->size(); ++i )
+    {
+      if ( mOverviewStack->item( i )->accept( visitor ) )
+        return false;
+    }
+  }
+
+  if ( mGridStack )
+  {
+    for ( int i = 0; i < mGridStack->size(); ++i )
+    {
+      if ( mGridStack->item( i )->accept( visitor ) )
+        return false;
+    }
+  }
+
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::LayoutItem, uuid(), displayName() ) ) )
+    return false;
+
+  return true;
 }
 
 QPointF QgsLayoutItemMap::mapToItemCoords( QPointF mapCoords ) const

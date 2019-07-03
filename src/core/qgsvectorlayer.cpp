@@ -1390,6 +1390,19 @@ void QgsVectorLayer::setTransformContext( const QgsCoordinateTransformContext &t
     mDataProvider->setTransformContext( transformContext );
 }
 
+bool QgsVectorLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mRenderer )
+    if ( !mRenderer->accept( visitor ) )
+      return false;
+
+  if ( mLabeling )
+    if ( !mLabeling->accept( visitor ) )
+      return false;
+
+  return true;
+}
+
 bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
   QgsDebugMsgLevel( QStringLiteral( "Datasource in QgsVectorLayer::readXml: %1" ).arg( mDataSource.toLocal8Bit().data() ), 3 );

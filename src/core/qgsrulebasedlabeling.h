@@ -290,6 +290,17 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         bool requiresAdvancedEffects() const;
 
+        /**
+         * Accepts the specified symbology \a visitor, causing it to visit all child rules associated
+         * with the rule.
+         *
+         * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+         * should be canceled.
+         *
+         * \since QGIS 3.10
+         */
+        bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
       private:
 #ifdef SIP_RUN
         Rule( const QgsRuleBasedLabeling::Rule &rh );
@@ -361,6 +372,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     QStringList subProviders() const override;
     QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
      * Set pal settings for a specific provider (takes ownership).

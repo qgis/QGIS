@@ -34,6 +34,7 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgscoordinateformatter.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QPainter>
 #include <QPen>
@@ -2222,6 +2223,24 @@ QgsExpressionContext QgsLayoutItemMapGrid::createExpressionContext() const
   context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), "x", true ) );
   context.setHighlightedVariables( QStringList() << QStringLiteral( "grid_number" ) << QStringLiteral( "grid_axis" ) );
   return context;
+}
+
+bool QgsLayoutItemMapGrid::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mGridLineSymbol )
+  {
+    QgsStyleSymbolEntity entity( mGridLineSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "grid" ), QObject::tr( "Grid" ) ) ) )
+      return false;
+  }
+  if ( mGridMarkerSymbol )
+  {
+    QgsStyleSymbolEntity entity( mGridMarkerSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "grid" ), QObject::tr( "Grid" ) ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 bool QgsLayoutItemMapGrid::testFrameSideFlag( QgsLayoutItemMapGrid::FrameSideFlag flag ) const
