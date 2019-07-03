@@ -43,6 +43,34 @@ QgsStyle::~QgsStyle()
   clear();
 }
 
+bool QgsStyle::addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update )
+{
+  switch ( entity->type() )
+  {
+    case SymbolEntity:
+      if ( !static_cast< const QgsStyleSymbolEntity * >( entity )->symbol() )
+        return false;
+      return addSymbol( name, static_cast< const QgsStyleSymbolEntity * >( entity )->symbol()->clone(), update );
+
+    case ColorrampEntity:
+      if ( !static_cast< const QgsStyleColorRampEntity * >( entity )->ramp() )
+        return false;
+      return addColorRamp( name, static_cast< const QgsStyleColorRampEntity * >( entity )->ramp()->clone(), update );
+
+    case TextFormatEntity:
+      return addTextFormat( name, static_cast< const QgsStyleTextFormatEntity * >( entity )->format(), update );
+
+    case LabelSettingsEntity:
+      return addLabelSettings( name, static_cast< const QgsStyleLabelSettingsEntity * >( entity )->settings(), update );
+
+    case TagEntity:
+    case SmartgroupEntity:
+      break;
+
+  }
+  return false;
+}
+
 QgsStyle *QgsStyle::defaultStyle() // static
 {
   if ( !sDefaultStyle )

@@ -32,6 +32,7 @@
 class QgsSymbol;
 class QgsSymbolLayer;
 class QgsColorRamp;
+class QgsStyleEntityInterface;
 
 class QDomDocument;
 class QDomElement;
@@ -182,6 +183,19 @@ class CORE_EXPORT QgsStyle : public QObject
       TextFormatEntity, //!< Text formats
       LabelSettingsEntity, //!< Label settings
     };
+
+    /**
+     * Adds an \a entity to the style, with the specified \a name. Ownership is not transferred.
+     *
+     * If \a update is TRUE then the style database is updated automatically as a result.
+     *
+     * Returns TRUE if the add operation was successful.
+     *
+     * \note Adding an entity with the name of existing one replaces the existing one automatically.
+     *
+     * \since QGIS 3.10
+     */
+    bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
 
     /**
      * Adds a symbol to style and takes symbol's ownership
