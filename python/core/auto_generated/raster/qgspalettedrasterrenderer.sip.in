@@ -86,14 +86,13 @@ Returns the raster band used for rendering the raster.
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
-
 
     virtual QList<int> usesBands() const;
 
-
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );

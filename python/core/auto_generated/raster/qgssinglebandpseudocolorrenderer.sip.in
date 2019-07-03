@@ -75,14 +75,13 @@ Creates a color ramp shader
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
-
 
     virtual QList<int> usesBands() const;
 
-
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
     int band() const;

@@ -21,6 +21,7 @@
 #include "qgsspatialindex.h"
 #include "qgsmultipoint.h"
 #include "qgslogger.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -203,6 +204,15 @@ QString QgsPointDistanceRenderer::filter( const QgsFields &fields )
     return QgsFeatureRenderer::filter( fields );
   else
     return mRenderer->filter( fields );
+}
+
+bool QgsPointDistanceRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mRenderer )
+    if ( !mRenderer->accept( visitor ) )
+      return false;
+
+  return true;
 }
 
 QSet<QString> QgsPointDistanceRenderer::usedAttributes( const QgsRenderContext &context ) const

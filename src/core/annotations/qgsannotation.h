@@ -306,6 +306,17 @@ class CORE_EXPORT QgsAnnotation : public QObject
      */
     virtual void setAssociatedFeature( const QgsFeature &feature );
 
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * within the annotation.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
   signals:
 
     //! Emitted whenever the annotation's appearance changes

@@ -1267,6 +1267,16 @@ Generates an unique identifier for this layer, the generate ID is prefixed by ``
 .. versionadded:: 3.8
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the layer.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
 
   public slots:
 

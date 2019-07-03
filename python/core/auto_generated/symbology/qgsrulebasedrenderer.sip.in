@@ -423,6 +423,17 @@ Check if this rule is an ELSE rule
 :return: ``True`` if this rule is an else rule
 %End
 
+        bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all child rules associated
+with the rule.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
       protected:
         void initFilter();
 
@@ -506,6 +517,8 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
 
     QgsRuleBasedRenderer::Rule *rootRule();

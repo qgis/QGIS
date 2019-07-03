@@ -37,6 +37,7 @@ class QgsFeature;
 class QgsVectorLayer;
 class QgsPaintEffect;
 class QgsReadWriteContext;
+class QgsStyleEntityVisitorInterface;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -458,6 +459,17 @@ class CORE_EXPORT QgsFeatureRenderer
      * \since QGIS 2.16
      */
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
+
+    /**
+     * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
+     * with the renderer.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   protected:
     QgsFeatureRenderer( const QString &type );

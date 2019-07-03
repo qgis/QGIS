@@ -268,6 +268,7 @@
 %Include auto_generated/symbology/qgsheatmaprenderer.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrenderer.sip
 %Include auto_generated/symbology/qgsnullsymbolrenderer.sip
+%Include auto_generated/symbology/qgsstyleentityvisitor.sip
 %Include auto_generated/symbology/qgssymbollayer.sip
 %Include auto_generated/symbology/qgssymbollayerregistry.sip
 %Include auto_generated/symbology/qgssymbollayerutils.sip

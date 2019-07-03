@@ -2853,3 +2853,23 @@ void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name 
       break;
   }
 }
+
+QgsStyle::StyleEntity QgsStyleSymbolEntity::type() const
+{
+  return QgsStyle::SymbolEntity;
+}
+
+QgsStyle::StyleEntity QgsStyleColorRampEntity::type() const
+{
+  return QgsStyle::ColorrampEntity;
+}
+
+QgsStyle::StyleEntity QgsStyleTextFormatEntity::type() const
+{
+  return QgsStyle::TextFormatEntity;
+}
+
+QgsStyle::StyleEntity QgsStyleLabelSettingsEntity::type() const
+{
+  return QgsStyle::LabelSettingsEntity;
+}
