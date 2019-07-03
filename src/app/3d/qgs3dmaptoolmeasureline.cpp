@@ -161,12 +161,6 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
   }
 }
 
-void Qgs3DMapToolMeasureLine::setMeasurementLayerRenderer()
-{
-  mMeasurementLayer->setRenderer3D( mLineSymbolRenderer );
-  mLineSymbolRenderer->setLayer( mMeasurementLayer );
-}
-
 void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
 {
   double verticalScale = canvas()->map()->terrainVerticalScale();
@@ -213,8 +207,10 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   phongMaterial.setAmbient( QColor( myRed, myGreen, myBlue, 100 ) );
   lineSymbol->setMaterial( phongMaterial );
 
-  mLineSymbolRenderer = new QgsVectorLayer3DRenderer( lineSymbol );
-  setMeasurementLayerRenderer();
+  // Set renderer
+  QgsVectorLayer3DRenderer *lineSymbolRenderer = new QgsVectorLayer3DRenderer( lineSymbol );
+  mMeasurementLayer->setRenderer3D( lineSymbolRenderer );
+  lineSymbolRenderer->setLayer( mMeasurementLayer );
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 

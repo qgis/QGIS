@@ -76,7 +76,6 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     friend class Qgs3DMapToolMeasureLinePickHandler;
 
     QgsVectorLayer *mMeasurementLayer = nullptr;
-    QgsVectorLayer3DRenderer *mLineSymbolRenderer = nullptr;
     bool mIsAlreadyActivated = false;
 
     //! Store points
@@ -84,9 +83,6 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     //! Indicates whether we've just done a right mouse click
     bool mDone = true;
-
-    //! Set the line layer renderer
-    void setMeasurementLayerRenderer();
 
     //! Update line layer
     void updateMeasurementLayer();
