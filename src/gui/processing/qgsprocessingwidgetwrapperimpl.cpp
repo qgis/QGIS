@@ -2577,6 +2577,7 @@ QWidget *QgsProcessingColorWidgetWrapper::createWidget()
     case QgsProcessingGui::Modeler:
     {
       mColorButton = new QgsColorButton( nullptr );
+      mColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
       if ( colorParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
         mColorButton->setShowNull( true );
