@@ -5704,7 +5704,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
   if ( !context->hasCachedValue( cacheIndex ) )
   {
-    spatialIndex = QgsSpatialIndex( cachedTarget->getFeatures() );
+    spatialIndex = QgsSpatialIndex( cachedTarget->getFeatures(), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
     if ( layerCanBeCached )
       context->setCachedValue( cacheIndex, QVariant::fromValue( spatialIndex ) );
   }
@@ -5724,7 +5724,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   FEAT_FROM_CONTEXT( context, feat )
   const QgsGeometry geometry = feat.geometry();
 
-  return overlayFunction( subExpression, subContext, spatialIndex, cachedTarget, geometry, testOnly );
+  return overlayFunction( subExpression, subContext, spatialIndex, cachedTarget, geometry, testOnly);
 }
 
 // Intersect functions:
@@ -5732,15 +5732,26 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 typedef bool ( QgsGeometry::*t_relationFunction )( const QgsGeometry &geometry ) const;
 
 template <t_relationFunction T>
-static QVariant intersectFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly )
+static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly)
 {
-  const QList<QgsFeatureId> targetFeatureIds = spatialIndex.intersects( geometry.boundingBox() );
+  QgsRectangle intDomain = geometry.boundingBox();
+  //if ( T == &QgsGeometry::touches){
+     //intDomain.grow(0.1);
+  //}
+  const QList<QgsFeatureId> targetFeatureIds = spatialIndex.intersects( intDomain );
   bool found = false;
+  bool geometryCheck;
   QVariantList results;
   for ( QgsFeatureId id : targetFeatureIds )
   {
     QgsFeature feat = cachedTarget->getFeature( id );
-    if ( ( feat.geometry().*T )( geometry ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
+    if ( T != &QgsGeometry::disjoint) {
+      geometryCheck = ( feat.geometry().*T )( geometry );
+    } else {
+      geometryCheck = !feat.geometry().intersects( geometry );
+    }
+
+    if ( geometryCheck ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
       found = true;
 
@@ -5759,14 +5770,94 @@ static QVariant intersectFilteredOverlay( QgsExpression &subExp, QgsExpressionCo
     return results;
 }
 
+
+static QVariantList indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly = false)
+{
+    const QList<QgsFeatureId> targetFeatureIds = spatialIndex.nearestNeighbor( geometry );
+    QVariantList results;
+    for ( QgsFeatureId id : targetFeatureIds )
+    {
+      QgsFeature feat = cachedTarget->getFeature( id );
+      // We want a list of attributes / geometries / other expression values, evaluate now
+      subContext.setFeature( feat );
+      results.append( subExp.evaluate( &subContext ) );
+    }
+    return results;
+}
+
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, false, intersectFilteredOverlay<&QgsGeometry::intersects> );
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::intersects> );
 }
 
 static QVariant fcnTestGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, true, intersectFilteredOverlay<&QgsGeometry::intersects> );
+  return executeGeomOverlay( values, context, parent, true, indexedFilteredOverlay<&QgsGeometry::intersects> );
+}
+
+static QVariant fcnGeomOverlayContains( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::contains> );
+}
+
+static QVariant fcnTestGeomOverlayContains( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, true, indexedFilteredOverlay<&QgsGeometry::contains> );
+}
+
+static QVariant fcnGeomOverlayCrosses( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::crosses> );
+}
+
+static QVariant fcnTestGeomOverlayCrosses( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, true, indexedFilteredOverlay<&QgsGeometry::crosses> );
+}
+
+static QVariant fcnGeomOverlayEquals( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::equals> );
+}
+
+static QVariant fcnTestGeomOverlayEquals( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, true, indexedFilteredOverlay<&QgsGeometry::equals> );
+}
+
+static QVariant fcnGeomOverlayTouches( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::touches> );
+}
+
+static QVariant fcnTestGeomOverlayTouches( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, true, indexedFilteredOverlay<&QgsGeometry::touches> );
+}
+
+static QVariant fcnGeomOverlayWithin( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::within> );
+}
+
+static QVariant fcnTestGeomOverlayWithin( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, true, indexedFilteredOverlay<&QgsGeometry::within> );
+}
+
+static QVariant fcnGeomOverlayDisjoint( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::disjoint> );
+}
+
+static QVariant fcnTestGeomOverlayDisjoint( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, true, indexedFilteredOverlay<&QgsGeometry::disjoint> );
+}
+
+static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredNearest );
 }
 
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
@@ -6149,7 +6240,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     fcnGeomOverlayIntersectsFunc->setIsStatic( false );
     functions << fcnGeomOverlayIntersectsFunc;
 
-    QgsStaticExpressionFunction *fcnTestGeomOverlayIntersectsFunc = new QgsStaticExpressionFunction( QStringLiteral( "test_geometry_overlay_intersects" ), QgsExpressionFunction::ParameterList()
+    QgsStaticExpressionFunction *fcnTestGeomOverlayIntersectsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_intersects_test" ), QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
         // TODO: filter param
         // TODO: limit param
@@ -6157,6 +6248,130 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     // The current feature is accessed for the geometry, so this should not be cached
     fcnTestGeomOverlayIntersectsFunc->setIsStatic( false );
     functions << fcnTestGeomOverlayIntersectsFunc;
+
+    QgsStaticExpressionFunction *fcnGeomOverlayContainsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_contains" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnGeomOverlayContains, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnGeomOverlayContainsFunc->setIsStatic( false );
+    functions << fcnGeomOverlayContainsFunc;
+
+    QgsStaticExpressionFunction *fcnTestGeomOverlayContainsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_contains_test" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnTestGeomOverlayContains, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnTestGeomOverlayContainsFunc->setIsStatic( false );
+    functions << fcnTestGeomOverlayContainsFunc;
+
+    QgsStaticExpressionFunction *fcnGeomOverlayCrossesFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_crosses" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnGeomOverlayCrosses, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnGeomOverlayCrossesFunc->setIsStatic( false );
+    functions << fcnGeomOverlayCrossesFunc;
+
+    QgsStaticExpressionFunction *fcnTestGeomOverlayCrossesFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_crosses_test" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnTestGeomOverlayCrosses, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnTestGeomOverlayCrossesFunc->setIsStatic( false );
+    functions << fcnTestGeomOverlayCrossesFunc;
+
+    QgsStaticExpressionFunction *fcnGeomOverlayEqualsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_equals" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnGeomOverlayEquals, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnGeomOverlayEqualsFunc->setIsStatic( false );
+    functions << fcnGeomOverlayEqualsFunc;
+
+    QgsStaticExpressionFunction *fcnTestGeomOverlayEqualsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_equals_test" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnTestGeomOverlayEquals, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnTestGeomOverlayEqualsFunc->setIsStatic( false );
+    functions << fcnTestGeomOverlayEqualsFunc;
+
+    QgsStaticExpressionFunction *fcnGeomOverlayTouchesFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_touches" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnGeomOverlayTouches, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnGeomOverlayTouchesFunc->setIsStatic( false );
+    functions << fcnGeomOverlayTouchesFunc;
+
+    QgsStaticExpressionFunction *fcnTestGeomOverlayTouchesFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_touches_test" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnTestGeomOverlayTouches, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnTestGeomOverlayTouchesFunc->setIsStatic( false );
+    functions << fcnTestGeomOverlayTouchesFunc;
+
+    QgsStaticExpressionFunction *fcnGeomOverlayDisjointFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_disjoint" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnGeomOverlayDisjoint, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnGeomOverlayDisjointFunc->setIsStatic( false );
+    functions << fcnGeomOverlayDisjointFunc;
+
+    QgsStaticExpressionFunction *fcnTestGeomOverlayDisjointFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_disjoint_test" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnTestGeomOverlayDisjoint, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnTestGeomOverlayDisjointFunc->setIsStatic( false );
+    functions << fcnTestGeomOverlayDisjointFunc;
+
+    QgsStaticExpressionFunction *fcnGeomOverlayWithinFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_within" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnGeomOverlayWithin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnGeomOverlayWithinFunc->setIsStatic( false );
+    functions << fcnGeomOverlayWithinFunc;
+
+    QgsStaticExpressionFunction *fcnTestGeomOverlayWithinFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_within_test" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnTestGeomOverlayWithin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnTestGeomOverlayWithinFunc->setIsStatic( false );
+    functions << fcnTestGeomOverlayWithinFunc;
+
+    QgsStaticExpressionFunction *fcnGeomOverlayNearestFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_nearest" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+        // TODO: filter param
+        // TODO: limit param
+        fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    // The current feature is accessed for the geometry, so this should not be cached
+    fcnGeomOverlayNearestFunc->setIsStatic( false );
+    functions << fcnGeomOverlayNearestFunc;
 
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "x" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnGeomX, QStringLiteral( "GeometryGroup" ) )
