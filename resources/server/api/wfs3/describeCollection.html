@@ -1,0 +1,72 @@
+<!-- template for the WFS3 API collection page -->
+{% include "header.html" %}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1><a title="View items of: {{ title }}" href="{% for link in links %}
+        {% if link.type == "text/html" and link.rel == "items" %}
+        {{ link.href }}
+        {% endif %}
+        {% endfor %}">{{ title }}</a></h1>
+        <h3>Available CRSs</h3>
+        <ul>
+        {% for c in crs %}
+            <li>{{ c }}</li>
+        {% endfor %}
+        </ul>
+
+        <h3>Extent</h3>
+        <dl>
+            <dd>West</dd>
+            <dt>{{ extent.spatial.0.0 }}</dt>
+            <dd>South</dd>
+            <dt>{{ extent.spatial.0.1 }}</dt>
+            <dd>East</dd>
+            <dt>{{ extent.spatial.0.2 }}</dt>
+            <dd>North</dd>
+            <dt>{{ extent.spatial.0.3 }}</dt>
+        </dl>
+
+    </div>
+
+    <div class="col-md-6">
+        <div id="mapid" class="small"></div>
+
+        <script type="text/javascript">
+        jQuery( document ).ready(function( $ ) {
+            var map = L.map('mapid').setView([0, 0], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map)
+            var west = {{ extent.spatial.0.0 }};
+            var south = {{ extent.spatial.0.1 }};
+            var east = {{ extent.spatial.0.2 }};
+            var north = {{ extent.spatial.0.3 }};
+            var p1 = new L.LatLng(south, west);
+            var p2 = new L.LatLng(north, west);
+            var p3 = new L.LatLng(north, east);
+            var p4 = new L.LatLng(south, east);
+            var polygonPoints = [p1, p2, p3, p4];
+
+            var jl = new L.Polygon(polygonPoints).addTo(map);
+            map.setView(jl.getBounds().getCenter());
+            if ( jl.getBounds().getEast() != jl.getBounds().getWest() && jl.getBounds().getNorth() != jl.getBounds().getSouth() )
+            {
+              map.fitBounds(jl.getBounds());
+            }
+
+        });
+
+        </script>
+    </div>
+
+</div>
+
+<div class="row">
+    <div>
+        <h2>Links</h2>
+        {% include "links.html" %}
+    </div>
+</div>
+
+{% include "footer.html" %}

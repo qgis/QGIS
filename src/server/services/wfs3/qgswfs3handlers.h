@@ -85,7 +85,6 @@ struct DescribeCollectionHandler: public QgsWfs3::Handler
 
   DescribeCollectionHandler( );
   void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
-
 };
 
 /**

@@ -1,0 +1,30 @@
+<!-- template for the WFS3 API getFeatures page -->
+{% include "header.html" %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <h1>{{ metadata.pageTitle }}</h1>
+
+            {% for feature in features %}
+                <h2><a href="{{ append_path( feature.id ) }}">{{ feature.id }}</a></h2>
+                <dl class="row">
+                {% for name, value in feature.properties %}
+                    <dt class="col-sm-3">{{ name }}</dt>
+                    <dd class="col-sm-9">{{ value }}</dd>
+                {% endfor %}
+                </dl>
+            {% endfor %}
+        </div>
+
+        {% include "leaflet_map.html" %}
+
+    </div>
+
+    <div class="row">
+        <div>
+            <h2>Links</h2>
+            {% include "links.html" %}
+        </div>
+    </div>
+
+{% include "footer.html" %}
