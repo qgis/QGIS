@@ -75,8 +75,8 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
   mIncludeGeoAttributes = mUri.hasParam( "includegeoattributes" ) ? mUri.param( "includegeoattributes" ) == "true" : false;
 
-  mConnection = QgsOracleConn::connectDb( mUri );
-  if ( !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( !conn )
   {
     return;
   }
@@ -93,7 +93,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
 
     if ( mOwnerName.isEmpty() )
     {
-      mOwnerName = mConnection->currentUser();
+      mOwnerName = conn->currentUser();
     }
 
     if ( !mOwnerName.isEmpty() )
@@ -229,12 +229,12 @@ void QgsOracleProvider::setWorkspace( const QString &workspace )
   else
     mUri.setParam( "dbworkspace", workspace );
 
-  mConnection = QgsOracleConn::connectDb( mUri );
-  if ( !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( !conn )
   {
     mUri = prevUri;
     QgsDebugMsg( QStringLiteral( "restoring previous uri:%1" ).arg( mUri.uri() ) );
-    mConnection = QgsOracleConn::connectDb( mUri );
+    conn = QgsOracleConn::connectDb( mUri );
   }
   else
   {
@@ -249,9 +249,9 @@ QgsAbstractFeatureSource *QgsOracleProvider::featureSource() const
 
 void QgsOracleProvider::disconnectDb()
 {
-  if ( mConnection )
-    mConnection->disconnect();
-  mConnection = nullptr;
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( conn )
+    conn->disconnect();
 }
 
 bool QgsOracleProvider::exec( QSqlQuery &qry, QString sql, const QVariantList &args )
@@ -288,6 +288,7 @@ QString QgsOracleProvider::storageType() const
 
 QString QgsOracleProvider::pkParamWhereClause() const
 {
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
   QString whereClause;
 
   switch ( mPrimaryKeyType )
@@ -303,7 +304,7 @@ QString QgsOracleProvider::pkParamWhereClause() const
         int idx = mPrimaryKeyAttrs[i];
         QgsField fld = field( idx );
 
-        whereClause += delim + QString( "%1=?" ).arg( mConnection->fieldExpression( fld ) );
+        whereClause += delim + QString( "%1=?" ).arg( conn->fieldExpression( fld ) );
         delim = " AND ";
       }
     }
@@ -517,7 +518,8 @@ bool QgsOracleProvider::loadFields()
   mAttributeFields.clear();
   mDefaultValues.clear();
 
-  QSqlQuery qry( *mConnection );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  QSqlQuery qry( *conn );
 
   QMap<QString, QString> comments;
   QMap<QString, QString> types;
@@ -752,10 +754,11 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 
   mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
 
-  QSqlQuery qry( *mConnection );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
-    if ( mConnection->currentUser() == mOwnerName )
+    if ( conn->currentUser() == mOwnerName )
     {
       // full set of privileges for the owner
       mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures
@@ -854,8 +857,8 @@ bool QgsOracleProvider::determinePrimaryKey()
   // check to see if there is an unique index on the relation, which
   // can be used as a key into the table. Primary keys are always
   // unique indices, so we catch them as well.
-
-  QSqlQuery qry( *mConnection );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
 
@@ -989,7 +992,8 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
 {
   Q_UNUSED( query )
   // Check to see if the given column contains unique data
-  QSqlQuery qry( *mConnection );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  QSqlQuery qry( *conn );
 
   QString table = mQuery;
   if ( !mSqlWhereClause.isEmpty() )
@@ -1015,7 +1019,8 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
 // Returns the minimum value of an attribute
 QVariant QgsOracleProvider::minimumValue( int index ) const
 {
-  if ( !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( !conn )
     return QVariant( QString() );
 
   try
@@ -1031,7 +1036,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
       sql += QString( " WHERE %1" ).arg( mSqlWhereClause );
     }
 
-    QSqlQuery qry( *mConnection );
+    QSqlQuery qry( *conn );
 
     if ( !exec( qry, sql, QVariantList() ) )
     {
@@ -1058,7 +1063,8 @@ QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
 {
   QSet<QVariant> uniqueValues;
 
-  if ( !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( !conn )
     return uniqueValues;
 
   try
@@ -1082,7 +1088,7 @@ QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
       sql = QString( "SELECT * FROM (%1) WHERE rownum<=%2" ).arg( sql ).arg( limit );
     }
 
-    QSqlQuery qry( *mConnection );
+    QSqlQuery qry( *conn );
 
     if ( !exec( qry, sql, QVariantList() ) )
     {
@@ -1108,7 +1114,8 @@ QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
 // Returns the maximum value of an attribute
 QVariant QgsOracleProvider::maximumValue( int index ) const
 {
-  if ( !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( !conn )
     return QVariant();
 
   try
@@ -1124,7 +1131,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
       sql += QString( " WHERE %1" ).arg( mSqlWhereClause );
     }
 
-    QSqlQuery qry( *mConnection );
+    QSqlQuery qry( *conn );
 
     if ( !exec( qry, sql, QVariantList() ) )
     {
@@ -1166,7 +1173,8 @@ QString QgsOracleProvider::paramValue( QString fieldValue, const QString &defaul
   }
   else if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
-    QSqlQuery qry( *mConnection );
+    QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+    QSqlQuery qry( *conn );
     if ( !exec( qry, QString( "SELECT %1 FROM dual" ).arg( defaultValue ), QVariantList() ) || !qry.next() )
     {
       throw OracleException( tr( "Evaluation of default value failed" ), qry );
@@ -1186,7 +1194,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
   if ( flist.size() == 0 )
     return true;
 
-  if ( mIsQuery || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mIsQuery || !conn )
     return false;
 
   bool returnvalue = true;
@@ -1202,7 +1211,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     flags |= QgsFeatureSink::FastInsert;
   }
 
-  QSqlDatabase db( *mConnection );
+  QSqlDatabase db( *conn );
 
   try
   {
@@ -1422,10 +1431,11 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   bool returnvalue = true;
 
-  if ( mIsQuery || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mIsQuery || !conn )
     return false;
 
-  QSqlDatabase db( *mConnection );
+  QSqlDatabase db( *conn );
 
   try
   {
@@ -1473,10 +1483,11 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
 {
   bool returnvalue = true;
 
-  if ( mIsQuery || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mIsQuery || !conn )
     return false;
 
-  QSqlDatabase db( *mConnection );
+  QSqlDatabase db( *conn );
 
   try
   {
@@ -1553,10 +1564,11 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds &ids )
 {
   bool returnvalue = true;
 
-  if ( mIsQuery || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mIsQuery || !conn )
     return false;
 
-  QSqlDatabase db( *mConnection );
+  QSqlDatabase db( *conn );
 
   try
   {
@@ -1615,7 +1627,8 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds &ids )
 
 bool QgsOracleProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
 {
-  if ( mIsQuery || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mIsQuery || !conn )
     return false;
 
   QgsFieldNameMap::const_iterator renameIt = renamedAttributes.constBegin();
@@ -1635,7 +1648,7 @@ bool QgsOracleProvider::renameAttributes( const QgsFieldNameMap &renamedAttribut
     }
   }
 
-  QSqlDatabase db( *mConnection );
+  QSqlDatabase db( *conn );
 
   bool returnvalue = true;
 
@@ -1695,13 +1708,14 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
 {
   bool returnvalue = true;
 
-  if ( mIsQuery || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mIsQuery || !conn )
     return false;
 
   if ( attr_map.isEmpty() )
     return true;
 
-  QSqlDatabase db( *mConnection );
+  QSqlDatabase db( *conn );
 
   try
   {
@@ -2037,11 +2051,11 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
 bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-
-  if ( mIsQuery || mGeometryColumn.isNull() || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mIsQuery || mGeometryColumn.isNull() || !conn )
     return false;
 
-  QSqlDatabase db( *mConnection );
+  QSqlDatabase db( *conn );
 
   bool returnvalue = true;
 
@@ -2104,7 +2118,8 @@ QgsVectorDataProvider::Capabilities QgsOracleProvider::capabilities() const
 
 bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
-  if ( !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( !conn )
     return false;
 
   if ( theSQL.trimmed() == mSqlWhereClause )
@@ -2123,7 +2138,7 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 
   sql += "1=0";
 
-  QSqlQuery qry( *mConnection );
+  QSqlQuery qry( *conn );
   if ( !exec( qry, sql, QVariantList() ) )
   {
     pushError( qry.lastError().text() );
@@ -2161,7 +2176,8 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
  */
 long QgsOracleProvider::featureCount() const
 {
-  if ( mFeaturesCounted >= 0 || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mFeaturesCounted >= 0 || !conn )
     return mFeaturesCounted;
 
   // get total number of features
@@ -2186,7 +2202,7 @@ long QgsOracleProvider::featureCount() const
     }
   }
 
-  QSqlQuery qry( *mConnection );
+  QSqlQuery qry( *conn );
   if ( exec( qry, sql, args ) && qry.next() )
   {
     mFeaturesCounted = qry.value( 0 ).toInt();
@@ -2200,13 +2216,14 @@ long QgsOracleProvider::featureCount() const
 
 QgsRectangle QgsOracleProvider::extent() const
 {
-  if ( mGeometryColumn.isNull() || !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( mGeometryColumn.isNull() || !conn )
     return QgsRectangle();
 
   if ( mLayerExtent.isEmpty() )
   {
     QString sql;
-    QSqlQuery qry( *mConnection );
+    QSqlQuery qry( *conn );
     bool ok = false;
 
     if ( !mIsQuery )
@@ -2285,7 +2302,8 @@ bool QgsOracleProvider::getGeometryDetails()
   QString tableName = mTableName;
   QString geomCol = mGeometryColumn;
 
-  QSqlQuery qry( *mConnection );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  QSqlQuery qry( *conn );
   if ( mIsQuery )
   {
     if ( !exec( qry, QString( "SELECT %1 FROM %2 WHERE 1=0" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery ), QVariantList() ) )
@@ -2385,7 +2403,7 @@ bool QgsOracleProvider::getGeometryDetails()
         delim = " AND ";
       }
 
-      mConnection->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, false );
+      conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, false );
 
       Q_ASSERT( layerProperty.types.size() == layerProperty.srids.size() );
     }
@@ -2461,10 +2479,11 @@ bool QgsOracleProvider::getGeometryDetails()
 
 bool QgsOracleProvider::createSpatialIndex()
 {
-  if ( !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( !conn )
     return false;
 
-  QSqlQuery qry( *mConnection );
+  QSqlQuery qry( *conn );
 
   if ( !crs().isGeographic() )
   {
@@ -2979,11 +2998,11 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 QgsCoordinateReferenceSystem QgsOracleProvider::crs() const
 {
   QgsCoordinateReferenceSystem srs;
-
-  if ( !mConnection )
+  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri );
+  if ( !conn )
     return srs;
 
-  QSqlQuery qry( *mConnection );
+  QSqlQuery qry( *conn );
 
   // apparently some EPSG codes don't have the auth_name setup in cs_srs
   if ( exec( qry, QString( "SELECT coalesce(auth_name,'EPSG'),auth_srid,wktext FROM mdsys.cs_srs WHERE srid=?" ), QVariantList() << mSrid ) )
