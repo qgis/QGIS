@@ -210,8 +210,9 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             tile_img = image.copy(self.tile_width * r, self.tile_height * c, self.tile_width, self.tile_height)
             self.writer.write_tile(tile, tile_img)
 
-        self.progress += 1
-        self.feedback.setProgress(100 * (self.progress / self.metatiles_total))
+        with self.progress_lock:
+            self.progress += 1
+            self.feedback.setProgress(100 * (self.progress / self.metatiles_total))
 
     def generate(self, writer, parameters, context, feedback):
         feedback.setProgress(1)
@@ -288,6 +289,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 
         feedback.pushConsoleInfo('Using %s CPU Threads:' % cpu_count())
         feedback.pushConsoleInfo('Pushing all tiles at once: %s tiles!' % len(all_metatiles))
+        self.progress_lock = threading.Lock()
         with ThreadPoolExecutor(max_workers=self.max_threads) as threadPool:
             threadPool.map(self.render_single_tile, all_metatiles)
 
