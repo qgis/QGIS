@@ -204,6 +204,7 @@
         <file>themes/default/mActionAddOgrLayer.svg</file>
         <file>themes/default/mActionAddOracleLayer.svg</file>
         <file>themes/default/mActionAddPostgisLayer.svg</file>
+        <file>themes/default/mActionAddHanaLayer.svg</file>
         <file>themes/default/mActionAddPart.svg</file>
         <file>themes/default/mActionAddRasterLayer.svg</file>
         <file>themes/default/mActionAddRing.svg</file>
@@ -474,6 +475,7 @@
         <file>themes/default/mIconMssql.svg</file>
         <file>themes/default/mIconNoPyramid.svg</file>
         <file>themes/default/mIconOracle.svg</file>
+        <file>themes/default/mIconHana.svg</file>
         <file>themes/default/mIconOws.svg</file>
         <file>themes/default/mIconPointLayer.svg</file>
         <file>themes/default/mIconPolygonLayer.svg</file>

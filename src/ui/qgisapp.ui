@@ -180,6 +180,7 @@
      <addaction name="mActionAddMssqlLayer"/>
      <addaction name="mActionAddDb2Layer"/>
      <addaction name="mActionAddOracleLayer"/>
+     <addaction name="mActionAddHanaLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddAmsLayer"/>
@@ -1558,6 +1559,18 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
+  <action name="mActionAddHanaLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddHanaLayer.svg</normaloff>:/images/themes/default/mActionAddHanaLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add HANA Spatial Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+3</string>
    </property>
   </action>
   <action name="mActionAddWmsLayer">
