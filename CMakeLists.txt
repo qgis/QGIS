@@ -240,6 +240,11 @@ if(WITH_CORE)
     set(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
   endif()
 
+  SET (WITH_HANA FALSE CACHE BOOL "Determines whether SAP HANA Spatial support should be built")
+  IF(WITH_HANA)
+    SET(HAVE_HANA TRUE)
+  ENDIF(WITH_HANA)
+
   set (WITH_PDAL FALSE CACHE BOOL "Determines whether PDAL support should be built")
   if(WITH_PDAL)
     set(HAVE_PDAL TRUE)
