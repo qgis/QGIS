@@ -51,6 +51,8 @@
 
 #cmakedefine HAVE_ORACLE
 
+#cmakedefine HAVE_HANA
+
 #cmakedefine HAVE_OSGEARTHQT
 
 #cmakedefine SERVER_SKIP_ECW

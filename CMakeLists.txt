@@ -197,6 +197,11 @@ IF(WITH_CORE)
     SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
   ENDIF(WITH_ORACLE)
 
+  SET (WITH_HANA FALSE CACHE BOOL "Determines whether SAP HANA Spatial support should be built")
+  IF(WITH_HANA)
+    SET(HAVE_HANA TRUE)
+  ENDIF(WITH_HANA)
+
   #BUILD WITH QtMobility by default on android only. Other platform can force it
   IF (ANDROID)
       SET (DEFAULT_WITH_QTMOBILITY TRUE)
