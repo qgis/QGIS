@@ -98,6 +98,21 @@ Constructor for QgsStyle.
       LabelSettingsEntity,
     };
 
+    bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
+%Docstring
+Adds an ``entity`` to the style, with the specified ``name``. Ownership is not transferred.
+
+If ``update`` is ``True`` then the style database is updated automatically as a result.
+
+Returns ``True`` if the add operation was successful.
+
+.. note::
+
+   Adding an entity with the name of existing one replaces the existing one automatically.
+
+.. versionadded:: 3.10
+%End
+
     bool addSymbol( const QString &name, QgsSymbol *symbol /Transfer/, bool update = false );
 %Docstring
 Adds a symbol to style and takes symbol's ownership
