@@ -76,6 +76,77 @@ class TestQgsSymbol(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
+    def testPythonAdditions(self):
+        """
+        Test PyQGIS additions to QgsSymbol
+        """
+        markerSymbol = QgsMarkerSymbol()
+        markerSymbol.symbolLayer(0).setColor(QColor(255, 255, 0))
+        self.assertEqual(len(markerSymbol), 1)
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ffff00'])
+        self.assertEqual(markerSymbol[0].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[-1].color().name(), '#ffff00')
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[1]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-2]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(1)
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(-1) # negative index only supported by []
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[1]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-2]
+
+        del markerSymbol[0]
+        self.assertEqual(len(markerSymbol), 0)
+        self.assertTrue(markerSymbol)
+
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[0]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-1]
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[0]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-1]
+
+        markerSymbol.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0),
+                                       strokeColor=QColor(0, 255, 0), size=10))
+        markerSymbol.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 255, 0),
+                                       strokeColor=QColor(0, 255, 255), size=10))
+
+        self.assertEqual(len(markerSymbol), 2)
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ff0000', '#ffff00'])
+        self.assertEqual(markerSymbol[0].color().name(), '#ff0000')
+        self.assertEqual(markerSymbol[-1].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[1].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[-2].color().name(), '#ff0000')
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[2]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-3]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(2)
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(-1) # negative index only supported by []
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[2]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-3]
+
+        del markerSymbol[1]
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ff0000'])
+
     def testGeometryRendering(self):
         '''Tests rendering a bunch of different geometries, including bad/odd geometries.'''
 
