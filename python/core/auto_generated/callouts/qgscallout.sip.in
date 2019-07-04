@@ -223,6 +223,30 @@ A simple direct line callout style.
 };
 
 
+class QgsManhattanLineCallout : QgsSimpleLineCallout
+{
+
+%TypeHeaderCode
+#include "qgscallout.h"
+%End
+  public:
+
+    QgsManhattanLineCallout();
+    QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
+
+    virtual QString type() const;
+
+    virtual QgsManhattanLineCallout *clone() const;
+
+
+  protected:
+    virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
+
+
+};
+
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

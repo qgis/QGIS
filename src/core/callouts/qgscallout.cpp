@@ -21,6 +21,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
+#include "qgslinestring.h"
 #include <QPainter>
 
 QVariantMap QgsCallout::properties() const
@@ -224,4 +225,72 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
     return;
 
   mLineSymbol->renderPolyline( line.asQPolygonF(), nullptr, context );
+}
+
+
+
+//
+// QgsManhattanLineCallout
+//
+
+QgsManhattanLineCallout::QgsManhattanLineCallout()
+{
+}
+
+QgsManhattanLineCallout::QgsManhattanLineCallout( const QgsManhattanLineCallout &other )
+  : QgsSimpleLineCallout( other )
+{
+
+}
+
+QgsManhattanLineCallout &QgsManhattanLineCallout::operator=( const QgsManhattanLineCallout &other )
+{
+}
+
+QString QgsManhattanLineCallout::type() const
+{
+  return QStringLiteral( "manhattan" );
+}
+
+QgsManhattanLineCallout *QgsManhattanLineCallout::clone() const
+{
+  return new QgsManhattanLineCallout( *this );
+}
+
+void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor )
+{
+  QgsGeometry label( QgsGeometry::fromRect( rect ) );
+  QgsGeometry line;
+  switch ( anchor.type() )
+  {
+    case QgsWkbTypes::PointGeometry:
+      line = label.shortestLine( anchor );
+      break;
+
+    case QgsWkbTypes::LineGeometry:
+      line = label.shortestLine( anchor );
+      break;
+
+    case QgsWkbTypes::PolygonGeometry:
+      if ( label.intersects( anchor ) )
+        return;
+
+      line = label.shortestLine( anchor.poleOfInaccessibility( std::max( anchor.boundingBox().width(), anchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
+      break;
+
+    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::UnknownGeometry:
+      return; // shouldn't even get here..
+  }
+
+  if ( qgsDoubleNear( line.length(), 0 ) )
+    return;
+
+  const QgsPoint start = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->startPoint();
+  const QgsPoint end = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint();
+  QgsPoint mid1 = QgsPoint( start.x(), end.y() );
+
+  QPolygonF lineF = QPolygonF() << start.toQPointF() << mid1.toQPointF() << end.toQPointF();
+
+  lineSymbol()->renderPolyline( lineF, nullptr, context );
 }
