@@ -25,6 +25,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsstylesavedialog.h"
+#include "qgscallout.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -274,6 +275,12 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mDataDefinedProperties = mSettings.dataDefinedProperties();
 
+  // callout settings, to move to custom widget when multiple styles exist
+  mCalloutLineStyleButton->setLayer( mLayer );
+  if ( mSettings.callout() )
+    mCalloutLineStyleButton->setSymbol( static_cast< QgsSimpleLineCallout * >( mSettings.callout() )->lineSymbol()->clone() );
+  mCalloutsDrawCheckBox->setChecked( mSettings.callout()->enabled() );
+
   updatePlacementWidgets();
   updateLinePlacementOptions();
 
@@ -453,6 +460,13 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.zIndex = mZIndexSpinBox->value();
 
   lyr.setDataDefinedProperties( mDataDefinedProperties );
+
+  // callout settings, to move to custom widget when multiple styles exist
+  // callout settings, to move to custom widget when multiple styles exist
+  std::unique_ptr< QgsSimpleLineCallout > callout = qgis::make_unique< QgsSimpleLineCallout >();
+  callout->setEnabled( mCalloutsDrawCheckBox->isChecked() );
+  callout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  lyr.setCallout( callout.release() );
 
   return lyr;
 }

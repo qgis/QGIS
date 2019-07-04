@@ -30,6 +30,7 @@
 
 #include "feature.h"
 #include "labelposition.h"
+#include "callouts/qgscallout.h"
 
 #include <QPicture>
 
@@ -346,6 +347,20 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 
   // Render the components of a label in reverse order
   //   (backgrounds -> text)
+
+  // render callout
+  if ( mSettings.callout() )
+  {
+    QgsMapToPixel xform = context.mapToPixel();
+    xform.setMapRotation( 0, 0, 0 );
+    QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QRectF rect( outPt.x(), outPt.y(), outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+
+    QgsGeometry g( QgsGeos::fromGeos( label->getFeaturePart()->feature()->geometry() ) );
+    g.transform( xform.transform() );
+    mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g );
+  }
 
   if ( tmpLyr.format().shadow().enabled() && tmpLyr.format().shadow().shadowPlacement() == QgsTextShadowSettings::ShadowLowest )
   {
