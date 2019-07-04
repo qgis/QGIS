@@ -719,18 +719,29 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
 QString QgsSymbolLegendNode::injectSymbolId ( const QString &expression )
 {
   QgsExpression parsedExpression = QgsExpression( expression );
-  const QList <QgsExpressionNode> = parsedExpression.nodes();
+  const QList <QgsExpressionNode *> expNodes = parsedExpression.nodes();
   const QList<QString> aggfuncs( { "count", "count_distinct" "count_missing", "minimum", "maximum", "sum", "mean", "median", "stdev", "range", "minority", "majority", "q1", "q3", "iqr", "min_length", "max_length", "collect", "concatenate", "concatenate_unique", "array_agg"} );
-  QString symbolStr = ' symbol_id:=' << mItem.ruleKey();
+  QString symbolStr = " symbol_id:=" << mItem.ruleKey();
 
+  for ( const QgsExpressionNode expNode : expNodes )
+  {
+    if ( expNode.type()==NodeType::ntFunction )
+    {
+      if ( aggfuncs.contains( expNode.name() )
+      {
+
+      }
+    }
+  }
   functs=expression.split('(');
   for (  int i =0 ; functs.lenght() > i ; i++ )
   {
     QString functName = functs[i].split(')')[-1].split(' ')[-1];
     if ( aggfuncs.contains( functName ) )
     {
+
       // somehow find the fittiinject in function
-    } 
+    }
   }
 
 }
