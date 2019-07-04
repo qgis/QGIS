@@ -34,16 +34,20 @@ without danger of the task being first removed by the QgsTaskManager.
 %End
   public:
 
-    QgsNetworkContentFetcherTask( const QUrl &url );
+    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString() );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches
 the specified ``url``.
+
+Optionally, authentication configuration can be set via the ``authcfg`` argument.
 %End
 
-    QgsNetworkContentFetcherTask( const QNetworkRequest &request );
+    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString() );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches
 the specified network ``request``.
+
+Optionally, authentication configuration can be set via the ``authcfg`` argument.
 %End
 
     ~QgsNetworkContentFetcherTask();
@@ -58,6 +62,23 @@ the specified network ``request``.
 Returns the network reply. Ownership is not transferred.
 
 May return ``None`` if the request has not yet completed.
+
+.. warning::
+
+   This should only be accessed from a slot connected directly to
+   the QgsNetworkContentFetcherTask.fetched() signal.
+%End
+
+    QString contentAsString() const;
+%Docstring
+Returns the fetched content as a string
+
+.. warning::
+
+   This should only be accessed from a slot connected directly to
+   the QgsNetworkContentFetcherTask.fetched() signal.
+
+.. versionadded:: 3.10
 %End
 
   signals:

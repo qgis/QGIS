@@ -17,6 +17,7 @@ from qgis.core import (QgsXmlUtils,
                        QgsCoordinateReferenceSystem)
 
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtGui import QColor
 
 from qgis.testing import start_app, unittest
 
@@ -182,6 +183,22 @@ class TestQgsXmlUtils(unittest.TestCase):
 
         g2 = QgsXmlUtils.readVariant(elem)
         self.assertEqual(g2.asWkt(), 'Point (3 4)')
+
+    def test_color(self):
+        """
+        Test that QColor values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(QColor(100, 200, 210), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QColor(100, 200, 210))
+        elem = QgsXmlUtils.writeVariant(QColor(100, 200, 210, 50), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QColor(100, 200, 210, 50))
+        elem = QgsXmlUtils.writeVariant(QColor(), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertFalse(c.isValid())
 
 
 if __name__ == '__main__':

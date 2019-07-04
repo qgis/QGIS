@@ -171,7 +171,6 @@ class GUI_EXPORT QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBro
       * \param parent parent widget
       */
     QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent = nullptr );
-    ~QgsBrowserPropertiesDialog() override;
 
     //! Create dialog from the given item and add it
     void setItem( QgsDataItem *item );

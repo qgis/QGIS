@@ -30,6 +30,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgsstylesavedialog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -1670,18 +1671,10 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
   layout->addWidget( buttonBox );
 
   setLayout( layout );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/TextFormatDialog/geometry" ) ).toByteArray() );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( buttonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
-}
-
-QgsTextFormatDialog::~QgsTextFormatDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/TextFormatDialog/geometry" ), saveGeometry() );
 }
 
 QgsTextFormat QgsTextFormatDialog::format() const

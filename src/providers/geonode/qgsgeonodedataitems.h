@@ -28,17 +28,10 @@ class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
   public:
     QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, std::unique_ptr< QgsGeoNodeConnection > conn );
     QVector<QgsDataItem *> createChildren() override;
-    QList<QAction *> actions( QWidget *parent ) override;
 
     QString mGeoNodeName;
 
   private:
-    void editConnection();
-    void deleteConnection()
-    {
-      QgsGeoNodeConnectionUtils::deleteConnection( name() );
-      mParent->refresh();
-    }
 
     QString mUri;
     std::unique_ptr< QgsGeoNodeConnection > mConnection = nullptr;
@@ -67,12 +60,8 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QList<QAction *> actions( QWidget *parent ) override;
-
     QVariant sortKey() const override { return 13; }
 
-  private slots:
-    void newConnection();
 };
 
 //! Provider for Geonode root data item

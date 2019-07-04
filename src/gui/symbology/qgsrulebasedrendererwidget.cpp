@@ -716,19 +716,11 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
   scrollArea->setWidget( mPropsWidget );
   layout->addWidget( buttonBox );
   this->setWindowTitle( "Edit Rule" );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRendererRulePropsDialog::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
-}
-
-QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsRendererRulePropsDialog::testFilter()

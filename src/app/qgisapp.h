@@ -2334,6 +2334,48 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
     QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
 
+    class QgsCanvasRefreshBlocker
+    {
+      public:
+
+        QgsCanvasRefreshBlocker()
+        {
+          if ( QgisApp::instance()->mFreezeCount++ == 0 )
+          {
+            // going from unfrozen to frozen, so freeze canvases
+            QgisApp::instance()->freezeCanvases( true );
+          }
+        }
+        QgsCanvasRefreshBlocker( const QgsCanvasRefreshBlocker &other ) = delete;
+        QgsCanvasRefreshBlocker &operator=( const QgsCanvasRefreshBlocker &other ) = delete;
+
+        void release()
+        {
+          if ( mReleased )
+            return;
+
+          mReleased = true;
+          if ( --QgisApp::instance()->mFreezeCount == 0 )
+          {
+            // going from frozen to unfrozen, so unfreeze canvases
+            QgisApp::instance()->freezeCanvases( false );
+            QgisApp::instance()->refreshMapCanvas();
+          }
+        }
+
+        ~QgsCanvasRefreshBlocker()
+        {
+          if ( !mReleased )
+            release();
+        }
+
+      private:
+
+        bool mReleased = false;
+    };
+    int mFreezeCount = 0;
+    friend class QgsCanvasRefreshBlocker;
+
     friend class TestQgisAppPython;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;

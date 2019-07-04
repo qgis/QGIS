@@ -17,6 +17,7 @@
 
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
+#include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprojectionselectionwidget.h"
 #include "qgsprocessingmatrixparameterdialog.h"
@@ -40,9 +41,11 @@
 #include "qgsmapmouseevent.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
+#include "qgscolorbutton.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
@@ -56,6 +59,31 @@
 //
 // QgsProcessingBooleanWidgetWrapper
 //
+
+
+QgsProcessingBooleanParameterDefinitionWidget::QgsProcessingBooleanParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mDefaultCheckBox = new QCheckBox( tr( "Checked" ) );
+  if ( const QgsProcessingParameterBoolean *boolParam = dynamic_cast<const QgsProcessingParameterBoolean *>( definition ) )
+    mDefaultCheckBox->setChecked( QgsProcessingParameters::parameterAsBool( boolParam, boolParam->defaultValue(), context ) );
+  else
+    mDefaultCheckBox->setChecked( false );
+  vlayout->addWidget( mDefaultCheckBox );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingBooleanParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterBoolean >( name, description, mDefaultCheckBox->isChecked() );
+  param->setFlags( flags );
+  return param.release();
+}
+
 
 QgsProcessingBooleanWidgetWrapper::QgsProcessingBooleanWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
@@ -188,6 +216,11 @@ QString QgsProcessingBooleanWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBooleanWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingBooleanWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingBooleanWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingBooleanParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 
@@ -327,6 +360,38 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingCrsWidgetWrapper::crea
 // QgsProcessingStringWidgetWrapper
 //
 
+
+QgsProcessingStringParameterDefinitionWidget::QgsProcessingStringParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  if ( const QgsProcessingParameterString *stringParam = dynamic_cast<const QgsProcessingParameterString *>( definition ) )
+    mDefaultLineEdit->setText( QgsProcessingParameters::parameterAsString( stringParam, stringParam->defaultValue(), context ) );
+  vlayout->addWidget( mDefaultLineEdit );
+
+  mMultiLineCheckBox = new QCheckBox( tr( "Multiline input" ) );
+  if ( const QgsProcessingParameterString *stringParam = dynamic_cast<const QgsProcessingParameterString *>( definition ) )
+    mMultiLineCheckBox->setChecked( stringParam->multiLine() );
+  vlayout->addWidget( mMultiLineCheckBox );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingStringParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterString >( name, description, mDefaultLineEdit->text(), mMultiLineCheckBox->isChecked() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
+
 QgsProcessingStringWidgetWrapper::QgsProcessingStringWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -431,6 +496,11 @@ QString QgsProcessingStringWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingStringWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingStringWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingStringWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingStringParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 
@@ -1824,8 +1894,6 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingEnumWidgetWrapper::cre
   return new QgsProcessingEnumWidgetWrapper( parameter, type );
 }
 
-
-
 //
 // QgsProcessingLayoutWidgetWrapper
 //
@@ -1945,6 +2013,56 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutWidgetWrapper::c
 //
 // QgsProcessingLayoutItemWidgetWrapper
 //
+
+
+QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Parent layout" ) ) );
+
+  mParentLayoutComboBox = new QComboBox();
+  QString initialParent;
+  if ( const QgsProcessingParameterLayoutItem *itemParam = dynamic_cast<const QgsProcessingParameterLayoutItem *>( definition ) )
+    initialParent = itemParam->parentLayoutParameterName();
+
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( const QgsProcessingParameterLayout *definition = dynamic_cast< const QgsProcessingParameterLayout * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayoutComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayoutComboBox->setCurrentIndex( mParentLayoutComboBox->count() - 1 );
+        }
+      }
+    }
+  }
+
+  if ( mParentLayoutComboBox->count() == 0 && !initialParent.isEmpty() )
+  {
+    // if no parent candidates found, we just add the existing one as a placeholder
+    mParentLayoutComboBox->addItem( initialParent, initialParent );
+    mParentLayoutComboBox->setCurrentIndex( mParentLayoutComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( mParentLayoutComboBox );
+  setLayout( vlayout );
+}
+QgsProcessingParameterDefinition *QgsProcessingLayoutItemParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterLayoutItem >( name, description, QVariant(), mParentLayoutComboBox->currentData().toString() );
+  param->setFlags( flags );
+  return param.release();
+}
+
 
 QgsProcessingLayoutItemWidgetWrapper::QgsProcessingLayoutItemWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
@@ -2105,6 +2223,11 @@ QString QgsProcessingLayoutItemWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutItemWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingLayoutItemWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingLayoutItemWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingLayoutItemParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 //
@@ -2388,6 +2511,159 @@ QString QgsProcessingPointWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingPointWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingColorWidgetWrapper
+//
+
+
+QgsProcessingColorParameterDefinitionWidget::QgsProcessingColorParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultColorButton = new QgsColorButton();
+  mDefaultColorButton->setShowNull( true );
+  mAllowOpacity = new QCheckBox( tr( "Allow opacity control" ) );
+
+  if ( const QgsProcessingParameterColor *colorParam = dynamic_cast<const QgsProcessingParameterColor *>( definition ) )
+  {
+    const QColor c = QgsProcessingParameters::parameterAsColor( colorParam, colorParam->defaultValue(), context );
+    if ( !c.isValid() )
+      mDefaultColorButton->setToNull();
+    else
+      mDefaultColorButton->setColor( c );
+    mAllowOpacity->setChecked( colorParam->opacityEnabled() );
+  }
+  else
+  {
+    mDefaultColorButton->setToNull();
+    mAllowOpacity->setChecked( true );
+  }
+
+  vlayout->addWidget( mDefaultColorButton );
+  vlayout->addWidget( mAllowOpacity );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingColorParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterColor >( name, description, mDefaultColorButton->color(), mAllowOpacity->isChecked() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+QgsProcessingColorWidgetWrapper::QgsProcessingColorWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingColorWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      mColorButton = new QgsColorButton( nullptr );
+      mColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+
+      if ( colorParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mColorButton->setShowNull( true );
+
+      mColorButton->setAllowOpacity( colorParam->opacityEnabled() );
+      mColorButton->setToolTip( parameterDefinition()->toolTip() );
+      mColorButton->setColorDialogTitle( parameterDefinition()->description() );
+      if ( colorParam->defaultValue().value< QColor >().isValid() )
+      {
+        mColorButton->setDefaultColor( colorParam->defaultValue().value< QColor >() );
+      }
+
+      connect( mColorButton, &QgsColorButton::colorChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      return mColorButton;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingColorWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mColorButton )
+  {
+    if ( !value.isValid() ||
+         ( value.type() == QVariant::String && value.toString().isEmpty() )
+         || ( value.type() == QVariant::Color && !value.value< QColor >().isValid() ) )
+      mColorButton->setToNull();
+    else
+    {
+      const QColor c = QgsProcessingParameters::parameterAsColor( parameterDefinition(), value, context );
+      if ( !c.isValid() && mColorButton->showNull() )
+        mColorButton->setToNull();
+      else
+        mColorButton->setColor( c );
+    }
+  }
+}
+
+QVariant QgsProcessingColorWidgetWrapper::widgetValue() const
+{
+  if ( mColorButton )
+    return mColorButton->isNull() ? QVariant() : mColorButton->color();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingColorWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterColor::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingColorWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingColorWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingColorWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "color style string, e.g. #ff0000 or 255,0,0" );
+}
+
+QString QgsProcessingColorWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterColor::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingColorWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingColorWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingColorWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingColorParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 ///@endcond PRIVATE

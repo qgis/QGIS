@@ -28,6 +28,7 @@
 #include "qgssqliteutils.h"
 #include "qgsreadwritecontext.h"
 #include "qgsapplication.h"
+#include "qgsogrutils.h"
 
 
 static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::Metadata &metadata )
@@ -201,19 +202,34 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
 
   QString errCause;
 
-  if ( !_projectsTableExists( projectUri.database ) )
+  if ( !QFile::exists( projectUri.database ) )
+  {
+    OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
+    if ( !hGpkgDriver )
+    {
+      errCause = QObject::tr( "GeoPackage driver not found." );
+    }
+    else
+    {
+      gdal::ogr_datasource_unique_ptr hDS( OGR_Dr_CreateDataSource( hGpkgDriver, projectUri.database.toUtf8().constData(), nullptr ) );
+      if ( !hDS )
+        errCause = QObject::tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    }
+  }
+
+  if ( errCause.isEmpty() && !_projectsTableExists( projectUri.database ) )
   {
     errCause = _executeSql( uri, QStringLiteral( "CREATE TABLE qgis_projects(name TEXT PRIMARY KEY, metadata BLOB, content BLOB)" ) );
+  }
 
-    if ( ! errCause.isEmpty() )
-    {
-      errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. <b>%1</b>: %2" )
-                 .arg( projectUri.database,
-                       errCause );
+  if ( !errCause.isEmpty() )
+  {
+    errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. <b>%1</b>: %2" )
+               .arg( projectUri.database,
+                     errCause );
 
-      context.pushMessage( errCause, Qgis::Critical );
-      return false;
-    }
+    context.pushMessage( errCause, Qgis::Critical );
+    return false;
   }
 
   // read from device and write to the table

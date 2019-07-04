@@ -125,6 +125,33 @@ handles the given ``parameter``, ``None`` will be returned.
 .. versionadded:: 3.4
 %End
 
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type,
+        QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = 0,
+        const QgsProcessingAlgorithm *algorithm = 0 ) /Factory/;
+%Docstring
+Creates a new parameter definition widget allowing for configuration of an instance of
+a specific parameter ``type``.
+
+The ``context`` argument must specify a Processing context, which will be used
+by the widget to evaluate existing ``definition`` properties such as default values. Similarly,
+the ``widgetContext`` argument specifies the wider GUI context in which the widget
+will be used.
+
+The optional ``definition`` argument may specify an existing parameter definition which
+will be reflected in the initial state of the returned widget. If ``definition`` is ``None``,
+then the returned widget will use default settings instead.
+
+Additionally, the optional ``algorithm`` parameter may be used to specify the algorithm or model
+associated with the parameter.
+
+If ``None`` is returned for a particular parameter ``type``,
+it indicates that the parameter type cannot be configured via GUI.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 /************************************************************************

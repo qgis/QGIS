@@ -391,6 +391,36 @@ last for the lifetime of the widget.
 .. seealso:: :py:func:`createWidgetWrapper`
 %End
 
+    virtual QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = 0,
+      const QgsProcessingAlgorithm *algorithm = 0 ) /Factory/;
+%Docstring
+Creates a new parameter definition widget allowing for configuration of an instance of
+the parameter type handled by this factory.
+
+The ``context`` argument must specify a Processing context, which will be used
+by the widget to evaluate existing ``definition`` properties such as default values. Similarly,
+the ``widgetContext`` argument specifies the wider GUI context in which the widget
+will be used.
+
+The optional ``definition`` argument may specify a parameter definition which
+should be reflected in the initial state of the returned widget. Subclasses must
+ensure that they correctly handle both the case when a initial ``definition`` is
+passed, or when ``definition`` is ``None`` (in which case sensible defaults should
+be shown in the returned widget).
+
+Additionally, the optional ``algorithm`` parameter may be used to specify the algorithm or model
+associated with the parameter.
+
+If a factory subclass returns ``None`` for this method (i.e. as the base class implementation does),
+it indicates that the parameter type cannot be configured via GUI. In this case the parameter
+type will not be configurable when users add it as an input to their graphical models.
+
+.. versionadded:: 3.10
+%End
+
   protected:
 
     virtual QStringList compatibleParameterTypes() const = 0;

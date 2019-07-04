@@ -53,14 +53,18 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     /**
      * Constructor for a QgsNetworkContentFetcherTask which fetches
      * the specified \a url.
+     *
+     * Optionally, authentication configuration can be set via the \a authcfg argument.
      */
-    QgsNetworkContentFetcherTask( const QUrl &url );
+    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString() );
 
     /**
      * Constructor for a QgsNetworkContentFetcherTask which fetches
      * the specified network \a request.
+     *
+     * Optionally, authentication configuration can be set via the \a authcfg argument.
      */
-    QgsNetworkContentFetcherTask( const QNetworkRequest &request );
+    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString() );
 
     ~QgsNetworkContentFetcherTask() override;
 
@@ -71,8 +75,21 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      * Returns the network reply. Ownership is not transferred.
      *
      * May return NULLPTR if the request has not yet completed.
+     *
+     * \warning This should only be accessed from a slot connected directly to
+     * the QgsNetworkContentFetcherTask::fetched() signal.
      */
     QNetworkReply *reply();
+
+    /**
+     * Returns the fetched content as a string
+     *
+     * \warning This should only be accessed from a slot connected directly to
+     * the QgsNetworkContentFetcherTask::fetched() signal.
+     *
+     * \since QGIS 3.10
+     */
+    QString contentAsString() const;
 
   signals:
 
@@ -89,6 +106,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
   private:
 
     QNetworkRequest mRequest;
+    QString mAuthcfg;
     QgsNetworkContentFetcher *mFetcher = nullptr;
 
 };

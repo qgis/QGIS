@@ -205,6 +205,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingmatrixparameterdialog.cpp
   processing/qgsprocessingmodelerparameterwidget.cpp
   processing/qgsprocessingmultipleselectiondialog.cpp
+  processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
@@ -780,6 +781,7 @@ SET(QGIS_GUI_MOC_HDRS
   processing/qgsprocessingmatrixparameterdialog.h
   processing/qgsprocessingmodelerparameterwidget.h
   processing/qgsprocessingmultipleselectiondialog.h
+  processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
@@ -1029,6 +1031,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods

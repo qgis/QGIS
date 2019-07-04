@@ -275,7 +275,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
     if ( mRewind )
     {
       mRewind = false;
-      if ( !QgsOracleProvider::exec( mQry, mSql, mArgs ) )
+      if ( !execQuery( mSql, mArgs, 1 ) )
       {
         QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
                                    .arg( mQry.lastQuery(),
@@ -508,7 +508,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
     QgsDebugMsg( QStringLiteral( "Fetch features: %1" ).arg( query ) );
     mSql = query;
     mArgs = args;
-    if ( !QgsOracleProvider::exec( mQry, query, args ) )
+    if ( !execQuery( query, args, 1 ) )
     {
       if ( showLog )
       {
@@ -525,6 +525,30 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
     return false;
   }
 
+  return true;
+}
+
+bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantList &args, int retryCount )
+{
+  if ( !QgsOracleProvider::exec( mQry, query, args ) )
+  {
+    if ( retryCount != 0 )
+    {
+      // If the connection has been closed try again N times in case of timeout
+      // ORA-12170: TNS:Connect timeout occurred
+      // Or if  there is a problem with the network connectivity try again N times
+      // ORA-03114: Not Connected to Oracle
+      if ( mQry.lastError().number() == 12170 ||
+           mQry.lastError().number() == 3114 )
+      {
+        // restart connection
+        mConnection->reconnect();
+        // redo execute query
+        return execQuery( query, args, retryCount - 1 );
+      }
+    }
+    return false;
+  }
   return true;
 }
 

@@ -23,7 +23,6 @@
 #include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
 #include "qgsguiutils.h"
-#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
@@ -54,8 +53,6 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      */
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr,
                      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-
-    ~QgsQueryBuilder() override;
 
     void showEvent( QShowEvent *event ) override;
 

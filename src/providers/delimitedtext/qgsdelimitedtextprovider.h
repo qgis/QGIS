@@ -26,9 +26,6 @@
 #include "qgsfields.h"
 
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 class QgsFeature;
 class QgsField;
@@ -65,6 +62,9 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString TEXT_PROVIDER_KEY;
+    static const QString TEXT_PROVIDER_DESCRIPTION;
 
     /**
      * Regular expression defining possible prefixes to WKT string,
@@ -293,14 +293,5 @@ class QgsDelimitedTextProviderMetadata: public QgsProviderMetadata
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QVariantMap decodeUri( const QString &uri ) override;
 };
-
-#ifdef HAVE_GUI
-class QgsDelimitedTextProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsDelimitedTextProviderGuiMetadata();
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 #endif

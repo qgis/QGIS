@@ -146,12 +146,15 @@ bool QgsCheckableStyleModel::setData( const QModelIndex &i, const QVariant &valu
 // QgsStyleManagerDialog
 //
 
+#include "qgsgui.h"
+
 QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, Qt::WindowFlags flags, bool readOnly )
   : QDialog( parent, flags )
   , mStyle( style )
   , mReadOnly( readOnly )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
@@ -166,7 +169,6 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   QgsSettings settings;
 
-  restoreGeometry( settings.value( QStringLiteral( "Windows/StyleV2Manager/geometry" ) ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 170 << 540 );
   mSplitter->restoreState( settings.value( QStringLiteral( "Windows/StyleV2Manager/splitter" ) ).toByteArray() );
 
@@ -446,7 +448,6 @@ void QgsStyleManagerDialog::onFinished()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/StyleV2Manager/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/StyleV2Manager/splitter" ), mSplitter->saveState() );
 }
 

@@ -278,6 +278,17 @@ class ProviderTestCase(FeatureSourceTestCase):
             pks.append(f['pk'])
         self.assertEqual(set(pks), {1, 2, 3, 4, 5})
 
+    def testCloneLayer(self):
+        """
+        Test that cloning layer works and has all expected features
+        """
+        l = self.vl.clone()
+
+        pks = []
+        for f in l.getFeatures():
+            pks.append(f['pk'])
+        self.assertEqual(set(pks), {1, 2, 3, 4, 5})
+
     def testGetFeaturesPolyFilterRectTests(self):
         """ Test fetching features from a polygon layer with filter rect"""
         try:

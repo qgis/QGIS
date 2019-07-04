@@ -189,6 +189,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterLayout;
     else if ( sipCpp->type() == QgsProcessingParameterLayoutItem::typeName() )
       sipType = sipType_QgsProcessingParameterLayoutItem;
+    else if ( sipCpp->type() == QgsProcessingParameterColor::typeName() )
+      sipType = sipType_QgsProcessingParameterColor;
     else
       sipType = nullptr;
 %End
@@ -1049,6 +1051,19 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a print la
 .. versionadded:: 3.8
 %End
 
+    static QColor parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Returns the color associated with an point parameter value, or an invalid color if the parameter was not set.
+
+.. versionadded:: 3.10
+%End
+
+    static QColor parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Returns the color associated with an color parameter value, or an invalid color if the parameter was not set.
+
+.. versionadded:: 3.10
+%End
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
 %Docstring
@@ -3031,6 +3046,75 @@ Sets the acceptable item ``type``, or -1 if any item type is allowed.
 These values correspond to the registered item types from :py:class:`QgsLayoutItemRegistry`.
 
 .. seealso:: :py:func:`itemType`
+%End
+
+};
+
+class QgsProcessingParameterColor : QgsProcessingParameterDefinition
+{
+%Docstring
+A color parameter for processing algorithms.
+
+QgsProcessingParameterColor should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsColor()`
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterColor( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                 bool opacityEnabled = true,
+                                 bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterColor.
+
+If ``opacityEnabled`` is ``True``, then users will have the option of varying color opacity.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    bool opacityEnabled() const;
+%Docstring
+Returns ``True`` if the parameter allows opacity control.
+
+The default behavior is to allow users to set opacity for the color.
+
+.. seealso:: :py:func:`setOpacityEnabled`
+%End
+
+    void setOpacityEnabled( bool enabled );
+%Docstring
+Sets whether the parameter allows opacity control.
+
+The default behavior is to allow users to set opacity for the color.
+
+.. seealso:: :py:func:`opacityEnabled`
+%End
+
+    static QgsProcessingParameterColor *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
 %End
 
 };

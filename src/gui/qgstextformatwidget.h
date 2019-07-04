@@ -256,8 +256,6 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      */
     QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsTextFormatDialog() override;
-
     /**
      * Returns the current formatting settings defined by the widget.
      */

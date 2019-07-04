@@ -344,6 +344,21 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
 
     details.grids.append( gridDetails );
   }
+
+#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+  for ( int j = 0; j < proj_concatoperation_get_step_count( pjContext, op ); ++j )
+  {
+    QgsProjUtils::proj_pj_unique_ptr step( proj_concatoperation_get_step( pjContext, op, j ) );
+    if ( step )
+    {
+      SingleOperationDetails singleOpDetails;
+      singleOpDetails.remarks = QString( proj_get_remarks( step.get() ) );
+      singleOpDetails.scope = QString( proj_get_scope( step.get() ) );
+      details.operationDetails.append( singleOpDetails );
+    }
+  }
+#endif
+
   return details;
 }
 #endif

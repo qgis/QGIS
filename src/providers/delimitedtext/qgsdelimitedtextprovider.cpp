@@ -42,19 +42,13 @@
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsproviderregistry.h"
-#ifdef HAVE_GUI
-#include "qgssourceselectprovider.h"
-#endif
 
 #include "qgsdelimitedtextfeatureiterator.h"
 #include "qgsdelimitedtextfile.h"
 
-#ifdef HAVE_GUI
-#include "qgsdelimitedtextsourceselect.h"
-#endif
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "delimitedtext" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Delimited text data provider" );
+const QString QgsDelimitedTextProvider::TEXT_PROVIDER_KEY = QStringLiteral( "delimitedtext" );
+const QString QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Delimited text data provider" );
 
 // If more than this fraction of records are not in a subset then use an index to
 // iterate over records rather than simple iterator and filter.
@@ -1151,38 +1145,9 @@ QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString
   return new QgsDelimitedTextProvider( uri, options );
 }
 
-#ifdef HAVE_GUI
-//! Provider for delimited text source select
-class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "delimitedtext" ); }
-    QString text() const override { return QObject::tr( "Delimited Text" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 30; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-QgsDelimitedTextProviderGuiMetadata::QgsDelimitedTextProviderGuiMetadata()
-  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsDelimitedTextProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsDelimitedTextSourceSelectProvider;
-  return providers;
-}
-
-#endif
 
 QgsDelimitedTextProviderMetadata::QgsDelimitedTextProviderMetadata():
-  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  QgsProviderMetadata( QgsDelimitedTextProvider::TEXT_PROVIDER_KEY, QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION )
 {
 }
 
@@ -1190,12 +1155,3 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsDelimitedTextProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsDelimitedTextProviderGuiMetadata();
-}
-#endif
-
-

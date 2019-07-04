@@ -116,7 +116,14 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
   mTimeComboBox->blockSignals( false );
 
   // enable/disable time controls depending on whether the data set is time varying
-  bool isTimeVarying = datasetCount > 1;
+  enableTimeControls();
+}
+
+void QgsMeshRendererActiveDatasetWidget::enableTimeControls()
+{
+  const int scalarDatesets = mMeshLayer->dataProvider()->datasetCount( mActiveScalarDatasetGroup );
+  const int vectorDatesets = mMeshLayer->dataProvider()->datasetCount( mActiveVectorDatasetGroup );
+  const bool isTimeVarying = ( scalarDatesets > 1 ) || ( vectorDatesets > 1 );
   mTimeComboBox->setEnabled( isTimeVarying );
   mDatasetSlider->setEnabled( isTimeVarying );
   mTimeFormatButton->setEnabled( isTimeVarying );
@@ -132,6 +139,10 @@ void QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged( int groupIn
     return;
 
   mActiveScalarDatasetGroup = groupIndex;
+
+  // enable/disable time slider controls
+  enableTimeControls();
+
   // keep the same timestep if possible
   onActiveTimeChanged( mTimeComboBox->currentIndex() );
   emit activeScalarGroupChanged( mActiveScalarDatasetGroup );
@@ -143,6 +154,8 @@ void QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged( int groupIn
     return;
 
   mActiveVectorDatasetGroup = groupIndex;
+  // enable/disable time slider controls
+  enableTimeControls();
 
   // keep the same timestep if possible
   onActiveTimeChanged( mTimeComboBox->currentIndex() );

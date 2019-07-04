@@ -25,9 +25,6 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 class QgsArcGisAsyncQuery;
 class QgsAmsProvider;
@@ -70,6 +67,10 @@ class QgsAmsProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString AMS_PROVIDER_KEY;
+    static const QString AMS_PROVIDER_DESCRIPTION;
+
     QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     explicit QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
@@ -219,15 +220,5 @@ class QgsAmsProviderMetadata: public QgsProviderMetadata
     QgsAmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QVariantMap decodeUri( const QString &uri ) override;
 };
-
-#ifdef HAVE_GUI
-class QgsAmsProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsAmsProviderGuiMetadata();
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 #endif // QGSMAPSERVERPROVIDER_H

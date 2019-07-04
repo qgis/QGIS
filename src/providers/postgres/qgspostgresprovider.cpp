@@ -45,14 +45,11 @@
 
 #include "qgspostgresprovider.h"
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#include "qgspgsourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 
-const QString POSTGRES_KEY = QStringLiteral( "postgres" );
-const QString POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
+
+const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
+const QString QgsPostgresProvider::POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
+
 static const QString EDITOR_WIDGET_STYLES_TABLE = QStringLiteral( "qgis_editor_widget_styles" );
 
 inline qint64 PKINT2FID( qint32 x )
@@ -229,6 +226,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
       << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255, -1, -1 )
       << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255, -1, -1 )
       << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QVariant::String, -1, -1, -1, -1 )
 
       // date type
       << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
@@ -244,6 +242,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
       // boolean
       << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
+
+      // binary (bytea)
+      << QgsVectorDataProvider::NativeType( tr( "Binary object (bytea)" ), QStringLiteral( "bytea" ), QVariant::ByteArray, -1, -1, -1, -1 )
       ;
 
   if ( connectionRO()->pgVersion() >= 90200 )
@@ -372,6 +373,22 @@ void QgsPostgresProvider::disconnectDb()
     mConnectionRW->unref();
     mConnectionRW = nullptr;
   }
+}
+
+QString QgsPostgresProvider::quotedByteaValue( const QVariant &value )
+{
+  if ( value.isNull() )
+    return QStringLiteral( "NULL" );
+
+  const QByteArray ba = value.toByteArray();
+  const unsigned char *buf = reinterpret_cast< const unsigned char * >( ba.constData() );
+  QString param;
+  param.reserve( ba.length() * 4 );
+  for ( int i = 0; i < ba.length(); ++i )
+  {
+    param += QStringLiteral( "\\%1" ).arg( static_cast< int >( buf[i] ), 3, 8, QChar( '0' ) );
+  }
+  return QStringLiteral( "decode('%1','escape')" ).arg( param );
 }
 
 QString QgsPostgresProvider::storageType() const
@@ -953,7 +970,13 @@ bool QgsPostgresProvider::loadFields()
         fieldType = QVariant::DateTime;
         fieldSize = -1;
       }
+      else if ( fieldTypeName == QLatin1String( "bytea" ) )
+      {
+        fieldType = QVariant::ByteArray;
+        fieldSize = -1;
+      }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
+                fieldTypeName == QLatin1String( "citext" ) ||
                 fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
                 fieldTypeName == QLatin1String( "money" ) ||
@@ -2191,11 +2214,15 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else if ( fieldTypeName == QLatin1String( "jsonb" ) )
         {
-          values += delim + quotedJsonValue( v ) + QLatin1String( "::jsonb" );
+          values += delim + quotedJsonValue( v ) + QStringLiteral( "::jsonb" );
         }
         else if ( fieldTypeName == QLatin1String( "json" ) )
         {
-          values += delim + quotedJsonValue( v ) + QLatin1String( "::json" );
+          values += delim + quotedJsonValue( v ) + QStringLiteral( "::json" );
+        }
+        else if ( fieldTypeName == QLatin1String( "bytea" ) )
+        {
+          values += delim + quotedByteaValue( v );
         }
         //TODO: convert arrays and hstore to native types
         else
@@ -2755,6 +2782,10 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
             sql += QStringLiteral( "%1::json" )
                    .arg( quotedJsonValue( siter.value() ) );
           }
+          else if ( fld.typeName() == QLatin1String( "bytea" ) )
+          {
+            sql += quotedByteaValue( siter.value() );
+          }
           else
           {
             sql += quotedValue( *siter );
@@ -3084,6 +3115,10 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           {
             sql += QStringLiteral( "st_geographyfromewkt(%1)" )
                    .arg( quotedValue( siter->toString() ) );
+          }
+          else if ( fld.typeName() == QLatin1String( "bytea" ) )
+          {
+            sql += quotedByteaValue( siter.value() );
           }
           else
           {
@@ -5015,49 +5050,6 @@ void QgsPostgresProviderMetadata::cleanupProvider()
 }
 
 
-#ifdef HAVE_GUI
-
-//! Provider for postgres source select
-class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spellok
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "postgres" ); }
-    QString text() const override { return QObject::tr( "PostgreSQL" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsPgSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsPostgresProviderGuiMetadata():
-      QgsProviderGuiMetadata( POSTGRES_KEY )
-    {
-    }
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsPostgresSourceSelectProvider;  //#spellok
-      return providers;
-    }
-    QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override
-    {
-      QList<QgsProjectStorageGuiProvider *> providers;
-      providers << new QgsPostgresProjectStorageGuiProvider;
-      return providers;
-    }
-    void registerGui( QMainWindow *mainWindow ) override
-    {
-      QgsPGRootItem::sMainWindow = mainWindow;
-    }
-};
-#endif
-
 // ----------
 
 void QgsPostgresSharedData::addFeaturesCounted( long diff )
@@ -5175,17 +5167,13 @@ void QgsPostgresSharedData::setFieldSupportsEnumValues( int index, bool isSuppor
   mFieldSupportsEnumValues[ index ] = isSupported;
 }
 
-QgsPostgresProviderMetadata::QgsPostgresProviderMetadata():
-  QgsProviderMetadata( POSTGRES_KEY, POSTGRES_DESCRIPTION ) {}
+
+QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
+  : QgsProviderMetadata( QgsPostgresProvider::POSTGRES_KEY, QgsPostgresProvider::POSTGRES_DESCRIPTION )
+{
+}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsPostgresProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsPostgresProviderGuiMetadata();
-}
-#endif

@@ -233,8 +233,6 @@ Constructor for QgsRendererRulePropsDialog
 :param context: symbol widget context
 %End
 
-    ~QgsRendererRulePropsDialog();
-
     QgsRuleBasedRenderer::Rule *rule();
 
   public slots:

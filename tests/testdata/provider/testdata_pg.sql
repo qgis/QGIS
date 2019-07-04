@@ -20,6 +20,8 @@ SET client_min_messages = warning;
 --
 
 CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS citext;
+
 
 --- Create qgis_test schema
 DROP SCHEMA IF EXISTS qgis_test CASCADE;
@@ -514,6 +516,37 @@ INSERT INTO qgis_test.boolean_table VALUES
 (1, TRUE),
 (2, FALSE),
 (3, NULL);
+
+
+--------------------------------------
+-- Table for citext
+--
+
+CREATE TABLE qgis_test.citext_table
+(
+  id int PRIMARY KEY,
+  fld1 citext
+);
+
+INSERT INTO qgis_test.citext_table VALUES
+(1, 'test val'),
+(2, NULL);
+
+
+--------------------------------------
+-- Table for bytea
+--
+
+CREATE TABLE qgis_test.byte_a_table
+(
+  id int PRIMARY KEY,
+  fld1 bytea
+);
+
+INSERT INTO qgis_test.byte_a_table VALUES
+(1, encode('binvalue', 'base64')::bytea),
+(2, NULL);
+
 
 -----------------------------
 -- Table for constraint tests

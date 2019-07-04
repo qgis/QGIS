@@ -77,6 +77,10 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   }
 
   connect( mCboProject, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
+  connect( mCboProject, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ), this, [ = ]( const QString & )
+  {
+    mCboProject->setItemData( mCboProject->currentIndex(), false );
+  } );
   connect( mCboConnection, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
 
   // If possible, set the item currently displayed database
@@ -122,7 +126,7 @@ void QgsGeoPackageProjectStorageDialog::onOK()
   if ( mSaving )
   {
     // Check if this is an overwrite of an existing project
-    if ( mCboProject->currentData( ).toBool() )
+    if ( mCboProject->currentData().toBool() )
     {
       int res = QMessageBox::question( this, tr( "Overwrite project" ),
                                        tr( "A project with the same name already exists. Would you like to overwrite it?" ),

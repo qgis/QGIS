@@ -31,6 +31,7 @@
 #include "qgsproviderregistry.h"
 #include "ogr/qgsnewogrconnection.h"
 #include "ogr/qgsogrhelperfunctions.h"
+#include "qgsgui.h"
 
 #include <gdal.h>
 
@@ -38,6 +39,8 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( radioSrcFile, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcFile_toggled );
   connect( radioSrcDirectory, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDirectory_toggled );
   connect( radioSrcDatabase, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDatabase_toggled );
@@ -66,8 +69,6 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   QgsSettings settings;
   QString enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
-
-  restoreGeometry( settings.value( QStringLiteral( "Windows/OpenVectorLayer/geometry" ) ).toByteArray() );
 
   // The specified decoding is added if not existing already, and then set current.
   // This should select it.
@@ -145,12 +146,6 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   } );
   // Set filter for ogr compatible auth methods
   mAuthSettingsProtocol->setDataprovider( QStringLiteral( "ogr" ) );
-}
-
-QgsOgrSourceSelect::~QgsOgrSourceSelect()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/OpenVectorLayer/geometry" ), saveGeometry() );
 }
 
 QStringList QgsOgrSourceSelect::dataSources()

@@ -15,7 +15,6 @@ email                : a.furieri@lqt.it
  ***************************************************************************/
 
 #include "qgis.h"
-#include "qgsapplication.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -37,12 +36,6 @@ email                : a.furieri@lqt.it
 
 #include "qgsprovidermetadata.h"
 
-#ifdef HAVE_GUI
-#include "qgssourceselectprovider.h"
-#include "qgsspatialitesourceselect.h"
-#include "qgsproviderguimetadata.h"
-#endif
-
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QDir>
@@ -52,8 +45,8 @@ email                : a.furieri@lqt.it
 using json = nlohmann::json;
 
 
-const QString SPATIALITE_KEY = QStringLiteral( "spatialite" );
-const QString SPATIALITE_DESCRIPTION = QStringLiteral( "SpatiaLite data provider" );
+const QString QgsSpatiaLiteProvider::SPATIALITE_KEY = QStringLiteral( "spatialite" );
+const QString QgsSpatiaLiteProvider::SPATIALITE_DESCRIPTION = QStringLiteral( "SpatiaLite data provider" );
 static const QString SPATIALITE_ARRAY_PREFIX = QStringLiteral( "json" );
 static const QString SPATIALITE_ARRAY_SUFFIX = QStringLiteral( "list" );
 
@@ -6047,38 +6040,10 @@ void QgsSpatiaLiteProviderMetadata::cleanupProvider()
   QgsSqliteHandle::closeAll();
 }
 
-#ifdef HAVE_GUI
 
-//! Provider for spatialite source select
-class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "spatialite" ); }
-    QString text() const override { return QObject::tr( "SpatiaLite" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-QgsSpatiaLiteProviderGuiMetadata::QgsSpatiaLiteProviderGuiMetadata():
-  QgsProviderGuiMetadata( SPATIALITE_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsSpatiaLiteProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsSpatialiteSourceSelectProvider;
-  return providers;
-}
-#endif
 
 QgsSpatiaLiteProviderMetadata::QgsSpatiaLiteProviderMetadata():
-  QgsProviderMetadata( SPATIALITE_KEY, SPATIALITE_DESCRIPTION )
+  QgsProviderMetadata( QgsSpatiaLiteProvider::SPATIALITE_KEY, QgsSpatiaLiteProvider::SPATIALITE_DESCRIPTION )
 {
 }
 
@@ -6093,10 +6058,3 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsSpatiaLiteProviderMetadata();
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsSpatiaLiteProviderGuiMetadata();
-}
-#endif

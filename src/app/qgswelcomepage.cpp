@@ -32,6 +32,7 @@
 #include <QDesktopServices>
 #include <QTextBrowser>
 #include <QMessageBox>
+#include <QSplitter>
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
@@ -43,22 +44,18 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mainLayout->setContentsMargins( 0, 0, 0, 0 );
   setLayout( mainLayout );
 
-  QHBoxLayout *layout = new QHBoxLayout();
-  layout->setMargin( 0 );
+  mSplitter = new QSplitter( Qt::Horizontal );
+  mainLayout->addWidget( mSplitter, 1 );
 
-  mainLayout->addLayout( layout );
-
-  QWidget *centerContainer = new QWidget;
-  QGridLayout *centerLayout = new QGridLayout;
-  centerContainer->setLayout( centerLayout );
-
-  centerLayout->setContentsMargins( 0, 0, 0, 0 );
-  centerLayout->setMargin( 0 );
+  QWidget *leftContainer = new QWidget();
+  QVBoxLayout *leftLayout = new QVBoxLayout;
+  leftLayout->setContentsMargins( 0, 0, 0, 0 );
+  leftLayout->setMargin( 0 );
 
   int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.4 );
   mRecentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
   mRecentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
-  centerLayout->addWidget( mRecentProjectsTitle, 0, 0 );
+  leftLayout->addWidget( mRecentProjectsTitle, 0 );
 
   mRecentProjectsListView = new QListView();
   mRecentProjectsListView->setResizeMode( QListView::Adjust );
@@ -76,13 +73,18 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   }
          );
 
-  centerLayout->addWidget( mRecentProjectsListView, 1, 0 );
+  leftLayout->addWidget( mRecentProjectsListView, 1 );
+  leftContainer->setLayout( leftLayout );
+  mSplitter->addWidget( leftContainer );
 
-  layout->addWidget( centerContainer );
+  QWidget *rightContainer = new QWidget();
+  QVBoxLayout *rightLayout = new QVBoxLayout;
+  rightLayout->setContentsMargins( 0, 0, 0, 0 );
+  rightLayout->setMargin( 0 );
 
   QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Project Templates" ) ) );
   templatesTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
-  centerLayout->addWidget( templatesTitle, 0, 1 );
+  rightLayout->addWidget( templatesTitle, 0 );
 
   mTemplateProjectsModel = new QgsTemplateProjectsModel( this );
   mTemplateProjectsListView = new QListView();
@@ -94,7 +96,10 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mTemplateProjectsListView->setItemDelegate( templateProjectsDelegate );
   mTemplateProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTemplateProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForTemplates );
-  centerLayout->addWidget( mTemplateProjectsListView, 1, 1 );
+  rightLayout->addWidget( mTemplateProjectsListView, 1 );
+
+  rightContainer->setLayout( rightLayout );
+  mSplitter->addWidget( rightContainer );
 
   mVersionInformation = new QTextBrowser;
   mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
@@ -116,12 +121,17 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
     mVersionInfo->checkVersion();
   }
 
+  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/WelcomePage/SplitState" ), QVariant(), QgsSettings::App ).toByteArray() );
+
   connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::recentProjectItemActivated );
   connect( mTemplateProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::templateProjectItemActivated );
 }
 
 QgsWelcomePage::~QgsWelcomePage()
 {
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState" ), mSplitter->saveState(), QgsSettings::App );
+
   delete mVersionInfo;
 }
 

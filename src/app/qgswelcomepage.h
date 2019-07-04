@@ -26,6 +26,7 @@
 class QgsVersionInfo;
 class QListView;
 class QLabel;
+class QSplitter;
 
 class QgsWelcomePage : public QWidget
 {
@@ -60,6 +61,7 @@ class QgsWelcomePage : public QWidget
     QLabel *mRecentProjectsTitle = nullptr;
     QListView *mTemplateProjectsListView = nullptr;
     QStandardItemModel *mTemplateProjectsModel = nullptr;
+    QSplitter *mSplitter = nullptr;
 };
 
 #endif // QGSWELCOMEPAGE_H

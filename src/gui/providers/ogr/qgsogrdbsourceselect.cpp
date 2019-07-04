@@ -24,6 +24,7 @@
 #include "qgsquerybuilder.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgsgui.h"
 
 #include <QMessageBox>
 
@@ -35,6 +36,8 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   , mExtension( theExtensions )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnConnect_clicked );
   connect( btnNew, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnNew_clicked );
   connect( btnDelete, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnDelete_clicked );
@@ -50,7 +53,6 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrDbSourceSelect::showHelp );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "ogr/%1SourceSelect/geometry" ).arg( ogrDriverName( ) ), QgsSettings::Section::Providers ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName( ) ), false, QgsSettings::Section::Providers ).toBool() );
 
   setWindowTitle( tr( "Add %1 Layer(s)" ).arg( name( ) ) );
@@ -110,7 +112,6 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
 QgsOgrDbSourceSelect::~QgsOgrDbSourceSelect()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "ogr/%1SourceSelect/geometry" ).arg( ogrDriverName( ) ), saveGeometry(), QgsSettings::Section::Providers );
   settings.setValue( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName( ) ), mHoldDialogOpen->isChecked(), QgsSettings::Section::Providers );
 }
 

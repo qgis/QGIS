@@ -25,9 +25,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 class QMutex;
 class QgsCoordinateTransform;
@@ -41,6 +38,9 @@ class QgsMdalProvider : public QgsMeshDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString MDAL_PROVIDER_KEY;
+    static const QString MDAL_PROVIDER_DESCRIPTION;
 
     /**
      * Constructor for the provider.
@@ -122,14 +122,5 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
-
-#ifdef HAVE_GUI
-class QgsMdalProviderGuiMetadata: public QgsProviderGuiMetadata
-{
-  public:
-    QgsMdalProviderGuiMetadata();
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 #endif //QGSMDALPROVIDER_H

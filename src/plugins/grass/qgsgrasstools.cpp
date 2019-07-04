@@ -110,7 +110,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   mTabWidget->addTab( mRegion, tr( "Region" ) );
 
   // Show before loadConfig() so that user can see loading
-  restorePosition();
+  show();
   showTabs();
 }
 
@@ -492,11 +492,6 @@ void QgsGrassTools::mapsetChanged()
   showTabs();
 }
 
-QgsGrassTools::~QgsGrassTools()
-{
-  saveWindowLocation();
-}
-
 QString QgsGrassTools::appDir( void )
 {
 #if defined(Q_OS_WIN)
@@ -508,27 +503,12 @@ QString QgsGrassTools::appDir( void )
 
 void QgsGrassTools::close( void )
 {
-  saveWindowLocation();
   hide();
 }
 
 void QgsGrassTools::closeEvent( QCloseEvent *e )
 {
-  saveWindowLocation();
   e->accept();
-}
-
-void QgsGrassTools::restorePosition()
-{
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "GRASS/windows/tools/geometry" ) ).toByteArray() );
-  show();
-}
-
-void QgsGrassTools::saveWindowLocation()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "GRASS/windows/tools/geometry" ), saveGeometry() );
 }
 
 void QgsGrassTools::emitRegionChanged()

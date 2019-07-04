@@ -37,7 +37,7 @@ QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int field
 
 QVariant QgsBinaryWidgetWrapper::value() const
 {
-  return mValue.isEmpty() || mValue.isNull() ? QVariant( QVariant::Invalid ) : mValue;
+  return mValue.isEmpty() || mValue.isNull() ? QVariant( QVariant::ByteArray ) : mValue;
 }
 
 void QgsBinaryWidgetWrapper::showIndeterminateState()
@@ -188,6 +188,7 @@ void QgsBinaryWidgetWrapper::clear()
     return;
 
   setValue( QByteArray() );
+  emitValueChanged();
 }
 
 QString QgsBinaryWidgetWrapper::defaultPath()
