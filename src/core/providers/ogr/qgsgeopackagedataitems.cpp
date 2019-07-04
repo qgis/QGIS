@@ -42,6 +42,16 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsgeopackageprojectstorage.h"
 
+QString QgsGeoPackageDataItemProvider::name()
+{
+  return QStringLiteral( "GPKG" );
+}
+
+int QgsGeoPackageDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
 QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   QgsDebugMsg( "path = " + path );

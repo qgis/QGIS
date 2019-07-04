@@ -219,6 +219,16 @@ void QgsWfsRootItem::onConnectionsChanged()
 // QgsWfsDataItemProvider
 //
 
+QString QgsWfsDataItemProvider::name()
+{
+  return QStringLiteral( "WFS" );
+}
+
+int QgsWfsDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
+
 QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   QgsDebugMsgLevel( "WFS path = " + path, 4 );

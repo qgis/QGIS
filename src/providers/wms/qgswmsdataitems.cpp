@@ -450,6 +450,23 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
   return items;
 }
 
+QString QgsXyzTileDataItemProvider::name()
+{
+  return QStringLiteral( "XYZ Tiles" );
+}
+
+int QgsXyzTileDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
+
+QgsDataItem *QgsXyzTileDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  if ( path.isEmpty() )
+    return new QgsXyzTileRootItem( parentItem, QStringLiteral( "XYZ Tiles" ), QStringLiteral( "xyz:" ) );
+  return nullptr;
+}
+
 QVector<QgsDataItem *> QgsXyzTileDataItemProvider::createDataItems( const QString &path, QgsDataItem *parentItem )
 {
   QVector<QgsDataItem *> items;

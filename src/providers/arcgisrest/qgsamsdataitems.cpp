@@ -276,6 +276,16 @@ QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem *parent, const QString &, const QS
 // QgsAmsDataItemProvider
 //
 
+QString QgsAmsDataItemProvider::name()
+{
+  return QStringLiteral( "AMS" );
+}
+
+int QgsAmsDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
+
 QgsDataItem *QgsAmsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )

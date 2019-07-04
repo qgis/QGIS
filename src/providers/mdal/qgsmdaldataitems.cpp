@@ -38,6 +38,16 @@ QString QgsMdalLayerItem::layerName() const
 // ---------------------------------------------------------------------------
 static QStringList sExtensions = QStringList();
 
+QString QgsMdalDataItemProvider::name()
+{
+  return QStringLiteral( "MDAL" );
+}
+
+int QgsMdalDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::File;
+}
+
 QgsDataItem *QgsMdalDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )

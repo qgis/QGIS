@@ -538,6 +538,16 @@ void QgsPGRootItem::onConnectionsChanged()
 
 QMainWindow *QgsPGRootItem::sMainWindow = nullptr;
 
+QString QgsPostgresDataItemProvider::name()
+{
+  return QStringLiteral( "PostGIS" );
+}
+
+int QgsPostgresDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
 QgsDataItem *QgsPostgresDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn )

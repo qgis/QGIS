@@ -125,9 +125,9 @@ class QgsOracleLayerItem : public QgsLayerItem
 class QgsOracleDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "ORACLE" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::Database; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
