@@ -361,6 +361,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "Offset is not valid" ) );
     }
+    // TODO: make the limit configurable
     auto limit { context->request()->queryParameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
     if ( 0 >= limit || limit > 10000 || !ok )
     {
@@ -386,12 +387,11 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
     req.setDestinationCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), context->project()->transformContext() );
     // Add offset to limit because paging is not supported from QgsFeatureRequest
     req.setLimit( limit + offset );
-    // Offset
     QgsJsonExporter exporter { mapLayer };
     QgsFeatureList featureList;
     auto features { mapLayer->getFeatures( req ) };
     QgsFeature feat;
-    auto i { 0 };
+    long i { 0 };
     while ( features.nextFeature( feat ) )
     {
       // Ignore records before offset
@@ -399,10 +399,53 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
         featureList << feat;
       i++;
     }
+
+    // TODO: featureCount when filter is implemented
+    const long matchedFeaturesCount { mapLayer->featureCount() };
     json data { exporter.exportFeaturesToJsonObject( featureList ) };
+    data["numberMatched"] = mapLayer->featureCount();
+    data["numberReturned"] = featureList.count();
     data["links"] = links( api, context );
+
+    // Current url
+    const QUrl url { context->request()->url() };
+    // Url without offset and limit
+    QString cleanedUrl { url.toString().replace( QRegularExpression( R"raw((offset|limit)(=\d+)*)raw" ), QString() ) };
+    if ( ! url.hasQuery() )
+    {
+      cleanedUrl += '?';
+    }
+
+    // Get the self link
+    json selfLink;
+    for ( const auto &l : data["links"] )
+    {
+      if ( l["rel"] == "self" )
+      {
+        selfLink = l;
+        break;
+      }
+    }
+    // This should never happen!
+    Q_ASSERT( selfLink );
+
+    // Add prev - next links
+    if ( offset != 0 )
+    {
+      auto prevLink { selfLink };
+      prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrl ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
+      prevLink["rel"] = "prev";
+      data["links"].push_back( prevLink );
+    }
+    if ( limit + offset < matchedFeaturesCount )
+    {
+      auto nextLink { selfLink };
+      nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrl ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
+      nextLink["rel"] = "next";
+      data["links"].push_back( nextLink );
+    }
+
     json navigation = json::array();
-    const auto url { context->request()->url() };
     navigation.push_back( {{ "title",  "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 3 ) }} ) ;
     navigation.push_back( {{ "title",  "Collections" }, { "href", QgsWfs3::Api::parentLink( url, 2 ) }} ) ;
     navigation.push_back( {{ "title",   title }, { "href", QgsWfs3::Api::parentLink( url, 1 )  }} ) ;
