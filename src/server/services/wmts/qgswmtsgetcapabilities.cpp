@@ -281,6 +281,15 @@ namespace QgsWmts
     //ows:Get
     QDomElement getElement = doc.createElement( QStringLiteral( "ows:Get" )/*ows:Get*/ );
     getElement.setAttribute( QStringLiteral( "xlink:href" ), hrefString );
+    QDomElement constraintElement = doc.createElement( QStringLiteral( "ows:Constraint" )/*ows:Constraint*/ );
+    constraintElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetEncoding" ) );
+    QDomElement allowedValuesElement = doc.createElement( QStringLiteral( "ows:AllowedValues" )/*ows:AllowedValues*/ );
+    QDomElement valueElement = doc.createElement( QStringLiteral( "ows:Value" )/*ows:Value*/ );
+    QDomText valueText = doc.createTextNode( QStringLiteral( "KVP" ) );
+    valueElement.appendChild( valueText );
+    allowedValuesElement.appendChild( valueElement );
+    constraintElement.appendChild( allowedValuesElement );
+    getElement.appendChild( constraintElement );
     httpElement.appendChild( getElement );
 
     //ows:Operation element with name GetTile
