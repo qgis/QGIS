@@ -323,6 +323,9 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
   details.accuracy = proj_coordoperation_get_accuracy( pjContext, op );
   details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op );
 
+  details.authority = QString( proj_get_id_auth_name( op, 0 ) );
+  details.code = QString( proj_get_id_code( op, 0 ) );
+
   const char *areaOfUseName = nullptr;
   if ( proj_get_area_of_use( pjContext, op, nullptr, nullptr, nullptr, nullptr, &areaOfUseName ) )
   {
@@ -365,6 +368,8 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
       SingleOperationDetails singleOpDetails;
       singleOpDetails.remarks = QString( proj_get_remarks( step.get() ) );
       singleOpDetails.scope = QString( proj_get_scope( step.get() ) );
+      singleOpDetails.authority = QString( proj_get_id_auth_name( step.get(), 0 ) );
+      singleOpDetails.code = QString( proj_get_id_code( step.get(), 0 ) );
 
       const char *areaOfUseName = nullptr;
       if ( proj_get_area_of_use( pjContext, step.get(), nullptr, nullptr, nullptr, nullptr, &areaOfUseName ) )
