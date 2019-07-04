@@ -57,7 +57,7 @@ class QgsHanaUtils
     }
     static QByteArray toQByteArray(const odbc::Binary& value);
 
-    static QgsWkbTypes::Type toWkbType(const std::string& hanaType);
+    static QgsWkbTypes::Type toWkbType(const QString& hanaType);
     static QVersionNumber toHANAVersion(const QString& dbVersion);
     static int toPlanarSRID(int srid);
     static bool convertField(QgsField &field);

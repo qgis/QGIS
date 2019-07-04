@@ -47,7 +47,7 @@ QString QgsHanaUtils::quotedValue(const QVariant &value)
   case QVariant::Double:
     return value.toString();
   case QVariant::Bool:
-    return value.toBool() ? "TRUE" : "FALSE";
+    return value.toBool() ? QStringLiteral("TRUE") : QStringLiteral("FALSE");
   case QVariant::String:
   default:
     return quotedString(value.toString());
@@ -235,23 +235,23 @@ QByteArray QgsHanaUtils::toQByteArray(const Binary& value)
     return QByteArray(value->data(), static_cast<int>(value->size()));
 }
 
-QgsWkbTypes::Type QgsHanaUtils::toWkbType(const string& hanaType)
+QgsWkbTypes::Type QgsHanaUtils::toWkbType(const QString& hanaType)
 {
-  if (hanaType == "ST_POINT")
+  if (hanaType == QStringLiteral("ST_POINT"))
     return QgsWkbTypes::Type::Point;
-  else if (hanaType == "ST_MULTIPOINT")
+  else if (hanaType == QStringLiteral("ST_MULTIPOINT"))
     return QgsWkbTypes::Type::MultiPoint;
-  else if (hanaType == "ST_LINESTRING")
+  else if (hanaType == QStringLiteral("ST_LINESTRING"))
     return QgsWkbTypes::Type::LineString;
-  else if (hanaType == "ST_MULTILINESTRING")
+  else if (hanaType == QStringLiteral("ST_MULTILINESTRING"))
     return QgsWkbTypes::Type::MultiLineString;
-  else if (hanaType == "ST_POLYGON")
+  else if (hanaType == QStringLiteral("ST_POLYGON"))
     return QgsWkbTypes::Type::Polygon;
-  else if (hanaType == "ST_MULTIPOLYGON")
+  else if (hanaType == QStringLiteral("ST_MULTIPOLYGON"))
     return QgsWkbTypes::Type::MultiPolygon;
-  else if (hanaType == "ST_GEOMETRYCOLLECTION")
+  else if (hanaType == QStringLiteral("ST_GEOMETRYCOLLECTION"))
     return QgsWkbTypes::Type::GeometryCollection;
-  else if (hanaType == "ST_CIRCULARSTRING")
+  else if (hanaType == QStringLiteral("ST_CIRCULARSTRING"))
     return QgsWkbTypes::Type::CircularString;
 
   return QgsWkbTypes::Type::Unknown;
@@ -382,11 +382,11 @@ QString QgsHanaUtils::formatErrorMessage(const char* message, bool withPrefix)
     return QString();
 
   QString ret(message);
-  const QString mark("[HDBODBC] ");
+  const QString mark = QStringLiteral("[HDBODBC] ");
   int pos = ret.indexOf(mark);
   if (pos != -1)
     ret = ret.remove(0, pos + mark.length());
   if (withPrefix)
-    return "HANA: " + ret;
+    return QStringLiteral("HANA: ") + ret;
   return ret;
 }

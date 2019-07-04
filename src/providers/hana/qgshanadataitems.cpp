@@ -136,7 +136,7 @@ void QgsHanaConnectionItem::editConnection()
 void QgsHanaConnectionItem::deleteConnection()
 {
   if (QMessageBox::question(nullptr, QObject::tr("Delete Connection"),
-    QObject::tr("Are you sure you want to delete the connection to %1?").arg(mName),
+    tr("Are you sure you want to delete the connection to %1?").arg(mName),
     QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes)
     return;
 
@@ -165,25 +165,26 @@ void QgsHanaConnectionItem::updateToolTip(const QString& userName, const QString
   QgsHanaSettings settings(mName, true);
   QString tip;
   if (!settings.getDatabase().isEmpty())
-    tip = "Database: " + settings.getDatabase();
+    tip = QStringLiteral("Database: ") + settings.getDatabase();
   if (!tip.isEmpty())
     tip += '\n';
+  tip += QStringLiteral("Host: ") + settings.getHost() + QStringLiteral(" ");
   if (QgsHanaIdentifierType::fromInt(settings.getIdentifierType()) == QgsHanaIdentifierType::INSTANCE_NUMBER)
-    tip += "Host: " + settings.getHost() + " " + settings.getIdentifier();
+    tip += settings.getIdentifier();
   else
-    tip += "Host: " + settings.getHost() + ":" + settings.getPort();
+    tip += settings.getPort();
   if (!tip.isEmpty())
     tip += '\n';
   if (!dbmsVersion.isEmpty())
   {
-    tip += "DB Version: " + dbmsVersion;
+    tip += QStringLiteral("DB Version: ") + dbmsVersion;
     if (!tip.isEmpty())
       tip += '\n';
   }
-  tip += "User: " + userName;
+  tip += QStringLiteral("User: ") + userName;
   if (!tip.isEmpty())
     tip += '\n';
-  tip += "Encrypted: " + QString(settings.getEnableSsl() ? "yes" : "no");
+  tip += QStringLiteral("Encrypted: ") + QString(settings.getEnableSsl() ? QStringLiteral("yes") : QStringLiteral("no"));
   setToolTip(tip);
 }
 
@@ -225,7 +226,7 @@ bool QgsHanaConnectionItem::handleDrop(const QMimeData* data, const QString &toS
         uri.setWkbType(srcLayer->wkbType());
         uri.setDataSource(!toSchema.isNull() ? toSchema : nullptr,
           u.name,
-          (srcLayer->geometryType() != QgsWkbTypes::NullGeometry) ? (fieldsInUpperCase ? "GEOM" : "geom") : nullptr);
+          (srcLayer->geometryType() != QgsWkbTypes::NullGeometry) ? (fieldsInUpperCase ? QStringLiteral("GEOM") : QStringLiteral("geom")) : nullptr);
 
         QgsDebugMsg("URI " + uri.uri(false));
 
@@ -266,7 +267,7 @@ bool QgsHanaConnectionItem::handleDrop(const QMimeData* data, const QString &toS
   }
   else
   {
-    importResults.append("Connection failed");
+    importResults.append(tr("Connection failed"));
     hasError = true;
   }
 
@@ -309,7 +310,7 @@ QString QgsHanaLayerItem::createUri() const
 
   if (!connItem)
   {
-    QgsDebugMsg("connection item not found.");
+    QgsDebugMsg("Connection item not found.");
     return QString();
   }
 
@@ -320,7 +321,7 @@ QString QgsHanaLayerItem::createUri() const
   uri.setWkbType(mLayerProperty.type);
   if (uri.wkbType() != QgsWkbTypes::NoGeometry)
     uri.setSrid(QString::number(mLayerProperty.srid));
-  QgsDebugMsg(QString("layer uri: %1").arg(uri.uri(false)));
+  QgsDebugMsg(QStringLiteral("layer uri: %1").arg(uri.uri(false)));
   return uri.uri(false);
 }
 
@@ -433,19 +434,19 @@ QList<QAction*> QgsHanaSchemaItem::actions(QWidget* parent)
 
 QgsHanaLayerItem* QgsHanaSchemaItem::createLayer(const QgsHanaLayerProperty &layerProperty)
 {
-  QString tip = tr(layerProperty.isView ? "View": "Table");
+  QString tip = layerProperty.isView ? QStringLiteral("View"): QStringLiteral("Table");
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::TableLayer;
   if (!layerProperty.geometryColName.isEmpty() && layerProperty.isValid())
   {
     if (layerProperty.srid < 0)
     {
-      tip += tr("\n%1 as %2").arg(layerProperty.geometryColName,
+      tip += QStringLiteral("\n%1 as %2").arg(layerProperty.geometryColName,
         QgsWkbTypes::displayString(layerProperty.type));
     }
     else
     {
-      tip += tr("\n%1 as %2 in SRID %3")
+      tip += QStringLiteral("\n%1 as %2 in SRID %3")
         .arg(layerProperty.geometryColName, QgsWkbTypes::displayString(layerProperty.type))
         .arg(layerProperty.srid);
     }
@@ -471,7 +472,7 @@ QgsHanaLayerItem* QgsHanaSchemaItem::createLayer(const QgsHanaLayerProperty &lay
   }
   else
   {
-    tip += "\nno geometry column";
+    tip += QStringLiteral("\nno geometry column");
   }
 
   QgsHanaLayerItem* layerItem = new QgsHanaLayerItem(this, layerProperty.defaultName(),
