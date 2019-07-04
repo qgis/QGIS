@@ -21,10 +21,6 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptoolpan.h"
-#include "qgsvertexmarker.h"
 
 //qt includes
 #include <QFileInfo>
@@ -46,27 +42,6 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( cbxHideDeprecated, &QCheckBox::stateChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
   connect( leSearch, &QgsFilterLineEdit::textChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
 
-  mPreviewBand = new QgsRubberBand( mAreaCanvas, QgsWkbTypes::PolygonGeometry );
-  mPreviewBand->setWidth( 4 );
-
-  mPreviewBand2 = new QgsRubberBand( mAreaCanvas, QgsWkbTypes::PolygonGeometry );
-  mPreviewBand2->setWidth( 4 );
-  QColor rectColor = QColor( 185, 84, 210, 60 );
-  mPreviewBand2->setColor( rectColor );
-
-  mVertexMarker = new QgsVertexMarker( mAreaCanvas );
-  mVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-  mVertexMarker->setColor( QColor( 185, 84, 210 ) );
-  mVertexMarker->setPenWidth( 3 );
-
-  QgsCoordinateReferenceSystem srs( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mAreaCanvas->setDestinationCrs( srs );
-
-  QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
-  mLayers << new QgsVectorLayer( layerPath );
-  mAreaCanvas->setLayers( mLayers );
-  mAreaCanvas->setMapTool( new QgsMapToolPan( mAreaCanvas ) );
-  mAreaCanvas->setPreviewJobsEnabled( true );
   mAreaCanvas->setVisible( mShowMap );
 
   if ( QDialog *dlg = qobject_cast<QDialog *>( parent ) )
@@ -108,11 +83,6 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
 {
-  qDeleteAll( mLayers );
-  delete mPreviewBand;
-  delete mPreviewBand2;
-  delete mVertexMarker;
-
   if ( !mPushProjectionToFront )
   {
     return;
@@ -326,16 +296,12 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
 
 void QgsProjectionSelectionTreeWidget::setPreviewRect( const QgsRectangle &rect )
 {
-  mPreviewRect = rect;
-  mPreviewBand2->setToGeometry( QgsGeometry::fromRect( mPreviewRect ), nullptr );
-  mPreviewBand2->show();
-  mVertexMarker->setCenter( rect.center() );
-  mVertexMarker->show();
+  mAreaCanvas->setCanvasRect( rect );
 }
 
 QgsRectangle QgsProjectionSelectionTreeWidget::previewRect() const
 {
-  return mPreviewRect;
+  return mAreaCanvas->canvasRect();
 }
 
 // Returns the whole proj4 string for the selected projection node
@@ -1007,38 +973,14 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
 
   QgsRectangle rect = currentCrs.bounds();
   QString extentString = tr( "Extent not known" );
+  mAreaCanvas->setPreviewRect( rect );
   if ( !qgsDoubleNear( rect.area(), 0.0 ) )
   {
-    QgsGeometry geom;
-    if ( rect.xMinimum() > rect.xMaximum() )
-    {
-      QgsRectangle rect1 = QgsRectangle( -180, rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
-      QgsRectangle rect2 = QgsRectangle( rect.xMinimum(), rect.yMinimum(), 180, rect.yMaximum() );
-      geom = QgsGeometry::fromRect( rect1 );
-      geom.addPart( QgsGeometry::fromRect( rect2 ) );
-    }
-    else
-    {
-      geom = QgsGeometry::fromRect( rect );
-    }
-    mPreviewBand->setToGeometry( geom, nullptr );
-    mPreviewBand->setColor( QColor( 255, 0, 0, 65 ) );
-    QgsRectangle extent = geom.boundingBox();
-    extent.scale( 1.1 );
-    mAreaCanvas->setExtent( extent );
-    mAreaCanvas->refresh();
-    mPreviewBand->show();
     extentString = QStringLiteral( "%1, %2, %3, %4" )
                    .arg( rect.xMinimum(), 0, 'f', 2 )
                    .arg( rect.yMinimum(), 0, 'f', 2 )
                    .arg( rect.xMaximum(), 0, 'f', 2 )
                    .arg( rect.yMaximum(), 0, 'f', 2 );
-
-  }
-  else
-  {
-    mPreviewBand->hide();
-    mAreaCanvas->zoomToFullExtent();
   }
 
   QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );

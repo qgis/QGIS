@@ -94,6 +94,7 @@
 %Include auto_generated/qgscolorwidgets.sip
 %Include auto_generated/qgscompoundcolorwidget.sip
 %Include auto_generated/qgsconfigureshortcutsdialog.sip
+%Include auto_generated/qgscoordinateboundspreviewmapwidget.sip
 %Include auto_generated/qgscredentialdialog.sip
 %Include auto_generated/qgscurveeditorwidget.sip
 %Include auto_generated/qgscustomdrophandler.sip
