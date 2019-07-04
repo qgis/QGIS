@@ -327,9 +327,18 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
   details.code = QString( proj_get_id_code( op, 0 ) );
 
   const char *areaOfUseName = nullptr;
-  if ( proj_get_area_of_use( pjContext, op, nullptr, nullptr, nullptr, nullptr, &areaOfUseName ) )
+  double westLon = 0;
+  double southLat = 0;
+  double eastLon = 0;
+  double northLat = 0;
+  if ( proj_get_area_of_use( pjContext, op, &westLon, &southLat, &eastLon, &northLat, &areaOfUseName ) )
   {
     details.areaOfUse = QString( areaOfUseName );
+    // don't use the constructor which normalizes!
+    details.bounds.setXMinimum( westLon );
+    details.bounds.setYMinimum( southLat );
+    details.bounds.setXMaximum( eastLon );
+    details.bounds.setYMaximum( northLat );
   }
 
 #if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2

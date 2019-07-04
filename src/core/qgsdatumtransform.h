@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsrectangle.h"
 #include <QString>
 #include <QList>
 
@@ -231,8 +232,16 @@ class CORE_EXPORT QgsDatumTransform
        *
        * This is only available for single step coordinate operations. For multi-step operations, check
        * \a operationDetails instead.
+       *
+       * \see bounds
        */
       QString areaOfUse;
+
+      /**
+       * Valid bounds for the coordinate operation.
+       * \see areaOfUse
+       */
+      QgsRectangle bounds;
 
       /**
        * Contains a list of transform grids used by the operation.
