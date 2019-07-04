@@ -453,7 +453,7 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * \since QGIS 3.8
      */
-    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames SIP_INOUT, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
+    bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames SIP_INOUT, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns the labeling property definitions.

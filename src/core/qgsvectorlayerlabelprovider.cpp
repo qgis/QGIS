@@ -90,7 +90,7 @@ QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
 }
 
 
-bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames )
+bool QgsVectorLayerLabelProvider::prepare( QgsRenderContext &context, QSet<QString> &attributeNames )
 {
   const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
