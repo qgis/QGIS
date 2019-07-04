@@ -48,11 +48,6 @@
 using namespace odbc;
 using namespace std;
 
-static const QString HANA_KEY = QStringLiteral("hana");
-static const QString HANA_DESCRIPTION = QStringLiteral("HANA spatial data provider");
-
-static const size_t MAX_BATCH_SIZE = 1024;
-
 namespace {
 
 bool executeQuery(ConnectionRef& conn, const QString& sql, QString *errorMessage)
@@ -231,6 +226,11 @@ void setStatementValue(
   }
 }
 }
+
+static const size_t MAX_BATCH_SIZE = 1024;
+
+const QString QgsHanaProvider::HANA_KEY = QStringLiteral("hana");
+const QString QgsHanaProvider::HANA_DESCRIPTION = QStringLiteral("HANA spatial data provider");
 
 QgsHanaProvider::QgsHanaProvider(
   const QString &uri,
@@ -492,6 +492,7 @@ bool QgsHanaProvider::addFeatures(QgsFeatureList &flist, Flags )
       if (!mGeometryColumn.isEmpty())
       {
         QByteArray wkb = feature.geometry().asWkb();
+
         if (wkb.size() == 0)
           stmt->setBinary(paramIndex, Binary());
         else
@@ -1510,7 +1511,7 @@ QgsHanaProvider *QgsHanaProviderMetadata::createProvider(
 }
 
 QgsHanaProviderMetadata::QgsHanaProviderMetadata()
-  : QgsProviderMetadata(HANA_KEY, HANA_DESCRIPTION)
+  : QgsProviderMetadata(QgsHanaProvider::HANA_KEY, QgsHanaProvider::HANA_DESCRIPTION)
 {
 }
 
@@ -1536,56 +1537,6 @@ QgsVectorLayerExporter::ExportError QgsHanaProviderMetadata::createEmptyLayer(
     &oldToNewAttrIdxMap, &errorMessage
   );
 }
-
-#ifdef HAVE_GUI
-
-class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
-{
-public:
-  QString providerKey() const override { return HANA_KEY; }
-
-  QString text() const override { return QObject::tr("HANA"); }
-
-  int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 70; }
-
-  QIcon icon() const override { return QgsApplication::getThemeIcon(QStringLiteral("/mActionAddHanaLayer.svg")); }
-
-  QgsAbstractDataSourceWidget *createDataSourceWidget(QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget,
-    QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded) const override
-  {
-    return new QgsHanaSourceSelect(parent, fl, widgetMode);
-  }
-};
-
-QgsHanaProviderGuiMetadata::QgsHanaProviderGuiMetadata()
-  : QgsProviderGuiMetadata(HANA_KEY)
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsHanaProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsHanaSourceSelectProvider;
-  return providers;
-}
-
-void QgsHanaProviderGuiMetadata::registerGui(QMainWindow *mainWindow)
-{
-  QgsHanaRootItem::sMainWindow = mainWindow;
-}
-
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  if (QgsHanaDriver::instance()->isInstalled())
-    return new QgsHanaProviderGuiMetadata();
-  else
-  {
-    QgsMessageLog::logMessage(QStringLiteral("HANA ODBC driver cannot be found"), QStringLiteral("HANA"));
-    return nullptr;
-  }
-}
-
-#endif
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

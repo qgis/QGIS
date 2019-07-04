@@ -50,6 +50,9 @@ class QgsHanaProvider : public QgsVectorDataProvider
   Q_OBJECT
 
 public:
+  static const QString HANA_KEY;
+  static const QString HANA_DESCRIPTION;
+
   explicit QgsHanaProvider(const QString &uri, const QgsDataProvider::ProviderOptions &options);
   ~QgsHanaProvider() override;
 
@@ -178,15 +181,5 @@ public:
 
   QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
-
-#ifdef HAVE_GUI
-class QgsHanaProviderGuiMetadata : public QgsProviderGuiMetadata
-{
-public:
-  QgsHanaProviderGuiMetadata();
-  QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-  void registerGui(QMainWindow *mainWindow) override;
-};
-#endif
 
 #endif // QGSHANAPROVIDER_H

@@ -40,13 +40,10 @@ class QgsHanaRootItem : public QgsDataCollectionItem
 
     QWidget *paramWidget() override;
 
-    QList<QAction *> actions( QWidget *parent ) override;
-
     static QMainWindow *sMainWindow;
 
   public slots:
     void onConnectionsChanged();
-    void newConnection();
 };
 
 class QgsHanaConnectionItem : public QgsDataCollectionItem
@@ -57,25 +54,18 @@ class QgsHanaConnectionItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-    QList<QAction *> actions( QWidget *parent ) override;
-
-    bool acceptDrop() override { return true; }
-    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
     bool handleDrop( const QMimeData *data, const QString &toSchema );
+
+private:
+  void updateToolTip(const QString& userName, const QString &dbmsVersion);
 
   signals:
     void addGeometryColumn( const QgsHanaLayerProperty &layerProperty);
 
   public slots:
-    void editConnection();
-    void deleteConnection();
-    void refreshConnection();
-
     // refresh specified schema or all schemas if schema name is empty
     void refreshSchema( const QString &schema );
-
-    void updateToolTip(const QString& userName, const QString &dbmsVersion);
 };
 
 class QgsHanaSchemaItem : public QgsDataCollectionItem
@@ -86,10 +76,6 @@ class QgsHanaSchemaItem : public QgsDataCollectionItem
       const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
-    QList<QAction *> actions( QWidget *parent ) override;
-
-    bool acceptDrop() override { return true; }
-    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
   private:
     QgsHanaLayerItem *createLayer(const QgsHanaLayerProperty &layerProperty );
@@ -110,10 +96,7 @@ class QgsHanaLayerItem : public QgsLayerItem
 
     QString comments() const override;
 
-    QList<QAction *> actions(QWidget *parent) override;
-
-public slots:
-  bool deleteLayer();
+    const QgsHanaLayerProperty &layerInfo() const { return mLayerProperty; }
 
   private:
     QgsHanaLayerProperty mLayerProperty;

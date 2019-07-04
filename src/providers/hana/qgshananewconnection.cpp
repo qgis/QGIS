@@ -24,12 +24,10 @@
 using namespace std;
 
 namespace {
-
 bool isStringEmpty(const QString& input)
 {
   return (input.isEmpty() || QString(input).replace(" ", "").isEmpty());
 }
-
 }
 
 QgsHanaNewConnection::QgsHanaNewConnection(
