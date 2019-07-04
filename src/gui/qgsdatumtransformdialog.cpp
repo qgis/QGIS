@@ -172,7 +172,10 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     item->setData( AvailableRole, transform.isAvailable );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
 
-    item->setText( transform.name );
+    QString name = transform.name;
+    if ( !transform.authority.isEmpty() && !transform.code.isEmpty() )
+      name += QStringLiteral( " — %1:%2" ).arg( transform.authority, transform.code );
+    item->setText( name );
 
     if ( row == 0 ) // highlight first (preferred) operation
     {
@@ -231,6 +234,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     }
 
     QStringList areasOfUse;
+    QStringList authorityCodes;
 
 #if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
     QStringList opText;
@@ -251,6 +255,12 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
       {
         if ( !areasOfUse.contains( singleOpDetails.areaOfUse ) )
           areasOfUse << singleOpDetails.areaOfUse;
+      }
+      if ( !singleOpDetails.authority.isEmpty() && !singleOpDetails.code.isEmpty() )
+      {
+        const QString identifier = QStringLiteral( "%1:%2" ).arg( singleOpDetails.authority, singleOpDetails.code );
+        if ( !authorityCodes.contains( identifier ) )
+          authorityCodes << identifier;
       }
 
       if ( !text.isEmpty() )
@@ -285,6 +295,10 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     if ( !transform.areaOfUse.isEmpty() && !areasOfUse.contains( transform.areaOfUse ) )
       areasOfUse << transform.areaOfUse;
 
+    const QString id = QStringLiteral( "%1:%2" ).arg( transform.authority, transform.code );
+    if ( !transform.authority.isEmpty() && !transform.code.isEmpty() && !authorityCodes.contains( id ) )
+      authorityCodes << id;
+
 #if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
     const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
     const QColor active = palette().color( QPalette::Active, QPalette::Text );
@@ -295,11 +309,13 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
                                   + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() )
                                   + ( !areasOfUse.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), areasOfUse.join( QStringLiteral( ", " ) ) ) : QString() )
+                                  + ( !authorityCodes.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifiers" ), authorityCodes.join( QStringLiteral( ", " ) ) ) : QString() )
                                   + ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() )
                                   + QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
 #else
-    const QString toolTipString = QStringLiteral( "<b>%1</b>%2%3<p><code>%4</code></p>" ).arg( transform.name,
+    const QString toolTipString = QStringLiteral( "<b>%1</b>%2%3%4<p><code>%5</code></p>" ).arg( transform.name,
                                   ( !transform.areaOfUse.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), transform.areaOfUse ) : QString() ),
+                                  ( !id.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifier" ), id ) : QString() ),
                                   ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() ),
                                   transform.proj );
 #endif
