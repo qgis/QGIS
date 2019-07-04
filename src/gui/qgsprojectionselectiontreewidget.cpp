@@ -95,8 +95,15 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
 
   mCheckBoxNoProjection->setHidden( true );
+  mCheckBoxNoProjection->setEnabled( false );
   connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, &QgsProjectionSelectionTreeWidget::crsSelected );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, mFrameProjections, &QFrame::setDisabled );
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( mCheckBoxNoProjection->isEnabled() )
+    {
+      mFrameProjections->setDisabled( checked );
+    }
+  } );
 }
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
@@ -474,7 +481,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 {
-  if ( mCheckBoxNoProjection->isChecked() )
+  if ( mCheckBoxNoProjection->isEnabled() && mCheckBoxNoProjection->isChecked() )
     return QgsCoordinateReferenceSystem();
 
   int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
@@ -486,7 +493,12 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 
 void QgsProjectionSelectionTreeWidget::setShowNoProjection( bool show )
 {
-  mCheckBoxNoProjection->setHidden( !show );
+  mCheckBoxNoProjection->setVisible( show );
+  mCheckBoxNoProjection->setEnabled( show );
+  if ( show )
+  {
+    mFrameProjections->setDisabled( mCheckBoxNoProjection->isChecked() );
+  }
 }
 
 void QgsProjectionSelectionTreeWidget::setShowBoundsMap( bool show )
