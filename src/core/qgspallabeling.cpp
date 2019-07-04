@@ -63,6 +63,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometrycollection.h"
+#include "callouts/qgscallout.h"
 #include <QMessageBox>
 
 using namespace pal;
@@ -303,6 +304,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacleFactor = 1.0;
   obstacleType = PolygonInterior;
   zIndex = 0.0;
+
+  mCallout = qgis::make_unique< QgsSimpleLineCallout >();
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -394,6 +397,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   mFormat = s.mFormat;
   mDataDefinedProperties = s.mDataDefinedProperties;
+
+  mCallout.reset( s.mCallout ? s.mCallout->clone() : nullptr );
 
   geometryGenerator = s.geometryGenerator;
   geometryGeneratorEnabled = s.geometryGeneratorEnabled;
@@ -512,10 +517,19 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
     }
   }
 
+  if ( mCallout )
+  {
+    const auto referencedColumns = mCallout->referencedFields( context );
+    for ( const QString &name : referencedColumns )
+    {
+      attributeNames.insert( name );
+    }
+  }
+
   return true;
 }
 
-void QgsPalLayerSettings::startRender( QgsRenderContext & )
+void QgsPalLayerSettings::startRender( QgsRenderContext &context )
 {
   if ( mRenderStarted )
   {
@@ -523,15 +537,25 @@ void QgsPalLayerSettings::startRender( QgsRenderContext & )
     return;
   }
 
+  if ( mCallout )
+  {
+    mCallout->startRender( context );
+  }
+
   mRenderStarted = true;
 }
 
-void QgsPalLayerSettings::stopRender( QgsRenderContext & )
+void QgsPalLayerSettings::stopRender( QgsRenderContext &context )
 {
   if ( !mRenderStarted )
   {
     qWarning( "Stop render called for QgsPalLayerSettings without a startRender call!" );
     return;
+  }
+
+  if ( mCallout )
+  {
+    mCallout->stopRender( context );
   }
 
   mRenderStarted = false;
@@ -1108,7 +1132,11 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     mDataDefinedProperties.setProperty( MaxScale, QgsProperty() );
   }
 
+  // TODO - replace with registry when multiple callout styles exist
+  if ( !mCallout )
+    mCallout = qgis::make_unique< QgsSimpleLineCallout >();
 
+  mCallout->restoreProperties( elem.firstChildElement( QStringLiteral( "callout" ) ), context );
 }
 
 
@@ -1204,7 +1232,18 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   elem.appendChild( placementElem );
   elem.appendChild( renderingElem );
   elem.appendChild( ddElem );
+
+  if ( mCallout )
+  {
+    mCallout->saveProperties( doc, elem );
+  }
+
   return elem;
+}
+
+void QgsPalLayerSettings::setCallout( QgsCallout *callout )
+{
+  mCallout.reset( callout );
 }
 
 QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText, int padding )
