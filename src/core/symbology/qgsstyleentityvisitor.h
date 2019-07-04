@@ -38,7 +38,7 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
     /**
      * Describes the types of nodes which may be visited by the visitor.
      */
-    enum class NodeType
+    enum class NodeType : int
     {
       Project, //!< QGIS Project node
       Layer, //!< Map layer
