@@ -164,10 +164,9 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
   Q_UNUSED( selectedDatumTransforms )
   for ( const QgsDatumTransform::TransformDetails &transform : qgis::as_const( mDatumTransforms ) )
   {
-    bool itemDisabled = !transform.isAvailable;
-
     std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
     item->setData( ProjRole, transform.proj );
+    item->setData( AvailableRole, transform.isAvailable );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
 
     item->setText( transform.name );
@@ -178,6 +177,11 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
       f.setBold( true );
       item->setFont( f );
       item->setForeground( QBrush( QColor( 0, 120, 0 ) ) );
+    }
+
+    if ( !transform.isAvailable )
+    {
+      item->setForeground( QBrush( QColor( 255, 0, 0 ) ) );
     }
 
     if ( preferredInitialRow < 0 && transform.isAvailable )
@@ -258,20 +262,12 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
                                   transform.proj );
 #endif
     item->setToolTip( toolTipString );
-    if ( itemDisabled )
-    {
-      item->setFlags( Qt::NoItemFlags );
-    }
     mDatumTransformTableWidget->setRowCount( row + 1 );
     mDatumTransformTableWidget->setItem( row, 0, item.release() );
 
     item = qgis::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( transform.accuracy >= 0 ? QString::number( transform.accuracy ) : tr( "Unknown" ) );
-    if ( itemDisabled )
-    {
-      item->setFlags( Qt::NoItemFlags );
-    }
     item->setToolTip( toolTipString );
     mDatumTransformTableWidget->setItem( row, 1, item.release() );
 
@@ -280,10 +276,6 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     item = qgis::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( areasOfUse.join( QStringLiteral( ", " ) ) );
-    if ( itemDisabled )
-    {
-      item->setFlags( Qt::NoItemFlags );
-    }
     item->setToolTip( toolTipString );
     mDatumTransformTableWidget->setItem( row, 2, item.release() );
 #endif
@@ -405,7 +397,11 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
 void QgsDatumTransformDialog::setOKButtonEnabled()
 {
   int row = mDatumTransformTableWidget->currentRow();
+#if PROJ_VERSION_MAJOR>=6
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && mDatumTransformTableWidget->item( row, 0 )->data( AvailableRole ).toBool() );
+#else
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && row >= 0 );
+#endif
 }
 
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
