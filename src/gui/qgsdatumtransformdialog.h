@@ -65,11 +65,15 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      * and the user has asked to be prompted, not re-adding transforms already in the current project
      * context, etc.
      *
+     * The optional \a mapCanvas argument can be used to refine the dialog's display based on the current
+     * map canvas extent.
+     *
      * \since QGIS 3.8
      */
     static bool run( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
                      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
-                     QWidget *parent = nullptr );
+                     QWidget *parent = nullptr,
+                     QgsMapCanvas *mapCanvas = nullptr );
 
     // TODO QGIS 4.0 - remove selectedDatumTransform
 
@@ -84,7 +88,8 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                              QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
                              QWidget *parent = nullptr,
                              Qt::WindowFlags f = nullptr,
-                             const QString &selectedProj = QString() );
+                             const QString &selectedProj = QString(),
+                             QgsMapCanvas *mapCanvas = nullptr );
     ~QgsDatumTransformDialog() override;
 
     void accept() override;
@@ -109,6 +114,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
       TransformIdRole = Qt::UserRole + 1,
       ProjRole,
       AvailableRole,
+      BoundsRole
     };
 
     bool gridShiftTransformation( const QString &itemText ) const;
