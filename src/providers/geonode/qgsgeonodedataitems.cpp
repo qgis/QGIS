@@ -16,7 +16,6 @@
 #include "qgslogger.h"
 #include "qgsgeonodedataitems.h"
 #include "qgsproviderregistry.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsgeonoderequest.h"
 
 typedef QList<QgsDataItemProvider *> *dataItemProviders_t();
