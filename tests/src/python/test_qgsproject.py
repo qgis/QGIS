@@ -32,7 +32,7 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QTemporaryFile
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt import sip
 
@@ -835,6 +835,20 @@ class TestQgsProject(unittest.TestCase):
             self.assertTrue('source="{}/landsat_4326.tif"'.format(tmpDir.path()) in content)
 
         del project
+
+    def testRelativePathsGpkg(self):
+        """
+        Test whether paths to layer sources are stored as relative to the project path with GPKG storage
+        """
+        d = QTemporaryDir('project_storage_XXXXXX')
+        path = os.path.join(d.path(), 'relative_paths_gh30387.gpkg')
+        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+        # Project URI
+        uri = 'geopackage://{}?projectName=relative_project'.format(path)
+        project = QgsProject()
+        self.assertTrue(project.read(uri))
+        for _, l in project.mapLayers().items():
+            self.assertTrue(l.isValid())
 
     def testSymbolicLinkInProjectPath(self):
         """

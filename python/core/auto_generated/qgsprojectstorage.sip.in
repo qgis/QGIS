@@ -88,6 +88,15 @@ Reads project metadata (e.g. last modified time) if this is supported by the sto
 Returns ``True`` if the metadata were read with success.
 %End
 
+    virtual QString filePath( const QString &uri );
+%Docstring
+Extracts and returns the file path from a storage backend ``uri``, filesystem-based storage
+backends should implement this method in order to support relative paths storage.
+The default implementation returns an empty string.
+
+.. versionadded:: 3.8.1
+%End
+
  virtual QString visibleName() /Deprecated/;
 %Docstring
 Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
@@ -112,6 +121,7 @@ Returns project URI if user has picked a destination or empty string if the GUI 
 
 .. deprecated:: since QGIS 3.10 - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
 %End
+
 };
 
 /************************************************************************

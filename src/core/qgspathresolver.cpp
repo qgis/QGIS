@@ -142,7 +142,6 @@ QString QgsPathResolver::readPath( const QString &filename ) const
   return vsiPrefix + projElems.join( QStringLiteral( "/" ) );
 }
 
-
 QString QgsPathResolver::writePath( const QString &src ) const
 {
   if ( mBaseFileName.isEmpty() || src.isEmpty() )
