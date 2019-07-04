@@ -363,6 +363,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
       continue;
     }
 
+    context.expressionContext().setFeature( lf->feature() );
     lf->provider()->drawLabel( context, label );
   }
 
