@@ -82,6 +82,9 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
 
   QgsGui::enableAutoGeometryRestore( this );
 
+  mLabelSrcDescription->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  mLabelSrcDescription->setOpenExternalLinks( true );
+
   if ( !showMakeDefault )
     mMakeDefaultCheckBox->setVisible( false );
 
@@ -181,13 +184,50 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
 
     if ( !transform.isAvailable )
     {
-      item->setForeground( QBrush( QColor( 255, 0, 0 ) ) );
+      item->setForeground( QBrush( palette().color( QPalette::Disabled, QPalette::Text ) ) );
     }
 
     if ( preferredInitialRow < 0 && transform.isAvailable )
     {
       // try to select a "preferred" entry by default
       preferredInitialRow = row;
+    }
+
+    QString missingMessage;
+    if ( !transform.isAvailable )
+    {
+      QStringList gridMessages;
+      for ( const QgsDatumTransform::GridDetails &grid : transform.grids )
+      {
+        if ( !grid.isAvailable )
+        {
+          QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
+          if ( !grid.url.isEmpty() )
+          {
+            if ( !grid.packageName.isEmpty() )
+            {
+              m += ' ' +  tr( "This grid is part of the <i>%1</i> package, available for download from <a href=\"%2\">%2</a>." ).arg( grid.packageName, grid.url );
+            }
+            else
+            {
+              m += ' ' + tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
+            }
+          }
+          gridMessages << m;
+        }
+      }
+
+      if ( gridMessages.count() > 1 )
+      {
+        for ( int k = 0; k < gridMessages.count(); ++k )
+          gridMessages[k] = QStringLiteral( "<li>%1</li>" ).arg( gridMessages.at( k ) );
+
+        missingMessage = QStringLiteral( "<ul>%1</ul" ).arg( gridMessages.join( QString() ) );
+      }
+      else if ( !gridMessages.empty() )
+      {
+        missingMessage = gridMessages.constFirst();
+      }
     }
 
     QStringList areasOfUse;
@@ -255,10 +295,12 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
                                   + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() )
                                   + ( !areasOfUse.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), areasOfUse.join( QStringLiteral( ", " ) ) ) : QString() )
+                                  + ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() )
                                   + QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
 #else
-    const QString toolTipString = QStringLiteral( "<b>%1</b>%2<p><code>%3</code></p>" ).arg( transform.name,
+    const QString toolTipString = QStringLiteral( "<b>%1</b>%2%3<p><code>%4</code></p>" ).arg( transform.name,
                                   ( !transform.areaOfUse.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), transform.areaOfUse ) : QString() ),
+                                  ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() ),
                                   transform.proj );
 #endif
     item->setToolTip( toolTipString );
@@ -269,6 +311,10 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( transform.accuracy >= 0 ? QString::number( transform.accuracy ) : tr( "Unknown" ) );
     item->setToolTip( toolTipString );
+    if ( !transform.isAvailable )
+    {
+      item->setForeground( QBrush( palette().color( QPalette::Disabled, QPalette::Text ) ) );
+    }
     mDatumTransformTableWidget->setItem( row, 1, item.release() );
 
 #if PROJ_VERSION_MAJOR>=6
@@ -277,6 +323,10 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( areasOfUse.join( QStringLiteral( ", " ) ) );
     item->setToolTip( toolTipString );
+    if ( !transform.isAvailable )
+    {
+      item->setForeground( QBrush( palette().color( QPalette::Disabled, QPalette::Text ) ) );
+    }
     mDatumTransformTableWidget->setItem( row, 2, item.release() );
 #endif
 
@@ -398,7 +448,8 @@ void QgsDatumTransformDialog::setOKButtonEnabled()
 {
   int row = mDatumTransformTableWidget->currentRow();
 #if PROJ_VERSION_MAJOR>=6
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && mDatumTransformTableWidget->item( row, 0 )->data( AvailableRole ).toBool() );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid()
+      && mDatumTransformTableWidget->item( row, 0 ) && mDatumTransformTableWidget->item( row, 0 )->data( AvailableRole ).toBool() );
 #else
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && row >= 0 );
 #endif
