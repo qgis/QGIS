@@ -3236,7 +3236,6 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     mRenderer = r;
     mSymbolFeatureCounted = false;
     mSymbolFeatureCountMap.clear();
-    mSymbolIdMap.clear();
 
     emit rendererChanged();
     emit styleChanged();
