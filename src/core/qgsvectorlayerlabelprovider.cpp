@@ -349,7 +349,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   //   (backgrounds -> text)
 
   // render callout
-  if ( mSettings.callout() )
+  if ( mSettings.callout() && label->getFeaturePart()->hasFixedPosition() )
   {
     QgsMapToPixel xform = context.mapToPixel();
     xform.setMapRotation( 0, 0, 0 );
