@@ -168,13 +168,13 @@ void QgsHanaNewConnection::cmbIdentifierType_changed(int index)
   {
     txtIdentifier->setMaxLength(2);
     txtIdentifier->setValidator(new QIntValidator(0, 99, this));
-    txtIdentifier->setText("00");
+    txtIdentifier->setText(QStringLiteral("00"));
   }
   else
   {
     txtIdentifier->setMaxLength(5);
     txtIdentifier->setValidator(new QIntValidator(10000, 99999, this));
-    txtIdentifier->setText("00000");
+    txtIdentifier->setText(QStringLiteral("00000"));
   }
 }
 
@@ -258,7 +258,7 @@ void QgsHanaNewConnection::updateControlsFromSettings(const QgsHanaSettings& set
   else
   {
     rbtnMultipleContainers->setChecked(true);
-    if (settings.getDatabase() == "SYSTEMDB")
+    if (settings.getDatabase() == QStringLiteral("SYSTEMDB"))
       rbtnSystemDatabase->setChecked(true);
     else
       txtTenantDatabaseName->setText(settings.getDatabase());
@@ -298,25 +298,25 @@ void QgsHanaNewConnection::testConnection()
 {
   QString warningMsg;
   if (txtDriver->text().isEmpty())
-    warningMsg = "Driver name has not been specified.";
+    warningMsg = QStringLiteral("Driver name has not been specified.");
   else if (txtHost->text().isEmpty())
-    warningMsg = "Host name has not been specified.";
+    warningMsg = QStringLiteral("Host name has not been specified.");
   else if (rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() &&
     txtTenantDatabaseName->text().isEmpty())
-    warningMsg = "Database has not been specified.";
+    warningMsg = QStringLiteral("Database has not been specified.");
   else if (mAuthSettings->username().isEmpty())
-    warningMsg = "User name has not been specified.";
+    warningMsg = QStringLiteral("User name has not been specified.");
   else if (mAuthSettings->password().isEmpty())
-    warningMsg = "Password has not been specified.";
+    warningMsg = QStringLiteral("Password has not been specified.");
   else if (txtIdentifier->text().isEmpty())
-    warningMsg = "Identifier has not been specified.";
+    warningMsg = QStringLiteral("Identifier has not been specified.");
   else
   {
     auto id = QgsHanaIdentifierType::fromInt(cmbIdentifierType->currentIndex());
     int len = txtIdentifier->text().length();
     if ((id == QgsHanaIdentifierType::INSTANCE_NUMBER && len != 2) ||
         (id == QgsHanaIdentifierType::PORT_NUMBER && len != 5))
-      warningMsg = "Identifier has incorrect format.";
+      warningMsg = QStringLiteral("Identifier has incorrect format.");
   }
 
   if (!warningMsg.isEmpty())
@@ -345,10 +345,10 @@ QString QgsHanaNewConnection::getDatabaseName() const
     if (rbtnTenantDatabase->isChecked())
       return QString(txtTenantDatabaseName->text());
     else
-      return QString("SYSTEMDB");
+      return QStringLiteral("SYSTEMDB");
   }
   else
-    return "";
+    return QStringLiteral("");
 }
 
 void QgsHanaNewConnection::showHelp()

@@ -30,6 +30,20 @@
 
 using namespace odbc;
 
+namespace {
+
+QString andWhereClauses(const QString &c1, const QString &c2)
+{
+  if (c1.isEmpty())
+    return c2;
+  if (c2.isEmpty())
+    return c1;
+
+  return QStringLiteral("(%1) AND (%2)").arg(c1, c2);
+}
+
+}
+
 QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   QgsHanaFeatureSource *source,
   bool ownSource,
@@ -264,7 +278,7 @@ void QgsHanaFeatureIterator::fetchFeatureGeometry(unsigned short paramIndex, Qgs
 
   if (bufLength == 0 || bufPtr == nullptr)
   {
-    QgsDebugMsg("Geometry is empty");
+    QgsDebugMsg(QStringLiteral("Geometry is empty"));
     feature.clearGeometry();
   }
   else
@@ -290,27 +304,17 @@ QString QgsHanaFeatureIterator::getBBOXFilter(const QgsRectangle& bbox,
 {
   if (dbVersion.majorVersion() == 1)
   {
-    return QString("%1.ST_SRID(%2).ST_IntersectsRect(ST_GeomFromText('Point(%3 %4)', %2), ST_GeomFromText('Point(%5 %6)', %2)) = 1")
+    return QStringLiteral("%1.ST_SRID(%2).ST_IntersectsRect(ST_GeomFromText('Point(%3 %4)', %2), ST_GeomFromText('Point(%5 %6)', %2)) = 1")
       .arg(QgsHanaUtils::quotedIdentifier(mSource->mGeometryColumn), QString::number(mSource->mSrid),
         qgsDoubleToString(bbox.xMinimum()), qgsDoubleToString(bbox.yMinimum()),
         qgsDoubleToString(bbox.xMaximum()), qgsDoubleToString(bbox.yMaximum()));
   }
   else
-    return QString("%1.ST_IntersectsRectPlanar(ST_GeomFromText('Point(%2 %3)', %6), ST_GeomFromText('Point(%4 %5)', %6)) = 1")
+    return QStringLiteral("%1.ST_IntersectsRectPlanar(ST_GeomFromText('Point(%2 %3)', %6), ST_GeomFromText('Point(%4 %5)', %6)) = 1")
     .arg(QgsHanaUtils::quotedIdentifier(mSource->mGeometryColumn),
       qgsDoubleToString(bbox.xMinimum()), qgsDoubleToString(bbox.yMinimum()),
       qgsDoubleToString(bbox.xMaximum()), qgsDoubleToString(bbox.yMaximum()),
       QString::number(mSource->mSrid));
-}
-
-QString andWhereClauses(const QString &c1, const QString &c2)
-{
-  if (c1.isEmpty())
-    return c2;
-  if (c2.isEmpty())
-    return c1;
-
-  return QStringLiteral("(%1) AND (%2)").arg(c1, c2);
 }
 
 void QgsHanaFeatureIterator::buildStatement(const QgsFeatureRequest &request)
@@ -455,7 +459,7 @@ void QgsHanaFeatureIterator::buildStatement(const QgsFeatureRequest &request)
     sqlFilter = andWhereClauses(sqlFilter, mSource->mQueryWhereClause);
 
   if (!sqlFilter.isEmpty())
-    sql += " WHERE " + sqlFilter;
+    sql += QStringLiteral(" WHERE ") + sqlFilter;
 
   if (limitAtProvider && request.limit() > 0)
     sql += QStringLiteral(" LIMIT %1").arg(mRequest.limit());

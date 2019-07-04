@@ -311,7 +311,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
     // Read geometryless tables
     if (allowGeometrylessTables)
     {
-      sql = QString("SELECT DISTINCT SCHEMA_NAME, TABLE_NAME, TABLE_COMMENTS FROM (%1)").arg(
+      sql = QStringLiteral("SELECT DISTINCT SCHEMA_NAME, TABLE_NAME, TABLE_COMMENTS FROM (%1)").arg(
         sqlTables.arg(userTablesOnly ? "CURRENT_USER" : "%", schema.isEmpty() ? "%" : schema, ""));
       ResultSetRef rsTables = stmt->executeQuery(sql.toStdString().c_str());
       while (rsTables->next())
@@ -329,7 +329,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
     }
 
     // Read views
-    sql = QString("SELECT SCHEMA_NAME, VIEW_NAME, COLUMN_NAME, DATA_TYPE_NAME, VIEW_OID, VIEW_COMMENTS FROM "
+    sql = QStringLiteral("SELECT SCHEMA_NAME, VIEW_NAME, COLUMN_NAME, DATA_TYPE_NAME, VIEW_OID, VIEW_COMMENTS FROM "
       "(SELECT * FROM SYS.VIEW_COLUMNS WHERE VIEW_OID IN (SELECT OBJECT_OID FROM OWNERSHIP WHERE "
       "OBJECT_TYPE = 'VIEW' AND OWNER_NAME LIKE '%1')) "
       "INNER JOIN "
@@ -398,11 +398,11 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas(const QString& owne
   QVector<QgsHanaSchemaProperty> list;
   try
   {
-    QString sql = QString("SELECT SCHEMA_NAME, SCHEMA_OWNER FROM SYS.SCHEMAS WHERE "
+    QString sql = QStringLiteral("SELECT SCHEMA_NAME, SCHEMA_OWNER FROM SYS.SCHEMAS WHERE "
       "HAS_PRIVILEGES = 'TRUE' AND SCHEMA_OWNER LIKE '%1' AND "
       "SCHEMA_NAME NOT LIKE_REGEXPR 'SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS|XSSQLCC_' AND "
       "SCHEMA_NAME LIKE '%2'")
-      .arg(ownerName.isEmpty() ? "%" : ownerName, mUri.schema().isEmpty() ? "%" : mUri.schema());
+      .arg(ownerName.isEmpty() ? QStringLiteral("%") : ownerName, mUri.schema().isEmpty() ? QStringLiteral("%") : mUri.schema());
     StatementRef stmt = mConnection->createStatement();
     ResultSetRef rsSchemas = stmt->executeQuery(sql.toStdString().c_str());
     while (rsSchemas->next())
@@ -434,7 +434,7 @@ int QgsHanaConnection::getLayerSRID(const QgsHanaLayerProperty& layerProperty)
 
     if (!layerProperty.isView)
     {
-      QString sql = QString("SELECT SRS_ID FROM SYS.ST_GEOMETRY_COLUMNS "
+      QString sql = QStringLiteral("SELECT SRS_ID FROM SYS.ST_GEOMETRY_COLUMNS "
         "WHERE SCHEMA_NAME = '%1' AND TABLE_NAME = '%2' AND COLUMN_NAME = '%3'")
         .arg(layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName);
       ResultSetRef rsSrid = stmt->executeQuery(sql.toStdString().c_str());
@@ -443,7 +443,7 @@ int QgsHanaConnection::getLayerSRID(const QgsHanaLayerProperty& layerProperty)
     }
     else
     {
-      QString sql = QString("SELECT %1.ST_SRID() FROM %2.%3 WHERE %1 IS NOT NULL LIMIT 10")
+      QString sql = QStringLiteral("SELECT %1.ST_SRID() FROM %2.%3 WHERE %1 IS NOT NULL LIMIT 10")
         .arg(QgsHanaUtils::quotedIdentifier(layerProperty.geometryColName),
           QgsHanaUtils::quotedIdentifier(layerProperty.schemaName),
           QgsHanaUtils::quotedIdentifier(layerProperty.tableName));
@@ -526,7 +526,7 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType(const QgsHanaLayerProp
 
   try
   {
-    QString sql = QString("SELECT upper(%1.ST_GeometryType()) AS geom_type FROM %2.%3 "
+    QString sql = QStringLiteral("SELECT upper(%1.ST_GeometryType()) AS geom_type FROM %2.%3 "
       "WHERE %1 IS NOT NULL LIMIT 10").arg(
         QgsHanaUtils::quotedIdentifier(layerProperty.geometryColName),
         QgsHanaUtils::quotedIdentifier(layerProperty.schemaName),
@@ -536,7 +536,7 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType(const QgsHanaLayerProp
     QgsWkbTypes::Type geomType = QgsWkbTypes::Unknown, prevGeomType = QgsWkbTypes::Unknown;
     while (rsGeomType->next())
     {
-      geomType = QgsWkbTypes::singleType(QgsHanaUtils::toWkbType(*rsGeomType->getString(1)));
+      geomType = QgsWkbTypes::singleType(QgsHanaUtils::toWkbType(rsGeomType->getString(1)->c_str()));
       if (prevGeomType != QgsWkbTypes::Unknown && geomType != prevGeomType)
       {
         geomType = QgsWkbTypes::Unknown;

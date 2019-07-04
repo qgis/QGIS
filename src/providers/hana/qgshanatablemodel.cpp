@@ -201,17 +201,17 @@ QIcon QgsHanaTableModel::iconForWkbType( QgsWkbTypes::Type type )
   switch ( QgsWkbTypes::geometryType( type ) )
   {
     case QgsWkbTypes::PointGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
+      return QgsApplication::getThemeIcon( QStringLiteral("/mIconPointLayer.svg") );
     case QgsWkbTypes::LineGeometry:
-      return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
+      return QgsApplication::getThemeIcon( QStringLiteral("/mIconLineLayer.svg") );
     case QgsWkbTypes::PolygonGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
+      return QgsApplication::getThemeIcon( QStringLiteral("/mIconPolygonLayer.svg") );
     case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
+      return QgsApplication::getThemeIcon( QStringLiteral("/mIconTableLayer.svg") );
     case QgsWkbTypes::UnknownGeometry:
-      return QgsApplication::getThemeIcon( "/mIconLayer.png" );
+      return QgsApplication::getThemeIcon( QStringLiteral("/mIconLayer.png") );
   }
-  return QgsApplication::getThemeIcon( "/mIconLayer.png" );
+  return QgsApplication::getThemeIcon( QStringLiteral("/mIconLayer.png") );
 }
 
 bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )

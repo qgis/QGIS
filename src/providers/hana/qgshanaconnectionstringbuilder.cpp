@@ -23,35 +23,35 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder(const QgsDataSour
   , mPassword(uri.password())
   , mSslEnabled(false)
 {
-  if (!uri.hasParam("encrypt"))
+  if (!uri.hasParam(QStringLiteral("encrypt")))
     return;
 
-  mSslEnabled = (uri.param("encrypt") == "true") ? true : false;
-  mSslCryptoProvider = uri.param("sslCryptoProvider");
-  mSslValidateCertificate = uri.param("sslValidateCertificate") == "true" ? true : false;
+  mSslEnabled = (uri.param(QStringLiteral("encrypt")) == QStringLiteral("true")) ? true : false;
+  mSslCryptoProvider = uri.param(QStringLiteral("sslCryptoProvider"));
+  mSslValidateCertificate = uri.param(QStringLiteral("sslValidateCertificate")) == QStringLiteral("true") ? true : false;
   if (mSslValidateCertificate)
-    mSslHostNameInCertificate = uri.param("sslHostNameInCertificate");
-  mSslKeyStore = uri.param("sslKeyStore");
-  mSslTrustStore = uri.param("sslTrustStore");
+    mSslHostNameInCertificate = uri.param(QStringLiteral("sslHostNameInCertificate"));
+  mSslKeyStore = uri.param(QStringLiteral("sslKeyStore"));
+  mSslTrustStore = uri.param(QStringLiteral("sslTrustStore"));
 }
 
 QString QgsHanaConnectionStringBuilder::toString()
 {
-  QString ret = QString("DRIVER={%1};SERVERNODE=%2:%3;DATABASENAME=%4;UID=%5;PWD=%6").arg(
+  QString ret = QStringLiteral("DRIVER={%1};SERVERNODE=%2:%3;DATABASENAME=%4;UID=%5;PWD=%6").arg(
       mDriver, mHost, mPort, mDatabase, mUserName, mPassword);
   if (!mSchema.isEmpty())
-    ret += ";CURRENTSCHEMA=" + mSchema;
+    ret += QStringLiteral(";CURRENTSCHEMA=") + mSchema;
   if (mSslEnabled)
   {
-    ret += ";encrypt=true";
-    ret += ";sslCryptoProvider=" + mSslCryptoProvider;
-    ret += ";sslValidateCertificate=" + QString(mSslValidateCertificate ? "true" : "false");
+    ret += QStringLiteral(";encrypt=true");
+    ret += QStringLiteral(";sslCryptoProvider=") + mSslCryptoProvider;
+    ret += QStringLiteral(";sslValidateCertificate=") + QString(mSslValidateCertificate ? QStringLiteral("true") : QStringLiteral("false"));
     if (mSslValidateCertificate)
-      ret += ";sslHostNameInCertificate=" + mSslValidateCertificate;
+      ret += QStringLiteral(";sslHostNameInCertificate=") + mSslValidateCertificate;
     if (!mSslKeyStore.isEmpty())
-      ret += ";sslKeyStore=" + mSslKeyStore;
+      ret += QStringLiteral(";sslKeyStore=") + mSslKeyStore;
     if (!mSslKeyStore.isEmpty())
-      ret += ";sslTrustStore=" + mSslTrustStore;
+      ret += QStringLiteral(";sslTrustStore=") + mSslTrustStore;
   }
   return ret;
 }

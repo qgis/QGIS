@@ -39,7 +39,7 @@ QString QgsHanaSettings::getPort() const
   {
     if (mMultitenant)
     {
-      if (mDatabase == "SYSTEMDB")
+      if (mDatabase == QStringLiteral("SYSTEMDB"))
         return QString("3" + mIdentifier + "13");
       else
         return QString("3" + mIdentifier + "41");
@@ -59,15 +59,15 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri()
   uri.setSchema(mSchema);
   if (mSslEnabled)
   {
-    uri.setParam("encrypt", "true");
-    uri.setParam("sslCryptoProvider", mSslCryptoProvider);
-    uri.setParam("sslValidateCertificate", mSslValidateCertificate ? "true" : "false");
+    uri.setParam(QStringLiteral("encrypt"), QStringLiteral("true"));
+    uri.setParam(QStringLiteral("sslCryptoProvider"), mSslCryptoProvider);
+    uri.setParam(QStringLiteral("sslValidateCertificate"), mSslValidateCertificate ? QStringLiteral("true") : QStringLiteral("false"));
     if (!mSslHostNameInCertificate.isEmpty())
-      uri.setParam("sslHostNameInCertificate", mSslHostNameInCertificate);
+      uri.setParam(QStringLiteral("sslHostNameInCertificate"), mSslHostNameInCertificate);
     if (!mSslKeyStore.isEmpty())
-      uri.setParam("sslKeyStore", mSslKeyStore);
+      uri.setParam(QStringLiteral("sslKeyStore"), mSslKeyStore);
     if (!mSslTrustStore.isEmpty())
-      uri.setParam("sslTrustStore", mSslTrustStore);
+      uri.setParam(QStringLiteral("sslTrustStore"), mSslTrustStore);
   }
 
   return uri;
