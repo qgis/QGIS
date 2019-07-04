@@ -215,6 +215,16 @@ void QgsWCSRootItem::onConnectionsChanged()
 #endif
 
 // ---------------------------------------------------------------------------
+QString QgsWcsDataItemProvider::name()
+{
+  return QStringLiteral( "WCS" );
+}
+
+int QgsWcsDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
+
 QgsDataItem *QgsWcsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   QgsDebugMsg( "thePath = " + path );

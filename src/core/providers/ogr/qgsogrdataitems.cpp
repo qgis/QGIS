@@ -405,6 +405,16 @@ bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QStr
 
 // ---------------------------------------------------------------------------
 
+QString QgsOgrDataItemProvider::name()
+{
+  return QStringLiteral( "OGR" );
+}
+
+int QgsOgrDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
+}
+
 QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   QString path( pathIn );

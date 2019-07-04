@@ -33,9 +33,9 @@ class QgsMdalLayerItem : public QgsLayerItem
 class QgsMdalDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "MDAL" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::File; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

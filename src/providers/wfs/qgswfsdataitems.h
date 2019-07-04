@@ -89,9 +89,9 @@ class QgsWfsLayerItem : public QgsLayerItem
 class QgsWfsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "WFS" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::Net; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 

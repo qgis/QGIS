@@ -49,9 +49,9 @@ class QgsOWSRootItem : public QgsDataCollectionItem
 class QgsOwsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "OWS" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::Net; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

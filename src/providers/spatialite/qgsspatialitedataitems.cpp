@@ -274,6 +274,16 @@ bool SpatiaLiteUtils::createDb( const QString &dbPath, QString &errCause )
 
 // ---------------------------------------------------------------------------
 
+QString QgsSpatiaLiteDataItemProvider::name()
+{
+  return QStringLiteral( "SPATIALITE" );
+}
+
+int QgsSpatiaLiteDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
 QgsDataItem *QgsSpatiaLiteDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn )

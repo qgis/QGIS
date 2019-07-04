@@ -110,9 +110,9 @@ class QgsPGLayerItem : public QgsLayerItem
 class QgsPostgresDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "PostGIS" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::Database; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

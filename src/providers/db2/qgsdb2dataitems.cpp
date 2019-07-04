@@ -474,6 +474,16 @@ QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
   return layerItem;
 }
 
+QString QgsDb2DataItemProvider::name()
+{
+  return QStringLiteral( "DB2" );
+}
+
+int QgsDb2DataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
 QgsDataItem *QgsDb2DataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn );

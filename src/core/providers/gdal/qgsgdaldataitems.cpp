@@ -126,6 +126,16 @@ static QStringList sExtensions = QStringList();
 static QStringList sWildcards = QStringList();
 static QMutex sBuildingFilters;
 
+QString QgsGdalDataItemProvider::name()
+{
+  return QStringLiteral( "GDAL" );
+}
+
+int QgsGdalDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
+}
+
 QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   QString path( pathIn );

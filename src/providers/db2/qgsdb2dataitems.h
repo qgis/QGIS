@@ -133,7 +133,7 @@ class QgsDb2LayerItem : public QgsLayerItem
 class QgsDb2DataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "DB2" ); }
-    int capabilities() const override { return QgsDataProvider::Database; }
+    QString name() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
