@@ -323,6 +323,17 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
   details.accuracy = proj_coordoperation_get_accuracy( pjContext, op );
   details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op );
 
+  const char *areaOfUseName = nullptr;
+  if ( proj_get_area_of_use( pjContext, op, nullptr, nullptr, nullptr, nullptr, &areaOfUseName ) )
+  {
+    details.areaOfUse = QString( areaOfUseName );
+  }
+
+#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+  details.remarks = QString( proj_get_remarks( op ) );
+  details.scope = QString( proj_get_scope( op ) );
+#endif
+
   for ( int j = 0; j < proj_coordoperation_get_grid_used_count( pjContext, op ); ++j )
   {
     const char *shortName = nullptr;
@@ -354,6 +365,12 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
       SingleOperationDetails singleOpDetails;
       singleOpDetails.remarks = QString( proj_get_remarks( step.get() ) );
       singleOpDetails.scope = QString( proj_get_scope( step.get() ) );
+
+      const char *areaOfUseName = nullptr;
+      if ( proj_get_area_of_use( pjContext, step.get(), nullptr, nullptr, nullptr, nullptr, &areaOfUseName ) )
+      {
+        singleOpDetails.areaOfUse = QString( areaOfUseName );
+      }
       details.operationDetails.append( singleOpDetails );
     }
   }
