@@ -695,11 +695,11 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
     if ( label.isEmpty() )
     {
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        mLabel = QgsExpression::replaceExpressionText(  injectSymbolId( "[%" + mLayerNode->labelExpression() + "%]" ) , &contextCopy );
+        mLabel = QgsExpression::replaceExpressionText( "[%" + mLayerNode->labelExpression() + "%]" , &contextCopy );
       else if ( mLabel.contains( "[%" ) )
       {
         const QString symLabel = symbolLabel();
-        mLabel = QgsExpression::replaceExpressionText( injectSymbolId( symLabel ), &contextCopy );
+        mLabel = QgsExpression::replaceExpressionText( symLabel , &contextCopy );
       }
       return mLabel;
     }
@@ -707,43 +707,13 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
     {
       QString eLabel;
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        eLabel = QgsExpression::replaceExpressionText( injectSymbolId( label + "[%" + mLayerNode->labelExpression() + "%]" ), &contextCopy );
+        eLabel = QgsExpression::replaceExpressionText( label + "[%" + mLayerNode->labelExpression() + "%]" , &contextCopy );
       else if ( label.contains( "[%" ) )
-        eLabel = QgsExpression::replaceExpressionText( injectSymbolId( label ), &contextCopy );
+        eLabel = QgsExpression::replaceExpressionText( label , &contextCopy );
       return eLabel;
     }
   }
   return mLabel;
-}
-
-QString QgsSymbolLegendNode::injectSymbolId ( const QString &expression )
-{
-  QgsExpression parsedExpression = QgsExpression( expression );
-  const QList <QgsExpressionNode *> expNodes = parsedExpression.nodes();
-  const QList<QString> aggfuncs( { "count", "count_distinct" "count_missing", "minimum", "maximum", "sum", "mean", "median", "stdev", "range", "minority", "majority", "q1", "q3", "iqr", "min_length", "max_length", "collect", "concatenate", "concatenate_unique", "array_agg"} );
-  QString symbolStr = " symbol_id:=" << mItem.ruleKey();
-
-  for ( const QgsExpressionNode expNode : expNodes )
-  {
-    if ( expNode.type()==NodeType::ntFunction )
-    {
-      if ( aggfuncs.contains( expNode.name() )
-      {
-
-      }
-    }
-  }
-  functs=expression.split('(');
-  for (  int i =0 ; functs.lenght() > i ; i++ )
-  {
-    QString functName = functs[i].split(')')[-1].split(' ')[-1];
-    if ( aggfuncs.contains( functName ) )
-    {
-
-      // somehow find the fittiinject in function
-    }
-  }
-
 }
 
 QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const

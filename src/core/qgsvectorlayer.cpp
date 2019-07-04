@@ -4474,7 +4474,6 @@ void QgsVectorLayer::onSymbolsCounted()
   if ( mFeatureCounter )
   {
     mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
-    mSymbolIdMap = mFeatureCounter->symbolFeatureIdMap();
     mSymbolFeatureCounted = true;
     emit symbolFeatureCountMapChanged();
   }

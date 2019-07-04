@@ -2602,9 +2602,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     // Feature counts for each renderer legend key
     QHash<QString, long> mSymbolFeatureCountMap;
 
-    // feature id for each renderer legend keyh
-    QHash<QString, QgsFeatureIds> mSymbolIdMap;
-
     //! True while an undo command is active
     bool mEditCommandActive = false;
 
