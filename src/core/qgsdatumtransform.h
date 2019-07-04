@@ -160,6 +160,9 @@ class CORE_EXPORT QgsDatumTransform
 
       //! Remarks for operation, from EPSG registry database
       QString remarks;
+
+      //! Area of use, from EPSG registry database
+      QString areaOfUse;
     };
 
     /**
@@ -178,12 +181,36 @@ class CORE_EXPORT QgsDatumTransform
       double accuracy = 0;
 
       /**
+       * Scope of operation, from EPSG registry database.
+       *
+       * This is only available for single step coordinate operations. For multi-step operations, check
+       * \a operationDetails instead.
+       */
+      QString scope;
+
+      /**
+      * Remarks for operation, from EPSG registry database.
+      *
+      * This is only available for single step coordinate operations. For multi-step operations, check
+      * \a operationDetails instead.
+      */
+      QString remarks;
+
+      /**
        * TRUE if operation is available.
        *
        * If FALSE, it likely means a transform grid is required which is not
        * available.
        */
       bool isAvailable = false;
+
+      /**
+       * Area of use string.
+       *
+       * This is only available for single step coordinate operations. For multi-step operations, check
+       * \a operationDetails instead.
+       */
+      QString areaOfUse;
 
       /**
        * Contains a list of transform grids used by the operation.
