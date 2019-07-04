@@ -33,7 +33,7 @@
 #include <proj.h>
 #endif
 
-bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent )
+bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent, QgsMapCanvas *mapCanvas )
 {
   if ( sourceCrs == destinationCrs )
     return true;
@@ -44,7 +44,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
     return true;
   }
 
-  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, true, qMakePair( -1, -1 ), parent );
+  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, true, qMakePair( -1, -1 ), parent, nullptr, QString(), mapCanvas );
   if ( dlg.shouldAskUserForSelection() )
   {
     if ( dlg.exec() )
@@ -74,7 +74,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice,
     QPair<int, int> selectedDatumTransforms,
     QWidget *parent,
-    Qt::WindowFlags f, const QString &selectedProj )
+    Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas )
   : QDialog( parent, f )
   , mPreviousCursorOverride( qgis::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
@@ -119,6 +119,37 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     mSourceCrsLabel->setText( QgsProjectionSelectionWidget::crsOptionText( sourceCrs ) );
     mDestCrsLabel->setText( QgsProjectionSelectionWidget::crsOptionText( destinationCrs ) );
   }
+
+#if PROJ_VERSION_MAJOR<6
+  mAreaCanvas->hide();
+  ( void )mapCanvas;
+#else
+  if ( mapCanvas )
+  {
+    // show canvas extent in preview widget
+    QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
+    QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
+    // close polygon
+    mainCanvasPoly << mainCanvasPoly.at( 0 );
+    if ( QgsProject::instance()->crs() !=
+         QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+    {
+      // reproject extent
+      QgsCoordinateTransform ct( QgsProject::instance()->crs(),
+                                 QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
+
+      g = g.densifyByCount( 5 );
+      try
+      {
+        g.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+      }
+    }
+    mAreaCanvas->setCanvasRect( g.boundingBox() );
+  }
+#endif
 
 #if PROJ_VERSION_MAJOR>=6
   // proj 6 doesn't provide deprecated operations
@@ -294,9 +325,10 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
 
     if ( !transform.areaOfUse.isEmpty() && !areasOfUse.contains( transform.areaOfUse ) )
       areasOfUse << transform.areaOfUse;
+    item->setData( BoundsRole, transform.bounds );
 
-    const QString id = QStringLiteral( "%1:%2" ).arg( transform.authority, transform.code );
-    if ( !transform.authority.isEmpty() && !transform.code.isEmpty() && !authorityCodes.contains( id ) )
+    const QString id = !transform.authority.isEmpty() && !transform.code.isEmpty() ? QStringLiteral( "%1:%2" ).arg( transform.authority, transform.code ) : QString();
+    if ( !id.isEmpty() && !authorityCodes.contains( id ) )
       authorityCodes << id;
 
 #if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
@@ -723,6 +755,15 @@ void QgsDatumTransformDialog::tableCurrentItemChanged( QTableWidgetItem *, QTabl
 
     QTableWidgetItem *srcItem = mDatumTransformTableWidget->item( row, 0 );
     mLabelSrcDescription->setText( srcItem ? srcItem->toolTip() : QString() );
+    if ( srcItem )
+    {
+      QgsRectangle rect = srcItem->data( BoundsRole ).value< QgsRectangle >();
+      mAreaCanvas->setPreviewRect( rect );
+    }
+    else
+    {
+      mAreaCanvas->setPreviewRect( QgsRectangle() );
+    }
     QTableWidgetItem *destItem = mDatumTransformTableWidget->item( row, 1 );
     mLabelDstDescription->setText( destItem ? destItem->toolTip() : QString() );
   }
