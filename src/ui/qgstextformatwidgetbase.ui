@@ -112,7 +112,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>806</width>
+               <width>811</width>
                <height>300</height>
               </rect>
              </property>
@@ -221,7 +221,7 @@
                <string>…</string>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset>
                 <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
               </property>
              </widget>
@@ -354,7 +354,7 @@
             </property>
             <widget class="QWidget" name="textTab">
              <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset>
                <normaloff>:/images/themes/default/mIconFieldText.svg</normaloff>:/images/themes/default/mIconFieldText.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -363,7 +363,7 @@
             </widget>
             <widget class="QWidget" name="tab_2">
              <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset>
                <normaloff>:/images/themes/default/propertyicons/labelformatting.svg</normaloff>:/images/themes/default/propertyicons/labelformatting.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -372,7 +372,7 @@
             </widget>
             <widget class="QWidget" name="tab">
              <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset>
                <normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -381,7 +381,7 @@
             </widget>
             <widget class="QWidget" name="tab_3">
              <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset>
                <normaloff>:/images/themes/default/propertyicons/labelbackground.svg</normaloff>:/images/themes/default/propertyicons/labelbackground.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -390,7 +390,7 @@
             </widget>
             <widget class="QWidget" name="tab_4">
              <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset>
                <normaloff>:/images/themes/default/propertyicons/labelshadow.svg</normaloff>:/images/themes/default/propertyicons/labelshadow.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -399,7 +399,7 @@
             </widget>
             <widget class="QWidget" name="callouts">
              <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset>
                <normaloff>:/images/themes/default/mIconSnappingSegment.svg</normaloff>:/images/themes/default/mIconSnappingSegment.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -411,7 +411,7 @@
             </widget>
             <widget class="QWidget" name="widget">
              <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset>
                <normaloff>:/images/themes/default/propertyicons/labelplacement.svg</normaloff>:/images/themes/default/propertyicons/labelplacement.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -420,7 +420,7 @@
             </widget>
             <widget class="QWidget" name="tab_6">
              <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset>
                <normaloff>:/images/themes/default/propertyicons/render.svg</normaloff>:/images/themes/default/propertyicons/render.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -494,7 +494,7 @@
                   <string>Text style</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../images/images.qrc">
+                  <iconset>
                    <normaloff>:/images/themes/default/propertyicons/labeltext.svg</normaloff>:/images/themes/default/propertyicons/labeltext.svg</iconset>
                  </property>
                 </item>
@@ -506,7 +506,7 @@
                   <string>Formatting</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../images/images.qrc">
+                  <iconset>
                    <normaloff>:/images/themes/default/propertyicons/labelformatting.svg</normaloff>:/images/themes/default/propertyicons/labelformatting.svg</iconset>
                  </property>
                 </item>
@@ -518,7 +518,7 @@
                   <string>Buffer</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../images/images.qrc">
+                  <iconset>
                    <normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</iconset>
                  </property>
                 </item>
@@ -530,7 +530,7 @@
                   <string>Background</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../images/images.qrc">
+                  <iconset>
                    <normaloff>:/images/themes/default/propertyicons/labelbackground.svg</normaloff>:/images/themes/default/propertyicons/labelbackground.svg</iconset>
                  </property>
                 </item>
@@ -542,7 +542,7 @@
                   <string>Shadow</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../images/images.qrc">
+                  <iconset>
                    <normaloff>:/images/themes/default/propertyicons/labelshadow.svg</normaloff>:/images/themes/default/propertyicons/labelshadow.svg</iconset>
                  </property>
                 </item>
@@ -554,7 +554,7 @@
                   <string>Callouts</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../images/images.qrc">
+                  <iconset>
                    <normaloff>:/images/themes/default/mIconSnappingSegment.svg</normaloff>:/images/themes/default/mIconSnappingSegment.svg</iconset>
                  </property>
                 </item>
@@ -566,7 +566,7 @@
                   <string>Placement</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../images/images.qrc">
+                  <iconset>
                    <normaloff>:/images/themes/default/propertyicons/labelplacement.svg</normaloff>:/images/themes/default/propertyicons/labelplacement.svg</iconset>
                  </property>
                 </item>
@@ -578,7 +578,7 @@
                   <string>Rendering</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../images/images.qrc">
+                  <iconset>
                    <normaloff>:/images/themes/default/propertyicons/render.svg</normaloff>:/images/themes/default/propertyicons/render.svg</iconset>
                  </property>
                 </item>
@@ -644,8 +644,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>311</width>
-                       <height>292</height>
+                       <width>251</width>
+                       <height>223</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1227,8 +1227,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>374</width>
-                       <height>644</height>
+                       <width>267</width>
+                       <height>494</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -2102,8 +2102,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>308</width>
-                       <height>308</height>
+                       <width>224</width>
+                       <height>233</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2448,8 +2448,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>474</width>
-                       <height>786</height>
+                       <width>368</width>
+                       <height>596</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3209,8 +3209,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>768</width>
-                       <height>457</height>
+                       <width>776</width>
+                       <height>435</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3637,8 +3637,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>782</width>
-                       <height>387</height>
+                       <width>776</width>
+                       <height>435</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -3708,9 +3708,12 @@ font-style: italic;</string>
                          </spacer>
                         </item>
                         <item row="2" column="0" colspan="2">
-                         <layout class="QGridLayout" name="gridLayout_45">
-                          <property name="topMargin">
+                         <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,1">
+                          <property name="leftMargin">
                            <number>20</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
                           </property>
                           <item row="0" column="1">
                            <widget class="QgsSymbolButton" name="mCalloutLineStyleButton">
@@ -3795,8 +3798,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>768</width>
-                       <height>1095</height>
+                       <width>303</width>
+                       <height>838</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4422,7 +4425,7 @@ font-style: italic;</string>
                                <string>…</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantCenter.svg</normaloff>:/images/themes/default/mIconLabelQuadrantCenter.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -4445,7 +4448,7 @@ font-style: italic;</string>
                                <string>abc</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -4465,7 +4468,7 @@ font-style: italic;</string>
                                <string>abc</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -4485,7 +4488,7 @@ font-style: italic;</string>
                                <string>abc</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -4505,7 +4508,7 @@ font-style: italic;</string>
                                <string>abc</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -4525,7 +4528,7 @@ font-style: italic;</string>
                                <string>abc</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -4545,7 +4548,7 @@ font-style: italic;</string>
                                <string>abc</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -4565,7 +4568,7 @@ font-style: italic;</string>
                                <string>abc</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -4585,7 +4588,7 @@ font-style: italic;</string>
                                <string>abc</string>
                               </property>
                               <property name="icon">
-                               <iconset resource="../../images/images.qrc">
+                               <iconset>
                                 <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
                               </property>
                               <property name="iconSize">
@@ -5503,8 +5506,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>415</width>
-                       <height>852</height>
+                       <width>287</width>
+                       <height>648</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -5634,7 +5637,7 @@ font-style: italic;</string>
                                  <string/>
                                 </property>
                                 <property name="pixmap">
-                                 <pixmap resource="../../images/images.qrc">:/images/themes/default/mActionZoomOut.svg</pixmap>
+                                 <pixmap>:/images/themes/default/mActionZoomOut.svg</pixmap>
                                 </property>
                                </widget>
                               </item>
@@ -5647,7 +5650,7 @@ font-style: italic;</string>
                                  <string/>
                                 </property>
                                 <property name="pixmap">
-                                 <pixmap resource="../../images/images.qrc">:/images/themes/default/mActionZoomIn.svg</pixmap>
+                                 <pixmap>:/images/themes/default/mActionZoomIn.svg</pixmap>
                                 </property>
                                </widget>
                               </item>
@@ -6789,9 +6792,7 @@ font-style: italic;</string>
   <tabstop>mCheckBoxSubstituteText</tabstop>
   <tabstop>mFontWordSpacingDDBtn</tabstop>
  </tabstops>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>mOptionsTab</sender>
