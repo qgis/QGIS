@@ -148,6 +148,20 @@ namespace QgsWfs3
      * optional \a metadata for the HTML templates can be specified and will be added as "metadata" to
      * the HTML template variables.
      *
+     * HTML output uses a template engine.
+     *
+     * Available template functions:
+     * See: https://github.com/pantor/inja#tutorial
+     *
+     * Available custom template functions:
+     * - path_append(<path>): appends a directory <path> to the current url
+     * - path_chomp(n):removes the specified number "n" of directory components from the current url path
+     * - json_dump(): prints current JSON data passed to the template
+     * - static(<path>): returns the full URL to the specified static <path>, for example:
+     *   static("/style/black.css") will return something like "/wfs3/static/style/black.css".
+     * - links_filter( <links>, <key>, <value> ): eturns filtered links from a link list
+     * - content_type_name( <content_type> ): Returns a short name from a content type for example "text/html" will return "HTML"
+     *
      * \note use xmlDump for XML output
      * \see xmlDump()
      */
@@ -159,7 +173,8 @@ namespace QgsWfs3
     void jsonDump( const json &data, QgsServerResponse *response, const QString &contentType = QStringLiteral( "application/json" ) ) const;
 
     /**
-     * Writes \a data to the \a response stream as HTML (indented if debug is active) using a template
+     * Writes \a data to the \a response stream as HTML (indented if debug is active) using a template.
+     *
      * \param api parent Api instance
      * \param response the response object
      * \see templatePath()
@@ -167,13 +182,13 @@ namespace QgsWfs3
     void htmlDump( const json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response ) const;
 
     /**
-     * Retursn handler information (id, description and other metadata) as JSON
+     * Returns handler information (id, description and other metadata) as JSON.
      */
     json handlerData( ) const;
 
 
     /**
-     * Writes \a data to the \a response stream as XML (indented if debug is active)
+     * Writes \a data to the \a response stream as XML (indented if debug is active).
      */
     void xmlDump( const json &data, QgsServerResponse *response ) const;
 
@@ -183,19 +198,21 @@ namespace QgsWfs3
     const QString templatePath() const;
 
     /**
-     * Returns the absolute path to base directory where resources for this handler are stored
+     * Returns the absolute path to base directory where resources for this handler are stored.
+     *
      * TODO: make this path configurable by env and/or settings
      */
     const QString resourcesPath() const;
 
     /**
-     * Returns the absolute path to the directory where static resources for this handler are stored
+     * Returns the absolute path to the directory where static resources for this handler are stored.
+     *
      * TODO: make this path configurable by env and/or settings
      */
     const QString staticPath() const;
 
     /**
-     * Returns the requested content type from the \a request
+     * Returns the content type from the \a request.
      *
      * The path file extension is examined first and checked for known mime types,
      * the "Accept" HTTP header is examined next.
@@ -204,7 +221,7 @@ namespace QgsWfs3
     contentType contentTypeFromRequest( const QgsServerRequest *request ) const;
 
     /**
-     * Returns the layer identified by \a collectionId from the given \a context
+     * Returns the layer identified by \a collectionId from the given \a context.
      *
      * \throws QgsServerApiImproperlyConfiguredError if not found or if more than one layer with same \a collectionId was found
      */
@@ -258,6 +275,8 @@ namespace QgsWfs3
       static std::string contentTypeToStdString( const contentType &ct );
 
       static QString contentTypeToExtension( const contentType &ct );
+
+      static contentType contenTypeFromExtension( const std::string &extension );
 
       /**
        * Returns the mime-type for the \a contentType or an empty string if not found

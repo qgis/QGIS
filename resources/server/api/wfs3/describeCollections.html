@@ -4,16 +4,11 @@
     <h1>Collections</h1>
 
     {% for collection in collections %}
-        <h3><a href="{% for link in collection.links %}
-        {% if link.type == "text/html" %}
-        {{ chomp_path( link.href ) }}
-        {% endif %}
+        <h3><a href="{% for link in links_filter( collection.links, "type", "text/html" ) %}
+        {{ path_chomp( link.href ) }}
         {% endfor %}">{{ collection.title }}</a></h3>
 
     {% endfor %}
 
-
-    <h2>Links</h2>
-    {% include "links.html" %}
 
 {% include "footer.html" %}

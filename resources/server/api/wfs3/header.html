@@ -30,11 +30,9 @@
                      {{ metadata.pageTitle }}
                   </li>
               </ol>
-              <ul class="list-separated m-0 p-0 text-muted">
-              {% for link in links %}
-                  {% if link.rel == "alternate" %}
-                  <li><a rel="{{ link.rel }}" href="{{ link.href }}" target="_blank">{{ link.title }}</a></li>
-                  {% endif %}
+              <ul class="list-unstyled list-separated m-0 p-0 text-muted">
+              {% for link in links_filter( links, "rel", "alternate" ) %}
+                  <li><a rel="{{ link.rel }}" href="{{ link.href }}" target="_blank">{{ content_type_name( link.type ) }}</a></li>
               {% endfor %}
               </ul>
           </div>

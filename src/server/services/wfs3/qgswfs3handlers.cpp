@@ -129,7 +129,7 @@ CollectionsHandler::CollectionsHandler()
 {
   path.setPattern( QStringLiteral( R"re(/collections(\.json|\.html)?$)re" ) );
   operationId = "describeCollections";
-  linkTitle = "Metadata about the feature collections";
+  linkTitle = "Feature collections";
   summary = "describe the feature collections in the dataset";
   description = "Metadata about the feature collections shared by this API.";
   linkType = QgsWfs3::rel::data;

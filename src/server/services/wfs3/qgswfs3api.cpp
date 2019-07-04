@@ -102,25 +102,30 @@ namespace QgsWfs3
     return contentTypeToString( ct ).toLower();
   }
 
+  contentType Api::contenTypeFromExtension( const std::string &extension )
+  {
+    return sContentTypeMime.key( QString::fromStdString( extension ) );
+  }
+
   void Handler::write( const json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response, const json &metadata ) const
   {
     // TODO: accept GML and XML?
     const auto contentType { contentTypeFromRequest( request ) };
-    json _data { data };
+    json dataCopy { data };
     switch ( contentType )
     {
       case QgsWfs3::contentType::HTML:
-        _data["handler"] = handlerData( );
+        dataCopy["handler"] = handlerData( );
         if ( ! metadata.is_null() )
         {
-          _data["metadata"] = metadata;
+          dataCopy["metadata"] = metadata;
         }
-        htmlDump( _data, api, request, response );
+        htmlDump( dataCopy, api, request, response );
         break;
       case QgsWfs3::contentType::GEOJSON:
       case QgsWfs3::contentType::JSON:
       case QgsWfs3::contentType::OPENAPI3:
-        jsonDump( _data, response, sContentTypeMime.value( contentType ) );
+        jsonDump( dataCopy, response, sContentTypeMime.value( contentType ) );
         break;
       case QgsWfs3::contentType::GML:
       case QgsWfs3::contentType::XML:
@@ -167,8 +172,8 @@ namespace QgsWfs3
         return data.dump();
       } );
 
-      // Path manipulation
-      env.add_callback( "append_path", 1, [ = ]( Arguments & args )
+      // Path manipulation: appends a directory path to the current url
+      env.add_callback( "path_append", 1, [ = ]( Arguments & args )
       {
         auto url { request->url() };
         QFileInfo fi{ url.path() };
@@ -185,8 +190,8 @@ namespace QgsWfs3
         return url.toString().toStdString();
       } );
 
-      // Path manipulation
-      env.add_callback( "chomp_path", 1, [ = ]( Arguments & args )
+      // Path manipulation: removes the specified number of directory components from the current url path
+      env.add_callback( "path_chomp", 1, [ = ]( Arguments & args )
       {
         QUrl url { QString::fromStdString( args.at( 0 )->get<std::string>( ) ) };
         QFileInfo fi{ url.path() };
@@ -204,7 +209,33 @@ namespace QgsWfs3
         return url.toString().toStdString();
       } );
 
-      // Static
+      // Returns filtered links from a link list
+      // links_filter( <links>, <key>, <value> )
+      env.add_callback( "links_filter", 3, [ = ]( Arguments & args )
+      {
+        json links { args.at( 0 )->get<json>( ) };
+        std::string key { args.at( 1 )->get<std::string>( ) };
+        std::string value { args.at( 2 )->get<std::string>( ) };
+        json result = json::array();
+        for ( const auto &l : links )
+        {
+          if ( l[key] == value )
+          {
+            result.push_back( l );
+          }
+        }
+        return result;
+      } );
+
+      // Returns a short name from content types
+      env.add_callback( "content_type_name", 1, [ = ]( Arguments & args )
+      {
+        const contentType ct { QgsWfs3::Api::contenTypeFromExtension( args.at( 0 )->get<std::string>( ) ) };
+        return QgsWfs3::Api::contentTypeToStdString( ct );
+      } );
+
+
+      // Static: returns the full URL to the specified static <path>
       env.add_callback( "static", 1, [ = ]( Arguments & args )
       {
         auto asset( args.at( 0 )->get<std::string>( ) );
@@ -222,13 +253,12 @@ namespace QgsWfs3
 
   json Handler::handlerData() const
   {
-    // TODO: add navigation for breadcrumbs
-    json _data;
-    _data["linkTitle"] = linkTitle;
-    _data["operationId"] = operationId;
-    _data["description"] = description;
-    _data["summary"] = summary;
-    return _data;
+    json data;
+    data["linkTitle"] = linkTitle;
+    data["operationId"] = operationId;
+    data["description"] = description;
+    data["summary"] = summary;
+    return data;
   }
 
   void Handler::xmlDump( const json &data, QgsServerResponse *response ) const
@@ -414,14 +444,13 @@ namespace QgsWfs3
                       const rel &linkType, const contentType contentType,
                       const std::string &title ) const
   {
-    const auto currentCt { contentTypeFromRequest( context->request() ) };
     json l
     {
       {
         "href", href( api, context->request(), "/" + landingPageRootLink,
                       QgsWfs3::Api::contentTypeToExtension( contentType ) )
       },
-      { "rel", QgsWfs3::Api::relToString( currentCt == contentType ? rel::self : linkType ) },
+      { "rel", QgsWfs3::Api::relToString( linkType ) },
       { "type", QgsWfs3::Api::mimeType( contentType ) },
       { "title", title != "" ? title : linkTitle },
     };
@@ -430,10 +459,11 @@ namespace QgsWfs3
 
   json Handler::links( const Api *api, const QgsServerApiContext *context ) const
   {
+    const auto currentCt { contentTypeFromRequest( context->request() ) };
     json links = json::array();
     for ( const auto &ct : qgis::as_const( contentTypes ) )
     {
-      links.push_back( link( api, context, rel::alternate, ct, linkTitle  + " as " + QgsWfs3::Api::contentTypeToStdString( ct ) ) );
+      links.push_back( link( api, context, ( ct == currentCt ? rel::self : rel::alternate ), ct, linkTitle  + " as " + QgsWfs3::Api::contentTypeToStdString( ct ) ) );
     }
     return links;
   }
