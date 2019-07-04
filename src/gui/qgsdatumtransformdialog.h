@@ -108,6 +108,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     {
       TransformIdRole = Qt::UserRole + 1,
       ProjRole,
+      AvailableRole,
     };
 
     bool gridShiftTransformation( const QString &itemText ) const;
