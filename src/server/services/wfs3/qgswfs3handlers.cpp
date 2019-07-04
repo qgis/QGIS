@@ -427,7 +427,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
       }
     }
     // This should never happen!
-    Q_ASSERT( selfLink );
+    Q_ASSERT( !selfLink.is_null() );
 
     // Add prev - next links
     if ( offset != 0 )
