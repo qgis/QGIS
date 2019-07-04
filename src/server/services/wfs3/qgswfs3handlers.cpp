@@ -35,7 +35,7 @@ APIHandler::APIHandler()
   linkTitle = "API definition";
   // TODO: is this correct? maybe _docs?
   linkType = QgsWfs3::rel::service_desc;
-  mimeType = QgsWfs3::contentType::OPENAPI3;
+  defaultContentType = QgsWfs3::contentType::OPENAPI3;
   landingPageRootLink = QStringLiteral( "api" );
 }
 
@@ -61,7 +61,7 @@ LandingPageHandler::LandingPageHandler()
                 "statements and the metadata about the feature data in this dataset.";
   linkTitle = "Landing page";
   linkType = QgsWfs3::rel::self;
-  mimeType = QgsWfs3::contentType::JSON;
+  defaultContentType = QgsWfs3::contentType::JSON;
 }
 
 void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -84,7 +84,7 @@ void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiCon
     {
       { "href", h->href( api, context->request(), "/" + h->landingPageRootLink )},
       { "rel", QgsWfs3::Api::relToString( h->linkType ) },
-      { "type", QgsWfs3::Api::mimeType( h->mimeType ) },
+      { "type", QgsWfs3::Api::mimeType( h->defaultContentType ) },
       { "title", h->linkTitle },
     } );
   }
@@ -101,7 +101,7 @@ ConformanceHandler::ConformanceHandler()
   description = "List all requirements classes specified in a standard (e.g., WFS 3.0 "
                 "Part 1: Core) that the server conforms to";
   linkType = QgsWfs3::rel::conformance;
-  mimeType = QgsWfs3::contentType::JSON;
+  defaultContentType = QgsWfs3::contentType::JSON;
   landingPageRootLink = QStringLiteral( "conformance" );
 }
 
@@ -133,7 +133,7 @@ CollectionsHandler::CollectionsHandler()
   summary = "describe the feature collections in the dataset";
   description = "Metadata about the feature collections shared by this API.";
   linkType = QgsWfs3::rel::data;
-  mimeType = QgsWfs3::contentType::JSON;
+  defaultContentType = QgsWfs3::contentType::JSON;
   landingPageRootLink = QStringLiteral( "collections" );
 }
 
@@ -221,7 +221,7 @@ DescribeCollectionHandler::DescribeCollectionHandler()
   summary = "describe the feature collections in the dataset";
   description = "Metadata about the feature collections shared by this API.";
   linkType = QgsWfs3::rel::data;
-  mimeType = QgsWfs3::contentType::JSON;
+  defaultContentType = QgsWfs3::contentType::JSON;
 }
 
 void DescribeCollectionHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -310,7 +310,8 @@ CollectionsItemsHandler::CollectionsItemsHandler()
                 "Use content negotiation or specify a file extension to request HTML (.html) "
                 "or GeoJSON (.json).";
   linkType = QgsWfs3::rel::data;
-  mimeType =  QgsWfs3::contentType::JSON;
+  defaultContentType =  QgsWfs3::contentType::GEOJSON;
+  contentTypes = { QgsWfs3::contentType::GEOJSON, QgsWfs3::contentType::HTML };
 }
 
 void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -410,7 +411,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
     // Current url
     const QUrl url { context->request()->url() };
     // Url without offset and limit
-    QString cleanedUrl { url.toString().replace( QRegularExpression( R"raw((offset|limit)(=\d+)*)raw" ), QString() ) };
+    QString cleanedUrl { url.toString().replace( QRegularExpression( R"raw(&?(offset|limit)(=\d+)*)raw" ), QString() ) };
     if ( ! url.hasQuery() )
     {
       cleanedUrl += '?';
@@ -475,7 +476,8 @@ CollectionsFeatureHandler::CollectionsFeatureHandler()
   summary = "retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)";
   description = "";
   linkType = QgsWfs3::rel::data;
-  mimeType = QgsWfs3::contentType::JSON;
+  defaultContentType =  QgsWfs3::contentType::GEOJSON;
+  contentTypes = { QgsWfs3::contentType::GEOJSON, QgsWfs3::contentType::HTML };
 }
 
 void CollectionsFeatureHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -535,7 +537,7 @@ StaticHandler::StaticHandler()
   summary = "Serves static files";
   description = "";
   linkType = QgsWfs3::rel::data;
-  mimeType = QgsWfs3::contentType::JSON;
+  defaultContentType = QgsWfs3::contentType::JSON;
 }
 
 void StaticHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
@@ -562,9 +564,9 @@ void StaticHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext 
     throw QgsServerApiInternalServerError( QStringLiteral( "Could not open static file %1" ).arg( staticFilePath ) );
   }
 
-  const auto size { f.size() };
-  const auto content { f.readAll() };
-  const auto mimeType { QMimeDatabase().mimeTypeForFile( filePath )};
+  const qint64 size { f.size() };
+  const QByteArray content { f.readAll() };
+  const QMimeType mimeType { QMimeDatabase().mimeTypeForFile( filePath )};
   context->response()->setHeader( QStringLiteral( "Content-Type" ), mimeType.name() );
   context->response()->setHeader( QStringLiteral( "Content-Length" ), QString::number( size ) );
   context->response()->write( content );

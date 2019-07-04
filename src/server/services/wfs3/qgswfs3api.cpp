@@ -287,6 +287,9 @@ namespace QgsWfs3
 
   contentType Handler::contentTypeFromRequest( const QgsServerRequest *request ) const
   {
+    // Fallback to default
+    contentType result { defaultContentType };
+    bool found { false };
     // First file extension ...
     const auto extension { QFileInfo( request->url().path() ).completeSuffix().toUpper() };
     if ( ! extension.isEmpty() )
@@ -296,29 +299,36 @@ namespace QgsWfs3
       const auto ct  { metaEnum.keyToValue( extension.toLocal8Bit().constData(), &ok ) };
       if ( ok )
       {
-        return static_cast<contentType>( ct );
+        result = static_cast<contentType>( ct );
+        found = true;
       }
       else
       {
         QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported extension: %1" ).arg( extension ), QStringLiteral( "Server" ), Qgis::Warning );
       }
     }
-    // ... then "Accept" ...
+    // ... then "Accept"
     const auto accept { request->header( QStringLiteral( "Accept" ) ) };
-    if ( ! accept.isEmpty() )
+    if ( ! found && ! accept.isEmpty() )
     {
       const auto ctFromAccept { contentTypeForAccept( accept ) };
       if ( ! ctFromAccept.isEmpty() )
       {
-        return sContentTypeMime.key( ctFromAccept );
+        result = sContentTypeMime.key( ctFromAccept );
+        found = true;
       }
       else
       {
         QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported content type in Accept header: %1" ).arg( accept ), QStringLiteral( "Server" ), Qgis::Warning );
       }
     }
-    // ... fallback to default
-    return mimeType;
+    // A bit more logic to check if the requested content type is supported by the handler
+    if ( ! contentTypes.contains( result ) )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsWfs3::Api::contentTypeToString( result ) ), QStringLiteral( "Server" ), Qgis::Info );
+      throw QgsServerApiBadRequestError( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsWfs3::Api::contentTypeToString( result ) ) );
+    }
+    return result;
   }
 
   QgsVectorLayer *Handler::layerFromCollection( QgsServerApiContext *context, const QString &collectionId ) const
@@ -401,7 +411,7 @@ namespace QgsWfs3
       { "description", description },
       { "linkTitle", linkTitle },
       { "linkType", QgsWfs3::Api::relToString( linkType ) },
-      { "mimeType", mimeType }
+      { "mimeType", defaultContentType }
     };
     jsonDump( data, context->response() );
   }

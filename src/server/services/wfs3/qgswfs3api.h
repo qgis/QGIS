@@ -141,7 +141,7 @@ namespace QgsWfs3
     QString landingPageRootLink;
 
     //! Default response content type in case the client did not specify it
-    contentType mimeType = contentType::JSON;
+    contentType defaultContentType = contentType::JSON;
 
     /**
      * Writes \a data to the \a response stream, content-type it is calculated from the \a request,
