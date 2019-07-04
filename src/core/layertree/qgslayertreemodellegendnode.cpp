@@ -695,11 +695,11 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
     if ( label.isEmpty() )
     {
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        mLabel = QgsExpression::replaceExpressionText( "[%" + mLayerNode->labelExpression() + "%]" , &contextCopy );
+        mLabel = QgsExpression::replaceExpressionText( "[%" + mLayerNode->labelExpression() + "%]", &contextCopy );
       else if ( mLabel.contains( "[%" ) )
       {
         const QString symLabel = symbolLabel();
-        mLabel = QgsExpression::replaceExpressionText( symLabel , &contextCopy );
+        mLabel = QgsExpression::replaceExpressionText( symLabel, &contextCopy );
       }
       return mLabel;
     }
@@ -707,9 +707,9 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
     {
       QString eLabel;
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        eLabel = QgsExpression::replaceExpressionText( label + "[%" + mLayerNode->labelExpression() + "%]" , &contextCopy );
+        eLabel = QgsExpression::replaceExpressionText( label + "[%" + mLayerNode->labelExpression() + "%]", &contextCopy );
       else if ( label.contains( "[%" ) )
-        eLabel = QgsExpression::replaceExpressionText( label , &contextCopy );
+        eLabel = QgsExpression::replaceExpressionText( label, &contextCopy );
       return eLabel;
     }
   }
