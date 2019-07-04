@@ -89,6 +89,10 @@ and ``destinationTransformId`` transforms.
       QString remarks;
 
       QString areaOfUse;
+
+      QString authority;
+
+      QString code;
     };
 
     struct TransformDetails
@@ -96,6 +100,10 @@ and ``destinationTransformId`` transforms.
       QString proj;
       QString name;
       double accuracy;
+
+      QString authority;
+
+      QString code;
 
       QString scope;
 
