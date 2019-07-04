@@ -861,8 +861,7 @@ void QgsVectorLayerProperties::onCancel()
     for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
       mLayer->removeJoin( info.joinLayerId() );
 
-    const auto constMOldJoins = mOldJoins;
-    for ( const QgsVectorLayerJoinInfo &info : constMOldJoins )
+    for ( const QgsVectorLayerJoinInfo &info : qgis::as_const( mOldJoins ) )
       mLayer->addJoin( info );
   }
 
