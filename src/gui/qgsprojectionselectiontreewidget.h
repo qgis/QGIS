@@ -20,8 +20,6 @@
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 
-
-class QgsVertexMarker;
 class QResizeEvent;
 
 /**
@@ -287,16 +285,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! Hide deprecated CRSes
     void hideDeprecated( QTreeWidgetItem *item );
 
-    QgsRubberBand *mPreviewBand;
-    QgsRubberBand *mPreviewBand2;
-    QgsVertexMarker *mVertexMarker;
-
     bool mShowMap = true;
-
-    QList<QgsMapLayer *> mLayers;
-
-    QgsRectangle mPreviewRect;
-
 
   private slots:
     //! Gets list of authorities
