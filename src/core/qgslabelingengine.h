@@ -65,8 +65,27 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Returns list of label features (they are owned by the provider and thus deleted on its destruction)
     virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) = 0;
 
-    //! draw this label at the position determined by the labeling engine
+    /**
+     * Draw this label at the position determined by the labeling engine.
+     *
+     * Before any calls to drawLabel(), a provider should be prepared for rendering by a call to
+     * startRender() and a corresponding call to stopRender().
+     */
     virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const = 0;
+
+    /**
+     * To be called before rendering of labels begins. Must be accompanied by
+     * a corresponding call to stopRender()
+     * \since QGIS 3.10
+     */
+    virtual void startRender( QgsRenderContext &context );
+
+    /**
+     * To be called after rendering is complete.
+     * \see startRender()
+     * \since QGIS 3.10
+     */
+    virtual void stopRender( QgsRenderContext &context );
 
     //! Returns list of child providers - useful if the provider needs to put labels into more layers with different configuration
     virtual QList<QgsAbstractLabelProvider *> subProviders() { return QList<QgsAbstractLabelProvider *>(); }

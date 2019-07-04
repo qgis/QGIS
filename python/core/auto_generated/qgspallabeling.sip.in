@@ -309,6 +309,25 @@ names which the labeling requires for the rendering.
 .. versionadded:: 3.8
 %End
 
+    void startRender( QgsRenderContext &context );
+%Docstring
+Prepares the label settings for rendering.
+
+This should be called before rendering any labels, and must be
+followed by a call to stopRender() in order to gracefully clean up symbols.
+
+.. versionadded:: 3.10
+%End
+
+    void stopRender( QgsRenderContext &context );
+%Docstring
+Finalises the label settings after use.
+
+This must be called after a call to startRender(), in order to gracefully clean up symbols.
+
+.. versionadded:: 3.10
+%End
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the labeling property definitions.
