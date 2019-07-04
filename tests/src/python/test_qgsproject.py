@@ -13,6 +13,11 @@ __date__ = '19/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
+import re
+import ogr
+import codecs
+from io import BytesIO
+from zipfile import ZipFile
 
 import qgis  # NOQA
 
@@ -823,7 +828,7 @@ class TestQgsProject(unittest.TestCase):
         project = QgsProject()
         self.assertTrue(project.read(tmpFile))
         store = project.layerStore()
-        self.assertEquals(set([l.name() for l in store.mapLayers().values()]), set(['lines', 'landsat', 'points']))
+        self.assertEqual(set([l.name() for l in store.mapLayers().values()]), set(['lines', 'landsat', 'points']))
         project.writeEntryBool('Paths', '/Absolute', True)
         tmpFile2 = "{}/project2.qgs".format(tmpDir.path())
         self.assertTrue(project.write(tmpFile2))
@@ -836,6 +841,7 @@ class TestQgsProject(unittest.TestCase):
 
         del project
 
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test doe not trun on Travis')
     def testRelativePathsGpkg(self):
         """
         Test whether paths to layer sources are stored as relative to the project path with GPKG storage
@@ -843,8 +849,74 @@ class TestQgsProject(unittest.TestCase):
         d = QTemporaryDir('project_storage_XXXXXX')
         path = os.path.join(d.path(), 'relative_paths_gh30387.gpkg')
         copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+        project = QgsProject()
+        l = QgsVectorLayer(path + '|layername=some_data', 'mylayer', 'ogr')
+        self.assertTrue(l.isValid())
+        self.assertTrue(project.addMapLayers([l]))
+        self.assertEqual(project.count(), 1)
         # Project URI
         uri = 'geopackage://{}?projectName=relative_project'.format(path)
+        project.setFileName(uri)
+        self.assertTrue(project.write())
+        # Verify
+        project = QgsProject()
+        self.assertTrue(project.read(uri))
+        for _, l in project.mapLayers().items():
+            self.assertTrue(l.isValid())
+        # Move it!
+        d2 = QTemporaryDir('project_storage_XXXXXX')
+        path2 = os.path.join(d2.path(), 'relative_paths_gh30387.gpkg')
+        copyfile(path, path2)
+        # Delete old temporary dir
+        del d
+        # Verify moved
+        project = QgsProject()
+        uri2 = 'geopackage://{}?projectName=relative_project'.format(path2)
+        self.assertTrue(project.read(uri2))
+        self.assertEqual(project.count(), 1)
+        for _, l in project.mapLayers().items():
+            self.assertTrue(l.isValid())
+
+    def testRelativePathsGpkgLowLevel(self):
+        """
+        Test whether paths to layer sources are stored as relative to the project path with GPKG storage
+        """
+
+        def _check_datasource(_path):
+            # Verify datasource path stored in the project
+
+            ds = ogr.GetDriverByName('GPKG').Open(path)
+            l = ds.GetLayer(1)
+            self.assertEqual(l.GetName(), 'qgis_projects')
+            self.assertEqual(l.GetFeatureCount(), 1)
+            f = l.GetFeature(1)
+            zip_content = BytesIO(codecs.decode(f.GetFieldAsBinary(2), 'hex'))
+            z = ZipFile(zip_content)
+            qgs = z.read(z.filelist[0])
+            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[0], b'./relative_paths_gh30387.gpkg|layername=some_data')
+
+        # Create a copy of the template GPKG (that has no stored projects, just a single data layer)
+        d = QTemporaryDir('project_storage_XXXXXX')
+        path = os.path.join(d.path(), 'relative_paths_gh30387.gpkg')
+        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+
+        # Create a project
+        project = QgsProject()
+        # Add the layer from the GPKC copy
+        l = QgsVectorLayer(path + '|layername=some_data', 'mylayer', 'ogr')
+        self.assertTrue(l.isValid())
+        self.assertTrue(project.addMapLayers([l]))
+        self.assertEqual(project.count(), 1)
+        # Project URI
+        uri = 'geopackage://{}?projectName=relative_project'.format(path)
+        project.setFileName(uri)
+        self.assertTrue(project.write())
+        # Test write path
+        self.assertEqual(project.writePath(path), './relative_paths_gh30387.gpkg')
+
+        _check_datasource(path)
+
+        # Verify layers
         project = QgsProject()
         self.assertTrue(project.read(uri))
         for _, l in project.mapLayers().items():
