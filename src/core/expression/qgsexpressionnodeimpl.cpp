@@ -1137,11 +1137,6 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
   return true;
 }
 
-QString QgsExpressionNodeFunction::name( ) const
-{
-  return QgsExpression::QgsExpression::Functions()[mFnIndex]->name();
-}
-
 //
 
 QVariant QgsExpressionNodeLiteral::evalNode( QgsExpression *parent, const QgsExpressionContext *context )

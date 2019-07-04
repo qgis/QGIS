@@ -3916,7 +3916,7 @@ QVariant QgsVectorLayer::maximumValue( int index ) const
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
-                                    bool *ok, QString *symbolId ) const
+                                    bool *ok, QgsFeatureIds *fids ) const
 {
   if ( ok )
     *ok = false;
@@ -3925,15 +3925,6 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   {
     return QVariant();
   }
-  bool hasFids = false;
-  QgsFeatureIds ids;
-  if ( symbolId )
-  {
-    if ( ! *symbolId.isEmpty() )
-    ids = mSymbolIdMap.value( *symbolId, QgsFeatureIds() );
-    hasFids = true;
-  }
-
 
   // test if we are calculating based on a field
   int attrIndex = mFields.lookupField( fieldOrExpression );
@@ -3945,10 +3936,9 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     if ( origin == QgsFields::OriginProvider )
     {
       bool providerOk = false;
-      QVariant val = mDataProvider->aggregate( aggregate, attrIndex, parameters, context, providerOk, &ids );
+      QVariant val = mDataProvider->aggregate( aggregate, attrIndex, parameters, context, providerOk, fids );
       if ( providerOk )
       {
-        qDebug() << "provider";
         // provider handled calculation
         if ( ok )
           *ok = true;
@@ -3959,11 +3949,8 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
 
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
-  if ( hasFids )
-  {
-    qDebug() << "fids set";
-    c.setFidsFilter( ids );
-  }
+  if ( fids )
+    c.setFidsFilter( *fids );
   c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }

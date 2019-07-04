@@ -352,8 +352,6 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
     //! Tests whether the provided argument list is valid for the matching function
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
 
-    QString name() const;
-
   private:
     int mFnIndex;
     NodeList *mArgs = nullptr;
