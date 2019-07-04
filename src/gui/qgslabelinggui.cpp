@@ -463,7 +463,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   // callout settings, to move to custom widget when multiple styles exist
   // callout settings, to move to custom widget when multiple styles exist
-  std::unique_ptr< QgsSimpleLineCallout > callout = qgis::make_unique< QgsSimpleLineCallout >();
+  std::unique_ptr< QgsManhattanLineCallout > callout = qgis::make_unique< QgsManhattanLineCallout >();
   callout->setEnabled( mCalloutsDrawCheckBox->isChecked() );
   callout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
   lyr.setCallout( callout.release() );

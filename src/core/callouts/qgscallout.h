@@ -185,7 +185,7 @@ class CORE_EXPORT QgsCallout
 
   private:
 
-    bool mEnabled = true;
+    bool mEnabled = false;
 
 };
 
@@ -222,6 +222,24 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
 
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
 };
+
+
+class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
+{
+  public:
+
+    QgsManhattanLineCallout();
+    QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
+    QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & );
+
+    QString type() const override;
+    QgsManhattanLineCallout *clone() const override;
+
+  protected:
+    void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor ) override;
+
+};
+
 
 #endif // QGSCALLOUT_H
 

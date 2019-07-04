@@ -305,7 +305,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacleType = PolygonInterior;
   zIndex = 0.0;
 
-  mCallout = qgis::make_unique< QgsSimpleLineCallout >();
+  mCallout = qgis::make_unique< QgsManhattanLineCallout >();
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -1133,9 +1133,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   }
 
   // TODO - replace with registry when multiple callout styles exist
-  if ( !mCallout )
-    mCallout = qgis::make_unique< QgsSimpleLineCallout >();
-
+  mCallout = qgis::make_unique< QgsManhattanLineCallout >();
   mCallout->restoreProperties( elem.firstChildElement( QStringLiteral( "callout" ) ), context );
 }
 
