@@ -456,6 +456,25 @@ class CORE_EXPORT QgsPalLayerSettings
     bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames SIP_INOUT, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
 
     /**
+     * Prepares the label settings for rendering.
+     *
+     * This should be called before rendering any labels, and must be
+     * followed by a call to stopRender() in order to gracefully clean up symbols.
+     *
+     * \since QGIS 3.10
+     */
+    void startRender( QgsRenderContext &context );
+
+    /**
+     * Finalises the label settings after use.
+     *
+     * This must be called after a call to startRender(), in order to gracefully clean up symbols.
+     *
+     * \since QGIS 3.10
+     */
+    void stopRender( QgsRenderContext &context );
+
+    /**
      * Returns the labeling property definitions.
      * \since QGIS 3.0
      */
@@ -1032,6 +1051,8 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsTextFormat mFormat;
 
     QgsExpression mGeometryGeneratorExpression;
+
+    bool mRenderStarted = false;
 
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 

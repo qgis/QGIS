@@ -515,9 +515,35 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
   return true;
 }
 
+void QgsPalLayerSettings::startRender( QgsRenderContext & )
+{
+  if ( mRenderStarted )
+  {
+    qWarning( "Start render called for when a previous render was already underway!!" );
+    return;
+  }
+
+  mRenderStarted = true;
+}
+
+void QgsPalLayerSettings::stopRender( QgsRenderContext & )
+{
+  if ( !mRenderStarted )
+  {
+    qWarning( "Stop render called for QgsPalLayerSettings without a startRender call!" );
+    return;
+  }
+
+  mRenderStarted = false;
+}
 
 QgsPalLayerSettings::~QgsPalLayerSettings()
 {
+  if ( mRenderStarted )
+  {
+    qWarning( "stopRender was not called on QgsPalLayerSettings object!" );
+  }
+
   // pal layer is deleted internally in PAL
 
   delete expression;

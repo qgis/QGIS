@@ -97,6 +97,18 @@ bool QgsVectorLayerLabelProvider::prepare( QgsRenderContext &context, QSet<QStri
   return mSettings.prepare( context, attributeNames, mFields, mapSettings, mCrs );
 }
 
+void QgsVectorLayerLabelProvider::startRender( QgsRenderContext &context )
+{
+  QgsAbstractLabelProvider::startRender( context );
+  mSettings.startRender( context );
+}
+
+void QgsVectorLayerLabelProvider::stopRender( QgsRenderContext &context )
+{
+  QgsAbstractLabelProvider::stopRender( context );
+  mSettings.stopRender( context );
+}
+
 QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderContext &ctx )
 {
   if ( !mSource )
