@@ -136,7 +136,8 @@ class ExecuteSQL(QgisAlgorithm):
             # belongs to temporary QgsMapLayerStore, not project.
             # So, we write them to disk is this is the case.
             if not QgsProject.instance().mapLayer(layer.id()):
-                tf = tempfile.NamedTemporaryFile(suffix=".gpkg")
+                suffix = "." + QgsVectorFileWriter.supportedFormatExtensions()[0]
+                tf = tempfile.NamedTemporaryFile(suffix=suffix)
                 tmp_path = tf.name
                 QgsVectorFileWriter.writeAsVectorFormat(
                     layer, tmp_path, layer.dataProvider().encoding())
