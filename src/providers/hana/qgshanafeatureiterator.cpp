@@ -85,10 +85,16 @@ bool QgsHanaFeatureIterator::rewind()
   if (mClosed)
     return false;
 
-  HANA_BEGIN
-  mResultSet.reset();
-  mResultSet = mStatement->executeQuery();
-  HANA_END
+  try
+  {
+    mResultSet.reset();
+    mResultSet = mStatement->executeQuery();
+  }
+  catch (const Exception& ex)
+  {
+    throw QgsHanaException(ex.what());
+  }
+
   return true;
 }
 
@@ -111,49 +117,55 @@ bool QgsHanaFeatureIterator::fetchFeature(QgsFeature &feature)
   if (mClosed)
     return false;
 
-  HANA_BEGIN
-  if (!mResultSet->next())
-    return false;
-
-  unsigned short paramIndex = 1;
-
-  // Read feature id
-  if (mHasFidColumn)
+  try
   {
-    feature.setId(*mResultSet->getLong(paramIndex));
-    ++paramIndex;
-  }
-  else
-  {
-    feature.setId(0u);
-  }
+    if (!mResultSet->next())
+      return false;
 
-  // Read attributes
-  feature.initAttributes(mSource->mFields.count());
-  if (mHasAttributes)
-  {
-    Q_FOREACH(int idx, mAttributesToFetch)
+    unsigned short paramIndex = 1;
+
+    // Read feature id
+    if (mHasFidColumn)
     {
-      fetchFeatureAttribute(idx, paramIndex, feature);
+      feature.setId(*mResultSet->getLong(paramIndex));
       ++paramIndex;
     }
+    else
+    {
+      feature.setId(0u);
+    }
+
+    // Read attributes
+    feature.initAttributes(mSource->mFields.count());
+    if (mHasAttributes)
+    {
+      Q_FOREACH(int idx, mAttributesToFetch)
+      {
+        fetchFeatureAttribute(idx, paramIndex, feature);
+        ++paramIndex;
+      }
+    }
+
+    // Read geometry
+    if (mHasGeometryColumn)
+    {
+      fetchFeatureGeometry(paramIndex, feature);
+      ++paramIndex;
+    }
+    else
+    {
+      feature.clearGeometry();
+    }
+
+    feature.setValid(true);
+    feature.setFields(mSource->mFields); // allow name-based attribute lookups
+    geometryToDestinationCrs(feature, mTransform);
+  }
+  catch (const Exception& ex)
+  {
+    throw QgsHanaException(ex.what());
   }
 
-  // Read geometry
-  if (mHasGeometryColumn)
-  {
-    fetchFeatureGeometry(paramIndex, feature);
-    ++paramIndex;
-  }
-  else
-  {
-    feature.clearGeometry();
-  }
-
-  feature.setValid(true);
-  feature.setFields(mSource->mFields); // allow name-based attribute lookups
-  geometryToDestinationCrs(feature, mTransform);
-  HANA_END
   return true;
 }
 
