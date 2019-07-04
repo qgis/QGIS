@@ -276,7 +276,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * call prepare() on sub-providers and populate attributeNames
          * \note not available in Python bindings
          */
-        void prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
+        void prepare( QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
 
         /**
          * register individual features
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     // reimplemented
 
-    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames ) override;
+    bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames ) override;
 
     void registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
 

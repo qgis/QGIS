@@ -296,7 +296,7 @@ class QgsPalLayerSettings
     };
 
 
-    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames /In,Out/, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
+    bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames /In,Out/, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Prepare for registration of features.
 The ``context``, ``mapSettings`` and ``fields`` parameters give more
