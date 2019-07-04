@@ -17,6 +17,7 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgisapp.h"
 
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
@@ -228,7 +229,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
 void QgsDatumTransformTableWidget::addDatumTransform()
 {
-  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false );
+  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair< int, int >(), nullptr, nullptr, QString(), QgisApp::instance()->mapCanvas() );
   if ( dlg.exec() )
   {
     const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
@@ -296,7 +297,7 @@ void QgsDatumTransformTableWidget::editDatumTransform()
          ( sourceTransform != -1 || destinationTransform != -1 ) )
 #endif
     {
-      QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, nullptr, proj );
+      QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, nullptr, proj, QgisApp::instance()->mapCanvas() );
       if ( dlg.exec() )
       {
         const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();

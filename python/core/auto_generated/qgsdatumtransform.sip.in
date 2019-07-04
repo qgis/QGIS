@@ -113,6 +113,8 @@ and ``destinationTransformId`` transforms.
 
       QString areaOfUse;
 
+      QgsRectangle bounds;
+
       QList< QgsDatumTransform::GridDetails > grids;
 
       QList< QgsDatumTransform::SingleOperationDetails > operationDetails;

@@ -7859,7 +7859,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
 
     if ( destCRS.isValid() )
     {
-      QgsDatumTransformDialog::run( vlayer->crs(), destCRS, this );
+      QgsDatumTransformDialog::run( vlayer->crs(), destCRS, this, mMapCanvas );
       ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
     }
 
@@ -13733,7 +13733,7 @@ bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sour
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
-  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this );
+  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this, mMapCanvas );
 }
 
 void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
