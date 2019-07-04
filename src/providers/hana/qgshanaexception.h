@@ -19,9 +19,6 @@
 #include "qgshanautils.h"
 #include "odbc/Exception.h"
 
-#define HANA_BEGIN { try {
-#define HANA_END } catch (const odbc::Exception& ex) { throw QgsHanaException(ex.what()); } }
-
 class QgsHanaException final : public QException
 {
 public:
@@ -34,10 +31,7 @@ public:
 
   QgsHanaException *clone() const override { return new QgsHanaException(*this); }
 
-  char const* what() const noexcept override
-  {
-    return mMessage.c_str();
-  }
+  char const* what() const noexcept override { return mMessage.c_str(); }
 
 private:
   std::string mMessage;
