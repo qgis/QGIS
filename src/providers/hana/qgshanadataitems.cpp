@@ -49,7 +49,6 @@ QVector<QgsDataItem*> QgsHanaConnectionItem::createChildren()
   QVector<QgsDataItem*> items;
 
   QgsHanaConnectionRef conn(mName);
-
   if (conn.isNull())
   {
     items.append(new QgsErrorItem(this, tr("Connection failed"), mPath + "/error"));
@@ -99,58 +98,6 @@ bool QgsHanaConnectionItem::equal(const QgsDataItem* other)
   return (mPath == o->mPath && mName == o->mName);
 }
 
-QList<QAction*> QgsHanaConnectionItem::actions(QWidget* parent)
-{
-  QList<QAction*> lst;
-
-  QAction* actionRefresh = new QAction(tr("Refresh"), parent);
-  connect(actionRefresh, &QAction::triggered, this, &QgsHanaConnectionItem::refreshConnection);
-  lst.append(actionRefresh);
-
-  QAction* separator = new QAction(parent);
-  separator->setSeparator(true);
-  lst.append(separator);
-
-  QAction* actionEdit = new QAction(tr("Edit Connection…"), parent);
-  connect(actionEdit, &QAction::triggered, this, &QgsHanaConnectionItem::editConnection);
-  lst.append(actionEdit);
-
-  QAction* actionDelete = new QAction(tr("Delete Connection"), this);
-  connect(actionDelete, &QAction::triggered, this, &QgsHanaConnectionItem::deleteConnection);
-  lst.append(actionDelete);
-
-  return lst;
-}
-
-void QgsHanaConnectionItem::editConnection()
-{
-  QgsHanaNewConnection nc(nullptr, mName);
-  if (nc.exec())
-  {
-    // the parent should be updated
-    if (mParent)
-      mParent->refreshConnections();
-  }
-}
-
-void QgsHanaConnectionItem::deleteConnection()
-{
-  if (QMessageBox::question(nullptr, QObject::tr("Delete Connection"),
-    tr("Are you sure you want to delete the connection to %1?").arg(mName),
-    QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes)
-    return;
-
-  QgsHanaSettings::removeConnection(mName);
-  // the parent should be updated
-  if (mParent)
-    mParent->refreshConnections();
-}
-
-void QgsHanaConnectionItem::refreshConnection()
-{
-  refresh();
-}
-
 void QgsHanaConnectionItem::refreshSchema(const QString &schema)
 {
   Q_FOREACH(QgsDataItem* child, mChildren)
@@ -186,11 +133,6 @@ void QgsHanaConnectionItem::updateToolTip(const QString& userName, const QString
     tip += '\n';
   tip += QStringLiteral("Encrypted: ") + QString(settings.getEnableSsl() ? QStringLiteral("yes") : QStringLiteral("no"));
   setToolTip(tip);
-}
-
-bool QgsHanaConnectionItem::handleDrop(const QMimeData* data, Qt::DropAction)
-{
-  return handleDrop(data, QString());
 }
 
 bool QgsHanaConnectionItem::handleDrop(const QMimeData* data, const QString &toSchema)
@@ -231,11 +173,11 @@ bool QgsHanaConnectionItem::handleDrop(const QMimeData* data, const QString &toS
         QgsDebugMsg("URI " + uri.uri(false));
 
         std::unique_ptr< QgsVectorLayerExporterTask > exportTask(
-          QgsVectorLayerExporterTask::withLayerOwnership(srcLayer, uri.uri(),
+          QgsVectorLayerExporterTask::withLayerOwnership(srcLayer, uri.uri( false ),
             QStringLiteral("hana"), srcLayer->crs()));
         // when export is successful:
         connect(exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this,
-          [&]()
+          [ = ]()
           {
             QMessageBox::information(nullptr, tr("Import to HANA database"), tr("Import was successful."));
             refreshSchema(toSchema);
@@ -243,7 +185,7 @@ bool QgsHanaConnectionItem::handleDrop(const QMimeData* data, const QString &toS
 
         // when an error occurs:
         connect(exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this,
-          [&](int error, const QString& errorMessage)
+          [ = ](int error, const QString& errorMessage)
           {
             if (error != QgsVectorLayerExporter::ErrUserCanceled)
             {
@@ -293,6 +235,7 @@ QgsHanaLayerItem::QgsHanaLayerItem(
   : QgsLayerItem(parent, name, path, QString(), layerType, QStringLiteral("hana"))
   , mLayerProperty(layerProperty)
 {
+  mCapabilities |= Delete;
   mUri = createUri();
   setState(Populated);
 }
@@ -323,49 +266,6 @@ QString QgsHanaLayerItem::createUri() const
     uri.setSrid(QString::number(mLayerProperty.srid));
   QgsDebugMsg(QStringLiteral("layer uri: %1").arg(uri.uri(false)));
   return uri.uri(false);
-}
-
-QList<QAction *> QgsHanaLayerItem::actions(QWidget *parent)
-{
-  QList<QAction *> lst;
-
-  QAction *actionDeleteLayer = new QAction(tr("Delete Table"), parent);
-  connect(actionDeleteLayer, &QAction::triggered, this, &QgsHanaLayerItem::deleteLayer);
-  lst.append(actionDeleteLayer);
-
-  return lst;
-}
-
-bool QgsHanaLayerItem::deleteLayer()
-{
-  QString typeName = mLayerProperty.isView ? tr("View") : tr("Table");
-
-  if (QMessageBox::question(nullptr, tr("Delete %1").arg(typeName),
-    tr("Are you sure you want to delete %1.%2?").arg(mLayerProperty.schemaName, mLayerProperty.tableName),
-    QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes)
-    return true;
-
-  QgsHanaConnectionItem* connItem = qobject_cast<QgsHanaConnectionItem*>(parent() ?
-    parent()->parent() : nullptr);
-
-  QgsHanaConnectionRef conn(connItem->name());
-  if (conn.isNull())
-    return false;
-
-  QString errMessage;
-  bool res = conn->dropTable(mLayerProperty.schemaName, mLayerProperty.tableName, &errMessage);
-  if (!res)
-  {
-    QMessageBox::warning(nullptr, tr("Delete %1").arg(typeName), errMessage);
-  }
-  else
-  {
-    QMessageBox::information(nullptr, tr("Delete %1")
-      .arg(typeName), tr("%1 deleted successfully.").arg(typeName));
-    if (mParent)
-      mParent->refresh();
-  }
-  return res;
 }
 
 // ---------------------------------------------------------------------------
@@ -420,18 +320,6 @@ QVector<QgsDataItem*> QgsHanaSchemaItem::createChildren()
   return items;
 }
 
-QList<QAction*> QgsHanaSchemaItem::actions(QWidget* parent)
-{
-  QList<QAction*> lst;
-
-  QAction* actionRefresh = new QAction(tr("Refresh"), parent);
-  connect(actionRefresh, &QAction::triggered, this,
-    static_cast<void (QgsDataItem::*)()>(&QgsDataItem::refresh));
-  lst.append(actionRefresh);
-
-  return lst;
-}
-
 QgsHanaLayerItem* QgsHanaSchemaItem::createLayer(const QgsHanaLayerProperty &layerProperty)
 {
   QString tip = layerProperty.isView ? QStringLiteral("View"): QStringLiteral("Table");
@@ -481,19 +369,6 @@ QgsHanaLayerItem* QgsHanaSchemaItem::createLayer(const QgsHanaLayerProperty &lay
   return layerItem;
 }
 
-bool QgsHanaSchemaItem::handleDrop(const QMimeData* data, Qt::DropAction)
-{
-  QgsHanaConnectionItem* conn = qobject_cast<QgsHanaConnectionItem*>(parent());
-  if (!conn)
-    return false;
-
-  bool result = conn->handleDrop(data, mSchemaName);
-  if (result)
-    refresh();
-
-  return result;
-}
-
 QgsHanaRootItem::QgsHanaRootItem(QgsDataItem* parent, const QString &name, const QString &path)
   : QgsDataCollectionItem(parent, name, path)
 {
@@ -512,17 +387,6 @@ QVector<QgsDataItem*> QgsHanaRootItem::createChildren()
   return connections;
 }
 
-QList<QAction*> QgsHanaRootItem::actions(QWidget* parent)
-{
-  QList<QAction*> lst;
-
-  QAction* actionNew = new QAction(tr("New Connection…"), parent);
-  connect(actionNew, &QAction::triggered, this, &QgsHanaRootItem::newConnection);
-  lst.append(actionNew);
-
-  return lst;
-}
-
 QMainWindow *QgsHanaRootItem::sMainWindow = nullptr;
 
 QWidget* QgsHanaRootItem::paramWidget()
@@ -537,13 +401,6 @@ QWidget* QgsHanaRootItem::paramWidget()
 void QgsHanaRootItem::onConnectionsChanged()
 {
   refresh();
-}
-
-void QgsHanaRootItem::newConnection()
-{
-  QgsHanaNewConnection nc(nullptr);
-  if (nc.exec())
-    refresh();
 }
 
 QgsDataItem *QgsHanaDataItemProvider::createDataItem(

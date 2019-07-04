@@ -29,11 +29,14 @@ SET (HANA_MOC_HDRS
 IF (WITH_GUI)
   SET(HANA_SRCS ${HANA_SRCS}
     qgshanadataitems.cpp
+    qgshanadataitemguiprovider.cpp
     qgshananewconnection.cpp
+    qgshanaprovidergui.cpp
     qgshanasourceselect.cpp
   )
   SET(HANA_MOC_HDRS ${HANA_MOC_HDRS}
     qgshananewconnection.h
+    qgshanadataitemguiprovider.h
     qgshanasourceselect.h
   )
 ENDIF ()
