@@ -1,4 +1,4 @@
-Content-Type: application/json
+Content-Type: application/vnd.geo+json
 
 {
   "features": [
@@ -51,5 +51,21 @@ Content-Type: application/json
       "type": "Feature"
     }
   ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson",
+      "rel": "self",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/vnd.geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as HTML",
+      "type": "text/html"
+    }
+  ],
+  "numberMatched": 3,
+  "numberReturned": 3,
   "type": "FeatureCollection"
 }

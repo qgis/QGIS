@@ -1,4 +1,4 @@
-Content-Type: application/json
+Content-Type: application/vnd.geo+json
 
 {
   "features": [
@@ -35,5 +35,21 @@ Content-Type: application/json
       "type": "Feature"
     }
   ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?bbox=437106.99096772138727829,4972307.72834488749504089,437129.50390358484582976,4972318.1108037903904914&bbox-crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F32632",
+      "rel": "self",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/vnd.geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?bbox=437106.99096772138727829,4972307.72834488749504089,437129.50390358484582976,4972318.1108037903904914&bbox-crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F32632",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as HTML",
+      "type": "text/html"
+    }
+  ],
+  "numberMatched": 3,
+  "numberReturned": 2,
   "type": "FeatureCollection"
 }

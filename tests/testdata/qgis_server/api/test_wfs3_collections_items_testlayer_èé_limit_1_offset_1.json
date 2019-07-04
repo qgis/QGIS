@@ -1,4 +1,4 @@
-Content-Type: application/json
+Content-Type: application/vnd.geo+json
 
 {
   "features": [
@@ -19,5 +19,33 @@ Content-Type: application/json
       "type": "Feature"
     }
   ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1&offset=1",
+      "rel": "self",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/vnd.geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1&offset=1",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as HTML",
+      "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?&offset=0&limit=1",
+      "rel": "prev",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/vnd.geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?&offset=2&limit=1",
+      "rel": "next",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/vnd.geo+json"
+    }
+  ],
+  "numberMatched": 3,
+  "numberReturned": 1,
   "type": "FeatureCollection"
 }

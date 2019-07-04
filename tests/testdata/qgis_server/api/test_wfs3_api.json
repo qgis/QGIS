@@ -1,5 +1,3 @@
-Content-Type: application/openapi+json;version=3.0
+Content-Type: application/json
 
-{
-  "api": "This page will contain the API documentation for this service."
-}
+[{"code":"Bad request error","description":"Unsupported Content-Type: OPENAPI3"}]

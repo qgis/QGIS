@@ -8,78 +8,95 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+            integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+            crossorigin=""/>
+    <link rel="stylesheet" href="/wfs3/static/style.css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
 
-    <title>Collections</title>
+
+    <title>Feature collections</title>
   </head>
+  <body>
+  <nav class="navbar navbar-light bg-light navbar-expand-sm">
+      <div class="container">
+          <div id="navbar" class="navbar-collapse collapse d-flex justify-content-between align-items-center">
+              <ol class="breadcrumb bg-light my-0 pl-0">
+              
+                  <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3" >Landing page</a></li>
+              
+                  <li class="breadcrumb-item active">
+                     Feature collections
+                  </li>
+              </ol>
+              <ul class="list-unstyled list-separated m-0 p-0 text-muted">
+              
+                  <li><a rel="alternate" href="http://server.qgis.org/wfs3/collections/collections.json" target="_blank">JSON</a></li>
+              
+              </ul>
+          </div>
+
+
+      </div>
+  </nav>
+  <div class="container pt-4">
   <!-- END HEADER TEMPLATE header.html -->
 
-<div class="container">
 
     <h1>Collections</h1>
 
     
-        <h2>A test vector layer</h2>
-        <ul>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items">A test vector layer as GeoJSON</a></li>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html">A test vector layer as HTML</a></li>
-        
-        </ul>
+        <h3><a href="
+        http://server.qgis.org/wfs3/collections/testlayer èé.html
+        ">A test vector layer</a></h3>
+
     
-        <h2>testlayer3</h2>
-        <ul>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/testlayer3/items">testlayer3 as GeoJSON</a></li>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/testlayer3/items.html">testlayer3 as HTML</a></li>
-        
-        </ul>
+        <h3><a href="
+        http://server.qgis.org/wfs3/collections/testlayer3.html
+        ">testlayer3</a></h3>
+
     
-        <h2>testlayer2</h2>
-        <ul>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/testlayer2/items">testlayer2 as GeoJSON</a></li>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/testlayer2/items.html">testlayer2 as HTML</a></li>
-        
-        </ul>
+        <h3><a href="
+        http://server.qgis.org/wfs3/collections/testlayer2.html
+        ">testlayer2</a></h3>
+
     
-        <h2>A Layer with a short name</h2>
-        <ul>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/layer_with_short_name/items">A Layer with a short name as GeoJSON</a></li>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/layer_with_short_name/items.html">A Layer with a short name as HTML</a></li>
-        
-        </ul>
+        <h3><a href="
+        http://server.qgis.org/wfs3/collections/layer_with_short_name.html
+        ">A Layer with a short name</a></h3>
+
     
-        <h2>A test vector layer</h2>
-        <ul>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/exclude_attribute/items">A test vector layer as GeoJSON</a></li>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/exclude_attribute/items.html">A test vector layer as HTML</a></li>
-        
-        </ul>
+        <h3><a href="
+        http://server.qgis.org/wfs3/collections/exclude_attribute.html
+        ">A test vector layer</a></h3>
+
     
-        <h2>A test vector layer</h2>
-        <ul>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/fields_alias/items">A test vector layer as GeoJSON</a></li>
-        
-            <li><a rel="item" href="http://server.qgis.org/wfs3/collections/fields_alias/items.html">A test vector layer as HTML</a></li>
-        
-        </ul>
+        <h3><a href="
+        http://server.qgis.org/wfs3/collections/fields_alias.html
+        ">A test vector layer</a></h3>
+
     
 
 
-    </div>
     <!-- FOOTER TEMPLATE footer.html -->
+    </div> <!-- //container -->
+
+    <footer class="footer bg-light py-4 d-flex flex-column justify-content-around align-items-center">
+        <div class="container d-flex flex-row justify-content-between align-items-center w-100">
+                <span><span class="text-muted small mr-2">powered by</span><a class="navbar-brand" href="https://www.qgis.org/" target="_blank">QGIS Server</a></span>
+        </div>
+    </footer>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+       integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+       crossorigin=""></script>
   </body>
 </html>
+
