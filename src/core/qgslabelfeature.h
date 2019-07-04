@@ -371,6 +371,22 @@ class CORE_EXPORT QgsLabelFeature
     //! Returns provider of this instance
     QgsAbstractLabelProvider *provider() const;
 
+    /**
+     * Returns the original feature associated with this label.
+     * \see setFeature()
+     *
+     * \since QGIS 3.10
+     */
+    QgsFeature feature() const;
+
+    /**
+     * Sets the original \a feature associated with this label.
+     * \see feature()
+     *
+     * \since QGIS 3.10
+     */
+    void setFeature( const QgsFeature &feature );
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -435,6 +451,8 @@ class CORE_EXPORT QgsLabelFeature
 
     // TODO - not required when QgsGeometry caches geos preparedness
     geos::prepared_unique_ptr mPermissibleZoneGeosPrepared;
+
+    QgsFeature mFeature;
 
 };
 

@@ -2121,6 +2121,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   //  feature to the layer
   QgsTextLabelFeature *lf = new QgsTextLabelFeature( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
+  lf->setFeature( feature );
   mFeatsRegPal++;
 
   *labelFeature = lf;
@@ -2317,6 +2318,7 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
   //  feature to the layer
   *obstacleFeature = new QgsLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
   ( *obstacleFeature )->setIsObstacle( true );
+  ( *obstacleFeature )->setFeature( f );
   mFeatsRegPal++;
 }
 
