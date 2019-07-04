@@ -92,10 +92,15 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     setWindowFlags( windowFlags() & ~Qt::WindowCloseButtonHint );
   }
 
+#if PROJ_VERSION_MAJOR>=6
+  mDatumTransformTableWidget->setColumnCount( 3 );
+#else
   mDatumTransformTableWidget->setColumnCount( 2 );
+#endif
+
   QStringList headers;
 #if PROJ_VERSION_MAJOR>=6
-  headers << tr( "Transformation" ) << tr( "Accuracy (meters)" ) ;
+  headers << tr( "Transformation" ) << tr( "Accuracy (meters)" ) << tr( "Area of Use" );
 #else
   headers << tr( "Source Transform" ) << tr( "Destination Transform" ) ;
 #endif
@@ -181,6 +186,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
       preferredInitialRow = row;
     }
 
+    QStringList areasOfUse;
 
 #if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
     QStringList opText;
@@ -197,6 +203,11 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
           text += QStringLiteral( "<br>" );
         text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), singleOpDetails.remarks );
       }
+      if ( !singleOpDetails.areaOfUse.isEmpty() )
+      {
+        if ( !areasOfUse.contains( singleOpDetails.areaOfUse ) )
+          areasOfUse << singleOpDetails.areaOfUse;
+      }
 
       if ( !text.isEmpty() )
       {
@@ -204,12 +215,33 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
       }
     }
 
+    QString text;
+    if ( !transform.scope.isEmpty() )
+    {
+      text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), transform.scope );
+    }
+    if ( !transform.remarks.isEmpty() )
+    {
+      if ( !text.isEmpty() )
+        text += QStringLiteral( "<br>" );
+      text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), transform.remarks );
+    }
+    if ( !text.isEmpty() )
+    {
+      opText.append( text );
+    }
+
     if ( opText.count() > 1 )
     {
       for ( int k = 0; k < opText.count(); ++k )
         opText[k] = QStringLiteral( "<li>%1</li>" ).arg( opText.at( k ) );
     }
+#endif
 
+    if ( !transform.areaOfUse.isEmpty() && !areasOfUse.contains( transform.areaOfUse ) )
+      areasOfUse << transform.areaOfUse;
+
+#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
     const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
     const QColor active = palette().color( QPalette::Active, QPalette::Text );
 
@@ -217,10 +249,13 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
                             static_cast< int >( active.green() * 0.6 + disabled.green() * 0.4 ),
                             static_cast< int >( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
     const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
-                                  + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() ) +
-                                  QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
+                                  + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() )
+                                  + ( !areasOfUse.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), areasOfUse.join( QStringLiteral( ", " ) ) ) : QString() )
+                                  + QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
 #else
-    const QString toolTipString = QStringLiteral( "<b>%1</b><p><code>%2</code></p>" ).arg( transform.name, transform.proj );
+    const QString toolTipString = QStringLiteral( "<b>%1</b>%2<p><code>%3</code></p>" ).arg( transform.name,
+                                  ( !transform.areaOfUse.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), transform.areaOfUse ) : QString() ),
+                                  transform.proj );
 #endif
     item->setToolTip( toolTipString );
     if ( itemDisabled )
@@ -237,7 +272,21 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     {
       item->setFlags( Qt::NoItemFlags );
     }
+    item->setToolTip( toolTipString );
     mDatumTransformTableWidget->setItem( row, 1, item.release() );
+
+#if PROJ_VERSION_MAJOR>=6
+    // area of use column
+    item = qgis::make_unique< QTableWidgetItem >();
+    item->setFlags( item->flags() & ~Qt::ItemIsEditable );
+    item->setText( areasOfUse.join( QStringLiteral( ", " ) ) );
+    if ( itemDisabled )
+    {
+      item->setFlags( Qt::NoItemFlags );
+    }
+    item->setToolTip( toolTipString );
+    mDatumTransformTableWidget->setItem( row, 2, item.release() );
+#endif
 
     if ( transform.proj == selectedProj )
     {
