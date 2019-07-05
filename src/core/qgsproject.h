@@ -139,7 +139,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool isDirty() const;
 
     /**
-     * Sets the file name associated with the project. This is the file which contains the project's XML
+     * Sets the file name associated with the project. This is the file or the storage URI which contains the project's XML
      * representation.
      * \param name project file name
      * \see fileName()
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setFileName( const QString &name );
 
     /**
-     * Returns the project's file name. This is the file which contains the project's XML
+     * Returns the project's file name. This is the file or the storage URI which contains the project's XML
      * representation.
      * \see setFileName()
      * \see fileInfo()
