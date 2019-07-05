@@ -52,6 +52,8 @@ SET(QGIS_GUI_SRCS
   effects/qgspainteffectpropertieswidget.cpp
   effects/qgspainteffectwidget.cpp
 
+  callouts/qgscalloutwidget.cpp
+
   attributetable/qgsattributetabledelegate.cpp
   attributetable/qgsattributetablefiltermodel.cpp
   attributetable/qgsattributetablemodel.cpp
@@ -597,6 +599,8 @@ SET(QGIS_GUI_MOC_HDRS
   qgsabstractdatasourcewidget.h
   qgswidgetstatehelper_p.h
   qgsattributeeditorcontext.h
+
+  callouts/qgscalloutwidget.h
 
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h

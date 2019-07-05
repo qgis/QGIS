@@ -24,7 +24,7 @@
 #include "qgslinestring.h"
 #include <QPainter>
 
-QVariantMap QgsCallout::properties() const
+QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
 {
   QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
@@ -36,14 +36,14 @@ void QgsCallout::readProperties( const QVariantMap &props, const QgsReadWriteCon
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
 }
 
-bool QgsCallout::saveProperties( QDomDocument &doc, QDomElement &element ) const
+bool QgsCallout::saveProperties( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const
 {
   if ( element.isNull() )
   {
     return false;
   }
 
-  QDomElement calloutPropsElement = QgsXmlUtils::writeVariant( properties(), doc );
+  QDomElement calloutPropsElement = QgsXmlUtils::writeVariant( properties( context ), doc );
 
   QDomElement calloutElement = doc.createElement( QStringLiteral( "callout" ) );
   calloutElement.setAttribute( QStringLiteral( "type" ), type() );
@@ -128,6 +128,13 @@ QgsSimpleLineCallout &QgsSimpleLineCallout::operator=( const QgsSimpleLineCallou
   mLineSymbol.reset( other.mLineSymbol ? other.mLineSymbol->clone() : nullptr );
 }
 
+QgsCallout *QgsSimpleLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
+{
+  std::unique_ptr< QgsSimpleLineCallout > callout = qgis::make_unique< QgsSimpleLineCallout >();
+  callout->readProperties( properties, context );
+  return callout.release();
+}
+
 QString QgsSimpleLineCallout::type() const
 {
   return QStringLiteral( "simple" );
@@ -138,9 +145,9 @@ QgsSimpleLineCallout *QgsSimpleLineCallout::clone() const
   return new QgsSimpleLineCallout( *this );
 }
 
-QVariantMap QgsSimpleLineCallout::properties() const
+QVariantMap QgsSimpleLineCallout::properties( const QgsReadWriteContext &context ) const
 {
-  QVariantMap props = QgsCallout::properties();
+  QVariantMap props = QgsCallout::properties( context );
 
   if ( mLineSymbol )
   {
@@ -245,6 +252,13 @@ QgsManhattanLineCallout::QgsManhattanLineCallout( const QgsManhattanLineCallout 
 
 QgsManhattanLineCallout &QgsManhattanLineCallout::operator=( const QgsManhattanLineCallout &other )
 {
+}
+
+QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
+{
+  std::unique_ptr< QgsManhattanLineCallout > callout = qgis::make_unique< QgsManhattanLineCallout >();
+  callout->readProperties( properties, context );
+  return callout.release();
 }
 
 QString QgsManhattanLineCallout::type() const

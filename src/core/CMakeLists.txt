@@ -18,6 +18,7 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
 
   callouts/qgscallout.cpp
+  callouts/qgscalloutsregistry.cpp
 
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
@@ -1049,6 +1050,7 @@ SET(QGIS_CORE_HDRS
   auth/qgsauthmethodregistry.h
 
   callouts/qgscallout.h
+  callouts/qgscalloutsregistry.h
 
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h

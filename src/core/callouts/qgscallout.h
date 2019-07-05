@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
+#include "qgsreadwritecontext.h"
 #include <QString>
 #include <QRectF>
 #include <memory>
@@ -72,7 +73,7 @@ class CORE_EXPORT QgsCallout
      * \see readProperties()
      * \see saveProperties()
      */
-    virtual QVariantMap properties() const;
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
 
     /**
      * Reads a string map of an callout's properties and restores the callout
@@ -92,7 +93,7 @@ class CORE_EXPORT QgsCallout
      * \returns TRUE if save was successful
      * \see readProperties()
      */
-    virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
+    virtual bool saveProperties( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
 
     /**
      * Restores the callout's properties from a DOM element.
@@ -203,9 +204,16 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
     QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & );
 
+    /**
+     * Creates a new QgsSimpleLineCallout, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsSimpleLineCallout::properties() ).
+     */
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
+
     QString type() const override;
     QgsSimpleLineCallout *clone() const override;
-    QVariantMap properties() const override;
+    QVariantMap properties( const QgsReadWriteContext &context ) const override;
     void readProperties( const QVariantMap &props, const QgsReadWriteContext &context ) override;
     void startRender( QgsRenderContext &context ) override;
     void stopRender( QgsRenderContext &context ) override;
@@ -231,6 +239,13 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout();
     QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
     QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & );
+
+    /**
+     * Creates a new QgsManhattanLineCallout, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsManhattanLineCallout::properties() ).
+     */
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
 
     QString type() const override;
     QgsManhattanLineCallout *clone() const override;
