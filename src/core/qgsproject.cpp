@@ -2240,15 +2240,12 @@ QgsPathResolver QgsProject::pathResolver() const
   QString filePath;
   if ( ! absolutePaths )
   {
+    // for projects stored in a custom storage, we need to ask to the
+    // storage for the path, if the storage returns an empty path
+    // relative paths are not supported
     if ( QgsProjectStorage *storage = projectStorage() )
     {
-      // for projects stored in a custom storage, we have to check for the support
-      // of relative paths since the storage most likely will not be in a file system
-      QString storageFilePath { storage->filePath( mFile.fileName() ) };
-      if ( ! storageFilePath.isEmpty() )
-      {
-        filePath = storageFilePath;
-      }
+      filePath = storage->filePath( mFile.fileName() );
     }
     else
     {
