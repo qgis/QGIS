@@ -93,7 +93,6 @@ static bool _projectsTableExists( const QString &database )
   return ok;
 }
 
-
 QStringList QgsGeoPackageProjectStorage::listProjects( const QString &uri )
 {
   QStringList lst;
@@ -272,6 +271,13 @@ QgsGeoPackageProjectUri QgsGeoPackageProjectStorage::decodeUri( const QString &u
   gpkgUri.projectName = urlQuery.queryItemValue( "projectName" );
   return gpkgUri;
 }
+
+QString QgsGeoPackageProjectStorage::filePath( const QString &uri )
+{
+  const QgsGeoPackageProjectUri gpkgUri { decodeUri( uri ) };
+  return gpkgUri.valid ? gpkgUri.database :  QString();
+}
+
 
 QString QgsGeoPackageProjectStorage::_executeSql( const QString &uri, const QString &sql )
 {

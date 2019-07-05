@@ -1691,9 +1691,15 @@ bool QgsProject::write()
 {
   if ( QgsProjectStorage *storage = projectStorage() )
   {
-    // for projects stored in a custom storage, we cannot use relative paths since the storage most likely
-    // will not be in a file system
-    writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true );
+    QgsReadWriteContext context;
+    // for projects stored in a custom storage, we have to check for the support
+    // of relative paths since the storage most likely will not be in a file system
+    QString storageFilePath { storage->filePath( mFile.fileName() ) };
+    if ( storageFilePath.isEmpty() )
+    {
+      writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true );
+    }
+    context.setPathResolver( pathResolver() );
 
     QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
     QString tmpZipFilename( tempPath + QDir::separator() + QUuid::createUuid().toString() );
@@ -1708,7 +1714,6 @@ bool QgsProject::write()
       return false;
     }
 
-    QgsReadWriteContext context;
     context.setTransformContext( transformContext() );
     if ( !storage->writeProject( mFile.fileName(), &tmpZipFile, context ) )
     {
@@ -2232,7 +2237,22 @@ void QgsProject::dumpProperties() const
 QgsPathResolver QgsProject::pathResolver() const
 {
   bool absolutePaths = readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
-  return QgsPathResolver( absolutePaths ? QString() : fileName() );
+  QString filePath;
+  if ( ! absolutePaths )
+  {
+    // for projects stored in a custom storage, we need to ask to the
+    // storage for the path, if the storage returns an empty path
+    // relative paths are not supported
+    if ( QgsProjectStorage *storage = projectStorage() )
+    {
+      filePath = storage->filePath( mFile.fileName() );
+    }
+    else
+    {
+      filePath = fileName();
+    }
+  }
+  return QgsPathResolver( filePath );
 }
 
 QString QgsProject::readPath( const QString &src ) const
