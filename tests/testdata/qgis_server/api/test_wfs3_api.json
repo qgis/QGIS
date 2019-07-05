@@ -1,3 +1,6 @@
-Content-Type: application/json
+Content-Type: application/openapi+json;version=3.0
 
-[{"code":"Bad request error","description":"Unsupported Content-Type: OPENAPI3"}]
+{
+  "api": "This page will contain the API documentation for this service.",
+  "timeStamp": "2019-07-05T17:17:40Z"
+}

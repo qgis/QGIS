@@ -77,3 +77,20 @@ QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs
     return crs;
   }
 }
+
+const QgsFields QgsServerApiUtils::publishedFields( const QgsVectorLayer *layer )
+{
+  // TODO: implement plugin's ACL filtering
+  return layer->fields();
+}
+
+const QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
+{
+  QString result { QUrl( value ).toString() };
+  static const QRegularExpression re( R"raw(;.*(DROP|DELETE|INSERT|UPDATE|CREATE|INTO))raw" );
+  if ( re.match( result.toUpper() ).hasMatch() )
+  {
+    result = QString();
+  }
+  return result.replace( '\'', QStringLiteral( "\'" ) );
+}

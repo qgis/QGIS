@@ -34,6 +34,7 @@ Content-Type: application/vnd.geo+json
     },
     {
       "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?&offset=1&limit=1",
+      "name": "Next page",
       "rel": "next",
       "title": "Retrieve the features of the collection as GEOJSON",
       "type": "application/vnd.geo+json"
@@ -41,5 +42,6 @@ Content-Type: application/vnd.geo+json
   ],
   "numberMatched": 3,
   "numberReturned": 1,
+  "timeStamp": "2019-07-05T17:17:40Z",
   "type": "FeatureCollection"
 }

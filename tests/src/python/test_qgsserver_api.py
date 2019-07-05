@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+import re
 
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
@@ -93,7 +94,7 @@ class QgsServerAPITest(QgsServerTestBase):
     """ QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    #regenerate_reference = True
+    regeregenerate_api_reference = False
 
     def dump(self, response):
         """Returns the response body as str"""
@@ -109,10 +110,13 @@ class QgsServerAPITest(QgsServerTestBase):
 
     def compareApi(self, request, project, reference_file):
         response = QgsBufferServerResponse()
+        # Add json to accept it reference_file is JSON
+        if reference_file.endswith('.json'):
+            request.setHeader('Accept', 'application/json')
         self.server.handleRequest(request, response, project)
         result = bytes(response.body()).decode('utf8') if reference_file.endswith('html') else self.dump(response)
         path = unitTestDataPath('qgis_server') + '/api/' + reference_file
-        if self.regenerate_reference:
+        if self.regeregenerate_api_reference:
             f = open(path.encode('utf8'), 'w+', encoding='utf8')
             f.write(result)
             f.close()
@@ -120,7 +124,10 @@ class QgsServerAPITest(QgsServerTestBase):
 
         def __normalize_json(content):
             reference_content = content.split('\n')
-            json_content = json.dumps(json.loads(''.join(reference_content[reference_content.index('') + 1:])))
+            j = ''.join(reference_content[reference_content.index('') + 1:])
+            # Do not test timeStamp
+            j = re.sub(r'"timeStamp": "[^"]+"', '"timeStamp": "2019-07-05T12:27:07Z"', j)
+            json_content = json.dumps(json.loads(j))
             headers_content = '\n'.join(reference_content[:reference_content.index('') + 1])
             return headers_content + '\n' + json_content
 
@@ -207,7 +214,8 @@ class QgsServerAPITest(QgsServerTestBase):
 
     def test_wfs3_landing_page(self):
         """Test WFS3 API landing page in HTML format"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3')
+
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3.html')
         self.compareApi(request, None, 'test_wfs3_landing_page.html')
 
     def test_content_type_negotiation(self):
@@ -235,7 +243,9 @@ class QgsServerAPITest(QgsServerTestBase):
 
     def test_wfs3_api(self):
         """Test WFS3 API"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/api')
+
+        self.compareContentType('http://server.qgis.org/wfs3/api', {}, 'application/openapi+json;version=3.0')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/api.openapi3')
         self.compareApi(request, None, 'test_wfs3_api.json')
 
     def test_wfs3_conformance(self):
@@ -342,6 +352,13 @@ class QgsServerAPITest(QgsServerTestBase):
         self.server.handleRequest(request, response, None)
         body = bytes(response.body()).decode('utf8')
         self.assertEqual(body, '[{"code":"API not found error","description":"Static file does_not_exists.css was not found"}]')
+
+    def test_wfs3_field_filters(self):
+        """Test field filters"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer3/items?name=two')
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer3_name_eq_two.json')
 
 
 if __name__ == '__main__':

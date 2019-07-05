@@ -1,40 +1,100 @@
-{
-  "links": [
-    {
-      "href": "http://server.qgis.org/wfs3.json",
-      "rel": "self",
-      "title": "Landing page as JSON",
-      "type": "application/json"
-    },
-    {
-      "href": "http://server.qgis.org/wfs3.html",
-      "rel": "alternate",
-      "title": "Landing page as HTML",
-      "type": "text/html"
-    },
-    {
-      "href": "http://server.qgis.org/wfs3",
-      "rel": "self",
-      "title": "Landing page",
-      "type": "application/json"
-    },
-    {
-      "href": "http://server.qgis.org/wfs3/collections",
-      "rel": "data",
-      "title": "Feature collections",
-      "type": "application/json"
-    },
-    {
-      "href": "http://server.qgis.org/wfs3/conformance",
-      "rel": "conformance",
-      "title": "WFS 3.0 conformance classes",
-      "type": "application/json"
-    },
-    {
-      "href": "http://server.qgis.org/wfs3/api",
-      "rel": "service_desc",
-      "title": "API definition",
-      "type": "application/openapi+json;version=3.0"
-    }
-  ]
-}
+<!-- template for the WFS3 API landing page -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+            integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+            crossorigin=""/>
+    <link rel="stylesheet" href="/wfs3/static/style.css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+
+
+    <title>Landing page</title>
+  </head>
+  <body>
+  <nav class="navbar navbar-light bg-light navbar-expand-sm">
+      <div class="container">
+          <div id="navbar" class="navbar-collapse collapse d-flex justify-content-between align-items-center">
+              <ol class="breadcrumb bg-light my-0 pl-0">
+              
+                  <li class="breadcrumb-item active">
+                     Landing page
+                  </li>
+              </ol>
+              <ul class="list-unstyled list-separated m-0 p-0 text-muted">
+              
+                  <li><a rel="alternate" href="http://server.qgis.org/wfs3.json" target="_blank">JSON</a></li>
+              
+              </ul>
+          </div>
+
+
+      </div>
+  </nav>
+  <div class="container pt-4">
+  <!-- END HEADER TEMPLATE header.html -->
+
+
+    <h1>QGIS Server</h1>
+
+    <h2>Available services</h2>
+    <ul>
+    
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        <li><a rel="data" href="http://server.qgis.org/wfs3/collections">Feature collections</a></li>
+        
+        
+    
+        
+        
+        <li><a rel="conformance" href="http://server.qgis.org/wfs3/conformance">WFS 3.0 conformance classes</a></li>
+        
+        
+    
+        
+        
+        <li><a rel="service_desc" href="http://server.qgis.org/wfs3/api">API definition</a></li>
+        
+        
+    
+    </ul>
+
+    <!-- FOOTER TEMPLATE footer.html -->
+    </div> <!-- //container -->
+
+    <footer class="footer bg-light py-4 d-flex flex-column justify-content-around align-items-center">
+        <div class="container d-flex flex-row justify-content-between align-items-center w-100">
+                <span><span class="text-muted small mr-2">powered by</span><a class="navbar-brand" href="https://www.qgis.org/" target="_blank">QGIS Server</a></span>
+        </div>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+       integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+       crossorigin=""></script>
+  </body>
+</html>
+

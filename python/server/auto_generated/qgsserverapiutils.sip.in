@@ -27,7 +27,7 @@ The QgsServerApiUtils class contains helper functions to handle API common opera
 
     static QgsRectangle parseBbox( const QString &bbox );
 %Docstring
-Parses a comma separated ``bbox`` into a (possibily empty) :py:class:`QgsRectangle`
+Parses a comma separated ``bbox`` into a (possibily empty) :py:class:`QgsRectangle`.
 
 .. note::
 
@@ -38,6 +38,20 @@ Parses a comma separated ``bbox`` into a (possibily empty) :py:class:`QgsRectang
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 %Docstring
 Pasrses the CRS URI ``bboxCrs`` (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
+%End
+
+    static const QgsFields publishedFields( const QgsVectorLayer *layer );
+%Docstring
+Returns the list of fields accessible to the service for a given ``layer``.
+
+This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
+TODO: implement ACL
+%End
+
+    static const QString sanitizedFieldValue( const QString &value );
+%Docstring
+Sanitize the input ``value`` by removing URL encoding and checking for malicious content.
+In case of failure returns an empty string.
 %End
 
 

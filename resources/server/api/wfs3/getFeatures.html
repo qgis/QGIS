@@ -7,7 +7,7 @@
             {% for link in links_filter( links, "rel", "prev" ) %}
             <li class="page-item"><a class="page-link" href="{{ link.href }}">Previous</a></li>
             {% endfor %}
-            <!--li class="page-item"><a class="page-link" href="#">1</a></li>
+            <!-- TODO: full pagination: li class="page-item"><a class="page-link" href="#">1</a></li>
             <li class="page-item"><a class="page-link" href="#">2</a></li>
             <li class="page-item"><a class="page-link" href="#">3</a></li-->
             {% for link in links_filter( links, "rel", "next" ) %}
@@ -22,7 +22,7 @@
             <h1>{{ metadata.pageTitle }}</h1>
 
             {% for feature in features %}
-                <h2><a href="{{ path_append( feature.id ) }}">{{ feature.id }}</a></h2>
+                <h2><a href="{{ path_append( feature.id ) }}">{{ metadata.layerTitle }} {{ feature.id }}</a></h2>
                 <dl class="row">
                 {% for name, value in feature.properties %}
                     <dt class="col-sm-3">{{ name }}</dt>

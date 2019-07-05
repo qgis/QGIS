@@ -69,16 +69,17 @@ namespace QgsWfs3
   };
   Q_ENUM_NS( contentType )
 
-
   //! Stores content type strings
   extern QMap<contentType, QString> sContentTypeMime;
+
+  //! Stores content type aliases (e.g. JSON->[GEOJSON,OPENAPI3], XML->[GML] )
+  extern QHash<contentType, QList<contentType>> sContentTypeAliases;
 
   /**
    * Looks for the first contentType match in accept and returns it's mime type,
    * returns an empty string if there are not matches.
    */
   QString contentTypeForAccept( const QString &accept );
-
 
   //! Generic endpoint handler for API, part of this class could be eventually factored out to QgsServerApi
   struct Handler
@@ -100,11 +101,16 @@ namespace QgsWfs3
     //! Main role for the resource link
     rel linkType;
     // TODO: add XML?
-    //! List of content types this handler can serve, default to JSON and HTML
+
+    /**
+     * List of content types this handler can serve, default to JSON and HTML.
+     * In case a specialised type (such as GEOJSON) is supported, the generic type (such as JSON) should not be listed.
+     */
     QList<contentType> contentTypes { contentType::JSON, contentType::HTML };
 
     /**
      * Returns an URL to be used for links in the output.
+     *
      * \param api the parent API instance
      * \param request the current request object
      * \param extraPath an optional extra path that will be appended to the calculated URL
@@ -113,7 +119,7 @@ namespace QgsWfs3
     std::string href( const Api *api, const QgsServerRequest *request, const QString &extraPath = QString(), const QString &extension = QString() ) const;
 
     /**
-     * Utility method that returns a link to the resource
+     * Utility method that builds and returns a link to the resource.
      *
      * \param api the parent API instance
      * \param context request context
@@ -128,7 +134,7 @@ namespace QgsWfs3
                const std::string &title = "" ) const;
 
     /**
-     * Returns all the links for the given request \a api and \a context
+     * Returns all the links for the given request \a api and \a context.
      *
      * The base implementation returns the alternate and self links, subclasses may
      * add other links.
@@ -137,10 +143,10 @@ namespace QgsWfs3
                 const QgsServerApiContext *context ) const;
 
 
-    //! Defines a root link for the landing page (e.g. "collections" or "api"), if it is empty the link will not be included in the landing page
+    //! Defines a root link for the landing page (e.g. "collections" or "api"), if it is empty the link will not be included in the landing page.
     QString landingPageRootLink;
 
-    //! Default response content type in case the client did not specify it
+    //! Default response content type in case the client did not specify it.
     contentType defaultContentType = contentType::JSON;
 
     /**
@@ -165,12 +171,12 @@ namespace QgsWfs3
      * \note use xmlDump for XML output
      * \see xmlDump()
      */
-    void write( const json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response, const json &metadata = nullptr ) const;
+    void write( json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response, const json &metadata = nullptr ) const;
 
     /**
      * Writes \a data to the \a response stream as JSON (indented if debug is active), an optional \a contentType can be specified.
      */
-    void jsonDump( const json &data, QgsServerResponse *response, const QString &contentType = QStringLiteral( "application/json" ) ) const;
+    void jsonDump( json &data, QgsServerResponse *response, const QString &contentType = QStringLiteral( "application/json" ) ) const;
 
     /**
      * Writes \a data to the \a response stream as HTML (indented if debug is active) using a template.
@@ -185,7 +191,6 @@ namespace QgsWfs3
      * Returns handler information (id, description and other metadata) as JSON.
      */
     json handlerData( ) const;
-
 
     /**
      * Writes \a data to the \a response stream as XML (indented if debug is active).
@@ -217,6 +222,8 @@ namespace QgsWfs3
      * The path file extension is examined first and checked for known mime types,
      * the "Accept" HTTP header is examined next.
      * Fallback to the default content type of the handler if none of the above matches.
+     *
+     * \throws QgsServerApiBadRequestError if the content type of the request is not compatible with the handler (\see contentTypes member)
      */
     contentType contentTypeFromRequest( const QgsServerRequest *request ) const;
 
@@ -266,16 +273,34 @@ namespace QgsWfs3
        */
       static std::string parentLink( const QUrl &url, int levels = 1 );
 
+      /**
+       * Returns a list of registered handlers.
+       */
       const std::vector<std::unique_ptr<Handler>> &handlers() const;
 
+      /**
+       * Returns the string representation of \a rel attribute.
+       */
       static std::string relToString( const QgsWfs3::rel &rel );
 
+      /**
+       * Returns the string representation of a \a ct (Content-Type) attribute.
+       */
       static QString contentTypeToString( const contentType &ct );
 
+      /**
+       * Returns the string representation of a \a ct (Content-Type) attribute.
+       */
       static std::string contentTypeToStdString( const contentType &ct );
 
+      /**
+       * Returns the file extension for a \a ct (Content-Type).
+       */
       static QString contentTypeToExtension( const contentType &ct );
 
+      /**
+       * Returns the Content-Type value corresponding to \a extension.
+       */
       static contentType contenTypeFromExtension( const std::string &extension );
 
       /**
@@ -290,6 +315,11 @@ namespace QgsWfs3
       // QgsServerApi interface
     public:
 
+      /**
+       * Executes a request in the given \a context
+       *
+       * \throws QgsServerApiBadRequestError if the handler does not match the request
+       */
       void executeRequest( QgsServerApiContext *context ) const override;
 
   };

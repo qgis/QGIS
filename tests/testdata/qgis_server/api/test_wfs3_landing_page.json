@@ -38,5 +38,6 @@ Content-Type: application/json
       "title": "API definition",
       "type": "application/openapi+json;version=3.0"
     }
-  ]
+  ],
+  "timeStamp": "2019-07-05T17:17:40Z"
 }

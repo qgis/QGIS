@@ -21,5 +21,6 @@ Content-Type: application/json
       "title": "WFS 3.0 conformance classes as HTML",
       "type": "text/html"
     }
-  ]
+  ],
+  "timeStamp": "2019-07-05T17:17:40Z"
 }

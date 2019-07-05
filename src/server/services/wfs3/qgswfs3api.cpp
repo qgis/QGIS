@@ -48,6 +48,14 @@ namespace QgsWfs3
     return map;
   }();
 
+  QHash<contentType, QList<contentType>> sContentTypeAliases = [ ]() -> QHash<contentType, QList<contentType>>
+  {
+    QHash<contentType, QList<contentType>> map;
+    map[contentType::JSON] = { contentType::GEOJSON, contentType::OPENAPI3};
+    map[contentType::XML] = { contentType::GML };
+    return map;
+  }();
+
   template<class T>
   void Api::registerHandler()
   {
@@ -107,25 +115,24 @@ namespace QgsWfs3
     return sContentTypeMime.key( QString::fromStdString( extension ) );
   }
 
-  void Handler::write( const json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response, const json &metadata ) const
+  void Handler::write( json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response, const json &metadata ) const
   {
     // TODO: accept GML and XML?
     const auto contentType { contentTypeFromRequest( request ) };
-    json dataCopy { data };
     switch ( contentType )
     {
       case QgsWfs3::contentType::HTML:
-        dataCopy["handler"] = handlerData( );
+        data["handler"] = handlerData( );
         if ( ! metadata.is_null() )
         {
-          dataCopy["metadata"] = metadata;
+          data["metadata"] = metadata;
         }
-        htmlDump( dataCopy, api, request, response );
+        htmlDump( data, api, request, response );
         break;
       case QgsWfs3::contentType::GEOJSON:
       case QgsWfs3::contentType::JSON:
       case QgsWfs3::contentType::OPENAPI3:
-        jsonDump( dataCopy, response, sContentTypeMime.value( contentType ) );
+        jsonDump( data, response, sContentTypeMime.value( contentType ) );
         break;
       case QgsWfs3::contentType::GML:
       case QgsWfs3::contentType::XML:
@@ -133,8 +140,11 @@ namespace QgsWfs3
     }
   }
 
-  void Handler::jsonDump( const json &data, QgsServerResponse *response, const QString &contentType ) const
+  void Handler::jsonDump( json &data, QgsServerResponse *response, const QString &contentType ) const
   {
+    QDateTime time { QDateTime::currentDateTime() };
+    time.setTimeSpec( Qt::TimeSpec::UTC );
+    data["timeStamp"] = time.toString( Qt::DateFormat::ISODate ).toStdString() ;
     response->setHeader( QStringLiteral( "Content-Type" ), contentType );
 #ifdef QGISDEBUG
     response->write( data.dump( 2 ) );
@@ -322,11 +332,29 @@ namespace QgsWfs3
         QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported content type in Accept header: %1" ).arg( accept ), QStringLiteral( "Server" ), Qgis::Warning );
       }
     }
-    // A bit more logic to check if the requested content type is supported by the handler
+    // Validation: check if the requested content type (or an alias) is supported by the handler
     if ( ! contentTypes.contains( result ) )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsWfs3::Api::contentTypeToString( result ) ), QStringLiteral( "Server" ), Qgis::Info );
-      throw QgsServerApiBadRequestError( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsWfs3::Api::contentTypeToString( result ) ) );
+      // Check aliases
+      bool found { false };
+      if ( sContentTypeAliases.keys().contains( result ) )
+      {
+        for ( const auto &ct : qgis::as_const( contentTypes ) )
+        {
+          if ( sContentTypeAliases[result].contains( ct ) )
+          {
+            result = ct;
+            found = true;
+            break;
+          }
+        }
+      }
+
+      if ( ! found )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsWfs3::Api::contentTypeToString( result ) ), QStringLiteral( "Server" ), Qgis::Info );
+        throw QgsServerApiBadRequestError( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsWfs3::Api::contentTypeToString( result ) ) );
+      }
     }
     return result;
   }
@@ -403,7 +431,7 @@ namespace QgsWfs3
   void Handler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
   {
     Q_UNUSED( api );
-    const json data
+    json data
     {
       { "operationId", operationId },
       { "path", path.pattern().toStdString() },

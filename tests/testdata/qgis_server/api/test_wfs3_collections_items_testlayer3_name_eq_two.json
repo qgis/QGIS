@@ -5,35 +5,35 @@ Content-Type: application/vnd.geo+json
     {
       "geometry": {
         "coordinates": [
-          8.203496,
-          44.901483
+          8.203547,
+          44.901436
         ],
         "type": "Point"
       },
-      "id": 0,
+      "id": 1,
       "properties": {
-        "id": 1,
-        "name": "one",
-        "utf8nameè": "one èé"
+        "id": 2,
+        "name": "two",
+        "utf8nameè": "two àò"
       },
       "type": "Feature"
     }
   ],
   "links": [
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?bbox=8.203495,44.901482,8.203497,44.901484",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer3/items.geojson?name=two",
       "rel": "self",
       "title": "Retrieve the features of the collection as GEOJSON",
       "type": "application/vnd.geo+json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?bbox=8.203495,44.901482,8.203497,44.901484",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer3/items.html?name=two",
       "rel": "alternate",
       "title": "Retrieve the features of the collection as HTML",
       "type": "text/html"
     }
   ],
-  "numberMatched": 3,
+  "numberMatched": 1,
   "numberReturned": 1,
   "timeStamp": "2019-07-05T17:17:40Z",
   "type": "FeatureCollection"

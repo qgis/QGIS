@@ -36,6 +36,7 @@ APIHandler::APIHandler()
   // TODO: is this correct? maybe _docs?
   linkType = QgsWfs3::rel::service_desc;
   defaultContentType = QgsWfs3::contentType::OPENAPI3;
+  contentTypes = { QgsWfs3::contentType::OPENAPI3, QgsWfs3::contentType::HTML };
   landingPageRootLink = QStringLiteral( "api" );
 }
 
@@ -340,21 +341,48 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
 
     // Validate inputs
     auto ok { false };
+
+    // BBOX
     const auto bbox { context->request()->queryParameter( QStringLiteral( "bbox" ) ) };
+    const auto filterRect { QgsServerApiUtils::parseBbox( bbox ) };
+    if ( ! bbox.isEmpty() && filterRect.isNull() )
+    {
+      throw QgsServerApiBadRequestError( QStringLiteral( "bbox is not valid" ) );
+    }
+    const auto bboxCrs { context->request()->queryParameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
+
+    // CRS
+    const auto crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
+    if ( ! crs.isValid() )
+    {
+      throw QgsServerApiBadRequestError( QStringLiteral( "CRS is not valid" ) );
+    }
+
+    // resultType
     const auto resultType { context->request()->queryParameter( QStringLiteral( "resultType" ), QStringLiteral( "results" ) ) };
     static const QStringList availableResultTypes { QStringLiteral( "results" ), QStringLiteral( "hits" )};
     if ( ! availableResultTypes.contains( resultType ) )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "resultType is not valid [results, hits]" ) );
     }
-    // TODO: attribute filters
-    const auto bboxCrs { context->request()->queryParameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
-    const auto filterRect { QgsServerApiUtils::parseBbox( bbox ) };
-    const auto crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
-    if ( ! crs.isValid() )
+
+    // Attribute filters
+    QgsStringMap attrFilters;
+    for ( const auto &f : QgsServerApiUtils::publishedFields( mapLayer ) )
     {
-      throw QgsServerApiBadRequestError( QStringLiteral( "CRS is not valid" ) );
+      const QString val = context->request()->queryParameter( f.name() ) ;
+      if ( ! val.isEmpty() )
+      {
+        QString sanitized { QgsServerApiUtils::sanitizedFieldValue( val ) };
+        if ( sanitized.isEmpty() )
+        {
+          throw QgsServerApiBadRequestError( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name() ).arg( val ) );
+        }
+        attrFilters[f.name()] = sanitized;
+      }
     }
+
+    // limit & offset
     // Apparently the standard set limits 0-10000 (and does not implement paging,
     // so we do our own paging with "offset")
     auto offset { context->request()->queryParameter( QStringLiteral( "offset" ), QStringLiteral( "0" ) ).toInt( &ok ) };
@@ -362,7 +390,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "Offset is not valid" ) );
     }
-    // TODO: make the limit configurable
+    // TODO: make the max limit configurable
     auto limit { context->request()->queryParameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
     if ( 0 >= limit || limit > 10000 || !ok )
     {
@@ -383,12 +411,36 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
       ct.transform( filterRect );
       req.setFilterRect( ct.transform( filterRect ) );
     }
+
+    QString filterExpression;
+    if ( ! attrFilters.isEmpty() )
+    {
+      QStringList expressions;
+      for ( auto it = attrFilters.constBegin(); it != attrFilters.constEnd(); it++ )
+      {
+        // Handle star
+        static const QRegularExpression re2( R"raw([^\]*)raw" );
+        if ( re2.match( it.value() ).hasMatch() )
+        {
+          QString val { it.value() };
+          expressions.push_back( QStringLiteral( "\"%1\" ~ '%2'" ).arg( it.key() ).arg( val.replace( '%', QStringLiteral( "%%" ) ).replace( '*', '%' ) ) );
+        }
+        else
+        {
+          expressions.push_back( QStringLiteral( "\"%1\" = '%2'" ).arg( it.key() ).arg( it.value() ) );
+        }
+      }
+      filterExpression = expressions.join( QStringLiteral( " AND " ) );
+      req.setFilterExpression( filterExpression );
+    }
+
     // WFS3 core specs only serves 4326
     // TODO: handle custom CRSs
     req.setDestinationCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), context->project()->transformContext() );
     // Add offset to limit because paging is not supported from QgsFeatureRequest
     req.setLimit( limit + offset );
     QgsJsonExporter exporter { mapLayer };
+    exporter.setSourceCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
     QgsFeatureList featureList;
     auto features { mapLayer->getFeatures( req ) };
     QgsFeature feat;
@@ -401,10 +453,29 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
       i++;
     }
 
-    // TODO: featureCount when filter is implemented
-    const long matchedFeaturesCount { mapLayer->featureCount() };
+    // Count features
+    long matchedFeaturesCount = 0;
+    if ( attrFilters.isEmpty() && filterRect.isNull() )
+    {
+      matchedFeaturesCount = mapLayer->featureCount();
+    }
+    else
+    {
+      if ( filterExpression.isEmpty() )
+      {
+        req.setNoAttributes();
+      }
+      req.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+      req.setLimit( -1 );
+      features = mapLayer->getFeatures( req );
+      while ( features.nextFeature( feat ) )
+      {
+        matchedFeaturesCount++;
+      }
+    }
+
     json data { exporter.exportFeaturesToJsonObject( featureList ) };
-    data["numberMatched"] = mapLayer->featureCount();
+    data["numberMatched"] = matchedFeaturesCount;
     data["numberReturned"] = featureList.count();
     data["links"] = links( api, context );
 
@@ -436,6 +507,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
       auto prevLink { selfLink };
       prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrl ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
       prevLink["rel"] = "prev";
+      prevLink["name"] = "Previous page";
       data["links"].push_back( prevLink );
     }
     if ( limit + offset < matchedFeaturesCount )
@@ -443,6 +515,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
       auto nextLink { selfLink };
       nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrl ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
       nextLink["rel"] = "next";
+      nextLink["name"] = "Next page";
       data["links"].push_back( nextLink );
     }
 
@@ -453,6 +526,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
     json metadata
     {
       { "pageTitle", "Features in layer " + title },
+      { "layerTitle", title },
       {
         "geojsonUrl", href( api, context->request(), "/" + landingPageRootLink,
                             QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::GEOJSON ) )
@@ -470,7 +544,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
 
 CollectionsFeatureHandler::CollectionsFeatureHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.html)?$)re" ) );
+  path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html)?$)re" ) );
   operationId = "getFeature";
   linkTitle = "Retrieve a feature";
   summary = "retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)";
@@ -504,6 +578,10 @@ void CollectionsFeatureHandler::handleRequest( const QgsWfs3::Api *api, QgsServe
     const auto featureId { match.captured( QStringLiteral( "featureId" ) ) };
     QgsJsonExporter exporter { mapLayer };
     auto feature { mapLayer->getFeature( featureId.toLongLong() ) };
+    if ( ! feature.isValid() )
+    {
+      QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
+    }
     json data { exporter.exportFeatureToJsonObject( feature ) };
     data["links"] = links( api, context );
     json navigation = json::array();
