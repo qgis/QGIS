@@ -34,6 +34,8 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
 
     QgsXyzConnection connection() const;
 
+    void accept() override;
+
   private:
 
     QString mBaseKey;

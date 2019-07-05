@@ -15,6 +15,7 @@
 
 #include "qgsxyzconnectiondialog.h"
 #include "qgsxyzconnection.h"
+#include <QMessageBox>
 
 QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   : QDialog( parent )
@@ -54,4 +55,14 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
   conn.referer = mEditReferer->text();
   conn.authCfg = mAuthSettings->configId( );
   return conn;
+}
+
+void QgsXyzConnectionDialog::accept()
+{
+  if ( mCheckBoxZMin->isChecked() && mCheckBoxZMax->isChecked() && mSpinZMax->value() < mSpinZMin->value() )
+  {
+    QMessageBox::warning( this, tr( "Connection Properties" ), tr( "The maximum zoom level (%1) cannot be lower than the minimum zoom level (%2)." ).arg( mSpinZMax->value() ).arg( mSpinZMin->value() ) );
+    return;
+  }
+  QDialog::accept();
 }
