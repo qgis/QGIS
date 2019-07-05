@@ -26,6 +26,8 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsstylesavedialog.h"
 #include "qgscallout.h"
+#include "qgsapplication.h"
+#include "qgscalloutsregistry.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -99,6 +101,12 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mMinScaleWidget->setShowCurrentScaleButton( true );
   mMaxScaleWidget->setMapCanvas( mCanvas );
   mMaxScaleWidget->setShowCurrentScaleButton( true );
+
+  const QStringList calloutTypes = QgsApplication::calloutRegistry()->calloutTypes();
+  for ( const QString &type : calloutTypes )
+  {
+    mCalloutStyleComboBox->addItem( QgsApplication::calloutRegistry()->calloutMetadata( type )->visibleName(), type );
+  }
 
   mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );
   mGeometryGeneratorWarningLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
@@ -278,8 +286,17 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   // callout settings, to move to custom widget when multiple styles exist
   mCalloutLineStyleButton->setLayer( mLayer );
   if ( mSettings.callout() )
+  {
     mCalloutLineStyleButton->setSymbol( static_cast< QgsSimpleLineCallout * >( mSettings.callout() )->lineSymbol()->clone() );
-  mCalloutsDrawCheckBox->setChecked( mSettings.callout()->enabled() );
+    whileBlocking( mCalloutsDrawCheckBox )->setChecked( mSettings.callout()->enabled() );
+    whileBlocking( mCalloutStyleComboBox )->setCurrentIndex( mCalloutStyleComboBox->findData( mSettings.callout()->type() ) );
+  }
+  else
+  {
+    std::unique_ptr< QgsCallout > defaultCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+    whileBlocking( mCalloutStyleComboBox )->setCurrentIndex( mCalloutStyleComboBox->findData( defaultCallout->type() ) );
+    whileBlocking( mCalloutsDrawCheckBox )->setChecked( false );
+  }
 
   updatePlacementWidgets();
   updateLinePlacementOptions();
@@ -461,10 +478,12 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.setDataDefinedProperties( mDataDefinedProperties );
 
-  // callout settings, to move to custom widget when multiple styles exist
-  std::unique_ptr< QgsManhattanLineCallout > callout = qgis::make_unique< QgsManhattanLineCallout >();
+  // callout settings
+  const QString calloutType = mCalloutStyleComboBox->currentData().toString();
+  std::unique_ptr< QgsCallout > callout( QgsApplication::calloutRegistry()->createCallout( calloutType ) );
   callout->setEnabled( mCalloutsDrawCheckBox->isChecked() );
-  callout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  // todo - move to custom widget
+  static_cast< QgsSimpleLineCallout * >( callout.get() )->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
   lyr.setCallout( callout.release() );
 
   return lyr;

@@ -116,16 +116,13 @@ QgsSimpleLineCallout::QgsSimpleLineCallout()
 
 }
 
+QgsSimpleLineCallout::~QgsSimpleLineCallout() = default;
+
 QgsSimpleLineCallout::QgsSimpleLineCallout( const QgsSimpleLineCallout &other )
   : QgsCallout( other )
   , mLineSymbol( other.mLineSymbol ? other.mLineSymbol->clone() : nullptr )
 {
 
-}
-
-QgsSimpleLineCallout &QgsSimpleLineCallout::operator=( const QgsSimpleLineCallout &other )
-{
-  mLineSymbol.reset( other.mLineSymbol ? other.mLineSymbol->clone() : nullptr );
 }
 
 QgsCallout *QgsSimpleLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
@@ -250,9 +247,6 @@ QgsManhattanLineCallout::QgsManhattanLineCallout( const QgsManhattanLineCallout 
 
 }
 
-QgsManhattanLineCallout &QgsManhattanLineCallout::operator=( const QgsManhattanLineCallout &other )
-{
-}
 
 QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {

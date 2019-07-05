@@ -62,7 +62,7 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
      *
      * Ownership of the callout is transferred to the caller.
      */
-    virtual QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext& context ) = 0 SIP_FACTORY;
+    virtual QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;
 
     /**
      * Creates a widget for configuring callouts of this type. Can return NULLPTR if there's no GUI required.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
     QString mVisibleName;
 };
 
-typedef QgsCallout *( *QgsCalloutCreateFunc )( const QVariantMap &, const QgsReadWriteContext& ) SIP_SKIP;
+typedef QgsCallout *( *QgsCalloutCreateFunc )( const QVariantMap &, const QgsReadWriteContext & ) SIP_SKIP;
 typedef QgsCalloutWidget *( *QgsCalloutWidgetFunc )( QgsVectorLayer * ) SIP_SKIP;
 
 /**
@@ -90,9 +90,9 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
 
     //! \note not available in Python bindings
     QgsCalloutMetadata( const QString &name, const QString &visibleName,
-                            QgsCalloutCreateFunc pfCreate,
-                            QgsCalloutWidgetFunc pfWidget = nullptr ) SIP_SKIP
-    : QgsCalloutAbstractMetadata( name, visibleName )
+                        QgsCalloutCreateFunc pfCreate,
+                        QgsCalloutWidgetFunc pfWidget = nullptr ) SIP_SKIP
+  : QgsCalloutAbstractMetadata( name, visibleName )
     , mCreateFunc( pfCreate )
     , mWidgetFunc( pfWidget )
     {}
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
     //! \note not available in Python bindings
     void setWidgetFunction( QgsCalloutWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
-    QgsCallout * createCallout(const QVariantMap &properties, const QgsReadWriteContext& context ) override SIP_FACTORY;
+    QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) override SIP_FACTORY;
     QgsCalloutWidget *createCalloutWidget( QgsVectorLayer *vl ) override SIP_FACTORY;
 
   protected:
@@ -143,12 +143,12 @@ class CORE_EXPORT QgsCalloutRegistry
     /**
      * Returns the metadata for specified the specified callout \a type. Returns NULLPTR if no matching callout style was found.
      */
-    QgsCalloutAbstractMetadata *calloutMetadata( const QString &type) const;
+    QgsCalloutAbstractMetadata *calloutMetadata( const QString &type ) const;
 
     /**
      * Registers a new callout type.
      *
-     * Owership of \a metadata is transferred to the registry.
+     * Ownership of \a metadata is transferred to the registry.
      */
     bool addCalloutType( QgsCalloutAbstractMetadata *metadata SIP_TRANSFER );
 
@@ -157,14 +157,19 @@ class CORE_EXPORT QgsCalloutRegistry
      *
      * The caller takes ownership of the callout.
      */
-    QgsCallout *createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext& context = QgsReadWriteContext() ) const SIP_FACTORY;
+    QgsCallout *createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const SIP_FACTORY;
 
     /**
      * Creates a new instance of a callout of the specified \a type, using the properties from a DOM \a element.
      *
      * The caller takes ownership of the callout.
      */
-    QgsCallout* createCallout( const QString& type, const QDomElement &element, const QgsReadWriteContext &context ) const SIP_FACTORY;
+    QgsCallout *createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const SIP_FACTORY;
+
+    /**
+     * Returns a list of all available callout types.
+     */
+    QStringList calloutTypes() const;
 
     /**
      * Create a new instance of a callout with default settings.
