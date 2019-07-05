@@ -652,7 +652,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     {
       Q_ASSERT( mTileLayer );
       Q_ASSERT( mTileMatrixSet );
-      Q_ASSERT( !mTileMatrixSet->tileMatrices.isEmpty() );
+      if ( mTileMatrixSet->tileMatrices.isEmpty() )
+      {
+        QgsDebugMsg( QStringLiteral( "WMTS tile set is empty!" ) );
+        return image;
+      }
 
       // if we know both source and output DPI, let's scale the tiles
       if ( mDpi != -1 && mTileLayer->dpi != -1 )
