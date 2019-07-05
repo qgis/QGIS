@@ -131,6 +131,7 @@ INCLUDE_DIRECTORIES(
 IF (WITH_GUI)
   INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/gui
+    ${CMAKE_SOURCE_DIR}/src/gui/callouts
     ${CMAKE_SOURCE_DIR}/src/gui/symbology
     ${CMAKE_SOURCE_DIR}/src/gui/raster
     ${CMAKE_SOURCE_DIR}/src/gui/attributetable

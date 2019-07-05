@@ -45,7 +45,7 @@ Duplicates a callout by creating a deep copy of the callout.
 Caller takes ownership of the returned object.
 %End
 
-    virtual QVariantMap properties() const;
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
 %Docstring
 Returns the properties describing the callout encoded in a
 string format.
@@ -69,7 +69,7 @@ method.
 .. seealso:: :py:func:`properties`
 %End
 
-    virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
+    virtual bool saveProperties( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
 Saves the current state of the callout to a DOM ``element``. The default
 behavior is to save the properties string map returned by
@@ -197,11 +197,18 @@ A simple direct line callout style.
     QgsSimpleLineCallout();
     QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
 
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+%Docstring
+Creates a new QgsSimpleLineCallout, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+QgsSimpleLineCallout.properties() ).
+%End
+
     virtual QString type() const;
 
     virtual QgsSimpleLineCallout *clone() const;
 
-    virtual QVariantMap properties() const;
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
 
     virtual void readProperties( const QVariantMap &props, const QgsReadWriteContext &context );
 
@@ -233,6 +240,13 @@ class QgsManhattanLineCallout : QgsSimpleLineCallout
 
     QgsManhattanLineCallout();
     QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
+
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+%Docstring
+Creates a new QgsManhattanLineCallout, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+QgsManhattanLineCallout.properties() ).
+%End
 
     virtual QString type() const;
 

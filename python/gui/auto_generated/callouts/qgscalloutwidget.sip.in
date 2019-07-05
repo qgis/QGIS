@@ -1,0 +1,90 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/callouts/qgscalloutwidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCalloutWidget : QWidget, protected QgsExpressionContextGenerator
+{
+
+%TypeHeaderCode
+#include "qgscalloutwidget.h"
+%End
+  public:
+
+    QgsCalloutWidget( QWidget *parent /TransferThis/, QgsVectorLayer *vl = 0 );
+%Docstring
+Constructor for QgsCalloutWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    virtual void setCallout( QgsCallout *callout ) = 0;
+    virtual QgsCallout *callout() = 0;
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
+:param context: symbol widget context
+
+.. seealso:: :py:func:`context`
+
+.. versionadded:: 3.0
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+
+.. versionadded:: 3.0
+%End
+
+    const QgsVectorLayer *vectorLayer() const;
+%Docstring
+Returns the vector layer associated with the widget.
+
+.. versionadded:: 2.12
+%End
+
+  protected:
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
+%Docstring
+Registers a data defined override button. Handles setting up connections
+for the button and initializing the button to show the correct descriptions
+and help text for the associated property.
+
+.. versionadded:: 3.0
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+  signals:
+
+    void changed();
+%Docstring
+Should be emitted whenever configuration changes happened on this symbol layer configuration.
+If the subsymbol is changed, symbolChanged() should be emitted instead.
+%End
+
+  protected slots:
+    void updateDataDefinedProperty();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/callouts/qgscalloutwidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

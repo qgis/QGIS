@@ -153,6 +153,7 @@
 %Include auto_generated/auth/qgsauthmanager.sip
 %Include auto_generated/auth/qgsauthmethod.sip
 %Include auto_generated/callouts/qgscallout.sip
+%Include auto_generated/callouts/qgscalloutsregistry.sip
 %Include auto_generated/diagram/qgsdiagram.sip
 %Include auto_generated/diagram/qgspiediagram.sip
 %Include auto_generated/diagram/qgstextdiagram.sip

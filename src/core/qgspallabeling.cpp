@@ -64,6 +64,7 @@
 #include "qgsmessagelog.h"
 #include "qgsgeometrycollection.h"
 #include "callouts/qgscallout.h"
+#include "callouts/qgscalloutsregistry.h"
 #include <QMessageBox>
 
 using namespace pal;
@@ -305,7 +306,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacleType = PolygonInterior;
   zIndex = 0.0;
 
-  mCallout = qgis::make_unique< QgsManhattanLineCallout >();
+  mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -1133,11 +1134,16 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   }
 
   // TODO - replace with registry when multiple callout styles exist
-  mCallout = qgis::make_unique< QgsManhattanLineCallout >();
-  mCallout->restoreProperties( elem.firstChildElement( QStringLiteral( "callout" ) ), context );
+  const QString calloutType = elem.attribute( QStringLiteral( "calloutType" ) );
+  if ( calloutType.isEmpty() )
+    mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+  else
+  {
+    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( QStringLiteral( "callout" ) ), context ) );
+    if ( !mCallout )
+      mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+  }
 }
-
-
 
 QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -1233,7 +1239,8 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
   if ( mCallout )
   {
-    mCallout->saveProperties( doc, elem );
+    elem.setAttribute( QStringLiteral( "calloutType" ), mCallout->type() );
+    mCallout->saveProperties( doc, elem, context );
   }
 
   return elem;
