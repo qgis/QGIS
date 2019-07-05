@@ -889,20 +889,20 @@ void TestQgsAttributeForm::testAttributeFormInterface()
   QgsAttributeForm form( layer );
   form.addInterface( new MyInterface( &form ) );
 
-  bool setted = false;
+  bool set = false;
   connect( &form, &QgsAttributeForm::widgetValueChanged, this,
-           [&setted]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
+           [&set]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
   {
 
-    // Check that our value setted by the QgsAttributeFormInterface has correct parameters.
+    // Check that our value set by the QgsAttributeFormInterface has correct parameters.
     // attributeChanged has to be true because it won't be taken into account by others
     // (QgsValueRelationWidgetWrapper for instance)
     if ( attribute == "col0" && newValue.toInt() == 100 && attributeChanged )
-      setted = true;
+      set = true;
   } );
 
   form.setFeature( ft );
-  QVERIFY( setted );
+  QVERIFY( set );
 }
 
 
