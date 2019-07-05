@@ -54,7 +54,6 @@ class GUI_EXPORT QgsCoordinateBoundsPreviewMapWidget : public QgsMapCanvas
     /**
      * Sets the "preview" rectangle for the bounds overview map.
      * Must be in EPSG:4326 coordinate reference system.
-     * \see previewRect()
      */
     void setPreviewRect( const QgsRectangle &rect );
 
