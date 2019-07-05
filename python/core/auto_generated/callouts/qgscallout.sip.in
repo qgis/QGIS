@@ -195,7 +195,8 @@ A simple direct line callout style.
   public:
 
     QgsSimpleLineCallout();
-    QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
+    ~QgsSimpleLineCallout();
+
 
     static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
 %Docstring
@@ -227,6 +228,9 @@ QgsSimpleLineCallout.properties() ).
     virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
 
 
+  private:
+    QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
+    QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & );
 };
 
 
@@ -239,7 +243,7 @@ class QgsManhattanLineCallout : QgsSimpleLineCallout
   public:
 
     QgsManhattanLineCallout();
-    QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
+
 
     static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
 %Docstring
@@ -257,6 +261,9 @@ QgsManhattanLineCallout.properties() ).
     virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
 
 
+  private:
+    QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
+    QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & );
 };
 
 

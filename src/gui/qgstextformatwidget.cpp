@@ -547,7 +547,8 @@ void QgsTextFormatWidget::initWidget()
           << mLinePlacementFlagsDDBtn
           << mBackgroundSymbolButton
           << mCalloutLineStyleButton
-          << mCalloutsDrawCheckBox;
+          << mCalloutsDrawCheckBox
+          << mCalloutStyleComboBox;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );

@@ -21,7 +21,7 @@
 // QgsCalloutAbstractMetadata
 //
 
-QgsCalloutWidget* QgsCalloutAbstractMetadata::createCalloutWidget(QgsVectorLayer*)
+QgsCalloutWidget *QgsCalloutAbstractMetadata::createCalloutWidget( QgsVectorLayer * )
 {
   return nullptr;
 }
@@ -30,12 +30,12 @@ QgsCalloutWidget* QgsCalloutAbstractMetadata::createCalloutWidget(QgsVectorLayer
 // QgsCalloutMetadata
 //
 
-QgsCallout* QgsCalloutMetadata::createCallout(const QVariantMap& properties, const QgsReadWriteContext& context)
+QgsCallout *QgsCalloutMetadata::createCallout( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
   return mCreateFunc ? mCreateFunc( properties, context ) : nullptr;
 }
 
-QgsCalloutWidget* QgsCalloutMetadata::createCalloutWidget(QgsVectorLayer* vl)
+QgsCalloutWidget *QgsCalloutMetadata::createCalloutWidget( QgsVectorLayer *vl )
 {
   return mWidgetFunc ? mWidgetFunc( vl ) : nullptr;
 }
@@ -48,8 +48,8 @@ QgsCalloutWidget* QgsCalloutMetadata::createCalloutWidget(QgsVectorLayer* vl)
 QgsCalloutRegistry::QgsCalloutRegistry()
 {
   // init registry with known callouts
-  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "SimpleLine" ), QObject::tr( "Simple lines" ), QgsSimpleLineCallout::create ) );
-  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "ManhattanLine" ), QObject::tr( "Manhattan lines" ), QgsManhattanLineCallout::create ) );
+  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "simple" ), QObject::tr( "Simple lines" ), QgsSimpleLineCallout::create ) );
+  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "manhattan" ), QObject::tr( "Manhattan lines" ), QgsManhattanLineCallout::create ) );
 }
 
 QgsCalloutRegistry::~QgsCalloutRegistry()
@@ -66,10 +66,15 @@ bool QgsCalloutRegistry::addCalloutType( QgsCalloutAbstractMetadata *metadata )
   return true;
 }
 
-QgsCallout* QgsCalloutRegistry::createCallout(const QString& name, const QDomElement& element, const QgsReadWriteContext& context) const
+QgsCallout *QgsCalloutRegistry::createCallout( const QString &name, const QDomElement &element, const QgsReadWriteContext &context ) const
 {
   const QVariantMap props = QgsXmlUtils::readVariant( element.firstChildElement() ).toMap();
   return createCallout( name, props, context );
+}
+
+QStringList QgsCalloutRegistry::calloutTypes() const
+{
+  return mMetadata.keys();
 }
 
 QgsCalloutAbstractMetadata *QgsCalloutRegistry::calloutMetadata( const QString &name ) const
@@ -82,7 +87,7 @@ QgsCallout *QgsCalloutRegistry::defaultCallout()
   return new QgsManhattanLineCallout();
 }
 
-QgsCallout *QgsCalloutRegistry::createCallout( const QString &name, const QVariantMap &properties, const QgsReadWriteContext& context ) const
+QgsCallout *QgsCalloutRegistry::createCallout( const QString &name, const QVariantMap &properties, const QgsReadWriteContext &context ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;

@@ -3209,8 +3209,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>776</width>
-                       <height>435</height>
+                       <width>259</width>
+                       <height>350</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3715,7 +3715,7 @@ font-style: italic;</string>
                           <property name="topMargin">
                            <number>0</number>
                           </property>
-                          <item row="0" column="1">
+                          <item row="1" column="1">
                            <widget class="QgsSymbolButton" name="mCalloutLineStyleButton">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -3728,10 +3728,20 @@ font-style: italic;</string>
                             </property>
                            </widget>
                           </item>
-                          <item row="0" column="0">
+                          <item row="1" column="0">
                            <widget class="QLabel" name="label">
                             <property name="text">
                              <string>Line style</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="1">
+                           <widget class="QComboBox" name="mCalloutStyleComboBox"/>
+                          </item>
+                          <item row="0" column="0">
+                           <widget class="QLabel" name="label_11">
+                            <property name="text">
+                             <string>Style</string>
                             </property>
                            </widget>
                           </item>

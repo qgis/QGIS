@@ -29,6 +29,7 @@ class QgsLineSymbol;
 class QgsGeometry;
 class QgsRenderContext;
 
+class QgsCalloutWidget; //stop sip breaking
 
 /**
  * \ingroup core
@@ -201,8 +202,12 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
   public:
 
     QgsSimpleLineCallout();
+    ~QgsSimpleLineCallout() override;
+
+#ifndef SIP_RUN
     QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
-    QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & );
+    QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & ) = delete;
+#endif
 
     /**
      * Creates a new QgsSimpleLineCallout, using the settings
@@ -228,6 +233,11 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
 
   private:
 
+#ifdef SIP_RUN
+    QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
+    QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & );
+#endif
+
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
 };
 
@@ -237,8 +247,11 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
   public:
 
     QgsManhattanLineCallout();
+
+#ifndef SIP_RUN
     QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
-    QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & );
+    QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & ) = delete;
+#endif
 
     /**
      * Creates a new QgsManhattanLineCallout, using the settings
@@ -253,6 +266,11 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
   protected:
     void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor ) override;
 
+  private:
+#ifdef SIP_RUN
+    QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
+    QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & );
+#endif
 };
 
 
