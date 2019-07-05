@@ -94,7 +94,7 @@ class QgsServerAPITest(QgsServerTestBase):
     """ QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regeregenerate_api_reference = False
+    regeregenerate_api_reference = True
 
     def dump(self, response):
         """Returns the response body as str"""
@@ -359,6 +359,13 @@ class QgsServerAPITest(QgsServerTestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer3/items?name=two')
         self.compareApi(request, project, 'test_wfs3_collections_items_testlayer3_name_eq_two.json')
+
+    def test_wfs3_field_filters_star(self):
+        """Test field filters"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer3/items?name=tw*')
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer3_name_eq_tw_star.json')
 
 
 if __name__ == '__main__':

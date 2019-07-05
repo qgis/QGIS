@@ -49,8 +49,8 @@ Content-Type: application/vnd.geo+json
       "type": "text/html"
     }
   ],
-  "numberMatched": 3,
+  "numberMatched": 2,
   "numberReturned": 2,
-  "timeStamp": "2019-07-05T17:17:40Z",
+  "timeStamp": "2019-07-05T18:47:49Z",
   "type": "FeatureCollection"
 }

@@ -419,11 +419,11 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
       for ( auto it = attrFilters.constBegin(); it != attrFilters.constEnd(); it++ )
       {
         // Handle star
-        static const QRegularExpression re2( R"raw([^\]*)raw" );
+        static const QRegularExpression re2( R"raw([^\\]\*)raw" );
         if ( re2.match( it.value() ).hasMatch() )
         {
           QString val { it.value() };
-          expressions.push_back( QStringLiteral( "\"%1\" ~ '%2'" ).arg( it.key() ).arg( val.replace( '%', QStringLiteral( "%%" ) ).replace( '*', '%' ) ) );
+          expressions.push_back( QStringLiteral( "\"%1\" LIKE '%2'" ).arg( it.key() ).arg( val.replace( '%', QStringLiteral( "%%" ) ).replace( '*', '%' ) ) );
         }
         else
         {
@@ -586,10 +586,10 @@ void CollectionsFeatureHandler::handleRequest( const QgsWfs3::Api *api, QgsServe
     data["links"] = links( api, context );
     json navigation = json::array();
     const auto url { context->request()->url() };
-    navigation.push_back( {{ "title",  "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 4 ) }} ) ;
-    navigation.push_back( {{ "title",  "Collections" }, { "href", QgsWfs3::Api::parentLink( url, 3 ) }} ) ;
-    navigation.push_back( {{ "title",   title }, { "href", QgsWfs3::Api::parentLink( url, 2 )  }} ) ;
-    navigation.push_back( {{ "title",  "Items of " + title }, { "href", QgsWfs3::Api::parentLink( url ) }} ) ;
+    navigation.push_back( {{ "title", "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 4 ) }} ) ;
+    navigation.push_back( {{ "title", "Collections" }, { "href", QgsWfs3::Api::parentLink( url, 3 ) }} ) ;
+    navigation.push_back( {{ "title", title }, { "href", QgsWfs3::Api::parentLink( url, 2 )  }} ) ;
+    navigation.push_back( {{ "title", "Items of " + title }, { "href", QgsWfs3::Api::parentLink( url ) }} ) ;
     json metadata
     {
       { "pageTitle", title + " - feature " + featureId.toStdString() },
