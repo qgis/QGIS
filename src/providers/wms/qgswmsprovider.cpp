@@ -653,7 +653,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     {
       Q_ASSERT( mTileLayer );
       Q_ASSERT( mTileMatrixSet );
-      Q_ASSERT( !mTileMatrixSet->tileMatrices.isEmpty() );
+      if ( mTileMatrixSet->tileMatrices.isEmpty() )
+      {
+        QgsDebugMsg( QStringLiteral( "WMTS tile set is empty!" ) );
+        return image;
+      }
 
       // find nearest resolution
       tm = mTileMatrixSet->findNearestResolution( vres );
