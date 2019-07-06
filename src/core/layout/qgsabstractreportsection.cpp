@@ -173,11 +173,13 @@ void QgsAbstractReportSection::reloadSettings()
 
 bool QgsAbstractReportSection::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
+  // NOTE: if visitEnter returns false it means "don't visit the report section", not "abort all further visitations"
   if ( mParent && !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, QStringLiteral( "reportsection" ), QObject::tr( "Report Section" ) ) ) )
     return true;
 
   if ( mHeader )
   {
+    // NOTE: if visitEnter returns false it means "don't visit the header", not "abort all further visitations"
     if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, QStringLiteral( "reportheader" ), QObject::tr( "Report Header" ) ) ) )
     {
       if ( !mHeader->accept( visitor ) )
@@ -196,9 +198,9 @@ bool QgsAbstractReportSection::accept( QgsStyleEntityVisitorInterface *visitor )
 
   if ( mFooter )
   {
+    // NOTE: if visitEnter returns false it means "don't visit the footer", not "abort all further visitations"
     if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, QStringLiteral( "reportfooter" ), QObject::tr( "Report Footer" ) ) ) )
     {
-
       if ( !mFooter->accept( visitor ) )
         return false;
 

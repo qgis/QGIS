@@ -3078,6 +3078,7 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
   {
     for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
     {
+      // NOTE: if visitEnter returns false it means "don't visit this layer", not "abort all further visitations"
       if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layer, ( *it )->id(), ( *it )->name() ) ) )
       {
         if ( !( ( *it )->accept( visitor ) ) )
