@@ -94,7 +94,7 @@ class QgsServerAPITest(QgsServerTestBase):
     """ QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regeregenerate_api_reference = True
+    regeregenerate_api_reference = False
 
     def dump(self, response):
         """Returns the response body as str"""
