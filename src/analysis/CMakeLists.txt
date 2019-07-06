@@ -120,6 +120,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmzonalhistogram.cpp
+  processing/qgsprojectstylealgorithms.cpp
 
   processing/qgsalgorithmnetworkanalysisbase.cpp
 

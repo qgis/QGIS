@@ -115,6 +115,7 @@
 #include "qgsalgorithmwedgebuffers.h"
 #include "qgsalgorithmzonalhistogram.h"
 #include "qgsalgorithmpolygonstolines.h"
+#include "qgsprojectstylealgorithms.h"
 
 ///@cond PRIVATE
 
@@ -250,6 +251,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSplitLinesByLengthAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
+  addAlgorithm( new QgsStyleFromProjectAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsSwapXYAlgorithm() );
   addAlgorithm( new QgsSymmetricalDifferenceAlgorithm() );
