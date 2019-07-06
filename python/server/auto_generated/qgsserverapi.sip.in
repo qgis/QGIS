@@ -87,7 +87,7 @@ Returns the root path for the API
 Returns ``True`` if the given method is supported by the API, default implementation supports all methods.
 %End
 
-    virtual void executeRequest( QgsServerApiContext *context ) const = 0;
+    virtual void executeRequest( const QgsServerApiContext &context ) const = 0;
 %Docstring
 Executes a request by passing the given ``context`` to the handlers.
 %End

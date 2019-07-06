@@ -365,8 +365,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QgsServerApi *api = nullptr;
       if ( params.service().isEmpty() && ( api = sServiceRegistry->getApiForRequest( request ) ) )
       {
-        std::unique_ptr<QgsServerApiContext> context = qgis::make_unique<QgsServerApiContext>( &request, &response, project, sServerInterface );
-        api->executeRequest( context.get() );
+        QgsServerApiContext context { &request, &response, project, sServerInterface };
+        api->executeRequest( context );
       }
       else
       {

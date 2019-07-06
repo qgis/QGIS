@@ -106,7 +106,7 @@ class SERVER_EXPORT QgsServerApi
     /**
      * Executes a request by passing the given \a context to the handlers.
      */
-    virtual void executeRequest( QgsServerApiContext *context ) const = 0;
+    virtual void executeRequest( const QgsServerApiContext &context ) const = 0;
 
     /**
      * Returns the server interface

@@ -115,10 +115,10 @@ namespace QgsWfs3
     return sContentTypeMime.key( QString::fromStdString( extension ) );
   }
 
-  void Handler::write( json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response, const json &metadata ) const
+  void Handler::write( json &data, const Api *api, const QgsServerApiContext &context, const json &metadata ) const
   {
     // TODO: accept GML and XML?
-    const auto contentType { contentTypeFromRequest( request ) };
+    const auto contentType { contentTypeFromRequest( context.request() ) };
     switch ( contentType )
     {
       case QgsWfs3::contentType::HTML:
@@ -127,12 +127,12 @@ namespace QgsWfs3
         {
           data["metadata"] = metadata;
         }
-        htmlDump( data, api, request, response );
+        htmlDump( data, api, context.request(), context.response() );
         break;
       case QgsWfs3::contentType::GEOJSON:
       case QgsWfs3::contentType::JSON:
       case QgsWfs3::contentType::OPENAPI3:
-        jsonDump( data, response, sContentTypeMime.value( contentType ) );
+        jsonDump( data, context.response(), sContentTypeMime.value( contentType ) );
         break;
       case QgsWfs3::contentType::GML:
       case QgsWfs3::contentType::XML:
@@ -359,9 +359,9 @@ namespace QgsWfs3
     return result;
   }
 
-  QgsVectorLayer *Handler::layerFromCollection( QgsServerApiContext *context, const QString &collectionId ) const
+  QgsVectorLayer *Handler::layerFromCollection( const QgsServerApiContext &context, const QString &collectionId ) const
   {
-    const auto mapLayers { context->project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
+    const auto mapLayers { context.project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
     if ( mapLayers.count() != 1 )
     {
       throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Collection with given id (%1) was not found or multiple matches were found" ).arg( collectionId ) );
@@ -403,10 +403,10 @@ namespace QgsWfs3
   }
 
 
-  void Api::executeRequest( QgsServerApiContext *context ) const
+  void Api::executeRequest( const QgsServerApiContext &context ) const
   {
     // Get url
-    const auto url { normalizedUrl( context->request()->url() ) };
+    const auto url { normalizedUrl( context.request()->url() ) };
     // Find matching handler
     auto hasMatch { false };
     for ( const auto &h : handlers() )
@@ -428,7 +428,7 @@ namespace QgsWfs3
     }
   }
 
-  void Handler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
+  void Handler::handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const
   {
     Q_UNUSED( api );
     json data
@@ -441,7 +441,7 @@ namespace QgsWfs3
       { "linkType", QgsWfs3::Api::relToString( linkType ) },
       { "mimeType", defaultContentType }
     };
-    jsonDump( data, context->response() );
+    jsonDump( data, context.response() );
   }
 
   std::string Handler::href( const Api *api, const QgsServerRequest *request, const QString &extraPath, const QString &extension ) const
@@ -478,14 +478,14 @@ namespace QgsWfs3
     return QgsWfs3::Api::normalizedUrl( url ).toString( QUrl::FullyEncoded ).toStdString();
   }
 
-  json Handler::link( const Api *api, const QgsServerApiContext *context,
+  json Handler::link( const Api *api, const QgsServerApiContext &context,
                       const rel &linkType, const contentType contentType,
                       const std::string &title ) const
   {
     json l
     {
       {
-        "href", href( api, context->request(), "/" + landingPageRootLink,
+        "href", href( api, context.request(), "/" + landingPageRootLink,
                       QgsWfs3::Api::contentTypeToExtension( contentType ) )
       },
       { "rel", QgsWfs3::Api::relToString( linkType ) },
@@ -495,9 +495,9 @@ namespace QgsWfs3
     return l;
   }
 
-  json Handler::links( const Api *api, const QgsServerApiContext *context ) const
+  json Handler::links( const Api *api, const QgsServerApiContext &context ) const
   {
-    const auto currentCt { contentTypeFromRequest( context->request() ) };
+    const auto currentCt { contentTypeFromRequest( context.request() ) };
     json links = json::array();
     for ( const auto &ct : qgis::as_const( contentTypes ) )
     {

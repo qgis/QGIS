@@ -86,7 +86,7 @@ namespace QgsWfs3
   {
 
     virtual ~Handler() = default;
-    virtual void handleRequest( const Api *api, QgsServerApiContext *context ) const;
+    virtual void handleRequest( const Api *api, const QgsServerApiContext &context ) const;
 
     //! URL pattern for this handler
     QRegularExpression path;
@@ -104,7 +104,7 @@ namespace QgsWfs3
 
     /**
      * List of content types this handler can serve, default to JSON and HTML.
-     * In case a specialised type (such as GEOJSON) is supported, the generic type (such as JSON) should not be listed.
+     * In case a specialized type (such as GEOJSON) is supported, the generic type (such as JSON) should not be listed.
      */
     QList<contentType> contentTypes { contentType::JSON, contentType::HTML };
 
@@ -128,7 +128,7 @@ namespace QgsWfs3
      * \param title default to "This documents as <content type>"
      */
     json link( const Api *api,
-               const QgsServerApiContext *context,
+               const QgsServerApiContext &context,
                const rel &linkType = rel::self,
                const contentType contentType = contentType::JSON,
                const std::string &title = "" ) const;
@@ -140,7 +140,7 @@ namespace QgsWfs3
      * add other links.
      */
     json links( const Api *api,
-                const QgsServerApiContext *context ) const;
+                const QgsServerApiContext &context ) const;
 
 
     //! Defines a root link for the landing page (e.g. "collections" or "api"), if it is empty the link will not be included in the landing page.
@@ -150,7 +150,7 @@ namespace QgsWfs3
     contentType defaultContentType = contentType::JSON;
 
     /**
-     * Writes \a data to the \a response stream, content-type it is calculated from the \a request,
+     * Writes \a data to the \a context response stream, content-type it is calculated from the \a context request,
      * optional \a metadata for the HTML templates can be specified and will be added as "metadata" to
      * the HTML template variables.
      *
@@ -171,7 +171,7 @@ namespace QgsWfs3
      * \note use xmlDump for XML output
      * \see xmlDump()
      */
-    void write( json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response, const json &metadata = nullptr ) const;
+    void write( json &data, const Api *api, const QgsServerApiContext &context, const json &metadata = nullptr ) const;
 
     /**
      * Writes \a data to the \a response stream as JSON (indented if debug is active), an optional \a contentType can be specified.
@@ -232,7 +232,7 @@ namespace QgsWfs3
      *
      * \throws QgsServerApiImproperlyConfiguredError if not found or if more than one layer with same \a collectionId was found
      */
-    QgsVectorLayer *layerFromCollection( QgsServerApiContext *context, const QString &collectionId ) const;
+    QgsVectorLayer *layerFromCollection( const QgsServerApiContext &context, const QString &collectionId ) const;
 
   };
 
@@ -320,7 +320,7 @@ namespace QgsWfs3
        *
        * \throws QgsServerApiBadRequestError if the handler does not match the request
        */
-      void executeRequest( QgsServerApiContext *context ) const override;
+      void executeRequest( const QgsServerApiContext &context ) const override;
 
   };
 
