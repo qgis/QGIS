@@ -1345,6 +1345,7 @@ bool QgsLayoutItemMap::isLabelBlockingItem( QgsLayoutItem *item ) const
 
 bool QgsLayoutItemMap::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
+  // NOTE: if visitEnter returns false it means "don't visit the item", not "abort all further visitations"
   if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::LayoutItem, uuid(), displayName() ) ) )
     return true;
 

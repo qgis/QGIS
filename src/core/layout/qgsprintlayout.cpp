@@ -116,8 +116,10 @@ void QgsPrintLayout::updateSettings()
 
 bool QgsPrintLayout::layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const
 {
+  // NOTE: if visitEnter returns false it means "don't visit the layout", not "abort all further visitations"
   if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::PrintLayout, QStringLiteral( "layout" ), mName ) ) )
     return true;
+
   if ( !accept( visitor ) )
     return false;
   if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::PrintLayout, QStringLiteral( "layout" ), mName ) ) )

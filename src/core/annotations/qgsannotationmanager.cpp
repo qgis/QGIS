@@ -149,6 +149,7 @@ bool QgsAnnotationManager::accept( QgsStyleEntityVisitorInterface *visitor ) con
   if ( mAnnotations.empty() )
     return true;
 
+  // NOTE: if visitEnter returns false it means "don't visit any annotations", not "abort all further visitations"
   if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotations, QStringLiteral( "annotations" ), tr( "Annotations" ) ) ) )
     return true;
 

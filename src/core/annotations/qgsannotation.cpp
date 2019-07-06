@@ -184,6 +184,7 @@ void QgsAnnotation::setAssociatedFeature( const QgsFeature &feature )
 
 bool QgsAnnotation::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
+  // NOTE: if visitEnter returns false it means "don't visit the annotation", not "abort all further visitations"
   if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotation, QStringLiteral( "annotation" ), tr( "Annotation" ) ) ) )
     return true;
 

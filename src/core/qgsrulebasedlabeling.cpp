@@ -135,6 +135,7 @@ bool QgsRuleBasedLabeling::Rule::requiresAdvancedEffects() const
 
 bool QgsRuleBasedLabeling::Rule::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
+  // NOTE: if visitEnter returns false it means "don't visit the rule", not "abort all further visitations"
   if ( mParent && !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::SymbolRule, mRuleKey, mDescription ) ) )
     return true;
 

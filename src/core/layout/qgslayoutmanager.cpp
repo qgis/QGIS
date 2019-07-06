@@ -309,6 +309,7 @@ bool QgsLayoutManager::accept( QgsStyleEntityVisitorInterface *visitor ) const
   if ( mLayouts.empty() )
     return true;
 
+  // NOTE: if visitEnter returns false it means "don't visit the layouts", not "abort all further visitations"
   if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layouts, QStringLiteral( "layouts" ), tr( "Layouts" ) ) ) )
     return true;
 

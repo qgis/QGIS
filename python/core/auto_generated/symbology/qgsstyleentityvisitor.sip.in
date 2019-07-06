@@ -91,6 +91,8 @@ Subclasses should return ``False`` if they do NOT want to visit this particular 
 if the node type is QgsStyleEntityVisitorInterface.NodeType.Layouts and they do not wish to visit
 layout objects. In this case the visitor will not process the node, and will move to the next available
 node instead. Return ``True`` to proceed with visiting the node.
+
+The default implementation returns ``True``.
 %End
 
     virtual bool visitExit( const QgsStyleEntityVisitorInterface::Node &node );
@@ -99,6 +101,8 @@ Called when the visitor stops visiting a ``node``.
 
 Subclasses should return ``False`` to abort further visitations, or ``True`` to continue
 visiting other nodes.
+
+The default implementation returns ``True``.
 %End
 
 };

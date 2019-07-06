@@ -78,16 +78,22 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
        *
        * This may be blank if no identifier is required, e.g. when a renderer has a single
        * symbol only.
+       *
+       * Note that in some cases where a specific identifier is not available, a generic, untranslated
+       * one may be used (e.g. "overview", "grid").
        */
       QString identifier;
 
       /**
        * A string describing the style entity. The actual value of \a description will vary
        * depending on the class being visited. E.g for a categorized renderer, the
-       * description will be the category label associated with the symbol.
+       * description will be the category label associated with the symbol, for a print layout, it will
+       * be the name of the layout in the project.
        *
        * This may be blank if no description is associated with a style entity, e.g. when a renderer has a single
        * symbol only.
+       *
+       * This value may be a generic, translated value in some cases, e.g. "Grid" or "Overview".
        */
       QString description;
 
@@ -144,7 +150,11 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
      * Subclasses should return FALSE to abort further visitations, or TRUE to continue
      * visiting after processing this entity.
      */
-    virtual bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity ) { Q_UNUSED( entity ); return true; }
+    virtual bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity )
+    {
+      Q_UNUSED( entity )
+      return true;
+    }
 
     /**
      * Called when the visitor starts visiting a \a node.
@@ -153,16 +163,28 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
      * if the node type is QgsStyleEntityVisitorInterface::NodeType::Layouts and they do not wish to visit
      * layout objects. In this case the visitor will not process the node, and will move to the next available
      * node instead. Return TRUE to proceed with visiting the node.
+     *
+     * The default implementation returns TRUE.
      */
-    virtual bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) { Q_UNUSED( node ); return true; }
+    virtual bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node )
+    {
+      Q_UNUSED( node )
+      return true;
+    }
 
     /**
      * Called when the visitor stops visiting a \a node.
      *
      * Subclasses should return FALSE to abort further visitations, or TRUE to continue
      * visiting other nodes.
+     *
+     * The default implementation returns TRUE.
      */
-    virtual bool visitExit( const QgsStyleEntityVisitorInterface::Node &node ) { Q_UNUSED( node ); return true; }
+    virtual bool visitExit( const QgsStyleEntityVisitorInterface::Node &node )
+    {
+      Q_UNUSED( node )
+      return true;
+    }
 
 };
 
