@@ -147,14 +147,18 @@ void TestStyle::testCreateSymbols()
   std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym4( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   s.addSymbol( QStringLiteral( "symbolA" ), sym1.release(), true );
   s.addSymbol( QStringLiteral( "symbolB" ), sym2.release(), true );
   s.addSymbol( QStringLiteral( "symbolC" ), sym3.release(), true );
+  QgsStyleSymbolEntity symbolEntity( sym4.get() );
+  s.addEntity( QStringLiteral( "symbolD" ),  &symbolEntity, true );
 
   QCOMPARE( s.allNames( QgsStyle::SymbolEntity ),
             QStringList() << QStringLiteral( "symbolA" )
             << QStringLiteral( "symbolB" )
-            << QStringLiteral( "symbolC" ) );
+            << QStringLiteral( "symbolC" )
+            << QStringLiteral( "symbolD" ) );
 }
 
 bool TestStyle::imageCheck( QgsMapSettings &ms, const QString &testName )
@@ -218,6 +222,19 @@ void TestStyle::testCreateColorRamps()
             << QStringLiteral( "test_cc3" )
             << QStringLiteral( "test_gradient" )
             << QStringLiteral( "test_random" ) );
+
+  std::unique_ptr< QgsCptCityColorRamp > cc4Ramp = qgis::make_unique< QgsCptCityColorRamp >( QStringLiteral( "grass/byr" ), QString() );
+  QgsStyleColorRampEntity entity( cc4Ramp.get() );
+  QVERIFY( mStyle->addEntity( "test_cc4", &entity, true ) );
+
+  QCOMPARE( mStyle->allNames( QgsStyle::ColorrampEntity ), QStringList() << QStringLiteral( "test_cb1" )
+            << QStringLiteral( "test_cb2" )
+            << QStringLiteral( "test_cc1" )
+            << QStringLiteral( "test_cc2" )
+            << QStringLiteral( "test_cc3" )
+            << QStringLiteral( "test_cc4" )
+            << QStringLiteral( "test_gradient" )
+            << QStringLiteral( "test_random" ) );
 }
 
 void TestStyle::testCreateTextFormats()
@@ -271,6 +288,12 @@ void TestStyle::testCreateTextFormats()
 
   QCOMPARE( mStyle->allNames( QgsStyle::TextFormatEntity ), QStringList() << QStringLiteral( "test_format" )
             << QStringLiteral( "test_format2" ) );
+
+
+  format.setColor( QColor( 255, 255, 205 ) );
+  QgsStyleTextFormatEntity entity( format );
+  QVERIFY( mStyle->addEntity( "test_format4", &entity, true ) );
+  QVERIFY( mStyle->textFormatNames().contains( QStringLiteral( "test_format4" ) ) );
 }
 
 void TestStyle::testCreateLabelSettings()
@@ -324,6 +347,10 @@ void TestStyle::testCreateLabelSettings()
 
   QCOMPARE( mStyle->allNames( QgsStyle::LabelSettingsEntity ), QStringList() << QStringLiteral( "test_format2" )
             << QStringLiteral( "test_settings" ) );
+
+  QgsStyleLabelSettingsEntity entity( settings );
+  QVERIFY( mStyle->addEntity( "test_settings2", &entity, true ) );
+  QVERIFY( mStyle->labelSettingsNames().contains( QStringLiteral( "test_settings2" ) ) );
 }
 
 void TestStyle::testLoadColorRamps()
