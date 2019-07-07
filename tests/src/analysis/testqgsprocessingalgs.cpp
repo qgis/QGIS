@@ -1338,10 +1338,10 @@ void TestQgsProcessingAlgs::styleFromProject()
   // no layout
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
-  QCOMPARE( results.value( QStringLiteral( "SYMBOLS" ) ), 6 );
-  QCOMPARE( results.value( QStringLiteral( "COLORRAMPS" ) ), 1 );
-  QCOMPARE( results.value( QStringLiteral( "TEXTFORMATS" ) ), 1 );
-  QCOMPARE( results.value( QStringLiteral( "LABELSETTINGS" ) ), 1 );
+  QCOMPARE( results.value( QStringLiteral( "SYMBOLS" ) ).toInt(), 6 );
+  QCOMPARE( results.value( QStringLiteral( "COLORRAMPS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "TEXTFORMATS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "LABELSETTINGS" ) ).toInt(), 1 );
 
   // read style file back in
   QgsStyle s;
