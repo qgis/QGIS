@@ -69,7 +69,7 @@ namespace QgsWfs3
   };
   Q_ENUM_NS( contentType )
 
-  //! Stores content type strings
+  //! Stores content type mime strings
   extern QMap<contentType, QString> sContentTypeMime;
 
   //! Stores content type aliases (e.g. JSON->[GEOJSON,OPENAPI3], XML->[GML] )

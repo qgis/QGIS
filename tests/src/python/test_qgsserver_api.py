@@ -126,8 +126,12 @@ class QgsServerAPITest(QgsServerTestBase):
             reference_content = content.split('\n')
             j = ''.join(reference_content[reference_content.index('') + 1:])
             # Do not test timeStamp
-            j = re.sub(r'"timeStamp": "[^"]+"', '"timeStamp": "2019-07-05T12:27:07Z"', j)
-            json_content = json.dumps(json.loads(j))
+            j = json.loads(j)
+            try:
+                j['timeStamp'] = '2019-07-05T12:27:07Z'
+            except:
+                pass
+            json_content = json.dumps(j)
             headers_content = '\n'.join(reference_content[:reference_content.index('') + 1])
             return headers_content + '\n' + json_content
 
