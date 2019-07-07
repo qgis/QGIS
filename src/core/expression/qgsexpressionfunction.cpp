@@ -5662,18 +5662,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QVariant layerValue = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
 
-  int paramIndex = 1;
-
   QString subExpString;
   QgsExpression subExpression;
-  if ( !testOnly )
-  {
-    // Second parameter is the subexpression (invalid QVariant for boolean)
-    node = QgsExpressionUtils::getNode( values.at( paramIndex ), parent );
-    ENSURE_NO_EVAL_ERROR
+  if ( values.length() > 1 ){
 
-    subExpString = node->dump();
-    ++ paramIndex;
+      node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
+      ENSURE_NO_EVAL_ERROR
+      subExpString = node->dump();
   }
 
   QgsSpatialIndex spatialIndex;
@@ -5701,6 +5696,24 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   {
     cachedTarget = context->cachedValue( cacheLayer ).value<std::shared_ptr<QgsVectorLayer>>();
   }
+
+  QgsFeatureIterator LayerGenerator;
+  if ( values.length() > 2 ){
+      node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
+      ENSURE_NO_EVAL_ERROR
+      QString filterString = node->dump();
+      LayerGenerator = cachedTarget->getFeatures(filterString);
+  } else {
+      LayerGenerator = cachedTarget->getFeatures();
+  }
+
+  /*
+  int limit;
+  if ( values.length() > 3 ){
+      limit = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+      ENSURE_NO_EVAL_ERROR
+  }
+  */
 
   if ( !context->hasCachedValue( cacheIndex ) )
   {
@@ -6365,9 +6378,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     QgsStaticExpressionFunction *fcnGeomOverlayNearestFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_nearest" ), QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
-        // TODO: filter param
-        // TODO: limit param
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true ),
+        //<< QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true ),
         fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayNearestFunc->setIsStatic( false );
