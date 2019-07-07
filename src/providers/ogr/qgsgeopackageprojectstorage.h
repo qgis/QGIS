@@ -50,6 +50,7 @@ class QgsGeoPackageProjectStorage : public QgsProjectStorage
 #endif
     static QString encodeUri( const QgsGeoPackageProjectUri &postUri );
     static QgsGeoPackageProjectUri decodeUri( const QString &uri );
+    virtual QString filePath( const QString &uri ) override;
 
   private:
     QString _executeSql( const QString &uri, const QString &sql );
