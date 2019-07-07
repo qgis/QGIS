@@ -384,6 +384,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
   {
     QVariant v;
     bool checkUnique = true;
+    bool hasUniqueConstraint = fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique;
 
     // in order of priority:
     // 1. passed attribute value and if field does not have a unique constraint like primary key
@@ -394,7 +395,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // 2. client side default expression
     // note - deliberately not using else if!
-    if ( ( !v.isValid() || ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique  && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
+    if ( ( v.isNull() || ( hasUniqueConstraint && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
          && layer->defaultValueDefinition( idx ).isValid() )
     {
       // client side default expression set - takes precedence over all. Why? Well, this is the only default
@@ -405,7 +406,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // 3. provider side default value clause
     // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
-    if ( ( !v.isValid() || ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique  && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
+    if ( ( v.isNull() || ( hasUniqueConstraint && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
          && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
     {
       int providerIndex = fields.fieldOriginIndex( idx );
@@ -419,7 +420,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // 4. provider side default literal
     // note - deliberately not using else if!
-    if ( ( !v.isValid() || ( checkUnique && fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique  && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
+    if ( ( v.isNull() || ( checkUnique && hasUniqueConstraint && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
          && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
     {
       int providerIndex = fields.fieldOriginIndex( idx );
@@ -433,7 +434,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // 5. passed attribute value
     // note - deliberately not using else if!
-    if ( !v.isValid() && attributes.contains( idx ) )
+    if ( v.isNull() && attributes.contains( idx ) )
     {
       v = attributes.value( idx );
     }
@@ -441,7 +442,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
     // last of all... check that unique constraints are respected
     // we can't handle not null or expression constraints here, since there's no way to pick a sensible
     // value if the constraint is violated
-    if ( checkUnique && fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    if ( checkUnique && hasUniqueConstraint )
     {
       if ( QgsVectorLayerUtils::valueExists( layer, idx, v ) )
       {
