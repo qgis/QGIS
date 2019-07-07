@@ -115,7 +115,7 @@ namespace QgsWfs3
     return sContentTypeMime.key( QString::fromStdString( extension ) );
   }
 
-  void Handler::write( json &data, const Api *api, const QgsServerApiContext &context, const json &metadata ) const
+  void Handler::write( json &data, const Api *api, const QgsServerApiContext &context, const json &htmlMetadata ) const
   {
     // TODO: accept GML and XML?
     const auto contentType { contentTypeFromRequest( context.request() ) };
@@ -123,9 +123,9 @@ namespace QgsWfs3
     {
       case QgsWfs3::contentType::HTML:
         data["handler"] = handlerData( );
-        if ( ! metadata.is_null() )
+        if ( ! htmlMetadata.is_null() )
         {
-          data["metadata"] = metadata;
+          data["metadata"] = htmlMetadata;
         }
         htmlDump( data, api, context.request(), context.response() );
         break;

@@ -340,26 +340,26 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, const QgsS
   {
 
     // Validate inputs
-    auto ok { false };
+    bool ok { false };
 
     // BBOX
-    const auto bbox { context.request()->queryParameter( QStringLiteral( "bbox" ) ) };
-    const auto filterRect { QgsServerApiUtils::parseBbox( bbox ) };
+    const QString bbox { context.request()->queryParameter( QStringLiteral( "bbox" ) ) };
+    const QgsRectangle filterRect { QgsServerApiUtils::parseBbox( bbox ) };
     if ( ! bbox.isEmpty() && filterRect.isNull() )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "bbox is not valid" ) );
     }
-    const auto bboxCrs { context.request()->queryParameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
+    const QString bboxCrs { context.request()->queryParameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
 
     // CRS
-    const auto crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
+    const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
     if ( ! crs.isValid() )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "CRS is not valid" ) );
     }
 
     // resultType
-    const auto resultType { context.request()->queryParameter( QStringLiteral( "resultType" ), QStringLiteral( "results" ) ) };
+    const QString resultType { context.request()->queryParameter( QStringLiteral( "resultType" ), QStringLiteral( "results" ) ) };
     static const QStringList availableResultTypes { QStringLiteral( "results" ), QStringLiteral( "hits" )};
     if ( ! availableResultTypes.contains( resultType ) )
     {
@@ -368,7 +368,8 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, const QgsS
 
     // Attribute filters
     QgsStringMap attrFilters;
-    for ( const auto &f : QgsServerApiUtils::publishedFields( mapLayer ) )
+    const auto constField { QgsServerApiUtils::publishedFields( mapLayer ) };
+    for ( const QgsField &f : constField )
     {
       const QString val = context.request()->queryParameter( f.name() ) ;
       if ( ! val.isEmpty() )
@@ -385,22 +386,22 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, const QgsS
     // limit & offset
     // Apparently the standard set limits 0-10000 (and does not implement paging,
     // so we do our own paging with "offset")
-    auto offset { context.request()->queryParameter( QStringLiteral( "offset" ), QStringLiteral( "0" ) ).toInt( &ok ) };
+    const long offset { context.request()->queryParameter( QStringLiteral( "offset" ), QStringLiteral( "0" ) ).toLong( &ok ) };
     if ( offset < 0 || !ok )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "Offset is not valid" ) );
     }
     // TODO: make the max limit configurable
-    auto limit { context.request()->queryParameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
+    const long limit { context.request()->queryParameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toLong( &ok ) };
     if ( 0 >= limit || limit > 10000 || !ok )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "Limit is not valid (0-10000)" ) );
     }
     // TODO: implement time
-    const auto time { context.request()->queryParameter( QStringLiteral( "time" ) ) };
+    const QString time { context.request()->queryParameter( QStringLiteral( "time" ) ) };
     if ( ! time.isEmpty() )
     {
-      throw QgsServerApiNotImplementedError( QStringLiteral( "Time is not implemented" ) ) ;
+      throw QgsServerApiNotImplementedError( QStringLiteral( "Time filter is not implemented" ) ) ;
     }
 
     // Inputs are valid, process request
@@ -475,6 +476,8 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, const QgsS
     }
 
     json data { exporter.exportFeaturesToJsonObject( featureList ) };
+
+    // Add some metadata
     data["numberMatched"] = matchedFeaturesCount;
     data["numberReturned"] = featureList.count();
     data["links"] = links( api, context );
@@ -523,7 +526,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, const QgsS
     navigation.push_back( {{ "title",  "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 3 ) }} ) ;
     navigation.push_back( {{ "title",  "Collections" }, { "href", QgsWfs3::Api::parentLink( url, 2 ) }} ) ;
     navigation.push_back( {{ "title",   title }, { "href", QgsWfs3::Api::parentLink( url, 1 )  }} ) ;
-    json metadata
+    json htmlMetadata
     {
       { "pageTitle", "Features in layer " + title },
       { "layerTitle", title },
@@ -533,7 +536,7 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, const QgsS
       },
       { "navigation", navigation }
     };
-    write( data, api, context, metadata );
+    write( data, api, context, htmlMetadata );
   }
   else
   {
@@ -590,7 +593,7 @@ void CollectionsFeatureHandler::handleRequest( const QgsWfs3::Api *api, const Qg
     navigation.push_back( {{ "title", "Collections" }, { "href", QgsWfs3::Api::parentLink( url, 3 ) }} ) ;
     navigation.push_back( {{ "title", title }, { "href", QgsWfs3::Api::parentLink( url, 2 )  }} ) ;
     navigation.push_back( {{ "title", "Items of " + title }, { "href", QgsWfs3::Api::parentLink( url ) }} ) ;
-    json metadata
+    json htmlMetadata
     {
       { "pageTitle", title + " - feature " + featureId.toStdString() },
       {
@@ -599,7 +602,7 @@ void CollectionsFeatureHandler::handleRequest( const QgsWfs3::Api *api, const Qg
       },
       { "navigation", navigation }
     };
-    write( data, api, context, metadata );
+    write( data, api, context, htmlMetadata );
   }
   else
   {

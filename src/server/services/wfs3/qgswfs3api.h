@@ -151,7 +151,7 @@ namespace QgsWfs3
 
     /**
      * Writes \a data to the \a context response stream, content-type it is calculated from the \a context request,
-     * optional \a metadata for the HTML templates can be specified and will be added as "metadata" to
+     * optional \a htmlMetadata for the HTML templates can be specified and will be added as "metadata" to
      * the HTML template variables.
      *
      * HTML output uses a template engine.
@@ -171,7 +171,7 @@ namespace QgsWfs3
      * \note use xmlDump for XML output
      * \see xmlDump()
      */
-    void write( json &data, const Api *api, const QgsServerApiContext &context, const json &metadata = nullptr ) const;
+    void write( json &data, const Api *api, const QgsServerApiContext &context, const json &htmlMetadata = nullptr ) const;
 
     /**
      * Writes \a data to the \a response stream as JSON (indented if debug is active), an optional \a contentType can be specified.
@@ -182,7 +182,7 @@ namespace QgsWfs3
      * Writes \a data to the \a response stream as HTML (indented if debug is active) using a template.
      *
      * \param api parent Api instance
-     * \param response the response object
+     * \param request the request object
      * \see templatePath()
      */
     void htmlDump( const json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response ) const;
