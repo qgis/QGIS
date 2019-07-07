@@ -791,7 +791,6 @@ SET(QGIS_GUI_MOC_HDRS
   providers/gdal/qgsgdalsourceselect.h
   providers/gdal/qgsgdalguiprovider.h
 
-  providers/ogr/qgsogrguiprovider.h
   providers/ogr/qgsogrsourceselect.h
   providers/ogr/qgsogrdbsourceselect.h
   providers/ogr/qgsogrdbtablemodel.h
@@ -918,6 +917,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingguiregistry.h
 
   providers/ogr/qgsgeopackageprojectstorageguiprovider.h
+  providers/ogr/qgsogrguiprovider.h
 
   raster/qgsrasterrendererwidget.h
 
