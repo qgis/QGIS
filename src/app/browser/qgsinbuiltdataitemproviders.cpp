@@ -34,6 +34,8 @@
 #include "qgsnewgeopackagelayerdialog.h"
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
+#include "processing/qgsprojectstylealgorithms.h"
+#include "qgsstylemanagerdialog.h"
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -541,7 +543,7 @@ QString QgsProjectItemGuiProvider::name()
   return QStringLiteral( "project_items" );
 }
 
-void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
   if ( !item || item->type() != QgsDataItem::Project )
     return;
@@ -555,6 +557,34 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       QgisApp::instance()->openProject( projectPath );
     } );
     menu->addAction( openAction );
+
+    QAction *extractAction = new QAction( tr( "Extract Symbols…" ), menu );
+    connect( extractAction, &QAction::triggered, this, [projectPath, context]
+    {
+      QgsStyle style;
+      style.createMemoryDatabase();
+
+      QgsSaveToStyleVisitor visitor( &style );
+
+      QgsProject p;
+      QgsTemporaryCursorOverride override( Qt::WaitCursor );
+      if ( p.read( projectPath ) )
+      {
+        p.accept( &visitor );
+        override.release();
+        QgsStyleManagerDialog dlg( &style, QgisApp::instance(), nullptr, true );
+        dlg.setFavoritesGroupVisible( false );
+        dlg.setSmartGroupsVisible( false );
+        QFileInfo fi( projectPath );
+        dlg.setBaseStyleName( fi.baseName() );
+        dlg.exec();
+      }
+      else if ( context.messageBar() )
+      {
+        context.messageBar()->pushWarning( tr( "Extract Symbols" ), tr( "Could not read project file" ) );
+      }
+    } );
+    menu->addAction( extractAction );
 
     if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
     {

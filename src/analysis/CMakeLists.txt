@@ -317,6 +317,8 @@ SET(QGIS_ANALYSIS_HDRS
   network/qgsgraphanalyzer.h
   network/qgsvectorlayerdirector.h
 
+  processing/qgsprojectstylealgorithms.h
+
   vector/geometry_checker/qgsgeometryanglecheck.h
   vector/geometry_checker/qgsgeometryareacheck.h
   vector/geometry_checker/qgsgeometrychecker.h

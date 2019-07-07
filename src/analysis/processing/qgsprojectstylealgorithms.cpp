@@ -17,97 +17,92 @@
 
 #include "qgsprojectstylealgorithms.h"
 #include "qgsstyle.h"
-#include "qgsstyleentityvisitor.h"
+
 ///@cond PRIVATE
 
-class StyleVisitor : public QgsStyleEntityVisitorInterface
+//
+// QgsProjectToStyleVisitor
+//
+
+QgsSaveToStyleVisitor::QgsSaveToStyleVisitor( QgsStyle *style, const QList<QgsStyle::StyleEntity> &objects )
+  : mStyle( style )
+  , mObjects( objects )
 {
-  public:
+}
 
-    StyleVisitor( QgsStyle *style, const QList< QgsStyle::StyleEntity > &objects )
-      : mStyle( style )
-      , mObjects( objects )
+bool QgsSaveToStyleVisitor::visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity )
+{
+  if ( mObjects.empty() || mObjects.contains( entity.entity->type() ) )
+  {
+    const QString name = ( mParentNames.join( ' ' ) + ' ' + entity.description ).trimmed();
+    QString candidate = name;
+    int i = 1;
+    bool exists = true;
+    while ( exists )
     {
+      exists = mStyle->allNames( entity.entity->type() ).contains( candidate );
+      if ( !exists )
+        break;
 
+      i++;
+      candidate = name + QStringLiteral( " (%1)" ).arg( i );
     }
+    mStyle->addEntity( candidate, entity.entity, true );
+  }
+  return true;
+}
 
-    bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity ) override
-    {
-      if ( mObjects.contains( entity.entity->type() ) )
-      {
-        const QString name = ( mParentNames.join( ' ' ) + ' ' + entity.description ).trimmed();
-        QString candidate = name;
-        int i = 1;
-        bool exists = true;
-        while ( exists )
-        {
-          exists = mStyle->allNames( entity.entity->type() ).contains( candidate );
-          if ( !exists )
-            break;
+bool QgsSaveToStyleVisitor::visitEnter( const QgsStyleEntityVisitorInterface::Node &node )
+{
+  switch ( node.type )
+  {
+    case QgsStyleEntityVisitorInterface::NodeType::Project:
+    case QgsStyleEntityVisitorInterface::NodeType::Layouts:
+    case QgsStyleEntityVisitorInterface::NodeType::LayoutItem:
+    case QgsStyleEntityVisitorInterface::NodeType::ReportHeader:
+    case QgsStyleEntityVisitorInterface::NodeType::ReportFooter:
+    case QgsStyleEntityVisitorInterface::NodeType::ReportSection:
+    case QgsStyleEntityVisitorInterface::NodeType::Annotations:
+      break;
 
-          i++;
-          candidate = name + QStringLiteral( " (%1)" ).arg( i );
-        }
-        mStyle->addEntity( candidate, entity.entity, true );
-      }
-      return true;
-    }
+    case QgsStyleEntityVisitorInterface::NodeType::Layer:
+    case QgsStyleEntityVisitorInterface::NodeType::PrintLayout:
+    case QgsStyleEntityVisitorInterface::NodeType::Report:
+    case QgsStyleEntityVisitorInterface::NodeType::Annotation:
+    case QgsStyleEntityVisitorInterface::NodeType::SymbolRule:
+      mParentNames << node.description;
+      break;
+  }
+  return true;
+}
 
-    bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
-    {
-      switch ( node.type )
-      {
-        case QgsStyleEntityVisitorInterface::NodeType::Project:
-        case QgsStyleEntityVisitorInterface::NodeType::Layouts:
-        case QgsStyleEntityVisitorInterface::NodeType::LayoutItem:
-        case QgsStyleEntityVisitorInterface::NodeType::ReportHeader:
-        case QgsStyleEntityVisitorInterface::NodeType::ReportFooter:
-        case QgsStyleEntityVisitorInterface::NodeType::ReportSection:
-        case QgsStyleEntityVisitorInterface::NodeType::Annotations:
-          break;
+bool QgsSaveToStyleVisitor::visitExit( const QgsStyleEntityVisitorInterface::Node &node )
+{
+  switch ( node.type )
+  {
+    case QgsStyleEntityVisitorInterface::NodeType::Project:
+    case QgsStyleEntityVisitorInterface::NodeType::Layouts:
+    case QgsStyleEntityVisitorInterface::NodeType::LayoutItem:
+    case QgsStyleEntityVisitorInterface::NodeType::ReportHeader:
+    case QgsStyleEntityVisitorInterface::NodeType::ReportFooter:
+    case QgsStyleEntityVisitorInterface::NodeType::ReportSection:
+    case QgsStyleEntityVisitorInterface::NodeType::Annotations:
+      break;
 
-        case QgsStyleEntityVisitorInterface::NodeType::Layer:
-        case QgsStyleEntityVisitorInterface::NodeType::PrintLayout:
-        case QgsStyleEntityVisitorInterface::NodeType::Report:
-        case QgsStyleEntityVisitorInterface::NodeType::Annotation:
-        case QgsStyleEntityVisitorInterface::NodeType::SymbolRule:
-          mParentNames << node.description;
-          break;
-      }
-      return true;
-    }
+    case QgsStyleEntityVisitorInterface::NodeType::Layer:
+    case QgsStyleEntityVisitorInterface::NodeType::PrintLayout:
+    case QgsStyleEntityVisitorInterface::NodeType::Report:
+    case QgsStyleEntityVisitorInterface::NodeType::Annotation:
+    case QgsStyleEntityVisitorInterface::NodeType::SymbolRule:
+      mParentNames.pop_back();
+      break;
+  }
+  return true;
+}
 
-    bool visitExit( const QgsStyleEntityVisitorInterface::Node &node ) override
-    {
-      switch ( node.type )
-      {
-        case QgsStyleEntityVisitorInterface::NodeType::Project:
-        case QgsStyleEntityVisitorInterface::NodeType::Layouts:
-        case QgsStyleEntityVisitorInterface::NodeType::LayoutItem:
-        case QgsStyleEntityVisitorInterface::NodeType::ReportHeader:
-        case QgsStyleEntityVisitorInterface::NodeType::ReportFooter:
-        case QgsStyleEntityVisitorInterface::NodeType::ReportSection:
-        case QgsStyleEntityVisitorInterface::NodeType::Annotations:
-          break;
-
-        case QgsStyleEntityVisitorInterface::NodeType::Layer:
-        case QgsStyleEntityVisitorInterface::NodeType::PrintLayout:
-        case QgsStyleEntityVisitorInterface::NodeType::Report:
-        case QgsStyleEntityVisitorInterface::NodeType::Annotation:
-        case QgsStyleEntityVisitorInterface::NodeType::SymbolRule:
-          mParentNames.pop_back();
-          break;
-      }
-      return true;
-    }
-
-  private:
-
-    QgsStyle *mStyle = nullptr;
-    QList< QgsStyle::StyleEntity > mObjects;
-    QStringList mParentNames;
-
-};
+//
+// QgsStyleFromProjectAlgorithm
+//
 
 QgsStyleFromProjectAlgorithm::QgsStyleFromProjectAlgorithm() = default;
 
@@ -191,7 +186,7 @@ bool QgsStyleFromProjectAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   mStyle = qgis::make_unique< QgsStyle >();
   mStyle->createMemoryDatabase();
 
-  StyleVisitor visitor( mStyle.get(), objects );
+  QgsSaveToStyleVisitor visitor( mStyle.get(), objects );
   context.project()->accept( &visitor );
   return true;
 }
@@ -214,6 +209,7 @@ QVariantMap QgsStyleFromProjectAlgorithm::processAlgorithm( const QVariantMap &p
 }
 
 ///@endcond
+
 
 
 
