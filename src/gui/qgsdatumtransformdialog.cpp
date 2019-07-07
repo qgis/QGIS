@@ -70,8 +70,8 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
   }
 }
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs,
-    const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice,
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sCrs,
+    const QgsCoordinateReferenceSystem &dCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice,
     QPair<int, int> selectedDatumTransforms,
     QWidget *parent,
     Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas )
@@ -79,6 +79,9 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   , mPreviousCursorOverride( qgis::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
   setupUi( this );
+
+  QgsCoordinateReferenceSystem sourceCrs = sCrs;
+  QgsCoordinateReferenceSystem destinationCrs = dCrs;
 
   QgsGui::enableAutoGeometryRestore( this );
 
@@ -108,6 +111,20 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   headers << tr( "Source Transform" ) << tr( "Destination Transform" ) ;
 #endif
   mDatumTransformTableWidget->setHorizontalHeaderLabels( headers );
+
+#if PROJ_VERSION_MAJOR>=6
+  if ( !sourceCrs.isValid() )
+    sourceCrs = QgsProject::instance()->crs();
+  if ( !sourceCrs.isValid() )
+    sourceCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  if ( !destinationCrs.isValid() )
+    destinationCrs = QgsProject::instance()->crs();
+  if ( !destinationCrs.isValid() )
+    destinationCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+
+  mSourceProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
+  mDestinationProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
+#endif
 
   mSourceProjectionSelectionWidget->setCrs( sourceCrs );
   mDestinationProjectionSelectionWidget->setCrs( destinationCrs );
