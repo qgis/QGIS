@@ -749,20 +749,28 @@ void QgsDatumTransformDialog::tableCurrentItemChanged( QTableWidgetItem *, QTabl
   {
     mLabelSrcDescription->clear();
     mLabelDstDescription->clear();
+#if PROJ_VERSION_MAJOR>=6
+    mAreaCanvas->hide();
+#endif
   }
   else
   {
-
     QTableWidgetItem *srcItem = mDatumTransformTableWidget->item( row, 0 );
     mLabelSrcDescription->setText( srcItem ? srcItem->toolTip() : QString() );
     if ( srcItem )
     {
       QgsRectangle rect = srcItem->data( BoundsRole ).value< QgsRectangle >();
       mAreaCanvas->setPreviewRect( rect );
+#if PROJ_VERSION_MAJOR>=6
+      mAreaCanvas->show();
+#endif
     }
     else
     {
       mAreaCanvas->setPreviewRect( QgsRectangle() );
+#if PROJ_VERSION_MAJOR>=6
+      mAreaCanvas->hide();
+#endif
     }
     QTableWidgetItem *destItem = mDatumTransformTableWidget->item( row, 1 );
     mLabelDstDescription->setText( destItem ? destItem->toolTip() : QString() );
