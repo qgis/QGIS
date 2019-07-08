@@ -3448,6 +3448,55 @@ void TestQgsProcessing::parameterLayerList()
   def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeFile ) );
   params.insert( QString( "optional" ), QgsProcessingOutputLayerDefinition( QString( "i'm not a layer, and nothing you can do will make me one" ) ) );
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() );
+
+
+  // TypeFile
+  def = qgis::make_unique< QgsProcessingParameterMultipleLayers >( "non_optional", QString(), QgsProcessing::TypeFile, QString(), false );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "layer12312312" << "a" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant::fromValue( v1 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+
+  params.clear();
+  params.insert( "non_optional",  QString( "a" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileList( def.get(), params, context ), QStringList() << QStringLiteral( "a" ) );
+  params.insert( "non_optional",  QStringList() << "a" );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileList( def.get(), params, context ), QStringList() << QStringLiteral( "a" ) );
+  params.insert( "non_optional",  QStringList() << "a" << "b" );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileList( def.get(), params, context ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  params.insert( "non_optional",  QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "d" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileList( def.get(), params, context ), QStringList() << QStringLiteral( "c" ) << QStringLiteral( "d" ) );
+  // mix of two lists (happens from models)
+  params.insert( "non_optional",  QVariantList() << QVariant( QVariantList() << QStringLiteral( "e" ) << QStringLiteral( "f" ) ) << QVariant( QVariantList() << QStringLiteral( "g" ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileList( def.get(), params, context ), QStringList() << QStringLiteral( "e" ) << QStringLiteral( "f" ) << QStringLiteral( "g" ) );
+
+  // with 2 min inputs
+  def->setMinimumNumberInputs( 2 );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "layer12312312" << "layerB" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "layer12312312" << "layerB" ) );
+
+  def->setMinimumNumberInputs( 3 );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "layer12312312" << "layerB" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "layer12312312" << "layerB" ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( "layer12312312", context ), QStringLiteral( "'layer12312312'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringList() << "a" << "B", context ), QStringLiteral( "['a','B']" ) );
+  QCOMPARE( def->valueAsPythonString( QVariantList() << "c" << "d", context ), QStringLiteral( "['c','d']" ) );
 }
 
 void TestQgsProcessing::parameterDistance()

@@ -1032,6 +1032,20 @@ class CORE_EXPORT QgsProcessingParameters
     static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+     *
+     * \since QGIS 3.10
+     */
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+     *
+     * \since QGIS 3.10
+     */
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a range of values.
      */
     static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );

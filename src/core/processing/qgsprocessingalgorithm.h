@@ -777,6 +777,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+     *
+     * \since QGIS 3.10
+     */
+    QStringList parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a range of values.
      */
     QList<double> parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
