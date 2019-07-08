@@ -280,7 +280,7 @@ QString QgsField::displayString( const QVariant &v ) const
   }
   else if ( d->type == QVariant::StringList )
   {
-    QString formatString = arrayFormatString() == QgsField::FormatHstore ? "{%1}" : "[%1]";
+    QString formatString = arrayFormatString() == QgsField::FormatHstore ? QStringLiteral("{%1}")  : QStringLiteral("[%1]");
     return formatString.arg( v.toStringList().join( "," ) );
   }
 
