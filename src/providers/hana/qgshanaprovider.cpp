@@ -4,6 +4,8 @@
    Date      : 31-05-2019
    Copyright : (C) SAP SE
    Author    : Maksim Rylov
+ ***************************************************************************/
+
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1330,7 +1332,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   bool fieldsInUpperCase = false;
   if (fields.size() > 0)
   {
-    size_t count = QgsHanaUtils::countFieldsInUppercase(fields);
+    int count = QgsHanaUtils::countFieldsInUppercase(fields);
     fieldsInUpperCase = count > fields.size() / 2;
   }
 
@@ -1530,11 +1532,11 @@ QgsVectorLayerExporter::ExportError QgsHanaProviderMetadata::createEmptyLayer(
   bool overwrite,
   QMap<int, int> &oldToNewAttrIdxMap,
   QString &errorMessage,
-  const QMap<QString, QVariant> *)
+  const QMap<QString, QVariant> *options)
 {
   return QgsHanaProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    &oldToNewAttrIdxMap, &errorMessage
+    &oldToNewAttrIdxMap, &errorMessage, options
   );
 }
 

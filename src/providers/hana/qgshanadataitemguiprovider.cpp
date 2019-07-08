@@ -4,6 +4,8 @@
    Date      : 31-05-2019
    Copyright : (C) SAP SE
    Author    : Maksim Rylov
+ ***************************************************************************/
+
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -57,7 +59,7 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
   }
 }
 
-bool QgsHanaDataItemGuiProvider::deleteLayer(QgsLayerItem *item, QgsDataItemGuiContext context)
+bool QgsHanaDataItemGuiProvider::deleteLayer(QgsLayerItem *item, QgsDataItemGuiContext)
 {
   if (QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>(item))
   {

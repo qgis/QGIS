@@ -4,6 +4,8 @@
    Date      : 31-05-2019
    Copyright : (C) SAP SE
    Author    : Maksim Rylov
+ ***************************************************************************/
+
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -61,7 +63,7 @@ class QgsHanaUtils
     static QVersionNumber toHANAVersion(const QString& dbVersion);
     static int toPlanarSRID(int srid);
     static bool convertField(QgsField &field);
-    static size_t countFieldsInUppercase(const QgsFields &fields);
+    static int countFieldsInUppercase(const QgsFields &fields);
     static QString formatErrorMessage(const char* message, bool withPrefix = true);
 };
 
