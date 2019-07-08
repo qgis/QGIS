@@ -1057,7 +1057,7 @@ void TestProcessingGui::testFileWrapper()
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
   QCOMPARE( static_cast< QgsProcessingParameterFile * >( def.get() )->behavior(), QgsProcessingParameterFile::Folder );
-  QCOMPARE( static_cast< QgsProcessingParameterFile * >( def.get() )->defaultValue(), QStringLiteral( "my path" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterFile * >( def.get() )->defaultValue().toString(), QStringLiteral( "my path" ) );
 }
 
 void TestProcessingGui::testAuthCfgWrapper()
