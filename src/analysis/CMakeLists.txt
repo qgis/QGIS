@@ -121,6 +121,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmzonalhistogram.cpp
   processing/qgsprojectstylealgorithms.cpp
+  processing/qgsstylealgorithms.cpp
 
   processing/qgsalgorithmnetworkanalysisbase.cpp
 
