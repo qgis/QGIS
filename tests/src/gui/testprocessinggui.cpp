@@ -1040,8 +1040,16 @@ void TestProcessingGui::testFileWrapper()
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
   QCOMPARE( static_cast< QgsProcessingParameterFile * >( def.get() )->behavior(), QgsProcessingParameterFile::File );
+  QVERIFY( !static_cast< QgsProcessingParameterFile * >( def.get() )->defaultValue().isValid() );
+  QCOMPARE( static_cast< QgsProcessingParameterFile * >( def.get() )->fileFilter(), QStringLiteral( "All files (*.*)" ) );
+  fileParam.setFileFilter( QStringLiteral( "TAB files (*.tab)" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "file" ), context, widgetContext, &fileParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( static_cast< QgsProcessingParameterFile * >( def.get() )->fileFilter(), QStringLiteral( "TAB files (*.tab)" ) );
+
   fileParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
   fileParam.setBehavior( QgsProcessingParameterFile::Folder );
+  fileParam.setDefaultValue( QStringLiteral( "my path" ) );
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "file" ), context, widgetContext, &fileParam );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
@@ -1049,6 +1057,7 @@ void TestProcessingGui::testFileWrapper()
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
   QCOMPARE( static_cast< QgsProcessingParameterFile * >( def.get() )->behavior(), QgsProcessingParameterFile::Folder );
+  QCOMPARE( static_cast< QgsProcessingParameterFile * >( def.get() )->defaultValue(), QStringLiteral( "my path" ) );
 }
 
 void TestProcessingGui::testAuthCfgWrapper()
