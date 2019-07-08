@@ -468,6 +468,9 @@ namespace Qgs3DSymbolImpl
   {
     if ( symbol.shape() == QgsPoint3DSymbol::Model )
       return new QgsModelPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+    // Add proper handler for billboard
+    else if ( symbol.shape() == QgsPoint3DSymbol::Billboard )
+      return new QgsModelPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
     else
       return new QgsInstancedPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
   }

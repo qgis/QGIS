@@ -66,6 +66,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
       Plane,
       ExtrudedText,  //!< Supported in Qt 5.9+
       Model,
+      Billboard,
     };
 
     //! Returns shape enum value from a string

@@ -42,6 +42,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   cboShape->addItem( tr( "Plane" ), QgsPoint3DSymbol::Plane );
   cboShape->addItem( tr( "Torus" ), QgsPoint3DSymbol::Torus );
   cboShape->addItem( tr( "3D Model" ), QgsPoint3DSymbol::Model );
+  cboShape->addItem( tr( "Billboard" ), QgsPoint3DSymbol::Billboard );
 
   setSymbol( QgsPoint3DSymbol() );
   onShapeChanged();
@@ -130,10 +131,19 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
       spinMinorRadius->setValue( vm[QStringLiteral( "minorRadius" )].toDouble() );
       break;
     case 6:  // 3d model
+    {
       lineEditModel->setText( vm[QStringLiteral( "model" )].toString() );
       bool overwriteMaterial = vm[QStringLiteral( "overwriteMaterial" )].toBool();
       widgetMaterial->setEnabled( overwriteMaterial );
       cbOverwriteMaterial->setChecked( overwriteMaterial );
+      break;
+    }
+    // TODO: Fix this for billboard
+    case 7:  // billboard
+      lineEditModel->setText( vm[QStringLiteral( "model" )].toString() );
+      bool overwriteMaterialX = vm[QStringLiteral( "overwriteMaterial" )].toBool();
+      widgetMaterial->setEnabled( overwriteMaterialX );
+      cbOverwriteMaterial->setChecked( overwriteMaterialX );
       break;
   }
 
@@ -194,7 +204,11 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       vm[QStringLiteral( "radius" )] = spinRadius->value();
       vm[QStringLiteral( "minorRadius" )] = spinMinorRadius->value();
       break;
-    case 6:  // model
+    case 6:  // 3d model
+      vm[QStringLiteral( "model" )] = lineEditModel->text();
+      vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
+      break;
+    case 7:  // billboard
       vm[QStringLiteral( "model" )] = lineEditModel->text();
       vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
       break;
@@ -227,7 +241,8 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
              << labelTopRadius << spinTopRadius
              << labelBottomRadius << spinBottomRadius
              << labelLength << spinLength
-             << labelModel << lineEditModel << btnModel << cbOverwriteMaterial;
+             << labelModel << lineEditModel << btnModel << cbOverwriteMaterial
+             << labelBillboardSymbol << btnChangeSymbol;
 
   widgetMaterial->setEnabled( true );
   QList<QWidget *> activeWidgets;
@@ -254,6 +269,9 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
     case 6:  // 3d model
       activeWidgets << labelModel << lineEditModel << btnModel << cbOverwriteMaterial;
       widgetMaterial->setEnabled( cbOverwriteMaterial->isChecked() );
+      break;
+    case 7:  // billboard
+      activeWidgets << labelBillboardSymbol << btnChangeSymbol;
       break;
   }
 

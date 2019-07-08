@@ -69,6 +69,7 @@ Sets material used for shading of the symbol
       Plane,
       ExtrudedText,
       Model,
+      Billboard,
     };
 
     static Shape shapeFromString( const QString &shape );

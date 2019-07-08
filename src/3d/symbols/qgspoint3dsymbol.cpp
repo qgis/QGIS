@@ -84,6 +84,8 @@ QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape 
     return ExtrudedText;
   else if ( shape == QStringLiteral( "model" ) )
     return Model;
+  else if ( shape == QStringLiteral( "billboard" ) )
+    return Billboard;
   else   // "cylinder" (default)
     return Cylinder;
 }
@@ -100,6 +102,7 @@ QString QgsPoint3DSymbol::shapeToString( QgsPoint3DSymbol::Shape shape )
     case Plane: return QStringLiteral( "plane" );
     case ExtrudedText: return QStringLiteral( "extruded-text" );
     case Model: return QStringLiteral( "model" );
+    case Billboard: return QStringLiteral( "billboard" );
     default: Q_ASSERT( false ); return QString();
   }
 }
