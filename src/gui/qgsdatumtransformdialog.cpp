@@ -776,7 +776,14 @@ void QgsDatumTransformDialog::tableCurrentItemChanged( QTableWidgetItem *, QTabl
     mLabelSrcDescription->setText( srcItem ? srcItem->toolTip() : QString() );
     if ( srcItem )
     {
-      QgsRectangle rect = srcItem->data( BoundsRole ).value< QgsRectangle >();
+      // find area of intersection of operation, source and dest bounding boxes
+      // see https://github.com/OSGeo/PROJ/issues/1549 for justification
+      const QgsRectangle operationRect = srcItem->data( BoundsRole ).value< QgsRectangle >();
+      const QgsRectangle sourceRect = mSourceCrs.bounds();
+      const QgsRectangle destRect = mDestinationCrs.bounds();
+      QgsRectangle rect = operationRect.intersect( sourceRect );
+      rect = rect.intersect( destRect );
+
       mAreaCanvas->setPreviewRect( rect );
 #if PROJ_VERSION_MAJOR>=6
       mAreaCanvas->show();
