@@ -1304,7 +1304,9 @@ QWidget *QgsProcessingFileWidgetWrapper::createWidget()
       {
         case QgsProcessingParameterFile::File:
           mFileWidget->setStorageMode( QgsFileWidget::GetFile );
-          if ( !fileParam->extension().isEmpty() )
+          if ( !fileParam->fileFilter().isEmpty() )
+            mFileWidget->setFilter( fileParam->fileFilter() );
+          else if ( !fileParam->extension().isEmpty() )
             mFileWidget->setFilter( tr( "%1 files" ).arg( fileParam->extension().toUpper() ) + QStringLiteral( " (*." ) + fileParam->extension().toLower() + ')' );
           break;
 

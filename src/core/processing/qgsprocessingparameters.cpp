@@ -34,6 +34,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
 #include "qgssymbollayerutils.h"
+#include "qgsfileutils.h"
 #include <functional>
 
 
@@ -2289,10 +2290,11 @@ QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const 
   return new QgsProcessingParameterPoint( name, description, definition, isOptional );
 }
 
-QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Behavior behavior, const QString &extension, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Behavior behavior, const QString &extension, const QVariant &defaultValue, bool optional, const QString &fileFilter )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mBehavior( behavior )
-  , mExtension( extension )
+  , mExtension( fileFilter.isEmpty() ? extension : QString() )
+  , mFileFilter( fileFilter.isEmpty() && extension.isEmpty() ? QObject::tr( "All files (*.*)" ) : fileFilter )
 {
 
 }
@@ -2322,8 +2324,18 @@ bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, 
     case File:
     {
       if ( !mExtension.isEmpty() )
+      {
         return string.endsWith( mExtension, Qt::CaseInsensitive );
-      return true;
+      }
+      else if ( !mFileFilter.isEmpty() )
+      {
+        const QString test = QgsFileUtils::addExtensionFromFilter( string, mFileFilter );
+        return test == string;
+      }
+      else
+      {
+        return true;
+      }
     }
 
     case Folder:
@@ -2353,7 +2365,10 @@ QString QgsProcessingParameterFile::asPythonString( const QgsProcessing::PythonO
       if ( mFlags & FlagOptional )
         code += QStringLiteral( ", optional=True" );
       code += QStringLiteral( ", behavior=%1" ).arg( mBehavior == File ? QStringLiteral( "QgsProcessingParameterFile.File" ) : QStringLiteral( "QgsProcessingParameterFile.Folder" ) );
-      code += QStringLiteral( ", extension='%1'" ).arg( mExtension );
+      if ( !mExtension.isEmpty() )
+        code += QStringLiteral( ", extension='%1'" ).arg( mExtension );
+      if ( !mFileFilter.isEmpty() )
+        code += QStringLiteral( ", fileFilter='%1'" ).arg( mFileFilter );
       QgsProcessingContext c;
       code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
       return code;
@@ -2362,11 +2377,29 @@ QString QgsProcessingParameterFile::asPythonString( const QgsProcessing::PythonO
   return QString();
 }
 
+void QgsProcessingParameterFile::setExtension( const QString &extension )
+{
+  mExtension = extension;
+  mFileFilter.clear();
+}
+
+QString QgsProcessingParameterFile::fileFilter() const
+{
+  return mFileFilter;
+}
+
+void QgsProcessingParameterFile::setFileFilter( const QString &filter )
+{
+  mFileFilter = filter;
+  mExtension.clear();
+}
+
 QVariantMap QgsProcessingParameterFile::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "behavior" ), mBehavior );
   map.insert( QStringLiteral( "extension" ), mExtension );
+  map.insert( QStringLiteral( "filefilter" ), mFileFilter );
   return map;
 }
 
@@ -2375,6 +2408,7 @@ bool QgsProcessingParameterFile::fromVariantMap( const QVariantMap &map )
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mBehavior = static_cast< Behavior >( map.value( QStringLiteral( "behavior" ) ).toInt() );
   mExtension = map.value( QStringLiteral( "extension" ) ).toString();
+  mFileFilter = map.value( QStringLiteral( "filefilter" ) ).toString();
   return true;
 }
 
