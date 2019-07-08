@@ -60,7 +60,7 @@ class QgsFieldPrivate : public QSharedData
       , length( len )
       , precision( prec )
       , comment( comment )
-      , arrayFormatString( "[%1]" )
+      , arrayFormatString( 0 )
     {
     }
 
@@ -123,7 +123,7 @@ class QgsFieldPrivate : public QSharedData
 
     QgsEditorWidgetSetup editorWidgetSetup;
 
-    QString arrayFormatString;
+    int arrayFormatString;
 };
 
 /// @endcond

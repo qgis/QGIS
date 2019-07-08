@@ -202,12 +202,12 @@ void QgsField::setAlias( const QString &alias )
   d->alias = alias;
 }
 
-QString QgsField::arrayFormatString() const
+QgsField::ArrayFormatString QgsField::arrayFormatString() const
 {
-  return d->arrayFormatString;
+  return QgsField::ArrayFormatString( d->arrayFormatString );
 }
 
-void QgsField::setArrayFormatString( const QString &arrayFormatString )
+void QgsField::setArrayFormatString( QgsField::ArrayFormatString arrayFormatString )
 {
   d->arrayFormatString = arrayFormatString;
 }
@@ -280,7 +280,8 @@ QString QgsField::displayString( const QVariant &v ) const
   }
   else if ( d->type == QVariant::StringList )
   {
-    return d->arrayFormatString.arg( v.toStringList().join( "," ) );
+    QString formatString = arrayFormatString() == QgsField::FormatHstore ? "{%1}" : "[%1]";
+    return formatString.arg( v.toStringList().join( "," ) );
   }
 
   // Fallback if special rules do not apply

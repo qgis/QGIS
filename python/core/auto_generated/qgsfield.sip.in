@@ -32,6 +32,12 @@ length, and if applicable, precision.
 
   public:
 
+    enum ArrayFormatString
+    {
+      FormatJson,
+      FormatHstore,
+    };
+
     QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
               const QString &typeName = QString(),
@@ -255,26 +261,26 @@ Sets the alias for the field (the friendly displayed name of the field ).
 .. versionadded:: 3.0
 %End
 
-    QString arrayFormatString() const;
+    ArrayFormatString arrayFormatString() const;
 %Docstring
-Returns the format string used when displayString() is called on an array value.
+Returns the format used when displayString() is called on an array value.
 
-:return: format string where %1 will be replaced by array values separated with commas.
+:return: array format
 
 .. seealso:: :py:func:`setArrayFormatString`
 
-.. versionadded:: 3.7
+.. versionadded:: 3.10
 %End
 
-    void setArrayFormatString( const QString &arrayFormatString );
+    void setArrayFormatString( ArrayFormatString arrayFormatString );
 %Docstring
-Set the format string used when displayString() is called on an array value.
+Set the format used when displayString() is called on an array value.
 
-:param arrayFormatString: format string where %1 is replaced by array values separated with commas.
+:param arrayFormatString: array format
 
 .. seealso:: :py:func:`arrayFormatString`
 
-.. versionadded:: 3.7
+.. versionadded:: 3.10
 %End
 
     QString displayString( const QVariant &v ) const;

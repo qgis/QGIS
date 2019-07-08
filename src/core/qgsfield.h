@@ -62,6 +62,13 @@ class CORE_EXPORT QgsField
 
   public:
 
+    //! Result of an edit operation
+    enum ArrayFormatString
+    {
+      FormatJson = 0, //!< Array JSON format {a,b,c}
+      FormatHstore = 1, //!< Array HStore format [a,b,c]
+    };
+
     /**
      * Constructor. Constructs a new QgsField object.
      * \param name Field name
@@ -258,20 +265,20 @@ class CORE_EXPORT QgsField
     void setAlias( const QString &alias );
 
     /**
-     * Returns the format string used when displayString() is called on an array value.
-     * \returns format string where %1 will be replaced by array values separated with commas.
+     * Returns the format used when displayString() is called on an array value.
+     * \returns array format
      * \see setArrayFormatString()
-     * \since QGIS 3.7
+     * \since QGIS 3.10
      */
-    QString arrayFormatString() const;
+    ArrayFormatString arrayFormatString() const;
 
     /**
-     * Set the format string used when displayString() is called on an array value.
-     * \param arrayFormatString format string where %1 is replaced by array values separated with commas.
+     * Set the format used when displayString() is called on an array value.
+     * \param arrayFormatString array format
      * \see arrayFormatString()
-     * \since QGIS 3.7
+     * \since QGIS 3.10
      */
-    void setArrayFormatString( const QString &arrayFormatString );
+    void setArrayFormatString( ArrayFormatString arrayFormatString );
 
     //! Formats string for display
     QString displayString( const QVariant &v ) const;

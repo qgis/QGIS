@@ -1084,7 +1084,7 @@ bool QgsPostgresProvider::loadFields()
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
 
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
-    newField.setArrayFormatString( "{%1}" );
+    newField.setArrayFormatString( QgsField::FormatHstore );
 
     QgsFieldConstraints constraints;
     if ( notNullMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == i ) || identityMap[tableoid][attnum] != ' ' )

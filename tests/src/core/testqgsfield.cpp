@@ -421,7 +421,7 @@ void TestQgsField::displayString()
   // string list field
   QgsField stringListField( QStringLiteral( "stringlist" ), QVariant::StringList, QStringLiteral( "_text" ) );
   QCOMPARE( stringListField.displayString( QStringList() << "test1" << "test2" << "test3" ), QString( "[test1,test2,test3]" ) );
-  stringListField.setArrayFormatString( "{%1}" );
+  stringListField.setArrayFormatString( QgsField::FormatHstore );
   QCOMPARE( stringListField.displayString( QStringList() << "test1" << "test2" << "test3" ), QString( "{test1,test2,test3}" ) );
 }
 
