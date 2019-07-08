@@ -1279,6 +1279,37 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMatrixWidgetWrapper::c
 // QgsProcessingFileWidgetWrapper
 //
 
+
+QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Type" ) ) );
+
+  mTypeComboBox = new QComboBox();
+  mTypeComboBox->addItem( tr( "File" ), QgsProcessingParameterFile::File );
+  mTypeComboBox->addItem( tr( "Folder" ), QgsProcessingParameterFile::Folder );
+  if ( const QgsProcessingParameterFile *fileParam = dynamic_cast<const QgsProcessingParameterFile *>( definition ) )
+    mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( fileParam->behavior() ) );
+  else
+    mTypeComboBox->setCurrentIndex( 0 );
+
+  vlayout->addWidget( mTypeComboBox );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingFileParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterFile >( name, description );
+  param->setBehavior( static_cast< QgsProcessingParameterFile::Behavior>( mTypeComboBox->currentData().toInt() ) );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
 QgsProcessingFileWidgetWrapper::QgsProcessingFileWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -1375,6 +1406,11 @@ QString QgsProcessingFileWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFileWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingFileWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFileWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingFileParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 
