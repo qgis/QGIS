@@ -75,26 +75,34 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
-    QVariantList vl;
-    //store as QVariantList because it's json
-    for ( const QString &s : qgis::as_const( selection ) )
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
     {
-      // Convert to proper type
-      const QVariant::Type type { fkType() };
-      switch ( type )
+      QVariantList vl;
+      //store as QVariantList because the field type supports data structure
+      for ( const QString &s : qgis::as_const( selection ) )
       {
-        case QVariant::Type::Int:
-          vl.push_back( s.toInt() );
-          break;
-        case QVariant::Type::LongLong:
-          vl.push_back( s.toLongLong() );
-          break;
-        default:
-          vl.push_back( s );
-          break;
+        // Convert to proper type
+        const QVariant::Type type { fkType() };
+        switch ( type )
+        {
+          case QVariant::Type::Int:
+            vl.push_back( s.toInt() );
+            break;
+          case QVariant::Type::LongLong:
+            vl.push_back( s.toLongLong() );
+            break;
+          default:
+            vl.push_back( s );
+            break;
+        }
       }
+      v = vl;
     }
-    v = vl;
+    else
+    {
+      //store as a formatted string because the fields supports only string
+      v = selection.join( ',' ).prepend( '{' ).append( '}' );
+    }
   }
 
   if ( mLineEdit )
