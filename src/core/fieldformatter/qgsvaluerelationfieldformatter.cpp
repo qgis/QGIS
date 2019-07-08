@@ -185,27 +185,33 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     {
       try
       {
-        for ( auto &element : json::parse( newVal.toString().toStdString() ) )
+        if ( json::accept( newVal.toString().toStdString() ) )
         {
-          if ( element.is_number_integer() )
+          for ( auto &element : json::parse( newVal.toString().toStdString() ) )
           {
-            checkList << QString::number( element.get<int>() );
+            if ( element.is_number_integer() )
+            {
+              checkList << QString::number( element.get<int>() );
+            }
+            else if ( element.is_number_unsigned() )
+            {
+              checkList << QString::number( element.get<unsigned>() );
+            }
+            else if ( element.is_string() )
+            {
+              checkList << QString::fromStdString( element.get<std::string>() );
+            }
           }
-          else if ( element.is_number_unsigned() )
-          {
-            checkList << QString::number( element.get<unsigned>() );
-          }
-          else if ( element.is_string() )
-          {
-            checkList << QString::fromStdString( element.get<std::string>() );
-          }
+        }
+        else
+        {
+          //fallback for wrongly stored string data without quotes
+          checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
         }
       }
       catch ( json::parse_error &ex )
       {
         qDebug() << QString::fromStdString( ex.what() );
-        //fallback for wrongly stored data
-        checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
       }
     }
   }
