@@ -1,9 +1,11 @@
 /***************************************************************************
-   qgshanaexpressioncompiler.h
+   qgshanaexpressioncompiler.cpp
    --------------------------------------
    Date      : 31-05-2019
    Copyright : (C) SAP SE
    Author    : Maksim Rylov
+ ***************************************************************************/
+
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify

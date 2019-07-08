@@ -4,6 +4,8 @@
    Date      : 31-05-2019
    Copyright : (C) SAP SE
    Author    : Maksim Rylov
+ ***************************************************************************/
+
 /***************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -362,9 +364,9 @@ bool QgsHanaUtils::convertField(QgsField &field)
   return true;
 }
 
-size_t QgsHanaUtils::countFieldsInUppercase(const QgsFields &fields)
+int QgsHanaUtils::countFieldsInUppercase(const QgsFields &fields)
 {
-  size_t count = 0;
+  int count = 0;
   for (int i = 0, n = fields.size(); i < n; ++i)
   {
     QString name = fields.at(i).name();
