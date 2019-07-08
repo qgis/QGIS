@@ -381,12 +381,34 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
                            << QStringLiteral( "NAME ILIKE '*QGIS*'" );
 
   // different wildCards
-  QTest::newRow( "like wildCard" ) << QString(
-                                     "<Filter>"
-                                     "<PropertyIsLike wildCard='*' singleChar='.' escape=\"\\\">"
-                                     "<PropertyName>NAME</PropertyName><Literal>*%QGIS*\\*</Literal></PropertyIsLike>"
-                                     "</Filter>" )
-                                   << QStringLiteral( "NAME LIKE '%\\\\%QGIS%*'" );
+  QTest::newRow( "like wildCard simple" ) << QString(
+      "<Filter>"
+      "<PropertyIsLike wildCard='*' singleChar='.' escape=\"\\\">"
+      "<PropertyName>NAME</PropertyName><Literal>*QGIS*</Literal></PropertyIsLike>"
+      "</Filter>" )
+                                          << QStringLiteral( "NAME LIKE '%QGIS%'" );
+
+  QTest::newRow( "like wildCard complex" ) << QString(
+        "<Filter>"
+        "<PropertyIsLike wildCard='*' singleChar='.' escape=\"\\\">"
+        "<PropertyName>NAME</PropertyName><Literal>*%QGIS*\\*</Literal></PropertyIsLike>"
+        "</Filter>" )
+      << QStringLiteral( "NAME LIKE '%\\\\%QGIS%*'" );
+
+  QTest::newRow( "ilike wildCard simple" ) << QString(
+        "<Filter>"
+        "<PropertyIsLike matchCase=\"false\" wildCard='*' singleChar='.' escape=\"\\\">"
+        "<PropertyName>NAME</PropertyName><Literal>*QGIS*</Literal></PropertyIsLike>"
+        "</Filter>" )
+      << QStringLiteral( "NAME ILIKE '%QGIS%'" );
+
+  QTest::newRow( "ilike wildCard complex" ) << QString(
+        "<Filter>"
+        "<PropertyIsLike matchCase=\"false\"  wildCard='*' singleChar='.' escape=\"\\\">"
+        "<PropertyName>NAME</PropertyName><Literal>*%QGIS*\\*</Literal></PropertyIsLike>"
+        "</Filter>" )
+      << QStringLiteral( "NAME ILIKE '%\\\\%QGIS%*'" );
+
   // different single chars
   QTest::newRow( "like single char" ) << QString(
                                         "<Filter>"
