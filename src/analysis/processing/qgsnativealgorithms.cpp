@@ -116,6 +116,7 @@
 #include "qgsalgorithmzonalhistogram.h"
 #include "qgsalgorithmpolygonstolines.h"
 #include "qgsprojectstylealgorithms.h"
+#include "qgsstylealgorithms.h"
 
 ///@cond PRIVATE
 
@@ -168,6 +169,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
+  addAlgorithm( new QgsCombineStylesAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsDifferenceAlgorithm() );
