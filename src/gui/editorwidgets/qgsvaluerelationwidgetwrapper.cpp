@@ -100,8 +100,24 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     }
     else
     {
+      QStringList sl;
+      for ( const QString &s : qgis::as_const( selection ) )
+      {
+        // Convert to proper type
+        const QVariant::Type type { fkType() };
+        switch ( type )
+        {
+          case QVariant::Type::Int:
+          case QVariant::Type::LongLong:
+            sl.push_back( s );
+            break;
+          default:
+            sl.push_back( "\"" + s + "\"" );
+            break;
+        }
+      }
       //store as a formatted string because the fields supports only string
-      v = selection.join( ',' ).prepend( '{' ).append( '}' );
+      v = sl.join( ',' ).prepend( '{' ).append( '}' );
     }
   }
 
