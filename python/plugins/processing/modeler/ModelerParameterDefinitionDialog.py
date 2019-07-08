@@ -45,7 +45,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterPoint,
-                       QgsProcessingParameterFile,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
@@ -86,7 +85,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_DISTANCE,
                          parameters.PARAMETER_SCALE,
                          parameters.PARAMETER_EXPRESSION,
-                         parameters.PARAMETER_FILE,
                          parameters.PARAMETER_POINT,
                          parameters.PARAMETER_CRS,
                          parameters.PARAMETER_ENUM,
@@ -101,7 +99,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 QgsProcessingParameterDistance,
                                 QgsProcessingParameterScale,
                                 QgsProcessingParameterExpression,
-                                QgsProcessingParameterFile,
                                 QgsProcessingParameterPoint,
                                 QgsProcessingParameterCrs,
                                 QgsProcessingParameterEnum,
@@ -305,16 +302,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
-        elif (self.paramType == parameters.PARAMETER_FILE or
-              isinstance(self.param, QgsProcessingParameterFile)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Type')))
-            self.fileFolderCombo = QComboBox()
-            self.fileFolderCombo.addItem(self.tr('File'))
-            self.fileFolderCombo.addItem(self.tr('Folder'))
-            if self.param is not None:
-                self.fileFolderCombo.setCurrentIndex(
-                    1 if self.param.behavior() == QgsProcessingParameterFile.Folder else 0)
-            self.verticalLayout.addWidget(self.fileFolderCombo)
         elif (self.paramType == parameters.PARAMETER_POINT or
               isinstance(self.param, QgsProcessingParameterPoint)):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
@@ -508,11 +495,6 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == parameters.PARAMETER_EXTENT or
               isinstance(self.param, QgsProcessingParameterExtent)):
             self.param = QgsProcessingParameterExtent(name, description)
-        elif (self.paramType == parameters.PARAMETER_FILE or
-              isinstance(self.param, QgsProcessingParameterFile)):
-            isFolder = self.fileFolderCombo.currentIndex() == 1
-            self.param = QgsProcessingParameterFile(name, description,
-                                                    QgsProcessingParameterFile.Folder if isFolder else QgsProcessingParameterFile.File)
         elif (self.paramType == parameters.PARAMETER_POINT or
               isinstance(self.param, QgsProcessingParameterPoint)):
             self.param = QgsProcessingParameterPoint(name, description,
