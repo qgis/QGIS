@@ -204,6 +204,8 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
       catch ( json::parse_error &ex )
       {
         qDebug() << QString::fromStdString( ex.what() );
+        //fallback for wrongly stored data
+        checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
       }
     }
   }
