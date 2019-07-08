@@ -430,6 +430,8 @@ class GUI_EXPORT QgsProcessingFileParameterDefinitionWidget : public QgsProcessi
   private:
 
     QComboBox *mTypeComboBox = nullptr;
+    QComboBox *mFilterComboBox = nullptr;
+    QgsFileWidget *mDefaultFileWidget = nullptr;
 
 };
 

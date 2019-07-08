@@ -1296,8 +1296,45 @@ QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinition
     mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( fileParam->behavior() ) );
   else
     mTypeComboBox->setCurrentIndex( 0 );
-
   vlayout->addWidget( mTypeComboBox );
+
+  vlayout->addWidget( new QLabel( tr( "File filter" ) ) );
+
+  mFilterComboBox = new QComboBox();
+  mFilterComboBox->setEditable( true );
+  // add some standard ones -- these also act as a demonstration of the required format
+  mFilterComboBox->addItem( tr( "All Files (*.*)" ) );
+  mFilterComboBox->addItem( tr( "CSV Files (*.csv)" ) );
+  mFilterComboBox->addItem( tr( "HTML Files (*.html *.htm)" ) );
+  mFilterComboBox->addItem( tr( "Text Files (*.txt)" ) );
+  if ( const QgsProcessingParameterFile *fileParam = dynamic_cast<const QgsProcessingParameterFile *>( definition ) )
+    mFilterComboBox->setCurrentText( fileParam->fileFilter() );
+  else
+    mFilterComboBox->setCurrentIndex( 0 );
+  vlayout->addWidget( mFilterComboBox );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultFileWidget = new QgsFileWidget();
+  mDefaultFileWidget->lineEdit()->setShowClearButton( true );
+  if ( const QgsProcessingParameterFile *fileParam = dynamic_cast<const QgsProcessingParameterFile *>( definition ) )
+  {
+    mDefaultFileWidget->setStorageMode( fileParam->behavior() == QgsProcessingParameterFile::File ? QgsFileWidget::GetFile : QgsFileWidget::GetDirectory );
+    mDefaultFileWidget->setFilePath( fileParam->defaultValue().toString() );
+  }
+  else
+    mDefaultFileWidget->setStorageMode( QgsFileWidget::GetFile );
+  vlayout->addWidget( mDefaultFileWidget );
+
+  connect( mTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    QgsProcessingParameterFile::Behavior behavior = static_cast< QgsProcessingParameterFile::Behavior >( mTypeComboBox->currentData().toInt() );
+    mFilterComboBox->setEnabled( behavior == QgsProcessingParameterFile::File );
+    mDefaultFileWidget->setStorageMode( behavior == QgsProcessingParameterFile::File ? QgsFileWidget::GetFile : QgsFileWidget::GetDirectory );
+  } );
+  mFilterComboBox->setEnabled( static_cast< QgsProcessingParameterFile::Behavior >( mTypeComboBox->currentData().toInt() ) == QgsProcessingParameterFile::File );
+
+
   setLayout( vlayout );
 }
 
@@ -1305,6 +1342,10 @@ QgsProcessingParameterDefinition *QgsProcessingFileParameterDefinitionWidget::cr
 {
   auto param = qgis::make_unique< QgsProcessingParameterFile >( name, description );
   param->setBehavior( static_cast< QgsProcessingParameterFile::Behavior>( mTypeComboBox->currentData().toInt() ) );
+  if ( param->behavior() == QgsProcessingParameterFile::File )
+    param->setFileFilter( mFilterComboBox->currentText() );
+  if ( !mDefaultFileWidget->filePath().isEmpty() )
+    param->setDefaultValue( mDefaultFileWidget->filePath() );
   param->setFlags( flags );
   return param.release();
 }
