@@ -17,6 +17,7 @@
 #define QGS3DMAPSCENEPICKHANDLER_H
 
 #include "qgsfeatureid.h"
+#include <Qt3DRender/QPickEvent>
 
 class QVector3D;
 class QgsVectorLayer;
@@ -37,7 +38,7 @@ class Qgs3DMapScenePickHandler
     virtual ~Qgs3DMapScenePickHandler() = default;
 
     //! Called when user clicked a 3D entity belonging to a feature of a vector layer
-    virtual void handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection ) = 0;
+    virtual void handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection, Qt3DRender::QPickEvent *event ) = 0;
 };
 
 #endif // QGS3DMAPSCENEPICKHANDLER_H

@@ -102,6 +102,7 @@
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
+#include "qgs3dmaptoolmeasureline.h"
 #endif
 
 #include "qgsgui.h"
@@ -10789,6 +10790,14 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureDist )->updateSettings();
     qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureArea )->updateSettings();
     qobject_cast<QgsMapToolMeasureAngle *>( mMapTools.mMeasureAngle )->updateSettings();
+
+#ifdef HAVE_3D
+    const QList< Qgs3DMapCanvasDockWidget * > canvases3D = findChildren< Qgs3DMapCanvasDockWidget * >();
+    for ( Qgs3DMapCanvasDockWidget *canvas3D : canvases3D )
+    {
+      canvas3D->measurementLineTool()->updateSettings();
+    }
+#endif
 
     double factor = mySettings.value( QStringLiteral( "qgis/magnifier_factor_default" ), 1.0 ).toDouble();
     mMagnifierWidget->setDefaultFactor( factor );
