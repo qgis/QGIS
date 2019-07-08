@@ -36,7 +36,7 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
                            "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers.</a>"
                            "<br><br>"
                            "You can also send us a helpful bug report using the Copy Report button <br>and opening a ticket at "
-                           "<a href=\"https://issues.qgis.org/\">issues.qgis.org</a>" ) );
+                           "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>" ) );
   mHelpLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mHelpLabel->setOpenExternalLinks( true );
 
