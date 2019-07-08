@@ -979,6 +979,20 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a list of 
 .. versionadded:: 3.4
 %End
 
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+
+.. versionadded:: 3.10
+%End
+
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+
+.. versionadded:: 3.10
+%End
+
     static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a range of values.

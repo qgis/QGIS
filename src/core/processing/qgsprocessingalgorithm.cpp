@@ -687,6 +687,11 @@ QList<QgsMapLayer *> QgsProcessingAlgorithm::parameterAsLayerList( const QVarian
   return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), parameters, context );
 }
 
+QStringList QgsProcessingAlgorithm::parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsFileList( parameterDefinition( name ), parameters, context );
+}
+
 QList<double> QgsProcessingAlgorithm::parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsRange( parameterDefinition( name ), parameters, context );

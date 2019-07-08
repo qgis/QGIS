@@ -782,6 +782,13 @@ Tables are collapsed to a 1 dimensional list.
 Evaluates the parameter with matching ``name`` to a list of map layers.
 %End
 
+    QStringList parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+
+.. versionadded:: 3.10
+%End
+
     QList<double> parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a range of values.

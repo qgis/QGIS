@@ -1413,6 +1413,60 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   return layers;
 }
 
+QStringList QgsProcessingParameters::parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  QVariant val = value;
+
+  QStringList files;
+
+  std::function< void( const QVariant &var ) > processVariant;
+  processVariant = [ &files, &context, &definition, &processVariant ]( const QVariant & var )
+  {
+    if ( var.type() == QVariant::List )
+    {
+      const auto constToList = var.toList();
+      for ( const QVariant &listVar : constToList )
+      {
+        processVariant( listVar );
+      }
+    }
+    else if ( var.type() == QVariant::StringList )
+    {
+      const auto constToStringList = var.toStringList();
+      for ( const QString &s : constToStringList )
+      {
+        processVariant( s );
+      }
+    }
+    else if ( var.canConvert<QgsProperty>() )
+      processVariant( var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() ) );
+    else
+    {
+      files << var.toString();
+    }
+  };
+
+  processVariant( val );
+
+  if ( files.isEmpty() )
+  {
+    processVariant( definition->defaultValue() );
+  }
+
+  return files;
+}
+
+QStringList QgsProcessingParameters::parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  return parameterAsFileList( definition, parameters.value( definition->name() ), context );
+}
+
 QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   if ( !definition )
@@ -2597,9 +2651,12 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
   if ( !input.isValid() )
     return mFlags & FlagOptional;
 
-  if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
+  if ( mLayerType != QgsProcessing::TypeFile )
   {
-    return true;
+    if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
+    {
+      return true;
+    }
   }
 
   if ( input.type() == QVariant::String )
@@ -2613,7 +2670,10 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+    if ( mLayerType != QgsProcessing::TypeFile )
+      return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+    else
+      return true;
   }
   else if ( input.type() == QVariant::List )
   {
@@ -2626,14 +2686,17 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    const auto constToList = input.toList();
-    for ( const QVariant &v : constToList )
+    if ( mLayerType != QgsProcessing::TypeFile )
     {
-      if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( v ) ) )
-        continue;
+      const auto constToList = input.toList();
+      for ( const QVariant &v : constToList )
+      {
+        if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( v ) ) )
+          continue;
 
-      if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context ) )
-        return false;
+        if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context ) )
+          return false;
+      }
     }
     return true;
   }
@@ -2648,11 +2711,14 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    const auto constToStringList = input.toStringList();
-    for ( const QString &v : constToStringList )
+    if ( mLayerType != QgsProcessing::TypeFile )
     {
-      if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
-        return false;
+      const auto constToStringList = input.toStringList();
+      for ( const QString &v : constToStringList )
+      {
+        if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
+          return false;
+      }
     }
     return true;
   }
@@ -2667,18 +2733,41 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  QVariantMap p;
-  p.insert( name(), value );
-  QList<QgsMapLayer *> list = QgsProcessingParameters::parameterAsLayerList( this, p, context );
-  if ( !list.isEmpty() )
+  if ( mLayerType == QgsProcessing::TypeFile )
   {
     QStringList parts;
-    const auto constList = list;
-    for ( const QgsMapLayer *layer : constList )
+    if ( value.type() == QVariant::StringList )
     {
-      parts << QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+      const QStringList list = value.toStringList();
+      parts.reserve( list.count() );
+      for ( const QString &v : list )
+        parts <<  QgsProcessingUtils::stringToPythonLiteral( v );
     }
-    return parts.join( ',' ).prepend( '[' ).append( ']' );
+    else if ( value.type() == QVariant::List )
+    {
+      const QVariantList list = value.toList();
+      parts.reserve( list.count() );
+      for ( const QVariant &v : list )
+        parts <<  QgsProcessingUtils::stringToPythonLiteral( v.toString() );
+    }
+    if ( !parts.isEmpty() )
+      return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+  else
+  {
+    QVariantMap p;
+    p.insert( name(), value );
+    const QList<QgsMapLayer *> list = QgsProcessingParameters::parameterAsLayerList( this, p, context );
+    if ( !list.isEmpty() )
+    {
+      QStringList parts;
+      parts.reserve( list.count() );
+      for ( const QgsMapLayer *layer : list )
+      {
+        parts << QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+      }
+      return parts.join( ',' ).prepend( '[' ).append( ']' );
+    }
   }
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
