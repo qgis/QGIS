@@ -87,6 +87,8 @@ class QgsStyleFromProjectAlgorithm : public QgsProcessingAlgorithm
 
   private:
 
+    QString mProjectPath;
+    QList< QgsStyle::StyleEntity > mObjects;
     std::unique_ptr< QgsStyle > mStyle;
 };
 

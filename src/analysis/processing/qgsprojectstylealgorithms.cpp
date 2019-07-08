@@ -110,6 +110,9 @@ QgsStyleFromProjectAlgorithm::~QgsStyleFromProjectAlgorithm() = default;
 
 void QgsStyleFromProjectAlgorithm::initAlgorithm( const QVariantMap & )
 {
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input project (leave blank to use current)" ), QgsProcessingParameterFile::File,
+                QString(), QVariant(), true, QObject::tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS)" ) ) );
+
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ),
                 QObject::tr( "Style files (*.xml)" ) ) );
 
@@ -153,7 +156,7 @@ QString QgsStyleFromProjectAlgorithm::groupId() const
 QString QgsStyleFromProjectAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm extracts all style objects (including symbols, color ramps, text formats and label settings) from a QGIS project.\n\n"
-                      "The extract symbols are saved to a QGIS style database (XML format), which can be managed and imported via the Style Manager dialog." );
+                      "The extracted symbols are saved to a QGIS style database (XML format), which can be managed and imported via the Style Manager dialog." );
 }
 
 QString QgsStyleFromProjectAlgorithm::shortDescription() const
@@ -168,31 +171,47 @@ QgsStyleFromProjectAlgorithm *QgsStyleFromProjectAlgorithm::createInstance() con
 
 bool QgsStyleFromProjectAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  if ( !context.project() )
+  mProjectPath = parameterAsFile( parameters, QStringLiteral( "INPUT" ), context );
+  if ( mProjectPath.isEmpty() && !context.project() )
     return false;
 
-  QList< QgsStyle::StyleEntity > objects;
   const QList< int > selectedObjects = parameterAsEnums( parameters, QStringLiteral( "OBJECTS" ), context );
   if ( selectedObjects.contains( 0 ) )
-    objects << QgsStyle::SymbolEntity;
+    mObjects << QgsStyle::SymbolEntity;
   if ( selectedObjects.contains( 1 ) )
-    objects << QgsStyle::ColorrampEntity;
+    mObjects << QgsStyle::ColorrampEntity;
   if ( selectedObjects.contains( 2 ) )
-    objects << QgsStyle::TextFormatEntity;
+    mObjects << QgsStyle::TextFormatEntity;
   if ( selectedObjects.contains( 3 ) )
-    objects << QgsStyle::LabelSettingsEntity;
+    mObjects << QgsStyle::LabelSettingsEntity;
 
-  // not thread safe, so prepare in the main thread
   mStyle = qgis::make_unique< QgsStyle >();
   mStyle->createMemoryDatabase();
 
-  QgsSaveToStyleVisitor visitor( mStyle.get(), objects );
-  context.project()->accept( &visitor );
+  if ( mProjectPath.isEmpty() )
+  {
+    // using current project -- not thread safe, so prepare in the main thread
+    QgsSaveToStyleVisitor visitor( mStyle.get(), mObjects );
+    context.project()->accept( &visitor );
+  }
   return true;
 }
 
 QVariantMap QgsStyleFromProjectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  if ( !mProjectPath.isEmpty() )
+  {
+    // load project from path
+    QgsProject p;
+    if ( !p.read( mProjectPath ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not read project %1" ).arg( mProjectPath ) );
+    }
+
+    QgsSaveToStyleVisitor visitor( mStyle.get(), mObjects );
+    p.accept( &visitor );
+  }
+
   const QString file = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
   if ( !mStyle->exportXml( file ) )
   {

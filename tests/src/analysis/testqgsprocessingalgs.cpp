@@ -1335,7 +1335,6 @@ void TestQgsProcessingAlgs::styleFromProject()
   bool ok = false;
   QgsProcessingFeedback feedback;
   QVariantMap results;
-  // no layout
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   QCOMPARE( results.value( QStringLiteral( "SYMBOLS" ) ).toInt(), 6 );
@@ -1360,6 +1359,21 @@ void TestQgsProcessingAlgs::styleFromProject()
   QVERIFY( s.textFormatNames().contains( QStringLiteral( "test layout <Scalebar>" ) ) );
   QCOMPARE( s.labelSettingsCount(), 1 );
   QVERIFY( s.labelSettingsNames().contains( QStringLiteral( "vl" ) ) );
+
+  // using a project path
+  QTemporaryFile tmpFile;
+  tmpFile.open();
+  tmpFile.close();
+  QVERIFY( p.write( tmpFile.fileName() ) );
+  p.clear();
+  parameters.insert( QStringLiteral( "INPUT" ), tmpFile.fileName() );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "SYMBOLS" ) ).toInt(), 6 );
+  QCOMPARE( results.value( QStringLiteral( "COLORRAMPS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "TEXTFORMATS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "LABELSETTINGS" ) ).toInt(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
