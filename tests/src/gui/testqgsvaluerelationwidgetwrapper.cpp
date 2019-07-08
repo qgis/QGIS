@@ -970,6 +970,8 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
 void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 {
 //these special characters are not supported with the string format
+//so I guess it's failing with GDAL 2.4 as well because it has no influence here
+//I have to check this
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   const auto fk_field { QStringLiteral( "json_content_text" ) };
   // create ogr gpkg layers
