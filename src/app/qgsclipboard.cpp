@@ -120,7 +120,12 @@ QString QgsClipboard::generateClipboardText() const
         for ( int idx = 0; idx < attributes.count(); ++idx )
         {
           // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));
-          textFields += attributes.at( idx ).toString();
+          if ( attributes.at( idx ).toString().contains( QStringLiteral( "\n" ), Qt::CaseInsensitive ) )
+            textFields += QStringLiteral( "\"" ) + attributes.at( idx ).toString() + QStringLiteral( "\"" );
+          else
+          {
+            textFields += attributes.at( idx ).toString();
+          }
         }
 
         textLines += textFields.join( QStringLiteral( "\t" ) );
