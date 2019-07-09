@@ -609,6 +609,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         lines = []
         for line in sql.split('\n'):
             if not line.strip().startswith('--'):
+                comment_idx = line.find('--')
+                if comment_idx > 1:
+                    line = line[:comment_idx]
                 lines.append(line)
         sql = ' '.join(lines)
         return sql.strip()
