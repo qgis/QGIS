@@ -420,7 +420,7 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
   QVector<QgsDataItem *> childItems;
 
   QgsProject p;
-  if ( !p.read( mPath ) )
+  if ( !p.read( mPath, QgsProject::FlagDontResolveLayers ) )
   {
     childItems.append( new QgsErrorItem( nullptr, p.error(), mPath + "/error" ) );
     return childItems;
