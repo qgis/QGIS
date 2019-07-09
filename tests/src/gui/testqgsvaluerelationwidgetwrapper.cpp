@@ -52,7 +52,8 @@ class TestQgsValueRelationWidgetWrapper : public QObject
     void testWithJsonInPostgres();
     void testWithJsonInGPKG();
     void testWithTextInGPKG();
-    void testWithTextInGPKGStringKeys();
+    void testWithTextInGPKGTextFk();
+    void testWithTextInGPKGWeirdTextFk();
     void testWithJsonInSpatialite();
     void testWithJsonInSpatialiteTextFk();
     void testMatchLayerName();
@@ -820,7 +821,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKG()
 }
 
 // Storing of strings as key and handle the quotes
-void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGStringKeys()
+void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGTextFk()
 {
   // create ogr gpkg layers
   QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
@@ -1045,6 +1046,187 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGStringKeys()
   QCOMPARE( w_favoriteauthors_reread2.mTableWidget->item( 4, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors_reread2.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Richard Helm" ) );
   QCOMPARE( w_favoriteauthors_reread2.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
+}
+
+// Storing of strings as key and handle the quotes
+void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
+{
+  // create ogr gpkg layer for foo (vl_text)
+  QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myTempDirName = tempDir.path();
+  QString myTempFileName = myTempDirName + "/test_json.gpkg";
+  QFile::copy( myFileName + "/provider/test_json.gpkg", myTempFileName );
+  QFileInfo myMapFileInfoFoo( myTempFileName );
+  QgsVectorLayer *vl_text = new QgsVectorLayer( myMapFileInfoFoo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) );
+  QVERIFY( vl_text->isValid() );
+
+  // create ogr spatialite layer for autors with weird signs (vl_authors)
+  myTempFileName = myTempDirName + QStringLiteral( "/valuerelation_widget_wrapper_test.spatialite.sqlite" );
+  QFile::copy( myFileName + QStringLiteral( "/valuerelation_widget_wrapper_test.spatialite.sqlite" ),
+               myTempFileName );
+  QFileInfo myMapFileInfoAutor( myTempFileName );
+  QgsVectorLayer *vl_authors = new QgsVectorLayer( QStringLiteral( R"(dbname='%1' table="%2")" )
+      .arg( myMapFileInfoAutor.filePath() ).arg( QStringLiteral( "authors" ) ),
+      QStringLiteral( "test" ),
+      QStringLiteral( "spatialite" ) );
+  QVERIFY( vl_authors->isValid() );
+
+  QgsProject::instance()->addMapLayer( vl_text, false, false );
+  QgsProject::instance()->addMapLayer( vl_authors, false, false );
+  vl_text->startEditing();
+
+  // build a value relation widget wrapper for authors
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  QVariantMap cfg_favoriteautors;
+  cfg_favoriteautors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteautors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk_text" ) );
+  cfg_favoriteautors.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
+  cfg_favoriteautors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteautors.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_favoriteautors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteautors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteautors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteautors );
+  w_favoriteauthors.widget();
+  w_favoriteauthors.setEnabled( true );
+
+  //check if set up nice
+  QCOMPARE( w_favoriteauthors.mTableWidget->rowCount(), 7 );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "1gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "2helm,comma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "3johnson\"quote" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "4vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "5adams'singlequote" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "6follett{}" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "7garcìa][" ) );
+
+  w_favoriteauthors.setFeature( vl_text->getFeature( 1 ) );
+
+  //check if first feature checked correctly (none)
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
+
+  //check authors 1,2,4,5,6 means all the super weird ones: "2helm,comma", "3johnson\"quote", "5adams'singlequote", "6follett{}", "7garcìa]["
+  w_favoriteauthors.mTableWidget->item( 1, 0 )->setCheckState( Qt::Checked );
+  w_favoriteauthors.mTableWidget->item( 2, 0 )->setCheckState( Qt::Checked );
+  w_favoriteauthors.mTableWidget->item( 4, 0 )->setCheckState( Qt::Checked );
+  w_favoriteauthors.mTableWidget->item( 5, 0 )->setCheckState( Qt::Checked );
+  w_favoriteauthors.mTableWidget->item( 6, 0 )->setCheckState( Qt::Checked );
+
+  //check if first feature checked correctly 1,2,4,5,6
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
+
+  //we do jump over the part with QgsAttributeForm::saveEdits
+  vl_text->changeAttributeValue( 1, 3, w_favoriteauthors.value() );
+
+  //check if everything set correctly
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\",\"6follett{}\",\"7garcìa][\"}" ) ) );
+
+  w_favoriteauthors.setFeature( vl_text->getFeature( 2 ) );
+  //check if second feature checked correctly (none)
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
+
+  w_favoriteauthors.setFeature( vl_text->getFeature( 1 ) );
+  //check if first feature checked correctly 1,2,4,5,6
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
+
+  // check if stored correctly
+  vl_text->commitChanges();
+  QString expected_string = QStringLiteral( "{\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\",\"6follett{}\",\"7garcìa][\"}" );
+
+  QgsFeature f = vl_text->getFeature( 1 );
+  QVariant attribute = f.attribute( QStringLiteral( "PRFEDEA" ) );
+  QString value = attribute.toString();
+  QCOMPARE( value, expected_string );
+
+  //reread completely
+  QgsVectorLayer *vl_text_reread = new QgsVectorLayer( myMapFileInfoFoo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) );
+  QVERIFY( vl_text_reread->isValid() );
+
+  QgsProject::instance()->addMapLayer( vl_text_reread, false, false );
+  vl_text_reread->startEditing();
+
+  // build a value relation widget wrapper for authors
+  QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text_reread->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  w_favoriteauthors_reread.setConfig( cfg_favoriteautors );
+  w_favoriteauthors_reread.widget();
+  w_favoriteauthors_reread.setEnabled( true );
+
+  w_favoriteauthors_reread.setFeature( vl_text_reread->getFeature( 1 ) );
+
+  //check if first feature on new layer checked correctly 1,2,4,5,6 after reread
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 3, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
 }
 
 void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
@@ -1277,7 +1459,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { "1gamma", "3johnson\"quote" } ) ) );
 #else
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"3johnson\"quote\"}" ) ) );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"3johnson\\\"quote\"}" ) ) );
 #endif
   //check if first feature checked correctly (1,3)                                          pk
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );   // 1
@@ -1296,8 +1478,9 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { "1gamma", "2helm,comma", "3johnson\"quote", "5adams'singlequote" } )
 #else
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"2helm,comma\",\"3johnson\"quote\",\"5adams'singlequote\"}" ) ) );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\"}" ) ) );
 #endif
+
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Checked );
@@ -1312,11 +1495,13 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
             QgsFeature f = vl_json->getFeature( 1 );
             QVariant attribute = f.attribute( fk_field );
             QVariantList value = attribute.toList();
+
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
             QCOMPARE( value, QVariantList( { "1gamma", "2helm,comma", "3johnson\"quote", "5adams'singlequote" } ) );
 #else
-            QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"2helm,comma\",\"3johnson\"quote\",\"5adams'singlequote\"}" ) ) );
+            QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\"}" ) ) );
 #endif
+
             // FEATURE 2
             w_favoriteauthors.setFeature( vl_json->getFeature( 2 ) );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
@@ -1324,6 +1509,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 #else
             QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"2helm,comma\",\"5adams'singlequote\"}" ) ) );
 #endif
+
             //check if second feature checked correctly
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
@@ -1335,12 +1521,14 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 
             // FEATURE 4
             w_favoriteauthors.setFeature( vl_json->getFeature( 4 ) );
+
             //check if first feature checked correctly (NULL)
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
             QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( ) ) );
 #else
             QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{}" ) ) );
 #endif
+
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Unchecked );
@@ -1351,12 +1539,14 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 
             // FEATURE 5
             w_favoriteauthors.setFeature( vl_json->getFeature( 5 ) );
+
             //check if first feature checked correctly (blank)
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
             QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList() ) );
 #else
             QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{}" ) ) );
 #endif
+
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
             QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Unchecked );
