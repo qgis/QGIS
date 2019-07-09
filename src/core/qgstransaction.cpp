@@ -37,7 +37,7 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
   QgsVectorLayer *firstLayer = *layers.constBegin();
 
   QString connStr = connectionString( firstLayer->source() );
-  QString providerKey = firstLayer->dataProvider()->name();
+  QString providerKey = firstLayer->providerType();
   std::unique_ptr<QgsTransaction> transaction( QgsTransaction::create( connStr, providerKey ) );
   if ( transaction )
   {

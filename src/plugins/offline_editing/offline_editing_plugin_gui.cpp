@@ -73,7 +73,7 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) con
     if ( QgsLayerTree::isLayer( node ) && index.column() > 0 )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->layer()->dataProvider()->name() == QStringLiteral( "WFS" ) )
+      if ( nodeLayer->layer()->providerType() == QStringLiteral( "WFS" ) )
       {
         switch ( role )
         {

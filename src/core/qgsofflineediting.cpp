@@ -240,7 +240,7 @@ void QgsOfflineEditing::synchronize()
     if ( remoteLayer->isValid() )
     {
       // Rebuild WFS cache to get feature id<->GML fid mapping
-      if ( remoteLayer->dataProvider()->name().contains( QLatin1String( "WFS" ), Qt::CaseInsensitive ) )
+      if ( remoteLayer->providerType().contains( QLatin1String( "WFS" ), Qt::CaseInsensitive ) )
       {
         QgsFeatureIterator fit = remoteLayer->getFeatures();
         QgsFeature f;
