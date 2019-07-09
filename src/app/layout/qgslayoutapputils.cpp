@@ -168,6 +168,10 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     Q_ASSERT( label );
 
     label->setText( QObject::tr( "Lorem ipsum" ) );
+    if ( QApplication::isRightToLeft() )
+    {
+      label->setHAlign( Qt::AlignRight );
+    }
     QSizeF minSize = label->sizeForText();
     QSizeF currentSize = label->rect().size();
 
