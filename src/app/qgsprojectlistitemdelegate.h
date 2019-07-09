@@ -63,4 +63,20 @@ class QgsProjectListItemDelegate : public QStyledItemDelegate
     QColor mColor = Qt::white;
 };
 
+class QgsNewsItemListItemDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    explicit QgsNewsItemListItemDelegate( QObject *parent = nullptr );
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  private:
+
+    int mRoundedRectSizePixels = 5;
+    QColor mColor = Qt::white;
+};
+
 #endif // QGSPROJECTLISTITEMDELEGATE_H

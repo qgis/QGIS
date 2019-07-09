@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewsfeedmodel.h"
+#include "qgsnetworkcontentfetcher.h"
+#include <QPixmap>
 
 //
 // QgsNewsFeedModel
@@ -23,7 +25,9 @@ QgsNewsFeedModel::QgsNewsFeedModel( QgsNewsFeedParser *parser, QObject *parent )
   , mParser( parser )
 {
   Q_ASSERT( mParser );
-  mEntries = mParser->entries();
+  const QList< QgsNewsFeedParser::Entry > initialEntries = mParser->entries();
+  for ( const QgsNewsFeedParser::Entry &e : initialEntries )
+    onEntryAdded( e );
 
   connect( mParser, &QgsNewsFeedParser::entryAdded, this, &QgsNewsFeedModel::onEntryAdded );
   connect( mParser, &QgsNewsFeedParser::entryDismissed, this, &QgsNewsFeedModel::onEntryRemoved );
@@ -52,11 +56,19 @@ QVariant QgsNewsFeedModel::data( const QModelIndex &index, int role ) const
     case ImageUrl:
       return entry.imageUrl;
 
+    case Image:
+      return entry.image;
+
     case Link:
       return entry.link;
 
     case Sticky:
       return entry.sticky;
+
+    case Qt::DecorationRole:
+      if ( entry.image.isNull() )
+        return QVariant();
+      return QPixmap::fromImage( entry.image );
   }
   return QVariant();
 }
@@ -104,6 +116,28 @@ void QgsNewsFeedModel::onEntryAdded( const QgsNewsFeedParser::Entry &entry )
 {
   beginInsertRows( QModelIndex(), mEntries.count(), mEntries.count() );
   mEntries.append( entry );
+
+  if ( !entry.imageUrl.isEmpty() )
+  {
+    // start fetching image
+    QgsNetworkContentFetcher *fetcher = new QgsNetworkContentFetcher();
+    connect( fetcher, &QgsNetworkContentFetcher::finished, this, [ = ]
+    {
+      auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
+      {
+        return candidate.key == entry.key;
+      } );
+      if ( findIter != mEntries.end() )
+      {
+        const int entryIndex = static_cast< int >( std::distance( mEntries.begin(), findIter ) );
+        mEntries[ entryIndex ].image = QImage::fromData( fetcher->reply()->readAll() );
+        this->emit dataChanged( index( entryIndex, 0, QModelIndex() ), index( entryIndex, 0, QModelIndex() ) );
+      }
+      fetcher->deleteLater();
+    } );
+    fetcher->fetchContent( entry.imageUrl, mParser->authcfg() );
+  }
+
   endInsertRows();
 }
 

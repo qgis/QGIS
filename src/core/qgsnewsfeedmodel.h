@@ -44,6 +44,7 @@ class CORE_EXPORT QgsNewsFeedModel : public QAbstractItemModel
       Title, //!< Entry title
       Content, //!< Entry content
       ImageUrl, //!< Optional entry image URL
+      Image, //!< Optional entry image
       Link, //!< Optional entry URL link
       Sticky, //!< Whether entry is sticky
     };
