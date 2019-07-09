@@ -208,9 +208,10 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
 }
 
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
 {
   bool layerError;
+  mReadFlags = flags;
 
   QDomNode mnl;
   QDomElement mne;

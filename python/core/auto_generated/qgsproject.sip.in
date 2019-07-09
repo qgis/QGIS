@@ -233,18 +233,29 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename );
+    enum ReadFlag
+    {
+      FlagDontResolveLayers,
+    };
+    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
+
+
+    bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
 %Docstring
 Reads given project file from the given file.
 
 :param filename: name of project file to read
+:param flags: optional flags which control the read behavior of projects
 
 :return: ``True`` if project file has been read successfully
 %End
 
-    bool read();
+    bool read( QgsProject::ReadFlags flags = 0 );
 %Docstring
 Reads the project from its currently associated file (see fileName() ).
+
+The ``flags`` argument can be used to specify optional flags which control
+the read behavior of projects.
 
 :return: ``True`` if project file has been read successfully
 %End
@@ -438,9 +449,11 @@ Returns project file path if layer is embedded from other project file. Returns 
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = 0 );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
+
+The optional ``flags`` argument can be used to control layer reading behavior.
 
 .. versionadded:: 2.4
 %End
@@ -1463,6 +1476,9 @@ So there can be created a ts file with these values.
 %End
 
 };
+
+QFlags<QgsProject::ReadFlag> operator|(QgsProject::ReadFlag f1, QFlags<QgsProject::ReadFlag> f2);
+
 
 class QgsProjectDirtyBlocker
 {
