@@ -27,7 +27,7 @@ class QgsNetworkContentFetcher;
  * \ingroup core
  * Parser for published QGIS news feeds.
  *
- * This class is designed to work with the specialised QGIS news feed API. See
+ * This class is designed to work with the specialized QGIS news feed API. See
  * https://github.com/elpaso/qgis-feed.
  *
  * \since QGIS 3.10

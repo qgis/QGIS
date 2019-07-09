@@ -13,7 +13,7 @@ class QgsNewsFeedParser : QObject
 %Docstring
 Parser for published QGIS news feeds.
 
-This class is designed to work with the specialised QGIS news feed API. See
+This class is designed to work with the specialized QGIS news feed API. See
 https://github.com/elpaso/qgis-feed.
 
 .. versionadded:: 3.10
