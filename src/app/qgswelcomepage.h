@@ -52,6 +52,7 @@ class QgsWelcomePage : public QWidget
     void versionInfoReceived();
     void showContextMenuForProjects( QPoint point );
     void showContextMenuForTemplates( QPoint point );
+    void showContextMenuForNews( QPoint point );
 
   private:
     void updateRecentProjectsVisibility();
