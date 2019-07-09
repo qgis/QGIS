@@ -84,6 +84,11 @@ Dismisses all current news items.
 Returns the authentication configuration for the parser.
 %End
 
+    static QString keyForFeed( const QString &baseUrl );
+%Docstring
+Returns the settings key used for a feed with the given ``baseUrl``.
+%End
+
   public slots:
 
     void fetch();

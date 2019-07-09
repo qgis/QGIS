@@ -99,6 +99,11 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      */
     QString authcfg() const;
 
+    /**
+     * Returns the settings key used for a feed with the given \a baseUrl.
+     */
+    static QString keyForFeed( const QString &baseUrl );
+
   public slots:
 
     /**
@@ -156,7 +161,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     Entry readEntryFromSettings( int key );
     void storeEntryInSettings( const Entry &entry );
     void fetchImageForEntry( const Entry &entry );
-    static QString keyForFeed( const QString &baseUrl );
 
     friend class TestQgsNewsFeedParser;
 
