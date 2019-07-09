@@ -389,7 +389,7 @@ bool QgsLayoutItemMap::containsWmsLayer() const
   const QList< QgsMapLayer * > layers = layersToRender();
   for ( QgsMapLayer *layer : layers )
   {
-    if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "wms" ) )
+    if ( layer->dataProvider() && layer->providerType() == QLatin1String( "wms" ) )
     {
       return true;
     }

@@ -5148,7 +5148,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   if ( !layer )
   {
     layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-    if ( !layer || layer->dataProvider()->name() != QLatin1String( "ogr" ) )
+    if ( !layer || layer->providerType() != QLatin1String( "ogr" ) )
       return result;
   }
 
@@ -11418,7 +11418,7 @@ bool QgisApp::saveDirty()
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
       // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
       // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers().
-      if ( !vl || vl->dataProvider()->name() == QLatin1String( "memory" ) )
+      if ( !vl || vl->providerType() == QLatin1String( "memory" ) )
       {
         continue;
       }
@@ -11481,7 +11481,7 @@ bool QgisApp::saveDirty()
   {
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
     {
-      if ( vl->dataProvider()->name() == QLatin1String( "memory" ) && vl->isEditable() && vl->isModified() )
+      if ( vl->providerType() == QLatin1String( "memory" ) && vl->isEditable() && vl->isModified() )
       {
         vl->rollBack();
       }
@@ -11504,7 +11504,7 @@ bool QgisApp::checkUnsavedLayerEdits()
       {
         // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
         // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers()
-        if ( ! vl->dataProvider() || vl->dataProvider()->name() == QLatin1String( "memory" ) )
+        if ( ! vl->dataProvider() || vl->providerType() == QLatin1String( "memory" ) )
           continue;
 
         const bool hasUnsavedEdits = ( vl->isEditable() && vl->isModified() );
@@ -11530,7 +11530,7 @@ bool QgisApp::checkMemoryLayers()
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.begin(); it != layers.end(); ++it )
   {
-    if ( it.value() && it.value()->dataProvider()->name() == QLatin1String( "memory" ) )
+    if ( it.value() && it.value()->providerType() == QLatin1String( "memory" ) )
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() );
       if ( vl && vl->featureCount() != 0 && !vl->customProperty( QStringLiteral( "skipMemoryLayersCheck" ) ).toInt() )

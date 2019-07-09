@@ -72,7 +72,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   connect( mOrButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOrButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
 
-  if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->dataProvider()->name() == QLatin1String( "gdal" ) )
+  if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->providerType() == QLatin1String( "gdal" ) )
   {
     setExtentSize( rasterLayer->width(), rasterLayer->height(), rasterLayer->extent() );
     mCrsSelector->setCrs( rasterLayer->crs() );
@@ -180,7 +180,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
   for ( const auto &entry : qgis::as_const( mAvailableRasterBands ) )
   {
     QgsRasterLayer *rlayer = entry.raster;
-    if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->name() == QLatin1String( "gdal" ) )
+    if ( rlayer && rlayer->dataProvider() && rlayer->providerType() == QLatin1String( "gdal" ) )
     {
       if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
       {
