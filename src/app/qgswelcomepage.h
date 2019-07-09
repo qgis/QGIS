@@ -27,6 +27,8 @@ class QgsVersionInfo;
 class QListView;
 class QLabel;
 class QSplitter;
+class QgsNewsFeedParser;
+class QgsNewsFeedProxyModel;
 
 class QgsWelcomePage : public QWidget
 {
@@ -53,6 +55,7 @@ class QgsWelcomePage : public QWidget
 
   private:
     void updateRecentProjectsVisibility();
+    void updateNewsFeedVisibility();
 
     QgsRecentProjectItemsModel *mRecentProjectsModel = nullptr;
     QTextBrowser *mVersionInformation = nullptr;
@@ -62,6 +65,11 @@ class QgsWelcomePage : public QWidget
     QListView *mTemplateProjectsListView = nullptr;
     QStandardItemModel *mTemplateProjectsModel = nullptr;
     QSplitter *mSplitter = nullptr;
+    QSplitter *mSplitter2 = nullptr;
+    QLabel *mNewsFeedTitle = nullptr;
+    QgsNewsFeedParser *mNewsFeedParser = nullptr;
+    QgsNewsFeedProxyModel *mNewsFeedModel = nullptr;
+    QListView *mNewsFeedListView = nullptr;
 };
 
 #endif // QGSWELCOMEPAGE_H

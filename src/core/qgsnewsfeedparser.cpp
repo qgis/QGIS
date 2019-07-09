@@ -78,6 +78,11 @@ void QgsNewsFeedParser::dismissEntry( int key )
   emit entryDismissed( dismissed );
 }
 
+QString QgsNewsFeedParser::authcfg() const
+{
+  return mAuthCfg;
+}
+
 void QgsNewsFeedParser::fetch()
 {
   QNetworkRequest req( mFeedUrl );

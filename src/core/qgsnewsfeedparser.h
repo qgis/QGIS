@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include <QObject>
 #include <QUrl>
+#include <QImage>
 
 class QgsNetworkContentFetcher;
 
@@ -52,6 +53,9 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
         //! Optional URL for image associated with entry
         QString imageUrl;
 
+        //! Optional image data
+        QImage image;
+
         //! HTML content of news entry
         QString content;
 
@@ -81,6 +85,11 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      * This removes the entry from the local store, ensuring it will never be present again.
      */
     void dismissEntry( int key );
+
+    /**
+     * Returns the authentication configuration for the parser.
+     */
+    QString authcfg() const;
 
   public slots:
 

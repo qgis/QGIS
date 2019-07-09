@@ -25,6 +25,8 @@
 #include "qgsfileutils.h"
 #include "qgstemplateprojectsmodel.h"
 #include "qgsprojectlistitemdelegate.h"
+#include "qgsnewsfeedmodel.h"
+#include "qgsnewsfeedparser.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -33,6 +35,8 @@
 #include <QTextBrowser>
 #include <QMessageBox>
 #include <QSplitter>
+
+#define FEED_URL "http://0.0.0.0:8000/"
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
@@ -81,10 +85,44 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   QVBoxLayout *rightLayout = new QVBoxLayout;
   rightLayout->setContentsMargins( 0, 0, 0, 0 );
   rightLayout->setMargin( 0 );
+  mSplitter2 = new QSplitter( Qt::Vertical );
+  rightLayout->addWidget( mSplitter2 );
 
+  QWidget *newsContainer = new QWidget();
+  QVBoxLayout *newsLayout = new QVBoxLayout();
+  newsLayout->setContentsMargins( 0, 0, 0, 0 );
+  newsLayout->setMargin( 0 );
+  mNewsFeedTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "News" ) ) );
+  mNewsFeedTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
+  newsLayout->addWidget( mNewsFeedTitle, 0 );
+
+  mNewsFeedParser = new QgsNewsFeedParser( QUrl( QStringLiteral( FEED_URL ) ), QString(), this );
+  mNewsFeedModel = new QgsNewsFeedProxyModel( mNewsFeedParser, this );
+  mNewsFeedListView = new QListView();
+  mNewsFeedListView->setResizeMode( QListView::Adjust );
+  mNewsFeedListView->setModel( mNewsFeedModel );
+  mNewsFeedListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  QgsNewsItemListItemDelegate *newsItemDelegate = new QgsNewsItemListItemDelegate( mNewsFeedListView );
+  mNewsFeedListView->setItemDelegate( newsItemDelegate );
+  mNewsFeedListView->setContextMenuPolicy( Qt::CustomContextMenu );
+//  connect( mTemplateProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForTemplates );
+  newsLayout->addWidget( mNewsFeedListView, 1 );
+  updateNewsFeedVisibility();
+  connect( mNewsFeedParser, &QgsNewsFeedParser::fetched, this, [ = ]
+  {
+    updateNewsFeedVisibility();
+  } );
+  mNewsFeedParser->fetch();
+  newsContainer->setLayout( newsLayout );
+  mSplitter2->addWidget( newsContainer );
+
+  QWidget *templateContainer = new QWidget();
+  QVBoxLayout *templateLayout = new QVBoxLayout();
+  templateLayout->setContentsMargins( 0, 0, 0, 0 );
+  templateLayout->setMargin( 0 );
   QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Project Templates" ) ) );
   templatesTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
-  rightLayout->addWidget( templatesTitle, 0 );
+  templateLayout->addWidget( templatesTitle, 0 );
 
   mTemplateProjectsModel = new QgsTemplateProjectsModel( this );
   mTemplateProjectsListView = new QListView();
@@ -96,7 +134,9 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mTemplateProjectsListView->setItemDelegate( templateProjectsDelegate );
   mTemplateProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTemplateProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForTemplates );
-  rightLayout->addWidget( mTemplateProjectsListView, 1 );
+  templateLayout->addWidget( mTemplateProjectsListView, 1 );
+  templateContainer->setLayout( templateLayout );
+  mSplitter2->addWidget( templateContainer );
 
   rightContainer->setLayout( rightLayout );
   mSplitter->addWidget( rightContainer );
@@ -122,6 +162,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   }
 
   mSplitter->restoreState( settings.value( QStringLiteral( "Windows/WelcomePage/SplitState" ), QVariant(), QgsSettings::App ).toByteArray() );
+  mSplitter2->restoreState( settings.value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
 
   connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::recentProjectItemActivated );
   connect( mTemplateProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::templateProjectItemActivated );
@@ -131,6 +172,7 @@ QgsWelcomePage::~QgsWelcomePage()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState" ), mSplitter->saveState(), QgsSettings::App );
+  settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState2" ), mSplitter2->saveState(), QgsSettings::App );
 
   delete mVersionInfo;
 }
@@ -279,7 +321,14 @@ void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
 
 void QgsWelcomePage::updateRecentProjectsVisibility()
 {
-  bool visible = mRecentProjectsModel->rowCount() > 0;
+  const bool visible = mRecentProjectsModel->rowCount() > 0;
   mRecentProjectsListView->setVisible( visible );
   mRecentProjectsTitle->setVisible( visible );
+}
+
+void QgsWelcomePage::updateNewsFeedVisibility()
+{
+  const bool visible = mNewsFeedModel->rowCount() > 0;
+  mNewsFeedListView->setVisible( visible );
+  mNewsFeedTitle->setVisible( visible );
 }

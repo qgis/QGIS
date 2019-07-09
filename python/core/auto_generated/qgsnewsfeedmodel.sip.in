@@ -29,6 +29,7 @@ feeds from a https://github.com/elpaso/qgis-feed server instance.
       Title,
       Content,
       ImageUrl,
+      Image,
       Link,
       Sticky,
     };

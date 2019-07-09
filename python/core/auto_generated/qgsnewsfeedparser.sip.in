@@ -41,6 +41,8 @@ Represents a single entry from a news feed.
 
         QString imageUrl;
 
+        QImage image;
+
         QString content;
 
         QUrl link;
@@ -66,6 +68,11 @@ Returns a list of existing entries in the feed.
 Dismisses an entry with matching ``key``.
 
 This removes the entry from the local store, ensuring it will never be present again.
+%End
+
+    QString authcfg() const;
+%Docstring
+Returns the authentication configuration for the parser.
 %End
 
   public slots:
