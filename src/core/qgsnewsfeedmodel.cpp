@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgsnewsfeedmodel.h"
 #include "qgsnetworkcontentfetcher.h"
-#include <QPixmap>
+#include <QPainter>
 
 //
 // QgsNewsFeedModel
@@ -31,6 +31,7 @@ QgsNewsFeedModel::QgsNewsFeedModel( QgsNewsFeedParser *parser, QObject *parent )
 
   connect( mParser, &QgsNewsFeedParser::entryAdded, this, &QgsNewsFeedModel::onEntryAdded );
   connect( mParser, &QgsNewsFeedParser::entryDismissed, this, &QgsNewsFeedModel::onEntryRemoved );
+  connect( mParser, &QgsNewsFeedParser::imageFetched, this, &QgsNewsFeedModel::onImageFetched );
 }
 
 QVariant QgsNewsFeedModel::data( const QModelIndex &index, int role ) const
@@ -68,7 +69,7 @@ QVariant QgsNewsFeedModel::data( const QModelIndex &index, int role ) const
     case Qt::DecorationRole:
       if ( entry.image.isNull() )
         return QVariant();
-      return QPixmap::fromImage( entry.image );
+      return entry.image;
   }
   return QVariant();
 }
@@ -116,28 +117,6 @@ void QgsNewsFeedModel::onEntryAdded( const QgsNewsFeedParser::Entry &entry )
 {
   beginInsertRows( QModelIndex(), mEntries.count(), mEntries.count() );
   mEntries.append( entry );
-
-  if ( !entry.imageUrl.isEmpty() )
-  {
-    // start fetching image
-    QgsNetworkContentFetcher *fetcher = new QgsNetworkContentFetcher();
-    connect( fetcher, &QgsNetworkContentFetcher::finished, this, [ = ]
-    {
-      auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
-      {
-        return candidate.key == entry.key;
-      } );
-      if ( findIter != mEntries.end() )
-      {
-        const int entryIndex = static_cast< int >( std::distance( mEntries.begin(), findIter ) );
-        mEntries[ entryIndex ].image = QImage::fromData( fetcher->reply()->readAll() );
-        this->emit dataChanged( index( entryIndex, 0, QModelIndex() ), index( entryIndex, 0, QModelIndex() ) );
-      }
-      fetcher->deleteLater();
-    } );
-    fetcher->fetchContent( entry.imageUrl, mParser->authcfg() );
-  }
-
   endInsertRows();
 }
 
@@ -155,6 +134,21 @@ void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )
   beginRemoveRows( QModelIndex(), entryIndex, entryIndex );
   mEntries.removeAt( entryIndex );
   endRemoveRows();
+}
+
+void QgsNewsFeedModel::onImageFetched( const int key, const QPixmap &pixmap )
+{
+  // find index of entry
+  auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [key]( const QgsNewsFeedParser::Entry & candidate )
+  {
+    return candidate.key == key;
+  } );
+  if ( findIter == mEntries.end() )
+    return;
+
+  const int entryIndex = static_cast< int >( std::distance( mEntries.begin(), findIter ) );
+  mEntries[ entryIndex ].image = pixmap;
+  emit dataChanged( index( entryIndex, 0, QModelIndex() ), index( entryIndex, 0, QModelIndex() ) );
 }
 
 

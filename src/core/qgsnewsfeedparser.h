@@ -19,7 +19,7 @@
 #include "qgis_sip.h"
 #include <QObject>
 #include <QUrl>
-#include <QImage>
+#include <QPixmap>
 
 class QgsNetworkContentFetcher;
 
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
         QString imageUrl;
 
         //! Optional image data
-        QImage image;
+        QPixmap image;
 
         //! HTML content of news entry
         QString content;
@@ -124,6 +124,12 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      */
     void entryDismissed( const QgsNewsFeedParser::Entry &entry );
 
+    /**
+     * Emitted when the image attached to the entry with the specified \a key has been fetched
+     * and is now available.
+     */
+    void imageFetched( int key, const QPixmap &pixmap );
+
   private slots:
 
     void onFetch( const QString &content );
@@ -139,8 +145,9 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     QList< Entry > mEntries;
 
     void readStoredEntries();
-    Entry readEntryFromSettings( int key ) const;
+    Entry readEntryFromSettings( int key );
     void storeEntryInSettings( const Entry &entry );
+    void fetchImageForEntry( const Entry &entry );
     static QString keyForFeed( const QString &baseUrl );
 
     friend class TestQgsNewsFeedParser;
