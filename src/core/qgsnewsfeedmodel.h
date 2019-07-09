@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include "qgsnewsfeedparser.h"
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 
 /**
  * \ingroup core
@@ -71,6 +72,36 @@ class CORE_EXPORT QgsNewsFeedModel : public QAbstractItemModel
 
     QgsNewsFeedParser *mParser = nullptr;
     QList< QgsNewsFeedParser::Entry > mEntries;
+};
+
+/**
+ * \ingroup core
+ * A proxy model for use with QgsNewsFeedModel.
+ *
+ * QgsNewsFeedProxyModel applies custom sorting to the entries in a QgsNewsFeedModel.
+ *
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsNewsFeedProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsNewsFeedProxyModel, with the specified \a parent object.
+     *
+     * The \a parser argument must specify a valid QgsNewsFeedParser object, which
+     * must exist for the lifetime of this model.
+     */
+    explicit QgsNewsFeedProxyModel( QgsNewsFeedParser *parser, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+  protected:
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+
+  private:
+
+    QgsNewsFeedModel *mModel = nullptr;
+
 };
 
 #endif // QGSNEWSFEEDMODEL_H

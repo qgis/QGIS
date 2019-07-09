@@ -14,6 +14,10 @@
  ***************************************************************************/
 #include "qgsnewsfeedmodel.h"
 
+//
+// QgsNewsFeedModel
+//
+
 QgsNewsFeedModel::QgsNewsFeedModel( QgsNewsFeedParser *parser, QObject *parent )
   : QAbstractItemModel( parent )
   , mParser( parser )
@@ -117,4 +121,36 @@ void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )
   beginRemoveRows( QModelIndex(), entryIndex, entryIndex );
   mEntries.removeAt( entryIndex );
   endRemoveRows();
+}
+
+
+//
+// QgsNewsFeedProxyModel
+//
+
+QgsNewsFeedProxyModel::QgsNewsFeedProxyModel( QgsNewsFeedParser *parser, QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  mModel = new QgsNewsFeedModel( parser, this );
+  setSortCaseSensitivity( Qt::CaseInsensitive );
+  setSourceModel( mModel );
+  setDynamicSortFilter( true );
+  sort( 0 );
+}
+
+bool QgsNewsFeedProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  const bool leftSticky = sourceModel()->data( left, QgsNewsFeedModel::Sticky ).toBool();
+  const bool rightSticky = sourceModel()->data( right, QgsNewsFeedModel::Sticky ).toBool();
+
+  // sticky items come first
+  if ( leftSticky && !rightSticky )
+    return true;
+  if ( rightSticky && !leftSticky )
+    return false;
+
+  // else sort by descending key
+  const int leftKey = sourceModel()->data( left, QgsNewsFeedModel::Key ).toInt();
+  const int rightKey = sourceModel()->data( right, QgsNewsFeedModel::Key ).toInt();
+  return rightKey < leftKey;
 }

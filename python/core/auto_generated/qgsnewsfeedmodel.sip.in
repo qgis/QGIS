@@ -56,6 +56,35 @@ must exist for the lifetime of this model.
 
 };
 
+class QgsNewsFeedProxyModel : QSortFilterProxyModel
+{
+%Docstring
+A proxy model for use with QgsNewsFeedModel.
+
+QgsNewsFeedProxyModel applies custom sorting to the entries in a QgsNewsFeedModel.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsnewsfeedmodel.h"
+%End
+  public:
+
+    explicit QgsNewsFeedProxyModel( QgsNewsFeedParser *parser, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsNewsFeedProxyModel, with the specified ``parent`` object.
+
+The ``parser`` argument must specify a valid QgsNewsFeedParser object, which
+must exist for the lifetime of this model.
+%End
+
+  protected:
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
