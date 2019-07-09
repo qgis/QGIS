@@ -104,16 +104,15 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
     mNewsFeedListView->setResizeMode( QListView::Adjust );
     mNewsFeedListView->setModel( mNewsFeedModel );
     mNewsFeedListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    QgsNewsItemListItemDelegate *newsItemDelegate = new QgsNewsItemListItemDelegate( mNewsFeedListView );
-    mNewsFeedListView->setItemDelegate( newsItemDelegate );
+    mNewsDelegate = new QgsNewsItemListItemDelegate( mNewsFeedListView );
+    mNewsFeedListView->setItemDelegate( mNewsDelegate );
     mNewsFeedListView->setContextMenuPolicy( Qt::CustomContextMenu );
+    mNewsFeedListView->viewport()->installEventFilter( this );
     connect( mNewsFeedListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForNews );
+    connect( mNewsFeedParser, &QgsNewsFeedParser::entryDismissed, this, &QgsWelcomePage::updateNewsFeedVisibility );
     newsLayout->addWidget( mNewsFeedListView, 1 );
     updateNewsFeedVisibility();
-    connect( mNewsFeedParser, &QgsNewsFeedParser::fetched, this, [ = ]
-    {
-      updateNewsFeedVisibility();
-    } );
+    connect( mNewsFeedParser, &QgsNewsFeedParser::fetched, this, &QgsWelcomePage::updateNewsFeedVisibility );
     mNewsFeedParser->fetch();
     newsContainer->setLayout( newsLayout );
     mSplitter2->addWidget( newsContainer );
@@ -351,7 +350,6 @@ void QgsWelcomePage::showContextMenuForNews( QPoint point )
   connect( dismissAllAction, &QAction::triggered, this, [this]
   {
     mNewsFeedParser->dismissAll();
-    updateNewsFeedVisibility();
   } );
   menu->addAction( dismissAllAction );
   menu->addSeparator();
@@ -362,7 +360,6 @@ void QgsWelcomePage::showContextMenuForNews( QPoint point )
     {
       //...sad trombone...
       mNewsFeedParser->dismissAll();
-      updateNewsFeedVisibility();
       QgsSettings().setValue( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QStringLiteral( FEED_URL ) ) ), true, QgsSettings::Core );
     }
   } );
@@ -392,3 +389,27 @@ void QgsWelcomePage::updateNewsFeedVisibility()
     mSplitter2->restoreState( QgsSettings().value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
   }
 }
+
+bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( obj == mNewsFeedListView->viewport() && event->type() == QEvent::MouseButtonRelease )
+  {
+    QMouseEvent *mouseEvent = dynamic_cast< QMouseEvent *>( event );
+    if ( mouseEvent->button() == Qt::LeftButton )
+    {
+      QModelIndex index = mNewsFeedListView->indexAt( mouseEvent->pos() );
+      if ( index.isValid() )
+      {
+        const QPoint itemClickPoint = mouseEvent->pos() - mNewsFeedListView->visualRect( index ).topLeft();
+        if ( QRect( mNewsDelegate->dismissRect().left(), mNewsDelegate->dismissRect().top(), mNewsDelegate->dismissRectSize().width(), mNewsDelegate->dismissRectSize().height() ).contains( itemClickPoint ) )
+        {
+          mNewsFeedParser->dismissEntry( index.data( QgsNewsFeedModel::Key ).toInt() );
+        }
+        return true;
+      }
+    }
+  }
+
+  return QWidget::eventFilter( obj, event );
+}
+

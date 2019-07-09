@@ -17,6 +17,7 @@
 #include "qgis.h"
 #include "qgsnewsfeedmodel.h"
 #include "qgswebframe.h"
+#include "qgsapplication.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -181,6 +182,7 @@ bool QgsProjectPreviewImage::isNull() const
 QgsNewsItemListItemDelegate::QgsNewsItemListItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
   , mRoundedRectSizePixels( static_cast<int>( Qgis::UI_SCALE_FACTOR * QApplication::fontMetrics().height() * 0.5 ) )
+  , mDismissRectSize( 20, 20 ) // TODO - hidpi friendly
 {
 
 }
@@ -242,6 +244,12 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
     painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels, icon );
   }
 
+  // Gross, but not well supported in Qt
+  mDismissRect = QRect( option.rect.width() - 32, option.rect.top() + 10, mDismissRectSize.width(), mDismissRectSize.height() );
+  QPixmap pixmap = QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearNews.svg" ) ).pixmap( mDismissRectSize, QIcon::Normal );
+  painter->drawPixmap( mDismissRect.topLeft(), pixmap );
+  mDismissRect.setTop( 10 );
+
   painter->translate( option.rect.left() + ( !icon.isNull() ? icon.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
   ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? icon.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
@@ -274,4 +282,5 @@ QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option,
 
   return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( icon.height() ) ) + 2.5 * mRoundedRectSizePixels );
 }
+
 
