@@ -83,8 +83,16 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      * Dismisses an entry with matching \a key.
      *
      * This removes the entry from the local store, ensuring it will never be present again.
+     *
+     * \see dismissAll()
      */
     void dismissEntry( int key );
+
+    /**
+     * Dismisses all current news items.
+     * \see dismissEntry()
+     */
+    void dismissAll();
 
     /**
      * Returns the authentication configuration for the parser.

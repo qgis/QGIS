@@ -91,6 +91,15 @@ void QgsNewsFeedParser::dismissEntry( int key )
   emit entryDismissed( dismissed );
 }
 
+void QgsNewsFeedParser::dismissAll()
+{
+  const QList< QgsNewsFeedParser::Entry > entries = mEntries;
+  for ( const Entry &entry : entries )
+  {
+    dismissEntry( entry.key );
+  }
+}
+
 QString QgsNewsFeedParser::authcfg() const
 {
   return mAuthCfg;
