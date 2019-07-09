@@ -172,7 +172,8 @@ QgsWelcomePage::~QgsWelcomePage()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState" ), mSplitter->saveState(), QgsSettings::App );
-  settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState2" ), mSplitter2->saveState(), QgsSettings::App );
+  if ( mNewsFeedTitle->isVisible() )
+    settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState2" ), mSplitter2->saveState(), QgsSettings::App );
 
   delete mVersionInfo;
 }
@@ -331,4 +332,12 @@ void QgsWelcomePage::updateNewsFeedVisibility()
   const bool visible = mNewsFeedModel->rowCount() > 0;
   mNewsFeedListView->setVisible( visible );
   mNewsFeedTitle->setVisible( visible );
+  if ( !visible )
+  {
+    mSplitter2->setSizes( QList<int>() << 0 << 99999999 );
+  }
+  else
+  {
+    mSplitter2->restoreState( QgsSettings().value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
+  }
 }

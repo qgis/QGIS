@@ -15,6 +15,7 @@
 #include "qgsnewsfeedparser.h"
 #include "qgis.h"
 #include "qgsnetworkcontentfetchertask.h"
+#include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
@@ -75,6 +76,18 @@ void QgsNewsFeedParser::dismissEntry( int key )
     return; // didn't find matching entry
 
   QgsSettings().remove( QStringLiteral( "%1/%2" ).arg( mSettingsKey ).arg( key ), QgsSettings::Core );
+
+  // also remove preview image, if it exists
+  if ( !dismissed.imageUrl.isEmpty() )
+  {
+    const QString previewDir = QStringLiteral( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
+    const QString imagePath = QStringLiteral( "%1/%2.png" ).arg( previewDir ).arg( key );
+    if ( QFile::exists( imagePath ) )
+    {
+      QFile::remove( imagePath );
+    }
+  }
+
   emit entryDismissed( dismissed );
 }
 
@@ -134,6 +147,10 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     newEntry.link = entryMap.value( QStringLiteral( "url" ) ).toString();
     newEntry.sticky = entryMap.value( QStringLiteral( "sticky" ) ).toBool();
     newEntries.append( newEntry );
+
+    if ( !newEntry.imageUrl.isEmpty() )
+      fetchImageForEntry( newEntry );
+
     mEntries.append( newEntry );
     storeEntryInSettings( newEntry );
     emit entryAdded( newEntry );
@@ -159,7 +176,7 @@ void QgsNewsFeedParser::readStoredEntries()
   }
 }
 
-QgsNewsFeedParser::Entry QgsNewsFeedParser::readEntryFromSettings( const int key ) const
+QgsNewsFeedParser::Entry QgsNewsFeedParser::readEntryFromSettings( const int key )
 {
   const QString baseSettingsKey = QStringLiteral( "%1/%2" ).arg( mSettingsKey ).arg( key );
   QgsSettings settings;
@@ -171,6 +188,20 @@ QgsNewsFeedParser::Entry QgsNewsFeedParser::readEntryFromSettings( const int key
   entry.content = settings.value( QStringLiteral( "content" ) ).toString();
   entry.link = settings.value( QStringLiteral( "link" ) ).toString();
   entry.sticky = settings.value( QStringLiteral( "sticky" ) ).toBool();
+  if ( !entry.imageUrl.isEmpty() )
+  {
+    const QString previewDir = QStringLiteral( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
+    const QString imagePath = QStringLiteral( "%1/%2.png" ).arg( previewDir ).arg( entry.key );
+    if ( QFile::exists( imagePath ) )
+    {
+      const QImage img( imagePath );
+      entry.image = QPixmap::fromImage( img );
+    }
+    else
+    {
+      fetchImageForEntry( entry );
+    }
+  }
   return entry;
 }
 
@@ -183,6 +214,66 @@ void QgsNewsFeedParser::storeEntryInSettings( const QgsNewsFeedParser::Entry &en
   settings.setValue( QStringLiteral( "%1/content" ).arg( baseSettingsKey ), entry.content, QgsSettings::Core );
   settings.setValue( QStringLiteral( "%1/link" ).arg( baseSettingsKey ), entry.link, QgsSettings::Core );
   settings.setValue( QStringLiteral( "%1/sticky" ).arg( baseSettingsKey ), entry.sticky, QgsSettings::Core );
+}
+
+void QgsNewsFeedParser::fetchImageForEntry( const QgsNewsFeedParser::Entry &entry )
+{
+  // start fetching image
+  QgsNetworkContentFetcher *fetcher = new QgsNetworkContentFetcher();
+  connect( fetcher, &QgsNetworkContentFetcher::finished, this, [ = ]
+  {
+    auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
+    {
+      return candidate.key == entry.key;
+    } );
+    if ( findIter != mEntries.end() )
+    {
+      const int entryIndex = static_cast< int >( std::distance( mEntries.begin(), findIter ) );
+
+      QImage img = QImage::fromData( fetcher->reply()->readAll() );
+
+      QSize size = img.size();
+      bool resize = false;
+      if ( size.width() > 250 )
+      {
+        size.setHeight( static_cast< int >( size.height() * static_cast< double >( 250 ) / size.width() ) );
+        size.setWidth( 250 );
+        resize = true;
+      }
+      if ( size.height() > 177 )
+      {
+        size.setWidth( static_cast< int >( size.width() * static_cast< double >( 177 ) / size.height() ) );
+        size.setHeight( 177 );
+        resize = true;
+      }
+      if ( resize )
+        img = img.scaled( size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+
+      //nicely round corners so users don't get paper cuts
+      QImage previewImage( size, QImage::Format_ARGB32 );
+      previewImage.fill( Qt::transparent );
+      QPainter previewPainter( &previewImage );
+      previewPainter.setRenderHint( QPainter::Antialiasing, true );
+      previewPainter.setRenderHint( QPainter::SmoothPixmapTransform, true );
+      previewPainter.setPen( Qt::NoPen );
+      previewPainter.setBrush( Qt::black );
+      previewPainter.drawRoundedRect( 0, 0, size.width(), size.height(), 8, 8 );
+      previewPainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
+      previewPainter.drawImage( 0, 0, img );
+      previewPainter.end();
+
+      // Save image, so we don't have to fetch it next time
+      const QString previewDir = QStringLiteral( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
+      QDir().mkdir( previewDir );
+      const QString imagePath = QStringLiteral( "%1/%2.png" ).arg( previewDir ).arg( entry.key );
+      previewImage.save( imagePath );
+
+      mEntries[ entryIndex ].image = QPixmap::fromImage( previewImage );
+      this->emit imageFetched( entry.key, mEntries[ entryIndex ].image );
+    }
+    fetcher->deleteLater();
+  } );
+  fetcher->fetchContent( entry.imageUrl, mAuthCfg );
 }
 
 QString QgsNewsFeedParser::keyForFeed( const QString &baseUrl )
