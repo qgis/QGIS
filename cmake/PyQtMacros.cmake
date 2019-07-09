@@ -19,7 +19,7 @@ IF(NOT PYUIC_PROGRAM)
   ENDIF (MSVC)
 
   IF (NOT PYUIC_PROGRAM)
-    MESSAGE(FATAL_ERROR "pyuic[4|5] not found - aborting")
+    MESSAGE(FATAL_ERROR "pyuic5 not found - aborting")
   ENDIF (NOT PYUIC_PROGRAM)
 ENDIF(NOT PYUIC_PROGRAM)
 
@@ -63,7 +63,7 @@ IF(NOT PYRCC_PROGRAM)
   ENDIF (MSVC)
 
   IF (NOT PYRCC_PROGRAM)
-    MESSAGE(FATAL_ERROR "pyrcc[4|5] not found - aborting")
+    MESSAGE(FATAL_ERROR "pyrcc5 not found - aborting")
   ENDIF (NOT PYRCC_PROGRAM)
 ENDIF(NOT PYRCC_PROGRAM)
 
