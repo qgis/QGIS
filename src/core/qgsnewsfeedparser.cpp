@@ -56,6 +56,16 @@ QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const
   return mEntries;
 }
 
+void QgsNewsFeedParser::dismissEntry( int key )
+{
+  mEntries.erase( std::remove_if( mEntries.begin(), mEntries.end(),
+                                  [key]( const Entry & entry )
+  {
+    return entry.key == key;
+  } ), mEntries.end() );
+  QgsSettings().remove( QStringLiteral( "%1/%2" ).arg( mSettingsKey ).arg( key ), QgsSettings::Core );
+}
+
 void QgsNewsFeedParser::fetch()
 {
   QNetworkRequest req( mFeedUrl );
@@ -109,6 +119,7 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     newEntries.append( newEntry );
     mEntries.append( newEntry );
     storeEntryInSettings( newEntry );
+    emit entryAdded( newEntry );
   }
 
   emit fetched( newEntries );

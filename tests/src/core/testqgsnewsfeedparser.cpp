@@ -16,9 +16,10 @@
 
 #include "qgstest.h"
 #include <QObject>
-
+#include <QSignalSpy>
 #include "qgsnewsfeedparser.h"
 #include "qgssettings.h"
+
 
 class TestQgsNewsFeedParser: public QObject
 {
@@ -71,6 +72,7 @@ void TestQgsNewsFeedParser::testFetch()
   uint beforeTime = QDateTime::currentDateTimeUtc().toTime_t();
 
   QgsNewsFeedParser parser( url );
+  QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
   QVERIFY( parser.entries().isEmpty() );
   QEventLoop loop;
   connect( &parser, &QgsNewsFeedParser::fetched, this, [ =, &loop, &entries ]( const  QList< QgsNewsFeedParser::Entry > &e )
@@ -82,6 +84,7 @@ void TestQgsNewsFeedParser::testFetch()
   loop.exec();
 
   // check result
+  QCOMPARE( spy.count(), 5 );
   QCOMPARE( entries.count(), 5 );
   QCOMPARE( entries.at( 0 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
   QCOMPARE( entries.at( 1 ).title, QStringLiteral( "QGIS core will be rewritten in Rust" ) );
@@ -142,6 +145,30 @@ void TestQgsNewsFeedParser::testFetch()
   QCOMPARE( parser3.entries().at( 1 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
   QCOMPARE( parser3.entries().at( 2 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
   QCOMPARE( parser3.entries().at( 3 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+
+  // dismiss imaginary entry
+  parser3.dismissEntry( -1 );
+  QCOMPARE( parser3.entries().count(), 4 );
+
+  // dismiss valid entry
+  parser3.dismissEntry( 4 );
+  QCOMPARE( parser3.entries().count(), 3 );
+  QCOMPARE( parser3.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( parser3.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( parser3.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+
+  // craft a new parser, should not have dismissed entry
+  QgsNewsFeedParser parser4( url );
+  QCOMPARE( parser4.entries().count(), 3 );
+  QCOMPARE( parser4.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( parser4.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( parser4.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+  // even if we re-fetch, the dismissed entry should not come back
+  parser4.fetch();
+  QCOMPARE( parser4.entries().count(), 3 );
+  QCOMPARE( parser4.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( parser4.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( parser4.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
 
 }
 

@@ -74,6 +74,13 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      */
     QList< QgsNewsFeedParser::Entry > entries() const;
 
+    /**
+     * Dismisses an entry with matching \a key.
+     *
+     * This removes the entry from the local store, ensuring it will never be present again.
+     */
+    void dismissEntry( int key );
+
   public slots:
 
     /**
@@ -90,6 +97,14 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      * \see fetch()
      */
     void fetched( const QList< QgsNewsFeedParser::Entry > &entries );
+
+    /**
+     * Emitted whenever a new entry is available from the feed (as a result
+     * of a call to fetch()).
+     *
+     * \see fetch()
+     */
+    void entryAdded( const QgsNewsFeedParser::Entry &entry );
 
   private slots:
 

@@ -61,6 +61,13 @@ configuration to use when connecting to the feed.
 Returns a list of existing entries in the feed.
 %End
 
+    void dismissEntry( int key );
+%Docstring
+Dismisses an entry with matching ``key``.
+
+This removes the entry from the local store, ensuring it will never be present again.
+%End
+
   public slots:
 
     void fetch();
@@ -75,6 +82,14 @@ Fetches new entries from the feed's URL.
     void fetched( const QList< QgsNewsFeedParser::Entry > &entries );
 %Docstring
 Emitted when ``entries`` have fetched from the feed.
+
+.. seealso:: :py:func:`fetch`
+%End
+
+    void entryAdded( const QgsNewsFeedParser::Entry &entry );
+%Docstring
+Emitted whenever a new entry is available from the feed (as a result
+of a call to fetch()).
 
 .. seealso:: :py:func:`fetch`
 %End
