@@ -536,6 +536,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets state from DOM document
      * \param layerElement The DOM element corresponding to ``maplayer'' tag
      * \param context writing context (e.g. for conversion between relative and absolute paths)
+     * \param flags optional argument which can be used to control layer reading behavior.
      * \note
      *
      * The DOM node corresponds to a DOM document project file XML element read
@@ -545,8 +546,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * by sub-classes so that they can read their own specific state from the given DOM node.
      *
      * Invoked by QgsProject::read().
-     *
-     * The optional \a flags argument can be used to control layer reading behavior.
      *
      * \returns TRUE if successful
      */
