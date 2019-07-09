@@ -108,6 +108,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
     mNewsFeedListView->setItemDelegate( mNewsDelegate );
     mNewsFeedListView->setContextMenuPolicy( Qt::CustomContextMenu );
     mNewsFeedListView->viewport()->installEventFilter( this );
+    connect( mNewsFeedListView, &QAbstractItemView::activated, this, &QgsWelcomePage::newsItemActivated );
     connect( mNewsFeedListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForNews );
     connect( mNewsFeedParser, &QgsNewsFeedParser::entryDismissed, this, &QgsWelcomePage::updateNewsFeedVisibility );
     newsLayout->addWidget( mNewsFeedListView, 1 );
@@ -205,6 +206,15 @@ void QgsWelcomePage::templateProjectItemActivated( const QModelIndex &index )
     QgisApp::instance()->newProject();
   else
     QgisApp::instance()->fileNewFromTemplate( index.data( QgsProjectListItemDelegate::NativePathRole ).toString() );
+}
+
+void QgsWelcomePage::newsItemActivated( const QModelIndex &index )
+{
+  if ( !index.isValid() )
+    return;
+
+  const QUrl link = index.data( QgsNewsFeedModel::Link ).toUrl();
+  QDesktopServices::openUrl( link );
 }
 
 void QgsWelcomePage::versionInfoReceived()
