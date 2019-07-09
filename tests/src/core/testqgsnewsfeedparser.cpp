@@ -176,6 +176,12 @@ void TestQgsNewsFeedParser::testFetch()
   QCOMPARE( parser4.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
   QCOMPARE( parser4.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
 
+  // dismiss all
+  parser4.dismissAll();
+  QCOMPARE( parser4.entries().count(), 0 );
+
+  QgsNewsFeedParser parser5( url );
+  QCOMPARE( parser5.entries().count(), 0 );
 }
 
 void TestQgsNewsFeedParser::testModel()
