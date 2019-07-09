@@ -29,6 +29,7 @@ class QLabel;
 class QSplitter;
 class QgsNewsFeedParser;
 class QgsNewsFeedProxyModel;
+class QgsNewsItemListItemDelegate;
 
 class QgsWelcomePage : public QWidget
 {
@@ -46,6 +47,9 @@ class QgsWelcomePage : public QWidget
     void projectPinned( int row );
     void projectUnpinned( int row );
 
+  protected:
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+
   private slots:
     void recentProjectItemActivated( const QModelIndex &index );
     void templateProjectItemActivated( const QModelIndex &index );
@@ -53,10 +57,10 @@ class QgsWelcomePage : public QWidget
     void showContextMenuForProjects( QPoint point );
     void showContextMenuForTemplates( QPoint point );
     void showContextMenuForNews( QPoint point );
+    void updateNewsFeedVisibility();
 
   private:
     void updateRecentProjectsVisibility();
-    void updateNewsFeedVisibility();
 
     QgsRecentProjectItemsModel *mRecentProjectsModel = nullptr;
     QTextBrowser *mVersionInformation = nullptr;
@@ -71,6 +75,7 @@ class QgsWelcomePage : public QWidget
     QgsNewsFeedParser *mNewsFeedParser = nullptr;
     QgsNewsFeedProxyModel *mNewsFeedModel = nullptr;
     QListView *mNewsFeedListView = nullptr;
+    QgsNewsItemListItemDelegate *mNewsDelegate = nullptr;
 };
 
 #endif // QGSWELCOMEPAGE_H
