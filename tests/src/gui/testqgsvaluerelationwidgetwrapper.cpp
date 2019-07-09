@@ -1069,9 +1069,9 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   myTempFileName = myTempDirName + QStringLiteral( "/valuerelation_widget_wrapper_test.spatialite.sqlite" );
   QFile::copy( myFileName + QStringLiteral( "/valuerelation_widget_wrapper_test.spatialite.sqlite" ),
                myTempFileName );
-  QFileInfo myMapFileInfoAutor( myTempFileName );
+  QFileInfo myMapFileInfoAuthor( myTempFileName );
   QgsVectorLayer *vl_authors = new QgsVectorLayer( QStringLiteral( R"(dbname='%1' table="%2")" )
-      .arg( myMapFileInfoAutor.filePath() ).arg( QStringLiteral( "authors" ) ),
+      .arg( myMapFileInfoAuthor.filePath() ).arg( QStringLiteral( "authors" ) ),
       QStringLiteral( "test" ),
       QStringLiteral( "spatialite" ) );
   QVERIFY( vl_authors->isValid() );
