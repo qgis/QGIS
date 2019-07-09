@@ -41,6 +41,10 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   if ( after > 0 )
     query.addQueryItem( QStringLiteral( "after" ), qgsDoubleToString( after, 0 ) );
 
+  const QString lang = QgsSettings().value( QStringLiteral( "locale/userLocale" ), QStringLiteral( "en_US" ) ).toString().left( 2 );
+  if ( !lang.isEmpty() )
+    query.addQueryItem( QStringLiteral( "lang" ), lang );
+
   // bit of a hack to allow testing using local files
   if ( feedUrl.isLocalFile() )
   {
