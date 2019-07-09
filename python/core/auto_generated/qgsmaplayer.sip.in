@@ -513,7 +513,14 @@ Returns ``True`` if the layer is considered a spatial layer, ie it has some form
 .. versionadded:: 2.16
 %End
 
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
+    enum ReadFlag
+    {
+      FlagDontResolveLayers,
+    };
+    typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
+
+
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = 0 );
 %Docstring
 Sets state from DOM document
 
@@ -528,6 +535,8 @@ This, in turn, calls readXml() (and then readSymbology()), which is overridable
 by sub-classes so that they can read their own specific state from the given DOM node.
 
 Invoked by :py:func:`QgsProject.read()`
+
+The optional ``flags`` argument can be used to control layer reading behavior.
 
 :return: ``True`` if successful
 %End
@@ -1653,11 +1662,14 @@ Checks whether a new set of dependencies will introduce a cycle
 
 
 
+
 };
 
 QFlags<QgsMapLayer::LayerFlag> operator|(QgsMapLayer::LayerFlag f1, QFlags<QgsMapLayer::LayerFlag> f2);
 
 QFlags<QgsMapLayer::StyleCategory> operator|(QgsMapLayer::StyleCategory f1, QFlags<QgsMapLayer::StyleCategory> f2);
+
+QFlags<QgsMapLayer::ReadFlag> operator|(QgsMapLayer::ReadFlag f1, QFlags<QgsMapLayer::ReadFlag> f2);
 
 
 
