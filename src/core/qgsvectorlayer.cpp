@@ -2133,7 +2133,10 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
   bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
 
-  if ( isSpatial() )
+  // we must try to restore a renderer if our geometry type is unknown
+  // as this allows the renderer to be correctly restored even for layers
+  // with broken sources
+  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
   {
     // try renderer v2 first
     if ( categories.testFlag( Symbology ) )
@@ -2152,7 +2155,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
         }
       }
       // make sure layer has a renderer - if none exists, fallback to a default renderer
-      if ( !renderer() )
+      if ( isSpatial() && !renderer() )
       {
         setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
       }
@@ -3253,7 +3256,10 @@ bool QgsVectorLayer::isAuxiliaryField( int index, int &srcIndex ) const
 
 void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
 {
-  if ( !isSpatial() )
+  // we must allow setting a renderer if our geometry type is unknown
+  // as this allows the renderer to be correctly set even for layers
+  // with broken sources
+  if ( !isSpatial() && mWkbType != QgsWkbTypes::Unknown )
     return;
 
   if ( r != mRenderer )
