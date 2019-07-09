@@ -112,7 +112,9 @@ QVariant QgsValueRelationWidgetWrapper::value() const
             sl.push_back( s );
             break;
           default:
-            sl.push_back( "\"" + s + "\"" );
+            QString newS = s;
+            newS.replace( '\"', QStringLiteral( "\\\"" ) );
+            sl.push_back( "\"" + newS + "\"" );
             break;
         }
       }
