@@ -56,7 +56,8 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterColor)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -210,6 +211,11 @@ def getParameterFromString(s, context=''):
                 if len(params) > 6:
                     params[6] = float(params[6].strip()) if params[6] is not None else sys.float_info.max - 1
             elif clazz == QgsProcessingParameterString:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterColor:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
                 if len(params) > 4:
