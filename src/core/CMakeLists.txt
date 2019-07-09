@@ -282,6 +282,7 @@ SET(QGIS_CORE_SRCS
   qgsnetworkcontentfetchertask.cpp
   qgsnetworkreply.cpp
   qgsnetworkreplyparser.cpp
+  qgsnewsfeedmodel.cpp
   qgsnewsfeedparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
@@ -673,6 +674,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsnetworkcontentfetcherregistry.h
   qgsnetworkcontentfetchertask.h
   qgsnetworkreplyparser.h
+  qgsnewsfeedmodel.h
   qgsnewsfeedparser.h
   qgsofflineediting.h
   qgsowsconnection.h

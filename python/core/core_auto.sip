@@ -366,6 +366,7 @@
 %Include auto_generated/qgsnetworkcontentfetcher.sip
 %Include auto_generated/qgsnetworkcontentfetcherregistry.sip
 %Include auto_generated/qgsnetworkcontentfetchertask.sip
+%Include auto_generated/qgsnewsfeedmodel.sip
 %Include auto_generated/qgsnewsfeedparser.sip
 %Include auto_generated/qgsofflineediting.sip
 %Include auto_generated/qgspluginlayer.sip

@@ -16,6 +16,7 @@
 #define QGSNEWSFEEDPARSER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QObject>
 #include <QUrl>
 
@@ -67,7 +68,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      * The optional \a authcfg argument can be used to specify an authentication
      * configuration to use when connecting to the feed.
      */
-    QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg = QString() );
+    QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg = QString(), QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns a list of existing entries in the feed.
@@ -99,12 +100,20 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     void fetched( const QList< QgsNewsFeedParser::Entry > &entries );
 
     /**
-     * Emitted whenever a new entry is available from the feed (as a result
+     * Emitted whenever a new \a entry is available from the feed (as a result
      * of a call to fetch()).
      *
      * \see fetch()
      */
     void entryAdded( const QgsNewsFeedParser::Entry &entry );
+
+    /**
+     * Emitted whenever an \a entry is dismissed (as a result of a call
+     * to dismissEntry()).
+     *
+     * \see dismissEntry()
+     */
+    void entryDismissed( const QgsNewsFeedParser::Entry &entry );
 
   private slots:
 

@@ -18,6 +18,7 @@
 #include <QObject>
 #include <QSignalSpy>
 #include "qgsnewsfeedparser.h"
+#include "qgsnewsfeedmodel.h"
 #include "qgssettings.h"
 
 
@@ -34,6 +35,7 @@ class TestQgsNewsFeedParser: public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testFetch();
+    void testModel();
 
 };
 
@@ -147,11 +149,14 @@ void TestQgsNewsFeedParser::testFetch()
   QCOMPARE( parser3.entries().at( 3 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
 
   // dismiss imaginary entry
+  QSignalSpy dismissSpy( &parser3, &QgsNewsFeedParser::entryDismissed );
   parser3.dismissEntry( -1 );
+  QCOMPARE( dismissSpy.count(), 0 );
   QCOMPARE( parser3.entries().count(), 4 );
 
   // dismiss valid entry
   parser3.dismissEntry( 4 );
+  QCOMPARE( dismissSpy.count(), 1 );
   QCOMPARE( parser3.entries().count(), 3 );
   QCOMPARE( parser3.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
   QCOMPARE( parser3.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
@@ -170,6 +175,85 @@ void TestQgsNewsFeedParser::testFetch()
   QCOMPARE( parser4.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
   QCOMPARE( parser4.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
 
+}
+
+void TestQgsNewsFeedParser::testModel()
+{
+  // test news feed model
+  const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
+  const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
+  QgsSettings().remove( feedKey, QgsSettings::Core );
+
+  QgsNewsFeedParser parser( url );
+  QgsNewsFeedModel model( &parser );
+  QCOMPARE( model.rowCount(), 0 );
+
+  QEventLoop loop;
+  connect( &parser, &QgsNewsFeedParser::fetched, this, [ =, &loop ]( const  QList< QgsNewsFeedParser::Entry > & )
+  {
+    loop.quit();
+  } );
+  parser.fetch();
+  loop.exec();
+
+  QCOMPARE( model.rowCount(), 5 );
+  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QStringLiteral( "<p>Rumors from a whistleblower revealed the next Windows release code nam" ) ) );
+  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QStringLiteral( "<p>Tired with C++ intricacies, the core developers h" ) ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "<p>Ciao from Italy!</p>" ) );
+  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QStringLiteral( "<p>QGIS is finally part of the ESRI ecosystem, i" ) ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "<p>Let's dive in the ocean together!</p>" ) );
+  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QStringLiteral( "<p>Rumors from a whistleblower revealed the next Windows release code nam" ) ) );
+  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QStringLiteral( "<p>Tired with C++ intricacies, the core developers h" ) ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString(), QStringLiteral( "<p>Ciao from Italy!</p>" ) );
+  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QStringLiteral( "<p>QGIS is finally part of the ESRI ecosystem, i" ) ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString(), QStringLiteral( "<p>Let's dive in the ocean together!</p>" ) );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::ToolTipRole ).toString(),  QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "QGIS Italian Meeting" ) );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS Italian Meeting" ) );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Key ).toInt(), 4 );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Key ).toInt(), 6 );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Key ).toInt(), 11 );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Key ).toInt(), 3 );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), QgsNewsFeedModel::Key ).toInt(), 5 );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::ImageUrl ).toString(), QString() );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::ImageUrl ).toString(), QStringLiteral( "http://0.0.0.0:8000/media/feedimages/rust.png" ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::ImageUrl ).toString(), QString() );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::ImageUrl ).toString(), QString() );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), QgsNewsFeedModel::ImageUrl ).toString(), QString() );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Link ).toString(), QStringLiteral( "https://www.winux.microsoft.com" ) );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Link ).toString(), QString() );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Link ).toString(), QString() );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Link ).toString(), QStringLiteral( "https://www.qgis.com" ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), QgsNewsFeedModel::Link ).toString(), QString() );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Sticky ).toBool(), true );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Sticky ).toBool(), true );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Sticky ).toBool(), false );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Sticky ).toBool(), false );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), QgsNewsFeedModel::Sticky ).toBool(), false );
+
+  // remove an entry
+  parser.dismissEntry( 11 );
+  QCOMPARE( model.rowCount(), 4 );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
+
+  // construct a new model/parser -- should initially have stored entries
+  QgsNewsFeedParser parser2( url );
+  QgsNewsFeedModel model2( &parser2 );
+  QCOMPARE( model2.rowCount(), 4 );
+  QCOMPARE( model2.data( model2.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( model2.data( model2.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QCOMPARE( model2.data( model2.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( model2.data( model2.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
 }
 
 
