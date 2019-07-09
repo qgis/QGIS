@@ -24,8 +24,9 @@
 #include <QDateTime>
 
 
-QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg )
-  : mBaseUrl( feedUrl.toString() )
+QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg, QObject *parent )
+  : QObject( parent )
+  , mBaseUrl( feedUrl.toString() )
   , mFeedUrl( feedUrl )
   , mAuthCfg( authcfg )
   , mSettingsKey( keyForFeed( mBaseUrl ) )
@@ -58,12 +59,23 @@ QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const
 
 void QgsNewsFeedParser::dismissEntry( int key )
 {
+  Entry dismissed;
+  const int beforeSize = mEntries.size();
   mEntries.erase( std::remove_if( mEntries.begin(), mEntries.end(),
-                                  [key]( const Entry & entry )
+                                  [key, &dismissed]( const Entry & entry )
   {
-    return entry.key == key;
+    if ( entry.key == key )
+    {
+      dismissed = entry;
+      return true;
+    }
+    return false;
   } ), mEntries.end() );
+  if ( beforeSize == mEntries.size() )
+    return; // didn't find matching entry
+
   QgsSettings().remove( QStringLiteral( "%1/%2" ).arg( mSettingsKey ).arg( key ), QgsSettings::Core );
+  emit entryDismissed( dismissed );
 }
 
 void QgsNewsFeedParser::fetch()
