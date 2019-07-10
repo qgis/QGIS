@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/callouts
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -87,6 +88,7 @@ SET(TESTS
  testqgsbrowsermodel.cpp
  testqgsbrowserproxymodel.cpp
  testqgscadutils.cpp
+ testqgscalloutregistry.cpp
  testqgsclipper.cpp
  testqgscolorscheme.cpp
  testqgscolorschemeregistry.cpp
