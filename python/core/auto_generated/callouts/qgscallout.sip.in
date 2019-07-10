@@ -25,6 +25,20 @@ relevant symbology elements to render them.
 %TypeHeaderCode
 #include "qgscallout.h"
 %End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == "simple" && dynamic_cast<QgsSimpleLineCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsSimpleLineCallout;
+    }
+    else if ( sipCpp->type() == "manhattan" && dynamic_cast<QgsManhattanLineCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsManhattanLineCallout;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
   public:
 
     enum Property
