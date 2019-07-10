@@ -88,6 +88,7 @@ SET(TESTS
  testqgsbrowsermodel.cpp
  testqgsbrowserproxymodel.cpp
  testqgscadutils.cpp
+ testqgscallout.cpp
  testqgscalloutregistry.cpp
  testqgsclipper.cpp
  testqgscolorscheme.cpp
