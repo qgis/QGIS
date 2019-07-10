@@ -148,9 +148,9 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
     if ( configPath.isEmpty() )
     {
       // Read it from the environment, because a rewrite rule may have rewritten it
-      if ( getenv( "QGIS_PROJECT_FILE") )
+      if ( getenv( "QGIS_PROJECT_FILE" ) )
       {
-        cfPath = getenv( "QGIS_PROJECT_FILE");
+        cfPath = getenv( "QGIS_PROJECT_FILE" );
         QgsMessageLog::logMessage( QStringLiteral( "Using configuration file path from environment: %1" ).arg( cfPath ), QStringLiteral( "Server" ), Qgis::Info );
       }
       else  if ( ! defaultConfigPath.isEmpty() )
