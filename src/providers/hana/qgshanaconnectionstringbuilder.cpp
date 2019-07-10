@@ -39,7 +39,7 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder(const QgsDataSour
 
 QString QgsHanaConnectionStringBuilder::toString()
 {
-  QString ret = QStringLiteral("DRIVER={%1};SERVERNODE=%2:%3;DATABASENAME=%4;UID=%5;PWD=%6").arg(
+  QString ret = QStringLiteral("DRIVER={%1};SERVERNODE=%2:%3;DATABASENAME=%4;UID=%5;PWD=%6;CHAR_AS_UTF8=1").arg(
       mDriver, mHost, mPort, mDatabase, mUserName, mPassword);
   if (!mSchema.isEmpty())
     ret += QStringLiteral(";CURRENTSCHEMA=") + mSchema;
