@@ -400,6 +400,14 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR;
         return compare( fL - fR ) ? TVL_True : TVL_False;
       }
+      else if ( QgsExpressionUtils::isIntervalSafe( vL ) && QgsExpressionUtils::isIntervalSafe( vR ) )
+      {
+        double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
+        ENSURE_NO_EVAL_ERROR;
+        double fR = QgsExpressionUtils::getInterval( vR, parent ).seconds();
+        ENSURE_NO_EVAL_ERROR;
+        return compare( fL - fR ) ? TVL_True : TVL_False;
+      }
       else
       {
         // do string comparison otherwise
