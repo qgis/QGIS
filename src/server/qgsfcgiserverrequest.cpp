@@ -128,7 +128,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   if ( logLevel <= Qgis::Info )
   {
-    printRequestInfos();
+    printRequestInfos( url );
   }
 }
 
@@ -182,7 +182,7 @@ void QgsFcgiServerRequest::readData()
   }
 }
 
-void QgsFcgiServerRequest::printRequestInfos()
+void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
 {
   QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), Qgis::Info );
 
@@ -190,18 +190,28 @@ void QgsFcgiServerRequest::printRequestInfos()
   {
     QStringLiteral( "SERVER_NAME" ),
     QStringLiteral( "REQUEST_URI" ),
+    QStringLiteral( "SCRIPT_NAME" ),
+    QStringLiteral( "HTTPS" ),
     QStringLiteral( "REMOTE_ADDR" ),
     QStringLiteral( "REMOTE_HOST" ),
+    QStringLiteral( "SERVER_PORT" ),
+    QStringLiteral( "QUERY_STRING" ),
     QStringLiteral( "REMOTE_USER" ),
     QStringLiteral( "REMOTE_IDENT" ),
     QStringLiteral( "CONTENT_TYPE" ),
+    QStringLiteral( "REQUEST_METHOD" ),
     QStringLiteral( "AUTH_TYPE" ),
     QStringLiteral( "HTTP_ACCEPT" ),
     QStringLiteral( "HTTP_USER_AGENT" ),
     QStringLiteral( "HTTP_PROXY" ),
     QStringLiteral( "NO_PROXY" ),
-    QStringLiteral( "HTTP_AUTHORIZATION" )
+    QStringLiteral( "HTTP_AUTHORIZATION" ),
+    QStringLiteral( "QGIS_PROJECT_FILE" )
   };
+
+  QgsMessageLog::logMessage( QStringLiteral( "Request URL: %2" ).arg( url.url() ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "Environment:" ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::Info );
 
   for ( const auto &envVar : envVars )
   {
