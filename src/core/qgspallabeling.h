@@ -435,6 +435,7 @@ class CORE_EXPORT QgsPalLayerSettings
       IsObstacle = 88,
       ObstacleFactor = 89,
       ZIndex = 90,
+      CalloutDraw = 100, //!< Show callout
 
       // (data defined only)
       Show = 15,
