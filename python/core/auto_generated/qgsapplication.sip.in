@@ -731,7 +731,7 @@ Returns the application's authentication manager instance
 .. versionadded:: 3.0
 %End
 
-    static QgsProcessingRegistry *processingRegistry() /KeepReference/;
+    static QgsProcessingRegistry *processingRegistry();
 %Docstring
 Returns the application's processing registry, used for managing processing providers,
 algorithms, and various parameters and outputs.
