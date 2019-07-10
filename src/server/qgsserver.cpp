@@ -147,7 +147,16 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
   {
     if ( configPath.isEmpty() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
+      // Read it from the environment, because a rewrite rule may have rewritten it
+      if ( getenv( "QGIS_PROJECT_FILE") )
+      {
+        cfPath = getenv( "QGIS_PROJECT_FILE");
+        QgsMessageLog::logMessage( QStringLiteral( "Using configuration file path from environment: %1" ).arg( cfPath ), QStringLiteral( "Server" ), Qgis::Info );
+      }
+      else  if ( ! defaultConfigPath.isEmpty() )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
+      }
     }
     else
     {
