@@ -938,8 +938,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>266</width>
-                <height>524</height>
+                <width>269</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2411,16 +2411,7 @@
                      </widget>
                     </item>
                    </layout>
-                  </item>
-                  <item row="11" column="0" colspan="2">
-                   <layout class="QHBoxLayout" name="mWMSDefaultMapUnitsPerMmLayout">
-                    <item>
-                     <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
-                      <property name="text">
-                       <string>Default map units per mm in legend</string>
-                      </property>
-                     </widget>
-                    </item>
+                 </item>
                   <item row="11" column="0" colspan="3">
                    <layout class="QHBoxLayout" name="horizontalLayout_18">
                     <item>
@@ -2435,6 +2426,17 @@
                     </item>
                     <item>
                      <widget class="QSpinBox" name="mWMSTileBufferSpinBox"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="11" column="0" colspan="2">
+                   <layout class="QHBoxLayout" name="mWMSDefaultMapUnitsPerMmLayout">
+                    <item>
+                     <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
+                      <property name="text">
+                       <string>Default map units per mm in legend</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </item>
