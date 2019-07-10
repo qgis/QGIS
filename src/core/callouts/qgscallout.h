@@ -208,7 +208,7 @@ class CORE_EXPORT QgsCallout
     /**
      * Performs the actual rendering of the callout implementation onto the specified render \a context.
      *
-     * The \a rect argument gives the desired size and position of the body of the callout (e.g. the
+     * The \a bodyBoundingBox argument gives the desired size and position of the body of the callout (e.g. the
      * actual label geometry). The \a angle argument specifies the rotation of the callout body
      * (in degrees clockwise from horizontal). It is assumed that angle rotation specified via \a angle
      * is applied around the center of \a rect.
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsCallout
      *
      * Both \a rect and \a anchor are specified in painter coordinates (i.e. pixels).
      */
-    virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor ) = 0;
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) = 0;
 
   private:
 
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     const QgsMapUnitScale &minimumLengthMapUnitScale() const { return mMinCalloutLengthScale; }
 
   protected:
-    void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor ) override;
+    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) override;
 
   private:
 
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout *clone() const override;
 
   protected:
-    void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor ) override;
+    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) override;
 
   private:
 #ifdef SIP_RUN
