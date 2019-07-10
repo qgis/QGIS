@@ -121,9 +121,7 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
     {
       w->setCallout( callout );
 
-      QgsSymbolWidgetContext context;
-      context.setMapCanvas( mMapCanvas );
-      w->setContext( context );
+      w->setContext( context() );
       mCalloutStackedWidget->addWidget( w );
       mCalloutStackedWidget->setCurrentWidget( w );
       // start receiving updates from widget
@@ -807,6 +805,15 @@ void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEnt
       break;
     }
   }
+}
+
+void QgsLabelingGui::setContext( const QgsSymbolWidgetContext &context )
+{
+  if ( QgsCalloutWidget *cw = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() ) )
+  {
+    cw->setContext( context );
+  }
+  QgsTextFormatWidget::setContext( context );
 }
 
 void QgsLabelingGui::saveFormat()

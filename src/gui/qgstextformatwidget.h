@@ -22,6 +22,7 @@
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"
 #include "qgsguiutils.h"
+#include "qgssymbolwidgetcontext.h"
 #include <QFontDatabase>
 #include "qgis_gui.h"
 
@@ -73,6 +74,20 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \since QGIS 3.2
      */
     void setFormat( const QgsTextFormat &format );
+
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see context()
+     * \since QGIS 3.10
+     */
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+    /**
+     * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see setContext()
+     * \since QGIS 3.10
+     */
+    QgsSymbolWidgetContext context() const;
 
   public slots:
 
@@ -143,6 +158,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     //! Associated map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
+
+    //! Context in which widget is shown
+    QgsSymbolWidgetContext mContext;
 
   protected slots:
 

@@ -56,6 +56,7 @@ void QgsCalloutWidget::setContext( const QgsSymbolWidgetContext &context )
   for ( QgsSymbolButton *symbolWidget : symbolButtonWidgets )
   {
     symbolWidget->setMapCanvas( mContext.mapCanvas() );
+    symbolWidget->setMessageBar( mContext.messageBar() );
   }
 }
 
