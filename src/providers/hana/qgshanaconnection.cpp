@@ -544,7 +544,6 @@ QgsHanaConnectionRef::QgsHanaConnectionRef(const QString& name)
 
 QgsHanaConnectionRef::~QgsHanaConnectionRef()
 {
-  QgsHanaConnection* conn = mConnection.release();
-  if (QgsHanaConnectionPool::hasInstance())
-    QgsHanaConnectionPool::instance()->releaseConnection(conn);
+  if (mConnection && QgsHanaConnectionPool::hasInstance())
+    QgsHanaConnectionPool::instance()->releaseConnection(mConnection.release());
 }
