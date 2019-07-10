@@ -322,12 +322,6 @@ void QgsTextFormatWidget::initWidget()
 
   setDockMode( false );
 
-  // Callout options - to move to custom widgets when multiple callout styles exist
-  mCalloutLineStyleButton->setSymbolType( QgsSymbol::Line );
-  mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
-  mCalloutLineStyleButton->registerExpressionContextGenerator( this );
-  mCalloutLineStyleButton->setMapCanvas( mMapCanvas );
-
   QList<QWidget *> widgets;
   widgets << btnBufferColor
           << btnTextColor
@@ -546,9 +540,9 @@ void QgsTextFormatWidget::initWidget()
           << mGeometryGeneratorType
           << mLinePlacementFlagsDDBtn
           << mBackgroundSymbolButton
-          << mCalloutLineStyleButton
           << mCalloutsDrawCheckBox
-          << mCalloutStyleComboBox;
+          << mCalloutStyleComboBox
+          << mCalloutDrawDDBtn;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );

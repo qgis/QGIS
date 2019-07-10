@@ -115,6 +115,7 @@ Controls whether data defined alignment buttons are enabled.
 
 
 
+
   protected slots:
 
     void updateLinePlacementOptions();
@@ -137,6 +138,13 @@ Sets the current text settings from a style entry.
     virtual void saveFormat();
 %Docstring
 Saves the current text settings to a style entry.
+%End
+
+    void updatePreview();
+%Docstring
+Updates the text preview.
+
+.. versionadded:: 3.10
 %End
 
 };

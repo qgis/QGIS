@@ -18,13 +18,12 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgis_sip.h"
 #include "qgssymbolwidgetcontext.h"
-#include "qgssymbollayer.h"
+#include "qgscallout.h"
 #include <QWidget>
 #include <QStandardItemModel>
 
 class QgsVectorLayer;
 class QgsMapCanvas;
-class QgsCallout;
 
 /**
  * \ingroup gui
@@ -76,9 +75,8 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
      * Registers a data defined override button. Handles setting up connections
      * for the button and initializing the button to show the correct descriptions
      * and help text for the associated property.
-     * \since QGIS 3.0
      */
-    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -104,5 +102,42 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
   private:
     QgsSymbolWidgetContext mContext;
 };
+
+
+///////////
+
+#include "ui_widget_simplelinecallout.h"
+
+class QgsSimpleLineCallout;
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private Ui::WidgetSimpleLineCallout
+{
+    Q_OBJECT
+
+  public:
+
+    QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleLineCalloutWidget( vl ); }
+
+    void setCallout( QgsCallout *callout ) override;
+    QgsCallout *callout() override;
+
+  private slots:
+
+    void minimumLengthChanged();
+    void minimumLengthUnitWidgetChanged();
+    void lineSymbolChanged();
+
+  private:
+    std::unique_ptr< QgsSimpleLineCallout > mCallout;
+
+};
+
+#endif
+///@endcond
 
 #endif // QGSCALLOUTWIDGET_H
