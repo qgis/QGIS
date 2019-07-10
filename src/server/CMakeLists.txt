@@ -45,6 +45,7 @@ SET(QGIS_SERVER_SRCS
   qgsfeaturefilterprovidergroup.cpp
   qgsfeaturefilter.cpp
   qgsstorebadlayerinfo.cpp
+  qgsserverquerystringparameter.cpp
 )
 
 SET (QGIS_SERVER_HDRS
@@ -52,6 +53,7 @@ SET (QGIS_SERVER_HDRS
   qgsmapserviceexception.h
   qgsserverapi.h
   qgsserverapicontext.h
+  qgsserverquerystringparameter.h
 )
 
 
@@ -61,6 +63,7 @@ SET (QGIS_SERVER_MOC_HDRS
   qgsserverlogger.h
   qgsserversettings.h
   qgsserverparameters.h
+  qgsserverquerystringparameter.h
 )
 
 
