@@ -56,13 +56,11 @@ Returns the vector layer associated with the widget.
 
   protected:
 
-    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
 %Docstring
 Registers a data defined override button. Handles setting up connections
 for the button and initializing the button to show the correct descriptions
 and help text for the associated property.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -80,6 +78,11 @@ If the subsymbol is changed, symbolChanged() should be emitted instead.
     void updateDataDefinedProperty();
 
 };
+
+
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -23,17 +23,37 @@
 #include "qgsxmlutils.h"
 #include "qgslinestring.h"
 #include <QPainter>
+#include <mutex>
+
+QgsPropertiesDefinition QgsCallout::sPropertyDefinitions;
+
+void QgsCallout::initPropertyDefinitions()
+{
+  const QString origin = QStringLiteral( "callouts" );
+
+  sPropertyDefinitions = QgsPropertiesDefinition
+  {
+    { QgsCallout::MinimumCalloutLength, QgsPropertyDefinition( "MinimumCalloutLength", QObject::tr( "Minimum callout length" ), QgsPropertyDefinition::DoublePositive, origin ) },
+  };
+}
+
+
+QgsCallout::QgsCallout()
+{
+}
 
 QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
 {
   QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "ddProperties" ), mDataDefinedProperties.toVariant( propertyDefinitions() ) );
   return props;
 }
 
 void QgsCallout::readProperties( const QVariantMap &props, const QgsReadWriteContext & )
 {
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
+  mDataDefinedProperties.loadVariant( props.value( QStringLiteral( "ddProperties" ) ), propertyDefinitions() );
 }
 
 bool QgsCallout::saveProperties( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const
@@ -68,9 +88,10 @@ void QgsCallout::stopRender( QgsRenderContext & )
 
 }
 
-QSet<QString> QgsCallout::referencedFields( const QgsRenderContext & ) const
+QSet<QString> QgsCallout::referencedFields( const QgsRenderContext &context ) const
 {
-  return QSet< QString >();
+  mDataDefinedProperties.prepare( context.expressionContext() );
+  return mDataDefinedProperties.referencedFields( context.expressionContext() );
 }
 
 void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor )
@@ -105,6 +126,16 @@ void QgsCallout::setEnabled( bool enabled )
   mEnabled = enabled;
 }
 
+QgsPropertiesDefinition QgsCallout::propertyDefinitions()
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
+  {
+    initPropertyDefinitions();
+  } );
+  return sPropertyDefinitions;
+}
+
 
 //
 // QgsSimpleLineCallout
@@ -121,6 +152,9 @@ QgsSimpleLineCallout::~QgsSimpleLineCallout() = default;
 QgsSimpleLineCallout::QgsSimpleLineCallout( const QgsSimpleLineCallout &other )
   : QgsCallout( other )
   , mLineSymbol( other.mLineSymbol ? other.mLineSymbol->clone() : nullptr )
+  , mMinCalloutLength( other.mMinCalloutLength )
+  , mMinCalloutLengthUnit( other.mMinCalloutLengthUnit )
+  , mMinCalloutLengthScale( other.mMinCalloutLengthScale )
 {
 
 }
@@ -150,6 +184,9 @@ QVariantMap QgsSimpleLineCallout::properties( const QgsReadWriteContext &context
   {
     props[ QStringLiteral( "lineSymbol" ) ] = QgsSymbolLayerUtils::symbolProperties( mLineSymbol.get() );
   }
+  props[ QStringLiteral( "minLength" ) ] = mMinCalloutLength;
+  props[ QStringLiteral( "minLengthUnit" ) ] = QgsUnitTypes::encodeUnit( mMinCalloutLengthUnit );
+  props[ QStringLiteral( "minLengthMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mMinCalloutLengthScale );
 
   return props;
 }
@@ -165,6 +202,10 @@ void QgsSimpleLineCallout::readProperties( const QVariantMap &props, const QgsRe
   std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ) );
   if ( lineSymbol )
     mLineSymbol = std::move( lineSymbol );
+
+  mMinCalloutLength = props.value( QStringLiteral( "minLength" ), 0 ).toInt();
+  mMinCalloutLengthUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "minLengthUnit" ) ).toString() );
+  mMinCalloutLengthScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "minLengthMapUnitScale" ) ).toString() );
 }
 
 void QgsSimpleLineCallout::startRender( QgsRenderContext &context )
@@ -227,6 +268,15 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
 
   if ( qgsDoubleNear( line.length(), 0 ) )
     return;
+
+  double minLength = mMinCalloutLength;
+  if ( dataDefinedProperties().isActive( QgsCallout::MinimumCalloutLength ) )
+  {
+    minLength = dataDefinedProperties().valueAsDouble( QgsCallout::MinimumCalloutLength, context.expressionContext(), minLength );
+  }
+  double minLengthPixels = context.convertToPainterUnits( minLength, mMinCalloutLengthUnit, mMinCalloutLengthScale );
+  if ( minLengthPixels > 0 && line.length() < minLengthPixels )
+    return; // too small!
 
   mLineSymbol->renderPolyline( line.asQPolygonF(), nullptr, context );
 }

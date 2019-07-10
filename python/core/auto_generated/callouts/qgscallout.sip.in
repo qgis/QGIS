@@ -27,6 +27,11 @@ relevant symbology elements to render them.
 %End
   public:
 
+    enum Property
+    {
+      MinimumCalloutLength,
+    };
+
     QgsCallout();
 %Docstring
 Constructor for QgsCallout.
@@ -160,6 +165,27 @@ Sets whether the callout is ``enabled``.
 .. seealso:: :py:func:`enabled`
 %End
 
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the callout's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the callout's property ``collection``, used for data defined overrides.
+
+Any existing properties will be discarded.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
+%End
+
+    static QgsPropertiesDefinition propertyDefinitions();
+
   protected:
 
     virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor ) = 0;
@@ -223,6 +249,64 @@ QgsSimpleLineCallout.properties() ).
     QgsLineSymbol *lineSymbol();
 
     void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+
+    double minimumLength() const;
+%Docstring
+Returns the minimum length of callout lines. Units are specified through minimumLengthUnits().
+
+.. seealso:: :py:func:`setMinimumLength`
+
+.. seealso:: :py:func:`minimumLengthUnit`
+%End
+
+    void setMinimumLength( double length );
+%Docstring
+Sets the minimum ``length`` of callout lines. Units are specified through setMinimumLengthUnit().
+
+.. seealso:: :py:func:`minimumLength`
+
+.. seealso:: :py:func:`setMinimumLengthUnit`
+%End
+
+    void setMinimumLengthUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the minimum length of callout lines.
+
+.. seealso:: :py:func:`minimumLengthUnit`
+
+.. seealso:: :py:func:`setMinimumLength`
+%End
+
+    QgsUnitTypes::RenderUnit minimumLengthUnit() const;
+%Docstring
+Returns the units for the minimum length of callout lines.
+
+.. seealso:: :py:func:`setMinimumLengthUnit`
+
+.. seealso:: :py:func:`minimumLength`
+%End
+
+    void setMinimumLengthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the minimum callout length.
+
+.. seealso:: :py:func:`minimumLengthMapUnitScale`
+
+.. seealso:: :py:func:`setMinimumLengthUnit`
+
+.. seealso:: :py:func:`setMinimumLength`
+%End
+
+    const QgsMapUnitScale &minimumLengthMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum callout length.
+
+.. seealso:: :py:func:`setMinimumLengthMapUnitScale`
+
+.. seealso:: :py:func:`minimumLengthUnit`
+
+.. seealso:: :py:func:`minimumLength`
+%End
 
   protected:
     virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
