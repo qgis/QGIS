@@ -46,8 +46,8 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
 
 QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode )
   : QWidget( parent )
-  , mWidgetMode( mode )
   , mMapCanvas( mapCanvas )
+  , mWidgetMode( mode )
 {
   initWidget();
   setWidgetMode( mode );
@@ -926,11 +926,27 @@ void QgsTextFormatWidget::setFormat( const QgsTextFormat &format )
   updateWidgetForFormat( format );
 }
 
+QgsSymbolWidgetContext QgsTextFormatWidget::context() const
+{
+  return mContext;
+}
+
 void QgsTextFormatWidget::optionsStackedWidget_CurrentChanged( int indx )
 {
   mLabelingOptionsListWidget->blockSignals( true );
   mLabelingOptionsListWidget->setCurrentRow( indx );
   mLabelingOptionsListWidget->blockSignals( false );
+}
+
+void QgsTextFormatWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  mContext = context;
+  const auto symbolButtonWidgets = findChildren<QgsSymbolButton *>();
+  for ( QgsSymbolButton *symbolWidget : symbolButtonWidgets )
+  {
+    symbolWidget->setMapCanvas( mContext.mapCanvas() );
+    symbolWidget->setMessageBar( mContext.messageBar() );
+  }
 }
 
 void QgsTextFormatWidget::collapseSample( bool collapse )

@@ -57,6 +57,24 @@ Sets the current formatting settings
 .. versionadded:: 3.2
 %End
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+
+.. versionadded:: 3.10
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+
+.. versionadded:: 3.10
+%End
+
   public slots:
 
     void setDockMode( bool enabled );
@@ -112,6 +130,7 @@ Controls whether data defined alignment buttons are enabled.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
 
 

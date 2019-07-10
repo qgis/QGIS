@@ -433,7 +433,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             if ( !mLabelingWidget )
             {
-              mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack );
+              mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack, mMessageBar );
               mLabelingWidget->setDockMode( true );
               connect( mLabelingWidget, &QgsLabelingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }

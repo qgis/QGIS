@@ -60,6 +60,8 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
      */
     void deactivateField( QgsPalLayerSettings::Property key );
 
+    void setContext( const QgsSymbolWidgetContext &context ) override;
+
   signals:
 
     void auxiliaryFieldCreated();
