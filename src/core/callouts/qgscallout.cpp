@@ -344,6 +344,15 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
   if ( qgsDoubleNear( line.length(), 0 ) )
     return;
 
+  double minLength = minimumLength();
+  if ( dataDefinedProperties().isActive( QgsCallout::MinimumCalloutLength ) )
+  {
+    minLength = dataDefinedProperties().valueAsDouble( QgsCallout::MinimumCalloutLength, context.expressionContext(), minLength );
+  }
+  double minLengthPixels = context.convertToPainterUnits( minLength, minimumLengthUnit(), minimumLengthMapUnitScale() );
+  if ( minLengthPixels > 0 && line.length() < minLengthPixels )
+    return; // too small!
+
   const QgsPoint start = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->startPoint();
   const QgsPoint end = qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint();
   QgsPoint mid1 = QgsPoint( start.x(), end.y() );

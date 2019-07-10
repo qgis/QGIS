@@ -97,6 +97,7 @@ static bool _initCalloutWidgetFunction( const QString &name, QgsCalloutWidgetFun
 void QgsLabelingGui::initCalloutWidgets()
 {
   _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
+  _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
 }
 
 void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )

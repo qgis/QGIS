@@ -137,6 +137,18 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
 
 };
 
+class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsManhattanLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); }
+
+};
+
 #endif
 ///@endcond
 
