@@ -46,6 +46,23 @@ class QgsCalloutWidget; //stop sip breaking
 class CORE_EXPORT QgsCallout
 {
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "simple" && dynamic_cast<QgsSimpleLineCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsSimpleLineCallout;
+    }
+    else if ( sipCpp->type() == "manhattan" && dynamic_cast<QgsManhattanLineCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsManhattanLineCallout;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
+
   public:
 
     //! Data definable properties.
