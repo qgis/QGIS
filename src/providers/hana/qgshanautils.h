@@ -17,6 +17,7 @@
 #ifndef QGSHANAUTILS_H
 #define QGSHANAUTILS_H
 
+#include "qgsdatasourceuri.h"
 #include "qgsfields.h"
 #include <qgswkbtypes.h>
 #include <qstring.h>
@@ -30,6 +31,8 @@ class QgsHanaUtils
 {
   public:
     QgsHanaUtils() = delete;
+
+    static QString connectionInfo(const QgsDataSourceUri& uri);
 
     static QString quotedIdentifier(const QString& str);
     static QString quotedString(const QString &str);

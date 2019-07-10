@@ -65,7 +65,6 @@ QVector<QgsDataItem*> QgsHanaConnectionItem::createChildren()
     QgsHanaSettings settings(mName, true);
     QVector<QgsHanaSchemaProperty> schemas =
       conn->getSchemas(settings.getUserTablesOnly() ? settings.getUserName() : "");
-    conn.release();
 
     if (schemas.isEmpty())
     {
