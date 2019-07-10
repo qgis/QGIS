@@ -14060,8 +14060,15 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
 
   if ( !result.successful )
   {
-    // fallback - use message bar
-    messageBar()->pushInfo( title, message );
+    // fallback - use message bar if available, otherwise use a message log
+    if ( messageBar() )
+    {
+      messageBar()->pushInfo( title, message );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( title, message ) );
+    }
   }
   else
   {
