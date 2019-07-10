@@ -37,9 +37,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>417</width>
-        <height>680</height>
+        <y>-202</y>
+        <width>414</width>
+        <height>536</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mLabelPropertiesLayout">
@@ -419,6 +419,13 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mShowCalloutChkbx">
+         <property name="text">
+          <string>Show callout</string>
+         </property>
         </widget>
        </item>
        <item>

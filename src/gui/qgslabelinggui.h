@@ -90,6 +90,11 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void validateGeometryGeneratorExpression();
     void determineGeometryGeneratorType();
 
+    /**
+     * Update widget when callout type changes
+     */
+    void calloutTypeChanged();
+
   private:
     QgsVectorLayer *mLayer = nullptr;
     QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
@@ -109,6 +114,8 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
   private slots:
 
     void updateProperty();
+    void initCalloutWidgets();
+    void updateCalloutWidget( QgsCallout *callout );
 
 };
 

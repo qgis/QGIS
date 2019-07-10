@@ -141,6 +141,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     //! Pixel size font limit
     int mMinPixelLimit = 0;
 
+    //! Associated map canvas
+    QgsMapCanvas *mMapCanvas = nullptr;
+
   protected slots:
 
     //! Updates line placement options to reflect current state of widget
@@ -160,9 +163,15 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      */
     virtual void saveFormat();
 
+    /**
+     * Updates the text preview.
+     * \since QGIS 3.10
+    */
+    void updatePreview();
+
   private:
     Mode mWidgetMode = Text;
-    QgsMapCanvas *mMapCanvas = nullptr;
+
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
     std::unique_ptr< QgsPaintEffect > mBufferEffect;
     std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
@@ -221,7 +230,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void collapseSample( bool collapse );
     void changeTextColor( const QColor &color );
     void changeBufferColor( const QColor &color );
-    void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
     void updateAvailableShadowPositions();

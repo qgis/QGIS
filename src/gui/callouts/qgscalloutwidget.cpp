@@ -61,6 +61,11 @@ void QgsCalloutWidget::setContext( const QgsSymbolWidgetContext &context )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
+  const auto symbolButtonWidgets = findChildren<QgsSymbolButton *>();
+  for ( QgsSymbolButton *symbolWidget : symbolButtonWidgets )
+  {
+    symbolWidget->setMapCanvas( mContext.mapCanvas() );
+  }
 }
 
 QgsSymbolWidgetContext QgsCalloutWidget::context() const
@@ -68,9 +73,9 @@ QgsSymbolWidgetContext QgsCalloutWidget::context() const
   return mContext;
 }
 
-void QgsCalloutWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
+void QgsCalloutWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key )
 {
-//  button->init( key, callout()->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer, true );
+  button->init( key, callout()->dataDefinedProperties(), QgsCallout::propertyDefinitions(), mVectorLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsCalloutWidget::updateDataDefinedProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsCalloutWidget::createAuxiliaryField );
 
@@ -91,8 +96,8 @@ void QgsCalloutWidget::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
-  QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
+  QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
+  QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
   if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
@@ -113,9 +118,7 @@ void QgsCalloutWidget::createAuxiliaryField()
   button->updateFieldLists();
   button->setToProperty( property );
 
-#if 0
-  callout()->setDataDefinedProperty( key, button->toProperty() );
-#endif
+  callout()->dataDefinedProperties().setProperty( key, button->toProperty() );
 
   emit changed();
 }
@@ -123,9 +126,79 @@ void QgsCalloutWidget::createAuxiliaryField()
 void QgsCalloutWidget::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
-#if 0
-  callout()->setDataDefinedProperty( key, button->toProperty() );
-#endif
+  QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
+  callout()->dataDefinedProperties().setProperty( key, button->toProperty() );
   emit changed();
 }
+
+/// @cond PRIVATE
+
+//
+// QgsSimpleLineCalloutWidget
+//
+
+QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsCalloutWidget( parent, vl )
+{
+  setupUi( this );
+
+  // Callout options - to move to custom widgets when multiple callout styles exist
+  mCalloutLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
+  mCalloutLineStyleButton->registerExpressionContextGenerator( this );
+
+  mCalloutLineStyleButton->setLayer( vl );
+  mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  connect( mMinCalloutWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::minimumLengthUnitWidgetChanged );
+  connect( mMinCalloutLengthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::minimumLengthChanged );
+  connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsSimpleLineCalloutWidget::lineSymbolChanged );
+}
+
+void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
+{
+  if ( !callout )
+    return;
+
+  mCallout.reset( dynamic_cast<QgsSimpleLineCallout *>( callout->clone() ) );
+  if ( !mCallout )
+    return;
+
+  mMinCalloutWidthUnitWidget->blockSignals( true );
+  mMinCalloutWidthUnitWidget->setUnit( mCallout->minimumLengthUnit() );
+  mMinCalloutWidthUnitWidget->setMapUnitScale( mCallout->minimumLengthMapUnitScale() );
+  mMinCalloutWidthUnitWidget->blockSignals( false );
+
+  whileBlocking( mMinCalloutLengthSpin )->setValue( mCallout->minimumLength() );
+
+  whileBlocking( mCalloutLineStyleButton )->setSymbol( mCallout->lineSymbol()->clone() );
+
+  registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::MinimumCalloutLength );
+}
+
+QgsCallout *QgsSimpleLineCalloutWidget::callout()
+{
+  return mCallout.get();
+}
+
+void QgsSimpleLineCalloutWidget::minimumLengthChanged()
+{
+  mCallout->setMinimumLength( mMinCalloutLengthSpin->value() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::minimumLengthUnitWidgetChanged()
+{
+  mCallout->setMinimumLengthUnit( mMinCalloutWidthUnitWidget->unit() );
+  mCallout->setMinimumLengthMapUnitScale( mMinCalloutWidthUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::lineSymbolChanged()
+{
+  mCallout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  emit changed();
+}
+
+///@endcond
