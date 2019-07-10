@@ -28,10 +28,12 @@ Processing map layer combo box.
 %End
   public:
 
-    QgsProcessingMapLayerComboBox( QgsProcessingParameterDefinition *parameter, QWidget *parent = 0 );
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsProcessingMapLayerComboBox, with the specified ``parameter`` definition.
 %End
+
+    ~QgsProcessingMapLayerComboBox();
 
     void setLayer( QgsMapLayer *layer );
 %Docstring
