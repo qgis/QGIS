@@ -29,15 +29,6 @@ QgsExpressionContext QgsCalloutWidget::createExpressionContext() const
 
   QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( vectorLayer() ) );
 
-  QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  if ( const QgsCallout *callout = const_cast< QgsCalloutWidget * >( this )->callout() )
-  {
-    //cheat a bit - set the symbol color variable to match the symbol layer's color (when we should really be using the *symbols*
-    //color, but that's not accessible here). 99% of the time these will be the same anyway
-//    symbolScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, symbolLayer->color(), true ) );
-  }
-  expContext << symbolScope;
-
   // additional scopes
   const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
   for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
