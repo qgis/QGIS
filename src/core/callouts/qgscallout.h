@@ -198,6 +198,9 @@ class CORE_EXPORT QgsCallout
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
+    /**
+     * Returns the definitions for data defined properties available for use in callouts.
+     */
     static QgsPropertiesDefinition propertyDefinitions();
 
   protected:
@@ -246,6 +249,10 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     ~QgsSimpleLineCallout() override;
 
 #ifndef SIP_RUN
+
+    /**
+     * Copy constructor.
+     */
     QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
     QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & ) = delete;
 #endif
@@ -265,8 +272,21 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     void stopRender( QgsRenderContext &context ) override;
     QSet< QString > referencedFields( const QgsRenderContext &context ) const override;
 
+    /**
+     * Returns the line symbol used to render the callout line.
+     *
+     * Ownership is not transferred.
+     *
+     * \see setLineSymbol()
+     */
     QgsLineSymbol *lineSymbol();
 
+    /**
+     * Sets the line \a symbol used to render the callout line. Ownership of \a symbol is
+     * transferred to the callout.
+     *
+     * \see lineSymbol()
+     */
     void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     /**
@@ -330,6 +350,12 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
 };
 
 
+/**
+ * \ingroup core
+ * \brief Draws straight (right angled) lines as callouts.
+ *
+ * \since QGIS 3.10
+ */
 class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
 {
   public:
@@ -337,7 +363,12 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout();
 
 #ifndef SIP_RUN
+
+    /**
+     * Copy constructor.
+     */
     QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
+
     QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & ) = delete;
 #endif
 

@@ -28,6 +28,8 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsCalloutWidget
+ * Base class for widgets which allow control over the properties of callouts.
+ * \since QGIS 3.10
  */
 class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionContextGenerator
 {
@@ -45,7 +47,17 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
       , mVectorLayer( vl )
     {}
 
+    /**
+     * Sets the \a callout to show in the widget. Ownership is not transferred.
+     * \see callout()
+     */
     virtual void setCallout( QgsCallout *callout ) = 0;
+
+    /**
+     * Returns the callout defined by the current settings in the widget. Ownership is not transferred,
+     * and the caller should clone the returned value.
+     * \see setCallout()
+     */
     virtual QgsCallout *callout() = 0;
 
     /**
@@ -93,10 +105,9 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
      */
     void changed();
 
-  protected slots:
+  private slots:
     void updateDataDefinedProperty();
 
-  private slots:
     void createAuxiliaryField();
 
   private:

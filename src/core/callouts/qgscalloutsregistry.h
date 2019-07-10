@@ -33,11 +33,17 @@ class QDomElement;
  *  \note It's necessary to implement createCallout() function.
  *  In C++ you can use QgsCalloutMetadata convenience class.
  *
- *  \sincce QGIS 3.10
+ *  \since QGIS 3.10
  */
 class CORE_EXPORT QgsCalloutAbstractMetadata
 {
   public:
+
+    /**
+     * Constructor for QgsCalloutAbstractMetadata, with the specified \a name.
+     *
+     * The \a visibleName argument gives a translated, user friendly string identifying the callout type.
+     */
     QgsCalloutAbstractMetadata( const QString &name, const QString &visibleName )
       : mName( name )
       , mVisibleName( visibleName )
