@@ -29,7 +29,7 @@
 #include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
 #include "callouts/qgscalloutwidget.h"
-
+#include <mutex>
 
 #include <QButtonGroup>
 #include <QMessageBox>
