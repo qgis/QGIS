@@ -656,7 +656,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * algorithms, and various parameters and outputs.
      * \since QGIS 3.0
      */
-    static QgsProcessingRegistry *processingRegistry() SIP_KEEPREFERENCE;
+    static QgsProcessingRegistry *processingRegistry();
 
     /**
      * Returns the application's page size registry, used for managing layout page sizes.
