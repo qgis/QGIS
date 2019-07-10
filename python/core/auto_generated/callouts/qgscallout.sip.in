@@ -191,11 +191,11 @@ Returns the definitions for data defined properties available for use in callout
 
   protected:
 
-    virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor ) = 0;
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) = 0;
 %Docstring
 Performs the actual rendering of the callout implementation onto the specified render ``context``.
 
-The ``rect`` argument gives the desired size and position of the body of the callout (e.g. the
+The ``bodyBoundingBox`` argument gives the desired size and position of the body of the callout (e.g. the
 actual label geometry). The ``angle`` argument specifies the rotation of the callout body
 (in degrees clockwise from horizontal). It is assumed that angle rotation specified via ``angle``
 is applied around the center of ``rect``.
@@ -325,7 +325,7 @@ Returns the map unit scale for the minimum callout length.
 %End
 
   protected:
-    virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor );
 
 
   private:
@@ -363,7 +363,7 @@ QgsManhattanLineCallout.properties() ).
 
 
   protected:
-    virtual void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor );
 
 
   private:
