@@ -185,6 +185,9 @@ Any existing properties will be discarded.
 %End
 
     static QgsPropertiesDefinition propertyDefinitions();
+%Docstring
+Returns the definitions for data defined properties available for use in callouts.
+%End
 
   protected:
 
@@ -247,8 +250,21 @@ QgsSimpleLineCallout.properties() ).
 
 
     QgsLineSymbol *lineSymbol();
+%Docstring
+Returns the line symbol used to render the callout line.
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setLineSymbol`
+%End
 
     void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the callout line. Ownership of ``symbol`` is
+transferred to the callout.
+
+.. seealso:: :py:func:`lineSymbol`
+%End
 
     double minimumLength() const;
 %Docstring
@@ -320,6 +336,11 @@ Returns the map unit scale for the minimum callout length.
 
 class QgsManhattanLineCallout : QgsSimpleLineCallout
 {
+%Docstring
+Draws straight (right angled) lines as callouts.
+
+.. versionadded:: 3.10
+%End
 
 %TypeHeaderCode
 #include "qgscallout.h"

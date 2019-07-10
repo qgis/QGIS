@@ -20,14 +20,20 @@ Stores metadata about one callout renderer class.
    It's necessary to implement createCallout() function.
    In C++ you can use QgsCalloutMetadata convenience class.
 
-\sincce QGIS 3.10
+.. versionadded:: 3.10
 %End
 
 %TypeHeaderCode
 #include "qgscalloutsregistry.h"
 %End
   public:
+
     QgsCalloutAbstractMetadata( const QString &name, const QString &visibleName );
+%Docstring
+Constructor for QgsCalloutAbstractMetadata, with the specified ``name``.
+
+The ``visibleName`` argument gives a translated, user friendly string identifying the callout type.
+%End
 
     virtual ~QgsCalloutAbstractMetadata();
 
