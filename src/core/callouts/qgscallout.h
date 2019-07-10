@@ -21,6 +21,8 @@
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 #include "qgsreadwritecontext.h"
+#include "qgspropertycollection.h"
+#include "qgsmapunitscale.h"
 #include <QString>
 #include <QRectF>
 #include <memory>
@@ -46,10 +48,16 @@ class CORE_EXPORT QgsCallout
 
   public:
 
+    //! Data definable properties.
+    enum Property
+    {
+      MinimumCalloutLength, //!< Minimum length of callouts
+    };
+
     /**
      * Constructor for QgsCallout.
      */
-    QgsCallout() = default;
+    QgsCallout();
     virtual ~QgsCallout() = default;
 
     /**
@@ -166,6 +174,32 @@ class CORE_EXPORT QgsCallout
      */
     void setEnabled( bool enabled );
 
+    /**
+     * Returns a reference to the callout's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the callout's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \see Property
+     * \note not available in Python bindings
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+
+    /**
+     * Sets the callout's property \a collection, used for data defined overrides.
+     *
+     * Any existing properties will be discarded.
+     *
+     * \see dataDefinedProperties()
+     * \see Property
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    static QgsPropertiesDefinition propertyDefinitions();
+
   protected:
 
     /**
@@ -189,6 +223,13 @@ class CORE_EXPORT QgsCallout
 
     bool mEnabled = false;
 
+    //! Property collection for data defined callout settings
+    QgsPropertyCollection mDataDefinedProperties;
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
+    static void initPropertyDefinitions();
 };
 
 /**
@@ -228,6 +269,50 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
 
     void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the minimum length of callout lines. Units are specified through minimumLengthUnits().
+     * \see setMinimumLength()
+     * \see minimumLengthUnit()
+     */
+    double minimumLength() const { return mMinCalloutLength; }
+
+    /**
+     * Sets the minimum \a length of callout lines. Units are specified through setMinimumLengthUnit().
+     * \see minimumLength()
+     * \see setMinimumLengthUnit()
+     */
+    void setMinimumLength( double length ) { mMinCalloutLength = length; }
+
+    /**
+     * Sets the \a unit for the minimum length of callout lines.
+     * \see minimumLengthUnit()
+     * \see setMinimumLength()
+    */
+    void setMinimumLengthUnit( QgsUnitTypes::RenderUnit unit ) { mMinCalloutLengthUnit = unit; }
+
+    /**
+     * Returns the units for the minimum length of callout lines.
+     * \see setMinimumLengthUnit()
+     * \see minimumLength()
+    */
+    QgsUnitTypes::RenderUnit minimumLengthUnit() const { return mMinCalloutLengthUnit; }
+
+    /**
+     * Sets the map unit \a scale for the minimum callout length.
+     * \see minimumLengthMapUnitScale()
+     * \see setMinimumLengthUnit()
+     * \see setMinimumLength()
+     */
+    void setMinimumLengthMapUnitScale( const QgsMapUnitScale &scale ) { mMinCalloutLengthScale = scale; }
+
+    /**
+     * Returns the map unit scale for the minimum callout length.
+     * \see setMinimumLengthMapUnitScale()
+     * \see minimumLengthUnit()
+     * \see minimumLength()
+     */
+    const QgsMapUnitScale &minimumLengthMapUnitScale() const { return mMinCalloutLengthScale; }
+
   protected:
     void draw( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor ) override;
 
@@ -239,6 +324,9 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
 #endif
 
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
+    double mMinCalloutLength = 0;
+    QgsUnitTypes::RenderUnit mMinCalloutLengthUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mMinCalloutLengthScale;
 };
 
 
