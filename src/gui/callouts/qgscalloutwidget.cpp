@@ -193,4 +193,16 @@ void QgsSimpleLineCalloutWidget::lineSymbolChanged()
   emit changed();
 }
 
+
+//
+// QgsManhattanLineCalloutWidget
+//
+
+QgsManhattanLineCalloutWidget::QgsManhattanLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSimpleLineCalloutWidget( vl, parent )
+{
+
+}
+
+
 ///@endcond
