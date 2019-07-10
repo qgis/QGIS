@@ -5694,7 +5694,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
           request.setFilterExpression (filterString);
       }
   }
-  int neighbors = 10;
+  int neighbors = 1;
   /*
   if ( values.length() > 3 ) { //neighbors param handling
       neighbors = QgsExpressionUtils::getNativeIntValue( values.at( 3 ), parent );
