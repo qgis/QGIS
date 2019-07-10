@@ -32,6 +32,11 @@ QgsHanaConnectionPool* QgsHanaConnectionPool::instance()
   return sInstance;
 }
 
+bool QgsHanaConnectionPool::hasInstance()
+{
+  return sInstance != nullptr;
+}
+
 void QgsHanaConnectionPool::cleanupInstance()
 {
   delete sInstance;

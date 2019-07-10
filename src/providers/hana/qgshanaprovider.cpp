@@ -1289,7 +1289,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,
-  const QMap<QString, QVariant> *options
+  const QMap<QString, QVariant> *
 )
 {
   QgsDataSourceUri dsUri(uri);

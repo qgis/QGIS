@@ -19,7 +19,7 @@
 
 bool QgsHanaIdentifierType::isValid(uint8_t i) noexcept
 {
-  return (i >= INSTANCE_NUMBER) && (i <= PORT_NUMBER);
+  return (QgsHanaIdentifierType::fromInt(i) >= INSTANCE_NUMBER) && (QgsHanaIdentifierType::fromInt(i) <= PORT_NUMBER);
 }
 
 QgsHanaIdentifierType::Value QgsHanaIdentifierType::fromInt(uint8_t i)

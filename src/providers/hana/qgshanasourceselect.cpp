@@ -21,6 +21,7 @@
 #include "qgshananewconnection.h"
 #include "qgshanaprovider.h"
 #include "qgshanatablemodel.h"
+#include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsproxyprogresstask.h"
@@ -601,7 +602,7 @@ QStringList QgsHanaSourceSelect::selectedTables()
 
 QString QgsHanaSourceSelect::connectionInfo()
 {
-  return mDataSrcUri.connectionInfo(false);
+  return QgsHanaUtils::connectionInfo(mDataSrcUri);
 }
 
 void QgsHanaSourceSelect::refresh()
@@ -618,7 +619,7 @@ void QgsHanaSourceSelect::setSql(const QModelIndex &index)
   }
 
   QModelIndex idx = mProxyModel.mapToSource(index);
-  QString uri = mTableModel.layerURI(idx, mDataSrcUri.connectionInfo(false));
+  QString uri = mTableModel.layerURI(idx, QgsHanaUtils::connectionInfo(mDataSrcUri));
   if (uri.isNull())
   {
     QgsDebugMsg("no uri");

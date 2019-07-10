@@ -32,7 +32,7 @@ inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri &uri, Qgs
 
 inline void qgsConnectionPool_ConnectionDestroy(QgsHanaConnection *c )
 {
-  c->disconnect();
+  delete c;
 }
 
 inline void qgsConnectionPool_InvalidateConnection(QgsHanaConnection *c )
@@ -68,6 +68,7 @@ class QgsHanaConnectionPool
 {
   public:
     static QgsHanaConnectionPool *instance();
+    static bool hasInstance();
     static void cleanupInstance();
 
   protected:

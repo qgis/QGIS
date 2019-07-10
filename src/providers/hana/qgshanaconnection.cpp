@@ -41,52 +41,29 @@
 using namespace odbc;
 using namespace std;
 
-static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
-
-bool QgsHanaConnection::sConnectionAttemptCanceled = false;
-
 namespace {
+
+static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
 
 void addNewLayer(QVector<QgsHanaLayerProperty>& list,
   const QgsHanaLayerProperty& layerProperty, bool checkDuplicates = false)
 {
   if (checkDuplicates)
   {
-    bool duplicateFound = false;
-    for (const QgsHanaLayerProperty& lp : list)
-    {
-      if (lp.schemaName == layerProperty.schemaName &&
-        lp.tableName == layerProperty.tableName)
-      {
-        duplicateFound = true;
-        break;
-      }
-    }
+    auto res = std::find_if(list.begin(), list.end(),
+      [&](const QgsHanaLayerProperty& lp)
+      { return (lp.schemaName == layerProperty.schemaName && lp.tableName == layerProperty.tableName); });
 
-    if (duplicateFound)
+    if (res != list.end())
       return;
   }
 
   list << layerProperty;
 }
 
-bool isTableAccessible(
-  DatabaseMetaDataRef& metaData,
-  const QString& schemaName,
-  const QString& tableName)
-{
-  bool ret = false;
-  ResultSetRef rsColumnPrivileges = metaData->getColumnPrivileges(nullptr,
-    schemaName.toStdString().c_str(), tableName.toStdString().c_str(), "%");
-  while (rsColumnPrivileges->next())
-  {
-    ret = true;
-  }
-  rsColumnPrivileges->close();
-  return ret;
 }
 
-}
+bool QgsHanaConnection::sConnectionAttemptCanceled = false;
 
 QgsHanaConnection::QgsHanaConnection(const QgsDataSourceUri& uri)
   : mUri(uri)
@@ -184,7 +161,7 @@ bool QgsHanaConnection::connect(
 
 QString QgsHanaConnection::connInfo()
 {
-  return mUri.connectionInfo(false);
+  return QgsHanaUtils::connectionInfo(mUri);
 }
 
 void QgsHanaConnection::disconnect()
@@ -279,7 +256,6 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
   QVector<QgsHanaLayerProperty> list;
   try
   {
-    DatabaseMetaDataRef dbmd = mConnection->getDatabaseMetaData();
     // Read table names with geometry columns
     QString sqlTables = "SELECT SCHEMA_NAME, TABLE_NAME, COLUMN_NAME, DATA_TYPE_NAME, TABLE_OID, TABLE_COMMENTS FROM "
       "(SELECT * FROM SYS.TABLE_COLUMNS WHERE TABLE_OID IN "
@@ -305,8 +281,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       layerProperty.geometryColName = QgsHanaUtils::toQString(*rsTables->getString(3));
       layerProperty.tableComment = QgsHanaUtils::toQString(*rsTables->getString(6));
 
-      if (isTableAccessible(dbmd, layerProperty.schemaName, layerProperty.tableName))
-        addNewLayer(list, layerProperty);
+      addNewLayer(list, layerProperty);
     }
     rsTables->close();
 
@@ -324,8 +299,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
         layerProperty.geometryColName = "";
         layerProperty.tableComment = QgsHanaUtils::toQString(*rsTables->getString(3));
 
-        if (isTableAccessible(dbmd, layerProperty.schemaName, layerProperty.tableName))
-          addNewLayer(list, layerProperty, true);
+        addNewLayer(list, layerProperty, true);
       }
       rsTables->close();
     }
@@ -354,8 +328,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       layerProperty.tableComment = QgsHanaUtils::toQString(*rsViews->getString(6));
       layerProperty.isView = true;
 
-      if (isTableAccessible(dbmd, layerProperty.schemaName, layerProperty.tableName))
-        addNewLayer(list, layerProperty, layerProperty.geometryColName.isEmpty());
+      addNewLayer(list, layerProperty, layerProperty.geometryColName.isEmpty());
     }
     rsViews->close();
 
@@ -559,24 +532,19 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType(const QgsHanaLayerProp
 QgsHanaConnectionRef::QgsHanaConnectionRef(const QgsDataSourceUri& uri)
 {
   mConnection = std::unique_ptr<QgsHanaConnection>(
-    QgsHanaConnectionPool::instance()->acquireConnection(uri.connectionInfo(false)));
+    QgsHanaConnectionPool::instance()->acquireConnection(QgsHanaUtils::connectionInfo(uri)));
 }
 
 QgsHanaConnectionRef::QgsHanaConnectionRef(const QString& name)
 {
   QgsHanaSettings settings(name, true);
   mConnection = std::unique_ptr<QgsHanaConnection>(
-    QgsHanaConnectionPool::instance()->acquireConnection(settings.toDataSourceUri().connectionInfo(false)));
+    QgsHanaConnectionPool::instance()->acquireConnection(QgsHanaUtils::connectionInfo(settings.toDataSourceUri())));
 }
 
 QgsHanaConnectionRef::~QgsHanaConnectionRef()
 {
-  release();
-}
-
-void QgsHanaConnectionRef::release()
-{
-  QgsHanaConnection* ptr = mConnection.release();
-  if (ptr != nullptr)
-    QgsHanaConnectionPool::instance()->releaseConnection(ptr);
+  QgsHanaConnection* conn = mConnection.release();
+  if (QgsHanaConnectionPool::hasInstance())
+    QgsHanaConnectionPool::instance()->releaseConnection(conn);
 }

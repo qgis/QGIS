@@ -14,6 +14,7 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgsdatasourceuri.h"
 #include "qgshanautils.h"
 
 #include <QDate>
@@ -22,6 +23,64 @@
 
 using namespace std;
 using namespace odbc;
+
+namespace
+{
+QString escape(const QString &val, QChar delim = '\'')
+{
+  QString escaped = val;
+
+  escaped.replace('\\', QLatin1String("\\\\"));
+  escaped.replace(delim, QStringLiteral("\\%1").arg(delim));
+
+  return escaped;
+}
+}
+
+QString QgsHanaUtils::connectionInfo(const QgsDataSourceUri& uri)
+{
+  QStringList connectionItems;
+
+  if (!uri.database().isEmpty())
+    connectionItems << "dbname='" + escape(uri.database()) + '\'';
+
+  if (!uri.host().isEmpty())
+    connectionItems << "host=" + uri.host();
+
+  if (!uri.port().isEmpty())
+    connectionItems << "port=" + uri.port();
+
+  if (!uri.driver().isEmpty())
+    connectionItems << "driver='" + escape(uri.driver()) + '\'';
+
+  if (!uri.username().isEmpty())
+  {
+    connectionItems << "user='" + escape(uri.username()) + '\'';
+
+    if (!uri.password().isEmpty())
+      connectionItems << "password='" + escape(uri.password()) + '\'';
+  }
+
+  if (uri.hasParam(QStringLiteral("encrypt")))
+    connectionItems << "encrypt='" + uri.param(QStringLiteral("encrypt")) + '\'';
+
+  if (uri.hasParam(QStringLiteral("sslCryptoProvider")))
+    connectionItems << "sslCryptoProvider='" + uri.param(QStringLiteral("sslCryptoProvider")) + '\'';
+
+  if (uri.hasParam(QStringLiteral("sslValidateCertificate")))
+    connectionItems << "sslValidateCertificate='" + uri.param(QStringLiteral("sslValidateCertificate")) + '\'';
+
+  if (uri.hasParam(QStringLiteral("sslHostNameInCertificate")))
+    connectionItems << "sslHostNameInCertificate='" + uri.param(QStringLiteral("sslHostNameInCertificate")) + '\'';
+
+  if (uri.hasParam(QStringLiteral("sslKeyStore")))
+    connectionItems << "sslKeyStore='" + uri.param(QStringLiteral("sslKeyStore")) + '\'';
+
+  if (uri.hasParam(QStringLiteral("sslTrustStore")))
+    connectionItems << "sslTrustStore='" + uri.param(QStringLiteral("sslTrustStore")) + '\'';
+
+  return connectionItems.join(QStringLiteral(" "));
+}
 
 QString QgsHanaUtils::quotedIdentifier(const QString& str)
 {
