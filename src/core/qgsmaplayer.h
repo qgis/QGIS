@@ -528,7 +528,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     enum ReadFlag
     {
-      FlagDontResolveLayers = 1 << 1, //!< Don't resolve layer paths or create data providers for layers.
+      FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 

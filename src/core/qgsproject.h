@@ -269,7 +269,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     enum ReadFlag
     {
-      FlagDontResolveLayers = 1 << 1, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
+      FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
