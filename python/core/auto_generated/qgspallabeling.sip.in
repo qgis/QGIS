@@ -288,6 +288,7 @@ class QgsPalLayerSettings
       IsObstacle,
       ObstacleFactor,
       ZIndex,
+      CalloutDraw,
 
       // (data defined only)
       Show,

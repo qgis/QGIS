@@ -239,6 +239,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::ZIndex, QgsPropertyDefinition( "ZIndex", QObject::tr( "Label z-index" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::Show, QgsPropertyDefinition( "Show", QObject::tr( "Show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::AlwaysShow, QgsPropertyDefinition( "AlwaysShow", QObject::tr( "Always show label" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::CalloutDraw, QgsPropertyDefinition( "CalloutDraw", QObject::tr( "Draw callout" ), QgsPropertyDefinition::Boolean, origin ) },
   };
 }
 
