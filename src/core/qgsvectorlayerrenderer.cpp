@@ -124,6 +124,14 @@ bool QgsVectorLayerRenderer::render()
     return false;
   }
 
+  if ( mRenderer->type() == QStringLiteral( "nullSymbol" ) )
+  {
+    // a little shortcut for the null symbol renderer - most of the time it is not going to render anything
+    // so we can even skip the whole loop to fetch features
+    if ( !mDrawVertexMarkers && !mLabelProvider && !mDiagramProvider && mSelectedFeatureIds.isEmpty() )
+      return true;
+  }
+
   bool usingEffect = false;
   if ( mRenderer->paintEffect() && mRenderer->paintEffect()->enabled() )
   {
