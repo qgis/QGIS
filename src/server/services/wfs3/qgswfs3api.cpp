@@ -39,7 +39,7 @@ namespace QgsWfs3
   {
     QMap<contentType, QString> map;
     map[contentType::JSON] = QStringLiteral( "application/json" );
-    map[contentType::GEOJSON] = QStringLiteral( "application/vnd.geo+json" );
+    map[contentType::GEOJSON] = QStringLiteral( "application/geo+json" );
     map[contentType::HTML] = QStringLiteral( "text/html" );
     map[contentType::XML] = QStringLiteral( "application/xml" );
     map[contentType::GML] = QStringLiteral( "application/gml+xml" );
@@ -446,12 +446,24 @@ namespace QgsWfs3
 
   std::string Handler::href( const Api *api, const QgsServerRequest *request, const QString &extraPath, const QString &extension ) const
   {
-    auto url { request->url() };
+    QUrl url { request->url() };
+    QString urlBasePath { url.path( ) };
+    const int idx { url.path().indexOf( api->rootPath() ) };
+    // Note: idx should bever <= 0
+    if ( idx != -1 )
+    {
+      urlBasePath.truncate( idx );
+    }
     const auto match { path.match( url.path() ) };
     if ( match.captured().count() > 0 )
     {
-      url.setPath( api->rootPath() + match.captured( 0 ) );
+      url.setPath( urlBasePath + api->rootPath() + match.captured( 0 ) );
     }
+    else
+    {
+      url.setPath( urlBasePath + api->rootPath() );
+    }
+
     // Remove any existing extension
     const auto suffixLength { QFileInfo( url.path() ).completeSuffix().length() };
     if ( suffixLength > 0 )
@@ -460,6 +472,7 @@ namespace QgsWfs3
       path.truncate( path.length() - ( suffixLength + 1 ) );
       url.setPath( path );
     }
+
     // Add extra path
     url.setPath( url.path() + extraPath );
 

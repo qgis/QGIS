@@ -1,4 +1,4 @@
-Content-Type: application/vnd.geo+json
+Content-Type: application/geo+json
 
 {
   "features": [
@@ -24,7 +24,7 @@ Content-Type: application/vnd.geo+json
       "href": "http://server.qgis.org/wfs3/collections/testlayer3/items.geojson?name=tw*",
       "rel": "self",
       "title": "Retrieve the features of the collection as GEOJSON",
-      "type": "application/vnd.geo+json"
+      "type": "application/geo+json"
     },
     {
       "href": "http://server.qgis.org/wfs3/collections/testlayer3/items.html?name=tw*",
@@ -35,6 +35,6 @@ Content-Type: application/vnd.geo+json
   ],
   "numberMatched": 1,
   "numberReturned": 1,
-  "timeStamp": "2019-07-05T18:47:49Z",
+  "timeStamp": "2019-07-10T07:06:21Z",
   "type": "FeatureCollection"
 }

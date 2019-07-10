@@ -39,6 +39,17 @@ class QgsServerInterface;
  * An API must have a name and a (possibly empty) version and define a
  * (possibly empty) root path (e.g. "/wfs3").
  *
+ * The server routing logic will check incoming request URLs by passing them
+ * to the API's accept(url) method, the default implementation performs a simple
+ * check for the presence of the API's root path string in the URL.
+ * This simple logic implies that APIs must be registered in reverse order from the
+ * most specific to the most generic: given two APIs with root paths '/wfs' and '/wfs3',
+ * '/wfs3' must be registered first or it will be shadowed by '/wfs'.
+ * APIs developers are encouraged to implement a more robust accept(url) logic by
+ * making sure that their APIs accept only URLs they can actually handle, if they do,
+ * the APIs registration order becomes irrelevant.
+ *
+ *
  * After the API has been registered to the server API registry:
  *
  * \code{.py}
@@ -102,6 +113,11 @@ class SERVER_EXPORT QgsServerApi
      * Returns TRUE if the given method is supported by the API, default implementation supports all methods.
      */
     virtual bool allowMethod( QgsServerRequest::Method ) const { return true; }
+
+    /**
+     * Returns TRUE if the given \a request is supported by the API, default implementation checks for the presence of rootPath inside the \a url path.
+     */
+    virtual bool accept( const QUrl &url ) const;
 
     /**
      * Executes a request by passing the given \a context to the handlers.

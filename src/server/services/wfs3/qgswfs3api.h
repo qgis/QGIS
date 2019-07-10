@@ -109,12 +109,12 @@ namespace QgsWfs3
     QList<contentType> contentTypes { contentType::JSON, contentType::HTML };
 
     /**
-     * Returns an URL to be used for links in the output.
+     * Returns an URL to be used for links to the current resources.
      *
      * \param api the parent API instance
      * \param request the current request object
      * \param extraPath an optional extra path that will be appended to the calculated URL
-     * \param extension optional file extension to add (the dot will be added automatically), note that JSON extension will not be added because it's the default.
+     * \param extension optional file extension to add (the dot will be added automatically).
      */
     std::string href( const Api *api, const QgsServerRequest *request, const QString &extraPath = QString(), const QString &extension = QString() ) const;
 

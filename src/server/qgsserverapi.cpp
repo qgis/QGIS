@@ -26,6 +26,11 @@ QgsServerApi::QgsServerApi( QgsServerInterface *serverIface )
 {
 }
 
+bool QgsServerApi::accept( const QUrl &url ) const
+{
+  return url.path().contains( rootPath() );
+}
+
 QgsServerInterface *QgsServerApi::serverIface() const
 {
   return mServerIface;

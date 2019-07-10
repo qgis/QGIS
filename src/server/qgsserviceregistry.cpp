@@ -229,10 +229,10 @@ QgsServerApi *QgsServiceRegistry::getApiForRequest( const QgsServerRequest &requ
   for ( const auto &api : mApis )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Trying URL path: %1 for %2" ).arg( request.url().path(), api->rootPath() ), QStringLiteral( "Server" ), Qgis::Info );
-    if ( request.url().path().startsWith( api->rootPath() ) )
+    if ( api->accept( request.url() ) )
     {
       Q_ASSERT( !api->name().isEmpty() );
-      QgsMessageLog::logMessage( QStringLiteral( "API %1 matches the URL path %2 " ).arg( api->name(), request.url().path() ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "API %1 accepts the URL path %2 " ).arg( api->name(), request.url().path() ), QStringLiteral( "Server" ), Qgis::Info );
       return api.get();
     }
   }
