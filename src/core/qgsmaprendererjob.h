@@ -114,6 +114,7 @@ struct LabelRenderJob
  * amount of time.
  *
  * Common use case:
+ *
  * 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
  * 1. create QgsMapRendererJob subclass with QgsMapSettings instance
  * 2. connect to job's finished() signal
@@ -123,6 +124,7 @@ struct LabelRenderJob
  * It is possible to cancel the rendering job while it is active by calling cancel() function.
  *
  * The following subclasses are available:
+ *
  * - QgsMapRendererSequentialJob - renders map in one background thread to an image
  * - QgsMapRendererParallelJob - renders map in multiple background threads to an image
  * - QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
