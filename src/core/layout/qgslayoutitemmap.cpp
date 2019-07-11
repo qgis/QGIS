@@ -1652,6 +1652,12 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
     }
   }
 
+  // remove any invalid layers
+  renderLayers.erase( std::remove_if( renderLayers.begin(), renderLayers.end(), []( QgsMapLayer * layer )
+  {
+    return !layer || !layer->isValid();
+  } ), renderLayers.end() );
+
   return renderLayers;
 }
 
