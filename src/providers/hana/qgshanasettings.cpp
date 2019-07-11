@@ -24,7 +24,7 @@ bool QgsHanaIdentifierType::isValid(uint8_t i) noexcept
 
 QgsHanaIdentifierType::Value QgsHanaIdentifierType::fromInt(uint8_t i)
 {
-  assert(isValid(i));
+  Q_ASSERT(isValid(i));
   return static_cast<Value>(i);
 }
 
