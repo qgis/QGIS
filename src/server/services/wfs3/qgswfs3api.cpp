@@ -19,7 +19,6 @@
 #include "qgsproject.h"
 #include "qgsserverexception.h"
 #include "qgsserverapicontext.h"
-#include "qgswfs3api.h"
 #include "qgswfs3handlers.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
@@ -115,7 +114,7 @@ namespace QgsWfs3
     return sContentTypeMime.key( QString::fromStdString( extension ) );
   }
 
-  void Handler::write( json &data, const Api *api, const QgsServerApiContext &context, const json &htmlMetadata ) const
+  void Handler::write( json &data, const QgsServerApiContext &context, const json &htmlMetadata ) const
   {
     // TODO: accept GML and XML?
     const auto contentType { contentTypeFromRequest( context.request() ) };
@@ -127,7 +126,7 @@ namespace QgsWfs3
         {
           data["metadata"] = htmlMetadata;
         }
-        htmlDump( data, api, context.request(), context.response() );
+        htmlDump( data, context );
         break;
       case QgsWfs3::contentType::GEOJSON:
       case QgsWfs3::contentType::JSON:
@@ -153,9 +152,9 @@ namespace QgsWfs3
 #endif
   }
 
-  void Handler::htmlDump( const json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response ) const
+  void Handler::htmlDump( const json &data, const QgsServerApiContext &context ) const
   {
-    response->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html" ) );
+    context.response()->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html" ) );
     auto path { templatePath() };
     if ( ! QFile::exists( path ) )
     {
@@ -185,7 +184,7 @@ namespace QgsWfs3
       // Path manipulation: appends a directory path to the current url
       env.add_callback( "path_append", 1, [ = ]( Arguments & args )
       {
-        auto url { request->url() };
+        auto url { context.request()->url() };
         QFileInfo fi{ url.path() };
         auto suffix { fi.suffix() };
         auto fName { fi.filePath()};
@@ -249,10 +248,10 @@ namespace QgsWfs3
       env.add_callback( "static", 1, [ = ]( Arguments & args )
       {
         auto asset( args.at( 0 )->get<std::string>( ) );
-        return api->rootPath().toStdString() + "/static/" + asset;
+        return context.matchedPath().toStdString() + "/static/" + asset;
       } );
 
-      response->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
+      context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
     }
     catch ( std::exception &e )
     {
@@ -271,10 +270,10 @@ namespace QgsWfs3
     return data;
   }
 
-  void Handler::xmlDump( const json &data, QgsServerResponse *response ) const
+  void Handler::xmlDump( const json &data, const QgsServerApiContext &context ) const
   {
-    response->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "application/xml" ) );
-    response->write( "<pre>" + data.dump( 2 ) + "</pre>" );
+    context.response()->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "application/xml" ) );
+    context.response()->write( "<pre>" + data.dump( 2 ) + "</pre>" );
   }
 
   const QString Handler::templatePath() const
@@ -417,7 +416,7 @@ namespace QgsWfs3
         hasMatch = true;
         // Execute handler
         QgsMessageLog::logMessage( QStringLiteral( "Found handler %1" ).arg( QString::fromStdString( h->operationId ) ), QStringLiteral( "Server" ), Qgis::Info );
-        h->handleRequest( this, context );
+        h->handleRequest( context );
         break;
       }
     }
@@ -428,9 +427,8 @@ namespace QgsWfs3
     }
   }
 
-  void Handler::handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const
+  void Handler::handleRequest( const QgsServerApiContext &context ) const
   {
-    Q_UNUSED( api );
     json data
     {
       { "operationId", operationId },
@@ -444,24 +442,18 @@ namespace QgsWfs3
     jsonDump( data, context.response() );
   }
 
-  std::string Handler::href( const Api *api, const QgsServerRequest *request, const QString &extraPath, const QString &extension ) const
+  std::string Handler::href( const QgsServerApiContext &context, const QString &extraPath, const QString &extension ) const
   {
-    QUrl url { request->url() };
-    QString urlBasePath { url.path( ) };
-    const int idx { url.path().indexOf( api->rootPath() ) };
-    // Note: idx should bever <= 0
-    if ( idx != -1 )
-    {
-      urlBasePath.truncate( idx );
-    }
+    QUrl url { context.request()->url() };
+    QString urlBasePath { context.matchedPath() };
     const auto match { path.match( url.path() ) };
     if ( match.captured().count() > 0 )
     {
-      url.setPath( urlBasePath + api->rootPath() + match.captured( 0 ) );
+      url.setPath( urlBasePath + match.captured( 0 ) );
     }
     else
     {
-      url.setPath( urlBasePath + api->rootPath() );
+      url.setPath( urlBasePath );
     }
 
     // Remove any existing extension
@@ -491,14 +483,14 @@ namespace QgsWfs3
     return QgsWfs3::Api::normalizedUrl( url ).toString( QUrl::FullyEncoded ).toStdString();
   }
 
-  json Handler::link( const Api *api, const QgsServerApiContext &context,
+  json Handler::link( const QgsServerApiContext &context,
                       const rel &linkType, const contentType contentType,
                       const std::string &title ) const
   {
     json l
     {
       {
-        "href", href( api, context.request(), "/" + landingPageRootLink,
+        "href", href( context, "/" + landingPageRootLink,
                       QgsWfs3::Api::contentTypeToExtension( contentType ) )
       },
       { "rel", QgsWfs3::Api::relToString( linkType ) },
@@ -508,13 +500,13 @@ namespace QgsWfs3
     return l;
   }
 
-  json Handler::links( const Api *api, const QgsServerApiContext &context ) const
+  json Handler::links( const QgsServerApiContext &context ) const
   {
     const auto currentCt { contentTypeFromRequest( context.request() ) };
     json links = json::array();
     for ( const auto &ct : qgis::as_const( contentTypes ) )
     {
-      links.push_back( link( api, context, ( ct == currentCt ? rel::self : rel::alternate ), ct, linkTitle  + " as " + QgsWfs3::Api::contentTypeToStdString( ct ) ) );
+      links.push_back( link( context, ( ct == currentCt ? rel::self : rel::alternate ), ct, linkTitle  + " as " + QgsWfs3::Api::contentTypeToStdString( ct ) ) );
     }
     return links;
   }

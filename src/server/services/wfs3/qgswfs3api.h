@@ -86,7 +86,7 @@ namespace QgsWfs3
   {
 
     virtual ~Handler() = default;
-    virtual void handleRequest( const Api *api, const QgsServerApiContext &context ) const;
+    virtual void handleRequest( const QgsServerApiContext &context ) const;
 
     //! URL pattern for this handler
     QRegularExpression path;
@@ -112,23 +112,21 @@ namespace QgsWfs3
      * Returns an URL to be used for links to the current resources.
      *
      * \param api the parent API instance
-     * \param request the current request object
+     * \param context the current request context
      * \param extraPath an optional extra path that will be appended to the calculated URL
      * \param extension optional file extension to add (the dot will be added automatically).
      */
-    std::string href( const Api *api, const QgsServerRequest *request, const QString &extraPath = QString(), const QString &extension = QString() ) const;
+    std::string href( const QgsServerApiContext &context, const QString &extraPath = QString(), const QString &extension = QString() ) const;
 
     /**
      * Utility method that builds and returns a link to the resource.
      *
-     * \param api the parent API instance
      * \param context request context
      * \param linkType type of the link (rel attribute), default to "self"
      * \param contentType, default to objects's linkType
      * \param title default to "This documents as <content type>"
      */
-    json link( const Api *api,
-               const QgsServerApiContext &context,
+    json link( const QgsServerApiContext &context,
                const rel &linkType = rel::self,
                const contentType contentType = contentType::JSON,
                const std::string &title = "" ) const;
@@ -139,8 +137,7 @@ namespace QgsWfs3
      * The base implementation returns the alternate and self links, subclasses may
      * add other links.
      */
-    json links( const Api *api,
-                const QgsServerApiContext &context ) const;
+    json links( const QgsServerApiContext &context ) const;
 
 
     //! Defines a root link for the landing page (e.g. "collections" or "api"), if it is empty the link will not be included in the landing page.
@@ -171,7 +168,7 @@ namespace QgsWfs3
      * \note use xmlDump for XML output
      * \see xmlDump()
      */
-    void write( json &data, const Api *api, const QgsServerApiContext &context, const json &htmlMetadata = nullptr ) const;
+    void write( json &data, const QgsServerApiContext &context, const json &htmlMetadata = nullptr ) const;
 
     /**
      * Writes \a data to the \a response stream as JSON (indented if debug is active), an optional \a contentType can be specified.
@@ -179,13 +176,12 @@ namespace QgsWfs3
     void jsonDump( json &data, QgsServerResponse *response, const QString &contentType = QStringLiteral( "application/json" ) ) const;
 
     /**
-     * Writes \a data to the \a response stream as HTML (indented if debug is active) using a template.
+     * Writes \a data to the \a context response stream as HTML (indented if debug is active) using a template.
      *
-     * \param api parent Api instance
      * \param request the request object
      * \see templatePath()
      */
-    void htmlDump( const json &data, const Api *api, const QgsServerRequest *request, QgsServerResponse *response ) const;
+    void htmlDump( const json &data, const QgsServerApiContext &context ) const;
 
     /**
      * Returns handler information (id, description and other metadata) as JSON.
@@ -193,9 +189,9 @@ namespace QgsWfs3
     json handlerData( ) const;
 
     /**
-     * Writes \a data to the \a response stream as XML (indented if debug is active).
+     * Writes \a data to the \a context response stream as XML (indented if debug is active).
      */
-    void xmlDump( const json &data, QgsServerResponse *response ) const;
+    void xmlDump( const json &data, const QgsServerApiContext &context ) const;
 
     /**
      * Returns the HTML template path for the handler

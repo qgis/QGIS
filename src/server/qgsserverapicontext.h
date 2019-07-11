@@ -17,6 +17,7 @@
 #define QGSSERVERAPICONTEXT_H
 
 #include "qgis_server.h"
+#include <QString>
 
 class QgsServerResponse;
 class QgsServerRequest;
@@ -25,10 +26,12 @@ class QgsProject;
 
 /**
  * \ingroup server
- * The QgsServerApiContext class encapsulates the resources for a particular client request:
- * the request and response objects, the project (might be NULL) and the server interface.
+ * The QgsServerApiContext class encapsulates the resources for a particular client
+ * request: the request and response objects, the project (might be NULL) and
+ * the server interface, the API root path that matched the request is also added.
  *
- * QgsServerApiContext is lightweight copyable object meant to be passed along the request handlers chain.
+ * QgsServerApiContext is lightweight copyable object meant to be passed along the
+ * request handlers chain.
  *
  * \since QGIS 3.10
  */
@@ -38,12 +41,15 @@ class SERVER_EXPORT QgsServerApiContext
 
     /**
     * QgsServerApiContext constructor
+    *
+    * \param apiRootPath is the API root path, this information is used by the handlers to build the href links to the resources.
     * \param request the incoming request
     * \param response the response
     * \param project the project (might be NULL)
     * \param serverInterface the server interface
     */
-    QgsServerApiContext( const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface );
+    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response,
+                         const QgsProject *project, QgsServerInterface *serverInterface );
 
     /**
      * Returns the server request object
@@ -72,8 +78,21 @@ class SERVER_EXPORT QgsServerApiContext
      */
     QgsServerInterface *serverInterface() const;
 
+    /**
+     * Returns the initial part of the incoming request URL path that matches the
+     * API root path.
+     * If there is no match returns an empty string (it should never happen).
+     *
+     * I.e. for an API with root path "/wfs3" and an incoming request
+     * "https://www.qgis.org/services/wfs3/collections"
+     * this method will return "/resources/wfs3"
+     *
+     */
+    const QString matchedPath( ) const;
+
   private:
 
+    QString mApiRootPath;
     const QgsServerRequest *mRequest = nullptr;
     QgsServerResponse *mResponse = nullptr;
     const QgsProject *mProject = nullptr;

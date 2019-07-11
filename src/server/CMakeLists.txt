@@ -27,6 +27,8 @@ SET(QGIS_SERVER_SRCS
   qgsrequesthandler.cpp
   qgsserver.cpp
   qgsserverapi.cpp
+  qgsserverogcapi.cpp
+  qgsserverogcapihandler.cpp
   qgsserverapiutils.cpp
   qgsserverapicontext.cpp
   qgsserverparameters.cpp
@@ -52,6 +54,8 @@ SET (QGIS_SERVER_HDRS
   qgsservicemodule.h
   qgsmapserviceexception.h
   qgsserverapi.h
+  qgsserverogcapi.h
+  qgsserverogcapihandler.h
   qgsserverapicontext.h
   qgsserverquerystringparameter.h
 )

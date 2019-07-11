@@ -34,7 +34,9 @@ class QgsServerInterface;
 
 /**
  * \ingroup server
- * Server API endpoint abstract base class.
+ * Server generic API endpoint abstract base class.
+ *
+ * \see QgsServerOgcApi for an OGC API (aka WFS3) implementation.
  *
  * An API must have a name and a (possibly empty) version and define a
  * (possibly empty) root path (e.g. "/wfs3").
@@ -48,7 +50,6 @@ class QgsServerInterface;
  * APIs developers are encouraged to implement a more robust accept(url) logic by
  * making sure that their APIs accept only URLs they can actually handle, if they do,
  * the APIs registration order becomes irrelevant.
- *
  *
  * After the API has been registered to the server API registry:
  *
@@ -115,12 +116,12 @@ class SERVER_EXPORT QgsServerApi
     virtual bool allowMethod( QgsServerRequest::Method ) const { return true; }
 
     /**
-     * Returns TRUE if the given \a request is supported by the API, default implementation checks for the presence of rootPath inside the \a url path.
+     * Returns TRUE if the given \a url is handled by the API, default implementation checks for the presence of rootPath inside the \a url path.
      */
     virtual bool accept( const QUrl &url ) const;
 
     /**
-     * Executes a request by passing the given \a context to the handlers.
+     * Executes a request by passing the given \a context to the API handlers.
      */
     virtual void executeRequest( const QgsServerApiContext &context ) const = 0;
 

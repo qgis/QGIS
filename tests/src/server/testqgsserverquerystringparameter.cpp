@@ -80,7 +80,7 @@ void TestQgsServerQueryStringParameter::testArguments()
 {
   QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ) };
   QgsServerRequest request;
-  QgsServerApiContext ctx { &request, nullptr, nullptr, nullptr };
+  QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
   // Test string (default)
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
@@ -131,7 +131,7 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
 {
   QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Int };
   QgsServerRequest request;
-  QgsServerApiContext ctx { &request, nullptr, nullptr, nullptr };
+  QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
   QCOMPARE( p.value( ctx ), 123 );

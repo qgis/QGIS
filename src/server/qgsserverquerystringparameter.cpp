@@ -108,3 +108,8 @@ QString QgsServerQueryStringParameter::typeName( const QgsServerQueryStringParam
   static QMetaEnum metaEnum = QMetaEnum::fromType<Type>();
   return metaEnum.valueToKey( static_cast<int>( type ) );
 }
+
+QString QgsServerQueryStringParameter::name() const
+{
+  return mName;
+}

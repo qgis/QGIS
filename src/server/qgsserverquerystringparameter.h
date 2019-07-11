@@ -63,7 +63,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
 
     QgsServerQueryStringParameter( const QString name,
                                    bool required = false,
-                                   Type type = Type::String,
+                                   Type type = QgsServerQueryStringParameter::Type::String,
                                    const QString &description = QString() );
 
     virtual ~QgsServerQueryStringParameter();
@@ -104,6 +104,11 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      * Returns the name of the \a type
      */
     static QString typeName( const Type type );
+
+    /**
+     * Returns the name of the parameter
+     */
+    QString name() const;
 
   private:
 

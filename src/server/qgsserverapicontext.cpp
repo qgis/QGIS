@@ -20,7 +20,8 @@
 #include "qgsproject.h"
 #include "qgsserverinterface.h"
 
-QgsServerApiContext::QgsServerApiContext( const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface ):
+QgsServerApiContext::QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface ):
+  mApiRootPath( apiRootPath ),
   mRequest( request ),
   mResponse( response ),
   mProject( project ),
@@ -54,4 +55,19 @@ void QgsServerApiContext::setProject( const QgsProject *project )
 QgsServerInterface *QgsServerApiContext::serverInterface() const
 {
   return mServerInterface;
+}
+
+const QString QgsServerApiContext::matchedPath() const
+{
+  auto path { mRequest->url().path( )};
+  const auto idx { path.indexOf( mApiRootPath )};
+  if ( idx != -1 )
+  {
+    path.truncate( idx + mApiRootPath.length() );
+    return path;
+  }
+  else
+  {
+    return QString();
+  }
 }

@@ -15,7 +15,9 @@
 class QgsServerApi
 {
 %Docstring
-Server API endpoint abstract base class.
+Server generic API endpoint abstract base class.
+
+.. seealso:: :py:class:`QgsServerOgcApi`
 
 An API must have a name and a (possibly empty) version and define a
 (possibly empty) root path (e.g. "/wfs3").
@@ -101,12 +103,12 @@ Returns ``True`` if the given method is supported by the API, default implementa
 
     virtual bool accept( const QUrl &url ) const;
 %Docstring
-Returns ``True`` if the given ``request`` is supported by the API, default implementation checks for the presence of rootPath inside the ``url`` path.
+Returns ``True`` if the given ``url`` is handled by the API, default implementation checks for the presence of rootPath inside the ``url`` path.
 %End
 
     virtual void executeRequest( const QgsServerApiContext &context ) const = 0;
 %Docstring
-Executes a request by passing the given ``context`` to the handlers.
+Executes a request by passing the given ``context`` to the API handlers.
 %End
 
     QgsServerInterface *serverIface() const;

@@ -18,7 +18,6 @@
 #ifndef QGS_WFS3_HANDLERS_H
 #define QGS_WFS3_HANDLERS_H
 
-#include "qgsserverapi.h"
 #include "qgswfs3api.h"
 
 
@@ -28,7 +27,7 @@
 struct APIHandler: public QgsWfs3::Handler
 {
   APIHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const override;
+  void handleRequest( const QgsServerApiContext &context ) const override;
 };
 
 
@@ -39,21 +38,21 @@ struct APIHandler: public QgsWfs3::Handler
 struct StaticHandler: public QgsWfs3::Handler
 {
   StaticHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const override;
+  void handleRequest( const QgsServerApiContext &context ) const override;
 };
 
 
 struct LandingPageHandler: public QgsWfs3::Handler
 {
   LandingPageHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const override;
+  void handleRequest( const QgsServerApiContext &context ) const override;
 };
 
 
 struct ConformanceHandler: public QgsWfs3::Handler
 {
   ConformanceHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const override;
+  void handleRequest( const QgsServerApiContext &context ) const override;
 };
 
 
@@ -64,7 +63,7 @@ struct ConformanceHandler: public QgsWfs3::Handler
 struct CollectionsHandler: public QgsWfs3::Handler
 {
   CollectionsHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const override;
+  void handleRequest( const QgsServerApiContext &context ) const override;
 };
 
 /**
@@ -74,7 +73,7 @@ struct CollectionsHandler: public QgsWfs3::Handler
 struct DescribeCollectionHandler: public QgsWfs3::Handler
 {
   DescribeCollectionHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const override;
+  void handleRequest( const QgsServerApiContext &context ) const override;
 };
 
 /**
@@ -84,14 +83,14 @@ struct DescribeCollectionHandler: public QgsWfs3::Handler
 struct CollectionsItemsHandler: public QgsWfs3::Handler
 {
   CollectionsItemsHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const override;
+  void handleRequest( const QgsServerApiContext &context ) const override;
 };
 
 
 struct CollectionsFeatureHandler: public QgsWfs3::Handler
 {
   CollectionsFeatureHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerApiContext &context ) const override;
+  void handleRequest( const QgsServerApiContext &context ) const override;
 };
 
 

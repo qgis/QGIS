@@ -15,12 +15,6 @@ Content-Type: application/json
       "type": "text/html"
     },
     {
-      "href": "http://server.qgis.org/wfs3",
-      "rel": "self",
-      "title": "Landing page",
-      "type": "application/json"
-    },
-    {
       "href": "http://server.qgis.org/wfs3/collections",
       "rel": "data",
       "title": "Feature collections",
