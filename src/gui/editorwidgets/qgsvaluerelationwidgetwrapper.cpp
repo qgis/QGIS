@@ -113,6 +113,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
             break;
           default:
             QString newS = s;
+            newS.replace( '\\', QStringLiteral( "\\\\" ) );
             newS.replace( '\"', QStringLiteral( "\\\"" ) );
             sl.push_back( "\"" + newS + "\"" );
             break;
