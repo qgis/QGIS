@@ -5652,7 +5652,7 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
 
 typedef std::function < QVariant( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, int neighbors, double max_distance, double bboxGrow ) > overlayFunc;
 
-static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, bool testOnly, const overlayFunc &overlayFunction, bool invert = false, double bboxGrow = 0  )
+static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, bool testOnly, const overlayFunc &overlayFunction, bool invert = false, double bboxGrow = 0 )
 {
   // First parameter is the overlay layer
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
@@ -5667,8 +5667,9 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
   ENSURE_NO_EVAL_ERROR
   subExpString = node->dump();
-  if ( subExpString == "NULL" ) {
-      testOnly = true;
+  if ( subExpString == "NULL" )
+  {
+    testOnly = true;
   }
 
   QgsSpatialIndex spatialIndex;
@@ -5686,10 +5687,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
   ENSURE_NO_EVAL_ERROR
   filterString = node->dump();
-  if ( filterString != "NULL" ) request.setFilterExpression (filterString); //filter cached features
+  if ( filterString != "NULL" )
+  {
+    request.setFilterExpression( filterString ); //filter cached features
+  }
 
   int limit = QgsExpressionUtils::getIntValue( values.at( 3 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
-  if (limit > 0) request.setLimit (limit);
+  request.setLimit( limit );
 
   int neighbors = 1;
   /*
@@ -5755,7 +5759,10 @@ template <t_relationFunction T>
 static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, int neighbors, double max_distance, double bboxGrow = 0 )
 {
   QgsRectangle intDomain = geometry.boundingBox();
-  if ( bboxGrow != 0 ) intDomain.grow(bboxGrow); //optional parameter to enlarge boundary context for touches and equals methods
+  if ( bboxGrow != 0 )
+  {
+    intDomain.grow( bboxGrow ); //optional parameter to enlarge boundary context for touches and equals methods
+  }
 
   const QList<QgsFeatureId> targetFeatureIds = spatialIndex.intersects( intDomain );
 
@@ -5775,46 +5782,58 @@ static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionCont
         break;
 
       // We want a list of attributes / geometries / other expression values, evaluate now
-      if (!invert){
-          subContext.setFeature( feat );
-          results.append( subExp.evaluate( &subContext ) );
-      } else {
-          results.append(id);
+      if ( !invert )
+      {
+        subContext.setFeature( feat );
+        results.append( subExp.evaluate( &subContext ) );
+      }
+      else
+      {
+        results.append( id );
       }
     }
   }
-  if ( testOnly ){
-      if ( invert ) found = !found;//for disjoint condition
-      return found;
-  } else {
-    if ( !invert ) return results;
-    else { // for disjoint condition returns the results for cached layers not intersected feats
-        QVariantList disjoint_results;
-        QgsFeature feat;
-        QgsFeatureIterator fi = cachedTarget->getFeatures();
-        while ( fi.nextFeature( feat ) ) {
-            if ( !results.contains(feat.id()) ) {
-                subContext.setFeature( feat );
-                disjoint_results.append( subExp.evaluate( &subContext ) );
-            }
+  if ( testOnly )
+  {
+    if ( invert )
+      found = !found;//for disjoint condition
+    return found;
+  }
+  else
+  {
+    if ( !invert )
+      return results;
+    else
+    {
+      // for disjoint condition returns the results for cached layers not intersected feats
+      QVariantList disjoint_results;
+      QgsFeature feat;
+      QgsFeatureIterator fi = cachedTarget->getFeatures();
+      while ( fi.nextFeature( feat ) )
+      {
+        if ( !results.contains( feat.id() ) )
+        {
+          subContext.setFeature( feat );
+          disjoint_results.append( subExp.evaluate( &subContext ) );
         }
-        return disjoint_results;
+      }
+      return disjoint_results;
     }
   }
 }
 
-static QVariantList indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, int neighbors, double max_distance, double bboxGrow = 0)
+static QVariantList indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, int neighbors, double max_distance, double bboxGrow = 0 )
 {
 
-    const QList<QgsFeatureId> targetFeatureIds = spatialIndex.nearestNeighbor( geometry, neighbors, max_distance );
-    QVariantList results;
-    for ( QgsFeatureId id : targetFeatureIds )
-    {
-      QgsFeature feat = cachedTarget->getFeature( id );
-      subContext.setFeature( feat );
-      results.append( subExp.evaluate( &subContext ) );
-    }
-    return results;
+  const QList<QgsFeatureId> targetFeatureIds = spatialIndex.nearestNeighbor( geometry, neighbors, max_distance );
+  QVariantList results;
+  for ( QgsFeatureId id : targetFeatureIds )
+  {
+    QgsFeature feat = cachedTarget->getFeature( id );
+    subContext.setFeature( feat );
+    results.append( subExp.evaluate( &subContext ) );
+  }
+  return results;
 }
 
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5849,7 +5868,7 @@ static QVariant fcnTestGeomOverlayCrosses( const QVariantList &values, const Qgs
 
 static QVariant fcnGeomOverlayEquals( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::equals>, false, 0.01  ); //grow amount should adapt to current units
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredOverlay<&QgsGeometry::equals>, false, 0.01 );  //grow amount should adapt to current units
 }
 
 static QVariant fcnTestGeomOverlayEquals( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5889,7 +5908,7 @@ static QVariant fcnTestGeomOverlayDisjoint( const QVariantList &values, const Qg
 
 static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, false, indexedFilteredNearest, false);
+  return executeGeomOverlay( values, context, parent, false, indexedFilteredNearest, false );
 }
 
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
@@ -6265,7 +6284,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, -1 ),
         fcnGeomOverlayIntersects, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
     // The current feature is accessed for the geometry, so this should not be cached
@@ -6285,7 +6304,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, -1 ),
         // TODO: limit param
         fcnGeomOverlayContains, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
@@ -6305,7 +6324,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, -1 ),
         fcnGeomOverlayCrosses, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayCrossesFunc->setIsStatic( false );
@@ -6324,7 +6343,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, -1 ),
         fcnGeomOverlayEquals, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayEqualsFunc->setIsStatic( false );
@@ -6343,7 +6362,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, -1 ),
         fcnGeomOverlayTouches, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayTouchesFunc->setIsStatic( false );
@@ -6362,7 +6381,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, -1 ),
         fcnGeomOverlayDisjoint, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayDisjointFunc->setIsStatic( false );
@@ -6381,7 +6400,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, -1 ),
         fcnGeomOverlayWithin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayWithinFunc->setIsStatic( false );
@@ -6400,9 +6419,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, -1 )
         << QgsExpressionFunction::Parameter( QStringLiteral( "neighbors" ), true, 1 )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "max_distance" ), true, 0),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "max_distance" ), true, 0 ),
         //<< QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true ),
         fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
