@@ -261,7 +261,7 @@
            <item>
             <widget class="QToolButton" name="mFlashButton">
              <property name="toolTip">
-              <string>Highlight currently edited feature on map</string>
+              <string>Highlight current feature on map</string>
              </property>
              <property name="text">
               <string/>
@@ -294,7 +294,7 @@
            <item>
             <widget class="QToolButton" name="mAutoPanButton">
              <property name="toolTip">
-              <string>Automatically pan to currently edited feature</string>
+              <string>Automatically pan to the current feature</string>
              </property>
              <property name="text">
               <string/>
@@ -314,7 +314,7 @@
            <item>
             <widget class="QToolButton" name="mAutoZoomButton">
              <property name="toolTip">
-              <string>Automatically zoom to currently edited feature</string>
+              <string>Automatically zoom to the current feature</string>
              </property>
              <property name="text">
               <string/>
