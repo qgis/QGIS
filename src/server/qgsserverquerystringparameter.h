@@ -23,7 +23,7 @@
 #include <QVariant>
 #include <QObject>
 
-class QgsServerApiBadRequestError;
+class QgsServerApiBadRequestException;
 
 
 

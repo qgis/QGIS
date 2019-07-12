@@ -18,6 +18,7 @@
 #ifndef QGSSERVEREXCEPTION_H
 #define QGSSERVEREXCEPTION_H
 
+
 #include <QString>
 #include <QByteArray>
 
@@ -133,6 +134,8 @@ class SERVER_EXPORT QgsBadRequestException: public QgsOgcServiceException
 };
 #endif
 
+#ifndef SIP_RUN // No API exceptions for SIP, see python/server/qgsserverexception.sip
+
 /**
  * \ingroup server
  * \class  QgsServerApiException
@@ -230,7 +233,7 @@ class SERVER_EXPORT QgsServerApiNotFoundError: public QgsServerApiException
 
 /**
  * \ingroup server
- * \class  QgsServerApiBadRequestError
+ * \class  QgsServerApiBadRequestException
  * \brief Bad request error API exception.
  *
  * Note that this exception is associated with a default return code 400 which may be
@@ -238,20 +241,19 @@ class SERVER_EXPORT QgsServerApiNotFoundError: public QgsServerApiException
  *
  * \since QGIS 3.10
  */
-class SERVER_EXPORT QgsServerApiBadRequestError: public QgsServerApiException
+class SERVER_EXPORT QgsServerApiBadRequestException: public QgsServerApiException
 {
   public:
     //! Construction
-    QgsServerApiBadRequestError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 )
+    QgsServerApiBadRequestException( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 )
       : QgsServerApiException( QStringLiteral( "Bad request error" ), message, mimeType, responseCode )
     {
     }
 };
 
-
 /**
  * \ingroup server
- * \class  QgsServerApiImproperlyConfiguredError
+ * \class  QgsServerApiImproperlyConfiguredException
  * \brief  configuration error on the server prevents to serve the request, which would be valid otherwise.
  *
  * Note that this exception is associated with a default return code 500 which may be
@@ -259,11 +261,11 @@ class SERVER_EXPORT QgsServerApiBadRequestError: public QgsServerApiException
  *
  * \since QGIS 3.10
  */
-class SERVER_EXPORT QgsServerApiImproperlyConfiguredError: public QgsServerApiException
+class SERVER_EXPORT QgsServerApiImproperlyConfiguredException: public QgsServerApiException
 {
   public:
     //! Construction
-    QgsServerApiImproperlyConfiguredError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
+    QgsServerApiImproperlyConfiguredException( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
       : QgsServerApiException( QStringLiteral( "Improperly configured error" ), message, mimeType, responseCode )
     {
     }
@@ -272,7 +274,7 @@ class SERVER_EXPORT QgsServerApiImproperlyConfiguredError: public QgsServerApiEx
 
 /**
  * \ingroup server
- * \class  QgsServerApiNotImplementedError
+ * \class  QgsServerApiNotImplementedException
  * \brief  this method is not yet implemented
  *
  * Note that this exception is associated with a default return code 500 which may be
@@ -280,11 +282,11 @@ class SERVER_EXPORT QgsServerApiImproperlyConfiguredError: public QgsServerApiEx
  *
  * \since QGIS 3.10
  */
-class SERVER_EXPORT QgsServerApiNotImplementedError: public QgsServerApiException
+class SERVER_EXPORT QgsServerApiNotImplementedException: public QgsServerApiException
 {
   public:
     //! Construction
-    QgsServerApiNotImplementedError( const QString &message = QStringLiteral( "Requested method is not implemented" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
+    QgsServerApiNotImplementedException( const QString &message = QStringLiteral( "Requested method is not implemented" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
       : QgsServerApiException( QStringLiteral( "Not implemented error" ), message, mimeType, responseCode )
     {
     }
@@ -293,21 +295,22 @@ class SERVER_EXPORT QgsServerApiNotImplementedError: public QgsServerApiExceptio
 
 /**
  * \ingroup server
- * \class  QgsServerApiInvalidMimeType
+ * \class  QgsServerApiInvalidMimeTypeException
  * \brief  the client sent an invalid mime type in the "Accept" header
  *
  * Note that this exception is associated with a default return code 406
  *
  * \since QGIS 3.10
  */
-class SERVER_EXPORT QgsServerApiInvalidMimeType: public QgsServerApiException
+class SERVER_EXPORT QgsServerApiInvalidMimeTypeException: public QgsServerApiException
 {
   public:
     //! Construction
-    QgsServerApiInvalidMimeType( const QString &message = QStringLiteral( "The Accept header submitted in the request did not support any of the media types supported by the server for the requested resource" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 406 )
+    QgsServerApiInvalidMimeTypeException( const QString &message = QStringLiteral( "The Accept header submitted in the request did not support any of the media types supported by the server for the requested resource" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 406 )
       : QgsServerApiException( QStringLiteral( "Invalid mime-type" ), message, mimeType, responseCode )
     {
     }
 };
+#endif // no API exceptions for SIP
 
 #endif

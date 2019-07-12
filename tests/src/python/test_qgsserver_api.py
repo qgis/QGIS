@@ -24,10 +24,17 @@ from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServerApi,
+    QgsServerApiBadRequestException,
+    QgsServerQueryStringParameter,
+    QgsServerApiContext,
+    QgsServerOgcApi,
+    QgsServerOgcApiHandler,
     QgsServerApiUtils,
     QgsServiceRegistry
 )
 from qgis.core import QgsProject, QgsRectangle
+from qgis.PyQt import QtCore
+
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 from urllib import parse
@@ -90,7 +97,7 @@ class API(QgsServerApi):
         request_context.response().write(b"\"Test API\"")
 
 
-class QgsServerAPITest(QgsServerTestBase):
+class QgsServerAPITestBase(QgsServerTestBase):
     """ QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
@@ -151,8 +158,12 @@ class QgsServerAPITest(QgsServerTestBase):
 
     @classmethod
     def setUpClass(cls):
-        super(QgsServerAPITest, cls).setUpClass()
+        super(QgsServerAPITestBase, cls).setUpClass()
         cls.maxDiff = None
+
+
+class QgsServerAPITest(QgsServerAPITestBase):
+    """ QGIS API server tests"""
 
     def test_api(self):
         """Test API registering"""
@@ -370,6 +381,163 @@ class QgsServerAPITest(QgsServerTestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer3/items?name=tw*')
         self.compareApi(request, project, 'test_wfs3_collections_items_testlayer3_name_eq_tw_star.json')
+
+
+class Handler1(QgsServerOgcApiHandler):
+
+    def path(self):
+        return QtCore.QRegularExpression("/handlerone")
+
+    def operationId(self):
+        return "handlerOne"
+
+    def summary(self):
+        return "First of its name"
+
+    def description(self):
+        return "The first handler ever"
+
+    def linkTitle(self):
+        return "Handler One Link Title"
+
+    def linkType(self):
+        return QgsServerOgcApi.data
+
+    def handleRequest(self, context):
+        """Simple mirror: returns the parameters"""
+
+        params = self.validate(context)
+        self.write(params, context)
+
+    def parameters(self):
+        return [QgsServerQueryStringParameter('value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value')]
+
+
+class Handler2(QgsServerOgcApiHandler):
+
+    def path(self):
+        return QtCore.QRegularExpression(r"/handlertwo/(?P<code1>\d{2})/(\d{3})")
+
+    def operationId(self):
+        return "handlerTwo"
+
+    def summary(self):
+        return "Second of its name"
+
+    def description(self):
+        return "The second handler ever"
+
+    def linkTitle(self):
+        return "Handler Two Link Title"
+
+    def linkType(self):
+        return QgsServerOgcApi.data
+
+    def handleRequest(self, context):
+        """Simple mirror: returns the parameters"""
+
+        params = self.validate(context)
+        self.write(params, context)
+
+    def parameters(self):
+        return [QgsServerQueryStringParameter('value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value')]
+
+
+class QgsServerOgcAPITest(QgsServerAPITestBase):
+    """ QGIS OGC API server tests"""
+
+    def testOgcApi(self):
+        """Test OGC API"""
+
+        api = QgsServerOgcApi(self.server.serverInterface(), '/api1', 'apione', 'an api', '1.1')
+        self.assertEqual(api.name(), 'apione')
+        self.assertEqual(api.description(), 'an api')
+        self.assertEqual(api.version(), '1.1')
+        self.assertEqual(api.rootPath(), '/api1')
+        url = 'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=-1'
+        self.assertEqual(api.sanitizeUrl(QtCore.QUrl(url)).toString(), 'http://server.qgis.org/wfs3/collections/testlayer \xe8\xe9/items?limit=-1')
+        self.assertEqual(api.sanitizeUrl(QtCore.QUrl('/path//double//slashes//#fr')).toString(), '/path/double/slashes#fr')
+        self.assertEqual(api.relToString(QgsServerOgcApi.data), 'data')
+        self.assertEqual(api.relToString(QgsServerOgcApi.alternate), 'alternate')
+        self.assertEqual(api.contentTypeToString(QgsServerOgcApi.JSON), 'JSON')
+        self.assertEqual(api.contentTypeToStdString(QgsServerOgcApi.JSON), 'JSON')
+        self.assertEqual(api.contentTypeToExtension(QgsServerOgcApi.JSON), 'json')
+        self.assertEqual(api.contentTypeToExtension(QgsServerOgcApi.GEOJSON), 'geojson')
+
+    def testOgcApiHandler(self):
+        """Test OGC API Handler"""
+
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=-1')
+        response = QgsBufferServerResponse()
+
+        ctx = QgsServerApiContext('/services/api1', request, response, project, self.server.serverInterface())
+        h = Handler1()
+        self.assertTrue(h.staticPath().endswith('/resources/server/api/ogc/static'))
+        self.assertEqual(h.path(), QtCore.QRegularExpression("/handlerone"))
+        self.assertEqual(h.description(), 'The first handler ever')
+        self.assertEqual(h.operationId(), 'handlerOne')
+        self.assertEqual(h.summary(), 'First of its name')
+        self.assertEqual(h.linkTitle(), 'Handler One Link Title')
+        self.assertEqual(h.linkType(), QgsServerOgcApi.data)
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            h.handleRequest(ctx)
+        self.assertEqual(str(ex.exception), 'Missing required argument: value1')
+
+        r = ctx.response()
+        self.assertEqual(r.data(), '')
+
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            h.validate(ctx)
+        self.assertEqual(str(ex.exception), 'Missing required argument: value1')
+
+        # Add handler to API and test for /api2
+        ctx = QgsServerApiContext('/services/api2', request, response, project, self.server.serverInterface())
+        api = QgsServerOgcApi(self.server.serverInterface(), '/api2', 'apitwo', 'a second api', '1.2')
+        api.registerHandler(h)
+        # Add a second handler (will be tested later)
+        h2 = Handler2()
+        api.registerHandler(h2)
+
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api1'))
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            api.executeRequest(ctx)
+        self.assertEqual(str(ex.exception), 'Requested URI does not match any registered API handler')
+
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2'))
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            api.executeRequest(ctx)
+        self.assertEqual(str(ex.exception), 'Requested URI does not match any registered API handler')
+
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone'))
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            api.executeRequest(ctx)
+        self.assertEqual(str(ex.exception), 'Missing required argument: value1')
+
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone?value1=not+a+double'))
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            api.executeRequest(ctx)
+        self.assertEqual(str(ex.exception), 'Argument value1 could not be converted to Double')
+
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone?value1=1.2345'))
+        params = h.validate(ctx)
+        self.assertEqual(params, {'path_arguments': [], 'value1': 1.2345})
+        api.executeRequest(ctx)
+        self.assertEqual(json.loads(bytes(ctx.response().data()))['value1'], 1.2345)
+
+        # Test path fragments extraction
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345'))
+        params = h2.validate(ctx)
+        self.assertEqual(params, {'code1': '00', 'path_arguments': ['00'], 'value1': 1.2345})
+
+        # Test links
+        self.assertEqual(h2.href(ctx), 'http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345')
+        self.assertEqual(h2.href(ctx, '/extra'), 'http://www.qgis.org/services/api2/handlertwo/00/555/extra?value1=1.2345')
+        self.assertEqual(h2.href(ctx, '/extra', 'json'), 'http://www.qgis.org/services/api2/handlertwo/00/555/extra.json?value1=1.2345')
+
+        # Test template path
+        self.assertTrue(h2.templatePath(ctx).endswith('/resources/server/api/ogc/templates/services/api2/handlerTwo.html'))
 
 
 if __name__ == '__main__':

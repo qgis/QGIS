@@ -10,17 +10,17 @@ Content-Type: application/json
   ],
   "links": [
     {
-      "href": "http://server.qgis.org/wfs3/conformance/conformance.json",
+      "href": "http://server.qgis.org/wfs3/conformance.json",
       "rel": "self",
       "title": "WFS 3.0 conformance classes as JSON",
       "type": "application/json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/conformance/conformance.html",
+      "href": "http://server.qgis.org/wfs3/conformance.html",
       "rel": "alternate",
       "title": "WFS 3.0 conformance classes as HTML",
       "type": "text/html"
     }
   ],
-  "timeStamp": "2019-07-10T07:06:21Z"
+  "timeStamp": "2019-07-12T13:28:56Z"
 }

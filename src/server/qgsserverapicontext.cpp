@@ -71,3 +71,8 @@ const QString QgsServerApiContext::matchedPath() const
     return QString();
   }
 }
+
+QString QgsServerApiContext::apiRootPath() const
+{
+  return mApiRootPath;
+}

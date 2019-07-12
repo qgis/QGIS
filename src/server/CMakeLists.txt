@@ -65,6 +65,7 @@ SET (QGIS_SERVER_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
   qgsserverlogger.h
+  qgsserverogcapi.h
   qgsserversettings.h
   qgsserverparameters.h
   qgsserverquerystringparameter.h

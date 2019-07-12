@@ -31,7 +31,8 @@ request handlers chain.
 %Docstring
 QgsServerApiContext constructor
 
-:param apiRootPath: is the API root path, this information is used by the handlers to build the href links to the resources.
+:param apiRootPath: is the API root path, this information is used by the
+                    handlers to build the href links to the resources and to the HTML templates.
 :param request: the incoming request
 :param response: the response
 :param project: the project (might be NULL)
@@ -76,6 +77,11 @@ If there is no match returns an empty string (it should never happen).
 I.e. for an API with root path "/wfs3" and an incoming request
 "https://www.qgis.org/services/wfs3/collections"
 this method will return "/resources/wfs3"
+%End
+
+    QString apiRootPath() const;
+%Docstring
+Returns the API root path
 %End
 
 };

@@ -1,8 +1,8 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgsservicemodule.sip
-%Include auto_generated/qgsmapserviceexception.sip
 %Include auto_generated/qgsserverapi.sip
 %Include auto_generated/qgsserverogcapi.sip
+%Include auto_generated/qgsserverogcapihandler.sip
 %Include auto_generated/qgsserverapicontext.sip
 %Include auto_generated/qgsserverquerystringparameter.sip
 %Include auto_generated/qgscapabilitiescache.sip

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswfs3handlers.h"
+#include "qgsserverogcapi.h"
 #include "qgsserverapicontext.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
@@ -23,24 +24,15 @@
 #include "qgsfeaturerequest.h"
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsmessagelog.h"
 
 #include <QMimeDatabase>
 
-APIHandler::APIHandler()
+Wfs3APIHandler::Wfs3APIHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/api)re" ) );
-  operationId = "api";
-  summary = "The API definition";
-  description = "The API definition";
-  linkTitle = "API definition";
-  // TODO: is this correct? maybe _docs?
-  linkType = QgsWfs3::rel::service_desc;
-  defaultContentType = QgsWfs3::contentType::OPENAPI3;
-  contentTypes = { QgsWfs3::contentType::OPENAPI3, QgsWfs3::contentType::HTML };
-  landingPageRootLink = QStringLiteral( "api" );
 }
 
-void APIHandler::handleRequest( const QgsServerApiContext &context ) const
+void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   // TODO
   json data
@@ -49,23 +41,16 @@ void APIHandler::handleRequest( const QgsServerApiContext &context ) const
   };
   json navigation = json::array();
   const auto url { context.request()->url() };
-  navigation.push_back( {{ "title",  "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 1 ) }} ) ;
-  write( data, context, {{ "pageTitle", linkTitle }, { "navigation", navigation }} );
+  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ) }} ) ;
+  write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
-LandingPageHandler::LandingPageHandler()
+Wfs3LandingPageHandler::Wfs3LandingPageHandler()
 {
-  path.setPattern( QStringLiteral( R"re($)re" ) );
-  operationId = "getLandingPage";
-  summary = "Landing page of this API";
-  description = "The landing page provides links to the API definition, the Conformance "
-                "statements and the metadata about the feature data in this dataset.";
-  linkTitle = "Landing page";
-  linkType = QgsWfs3::rel::self;
-  defaultContentType = QgsWfs3::contentType::JSON;
+
 }
 
-void LandingPageHandler::handleRequest( const QgsServerApiContext &context ) const
+void Wfs3LandingPageHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json data
   {
@@ -75,42 +60,33 @@ void LandingPageHandler::handleRequest( const QgsServerApiContext &context ) con
   data["links"].push_back(
   {
     { "href", href( context, "/collections" )},
-    { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::data ) },
-    { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::JSON ) },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::data ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::JSON ) },
     { "title", "Feature collections" },
   } );
   data["links"].push_back(
   {
     { "href", href( context, "/conformance" )},
-    { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::conformance ) },
-    { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::JSON ) },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::conformance ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::JSON ) },
     { "title", "WFS 3.0 conformance classes" },
   } );
   data["links"].push_back(
   {
     { "href", href( context, "/api" )},
-    { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::service_desc ) },
-    { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::OPENAPI3 ) },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::service_desc ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
     { "title", "API definition" },
   } );
-  write( data, context, {{ "pageTitle", linkTitle }, { "navigation", json::array() }} );
+  write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
 }
 
 
-ConformanceHandler::ConformanceHandler()
+Wfs3ConformanceHandler::Wfs3ConformanceHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/conformance$)re" ) );
-  operationId = "getRequirementClasses";
-  linkTitle = "WFS 3.0 conformance classes";
-  summary = "Information about standards that this API conforms to";
-  description = "List all requirements classes specified in a standard (e.g., WFS 3.0 "
-                "Part 1: Core) that the server conforms to";
-  linkType = QgsWfs3::rel::conformance;
-  defaultContentType = QgsWfs3::contentType::JSON;
-  landingPageRootLink = QStringLiteral( "conformance" );
 }
 
-void ConformanceHandler::handleRequest( const QgsServerApiContext &context ) const
+void Wfs3ConformanceHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json data
   {
@@ -126,23 +102,15 @@ void ConformanceHandler::handleRequest( const QgsServerApiContext &context ) con
   };
   json navigation = json::array();
   const auto url { context.request()->url() };
-  navigation.push_back( {{ "title",  "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 1 ) }} ) ;
-  write( data, context, {{ "pageTitle", linkTitle }, { "navigation", navigation }} );
+  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ) }} ) ;
+  write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
-CollectionsHandler::CollectionsHandler()
+Wfs3CollectionsHandler::Wfs3CollectionsHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/collections(\.json|\.html)?$)re" ) );
-  operationId = "describeCollections";
-  linkTitle = "Feature collections";
-  summary = "describe the feature collections in the dataset";
-  description = "Metadata about the feature collections shared by this API.";
-  linkType = QgsWfs3::rel::data;
-  defaultContentType = QgsWfs3::contentType::JSON;
-  landingPageRootLink = QStringLiteral( "collections" );
 }
 
-void CollectionsHandler::handleRequest( const QgsServerApiContext &context ) const
+void Wfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json data
   {
@@ -189,20 +157,20 @@ void CollectionsHandler::handleRequest( const QgsServerApiContext &context ) con
         {
           "links", {
             {
-              { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::JSON ) )  },
-              { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
-              { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::GEOJSON ) },
+              { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) )  },
+              { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
+              { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) },
               { "title", title + " as GeoJSON" }
             },
             {
-              { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) )  },
-              { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
-              { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::HTML )  },
+              { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) )  },
+              { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
+              { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML )  },
               { "title", title + " as HTML" }
             }/* TODO: not sure what these "concepts" are about, neither if they are mandatory
             {
               { "href", href( api, context.request(), QStringLiteral( "/%1/concepts" ).arg( shortName ) )  },
-              { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
+              { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
               { "type", "text/html" },
               { "title", "Describe " + title }
             }
@@ -214,29 +182,22 @@ void CollectionsHandler::handleRequest( const QgsServerApiContext &context ) con
   }
   json navigation = json::array();
   const auto url { context.request()->url() };
-  navigation.push_back( {{ "title",  "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 1 ) }} ) ;
-  write( data, context, {{ "pageTitle", linkTitle }, { "navigation", navigation }} );
+  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ) }} ) ;
+  write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
-DescribeCollectionHandler::DescribeCollectionHandler()
+Wfs3DescribeCollectionHandler::Wfs3DescribeCollectionHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+?)(\.json|\.html)?$)re" ) );
-  operationId = "describeCollection";
-  linkTitle = "Metadata about the feature collections";
-  summary = "describe the feature collections in the dataset";
-  description = "Metadata about the feature collections shared by this API.";
-  linkType = QgsWfs3::rel::data;
-  defaultContentType = QgsWfs3::contentType::JSON;
 }
 
-void DescribeCollectionHandler::handleRequest( const QgsServerApiContext &context ) const
+void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   if ( ! context.project() )
   {
-    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Project is invalid or undefined" ) );
+    throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project is invalid or undefined" ) );
   }
   // Check collectionId
-  const auto match { path.match( context.request()->url().path( ) ) };
+  const auto match { path().match( context.request()->url().path( ) ) };
   if ( ! match.hasMatch() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
@@ -251,23 +212,23 @@ void DescribeCollectionHandler::handleRequest( const QgsServerApiContext &contex
   json _links { links( context ) };
   _links.push_back(
   {
-    { "href", href( context, QStringLiteral( "/items" ), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::JSON ) )  },
-    { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::items ) },
-    { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::JSON ) },
+    { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) )  },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::JSON ) },
     { "title", title }
   } );
 
   _links.push_back(
   {
-    { "href", href( context, QStringLiteral( "/items" ), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) )  },
-    { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::items ) },
-    { "type", QgsWfs3::Api::mimeType( QgsWfs3::contentType::HTML ) },
+    { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) )  },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
     { "title", title }
   }
   /* TODO: not sure what these "concepts" are about, neither if they are mandatory
   ,{
     { "href", href( api, *context.request() , QStringLiteral( "/concepts" ), QStringLiteral( "html") )  },
-    { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
     { "type", "text/html" },
     { "title", "Describe " + title }
   }
@@ -297,36 +258,24 @@ void DescribeCollectionHandler::handleRequest( const QgsServerApiContext &contex
   };
   json navigation = json::array();
   const auto url { context.request()->url() };
-  navigation.push_back( {{ "title",  "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 2 ) }} ) ;
-  navigation.push_back( {{ "title",  "Collections" }, { "href", QgsWfs3::Api::parentLink( url, 1 ) }} ) ;
+  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 2 ) }} ) ;
+  navigation.push_back( {{ "title",  "Collections" }, { "href", parentLink( url, 1 ) }} ) ;
   write( data, context, {{ "pageTitle", title }, { "navigation", navigation }} );
 }
 
 
-CollectionsItemsHandler::CollectionsItemsHandler()
+Wfs3CollectionsItemsHandler::Wfs3CollectionsItemsHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html)?$)re" ) );
-  operationId = "getFeatures";
-  linkTitle = "Retrieve the features of the collection";
-  summary = "retrieve features of feature collection collectionId";
-  description = "Every feature in a dataset belongs to a collection. A dataset may "
-                "consist of multiple feature collections. A feature collection is often a "
-                "collection of features of a similar type, based on a common schema. "
-                "Use content negotiation or specify a file extension to request HTML (.html) "
-                "or GeoJSON (.json).";
-  linkType = QgsWfs3::rel::data;
-  defaultContentType =  QgsWfs3::contentType::GEOJSON;
-  contentTypes = { QgsWfs3::contentType::GEOJSON, QgsWfs3::contentType::HTML };
 }
 
-void CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context ) const
+void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   if ( ! context.project() )
   {
-    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Project is invalid or undefined" ) );
+    throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project is invalid or undefined" ) );
   }
   // Check collectionId
-  const auto match { path.match( context.request()->url().path( ) ) };
+  const auto match { path().match( context.request()->url().path( ) ) };
   if ( ! match.hasMatch() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
@@ -350,7 +299,7 @@ void CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context 
     const QgsRectangle filterRect { QgsServerApiUtils::parseBbox( bbox ) };
     if ( ! bbox.isEmpty() && filterRect.isNull() )
     {
-      throw QgsServerApiBadRequestError( QStringLiteral( "bbox is not valid" ) );
+      throw QgsServerApiBadRequestException( QStringLiteral( "bbox is not valid" ) );
     }
     const QString bboxCrs { context.request()->queryParameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
 
@@ -358,7 +307,7 @@ void CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context 
     const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
     if ( ! crs.isValid() )
     {
-      throw QgsServerApiBadRequestError( QStringLiteral( "CRS is not valid" ) );
+      throw QgsServerApiBadRequestException( QStringLiteral( "CRS is not valid" ) );
     }
 
     // resultType
@@ -366,7 +315,7 @@ void CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context 
     static const QStringList availableResultTypes { QStringLiteral( "results" ), QStringLiteral( "hits" )};
     if ( ! availableResultTypes.contains( resultType ) )
     {
-      throw QgsServerApiBadRequestError( QStringLiteral( "resultType is not valid [results, hits]" ) );
+      throw QgsServerApiBadRequestException( QStringLiteral( "resultType is not valid [results, hits]" ) );
     }
 
     // Attribute filters
@@ -380,7 +329,7 @@ void CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context 
         QString sanitized { QgsServerApiUtils::sanitizedFieldValue( val ) };
         if ( sanitized.isEmpty() )
         {
-          throw QgsServerApiBadRequestError( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name() ).arg( val ) );
+          throw QgsServerApiBadRequestException( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name() ).arg( val ) );
         }
         attrFilters[f.name()] = sanitized;
       }
@@ -392,19 +341,19 @@ void CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context 
     const long offset { context.request()->queryParameter( QStringLiteral( "offset" ), QStringLiteral( "0" ) ).toLong( &ok ) };
     if ( offset < 0 || !ok )
     {
-      throw QgsServerApiBadRequestError( QStringLiteral( "Offset is not valid" ) );
+      throw QgsServerApiBadRequestException( QStringLiteral( "Offset is not valid" ) );
     }
     // TODO: make the max limit configurable
     const long limit { context.request()->queryParameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toLong( &ok ) };
     if ( 0 >= limit || limit > 10000 || !ok )
     {
-      throw QgsServerApiBadRequestError( QStringLiteral( "Limit is not valid (0-10000)" ) );
+      throw QgsServerApiBadRequestException( QStringLiteral( "Limit is not valid (0-10000)" ) );
     }
     // TODO: implement time
     const QString time { context.request()->queryParameter( QStringLiteral( "time" ) ) };
     if ( ! time.isEmpty() )
     {
-      throw QgsServerApiNotImplementedError( QStringLiteral( "Time filter is not implemented" ) ) ;
+      throw QgsServerApiNotImplementedException( QStringLiteral( "Time filter is not implemented" ) ) ;
     }
 
     // Inputs are valid, process request
@@ -526,16 +475,16 @@ void CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context 
     }
 
     json navigation = json::array();
-    navigation.push_back( {{ "title",  "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 3 ) }} ) ;
-    navigation.push_back( {{ "title",  "Collections" }, { "href", QgsWfs3::Api::parentLink( url, 2 ) }} ) ;
-    navigation.push_back( {{ "title",   title }, { "href", QgsWfs3::Api::parentLink( url, 1 )  }} ) ;
+    navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 3 ) }} ) ;
+    navigation.push_back( {{ "title",  "Collections" }, { "href", parentLink( url, 2 ) }} ) ;
+    navigation.push_back( {{ "title",   title }, { "href", parentLink( url, 1 )  }} ) ;
     json htmlMetadata
     {
       { "pageTitle", "Features in layer " + title },
       { "layerTitle", title },
       {
-        "geojsonUrl", href( context, "/" + landingPageRootLink,
-                            QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::GEOJSON ) )
+        "geojsonUrl", href( context, "/",
+                            QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) )
       },
       { "navigation", navigation }
     };
@@ -543,31 +492,23 @@ void CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context 
   }
   else
   {
-    throw QgsServerApiNotImplementedError( QStringLiteral( "Only GET method is implemented." ) );
+    throw QgsServerApiNotImplementedException( QStringLiteral( "Only GET method is implemented." ) );
   }
 
 }
 
-CollectionsFeatureHandler::CollectionsFeatureHandler()
+Wfs3CollectionsFeatureHandler::Wfs3CollectionsFeatureHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html)?$)re" ) );
-  operationId = "getFeature";
-  linkTitle = "Retrieve a feature";
-  summary = "retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)";
-  description = "";
-  linkType = QgsWfs3::rel::data;
-  defaultContentType =  QgsWfs3::contentType::GEOJSON;
-  contentTypes = { QgsWfs3::contentType::GEOJSON, QgsWfs3::contentType::HTML };
 }
 
-void CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &context ) const
+void Wfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   if ( ! context.project() )
   {
-    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Project is invalid or undefined" ) );
+    throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project is invalid or undefined" ) );
   }
   // Check collectionId
-  const auto match { path.match( context.request()->url().path( ) ) };
+  const auto match { path().match( context.request()->url().path( ) ) };
   if ( ! match.hasMatch() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
@@ -591,16 +532,16 @@ void CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &contex
     data["links"] = links( context );
     json navigation = json::array();
     const auto url { context.request()->url() };
-    navigation.push_back( {{ "title", "Landing page" }, { "href", QgsWfs3::Api::parentLink( url, 4 ) }} ) ;
-    navigation.push_back( {{ "title", "Collections" }, { "href", QgsWfs3::Api::parentLink( url, 3 ) }} ) ;
-    navigation.push_back( {{ "title", title }, { "href", QgsWfs3::Api::parentLink( url, 2 )  }} ) ;
-    navigation.push_back( {{ "title", "Items of " + title }, { "href", QgsWfs3::Api::parentLink( url ) }} ) ;
+    navigation.push_back( {{ "title", "Landing page" }, { "href", parentLink( url, 4 ) }} ) ;
+    navigation.push_back( {{ "title", "Collections" }, { "href", parentLink( url, 3 ) }} ) ;
+    navigation.push_back( {{ "title", title }, { "href", parentLink( url, 2 )  }} ) ;
+    navigation.push_back( {{ "title", "Items of " + title }, { "href", parentLink( url ) }} ) ;
     json htmlMetadata
     {
       { "pageTitle", title + " - feature " + featureId.toStdString() },
       {
-        "geojsonUrl", href( context, "/" + landingPageRootLink,
-                            QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::GEOJSON ) )
+        "geojsonUrl", href( context, "",
+                            QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) )
       },
       { "navigation", navigation }
     };
@@ -608,25 +549,18 @@ void CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &contex
   }
   else
   {
-    throw QgsServerApiNotImplementedError( QStringLiteral( "Only GET method is implemented." ) );
+    throw QgsServerApiNotImplementedException( QStringLiteral( "Only GET method is implemented." ) );
   }
 }
 
-StaticHandler::StaticHandler()
+Wfs3StaticHandler::Wfs3StaticHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/static/(?<staticFilePath>.*)$)re" ) );
-  operationId = "static";
-  linkTitle = "Serves static files";
-  summary = "Serves static files";
-  description = "";
-  linkType = QgsWfs3::rel::data;
-  defaultContentType = QgsWfs3::contentType::JSON;
 }
 
-void StaticHandler::handleRequest( const QgsServerApiContext &context ) const
+void Wfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) const
 {
 
-  const auto match { path.match( context.request()->url().path( ) ) };
+  const auto match { path().match( context.request()->url().path( ) ) };
   if ( ! match.hasMatch() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Static file was not found" ) );
@@ -637,6 +571,7 @@ void StaticHandler::handleRequest( const QgsServerApiContext &context ) const
   const auto filePath { staticPath() + '/' + staticFilePath };
   if ( ! QFile::exists( filePath ) )
   {
+    QgsMessageLog::logMessage( QStringLiteral( "Static file was not found: %1" ).arg( filePath ), QStringLiteral( "Server" ), Qgis::Info );
     throw QgsServerApiNotFoundError( QStringLiteral( "Static file %1 was not found" ).arg( staticFilePath ) );
   }
 

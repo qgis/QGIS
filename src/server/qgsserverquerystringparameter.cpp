@@ -41,7 +41,7 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
   // 1: check required
   if ( mRequired && ! context.request()->url().hasQueryItem( mName ) )
   {
-    throw  QgsServerApiBadRequestError( QStringLiteral( "Missing required argument: %1" ).arg( mName ) );
+    throw QgsServerApiBadRequestException( QStringLiteral( "Missing required argument: %1" ).arg( mName ) );
   }
 
   // 2: check type
@@ -80,15 +80,15 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
 
     if ( ! ok )
     {
-      throw  QgsServerApiBadRequestError( QStringLiteral( "Argument %1 could not be converted to %2" ).arg( mName )
-                                          .arg( typeName( mType ) ) );
+      throw  QgsServerApiBadRequestException( QStringLiteral( "Argument %1 could not be converted to %2" ).arg( mName )
+                                              .arg( typeName( mType ) ) );
     }
   }
 
   // 3: check custom validation
   if ( mCustomValidator && ! mCustomValidator( context, value ) )
   {
-    throw  QgsServerApiBadRequestError( QStringLiteral( "Custom validator failed to validate argument: %1" ).arg( mName ) );
+    throw  QgsServerApiBadRequestException( QStringLiteral( "Custom validator failed to validate argument: %1" ).arg( mName ) );
   }
   return value;
 }

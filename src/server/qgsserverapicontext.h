@@ -42,7 +42,8 @@ class SERVER_EXPORT QgsServerApiContext
     /**
     * QgsServerApiContext constructor
     *
-    * \param apiRootPath is the API root path, this information is used by the handlers to build the href links to the resources.
+    * \param apiRootPath is the API root path, this information is used by the
+    *        handlers to build the href links to the resources and to the HTML templates.
     * \param request the incoming request
     * \param response the response
     * \param project the project (might be NULL)
@@ -89,6 +90,11 @@ class SERVER_EXPORT QgsServerApiContext
      *
      */
     const QString matchedPath( ) const;
+
+    /**
+     * Returns the API root path
+     */
+    QString apiRootPath() const;
 
   private:
 

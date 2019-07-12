@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgsmodule.h"
-#include "qgswfs3api.h"
+#include "qgsserverogcapi.h"
+#include "qgswfs3handlers.h"
 
 /**
  * \ingroup server
@@ -29,8 +30,23 @@ class QgsWfs3Module: public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsg( QStringLiteral( "QgsWfs3Module::registerSelf called" ) );
-      registry.registerApi( new QgsWfs3::Api( serverIface ) );
+      QgsServerOgcApi *wfs3Api = new QgsServerOgcApi { serverIface,
+                                                       QStringLiteral( "/wfs3" ),
+                                                       QStringLiteral( "OGC WFS3 (Draft)" ),
+                                                       QStringLiteral( "1.0.0" )
+                                                     };
+      // Register handlers
+      wfs3Api->registerHandler<Wfs3CollectionsItemsHandler>();
+      wfs3Api->registerHandler<Wfs3CollectionsFeatureHandler>();
+      wfs3Api->registerHandler<Wfs3CollectionsHandler>();
+      wfs3Api->registerHandler<Wfs3DescribeCollectionHandler>();
+      wfs3Api->registerHandler<Wfs3ConformanceHandler>();
+      wfs3Api->registerHandler<Wfs3StaticHandler>();
+      wfs3Api->registerHandler<Wfs3APIHandler>();
+      wfs3Api->registerHandler<Wfs3LandingPageHandler>();
+
+      // Register API
+      registry.registerApi( wfs3Api );
     }
 };
 

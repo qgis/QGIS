@@ -213,17 +213,17 @@ Content-Type: application/json
   ],
   "links": [
     {
-      "href": "http://server.qgis.org/wfs3/collections/collections.json",
+      "href": "http://server.qgis.org/wfs3/collections.json",
       "rel": "self",
       "title": "Feature collections as JSON",
       "type": "application/json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/collections.html",
+      "href": "http://server.qgis.org/wfs3/collections.html",
       "rel": "alternate",
       "title": "Feature collections as HTML",
       "type": "text/html"
     }
   ],
-  "timeStamp": "2019-07-10T07:06:21Z"
+  "timeStamp": "2019-07-12T13:28:56Z"
 }

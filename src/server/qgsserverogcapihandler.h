@@ -16,15 +16,16 @@
 #ifndef QGSSERVEROGCAPIHANDLER_H
 #define QGSSERVEROGCAPIHANDLER_H
 
-#define SIP_NO_FILE
-
 #include <QRegularExpression>
 #include "qgis_server.h"
 #include "qgsserverquerystringparameter.h"
+#include "qgsserverogcapi.h"
 #include "nlohmann/json_fwd.hpp"
 #include "inja/inja.hpp"
 
+#ifndef SIP_RUN
 using json = nlohmann::json;
+#endif
 
 class QgsServerApiContext;
 
@@ -34,56 +35,45 @@ class QgsServerApiContext;
  *
  * Subclasses must override operational and informative methods and define
  * the core functionality in handleRequest() method.
+ *
+ * The following methods also MUST be implemented:
+ * - path
+ * - operationId
+ * - summary
+ * - description
+ * - linkTitle
+ * - linkType
+ *
+ * Optionally, override:
+ * - parameters
+ * - contentTypes
+ * - defaultContentType
+ *
+ *
  * \note not available in Python bindings
  * \since QGIS 3.10
  */
 class SERVER_EXPORT QgsServerOgcApiHandler
 {
-    Q_GADGET
 
   public:
 
-    //! Rel link types
-    enum class rel
-    {
-      // The following registered link relation types are used
-      alternate, //! Refers to a substitute for this context.
-      describedBy, //! Refers to a resource providing information about the link’s context.
-      collection, //! The target IRI points to a resource that is a member of the collection represented by the context IRI.
-      item, //! The target IRI points to a resource that is a member of the collection represented by the context IRI.
-      self, //! Conveys an identifier for the link’s context.
-      service_desc, //! Identifies service description for the context that is primarily intended for consumption by machines.
-      service_doc, //! Identifies service documentation for the context that is primarily intended for human consumption.
-      prev, //! Indicates that the link’s context is a part of a series, and that the previous in the series is the link targe
-      next, //! Indicates that the link’s context is a part of a series, and that the next in the series is the link target.
-      license, //! Refers to a license associated with this context.
-      // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
-      items, //! Refers to a resource that is comprised of members of the collection represented by the link’s context.
-      conformance, //! The target IRI points to a resource which represents the collection resource for the context IRI.
-      data,
-    };
-    Q_ENUM( rel )
-
-    //! Media types used for content negotiation, insert more specific first
-    enum class contentType
-    {
-      GEOJSON,
-      OPENAPI3, //! "application/openapi+json;version=3.0"
-      JSON,
-      HTML,
-      GML,
-      XML
-    };
-    Q_ENUM( contentType )
-
     QgsServerOgcApiHandler() = default;
 
-    virtual ~QgsServerOgcApiHandler() = default;
+    virtual ~QgsServerOgcApiHandler();
 
     // /////////////////////////////////////////////
     // MAIN Section (operational)
 
-    //! URL pattern for this handler
+    /**
+     * URL pattern for this handler, named capture group are supported as
+     * well as positional capture groups.
+     *
+     * Example: "/handlername/(?P<code1>\d{2})/(\d{3})" will capture "code1" as a
+     * named parameter and the second group as a positional parameter with index 0.
+     *
+     * \see validate()
+     */
     virtual QRegularExpression path() const = 0;
 
     //! Operation id for template file names and other internal references
@@ -108,42 +98,142 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     virtual std::string linkTitle() const = 0;
 
     //! Main role for the resource link
-    virtual rel linkType() const = 0;
+    virtual QgsServerOgcApi::Rel linkType() const = 0;
 
     /**
      * Default response content type in case the client did not specifically
      * ask for any particular content type.
      */
-    virtual contentType defaultContentType() const  { return contentType::JSON; }
+    virtual QgsServerOgcApi::ContentType defaultContentType() const  { return QgsServerOgcApi::ContentType::JSON; }
 
     /**
      * List of content types this handler can serve, default to JSON and HTML.
      * In case a specialized type (such as GEOJSON) is supported,
      * the generic type (such as JSON) should not be listed.
      */
-    virtual QList<contentType> contentTypes() const { return  { contentType::JSON, contentType::HTML }; }
+    virtual QList<QgsServerOgcApi::ContentType> contentTypes() const { return  { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML }; }
 
     /**
-     * Handles the request within it's \a context
+     * Handles the request within its \a context
+     *
+     * Subclasses must implement this methods, and call validate() to
+     * extract validated parameters from the request.
+     *
+     * \throws QgsServerApiBadRequestError if the method encounters any error
      */
     virtual void handleRequest( const QgsServerApiContext &context ) const = 0;
 
     /**
-     * Validates the request within it's \a context
+     * Validates the request within its \a context and returns the
+     * parameter map.
      *
-     * \returns the validated parameters map
+     * Your handleRequest method should call this function to retrieve
+     * the parameters map.
+     *
+     * Path fragments are returned in the string list "path_arguments", if the
+     * path() regular expression contains named capture groups, the
+     * corresponding parameters are also added to the map.
+     *
+     * \returns the validated parameters map by extracting captured
+     *          parameters from the path (no validation is performed on
+     *          the type because the regurlar expression can do it),
+     *          and the query string parameters.
+     *
+     * \see path()
+     * \see parameters()
      * \throws QgsServerApiBadRequestError if validation fails
      */
-    virtual QVariantMap validate( const QgsServerApiContext &context );
+    virtual QVariantMap validate( const QgsServerApiContext &context ) const SIP_THROW( QgsServerApiBadRequestException );
 
     /**
-     * Looks for the first contentType match in accept and returns it's mime type,
+     * Looks for the first contentType match in accept and returns its mime type,
      * returns an empty string if there are not matches.
      */
-    QString contentTypeForAccept( const QString &accept );
+    QString contentTypeForAccept( const QString &accept ) const;
 
     // /////////////////////////////////////////////////////
     // Utility methods: override should not be required
+
+#ifndef SIP_RUN
+
+    /**
+     * Writes \a data to the \a context response stream, content-type it is calculated from the \a context request,
+     * optional \a htmlMetadata for the HTML templates can be specified and will be added as "metadata" to
+     * the HTML template variables.
+     *
+     * HTML output uses a template engine.
+     *
+     * Available template functions:
+     * See: https://github.com/pantor/inja#tutorial
+     *
+     * Available custom template functions:
+     * - path_append(<path>): appends a directory <path> to the current url
+     * - path_chomp(n):removes the specified number "n" of directory components from the current url path
+     * - json_dump(): prints current JSON data passed to the template
+     * - static(<path>): returns the full URL to the specified static <path>, for example:
+     *   static("/style/black.css") will return something like "/wfs3/static/style/black.css".
+     * - links_filter( <links>, <key>, <value> ): eturns filtered links from a link list
+     * - content_type_name( <content_type> ): Returns a short name from a content type for example "text/html" will return "HTML"
+     *
+     * \note use xmlDump for XML output
+     * \see xmlDump()
+     * \note not available in Python bindings
+     */
+    void write( json &data, const QgsServerApiContext &context, const json &htmlMetadata = nullptr ) const;
+
+    /**
+     * Writes \a data to the \a context response stream as JSON
+     * (indented if debug is active), an optional \a contentType can be specified.
+     * \note not available in Python bindings
+     */
+    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = QStringLiteral( "application/json" ) ) const;
+
+    /**
+     * Writes \a data to the \a response stream as HTML (indented if debug is active) using a template.
+     *
+     * \param api parent Api instance
+     * \param context the API request context object
+     * \see templatePath()
+     * \note not available in Python bindings
+     */
+    void htmlDump( const json &data, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns handler information (id, description and other metadata) as JSON.
+     * \note not available in Python bindings
+     */
+    json handlerData( ) const;
+
+    /**
+     * Writes \a data to the \a response stream as XML (indented if debug is active).
+     * \note not available in Python bindings
+     */
+    void xmlDump( const json &data, QgsServerResponse *response ) const;
+
+    /**
+     * Utility method that builds and returns a link to the resource.
+     *
+     * \param context request context
+     * \param linkType type of the link (rel attribute), default to "self"
+     * \param contentType, default to objects's linkType
+     * \param title default to "This documents as <content type>"
+     * \note not available in Python bindings
+     */
+    json link( const QgsServerApiContext &context,
+               const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
+               const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
+               const std::string &title = "" ) const;
+
+    /**
+     * Returns all the links for the given request \a api and \a context.
+     *
+     * The base implementation returns the alternate and self links, subclasses may
+     * add other links.
+     */
+    json links( const QgsServerApiContext &context ) const;
+
+
+#endif
 
     /**
      * Writes \a data to the \a context response stream, content-type it is calculated from the \a context request,
@@ -167,46 +257,31 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \note use xmlDump for XML output
      * \see xmlDump()
      */
-    void write( json &data, const QgsServerApiContext &context, const json &htmlMetadata = nullptr ) const;
+    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const;
 
     /**
-     * Writes \a data to the \a response stream as JSON (indented if debug is active), an optional \a contentType can be specified.
-     */
-    void jsonDump( json &data, QgsServerResponse *response, const QString &contentType = QStringLiteral( "application/json" ) ) const;
-
-    /**
-     * Writes \a data to the \a response stream as HTML (indented if debug is active) using a template.
+     * Returns an URL to self, to be used for links to the current resources and as a base for constructing links to sub-resources
      *
-     * \param api parent Api instance
-     * \param request the request object
-     * \see templatePath()
+     * \param context the current request context
+     * \param extraPath an optional extra path that will be appended to the calculated URL
+     * \param extension optional file extension to add (the dot will be added automatically).
      */
-    void htmlDump( const json &data, const QgsServerRequest *request, QgsServerResponse *response ) const;
+    std::string href( const QgsServerApiContext &context, const QString &extraPath = QString(), const QString &extension = QString() ) const;
 
     /**
-     * Returns handler information (id, description and other metadata) as JSON.
-     */
-    json handlerData( ) const;
-
-    /**
-     * Writes \a data to the \a response stream as XML (indented if debug is active).
-     */
-    void xmlDump( const json &data, QgsServerResponse *response ) const;
-
-    /**
-     * Returns the HTML template path for the handler
-     */
-    const QString templatePath() const;
-
-    /**
-     * Returns the absolute path to base directory where resources for this handler are stored.
+     * Returns the HTML template path for the handler in the given \a context
      *
-     * TODO: make this path configurable by env and/or settings
+     * The template path is calculated as follow:
+     * QgsServerOgcApi::resourcesPath() + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
+     * e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
+     * will be QgsServerOgcApi::resourcesPath() + "/ogc/templates/wfs3/collectionItems.html"
+     * \see QgsServerOgcApi::resourcesPath()
      */
-    const QString resourcesPath() const;
+    const QString templatePath( const QgsServerApiContext &context ) const;
 
     /**
-     * Returns the absolute path to the directory where static resources for this handler are stored.
+     * Returns the absolute path to the base directory where static resources for
+     * this handler are stored.
      *
      * TODO: make this path configurable by env and/or settings
      */
@@ -221,16 +296,18 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \throws QgsServerApiBadRequestError if the content type of the request is not compatible with the handler (\see contentTypes member)
      */
-    contentType contentTypeFromRequest( const QgsServerRequest *request ) const;
+    QgsServerOgcApi::ContentType contentTypeFromRequest( const QgsServerRequest *request ) const;
+
+    /**
+     * Returns a link to the parent page up to \a levels in the HTML hierarchy from the given \a url, MAP query argument is preserved
+     */
+    static std::string parentLink( const QUrl &url, int levels = 1 );
+
+    static QgsVectorLayer *layerFromCollection( const QgsServerApiContext &context, const QString &collectionId );
 
 
   private:
 
-    //! Stores content type mime strings
-    static QMap<contentType, QString> sContentTypeMime;
-
-    //! Stores content type aliases (e.g. JSON->[GEOJSON,OPENAPI3], XML->[GML] )
-    static QHash<contentType, QList<contentType>> sContentTypeAliases;
 
 };
 
