@@ -24,12 +24,12 @@
 #include <QPen>
 #include <QPolygon>
 #include <QObject>
+#include <QSvgRenderer>
 
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QPaintEvent;
-class QSvgRenderer;
 
 /**
  * \ingroup gui
@@ -378,7 +378,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 
     //! Icon to be shown.
     IconType mIconType = ICON_CIRCLE;
-    std::unque_ptr<QSvgRenderer> mSvgRenderer;
+    std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
 
     /**
