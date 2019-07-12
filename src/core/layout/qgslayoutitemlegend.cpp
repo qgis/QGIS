@@ -897,12 +897,13 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   if ( nodeLayer && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     QString name;
-    QgsSymbolLegendNode *symnode = nullptr;
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+
     if ( ltmln )
     {
-      symnode = qobject_cast<QgsSymbolLegendNode *>( ltmln );
-      name = symnode->symbolLabel();
+      QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( ltmln );
+      if ( symnode )
+        name = symnode->symbolLayer();
     }
     else
     {
@@ -919,8 +920,6 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         if ( vlayer && vlayer->featureCount() >= 0 )
         {
           name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
-          Q_UNUSED( ltmln );
-          Q_UNUSED( symnode );
           return name;
         }
       }
@@ -936,30 +935,20 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 
       if ( mLayoutLegend )
         expressionContext = mLayoutLegend->createExpressionContext();
-      else if ( vlayer )
-        expressionContext = vlayer->createExpressionContext();
       else
         expressionContext = QgsExpressionContext();
 
-      if ( symnode )
-        name = symnode->evaluateLabel( expressionContext ); // removed name input; existing symbol/model tree have distinct names
-      else
+      const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
+      if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
       {
-        const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
-        if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
+        for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
         {
-          for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
-          {
-            if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
-            {
-              symnode->evaluateLabel( expressionContext );
-              expressionContext.clearCachedValues();
-            }
-          }
+          if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
+            symnode->evaluateLabel( expressionContext );
         }
-        else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-          name = symnode->evaluateLabel( expressionContext, name );
       }
+      else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+        name = symnode->evaluateLabel( expressionContext, name );
     }
     return name;
   }

@@ -696,11 +696,14 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
+
+
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
-
   if ( mSymbolFeatureCounted || mFeatureCounter )
     return mFeatureCounter;
+
+  mSymbolFeatureCountMap.clear();
 
   if ( !mValid )
   {
@@ -717,13 +720,16 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
     QgsDebugMsgLevel( QStringLiteral( "invoked with null mRenderer" ), 3 );
     return mFeatureCounter;
   }
+
   if ( !mFeatureCounter )
   {
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
     connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
+    connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
 
     QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
+
   return mFeatureCounter;
 }
 
@@ -4442,10 +4448,13 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 void QgsVectorLayer::onFeatureCounterCompleted()
 {
   onSymbolsCounted();
+  mFeatureCounter = nullptr;	
 }
 
-
-
+void QgsVectorLayer::onFeatureCounterTerminated()	
+{	
+  mFeatureCounter = nullptr;	
+}
 
 void QgsVectorLayer::onJoinedFieldsChanged()
 {

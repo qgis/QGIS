@@ -44,7 +44,7 @@ Alternative constructor.
 
     void refreshLegend();
 %Docstring
-Emitted to refresh the legend once counting is done.
+Emitted to refresh the legend.
 
 .. versionadded:: 3.10
 %End

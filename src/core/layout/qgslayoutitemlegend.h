@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
   signals:
 
     /**
-     * Emitted to refresh the legend once counting is done.
+     * Emitted to refresh the legend.
      * \since QGIS 3.10
      */
     void refreshLegend();
