@@ -496,7 +496,9 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
               p->drawPolygon( pts, 4 );
             else
               p->drawPolyline( pts, 4 );
+            break;
           }
+
           case ICON_SVG:
             QRectF viewBox = mSvgRenderer->viewBoxF();
             QRectF r( mSvgOffset.x(), mSvgOffset.y(), viewBox.width(), viewBox.height() );
@@ -540,13 +542,11 @@ void QgsRubberBand::updateRect()
   qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
   QgsRectangle r;  // in canvas units
-  for ( int i = 0; i < mPoints.size(); ++i )
+  for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
   {
-    QList<QgsPointXY>::const_iterator it = mPoints.at( i ).constBegin(),
-                                      itE = mPoints.at( i ).constEnd();
-    for ( ; it != itE; ++it )
+    for ( const QgsPointXY &point : ring )
     {
-      QgsPointXY p( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
+      QgsPointXY p( point.x() + mTranslationOffsetX, point.y() + mTranslationOffsetY );
       p = m2p.transform( p );
       QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w );
 
@@ -602,14 +602,9 @@ int QgsRubberBand::partSize( int geometryIndex ) const
 int QgsRubberBand::numberOfVertices() const
 {
   int count = 0;
-  QList<QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-  for ( ; it != mPoints.constEnd(); ++it )
+  for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
   {
-    QList<QgsPointXY>::const_iterator iter = it->constBegin();
-    for ( ; iter != it->constEnd(); ++iter )
-    {
-      ++count;
-    }
+    count += ring.size();
   }
   return count;
 }
@@ -631,10 +626,9 @@ QgsGeometry QgsRubberBand::asGeometry() const
     case QgsWkbTypes::PolygonGeometry:
     {
       QgsPolygonXY polygon;
-      QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-      for ( ; it != mPoints.constEnd(); ++it )
+      for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
       {
-        polygon.append( getPolyline( *it ) );
+        polygon.append( getPolyline( ring ) );
       }
       geom = QgsGeometry::fromPolygonXY( polygon );
       break;
@@ -644,10 +638,9 @@ QgsGeometry QgsRubberBand::asGeometry() const
     {
       QgsMultiPointXY multiPoint;
 
-      QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-      for ( ; it != mPoints.constEnd(); ++it )
+      for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
       {
-        multiPoint += getPolyline( *it );
+        multiPoint += getPolyline( ring );
       }
       geom = QgsGeometry::fromMultiPointXY( multiPoint );
       break;
@@ -661,10 +654,9 @@ QgsGeometry QgsRubberBand::asGeometry() const
         if ( mPoints.size() > 1 )
         {
           QgsMultiPolylineXY multiPolyline;
-          QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-          for ( ; it != mPoints.constEnd(); ++it )
+          for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
           {
-            multiPolyline.append( getPolyline( *it ) );
+            multiPolyline.append( getPolyline( ring ) );
           }
           geom = QgsGeometry::fromMultiPolylineXY( multiPolyline );
         }
@@ -681,11 +673,5 @@ QgsGeometry QgsRubberBand::asGeometry() const
 
 QgsPolylineXY QgsRubberBand::getPolyline( const QList<QgsPointXY> &points )
 {
-  QgsPolylineXY polyline;
-  QList<QgsPointXY>::const_iterator iter = points.constBegin();
-  for ( ; iter != points.constEnd(); ++iter )
-  {
-    polyline.append( *iter );
-  }
-  return polyline;
+  return points.toVector();
 }
