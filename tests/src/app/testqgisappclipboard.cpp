@@ -188,6 +188,37 @@ void TestQgisAppClipboard::copyToText()
 
   QCOMPARE( x, 145 );
   QCOMPARE( y, -38 );
+
+  // test that multiline text fields are quoted to render correctly as csv files in WKT mode
+  QgsFeature feat3( fields, 7 );
+  feat3.setAttribute( QStringLiteral( "string_field" ), "Single line text" );
+  feat3.setAttribute( QStringLiteral( "int_field" ), 1 );
+  feat3.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
+  QgsFeature feat4( fields, 8 );
+  feat4.setAttribute( QStringLiteral( "string_field" ), "Unix Multiline \nText" );
+  feat4.setAttribute( QStringLiteral( "int_field" ), 2 );
+  feat4.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
+  QgsFeature feat5( fields, 9 );
+  feat5.setAttribute( QStringLiteral( "string_field" ), "Windows Multiline \r\nText" );
+  feat5.setAttribute( QStringLiteral( "int_field" ), 3 );
+  feat5.setGeometry( QgsGeometry( new QgsPoint( 9, 10 ) ) );
+  QgsFeatureStore featsML;
+  featsML.addFeature( feat3 );
+  featsML.addFeature( feat4 );
+  featsML.addFeature( feat5 );
+  featsML.setFields( fields );
+  mQgisApp->clipboard()->replaceWithCopyOf( featsML );
+
+  // attributes only
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
+  result = mQgisApp->clipboard()->generateClipboardText();
+  qDebug() << result;
+  QCOMPARE( result, QString( "int_field\tstring_field\n1\tSingle line text\n2\t\"Unix Multiline \nText\"\n3\t\"Windows Multiline \r\nText\"" ) );
+
+  // attributes with WKT
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
+  result = mQgisApp->clipboard()->generateClipboardText();
+  QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ) );
 }
 
 void TestQgisAppClipboard::pasteWkt()
