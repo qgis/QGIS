@@ -112,8 +112,6 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
-    ~QgsRubberBand();
-
     /**
      * Sets the color for the rubberband.
      * Shorthand method to set fill and stroke color with a single call.
@@ -380,7 +378,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 
     //! Icon to be shown.
     IconType mIconType = ICON_CIRCLE;
-    QSvgRenderer *mSvgRenderer = nullptr;
+    std::unque_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
 
     /**

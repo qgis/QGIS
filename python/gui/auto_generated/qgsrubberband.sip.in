@@ -58,8 +58,6 @@ Creates a new RubberBand.
                      QgsWkbTypes.LineGeometry, QgsWkbTypes.PolygonGeometry or QgsWkbTypes.PointGeometry
 %End
 
-    ~QgsRubberBand();
-
     void setColor( const QColor &color );
 %Docstring
 Sets the color for the rubberband.

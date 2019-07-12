@@ -44,11 +44,6 @@ QgsRubberBand::QgsRubberBand()
 {
 }
 
-QgsRubberBand::~QgsRubberBand()
-{
-  delete mSvgRenderer;
-}
-
 void QgsRubberBand::setColor( const QColor &color )
 {
   setStrokeColor( color );
@@ -80,15 +75,13 @@ void QgsRubberBand::setWidth( int width )
 
 void QgsRubberBand::setIcon( IconType icon )
 {
-  delete mSvgRenderer;
-  mSvgRenderer = 0;
   mIconType = icon;
 }
 
 void QgsRubberBand::setSvgIcon( const QString &path, const QPoint &drawOffset )
 {
   setIcon( ICON_SVG );
-  mSvgRenderer = new QSvgRenderer( path );;
+  mSvgRenderer = qgis::make_unique<QSvgRenderer>( path );
   mSvgOffset = drawOffset;
 }
 
