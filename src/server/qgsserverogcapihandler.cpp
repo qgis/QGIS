@@ -40,7 +40,7 @@ QVariantMap QgsServerOgcApiHandler::validate( const QgsServerApiContext &context
 {
   QVariantMap result ;
   QVariantList positional;
-  const auto constParameters { parameters() };
+  const auto constParameters { parameters( context ) };
   for ( const auto &p : constParameters )
   {
     // value() calls the validators and throw an exception if validation fails
@@ -54,12 +54,12 @@ QVariantMap QgsServerOgcApiHandler::validate( const QgsServerApiContext &context
     for ( const auto &name : constNamed )
     {
       if ( ! name.isEmpty() )
-        result[name] = match.captured( name );
+        result[name] = QUrlQuery( match.captured( name ) ).toString() ;
     }
     // Get unnamed (positional) path parameters
     for ( int i = 1; i < path().captureCount(); i++ )
     {
-      positional.append( match.captured( i ) );
+      positional.append( QUrlQuery( match.captured( i ) ).toString() );
     }
   }
   result["path_arguments"] = positional;
@@ -211,6 +211,24 @@ json QgsServerOgcApiHandler::links( const QgsServerApiContext &context ) const
                            linkTitle()  + " as " + QgsServerOgcApi::contentTypeToStdString( ct ) ) );
   }
   return links;
+}
+
+QgsVectorLayer *QgsServerOgcApiHandler::layerFromContext( const QgsServerApiContext &context ) const
+{
+  if ( ! context.project() )
+  {
+    throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project is invalid or undefined" ) );
+  }
+  // Check collectionId
+  const auto match { path().match( context.request()->url().path( ) ) };
+  if ( ! match.hasMatch() )
+  {
+    throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
+  }
+  const auto collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
+  // May throw if not found
+  return layerFromCollection( context, collectionId );
+
 }
 
 const QString QgsServerOgcApiHandler::staticPath( ) const

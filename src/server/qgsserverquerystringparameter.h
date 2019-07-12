@@ -32,7 +32,6 @@ class QgsServerApiBadRequestException;
  * and its validation.
  *
  * The class is extendable through custom validators and/or by subclassing and overriding the value() method.
- * Custom validators return
  *
  * \ingroup server
  * \since QGIS 3.10
@@ -61,16 +60,26 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     Q_ENUM( Type )
 
 
+    /**
+     * QgsServerQueryStringParameter
+     * \param name
+     * \param required
+     * \param type
+     * \param description
+     * \param defaultValue
+     */
     QgsServerQueryStringParameter( const QString name,
                                    bool required = false,
                                    Type type = QgsServerQueryStringParameter::Type::String,
-                                   const QString &description = QString() );
+                                   const QString &description = QString(),
+                                   const QVariant &defaultValue = QVariant() );
 
     virtual ~QgsServerQueryStringParameter();
 
     /**
      * Extracts the value from the request \a context by validating the parameter
      * value and converting it to its proper Type.
+     * If the value is not set and a default was not provided an invalid QVariant is returned.
      *
      * Validation steps:
      * - required
@@ -110,6 +119,11 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      */
     QString name() const;
 
+    /**
+     * Sets validator \a description
+     */
+    void setDescription( const QString &description );
+
   private:
 
     QString mName;
@@ -117,6 +131,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     Type mType = Type::String;
     customValidator mCustomValidator = nullptr;
     QString mDescription;
+    QVariant mDefaultValue;
 
     friend class TestQgsServerQueryStringParameter;
 

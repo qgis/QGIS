@@ -22,11 +22,13 @@
 QgsServerQueryStringParameter::QgsServerQueryStringParameter( const QString name,
     bool required,
     QgsServerQueryStringParameter::Type type,
-    const QString &description ):
+    const QString &description,
+    const QVariant &defaultValue ):
   mName( name ),
   mRequired( required ),
   mType( type ),
-  mDescription( description )
+  mDescription( description ),
+  mDefaultValue( defaultValue )
 {
 
 }
@@ -38,57 +40,72 @@ QgsServerQueryStringParameter::~QgsServerQueryStringParameter()
 
 QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &context ) const
 {
+
   // 1: check required
   if ( mRequired && ! context.request()->url().hasQueryItem( mName ) )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "Missing required argument: %1" ).arg( mName ) );
+    throw QgsServerApiBadRequestException( QStringLiteral( "Missing required argument: '%1'" ).arg( mName ) );
   }
 
-  // 2: check type
-  QVariant value { context.request()->url().queryItemValue( mName ) };
-  const QVariant::Type targetType { static_cast< QVariant::Type  >( mType )};
-  // Handle csv list type
-  if ( mType == Type::List )
+  // 2: get value from query string or set it to the default
+  QVariant value;
+  if ( context.request()->url().hasQueryItem( mName ) )
   {
-    value = value.toString().split( ',' );
+    value = QUrlQuery( context.request()->url() ).queryItemValue( mName, QUrl::FullyDecoded );
   }
-  if ( value.type() != targetType )
+  else if ( mDefaultValue.isValid() )
   {
-    bool ok = false;
-    if ( value.canConvert( static_cast<int>( targetType ) ) )
+    value = mDefaultValue;
+  }
+
+  if ( value.isValid() )
+  {
+
+    // 3: check type
+    const QVariant::Type targetType { static_cast< QVariant::Type  >( mType )};
+    // Handle csv list type
+    if ( mType == Type::List )
     {
-      ok = true;
-      switch ( mType )
+      value = value.toString().split( ',' );
+    }
+    if ( value.type() != targetType )
+    {
+      bool ok = false;
+      if ( value.canConvert( static_cast<int>( targetType ) ) )
       {
-        case Type::String:
-          value = value.toString( );
-          break;
-        case Type::Bool:
-          value = value.toBool( );
-          break;
-        case Type::Double:
-          value = value.toDouble( &ok );
-          break;
-        case Type::Int:
-          value = value.toLongLong( &ok );
-          break;
-        case Type::List:
-          // already converted to a string list
-          break;
+        ok = true;
+        switch ( mType )
+        {
+          case Type::String:
+            value = value.toString( );
+            break;
+          case Type::Bool:
+            value = value.toBool( );
+            break;
+          case Type::Double:
+            value = value.toDouble( &ok );
+            break;
+          case Type::Int:
+            value = value.toLongLong( &ok );
+            break;
+          case Type::List:
+            // already converted to a string list
+            break;
+        }
+      }
+
+      if ( ! ok )
+      {
+        throw  QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' could not be converted to %2" ).arg( mName )
+                                                .arg( typeName( mType ) ) );
       }
     }
 
-    if ( ! ok )
+    // 4: check custom validation
+    if ( mCustomValidator && ! mCustomValidator( context, value ) )
     {
-      throw  QgsServerApiBadRequestException( QStringLiteral( "Argument %1 could not be converted to %2" ).arg( mName )
-                                              .arg( typeName( mType ) ) );
+      throw  QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' is not valid. %2" ).arg( name() ).arg( description() ) );
     }
-  }
-
-  // 3: check custom validation
-  if ( mCustomValidator && ! mCustomValidator( context, value ) )
-  {
-    throw  QgsServerApiBadRequestException( QStringLiteral( "Custom validator failed to validate argument: %1" ).arg( mName ) );
   }
   return value;
 }
@@ -112,4 +129,9 @@ QString QgsServerQueryStringParameter::typeName( const QgsServerQueryStringParam
 QString QgsServerQueryStringParameter::name() const
 {
   return mName;
+}
+
+void QgsServerQueryStringParameter::setDescription( const QString &description )
+{
+  mDescription = description;
 }

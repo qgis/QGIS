@@ -162,8 +162,6 @@ class Wfs3DescribeCollectionHandler: public QgsServerOgcApiHandler
     QList<QgsServerOgcApi::ContentType> contentTypes() const override { return { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     QgsServerOgcApi::ContentType defaultContentType() const override { return QgsServerOgcApi::ContentType::JSON; }
-
-
 };
 
 /**
@@ -190,6 +188,7 @@ class Wfs3CollectionsItemsHandler: public QgsServerOgcApiHandler
     QList<QgsServerOgcApi::ContentType> contentTypes() const override { return { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     QgsServerOgcApi::ContentType defaultContentType() const override { return QgsServerOgcApi::ContentType::GEOJSON; }
+    QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const override;
 
 };
 

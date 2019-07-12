@@ -263,9 +263,106 @@ void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &co
   write( data, context, {{ "pageTitle", title }, { "navigation", navigation }} );
 }
 
-
 Wfs3CollectionsItemsHandler::Wfs3CollectionsItemsHandler()
 {
+}
+
+QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::parameters( const QgsServerApiContext &context ) const
+{
+  QList<QgsServerQueryStringParameter> params;
+
+// Limit
+  QgsServerQueryStringParameter limit { QStringLiteral( "limit" ), false,
+                                        QgsServerQueryStringParameter::Type::Int,
+                                        QStringLiteral( "Number of features to retrieve [0-10000]" ),
+                                        10 };
+  limit.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
+  {
+    return value >= 0 && value <= 10000;   // TODO: make this configurable!
+  } );
+  params.push_back( limit );
+
+// Offset
+  QgsServerQueryStringParameter offset { QStringLiteral( "offset" ), false,
+                                         QgsServerQueryStringParameter::Type::Int,
+                                         QStringLiteral( "Offset for features to retrieve [0-<number of features in the collection>]" ),
+                                         0 };
+
+  bool offsetValidatorSet = false;
+
+// I'm not yet sure if we should get here without a project,
+// but parameters() may be called to document the API - better safe than sorry.
+  if ( context.project() )
+  {
+    // Fields filters
+    const auto mapLayer { layerFromContext( context ) };
+    if ( mapLayer )
+    {
+      offset.setCustomValidator( [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
+      {
+        const auto longVal { value.toLongLong( ) };
+        return longVal >= 0 && longVal <= mapLayer->featureCount( );
+      } );
+      offset.setDescription( QStringLiteral( "Offset for features to retrieve [0-%1]" ).arg( mapLayer->featureCount( ) ) );
+      offsetValidatorSet = true;
+
+      const auto constFields { QgsServerApiUtils::publishedFields( mapLayer ) };
+      for ( const auto &f : constFields )
+      {
+        QgsServerQueryStringParameter::Type t;
+        switch ( f.type() )
+        {
+          case QVariant::Int:
+          case QVariant::LongLong:
+            t = QgsServerQueryStringParameter::Type::Int;
+            break;
+          case QVariant::Double:
+            t = QgsServerQueryStringParameter::Type::Double;
+            break;
+          // TODO: date & time
+          default:
+            t = QgsServerQueryStringParameter::Type::String;
+            break;
+        }
+        QgsServerQueryStringParameter fieldParam { f.name(), false,
+            t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( f.name() )
+            .arg( QgsServerQueryStringParameter::typeName( t ) ) };
+        params.push_back( fieldParam );
+      }
+    }
+  }
+
+  if ( ! offsetValidatorSet )
+  {
+    offset.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
+    {
+      const auto longVal { value.toLongLong( ) };
+      return longVal >= 0 ;
+    } );
+  }
+
+  params.push_back( offset );
+
+// BBOX
+  QgsServerQueryStringParameter bbox { QStringLiteral( "bbox" ), false,
+                                       QgsServerQueryStringParameter::Type::String,
+                                       QStringLiteral( "BBOX filter for the features to retrieve" ) };
+  params.push_back( bbox );
+
+// BBOX CRS
+  QgsServerQueryStringParameter bboxCrs { QStringLiteral( "bbox-crs" ), false,
+                                          QgsServerQueryStringParameter::Type::String,
+                                          QStringLiteral( "CRS for the BBOX filter" ),
+                                          QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) };
+  params.push_back( bboxCrs );
+
+// Result type
+  QgsServerQueryStringParameter resultType { QStringLiteral( "resultType" ), false,
+      QgsServerQueryStringParameter::Type::String,
+      QStringLiteral( "Type of returned result: 'results' (default) or 'hits'" ),
+      QStringLiteral( "results" ) };
+  params.push_back( resultType );
+  return params;
 }
 
 void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context ) const
@@ -274,20 +371,14 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
   {
     throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project is invalid or undefined" ) );
   }
-  // Check collectionId
-  const auto match { path().match( context.request()->url().path( ) ) };
-  if ( ! match.hasMatch() )
-  {
-    throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
-  }
-  const auto collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
-  // May throw if not found
-  const auto mapLayer { layerFromCollection( context, collectionId ) };
+  const auto mapLayer { layerFromContext( context ) };
   Q_ASSERT( mapLayer );
   const auto title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
   const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
 
   // Get parameters
+  QVariantMap params { validate( context )};
+
   if ( context.request()->method() == QgsServerRequest::Method::GetMethod )
   {
 
@@ -295,23 +386,22 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
     bool ok { false };
 
     // BBOX
-    const QString bbox { context.request()->queryParameter( QStringLiteral( "bbox" ) ) };
+    const QString bbox { params[ QStringLiteral( "bbox" )].toString()  };
     const QgsRectangle filterRect { QgsServerApiUtils::parseBbox( bbox ) };
     if ( ! bbox.isEmpty() && filterRect.isNull() )
     {
       throw QgsServerApiBadRequestException( QStringLiteral( "bbox is not valid" ) );
     }
-    const QString bboxCrs { context.request()->queryParameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
 
     // CRS
-    const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
+    const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( params[ QStringLiteral( "bbox-crs" ) ].toString() ) };
     if ( ! crs.isValid() )
     {
-      throw QgsServerApiBadRequestException( QStringLiteral( "CRS is not valid" ) );
+      throw QgsServerApiBadRequestException( QStringLiteral( "BBOX CRS is not valid" ) );
     }
 
     // resultType
-    const QString resultType { context.request()->queryParameter( QStringLiteral( "resultType" ), QStringLiteral( "results" ) ) };
+    const QString resultType { params[ QStringLiteral( "resultType" ) ].toString() };
     static const QStringList availableResultTypes { QStringLiteral( "results" ), QStringLiteral( "hits" )};
     if ( ! availableResultTypes.contains( resultType ) )
     {
@@ -323,7 +413,7 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
     const auto constField { QgsServerApiUtils::publishedFields( mapLayer ) };
     for ( const QgsField &f : constField )
     {
-      const QString val = context.request()->queryParameter( f.name() ) ;
+      const QString val = params.value( f.name() ).toString() ;
       if ( ! val.isEmpty() )
       {
         QString sanitized { QgsServerApiUtils::sanitizedFieldValue( val ) };
@@ -338,17 +428,11 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
     // limit & offset
     // Apparently the standard set limits 0-10000 (and does not implement paging,
     // so we do our own paging with "offset")
-    const long offset { context.request()->queryParameter( QStringLiteral( "offset" ), QStringLiteral( "0" ) ).toLong( &ok ) };
-    if ( offset < 0 || !ok )
-    {
-      throw QgsServerApiBadRequestException( QStringLiteral( "Offset is not valid" ) );
-    }
+    const long offset { params.value( QStringLiteral( "offset" ) ).toLongLong( &ok ) };
+
     // TODO: make the max limit configurable
-    const long limit { context.request()->queryParameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toLong( &ok ) };
-    if ( 0 >= limit || limit > 10000 || !ok )
-    {
-      throw QgsServerApiBadRequestException( QStringLiteral( "Limit is not valid (0-10000)" ) );
-    }
+    const long limit {  params.value( QStringLiteral( "limit" ) ).toLongLong( &ok ) };
+
     // TODO: implement time
     const QString time { context.request()->queryParameter( QStringLiteral( "time" ) ) };
     if ( ! time.isEmpty() )

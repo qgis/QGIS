@@ -81,9 +81,11 @@ class SERVER_EXPORT QgsServerOgcApiHandler
 
     /**
      * Returns a list of query string parameters.
-     * Depending on the service, it may be dynamic (per-request) or static.
+     *
+     * Depending on the handler, it may be dynamic (per-request) or static.
+     * \param context the request context
      */
-    virtual QList<QgsServerQueryStringParameter> parameters() const  { return { }; }
+    virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const  { Q_UNUSED( context ); return { }; }
 
     // /////////////////////////////////////////////
     // METADATA Sections (informative)
@@ -231,6 +233,16 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * add other links.
      */
     json links( const QgsServerApiContext &context ) const;
+
+
+    /**
+     * Returns a vector layer instance from the "collectionId" parameter of the path in the given \a context,
+     * requires a valid project instance in the context.
+     *
+     * \throws QgsServerApiNotFoundError if the layer could not be found
+     * \throws QgsServerApiImproperlyConfiguredException if project is not set
+     */
+    QgsVectorLayer *layerFromContext( const QgsServerApiContext &context ) const;
 
 
 #endif

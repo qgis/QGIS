@@ -318,13 +318,13 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 400) # Bad request
-        self.assertEqual(response.body(), b'[{"code":"Bad request error","description":"Limit is not valid (0-10000)"}]') # Bad request
+        self.assertEqual(response.body(), b'[{"code":"Bad request error","description":"Argument \'limit\' is not valid. Number of features to retrieve [0-10000]"}]') # Bad request
 
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=10001')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 400) # Bad request
-        self.assertEqual(response.body(), b'[{"code":"Bad request error","description":"Limit is not valid (0-10000)"}]') # Bad request
+        self.assertEqual(response.body(), b'[{"code":"Bad request error","description":"Argument \'limit\' is not valid. Number of features to retrieve [0-10000]"}]') # Bad request
 
     def test_wfs3_collection_items_limit(self):
         """Test WFS3 API item limits"""
@@ -409,7 +409,7 @@ class Handler1(QgsServerOgcApiHandler):
         params = self.validate(context)
         self.write(params, context)
 
-    def parameters(self):
+    def parameters(self, context):
         return [QgsServerQueryStringParameter('value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value')]
 
 
@@ -439,8 +439,9 @@ class Handler2(QgsServerOgcApiHandler):
         params = self.validate(context)
         self.write(params, context)
 
-    def parameters(self):
-        return [QgsServerQueryStringParameter('value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value')]
+    def parameters(self, context):
+        return [QgsServerQueryStringParameter('value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value'),
+                QgsServerQueryStringParameter('value2', False, QgsServerQueryStringParameter.Type.String, 'a string value'), ]
 
 
 class QgsServerOgcAPITest(QgsServerAPITestBase):
@@ -483,14 +484,14 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(h.linkType(), QgsServerOgcApi.data)
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             h.handleRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Missing required argument: value1')
+        self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
 
         r = ctx.response()
         self.assertEqual(r.data(), '')
 
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             h.validate(ctx)
-        self.assertEqual(str(ex.exception), 'Missing required argument: value1')
+        self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
 
         # Add handler to API and test for /api2
         ctx = QgsServerApiContext('/services/api2', request, response, project, self.server.serverInterface())
@@ -513,12 +514,12 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone'))
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             api.executeRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Missing required argument: value1')
+        self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
 
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone?value1=not+a+double'))
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             api.executeRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Argument value1 could not be converted to Double')
+        self.assertEqual(str(ex.exception), 'Argument \'value1\' could not be converted to Double')
 
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone?value1=1.2345'))
         params = h.validate(ctx)
@@ -529,12 +530,17 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         # Test path fragments extraction
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345'))
         params = h2.validate(ctx)
-        self.assertEqual(params, {'code1': '00', 'path_arguments': ['00'], 'value1': 1.2345})
+        self.assertEqual(params, {'code1': '00', 'path_arguments': ['00'], 'value1': 1.2345, 'value2': None})
+
+        # Test string encoding
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345&value2=a%2Fstring%20some'))
+        params = h2.validate(ctx)
+        self.assertEqual(params, {'code1': '00', 'path_arguments': ['00'], 'value1': 1.2345, 'value2': 'a/string some'})
 
         # Test links
-        self.assertEqual(h2.href(ctx), 'http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345')
-        self.assertEqual(h2.href(ctx, '/extra'), 'http://www.qgis.org/services/api2/handlertwo/00/555/extra?value1=1.2345')
-        self.assertEqual(h2.href(ctx, '/extra', 'json'), 'http://www.qgis.org/services/api2/handlertwo/00/555/extra.json?value1=1.2345')
+        self.assertEqual(h2.href(ctx), 'http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345&value2=a%2Fstring%20some')
+        self.assertEqual(h2.href(ctx, '/extra'), 'http://www.qgis.org/services/api2/handlertwo/00/555/extra?value1=1.2345&value2=a%2Fstring%20some')
+        self.assertEqual(h2.href(ctx, '/extra', 'json'), 'http://www.qgis.org/services/api2/handlertwo/00/555/extra.json?value1=1.2345&value2=a%2Fstring%20some')
 
         # Test template path
         self.assertTrue(h2.templatePath(ctx).endswith('/resources/server/api/ogc/templates/services/api2/handlerTwo.html'))
