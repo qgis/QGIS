@@ -1013,9 +1013,10 @@ QgsRectangle QgsHanaProvider::estimateExtent() const
   QString sql;
   if (isRoundEarth)
   {
-    sql = QStringLiteral("SELECT MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), "
-      "MAX(%1.ST_XMax()), MAX(%1.ST_YMax()) FROM (SELECT * FROM (%2))")
-      .arg(QgsHanaUtils::quotedIdentifier(mGeometryColumn), mQuery);
+    QString geomColumn = !mHasSrsPlanarEquivalent ? QgsHanaUtils::quotedIdentifier(mGeometryColumn) :
+      QStringLiteral("%1.ST_SRID(%2)").arg(QgsHanaUtils::quotedIdentifier(mGeometryColumn), QString::number(QgsHanaUtils::toPlanarSRID(mSrid)));
+    sql = QStringLiteral("SELECT MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), MAX(%1.ST_XMax()), MAX(%1.ST_YMax()) FROM (%2)")
+      .arg(geomColumn, mQuery);
   }
   else
   {
