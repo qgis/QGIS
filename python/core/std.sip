@@ -17,23 +17,26 @@
     return newstring;
 %End
 
+
 %ConvertToTypeCode
     // Allow a Python string (or a unicode string) whenever a string is
     // expected.
     // If argument is a Unicode string, just decode it to UTF-8
-        if (sipIsErr == NULL)
-                return (PyUnicode_Check(sipPy));
-        if (sipPy == Py_None) {
-                *sipCppPtr = new std::string;
-                return 1;
-        }
-        if (PyUnicode_Check(sipPy))	{
-        PyObject* s = PyUnicode_AsEncodedString(sipPy, "UTF-8", "");
-        *sipCppPtr = new std::string(PyUnicode_AS_DATA(s));
-        Py_DECREF(s);
-        return 1;
-        }
-    return 0;
+    if (sipIsErr == NULL)
+      return (PyUnicode_Check(sipPy));
+    if (sipPy == Py_None) {
+      *sipCppPtr = new std::string;
+      return 1;
+    }
+    if (PyUnicode_Check(sipPy))	{
+      Py_ssize_t size;
+      char *s = PyUnicode_AsUTF8AndSize(sipPy, &size);
+      if (!s) {
+          return NULL;
+      }
+      *sipCppPtr = new std::string(s);
+      return 1;
+    }
+return 0;
 %End
 };
-
