@@ -4448,12 +4448,12 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 void QgsVectorLayer::onFeatureCounterCompleted()
 {
   onSymbolsCounted();
-  mFeatureCounter = nullptr;	
+  mFeatureCounter = nullptr;
 }
 
-void QgsVectorLayer::onFeatureCounterTerminated()	
-{	
-  mFeatureCounter = nullptr;	
+void QgsVectorLayer::onFeatureCounterTerminated()
+{
+  mFeatureCounter = nullptr;
 }
 
 void QgsVectorLayer::onJoinedFieldsChanged()

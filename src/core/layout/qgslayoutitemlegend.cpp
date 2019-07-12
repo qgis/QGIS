@@ -903,7 +903,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     {
       QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( ltmln );
       if ( symnode )
-        name = symnode->symbolLayer();
+        name = symnode->symbolLabel();
     }
     else
     {

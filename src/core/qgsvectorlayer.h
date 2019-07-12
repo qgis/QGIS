@@ -1042,7 +1042,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * The method will return the feature counter task. You will need to
      * connect to the symbolFeatureCountMapChanged() signal to be
      * notified when the freshly updated feature counts are ready.
-     * 
+     *
      * \note If the count features for symbols has been already done a
      *       NULLPTR is returned. If you need to wait for the results,
      *       you can call waitForFinished() on the feature counter.
