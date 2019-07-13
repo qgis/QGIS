@@ -630,6 +630,15 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItemInternal( Qg
 {
   QgsLayerTreeModelLegendNode::ItemContext ctx;
   ctx.context = context;
+
+  // add a layer expression context scope
+  QgsExpressionContextScope *layerScope = nullptr;
+  if ( context && symbolItem->layerNode()->layer() )
+  {
+    layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() );
+    context->expressionContext().appendScope( layerScope );
+  }
+
   ctx.painter = context ? context->painter() : painter;
   Q_NOWARN_DEPRECATED_PUSH
   ctx.point = QPointF( columnContext.left, top );
@@ -644,11 +653,13 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItemInternal( Qg
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
       : ( painter ? &ctx : nullptr ) );
 
+  if ( layerScope )
+    delete context->expressionContext().popScope();
+
   LegendComponent component;
   component.item = symbolItem;
   component.symbolSize = im.symbolSize;
   component.labelSize = im.labelSize;
-
   //QgsDebugMsg( QStringLiteral( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
   // NOTE -- we hard code left/right margins below, because those are the only ones exposed for use currently.
   // ideally we could (should?) expose all these margins as settings, and then adapt the below to respect the current symbol/text alignment

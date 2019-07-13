@@ -892,36 +892,26 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   // handle custom layer node labels
 
   QgsLayerTreeNode *node = index2node( index );
-  QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ); // Possibly useless
   QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node ) ? QgsLayerTree::toLayer( node ) : nullptr;
   if ( nodeLayer && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     QString name;
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
 
-    if ( ltmln )
+    //finding the first label that is stored
+    name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    if ( name.isEmpty() )
+      name = nodeLayer->name();
+    if ( name.isEmpty() )
+      name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    if ( name.isEmpty() )
+      name = node->name();
+    if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
-      QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( ltmln );
-      if ( symnode )
-        name = symnode->symbolLabel();
-    }
-    else
-    {
-      //finding the first label that is stored
-      name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-      if ( name.isEmpty() )
-        name = nodeLayer->name();
-      if ( name.isEmpty() )
-        name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-      if ( name.isEmpty() )
-        name = node->name();
-      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
+      if ( vlayer && vlayer->featureCount() >= 0 )
       {
-        if ( vlayer && vlayer->featureCount() >= 0 )
-        {
-          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
-          return name;
-        }
+        name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+        return name;
       }
     }
 
@@ -931,7 +921,10 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     {
       QgsExpressionContext expressionContext;
       if ( vlayer )
+      {
         connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh );
+        vlayer->countSymbolFeatures();
+      }
 
       if ( mLayoutLegend )
         expressionContext = mLayoutLegend->createExpressionContext();

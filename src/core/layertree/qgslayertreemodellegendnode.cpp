@@ -725,7 +725,6 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
   if ( vl )
   {
-    vl->countSymbolFeatures();
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
   }
   return scope;
