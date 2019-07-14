@@ -86,7 +86,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * Pointer to the QgsLayoutItemLegend class that made the model.
      * \since QGIS 3.10
      */
-    QgsLayoutItemLegend *mLayoutLegend;
+    QgsLayoutItemLegend *mLayoutLegend = nullptr;
 
 };
 
