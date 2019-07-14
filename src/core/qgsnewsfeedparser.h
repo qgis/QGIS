@@ -39,6 +39,8 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 
     /**
      * Represents a single entry from a news feed.
+     * \ingroup core
+     * \since QGIS 3.10
      */
     class Entry
     {
