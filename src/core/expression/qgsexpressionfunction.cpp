@@ -5650,16 +5650,20 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
   return QVariant( decoded );
 }
 
-typedef std::function < QVariant( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, int neighbors, double max_distance, double bboxGrow ) > overlayFunc;
+typedef std::function < QVariant( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow ) > overlayFunc;
 
 static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, bool testOnly, const overlayFunc &overlayFunction, bool invert = false, double bboxGrow = 0 )
 {
+
+   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sorceLayer and targetLayer are the same
+   QgsVectorLayer *sourceLayer = QgsExpressionUtils::getVectorLayer( sourceLayerRef, parent );
+
   // First parameter is the overlay layer
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
   ENSURE_NO_EVAL_ERROR
 
   const bool layerCanBeCached = node->isStatic( parent, context );
-  QVariant layerValue = node->eval( parent, context );
+  QVariant targetLayerValue = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
 
   QString subExpString;
@@ -5675,10 +5679,10 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QgsSpatialIndex spatialIndex;
   std::shared_ptr<QgsVectorLayer> cachedTarget;
 
-  QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( layerValue, parent );
+  QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( targetLayerValue, parent );
   if ( !layer ) // No layer, no joy
   {
-    parent->setEvalErrorString( QObject::tr( "Layer '%1' could not be loaded." ).arg( layerValue.toString() ) );
+    parent->setEvalErrorString( QObject::tr( "Layer '%1' could not be loaded." ).arg( targetLayerValue.toString() ) );
     return QVariant();
   }
 
@@ -5752,7 +5756,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   FEAT_FROM_CONTEXT( context, feat )
   const QgsGeometry geometry = feat.geometry();
 
-  return overlayFunction( subExpression, subContext, spatialIndex, cachedTarget, geometry, testOnly, invert, neighbors, max_distance, bboxGrow );
+  QVariant currentFeatId;
+  if (sourceLayer->id() == targetLayerValue)
+  {
+      currentFeatId = feat.id(); //if sourceLayer and targetLayer are the same, current feature have to be excluded from spatial check
+  }
+
+  return overlayFunction( subExpression, subContext, spatialIndex, cachedTarget, geometry, testOnly, invert, currentFeatId, neighbors, max_distance, bboxGrow );
 }
 
 // Intersect functions:
@@ -5760,7 +5770,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 typedef bool ( QgsGeometry::*t_relationFunction )( const QgsGeometry &geometry ) const;
 
 template <t_relationFunction T>
-static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, int neighbors, double max_distance, double bboxGrow = 0 )
+static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
 {
   QgsRectangle intDomain = geometry.boundingBox();
   if ( bboxGrow != 0 )
@@ -5774,6 +5784,10 @@ static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionCont
   QVariantList results;
   for ( QgsFeatureId id : targetFeatureIds )
   {
+    if (!currentFeatId.isNull() && currentFeatId.toLongLong() == id)
+    {
+        continue; //if sourceLayer and targetLayer are the same, current feature have to be excluded from spatial check
+    }
 
     QgsFeature feat = cachedTarget->getFeature( id );
 
@@ -5826,7 +5840,7 @@ static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionCont
   }
 }
 
-static QVariantList indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, int neighbors, double max_distance, double bboxGrow = 0 )
+static QVariantList indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
 {
 
   const QList<QgsFeatureId> targetFeatureIds = spatialIndex.nearestNeighbor( geometry, neighbors, max_distance );
