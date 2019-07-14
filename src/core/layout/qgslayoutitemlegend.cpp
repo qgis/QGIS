@@ -922,8 +922,9 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       QgsExpressionContext expressionContext;
       if ( vlayer )
       {
-        connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh );
-        vlayer->countSymbolFeatures();
+        connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh, Qt::UniqueConnection );
+        // counting is done here to ensure that a valid vector layer needs to be evaluated, count is used to validate previous count or update the count if invalidated
+        vlayer->countSymbolFeatures(); 
       }
 
       if ( mLayoutLegend )
