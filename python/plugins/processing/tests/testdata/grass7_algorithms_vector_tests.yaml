@@ -519,3 +519,23 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: grass7:v.report
+    name: v.report - Reports geometry statistics for vector maps
+    params:
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      map:
+        name: points.gml|layername=points
+        type: vector
+      option: 2
+      sort: 0
+      units: 2
+    results:
+      html:
+        name: expected/grass7/v_report.html
+        type: regex
+        rules:
+          - 'cat|fid|id|id2|x|y|z'
+          - '6|points.5|6|0|0|-5|0'
+          - '8|points.7|8|0|7|-1|0'
