@@ -1243,9 +1243,9 @@
    <header>qgsfontbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsLayoutItemComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgslayoutitemcombobox.h</header>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeView</class>

@@ -10,7 +10,7 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '24/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.PyQt.QtCore import QRectF, QEventLoop, QDir
+from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsPrintLayout,
