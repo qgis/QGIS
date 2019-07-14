@@ -246,7 +246,7 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
 
   // Gross, but not well supported in Qt
   mDismissRect = QRect( option.rect.width() - 32, option.rect.top() + 10, mDismissRectSize.width(), mDismissRectSize.height() );
-  QPixmap pixmap = QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearNews.svg" ) ).pixmap( mDismissRectSize, QIcon::Normal );
+  QPixmap pixmap = QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearItem.svg" ) ).pixmap( mDismissRectSize, QIcon::Normal );
   painter->drawPixmap( mDismissRect.topLeft(), pixmap );
   mDismissRect.setTop( 10 );
 
