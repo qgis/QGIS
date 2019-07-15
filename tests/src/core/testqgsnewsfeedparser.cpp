@@ -36,6 +36,7 @@ class TestQgsNewsFeedParser: public QObject
 
     void testFetch();
     void testAutoExpiry();
+    void testLang();
     void testGeoFencing();
     void testModel();
     void testProxyModel();
@@ -219,6 +220,33 @@ void TestQgsNewsFeedParser::testAutoExpiry()
   QCOMPARE( parser2.entries().count(), 1 );
   QCOMPARE( parser2.entries().at( 0 ).title, QStringLiteral( "test entry" ) );
   QVERIFY( !parser2.entries().at( 0 ).expiry.isValid() );
+}
+
+void TestQgsNewsFeedParser::testLang()
+{
+  QList< QgsNewsFeedParser::Entry > entries;
+
+  const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
+  const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
+  QgsSettings().remove( feedKey, QgsSettings::Core );
+  // force to Spanish language
+  QgsSettings().setValue( QStringLiteral( "%1/lang" ).arg( feedKey ), QStringLiteral( "es" ), QgsSettings::Core );
+
+  QgsNewsFeedParser parser( url );
+  QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
+  QVERIFY( parser.entries().isEmpty() );
+  QEventLoop loop;
+  connect( &parser, &QgsNewsFeedParser::fetched, this, [ =, &loop, &entries ]( const  QList< QgsNewsFeedParser::Entry > &e )
+  {
+    entries = e;
+    loop.quit();
+  } );
+
+  parser.fetch();
+  loop.exec();
+
+  QCOMPARE( entries.count(), 1 );
+  QCOMPARE( entries.at( 0 ).title, QStringLiteral( "Primer seminario SIG libre" ) );
 }
 
 void TestQgsNewsFeedParser::testGeoFencing()
