@@ -17,9 +17,10 @@
 #define QGSLAYERTREEVIEWBADLAYERINDICATORPROVIDER_H
 
 #include "qgslayertreeviewindicatorprovider.h"
+#include "qgsmaplayer.h"
 
 #include <QObject>
-
+#include <QPointer>
 
 //! Indicators for bad layers
 class QgsLayerTreeViewBadLayerIndicatorProvider : public QgsLayerTreeViewIndicatorProvider
@@ -28,6 +29,13 @@ class QgsLayerTreeViewBadLayerIndicatorProvider : public QgsLayerTreeViewIndicat
 
   public:
     explicit QgsLayerTreeViewBadLayerIndicatorProvider( QgsLayerTreeView *view );
+
+  public slots:
+
+    /**
+     * Used to report an \a error, e.g. a rendering or data access error, with the specified \a layer.
+     */
+    void reportLayerError( const QString &error, QgsMapLayer *layer );
 
   signals:
 
@@ -45,6 +53,18 @@ class QgsLayerTreeViewBadLayerIndicatorProvider : public QgsLayerTreeViewIndicat
     QString iconName( QgsMapLayer *layer ) override;
     QString tooltipText( QgsMapLayer *layer ) override;
     bool acceptLayer( QgsMapLayer *layer ) override;
+
+    struct Error
+    {
+      Error( const QString &error, QgsMapLayer *layer = nullptr )
+        : error( error )
+        , layer( layer )
+      {}
+      QString error;
+      QPointer< QgsMapLayer >  layer;
+    };
+
+    QList< Error > mErrors;
 };
 
 #endif // QGSLAYERTREEVIEWBADLAYERINDICATORPROVIDER_H

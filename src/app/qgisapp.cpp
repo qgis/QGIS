@@ -4062,6 +4062,7 @@ void QgisApp::initLayerTreeView()
   mLayerOrderDock->hide();
 
   connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, this, &QgisApp::updateFilterLegend );
+  connect( mMapCanvas, &QgsMapCanvas::renderErrorOccurred, badLayerIndicatorProvider, &QgsLayerTreeViewBadLayerIndicatorProvider::reportLayerError );
 }
 
 void QgisApp::setupLayerTreeViewFromSettings()
