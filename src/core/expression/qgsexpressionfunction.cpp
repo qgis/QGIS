@@ -5696,9 +5696,9 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     request.setFilterExpression( filterString ); //filter cached features
   }
 
-  if (targetLayer->crs().authid() != sourceLayer->crs().authid())
+  if ( targetLayer->crs() != sourceLayer->crs() )
   {
-      QgsCoordinateTransformContext TransformContext;
+      QgsCoordinateTransformContext TransformContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
       request.setDestinationCrs(sourceLayer->crs(), TransformContext); //if crs are not the same, cached target will be reprojected to source crs
   }
 
@@ -5790,7 +5790,7 @@ static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionCont
   QVariantList results;
   for ( QgsFeatureId id : targetFeatureIds )
   {
-    if (!currentFeatId.isNull() && currentFeatId.toLongLong() == id)
+    if ( !currentFeatId.isNull() && currentFeatId.toLongLong() == id )
     {
         continue; //if sourceLayer and targetLayer are the same, current feature have to be excluded from spatial check
     }
