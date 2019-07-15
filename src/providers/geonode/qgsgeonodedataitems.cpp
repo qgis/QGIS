@@ -16,7 +16,6 @@
 #include "qgslogger.h"
 #include "qgsgeonodedataitems.h"
 #include "qgsproviderregistry.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsgeonoderequest.h"
 
 typedef QList<QgsDataItemProvider *> *dataItemProviders_t();
@@ -176,7 +175,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
 }
 
 // reset path recursively
-void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, QString before, QString after )
+void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, const QString &before, const QString &after )
 {
   item->setPath( item->path().replace( before, after ) );
   const QVector< QgsDataItem * > children = item->children();
@@ -186,7 +185,8 @@ void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, QString before, QStr
   }
 }
 
-QgsGeoNodeRootItem::QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path ) : QgsDataCollectionItem( parent, name, path )
+QgsGeoNodeRootItem::QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
   {
@@ -210,6 +210,16 @@ QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
   return connections;
 }
 
+
+QString QgsGeoNodeDataItemProvider::name()
+{
+  return QStringLiteral( "GeoNode" );
+}
+
+int QgsGeoNodeDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
 
 QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {

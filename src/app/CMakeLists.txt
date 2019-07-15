@@ -490,6 +490,8 @@ IF (WITH_3D)
     3d/qgs3dmapconfigwidget.cpp
     3d/qgs3dmaptool.cpp
     3d/qgs3dmaptoolidentify.cpp
+    3d/qgs3dmaptoolmeasureline.cpp
+    3d/qgs3dmeasuredialog.cpp
     3d/qgs3dnavigationwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
@@ -513,6 +515,8 @@ IF (WITH_3D)
     3d/qgs3dmapconfigwidget.h
     3d/qgs3dmaptool.h
     3d/qgs3dmaptoolidentify.h
+    3d/qgs3dmaptoolmeasureline.h
+    3d/qgs3dmeasuredialog.h
     3d/qgs3dnavigationwidget.h
     3d/qgslightswidget.h
     3d/qgsline3dsymbolwidget.h

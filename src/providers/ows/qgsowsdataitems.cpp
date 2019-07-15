@@ -179,6 +179,16 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
 
+QString QgsOwsDataItemProvider::name()
+{
+  return QStringLiteral( "OWS" );
+}
+
+int QgsOwsDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
+
 QgsDataItem *QgsOwsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )

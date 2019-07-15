@@ -1032,6 +1032,20 @@ class CORE_EXPORT QgsProcessingParameters
     static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+     *
+     * \since QGIS 3.10
+     */
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+     *
+     * \since QGIS 3.10
+     */
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a range of values.
      */
     static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -1312,9 +1326,13 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
 
     /**
      * Constructor for QgsProcessingParameterFile.
+     *
+     * The \a extension argument allows for specifying a file extension associated with the parameter (e.g. "html"). Use \a fileFilter
+     * for a more flexible approach which allows for multiple file extensions. Only one of \a extension or \a fileFilter should be specified,
+     * if both are specified then \a fileFilter takes precedence.
      */
     QgsProcessingParameterFile( const QString &name, const QString &description = QString(), Behavior behavior = File, const QString &extension = QString(), const QVariant &defaultValue = QVariant(),
-                                bool optional = false );
+                                bool optional = false, const QString &fileFilter = QString() );
 
     /**
      * Returns the type name for the parameter class.
@@ -1340,15 +1358,42 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
 
     /**
      * Returns any specified file extension for the parameter.
+     *
+     * \note See fileFilter() for a more flexible approach.
+     *
      * \see setExtension()
      */
     QString extension() const { return mExtension; }
 
     /**
      * Sets a file \a extension for the parameter.
+     *
+     * Calling this method resets any existing fileFilter().
+     *
+     * \note See setFileFilter() for a more flexible approach.
+     *
      * \see extension()
      */
-    void setExtension( const QString &extension ) { mExtension = extension; }
+    void setExtension( const QString &extension );
+
+    /**
+     * Returns the file filter string for file destinations compatible with this parameter.
+     * \see setFileFilter()
+     * \see extension()
+     * \since QGIS 3.10
+     */
+    QString fileFilter() const;
+
+    /**
+     * Sets the file \a filter string for file destinations compatible with this parameter.
+     *
+     * Calling this method resets any existing extension() setting.
+     *
+     * \see fileFilter()
+     * \see setExtension()
+     * \since QGIS 3.10
+     */
+    void setFileFilter( const QString &filter );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1362,6 +1407,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
 
     Behavior mBehavior = File;
     QString mExtension;
+    QString mFileFilter;
 };
 
 /**
@@ -2653,7 +2699,8 @@ class CORE_EXPORT QgsProcessingParameterFolderDestination : public QgsProcessing
      */
     QgsProcessingParameterFolderDestination( const QString &name, const QString &description = QString(),
         const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false,
+        bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.

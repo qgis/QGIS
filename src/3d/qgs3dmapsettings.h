@@ -369,6 +369,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      * \since QGIS 3.6
      */
     void terrainMapThemeChanged();
+
+    /**
+     * Emitted when the list of map's extra renderers have been modified
+     * \since QGIS 3.10
+     */
+    void renderersChanged();
+
     //! Emitted when the flag whether terrain's bounding boxes are shown has changed
     void showTerrainBoundingBoxesChanged();
     //! Emitted when the flag whether terrain's tile info is shown has changed

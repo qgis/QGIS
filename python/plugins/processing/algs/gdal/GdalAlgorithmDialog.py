@@ -127,6 +127,9 @@ class GdalParametersPanel(ParametersPanel):
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
             for p in self.alg.parameterDefinitions():
+                if p.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    continue
+
                 if (not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
                         or (not p.checkValueIsAcceptable(parameters[p.name()])):
                     # not ready yet

@@ -115,6 +115,17 @@ Generates a unique title for a new layout of the specified ``type``, which does 
 clash with any already contained by the manager.
 %End
 
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+within the contained layouts.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void layoutAboutToBeAdded( const QString &name );

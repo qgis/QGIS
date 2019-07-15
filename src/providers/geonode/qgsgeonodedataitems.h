@@ -45,7 +45,7 @@ class QgsGeoNodeServiceItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
   private:
-    void replacePath( QgsDataItem *item, QString before, QString after );
+    void replacePath( QgsDataItem *item, const QString &before, const QString &after );
     QString mName;
     QString mServiceName;
     QString mUri;
@@ -68,9 +68,9 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 class QgsGeoNodeDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "GeoNode" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::Net; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };

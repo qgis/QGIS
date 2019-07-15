@@ -1301,6 +1301,16 @@ QDateTime QgsRasterLayer::timestamp() const
   return mDataProvider->timestamp();
 }
 
+bool QgsRasterLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mPipe.renderer() )
+  {
+    if ( !mPipe.renderer()->accept( visitor ) )
+      return false;
+  }
+  return true;
+}
+
 
 bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props ) const
 {
@@ -1767,12 +1777,18 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
 
-  QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-  setDataProvider( mProviderKey, providerOptions );
+  if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
+  {
+    QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
+    setDataProvider( mProviderKey, providerOptions );
+  }
 
   if ( ! mDataProvider )
   {
-    QgsDebugMsg( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+    if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+    }
     return false;
   }
 

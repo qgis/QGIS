@@ -142,16 +142,11 @@ class QgsXyzLayerItem : public QgsLayerItem
 class QgsXyzTileDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "XYZ Tiles" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::Net; }
+    int capabilities() const override;
 
-    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
-    {
-      if ( path.isEmpty() )
-        return new QgsXyzTileRootItem( parentItem, QStringLiteral( "XYZ Tiles" ), QStringLiteral( "xyz:" ) );
-      return nullptr;
-    }
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 
     QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };

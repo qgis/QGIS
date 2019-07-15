@@ -63,6 +63,8 @@
 #include "qgscurvepolygon.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometrycollection.h"
+#include "callouts/qgscallout.h"
+#include "callouts/qgscalloutsregistry.h"
 #include <QMessageBox>
 
 using namespace pal;
@@ -237,6 +239,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::ZIndex, QgsPropertyDefinition( "ZIndex", QObject::tr( "Label z-index" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::Show, QgsPropertyDefinition( "Show", QObject::tr( "Show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::AlwaysShow, QgsPropertyDefinition( "AlwaysShow", QObject::tr( "Always show label" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::CalloutDraw, QgsPropertyDefinition( "CalloutDraw", QObject::tr( "Draw callout" ), QgsPropertyDefinition::Boolean, origin ) },
   };
 }
 
@@ -303,6 +306,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacleFactor = 1.0;
   obstacleType = PolygonInterior;
   zIndex = 0.0;
+
+  mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -395,6 +400,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   mFormat = s.mFormat;
   mDataDefinedProperties = s.mDataDefinedProperties;
 
+  mCallout.reset( s.mCallout ? s.mCallout->clone() : nullptr );
+
   geometryGenerator = s.geometryGenerator;
   geometryGeneratorEnabled = s.geometryGeneratorEnabled;
   geometryGeneratorType = s.geometryGeneratorType;
@@ -403,7 +410,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   return *this;
 }
 
-bool QgsPalLayerSettings::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs )
+bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &attributeNames, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs )
 {
   if ( drawLabels )
   {
@@ -512,12 +519,57 @@ bool QgsPalLayerSettings::prepare( const QgsRenderContext &context, QSet<QString
     }
   }
 
+  if ( mCallout )
+  {
+    const auto referencedColumns = mCallout->referencedFields( context );
+    for ( const QString &name : referencedColumns )
+    {
+      attributeNames.insert( name );
+    }
+  }
+
   return true;
 }
 
+void QgsPalLayerSettings::startRender( QgsRenderContext &context )
+{
+  if ( mRenderStarted )
+  {
+    qWarning( "Start render called for when a previous render was already underway!!" );
+    return;
+  }
+
+  if ( mCallout )
+  {
+    mCallout->startRender( context );
+  }
+
+  mRenderStarted = true;
+}
+
+void QgsPalLayerSettings::stopRender( QgsRenderContext &context )
+{
+  if ( !mRenderStarted )
+  {
+    qWarning( "Stop render called for QgsPalLayerSettings without a startRender call!" );
+    return;
+  }
+
+  if ( mCallout )
+  {
+    mCallout->stopRender( context );
+  }
+
+  mRenderStarted = false;
+}
 
 QgsPalLayerSettings::~QgsPalLayerSettings()
 {
+  if ( mRenderStarted )
+  {
+    qWarning( "stopRender was not called on QgsPalLayerSettings object!" );
+  }
+
   // pal layer is deleted internally in PAL
 
   delete expression;
@@ -1082,10 +1134,17 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     mDataDefinedProperties.setProperty( MaxScale, QgsProperty() );
   }
 
-
+  // TODO - replace with registry when multiple callout styles exist
+  const QString calloutType = elem.attribute( QStringLiteral( "calloutType" ) );
+  if ( calloutType.isEmpty() )
+    mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+  else
+  {
+    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( QStringLiteral( "callout" ) ), context ) );
+    if ( !mCallout )
+      mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+  }
 }
-
-
 
 QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -1178,7 +1237,19 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   elem.appendChild( placementElem );
   elem.appendChild( renderingElem );
   elem.appendChild( ddElem );
+
+  if ( mCallout )
+  {
+    elem.setAttribute( QStringLiteral( "calloutType" ), mCallout->type() );
+    mCallout->saveProperties( doc, elem, context );
+  }
+
   return elem;
+}
+
+void QgsPalLayerSettings::setCallout( QgsCallout *callout )
+{
+  mCallout.reset( callout );
 }
 
 QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText, int padding )
@@ -2121,6 +2192,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   //  feature to the layer
   QgsTextLabelFeature *lf = new QgsTextLabelFeature( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
+  lf->setFeature( feature );
   mFeatsRegPal++;
 
   *labelFeature = lf;
@@ -2317,6 +2389,7 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
   //  feature to the layer
   *obstacleFeature = new QgsLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
   ( *obstacleFeature )->setIsObstacle( true );
+  ( *obstacleFeature )->setFeature( f );
   mFeatsRegPal++;
 }
 

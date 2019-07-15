@@ -102,6 +102,7 @@
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
+#include "qgs3dmaptoolmeasureline.h"
 #endif
 
 #include "qgsgui.h"
@@ -5161,7 +5162,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   if ( !layer )
   {
     layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-    if ( !layer || layer->dataProvider()->name() != QLatin1String( "ogr" ) )
+    if ( !layer || layer->providerType() != QLatin1String( "ogr" ) )
       return result;
   }
 
@@ -6507,11 +6508,11 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   {
     if ( allowInteractive )
     {
-      ok = addVectorLayersPrivate( QStringList( fileName ), QStringLiteral( "System" ), QStringLiteral( "file" ), false );
+      ok = ok || addVectorLayersPrivate( QStringList( fileName ), QStringLiteral( "System" ), QStringLiteral( "file" ), false );
     }
     else
     {
-      ok = addVectorLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "ogr" ), false );
+      ok = ok || addVectorLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "ogr" ), false );
     }
   }
 
@@ -7873,7 +7874,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
 
     if ( destCRS.isValid() )
     {
-      QgsDatumTransformDialog::run( vlayer->crs(), destCRS, this );
+      QgsDatumTransformDialog::run( vlayer->crs(), destCRS, this, mMapCanvas );
       ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
     }
 
@@ -10804,6 +10805,14 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureArea )->updateSettings();
     qobject_cast<QgsMapToolMeasureAngle *>( mMapTools.mMeasureAngle )->updateSettings();
 
+#ifdef HAVE_3D
+    const QList< Qgs3DMapCanvasDockWidget * > canvases3D = findChildren< Qgs3DMapCanvasDockWidget * >();
+    for ( Qgs3DMapCanvasDockWidget *canvas3D : canvases3D )
+    {
+      canvas3D->measurementLineTool()->updateSettings();
+    }
+#endif
+
     double factor = mySettings.value( QStringLiteral( "qgis/magnifier_factor_default" ), 1.0 ).toDouble();
     mMagnifierWidget->setDefaultFactor( factor );
     mMagnifierWidget->updateMagnification( factor );
@@ -11423,7 +11432,7 @@ bool QgisApp::saveDirty()
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
       // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
       // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers().
-      if ( !vl || vl->dataProvider()->name() == QLatin1String( "memory" ) )
+      if ( !vl || vl->providerType() == QLatin1String( "memory" ) )
       {
         continue;
       }
@@ -11486,7 +11495,7 @@ bool QgisApp::saveDirty()
   {
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
     {
-      if ( vl->dataProvider()->name() == QLatin1String( "memory" ) && vl->isEditable() && vl->isModified() )
+      if ( vl->providerType() == QLatin1String( "memory" ) && vl->isEditable() && vl->isModified() )
       {
         vl->rollBack();
       }
@@ -11509,7 +11518,7 @@ bool QgisApp::checkUnsavedLayerEdits()
       {
         // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
         // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers()
-        if ( ! vl->dataProvider() || vl->dataProvider()->name() == QLatin1String( "memory" ) )
+        if ( ! vl->dataProvider() || vl->providerType() == QLatin1String( "memory" ) )
           continue;
 
         const bool hasUnsavedEdits = ( vl->isEditable() && vl->isModified() );
@@ -11535,7 +11544,7 @@ bool QgisApp::checkMemoryLayers()
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.begin(); it != layers.end(); ++it )
   {
-    if ( it.value() && it.value()->dataProvider()->name() == QLatin1String( "memory" ) )
+    if ( it.value() && it.value()->providerType() == QLatin1String( "memory" ) )
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() );
       if ( vl && vl->featureCount() != 0 && !vl->customProperty( QStringLiteral( "skipMemoryLayersCheck" ) ).toInt() )
@@ -13747,7 +13756,7 @@ bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sour
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
-  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this );
+  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this, mMapCanvas );
 }
 
 void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
@@ -14268,8 +14277,15 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
 
   if ( !result.successful )
   {
-    // fallback - use message bar
-    messageBar()->pushInfo( title, message );
+    // fallback - use message bar if available, otherwise use a message log
+    if ( messageBar() )
+    {
+      messageBar()->pushInfo( title, message );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( title, message ) );
+    }
   }
   else
   {

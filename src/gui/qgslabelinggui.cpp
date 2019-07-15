@@ -25,6 +25,11 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsstylesavedialog.h"
+#include "qgscallout.h"
+#include "qgsapplication.h"
+#include "qgscalloutsregistry.h"
+#include "callouts/qgscalloutwidget.h"
+#include <mutex>
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -69,6 +74,66 @@ void QgsLabelingGui::updateProperty()
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
+static bool _initCalloutWidgetFunction( const QString &name, QgsCalloutWidgetFunc f )
+{
+  QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
+
+  QgsCalloutAbstractMetadata *abstractMetadata = registry->calloutMetadata( name );
+  if ( !abstractMetadata )
+  {
+    QgsDebugMsg( QStringLiteral( "Failed to find callout entry in registry: %1" ).arg( name ) );
+    return false;
+  }
+  QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
+  if ( !metadata )
+  {
+    QgsDebugMsg( QStringLiteral( "Failed to cast callout's metadata: " ) .arg( name ) );
+    return false;
+  }
+  metadata->setWidgetFunction( f );
+  return true;
+}
+
+void QgsLabelingGui::initCalloutWidgets()
+{
+  _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
+  _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
+}
+
+void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
+{
+  if ( !callout )
+  {
+    mCalloutStackedWidget->setCurrentWidget( pageDummy );
+    return;
+  }
+
+  if ( mCalloutStackedWidget->currentWidget() != pageDummy )
+  {
+    // stop updating from the original widget
+    if ( QgsCalloutWidget *pew = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() ) )
+      disconnect( pew, &QgsCalloutWidget::changed, this, &QgsLabelingGui::updatePreview );
+  }
+
+  QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
+  if ( QgsCalloutAbstractMetadata *am = registry->calloutMetadata( callout->type() ) )
+  {
+    if ( QgsCalloutWidget *w = am->createCalloutWidget( mLayer ) )
+    {
+      w->setCallout( callout );
+
+      w->setContext( context() );
+      mCalloutStackedWidget->addWidget( w );
+      mCalloutStackedWidget->setCurrentWidget( w );
+      // start receiving updates from widget
+      connect( w, &QgsCalloutWidget::changed, this, &QgsLabelingGui::updatePreview );
+      return;
+    }
+  }
+  // When anything is not right
+  mCalloutStackedWidget->setCurrentWidget( pageDummy );
+}
+
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, QgsWkbTypes::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling )
   , mLayer( layer )
@@ -77,6 +142,12 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   , mMode( NoLabels )
   , mCanvas( mapCanvas )
 {
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
+  {
+    initCalloutWidgets();
+  } );
+
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mShapeDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -99,6 +170,12 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mMaxScaleWidget->setMapCanvas( mCanvas );
   mMaxScaleWidget->setShowCurrentScaleButton( true );
 
+  const QStringList calloutTypes = QgsApplication::calloutRegistry()->calloutTypes();
+  for ( const QString &type : calloutTypes )
+  {
+    mCalloutStyleComboBox->addItem( QgsApplication::calloutRegistry()->calloutMetadata( type )->visibleName(), type );
+  }
+
   mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );
   mGeometryGeneratorWarningLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
   connect( mGeometryGeneratorWarningLabel, &QLabel::linkActivated, this, [this]( const QString & link )
@@ -106,6 +183,8 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
     if ( link == QLatin1String( "#determineGeometryGeneratorType" ) )
       determineGeometryGeneratorType();
   } );
+
+  connect( mCalloutStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::calloutTypeChanged );
 
   setLayer( layer );
 }
@@ -273,6 +352,21 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mZIndexSpinBox->setValue( mSettings.zIndex );
 
   mDataDefinedProperties = mSettings.dataDefinedProperties();
+
+  // callout settings, to move to custom widget when multiple styles exist
+  if ( mSettings.callout() )
+  {
+    whileBlocking( mCalloutsDrawCheckBox )->setChecked( mSettings.callout()->enabled() );
+    whileBlocking( mCalloutStyleComboBox )->setCurrentIndex( mCalloutStyleComboBox->findData( mSettings.callout()->type() ) );
+    updateCalloutWidget( mSettings.callout() );
+  }
+  else
+  {
+    std::unique_ptr< QgsCallout > defaultCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+    whileBlocking( mCalloutStyleComboBox )->setCurrentIndex( mCalloutStyleComboBox->findData( defaultCallout->type() ) );
+    whileBlocking( mCalloutsDrawCheckBox )->setChecked( false );
+    updateCalloutWidget( defaultCallout.get() );
+  }
 
   updatePlacementWidgets();
   updateLinePlacementOptions();
@@ -454,6 +548,19 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.setDataDefinedProperties( mDataDefinedProperties );
 
+  // callout settings
+  const QString calloutType = mCalloutStyleComboBox->currentData().toString();
+  std::unique_ptr< QgsCallout > callout;
+  if ( QgsCalloutWidget *pew = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() ) )
+  {
+    callout.reset( pew->callout()->clone() );
+  }
+  if ( !callout )
+    callout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType ) );
+
+  callout->setEnabled( mCalloutsDrawCheckBox->isChecked() );
+  lyr.setCallout( callout.release() );
+
   return lyr;
 }
 
@@ -596,6 +703,8 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mIsObstacleDDBtn, QgsPalLayerSettings::IsObstacle );
   registerDataDefinedButton( mObstacleFactorDDBtn, QgsPalLayerSettings::ObstacleFactor );
   registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::ZIndex );
+
+  registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::CalloutDraw );
 }
 
 void QgsLabelingGui::syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f )
@@ -697,6 +806,15 @@ void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEnt
       break;
     }
   }
+}
+
+void QgsLabelingGui::setContext( const QgsSymbolWidgetContext &context )
+{
+  if ( QgsCalloutWidget *cw = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() ) )
+  {
+    cw->setContext( context );
+  }
+  QgsTextFormatWidget::setContext( context );
 }
 
 void QgsLabelingGui::saveFormat()
@@ -912,6 +1030,32 @@ void QgsLabelingGui::determineGeometryGeneratorType()
   const QgsGeometry geometry = expression.evaluate( &context ).value<QgsGeometry>();
 
   mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( geometry.type() ) );
+}
+
+void QgsLabelingGui::calloutTypeChanged()
+{
+  QString newCalloutType = mCalloutStyleComboBox->currentData().toString();
+  QgsCalloutWidget *pew = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() );
+  if ( pew )
+  {
+    if ( pew->callout() && pew->callout()->type() == newCalloutType )
+      return;
+  }
+
+  // get creation function for new callout from registry
+  QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
+  QgsCalloutAbstractMetadata *am = registry->calloutMetadata( newCalloutType );
+  if ( !am ) // check whether the metadata is assigned
+    return;
+
+  // change callout to a new one (with different type)
+  // base new callout on existing callout's properties
+  std::unique_ptr< QgsCallout > newCallout( am->createCallout( pew && pew->callout() ? pew->callout()->properties( QgsReadWriteContext() ) : QVariantMap(), QgsReadWriteContext() ) );
+  if ( !newCallout )
+    return;
+
+  updateCalloutWidget( newCallout.get() );
+  updatePreview();
 }
 
 

@@ -18,6 +18,7 @@
 #include "qgslayoutatlas.h"
 #include "qgsreadwritecontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
 
 QgsPrintLayout::QgsPrintLayout( QgsProject *project )
   : QgsLayout( project )
@@ -111,6 +112,19 @@ QgsExpressionContext QgsPrintLayout::createExpressionContext() const
 void QgsPrintLayout::updateSettings()
 {
   reloadSettings();
+}
+
+bool QgsPrintLayout::layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  // NOTE: if visitEnter returns false it means "don't visit the layout", not "abort all further visitations"
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::PrintLayout, QStringLiteral( "layout" ), mName ) ) )
+    return true;
+
+  if ( !accept( visitor ) )
+    return false;
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::PrintLayout, QStringLiteral( "layout" ), mName ) ) )
+    return false;
+  return true;
 }
 
 QgsMasterLayoutInterface::Type QgsPrintLayout::layoutType() const

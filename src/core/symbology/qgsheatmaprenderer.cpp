@@ -27,6 +27,7 @@
 #include "qgsrendercontext.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -393,6 +394,17 @@ QgsHeatmapRenderer *QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRen
   {
     return new QgsHeatmapRenderer();
   }
+}
+
+bool QgsHeatmapRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mGradientRamp )
+  {
+    QgsStyleColorRampEntity entity( mGradientRamp );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) ) )
+      return false;
+  }
+  return true;
 }
 
 void QgsHeatmapRenderer::setColorRamp( QgsColorRamp *ramp )

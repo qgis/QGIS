@@ -39,6 +39,7 @@
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
+#include "callouts/qgscalloutsregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
@@ -53,6 +54,7 @@
 #include "qgsstyle.h"
 #include "qgsprojutils.h"
 #include "qgsvaliditycheckregistry.h"
+#include "qgsnewsfeedparser.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -218,6 +220,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
   qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
   qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
+  qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
 
   ( void ) resolvePkgPath();
 
@@ -1881,6 +1884,11 @@ QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
   return members()->mSymbolLayerRegistry;
 }
 
+QgsCalloutRegistry *QgsApplication::calloutRegistry()
+{
+  return members()->mCalloutRegistry;
+}
+
 QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
 {
   return members()->mLayoutItemRegistry;
@@ -1945,6 +1953,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mColorSchemeRegistry = new QgsColorSchemeRegistry();
   mPaintEffectRegistry = new QgsPaintEffectRegistry();
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+  mCalloutRegistry = new QgsCalloutRegistry();
   mRendererRegistry = new QgsRendererRegistry();
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
   mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
@@ -1981,6 +1990,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mRendererRegistry;
   delete mSvgCache;
   delete mImageCache;
+  delete mCalloutRegistry;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;

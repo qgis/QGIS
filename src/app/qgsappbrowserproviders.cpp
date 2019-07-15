@@ -420,7 +420,7 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
   QVector<QgsDataItem *> childItems;
 
   QgsProject p;
-  if ( !p.read( mPath ) )
+  if ( !p.read( mPath, QgsProject::FlagDontResolveLayers ) )
   {
     childItems.append( new QgsErrorItem( nullptr, p.error(), mPath + "/error" ) );
     return childItems;
@@ -457,7 +457,7 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
                 layer ? layer->source() : QString(),
                 layer ? layer->source() : QString(),
                 layer ? QgsLayerItem::typeFromMapLayer( layer ) : QgsLayerItem::NoType,
-                layer ? layer->dataProvider()->name() : QString() );
+                layer ? layer->providerType() : QString() );
             layerItem->setState( Populated ); // children are not expected
             layerItem->setToolTip( layer ? layer->source() : QString() );
             if ( parentItem == this )

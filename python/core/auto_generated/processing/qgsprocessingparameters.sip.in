@@ -979,6 +979,20 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a list of 
 .. versionadded:: 3.4
 %End
 
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+
+.. versionadded:: 3.10
+%End
+
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+
+.. versionadded:: 3.10
+%End
+
     static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a range of values.
@@ -1298,9 +1312,13 @@ An input file or folder parameter for processing algorithms.
     };
 
     QgsProcessingParameterFile( const QString &name, const QString &description = QString(), Behavior behavior = File, const QString &extension = QString(), const QVariant &defaultValue = QVariant(),
-                                bool optional = false );
+                                bool optional = false, const QString &fileFilter = QString() );
 %Docstring
 Constructor for QgsProcessingParameterFile.
+
+The ``extension`` argument allows for specifying a file extension associated with the parameter (e.g. "html"). Use ``fileFilter``
+for a more flexible approach which allows for multiple file extensions. Only one of ``extension`` or ``fileFilter`` should be specified,
+if both are specified then ``fileFilter`` takes precedence.
 %End
 
     static QString typeName();
@@ -1335,6 +1353,10 @@ Sets the parameter ``behavior`` (e.g. File or Folder).
 %Docstring
 Returns any specified file extension for the parameter.
 
+.. note::
+
+   See fileFilter() for a more flexible approach.
+
 .. seealso:: :py:func:`setExtension`
 %End
 
@@ -1342,7 +1364,37 @@ Returns any specified file extension for the parameter.
 %Docstring
 Sets a file ``extension`` for the parameter.
 
+Calling this method resets any existing fileFilter().
+
+.. note::
+
+   See setFileFilter() for a more flexible approach.
+
 .. seealso:: :py:func:`extension`
+%End
+
+    QString fileFilter() const;
+%Docstring
+Returns the file filter string for file destinations compatible with this parameter.
+
+.. seealso:: :py:func:`setFileFilter`
+
+.. seealso:: :py:func:`extension`
+
+.. versionadded:: 3.10
+%End
+
+    void setFileFilter( const QString &filter );
+%Docstring
+Sets the file ``filter`` string for file destinations compatible with this parameter.
+
+Calling this method resets any existing extension() setting.
+
+.. seealso:: :py:func:`fileFilter`
+
+.. seealso:: :py:func:`setExtension`
+
+.. versionadded:: 3.10
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -2813,7 +2865,8 @@ A folder output parameter.
 
     QgsProcessingParameterFolderDestination( const QString &name, const QString &description = QString(),
         const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false,
+        bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingParameterFolderDestination.
 %End

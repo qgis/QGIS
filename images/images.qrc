@@ -177,6 +177,7 @@
         <file>themes/default/mActionDistributeTop.svg</file>
         <file>themes/default/mActionDistributeVCenter.svg</file>
         <file>themes/default/mActionDistributeVSpace.svg</file>
+        <file>themes/default/mActionAddExpression.svg</file>
         <file>themes/default/mActionAddLayer.svg</file>
         <file>themes/default/mActionAddMeshLayer.svg</file>
         <file>themes/default/mActionAddAllToOverview.svg</file>
@@ -769,6 +770,7 @@
         <file>themes/default/mIconAlignRight.svg</file>
         <file>themes/default/mIconArrangeSymbolsLeft.svg</file>
         <file>themes/default/mIconArrangeSymbolsRight.svg</file>
+        <file>themes/default/mIconClearItem.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

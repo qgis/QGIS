@@ -444,6 +444,11 @@ const QgsFeatureRenderer *QgsFeatureRenderer::embeddedRenderer() const
   return nullptr;
 }
 
+bool QgsFeatureRenderer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
+}
+
 void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field )
 {
   if ( symbol->type() == QgsSymbol::Marker )

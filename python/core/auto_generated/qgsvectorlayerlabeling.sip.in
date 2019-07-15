@@ -94,6 +94,17 @@ Try to create instance of an implementation based on the XML data
 Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the labeling.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
   protected:
 
     virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QgsStringMap &props ) const;
@@ -135,6 +146,8 @@ Constructs simple labeling configuration with given initial settings
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
     virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() );

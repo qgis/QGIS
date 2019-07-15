@@ -30,6 +30,7 @@
 #include "qgscompositionconverter.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -782,6 +783,29 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   mUndoStack->endMacro();
 
   return ungroupedItems;
+}
+
+bool QgsLayout::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  const QList< QGraphicsItem * > constItems = items();
+  for ( const QGraphicsItem *item : constItems )
+  {
+    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    if ( !layoutItem )
+      continue;
+
+    if ( !layoutItem->accept( visitor ) )
+      return false;
+  }
+
+  if ( pageCollection()->pageStyleSymbol() )
+  {
+    QgsStyleSymbolEntity entity( pageCollection()->pageStyleSymbol() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "page" ), QObject::tr( "Page" ) ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsLayout::refresh()

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLayoutItemRenderContext
 {
 %Docstring
@@ -931,6 +930,17 @@ Returns whether the item should be drawn in the current context.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+with the layout item.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
 
   public slots:
 

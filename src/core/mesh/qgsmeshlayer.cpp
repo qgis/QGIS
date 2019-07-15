@@ -388,6 +388,11 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     mProviderKey = pkeyElt.text();
   }
 
+  if ( mReadFlags & QgsMapLayer::FlagDontResolveLayers )
+  {
+    return false;
+  }
+
   QgsDataProvider::ProviderOptions providerOptions;
   if ( !setDataProvider( mProviderKey, providerOptions ) )
   {

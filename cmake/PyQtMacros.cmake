@@ -19,7 +19,7 @@ IF(NOT PYUIC_PROGRAM)
   ENDIF (MSVC)
 
   IF (NOT PYUIC_PROGRAM)
-    MESSAGE(FATAL_ERROR "pyuic[4|5] not found - aborting")
+    MESSAGE(FATAL_ERROR "pyuic5 not found - aborting")
   ENDIF (NOT PYUIC_PROGRAM)
 ENDIF(NOT PYUIC_PROGRAM)
 
@@ -63,7 +63,7 @@ IF(NOT PYRCC_PROGRAM)
   ENDIF (MSVC)
 
   IF (NOT PYRCC_PROGRAM)
-    MESSAGE(FATAL_ERROR "pyrcc[4|5] not found - aborting")
+    MESSAGE(FATAL_ERROR "pyrcc5 not found - aborting")
   ENDIF (NOT PYRCC_PROGRAM)
 ENDIF(NOT PYRCC_PROGRAM)
 
@@ -87,11 +87,6 @@ MACRO (PYQT_ADD_RESOURCES outfiles )
       ENDIF(NOT _ABS_PATH_INDICATOR)
       SET(_RC_DEPENDS ${_RC_DEPENDS} "${_RC_FILE}")
     ENDFOREACH(_RC_FILE)
-    SET(_name_opt)
-    IF(PYQT5_VERSION_STR VERSION_LESS 5.9.1)
-      # option removed in PyQt5 >= 5.9.1
-      SET(_name_opt -name ${outfile})
-    ENDIF()
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
       COMMAND ${PYRCC_PROGRAM} ${_name_opt} -o ${outfile} ${infile}
       MAIN_DEPENDENCY ${infile}

@@ -17,6 +17,9 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
 
+  callouts/qgscallout.cpp
+  callouts/qgscalloutsregistry.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
@@ -279,6 +282,8 @@ SET(QGIS_CORE_SRCS
   qgsnetworkcontentfetchertask.cpp
   qgsnetworkreply.cpp
   qgsnetworkreplyparser.cpp
+  qgsnewsfeedmodel.cpp
+  qgsnewsfeedparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
@@ -669,6 +674,8 @@ SET(QGIS_CORE_MOC_HDRS
   qgsnetworkcontentfetcherregistry.h
   qgsnetworkcontentfetchertask.h
   qgsnetworkreplyparser.h
+  qgsnewsfeedmodel.h
+  qgsnewsfeedparser.h
   qgsofflineediting.h
   qgsowsconnection.h
   qgspluginlayer.h
@@ -1046,6 +1053,9 @@ SET(QGIS_CORE_HDRS
   auth/qgsauthmethodmetadata.h
   auth/qgsauthmethodregistry.h
 
+  callouts/qgscallout.h
+  callouts/qgscalloutsregistry.h
+
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
@@ -1183,6 +1193,7 @@ SET(QGIS_CORE_HDRS
   symbology/qgsheatmaprenderer.h
   symbology/qgsinvertedpolygonrenderer.h
   symbology/qgsnullsymbolrenderer.h
+  symbology/qgsstyleentityvisitor.h
   symbology/qgssymbollayer.h
   symbology/qgssymbollayerregistry.h
   symbology/qgssymbollayerutils.h

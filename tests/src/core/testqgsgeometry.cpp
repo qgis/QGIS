@@ -3757,6 +3757,32 @@ void TestQgsGeometry::lineString()
   //endPoint
   QCOMPARE( l19.endPoint(), QgsPoint( QgsWkbTypes::PointZM, 15, 10, 6, 7 ) );
 
+  //test 3d length
+  // without vertices
+  l19.clear();
+  QCOMPARE( l19.length3D(), 0.0 );
+
+  // without Z
+  l19.clear();
+  l19.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
+                 << QgsPoint( QgsWkbTypes::Point, 3, 4 )
+                 << QgsPoint( QgsWkbTypes::Point, 8, 16 ) );
+  QCOMPARE( l19.length3D(), 18.0 );
+
+  // with z
+  l19.clear();
+  l19.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 0 )
+                 << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 2 )
+                 << QgsPoint( QgsWkbTypes::PointZ, 4, 6, 2 ) );
+  QCOMPARE( l19.length3D(), 8.0 );
+
+  // with z and m
+  l19.clear();
+  l19.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 0, 0 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 13 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 4, 6, 2, 7 ) );
+  QCOMPARE( l19.length3D(), 8.0 );
+
   //bad start/end points. Test that this doesn't crash.
   l19.clear();
   QCOMPARE( l19.startPoint(), QgsPoint() );

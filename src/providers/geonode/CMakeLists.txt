@@ -1,16 +1,17 @@
 
 SET (GEONODE_SRCS
   qgsgeonodeprovider.cpp
+  qgsgeonodedataitems.cpp
 )
 
 SET(GEONODE_MOC_HDRS
+    qgsgeonodedataitems.h
 )
 
 IF (WITH_GUI)
   SET(GEONODE_SRCS ${GEONODE_SRCS}
     qgsgeonodeprovidergui.cpp
     qgsgeonodedataitemguiprovider.cpp
-    qgsgeonodedataitems.cpp
     qgsgeonodenewconnection.cpp
     qgsgeonodesourceselect.cpp
   )
@@ -18,7 +19,6 @@ IF (WITH_GUI)
     qgsgeonodedataitemguiprovider.h
     qgsgeonodesourceselect.h
     qgsgeonodenewconnection.h
-    qgsgeonodedataitems.h
   )
 ENDIF ()
 

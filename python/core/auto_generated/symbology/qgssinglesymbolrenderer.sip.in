@@ -33,6 +33,8 @@ of ``symbol`` is transferred to the renderer.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
     QgsSymbol *symbol() const;
 %Docstring

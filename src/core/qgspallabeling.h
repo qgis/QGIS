@@ -70,7 +70,7 @@ class QgsVectorLayerLabelProvider;
 class QgsDxfExport;
 class QgsVectorLayerDiagramProvider;
 class QgsExpressionContext;
-
+class QgsCallout;
 
 /**
  * \ingroup core
@@ -435,6 +435,7 @@ class CORE_EXPORT QgsPalLayerSettings
       IsObstacle = 88,
       ObstacleFactor = 89,
       ZIndex = 90,
+      CalloutDraw = 100, //!< Show callout
 
       // (data defined only)
       Show = 15,
@@ -453,7 +454,26 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * \since QGIS 3.8
      */
-    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames SIP_INOUT, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
+    bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames SIP_INOUT, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Prepares the label settings for rendering.
+     *
+     * This should be called before rendering any labels, and must be
+     * followed by a call to stopRender() in order to gracefully clean up symbols.
+     *
+     * \since QGIS 3.10
+     */
+    void startRender( QgsRenderContext &context );
+
+    /**
+     * Finalises the label settings after use.
+     *
+     * This must be called after a call to startRender(), in order to gracefully clean up symbols.
+     *
+     * \since QGIS 3.10
+     */
+    void stopRender( QgsRenderContext &context );
 
     /**
      * Returns the labeling property definitions.
@@ -933,6 +953,26 @@ class CORE_EXPORT QgsPalLayerSettings
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
 
     /**
+     * Returns the label callout renderer, responsible for drawing label callouts.
+     *
+     * Ownership is not transferred.
+     *
+     * \see setCallout()
+     * \since QGIS 3.10
+     */
+    QgsCallout *callout() const { return mCallout.get(); }
+
+    /**
+     * Sets the label \a callout renderer, responsible for drawing label callouts.
+     *
+     * Ownership of \a callout is transferred to the settings.
+
+     * \see callout()
+     * \since QGIS 3.10
+     */
+    void setCallout( QgsCallout *callout SIP_TRANSFER );
+
+    /**
     * Returns a pixmap preview for label \a settings.
     * \param settings label settings
     * \param size target pixmap size
@@ -1031,7 +1071,11 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsTextFormat mFormat;
 
+    std::unique_ptr< QgsCallout > mCallout;
+
     QgsExpression mGeometryGeneratorExpression;
+
+    bool mRenderStarted = false;
 
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 

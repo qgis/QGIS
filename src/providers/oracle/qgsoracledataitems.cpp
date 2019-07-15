@@ -591,3 +591,13 @@ QgsDataItem *QgsOracleDataItemProvider::createDataItem( const QString &pathIn, Q
   Q_UNUSED( pathIn )
   return new QgsOracleRootItem( parentItem, "Oracle", "oracle:" );
 }
+
+QString QgsOracleDataItemProvider::name()
+{
+  return QStringLiteral( "ORACLE" );
+}
+
+int QgsOracleDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}

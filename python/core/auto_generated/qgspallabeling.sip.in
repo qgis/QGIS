@@ -11,7 +11,6 @@
 
 
 
-
 class QgsLabelPosition
 {
 
@@ -289,6 +288,7 @@ class QgsPalLayerSettings
       IsObstacle,
       ObstacleFactor,
       ZIndex,
+      CalloutDraw,
 
       // (data defined only)
       Show,
@@ -296,7 +296,7 @@ class QgsPalLayerSettings
     };
 
 
-    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames /In,Out/, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
+    bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames /In,Out/, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Prepare for registration of features.
 The ``context``, ``mapSettings`` and ``fields`` parameters give more
@@ -307,6 +307,25 @@ The parameter ``attributeNames`` should be updated to contain all the field
 names which the labeling requires for the rendering.
 
 .. versionadded:: 3.8
+%End
+
+    void startRender( QgsRenderContext &context );
+%Docstring
+Prepares the label settings for rendering.
+
+This should be called before rendering any labels, and must be
+followed by a call to stopRender() in order to gracefully clean up symbols.
+
+.. versionadded:: 3.10
+%End
+
+    void stopRender( QgsRenderContext &context );
+%Docstring
+Finalises the label settings after use.
+
+This must be called after a call to startRender(), in order to gracefully clean up symbols.
+
+.. versionadded:: 3.10
 %End
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -519,6 +538,28 @@ Sets the label text formatting settings, e.g., font settings, buffer settings, e
 .. seealso:: :py:func:`format`
 
 .. versionadded:: 3.0
+%End
+
+    QgsCallout *callout() const;
+%Docstring
+Returns the label callout renderer, responsible for drawing label callouts.
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setCallout`
+
+.. versionadded:: 3.10
+%End
+
+    void setCallout( QgsCallout *callout /Transfer/ );
+%Docstring
+Sets the label ``callout`` renderer, responsible for drawing label callouts.
+
+Ownership of ``callout`` is transferred to the settings.
+
+.. seealso:: :py:func:`callout`
+
+.. versionadded:: 3.10
 %End
 
     static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );

@@ -102,9 +102,9 @@ class QgsAmsLayerItem : public QgsLayerItem
 class QgsAmsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "AMS" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::Net; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };

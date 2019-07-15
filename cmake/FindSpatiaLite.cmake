@@ -70,11 +70,6 @@ IF (SPATIALITE_FOUND)
      SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
    ENDIF(APPLE)
 
-   check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_GE_4_2_0)
-   IF (NOT SPATIALITE_VERSION_GE_4_2_0)
-     MESSAGE(FATAL_ERROR "Found SpatiaLite, but version is too old. Requires at least version 4.2.0")
-   ENDIF (NOT SPATIALITE_VERSION_GE_4_2_0)
-
 ELSE (SPATIALITE_FOUND)
 
    IF (SPATIALITE_FIND_REQUIRED)

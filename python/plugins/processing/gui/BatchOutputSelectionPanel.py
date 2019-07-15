@@ -88,47 +88,39 @@ class BatchOutputSelectionPanel(QWidget):
             dlg = AutofillDialog(self.alg)
             dlg.exec_()
             if dlg.mode is not None:
-                try:
-                    if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
-                        self.table.cellWidget(self.row,
-                                              self.col).setValue(filename)
-                    elif dlg.mode == AutofillDialog.FILL_WITH_NUMBERS:
-                        n = self.table.rowCount() - self.row
-                        for i in range(n):
-                            name = filename[:filename.rfind('.')] \
-                                + str(i + 1) + filename[filename.rfind('.'):]
-                            self.table.cellWidget(i + self.row,
-                                                  self.col).setValue(name)
-                    elif dlg.mode == AutofillDialog.FILL_WITH_PARAMETER:
-                        n = self.table.rowCount() - self.row
-                        for i in range(n):
-                            widget = self.table.cellWidget(i + self.row,
-                                                           dlg.param_index)
-                            param = self.alg.parameterDefinitions()[dlg.param_index]
-                            if isinstance(param, (QgsProcessingParameterRasterLayer,
-                                                  QgsProcessingParameterFeatureSource,
-                                                  QgsProcessingParameterVectorLayer,
-                                                  QgsProcessingParameterMultipleLayers)):
-                                v = widget.value()
-                                if isinstance(v, QgsMapLayer):
-                                    s = v.name()
-                                else:
-                                    s = os.path.basename(v)
-                                    s = os.path.splitext(s)[0]
-                            elif isinstance(param, QgsProcessingParameterBoolean):
-                                s = str(widget.currentIndex() == 0)
-                            elif isinstance(param, QgsProcessingParameterEnum):
-                                s = str(widget.currentText())
-                            elif isinstance(param, QgsProcessingParameterMatrix):
-                                s = str(widget.table)
+                if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
+                    self.table.cellWidget(self.row,
+                                          self.col).setValue(filename)
+                elif dlg.mode == AutofillDialog.FILL_WITH_NUMBERS:
+                    n = self.table.rowCount() - self.row
+                    for i in range(n):
+                        name = filename[:filename.rfind('.')] \
+                            + str(i + 1) + filename[filename.rfind('.'):]
+                        self.table.cellWidget(i + self.row,
+                                              self.col).setValue(name)
+                elif dlg.mode == AutofillDialog.FILL_WITH_PARAMETER:
+                    for row in range(self.row, self.table.rowCount()):
+                        v = self.panel.valueForParameter(row - 1, dlg.param_name)
+                        param = self.alg.parameterDefinition(dlg.param_name)
+                        if isinstance(param, (QgsProcessingParameterRasterLayer,
+                                              QgsProcessingParameterFeatureSource,
+                                              QgsProcessingParameterVectorLayer,
+                                              QgsProcessingParameterMultipleLayers)):
+                            if isinstance(v, QgsMapLayer):
+                                s = v.name()
                             else:
-                                s = str(widget.text())
-                            name = filename[:filename.rfind('.')] + s \
-                                + filename[filename.rfind('.'):]
-                            self.table.cellWidget(i + self.row,
-                                                  self.col).setValue(name)
-                except:
-                    pass
+                                s = os.path.basename(v)
+                                s = os.path.splitext(s)[0]
+                        elif isinstance(param, QgsProcessingParameterBoolean):
+                            s = 'true' if v else 'false'
+                        elif isinstance(param, QgsProcessingParameterEnum):
+                            s = param.options()[v]
+                        else:
+                            s = str(v)
+                        name = filename[:filename.rfind('.')] + s \
+                            + filename[filename.rfind('.'):]
+                        self.table.cellWidget(row,
+                                              self.col).setValue(name)
 
     def selectDirectory(self):
 

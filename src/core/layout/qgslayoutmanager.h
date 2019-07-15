@@ -25,6 +25,7 @@
 
 class QgsProject;
 class QgsPrintLayout;
+class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -121,6 +122,17 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * clash with any already contained by the manager.
      */
     QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
+
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * within the contained layouts.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   signals:
 

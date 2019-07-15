@@ -57,6 +57,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included

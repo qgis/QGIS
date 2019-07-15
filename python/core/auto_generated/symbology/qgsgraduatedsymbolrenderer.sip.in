@@ -141,6 +141,8 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
     QString classAttribute() const;
     void setClassAttribute( const QString &attr );

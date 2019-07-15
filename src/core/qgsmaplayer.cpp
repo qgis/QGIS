@@ -208,9 +208,10 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
 }
 
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
 {
   bool layerError;
+  mReadFlags = flags;
 
   QDomNode mnl;
   QDomElement mne;
@@ -1875,6 +1876,11 @@ QString QgsMapLayer::generateId( const QString &layerName )
   // there for the compiler, so the pattern is actually \W
   id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
   return id;
+}
+
+bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
 }
 
 void QgsMapLayer::setProviderType( const QString &providerType )

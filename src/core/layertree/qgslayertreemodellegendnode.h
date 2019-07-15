@@ -27,6 +27,7 @@
 #include "qgis_sip.h"
 
 #include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
+#include "qgsexpressioncontext.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -48,6 +49,14 @@ class QgsRenderContext;
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
     Q_OBJECT
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsSymbolLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsSymbolLegendNode;
+    else
+      sipType = 0;
+    SIP_END
+#endif
   public:
 
     enum LegendNodeRoles
@@ -228,6 +237,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
+
   public:
 
     /**
@@ -319,6 +329,20 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     void setTextOnSymbolTextFormat( const QgsTextFormat &format ) { mTextOnSymbolTextFormat = format; }
 
+    /**
+     * Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
+     * \since QGIS 3.10
+     */
+    QString symbolLabel() const;
+
+    /**
+     * Evaluates  and returns the text label of the current node
+     * \param context extra QgsExpressionContext to use for evaluating the expression
+     * \param label text to evaluate instead of the layer layertree string
+     * \since QGIS 3.10
+     */
+    QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
+
   public slots:
 
     /**
@@ -360,6 +384,12 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     // ident the symbol icon to make it look like a tree structure
     static const int INDENT_SIZE = 20;
+
+    /**
+     * Create an expressionContextScope containing symbol related variables
+     * \since QGIS 3.10
+     */
+    QgsExpressionContextScope *createSymbolScope() const SIP_FACTORY;
 
     /**
      * Sets all items belonging to the same layer as this node to the same check state.

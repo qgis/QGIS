@@ -415,6 +415,16 @@ segment in the line.
 
     virtual double length() const;
 
+
+    double length3D() const;
+%Docstring
+Returns the length in 3D world of the line string.
+If it is not a 3D line string, return its 2D length.
+
+.. seealso:: :py:func:`length`
+
+.. versionadded:: 3.10
+%End
     virtual QgsPoint startPoint() const;
 
     virtual QgsPoint endPoint() const;

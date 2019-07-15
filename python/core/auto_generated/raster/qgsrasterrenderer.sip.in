@@ -120,6 +120,17 @@ Used from subclasses to create SLD Rule elements following SLD v1.0 specs
 .. versionadded:: 3.6
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the renderer.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
   protected:
 
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;

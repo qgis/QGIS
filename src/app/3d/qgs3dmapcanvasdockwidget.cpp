@@ -36,6 +36,7 @@
 #include "qgs3danimationwidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
+#include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dutils.h"
 
 
@@ -51,6 +52,9 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   QToolBar *toolBar = new QToolBar( contentsWidget );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
+  QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ),
+                                 tr( "Camera Control" ), this, &Qgs3DMapCanvasDockWidget::cameraControl );
+  actionCameraControl->setCheckable( true );
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
@@ -70,6 +74,18 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   QAction *actionIdentify = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionIdentify.svg" ) ),
                             tr( "Identify" ), this, &Qgs3DMapCanvasDockWidget::identify );
   actionIdentify->setCheckable( true );
+
+  QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ),
+                                   tr( "Measurement Line" ), this, &Qgs3DMapCanvasDockWidget::measureLine );
+  actionMeasurementTool->setCheckable( true );
+
+  // Create action group to make the action exclusive
+  QActionGroup *actionGroup = new QActionGroup( this );
+  actionGroup->addAction( actionCameraControl );
+  actionGroup->addAction( actionIdentify );
+  actionGroup->addAction( actionMeasurementTool );
+  actionGroup->setExclusive( true );
+  actionCameraControl->setChecked( true );
 
   QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
                         tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
@@ -94,6 +110,8 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   } );
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
+
+  mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -150,6 +168,15 @@ void Qgs3DMapCanvasDockWidget::toggleAnimations()
   }
 }
 
+void Qgs3DMapCanvasDockWidget::cameraControl()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( nullptr );
+}
+
 void Qgs3DMapCanvasDockWidget::identify()
 {
   QAction *action = qobject_cast<QAction *>( sender() );
@@ -157,6 +184,15 @@ void Qgs3DMapCanvasDockWidget::identify()
     return;
 
   mCanvas->setMapTool( action->isChecked() ? mMapToolIdentify : nullptr );
+}
+
+void Qgs3DMapCanvasDockWidget::measureLine()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
 }
 
 void Qgs3DMapCanvasDockWidget::toggleNavigationWidget( bool visibility )

@@ -98,6 +98,21 @@ Constructor for QgsStyle.
       LabelSettingsEntity,
     };
 
+    bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
+%Docstring
+Adds an ``entity`` to the style, with the specified ``name``. Ownership is not transferred.
+
+If ``update`` is ``True`` then the style database is updated automatically as a result.
+
+Returns ``True`` if the add operation was successful.
+
+.. note::
+
+   Adding an entity with the name of existing one replaces the existing one automatically.
+
+.. versionadded:: 3.10
+%End
+
     bool addSymbol( const QString &name, QgsSymbol *symbol /Transfer/, bool update = false );
 %Docstring
 Adds a symbol to style and takes symbol's ownership
@@ -880,6 +895,170 @@ name or tag changes.
 .. seealso:: :py:func:`labelSettingsAdded`
 
 .. versionadded:: 3.10
+%End
+
+};
+
+class QgsStyleEntityInterface
+{
+%Docstring
+An interface for entities which can be placed in a QgsStyle database.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+%ConvertToSubClassCode
+    switch ( sipCpp->type() )
+    {
+      case QgsStyle::SymbolEntity:
+        sipType = sipType_QgsStyleSymbolEntity;
+        break;
+
+      case QgsStyle::ColorrampEntity:
+        sipType = sipType_QgsStyleColorRampEntity;
+        break;
+
+      case QgsStyle::TextFormatEntity:
+        sipType = sipType_QgsStyleTextFormatEntity;
+        break;
+
+      case QgsStyle::LabelSettingsEntity:
+        sipType = sipType_QgsStyleLabelSettingsEntity;
+        break;
+
+      case QgsStyle::SmartgroupEntity:
+      case QgsStyle::TagEntity:
+        sipType = 0;
+        break;
+    }
+%End
+  public:
+
+    virtual ~QgsStyleEntityInterface();
+
+    virtual QgsStyle::StyleEntity type() const = 0;
+%Docstring
+Returns the type of style entity.
+%End
+
+};
+
+class QgsStyleSymbolEntity : QgsStyleEntityInterface
+{
+%Docstring
+A symbol entity for QgsStyle databases.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleSymbolEntity( const QgsSymbol *symbol );
+%Docstring
+Constructor for QgsStyleSymbolEntity, with the specified ``symbol``.
+
+Ownership of ``symbol`` is NOT transferred.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    const QgsSymbol *symbol() const;
+%Docstring
+Returns the entity's symbol.
+%End
+
+};
+
+class QgsStyleColorRampEntity : QgsStyleEntityInterface
+{
+%Docstring
+A color ramp entity for QgsStyle databases.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleColorRampEntity( const QgsColorRamp *ramp );
+%Docstring
+Constructor for QgsStyleColorRampEntity, with the specified color ``ramp``.
+
+Ownership of ``ramp`` is NOT transferred.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    const QgsColorRamp *ramp() const;
+%Docstring
+Returns the entity's color ramp.
+%End
+
+};
+
+class QgsStyleTextFormatEntity : QgsStyleEntityInterface
+{
+%Docstring
+A text format entity for QgsStyle databases.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleTextFormatEntity( const QgsTextFormat &format );
+%Docstring
+Constructor for QgsStyleTextFormatEntity, with the specified text ``format``.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    QgsTextFormat format() const;
+%Docstring
+Returns the entity's text format.
+%End
+
+};
+
+class QgsStyleLabelSettingsEntity : QgsStyleEntityInterface
+{
+%Docstring
+A label settings entity for QgsStyle databases.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+
+    QgsStyleLabelSettingsEntity( const QgsPalLayerSettings &settings );
+%Docstring
+Constructor for QgsStyleLabelSettingsEntity, with the specified label ``settings``.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+
+    const QgsPalLayerSettings &settings() const;
+%Docstring
+Returns the entity's label settings.
 %End
 
 };

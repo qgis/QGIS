@@ -428,6 +428,17 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool isElse() const { return mElseRule; }
 
+        /**
+         * Accepts the specified symbology \a visitor, causing it to visit all child rules associated
+         * with the rule.
+         *
+         * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+         * should be canceled.
+         *
+         * \since QGIS 3.10
+         */
+        bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
       protected:
         void initFilter();
 
@@ -509,6 +520,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /////
 

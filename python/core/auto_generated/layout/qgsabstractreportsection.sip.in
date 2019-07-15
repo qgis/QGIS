@@ -344,6 +344,17 @@ Sets the item state from a DOM element.
 Refreshes the section when global layout related options change.
 %End
 
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+with the report.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
   protected:
 
     enum SubSection

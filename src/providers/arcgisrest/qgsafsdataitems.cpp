@@ -295,6 +295,16 @@ bool QgsAfsParentLayerItem::equal( const QgsDataItem *other )
 // QgsAfsDataItemProvider
 //
 
+QString QgsAfsDataItemProvider::name()
+{
+  return QStringLiteral( "AFS" );
+}
+
+int QgsAfsDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
+
 QgsDataItem *QgsAfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )

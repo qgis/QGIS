@@ -28,6 +28,7 @@
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QPainter>
 
@@ -306,6 +307,18 @@ QgsVectorLayer *QgsLayoutItemMapOverview::asMapLayer()
   mExtentLayer->dataProvider()->addFeature( f );
 
   return mExtentLayer.get();
+}
+
+bool QgsLayoutItemMapOverview::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mFrameSymbol )
+  {
+    QgsStyleSymbolEntity entity( mFrameSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "overview" ), QObject::tr( "Overview" ) ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsLayoutItemMapOverview::setFrameSymbol( QgsFillSymbol *symbol )

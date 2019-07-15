@@ -45,6 +45,7 @@ QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *
   mPalProperties << QgsPalLayerSettings::MinScale;
   mPalProperties << QgsPalLayerSettings::MaxScale;
   mPalProperties << QgsPalLayerSettings::AlwaysShow;
+  mPalProperties << QgsPalLayerSettings::CalloutDraw;
 }
 
 void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )

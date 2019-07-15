@@ -136,7 +136,7 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg()
     const auto mapLayers = QgsProject::instance()->mapLayers();
     for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
     {
-      const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( it.value()->dataProvider()->name(), it.value()->source() );
+      const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( it.value()->providerType(), it.value()->source() );
       if ( parts.value( QStringLiteral( "path" ) ).toString() == path )
       {
         projectLayer = it.value();

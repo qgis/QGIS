@@ -83,6 +83,13 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      */
     void cancel();
 
+    /**
+     * Returns TRUE if the fetching was canceled.
+     *
+     * \since QGIS 3.10
+     */
+    bool wasCanceled() const;
+
   signals:
 
     /**

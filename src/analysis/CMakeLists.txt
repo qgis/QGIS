@@ -120,6 +120,8 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmzonalhistogram.cpp
+  processing/qgsprojectstylealgorithms.cpp
+  processing/qgsstylealgorithms.cpp
 
   processing/qgsalgorithmnetworkanalysisbase.cpp
 
@@ -315,6 +317,8 @@ SET(QGIS_ANALYSIS_HDRS
   network/qgsnetworkdistancestrategy.h
   network/qgsgraphanalyzer.h
   network/qgsvectorlayerdirector.h
+
+  processing/qgsprojectstylealgorithms.h
 
   vector/geometry_checker/qgsgeometryanglecheck.h
   vector/geometry_checker/qgsgeometryareacheck.h

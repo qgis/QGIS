@@ -27,6 +27,9 @@ class QgsVersionInfo;
 class QListView;
 class QLabel;
 class QSplitter;
+class QgsNewsFeedParser;
+class QgsNewsFeedProxyModel;
+class QgsNewsItemListItemDelegate;
 
 class QgsWelcomePage : public QWidget
 {
@@ -39,17 +42,28 @@ class QgsWelcomePage : public QWidget
 
     void setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects );
 
+    /**
+     * Returns the URL used for the QGIS project news feed.
+     */
+    static QString newsFeedUrl();
+
   signals:
     void projectRemoved( int row );
     void projectPinned( int row );
     void projectUnpinned( int row );
 
+  protected:
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+
   private slots:
     void recentProjectItemActivated( const QModelIndex &index );
     void templateProjectItemActivated( const QModelIndex &index );
+    void newsItemActivated( const QModelIndex &index );
     void versionInfoReceived();
     void showContextMenuForProjects( QPoint point );
     void showContextMenuForTemplates( QPoint point );
+    void showContextMenuForNews( QPoint point );
+    void updateNewsFeedVisibility();
 
   private:
     void updateRecentProjectsVisibility();
@@ -62,6 +76,12 @@ class QgsWelcomePage : public QWidget
     QListView *mTemplateProjectsListView = nullptr;
     QStandardItemModel *mTemplateProjectsModel = nullptr;
     QSplitter *mSplitter = nullptr;
+    QSplitter *mSplitter2 = nullptr;
+    QLabel *mNewsFeedTitle = nullptr;
+    QgsNewsFeedParser *mNewsFeedParser = nullptr;
+    QgsNewsFeedProxyModel *mNewsFeedModel = nullptr;
+    QListView *mNewsFeedListView = nullptr;
+    QgsNewsItemListItemDelegate *mNewsDelegate = nullptr;
 };
 
 #endif // QGSWELCOMEPAGE_H

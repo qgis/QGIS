@@ -631,6 +631,16 @@ void QgsMssqlRootItem::onConnectionsChanged()
 }
 #endif
 
+QString QgsMssqlDataItemProvider::name()
+{
+  return QStringLiteral( "MSSQL" );
+}
+
+int QgsMssqlDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
 QgsDataItem *QgsMssqlDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn )

@@ -43,6 +43,11 @@ QgsTask::~QgsTask()
   mNotFinishedMutex.unlock();
 }
 
+void QgsTask::setDescription( const QString &description )
+{
+  mDescription = description;
+}
+
 qint64 QgsTask::elapsedTime() const
 {
   return mElapsedTime.elapsed();

@@ -517,6 +517,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     QgsMapRendererJob::Errors renderingErrors() const { return mRenderingErrors; }
 
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;

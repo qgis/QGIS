@@ -49,9 +49,9 @@ class CORE_EXPORT QgsGdalLayerItem : public QgsLayerItem
 class QgsGdalDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "GDAL" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

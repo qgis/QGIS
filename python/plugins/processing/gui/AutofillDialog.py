@@ -45,13 +45,13 @@ class AutofillDialog(BASE, WIDGET):
         super(AutofillDialog, self).__init__(None)
         self.setupUi(self)
         self.mode = None
-        self.param_index = None
+        self.param_name = None
         self.alg = alg
 
         self.cmbFillType.currentIndexChanged.connect(self.toggleParameters)
 
         for param in self.alg.parameterDefinitions():
-            self.cmbParameters.addItem(param.description())
+            self.cmbParameters.addItem(param.description(), param.name())
 
     def toggleParameters(self, index):
         if index == self.FILL_WITH_PARAMETER:
@@ -63,10 +63,10 @@ class AutofillDialog(BASE, WIDGET):
 
     def accept(self):
         self.mode = self.cmbFillType.currentIndex()
-        self.param_index = self.cmbParameters.currentIndex()
+        self.param_name = self.cmbParameters.currentData()
         QDialog.accept(self)
 
     def reject(self):
         self.mode = None
-        self.param_index = None
+        self.param_name = None
         QDialog.reject(self)

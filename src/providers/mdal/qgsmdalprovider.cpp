@@ -572,8 +572,8 @@ QString QgsMdalProviderMetadata::filters( FilterType type )
   }
 }
 
-QgsMdalProviderMetadata::QgsMdalProviderMetadata():
-  QgsProviderMetadata( QgsMdalProvider::MDAL_PROVIDER_KEY, QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION )
+QgsMdalProviderMetadata::QgsMdalProviderMetadata()
+  : QgsProviderMetadata( QgsMdalProvider::MDAL_PROVIDER_KEY, QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION )
 {}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

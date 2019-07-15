@@ -130,15 +130,38 @@ class CORE_EXPORT QgsSymbol
      */
     QgsSymbolLayerList symbolLayers() { return mLayers; }
 
+#ifndef SIP_RUN
+
     /**
-     * Returns a specific symbol layer contained in the symbol.
-     * \param layer layer number
-     * \returns corresponding symbol layer
+     * Returns the symbol layer at the specified index
      * \see symbolLayers
      * \see symbolLayerCount
      * \since QGIS 2.7
      */
     QgsSymbolLayer *symbolLayer( int layer );
+#else
+
+    /**
+     * Returns the symbol layer at the specified index. An IndexError will be raised if no layer with the specified index exists.
+     *
+     * \see symbolLayers
+     * \see symbolLayerCount
+     * \since QGIS 2.7
+     */
+    SIP_PYOBJECT symbolLayer( int layer ) SIP_TYPEHINT( QgsSymbolLayer );
+    % MethodCode
+    const int count = sipCpp->symbolLayerCount();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipConvertFromType( sipCpp->symbolLayer( a0 ), sipType_QgsSymbolLayer, NULL );
+    }
+    % End
+#endif
 
     /**
      * Returns the total number of symbol layers contained in the symbol.
@@ -148,6 +171,71 @@ class CORE_EXPORT QgsSymbol
      * \since QGIS 2.7
      */
     int symbolLayerCount() const { return mLayers.count(); }
+
+#ifdef SIP_RUN
+
+    /**
+     * Returns the number of symbol layers contained in the symbol.
+     */
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->symbolLayerCount();
+    % End
+
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
+
+    /**
+    * Returns the symbol layer at the specified ``index``. An IndexError will be raised if no layer with the specified ``index`` exists.
+    *
+    * Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
+    * corresponds to the last layer in the symbol.
+    *
+    * \since QGIS 3.10
+    */
+    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsSymbolLayer );
+    % MethodCode
+    const int count = sipCpp->symbolLayerCount();
+    if ( a0 < -count || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else if ( a0 >= 0 )
+    {
+      return sipConvertFromType( sipCpp->symbolLayer( a0 ), sipType_QgsSymbolLayer, NULL );
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->symbolLayer( count + a0 ), sipType_QgsSymbolLayer, NULL );
+    }
+    % End
+
+    /**
+     * Deletes the layer at the specified ``index``. A layer at the ``index`` must already exist or an IndexError will be raised.
+     *
+     * Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
+     * corresponds to the last layer in the symbol.
+     *
+     * \since QGIS 3.10
+     */
+    void __delitem__( int index );
+    % MethodCode
+    const int count = sipCpp->symbolLayerCount();
+    if ( a0 >= 0 && a0 < count )
+      sipCpp->deleteSymbolLayer( a0 );
+    else if ( a0 < 0 && a0 >= -count )
+      sipCpp->deleteSymbolLayer( count + a0 );
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
 
     /**
      * Inserts a symbol \a layer to specified \a index.

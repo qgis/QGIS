@@ -26,10 +26,11 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgisapp.h"
 
-QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
   , mLayer( layer )
   , mCanvas( canvas )
+  , mMessageBar( messageBar )
 
 {
   setupUi( this );
@@ -190,6 +191,12 @@ void QgsLabelingWidget::labelModeChanged( int index )
       mSimpleSettings->fieldName = mLayer->displayField();
 
     QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
+
+    QgsSymbolWidgetContext context;
+    context.setMapCanvas( mMapCanvas );
+    context.setMessageBar( mMessageBar );
+    simpleWidget->setContext( context );
+
     simpleWidget->setDockMode( dockMode() );
     connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
     connect( simpleWidget, &QgsLabelingGui::auxiliaryFieldCreated, this, &QgsLabelingWidget::auxiliaryFieldCreated );

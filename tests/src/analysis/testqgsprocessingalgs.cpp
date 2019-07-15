@@ -37,7 +37,17 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutitemmap.h"
-
+#include "qgsmarkersymbollayer.h"
+#include "qgsrulebasedrenderer.h"
+#include "qgspallabeling.h"
+#include "qgsrastershader.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgslayoutitemscalebar.h"
+#include "annotations/qgstextannotation.h"
+#include "qgsfontutils.h"
+#include "annotations/qgsannotationmanager.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsstyle.h"
 class TestQgsProcessingAlgs: public QObject
 {
     Q_OBJECT
@@ -76,6 +86,9 @@ class TestQgsProcessingAlgs: public QObject
     void rasterLogicOp();
 
     void layoutMapExtent();
+
+    void styleFromProject();
+    void combineStyles();
 
   private:
 
@@ -1245,6 +1258,198 @@ void TestQgsProcessingAlgs::layoutMapExtent()
   QCOMPARE( f.attribute( 4 ).toDouble(), 0.0 );
   QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((-10399464 -5347896, -10399461 -5347835, -10399364 -5347840, -10399367 -5347901, -10399464 -5347896))" ) );
 
+}
+
+void TestQgsProcessingAlgs::styleFromProject()
+{
+  QgsProject p;
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  p.addMapLayer( vl );
+  QgsSimpleMarkerSymbolLayer *simpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();
+  QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol();
+  markerSymbol->changeSymbolLayer( 0, simpleMarkerLayer );
+  vl->setRenderer( new QgsSingleSymbolRenderer( markerSymbol ) );
+  // rule based renderer
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl2->isValid() );
+  p.addMapLayer( vl2 );
+  QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  s1->setColor( QColor( 0, 255, 0 ) );
+  QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  s2->setColor( QColor( 0, 255, 255 ) );
+  QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
+  QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1, 0, 0, QStringLiteral( "fld >= 5 and fld <= 20" ) );
+  rootRule->appendChild( rule2 );
+  QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( s2, 0, 0, QStringLiteral( "fld <= 10" ) );
+  rule2->appendChild( rule3 );
+  vl2->setRenderer( new QgsRuleBasedRenderer( rootRule ) );
+  // labeling
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  // raster layer
+  QgsRasterLayer *rl = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc",
+      QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+  p.addMapLayer( rl );
+
+  QgsRasterShader *rasterShader = new QgsRasterShader();
+  QgsColorRampShader *colorRampShader = new QgsColorRampShader();
+  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+  colorRampShader->setSourceColorRamp( new QgsGradientColorRamp( QColor( 255, 255, 0 ), QColor( 255, 0, 255 ) ) );
+  rasterShader->setRasterShaderFunction( colorRampShader );
+  QgsSingleBandPseudoColorRenderer *r = new QgsSingleBandPseudoColorRenderer( rl->dataProvider(), 1, rasterShader );
+  rl->setRenderer( r );
+
+  // with layout
+  QgsPrintLayout *l = new QgsPrintLayout( &p );
+  l->setName( QStringLiteral( "test layout" ) );
+  l->initializeDefaults();
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l->addLayoutItem( scalebar );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+
+  p.layoutManager()->addLayout( l );
+
+  // with annotations
+  QgsTextAnnotation *annotation = new QgsTextAnnotation();
+  QgsSymbol *a1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  a1->setColor( QColor( 0, 200, 0 ) );
+  annotation->setMarkerSymbol( static_cast< QgsMarkerSymbol * >( a1 ) );
+  QgsSymbol *a2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
+  a2->setColor( QColor( 200, 200, 0 ) );
+  annotation->setFillSymbol( static_cast< QgsFillSymbol * >( a2 ) );
+  p.annotationManager()->addAnnotation( annotation );
+
+  // ok, run alg
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:stylefromproject" ) ) );
+  QVERIFY( alg != nullptr );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "SYMBOLS" ) ).toInt(), 6 );
+  QCOMPARE( results.value( QStringLiteral( "COLORRAMPS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "TEXTFORMATS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "LABELSETTINGS" ) ).toInt(), 1 );
+
+  // read style file back in
+  QgsStyle s;
+  s.createMemoryDatabase();
+  QVERIFY( s.importXml( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QCOMPARE( s.symbolCount(), 6 );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "Annotation Fill" ) ) );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "Annotation Marker" ) ) );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "test layout Page" ) ) );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "vl" ) ) );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "vl2" ) ) );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "vl2 (2)" ) ) );
+  QCOMPARE( s.colorRampCount(), 1 );
+  QVERIFY( s.colorRampNames().contains( QStringLiteral( "rl" ) ) );
+  QCOMPARE( s.textFormatCount(), 1 );
+  QVERIFY( s.textFormatNames().contains( QStringLiteral( "test layout <Scalebar>" ) ) );
+  QCOMPARE( s.labelSettingsCount(), 1 );
+  QVERIFY( s.labelSettingsNames().contains( QStringLiteral( "vl" ) ) );
+
+  // using a project path
+  QTemporaryFile tmpFile;
+  tmpFile.open();
+  tmpFile.close();
+  QVERIFY( p.write( tmpFile.fileName() ) );
+  p.clear();
+  parameters.insert( QStringLiteral( "INPUT" ), tmpFile.fileName() );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "SYMBOLS" ) ).toInt(), 6 );
+  // this should be 1, but currently raster layers aren't supported -
+  // we first need to allow raster renderers to be read and restored for invalid layer sources
+  QCOMPARE( results.value( QStringLiteral( "COLORRAMPS" ) ).toInt(), 0 );
+  QCOMPARE( results.value( QStringLiteral( "TEXTFORMATS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "LABELSETTINGS" ) ).toInt(), 1 );
+}
+
+void TestQgsProcessingAlgs::combineStyles()
+{
+  QgsStyle s1;
+  s1.createMemoryDatabase();
+  QgsStyle s2;
+  s2.createMemoryDatabase();
+
+  QgsSimpleMarkerSymbolLayer *simpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();
+  QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol();
+  markerSymbol->changeSymbolLayer( 0, simpleMarkerLayer );
+  s1.addSymbol( QStringLiteral( "sym1" ), markerSymbol, true );
+  s1.tagSymbol( QgsStyle::SymbolEntity, QStringLiteral( "sym1" ), QStringList() << QStringLiteral( "t1" ) << QStringLiteral( "t2" ) );
+
+  QgsSymbol *sym1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  s2.addSymbol( QStringLiteral( "sym2" ), sym1, true );
+  QgsSymbol *sym2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  s2.addSymbol( QStringLiteral( "sym1" ), sym2, true );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  s1.addLabelSettings( QStringLiteral( "label1" ), settings, true );
+
+  s2.addColorRamp( QStringLiteral( "ramp1" ), new QgsGradientColorRamp( QColor( 255, 255, 0 ), QColor( 255, 0, 255 ) ), true );
+  s2.addTextFormat( QStringLiteral( "format2" ), QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ), true );
+
+  QTemporaryFile tmpFile;
+  tmpFile.open();
+  tmpFile.close();
+  QVERIFY( s1.exportXml( tmpFile.fileName() ) );
+  QTemporaryFile tmpFile2;
+  tmpFile2.open();
+  tmpFile2.close();
+  QVERIFY( s2.exportXml( tmpFile2.fileName() ) );
+
+  // ok, run alg
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:combinestyles" ) ) );
+  QVERIFY( alg != nullptr );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QStringList() << tmpFile.fileName() << tmpFile2.fileName() );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "SYMBOLS" ) ).toInt(), 3 );
+  QCOMPARE( results.value( QStringLiteral( "COLORRAMPS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "TEXTFORMATS" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "LABELSETTINGS" ) ).toInt(), 1 );
+
+  // check result
+  QgsStyle s;
+  s.createMemoryDatabase();
+  QVERIFY( s.importXml( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QCOMPARE( s.symbolCount(), 3 );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "sym1" ) ) );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "sym2" ) ) );
+  QVERIFY( s.symbolNames().contains( QStringLiteral( "sym1 (2)" ) ) );
+  QCOMPARE( s.tagsOfSymbol( QgsStyle::SymbolEntity, QStringLiteral( "sym1" ) ).count(), 2 );
+  QVERIFY( s.tagsOfSymbol( QgsStyle::SymbolEntity, QStringLiteral( "sym1" ) ).contains( QStringLiteral( "t1" ) ) );
+  QVERIFY( s.tagsOfSymbol( QgsStyle::SymbolEntity, QStringLiteral( "sym1" ) ).contains( QStringLiteral( "t2" ) ) );
+  QCOMPARE( s.colorRampCount(), 1 );
+  QVERIFY( s.colorRampNames().contains( QStringLiteral( "ramp1" ) ) );
+  QCOMPARE( s.textFormatCount(), 1 );
+  QVERIFY( s.textFormatNames().contains( QStringLiteral( "format2" ) ) );
+  QCOMPARE( s.labelSettingsCount(), 1 );
+  QVERIFY( s.labelSettingsNames().contains( QStringLiteral( "label1" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )

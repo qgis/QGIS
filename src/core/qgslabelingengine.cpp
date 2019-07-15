@@ -351,6 +351,12 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   // sort labels
   std::sort( labels.begin(), labels.end(), QgsLabelSorter( mMapSettings ) );
 
+  // prepare for rendering
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
+  {
+    provider->startRender( context );
+  }
+
   // draw the labels
   for ( pal::LabelPosition *label : qgis::as_const( labels ) )
   {
@@ -363,7 +369,15 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
       continue;
     }
 
+    context.expressionContext().setFeature( lf->feature() );
+    context.expressionContext().setFields( lf->feature().fields() );
     lf->provider()->drawLabel( context, label );
+  }
+
+  // cleanup
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
+  {
+    provider->stopRender( context );
   }
 
   // Reset composition mode for further drawing operations
@@ -398,6 +412,23 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
 {
 }
 
+void QgsAbstractLabelProvider::startRender( QgsRenderContext &context )
+{
+  const auto subproviders = subProviders();
+  for ( QgsAbstractLabelProvider *subProvider : subproviders )
+  {
+    subProvider->startRender( context );
+  }
+}
+
+void QgsAbstractLabelProvider::stopRender( QgsRenderContext &context )
+{
+  const auto subproviders = subProviders();
+  for ( QgsAbstractLabelProvider *subProvider : subproviders )
+  {
+    subProvider->stopRender( context );
+  }
+}
 
 //
 // QgsLabelingUtils

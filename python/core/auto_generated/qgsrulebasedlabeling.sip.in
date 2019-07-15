@@ -257,6 +257,17 @@ Returns ``True`` if this rule or any of its children requires advanced compositi
 to render.
 %End
 
+        bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all child rules associated
+with the rule.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
       private:
         Rule( const QgsRuleBasedLabeling::Rule &rh );
     };
@@ -285,6 +296,8 @@ Create the instance from a DOM element with saved configuration
     virtual QStringList subProviders() const;
 
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
     virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() );

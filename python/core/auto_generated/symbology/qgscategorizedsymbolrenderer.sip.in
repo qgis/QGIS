@@ -170,6 +170,8 @@ can be added later by calling addCategory().
 
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
     void updateSymbols( QgsSymbol *sym );
 %Docstring

@@ -443,6 +443,28 @@ double QgsLineString::length() const
   return length;
 }
 
+double QgsLineString::length3D() const
+{
+  if ( is3D() )
+  {
+    double length = 0;
+    int size = mX.size();
+    double dx, dy, dz;
+    for ( int i = 1; i < size; ++i )
+    {
+      dx = mX.at( i ) - mX.at( i - 1 );
+      dy = mY.at( i ) - mY.at( i - 1 );
+      dz = mZ.at( i ) - mZ.at( i - 1 );
+      length += std::sqrt( dx * dx + dy * dy + dz * dz );
+    }
+    return length;
+  }
+  else
+  {
+    return length();
+  }
+}
+
 QgsPoint QgsLineString::startPoint() const
 {
   if ( numPoints() < 1 )

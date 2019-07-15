@@ -29,8 +29,21 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgssinglesymbolrenderer.h"
-
+#include "qgsmarkersymbollayer.h"
+#include "qgsrulebasedrenderer.h"
+#include "qgsvectorlayerlabeling.h"
 #include "qgsstyle.h"
+#include "qgsproject.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsrasterlayer.h"
+#include "qgsrastershader.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgsfontutils.h"
+#include "qgslayoutmanager.h"
+#include "qgsannotationmanager.h"
+#include "qgstextannotation.h"
 
 /**
  * \ingroup UnitTests
@@ -72,6 +85,7 @@ class TestStyle : public QObject
     void testTags();
     void testSmartGroup();
     void testIsStyleXml();
+    void testVisitor();
 
 };
 
@@ -133,14 +147,18 @@ void TestStyle::testCreateSymbols()
   std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym4( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   s.addSymbol( QStringLiteral( "symbolA" ), sym1.release(), true );
   s.addSymbol( QStringLiteral( "symbolB" ), sym2.release(), true );
   s.addSymbol( QStringLiteral( "symbolC" ), sym3.release(), true );
+  QgsStyleSymbolEntity symbolEntity( sym4.get() );
+  s.addEntity( QStringLiteral( "symbolD" ),  &symbolEntity, true );
 
   QCOMPARE( s.allNames( QgsStyle::SymbolEntity ),
             QStringList() << QStringLiteral( "symbolA" )
             << QStringLiteral( "symbolB" )
-            << QStringLiteral( "symbolC" ) );
+            << QStringLiteral( "symbolC" )
+            << QStringLiteral( "symbolD" ) );
 }
 
 bool TestStyle::imageCheck( QgsMapSettings &ms, const QString &testName )
@@ -204,6 +222,19 @@ void TestStyle::testCreateColorRamps()
             << QStringLiteral( "test_cc3" )
             << QStringLiteral( "test_gradient" )
             << QStringLiteral( "test_random" ) );
+
+  std::unique_ptr< QgsCptCityColorRamp > cc4Ramp = qgis::make_unique< QgsCptCityColorRamp >( QStringLiteral( "grass/byr" ), QString() );
+  QgsStyleColorRampEntity entity( cc4Ramp.get() );
+  QVERIFY( mStyle->addEntity( "test_cc4", &entity, true ) );
+
+  QCOMPARE( mStyle->allNames( QgsStyle::ColorrampEntity ), QStringList() << QStringLiteral( "test_cb1" )
+            << QStringLiteral( "test_cb2" )
+            << QStringLiteral( "test_cc1" )
+            << QStringLiteral( "test_cc2" )
+            << QStringLiteral( "test_cc3" )
+            << QStringLiteral( "test_cc4" )
+            << QStringLiteral( "test_gradient" )
+            << QStringLiteral( "test_random" ) );
 }
 
 void TestStyle::testCreateTextFormats()
@@ -257,6 +288,12 @@ void TestStyle::testCreateTextFormats()
 
   QCOMPARE( mStyle->allNames( QgsStyle::TextFormatEntity ), QStringList() << QStringLiteral( "test_format" )
             << QStringLiteral( "test_format2" ) );
+
+
+  format.setColor( QColor( 255, 255, 205 ) );
+  QgsStyleTextFormatEntity entity( format );
+  QVERIFY( mStyle->addEntity( "test_format4", &entity, true ) );
+  QVERIFY( mStyle->textFormatNames().contains( QStringLiteral( "test_format4" ) ) );
 }
 
 void TestStyle::testCreateLabelSettings()
@@ -310,6 +347,10 @@ void TestStyle::testCreateLabelSettings()
 
   QCOMPARE( mStyle->allNames( QgsStyle::LabelSettingsEntity ), QStringList() << QStringLiteral( "test_format2" )
             << QStringLiteral( "test_settings" ) );
+
+  QgsStyleLabelSettingsEntity entity( settings );
+  QVERIFY( mStyle->addEntity( "test_settings2", &entity, true ) );
+  QVERIFY( mStyle->labelSettingsNames().contains( QStringLiteral( "test_settings2" ) ) );
 }
 
 void TestStyle::testLoadColorRamps()
@@ -1010,6 +1051,218 @@ void TestStyle::testIsStyleXml()
   QVERIFY( !QgsStyle::isXmlStyleFile( QStringLiteral( "blah" ) ) );
   QVERIFY( QgsStyle::isXmlStyleFile( mTestDataDir + QStringLiteral( "categorized.xml" ) ) );
   QVERIFY( !QgsStyle::isXmlStyleFile( mTestDataDir + QStringLiteral( "openstreetmap/testdata.xml" ) ) );
+}
+
+
+class TestVisitor : public QgsStyleEntityVisitorInterface
+{
+  public:
+
+    TestVisitor( QStringList &found )
+      : mFound( found )
+    {}
+
+    bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+    {
+      mFound << QStringLiteral( "enter: %1 %2" ).arg( node.identifier, node.description );
+      return true;
+    }
+
+    bool visitExit( const QgsStyleEntityVisitorInterface::Node &node ) override
+    {
+      mFound << QStringLiteral( "exit: %1 %2" ).arg( node.identifier, node.description );
+      return true;
+    }
+
+    bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity ) override
+    {
+      switch ( entity.entity->type() )
+      {
+        case QgsStyle::SymbolEntity:
+        {
+          mFound << QStringLiteral( "symbol: %1 %2 %3" ).arg( entity.description, entity.identifier, static_cast< const QgsStyleSymbolEntity * >( entity.entity )->symbol()->color().name() );
+          break;
+        }
+        case QgsStyle::ColorrampEntity:
+          mFound << QStringLiteral( "ramp: %1 %2 %3" ).arg( entity.description, entity.identifier, static_cast< const QgsStyleColorRampEntity * >( entity.entity )->ramp()->color( 0 ).name() );
+          break;
+
+        case QgsStyle::TextFormatEntity:
+          mFound << QStringLiteral( "text format: %1 %2 %3" ).arg( entity.description, entity.identifier, static_cast< const QgsStyleTextFormatEntity * >( entity.entity )->format().font().family() );
+          break;
+
+        case QgsStyle::LabelSettingsEntity:
+          mFound << QStringLiteral( "labels: %1 %2 %3" ).arg( entity.description, entity.identifier, static_cast< const QgsStyleLabelSettingsEntity * >( entity.entity )->settings().fieldName );
+          break;
+
+        case QgsStyle::TagEntity:
+        case QgsStyle::SmartgroupEntity:
+          break;
+      }
+      return true;
+    }
+
+    QStringList &mFound;
+};
+
+void TestStyle::testVisitor()
+{
+  // test style visitor
+  QgsProject p;
+
+  QStringList found;
+  TestVisitor visitor( found );
+  QVERIFY( p.accept( &visitor ) );
+  QVERIFY( found.isEmpty() );
+
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  p.addMapLayer( vl );
+
+  // with renderer
+  QgsSimpleMarkerSymbolLayer *simpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();
+  QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol();
+  markerSymbol->changeSymbolLayer( 0, simpleMarkerLayer );
+  vl->setRenderer( new QgsSingleSymbolRenderer( markerSymbol ) );
+
+  QVERIFY( p.accept( &visitor ) );
+  QCOMPARE( found, QStringList() << QStringLiteral( "enter: %1 vl" ).arg( vl->id() )
+            << QStringLiteral( "symbol:   #ff0000" )
+            << QStringLiteral( "exit: %1 vl" ).arg( vl->id() ) );
+
+  // rule based renderer
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl2->isValid() );
+  p.addMapLayer( vl2 );
+  QgsSymbol *s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  s1->setColor( QColor( 0, 255, 0 ) );
+  QgsSymbol *s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  s2->setColor( QColor( 0, 255, 255 ) );
+  QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
+  QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1, 0, 0, QStringLiteral( "fld >= 5 and fld <= 20" ) );
+  rootRule->appendChild( rule2 );
+  QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( s2, 0, 0, QStringLiteral( "fld <= 10" ) );
+  rule2->appendChild( rule3 );
+  vl2->setRenderer( new QgsRuleBasedRenderer( rootRule ) );
+
+  found.clear();
+  QVERIFY( p.accept( &visitor ) );
+  QCOMPARE( found, QStringList()
+            << QStringLiteral( "enter: %1 vl2" ).arg( vl2->id() )
+            << QStringLiteral( "enter: %1 " ).arg( rule2->ruleKey() )
+            << QStringLiteral( "symbol:   #00ff00" )
+            << QStringLiteral( "enter: %1 " ).arg( rule3->ruleKey() )
+            << QStringLiteral( "symbol:   #00ffff" )
+            << QStringLiteral( "exit: %1 " ).arg( rule3->ruleKey() )
+            << QStringLiteral( "exit: %1 " ).arg( rule2->ruleKey() )
+            << QStringLiteral( "exit: %1 vl2" ).arg( vl2->id() )
+            << QStringLiteral( "enter: %1 vl" ).arg( vl->id() )
+            << QStringLiteral( "symbol:   #ff0000" )
+            << QStringLiteral( "exit: %1 vl" ).arg( vl->id() ) );
+
+  p.removeMapLayer( vl2 );
+
+  // labeling
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  found.clear();
+  QVERIFY( p.accept( &visitor ) );
+
+  QCOMPARE( found, QStringList() << QStringLiteral( "enter: %1 vl" ).arg( vl->id() )
+            << QStringLiteral( "symbol:   #ff0000" )
+            << QStringLiteral( "labels:   Class" )
+            << QStringLiteral( "exit: %1 vl" ).arg( vl->id() ) );
+
+  // raster layer
+  QgsRasterLayer *rl = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc",
+      QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+  p.addMapLayer( rl );
+
+  QgsRasterShader *rasterShader = new QgsRasterShader();
+  QgsColorRampShader *colorRampShader = new QgsColorRampShader();
+  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+  colorRampShader->setSourceColorRamp( new QgsGradientColorRamp( QColor( 255, 255, 0 ), QColor( 255, 0, 255 ) ) );
+  rasterShader->setRasterShaderFunction( colorRampShader );
+  QgsSingleBandPseudoColorRenderer *r = new QgsSingleBandPseudoColorRenderer( rl->dataProvider(), 1, rasterShader );
+  rl->setRenderer( r );
+
+  found.clear();
+  QVERIFY( p.accept( &visitor ) );
+
+  QCOMPARE( found, QStringList()
+            << QStringLiteral( "enter: %1 rl" ).arg( rl->id() )
+            << QStringLiteral( "ramp:   #ffff00" )
+            << QStringLiteral( "exit: %1 rl" ).arg( rl->id() )
+            << QStringLiteral( "enter: %1 vl" ).arg( vl->id() )
+            << QStringLiteral( "symbol:   #ff0000" )
+            << QStringLiteral( "labels:   Class" )
+            << QStringLiteral( "exit: %1 vl" ).arg( vl->id() ) );
+
+  // with layout
+  QgsPrintLayout *l = new QgsPrintLayout( &p );
+  l->setName( QStringLiteral( "test layout" ) );
+  l->initializeDefaults();
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l->addLayoutItem( scalebar );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+
+  p.layoutManager()->addLayout( l );
+
+  found.clear();
+  QVERIFY( p.accept( &visitor ) );
+
+  QCOMPARE( found, QStringList()
+            << QStringLiteral( "enter: %1 rl" ).arg( rl->id() )
+            << QStringLiteral( "ramp:   #ffff00" )
+            << QStringLiteral( "exit: %1 rl" ).arg( rl->id() )
+            << QStringLiteral( "enter: %1 vl" ).arg( vl->id() )
+            << QStringLiteral( "symbol:   #ff0000" )
+            << QStringLiteral( "labels:   Class" )
+            << QStringLiteral( "exit: %1 vl" ).arg( vl->id() )
+            << QStringLiteral( "enter: layouts Layouts" )
+            << QStringLiteral( "enter: layout test layout" )
+            << QStringLiteral( "text format: <Scalebar> %1 QGIS Vera Sans" ).arg( scalebar->uuid() )
+            << QStringLiteral( "symbol: Page page #ffffff" )
+            << QStringLiteral( "exit: layout test layout" )
+            << QStringLiteral( "exit: layouts Layouts" ) );
+
+  // with annotations
+  QgsTextAnnotation *annotation = new QgsTextAnnotation();
+  QgsSymbol *a1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  a1->setColor( QColor( 0, 200, 0 ) );
+  annotation->setMarkerSymbol( static_cast< QgsMarkerSymbol * >( a1 ) );
+  QgsSymbol *a2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry );
+  a2->setColor( QColor( 200, 200, 0 ) );
+  annotation->setFillSymbol( static_cast< QgsFillSymbol * >( a2 ) );
+  p.annotationManager()->addAnnotation( annotation );
+
+  found.clear();
+  QVERIFY( p.accept( &visitor ) );
+
+  QCOMPARE( found, QStringList()
+            << QStringLiteral( "enter: %1 rl" ).arg( rl->id() )
+            << QStringLiteral( "ramp:   #ffff00" )
+            << QStringLiteral( "exit: %1 rl" ).arg( rl->id() )
+            << QStringLiteral( "enter: %1 vl" ).arg( vl->id() )
+            << QStringLiteral( "symbol:   #ff0000" )
+            << QStringLiteral( "labels:   Class" )
+            << QStringLiteral( "exit: %1 vl" ).arg( vl->id() )
+            << QStringLiteral( "enter: layouts Layouts" )
+            << QStringLiteral( "enter: layout test layout" )
+            << QStringLiteral( "text format: <Scalebar> %1 QGIS Vera Sans" ).arg( scalebar->uuid() )
+            << QStringLiteral( "symbol: Page page #ffffff" )
+            << QStringLiteral( "exit: layout test layout" )
+            << QStringLiteral( "exit: layouts Layouts" )
+            << QStringLiteral( "enter: annotations Annotations" )
+            << QStringLiteral( "enter: annotation Annotation" )
+            << QStringLiteral( "symbol: Marker marker #00c800" )
+            << QStringLiteral( "symbol: Fill fill #c8c800" )
+            << QStringLiteral( "exit: annotation Annotation" )
+            << QStringLiteral( "exit: annotations Annotations" ) );
 }
 
 QGSTEST_MAIN( TestStyle )

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsAnnotationManager : QObject
 {
 %Docstring
@@ -100,6 +99,17 @@ present in the XML document.
 Returns a DOM element representing the state of the manager.
 
 .. seealso:: :py:func:`readXml`
+%End
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+within the contained annotations.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
 %End
 
   signals:

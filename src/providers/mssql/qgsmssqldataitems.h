@@ -133,9 +133,9 @@ class QgsMssqlLayerItem : public QgsLayerItem
 class QgsMssqlDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "MSSQL" ); }
+    QString name() override;
 
-    int capabilities() const override { return QgsDataProvider::Database; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

@@ -52,6 +52,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void startRender( QgsRenderContext &context ) override;
+    void stopRender( QgsRenderContext &context ) override;
 
     // new virtual methods
 
@@ -61,7 +63,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * \param attributeNames list of attribute names to which additional required attributes shall be added
      * \returns Whether the preparation was successful - if not, the provider shall not be used
      */
-    virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames );
+    virtual bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames );
 
     /**
      * Register a feature for labeling as one or more QgsLabelFeature objects stored into mLabels
@@ -112,6 +114,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     //! List of generated
     QList<QgsLabelFeature *> mLabels;
+
+  private:
 
     friend class TestQgsLabelingEngine;
 };

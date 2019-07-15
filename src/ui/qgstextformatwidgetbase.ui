@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>828</width>
-    <height>1081</height>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -335,7 +335,7 @@
              <enum>QTabWidget::Rounded</enum>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>5</number>
             </property>
             <property name="iconSize">
              <size>
@@ -395,6 +395,18 @@
              </attribute>
              <attribute name="title">
               <string/>
+             </attribute>
+            </widget>
+            <widget class="QWidget" name="callouts">
+             <attribute name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mIconSnappingSegment.svg</normaloff>:/images/themes/default/mIconSnappingSegment.svg</iconset>
+             </attribute>
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>Callouts</string>
              </attribute>
             </widget>
             <widget class="QWidget" name="widget">
@@ -536,6 +548,18 @@
                 </item>
                 <item>
                  <property name="text">
+                  <string>Callouts</string>
+                 </property>
+                 <property name="toolTip">
+                  <string>Callouts</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../images/images.qrc">
+                   <normaloff>:/images/themes/default/mIconSnappingSegment.svg</normaloff>:/images/themes/default/mIconSnappingSegment.svg</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>Placement</string>
                  </property>
                  <property name="toolTip">
@@ -577,21 +601,21 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <property name="leftMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <property name="topMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <property name="rightMargin">
                <number>0</number>
               </property>
               <property name="bottomMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>4</number>
+                 <number>5</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -620,8 +644,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>866</height>
+                       <width>283</width>
+                       <height>240</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1203,8 +1227,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>847</height>
+                       <width>290</width>
+                       <height>509</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -2078,8 +2102,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>866</height>
+                       <width>233</width>
+                       <height>248</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2424,8 +2448,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>866</height>
+                       <width>375</width>
+                       <height>633</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3185,8 +3209,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>866</height>
+                       <width>268</width>
+                       <height>366</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3579,6 +3603,141 @@ font-style: italic;</string>
                          </size>
                         </property>
                        </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="page">
+                 <layout class="QVBoxLayout" name="verticalLayout_14">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QScrollArea" name="scrollArea_6">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents_7">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>775</width>
+                       <height>405</height>
+                      </rect>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_46">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item row="0" column="0">
+                       <layout class="QGridLayout" name="gridLayout_43">
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label_51">
+                          <property name="text">
+                           <string>Callouts</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QgsPropertyOverrideButton" name="mCalloutDrawDDBtn">
+                          <property name="text">
+                           <string>…</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="0" colspan="3">
+                         <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0">
+                          <property name="leftMargin">
+                           <number>20</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <item row="0" column="1" colspan="2">
+                           <widget class="QComboBox" name="mCalloutStyleComboBox"/>
+                          </item>
+                          <item row="0" column="0">
+                           <widget class="QLabel" name="label_11">
+                            <property name="text">
+                             <string>Style</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="1">
+                           <widget class="QStackedWidget" name="mCalloutStackedWidget">
+                            <widget class="QWidget" name="pageDummy">
+                             <layout class="QVBoxLayout" name="verticalLayout_19">
+                              <item>
+                               <widget class="QLabel" name="label_45">
+                                <property name="text">
+                                 <string>This callout type doesn't have any editable properties</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                                <property name="wordWrap">
+                                 <bool>true</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QCheckBox" name="mCalloutsDrawCheckBox">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Draw callouts</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="2">
+                         <spacer name="horizontalSpacer_15">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>0</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
                       </item>
                      </layout>
                     </widget>

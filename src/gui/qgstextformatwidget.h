@@ -22,6 +22,7 @@
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"
 #include "qgsguiutils.h"
+#include "qgssymbolwidgetcontext.h"
 #include <QFontDatabase>
 #include "qgis_gui.h"
 
@@ -73,6 +74,20 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \since QGIS 3.2
      */
     void setFormat( const QgsTextFormat &format );
+
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see context()
+     * \since QGIS 3.10
+     */
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+    /**
+     * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see setContext()
+     * \since QGIS 3.10
+     */
+    QgsSymbolWidgetContext context() const;
 
   public slots:
 
@@ -141,6 +156,12 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     //! Pixel size font limit
     int mMinPixelLimit = 0;
 
+    //! Associated map canvas
+    QgsMapCanvas *mMapCanvas = nullptr;
+
+    //! Context in which widget is shown
+    QgsSymbolWidgetContext mContext;
+
   protected slots:
 
     //! Updates line placement options to reflect current state of widget
@@ -160,9 +181,15 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      */
     virtual void saveFormat();
 
+    /**
+     * Updates the text preview.
+     * \since QGIS 3.10
+    */
+    void updatePreview();
+
   private:
     Mode mWidgetMode = Text;
-    QgsMapCanvas *mMapCanvas = nullptr;
+
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
     std::unique_ptr< QgsPaintEffect > mBufferEffect;
     std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
@@ -221,7 +248,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void collapseSample( bool collapse );
     void changeTextColor( const QColor &color );
     void changeBufferColor( const QColor &color );
-    void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
     void updateAvailableShadowPositions();
