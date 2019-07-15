@@ -12,7 +12,6 @@
 
 
 
-
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring
