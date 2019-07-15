@@ -34,38 +34,40 @@ class QgsHanaConnection : public QObject
     QString connInfo();
     void disconnect();
 
-    bool dropTable(const QString& schemaName, const QString& tableName, QString* errMessage);
+    bool dropTable( const QString &schemaName, const QString &tableName, QString *errMessage );
 
-    const QString& getDatabaseVersion();
-    const QString& getUserName();
+    const QString &getDatabaseVersion();
+    const QString &getUserName();
     QVector<QgsHanaLayerProperty> getLayers(
-      const QString& schemaName,
+      const QString &schemaName,
       bool allowGeometrylessTables,
-      bool userTablesOnly = true);
-    void readLayerInfo(QgsHanaLayerProperty& layerProperty);
-    QVector<QgsHanaSchemaProperty> getSchemas(const QString& ownerName);
+      bool userTablesOnly = true );
+    void readLayerInfo( QgsHanaLayerProperty &layerProperty );
+    QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
 
-    odbc::ConnectionRef& getNativeRef() { return mConnection; }
+    odbc::ConnectionRef &getNativeRef() { return mConnection; }
 
-    static QgsHanaConnection* createConnection(const QgsDataSourceUri& uri);
-    static void setConnectionAttemptCanceled(bool value) {
+    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri );
+    static void setConnectionAttemptCanceled( bool value )
+    {
       sConnectionAttemptCanceled = value;
     }
-    static bool isConnectionAttemptCanceled() {
+    static bool isConnectionAttemptCanceled()
+    {
       return sConnectionAttemptCanceled;
     }
 
   private:
-    explicit QgsHanaConnection(const QgsDataSourceUri& uri);
+    explicit QgsHanaConnection( const QgsDataSourceUri &uri );
 
-    QgsWkbTypes::Type getLayerGeometryType(const QgsHanaLayerProperty& layerProperty);
-    int getLayerSRID(const QgsHanaLayerProperty& layerProperty);
-    QStringList getLayerPrimaryeKeys(const QgsHanaLayerProperty& layerProperty);
+    QgsWkbTypes::Type getLayerGeometryType( const QgsHanaLayerProperty &layerProperty );
+    int getLayerSRID( const QgsHanaLayerProperty &layerProperty );
+    QStringList getLayerPrimaryeKeys( const QgsHanaLayerProperty &layerProperty );
 
     static bool connect(
-      odbc::ConnectionRef& conn,
-      const QgsDataSourceUri& uri,
-      QString& errorMessage);
+      odbc::ConnectionRef &conn,
+      const QgsDataSourceUri &uri,
+      QString &errorMessage );
 
   private:
     odbc::ConnectionRef mConnection;
@@ -80,14 +82,14 @@ class QgsHanaConnectionRef
 {
   public:
     QgsHanaConnectionRef() = default;
-    QgsHanaConnectionRef(const QString& name);
-    QgsHanaConnectionRef(const QgsDataSourceUri& uri);
+    QgsHanaConnectionRef( const QString &name );
+    QgsHanaConnectionRef( const QgsDataSourceUri &uri );
     ~QgsHanaConnectionRef();
 
     bool isNull() const { return mConnection.get() == nullptr; }
-    QgsHanaConnection& connection() const { return *mConnection; }
+    QgsHanaConnection &connection() const { return *mConnection; }
 
-    QgsHanaConnection* operator->() { return mConnection.get(); }
+    QgsHanaConnection *operator->() { return mConnection.get(); }
 
   private:
     std::unique_ptr<QgsHanaConnection> mConnection;

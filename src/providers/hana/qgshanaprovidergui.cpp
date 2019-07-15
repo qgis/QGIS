@@ -25,46 +25,46 @@
 
 class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
 {
-public:
-  QString providerKey() const override { return QgsHanaProvider::HANA_KEY; }
+  public:
+    QString providerKey() const override { return QgsHanaProvider::HANA_KEY; }
 
-  QString text() const override { return QObject::tr("HANA"); }
+    QString text() const override { return QObject::tr( "HANA" ); }
 
-  int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 70; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 70; }
 
-  QIcon icon() const override { return QgsApplication::getThemeIcon(QStringLiteral("/mActionAddHanaLayer.svg")); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHanaLayer.svg" ) ); }
 
-  QgsAbstractDataSourceWidget *createDataSourceWidget(QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget,
-    QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded) const override
-  {
-    return new QgsHanaSourceSelect(parent, fl, widgetMode);
-  }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget,
+        QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsHanaSourceSelect( parent, fl, widgetMode );
+    }
 };
 
 class QgsHanaProviderGuiMetadata : public QgsProviderGuiMetadata
 {
-public:
-  QgsHanaProviderGuiMetadata() : QgsProviderGuiMetadata(QgsHanaProvider::HANA_KEY)
-  {
-  }
+  public:
+    QgsHanaProviderGuiMetadata() : QgsProviderGuiMetadata( QgsHanaProvider::HANA_KEY )
+    {
+    }
 
-  QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-  {
-    QList<QgsSourceSelectProvider *> providers;
-    providers << new QgsHanaSourceSelectProvider;
-    return providers;
-  }
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
+    {
+      QList<QgsSourceSelectProvider *> providers;
+      providers << new QgsHanaSourceSelectProvider;
+      return providers;
+    }
 
-  QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-  {
-    return QList<QgsDataItemGuiProvider *>()
-      << new QgsHanaDataItemGuiProvider;
-  }
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
+    {
+      return QList<QgsDataItemGuiProvider *>()
+             << new QgsHanaDataItemGuiProvider;
+    }
 
-  void registerGui(QMainWindow *mainWindow) override
-  {
-    QgsHanaRootItem::sMainWindow = mainWindow;
-  }
+    void registerGui( QMainWindow *mainWindow ) override
+    {
+      QgsHanaRootItem::sMainWindow = mainWindow;
+    }
 };
 
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()

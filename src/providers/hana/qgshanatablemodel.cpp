@@ -1,10 +1,10 @@
- /***************************************************************************
-   qgshanatablemodel.cpp
-   --------------------------------------
-   Date      : 31-05-2019
-   Copyright : (C) SAP SE
-   Author    : Maksim Rylov
- ***************************************************************************/
+/***************************************************************************
+  qgshanatablemodel.cpp
+  --------------------------------------
+  Date      : 31-05-2019
+  Copyright : (C) SAP SE
+  Author    : Maksim Rylov
+***************************************************************************/
 
 /***************************************************************************
  *
@@ -25,9 +25,9 @@ QgsHanaTableModel::QgsHanaTableModel()
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
   headerLabels << tr( "Table" );
-  headerLabels << tr( "Comment");
+  headerLabels << tr( "Comment" );
   headerLabels << tr( "Column" );
-  headerLabels << tr( "Spatial Type");
+  headerLabels << tr( "Spatial Type" );
   headerLabels << tr( "SRID" );
   headerLabels << tr( "Feature ID" );
   headerLabels << tr( "Select at ID" );
@@ -35,7 +35,7 @@ QgsHanaTableModel::QgsHanaTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-void QgsHanaTableModel::addTableEntry(const QgsHanaLayerProperty &layerProperty)
+void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty )
 {
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem = nullptr;
@@ -43,56 +43,56 @@ void QgsHanaTableModel::addTableEntry(const QgsHanaLayerProperty &layerProperty)
   QgsWkbTypes::Type wkbType = layerProperty.type;
   int srid = layerProperty.srid;
 
-  if (wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty())
+  if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
     wkbType = QgsWkbTypes::NoGeometry;
 
   QString tip;
 
-  if (wkbType == QgsWkbTypes::Unknown)
-    tip = tr("Specify a geometry type in the '%1' column").arg(tr("Data Type"));
-  else if (wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min())
-    tip = tr("Enter a SRID into the '%1' column").arg(tr("SRID"));
-  else if (!layerProperty.pkCols.isEmpty())
-    tip = tr("Select columns in the '%1' column that uniquely identify features of this layer").arg(tr("Feature ID"));
+  if ( wkbType == QgsWkbTypes::Unknown )
+    tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
+  else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
+    tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
+  else if ( !layerProperty.pkCols.isEmpty() )
+    tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature ID" ) );
 
-  QStandardItem *schemaNameItem = new QStandardItem(layerProperty.schemaName);
-  QStandardItem *typeItem = new QStandardItem(iconForWkbType(wkbType),
-    wkbType == QgsWkbTypes::Unknown ? tr("Select…") : QgsWkbTypes::displayString(wkbType));
-  typeItem->setData(wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1);
-  typeItem->setData(wkbType, Qt::UserRole + 2);
-  if (wkbType == QgsWkbTypes::Unknown)
-    typeItem->setFlags(typeItem->flags() | Qt::ItemIsEditable);
+  QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
+  QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
+      wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsWkbTypes::displayString( wkbType ) );
+  typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
+  typeItem->setData( wkbType, Qt::UserRole + 2 );
+  if ( wkbType == QgsWkbTypes::Unknown )
+    typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
-  QStandardItem *tableItem = new QStandardItem(layerProperty.tableName);
-  QStandardItem *commentItem = new QStandardItem(layerProperty.tableComment);
-  QStandardItem *geomItem = new QStandardItem(layerProperty.geometryColName);
-  QStandardItem *sridItem = new QStandardItem(wkbType != QgsWkbTypes::NoGeometry ? QString::number(srid) : "");
-  sridItem->setEditable(wkbType != QgsWkbTypes::NoGeometry && srid < 0);
-  if (sridItem->isEditable())
+  QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
+  QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
+  QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
+  QStandardItem *sridItem = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : "" );
+  sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid < 0 );
+  if ( sridItem->isEditable() )
   {
-    sridItem->setText(tr("Enter…"));
-    sridItem->setFlags(sridItem->flags() | Qt::ItemIsEditable);
+    sridItem->setText( tr( "Enter…" ) );
+    sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
   }
 
-  QStandardItem *pkItem = new QStandardItem(QLatin1String(""));
-  if (!layerProperty.pkCols.isEmpty())
+  QStandardItem *pkItem = new QStandardItem( QLatin1String( "" ) );
+  if ( !layerProperty.pkCols.isEmpty() )
   {
-    pkItem->setText(tr("Select…"));
-    pkItem->setFlags(pkItem->flags() | Qt::ItemIsEditable);
+    pkItem->setText( tr( "Select…" ) );
+    pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
   }
   else
-    pkItem->setFlags(pkItem->flags() & ~Qt::ItemIsEditable);
+    pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
 
-  pkItem->setData(layerProperty.pkCols, Qt::UserRole + 1);
-  pkItem->setData("", Qt::UserRole + 2);
+  pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
+  pkItem->setData( "", Qt::UserRole + 2 );
 
-  QStandardItem *selItem = new QStandardItem(QLatin1String(""));
-  selItem->setFlags(selItem->flags() | Qt::ItemIsUserCheckable);
-  selItem->setCheckState(Qt::Checked);
-  selItem->setToolTip(tr("Disable 'Fast Access to Features at ID' capability to force keeping "
-    "the attribute table in memory (e.g. in case of expensive views)."));
+  QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
+  selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
+  selItem->setCheckState( Qt::Checked );
+  selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping "
+                           "the attribute table in memory (e.g. in case of expensive views)." ) );
 
-  QStandardItem *sqlItem = new QStandardItem(layerProperty.sql);
+  QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
   QList<QStandardItem *> childItemList;
 
@@ -106,44 +106,44 @@ void QgsHanaTableModel::addTableEntry(const QgsHanaLayerProperty &layerProperty)
   childItemList << selItem;
   childItemList << sqlItem;
 
-  Q_FOREACH(QStandardItem *item, childItemList)
+  Q_FOREACH ( QStandardItem *item, childItemList )
   {
-    if (tip.isEmpty())
+    if ( tip.isEmpty() )
     {
-      item->setFlags(item->flags() | Qt::ItemIsSelectable);
-      item->setToolTip(QLatin1String(""));
+      item->setFlags( item->flags() | Qt::ItemIsSelectable );
+      item->setToolTip( QLatin1String( "" ) );
     }
     else
     {
-      item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+      item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
-      if (item == schemaNameItem)
-        item->setData(QgsApplication::getThemeIcon(QStringLiteral("/mIconWarning.svg")), Qt::DecorationRole);
+      if ( item == schemaNameItem )
+        item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
 
-      if (item == schemaNameItem || item == tableItem || item == geomItem)
-        item->setToolTip(tip);
+      if ( item == schemaNameItem || item == tableItem || item == geomItem )
+        item->setToolTip( tip );
     }
   }
 
-  if (!schemaItem)
+  if ( !schemaItem )
   {
-    QList<QStandardItem*> schemaItems = findItems(layerProperty.schemaName, Qt::MatchExactly, DbtmSchema);
+    QList<QStandardItem *> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
     // there is already an item for this schema
-    if (!schemaItems.isEmpty())
+    if ( !schemaItems.isEmpty() )
     {
-      schemaItem = schemaItems.at(DbtmSchema);
+      schemaItem = schemaItems.at( DbtmSchema );
     }
     else
     {
       // create a new toplevel item for this schema
-      schemaItem = new QStandardItem(layerProperty.schemaName);
-      schemaItem->setFlags(Qt::ItemIsEnabled);
-      invisibleRootItem()->setChild(invisibleRootItem()->rowCount(), schemaItem);
+      schemaItem = new QStandardItem( layerProperty.schemaName );
+      schemaItem->setFlags( Qt::ItemIsEnabled );
+      invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
     }
   }
 
-  schemaItem->appendRow(childItemList);
+  schemaItem->appendRow( childItemList );
 
   ++mTableCount;
 }
@@ -203,75 +203,75 @@ QIcon QgsHanaTableModel::iconForWkbType( QgsWkbTypes::Type type )
   switch ( QgsWkbTypes::geometryType( type ) )
   {
     case QgsWkbTypes::PointGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral("/mIconPointLayer.svg") );
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
     case QgsWkbTypes::LineGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral("/mIconLineLayer.svg") );
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
     case QgsWkbTypes::PolygonGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral("/mIconPolygonLayer.svg") );
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
     case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral("/mIconTableLayer.svg") );
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
     case QgsWkbTypes::UnknownGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral("/mIconLayer.png") );
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
   }
-  return QgsApplication::getThemeIcon( QStringLiteral("/mIconLayer.png") );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
 }
 
 bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-  if (!QStandardItemModel::setData(idx, value, role))
+  if ( !QStandardItemModel::setData( idx, value, role ) )
     return false;
 
-  if (idx.column() == DbtmGeomType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol)
+  if ( idx.column() == DbtmGeomType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QgsWkbTypes::Type wkbType = (QgsWkbTypes::Type) idx.sibling(idx.row(), DbtmGeomType).data(Qt::UserRole + 2).toInt();
+    QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), DbtmGeomType ).data( Qt::UserRole + 2 ).toInt();
 
     QString tip;
-    if (wkbType == QgsWkbTypes::Unknown)
+    if ( wkbType == QgsWkbTypes::Unknown )
     {
-      tip = tr("Specify a geometry type in the '%1' column").arg(tr("Data Type"));
+      tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
     }
-    else if (wkbType != QgsWkbTypes::NoGeometry)
+    else if ( wkbType != QgsWkbTypes::NoGeometry )
     {
       bool ok;
-      int srid = idx.sibling(idx.row(), DbtmSrid).data().toInt(&ok);
+      int srid = idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
-      if (!ok || srid == std::numeric_limits<int>::min())
-        tip = tr("Enter a SRID into the '%1' column").arg(tr("SRID"));
+      if ( !ok || srid == std::numeric_limits<int>::min() )
+        tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
     }
 
-    QStringList pkCols = idx.sibling(idx.row(), DbtmPkCol).data(Qt::UserRole + 1).toStringList();
-    if (tip.isEmpty() && !pkCols.isEmpty())
+    QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
+    if ( tip.isEmpty() && !pkCols.isEmpty() )
     {
-      QSet<QString> s0(idx.sibling(idx.row(), DbtmPkCol).data(Qt::UserRole + 2).toStringList().toSet());
-      QSet<QString> s1(pkCols.toSet());
-      if (s0.intersect(s1).isEmpty())
-        tip = tr("Select columns in the '%1' column that uniquely identify features of this layer").arg(tr("Feature ID"));
+      QSet<QString> s0( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList().toSet() );
+      QSet<QString> s1( pkCols.toSet() );
+      if ( s0.intersect( s1 ).isEmpty() )
+        tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature ID" ) );
     }
 
-    for (int i = 0; i < DbtmColumns; i++)
+    for ( int i = 0; i < DbtmColumns; i++ )
     {
-      QStandardItem *item = itemFromIndex(idx.sibling(idx.row(), i));
-      if (tip.isEmpty())
+      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
+      if ( tip.isEmpty() )
       {
-        if (i == DbtmSchema)
+        if ( i == DbtmSchema )
         {
-          item->setData(QVariant(), Qt::DecorationRole);
+          item->setData( QVariant(), Qt::DecorationRole );
         }
 
-        item->setFlags(item->flags() | Qt::ItemIsSelectable);
-        item->setToolTip(QLatin1String(""));
+        item->setFlags( item->flags() | Qt::ItemIsSelectable );
+        item->setToolTip( QLatin1String( "" ) );
       }
       else
       {
-        item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
-        if (i == DbtmSchema)
-          item->setData(QgsApplication::getThemeIcon(QStringLiteral("/mIconWarning.svg")), Qt::DecorationRole);
+        if ( i == DbtmSchema )
+          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
 
-        if (i == DbtmSchema || i == DbtmTable || i == DbtmGeomCol)
+        if ( i == DbtmSchema || i == DbtmTable || i == DbtmGeomCol )
         {
-          item->setFlags(item->flags());
-          item->setToolTip(tip);
+          item->setFlags( item->flags() );
+          item->setToolTip( tip );
         }
       }
     }
@@ -280,12 +280,12 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
   return true;
 }
 
-QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &connInfo)
+QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &connInfo )
 {
   if ( !index.isValid() )
     return QString();
 
-  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmGeomType) )->data( Qt::UserRole + 2 ).toInt();
+  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmGeomType ) )->data( Qt::UserRole + 2 ).toInt();
   if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
     return QString();
@@ -326,7 +326,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   return uri.uri();
 }
 
-QgsWkbTypes::Type QgsHanaTableModel::wkbTypeFromHana(const QString &type )
+QgsWkbTypes::Type QgsHanaTableModel::wkbTypeFromHana( const QString &type )
 {
   return QgsWkbTypes::parseType( type.toUpper() );
 }

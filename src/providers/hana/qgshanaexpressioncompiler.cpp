@@ -19,27 +19,27 @@
 #include "qgshanautils.h"
 #include "qgssqlexpressioncompiler.h"
 
-QgsHanaExpressionCompiler::QgsHanaExpressionCompiler(QgsHanaFeatureSource *source)
-  : QgsSqlExpressionCompiler(source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger)
-  , mGeometryColumn(source->mGeometryColumn)
+QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+  , mGeometryColumn( source->mGeometryColumn )
 {
 }
 
-QString QgsHanaExpressionCompiler::quotedIdentifier(const QString &identifier)
+QString QgsHanaExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
-  return QgsHanaUtils::quotedIdentifier(identifier);
+  return QgsHanaUtils::quotedIdentifier( identifier );
 }
 
-QString QgsHanaExpressionCompiler::quotedValue(const QVariant &value, bool &ok)
+QString QgsHanaExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
-  switch (value.type())
+  switch ( value.type() )
   {
-  case QVariant::Bool:
-    return value.toBool() ? "(1=1)" : "(1=0)";
+    case QVariant::Bool:
+      return value.toBool() ? "(1=1)" : "(1=0)";
 
-  default:
-    return QgsHanaUtils::quotedValue(value);
+    default:
+      return QgsHanaUtils::quotedValue( value );
   }
 }
 
@@ -75,47 +75,47 @@ static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
   { "upper", "upper" },
 };
 
-QString QgsHanaExpressionCompiler::sqlFunctionFromFunctionName(const QString &fnName) const
+QString QgsHanaExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
-  return FUNCTION_NAMES_SQL_FUNCTIONS_MAP.value(fnName, QString());
+  return FUNCTION_NAMES_SQL_FUNCTIONS_MAP.value( fnName, QString() );
 }
 
-QString QgsHanaExpressionCompiler::castToReal(const QString &value) const
+QString QgsHanaExpressionCompiler::castToReal( const QString &value ) const
 {
-  return QStringLiteral("CAST((%1) AS REAL)").arg(value);
+  return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
 }
 
-QString QgsHanaExpressionCompiler::castToInt(const QString &value) const
+QString QgsHanaExpressionCompiler::castToInt( const QString &value ) const
 {
-  return QStringLiteral("CAST((%1) AS INTEGER)").arg(value);
+  return QStringLiteral( "CAST((%1) AS INTEGER)" ).arg( value );
 }
 
-QString QgsHanaExpressionCompiler::castToText(const QString &value) const
+QString QgsHanaExpressionCompiler::castToText( const QString &value ) const
 {
-  return QStringLiteral("CAST((%1) AS NVARCHAR)").arg(value);
+  return QStringLiteral( "CAST((%1) AS NVARCHAR)" ).arg( value );
 }
 
 QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
-  const QgsExpressionNode *node, QString &result)
+  const QgsExpressionNode *node, QString &result )
 {
-  switch (node->nodeType())
+  switch ( node->nodeType() )
   {
-  case QgsExpressionNode::ntFunction:
-  {
-    const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>(node);
-
-    QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
-    if (fd->name() == QLatin1String("$geometry"))
+    case QgsExpressionNode::ntFunction:
     {
-      result = quotedIdentifier(mGeometryColumn);
-      return Complete;
+      const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
+
+      QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
+      if ( fd->name() == QLatin1String( "$geometry" ) )
+      {
+        result = quotedIdentifier( mGeometryColumn );
+        return Complete;
+      }
+
+      FALLTHROUGH;
     }
-
-    FALLTHROUGH;
-  }
-  default:
-    break;
+    default:
+      break;
   }
 
-  return QgsSqlExpressionCompiler::compileNode(node, result);
+  return QgsSqlExpressionCompiler::compileNode( node, result );
 }

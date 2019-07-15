@@ -21,7 +21,7 @@
 #include <qgswkbtypes.h>
 #include <QStandardItemModel>
 
- //! Schema properties structure
+//! Schema properties structure
 struct QgsHanaSchemaProperty
 {
   QString name;
@@ -45,7 +45,7 @@ struct QgsHanaLayerProperty
   QString defaultName() const
   {
     QString ret = tableName;
-    if (!isUnique && !geometryColName.isEmpty())
+    if ( !isUnique && !geometryColName.isEmpty() )
       ret += " [" + geometryColName + "]";
     return ret;
   }

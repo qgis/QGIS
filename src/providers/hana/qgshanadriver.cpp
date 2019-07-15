@@ -22,26 +22,26 @@
 
 using namespace odbc;
 
-QgsHanaDriver* QgsHanaDriver::sInstance = nullptr;
+QgsHanaDriver *QgsHanaDriver::sInstance = nullptr;
 
 QgsHanaDriver::QgsHanaDriver()
 {
   QgsDebugCall;
   mEnv = Environment::create();
 #ifdef Q_OS_WIN
-  #ifdef Q_OS_WIN64
-    mIsInstalled = mEnv->isDriverInstalled("HDBODBC");
-  #else
-    mIsInstalled = mEnv->isDriverInstalled("HDBODBC32");
-  #endif
+#ifdef Q_OS_WIN64
+  mIsInstalled = mEnv->isDriverInstalled( "HDBODBC" );
+#else
+  mIsInstalled = mEnv->isDriverInstalled( "HDBODBC32" );
+#endif
 #else
   mIsInstalled = true;
 #endif
 }
 
-QgsHanaDriver* QgsHanaDriver::instance()
+QgsHanaDriver *QgsHanaDriver::instance()
 {
-  if (!sInstance)
+  if ( !sInstance )
     sInstance = new QgsHanaDriver();
   return sInstance;
 }

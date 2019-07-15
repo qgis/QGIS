@@ -24,24 +24,24 @@ class QgsHanaLayerItem;
 
 class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
-  Q_OBJECT
-public:
+    Q_OBJECT
+  public:
 
-  QString name() override { return QStringLiteral("HANA"); }
+    QString name() override { return QStringLiteral( "HANA" ); }
 
-  void populateContextMenu(QgsDataItem *item, QMenu *menu,
-    const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
-  bool deleteLayer(QgsLayerItem *item, QgsDataItemGuiContext context) override;
+    bool deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context ) override;
 
-  bool acceptDrop(QgsDataItem *item, QgsDataItemGuiContext context) override;
-  bool handleDrop(QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action) override;
+    bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+    bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
 
-private:
-  static void newConnection(QgsDataItem *item);
-  static void editConnection(QgsDataItem *item);
-  static void deleteConnection(QgsDataItem *item);
-  static void refreshConnection(QgsDataItem *item);
+  private:
+    static void newConnection( QgsDataItem *item );
+    static void editConnection( QgsDataItem *item );
+    static void deleteConnection( QgsDataItem *item );
+    static void refreshConnection( QgsDataItem *item );
 };
 
 #endif // QGSHANADATAITEMGUIPROVIDER_H

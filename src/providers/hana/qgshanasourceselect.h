@@ -40,7 +40,7 @@ class QgisApp;
 
 class QgsHanaSourceSelectDelegate : public QItemDelegate
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     explicit QgsHanaSourceSelectDelegate( QObject *parent = nullptr )
@@ -55,7 +55,7 @@ class QgsHanaSourceSelectDelegate : public QItemDelegate
       QWidget *editor,
       QAbstractItemModel *model,
       const QModelIndex &index ) const override;
-    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 };
 
 /**

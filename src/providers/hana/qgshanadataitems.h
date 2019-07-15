@@ -52,18 +52,18 @@ class QgsHanaConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsHanaConnectionItem(QgsDataItem *parent, const QString &name, const QString &path );
+    QgsHanaConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
     bool handleDrop( const QMimeData *data, const QString &toSchema );
 
-private:
-  void updateToolTip(const QString& userName, const QString &dbmsVersion);
+  private:
+    void updateToolTip( const QString &userName, const QString &dbmsVersion );
 
   signals:
-    void addGeometryColumn( const QgsHanaLayerProperty &layerProperty);
+    void addGeometryColumn( const QgsHanaLayerProperty &layerProperty );
 
   public slots:
     // refresh specified schema or all schemas if schema name is empty
@@ -75,12 +75,12 @@ class QgsHanaSchemaItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsHanaSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name,
-      const QString &path );
+                       const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
 
   private:
-    QgsHanaLayerItem *createLayer(const QgsHanaLayerProperty &layerProperty );
+    QgsHanaLayerItem *createLayer( const QgsHanaLayerProperty &layerProperty );
 
     QString mSchemaName;
     QString mConnectionName;
@@ -92,7 +92,7 @@ class QgsHanaLayerItem : public QgsLayerItem
 
   public:
     QgsHanaLayerItem( QgsDataItem *parent, const QString &name, const QString &path,
-      QgsLayerItem::LayerType layerType, const QgsHanaLayerProperty &layerProperties );
+                      QgsLayerItem::LayerType layerType, const QgsHanaLayerProperty &layerProperties );
 
     QString createUri() const;
 
@@ -107,10 +107,10 @@ class QgsHanaLayerItem : public QgsLayerItem
 //! Provider for HANA data items
 class QgsHanaDataItemProvider : public QgsDataItemProvider
 {
-public:
-  QString name() override { return QStringLiteral("HANA"); }
-  int capabilities() const override { return QgsDataProvider::Database; }
-  QgsDataItem *createDataItem(const QString &pathIn, QgsDataItem *parentItem) override;
+  public:
+    QString name() override { return QStringLiteral( "HANA" ); }
+    int capabilities() const override { return QgsDataProvider::Database; }
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 
