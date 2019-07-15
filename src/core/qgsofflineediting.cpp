@@ -222,6 +222,9 @@ void QgsOfflineEditing::synchronize()
 
   emit progressStarted();
 
+  //copy snapping settings
+  QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
+
   // restore and sync remote layers
   QList<QgsMapLayer *> offlineLayers;
   QMap<QString, QgsMapLayer *> mapLayers = QgsProject::instance()->mapLayers();
@@ -270,6 +273,10 @@ void QgsOfflineEditing::synchronize()
       updateRelations( offlineLayer, remoteLayer );
       updateMapThemes( offlineLayer, remoteLayer );
       updateLayerOrder( offlineLayer, remoteLayer );
+
+      //append snapping setting on remote layer
+      snappingConfig.setIndividualLayerSettings( remoteLayer, QgsProject::instance()->snappingConfig().individualLayerSettings( offlineLayer ) );
+      snappingConfig.removeLayers( QList<QgsMapLayer *>() << offlineLayer );
 
       //set QgsLayerTreeNode properties back
       QgsLayerTreeLayer *layerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( offlineLayer->id() );
@@ -348,6 +355,9 @@ void QgsOfflineEditing::synchronize()
   // reset commitNo
   QString sql = QStringLiteral( "UPDATE 'log_indices' SET 'last_index' = 0 WHERE \"name\" = 'commit_no'" );
   sqlExec( database.get(), sql );
+
+  //set snapping config
+  QgsProject::instance()->setSnappingConfig( snappingConfig );
 
   emit progressStopped();
 }
