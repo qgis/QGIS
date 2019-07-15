@@ -2243,3 +2243,4 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
     return g.boundingBox();
   }
 }
+

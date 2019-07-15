@@ -34,10 +34,11 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include "qgsexpressioncontext.h"
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
-  , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot() ) )
+  , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot(), this ) )
 {
 #if 0 //no longer required?
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
@@ -55,6 +56,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
     invalidateCache();
     update();
   } );
+  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, &QgsLayoutItemLegend::refresh );
 }
 
 QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout )
@@ -224,6 +226,7 @@ void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 
   mCustomLayerTree.reset( rootGroup );
 }
+
 
 void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
 {
@@ -697,6 +700,7 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
   }
 
   updateFilterByMap();
+
 }
 
 void QgsLayoutItemLegend::invalidateCurrentMap()
@@ -760,9 +764,8 @@ void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
   else
   {
     mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
-
-    const auto constFindLayers = mLegendModel->rootGroup()->findLayers();
-    for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
+    const QList< QgsLayerTreeLayer * > layers =  mLegendModel->rootGroup()->findLayers();
+    for ( QgsLayerTreeLayer *nodeLayer : layers )
       mLegendModel->refreshLayerLegend( nodeLayer );
   }
 
@@ -846,11 +849,8 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   // We only want the last scope from the map's expression context, as this contains
   // the map specific variables. We don't want the rest of the map's context, because that
   // will contain duplicate global, project, layout, etc scopes.
-
   if ( mMap )
-  {
     context.appendScope( mMap->createExpressionContext().popScope() );
-  }
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
 
@@ -862,16 +862,26 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_out_atlas" ), legendFilterOutAtlas(), true ) );
 
   context.appendScope( scope );
-
   return context;
 }
+
 
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerlegend.h"
 
-QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayoutItemLegend *layout )
   : QgsLayerTreeModel( rootNode, parent )
+  , mLayoutLegend( layout )
+{
+  setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
+  setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+}
+
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout )
+  : QgsLayerTreeModel( rootNode )
+  , mLayoutLegend( layout )
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
@@ -880,22 +890,62 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
 QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
-  if ( QgsLayerTreeNode *node = index2node( index ) )
-  {
-    if ( QgsLayerTree::isLayer( node ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) && !node->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
-    {
-      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
-      {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-        if ( vlayer && vlayer->featureCount() >= 0 )
-          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
-      }
-      return name;
-    }
-  }
 
+  QgsLayerTreeNode *node = index2node( index );
+  QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node ) ? QgsLayerTree::toLayer( node ) : nullptr;
+  if ( nodeLayer && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
+  {
+    QString name;
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+
+    //finding the first label that is stored
+    name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    if ( name.isEmpty() )
+      name = nodeLayer->name();
+    if ( name.isEmpty() )
+      name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    if ( name.isEmpty() )
+      name = node->name();
+    if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
+    {
+      if ( vlayer && vlayer->featureCount() >= 0 )
+      {
+        name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+        return name;
+      }
+    }
+
+    bool evaluate = vlayer ? !nodeLayer->labelExpression().isEmpty() : false;
+
+    if ( evaluate || name.contains( "[%" ) )
+    {
+      QgsExpressionContext expressionContext;
+      if ( vlayer )
+      {
+        connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh, Qt::UniqueConnection );
+        // counting is done here to ensure that a valid vector layer needs to be evaluated, count is used to validate previous count or update the count if invalidated
+        vlayer->countSymbolFeatures();
+      }
+
+      if ( mLayoutLegend )
+        expressionContext = mLayoutLegend->createExpressionContext();
+      else
+        expressionContext = QgsExpressionContext();
+
+      const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
+      if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
+      {
+        for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
+        {
+          if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
+            symnode->evaluateLabel( expressionContext );
+        }
+      }
+      else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+        name = symnode->evaluateLabel( expressionContext, name );
+    }
+    return name;
+  }
   return QgsLayerTreeModel::data( index, role );
 }
 
@@ -907,3 +957,22 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
 
   return QgsLayerTreeModel::flags( index );
 }
+
+QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent ) const
+{
+  if ( !mLegend.contains( nodeLayer ) )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
+  const LayerLegendData &data = mLegend[nodeLayer];
+  QList<QgsLayerTreeModelLegendNode *> lst( data.activeNodes );
+  if ( !skipNodeEmbeddedInParent && data.embeddedNodeInParent )
+    lst.prepend( data.embeddedNodeInParent );
+  return lst;
+}
+
+void QgsLegendModel::forceRefresh()
+{
+  emit refreshLegend();
+}
+
+

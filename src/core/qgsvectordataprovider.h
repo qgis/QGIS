@@ -32,6 +32,7 @@ class QTextCodec;
 #include "qgsrelation.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
+#include "qgsfeaturerequest.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -43,7 +44,6 @@ class QgsFeedback;
 class QgsFeatureRenderer;
 class QgsAbstractVectorLayerLabeling;
 
-#include "qgsfeaturerequest.h"
 
 /**
  * \ingroup core

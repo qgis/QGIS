@@ -2279,7 +2279,6 @@ Configuration and logic to apply automatically on any edit happening on this lay
 
 
 
-
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -2652,6 +2651,7 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 
 .. versionadded:: 3.0
 %End
+
 
   protected:
     virtual void setExtent( const QgsRectangle &rect ) ${SIP_FINAL};

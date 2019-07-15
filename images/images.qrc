@@ -177,6 +177,7 @@
         <file>themes/default/mActionDistributeTop.svg</file>
         <file>themes/default/mActionDistributeVCenter.svg</file>
         <file>themes/default/mActionDistributeVSpace.svg</file>
+        <file>themes/default/mActionAddExpression.svg</file>
         <file>themes/default/mActionAddLayer.svg</file>
         <file>themes/default/mActionAddMeshLayer.svg</file>
         <file>themes/default/mActionAddAllToOverview.svg</file>

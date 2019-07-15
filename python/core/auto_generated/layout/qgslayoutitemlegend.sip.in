@@ -24,15 +24,30 @@ Overrides some functionality of QgsLayerTreeModel to better fit the needs of lay
 #include "qgslayoutitemlegend.h"
 %End
   public:
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0 );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0, QgsLayoutItemLegend *layout = 0 );
 %Docstring
 Construct the model based on the given layer tree
+%End
+
+    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
+%Docstring
+Alternative constructor.
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+  signals:
+
+    void refreshLegend();
+%Docstring
+Emitted to refresh the legend.
+
+.. versionadded:: 3.10
+%End
 
 };
 
@@ -511,7 +526,6 @@ Returns the legend's renderer settings object.
 
 
     virtual QgsExpressionContext createExpressionContext() const;
-
 
 
   public slots:

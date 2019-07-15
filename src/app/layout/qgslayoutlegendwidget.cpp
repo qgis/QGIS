@@ -38,6 +38,7 @@
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsunittypes.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -104,6 +105,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mEditPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mEditPushButton_clicked );
   connect( mCountToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mCountToolButton_clicked );
   connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsLayoutLegendWidget::mExpressionFilterButton_toggled );
+  connect( mLayerExpressionButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
   connect( mFilterByMapToolButton, &QToolButton::toggled, this, &QgsLayoutLegendWidget::mFilterByMapToolButton_toggled );
   connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mUpdateAllPushButton_clicked );
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
@@ -136,6 +138,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mMoveUpToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowUp.svg" ) ) );
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
+  mLayerExpressionButton->setIcon( QIcon( QgsApplication::iconPath( "mActionAddExpression.svg" ) ) );
 
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
@@ -994,6 +997,45 @@ void QgsLayoutLegendWidget::mExpressionFilterButton_toggled( bool checked )
   mLegend->endCommand();
 }
 
+void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
+{
+
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  QModelIndex currentIndex = mItemTreeView->currentIndex();
+  if ( !currentIndex.isValid() )
+    return;
+
+  QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
+  if ( !QgsLayerTree::isLayer( currentNode ) )
+    return;
+
+  QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( currentNode );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerNode->layer() );
+
+  if ( !vl )
+    return;
+
+  QString currentExpression;
+  if ( layerNode->labelExpression().isEmpty() )
+    currentExpression = QStringLiteral( "@symbol_label" );
+  else
+    currentExpression = layerNode->labelExpression();
+  QgsExpressionContext legendContext = mLegend->createExpressionContext();
+  legendContext.appendScope( vl->createExpressionContextScope() );
+  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", legendContext );
+  if ( expressiondialog.exec() )
+    layerNode->setLabelExpression( expressiondialog.expressionText() );
+
+  mLegend->beginCommand( tr( "Update Legend" ) );
+  mLegend->updateLegend();
+  mLegend->adjustBoxSize();
+  mLegend->endCommand();
+}
+
 void QgsLayoutLegendWidget::mUpdateAllPushButton_clicked()
 {
   updateLegend();
@@ -1105,11 +1147,26 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
   Q_UNUSED( current )
   Q_UNUSED( previous )
 
+  mLayerExpressionButton->setEnabled( false );
+
   if ( mLegend && mLegend->autoUpdateModel() )
+  {
+    QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
+    if ( !QgsLayerTree::isLayer( currentNode ) )
+      return;
+
+    QgsLayerTreeLayer *currentLayerNode = QgsLayerTree::toLayer( currentNode );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( currentLayerNode->layer() );
+    if ( !vl )
+      return;
+
+    mLayerExpressionButton->setEnabled( true );
     return;
+  }
 
   mCountToolButton->setChecked( false );
   mCountToolButton->setEnabled( false );
+
 
   mExpressionFilterButton->blockSignals( true );
   mExpressionFilterButton->setChecked( false );
@@ -1127,6 +1184,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
 
   mCountToolButton->setChecked( currentNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
   mCountToolButton->setEnabled( true );
+  mLayerExpressionButton->setEnabled( true );
 
   bool exprEnabled;
   QString expr = QgsLayerTreeUtils::legendFilterByExpression( *qobject_cast<QgsLayerTreeLayer *>( currentNode ), &exprEnabled );
