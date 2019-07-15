@@ -25,24 +25,151 @@
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
+#include "qgsbufferserverrequest.h"
+#include "qgsserverprojectutils.h"
 
 #include <QMimeDatabase>
 
-Wfs3APIHandler::Wfs3APIHandler()
+
+Wfs3APIHandler::Wfs3APIHandler( const QgsServerOgcApi *api ):
+  mApi( api )
 {
 }
 
 void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
 {
-  // TODO
+  if ( ! context.project() )
+  {
+    throw  QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project not found, please check your server configuration." ) );
+  }
+
+  QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *context.project() );
+  QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *context.project() );
+
+  const auto metadata { context.project()->metadata() };
   json data
   {
-    { "api", "This page will contain the API documentation for this service." }
+    { "openapi", "3.0.1" },
+    {
+      "tags", {{
+          { "name", "Capabilities" },
+          { "description", "Essential characteristics of this API including information about the data." }
+        }, {
+          { "name", "Features" },
+          { "description", "Access to data (features)." }
+        }
+      }
+    },
+    {
+      "info", {
+        { "title", context.project()->title().toStdString() },
+        { "description", metadata.abstract().toStdString() },
+        {
+          "contact",  {
+            { "name", contactPerson.toStdString() },
+            { "email", contactMail.toStdString() },
+            { "url", "" }   // TODO: contact url
+          }
+        },
+        {
+          "license", {
+            { "name",  "" }  // TODO: license
+          }
+        },
+        { "version", mApi->version().toStdString() }
+      }
+    },
+    {
+      "servers", {{
+          { "url", parentLink( context.request()->url(), 1 ) }
+        }
+      }
+    }
   };
+  assert( data.is_object() );
+  json paths = json::array();
+  // Gather information from handlers
+  for ( const auto &h : mApi->handlers() )
+  {
+    // Skip null schema
+    const auto hSchema { h->schema( context ) };
+    if ( ! hSchema.is_null() )
+      paths.push_back( hSchema );
+  }
+  data[ "paths" ] = paths;
+  static json schema;
+  if ( schema.is_null() )
+  {
+    QFile f( QgsServerOgcApi::resourcesPath() + "/schema.json" );
+    if ( f.open( QFile::ReadOnly | QFile::Text ) )
+    {
+      QTextStream in( &f );
+      schema = json::parse( in.readAll().toStdString() );
+    }
+  }
+  // Fill crss
+  json crss = json::array();
+  for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
+  {
+    crss.push_back( crs.toStdString() );
+  }
+  schema[ "components" ][ "parameters" ][ "bbox-crs" ][ "schema" ][ "enum" ] = crss;
+  schema[ "components" ][ "parameters" ][ "crs" ][ "schema" ][ "enum" ] = crss;
+  data[ "schema" ] = schema;
+  // Add schema refs
   json navigation = json::array();
   const auto url { context.request()->url() };
   navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ) }} ) ;
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
+}
+
+json Wfs3APIHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  const auto path { ( context.apiRootPath() + QStringLiteral( "api" ) ).toStdString() };
+  data[ path ] =
+  {
+    {
+      "get", {
+        { "tags", jsonTags() },
+        { "summary", summary() },
+        { "operationId", operationId() },
+        {
+          "responses", {
+            {
+              "200", {
+                { "description", description() },
+                {
+                  "content", {
+                    {
+                      "application/openapi+json;version=3.0", {
+                        {
+                          "schema",  {
+                            { "type", "object" }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "text/html", {
+                        {
+                          "schema",  {
+                            { "type", "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            defaultResponse()
+          }
+        }
+      }
+    }
+  };
+  return data;
 }
 
 Wfs3LandingPageHandler::Wfs3LandingPageHandler()
@@ -81,6 +208,56 @@ void Wfs3LandingPageHandler::handleRequest( const QgsServerApiContext &context )
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
 }
 
+json Wfs3LandingPageHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  const auto path { context.apiRootPath().toStdString() };
+
+  data[ path ] =
+  {
+    {
+      "get", {
+        { "tags", jsonTags() },
+        { "summary", summary() },
+        { "operationId", operationId() },
+        {
+          "responses", {
+            {
+              "200", {
+                { "description", description() },
+                {
+                  "content", {
+                    {
+                      "application/json", {
+                        {
+                          "schema",  {
+                            { "$ref", "#/components/schemas/root" }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "text/html", {
+                        {
+                          "schema",  {
+                            { "type", "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            defaultResponse()
+          }
+        }
+      }
+    }
+  };
+  return data;
+}
+
 
 Wfs3ConformanceHandler::Wfs3ConformanceHandler()
 {
@@ -104,6 +281,55 @@ void Wfs3ConformanceHandler::handleRequest( const QgsServerApiContext &context )
   const auto url { context.request()->url() };
   navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ) }} ) ;
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
+}
+
+json Wfs3ConformanceHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  const auto path { ( context.apiRootPath() + QStringLiteral( "/conformance" ) ).toStdString() };
+  data[ path ] =
+  {
+    {
+      "get", {
+        { "tags", jsonTags() },
+        { "summary", summary() },
+        { "operationId", operationId() },
+        {
+          "responses", {
+            {
+              "200", {
+                { "description", description() },
+                {
+                  "content", {
+                    {
+                      "application/json", {
+                        {
+                          "schema",  {
+                            { "$ref", "#/components/schemas/root" }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "text/html", {
+                        {
+                          "schema",  {
+                            { "type", "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            defaultResponse()
+          }
+        }
+      }
+    }
+  };
+  return data;
 }
 
 Wfs3CollectionsHandler::Wfs3CollectionsHandler()
@@ -186,6 +412,55 @@ void Wfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context )
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
+json Wfs3CollectionsHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  const auto path { ( context.apiRootPath() + QStringLiteral( "/collections" ) ).toStdString() };
+  data[ path ] =
+  {
+    {
+      "get", {
+        { "tags", jsonTags() },
+        { "summary", summary() },
+        { "operationId", operationId() },
+        {
+          "responses", {
+            {
+              "200", {
+                { "description", description() },
+                {
+                  "content", {
+                    {
+                      "application/json", {
+                        {
+                          "schema",  {
+                            { "$ref", "#/components/schemas/content" }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "text/html", {
+                        {
+                          "schema",  {
+                            { "type", "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            defaultResponse()
+          }
+        }
+      }
+    }
+  };
+  return data;
+}
+
 Wfs3DescribeCollectionHandler::Wfs3DescribeCollectionHandler()
 {
 }
@@ -234,16 +509,18 @@ void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &co
   }
   */
   );
+  json crss = json::array();
+  for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
+  {
+    crss.push_back( crs.toStdString() );
+  }
   json data
   {
     { "name", mapLayer->name().toStdString() },
     { "title", title },
     // TODO: check if we need to expose other advertised CRS here
     {
-      "crs", {
-        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-        "http://www.opengis.net/def/crs/EPSG/0/4326"
-      }
+      "crs", crss
     },
     // TODO: "relations" ?
     {
@@ -263,6 +540,65 @@ void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &co
   write( data, context, {{ "pageTitle", title }, { "navigation", navigation }} );
 }
 
+json Wfs3DescribeCollectionHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  Q_ASSERT( context.project() );
+
+  const auto layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer>( context.project() ) };
+  // Construct the context with collecion id
+  for ( const auto &mapLayer : layers )
+  {
+    const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
+    const auto title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+    const auto path { ( context.apiRootPath() + QStringLiteral( "collections/%1" ).arg( shortName ) ).toStdString() };
+
+    data[ path ] =
+    {
+      {
+        "get", {
+          { "tags", jsonTags() },
+          { "summary", "Describe the '" + title + "' feature collection"},
+          { "operationId", operationId() + '_' + shortName.toStdString() },
+          {
+            "responses", {
+              {
+                "200", {
+                  { "description", "Metadata about the collection '" + title + "' shared by this API." },
+                  {
+                    "content", {
+                      {
+                        "application/json", {
+                          {
+                            "schema",  {
+                              { "$ref", "#/components/schemas/collectionInfo" }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "text/html", {
+                          {
+                            "schema",  {
+                              { "type", "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              defaultResponse()
+            }
+          }
+        }
+      }
+    };
+  }
+  return data;
+}
+
 Wfs3CollectionsItemsHandler::Wfs3CollectionsItemsHandler()
 {
 }
@@ -271,9 +607,9 @@ QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::parameters( co
 {
   QList<QgsServerQueryStringParameter> params;
 
-// Limit
+  // Limit
   QgsServerQueryStringParameter limit { QStringLiteral( "limit" ), false,
-                                        QgsServerQueryStringParameter::Type::Int,
+                                        QgsServerQueryStringParameter::Type::Integer,
                                         QStringLiteral( "Number of features to retrieve [0-10000]" ),
                                         10 };
   limit.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
@@ -282,16 +618,16 @@ QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::parameters( co
   } );
   params.push_back( limit );
 
-// Offset
+  // Offset
   QgsServerQueryStringParameter offset { QStringLiteral( "offset" ), false,
-                                         QgsServerQueryStringParameter::Type::Int,
+                                         QgsServerQueryStringParameter::Type::Integer,
                                          QStringLiteral( "Offset for features to retrieve [0-<number of features in the collection>]" ),
                                          0 };
 
   bool offsetValidatorSet = false;
 
-// I'm not yet sure if we should get here without a project,
-// but parameters() may be called to document the API - better safe than sorry.
+  // I'm not yet sure if we should get here without a project,
+  // but parameters() may be called to document the API - better safe than sorry.
   if ( context.project() )
   {
     // Fields filters
@@ -305,29 +641,9 @@ QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::parameters( co
       } );
       offset.setDescription( QStringLiteral( "Offset for features to retrieve [0-%1]" ).arg( mapLayer->featureCount( ) ) );
       offsetValidatorSet = true;
-
-      const auto constFields { QgsServerApiUtils::publishedFields( mapLayer ) };
-      for ( const auto &f : constFields )
+      for ( const auto &p : fieldParameters( mapLayer ) )
       {
-        QgsServerQueryStringParameter::Type t;
-        switch ( f.type() )
-        {
-          case QVariant::Int:
-          case QVariant::LongLong:
-            t = QgsServerQueryStringParameter::Type::Int;
-            break;
-          case QVariant::Double:
-            t = QgsServerQueryStringParameter::Type::Double;
-            break;
-          // TODO: date & time
-          default:
-            t = QgsServerQueryStringParameter::Type::String;
-            break;
-        }
-        QgsServerQueryStringParameter fieldParam { f.name(), false,
-            t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( f.name() )
-            .arg( QgsServerQueryStringParameter::typeName( t ) ) };
-        params.push_back( fieldParam );
+        params.push_back( p );
       }
     }
   }
@@ -343,25 +659,146 @@ QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::parameters( co
 
   params.push_back( offset );
 
-// BBOX
+  // BBOX
   QgsServerQueryStringParameter bbox { QStringLiteral( "bbox" ), false,
                                        QgsServerQueryStringParameter::Type::String,
                                        QStringLiteral( "BBOX filter for the features to retrieve" ) };
   params.push_back( bbox );
 
-// BBOX CRS
+  auto crsValidator = [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
+  {
+    return QgsServerApiUtils::publishedCrsList( context.project() ).contains( value.toString() );
+  };
+
+  // BBOX CRS
   QgsServerQueryStringParameter bboxCrs { QStringLiteral( "bbox-crs" ), false,
                                           QgsServerQueryStringParameter::Type::String,
                                           QStringLiteral( "CRS for the BBOX filter" ),
                                           QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) };
+  bboxCrs.setCustomValidator( crsValidator );
   params.push_back( bboxCrs );
 
-// Result type
+  // CRS
+  QgsServerQueryStringParameter crs { QStringLiteral( "crs" ), false,
+                                      QgsServerQueryStringParameter::Type::String,
+                                      QStringLiteral( "The coordinate reference system of the response geometries." ),
+                                      QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) };
+  crs.setCustomValidator( crsValidator );
+  params.push_back( crs );
+
+  // Result type
   QgsServerQueryStringParameter resultType { QStringLiteral( "resultType" ), false,
       QgsServerQueryStringParameter::Type::String,
       QStringLiteral( "Type of returned result: 'results' (default) or 'hits'" ),
       QStringLiteral( "results" ) };
   params.push_back( resultType );
+
+  return params;
+}
+
+json Wfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  Q_ASSERT( context.project() );
+
+  const auto layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer>( context.project() ) };
+  // Construct the context with collecion id
+  for ( const auto &mapLayer : layers )
+  {
+    const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
+    const auto title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+    const auto path { ( context.apiRootPath() + QStringLiteral( "collections/%1/items" ).arg( shortName ) ).toStdString() };
+
+    data[ path ] =
+    {
+      {
+        "get", {
+          { "tags", jsonTags() },
+          { "summary", "Retrieve features of '" + title + "' feature collection" },
+          { "operationId", operationId() + '_' + shortName.toStdString() },
+          {
+            "responses", {
+              {
+                "200", {
+                  { "description", "Metadata about the collection '" + title + "' shared by this API." },
+                  {
+                    "content", {
+                      {
+                        "application/geo+json", {
+                          {
+                            "schema",  {
+                              { "$ref", "#/components/schemas/featureCollectionGeoJSON" }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "text/html", {
+                          {
+                            "schema",  {
+                              { "type", "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              defaultResponse()
+            }
+          }
+        }
+      }
+    };
+    data[ "parameters" ] = {{
+        {{ "$ref", "#/components/parameters/limit" }},
+        {{ "$ref", "#/components/parameters/offset" }},
+        {{ "$ref", "#/components/parameters/resultType" }},
+        {{ "$ref", "#/components/parameters/bbox" }},
+        {{ "$ref", "#/components/parameters/bbox-crs" }},
+        // TODO: {{ "$ref", "#/components/parameters/time" }},
+      }
+    };
+    for ( const auto &p : fieldParameters( mapLayer ) )
+    {
+      const auto name { p.name().toStdString() };
+      data[ "parameters" ].push_back( p.data() );
+    }
+  }
+  return data;
+}
+
+const QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::fieldParameters( const QgsVectorLayer *mapLayer ) const
+{
+  QList<QgsServerQueryStringParameter> params;
+  if ( mapLayer )
+  {
+
+    const auto constFields { QgsServerApiUtils::publishedFields( mapLayer ) };
+    for ( const auto &f : constFields )
+    {
+      QgsServerQueryStringParameter::Type t;
+      switch ( f.type() )
+      {
+        case QVariant::Int:
+        case QVariant::LongLong:
+          t = QgsServerQueryStringParameter::Type::Integer;
+          break;
+        case QVariant::Double:
+          t = QgsServerQueryStringParameter::Type::Double;
+          break;
+        // TODO: date & time
+        default:
+          t = QgsServerQueryStringParameter::Type::String;
+          break;
+      }
+      QgsServerQueryStringParameter fieldParam { f.name(), false,
+          t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( f.name() )
+          .arg( QgsServerQueryStringParameter::typeName( t ) ) };
+      params.push_back( fieldParam );
+    }
+  }
   return params;
 }
 
@@ -377,7 +814,7 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
   const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
 
   // Get parameters
-  QVariantMap params { validate( context )};
+  QVariantMap params { values( context )};
 
   if ( context.request()->method() == QgsServerRequest::Method::GetMethod )
   {
@@ -393,11 +830,18 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
       throw QgsServerApiBadRequestException( QStringLiteral( "bbox is not valid" ) );
     }
 
-    // CRS
-    const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( params[ QStringLiteral( "bbox-crs" ) ].toString() ) };
-    if ( ! crs.isValid() )
+    // BBOX CRS
+    const QgsCoordinateReferenceSystem bboxCrs { QgsServerApiUtils::parseCrs( params[ QStringLiteral( "bbox-crs" ) ].toString() ) };
+    if ( ! bboxCrs.isValid() )
     {
       throw QgsServerApiBadRequestException( QStringLiteral( "BBOX CRS is not valid" ) );
+    }
+
+    // CRS
+    const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( params[ QStringLiteral( "crs" ) ].toString() ) };
+    if ( ! crs.isValid() )
+    {
+      throw QgsServerApiBadRequestException( QStringLiteral( "CRS is not valid" ) );
     }
 
     // resultType
@@ -444,7 +888,7 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
     QgsFeatureRequest req;
     if ( ! filterRect.isNull() )
     {
-      QgsCoordinateTransform ct( crs, mapLayer->crs(), context.project()->transformContext() );
+      QgsCoordinateTransform ct( bboxCrs, mapLayer->crs(), context.project()->transformContext() );
       ct.transform( filterRect );
       req.setFilterRect( ct.transform( filterRect ) );
     }
@@ -472,12 +916,11 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
     }
 
     // WFS3 core specs only serves 4326
-    // TODO: handle custom CRSs
-    req.setDestinationCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), context.project()->transformContext() );
+    req.setDestinationCrs( crs, context.project()->transformContext() );
     // Add offset to limit because paging is not supported from QgsFeatureRequest
     req.setLimit( limit + offset );
     QgsJsonExporter exporter { mapLayer };
-    exporter.setSourceCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+    exporter.setSourceCrs( mapLayer->crs() );
     QgsFeatureList featureList;
     auto features { mapLayer->getFeatures( req ) };
     QgsFeature feat;
@@ -520,8 +963,10 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
 
     // Current url
     const QUrl url { context.request()->url() };
+
     // Url without offset and limit
     QString cleanedUrl { url.toString().replace( QRegularExpression( R"raw(&?(offset|limit)(=\d+)*)raw" ), QString() ) };
+
     if ( ! url.hasQuery() )
     {
       cleanedUrl += '?';
@@ -637,6 +1082,65 @@ void Wfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &co
   }
 }
 
+json Wfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  Q_ASSERT( context.project() );
+
+  const auto layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer>( context.project() ) };
+  // Construct the context with collecion id
+  for ( const auto &mapLayer : layers )
+  {
+    const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
+    const auto title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+    const auto path { ( context.apiRootPath() + QStringLiteral( "collections/%1/items/{featureId}" ).arg( shortName ) ).toStdString() };
+
+    data[ path ] =
+    {
+      {
+        "get", {
+          { "tags", jsonTags() },
+          { "summary", "Describe the '" + title + "' feature collection"},
+          { "operationId", operationId() + '_' + shortName.toStdString() },
+          {
+            "responses", {
+              {
+                "200", {
+                  { "description", "Retrieve a '" + title + "' feature by 'featureId'." },
+                  {
+                    "content", {
+                      {
+                        "application/geo+json", {
+                          {
+                            "schema",  {
+                              { "$ref", "#/components/schemas/featureGeoJSON" }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "text/html", {
+                          {
+                            "schema",  {
+                              { "type", "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              defaultResponse()
+            }
+          }
+        }
+      }
+    };
+  }
+  return data;
+}
+
 Wfs3StaticHandler::Wfs3StaticHandler()
 {
 }
@@ -672,3 +1176,4 @@ void Wfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) cons
   context.response()->setHeader( QStringLiteral( "Content-Length" ), QString::number( size ) );
   context.response()->write( content );
 }
+

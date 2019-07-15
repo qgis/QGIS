@@ -72,19 +72,27 @@ QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
 void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
 {
   // Get url
-  const auto url { sanitizeUrl( context.request()->url() ) };
+  auto path { sanitizeUrl( context.request()->url() ).path() };
+  //path.truncate( context.apiRootPath().length() );
   // Find matching handler
   auto hasMatch { false };
   for ( const auto &h : mHandlers )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( url.path( ), rootPath() + h->path().pattern() ), QStringLiteral( "Server" ), Qgis::Info );
-    if ( h->path().match( url.path( ) ).hasMatch() )
+    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( path, h->path().pattern() ), QStringLiteral( "Server" ), Qgis::Info );
+    if ( h->path().match( path ).hasMatch() )
     {
       hasMatch = true;
       // Execute handler
       QgsMessageLog::logMessage( QStringLiteral( "Found API handler %1" ).arg( QString::fromStdString( h->operationId() ) ), QStringLiteral( "Server" ), Qgis::Info );
-      // May throw QgsServerApiBadRequestException
-      h->handleRequest( context );
+      // May throw QgsServerApiBadRequestException or JSON exceptions on serializing
+      try
+      {
+        h->handleRequest( context );
+      }
+      catch ( json::exception &ex )
+      {
+        throw QgsServerApiInternalServerError( QStringLiteral( "The API handler returned an error: %1" ).arg( ex.what() ) );
+      }
       break;
     }
   }
@@ -141,7 +149,12 @@ std::string QgsServerOgcApi::mimeType( const QgsServerOgcApi::ContentType &conte
 
 const QString QgsServerOgcApi::resourcesPath()
 {
-  return QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/server/api" ) );
+  return QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/server/api/ogc" ) );
+}
+
+const std::vector<std::shared_ptr<QgsServerOgcApiHandler> > QgsServerOgcApi::handlers() const
+{
+  return mHandlers;
 }
 
 

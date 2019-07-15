@@ -21,6 +21,8 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsserverprojectutils.h"
+#include "qgsmessagelog.h"
 
 #include "nlohmann/json.hpp"
 
@@ -84,6 +86,27 @@ const QgsFields QgsServerApiUtils::publishedFields( const QgsVectorLayer *layer 
   return layer->fields();
 }
 
+const QVector<QgsMapLayer *> QgsServerApiUtils::publishedWfsLayers( const QgsProject *project )
+{
+  const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+  const QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
+  const QStringList wfstInsertLayersId = QgsServerProjectUtils::wfstInsertLayerIds( *project );
+  const QStringList wfstDeleteLayersId = QgsServerProjectUtils::wfstDeleteLayerIds( *project );
+  QVector<QgsMapLayer *> result;
+  const auto constLayers { project->mapLayers() };
+  for ( auto it = project->mapLayers().constBegin(); it !=  project->mapLayers().constEnd(); it++ )
+  {
+    if ( wfstUpdateLayersId.contains( it.value()->id() ) ||
+         wfstInsertLayersId.contains( it.value()->id() ) ||
+         wfstDeleteLayersId.contains( it.value()->id() ) )
+    {
+      result.push_back( it.value() );
+    }
+
+  }
+  return result;
+}
+
 const QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
 {
   QString result { QUrl( value ).toString() };
@@ -94,3 +117,43 @@ const QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
   }
   return result.replace( '\'', QStringLiteral( "\'" ) );
 }
+
+const QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project )
+{
+  // This must be always available in OGC APIs
+  QStringList result { { QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" )}};
+  const QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
+  for ( const QString &crsId : outputCrsList )
+  {
+    const auto crsUri { crsToOgcUri( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsId ) ) };
+    if ( ! crsUri.isEmpty() )
+    {
+      result.push_back( crsUri );
+    }
+  }
+  return result;
+}
+
+const QString QgsServerApiUtils::crsToOgcUri( const QgsCoordinateReferenceSystem &crs )
+{
+  const auto parts { crs.authid().split( ':' ) };
+  if ( parts.length() == 2 )
+  {
+    if ( parts[0] == QStringLiteral( "EPSG" ) )
+      return  QStringLiteral( "http://www.opengis.net/def/crs/EPSG/9.6.2/%1" ).arg( parts[1] ) ;
+    else if ( parts[0] == QStringLiteral( "OGC" ) )
+    {
+      return  QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/%1" ).arg( parts[1] ) ;
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI %1: (not OGC or EPSG)" ).arg( crs.authid() ), QStringLiteral( "Server" ), Qgis::Critical );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI: %1" ).arg( crs.authid() ), QStringLiteral( "Server" ), Qgis::Critical );
+  }
+  return QString();
+}
+

@@ -42,7 +42,8 @@ class QgsWfs3Module: public QgsServiceModule
       wfs3Api->registerHandler<Wfs3DescribeCollectionHandler>();
       wfs3Api->registerHandler<Wfs3ConformanceHandler>();
       wfs3Api->registerHandler<Wfs3StaticHandler>();
-      wfs3Api->registerHandler<Wfs3APIHandler>();
+      // API handler must access to the whole API
+      wfs3Api->registerHandler<Wfs3APIHandler>( wfs3Api );
       wfs3Api->registerHandler<Wfs3LandingPageHandler>();
 
       // Register API

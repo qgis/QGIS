@@ -24,6 +24,7 @@
 #include "qgis_server.h"
 #include <QString>
 #include "qgsproject.h"
+#include "qgsserverprojectutils.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -73,10 +74,70 @@ class SERVER_EXPORT QgsServerApiUtils
     static const QgsFields publishedFields( const QgsVectorLayer *layer );
 
     /**
+     * Returns the list of layers accessible to the service for a given \a project.
+     *
+     * This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
+     *
+     * \note project must not be NULL
+     * TODO: implement ACL
+     */
+    static const QVector<QgsMapLayer *> publishedWfsLayers( const QgsProject *project );
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the list of layers of type T accessible to the WFS service for a given \a project.
+     *
+     * Example:
+     *
+     *     QVector<QgsVectorLayer*> vectorLayers = publishedLayers<QgsVectorLayer>();
+     *
+     * TODO: implement ACL
+     * \note not available in Python bindings
+     * \see publishedWfsLayers()
+     * \since QGIS 3.10
+     */
+    template <typename T>
+    static const QVector<T *> publishedWfsLayers( const QgsProject *project )
+    {
+      const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+      const QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
+      const QStringList wfstInsertLayersId = QgsServerProjectUtils::wfstInsertLayerIds( *project );
+      const QStringList wfstDeleteLayersId = QgsServerProjectUtils::wfstDeleteLayerIds( *project );
+      QVector<T *> result;
+      const auto constLayers { project->layers<T *>() };
+      for ( const auto &layer : constLayers )
+      {
+        if ( wfstUpdateLayersId.contains( layer->id() ) ||
+             wfstInsertLayersId.contains( layer->id() ) ||
+             wfstDeleteLayersId.contains( layer->id() ) )
+        {
+          result.push_back( layer );
+        }
+
+      }
+      return result;
+    }
+
+#endif
+
+    /**
      * Sanitize the input \a value by removing URL encoding and checking for malicious content.
      * In case of failure returns an empty string.
      */
     static const QString sanitizedFieldValue( const QString &value );
+
+    /**
+     * Return the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) available for this \a project.
+     * Information is read from project WMS configuration.
+     */
+    static const QStringList publishedCrsList( const QgsProject *project );
+
+    /**
+     * Returns a \a crs into OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
+     * Returns an empty string on failure.
+     */
+    static const QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs );
 
 
 };

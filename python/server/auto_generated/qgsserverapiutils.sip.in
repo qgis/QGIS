@@ -48,10 +48,35 @@ This method takes into account the ACL restrictions provided by QGIS Server Acce
 TODO: implement ACL
 %End
 
+    static const QVector<QgsMapLayer *> publishedWfsLayers( const QgsProject *project );
+%Docstring
+Returns the list of layers accessible to the service for a given ``project``.
+
+This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
+
+.. note::
+
+   project must not be NULL
+   TODO: implement ACL
+%End
+
+
     static const QString sanitizedFieldValue( const QString &value );
 %Docstring
 Sanitize the input ``value`` by removing URL encoding and checking for malicious content.
 In case of failure returns an empty string.
+%End
+
+    static const QStringList publishedCrsList( const QgsProject *project );
+%Docstring
+Return the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) available for this ``project``.
+Information is read from project WMS configuration.
+%End
+
+    static const QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Returns a ``crs`` into OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
+Returns an empty string on failure.
 %End
 
 

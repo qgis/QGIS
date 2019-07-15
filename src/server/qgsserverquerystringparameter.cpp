@@ -17,7 +17,7 @@
 #include "qgsserverquerystringparameter.h"
 #include "qgsserverrequest.h"
 #include "qgsserverexception.h"
-
+#include "nlohmann/json.hpp"
 
 QgsServerQueryStringParameter::QgsServerQueryStringParameter( const QString name,
     bool required,
@@ -30,7 +30,6 @@ QgsServerQueryStringParameter::QgsServerQueryStringParameter( const QString name
   mDescription( description ),
   mDefaultValue( defaultValue )
 {
-
 }
 
 QgsServerQueryStringParameter::~QgsServerQueryStringParameter()
@@ -79,13 +78,13 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
           case Type::String:
             value = value.toString( );
             break;
-          case Type::Bool:
+          case Type::Boolean:
             value = value.toBool( );
             break;
           case Type::Double:
             value = value.toDouble( &ok );
             break;
-          case Type::Int:
+          case Type::Integer:
             value = value.toLongLong( &ok );
             break;
           case Type::List:
@@ -113,6 +112,28 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
 void QgsServerQueryStringParameter::setCustomValidator( const customValidator &customValidator )
 {
   mCustomValidator = customValidator;
+}
+
+json QgsServerQueryStringParameter::data() const
+{
+  const auto nameString { name().toStdString() };
+  auto dataType { typeName( mType ).toLower().toStdString() };
+  // Map list to string because it will be serialized
+  if ( dataType == "list" )
+  {
+    dataType = "string";
+  }
+  return
+  {
+    { "name", nameString },
+    { "description", "Filter the collection by '" + nameString + "'" },
+    { "required", mRequired },
+    { "in", "query"},
+    { "style", "form"},
+    { "explode", false },
+    { "schema", {{ "type", dataType }}},
+    // This is unfortunately not in OAS: { "default", mDefaultValue.toString().toStdString() }
+  };
 }
 
 QString QgsServerQueryStringParameter::description() const

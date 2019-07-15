@@ -96,6 +96,11 @@ class SERVER_EXPORT QgsServerApiContext
      */
     QString apiRootPath() const;
 
+    /**
+     * Sets context request to \a request
+     */
+    void setRequest( const QgsServerRequest *request );
+
   private:
 
     QString mApiRootPath;

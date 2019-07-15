@@ -43,8 +43,10 @@ class QgsServerApiContext;
  * - description
  * - linkTitle
  * - linkType
+ * - schema
  *
  * Optionally, override:
+ * - tags
  * - parameters
  * - contentTypes
  * - defaultContentType
@@ -66,13 +68,13 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     // MAIN Section (operational)
 
     /**
-     * URL pattern for this handler, named capture group are supported as
-     * well as positional capture groups.
+     * URL pattern for this handler, named capture group are automatically
+     * extracted and returned by values()
      *
-     * Example: "/handlername/(?P<code1>\d{2})/(\d{3})" will capture "code1" as a
-     * named parameter and the second group as a positional parameter with index 0.
+     * Example: "/handlername/(?P<code1>\d{2})/items" will capture "code1" as a
+     * named parameter.
      *
-     * \see validate()
+     * \see values()
      */
     virtual QRegularExpression path() const = 0;
 
@@ -102,6 +104,9 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     //! Main role for the resource link
     virtual QgsServerOgcApi::Rel linkType() const = 0;
 
+    //! Tags
+    virtual QStringList tags() const { return {}; }
+
     /**
      * Default response content type in case the client did not specifically
      * ask for any particular content type.
@@ -126,18 +131,17 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     virtual void handleRequest( const QgsServerApiContext &context ) const = 0;
 
     /**
-     * Validates the request within its \a context and returns the
-     * parameter map.
+     * Analyze the incoming request \a context and returns the validated
+     * parameter map, throws QgsServerApiBadRequestError in case of errors.
+     *
+     * Path fragments from the named groups in the path() regular expression
+     * are also added to the map.
      *
      * Your handleRequest method should call this function to retrieve
      * the parameters map.
      *
-     * Path fragments are returned in the string list "path_arguments", if the
-     * path() regular expression contains named capture groups, the
-     * corresponding parameters are also added to the map.
-     *
      * \returns the validated parameters map by extracting captured
-     *          parameters from the path (no validation is performed on
+     *          named parameters from the path (no validation is performed on
      *          the type because the regurlar expression can do it),
      *          and the query string parameters.
      *
@@ -145,10 +149,10 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \see parameters()
      * \throws QgsServerApiBadRequestError if validation fails
      */
-    virtual QVariantMap validate( const QgsServerApiContext &context ) const SIP_THROW( QgsServerApiBadRequestException );
+    virtual QVariantMap values( const QgsServerApiContext &context ) const SIP_THROW( QgsServerApiBadRequestException );
 
     /**
-     * Looks for the first contentType match in accept and returns its mime type,
+     * Looks for the first ContentType match in the accept header and returns its mime type,
      * returns an empty string if there are not matches.
      */
     QString contentTypeForAccept( const QString &accept ) const;
@@ -201,10 +205,12 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     void htmlDump( const json &data, const QgsServerApiContext &context ) const;
 
     /**
-     * Returns handler information (id, description and other metadata) as JSON.
+     * Returns handler information for the OPENAPI description (id, description and other metadata) as JSON.
+     * It may return a NULL JSON object in case the handler does not need to be included in the API.
+     * \note requires a valid project to be present in the context
      * \note not available in Python bindings
      */
-    json handlerData( ) const;
+    virtual json schema( const QgsServerApiContext &context ) const;
 
     /**
      * Writes \a data to the \a response stream as XML (indented if debug is active).
@@ -231,6 +237,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * The base implementation returns the alternate and self links, subclasses may
      * add other links.
+     * \note not available in Python bindings
      */
     json links( const QgsServerApiContext &context ) const;
 
@@ -239,6 +246,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * Returns a vector layer instance from the "collectionId" parameter of the path in the given \a context,
      * requires a valid project instance in the context.
      *
+     * \note not available in Python bindings
      * \throws QgsServerApiNotFoundError if the layer could not be found
      * \throws QgsServerApiImproperlyConfiguredException if project is not set
      */
@@ -246,6 +254,16 @@ class SERVER_EXPORT QgsServerOgcApiHandler
 
 
 #endif
+
+    /**
+     * Returns handler information as (id, description and other metadata) as QVariant.
+     *
+     * \note This is meant for Python plugins to consume, C++ code must use the faster
+     * implementation in handlerData().
+     *
+     * \see handlerData()
+     */
+    QVariant handlerDataAsQVariant( const QgsServerApiContext &context ) const SIP_PYNAME( schema );
 
     /**
      * Writes \a data to the \a context response stream, content-type it is calculated from the \a context request,
@@ -315,10 +333,22 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      */
     static std::string parentLink( const QUrl &url, int levels = 1 );
 
+    /**
+     * Returns a vector layer from the \a collectionId in the given \a context     *
+     */
     static QgsVectorLayer *layerFromCollection( const QgsServerApiContext &context, const QString &collectionId );
 
+    /**
+     * Return the defaultResponse as JSON
+     */
+    static json defaultResponse() SIP_SKIP;
 
-  private:
+    /**
+     * Returns tags as JSON
+     * \see tags()
+     * \note not available in Python bindings
+     */
+    json jsonTags( ) const SIP_SKIP;
 
 
 };

@@ -5,8 +5,8 @@ Content-Type: application/geo+json
     {
       "geometry": {
         "coordinates": [
-          8.203496,
-          44.901483
+          913209.035793,
+          5606025.237304
         ],
         "type": "Point"
       },
@@ -21,8 +21,8 @@ Content-Type: application/geo+json
     {
       "geometry": {
         "coordinates": [
-          8.203547,
-          44.901436
+          913214.67407,
+          5606017.874258
         ],
         "type": "Point"
       },
@@ -33,24 +33,40 @@ Content-Type: application/geo+json
         "utf8nameè": "two àò"
       },
       "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          913204.912803,
+          5606011.456473
+        ],
+        "type": "Point"
+      },
+      "id": 2,
+      "properties": {
+        "id": 3,
+        "name": "three",
+        "utf8nameè": "three èé↓"
+      },
+      "type": "Feature"
     }
   ],
   "links": [
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?bbox=437106.99096772138727829,4972307.72834488749504089,437129.50390358484582976,4972318.1108037903904914&bbox-crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F32632",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F3857",
       "rel": "self",
       "title": "Retrieve the features of the collection as GEOJSON",
       "type": "application/geo+json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?bbox=437106.99096772138727829,4972307.72834488749504089,437129.50390358484582976,4972318.1108037903904914&bbox-crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F32632",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F3857",
       "rel": "alternate",
       "title": "Retrieve the features of the collection as HTML",
       "type": "text/html"
     }
   ],
-  "numberMatched": 2,
-  "numberReturned": 2,
-  "timeStamp": "2019-07-12T13:28:56Z",
+  "numberMatched": 3,
+  "numberReturned": 3,
+  "timeStamp": "2019-07-15T17:48:05Z",
   "type": "FeatureCollection"
 }

@@ -84,6 +84,11 @@ this method will return "/resources/wfs3"
 Returns the API root path
 %End
 
+    void setRequest( const QgsServerRequest *request );
+%Docstring
+Sets context request to ``request``
+%End
+
 };
 
 /************************************************************************

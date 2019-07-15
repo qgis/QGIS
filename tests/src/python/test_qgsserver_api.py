@@ -65,14 +65,24 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,8.203497,something_wrong_here')
         self.assertTrue(bbox.isEmpty())
 
+    def test_published_crs(self):
+        """Test published WMS CRSs"""
+
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        crss = QgsServerApiUtils.publishedCrsList(project)
+        self.assertTrue('http://www.opengis.net/def/crs/OGC/1.3/CRS84' in crss)
+        self.assertTrue('http://www.opengis.net/def/crs/EPSG/9.6.2/3857' in crss)
+        self.assertTrue('http://www.opengis.net/def/crs/EPSG/9.6.2/4326' in crss)
+
     def test_parse_crs(self):
         crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/OGC/1.3/CRS84')
         self.assertTrue(crs.isValid())
         self.assertEquals(crs.postgisSrid(), 4326)
 
-        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/EPSG/9.6.2/32632')
+        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/EPSG/9.6.2/3857')
         self.assertTrue(crs.isValid())
-        self.assertEquals(crs.postgisSrid(), 32632)
+        self.assertEquals(crs.postgisSrid(), 3857)
 
         crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/something_wrong_here')
         self.assertFalse(crs.isValid())
@@ -259,9 +269,14 @@ class QgsServerAPITest(QgsServerAPITestBase):
     def test_wfs3_api(self):
         """Test WFS3 API"""
 
-        self.compareContentType('http://server.qgis.org/wfs3/api', {}, 'application/openapi+json;version=3.0')
+        # No project: error
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/api.openapi3')
         self.compareApi(request, None, 'test_wfs3_api.json')
+
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/api.openapi3')
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        self.compareApi(request, project, 'test_wfs3_api_project.json')
 
     def test_wfs3_conformance(self):
         """Test WFS3 API"""
@@ -310,6 +325,14 @@ class QgsServerAPITest(QgsServerAPITestBase):
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items')
         self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé.json')
 
+    def test_wfs3_collection_items_crs(self):
+        """Test WFS3 API items with CRS"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?crs={}'.format(encoded_crs))
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_crs_3857.json')
+
     def test_invalid_args(self):
         """Test wrong args"""
         project = QgsProject()
@@ -339,6 +362,16 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=1&offset=1')
         self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1_offset_1.json')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=1&offset=-1')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400) # Bad request
+        self.assertEqual(response.body(), b'[{"code":"Bad request error","description":"Argument \'offset\' is not valid. Offset for features to retrieve [0-3]"}]') # Bad request
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=-1&offset=1')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400) # Bad request
+        self.assertEqual(response.body(), b'[{"code":"Bad request error","description":"Argument \'limit\' is not valid. Number of features to retrieve [0-10000]"}]') # Bad request
 
     def test_wfs3_collection_items_bbox(self):
         """Test WFS3 API bbox"""
@@ -348,9 +381,9 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_bbox.json')
 
         # Test with a different CRS
-        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/32632', safe='')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=437106.99096772138727829,4972307.72834488749504089,437129.50390358484582976,4972318.1108037903904914&bbox-crs={}'.format(encoded_crs))
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_bbox_32632.json')
+        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=913191,5606014,913234,5606029&bbox-crs={}'.format(encoded_crs))
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_bbox_3857.json')
 
     def test_wfs3_static_handler(self):
         """Test static handler"""
@@ -406,7 +439,7 @@ class Handler1(QgsServerOgcApiHandler):
     def handleRequest(self, context):
         """Simple mirror: returns the parameters"""
 
-        params = self.validate(context)
+        params = self.values(context)
         self.write(params, context)
 
     def parameters(self, context):
@@ -436,7 +469,7 @@ class Handler2(QgsServerOgcApiHandler):
     def handleRequest(self, context):
         """Simple mirror: returns the parameters"""
 
-        params = self.validate(context)
+        params = self.values(context)
         self.write(params, context)
 
     def parameters(self, context):
@@ -490,7 +523,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(r.data(), '')
 
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
-            h.validate(ctx)
+            h.values(ctx)
         self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
 
         # Add handler to API and test for /api2
@@ -522,20 +555,20 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(str(ex.exception), 'Argument \'value1\' could not be converted to Double')
 
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone?value1=1.2345'))
-        params = h.validate(ctx)
-        self.assertEqual(params, {'path_arguments': [], 'value1': 1.2345})
+        params = h.values(ctx)
+        self.assertEqual(params, {'value1': 1.2345})
         api.executeRequest(ctx)
         self.assertEqual(json.loads(bytes(ctx.response().data()))['value1'], 1.2345)
 
         # Test path fragments extraction
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345'))
-        params = h2.validate(ctx)
-        self.assertEqual(params, {'code1': '00', 'path_arguments': ['00'], 'value1': 1.2345, 'value2': None})
+        params = h2.values(ctx)
+        self.assertEqual(params, {'code1': '00', 'value1': 1.2345, 'value2': None})
 
         # Test string encoding
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345&value2=a%2Fstring%20some'))
-        params = h2.validate(ctx)
-        self.assertEqual(params, {'code1': '00', 'path_arguments': ['00'], 'value1': 1.2345, 'value2': 'a/string some'})
+        params = h2.values(ctx)
+        self.assertEqual(params, {'code1': '00', 'value1': 1.2345, 'value2': 'a/string some'})
 
         # Test links
         self.assertEqual(h2.href(ctx), 'http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345&value2=a%2Fstring%20some')

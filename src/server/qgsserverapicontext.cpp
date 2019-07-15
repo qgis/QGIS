@@ -76,3 +76,8 @@ QString QgsServerApiContext::apiRootPath() const
 {
   return mApiRootPath;
 }
+
+void QgsServerApiContext::setRequest( const QgsServerRequest *request )
+{
+  mRequest = request;
+}

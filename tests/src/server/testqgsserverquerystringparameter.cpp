@@ -53,6 +53,9 @@ class TestQgsServerQueryStringParameter : public QObject
 
     // Test custom validators
     void testCustomValidators();
+
+    // Test default values
+    void testDefaultValues();
 };
 
 
@@ -98,7 +101,7 @@ void TestQgsServerQueryStringParameter::testArguments()
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
 
   // Test int
-  p.mType = QgsServerQueryStringParameter::Type::Int;
+  p.mType = QgsServerQueryStringParameter::Type::Integer;
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
   QCOMPARE( p.value( ctx ), 123 );
   QCOMPARE( p.value( ctx ).type(), QVariant::LongLong );
@@ -129,7 +132,7 @@ void TestQgsServerQueryStringParameter::testArguments()
 
 void TestQgsServerQueryStringParameter::testCustomValidators()
 {
-  QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Int };
+  QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Integer };
   QgsServerRequest request;
   QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
@@ -150,6 +153,23 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
   QCOMPARE( p.value( ctx ), 502 );
   QCOMPARE( p.value( ctx ).type(), QVariant::LongLong );
+
+}
+
+void TestQgsServerQueryStringParameter::testDefaultValues()
+{
+  // Set a default AND required, verify it's ignored
+  QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Paramerer 1" ), 10 };
+  QgsServerRequest request;
+  QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
+
+  request.setUrl( QStringLiteral( "http://www.qgis.org/api/" ) );
+  QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
+
+  QgsServerQueryStringParameter p2 { QStringLiteral( "parameter1" ), false, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Paramerer 1" ), 10 };
+  QCOMPARE( p2.value( ctx ), 10 );
+  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
+  QCOMPARE( p2.value( ctx ), 501 );
 
 }
 

@@ -119,10 +119,10 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 
     // Utilities
 #ifndef SIP_RUN
-    template<class T>
-    void registerHandler()
+    template<class T, typename... Args>
+    void registerHandler( Args... args )
     {
-      mHandlers.emplace_back( std::make_shared<T>() );
+      mHandlers.emplace_back( std::make_shared<T>( args... ) );
     }
 #endif
 
@@ -173,6 +173,11 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
      * TODO: make this path configurable by env and/or settings
      */
     static const QString resourcesPath();
+
+    /**
+     * Returns registered handlers
+     */
+    const std::vector<std::shared_ptr<QgsServerOgcApiHandler> > handlers() const SIP_SKIP;
 
   private:
 

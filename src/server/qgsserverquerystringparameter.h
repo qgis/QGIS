@@ -23,8 +23,15 @@
 #include <QVariant>
 #include <QObject>
 
-class QgsServerApiBadRequestException;
 
+#include "nlohmann/json_fwd.hpp"
+
+#ifndef SIP_RUN
+using json = nlohmann::json;
+#endif
+
+
+class QgsServerApiBadRequestException;
 
 
 /**
@@ -52,21 +59,22 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     enum class Type
     {
       String = QVariant::String,   //! parameter is a string
-      Int = QVariant::LongLong,    //! parameter is an integer
+      Integer = QVariant::LongLong,    //! parameter is an integer
       Double = QVariant::Double,   //! parameter is a double
-      Bool = QVariant::Bool,       //! parameter is a boolean
+      Boolean = QVariant::Bool,       //! parameter is a boolean
       List = QVariant::StringList, //! parameter is a list of strings, the handler will perform any further required conversion of the list values
     };
     Q_ENUM( Type )
 
 
     /**
-     * QgsServerQueryStringParameter
-     * \param name
+     * Constructs a QgsServerQueryStringParameter object.
+     *
+     * \param name parameter name
      * \param required
-     * \param type
-     * \param description
-     * \param defaultValue
+     * \param type the parameter type
+     * \param description parameter description
+     * \param defaultValue, it is ignored if the parameter is required
      */
     QgsServerQueryStringParameter( const QString name,
                                    bool required = false,
@@ -102,6 +110,12 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      * \note not available in Python bindings
      */
     void setCustomValidator( const customValidator &customValidator );
+
+    /**
+     * Returns the handler information as a JSON object.
+     */
+    json data( ) const;
+
 #endif
 
     /**

@@ -36,7 +36,7 @@ using namespace inja;
 
 
 
-QVariantMap QgsServerOgcApiHandler::validate( const QgsServerApiContext &context ) const
+QVariantMap QgsServerOgcApiHandler::values( const QgsServerApiContext &context ) const
 {
   QVariantMap result ;
   QVariantList positional;
@@ -56,13 +56,7 @@ QVariantMap QgsServerOgcApiHandler::validate( const QgsServerApiContext &context
       if ( ! name.isEmpty() )
         result[name] = QUrlQuery( match.captured( name ) ).toString() ;
     }
-    // Get unnamed (positional) path parameters
-    for ( int i = 1; i < path().captureCount(); i++ )
-    {
-      positional.append( QUrlQuery( match.captured( i ) ).toString() );
-    }
   }
-  result["path_arguments"] = positional;
   return result;
 }
 
@@ -95,7 +89,7 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
   switch ( contentType )
   {
     case QgsServerOgcApi::ContentType::HTML:
-      data["handler"] = handlerData( );
+      data["handler"] = schema( context );
       if ( ! htmlMetadata.is_null() )
       {
         data["metadata"] = htmlMetadata;
@@ -174,14 +168,15 @@ void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &co
 #endif
 }
 
-json QgsServerOgcApiHandler::handlerData() const
+json QgsServerOgcApiHandler::schema( const QgsServerApiContext &context ) const
 {
-  json data;
-  data["linkTitle"] = linkTitle();
-  data["operationId"] = operationId();
-  data["description"] = description();
-  data["summary"] = summary();
-  return data;
+  Q_UNUSED( context );
+  return nullptr;
+}
+
+QVariant QgsServerOgcApiHandler::handlerDataAsQVariant( const QgsServerApiContext &context ) const
+{
+  return QgsJsonUtils::parseJson( schema( context ).dump() );
 }
 
 json QgsServerOgcApiHandler::link( const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType, const QgsServerOgcApi::ContentType contentType, const std::string &title ) const
@@ -233,15 +228,15 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromContext( const QgsServerApiCont
 
 const QString QgsServerOgcApiHandler::staticPath( ) const
 {
-  // resources/server/api + /ogc/static
-  return QgsServerOgcApi::resourcesPath() + QStringLiteral( "/ogc/static" );
+  // resources/server/api + /static
+  return QgsServerOgcApi::resourcesPath() + QStringLiteral( "/static" );
 }
 
 const QString QgsServerOgcApiHandler::templatePath( const QgsServerApiContext &context ) const
 {
-  // resources/server/api + /ogc/templates/ + operationId + .html
+  // resources/server/api/ogc + /templates/ + operationId + .html
   auto path { QgsServerOgcApi::resourcesPath() };
-  path += QStringLiteral( "/ogc/templates" );
+  path += QStringLiteral( "/templates" );
   path += context.apiRootPath();
   path += '/';
   path += QString::fromStdString( operationId() );
@@ -464,4 +459,44 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromCollection( const QgsServerApiC
     throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Collection with given id (%1) was not found or multiple matches were found" ).arg( collectionId ) );
   }
   return mapLayers.first();
+}
+
+json QgsServerOgcApiHandler::defaultResponse()
+{
+  static json defRes =
+  {
+    {
+      "default", {
+        { "description", "An error occured." },
+        {
+          "content", {
+            {
+              "application/json", {
+                {
+                  "schema", {
+                    { "$ref", "#/components/schemas/exception" }
+                  }
+                },
+                {
+                  "text/html", {
+                    {
+                      "schema", {
+                        { "type", "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  return defRes;
+}
+
+json QgsServerOgcApiHandler::jsonTags() const
+{
+  return QgsJsonUtils::jsonFromVariant( tags() );
 }
