@@ -195,6 +195,11 @@ void QgsWelcomePage::setRecentProjects( const QList<QgsRecentProjectItemsModel::
   updateRecentProjectsVisibility();
 }
 
+QString QgsWelcomePage::newsFeedUrl()
+{
+  return QStringLiteral( FEED_URL );
+}
+
 void QgsWelcomePage::recentProjectItemActivated( const QModelIndex &index )
 {
   QgisApp::instance()->openProject( mRecentProjectsModel->data( index, Qt::ToolTipRole ).toString() );
@@ -366,7 +371,7 @@ void QgsWelcomePage::showContextMenuForNews( QPoint point )
   QAction *hideAction = new QAction( tr( "Hide QGIS News…" ), menu );
   connect( hideAction, &QAction::triggered, this, [this]
   {
-    if ( QMessageBox::question( this,  tr( "QGIS News" ), tr( "Are you sure you want to permanently hide QGIS news? This action can not be undone." ) ) == QMessageBox::Yes )
+    if ( QMessageBox::question( this,  tr( "QGIS News" ), tr( "Are you sure you want to hide QGIS news? (The news feed can be re-enabled from the QGIS settings dialog.)" ) ) == QMessageBox::Yes )
     {
       //...sad trombone...
       mNewsFeedParser->dismissAll();
