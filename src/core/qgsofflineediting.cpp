@@ -86,6 +86,12 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
   {
     return false;
   }
+
+  //preserve individual snapping settings
+  QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
+  const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings = snappingConfig.individualLayerSettings();
+  snappingConfig.removeLayers( QgsProject::instance()->mapLayers().values() );
+
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
   if ( createOfflineDb( dbPath, containerType ) )
   {
@@ -188,6 +194,13 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
       QgsProject::instance()->setTitle( projectTitle );
 
       QgsProject::instance()->writeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH, QgsProject::instance()->writePath( dbPath ) );
+
+      //preserve individual snapping settings
+      for ( const QgsSnappingConfig::IndividualLayerSettings &individualSetting : individualLayerSettings )
+      {
+        snappingConfig.setIndividualLayerSettings( layerIdMapping.value( individualLayerSettings.key( individualSetting )->id() ), individualSetting );
+      }
+      QgsProject::instance()->setSnappingConfig( snappingConfig );
 
       return true;
     }
