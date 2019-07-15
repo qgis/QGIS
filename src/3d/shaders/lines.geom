@@ -24,8 +24,8 @@ vec2 toScreenSpace( vec4 vertex )
 
 vec4 clip_near_plane(vec4 pt1, vec4 pt2)
 {
-  // Figure out intersection point of line pt1-pt2 and near plane in homogenous coordinates.
-  // Near plane is z=-1 in NDC, that means in homogenous coordinates that's z/w=-1
+  // Figure out intersection point of line pt1-pt2 and near plane in homogeneous coordinates.
+  // Near plane is z=-1 in NDC, that means in homogeneous coordinates that's z/w=-1
   // Going from line equation P = P1 + u * (P2 - P1) we need to figure out "u"
   // In the above equation P, P1, P2 are vectors, so individual coordinate values are
   // x = x1 + u * (x2 - x1) and so on for y,z,w as well. Now combining near plane equation z/w=-1

@@ -102,7 +102,7 @@ QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
     mRecentProjections.removeLast();
   }
 
-  // Save to file *** Should be removed sometims in the future ***
+  // Save to file *** Should be removed sometime in the future ***
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/UI/recentProjections" ), mRecentProjections );
 

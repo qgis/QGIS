@@ -67,7 +67,7 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
      *
      * Common properties for parameters, including the \a name, \a description, and parameter \a flags are passed to the
      * method. Subclass implementations must use these properties when crafting a parameter definition which
-     * also respects the additional properties specific to the parameter type handled by the widget sublass.
+     * also respects the additional properties specific to the parameter type handled by the widget subclass.
      */
     virtual QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const = 0 SIP_FACTORY;
 };

@@ -159,7 +159,7 @@ Opens the associated help
 
     void groupChanged( const QModelIndex & );
 %Docstring
-Trigerred when the current group (or tag) is changed.
+Triggered when the current group (or tag) is changed.
 %End
 
     void groupRenamed( QStandardItem *item );

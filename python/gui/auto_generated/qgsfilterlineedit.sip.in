@@ -99,7 +99,7 @@ the text that is shown to users when the widget's value is null.
 
     QString nullValue() const;
 %Docstring
-Returns the string used for representating null values in the widget.
+Returns the string used for representing null values in the widget.
 
 .. seealso:: :py:func:`setNullValue`
 
