@@ -85,7 +85,7 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Transform the point specified by x,y from map (world)
      * coordinates to device coordinates
-     * \param x x cordinate o point to transform
+     * \param x x coordinate o point to transform
      * \param y y coordinate of point to transform
      * \returns QgsPointXY in device coordinates
      */

@@ -199,7 +199,7 @@ QgsWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType typ
 //    widget (until the QTreeWidget itself is large enough to show the whole
 //    inserted widget).  => We have to keep the height of QgsIdentifyResultsWebView smaller
 //    than the height of QTreeWidget so that a user can see it entire, even if
-//    this height is smaller than QgsIdentifyResultsWebView content (i.e. QgsIdentifyResultsWebView scroolbar
+//    this height is smaller than QgsIdentifyResultsWebView content (i.e. QgsIdentifyResultsWebView scrollbar
 //    is added). We make it even a bit smaller so that a user can see a bit of
 //    context (items above/below) when scrolling which is more pleasant.
 //

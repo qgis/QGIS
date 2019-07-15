@@ -196,7 +196,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     Q_DECL_DEPRECATED void itemChanged( QStandardItem *item ) SIP_DEPRECATED;
 
     /**
-     * Trigerred when the current group (or tag) is changed.
+     * Triggered when the current group (or tag) is changed.
      */
     void groupChanged( const QModelIndex & );
 

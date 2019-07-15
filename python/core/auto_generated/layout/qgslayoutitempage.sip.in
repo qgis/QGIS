@@ -77,7 +77,7 @@ Returns the size of the page.
 
     Orientation orientation() const;
 %Docstring
-Returns the page orientiation.
+Returns the page orientation.
 
 .. note::
 

@@ -51,7 +51,7 @@ Returns a new instance of a parameter definition, using the current settings def
 
 Common properties for parameters, including the ``name``, ``description``, and parameter ``flags`` are passed to the
 method. Subclass implementations must use these properties when crafting a parameter definition which
-also respects the additional properties specific to the parameter type handled by the widget sublass.
+also respects the additional properties specific to the parameter type handled by the widget subclass.
 %End
 };
 

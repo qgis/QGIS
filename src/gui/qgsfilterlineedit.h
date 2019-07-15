@@ -115,7 +115,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void setNullValue( const QString &nullValue ) { mNullValue = nullValue; }
 
     /**
-     * Returns the string used for representating null values in the widget.
+     * Returns the string used for representing null values in the widget.
      * \see setNullValue()
      * \see isNull()
      */

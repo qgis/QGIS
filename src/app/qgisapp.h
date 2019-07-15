@@ -1698,7 +1698,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void connectionsChanged();
 
     /**
-     * Emitted when a key is pressed and we want non widget sublasses to be able
+     * Emitted when a key is pressed and we want non widget subclasses to be able
       to pick up on this (e.g. maplayer) */
     void keyPressed( QKeyEvent *e );
 

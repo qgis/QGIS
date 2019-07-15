@@ -73,7 +73,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     }
     if ( edgeMatch.hasEdge() && !ctx.yConstraint.locked )
     {
-      // intersect with snapped segment line at X ccordinate
+      // intersect with snapped segment line at X coordinate
       const double dx = edgePt1.x() - edgePt0.x();
       if ( dx == 0 )
       {
@@ -101,7 +101,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     }
     if ( edgeMatch.hasEdge() && !ctx.xConstraint.locked )
     {
-      // intersect with snapped segment line at Y ccordinate
+      // intersect with snapped segment line at Y coordinate
       const double dy = edgePt1.y() - edgePt0.y();
       if ( dy == 0 )
       {
