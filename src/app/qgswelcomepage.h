@@ -42,6 +42,11 @@ class QgsWelcomePage : public QWidget
 
     void setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects );
 
+    /**
+     * Returns the URL used for the QGIS project news feed.
+     */
+    static QString newsFeedUrl();
+
   signals:
     void projectRemoved( int row );
     void projectPinned( int row );
