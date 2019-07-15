@@ -952,6 +952,15 @@ Emitted when the canvas has been assigned a different map theme.
 emit a message (usually to be displayed in a message bar)
 %End
 
+    void renderErrorOccurred( const QString &error, QgsMapLayer *layer );
+%Docstring
+Emitted whenever an error is encountered during a map render operation.
+
+The ``layer`` argument indicates the associated map layer, if available.
+
+.. versionadded:: 3.10.0
+%End
+
   protected:
 
     virtual bool event( QEvent *e );
