@@ -6696,7 +6696,7 @@ void TestQgsGeometry::triangle()
   QVERIFY( !t1.exteriorRing() );
   QVERIFY( !t1.interiorRing( 0 ) );
 
-  // degenarate triangles
+  // degenerate triangles
   QgsTriangle invalid( QgsPointXY( 0, 0 ), QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
   QVERIFY( !invalid.isEmpty() );
   invalid = QgsTriangle( QPointF( 0, 0 ), QPointF( 0, 0 ), QPointF( 10, 10 ) );

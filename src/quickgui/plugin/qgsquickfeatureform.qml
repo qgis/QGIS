@@ -85,7 +85,7 @@ Item {
   property QgsQuick.Project project
 
   /**
-   * The function used for a component loader to find qml edit widget componets used in form.
+   * The function used for a component loader to find qml edit widget components used in form.
    */
   property var loadWidgetFn: QgsQuick.Utils.getEditorComponentSource
 

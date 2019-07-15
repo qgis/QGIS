@@ -208,7 +208,7 @@ brew tap osgeo/osgeo4mac
 brew unlink qt
 brew unlink pyqt
 
-# Older txt2tags generator for INSTALL doc breakes build and chokes on Python 3
+# Older txt2tags generator for INSTALL doc breaks build and chokes on Python 3
 brew unlink txt2tags
 
 # Install and verify GDAL/OGR with decent driver support
