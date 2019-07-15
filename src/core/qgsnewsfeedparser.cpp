@@ -41,9 +41,32 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   if ( after > 0 )
     query.addQueryItem( QStringLiteral( "after" ), qgsDoubleToString( after, 0 ) );
 
-  const QString lang = QgsSettings().value( QStringLiteral( "locale/userLocale" ), QStringLiteral( "en_US" ) ).toString().left( 2 );
-  if ( !lang.isEmpty() )
-    query.addQueryItem( QStringLiteral( "lang" ), lang );
+  QString feedLanguage = QgsSettings().value( QStringLiteral( "%1/lang" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toString();
+  if ( feedLanguage.isEmpty() )
+  {
+    feedLanguage = QgsSettings().value( QStringLiteral( "locale/userLocale" ), QStringLiteral( "en_US" ) ).toString().left( 2 );
+  }
+  if ( !feedLanguage.isEmpty() )
+    query.addQueryItem( QStringLiteral( "lang" ), feedLanguage );
+
+  bool latOk = false;
+  bool longOk = false;
+  const double feedLat = QgsSettings().value( QStringLiteral( "%1/latitude" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toDouble( &latOk );
+  const double feedLong = QgsSettings().value( QStringLiteral( "%1/longitude" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toDouble( &longOk );
+  if ( latOk && longOk )
+  {
+    // hack to allow testing using local files
+    if ( feedUrl.isLocalFile() )
+    {
+      query.addQueryItem( QStringLiteral( "lat" ), QString::number( static_cast< int >( feedLat ) ) );
+      query.addQueryItem( QStringLiteral( "lon" ), QString::number( static_cast< int >( feedLong ) ) );
+    }
+    else
+    {
+      query.addQueryItem( QStringLiteral( "lat" ), qgsDoubleToString( feedLat ) );
+      query.addQueryItem( QStringLiteral( "lon" ), qgsDoubleToString( feedLong ) );
+    }
+  }
 
   // bit of a hack to allow testing using local files
   if ( feedUrl.isLocalFile() )
