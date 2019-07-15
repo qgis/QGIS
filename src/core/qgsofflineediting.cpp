@@ -87,17 +87,6 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
     return false;
   }
 
-  //preserve individual snapping settings
-  QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
-  QHash<QString, QgsSnappingConfig::IndividualLayerSettings> preservedIndividualLayerSettings;
-  const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings = snappingConfig.individualLayerSettings();
-  for ( const QgsSnappingConfig::IndividualLayerSettings &individualSetting : individualLayerSettings )
-  {
-    preservedIndividualLayerSettings.insert( individualLayerSettings.key( individualSetting )->id(), individualSetting );
-  }
-
-  snappingConfig.removeLayers( QgsProject::instance()->mapLayers().values() );
-
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
   if ( createOfflineDb( dbPath, containerType ) )
   {
@@ -144,6 +133,9 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         joinInfoBuffer.insert( vl->id(), joins );
       }
 
+      //preserve individual snapping settings
+      QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
+
       // copy selected vector layers to SpatiaLite
       for ( int i = 0; i < layerIds.count(); i++ )
       {
@@ -158,12 +150,19 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
+            //append snapping setting on new layer
+            snappingConfig.setIndividualLayerSettings( newLayer, QgsProject::instance()->snappingConfig().individualLayerSettings( vl ) );
+            snappingConfig.removeLayers( QList<QgsMapLayer *>() << vl );
+
             // remove remote layer
             QgsProject::instance()->removeMapLayers(
               QStringList() << origLayerId );
           }
         }
       }
+
+      //set snapping config
+      QgsProject::instance()->setSnappingConfig( snappingConfig );
 
       // restore join info on new SpatiaLite layer
       QMap<QString, QgsVectorJoinList >::ConstIterator it;
@@ -187,7 +186,6 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         }
       }
 
-
       emit progressStopped();
 
       // save offline project
@@ -200,13 +198,6 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
       QgsProject::instance()->setTitle( projectTitle );
 
       QgsProject::instance()->writeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH, QgsProject::instance()->writePath( dbPath ) );
-
-      //preserve individual snapping settings
-      for ( const QgsSnappingConfig::IndividualLayerSettings &preservedIndividualSetting : preservedIndividualLayerSettings )
-      {
-        snappingConfig.setIndividualLayerSettings( layerIdMapping.value( preservedIndividualLayerSettings.key( preservedIndividualSetting ) ), preservedIndividualSetting );
-      }
-      QgsProject::instance()->setSnappingConfig( snappingConfig );
 
       return true;
     }
