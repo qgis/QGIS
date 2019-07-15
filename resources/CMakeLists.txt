@@ -1,4 +1,5 @@
 INSTALL(FILES srs.db
+              srs6.db
               qgis.db
               symbology-style.xml
               spatialite.db

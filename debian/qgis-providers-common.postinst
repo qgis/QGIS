@@ -3,6 +3,7 @@ set -e
 
 if [ "$1" = "configure" ] && [ -x /usr/lib/qgis/crssync ]; then
 	cp /usr/share/qgis/resources/srs-template.db /usr/share/qgis/resources/srs.db
+	cp /usr/share/qgis/resources/srs6-template.db /usr/share/qgis/resources/srs6.db
 	dpkg-trigger qgis-crssync
 fi
 

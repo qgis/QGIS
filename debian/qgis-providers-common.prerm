@@ -4,5 +4,8 @@ set -e
 if [ "$1" = "remove" ] && [ -e /usr/share/qgis/resources/srs.db ]; then
 	rm -f /usr/share/qgis/resources/srs.db || true
 fi
+if [ "$1" = "remove" ] && [ -e /usr/share/qgis/resources/srs6.db ]; then
+	rm -f /usr/share/qgis/resources/srs6.db || true
+fi
 
 #DEBHELPER#
