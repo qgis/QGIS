@@ -767,7 +767,7 @@ void GlobePlugin::setupProxy()
       qputenv( "OSGEARTH_CURL_PROXYAUTH", auth.toLocal8Bit() );
     }
     //TODO: settings.value("/proxyType")
-    //TODO: URL exlusions
+    //TODO: URL exclusions
     osgEarth::HTTPClient::setProxySettings( proxySettings );
   }
   settings.endGroup();

@@ -459,7 +459,7 @@ void TestQgsRasterCalculator::calcWithLayers()
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is no avialable until open
+  tmpFile.open(); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 

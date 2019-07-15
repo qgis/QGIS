@@ -176,7 +176,7 @@ void QgsLeastSquares::affine( QVector<QgsPointXY> mapCoords,
 /**
  * Scales the given coordinates so that the center of gravity is at the origin and the mean distance to the origin is sqrt(2).
  *
- * Also returns 3x3 homogenous matrices which can be used to normalize and de-normalize coordinates.
+ * Also returns 3x3 homogeneous matrices which can be used to normalize and de-normalize coordinates.
  */
 void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY> &normalizedCoords,
                            double normalizeMatrix[9], double denormalizeMatrix[9] )

@@ -48,7 +48,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         provider = rasterLayer.dataProvider()
 
         tmpFile = QTemporaryFile()
-        tmpFile.open()  # fileName is no avialable until open
+        tmpFile.open()  # fileName is not available until open
         tmpName = tmpFile.fileName()
         tmpFile.close()
         # do not remove when class is destroyed so that we can read
