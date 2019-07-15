@@ -324,6 +324,7 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
+	"apps/%PACKAGENAME%/resources/srs.db" ^
 	"apps/%PACKAGENAME%/resources/symbology-style.xml" ^
 	"apps/%PACKAGENAME%/resources/cpt-city-qgis-min/" ^
 	"apps/%PACKAGENAME%/svg/" ^

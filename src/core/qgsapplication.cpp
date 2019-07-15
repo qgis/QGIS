@@ -952,6 +952,27 @@ QString QgsApplication::iconsPath()
 
 QString QgsApplication::srsDatabaseFilePath()
 {
+#if PROJ_VERSION_MAJOR>=6
+  if ( ABISYM( mRunningFromBuildDir ) )
+  {
+    QString tempCopy = QDir::tempPath() + "/srs6.db";
+
+    if ( !QFile( tempCopy ).exists() )
+    {
+      QFile f( pkgDataPath() + "/resources/srs6.db" );
+      if ( !f.copy( tempCopy ) )
+      {
+        qFatal( "Could not create temporary copy" );
+      }
+    }
+
+    return tempCopy;
+  }
+  else
+  {
+    return pkgDataPath() + QStringLiteral( "/resources/srs6.db" );
+  }
+#else
   if ( ABISYM( mRunningFromBuildDir ) )
   {
     QString tempCopy = QDir::tempPath() + "/srs.db";
@@ -971,6 +992,7 @@ QString QgsApplication::srsDatabaseFilePath()
   {
     return pkgDataPath() + QStringLiteral( "/resources/srs.db" );
   }
+#endif
 }
 
 QStringList QgsApplication::svgPaths()
