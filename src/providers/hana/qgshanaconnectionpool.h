@@ -30,29 +30,29 @@ inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri &uri, Qgs
   c = QgsHanaConnection::createConnection( uri );
 }
 
-inline void qgsConnectionPool_ConnectionDestroy(QgsHanaConnection *c )
+inline void qgsConnectionPool_ConnectionDestroy( QgsHanaConnection *c )
 {
   delete c;
 }
 
-inline void qgsConnectionPool_InvalidateConnection(QgsHanaConnection *c )
+inline void qgsConnectionPool_InvalidateConnection( QgsHanaConnection *c )
 {
   Q_UNUSED( c );
 }
 
-inline bool qgsConnectionPool_ConnectionIsValid(QgsHanaConnection *c )
+inline bool qgsConnectionPool_ConnectionIsValid( QgsHanaConnection *c )
 {
   Q_UNUSED( c );
   return true;
 }
 
 class QgsHanaConnectionPoolGroup
-  : public QObject, public QgsConnectionPoolGroup<QgsHanaConnection*>
+  : public QObject, public QgsConnectionPoolGroup<QgsHanaConnection *>
 {
     Q_OBJECT
 
   public:
-    explicit QgsHanaConnectionPoolGroup(const QString &name);
+    explicit QgsHanaConnectionPoolGroup( const QString &name );
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
@@ -60,11 +60,11 @@ class QgsHanaConnectionPoolGroup
     void stopExpirationTimer() { expirationTimer->stop(); }
 
   protected:
-    Q_DISABLE_COPY(QgsHanaConnectionPoolGroup)
+    Q_DISABLE_COPY( QgsHanaConnectionPoolGroup )
 };
 
 class QgsHanaConnectionPool
-  : public QgsConnectionPool<QgsHanaConnection*, QgsHanaConnectionPoolGroup>
+  : public QgsConnectionPool<QgsHanaConnection *, QgsHanaConnectionPoolGroup>
 {
   public:
     static QgsHanaConnectionPool *instance();
@@ -72,7 +72,7 @@ class QgsHanaConnectionPool
     static void cleanupInstance();
 
   protected:
-    Q_DISABLE_COPY(QgsHanaConnectionPool)
+    Q_DISABLE_COPY( QgsHanaConnectionPool )
 
   private:
     QgsHanaConnectionPool();

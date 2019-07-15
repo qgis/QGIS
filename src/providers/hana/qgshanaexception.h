@@ -23,20 +23,20 @@
 
 class QgsHanaException final : public QException
 {
-public:
-  explicit QgsHanaException(const char* what) noexcept
-    : mMessage(QgsHanaUtils::formatErrorMessage(what).toStdString())
-  {
-  }
+  public:
+    explicit QgsHanaException( const char *what ) noexcept
+      : mMessage( QgsHanaUtils::formatErrorMessage( what ).toStdString() )
+    {
+    }
 
-  void raise() const override { throw *this; }
+    void raise() const override { throw *this; }
 
-  QgsHanaException *clone() const override { return new QgsHanaException(*this); }
+    QgsHanaException *clone() const override { return new QgsHanaException( *this ); }
 
-  char const* what() const noexcept override { return mMessage.c_str(); }
+    char const *what() const noexcept override { return mMessage.c_str(); }
 
-private:
-  std::string mMessage;
+  private:
+    std::string mMessage;
 };
 
 #endif  // QGSHANAEXCEPTION_H

@@ -17,15 +17,15 @@
 #include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
 
-QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup(const QString &name)
-  : QgsConnectionPoolGroup<QgsHanaConnection*>(name)
+QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
+  : QgsConnectionPoolGroup<QgsHanaConnection*>( name )
 {
-  initTimer(this);
+  initTimer( this );
 }
 
-QgsHanaConnectionPool* QgsHanaConnectionPool::sInstance = nullptr;
+QgsHanaConnectionPool *QgsHanaConnectionPool::sInstance = nullptr;
 
-QgsHanaConnectionPool* QgsHanaConnectionPool::instance()
+QgsHanaConnectionPool *QgsHanaConnectionPool::instance()
 {
   if ( !sInstance )
     sInstance = new QgsHanaConnectionPool();
@@ -44,7 +44,7 @@ void QgsHanaConnectionPool::cleanupInstance()
 }
 
 QgsHanaConnectionPool::QgsHanaConnectionPool()
-  : QgsConnectionPool<QgsHanaConnection*, QgsHanaConnectionPoolGroup>()
+  : QgsConnectionPool<QgsHanaConnection *, QgsHanaConnectionPoolGroup>()
 {
   QgsDebugCall;
 }

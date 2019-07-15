@@ -21,14 +21,14 @@
 #include "qgshanasettings.h"
 #include <QThread>
 
- // A class that determines the geometry type of a given database
- // schema.table.column, with the option of doing so in a separate
- // thread.
+// A class that determines the geometry type of a given database
+// schema.table.column, with the option of doing so in a separate
+// thread.
 class QgsHanaColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsHanaColumnTypeThread(const QgsHanaSettings& settings);
+    QgsHanaColumnTypeThread( const QgsHanaSettings &settings );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
@@ -38,11 +38,11 @@ class QgsHanaColumnTypeThread : public QThread
     QVector<QgsHanaLayerProperty> layerProperties() const { return mLayerProperties; }
 
   signals:
-    void setLayerType(QgsHanaLayerProperty layerProperty);
-    void progress(int, int);
-    void progressMessage( const QString&);
+    void setLayerType( QgsHanaLayerProperty layerProperty );
+    void progress( int, int );
+    void progressMessage( const QString & );
 
-    public slots:
+  public slots:
     void stop();
 
   private:

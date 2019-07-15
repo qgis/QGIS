@@ -6,14 +6,14 @@
    Author    : Maksim Rylov
  ***************************************************************************/
 
- /***************************************************************************
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- ***************************************************************************/
+/***************************************************************************
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+***************************************************************************/
 #ifndef QGSHANAFEATUREITERATOR_H
 #define QGSHANAFEATUREITERATOR_H
 
@@ -26,10 +26,10 @@
 class QgsHanaFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsHanaFeatureSource(const QgsHanaProvider *p);
+    explicit QgsHanaFeatureSource( const QgsHanaProvider *p );
     ~QgsHanaFeatureSource() override;
 
-    QgsFeatureIterator getFeatures(const QgsFeatureRequest &request) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     bool isSpatial() const { return !mGeometryColumn.isEmpty() || mGeometryType != QgsWkbTypes::Unknown; }
@@ -58,7 +58,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     QgsHanaFeatureIterator(
       QgsHanaFeatureSource *source,
       bool ownSource,
-      const QgsFeatureRequest &request);
+      const QgsFeatureRequest &request );
 
     ~QgsHanaFeatureIterator() override;
 
@@ -66,15 +66,15 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     bool close() override;
 
   protected:
-    bool fetchFeature(QgsFeature &feature) override;
-    void fetchFeatureAttribute(int attrIndex, unsigned short paramIndex, QgsFeature &feature);
-    void fetchFeatureGeometry(unsigned short paramIndex, QgsFeature &feature);
-    bool nextFeatureFilterExpression(QgsFeature &feature) override;
+    bool fetchFeature( QgsFeature &feature ) override;
+    void fetchFeatureAttribute( int attrIndex, unsigned short paramIndex, QgsFeature &feature );
+    void fetchFeatureGeometry( unsigned short paramIndex, QgsFeature &feature );
+    bool nextFeatureFilterExpression( QgsFeature &feature ) override;
 
   private:
-    void buildStatement(const QgsFeatureRequest &request);
-    void ensureBufferCapacity(std::size_t capacity);
-    QString getBBOXFilter(const QgsRectangle& bbox, const QVersionNumber& dbVersion) const;
+    void buildStatement( const QgsFeatureRequest &request );
+    void ensureBufferCapacity( std::size_t capacity );
+    QString getBBOXFilter( const QgsRectangle &bbox, const QVersionNumber &dbVersion ) const;
 
   private:
     QgsHanaConnectionRef mConnRef;

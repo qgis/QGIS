@@ -30,7 +30,7 @@ class QgsHanaDriver
     static void cleanupInstance();
 
   protected:
-    Q_DISABLE_COPY(QgsHanaDriver)
+    Q_DISABLE_COPY( QgsHanaDriver )
 
   private:
     QgsHanaDriver();
