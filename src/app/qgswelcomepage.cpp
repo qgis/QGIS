@@ -112,7 +112,6 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
     connect( mNewsFeedListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForNews );
     connect( mNewsFeedParser, &QgsNewsFeedParser::entryDismissed, this, &QgsWelcomePage::updateNewsFeedVisibility );
     newsLayout->addWidget( mNewsFeedListView, 1 );
-    updateNewsFeedVisibility();
     connect( mNewsFeedParser, &QgsNewsFeedParser::fetched, this, &QgsWelcomePage::updateNewsFeedVisibility );
     mNewsFeedParser->fetch();
     newsContainer->setLayout( newsLayout );
@@ -177,6 +176,8 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::recentProjectItemActivated );
   connect( mTemplateProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::templateProjectItemActivated );
+
+  updateNewsFeedVisibility();
 }
 
 QgsWelcomePage::~QgsWelcomePage()
@@ -392,6 +393,9 @@ void QgsWelcomePage::updateRecentProjectsVisibility()
 
 void QgsWelcomePage::updateNewsFeedVisibility()
 {
+  if ( !mNewsFeedModel || !mNewsFeedListView || !mSplitter2 )
+    return;
+
   const bool visible = mNewsFeedModel->rowCount() > 0;
   mNewsFeedListView->setVisible( visible );
   mNewsFeedTitle->setVisible( visible );
