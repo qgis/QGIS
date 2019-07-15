@@ -357,6 +357,23 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
     provider->startRender( context );
   }
 
+  // draw label backgrounds
+  for ( pal::LabelPosition *label : qgis::as_const( labels ) )
+  {
+    if ( context.renderingStopped() )
+      break;
+
+    QgsLabelFeature *lf = label->getFeaturePart()->feature();
+    if ( !lf )
+    {
+      continue;
+    }
+
+    context.expressionContext().setFeature( lf->feature() );
+    context.expressionContext().setFields( lf->feature().fields() );
+    lf->provider()->drawLabelBackground( context, label );
+  }
+
   // draw the labels
   for ( pal::LabelPosition *label : qgis::as_const( labels ) )
   {
@@ -410,6 +427,11 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   , mObstacleType( QgsPalLayerSettings::PolygonInterior )
   , mUpsidedownLabels( QgsPalLayerSettings::Upright )
 {
+}
+
+void QgsAbstractLabelProvider::drawLabelBackground( QgsRenderContext &, pal::LabelPosition * ) const
+{
+
 }
 
 void QgsAbstractLabelProvider::startRender( QgsRenderContext &context )

@@ -71,6 +71,13 @@ class CORE_EXPORT QgsCallout
       MinimumCalloutLength, //!< Minimum length of callouts
     };
 
+    //! Options for draw order (stacking) of callouts
+    enum DrawOrder
+    {
+      OrderBelowAllLabels, //!< Render callouts below all labels
+      OrderBelowIndividualLabels, //!< Render callouts below their individual associated labels, some callouts may be drawn over other labels
+    };
+
     /**
      * Constructor for QgsCallout.
      */
@@ -158,6 +165,13 @@ class CORE_EXPORT QgsCallout
      * the same render \a context.
      */
     virtual QSet< QString > referencedFields( const QgsRenderContext &context ) const;
+
+    /**
+     * Returns the desired drawing order (stacking) to use while rendering this callout.
+     *
+     * The default order is QgsCallout::OrderBelowIndividualLabels.
+     */
+    virtual DrawOrder drawOrder() const;
 
     /**
      * Renders the callout onto the specified render \a context.
