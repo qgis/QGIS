@@ -9,6 +9,7 @@ SET(MDAL_MOC_HDRS
 
 IF (WITH_GUI)
   SET(MDAL_SRCS ${MDAL_SRCS}
+    qgsmdalprovidergui.cpp
     qgsmdalsourceselect.cpp
   )
   SET(MDAL_MOC_HDRS ${MDAL_MOC_HDRS}

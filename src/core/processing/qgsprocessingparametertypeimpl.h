@@ -1623,4 +1623,59 @@ class CORE_EXPORT QgsProcessingParameterTypeLayoutItem : public QgsProcessingPar
 
 
 };
+
+
+/**
+ * A color parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('color')
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterColor( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A color parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Color" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "color" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterColor" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterColor" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: string representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" )
+             << QStringLiteral( "QColor" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "String representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" );
+    }
+
+
+};
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

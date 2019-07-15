@@ -119,3 +119,59 @@ void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
 
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
 }
+
+QString QgsGdalUtils::helpCreationOptionsFormat( QString format )
+{
+  QString message;
+  GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
+  if ( myGdalDriver )
+  {
+    // first report details and help page
+    char **GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
+    message += QLatin1String( "Format Details:\n" );
+    message += QStringLiteral( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
+    message += QStringLiteral( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
+    message += QStringLiteral( "  /  Long Name: %1\n" ).arg( GDALGetDriverLongName( myGdalDriver ) );
+    message += QStringLiteral( "  Help page:  http://www.gdal.org/%1\n\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_HELPTOPIC ) );
+
+    // next get creation options
+    // need to serialize xml to get newlines, should we make the basic xml prettier?
+    CPLXMLNode *psCOL = CPLParseXMLString( GDALGetMetadataItem( myGdalDriver,
+                                           GDAL_DMD_CREATIONOPTIONLIST, "" ) );
+    char *pszFormattedXML = CPLSerializeXMLTree( psCOL );
+    if ( pszFormattedXML )
+      message += QString( pszFormattedXML );
+    if ( psCOL )
+      CPLDestroyXMLNode( psCOL );
+    if ( pszFormattedXML )
+      CPLFree( pszFormattedXML );
+  }
+  return message;
+}
+
+char **QgsGdalUtils::papszFromStringList( const QStringList &list )
+{
+  char **papszRetList = nullptr;
+  const auto constList = list;
+  for ( const QString &elem : constList )
+  {
+    papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
+  }
+  return papszRetList;
+}
+
+QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOptions, QString format )
+{
+  GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
+  if ( ! myGdalDriver )
+    return QStringLiteral( "invalid GDAL driver" );
+
+  char **papszOptions = papszFromStringList( createOptions );
+  // get error string?
+  int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
+  CSLDestroy( papszOptions );
+
+  if ( !ok )
+    return QStringLiteral( "Failed GDALValidateCreationOptions() test" );
+  return QString();
+}

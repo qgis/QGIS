@@ -43,6 +43,7 @@ class TestQgsProject : public QObject
     void testLayerFlags();
     void testLocalFiles();
     void testLocalUrlFiles();
+    void testReadFlags();
 };
 
 void TestQgsProject::init()
@@ -425,6 +426,36 @@ void TestQgsProject::testLocalUrlFiles()
   QgsPathResolver resolver( f.fileName( ) );
   QCOMPARE( resolver.writePath( layerPath ), QString( "./" + info.baseName() + ".shp" + extraStuff ) ) ;
 
+}
+
+void TestQgsProject::testReadFlags()
+{
+  QString project1Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" );
+  QgsProject p;
+  QVERIFY( p.read( project1Path, QgsProject::FlagDontResolveLayers ) );
+  auto layers = p.mapLayers();
+  QCOMPARE( layers.count(), 3 );
+  // layers should be invalid - we skipped loading them!
+  QVERIFY( !layers.value( QStringLiteral( "points20170310142652246" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "lines20170310142652255" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "polys20170310142652234" ) )->isValid() );
+
+  // but they should have renderers (and other stuff!)
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "points20170310142652246" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+
+  // project with embedded groups
+  QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
+  QgsProject p2;
+  QVERIFY( p2.read( project2Path, QgsProject::FlagDontResolveLayers ) );
+  // layers should be invalid - we skipped loading them!
+  layers = p2.mapLayers();
+  QCOMPARE( layers.count(), 2 );
+  QVERIFY( !layers.value( QStringLiteral( "lines20170310142652255" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "polys20170310142652234" ) )->isValid() );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
 }
 
 

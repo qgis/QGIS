@@ -20,6 +20,7 @@
 #include "qgsreportsectionfieldgroup.h"
 #include "qgsreportsectionlayout.h"
 #include "qgsvectorlayer.h"
+#include "qgsstyleentityvisitor.h"
 
 ///@cond NOT_STABLE
 
@@ -168,6 +169,50 @@ void QgsAbstractReportSection::reloadSettings()
     mHeader->reloadSettings();
   if ( mFooter )
     mFooter->reloadSettings();
+}
+
+bool QgsAbstractReportSection::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  // NOTE: if visitEnter returns false it means "don't visit the report section", not "abort all further visitations"
+  if ( mParent && !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, QStringLiteral( "reportsection" ), QObject::tr( "Report Section" ) ) ) )
+    return true;
+
+  if ( mHeader )
+  {
+    // NOTE: if visitEnter returns false it means "don't visit the header", not "abort all further visitations"
+    if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, QStringLiteral( "reportheader" ), QObject::tr( "Report Header" ) ) ) )
+    {
+      if ( !mHeader->accept( visitor ) )
+        return false;
+
+      if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, QStringLiteral( "reportheader" ), QObject::tr( "Report Header" ) ) ) )
+        return false;
+    }
+  }
+
+  for ( const QgsAbstractReportSection *child : mChildren )
+  {
+    if ( !child->accept( visitor ) )
+      return false;
+  }
+
+  if ( mFooter )
+  {
+    // NOTE: if visitEnter returns false it means "don't visit the footer", not "abort all further visitations"
+    if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, QStringLiteral( "reportfooter" ), QObject::tr( "Report Footer" ) ) ) )
+    {
+      if ( !mFooter->accept( visitor ) )
+        return false;
+
+      if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, QStringLiteral( "reportfooter" ), QObject::tr( "Report Footer" ) ) ) )
+        return false;
+    }
+  }
+
+  if ( mParent && !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, QStringLiteral( "reportsection" ), QObject::tr( "Report Section" ) ) ) )
+    return false;
+
+  return true;
 }
 
 QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const QString &extension )

@@ -18,12 +18,14 @@
 #ifndef QGSDELIMITEDTEXTPROVIDER_H
 #define QGSDELIMITEDTEXTPROVIDER_H
 
+#include <QStringList>
+
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdelimitedtextfile.h"
 #include "qgsfields.h"
 
-#include <QStringList>
+#include "qgsprovidermetadata.h"
 
 class QgsFeature;
 class QgsField;
@@ -60,6 +62,9 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString TEXT_PROVIDER_KEY;
+    static const QString TEXT_PROVIDER_DESCRIPTION;
 
     /**
      * Regular expression defining possible prefixes to WKT string,
@@ -279,6 +284,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;
+};
+
+class QgsDelimitedTextProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsDelimitedTextProviderMetadata();
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QVariantMap decodeUri( const QString &uri ) override;
 };
 
 #endif

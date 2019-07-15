@@ -67,6 +67,14 @@ Constructor for QgsTask.
 Returns the flags associated with the task.
 %End
 
+    void setDescription( const QString &description );
+%Docstring
+Sets the task's ``description``. This must be called before adding the task to a QgsTaskManager,
+changing the description after queuing the task has no effect.
+
+.. versionadded:: 3.10
+%End
+
     bool canCancel() const;
 %Docstring
 Returns ``True`` if the task can be canceled.

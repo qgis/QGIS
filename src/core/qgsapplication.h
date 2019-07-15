@@ -51,6 +51,7 @@ class QgsAuthManager;
 class QgsNetworkContentFetcherRegistry;
 class QgsValidityCheckRegistry;
 class QTranslator;
+class QgsCalloutRegistry;
 
 /**
  * \ingroup core
@@ -610,25 +611,31 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's symbol layer registry, used for managing symbol layers.
      * \since QGIS 3.0
      */
-    static QgsSymbolLayerRegistry *symbolLayerRegistry();
+    static QgsSymbolLayerRegistry *symbolLayerRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the application's callout registry, used for managing callout types.
+     * \since QGIS 3.10
+     */
+    static QgsCalloutRegistry *calloutRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's layout item registry, used for layout item types.
      * \since QGIS 3.0
      */
-    static QgsLayoutItemRegistry *layoutItemRegistry();
+    static QgsLayoutItemRegistry *layoutItemRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
      * \since QGIS 3.0
      */
-    static QgsGpsConnectionRegistry *gpsConnectionRegistry();
+    static QgsGpsConnectionRegistry *gpsConnectionRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
      * \since QGIS 3.0
      */
-    static QgsPluginLayerRegistry *pluginLayerRegistry();
+    static QgsPluginLayerRegistry *pluginLayerRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's message log.
@@ -655,7 +662,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's page size registry, used for managing layout page sizes.
      * \since QGIS 3.0
      */
-    static QgsPageSizeRegistry *pageSizeRegistry();
+    static QgsPageSizeRegistry *pageSizeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
@@ -871,6 +878,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
+      QgsCalloutRegistry *mCalloutRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;

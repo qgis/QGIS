@@ -33,6 +33,8 @@
 #include "qgsapplication.h"
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
+#include "qgssymbollayerutils.h"
+#include "qgsfileutils.h"
 #include <functional>
 
 
@@ -1411,6 +1413,60 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   return layers;
 }
 
+QStringList QgsProcessingParameters::parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  QVariant val = value;
+
+  QStringList files;
+
+  std::function< void( const QVariant &var ) > processVariant;
+  processVariant = [ &files, &context, &definition, &processVariant ]( const QVariant & var )
+  {
+    if ( var.type() == QVariant::List )
+    {
+      const auto constToList = var.toList();
+      for ( const QVariant &listVar : constToList )
+      {
+        processVariant( listVar );
+      }
+    }
+    else if ( var.type() == QVariant::StringList )
+    {
+      const auto constToStringList = var.toStringList();
+      for ( const QString &s : constToStringList )
+      {
+        processVariant( s );
+      }
+    }
+    else if ( var.canConvert<QgsProperty>() )
+      processVariant( var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() ) );
+    else
+    {
+      files << var.toString();
+    }
+  };
+
+  processVariant( val );
+
+  if ( files.isEmpty() )
+  {
+    processVariant( definition->defaultValue() );
+  }
+
+  return files;
+}
+
+QStringList QgsProcessingParameters::parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  return parameterAsFileList( definition, parameters.value( definition->name() ), context );
+}
+
 QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   if ( !definition )
@@ -1562,6 +1618,53 @@ QgsLayoutItem *QgsProcessingParameters::parameterAsLayoutItem( const QgsProcessi
     return nullptr;
 }
 
+QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QColor();
+
+  return parameterAsColor( definition, parameters.value( definition->name() ), context );
+}
+
+QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QColor();
+
+  QVariant val = value;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    val = val.value< QgsProperty >().value( context.expressionContext(), definition->defaultValue() );
+  }
+  if ( val.type() == QVariant::Color )
+  {
+    QColor c = val.value< QColor >();
+    if ( const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor * >( definition ) )
+      if ( !colorParam->opacityEnabled() )
+        c.setAlpha( 255 );
+    return c;
+  }
+
+  QString colorText = parameterAsString( definition, value, context );
+  if ( colorText.isEmpty() && !( definition->flags() & QgsProcessingParameterDefinition::FlagOptional ) )
+  {
+    if ( definition->defaultValue().type() == QVariant::Color )
+      return definition->defaultValue().value< QColor >();
+    else
+      colorText = definition->defaultValue().toString();
+  }
+
+  if ( colorText.isEmpty() )
+    return QColor();
+
+  bool containsAlpha = false;
+  QColor c = QgsSymbolLayerUtils::parseColorWithAlpha( colorText, containsAlpha );
+  if ( const QgsProcessingParameterColor *colorParam = dynamic_cast< const QgsProcessingParameterColor * >( definition ) )
+    if ( c.isValid() && !colorParam->opacityEnabled() )
+      c.setAlpha( 255 );
+  return c;
+}
+
 QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
 {
   QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
@@ -1621,6 +1724,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterLayout( name ) );
   else if ( type == QgsProcessingParameterLayoutItem::typeName() )
     def.reset( new QgsProcessingParameterLayoutItem( name ) );
+  else if ( type == QgsProcessingParameterColor::typeName() )
+    def.reset( new QgsProcessingParameterColor( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
@@ -1713,6 +1818,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterLayout::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "layoutitem" ) )
     return QgsProcessingParameterLayoutItem::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "color" ) )
+    return QgsProcessingParameterColor::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -2237,10 +2344,11 @@ QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const 
   return new QgsProcessingParameterPoint( name, description, definition, isOptional );
 }
 
-QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Behavior behavior, const QString &extension, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Behavior behavior, const QString &extension, const QVariant &defaultValue, bool optional, const QString &fileFilter )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mBehavior( behavior )
-  , mExtension( extension )
+  , mExtension( fileFilter.isEmpty() ? extension : QString() )
+  , mFileFilter( fileFilter.isEmpty() && extension.isEmpty() ? QObject::tr( "All files (*.*)" ) : fileFilter )
 {
 
 }
@@ -2270,8 +2378,18 @@ bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, 
     case File:
     {
       if ( !mExtension.isEmpty() )
+      {
         return string.endsWith( mExtension, Qt::CaseInsensitive );
-      return true;
+      }
+      else if ( !mFileFilter.isEmpty() )
+      {
+        const QString test = QgsFileUtils::addExtensionFromFilter( string, mFileFilter );
+        return test == string;
+      }
+      else
+      {
+        return true;
+      }
     }
 
     case Folder:
@@ -2301,7 +2419,10 @@ QString QgsProcessingParameterFile::asPythonString( const QgsProcessing::PythonO
       if ( mFlags & FlagOptional )
         code += QStringLiteral( ", optional=True" );
       code += QStringLiteral( ", behavior=%1" ).arg( mBehavior == File ? QStringLiteral( "QgsProcessingParameterFile.File" ) : QStringLiteral( "QgsProcessingParameterFile.Folder" ) );
-      code += QStringLiteral( ", extension='%1'" ).arg( mExtension );
+      if ( !mExtension.isEmpty() )
+        code += QStringLiteral( ", extension='%1'" ).arg( mExtension );
+      if ( !mFileFilter.isEmpty() )
+        code += QStringLiteral( ", fileFilter='%1'" ).arg( mFileFilter );
       QgsProcessingContext c;
       code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
       return code;
@@ -2310,11 +2431,29 @@ QString QgsProcessingParameterFile::asPythonString( const QgsProcessing::PythonO
   return QString();
 }
 
+void QgsProcessingParameterFile::setExtension( const QString &extension )
+{
+  mExtension = extension;
+  mFileFilter.clear();
+}
+
+QString QgsProcessingParameterFile::fileFilter() const
+{
+  return mFileFilter;
+}
+
+void QgsProcessingParameterFile::setFileFilter( const QString &filter )
+{
+  mFileFilter = filter;
+  mExtension.clear();
+}
+
 QVariantMap QgsProcessingParameterFile::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "behavior" ), mBehavior );
   map.insert( QStringLiteral( "extension" ), mExtension );
+  map.insert( QStringLiteral( "filefilter" ), mFileFilter );
   return map;
 }
 
@@ -2323,6 +2462,7 @@ bool QgsProcessingParameterFile::fromVariantMap( const QVariantMap &map )
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mBehavior = static_cast< Behavior >( map.value( QStringLiteral( "behavior" ) ).toInt() );
   mExtension = map.value( QStringLiteral( "extension" ) ).toString();
+  mFileFilter = map.value( QStringLiteral( "filefilter" ) ).toString();
   return true;
 }
 
@@ -2511,9 +2651,12 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
   if ( !input.isValid() )
     return mFlags & FlagOptional;
 
-  if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
+  if ( mLayerType != QgsProcessing::TypeFile )
   {
-    return true;
+    if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
+    {
+      return true;
+    }
   }
 
   if ( input.type() == QVariant::String )
@@ -2527,7 +2670,10 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+    if ( mLayerType != QgsProcessing::TypeFile )
+      return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+    else
+      return true;
   }
   else if ( input.type() == QVariant::List )
   {
@@ -2540,14 +2686,17 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    const auto constToList = input.toList();
-    for ( const QVariant &v : constToList )
+    if ( mLayerType != QgsProcessing::TypeFile )
     {
-      if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( v ) ) )
-        continue;
+      const auto constToList = input.toList();
+      for ( const QVariant &v : constToList )
+      {
+        if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( v ) ) )
+          continue;
 
-      if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context ) )
-        return false;
+        if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context ) )
+          return false;
+      }
     }
     return true;
   }
@@ -2562,11 +2711,14 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    const auto constToStringList = input.toStringList();
-    for ( const QString &v : constToStringList )
+    if ( mLayerType != QgsProcessing::TypeFile )
     {
-      if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
-        return false;
+      const auto constToStringList = input.toStringList();
+      for ( const QString &v : constToStringList )
+      {
+        if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
+          return false;
+      }
     }
     return true;
   }
@@ -2581,18 +2733,41 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  QVariantMap p;
-  p.insert( name(), value );
-  QList<QgsMapLayer *> list = QgsProcessingParameters::parameterAsLayerList( this, p, context );
-  if ( !list.isEmpty() )
+  if ( mLayerType == QgsProcessing::TypeFile )
   {
     QStringList parts;
-    const auto constList = list;
-    for ( const QgsMapLayer *layer : constList )
+    if ( value.type() == QVariant::StringList )
     {
-      parts << QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+      const QStringList list = value.toStringList();
+      parts.reserve( list.count() );
+      for ( const QString &v : list )
+        parts <<  QgsProcessingUtils::stringToPythonLiteral( v );
     }
-    return parts.join( ',' ).prepend( '[' ).append( ']' );
+    else if ( value.type() == QVariant::List )
+    {
+      const QVariantList list = value.toList();
+      parts.reserve( list.count() );
+      for ( const QVariant &v : list )
+        parts <<  QgsProcessingUtils::stringToPythonLiteral( v.toString() );
+    }
+    if ( !parts.isEmpty() )
+      return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+  else
+  {
+    QVariantMap p;
+    p.insert( name(), value );
+    const QList<QgsMapLayer *> list = QgsProcessingParameters::parameterAsLayerList( this, p, context );
+    if ( !list.isEmpty() )
+    {
+      QStringList parts;
+      parts.reserve( list.count() );
+      for ( const QgsMapLayer *layer : list )
+      {
+        parts << QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+      }
+      return parts.join( ',' ).prepend( '[' ).append( ']' );
+    }
   }
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
@@ -4714,8 +4889,8 @@ QgsProcessingParameterFileDestination *QgsProcessingParameterFileDestination::fr
   return new QgsProcessingParameterFileDestination( name, description, QString(), definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
-QgsProcessingParameterFolderDestination::QgsProcessingParameterFolderDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
-  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
+QgsProcessingParameterFolderDestination::QgsProcessingParameterFolderDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
 {}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterFolderDestination::clone() const
@@ -5584,4 +5759,149 @@ int QgsProcessingParameterLayoutItem::itemType() const
 void QgsProcessingParameterLayoutItem::setItemType( int type )
 {
   mItemType = type;
+}
+
+//
+// QgsProcessingParameterColor
+//
+
+QgsProcessingParameterColor::QgsProcessingParameterColor( const QString &name, const QString &description, const QVariant &defaultValue, bool opacityEnabled, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mAllowOpacity( opacityEnabled )
+{
+
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterColor::clone() const
+{
+  return new QgsProcessingParameterColor( *this );
+}
+
+QString QgsProcessingParameterColor::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() || value.isNull() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert< QColor >() && !value.value< QColor >().isValid() )
+    return QStringLiteral( "QColor()" );
+
+  if ( value.canConvert< QColor >() )
+  {
+    QColor c = value.value< QColor >();
+    if ( !mAllowOpacity || c.alpha() == 255 )
+      return QStringLiteral( "QColor(%1, %2, %3)" ).arg( c.red() ).arg( c.green() ).arg( c.blue() );
+    else
+      return QStringLiteral( "QColor(%1, %2, %3, %4)" ).arg( c.red() ).arg( c.green() ).arg( c.blue() ).arg( c.alpha() );
+  }
+
+  QString s = value.toString();
+  return QgsProcessingUtils::stringToPythonLiteral( s );
+}
+
+QString QgsProcessingParameterColor::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "color " );
+
+  if ( mAllowOpacity )
+    code += QStringLiteral( "withopacity " );
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterColor::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterColor('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      code += QStringLiteral( ", opacityEnabled=%1" ).arg( mAllowOpacity ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+bool QgsProcessingParameterColor::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() && ( mDefault.isValid() && ( !mDefault.toString().isEmpty() || mDefault.value< QColor >().isValid() ) ) )
+    return true;
+
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.type() == QVariant::Color )
+  {
+    return true;
+  }
+  else if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  bool containsAlpha = false;
+  return QgsSymbolLayerUtils::parseColorWithAlpha( input.toString(), containsAlpha ).isValid();
+}
+
+QVariantMap QgsProcessingParameterColor::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "opacityEnabled" ), mAllowOpacity );
+  return map;
+}
+
+bool QgsProcessingParameterColor::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mAllowOpacity = map.value( QStringLiteral( "opacityEnabled" ) ).toBool();
+  return true;
+}
+
+bool QgsProcessingParameterColor::opacityEnabled() const
+{
+  return mAllowOpacity;
+}
+
+void QgsProcessingParameterColor::setOpacityEnabled( bool enabled )
+{
+  mAllowOpacity = enabled;
+}
+
+QgsProcessingParameterColor *QgsProcessingParameterColor::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString def = definition;
+
+  bool allowOpacity = false;
+  if ( def.startsWith( QLatin1String( "withopacity" ), Qt::CaseInsensitive ) )
+  {
+    allowOpacity = true;
+    def = def.mid( 12 );
+  }
+
+  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+    def = def.mid( 1 );
+  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
+    def.chop( 1 );
+
+  QVariant defaultValue = def;
+  if ( def == QStringLiteral( "None" ) )
+    defaultValue = QVariant();
+
+  return new QgsProcessingParameterColor( name, description, defaultValue, allowOpacity, isOptional );
 }

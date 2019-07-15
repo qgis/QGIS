@@ -422,3 +422,6 @@ class PyProvider(QgsVectorDataProvider):
 
     def crs(self):
         return self._crs
+
+    def handlePostCloneOperations(self, source):
+        self._features = source._features

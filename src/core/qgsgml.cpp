@@ -1216,7 +1216,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int &epsgNr, const XML_Char **
       QString epsgString( attr[i + 1] );
       QString epsgNrString;
       bool bIsUrn = false;
-      if ( epsgString.startsWith( QLatin1String( "http" ) ) ) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
+      if ( epsgString.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) ) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
       {
         epsgNrString = epsgString.section( '#', 1, 1 );
       }
@@ -1226,6 +1226,11 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int &epsgNr, const XML_Char **
       {
         bIsUrn = true;
         epsgNrString = epsgString.split( ':' ).last();
+      }
+      else if ( epsgString.startsWith( QLatin1String( "http://www.opengis.net/def/crs/EPSG/" ) ) ) //e.g. geoserver: "http://www.opengis.net/def/crs/EPSG/4326"
+      {
+        bIsUrn = true;
+        epsgNrString = epsgString.split( '/' ).last();
       }
       else //e.g. umn mapserver: "EPSG:4326">
       {

@@ -1079,6 +1079,13 @@ class QgsVectorFileWriterMetadataContainer
                              15 // Default value
                            ) );
 
+      layerOptions.insert( QStringLiteral( "RFC7946" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to use RFC 7946 standard. "
+                                          "If disabled GeoJSON 2008 initial version will be used. "
+                                          "Default is NO (thus GeoJSON 2008). See also Documentation (via Help button)" ),
+                             false // Default value
+                           ) );
+
       driverMetadata.insert( QStringLiteral( "GeoJSON" ),
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "GeoJSON" ),

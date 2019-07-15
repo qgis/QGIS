@@ -240,7 +240,7 @@ void QgsOfflineEditing::synchronize()
     if ( remoteLayer->isValid() )
     {
       // Rebuild WFS cache to get feature id<->GML fid mapping
-      if ( remoteLayer->dataProvider()->name().contains( QLatin1String( "WFS" ), Qt::CaseInsensitive ) )
+      if ( remoteLayer->providerType().contains( QLatin1String( "WFS" ), Qt::CaseInsensitive ) )
       {
         QgsFeatureIterator fit = remoteLayer->getFeatures();
         QgsFeature f;
@@ -837,6 +837,16 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
     // copy style
     copySymbology( layer, newLayer );
+
+    //remove constrainst of fields that use defaultValueClauses from provider on original
+    const auto fields = layer->fields();
+    for ( const QgsField &field : fields )
+    {
+      if ( !layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( layer->fields().indexOf( field.name() ) ) ).isEmpty() )
+      {
+        newLayer->removeFieldConstraint( newLayer->fields().indexOf( field.name() ), QgsFieldConstraints::ConstraintNotNull );
+      }
+    }
 
     QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
     // Find the parent group of the original layer

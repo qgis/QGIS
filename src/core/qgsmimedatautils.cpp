@@ -65,7 +65,7 @@ QgsMimeDataUtils::Uri::Uri( QString &encData )
 }
 
 QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
-  : providerKey( layer->dataProvider()->name() )
+  : providerKey( layer->providerType() )
   , name( layer->name() )
   , uri( layer->dataProvider()->dataSourceUri() )
   , layerId( layer->id() )

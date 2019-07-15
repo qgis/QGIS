@@ -636,9 +636,17 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     if outName in parameters and parameters[outName] is not None:
                         # for HTML reports, we need to redirect stdout
                         if out.defaultFileExtension().lower() == 'html':
-                            command += ' {}=- > "{}"'.format(
-                                outName,
-                                self.parameterAsFileOutput(parameters, outName, context))
+                            if outName == 'html':
+                                # for "fake" outputs redirect command stdout
+                                command += ' > "{}"'.format(
+                                    self.parameterAsFileOutput(
+                                        parameters, outName, context)
+                                )
+                            else:
+                                # for real outputs only output itself should be redirected
+                                command += ' {}=- > "{}"'.format(
+                                    outName,
+                                    self.parameterAsFileOutput(parameters, outName, context))
                         else:
                             command += ' {}="{}"'.format(
                                 outName,

@@ -50,7 +50,7 @@ class CORE_EXPORT QgsDataItemProvider
     virtual QString name() = 0;
 
     //! Returns combination of flags from QgsDataProvider::DataCapabilities
-    virtual int capabilities() = 0;
+    virtual int capabilities() const = 0;
 
     /**
      * Create a new instance of QgsDataItem (or NULLPTR) for given path and parent item.
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsDataItemProvider
      * Create a vector of instances of QgsDataItem (or NULLPTR) for given path and parent item.
      * Caller takes responsibility of deleting created items.
      */
-    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) { Q_UNUSED( path ) Q_UNUSED( parentItem ); return QVector<QgsDataItem *>(); }
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem );
 
     /**
      * Returns TRUE if the provider will handle the directory at the specified \a path.

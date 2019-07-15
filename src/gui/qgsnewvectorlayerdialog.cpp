@@ -25,10 +25,11 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgssettings.h"
+#include "qgsogrprovider.h"
+#include "qgsgui.h"
 
 #include <QPushButton>
 #include <QComboBox>
-#include <QLibrary>
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -36,15 +37,13 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   : QDialog( parent, fl )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked );
   connect( mFileFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged );
   connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewVectorLayerDialog::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/NewVectorLayer/geometry" ) ).toByteArray() );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
@@ -107,6 +106,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mFileName->setFilter( QgsVectorFileWriter::filterForDriver( mFileFormatComboBox->currentData( Qt::UserRole ).toString() ) );
   mFileName->setConfirmOverwrite( false );
   mFileName->setDialogTitle( tr( "Save Layer As" ) );
+  QgsSettings settings;
   mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]
   {
@@ -115,12 +115,6 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
     checkOk();
   } );
-}
-
-QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/NewVectorLayer/geometry" ), saveGeometry() );
 }
 
 void QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged( int index )
@@ -301,41 +295,21 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
   settings.setValue( QStringLiteral( "UI/encoding" ), enc );
 
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
-  QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
-  QString ogrlib = pReg->library( QStringLiteral( "ogr" ) );
-  // load the data provider
-  QLibrary *myLib = new QLibrary( ogrlib );
-  bool loaded = myLib->load();
-  if ( loaded )
+  QString createError;
+  if ( geometrytype != QgsWkbTypes::Unknown )
   {
-    QgsDebugMsg( QStringLiteral( "ogr provider loaded" ) );
-
-    typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type,
-        const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem &, QString & );
-    createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
-    if ( createEmptyDataSource )
+    QgsCoordinateReferenceSystem srs = geomDialog.crs();
+    bool success = QgsOgrProviderUtils::createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs, errorMessage );
+    if ( !success )
     {
-      if ( geometrytype != QgsWkbTypes::Unknown )
-      {
-        QgsCoordinateReferenceSystem srs = geomDialog.crs();
-        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs, errorMessage ) )
-        {
-          return QString();
-        }
-      }
-      else
-      {
-        errorMessage = QObject::tr( "Geometry type not recognised" );
-        QgsDebugMsg( errorMessage );
-        return QString();
-      }
-    }
-    else
-    {
-      errorMessage = QObject::tr( "Resolving newEmptyDataSource(...) failed" );
-      QgsDebugMsg( errorMessage );
       return QString();
     }
+  }
+  else
+  {
+    errorMessage = QObject::tr( "Geometry type not recognised" );
+    QgsDebugMsg( errorMessage );
+    return QString();
   }
 
   if ( encoding )

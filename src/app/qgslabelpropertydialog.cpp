@@ -27,6 +27,7 @@
 #include "qgsproperty.h"
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
 
 #include <QColorDialog>
 #include <QFontDatabase>
@@ -37,9 +38,12 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsLabelPropertyDialog::buttonBox_clicked );
   connect( mShowLabelChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mShowLabelChkbx_toggled );
   connect( mAlwaysShowChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mAlwaysShowChkbx_toggled );
+  connect( mShowCalloutChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::showCalloutToggled );
   connect( mLabelDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mLabelDistanceSpinBox_valueChanged );
   connect( mXCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mXCoordSpinBox_valueChanged );
   connect( mYCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged );
@@ -63,16 +67,8 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
 
   init( layerId, providerId, featureId, labelText );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
   connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsLabelPropertyDialog::minScaleChanged );
   connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsLabelPropertyDialog::maxScaleChanged );
-}
-
-QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ChangeLabelProps/geometry" ), saveGeometry() );
 }
 
 void QgsLabelPropertyDialog::setMapCanvas( QgsMapCanvas *canvas )
@@ -203,6 +199,7 @@ void QgsLabelPropertyDialog::disableGuiElements()
 {
   mShowLabelChkbx->setEnabled( false );
   mAlwaysShowChkbx->setEnabled( false );
+  mShowCalloutChkbx->setEnabled( false );
   mMinScaleWidget->setEnabled( false );
   mMaxScaleWidget->setEnabled( false );
   mFontFamilyCmbBx->setEnabled( false );
@@ -227,6 +224,7 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
 {
   mShowLabelChkbx->blockSignals( block );
   mAlwaysShowChkbx->blockSignals( block );
+  mShowCalloutChkbx->blockSignals( block );
   mMinScaleWidget->blockSignals( block );
   mMaxScaleWidget->blockSignals( block );
   mFontFamilyCmbBx->blockSignals( block );
@@ -287,6 +285,11 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::AlwaysShow:
         mAlwaysShowChkbx->setChecked( result.toBool() );
         break;
+
+      case QgsPalLayerSettings::CalloutDraw:
+        mShowCalloutChkbx->setChecked( result.toBool() );
+        break;
+
       case QgsPalLayerSettings::MinimumScale:
       {
         double minScale = result.toDouble( &ok );
@@ -472,6 +475,9 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::Size:
         mFontSizeSpinBox->setEnabled( true );
         break;
+      case QgsPalLayerSettings::CalloutDraw:
+        mShowCalloutChkbx->setEnabled( true );
+        break;
       default:
         break;
     }
@@ -542,6 +548,11 @@ void QgsLabelPropertyDialog::mShowLabelChkbx_toggled( bool chkd )
 void QgsLabelPropertyDialog::mAlwaysShowChkbx_toggled( bool chkd )
 {
   insertChangedValue( QgsPalLayerSettings::AlwaysShow, ( chkd ? 1 : 0 ) );
+}
+
+void QgsLabelPropertyDialog::showCalloutToggled( bool chkd )
+{
+  insertChangedValue( QgsPalLayerSettings::CalloutDraw, ( chkd ? 1 : 0 ) );
 }
 
 void QgsLabelPropertyDialog::minScaleChanged( double scale )

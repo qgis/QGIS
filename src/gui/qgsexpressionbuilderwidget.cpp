@@ -482,7 +482,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
       strValue = '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'';
 
     QString representedValue = formatter->representValue( mLayer, fieldIndex, setup.config(), QVariant(), value );
-    if ( representedValue != strValue )
+    if ( representedValue != value.toString() )
       representedValue = representedValue + QStringLiteral( " [" ) + strValue + ']';
 
     QStandardItem *item = new QStandardItem( representedValue );

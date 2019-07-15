@@ -133,6 +133,7 @@ class QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutIm
     void mHeightSpinBox_valueChanged( int value );
     void mResolutionSpinBox_valueChanged( int value );
     void clipToContentsToggled( bool state );
+    void showHelp();
 
   private:
 

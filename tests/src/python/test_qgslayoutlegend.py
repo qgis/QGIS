@@ -10,7 +10,7 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '24/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsPrintLayout,
@@ -32,14 +32,15 @@ from qgis.core import (QgsPrintLayout,
                        QgsExpression,
                        QgsMapLayerLegendUtils,
                        QgsLegendStyle,
-                       QgsFontUtils)
+                       QgsFontUtils,
+                       QgsApplication)
 from qgis.testing import (start_app,
                           unittest
                           )
 from utilities import unitTestDataPath
 from qgslayoutchecker import QgsLayoutChecker
 import os
-
+from time import sleep
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
@@ -52,11 +53,21 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
     def setUpClass(cls):
         cls.item_class = QgsLayoutItemLegend
 
+    def setUp(self):
+        self.report = "<h1>Python QgsLayoutItemLegend Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
+        QgsProject.instance().removeAllMapLayers()
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        QgsProject.instance().clear()
         QgsProject.instance().addMapLayers([point_layer])
 
         marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
@@ -89,6 +100,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_mapunits', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         # resize with non-top-left reference point
@@ -113,7 +125,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     def testResizeWithMapContent(self):
         """Test test legend resizes to match map content"""
-
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
@@ -147,13 +158,13 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_size_content', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabled(self):
         """Test that test legend does not resize if auto size is disabled"""
-
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
@@ -191,13 +202,13 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_noresize', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabledCrop(self):
         """Test that if legend resizing is disabled, and legend is too small, then content is cropped"""
-
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
@@ -235,6 +246,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_noresize_crop', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
@@ -309,10 +321,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     def testExpressionInText(self):
         """Test expressions embedded in legend node text"""
-
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-
         layout = QgsPrintLayout(QgsProject.instance())
         layout.setName('LAYOUT')
         layout.initializeDefaults()
@@ -359,6 +369,122 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker(
             'composer_legend_expressions', layout)
         checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        QgsProject.instance().removeMapLayers([point_layer.id()])
+
+    def testSymbolExpressions(self):
+        "Test expressions embedded in legend node text"
+        QgsProject.instance().clear()
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+
+        layout = QgsPrintLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.setLayers([point_layer])
+        layout.addLayoutItem(map)
+        map.setExtent(point_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+
+        layer = QgsProject.instance().addMapLayer(point_layer)
+        legendlayer = legend.model().rootGroup().addLayer(point_layer)
+
+        counterTask = point_layer.countSymbolFeatures()
+        counterTask.waitForFinished()
+        TM = QgsApplication.taskManager()
+        actask = TM.activeTasks()
+        print(TM.tasks(), actask)
+        count = actask[0]
+        legend.model().refreshLayerLegend(legendlayer)
+        legendnodes = legend.model().layerLegendNodes(legendlayer)
+        legendnodes[0].setUserLabel('[% @symbol_id %]')
+        legendnodes[1].setUserLabel('[% @symbol_count %]')
+        legendnodes[2].setUserLabel('[% sum("Pilots") %]')
+        label1 = legendnodes[0].evaluateLabel()
+        label2 = legendnodes[1].evaluateLabel()
+        label3 = legendnodes[2].evaluateLabel()
+        count.waitForFinished()
+        self.assertEqual(label1, '0')
+        #self.assertEqual(label2, '5')
+        #self.assertEqual(label3, '12')
+
+        legendlayer.setLabelExpression("Concat(@symbol_label, @symbol_id)")
+
+        label1 = legendnodes[0].evaluateLabel()
+        label2 = legendnodes[1].evaluateLabel()
+        label3 = legendnodes[2].evaluateLabel()
+
+        self.assertEqual(label1, ' @symbol_id 0')
+        #self.assertEqual(label2, '@symbol_count 1')
+        #self.assertEqual(label3, 'sum("Pilots") 2')
+
+        QgsProject.instance().clear()
+
+    def testSymbolExpressionRender(self):
+        """Test expressions embedded in legend node text"""
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        layout = QgsPrintLayout(QgsProject.instance())
+        layout.setName('LAYOUT')
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setLayers([point_layer])
+        layout.addLayoutItem(map)
+        map.setExtent(point_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 100, 100))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        legend.setLegendFilterByMapEnabled(False)
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
+        legend.setAutoUpdateModel(False)
+
+        QgsProject.instance().addMapLayers([point_layer])
+        s = QgsMapSettings()
+        s.setLayers([point_layer])
+
+        group = legend.model().rootGroup().addGroup("Group [% 1 + 5 %] [% @layout_name %]")
+        layer_tree_layer = group.addLayer(point_layer)
+        counterTask = point_layer.countSymbolFeatures()
+        counterTask.waitForFinished() # does this even work?
+        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
+        QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
+        legend.model().refreshLayerLegend(layer_tree_layer)
+        layer_tree_layer.setLabelExpression('Concat(@symbol_id, @symbol_label, count("Class"))')
+        legend.model().layerLegendNodes(layer_tree_layer)[0].setUserLabel(' sym 1')
+        legend.model().layerLegendNodes(layer_tree_layer)[1].setUserLabel('[%@symbol_count %]')
+        legend.model().layerLegendNodes(layer_tree_layer)[2].setUserLabel('[% count("Class") %]')
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+        legend.updateLegend()
+        print(layer_tree_layer.labelExpression())
+        TM = QgsApplication.taskManager()
+        actask = TM.activeTasks()
+        print(TM.tasks(), actask)
+        count = actask[0]
+        count.waitForFinished()
+        map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
+        checker = QgsLayoutChecker(
+            'composer_legend_symbol_expression', layout)
+        checker.setControlPathPrefix("composer_legend")
+        sleep(4)
         result, message = checker.testLayout()
         self.assertTrue(result, message)
 

@@ -77,6 +77,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_QTSVG_INCLUDE_DIR}
   ${QT_QTXML_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
@@ -94,6 +95,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/callouts
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/diagram
@@ -129,6 +131,7 @@ INCLUDE_DIRECTORIES(
 IF (WITH_GUI)
   INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/gui
+    ${CMAKE_SOURCE_DIR}/src/gui/callouts
     ${CMAKE_SOURCE_DIR}/src/gui/symbology
     ${CMAKE_SOURCE_DIR}/src/gui/raster
     ${CMAKE_SOURCE_DIR}/src/gui/attributetable

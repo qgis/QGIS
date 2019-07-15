@@ -12,7 +12,7 @@
 
 
 
-class QgsTextFormatWidget : QWidget, protected Ui::QgsTextFormatWidgetBase
+class QgsTextFormatWidget : QWidget, QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
 %Docstring
 A widget for customizing text formatting settings.
@@ -55,6 +55,24 @@ Returns the current formatting settings defined by the widget.
 Sets the current formatting settings
 
 .. versionadded:: 3.2
+%End
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+
+.. versionadded:: 3.10
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+
+.. versionadded:: 3.10
 %End
 
   public slots:
@@ -111,6 +129,11 @@ Controls whether data defined alignment buttons are enabled.
 :param enable: set to ``True`` to enable alignment controls
 %End
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+
+
 
   protected slots:
 
@@ -122,6 +145,25 @@ Updates line placement options to reflect current state of widget
     void updatePlacementWidgets();
 %Docstring
 Updates label placement options to reflect current state of widget
+%End
+
+    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+%Docstring
+Sets the current text settings from a style entry.
+
+.. versionadded:: 3.10
+%End
+
+    virtual void saveFormat();
+%Docstring
+Saves the current text settings to a style entry.
+%End
+
+    void updatePreview();
+%Docstring
+Updates the text preview.
+
+.. versionadded:: 3.10
 %End
 
 };
@@ -154,8 +196,6 @@ Constructor for QgsTextFormatDialog.
 :param parent: parent widget
 :param fl: window flags for dialog
 %End
-
-    ~QgsTextFormatDialog();
 
     QgsTextFormat format() const;
 %Docstring

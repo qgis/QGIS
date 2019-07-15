@@ -43,13 +43,13 @@
 #include "qgssettings.h"
 #include "qgsjsonutils.h"
 
-#ifdef HAVE_GUI
-#include "qgspgsourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
+#include "qgspostgresprovider.h"
+#include "qgsprovidermetadata.h"
 
-const QString POSTGRES_KEY = QStringLiteral( "postgres" );
-const QString POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
+
+const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
+const QString QgsPostgresProvider::POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
+
 static const QString EDITOR_WIDGET_STYLES_TABLE = QStringLiteral( "qgis_editor_widget_styles" );
 
 inline qint64 PKINT2FID( qint32 x )
@@ -226,6 +226,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
       << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255, -1, -1 )
       << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255, -1, -1 )
       << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QVariant::String, -1, -1, -1, -1 )
 
       // date type
       << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
@@ -241,6 +242,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
       // boolean
       << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
+
+      // binary (bytea)
+      << QgsVectorDataProvider::NativeType( tr( "Binary object (bytea)" ), QStringLiteral( "bytea" ), QVariant::ByteArray, -1, -1, -1, -1 )
       ;
 
   if ( connectionRO()->pgVersion() >= 90200 )
@@ -369,6 +373,22 @@ void QgsPostgresProvider::disconnectDb()
     mConnectionRW->unref();
     mConnectionRW = nullptr;
   }
+}
+
+QString QgsPostgresProvider::quotedByteaValue( const QVariant &value )
+{
+  if ( value.isNull() )
+    return QStringLiteral( "NULL" );
+
+  const QByteArray ba = value.toByteArray();
+  const unsigned char *buf = reinterpret_cast< const unsigned char * >( ba.constData() );
+  QString param;
+  param.reserve( ba.length() * 4 );
+  for ( int i = 0; i < ba.length(); ++i )
+  {
+    param += QStringLiteral( "\\%1" ).arg( static_cast< int >( buf[i] ), 3, 8, QChar( '0' ) );
+  }
+  return QStringLiteral( "decode('%1','escape')" ).arg( param );
 }
 
 QString QgsPostgresProvider::storageType() const
@@ -950,7 +970,13 @@ bool QgsPostgresProvider::loadFields()
         fieldType = QVariant::DateTime;
         fieldSize = -1;
       }
+      else if ( fieldTypeName == QLatin1String( "bytea" ) )
+      {
+        fieldType = QVariant::ByteArray;
+        fieldSize = -1;
+      }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
+                fieldTypeName == QLatin1String( "citext" ) ||
                 fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
                 fieldTypeName == QLatin1String( "money" ) ||
@@ -2188,11 +2214,15 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else if ( fieldTypeName == QLatin1String( "jsonb" ) )
         {
-          values += delim + quotedJsonValue( v ) + QLatin1String( "::jsonb" );
+          values += delim + quotedJsonValue( v ) + QStringLiteral( "::jsonb" );
         }
         else if ( fieldTypeName == QLatin1String( "json" ) )
         {
-          values += delim + quotedJsonValue( v ) + QLatin1String( "::json" );
+          values += delim + quotedJsonValue( v ) + QStringLiteral( "::json" );
+        }
+        else if ( fieldTypeName == QLatin1String( "bytea" ) )
+        {
+          values += delim + quotedByteaValue( v );
         }
         //TODO: convert arrays and hstore to native types
         else
@@ -2752,6 +2782,10 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
             sql += QStringLiteral( "%1::json" )
                    .arg( quotedJsonValue( siter.value() ) );
           }
+          else if ( fld.typeName() == QLatin1String( "bytea" ) )
+          {
+            sql += quotedByteaValue( siter.value() );
+          }
           else
           {
             sql += quotedValue( *siter );
@@ -3081,6 +3115,10 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           {
             sql += QStringLiteral( "st_geographyfromewkt(%1)" )
                    .arg( quotedValue( siter->toString() ) );
+          }
+          else if ( fld.typeName() == QLatin1String( "bytea" ) )
+          {
+            sql += quotedByteaValue( siter.value() );
           }
           else
           {
@@ -4611,208 +4649,39 @@ bool QgsPostgresProvider::hasMetadata() const
   return hasMetadata;
 }
 
-/**
- * Class factory to return a pointer to a newly created
- * QgsPostgresProvider object
- */
-QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsPostgresProvider( *uri, options );
+  return new QgsPostgresProvider( uri, options );
 }
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
+QList< QgsDataItemProvider * > QgsPostgresProviderMetadata::dataItemProviders() const
 {
-  return  POSTGRES_KEY;
-}
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return POSTGRES_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsPgSourceSelect( parent, fl, widgetMode );
-}
-#endif
-
-QGISEXTERN int dataCapabilities()
-{
-  return QgsDataProvider::Database;
-}
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
-  Q_UNUSED( path )
-  return new QgsPGRootItem( parentItem, QStringLiteral( "PostGIS" ), QStringLiteral( "pg:" ) );
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsPostgresDataItemProvider;
+  return providers;
 }
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
+QgsVectorLayerExporter::ExportError QgsPostgresProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
   const QMap<QString, QVariant> *options )
 {
   return QgsPostgresProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           oldToNewAttrIdxMap, errorMessage, options
+           &oldToNewAttrIdxMap, &errorMessage, options
          );
 }
 
-QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
-{
-  QgsDebugMsg( "deleting layer " + uri );
-
-  QgsDataSourceUri dsUri( uri );
-  QString schemaName = dsUri.schema();
-  QString tableName = dsUri.table();
-  QString geometryCol = dsUri.geometryColumn();
-
-  QString schemaTableName;
-  if ( !schemaName.isEmpty() )
-  {
-    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + '.';
-  }
-  schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
-
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
-  if ( !conn )
-  {
-    errCause = QObject::tr( "Connection to database failed" );
-    return false;
-  }
-
-  // handle deletion of views
-  QString sqlViewCheck = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" )
-                         .arg( QgsPostgresConn::quotedValue( schemaTableName ) );
-  QgsPostgresResult resViewCheck( conn->PQexec( sqlViewCheck ) );
-  QString type = resViewCheck.PQgetvalue( 0, 0 );
-  if ( type == QLatin1String( "v" ) || type == QLatin1String( "m" ) )
-  {
-    QString sql = QString( "DROP VIEW %1" ).arg( schemaTableName );
-    QgsPostgresResult result( conn->PQexec( sql ) );
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-    {
-      errCause = QObject::tr( "Unable to delete view %1: \n%2" )
-                 .arg( schemaTableName,
-                       result.PQresultErrorMessage() );
-      conn->unref();
-      return false;
-    }
-    conn->unref();
-    return true;
-  }
-
-
-  // check the geometry column count
-  QString sql = QString( "SELECT count(*) "
-                         "FROM geometry_columns, pg_class, pg_namespace "
-                         "WHERE f_table_name=relname AND f_table_schema=nspname "
-                         "AND pg_class.relnamespace=pg_namespace.oid "
-                         "AND f_table_schema=%1 AND f_table_name=%2" )
-                .arg( QgsPostgresConn::quotedValue( schemaName ),
-                      QgsPostgresConn::quotedValue( tableName ) );
-  QgsPostgresResult result( conn->PQexec( sql ) );
-  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-  {
-    errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
-               .arg( schemaTableName,
-                     result.PQresultErrorMessage() );
-    conn->unref();
-    return false;
-  }
-
-  int count = result.PQgetvalue( 0, 0 ).toInt();
-
-  if ( !geometryCol.isEmpty() && count > 1 )
-  {
-    // the table has more geometry columns, drop just the geometry column
-    sql = QStringLiteral( "SELECT DropGeometryColumn(%1,%2,%3)" )
-          .arg( QgsPostgresConn::quotedValue( schemaName ),
-                QgsPostgresConn::quotedValue( tableName ),
-                QgsPostgresConn::quotedValue( geometryCol ) );
-  }
-  else
-  {
-    // drop the table
-    sql = QStringLiteral( "SELECT DropGeometryTable(%1,%2)" )
-          .arg( QgsPostgresConn::quotedValue( schemaName ),
-                QgsPostgresConn::quotedValue( tableName ) );
-  }
-
-  result = conn->PQexec( sql );
-  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-  {
-    errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
-               .arg( schemaTableName,
-                     result.PQresultErrorMessage() );
-    conn->unref();
-    return false;
-  }
-
-  conn->unref();
-  return true;
-}
-
-QGISEXTERN bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade = false )
-{
-  QgsDebugMsg( "deleting schema " + schema );
-
-  if ( schema.isEmpty() )
-    return false;
-
-  QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
-
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
-  if ( !conn )
-  {
-    errCause = QObject::tr( "Connection to database failed" );
-    return false;
-  }
-
-  // drop the schema
-  QString sql = QStringLiteral( "DROP SCHEMA %1 %2" )
-                .arg( schemaName, cascade ? QStringLiteral( "CASCADE" ) : QString() );
-
-  QgsPostgresResult result( conn->PQexec( sql ) );
-  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-  {
-    errCause = QObject::tr( "Unable to delete schema %1: \n%2" )
-               .arg( schemaName,
-                     result.PQresultErrorMessage() );
-    conn->unref();
-    return false;
-  }
-
-  conn->unref();
-  return true;
-}
-
-QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                           const QString &styleName, const QString &styleDescription,
-                           const QString &uiFileContent, bool useAsDefault, QString &errCause )
+bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+    const QString &styleName, const QString &styleDescription,
+    const QString &uiFileContent, bool useAsDefault, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
@@ -4962,7 +4831,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
 }
 
 
-QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
+QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
@@ -5015,8 +4884,8 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   return style;
 }
 
-QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString &errCause )
+int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names,
+    QStringList &descriptions, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
@@ -5091,7 +4960,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
-QGISEXTERN bool deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, QString styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   bool deleted;
@@ -5125,7 +4994,7 @@ QGISEXTERN bool deleteStyleById( const QString &uri, QString styleId, QString &e
   return deleted;
 }
 
-QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &errCause )
+QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
@@ -5157,7 +5026,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   return style;
 }
 
-QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
+QgsTransaction *QgsPostgresProviderMetadata::createTransaction( const QString &connString )
 {
   return new QgsPostgresTransaction( connString );
 }
@@ -5165,14 +5034,14 @@ QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
 
 QgsPostgresProjectStorage *gProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
 
-QGISEXTERN void initProvider()
+void QgsPostgresProviderMetadata::initProvider()
 {
   Q_ASSERT( !gProjectStorage );
   gProjectStorage = new QgsPostgresProjectStorage;
   QgsApplication::projectStorageRegistry()->registerProjectStorage( gProjectStorage );  // takes ownership
 }
 
-QGISEXTERN void cleanupProvider()
+void QgsPostgresProviderMetadata::cleanupProvider()
 {
   QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gProjectStorage );  // destroys the object
   gProjectStorage = nullptr;
@@ -5180,35 +5049,6 @@ QGISEXTERN void cleanupProvider()
   QgsPostgresConnPool::cleanupInstance();
 }
 
-
-#ifdef HAVE_GUI
-
-//! Provider for postgres source select
-class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spellok
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "postgres" ); }
-    QString text() const override { return QObject::tr( "PostgreSQL" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsPgSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsPostgresSourceSelectProvider;  //#spellok
-
-  return providers;
-}
-#endif
 
 // ----------
 
@@ -5327,3 +5167,13 @@ void QgsPostgresSharedData::setFieldSupportsEnumValues( int index, bool isSuppor
   mFieldSupportsEnumValues[ index ] = isSupported;
 }
 
+
+QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
+  : QgsProviderMetadata( QgsPostgresProvider::POSTGRES_KEY, QgsPostgresProvider::POSTGRES_DESCRIPTION )
+{
+}
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsPostgresProviderMetadata();
+}

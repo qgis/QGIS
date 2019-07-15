@@ -150,7 +150,7 @@ QSize QgsImageCache::originalSize( const QString &path ) const
     return QSize();
 
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
-  if ( QFile::exists( path ) )
+  if ( !path.startsWith( QStringLiteral( "base64:" ) ) && QFile::exists( path ) )
   {
     QImageReader reader( path );
     if ( reader.size().isValid() )
@@ -184,7 +184,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
 {
   QImage im;
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
-  if ( QFile::exists( path ) )
+  if ( !path.startsWith( QStringLiteral( "base64:" ) ) && QFile::exists( path ) )
   {
     im = QImage( path );
   }

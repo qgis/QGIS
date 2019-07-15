@@ -28,17 +28,10 @@ class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
   public:
     QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, std::unique_ptr< QgsGeoNodeConnection > conn );
     QVector<QgsDataItem *> createChildren() override;
-    QList<QAction *> actions( QWidget *parent ) override;
 
     QString mGeoNodeName;
 
   private:
-    void editConnection();
-    void deleteConnection()
-    {
-      QgsGeoNodeConnectionUtils::deleteConnection( name() );
-      mParent->refresh();
-    }
 
     QString mUri;
     std::unique_ptr< QgsGeoNodeConnection > mConnection = nullptr;
@@ -52,7 +45,7 @@ class QgsGeoNodeServiceItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
   private:
-    void replacePath( QgsDataItem *item, QString before, QString after );
+    void replacePath( QgsDataItem *item, const QString &before, const QString &after );
     QString mName;
     QString mServiceName;
     QString mUri;
@@ -67,21 +60,17 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QList<QAction *> actions( QWidget *parent ) override;
-
     QVariant sortKey() const override { return 13; }
 
-  private slots:
-    void newConnection();
 };
 
 //! Provider for Geonode root data item
 class QgsGeoNodeDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "GeoNode" ); }
+    QString name() override;
 
-    int capabilities() override { return QgsDataProvider::Net; }
+    int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };

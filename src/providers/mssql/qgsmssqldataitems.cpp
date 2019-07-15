@@ -33,14 +33,11 @@
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
-#include "qgsmssqlnewconnection.h"
 #endif
 
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QProgressDialog>
-#include <QInputDialog>
 
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -314,6 +311,13 @@ void QgsMssqlConnectionItem::setAsPopulated()
   setState( Populated );
 }
 
+void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
+{
+  mAllowGeometrylessTables = allow;
+  QgsMssqlConnection::setAllowGeometrylessTables( mName, allow );
+  refresh();
+}
+
 void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 {
   QgsMssqlSchemaItem *schemaItem = nullptr;
@@ -377,106 +381,6 @@ bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
 
   const QgsMssqlConnectionItem *o = qobject_cast<const QgsMssqlConnectionItem *>( other );
   return ( mPath == o->mPath && mName == o->mName );
-}
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsMssqlConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
-  connect( actionRefresh, &QAction::triggered, this, [ = ]
-  {
-    refresh();
-    if ( mParent )
-      mParent->refreshConnections();
-  } );
-  lst.append( actionRefresh );
-
-  QAction *separator = new QAction( parent );
-  separator->setSeparator( true );
-  lst.append( separator );
-
-
-  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsMssqlConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsMssqlConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  QAction *sep = new QAction( parent );
-  sep->setSeparator( true );
-  lst << sep;
-
-  QAction *actionShowNoGeom = new QAction( tr( "Show Non-spatial Tables" ), parent );
-  actionShowNoGeom->setCheckable( true );
-  actionShowNoGeom->setChecked( mAllowGeometrylessTables );
-  connect( actionShowNoGeom, &QAction::toggled, this, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
-  lst.append( actionShowNoGeom );
-
-  QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), parent );
-  connect( actionCreateSchema, &QAction::triggered, this, &QgsMssqlConnectionItem::createSchema );
-  lst.append( actionCreateSchema );
-
-  return lst;
-}
-
-void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
-{
-  mAllowGeometrylessTables = allow;
-  QgsMssqlConnection::setAllowGeometrylessTables( mName, allow );
-  refresh();
-}
-
-void QgsMssqlConnectionItem::createSchema()
-{
-  QString schemaName = QInputDialog::getText( nullptr, tr( "Create Schema" ), tr( "Schema name:" ) );
-  if ( schemaName.isEmpty() )
-    return;
-
-  QString uri = connInfo();
-  QString error;
-  if ( !QgsMssqlConnection::createSchema( uri, schemaName, &error ) )
-  {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
-                          error ) );
-    return;
-  }
-
-  refresh();
-  // the parent should be updated
-  if ( mParent )
-    mParent->refreshConnections();
-}
-
-void QgsMssqlConnectionItem::editConnection()
-{
-  QgsMssqlNewConnection nc( nullptr, mName );
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refreshConnections();
-  }
-}
-
-void QgsMssqlConnectionItem::deleteConnection()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsMssqlSourceSelect::deleteConnection( mName );
-  // the parent should be updated
-  mParent->refreshConnections();
-}
-#endif
-
-bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  return handleDrop( data, QString() );
 }
 
 bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
@@ -579,64 +483,6 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, 
   setState( Populated );
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsMssqlLayerItem::actions( QWidget *actionParent )
-{
-  QList<QAction *> lst;
-
-  // truncate
-  QAction *actionTruncateLayer = new QAction( tr( "Truncate Table" ), actionParent );
-  connect( actionTruncateLayer, &QAction::triggered, this, [ = ]
-  {
-    truncateTable();
-  } );
-  lst.append( actionTruncateLayer );
-  return lst;
-}
-
-bool QgsMssqlLayerItem::deleteLayer()
-{
-  QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
-
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
-                              QObject::tr( "Are you sure you want to delete [%1].[%2]?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return true;
-
-  QString errCause;
-  bool res = QgsMssqlConnection::dropTable( mUri, &errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete Table" ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
-    if ( connItem )
-      connItem->refresh();
-  }
-  return true;
-}
-
-void QgsMssqlLayerItem::truncateTable()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ),
-                              QObject::tr( "Are you sure you want to truncate [%1].[%2]?\n\nThis will delete all data within the table." ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QString errCause;
-  bool res = QgsMssqlConnection::truncateTable( mUri, &errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Truncate Table" ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
-  }
-}
-#endif
 
 QgsMssqlLayerItem *QgsMssqlLayerItem::createClone()
 {
@@ -685,22 +531,6 @@ QVector<QgsDataItem *> QgsMssqlSchemaItem::createChildren()
   return QVector<QgsDataItem *>();
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsMssqlSchemaItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
-  connect( actionRefresh, &QAction::triggered, this, [ = ]
-  {
-    if ( mParent )
-      mParent->refresh();
-  } );
-  lst.append( actionRefresh );
-
-  return lst;
-}
-#endif
 
 void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
 {
@@ -716,15 +546,6 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
     QgsMssqlLayerItem *layer = static_cast< QgsMssqlLayerItem * >( child )->createClone();
     addChildItem( layer, true );
   }
-}
-
-bool QgsMssqlSchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  QgsMssqlConnectionItem *conn = qobject_cast<QgsMssqlConnectionItem *>( parent() );
-  if ( !conn )
-    return false;
-
-  return conn->handleDrop( data, mName );
 }
 
 QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh )
@@ -797,17 +618,6 @@ QVector<QgsDataItem *> QgsMssqlRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsMssqlRootItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsMssqlRootItem::newConnection );
-  lst.append( actionNew );
-
-  return lst;
-}
-
 QWidget *QgsMssqlRootItem::paramWidget()
 {
   QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
@@ -819,13 +629,20 @@ void QgsMssqlRootItem::onConnectionsChanged()
 {
   refresh();
 }
-
-void QgsMssqlRootItem::newConnection()
-{
-  QgsMssqlNewConnection nc( nullptr );
-  if ( nc.exec() )
-  {
-    refreshConnections();
-  }
-}
 #endif
+
+QString QgsMssqlDataItemProvider::name()
+{
+  return QStringLiteral( "MSSQL" );
+}
+
+int QgsMssqlDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
+QgsDataItem *QgsMssqlDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn )
+  return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
+}

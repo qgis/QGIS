@@ -335,6 +335,8 @@ Write a tuple of group code and a handle
 
 
 
+
+
     void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 %Docstring
 Write line (as a polyline)

@@ -192,6 +192,15 @@ void QgsOracleConn::disconnect()
   deleteLater();
 }
 
+void QgsOracleConn::reconnect()
+{
+  if ( mDatabase.isOpen() )
+  {
+    mDatabase.close();
+    mDatabase.open();
+  }
+}
+
 bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )
 {
   QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( sql ), 4 );

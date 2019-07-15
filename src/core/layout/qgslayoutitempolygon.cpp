@@ -23,6 +23,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
+#include "qgsstyleentityvisitor.h"
+
 #include <limits>
 
 QgsLayoutItemPolygon::QgsLayoutItemPolygon( QgsLayout *layout )
@@ -95,6 +97,18 @@ QString QgsLayoutItemPolygon::displayName() const
     return id();
 
   return tr( "<Polygon>" );
+}
+
+bool QgsLayoutItemPolygon::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mPolygonStyleSymbol )
+  {
+    QgsStyleSymbolEntity entity( mPolygonStyleSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, uuid(), displayName() ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )

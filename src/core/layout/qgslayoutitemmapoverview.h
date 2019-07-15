@@ -230,6 +230,8 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
      */
     QgsVectorLayer *asMapLayer();
 
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
   public slots:
 
     /**

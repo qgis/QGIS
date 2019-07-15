@@ -98,23 +98,35 @@ class CORE_EXPORT QgsProjectStorage
     virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata SIP_OUT ) { Q_UNUSED( uri ) Q_UNUSED( metadata ); return false; }
 
     /**
+     * Extracts and returns the file path from a storage backend \a uri, filesystem-based storage
+     * backends should implement this method in order to support relative paths storage.
+     * The default implementation returns an empty string.
+     * \since QGIS 3.8.1
+     */
+    virtual QString filePath( const QString &uri );
+
+    /**
      * Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
      * indicates that the storage does not implement GUI support (showLoadGui() and showSaveGui()).
      * The name may be translatable and ideally unique as well.
+     * \deprecated since QGIS 3.10 - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
      */
-    virtual QString visibleName() { return QString(); }
+    Q_DECL_DEPRECATED virtual QString visibleName() SIP_DEPRECATED { return QString(); }
 
     /**
      * Opens GUI to allow user to select a project to be loaded (GUI specific to this storage type).
      * Returns project URI if user has picked a project or empty string if the GUI was canceled.
+     * \deprecated since QGIS 3.10 - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
      */
-    virtual QString showLoadGui() { return QString(); }
+    Q_DECL_DEPRECATED virtual QString showLoadGui() SIP_DEPRECATED { return QString(); }
 
     /**
      * Opens GUI to allow user to select where a project should be saved (GUI specific to this storage type).
      * Returns project URI if user has picked a destination or empty string if the GUI was canceled.
+     * \deprecated since QGIS 3.10 - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
      */
-    virtual QString showSaveGui() { return QString(); }
+    Q_DECL_DEPRECATED virtual QString showSaveGui() SIP_DEPRECATED { return QString(); }
+
 };
 
 #endif // QGSPROJECTSTORAGE_H

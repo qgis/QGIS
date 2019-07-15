@@ -34,6 +34,7 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -627,6 +628,25 @@ QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context )
     lst.append( cat.symbol() );
   }
   return lst;
+}
+
+bool QgsCategorizedSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  for ( const QgsRendererCategory &cat : mCategories )
+  {
+    QgsStyleSymbolEntity entity( cat.symbol() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, cat.value().toString(), cat.label() ) ) )
+      return false;
+  }
+
+  if ( mSourceColorRamp )
+  {
+    QgsStyleColorRampEntity entity( mSourceColorRamp.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )

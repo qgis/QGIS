@@ -24,11 +24,13 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgslayertreegroup.h"
+#include "qgsexpressioncontext.h"
 
 class QgsLayerTreeModel;
 class QgsSymbol;
 class QgsLayoutItemMap;
 class QgsLegendRenderer;
+class QgsLayoutItemLegend;
 
 /**
  * \ingroup core
@@ -44,11 +46,48 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr, QgsLayoutItemLegend *layout = nullptr );
+
+    //! Alternative constructor.
+    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+  signals:
+
+    /**
+     * Emitted to refresh the legend.
+     * \since QGIS 3.10
+     */
+    void refreshLegend();
+
+  private slots:
+
+    /**
+     * Handle incoming signal to refresh the legend.
+     * \since QGIS 3.10
+     */
+    void forceRefresh();
+
+  private:
+
+    /**
+     * Returns filtered list of active legend nodes attached to a particular layer node
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
+     * \see layerOriginalLegendNodes()
+     * \since QGIS 3.10
+     */
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
+
+    /**
+     * Pointer to the QgsLayoutItemLegend class that made the model.
+     * \since QGIS 3.10
+     */
+    QgsLayoutItemLegend *mLayoutLegend = nullptr;
+
 };
 
 
@@ -267,6 +306,26 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setSymbolWidth( double width );
 
     /**
+     * Sets the \a alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see symbolAlignment()
+     * \since QGIS 3.10
+     */
+    void setSymbolAlignment( Qt::AlignmentFlag alignment );
+
+    /**
+     * Returns the alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see setSymbolAlignment()
+     * \since QGIS 3.10
+     */
+    Qt::AlignmentFlag symbolAlignment() const;
+
+    /**
      * Returns the legend symbol height.
      * \see setSymbolHeight()
      */
@@ -438,7 +497,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     QgsExpressionContext createExpressionContext() const override;
 
-
   public slots:
 
     void refresh() override;
@@ -465,6 +523,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+
 
   private:
     QgsLayoutItemLegend() = delete;

@@ -16,6 +16,7 @@
 #define QGSSPATIALITEDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
 
 class QgsSLLayerItem : public QgsLayerItem
 {
@@ -23,9 +24,6 @@ class QgsSLLayerItem : public QgsLayerItem
   public:
     QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
 
-#ifdef HAVE_GUI
-    bool deleteLayer() override;
-#endif
 };
 
 class QgsSLConnectionItem : public QgsDataCollectionItem
@@ -37,18 +35,7 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
-#ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
-#endif
-
-    bool acceptDrop() override { return true; }
-    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
-
-  public slots:
-#ifdef HAVE_GUI
-    void editConnection();
-    void deleteConnection();
-#endif
+    QString databasePath() const { return mDbPath; }
 
   protected:
     QString mDbPath;
@@ -66,16 +53,29 @@ class QgsSLRootItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;
-    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
     void onConnectionsChanged();
-    void newConnection();
 #endif
-    void createDatabase();
 };
 
+namespace SpatiaLiteUtils
+{
+  bool createDb( const QString &dbPath, QString &errCause );
+  bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
+}
+
+//! Provider for SpatiaLite root data item
+class QgsSpatiaLiteDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+
+    int capabilities() const override;
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+};
 
 #endif // QGSSPATIALITEDATAITEMS_H

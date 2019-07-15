@@ -20,6 +20,8 @@
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsgeometryutils.h"
+#include "qgsstyleentityvisitor.h"
+
 #include <QPen>
 #include <QPainter>
 
@@ -178,6 +180,32 @@ void QgsAnnotation::setMapLayer( QgsMapLayer *layer )
 void QgsAnnotation::setAssociatedFeature( const QgsFeature &feature )
 {
   mFeature = feature;
+}
+
+bool QgsAnnotation::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  // NOTE: if visitEnter returns false it means "don't visit the annotation", not "abort all further visitations"
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotation, QStringLiteral( "annotation" ), tr( "Annotation" ) ) ) )
+    return true;
+
+  if ( mMarkerSymbol )
+  {
+    QgsStyleSymbolEntity entity( mMarkerSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "marker" ), QObject::tr( "Marker" ) ) ) )
+      return false;
+  }
+
+  if ( mFillSymbol )
+  {
+    QgsStyleSymbolEntity entity( mFillSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "fill" ), QObject::tr( "Fill" ) ) ) )
+      return false;
+  }
+
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotation, QStringLiteral( "annotation" ), tr( "Annotation" ) ) ) )
+    return false;
+
+  return true;
 }
 
 QSizeF QgsAnnotation::minimumFrameSize() const

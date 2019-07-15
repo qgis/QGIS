@@ -19,11 +19,7 @@
 #include "qgsarcgisrestutils.h"
 
 #ifdef HAVE_GUI
-#include "qgsnewhttpconnection.h"
 #include "qgsafssourceselect.h"
-#include <QMenu>
-#include <QAction>
-#include <QDesktopServices>
 #endif
 
 #include <QMessageBox>
@@ -54,13 +50,6 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsAfsRootItem::actions( QWidget *parent )
-{
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsAfsRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
-}
-
 QWidget *QgsAfsRootItem::paramWidget()
 {
   QgsAfsSourceSelect *select = new QgsAfsSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
@@ -71,17 +60,6 @@ QWidget *QgsAfsRootItem::paramWidget()
 void QgsAfsRootItem::onConnectionsChanged()
 {
   refresh();
-}
-
-void QgsAfsRootItem::newConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Create a New ArcGIS Feature Server Connection" ) );
-
-  if ( nc.exec() )
-  {
-    refresh();
-  }
 }
 #endif
 
@@ -196,67 +174,6 @@ QString QgsAfsConnectionItem::url() const
   const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnName );
   return connection.uri().param( QStringLiteral( "url" ) );
 }
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsAfsConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
-  connect( actionRefresh, &QAction::triggered, this, &QgsAfsConnectionItem::refreshConnection );
-  lst.append( actionRefresh );
-
-  QAction *separator = new QAction( parent );
-  separator->setSeparator( true );
-  lst.append( separator );
-
-  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsAfsConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete Connection…" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsAfsConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsAfsConnectionItem::editConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), mName, QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Modify ArcGIS Feature Server Connection" ) );
-
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    refresh();
-    if ( mParent )
-      mParent->refreshConnections();
-  }
-}
-
-void QgsAfsConnectionItem::deleteConnection()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsOwsConnection::deleteConnection( QStringLiteral( "arcgisfeatureserver" ), mName );
-
-  // the parent should be updated
-  if ( mParent )
-    mParent->refreshConnections();
-}
-
-void QgsAfsConnectionItem::refreshConnection()
-{
-  refresh();
-  // the parent should be updated
-  if ( mParent )
-    mParent->refreshConnections();
-}
-#endif
 
 
 QgsAfsFolderItem::QgsAfsFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers )
@@ -378,6 +295,16 @@ bool QgsAfsParentLayerItem::equal( const QgsDataItem *other )
 // QgsAfsDataItemProvider
 //
 
+QString QgsAfsDataItemProvider::name()
+{
+  return QStringLiteral( "AFS" );
+}
+
+int QgsAfsDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
+
 QgsDataItem *QgsAfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
@@ -398,65 +325,3 @@ QgsDataItem *QgsAfsDataItemProvider::createDataItem( const QString &path, QgsDat
   return nullptr;
 }
 
-#ifdef HAVE_GUI
-
-//
-// QgsAfsItemGuiProvider
-//
-
-QString QgsAfsItemGuiProvider::name()
-{
-  return QStringLiteral( "afs_items" );
-}
-
-void QgsAfsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
-{
-  if ( QgsAfsConnectionItem *connectionItem = qobject_cast< QgsAfsConnectionItem * >( item ) )
-  {
-    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [ = ]
-    {
-      QDesktopServices::openUrl( QUrl( connectionItem->url() ) );
-    } );
-    menu->addAction( viewInfo );
-  }
-  else if ( QgsAfsFolderItem *folderItem = qobject_cast< QgsAfsFolderItem * >( item ) )
-  {
-    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [ = ]
-    {
-      QDesktopServices::openUrl( QUrl( folderItem->path() ) );
-    } );
-    menu->addAction( viewInfo );
-  }
-  else if ( QgsAfsServiceItem *serviceItem = qobject_cast< QgsAfsServiceItem * >( item ) )
-  {
-    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [ = ]
-    {
-      QDesktopServices::openUrl( QUrl( serviceItem->path() ) );
-    } );
-    menu->addAction( viewInfo );
-  }
-  else if ( QgsAfsParentLayerItem *layerItem = qobject_cast< QgsAfsParentLayerItem * >( item ) )
-  {
-    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [ = ]
-    {
-      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
-    } );
-    menu->addAction( viewInfo );
-  }
-  else if ( QgsAfsLayerItem *layerItem = qobject_cast< QgsAfsLayerItem * >( item ) )
-  {
-    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [ = ]
-    {
-      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
-    } );
-    menu->addAction( viewInfo );
-    menu->addSeparator();
-  }
-}
-
-#endif

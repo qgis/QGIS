@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsrectangle.h"
 #include <QString>
 #include <QList>
 
@@ -148,6 +149,30 @@ class CORE_EXPORT QgsDatumTransform
     };
 
     /**
+     * Contains information about a single coordinate operation.
+     *
+     * \note Only used in builds based on on Proj >= 6.2
+     * \since QGIS 3.10
+     */
+    struct SingleOperationDetails
+    {
+      //! Scope of operation, from EPSG registry database
+      QString scope;
+
+      //! Remarks for operation, from EPSG registry database
+      QString remarks;
+
+      //! Area of use, from EPSG registry database
+      QString areaOfUse;
+
+      //! Authority name, e.g. EPSG.
+      QString authority;
+
+      //! Authority code, e.g. "8447" (for EPSG:8447).
+      QString code;
+    };
+
+    /**
      * Contains information about a coordinate transformation operation.
      *
      * \note Only used in builds based on on Proj >= 6.0
@@ -163,6 +188,38 @@ class CORE_EXPORT QgsDatumTransform
       double accuracy = 0;
 
       /**
+       * Authority name, e.g. EPSG.
+       *
+       * This is only available for single step coordinate operations. For multi-step operations, check
+       * \a operationDetails instead.
+       */
+      QString authority;
+
+      /**
+       * Identification code, e.g. "8447" (For EPSG:8447).
+       *
+       * This is only available for single step coordinate operations. For multi-step operations, check
+       * \a operationDetails instead.
+       */
+      QString code;
+
+      /**
+       * Scope of operation, from EPSG registry database.
+       *
+       * This is only available for single step coordinate operations. For multi-step operations, check
+       * \a operationDetails instead.
+       */
+      QString scope;
+
+      /**
+      * Remarks for operation, from EPSG registry database.
+      *
+      * This is only available for single step coordinate operations. For multi-step operations, check
+      * \a operationDetails instead.
+      */
+      QString remarks;
+
+      /**
        * TRUE if operation is available.
        *
        * If FALSE, it likely means a transform grid is required which is not
@@ -171,9 +228,33 @@ class CORE_EXPORT QgsDatumTransform
       bool isAvailable = false;
 
       /**
+       * Area of use string.
+       *
+       * This is only available for single step coordinate operations. For multi-step operations, check
+       * \a operationDetails instead.
+       *
+       * \see bounds
+       */
+      QString areaOfUse;
+
+      /**
+       * Valid bounds for the coordinate operation.
+       * \see areaOfUse
+       */
+      QgsRectangle bounds;
+
+      /**
        * Contains a list of transform grids used by the operation.
        */
       QList< QgsDatumTransform::GridDetails > grids;
+
+      /**
+       * Contains information about the single operation steps used in the transform operation.
+       *
+       * \note Only used in builds based on on Proj >= 6.2
+       * \since QGIS 3.10
+       */
+      QList< QgsDatumTransform::SingleOperationDetails > operationDetails;
     };
 
     /**

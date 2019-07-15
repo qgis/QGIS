@@ -42,7 +42,7 @@ class QgsQlrDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -84,7 +84,7 @@ class QgsQptDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -129,7 +129,7 @@ class QgsPyDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -176,7 +176,7 @@ class QgsStyleXmlDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -235,7 +235,7 @@ class APP_EXPORT QgsProjectDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

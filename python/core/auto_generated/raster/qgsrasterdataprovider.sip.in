@@ -75,6 +75,7 @@ Base class for raster data providers.
       NoProviderCapabilities,
       ReadLayerMetadata,
       WriteLayerMetadata,
+      ProviderHintBenefitsFromResampling
     };
 
     typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;

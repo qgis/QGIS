@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproviderguimetadata.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProviderGuiMetadata
+{
+%Docstring
+Holds data for GUI part of the data providers
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsproviderguimetadata.h"
+%End
+  public:
+
+    explicit QgsProviderGuiMetadata( const QString &key );
+%Docstring
+Constructor for provider gui metadata
+%End
+
+    virtual ~QgsProviderGuiMetadata();
+
+    virtual void registerGui( QMainWindow *widget );
+%Docstring
+Called during GUI initialization - allows provider to do its internal initialization
+of GUI components, possibly making use of the passed pointer to the QGIS main window.
+%End
+
+    virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders() /Factory/;
+%Docstring
+Returns data item gui providers
+
+.. note::
+
+   Ownership of created data item gui providers is passed to the caller.
+%End
+
+    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() /Factory/;
+%Docstring
+Returns project storage gui providers
+
+.. note::
+
+   Ownership of created project storage gui providers is passed to the caller.
+%End
+
+    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders() /Factory/;
+%Docstring
+Returns source select providers
+
+.. note::
+
+   Ownership of created source select providers is passed to the caller.
+%End
+
+    QString key() const;
+%Docstring
+Returns unique provider key
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproviderguimetadata.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

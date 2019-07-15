@@ -5,6 +5,9 @@ if [ "$1" = "triggered" ] || [ "$1" = "configure" ]; then
 	if [ -w /usr/share/qgis/resources/srs.db ] && [ -x /usr/lib/qgis/crssync ]; then
 		/usr/lib/qgis/crssync
 	fi
+	if [ -w /usr/share/qgis/resources/srs6.db ] && [ -x /usr/lib/qgis/crssync ]; then
+		/usr/lib/qgis/crssync
+	fi
 fi
 
 #DEBHELPER#

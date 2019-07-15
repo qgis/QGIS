@@ -87,6 +87,16 @@ void QgsMapSettings::setExtent( const QgsRectangle &extent, bool magnified )
   updateDerived();
 }
 
+double QgsMapSettings::extentBuffer() const
+{
+  return mExtentBuffer;
+}
+
+void QgsMapSettings::setExtentBuffer( const double buffer )
+{
+  mExtentBuffer = buffer;
+}
+
 double QgsMapSettings::rotation() const
 {
   return mRotation;

@@ -30,6 +30,7 @@ class QgsPalLayerSettings;
 class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsVectorLayerLabelProvider;
+class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -114,6 +115,17 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
       parent.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( type() ) ) );
     }
 
+    /**
+     * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
+     * with the labeling.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
   protected:
 
     /**
@@ -153,6 +165,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
      * Set pal settings (takes ownership).

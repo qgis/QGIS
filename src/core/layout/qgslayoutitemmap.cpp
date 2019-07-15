@@ -32,6 +32,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -388,7 +389,7 @@ bool QgsLayoutItemMap::containsWmsLayer() const
   const QList< QgsMapLayer * > layers = layersToRender();
   for ( QgsMapLayer *layer : layers )
   {
-    if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "wms" ) )
+    if ( layer->dataProvider() && layer->providerType() == QLatin1String( "wms" ) )
     {
       return true;
     }
@@ -1342,6 +1343,36 @@ bool QgsLayoutItemMap::isLabelBlockingItem( QgsLayoutItem *item ) const
   return mBlockingLabelItems.contains( item );
 }
 
+bool QgsLayoutItemMap::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  // NOTE: if visitEnter returns false it means "don't visit the item", not "abort all further visitations"
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::LayoutItem, uuid(), displayName() ) ) )
+    return true;
+
+  if ( mOverviewStack )
+  {
+    for ( int i = 0; i < mOverviewStack->size(); ++i )
+    {
+      if ( mOverviewStack->item( i )->accept( visitor ) )
+        return false;
+    }
+  }
+
+  if ( mGridStack )
+  {
+    for ( int i = 0; i < mGridStack->size(); ++i )
+    {
+      if ( mGridStack->item( i )->accept( visitor ) )
+        return false;
+    }
+  }
+
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::LayoutItem, uuid(), displayName() ) ) )
+    return false;
+
+  return true;
+}
+
 QPointF QgsLayoutItemMap::mapToItemCoords( QPointF mapCoords ) const
 {
   QPolygonF mapPoly = transformedMapPolygon();
@@ -1559,7 +1590,7 @@ QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const
   return mapTransform;
 }
 
-QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings &mapSettings ) const
+QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings & ) const
 {
   const QTransform mapTransform = layoutToMapCoordsTransform();
   QList< QgsLabelBlockingRegion > blockers;
@@ -1572,9 +1603,6 @@ QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( cons
     QPolygonF itemRectInMapCoordinates = mapTransform.map( item->mapToScene( item->rect() ) );
     itemRectInMapCoordinates.append( itemRectInMapCoordinates.at( 0 ) ); //close polygon
     QgsGeometry blockingRegion = QgsGeometry::fromQPolygonF( itemRectInMapCoordinates );
-    const double labelMargin = mLayout->convertToLayoutUnits( mEvaluatedLabelMargin );
-    const double labelMarginInMapUnits = labelMargin / rect().width() * mapSettings.extent().width();
-    blockingRegion = blockingRegion.buffer( labelMarginInMapUnits, 0, QgsGeometry::CapSquare, QgsGeometry::JoinStyleMiter, 2 );
     blockers << QgsLabelBlockingRegion( blockingRegion );
   }
   return blockers;
@@ -1654,6 +1682,12 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
       renderLayers.removeAt( removeAt );
     }
   }
+
+  // remove any invalid layers
+  renderLayers.erase( std::remove_if( renderLayers.begin(), renderLayers.end(), []( QgsMapLayer * layer )
+  {
+    return !layer || !layer->isValid();
+  } ), renderLayers.end() );
 
   return renderLayers;
 }
@@ -2209,3 +2243,4 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
     return g.boundingBox();
   }
 }
+

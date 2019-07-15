@@ -603,6 +603,17 @@ was not successful.
 .. seealso:: :py:func:`groupItems`
 %End
 
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+with the layout.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
   public slots:
 
     void refresh();

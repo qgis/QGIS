@@ -72,3 +72,13 @@ void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
 
   mPermissibleZoneGeosPrepared.reset( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mPermissibleZoneGeos.get() ) );
 }
+
+QgsFeature QgsLabelFeature::feature() const
+{
+  return mFeature;
+}
+
+void QgsLabelFeature::setFeature( const QgsFeature &feature )
+{
+  mFeature = feature;
+}

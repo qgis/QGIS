@@ -27,6 +27,7 @@
 #include "qgis_sip.h"
 
 #include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
+#include "qgsexpressioncontext.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -48,6 +49,14 @@ class QgsRenderContext;
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
     Q_OBJECT
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsSymbolLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsSymbolLegendNode;
+    else
+      sipType = 0;
+    SIP_END
+#endif
   public:
 
     enum LegendNodeRoles
@@ -86,14 +95,56 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     struct ItemContext
     {
+      Q_NOWARN_DEPRECATED_PUSH     //because of deprecated members
+      ItemContext() = default;
+      Q_NOWARN_DEPRECATED_POP
+
       //! Render context, if available
       QgsRenderContext *context = nullptr;
       //! Painter
       QPainter *painter = nullptr;
-      //! Top-left corner of the legend item
-      QPointF point;
-      //! offset from the left side where label should start
-      double labelXOffset;
+
+      /**
+       * Top-left corner of the legend item.
+       * \deprecated Use top, columnLeft, columnRight instead.
+       */
+      Q_DECL_DEPRECATED QPointF point;
+
+      /**
+       * Offset from the left side where label should start.
+       * \deprecated use columnLeft, columnRight instead.
+       */
+      Q_DECL_DEPRECATED double labelXOffset = 0.0;
+
+      /**
+       * Top y-position of legend item.
+       * \since QGIS 3.10
+       */
+      double top = 0.0;
+
+      /**
+       * Left side of current legend column. This should be used when determining
+       * where to render legend item content, correctly respecting the symbol and text
+       * alignment from the legend settings.
+       * \since QGIS 3.10
+       */
+      double columnLeft = 0.0;
+
+      /**
+       * Right side of current legend column. This should be used when determining
+       * where to render legend item content, correctly respecting the symbol and text
+       * alignment from the legend settings.
+       * \since QGIS 3.10
+       */
+      double columnRight = 0.0;
+
+      /**
+       * Largest symbol width, considering all other sibling legend components associated with
+       * the current component.
+       * \since QGIS 3.10
+       */
+      double maxSiblingSymbolWidth = 0.0;
+
     };
 
     struct ItemMetrics
@@ -186,6 +237,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
+
   public:
 
     /**
@@ -277,6 +329,20 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     void setTextOnSymbolTextFormat( const QgsTextFormat &format ) { mTextOnSymbolTextFormat = format; }
 
+    /**
+     * Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
+     * \since QGIS 3.10
+     */
+    QString symbolLabel() const;
+
+    /**
+     * Evaluates  and returns the text label of the current node
+     * \param context extra QgsExpressionContext to use for evaluating the expression
+     * \param label text to evaluate instead of the layer layertree string
+     * \since QGIS 3.10
+     */
+    QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
+
   public slots:
 
     /**
@@ -318,6 +384,12 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     // ident the symbol icon to make it look like a tree structure
     static const int INDENT_SIZE = 20;
+
+    /**
+     * Create an expressionContextScope containing symbol related variables
+     * \since QGIS 3.10
+     */
+    QgsExpressionContextScope *createSymbolScope() const SIP_FACTORY;
 
     /**
      * Sets all items belonging to the same layer as this node to the same check state.

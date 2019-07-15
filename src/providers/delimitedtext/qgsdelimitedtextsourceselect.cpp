@@ -20,6 +20,7 @@
 #include "qgsdelimitedtextfile.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -40,11 +41,9 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 {
 
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
 
   bgFileFormat = new QButtonGroup( this );
   bgFileFormat->addButton( delimiterCSV, swFileFormat->indexOf( swpCSVOptions ) );
@@ -94,6 +93,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   connect( crsGeometry, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
+  QgsSettings settings;
   mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
   mFileWidget->setFilter( tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;" + tr( "All files" ) + " (* *.*)" );
   mFileWidget->setSelectedFilter( settings.value( mPluginKey + "/file_filter", "" ).toString() );
@@ -102,8 +102,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
 QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
 {
-  QgsSettings settings;
-  settings.setValue( mPluginKey + "/geometry", saveGeometry() );
   delete mFile;
 }
 

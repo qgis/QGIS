@@ -32,18 +32,14 @@ in QgsLegendModel class.
 
     Qt::AlignmentFlag titleAlignment() const;
 %Docstring
-Returns the alignment of the legend title
-
-:return: Qt.AlignmentFlag for the legend title
+Returns the alignment of the legend title.
 
 .. seealso:: :py:func:`setTitleAlignment`
 %End
 
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 %Docstring
-Sets the alignment of the legend title
-
-:param alignment: Text alignment for drawing the legend title
+Sets the ``alignment`` of the legend title.
 
 .. seealso:: :py:func:`titleAlignment`
 %End
@@ -101,6 +97,28 @@ Overrides fontColor()
 
     QSizeF symbolSize() const;
     void setSymbolSize( QSizeF s );
+
+    void setSymbolAlignment( Qt::AlignmentFlag alignment );
+%Docstring
+Sets the ``alignment`` for placement of legend symbols.
+
+Only Qt.AlignLeft or Qt.AlignRight are supported values.
+
+.. seealso:: :py:func:`symbolAlignment`
+
+.. versionadded:: 3.10
+%End
+
+    Qt::AlignmentFlag symbolAlignment() const;
+%Docstring
+Returns the alignment for placement of legend symbols.
+
+Only Qt.AlignLeft or Qt.AlignRight are supported values.
+
+.. seealso:: :py:func:`setSymbolAlignment`
+
+.. versionadded:: 3.10
+%End
 
     bool drawRasterStroke() const;
 %Docstring

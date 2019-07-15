@@ -46,6 +46,7 @@ class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
 class QgsProject;
+class QgsStyleEntityVisitorInterface;
 
 class QDomDocument;
 class QKeyEvent;
@@ -522,9 +523,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool isSpatial() const;
 
     /**
+     * Flags which control project read behavior.
+     * \since QGIS 3.10
+     */
+    enum ReadFlag
+    {
+      FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
+    };
+    Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
+
+    /**
      * Sets state from DOM document
      * \param layerElement The DOM element corresponding to ``maplayer'' tag
      * \param context writing context (e.g. for conversion between relative and absolute paths)
+     * \param flags optional argument which can be used to control layer reading behavior.
      * \note
      *
      * The DOM node corresponds to a DOM document project file XML element read
@@ -537,7 +549,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \returns TRUE if successful
      */
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = nullptr );
 
     /**
      * Stores state in DOM node
@@ -1139,6 +1151,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     static QString generateId( const QString &layerName );
 
+    /**
+     * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
+     * with the layer.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   public slots:
 
@@ -1486,6 +1508,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Data provider key (name of the data provider)
     QString mProviderKey;
 
+    //TODO QGIS 4 - move to readXml as a new argument (breaks API)
+
+    //! Read flags. It's up to the subclass to respect these when restoring state from XML
+    QgsMapLayer::ReadFlags mReadFlags = nullptr;
 
   private:
 
@@ -1559,11 +1585,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString mOriginalXmlProperties;
 
+
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::LayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::StyleCategories )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::ReadFlags )
 
 
 #ifndef SIP_RUN

@@ -22,7 +22,7 @@ The QgsBrowserDockWidget class
 %End
   public:
 
-    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent /TransferThis/ = 0 );
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserDockWidget
 

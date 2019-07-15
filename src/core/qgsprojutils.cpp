@@ -204,8 +204,7 @@ QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &pr
     const QString gridName = match.captured( 1 );
     QgsDatumTransform::GridDetails grid;
     grid.shortName = gridName;
-#if PROJ_VERSION_MAJOR >= 6
-#if PROJ_VERSION_MINOR >= 2
+#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
     const char *fullName = nullptr;
     const char *packageName = nullptr;
     const char *url = nullptr;
@@ -219,7 +218,6 @@ QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &pr
     grid.directDownload = directDownload;
     grid.openLicense = openLicense;
     grid.isAvailable = available;
-#endif
 #endif
     grids.append( grid );
   }
@@ -257,11 +255,15 @@ QStringList QgsProjUtils::searchPaths()
 #if PROJ_VERSION_MAJOR >= 6
   const QString path( proj_info().searchpath );
   QStringList paths;
-// #ifdef Q_OS_WIN
-#if 1 // -- see https://github.com/OSGeo/proj.4/pull/1497
+#if PROJ_VERSION_MINOR == 1 and PROJ_VERSION_PATCH == 0
+  // -- see https://github.com/OSGeo/proj.4/pull/1497
+  paths = path.split( ';' );
+#else
+#ifdef Q_OS_WIN
   paths = path.split( ';' );
 #else
   paths = path.split( ':' );
+#endif
 #endif
 
   QSet<QString> existing;

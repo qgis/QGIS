@@ -28,8 +28,12 @@
 #include "qgssettings.h"
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
+#include "qgsstylesavedialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
+#include <QMessageBox>
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
@@ -42,8 +46,8 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
 
 QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode )
   : QWidget( parent )
-  , mWidgetMode( mode )
   , mMapCanvas( mapCanvas )
+  , mWidgetMode( mode )
 {
   initWidget();
   setWidgetMode( mode );
@@ -157,6 +161,20 @@ void QgsTextFormatWidget::initWidget()
 
   mOffsetTypeComboBox->addItem( tr( "From point" ), QgsPalLayerSettings::FromPoint );
   mOffsetTypeComboBox->addItem( tr( "From symbol bounds" ), QgsPalLayerSettings::FromSymbolBounds );
+
+  mShapeTypeCmbBx->addItem( tr( "Rectangle" ), QgsTextBackgroundSettings::ShapeRectangle );
+  mShapeTypeCmbBx->addItem( tr( "Square" ), QgsTextBackgroundSettings::ShapeSquare );
+  mShapeTypeCmbBx->addItem( tr( "Ellipse" ), QgsTextBackgroundSettings::ShapeEllipse );
+  mShapeTypeCmbBx->addItem( tr( "Circle" ), QgsTextBackgroundSettings::ShapeCircle );
+  mShapeTypeCmbBx->addItem( tr( "SVG" ), QgsTextBackgroundSettings::ShapeSVG );
+  mShapeTypeCmbBx->addItem( tr( "Marker Symbol" ), QgsTextBackgroundSettings::ShapeMarkerSymbol );
+
+  updateAvailableShadowPositions();
+
+  mBackgroundSymbolButton->setSymbolType( QgsSymbol::Marker );
+  mBackgroundSymbolButton->setDialogTitle( tr( "Background Symbol" ) );
+  mBackgroundSymbolButton->registerExpressionContextGenerator( this );
+  mBackgroundSymbolButton->setMapCanvas( mMapCanvas );
 
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
@@ -520,7 +538,11 @@ void QgsTextFormatWidget::initWidget()
           << mGeometryGeneratorGroupBox
           << mGeometryGenerator
           << mGeometryGeneratorType
-          << mLinePlacementFlagsDDBtn;
+          << mLinePlacementFlagsDDBtn
+          << mBackgroundSymbolButton
+          << mCalloutsDrawCheckBox
+          << mCalloutStyleComboBox
+          << mCalloutDrawDDBtn;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
@@ -537,6 +559,11 @@ void QgsTextFormatWidget::initWidget()
     lblFontPreview->setMapUnits( mMapCanvas->mapSettings().mapUnits() );
     mPreviewScaleComboBox->setScale( mMapCanvas->mapSettings().scale() );
   }
+
+  mTextFormatsListWidget->setStyle( QgsStyle::defaultStyle() );
+  mTextFormatsListWidget->setEntityType( QgsStyle::TextFormatEntity );
+  connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsTextFormatWidget::setFormatFromStyle );
+  connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsTextFormatWidget::saveFormat );
 }
 
 void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
@@ -546,6 +573,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
   {
     case Labeling:
       toggleDDButtons( true );
+      mTextFormatsListWidget->setEntityTypes( QList< QgsStyle::StyleEntity >() << QgsStyle::TextFormatEntity << QgsStyle::LabelSettingsEntity );
       break;
 
     case Text:
@@ -599,6 +627,10 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, 
   for ( QWidget *widget : constWidgets )
   {
     if ( QgsPropertyOverrideButton *w = qobject_cast<QgsPropertyOverrideButton *>( widget ) )
+    {
+      connect( w, SIGNAL( changed() ), this, slot );
+    }
+    else if ( QgsSymbolButton *w = qobject_cast<QgsSymbolButton *>( widget ) )
     {
       connect( w, SIGNAL( changed() ), this, slot );
     }
@@ -724,8 +756,9 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   // shape background
   mShapeDrawChkBx->setChecked( background.enabled() );
   mShapeTypeCmbBx->blockSignals( true );
-  mShapeTypeCmbBx->setCurrentIndex( background.type() );
+  mShapeTypeCmbBx->setCurrentIndex( mShapeTypeCmbBx->findData( background.type() ) );
   mShapeTypeCmbBx->blockSignals( false );
+  updateAvailableShadowPositions();
   mShapeSVGPathLineEdit->setText( background.svgFile() );
 
   mShapeSizeCmbBx->setCurrentIndex( background.sizeType() );
@@ -768,9 +801,11 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   }
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
+  mBackgroundSymbolButton->setSymbol( background.markerSymbol() ? background.markerSymbol()->clone() : QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+
   // drop shadow
   mShadowDrawChkBx->setChecked( shadow.enabled() );
-  mShadowUnderCmbBx->setCurrentIndex( shadow.shadowPlacement() );
+  mShadowUnderCmbBx->setCurrentIndex( mShadowUnderCmbBx->findData( shadow.shadowPlacement() ) );
   mShadowOffsetAngleSpnBx->setValue( shadow.offsetAngle() );
   mShadowOffsetSpnBx->setValue( shadow.offsetDistance() );
   mShadowOffsetUnitWidget->setUnit( shadow.offsetUnit() );
@@ -787,6 +822,9 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mShadowColorBtn->setColor( shadow.color() );
   mShadowBlendCmbBx->setBlendMode( shadow.blendMode() );
 
+  mPreviewBackgroundBtn->setColor( format.previewBackgroundColor() );
+  mPreviewBackgroundBtn->setDefaultColor( format.previewBackgroundColor() );
+  setPreviewBackground( format.previewBackgroundColor() );
 }
 
 QgsTextFormatWidget::~QgsTextFormatWidget()
@@ -809,6 +847,7 @@ QgsTextFormat QgsTextFormatWidget::format() const
   format.setSizeUnit( mFontSizeUnitWidget->unit() );
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
   format.setLineHeight( mFontLineHeightSpinBox->value() );
+  format.setPreviewBackgroundColor( mPreviewBackgroundColor );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -830,7 +869,7 @@ QgsTextFormat QgsTextFormatWidget::format() const
   // shape background
   QgsTextBackgroundSettings background;
   background.setEnabled( mShapeDrawChkBx->isChecked() );
-  background.setType( ( QgsTextBackgroundSettings::ShapeType )mShapeTypeCmbBx->currentIndex() );
+  background.setType( static_cast< QgsTextBackgroundSettings::ShapeType >( mShapeTypeCmbBx->currentData().toInt() ) );
   background.setSvgFile( mShapeSVGPathLineEdit->text() );
   background.setSizeType( ( QgsTextBackgroundSettings::SizeType )mShapeSizeCmbBx->currentIndex() );
   background.setSize( QSizeF( mShapeSizeXSpnBx->value(), mShapeSizeYSpnBx->value() ) );
@@ -857,12 +896,13 @@ QgsTextFormat QgsTextFormatWidget::format() const
     background.setPaintEffect( mBackgroundEffect->clone() );
   else
     background.setPaintEffect( nullptr );
+  background.setMarkerSymbol( mBackgroundSymbolButton->clonedSymbol< QgsMarkerSymbol >() );
   format.setBackground( background );
 
   // drop shadow
   QgsTextShadowSettings shadow;
   shadow.setEnabled( mShadowDrawChkBx->isChecked() );
-  shadow.setShadowPlacement( ( QgsTextShadowSettings::ShadowPlacement )mShadowUnderCmbBx->currentIndex() );
+  shadow.setShadowPlacement( static_cast< QgsTextShadowSettings::ShadowPlacement >( mShadowUnderCmbBx->currentData().toInt() ) );
   shadow.setOffsetAngle( mShadowOffsetAngleSpnBx->value() );
   shadow.setOffsetDistance( mShadowOffsetSpnBx->value() );
   shadow.setOffsetUnit( mShadowOffsetUnitWidget->unit() );
@@ -886,11 +926,27 @@ void QgsTextFormatWidget::setFormat( const QgsTextFormat &format )
   updateWidgetForFormat( format );
 }
 
+QgsSymbolWidgetContext QgsTextFormatWidget::context() const
+{
+  return mContext;
+}
+
 void QgsTextFormatWidget::optionsStackedWidget_CurrentChanged( int indx )
 {
   mLabelingOptionsListWidget->blockSignals( true );
   mLabelingOptionsListWidget->setCurrentRow( indx );
   mLabelingOptionsListWidget->blockSignals( false );
+}
+
+void QgsTextFormatWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  mContext = context;
+  const auto symbolButtonWidgets = findChildren<QgsSymbolButton *>();
+  for ( QgsSymbolButton *symbolWidget : symbolButtonWidgets )
+  {
+    symbolWidget->setMapCanvas( mContext.mapCanvas() );
+    symbolWidget->setMessageBar( mContext.messageBar() );
+  }
 }
 
 void QgsTextFormatWidget::collapseSample( bool collapse )
@@ -977,6 +1033,8 @@ void QgsTextFormatWidget::scrollPreview()
 
 void QgsTextFormatWidget::setPreviewBackground( const QColor &color )
 {
+  mPreviewBackgroundColor = color;
+
   scrollArea_mPreview->widget()->setStyleSheet( QStringLiteral( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
       QString::number( color.green() ),
       QString::number( color.blue() ) ) );
@@ -1218,22 +1276,25 @@ void QgsTextFormatWidget::mCoordYDDBtn_activated( bool active )
   }
 }
 
-void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int index )
+void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int )
 {
   // shape background
-  bool isRect = ( ( QgsTextBackgroundSettings::ShapeType )index == QgsTextBackgroundSettings::ShapeRectangle
-                  || ( QgsTextBackgroundSettings::ShapeType )index == QgsTextBackgroundSettings::ShapeSquare );
-  bool isSVG = ( ( QgsTextBackgroundSettings::ShapeType )index == QgsTextBackgroundSettings::ShapeSVG );
+  QgsTextBackgroundSettings::ShapeType type = static_cast< QgsTextBackgroundSettings::ShapeType >( mShapeTypeCmbBx->currentData().toInt() );
+  const bool isRect = type == QgsTextBackgroundSettings::ShapeRectangle || type == QgsTextBackgroundSettings::ShapeSquare;
+  const bool isSVG = type == QgsTextBackgroundSettings::ShapeSVG;
+  const bool isMarker = type == QgsTextBackgroundSettings::ShapeMarkerSymbol;
 
   showBackgroundPenStyle( isRect );
   showBackgroundRadius( isRect );
 
   mShapeSVGPathFrame->setVisible( isSVG );
+  mBackgroundSymbolButton->setVisible( isMarker );
+
   // symbology SVG renderer only supports size^2 scaling, so we only use the x size spinbox
-  mShapeSizeYLabel->setVisible( !isSVG );
-  mShapeSizeYSpnBx->setVisible( !isSVG );
-  mShapeSizeYDDBtn->setVisible( !isSVG && mWidgetMode == Labeling );
-  mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : QString() ) );
+  mShapeSizeYLabel->setVisible( !isSVG && !isMarker );
+  mShapeSizeYSpnBx->setVisible( !isSVG && !isMarker );
+  mShapeSizeYDDBtn->setVisible( !isSVG && !isMarker && mWidgetMode == Labeling );
+  mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG && !isMarker ? tr( " X" ) : QString() ) );
 
   // SVG parameter setting doesn't support color's alpha component yet
   mShapeFillColorBtn->setAllowOpacity( !isSVG );
@@ -1249,21 +1310,23 @@ void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int index )
   }
   else
   {
-    mShapeFillColorLabel->setEnabled( true );
-    mShapeFillColorBtn->setEnabled( true );
-    mShapeFillColorDDBtn->setEnabled( true );
-    mShapeStrokeColorLabel->setEnabled( true );
-    mShapeStrokeColorBtn->setEnabled( true );
-    mShapeStrokeColorDDBtn->setEnabled( true );
-    mShapeStrokeWidthLabel->setEnabled( true );
-    mShapeStrokeWidthSpnBx->setEnabled( true );
-    mShapeStrokeWidthDDBtn->setEnabled( true );
+    mShapeFillColorLabel->setEnabled( !isMarker );
+    mShapeFillColorBtn->setEnabled( !isMarker );
+    mShapeFillColorDDBtn->setEnabled( !isMarker );
+    mShapeStrokeColorLabel->setEnabled( !isMarker );
+    mShapeStrokeColorBtn->setEnabled( !isMarker );
+    mShapeStrokeColorDDBtn->setEnabled( !isMarker );
+    mShapeStrokeWidthLabel->setEnabled( !isMarker );
+    mShapeStrokeWidthSpnBx->setEnabled( !isMarker );
+    mShapeStrokeWidthDDBtn->setEnabled( !isMarker );
   }
   // TODO: fix overriding SVG symbol's stroke width units in QgsSvgCache
   // currently broken, fall back to symbol units only
-  mShapeStrokeWidthUnitWidget->setVisible( !isSVG );
+  mShapeStrokeWidthUnitWidget->setVisible( !isSVG && !isMarker );
   mShapeSVGUnitsLabel->setVisible( isSVG );
-  mShapeStrokeUnitsDDBtn->setEnabled( !isSVG );
+  mShapeStrokeUnitsDDBtn->setEnabled( !isSVG && !isMarker );
+
+  updateAvailableShadowPositions();
 }
 
 void QgsTextFormatWidget::mShapeSVGPathLineEdit_textChanged( const QString &text )
@@ -1360,6 +1423,95 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
   //mShapeStrokeWidthUnitWidget->setEnabled( validSVG && strokeWidthParam );
   //mShapeStrokeUnitsDDBtn->setEnabled( validSVG && strokeWidthParam );
   mShapeSVGUnitsLabel->setEnabled( validSVG && strokeWidthParam );
+}
+
+void QgsTextFormatWidget::updateAvailableShadowPositions()
+{
+  if ( mShadowUnderCmbBx->count() == 0
+       || ( mShadowUnderCmbBx->findData( QgsTextShadowSettings::ShadowShape ) > -1 && mShapeTypeCmbBx->currentData().toInt() == QgsTextBackgroundSettings::ShapeMarkerSymbol )
+       || ( mShadowUnderCmbBx->findData( QgsTextShadowSettings::ShadowShape ) == -1 && mShapeTypeCmbBx->currentData().toInt() != QgsTextBackgroundSettings::ShapeMarkerSymbol ) )
+  {
+    // showing invalid choices, have to rebuild the list
+    QgsTextShadowSettings::ShadowPlacement currentPlacement = static_cast< QgsTextShadowSettings::ShadowPlacement >( mShadowUnderCmbBx->currentData().toInt() );
+    mShadowUnderCmbBx->clear();
+
+    mShadowUnderCmbBx->addItem( tr( "Lowest label component" ), QgsTextShadowSettings::ShadowLowest );
+    mShadowUnderCmbBx->addItem( tr( "Text" ), QgsTextShadowSettings::ShadowText );
+    mShadowUnderCmbBx->addItem( tr( "Buffer" ), QgsTextShadowSettings::ShadowBuffer );
+    if ( mShapeTypeCmbBx->currentData().toInt() != QgsTextBackgroundSettings::ShapeMarkerSymbol )
+      mShadowUnderCmbBx->addItem( tr( "Background" ), QgsTextShadowSettings::ShadowShape ); // not supported for marker symbol background shapes
+
+    mShadowUnderCmbBx->setCurrentIndex( mShadowUnderCmbBx->findData( currentPlacement ) );
+    if ( mShadowUnderCmbBx->currentIndex() == -1 )
+      mShadowUnderCmbBx->setCurrentIndex( 0 );
+  }
+}
+
+void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
+{
+  switch ( type )
+  {
+    case QgsStyle::SymbolEntity:
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+      return;
+
+    case QgsStyle::TextFormatEntity:
+    {
+      if ( !QgsStyle::defaultStyle()->textFormatNames().contains( name ) )
+        return;
+
+      QgsTextFormat newFormat = QgsStyle::defaultStyle()->textFormat( name );
+      setFormat( newFormat );
+      break;
+    }
+
+    case QgsStyle::LabelSettingsEntity:
+    {
+      if ( !QgsStyle::defaultStyle()->labelSettingsNames().contains( name ) )
+        return;
+
+      QgsTextFormat newFormat = QgsStyle::defaultStyle()->labelSettings( name ).format();
+      setFormat( newFormat );
+      break;
+    }
+  }
+}
+
+void QgsTextFormatWidget::saveFormat()
+{
+  QgsStyle *style = QgsStyle::defaultStyle();
+  if ( !style )
+    return;
+
+  QgsStyleSaveDialog saveDlg( this );
+  saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
+  if ( !saveDlg.exec() )
+    return;
+
+  if ( saveDlg.name().isEmpty() )
+    return;
+
+  // check if there is no format with same name
+  if ( style->textFormatNames().contains( saveDlg.name() ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save Text Format" ),
+                                    tr( "Format with name '%1' already exists. Overwrite?" )
+                                    .arg( saveDlg.name() ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+    style->removeTextFormat( saveDlg.name() );
+  }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  QgsTextFormat newFormat = format();
+  style->addTextFormat( saveDlg.name(), newFormat );
+  style->saveTextFormat( saveDlg.name(), newFormat, saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsTextFormatWidget::mShapeSVGSelectorBtn_clicked()
@@ -1506,6 +1658,18 @@ void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
   mCoordAlignmentFrame->setEnabled( enable );
 }
 
+QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr );
+  if ( mMapCanvas )
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+
+  return expContext;
+}
+
 
 //
 // QgsTextFormatDialog
@@ -1526,18 +1690,10 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
   layout->addWidget( buttonBox );
 
   setLayout( layout );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/TextFormatDialog/geometry" ) ).toByteArray() );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( buttonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
-}
-
-QgsTextFormatDialog::~QgsTextFormatDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/TextFormatDialog/geometry" ), saveGeometry() );
 }
 
 QgsTextFormat QgsTextFormatDialog::format() const

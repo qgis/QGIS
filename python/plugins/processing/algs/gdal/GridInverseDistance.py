@@ -54,6 +54,7 @@ class GridInverseDistance(GdalAlgorithm):
     ANGLE = 'ANGLE'
     NODATA = 'NODATA'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     DATA_TYPE = 'DATA_TYPE'
     OUTPUT = 'OUTPUT'
 
@@ -128,6 +129,13 @@ class GridInverseDistance(GdalAlgorithm):
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
 
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
+
         dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
                                                     self.tr('Output data type'),
                                                     self.TYPES,
@@ -191,6 +199,10 @@ class GridInverseDistance(GdalAlgorithm):
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.append(ogrLayer)
         arguments.append(out)

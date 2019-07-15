@@ -464,7 +464,11 @@ void Qgs3DMapSettings::setTerrainMapTheme( const QString &theme )
 
 void Qgs3DMapSettings::setRenderers( const QList<QgsAbstract3DRenderer *> &renderers )
 {
+  qDeleteAll( mRenderers );
+
   mRenderers = renderers;
+
+  emit renderersChanged();
 }
 
 void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )

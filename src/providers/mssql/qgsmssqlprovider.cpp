@@ -48,13 +48,9 @@
 #include "qgsmssqldataitems.h"
 #include "qgsmssqlfeatureiterator.h"
 
-#ifdef HAVE_GUI
-#include "qgsmssqlsourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mssql" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial data provider" );
+const QString QgsMssqlProvider::MSSQL_PROVIDER_KEY = QStringLiteral( "mssql" );
+const QString QgsMssqlProvider::MSSQL_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial data provider" );
 int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &options )
@@ -1548,7 +1544,7 @@ QString QgsMssqlProvider::subsetString() const
 
 QString  QgsMssqlProvider::name() const
 {
-  return TEXT_PROVIDER_KEY;
+  return MSSQL_PROVIDER_KEY;
 }
 
 bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
@@ -1595,7 +1591,7 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 
 QString  QgsMssqlProvider::description() const
 {
-  return TEXT_PROVIDER_DESCRIPTION;
+  return MSSQL_PROVIDER_DESCRIPTION;
 }
 
 QgsAttributeList QgsMssqlProvider::pkAttributeIndexes() const
@@ -2010,72 +2006,37 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
  * Class factory to return a pointer to a newly created
  * QgsMssqlProvider object
  */
-QGISEXTERN QgsMssqlProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsMssqlProvider *QgsMssqlProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsMssqlProvider( *uri, options );
+  return new QgsMssqlProvider( uri, options );
 }
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
+QList<QgsDataItemProvider *> QgsMssqlProviderMetadata::dataItemProviders() const
 {
-  return TEXT_PROVIDER_KEY;
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsMssqlDataItemProvider;
+  return providers;
 }
 
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return TEXT_PROVIDER_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
-#ifdef HAVE_GUI
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsMssqlSourceSelect( parent, fl, widgetMode );
-}
-#endif
-
-QGISEXTERN int dataCapabilities()
-{
-  return QgsDataProvider::Database;
-}
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
-  Q_UNUSED( path )
-  return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
-}
-
-QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
+QgsVectorLayerExporter::ExportError QgsMssqlProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
+  QMap<int, int> &oldToNewAttrIdxMap,
+  QString &errorMessage,
   const QMap<QString, QVariant> *options )
 {
   return QgsMssqlProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           oldToNewAttrIdxMap, errorMessage, options
+           &oldToNewAttrIdxMap, &errorMessage, options
          );
 }
-QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                           const QString &styleName, const QString &styleDescription,
-                           const QString &uiFileContent, bool useAsDefault, QString &errCause )
+
+bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+    const QString &styleName, const QString &styleDescription,
+    const QString &uiFileContent, bool useAsDefault, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database
@@ -2233,8 +2194,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   return execOk;
 }
 
-
-QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
+QString QgsMssqlProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database
@@ -2278,8 +2238,8 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   return QString();
 }
 
-QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString &errCause )
+int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names,
+    QStringList &descriptions, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database
@@ -2359,7 +2319,13 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   }
   return numberOfRelatedStyles;
 }
-QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &errCause )
+
+QgsMssqlProviderMetadata::QgsMssqlProviderMetadata():
+  QgsProviderMetadata( QgsMssqlProvider::MSSQL_PROVIDER_KEY, QgsMssqlProvider::MSSQL_PROVIDER_DESCRIPTION )
+{
+}
+
+QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, QString styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database
@@ -2392,32 +2358,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
 }
 
 
-#ifdef HAVE_GUI
-
-//! Provider for msssql raster source select
-class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "mssql" ); }
-    QString text() const override { return QObject::tr( "MSSQL" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 30; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsMssqlSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsMssqlSourceSelectProvider;
-
-  return providers;
+  return new QgsMssqlProviderMetadata();
 }
-
-#endif

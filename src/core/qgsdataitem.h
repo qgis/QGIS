@@ -22,7 +22,6 @@
 #include <QFileSystemWatcher>
 #include <QFutureWatcher>
 #include <QIcon>
-#include <QLibrary>
 #include <QObject>
 #include <QPixmap>
 #include <QString>
@@ -143,7 +142,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns TRUE if this item is equal to another item (by testing item type and path).
      */
     virtual bool equal( const QgsDataItem *other );
-
     virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
 
     /**
@@ -169,15 +167,21 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
      * \see handleDrop()
+     * \see QgsDataItemGuiProvider::handleDrop()
+     *
+     * \deprecated QGIS 3.10
      */
-    virtual bool acceptDrop() { return false; }
+    Q_DECL_DEPRECATED virtual bool acceptDrop() SIP_DEPRECATED { return false; }
 
     /**
      * Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
      * accept dropped layers.
      * \see acceptDrop()
+     * \see QgsDataItemGuiProvider::handleDrop()
+     *
+     * \deprecated QGIS 3.10
      */
-    virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
+    Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) SIP_DEPRECATED { return false; }
 
     /**
      * Called when a user double clicks on the item. Subclasses should return TRUE
@@ -235,9 +239,12 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * The default implementation does nothing.
      *
+     * Use QgsDataItemGuiProvider:
+     *
      * \since QGIS 3.4
+     * \deprecated QGIS 3.10
      */
-    virtual bool rename( const QString &name );
+    Q_DECL_DEPRECATED virtual bool rename( const QString &name ) SIP_DEPRECATED;
 
     // ### QGIS 4 - rename to capabilities()
 
@@ -512,8 +519,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      */
     static QString iconName( LayerType layerType );
 
-    //! Delete this layer item
-    virtual bool deleteLayer();
+    /**
+     * Delete this layer item
+     * Use QgsDataItemGuiProvider::deleteLayer instead
+     *
+     * \deprecated QGIS 3.10
+     */
+    Q_DECL_DEPRECATED virtual bool deleteLayer() SIP_DEPRECATED;
 
   protected:
 

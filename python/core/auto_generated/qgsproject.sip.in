@@ -79,7 +79,7 @@ Returns ``True`` if the project has been modified since the last write()
 
     void setFileName( const QString &name );
 %Docstring
-Sets the file name associated with the project. This is the file which contains the project's XML
+Sets the file name associated with the project. This is the file or the storage URI which contains the project's XML
 representation.
 
 :param name: project file name
@@ -89,7 +89,7 @@ representation.
 
     QString fileName() const;
 %Docstring
-Returns the project's file name. This is the file which contains the project's XML
+Returns the project's file name. This is the file or the storage URI which contains the project's XML
 representation.
 
 .. seealso:: :py:func:`setFileName`
@@ -233,18 +233,29 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename );
+    enum ReadFlag
+    {
+      FlagDontResolveLayers,
+    };
+    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
+
+
+    bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
 %Docstring
 Reads given project file from the given file.
 
 :param filename: name of project file to read
+:param flags: optional flags which control the read behavior of projects
 
 :return: ``True`` if project file has been read successfully
 %End
 
-    bool read();
+    bool read( QgsProject::ReadFlags flags = 0 );
 %Docstring
 Reads the project from its currently associated file (see fileName() ).
+
+The ``flags`` argument can be used to specify optional flags which control
+the read behavior of projects.
 
 :return: ``True`` if project file has been read successfully
 %End
@@ -438,9 +449,11 @@ Returns project file path if layer is embedded from other project file. Returns 
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = 0 );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
+
+The optional ``flags`` argument can be used to control layer reading behavior.
 
 .. versionadded:: 2.4
 %End
@@ -976,6 +989,8 @@ Returns the current auxiliary storage.
 .. versionadded:: 3.0
 %End
 
+
+
     const QgsProjectMetadata &metadata() const;
 %Docstring
 Returns a reference to the project's metadata store.
@@ -1051,6 +1066,17 @@ Translates the project with QTranslator and qm file
 :param n: if -1 uses the appropriate form
 
 .. versionadded:: 3.4
+%End
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+with the project.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
 %End
 
   signals:
@@ -1392,6 +1418,7 @@ Emitted when the project dirty status changes.
 .. versionadded:: 3.2
 %End
 
+
   public slots:
 
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
@@ -1449,6 +1476,9 @@ So there can be created a ts file with these values.
 %End
 
 };
+
+QFlags<QgsProject::ReadFlag> operator|(QgsProject::ReadFlag f1, QFlags<QgsProject::ReadFlag> f2);
+
 
 class QgsProjectDirtyBlocker
 {

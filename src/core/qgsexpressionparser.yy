@@ -166,7 +166,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %right UMINUS  // fictitious symbol (for unary minus)
 
 %left COMMA
-%left '[' 
+%left '['
 
 %destructor { delete $$; } <node>
 %destructor { delete $$; } <nodelist>
@@ -269,8 +269,9 @@ expression:
           }
           // 0 parameters is expected, -1 parameters means leave it to the
           // implementation
-          if ( QgsExpression::Functions()[fnIndex]->params() > 0 )
+          if ( QgsExpression::Functions()[fnIndex]->minParams() > 0 )
           {
+
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionWrongArgs;
             parser_ctx->currentErrorType = errorType;
             exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );

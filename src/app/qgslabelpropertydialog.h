@@ -31,7 +31,6 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     Q_OBJECT
   public:
     QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, int featureId, const QFont &labelFont, const QString &labelText, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsLabelPropertyDialog() override;
 
     //! Returns properties changed by the user
     const QgsAttributeMap &changedProperties() const { return mChangedProperties; }
@@ -50,6 +49,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void buttonBox_clicked( QAbstractButton *button );
     void mShowLabelChkbx_toggled( bool chkd );
     void mAlwaysShowChkbx_toggled( bool chkd );
+    void showCalloutToggled( bool chkd );
     void minScaleChanged( double scale );
     void maxScaleChanged( double scale );
     void mLabelDistanceSpinBox_valueChanged( double d );

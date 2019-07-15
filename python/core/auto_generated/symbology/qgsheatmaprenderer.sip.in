@@ -60,6 +60,8 @@ Creates a new heatmap renderer instance from XML
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
 

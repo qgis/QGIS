@@ -24,7 +24,7 @@
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
 
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
@@ -45,7 +45,7 @@
 
 #include <QDragEnterEvent>
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
   , mModel( browserModel )
   , mPropertiesWidgetEnabled( false )
@@ -281,6 +281,7 @@ void QgsBrowserDockWidget::addFavoriteDirectory( const QString &favDir, const QS
 void QgsBrowserDockWidget::setMessageBar( QgsMessageBar *bar )
 {
   mMessageBar = bar;
+  mModel->setMessageBar( bar );
 }
 
 QgsMessageBar *QgsBrowserDockWidget::messageBar()

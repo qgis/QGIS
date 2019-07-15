@@ -32,6 +32,7 @@ class QTextCodec;
 #include "qgsrelation.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
+#include "qgsfeaturerequest.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -43,7 +44,6 @@ class QgsFeedback;
 class QgsFeatureRenderer;
 class QgsAbstractVectorLayerLabeling;
 
-#include "qgsfeaturerequest.h"
 
 /**
  * \ingroup core
@@ -600,6 +600,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \since QGIS 3.0
      */
     virtual bool hasMetadata() const { return true; }
+
+    /**
+     * Handles any post-clone operations required after this vector data provider was cloned
+     * from the \a source provider.
+     *
+     * \since QGIS 3.8.1
+     */
+    virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
 
   signals:
 

@@ -13,13 +13,16 @@ SET (WMS_MOC_HDRS
 
 IF (WITH_GUI)
   SET(WMS_SRCS ${WMS_SRCS}
+    qgswmsprovidergui.cpp
     qgswmssourceselect.cpp
+    qgswmsdataitemguiproviders.cpp
     qgstilescalewidget.cpp
     qgswmtsdimensions.cpp
     qgsxyzconnectiondialog.cpp
   )
   SET(WMS_MOC_HDRS ${WMS_MOC_HDRS}
     qgswmssourceselect.h
+    qgswmsdataitemguiproviders.h
     qgstilescalewidget.h
     qgswmtsdimensions.h
     qgsxyzconnectiondialog.h

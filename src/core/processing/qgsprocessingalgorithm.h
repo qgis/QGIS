@@ -777,6 +777,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+     *
+     * \since QGIS 3.10
+     */
+    QStringList parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a range of values.
      */
     QList<double> parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
@@ -805,6 +812,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \since QGIS 3.8
      */
     QgsLayoutItem *parameterAsLayoutItem( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsPrintLayout *layout );
+
+    /**
+     * Evaluates the parameter with matching \a name to a color, or returns an invalid color if the parameter was not set.
+     *
+     * \since QGIS 3.10
+     */
+    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 
     /**
      * Returns a user-friendly string to use as an error when a source parameter could

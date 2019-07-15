@@ -644,6 +644,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mWMSImageQualitySpinBox->setValue( imageQuality );
   }
 
+  // WMS tileBuffer
+  mWMSTileBufferSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSTileBuffer" ), QStringLiteral( "/" ), 0 ) );
+
   mWMSMaxAtlasFeaturesSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 ) );
 
   QString defaultValueToolTip = tr( "In case of no other information to evaluate the map unit sized symbols, it uses default scale (on projected CRS) or default map units per mm (on geographic CRS)." );
@@ -1322,6 +1325,9 @@ void QgsProjectProperties::apply()
   {
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSImageQuality" ), QStringLiteral( "/" ), imageQualityValue );
   }
+
+  // WMS TileBuffer
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSTileBuffer" ), QStringLiteral( "/" ), mWMSTileBufferSpinBox->value() );
 
   int maxAtlasFeatures = mWMSMaxAtlasFeaturesSpinBox->value();
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), maxAtlasFeatures );

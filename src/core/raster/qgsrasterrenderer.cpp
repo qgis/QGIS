@@ -168,3 +168,8 @@ void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const Qg
     rasterSymbolizerElem.appendChild( opacityElem );
   }
 }
+
+bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
+}

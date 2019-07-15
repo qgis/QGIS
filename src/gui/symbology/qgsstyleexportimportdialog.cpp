@@ -300,6 +300,8 @@ void QgsStyleExportImportDialog::selectSmartgroup( const QString &groupName )
   selectSymbols( symbolNames );
   symbolNames = mStyle->symbolsOfSmartgroup( QgsStyle::ColorrampEntity, mStyle->smartgroupId( groupName ) );
   selectSymbols( symbolNames );
+  symbolNames = mStyle->symbolsOfSmartgroup( QgsStyle::TextFormatEntity, mStyle->smartgroupId( groupName ) );
+  selectSymbols( symbolNames );
 }
 
 void QgsStyleExportImportDialog::deselectSmartgroup( const QString &groupName )
@@ -307,6 +309,8 @@ void QgsStyleExportImportDialog::deselectSmartgroup( const QString &groupName )
   QStringList symbolNames = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, mStyle->smartgroupId( groupName ) );
   deselectSymbols( symbolNames );
   symbolNames = mStyle->symbolsOfSmartgroup( QgsStyle::ColorrampEntity, mStyle->smartgroupId( groupName ) );
+  deselectSymbols( symbolNames );
+  symbolNames = mStyle->symbolsOfSmartgroup( QgsStyle::TextFormatEntity, mStyle->smartgroupId( groupName ) );
   deselectSymbols( symbolNames );
 }
 

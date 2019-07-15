@@ -782,6 +782,13 @@ Tables are collapsed to a 1 dimensional list.
 Evaluates the parameter with matching ``name`` to a list of map layers.
 %End
 
+    QStringList parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+
+.. versionadded:: 3.10
+%End
+
     QList<double> parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a range of values.
@@ -814,6 +821,13 @@ Evaluates the parameter with matching ``name`` to a print layout item, taken fro
    implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
 
 .. versionadded:: 3.8
+%End
+
+    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a color, or returns an invalid color if the parameter was not set.
+
+.. versionadded:: 3.10
 %End
 
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );

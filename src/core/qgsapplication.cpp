@@ -39,6 +39,7 @@
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
+#include "callouts/qgscalloutsregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
@@ -53,6 +54,7 @@
 #include "qgsstyle.h"
 #include "qgsprojutils.h"
 #include "qgsvaliditycheckregistry.h"
+#include "qgsnewsfeedparser.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -218,6 +220,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
   qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
   qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
+  qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
 
   ( void ) resolvePkgPath();
 
@@ -307,12 +310,16 @@ void QgsApplication::init( QString profileFolder )
   // append local user-writable folder as a proj search path
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
-  const char **newPaths = new const char *[currentProjSearchPaths.length()];
+  char **newPaths = new char *[currentProjSearchPaths.length()];
   for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
   {
-    newPaths[i] = currentProjSearchPaths.at( i ).toUtf8().constData();
+    newPaths[i] = CPLStrdup( currentProjSearchPaths.at( i ).toUtf8().constData() );
   }
   proj_context_set_search_paths( nullptr, currentProjSearchPaths.count(), newPaths );
+  for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
+  {
+    CPLFree( newPaths[i] );
+  }
   delete [] newPaths;
 #endif
 
@@ -948,6 +955,27 @@ QString QgsApplication::iconsPath()
 
 QString QgsApplication::srsDatabaseFilePath()
 {
+#if PROJ_VERSION_MAJOR>=6
+  if ( ABISYM( mRunningFromBuildDir ) )
+  {
+    QString tempCopy = QDir::tempPath() + "/srs6.db";
+
+    if ( !QFile( tempCopy ).exists() )
+    {
+      QFile f( pkgDataPath() + "/resources/srs6.db" );
+      if ( !f.copy( tempCopy ) )
+      {
+        qFatal( "Could not create temporary copy" );
+      }
+    }
+
+    return tempCopy;
+  }
+  else
+  {
+    return pkgDataPath() + QStringLiteral( "/resources/srs6.db" );
+  }
+#else
   if ( ABISYM( mRunningFromBuildDir ) )
   {
     QString tempCopy = QDir::tempPath() + "/srs.db";
@@ -967,6 +995,7 @@ QString QgsApplication::srsDatabaseFilePath()
   {
     return pkgDataPath() + QStringLiteral( "/resources/srs.db" );
   }
+#endif
 }
 
 QStringList QgsApplication::svgPaths()
@@ -1877,6 +1906,11 @@ QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
   return members()->mSymbolLayerRegistry;
 }
 
+QgsCalloutRegistry *QgsApplication::calloutRegistry()
+{
+  return members()->mCalloutRegistry;
+}
+
 QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
 {
   return members()->mLayoutItemRegistry;
@@ -1941,6 +1975,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mColorSchemeRegistry = new QgsColorSchemeRegistry();
   mPaintEffectRegistry = new QgsPaintEffectRegistry();
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+  mCalloutRegistry = new QgsCalloutRegistry();
   mRendererRegistry = new QgsRendererRegistry();
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
   mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
@@ -1977,6 +2012,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mRendererRegistry;
   delete mSvgCache;
   delete mImageCache;
+  delete mCalloutRegistry;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;

@@ -22,6 +22,7 @@
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"
 #include "qgsguiutils.h"
+#include "qgssymbolwidgetcontext.h"
 #include <QFontDatabase>
 #include "qgis_gui.h"
 
@@ -46,7 +47,7 @@ class QgsCharacterSelectorDialog;
  * \since QGIS 3.0
  */
 
-class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextFormatWidgetBase
+class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
     Q_OBJECT
     Q_PROPERTY( QgsTextFormat format READ format )
@@ -73,6 +74,20 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      * \since QGIS 3.2
      */
     void setFormat( const QgsTextFormat &format );
+
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see context()
+     * \since QGIS 3.10
+     */
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+    /**
+     * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see setContext()
+     * \since QGIS 3.10
+     */
+    QgsSymbolWidgetContext context() const;
 
   public slots:
 
@@ -122,6 +137,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      */
     void enableDataDefinedAlignment( bool enable );
 
+    QgsExpressionContext createExpressionContext() const override;
+
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
     //! Quadrant button group
@@ -139,6 +156,12 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     //! Pixel size font limit
     int mMinPixelLimit = 0;
 
+    //! Associated map canvas
+    QgsMapCanvas *mMapCanvas = nullptr;
+
+    //! Context in which widget is shown
+    QgsSymbolWidgetContext mContext;
+
   protected slots:
 
     //! Updates line placement options to reflect current state of widget
@@ -147,12 +170,30 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     //! Updates label placement options to reflect current state of widget
     void updatePlacementWidgets();
 
+    /**
+     * Sets the current text settings from a style entry.
+     * \since QGIS 3.10
+     */
+    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+
+    /**
+     * Saves the current text settings to a style entry.
+     */
+    virtual void saveFormat();
+
+    /**
+     * Updates the text preview.
+     * \since QGIS 3.10
+    */
+    void updatePreview();
+
   private:
     Mode mWidgetMode = Text;
-    QgsMapCanvas *mMapCanvas = nullptr;
+
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
     std::unique_ptr< QgsPaintEffect > mBufferEffect;
     std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
+    QColor mPreviewBackgroundColor;
 
     QFontDatabase mFontDB;
 
@@ -207,9 +248,10 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void collapseSample( bool collapse );
     void changeTextColor( const QColor &color );
     void changeBufferColor( const QColor &color );
-    void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
+    void updateAvailableShadowPositions();
+
 };
 
 
@@ -239,8 +281,6 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * \param fl window flags for dialog
      */
     QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-
-    ~QgsTextFormatDialog() override;
 
     /**
      * Returns the current formatting settings defined by the widget.

@@ -20,9 +20,11 @@
 #define QGSMAPSERVERPROVIDER_H
 
 #include "qgsrasterdataprovider.h"
-#include "qgscoordinatereferencesystem.h"
 
 #include <QNetworkRequest>
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsprovidermetadata.h"
 
 class QgsArcGisAsyncQuery;
 class QgsAmsProvider;
@@ -65,14 +67,18 @@ class QgsAmsProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString AMS_PROVIDER_KEY;
+    static const QString AMS_PROVIDER_DESCRIPTION;
+
     QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     explicit QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
     QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
-    QString name() const override { return QStringLiteral( "mapserver" ); }
-    QString description() const override { return QStringLiteral( "ArcGIS MapServer data provider" ); }
+    QString name() const override;
+    QString description() const override;
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
     uint subLayerCount() const override { return mSubLayers.size(); }
     QStringList subLayers() const override { return mSubLayers; }
@@ -204,6 +210,15 @@ class QgsAmsTiledImageDownloadHandler : public QObject
     QList<QNetworkReply *> mReplies;
 
     QgsRasterBlockFeedback *mFeedback = nullptr;
+};
+
+class QgsAmsProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsAmsProviderMetadata();
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QgsAmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QVariantMap decodeUri( const QString &uri ) override;
 };
 
 #endif // QGSMAPSERVERPROVIDER_H

@@ -45,6 +45,7 @@ class gdaladdo(GdalAlgorithm):
     CLEAN = 'CLEAN'
     RESAMPLING = 'RESAMPLING'
     FORMAT = 'FORMAT'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -87,6 +88,10 @@ class gdaladdo(GdalAlgorithm):
                                                  allowMultiple=False,
                                                  defaultValue=0,
                                                  optional=True))
+        params.append(QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True))
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
@@ -132,6 +137,10 @@ class gdaladdo(GdalAlgorithm):
 
         if self.parameterAsBoolean(parameters, self.CLEAN, context):
             arguments.append('-clean')
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.extend(self.parameterAsString(parameters, self.LEVELS, context).split(' '))
 

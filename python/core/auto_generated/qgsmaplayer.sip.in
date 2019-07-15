@@ -513,12 +513,20 @@ Returns ``True`` if the layer is considered a spatial layer, ie it has some form
 .. versionadded:: 2.16
 %End
 
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
+    enum ReadFlag
+    {
+      FlagDontResolveLayers,
+    };
+    typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
+
+
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = 0 );
 %Docstring
 Sets state from DOM document
 
 :param layerElement: The DOM element corresponding to ``maplayer'' tag
 :param context: writing context (e.g. for conversion between relative and absolute paths)
+:param flags: optional argument which can be used to control layer reading behavior.
 \note
 
 The DOM node corresponds to a DOM document project file XML element read
@@ -1267,6 +1275,16 @@ Generates an unique identifier for this layer, the generate ID is prefixed by ``
 .. versionadded:: 3.8
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the layer.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
 
   public slots:
 
@@ -1643,11 +1661,14 @@ Checks whether a new set of dependencies will introduce a cycle
 
 
 
+
 };
 
 QFlags<QgsMapLayer::LayerFlag> operator|(QgsMapLayer::LayerFlag f1, QFlags<QgsMapLayer::LayerFlag> f2);
 
 QFlags<QgsMapLayer::StyleCategory> operator|(QgsMapLayer::StyleCategory f1, QFlags<QgsMapLayer::StyleCategory> f2);
+
+QFlags<QgsMapLayer::ReadFlag> operator|(QgsMapLayer::ReadFlag f1, QFlags<QgsMapLayer::ReadFlag> f2);
 
 
 

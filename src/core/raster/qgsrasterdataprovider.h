@@ -99,6 +99,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       NoProviderCapabilities = 0,       //!< Provider has no capabilities
       ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
       WriteLayerMetadata = 1 << 2, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
+      ProviderHintBenefitsFromResampling = 1 << 3 //!< Provider benefits from resampling and should apply user default resampling settings (since QGIS 3.10)
     };
 
     //! Provider capabilities

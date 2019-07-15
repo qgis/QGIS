@@ -23,15 +23,17 @@
 #include "qgsproject.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QDir>
 #include <QPushButton>
 
 #if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
+#include <proj.h>
 #endif
 
-bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent )
+bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent, QgsMapCanvas *mapCanvas )
 {
   if ( sourceCrs == destinationCrs )
     return true;
@@ -42,7 +44,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
     return true;
   }
 
-  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, true, qMakePair( -1, -1 ), parent );
+  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, true, qMakePair( -1, -1 ), parent, nullptr, QString(), mapCanvas );
   if ( dlg.shouldAskUserForSelection() )
   {
     if ( dlg.exec() )
@@ -68,17 +70,23 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
   }
 }
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs,
-    const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice,
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sCrs,
+    const QgsCoordinateReferenceSystem &dCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice,
     QPair<int, int> selectedDatumTransforms,
     QWidget *parent,
-    Qt::WindowFlags f, const QString &selectedProj )
+    Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas )
   : QDialog( parent, f )
   , mPreviousCursorOverride( qgis::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
   setupUi( this );
 
+  QgsCoordinateReferenceSystem sourceCrs = sCrs;
+  QgsCoordinateReferenceSystem destinationCrs = dCrs;
+
   QgsGui::enableAutoGeometryRestore( this );
+
+  mLabelSrcDescription->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  mLabelSrcDescription->setOpenExternalLinks( true );
 
   if ( !showMakeDefault )
     mMakeDefaultCheckBox->setVisible( false );
@@ -90,14 +98,33 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     setWindowFlags( windowFlags() & ~Qt::WindowCloseButtonHint );
   }
 
+#if PROJ_VERSION_MAJOR>=6
+  mDatumTransformTableWidget->setColumnCount( 3 );
+#else
   mDatumTransformTableWidget->setColumnCount( 2 );
+#endif
+
   QStringList headers;
 #if PROJ_VERSION_MAJOR>=6
-  headers << tr( "Transformation" ) << tr( "Accuracy (meters)" ) ;
+  headers << tr( "Transformation" ) << tr( "Accuracy (meters)" ) << tr( "Area of Use" );
 #else
   headers << tr( "Source Transform" ) << tr( "Destination Transform" ) ;
 #endif
   mDatumTransformTableWidget->setHorizontalHeaderLabels( headers );
+
+#if PROJ_VERSION_MAJOR>=6
+  if ( !sourceCrs.isValid() )
+    sourceCrs = QgsProject::instance()->crs();
+  if ( !sourceCrs.isValid() )
+    sourceCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  if ( !destinationCrs.isValid() )
+    destinationCrs = QgsProject::instance()->crs();
+  if ( !destinationCrs.isValid() )
+    destinationCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+
+  mSourceProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
+  mDestinationProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
+#endif
 
   mSourceProjectionSelectionWidget->setCrs( sourceCrs );
   mDestinationProjectionSelectionWidget->setCrs( destinationCrs );
@@ -110,9 +137,42 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     mDestCrsLabel->setText( QgsProjectionSelectionWidget::crsOptionText( destinationCrs ) );
   }
 
+#if PROJ_VERSION_MAJOR<6
+  mAreaCanvas->hide();
+  ( void )mapCanvas;
+#else
+  if ( mapCanvas )
+  {
+    // show canvas extent in preview widget
+    QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
+    QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
+    // close polygon
+    mainCanvasPoly << mainCanvasPoly.at( 0 );
+    if ( QgsProject::instance()->crs() !=
+         QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+    {
+      // reproject extent
+      QgsCoordinateTransform ct( QgsProject::instance()->crs(),
+                                 QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
+
+      g = g.densifyByCount( 5 );
+      try
+      {
+        g.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+      }
+    }
+    mAreaCanvas->setCanvasRect( g.boundingBox() );
+  }
+#endif
+
 #if PROJ_VERSION_MAJOR>=6
   // proj 6 doesn't provide deprecated operations
   mHideDeprecatedCheckBox->setVisible( false );
+
+  mLabelDstDescription->hide();
 #else
   QgsSettings settings;
   mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), true ).toBool() );
@@ -137,6 +197,11 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   mLabelSrcDescription->clear();
   mLabelDstDescription->clear();
 
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
+  } );
+
   load( selectedDatumTransforms, selectedProj );
 }
 
@@ -150,13 +215,15 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
   Q_UNUSED( selectedDatumTransforms )
   for ( const QgsDatumTransform::TransformDetails &transform : qgis::as_const( mDatumTransforms ) )
   {
-    bool itemDisabled = !transform.isAvailable;
-
     std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
     item->setData( ProjRole, transform.proj );
+    item->setData( AvailableRole, transform.isAvailable );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
 
-    item->setText( transform.name );
+    QString name = transform.name;
+    if ( !transform.authority.isEmpty() && !transform.code.isEmpty() )
+      name += QStringLiteral( " — %1:%2" ).arg( transform.authority, transform.code );
+    item->setText( name );
 
     if ( row == 0 ) // highlight first (preferred) operation
     {
@@ -166,29 +233,167 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
       item->setForeground( QBrush( QColor( 0, 120, 0 ) ) );
     }
 
+    if ( !transform.isAvailable )
+    {
+      item->setForeground( QBrush( palette().color( QPalette::Disabled, QPalette::Text ) ) );
+    }
+
     if ( preferredInitialRow < 0 && transform.isAvailable )
     {
       // try to select a "preferred" entry by default
       preferredInitialRow = row;
     }
 
-    const QString toolTipString = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( transform.name, transform.proj );
-    item->setToolTip( toolTipString );
-    if ( itemDisabled )
+    QString missingMessage;
+    if ( !transform.isAvailable )
     {
-      item->setFlags( Qt::NoItemFlags );
+      QStringList gridMessages;
+      for ( const QgsDatumTransform::GridDetails &grid : transform.grids )
+      {
+        if ( !grid.isAvailable )
+        {
+          QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
+          if ( !grid.url.isEmpty() )
+          {
+            if ( !grid.packageName.isEmpty() )
+            {
+              m += ' ' +  tr( "This grid is part of the <i>%1</i> package, available for download from <a href=\"%2\">%2</a>." ).arg( grid.packageName, grid.url );
+            }
+            else
+            {
+              m += ' ' + tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
+            }
+          }
+          gridMessages << m;
+        }
+      }
+
+      if ( gridMessages.count() > 1 )
+      {
+        for ( int k = 0; k < gridMessages.count(); ++k )
+          gridMessages[k] = QStringLiteral( "<li>%1</li>" ).arg( gridMessages.at( k ) );
+
+        missingMessage = QStringLiteral( "<ul>%1</ul" ).arg( gridMessages.join( QString() ) );
+      }
+      else if ( !gridMessages.empty() )
+      {
+        missingMessage = gridMessages.constFirst();
+      }
     }
+
+    QStringList areasOfUse;
+    QStringList authorityCodes;
+
+#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+    QStringList opText;
+    for ( const QgsDatumTransform::SingleOperationDetails &singleOpDetails : transform.operationDetails )
+    {
+      QString text;
+      if ( !singleOpDetails.scope.isEmpty() )
+      {
+        text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), singleOpDetails.scope );
+      }
+      if ( !singleOpDetails.remarks.isEmpty() )
+      {
+        if ( !text.isEmpty() )
+          text += QStringLiteral( "<br>" );
+        text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), singleOpDetails.remarks );
+      }
+      if ( !singleOpDetails.areaOfUse.isEmpty() )
+      {
+        if ( !areasOfUse.contains( singleOpDetails.areaOfUse ) )
+          areasOfUse << singleOpDetails.areaOfUse;
+      }
+      if ( !singleOpDetails.authority.isEmpty() && !singleOpDetails.code.isEmpty() )
+      {
+        const QString identifier = QStringLiteral( "%1:%2" ).arg( singleOpDetails.authority, singleOpDetails.code );
+        if ( !authorityCodes.contains( identifier ) )
+          authorityCodes << identifier;
+      }
+
+      if ( !text.isEmpty() )
+      {
+        opText.append( text );
+      }
+    }
+
+    QString text;
+    if ( !transform.scope.isEmpty() )
+    {
+      text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), transform.scope );
+    }
+    if ( !transform.remarks.isEmpty() )
+    {
+      if ( !text.isEmpty() )
+        text += QStringLiteral( "<br>" );
+      text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), transform.remarks );
+    }
+    if ( !text.isEmpty() )
+    {
+      opText.append( text );
+    }
+
+    if ( opText.count() > 1 )
+    {
+      for ( int k = 0; k < opText.count(); ++k )
+        opText[k] = QStringLiteral( "<li>%1</li>" ).arg( opText.at( k ) );
+    }
+#endif
+
+    if ( !transform.areaOfUse.isEmpty() && !areasOfUse.contains( transform.areaOfUse ) )
+      areasOfUse << transform.areaOfUse;
+    item->setData( BoundsRole, transform.bounds );
+
+    const QString id = !transform.authority.isEmpty() && !transform.code.isEmpty() ? QStringLiteral( "%1:%2" ).arg( transform.authority, transform.code ) : QString();
+    if ( !id.isEmpty() && !authorityCodes.contains( id ) )
+      authorityCodes << id;
+
+#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+    const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
+    const QColor active = palette().color( QPalette::Active, QPalette::Text );
+
+    const QColor codeColor( static_cast< int >( active.red() * 0.6 + disabled.red() * 0.4 ),
+                            static_cast< int >( active.green() * 0.6 + disabled.green() * 0.4 ),
+                            static_cast< int >( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
+    const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
+                                  + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() )
+                                  + ( !areasOfUse.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), areasOfUse.join( QStringLiteral( ", " ) ) ) : QString() )
+                                  + ( !authorityCodes.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifiers" ), authorityCodes.join( QStringLiteral( ", " ) ) ) : QString() )
+                                  + ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() )
+                                  + QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
+#else
+    const QString toolTipString = QStringLiteral( "<b>%1</b>%2%3%4<p><code>%5</code></p>" ).arg( transform.name,
+                                  ( !transform.areaOfUse.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), transform.areaOfUse ) : QString() ),
+                                  ( !id.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifier" ), id ) : QString() ),
+                                  ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() ),
+                                  transform.proj );
+#endif
+    item->setToolTip( toolTipString );
     mDatumTransformTableWidget->setRowCount( row + 1 );
     mDatumTransformTableWidget->setItem( row, 0, item.release() );
 
     item = qgis::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( transform.accuracy >= 0 ? QString::number( transform.accuracy ) : tr( "Unknown" ) );
-    if ( itemDisabled )
+    item->setToolTip( toolTipString );
+    if ( !transform.isAvailable )
     {
-      item->setFlags( Qt::NoItemFlags );
+      item->setForeground( QBrush( palette().color( QPalette::Disabled, QPalette::Text ) ) );
     }
     mDatumTransformTableWidget->setItem( row, 1, item.release() );
+
+#if PROJ_VERSION_MAJOR>=6
+    // area of use column
+    item = qgis::make_unique< QTableWidgetItem >();
+    item->setFlags( item->flags() & ~Qt::ItemIsEditable );
+    item->setText( areasOfUse.join( QStringLiteral( ", " ) ) );
+    item->setToolTip( toolTipString );
+    if ( !transform.isAvailable )
+    {
+      item->setForeground( QBrush( palette().color( QPalette::Disabled, QPalette::Text ) ) );
+    }
+    mDatumTransformTableWidget->setItem( row, 2, item.release() );
+#endif
 
     if ( transform.proj == selectedProj )
     {
@@ -307,7 +512,12 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
 void QgsDatumTransformDialog::setOKButtonEnabled()
 {
   int row = mDatumTransformTableWidget->currentRow();
+#if PROJ_VERSION_MAJOR>=6
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid()
+      && mDatumTransformTableWidget->item( row, 0 ) && mDatumTransformTableWidget->item( row, 0 )->data( AvailableRole ).toBool() );
+#else
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && row >= 0 );
+#endif
 }
 
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
@@ -556,12 +766,36 @@ void QgsDatumTransformDialog::tableCurrentItemChanged( QTableWidgetItem *, QTabl
   {
     mLabelSrcDescription->clear();
     mLabelDstDescription->clear();
+#if PROJ_VERSION_MAJOR>=6
+    mAreaCanvas->hide();
+#endif
   }
   else
   {
-
     QTableWidgetItem *srcItem = mDatumTransformTableWidget->item( row, 0 );
     mLabelSrcDescription->setText( srcItem ? srcItem->toolTip() : QString() );
+    if ( srcItem )
+    {
+      // find area of intersection of operation, source and dest bounding boxes
+      // see https://github.com/OSGeo/PROJ/issues/1549 for justification
+      const QgsRectangle operationRect = srcItem->data( BoundsRole ).value< QgsRectangle >();
+      const QgsRectangle sourceRect = mSourceCrs.bounds();
+      const QgsRectangle destRect = mDestinationCrs.bounds();
+      QgsRectangle rect = operationRect.intersect( sourceRect );
+      rect = rect.intersect( destRect );
+
+      mAreaCanvas->setPreviewRect( rect );
+#if PROJ_VERSION_MAJOR>=6
+      mAreaCanvas->show();
+#endif
+    }
+    else
+    {
+      mAreaCanvas->setPreviewRect( QgsRectangle() );
+#if PROJ_VERSION_MAJOR>=6
+      mAreaCanvas->hide();
+#endif
+    }
     QTableWidgetItem *destItem = mDatumTransformTableWidget->item( row, 1 );
     mLabelDstDescription->setText( destItem ? destItem->toolTip() : QString() );
   }

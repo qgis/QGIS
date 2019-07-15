@@ -27,6 +27,8 @@
 #include "qgsfields.h"
 #include "qgslayermetadata.h"
 
+#include "qgsprovidermetadata.h"
+
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
  */
@@ -35,6 +37,9 @@ class QgsAfsProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString AFS_PROVIDER_KEY;
+    static const QString AFS_PROVIDER_DESCRIPTION;
 
     QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
@@ -84,6 +89,16 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
     QgsStringMap mRequestHeaders;
+};
+
+class QgsAfsProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsAfsProviderMetadata();
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QVariantMap decodeUri( const QString &uri ) override;
+    QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+
 };
 
 #endif // QGSAFSPROVIDER_H

@@ -563,11 +563,20 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     if ( ellipsoid != GEO_NONE )
     {
       str = formatDistance( dist );
-      derivedAttributes.insert( tr( "Length (Ellipsoidal, %1)" ).arg( ellipsoid ), str );
+      derivedAttributes.insert( tr( "Length (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
     }
     str = formatDistance( feature.geometry().constGet()->length()
                           * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
-    derivedAttributes.insert( tr( "Length (Cartesian)" ), str );
+    if ( !QgsWkbTypes::hasZ( feature.geometry().wkbType() ) )
+      derivedAttributes.insert( tr( "Length (Cartesian)" ), str );
+    else
+      derivedAttributes.insert( tr( "Length (Cartesian — 2D)" ), str );
+    if ( QgsWkbTypes::hasZ( feature.geometry().wkbType() ) && QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
+    {
+      str = formatDistance( qgsgeometry_cast< const QgsLineString * >( feature.geometry().constGet() )->length3D()
+                            * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
+      derivedAttributes.insert( tr( "Length (Cartesian — 3D)" ), str );
+    }
 
     const QgsAbstractGeometry *geom = feature.geometry().constGet();
     if ( geom )
@@ -602,7 +611,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     if ( ellipsoid != GEO_NONE )
     {
       str = formatArea( area );
-      derivedAttributes.insert( tr( "Area (Ellipsoidal, %1)" ).arg( ellipsoid ), str );
+      derivedAttributes.insert( tr( "Area (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
     }
     str = formatArea( feature.geometry().area()
                       * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ), cartesianAreaUnits ), cartesianAreaUnits );
@@ -613,7 +622,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       double perimeter = calc.measurePerimeter( feature.geometry() );
       perimeter = calc.convertLengthMeasurement( perimeter, displayDistanceUnits() );
       str = formatDistance( perimeter );
-      derivedAttributes.insert( tr( "Perimeter (Ellipsoidal, %1)" ).arg( ellipsoid ), str );
+      derivedAttributes.insert( tr( "Perimeter (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
     }
     str = formatDistance( feature.geometry().constGet()->perimeter()
                           * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );

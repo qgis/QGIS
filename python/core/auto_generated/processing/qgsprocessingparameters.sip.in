@@ -189,6 +189,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterLayout;
     else if ( sipCpp->type() == QgsProcessingParameterLayoutItem::typeName() )
       sipType = sipType_QgsProcessingParameterLayoutItem;
+    else if ( sipCpp->type() == QgsProcessingParameterColor::typeName() )
+      sipType = sipType_QgsProcessingParameterColor;
     else
       sipType = nullptr;
 %End
@@ -977,6 +979,20 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a list of 
 .. versionadded:: 3.4
 %End
 
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+
+.. versionadded:: 3.10
+%End
+
+    static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+
+.. versionadded:: 3.10
+%End
+
     static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a range of values.
@@ -1049,6 +1065,19 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a print la
 .. versionadded:: 3.8
 %End
 
+    static QColor parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Returns the color associated with an point parameter value, or an invalid color if the parameter was not set.
+
+.. versionadded:: 3.10
+%End
+
+    static QColor parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Returns the color associated with an color parameter value, or an invalid color if the parameter was not set.
+
+.. versionadded:: 3.10
+%End
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
 %Docstring
@@ -1283,9 +1312,13 @@ An input file or folder parameter for processing algorithms.
     };
 
     QgsProcessingParameterFile( const QString &name, const QString &description = QString(), Behavior behavior = File, const QString &extension = QString(), const QVariant &defaultValue = QVariant(),
-                                bool optional = false );
+                                bool optional = false, const QString &fileFilter = QString() );
 %Docstring
 Constructor for QgsProcessingParameterFile.
+
+The ``extension`` argument allows for specifying a file extension associated with the parameter (e.g. "html"). Use ``fileFilter``
+for a more flexible approach which allows for multiple file extensions. Only one of ``extension`` or ``fileFilter`` should be specified,
+if both are specified then ``fileFilter`` takes precedence.
 %End
 
     static QString typeName();
@@ -1320,6 +1353,10 @@ Sets the parameter ``behavior`` (e.g. File or Folder).
 %Docstring
 Returns any specified file extension for the parameter.
 
+.. note::
+
+   See fileFilter() for a more flexible approach.
+
 .. seealso:: :py:func:`setExtension`
 %End
 
@@ -1327,7 +1364,37 @@ Returns any specified file extension for the parameter.
 %Docstring
 Sets a file ``extension`` for the parameter.
 
+Calling this method resets any existing fileFilter().
+
+.. note::
+
+   See setFileFilter() for a more flexible approach.
+
 .. seealso:: :py:func:`extension`
+%End
+
+    QString fileFilter() const;
+%Docstring
+Returns the file filter string for file destinations compatible with this parameter.
+
+.. seealso:: :py:func:`setFileFilter`
+
+.. seealso:: :py:func:`extension`
+
+.. versionadded:: 3.10
+%End
+
+    void setFileFilter( const QString &filter );
+%Docstring
+Sets the file ``filter`` string for file destinations compatible with this parameter.
+
+Calling this method resets any existing extension() setting.
+
+.. seealso:: :py:func:`fileFilter`
+
+.. seealso:: :py:func:`setExtension`
+
+.. versionadded:: 3.10
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -2798,7 +2865,8 @@ A folder output parameter.
 
     QgsProcessingParameterFolderDestination( const QString &name, const QString &description = QString(),
         const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false,
+        bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingParameterFolderDestination.
 %End
@@ -3031,6 +3099,75 @@ Sets the acceptable item ``type``, or -1 if any item type is allowed.
 These values correspond to the registered item types from :py:class:`QgsLayoutItemRegistry`.
 
 .. seealso:: :py:func:`itemType`
+%End
+
+};
+
+class QgsProcessingParameterColor : QgsProcessingParameterDefinition
+{
+%Docstring
+A color parameter for processing algorithms.
+
+QgsProcessingParameterColor should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsColor()`
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterColor( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                 bool opacityEnabled = true,
+                                 bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterColor.
+
+If ``opacityEnabled`` is ``True``, then users will have the option of varying color opacity.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    bool opacityEnabled() const;
+%Docstring
+Returns ``True`` if the parameter allows opacity control.
+
+The default behavior is to allow users to set opacity for the color.
+
+.. seealso:: :py:func:`setOpacityEnabled`
+%End
+
+    void setOpacityEnabled( bool enabled );
+%Docstring
+Sets whether the parameter allows opacity control.
+
+The default behavior is to allow users to set opacity for the color.
+
+.. seealso:: :py:func:`opacityEnabled`
+%End
+
+    static QgsProcessingParameterColor *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
 %End
 
 };

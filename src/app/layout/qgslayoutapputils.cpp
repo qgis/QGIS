@@ -168,6 +168,10 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     Q_ASSERT( label );
 
     label->setText( QObject::tr( "Lorem ipsum" ) );
+    if ( QApplication::isRightToLeft() )
+    {
+      label->setHAlign( Qt::AlignRight );
+    }
     QSizeF minSize = label->sizeForText();
     QSizeF currentSize = label->rect().size();
 
@@ -194,6 +198,16 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 
     // try to find a good map to link the legend with by default
     legend->setLinkedMap( findSensibleDefaultLinkedMapItem( legend ) );
+
+    if ( QApplication::isRightToLeft() )
+    {
+      // for right-to-left locales, use an appropriate default layout
+      legend->setSymbolAlignment( Qt::AlignRight );
+      legend->rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
+      legend->rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
+      legend->rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
+      legend->setTitleAlignment( Qt::AlignRight );
+    }
 
     legend->updateLegend();
   } );

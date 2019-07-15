@@ -27,7 +27,7 @@
 #include <QFont>
 #include <QMutex>
 
-#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
@@ -41,6 +41,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontextscopegenerator.h"
+#include "qgsexpressioncontext.h"
 
 class QPainter;
 class QImage;
@@ -73,6 +74,7 @@ class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
+class QgsStyleEntityVisitorInterface;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -853,7 +855,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param names the list in which will be stored the style names
      * \param descriptions the list in which will be stored the style descriptions
      * \param msgError
-     * \returns the number of styles related to current layer
+     * \returns the number of styles related to current layer (-1 on not implemented)
      * \note Since QGIS 3.2 Styles related to the layer are ordered with the default style first then by update time for Postgres, MySQL and Spatialite.
      */
     virtual int listStylesInDatabase( QStringList &ids SIP_OUT, QStringList &names SIP_OUT,
@@ -2194,6 +2196,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   signals:
 

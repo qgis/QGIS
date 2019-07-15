@@ -116,7 +116,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
-    bool providerFileBased = ( QgsProviderRegistry::instance()->providerCapabilities( provider ) & QgsDataProvider::File ) != 0;
+    bool providerFileBased = ( provider == QStringLiteral( "gdal" ) || provider == QStringLiteral( "ogr" ) || provider == QStringLiteral( "mdal" ) );
     const QString basepath = datasource.left( datasource.lastIndexOf( '/' ) );
     mFileBase[name].append( basepath );
 

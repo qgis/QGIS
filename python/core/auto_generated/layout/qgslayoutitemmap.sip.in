@@ -576,6 +576,9 @@ Returns map rendering errors
 :return: list of errors
 %End
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );

@@ -43,7 +43,6 @@ class QgsMapToPixel;
 class QgsRasterRenderer;
 class QgsRectangle;
 class QImage;
-class QLibrary;
 class QPixmap;
 class QSlider;
 
@@ -422,6 +421,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setLayerOrder( const QStringList &layers ) override;
     void setSubLayerVisibility( const QString &name, bool vis ) override;
     QDateTime timestamp() const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
      * Writes the symbology of the layer into the document provided in SLD 1.0.0 format

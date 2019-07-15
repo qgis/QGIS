@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -33,9 +34,16 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelParameter,
                        QgsProcessingModelOutput,
                        QgsProcessingModelChildAlgorithm,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsProject)
+from qgis.gui import (
+    QgsProcessingParameterDefinitionDialog,
+    QgsProcessingParameterWidgetContext
+)
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
+from processing.tools.dataobjects import createContext
+from qgis.utils import iface
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -227,16 +235,45 @@ class ModelerGraphicItem(QGraphicsItem):
                                 'The selected algorithm depends on other currently non-active algorithms.\n'
                                 'Activate them them before trying to activate it.')
 
+    def create_widget_context(self):
+        """
+        Returns a new widget context for use in the model editor
+        """
+        widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
+        if iface is not None:
+            widget_context.setMapCanvas(iface.mapCanvas())
+        widget_context.setModel(self.model)
+        return widget_context
+
     def editElement(self):
         if isinstance(self.element, QgsProcessingModelParameter):
-            dlg = ModelerParameterDefinitionDialog(self.model,
-                                                   param=self.model.parameterDefinition(self.element.parameterName()))
-            if dlg.exec_() and dlg.param is not None:
+            existing_param = self.model.parameterDefinition(self.element.parameterName())
+            new_param = None
+            if ModelerParameterDefinitionDialog.use_legacy_dialog(param=existing_param):
+                # boo, old api
+                dlg = ModelerParameterDefinitionDialog(self.model,
+                                                       param=existing_param)
+                if dlg.exec_():
+                    new_param = dlg.param
+            else:
+                # yay, use new API!
+                context = createContext()
+                widget_context = self.create_widget_context()
+                dlg = QgsProcessingParameterDefinitionDialog(type=existing_param.type(),
+                                                             context=context,
+                                                             widgetContext=widget_context,
+                                                             definition=existing_param,
+                                                             algorithm=self.model)
+                if dlg.exec_():
+                    new_param = dlg.createParameter(existing_param.name())
+
+            if new_param is not None:
                 self.model.removeModelParameter(self.element.parameterName())
-                self.element.setParameterName(dlg.param.name())
-                self.element.setDescription(dlg.param.name())
-                self.model.addModelParameter(dlg.param, self.element)
-                self.text = dlg.param.description()
+                self.element.setParameterName(new_param.name())
+                self.element.setDescription(new_param.name())
+                self.model.addModelParameter(new_param, self.element)
+                self.text = new_param.description()
                 self.scene.dialog.repaintModel()
         elif isinstance(self.element, QgsProcessingModelChildAlgorithm):
             elemAlg = self.element.algorithm()

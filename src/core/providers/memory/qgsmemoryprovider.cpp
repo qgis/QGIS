@@ -359,6 +359,17 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
   return mCrs; // return default CRS
 }
 
+void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  if ( QgsMemoryProvider *other = qobject_cast< QgsMemoryProvider * >( source ) )
+  {
+    // these properties aren't copied when cloning a memory provider by uri, so we need to do it manually
+    mFeatures = other->mFeatures;
+    mNextFeatureId = other->mNextFeatureId;
+    mExtent = other->mExtent;
+  }
+}
+
 
 bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
 {
@@ -642,6 +653,5 @@ QString QgsMemoryProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
 }
-
 
 ///@endcond

@@ -75,7 +75,6 @@ the source selects (ascending) using this integer value
 Create a new instance of :py:class:`QgsAbstractDataSourceWidget` (or ``None``).
 Caller takes responsibility of deleting created.
 %End
-
 };
 
 

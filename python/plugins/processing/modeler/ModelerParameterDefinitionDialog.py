@@ -41,12 +41,10 @@ from qgis.core import (QgsApplication,
                        QgsProcessing,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterPoint,
-                       QgsProcessingParameterFile,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
@@ -55,14 +53,11 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterString,
                        QgsProcessingParameterExpression,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBand,
-                       QgsProcessingParameterLayout,
-                       QgsProcessingParameterLayoutItem,
                        QgsProcessingDestinationParameter,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFileDestination,
@@ -78,6 +73,41 @@ from processing.modeler.exceptions import UndefinedParameterException
 
 
 class ModelerParameterDefinitionDialog(QDialog):
+
+    @staticmethod
+    def use_legacy_dialog(param=None, paramType=None):
+        if paramType in (parameters.PARAMETER_TABLE_FIELD,
+                         parameters.PARAMETER_BAND,
+                         parameters.PARAMETER_VECTOR,
+                         parameters.PARAMETER_TABLE,
+                         parameters.PARAMETER_MULTIPLE,
+                         parameters.PARAMETER_NUMBER,
+                         parameters.PARAMETER_DISTANCE,
+                         parameters.PARAMETER_SCALE,
+                         parameters.PARAMETER_EXPRESSION,
+                         parameters.PARAMETER_POINT,
+                         parameters.PARAMETER_CRS,
+                         parameters.PARAMETER_ENUM,
+                         parameters.PARAMETER_MATRIX):
+            return True
+        elif isinstance(param, (QgsProcessingParameterField,
+                                QgsProcessingParameterBand,
+                                QgsProcessingParameterFeatureSource,
+                                QgsProcessingParameterVectorLayer,
+                                QgsProcessingParameterMultipleLayers,
+                                QgsProcessingParameterNumber,
+                                QgsProcessingParameterDistance,
+                                QgsProcessingParameterScale,
+                                QgsProcessingParameterExpression,
+                                QgsProcessingParameterPoint,
+                                QgsProcessingParameterCrs,
+                                QgsProcessingParameterEnum,
+                                QgsProcessingParameterMatrix,
+                                QgsProcessingDestinationParameter)):
+            return True
+
+        # yay, use new API!
+        return False
 
     def __init__(self, alg, paramType=None, param=None):
         self.alg = alg
@@ -110,15 +140,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         if isinstance(self.param, QgsProcessingParameterDefinition):
             self.nameTextBox.setText(self.param.description())
 
-        if self.paramType == parameters.PARAMETER_BOOLEAN or \
-                isinstance(self.param, QgsProcessingParameterBoolean):
-            self.state = QCheckBox()
-            self.state.setText(self.tr('Checked'))
-            self.state.setChecked(False)
-            if self.param is not None:
-                self.state.setChecked(bool(self.param.defaultValue()))
-            self.verticalLayout.addWidget(self.state)
-        elif self.paramType == parameters.PARAMETER_TABLE_FIELD or \
+        if self.paramType == parameters.PARAMETER_TABLE_FIELD or \
                 isinstance(self.param, QgsProcessingParameterField):
             self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
             self.parentCombo = QComboBox()
@@ -176,20 +198,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
                         if self.param.parentLayerParameterName() == definition.name():
-                            self.parentCombo.setCurrentIndex(idx)
-                    idx += 1
-            self.verticalLayout.addWidget(self.parentCombo)
-        elif self.paramType == parameters.PARAMETER_LAYOUTITEM or \
-                isinstance(self.param, QgsProcessingParameterLayoutItem):
-            self.verticalLayout.addWidget(QLabel(self.tr('Parent layout')))
-            self.parentCombo = QComboBox()
-            idx = 0
-            for param in list(self.alg.parameterComponents().values()):
-                definition = self.alg.parameterDefinition(param.parameterName())
-                if isinstance(definition, (QgsProcessingParameterLayout)):
-                    self.parentCombo.addItem(definition.description(), definition.name())
-                    if self.param is not None:
-                        if self.param.parentLayoutParameterName() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -294,23 +302,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
-        elif (self.paramType == parameters.PARAMETER_STRING or
-              isinstance(self.param, QgsProcessingParameterString)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultTextBox = QLineEdit()
-            if self.param is not None:
-                self.defaultTextBox.setText(self.param.defaultValue())
-            self.verticalLayout.addWidget(self.defaultTextBox)
-        elif (self.paramType == parameters.PARAMETER_FILE or
-              isinstance(self.param, QgsProcessingParameterFile)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Type')))
-            self.fileFolderCombo = QComboBox()
-            self.fileFolderCombo.addItem(self.tr('File'))
-            self.fileFolderCombo.addItem(self.tr('Folder'))
-            if self.param is not None:
-                self.fileFolderCombo.setCurrentIndex(
-                    1 if self.param.behavior() == QgsProcessingParameterFile.Folder else 0)
-            self.verticalLayout.addWidget(self.fileFolderCombo)
         elif (self.paramType == parameters.PARAMETER_POINT or
               isinstance(self.param, QgsProcessingParameterPoint)):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
@@ -356,6 +347,13 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.requiredCheck.setChecked(not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
         self.verticalLayout.addWidget(self.requiredCheck)
 
+        self.advancedCheck = QCheckBox()
+        self.advancedCheck.setText(self.tr('Advanced'))
+        self.advancedCheck.setChecked(False)
+        if self.param is not None:
+            self.advancedCheck.setChecked(self.param.flags() & QgsProcessingParameterDefinition.FlagAdvanced)
+        self.verticalLayout.addWidget(self.advancedCheck)
+
         # If child algorithm output is mandatory, disable checkbox
         if isinstance(self.param, QgsProcessingDestinationParameter):
             provider_name, child_name, output_name = self.param.name().split(':')
@@ -365,6 +363,9 @@ class ModelerParameterDefinitionDialog(QDialog):
             if not (param_def.flags() & QgsProcessingParameterDefinition.FlagOptional):
                 self.requiredCheck.setEnabled(False)
                 self.requiredCheck.setChecked(True)
+
+            self.advancedCheck.setEnabled(False)
+            self.advancedCheck.setChecked(False)
 
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Horizontal)
@@ -396,11 +397,8 @@ class ModelerParameterDefinitionDialog(QDialog):
                 i += 1
         else:
             name = self.param.name()
-        if (self.paramType == parameters.PARAMETER_BOOLEAN or
-                isinstance(self.param, QgsProcessingParameterBoolean)):
-            self.param = QgsProcessingParameterBoolean(name, description, self.state.isChecked())
-        elif (self.paramType == parameters.PARAMETER_TABLE_FIELD or
-              isinstance(self.param, QgsProcessingParameterField)):
+        if (self.paramType == parameters.PARAMETER_TABLE_FIELD or
+                isinstance(self.param, QgsProcessingParameterField)):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
@@ -421,14 +419,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 return
             parent = self.parentCombo.currentData()
             self.param = QgsProcessingParameterBand(name, description, None, parent)
-        elif (self.paramType == parameters.PARAMETER_LAYOUTITEM or
-              isinstance(self.param, QgsProcessingParameterLayoutItem)):
-            if self.parentCombo.currentIndex() < 0:
-                QMessageBox.warning(self, self.tr('Unable to define parameter'),
-                                    self.tr('Wrong or missing parameter values'))
-                return
-            parent = self.parentCombo.currentData()
-            self.param = QgsProcessingParameterLayoutItem(name, description, None, parent)
         elif (self.paramType == parameters.PARAMETER_MAP_LAYER or
               isinstance(self.param, QgsProcessingParameterMapLayer)):
             self.param = QgsProcessingParameterMapLayer(
@@ -502,18 +492,9 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param = QgsProcessingParameterExpression(name, description,
                                                           str(self.defaultEdit.expression()),
                                                           parent)
-        elif (self.paramType == parameters.PARAMETER_STRING or
-              isinstance(self.param, QgsProcessingParameterString)):
-            self.param = QgsProcessingParameterString(name, description,
-                                                      str(self.defaultTextBox.text()))
         elif (self.paramType == parameters.PARAMETER_EXTENT or
               isinstance(self.param, QgsProcessingParameterExtent)):
             self.param = QgsProcessingParameterExtent(name, description)
-        elif (self.paramType == parameters.PARAMETER_FILE or
-              isinstance(self.param, QgsProcessingParameterFile)):
-            isFolder = self.fileFolderCombo.currentIndex() == 1
-            self.param = QgsProcessingParameterFile(name, description,
-                                                    QgsProcessingParameterFile.Folder if isFolder else QgsProcessingParameterFile.File)
         elif (self.paramType == parameters.PARAMETER_POINT or
               isinstance(self.param, QgsProcessingParameterPoint)):
             self.param = QgsProcessingParameterPoint(name, description,
@@ -576,6 +557,11 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)
         else:
             self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.FlagOptional)
+
+        if self.advancedCheck.isChecked():
+            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        else:
+            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.FlagAdvanced)
 
         settings = QgsSettings()
         settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())

@@ -23,17 +23,42 @@
 #endif
 
 #include "qgslogger.h"
-#include "qgsmimedatautils.h"
 #include "qgsvectorlayerexporter.h"
-#include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
 
-#include <QAction>
-#include <QFileDialog>
-#include <QMessageBox>
 
-QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
+bool SpatiaLiteUtils::deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause )
+{
+  QgsDebugMsg( "deleting layer " + tableName );
+
+  QgsSqliteHandle *hndl = QgsSqliteHandle::openDb( dbPath );
+  if ( !hndl )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+  sqlite3 *sqlite_handle = hndl->handle();
+  int ret;
+  if ( !gaiaDropTable( sqlite_handle, tableName.toUtf8().constData() ) )
+  {
+    // unexpected error
+    errCause = QObject::tr( "Unable to delete table %1\n" ).arg( tableName );
+    QgsSqliteHandle::closeDb( hndl );
+    return false;
+  }
+
+  // TODO: remove spatial indexes?
+  // run VACUUM to free unused space and compact the database
+  ret = sqlite3_exec( sqlite_handle, "VACUUM", nullptr, nullptr, nullptr );
+  if ( ret != SQLITE_OK )
+  {
+    QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
+  }
+
+  QgsSqliteHandle::closeDb( hndl );
+
+  return true;
+}
 
 QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
@@ -41,30 +66,6 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const 
   mCapabilities |= Delete;
   setState( Populated ); // no children are expected
 }
-
-#ifdef HAVE_GUI
-bool QgsSLLayerItem::deleteLayer()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Object" ),
-                              QObject::tr( "Are you sure you want to delete %1?" ).arg( mName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return true;
-
-  QgsDataSourceUri uri( mUri );
-  QString errCause;
-  bool res = ::deleteLayer( uri.database(), uri.table(), errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
-    mParent->refresh();
-  }
-  return true;
-}
-#endif
 
 // ------
 
@@ -157,115 +158,6 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
   return o && mPath == o->mPath && mName == o->mName;
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsSLConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  //QAction* actionEdit = new QAction( tr( "Edit…" ), parent );
-  //connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
-  //lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsSLConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsSLConnectionItem::editConnection()
-{
-}
-
-void QgsSLConnectionItem::deleteConnection()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsSpatiaLiteConnection::deleteConnection( mName );
-  // the parent should be updated
-  mParent->refreshConnections();
-}
-#endif
-
-bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  if ( !QgsMimeDataUtils::isUriList( data ) )
-    return false;
-
-  // TODO: probably should show a GUI with settings etc
-
-  QgsDataSourceUri destUri;
-  destUri.setDatabase( mDbPath );
-
-  QStringList importResults;
-  bool hasError = false;
-
-  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  const auto constLst = lst;
-  for ( const QgsMimeDataUtils::Uri &u : constLst )
-  {
-    // open the source layer
-    bool owner;
-    QString error;
-    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
-    if ( !srcLayer )
-    {
-      importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
-      hasError = true;
-      continue;
-    }
-
-    if ( srcLayer->isValid() )
-    {
-      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
-      QgsDebugMsg( "URI " + destUri.uri() );
-
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), QVariantMap(), owner ) );
-
-      // when export is successful:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
-      {
-        // this is gross - TODO - find a way to get access to messageBar from data items
-        QMessageBox::information( nullptr, tr( "Import to SpatiaLite database" ), tr( "Import was successful." ) );
-        refresh();
-      } );
-
-      // when an error occurs:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
-      {
-        if ( error != QgsVectorLayerExporter::ErrUserCanceled )
-        {
-          QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-          output->setTitle( tr( "Import to SpatiaLite database" ) );
-          output->setMessage( tr( "Failed to import layer!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
-          output->showMessage();
-        }
-        refresh();
-      } );
-
-      QgsApplication::taskManager()->addTask( exportTask.release() );
-    }
-    else
-    {
-      importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
-      hasError = true;
-    }
-  }
-
-  if ( hasError )
-  {
-    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-    output->setTitle( tr( "Import to SpatiaLite database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
-    output->showMessage();
-  }
-
-  return true;
-}
-
 
 // ---------------------------------------------------------------------------
 
@@ -289,20 +181,6 @@ QVector<QgsDataItem *> QgsSLRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsSLRootItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsSLRootItem::newConnection );
-  lst.append( actionNew );
-
-  QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), parent );
-  connect( actionCreateDatabase, &QAction::triggered, this, &QgsSLRootItem::createDatabase );
-  lst.append( actionCreateDatabase );
-
-  return lst;
-}
 
 QWidget *QgsSLRootItem::paramWidget()
 {
@@ -316,59 +194,98 @@ void QgsSLRootItem::onConnectionsChanged()
   refresh();
 }
 
-void QgsSLRootItem::newConnection()
-{
-  if ( QgsSpatiaLiteSourceSelect::newConnection( nullptr ) )
-  {
-    refreshConnections();
-  }
-}
 #endif
 
-QGISEXTERN bool createDb( const QString &dbPath, QString &errCause );
-
-void QgsSLRootItem::createDatabase()
+static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause )
 {
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
+  // attempting to perform self-initialization for a newly created DB
+  if ( !sqlite_handle )
+    return false;
 
-  QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),
-                     lastUsedDir,
-                     tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
-  if ( filename.isEmpty() )
-    return;
+  // checking if this DB is really empty
+  char **results = nullptr;
+  int rows, columns;
+  int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, nullptr );
+  if ( ret != SQLITE_OK )
+    return false;
 
-  QString errCause;
-  if ( ::createDb( filename, errCause ) )
+  int count = 0;
+  if ( rows >= 1 )
   {
-    // add connection
-    settings.setValue( "/SpatiaLite/connections/" + QFileInfo( filename ).fileName() + "/sqlitepath", filename );
+    for ( int i = 1; i <= rows; i++ )
+      count = atoi( results[( i * columns ) + 0] );
+  }
 
-    refresh();
-  }
-  else
+  sqlite3_free_table( results );
+
+  if ( count > 0 )
+    return false;
+
+  const bool above41 = QgsSpatiaLiteProvider::versionIsAbove( sqlite_handle, 4, 1 );
+
+  // all right, it's empty: proceeding to initialize
+  char *errMsg = nullptr;
+  ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", nullptr, nullptr, &errMsg );
+  if ( ret != SQLITE_OK )
   {
-    QMessageBox::critical( nullptr, tr( "Create SpatiaLite database" ), tr( "Failed to create the database:\n" ) + errCause );
+    errCause = QObject::tr( "Unable to initialize SpatialMetadata:\n" );
+    errCause += QString::fromUtf8( errMsg );
+    sqlite3_free( errMsg );
+    return false;
   }
+  spatial_ref_sys_init( sqlite_handle, 0 );
+  return true;
+}
+
+bool SpatiaLiteUtils::createDb( const QString &dbPath, QString &errCause )
+{
+  QgsDebugMsg( QStringLiteral( "creating a new db" ) );
+
+  QFileInfo fullPath = QFileInfo( dbPath );
+  QDir path = fullPath.dir();
+  QgsDebugMsg( QStringLiteral( "making this dir: %1" ).arg( path.absolutePath() ) );
+
+  // Must be sure there is destination directory ~/.qgis
+  QDir().mkpath( path.absolutePath() );
+
+  // creating/opening the new database
+  spatialite_database_unique_ptr database;
+  int ret = database.open_v2( dbPath, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
+  if ( ret )
+  {
+    // an error occurred
+    errCause = QObject::tr( "Could not create a new database\n" );
+    errCause += database.errorMessage();
+    return false;
+  }
+  // activating Foreign Key constraints
+  char *errMsg = nullptr;
+  ret = sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    errCause = QObject::tr( "Unable to activate FOREIGN_KEY constraints [%1]" ).arg( errMsg );
+    sqlite3_free( errMsg );
+    return false;
+  }
+  bool init_res = ::initializeSpatialMetadata( database.get(), errCause );
+
+  return init_res;
 }
 
 // ---------------------------------------------------------------------------
 
-#ifdef HAVE_GUI
-QGISEXTERN QgsSpatiaLiteSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+QString QgsSpatiaLiteDataItemProvider::name()
 {
-  // TODO: this should be somewhere else
-  return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
-}
-#endif
-
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::Database;
+  return QStringLiteral( "SPATIALITE" );
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
+int QgsSpatiaLiteDataItemProvider::capabilities() const
 {
-  Q_UNUSED( path )
+  return QgsDataProvider::Database;
+}
+
+QgsDataItem *QgsSpatiaLiteDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn )
   return new QgsSLRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
 }

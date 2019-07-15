@@ -29,6 +29,7 @@
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -78,6 +79,16 @@ QSet<QString> QgsSingleSymbolRenderer::usedAttributes( const QgsRenderContext &c
   if ( mSymbol )
     attributes.unite( mSymbol->usedAttributes( context ) );
   return attributes;
+}
+
+bool QgsSingleSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mSymbol )
+  {
+    QgsStyleSymbolEntity entity( mSymbol.get() );
+    return visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) );
+  }
+  return true;
 }
 
 QgsSymbol *QgsSingleSymbolRenderer::symbol() const

@@ -24,15 +24,30 @@ Overrides some functionality of QgsLayerTreeModel to better fit the needs of lay
 #include "qgslayoutitemlegend.h"
 %End
   public:
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0 );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0, QgsLayoutItemLegend *layout = 0 );
 %Docstring
 Construct the model based on the given layer tree
+%End
+
+    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
+%Docstring
+Alternative constructor.
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+  signals:
+
+    void refreshLegend();
+%Docstring
+Emitted to refresh the legend.
+
+.. versionadded:: 3.10
+%End
 
 };
 
@@ -281,6 +296,28 @@ Sets the legend symbol ``width``.
 .. seealso:: :py:func:`symbolWidth`
 %End
 
+    void setSymbolAlignment( Qt::AlignmentFlag alignment );
+%Docstring
+Sets the ``alignment`` for placement of legend symbols.
+
+Only Qt.AlignLeft or Qt.AlignRight are supported values.
+
+.. seealso:: :py:func:`symbolAlignment`
+
+.. versionadded:: 3.10
+%End
+
+    Qt::AlignmentFlag symbolAlignment() const;
+%Docstring
+Returns the alignment for placement of legend symbols.
+
+Only Qt.AlignLeft or Qt.AlignRight are supported values.
+
+.. seealso:: :py:func:`setSymbolAlignment`
+
+.. versionadded:: 3.10
+%End
+
     double symbolHeight() const;
 %Docstring
 Returns the legend symbol height.
@@ -489,7 +526,6 @@ Returns the legend's renderer settings object.
 
 
     virtual QgsExpressionContext createExpressionContext() const;
-
 
 
   public slots:

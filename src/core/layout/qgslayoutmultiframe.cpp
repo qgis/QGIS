@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsexpressioncontextutils.h"
 #include <QtCore>
 
 QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )
@@ -277,6 +278,13 @@ QString QgsLayoutMultiFrame::displayName() const
 QgsAbstractLayoutUndoCommand *QgsLayoutMultiFrame::createCommand( const QString &text, int id, QUndoCommand *parent )
 {
   return new QgsLayoutMultiFrameUndoCommand( this, text, id, parent );
+}
+
+QgsExpressionContext QgsLayoutMultiFrame::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::multiFrameScope( this ) );
+  return context;
 }
 
 void QgsLayoutMultiFrame::beginCommand( const QString &commandText, QgsLayoutMultiFrame::UndoCommand command )

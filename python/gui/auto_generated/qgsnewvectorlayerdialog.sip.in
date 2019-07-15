@@ -57,7 +57,6 @@ If ``encoding`` is specified, it will be set to the encoding of the created file
 %Docstring
 New dialog constructor.
 %End
-    ~QgsNewVectorLayerDialog();
     QgsWkbTypes::Type selectedType() const;
 %Docstring
 Returns the selected geometry type

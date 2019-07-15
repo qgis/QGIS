@@ -567,6 +567,13 @@ class BatchPanel(BASE, WIDGET):
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.tblParameters.setColumnHidden(self.parameter_to_column[param.name()], not checked)
 
+    def valueForParameter(self, row, parameter_name):
+        """
+        Returns the current value for a parameter in a row
+        """
+        wrapper = self.wrappers[row][self.parameter_to_column[parameter_name]]
+        return wrapper.parameterValue()
+
     def parametersForRow(self, row, destinationProject=None, warnOnInvalid=True):
         """
         Returns the parameters dictionary corresponding to a row in the batch table

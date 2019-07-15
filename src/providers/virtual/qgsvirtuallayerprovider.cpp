@@ -643,42 +643,11 @@ QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
   return deps;
 }
 
-/**
- * Class factory to return a pointer to a newly created
- * QgsSpatiaLiteProvider object
- */
-QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
+  const QString &uri,
+  const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsVirtualLayerProvider( *uri, options );
-}
-
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
-{
-  return VIRTUAL_LAYER_KEY;
-}
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return VIRTUAL_LAYER_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
-QGISEXTERN void cleanupProvider()
-{
+  return new QgsVirtualLayerProvider( uri, options );
 }
 
 
@@ -701,13 +670,34 @@ class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+QgsVirtualLayerProviderGuiMetadata::QgsVirtualLayerProviderGuiMetadata()
+  : QgsProviderGuiMetadata( VIRTUAL_LAYER_KEY )
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+}
 
-  *providers
-      << new QgsVirtualSourceSelectProvider;
-
+QList<QgsSourceSelectProvider *> QgsVirtualLayerProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsVirtualSourceSelectProvider;
   return providers;
 }
 #endif
+
+QgsVirtualLayerProviderMetadata::QgsVirtualLayerProviderMetadata():
+  QgsProviderMetadata( VIRTUAL_LAYER_KEY, VIRTUAL_LAYER_DESCRIPTION )
+{
+}
+
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsVirtualLayerProviderMetadata();
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
+{
+  return new QgsVirtualLayerProviderGuiMetadata();
+}
+#endif
+

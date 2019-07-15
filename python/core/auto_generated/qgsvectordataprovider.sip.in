@@ -607,6 +607,14 @@ Returns ``True`` if the data source has metadata, ``False`` otherwise.
 .. versionadded:: 3.0
 %End
 
+    virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
+%Docstring
+Handles any post-clone operations required after this vector data provider was cloned
+from the ``source`` provider.
+
+.. versionadded:: 3.8.1
+%End
+
   signals:
 
     void raiseError( const QString &msg ) const;

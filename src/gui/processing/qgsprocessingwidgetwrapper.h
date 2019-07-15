@@ -37,6 +37,7 @@ class QgsVectorLayer;
 class QgsProcessingModelAlgorithm;
 class QgsMapCanvas;
 class QgsProcessingAlgorithm;
+class QgsProcessingAbstractParameterDefinitionWidget;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -451,6 +452,36 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
         const QString &childId,
         const QgsProcessingParameterDefinition *parameter,
         QgsProcessingContext &context );
+
+    /**
+     * Creates a new parameter definition widget allowing for configuration of an instance of
+     * the parameter type handled by this factory.
+     *
+     * The \a context argument must specify a Processing context, which will be used
+     * by the widget to evaluate existing \a definition properties such as default values. Similarly,
+     * the \a widgetContext argument specifies the wider GUI context in which the widget
+     * will be used.
+     *
+     * The optional \a definition argument may specify a parameter definition which
+     * should be reflected in the initial state of the returned widget. Subclasses must
+     * ensure that they correctly handle both the case when a initial \a definition is
+     * passed, or when \a definition is NULLPTR (in which case sensible defaults should
+     * be shown in the returned widget).
+     *
+     * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
+     * associated with the parameter.
+     *
+     * If a factory subclass returns NULLPTR for this method (i.e. as the base class implementation does),
+     * it indicates that the parameter type cannot be configured via GUI. In this case the parameter
+     * type will not be configurable when users add it as an input to their graphical models.
+     *
+     * \since QGIS 3.10
+     */
+    virtual QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
 
   protected:
 

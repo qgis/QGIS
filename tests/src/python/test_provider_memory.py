@@ -226,6 +226,31 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
             assert compareWkt(str(geom.asWkt()), "Point (10 10)"), myMessage
 
+    def testClone(self):
+        """
+        Test that cloning a memory layer also clones features
+        """
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:integer',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([5, -200])
+        f2 = QgsFeature()
+        f2.setAttributes([3, 300])
+        f3 = QgsFeature()
+        f3.setAttributes([1, 100])
+        res, [f1, f2, f3] = vl.dataProvider().addFeatures([f1, f2, f3])
+        self.assertEqual(vl.featureCount(), 3)
+
+        vl2 = vl.clone()
+        self.assertEqual(vl2.featureCount(), 3)
+        features = [f for f in vl2.getFeatures()]
+        self.assertTrue([f for f in features if f['f1'] == 5])
+        self.assertTrue([f for f in features if f['f1'] == 3])
+        self.assertTrue([f for f in features if f['f1'] == 1])
+
     def testGetFields(self):
         layer = QgsVectorLayer("Point", "test", "memory")
         provider = layer.dataProvider()

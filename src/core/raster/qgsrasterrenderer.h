@@ -29,6 +29,7 @@ class QDomElement;
 
 class QPainter;
 class QgsRasterTransparency;
+class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -117,6 +118,17 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      * Used from subclasses to create SLD Rule elements following SLD v1.0 specs
      * \since QGIS 3.6  */
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+    /**
+     * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
+     * with the renderer.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   protected:
 

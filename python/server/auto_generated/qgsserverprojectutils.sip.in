@@ -154,6 +154,17 @@ Returns the quality for WMS images defined in a QGIS project.
 :return: quality if defined in project, -1 otherwise.
 %End
 
+  int wmsTileBuffer( const QgsProject &project );
+%Docstring
+Returns the tile buffer in pixels for WMS images defined in a QGIS project.
+
+:param project: the QGIS project
+
+:return: tile buffer if defined in project, 0 otherwise.
+
+.. versionadded:: 3.10
+%End
+
   int wmsMaxAtlasFeatures( const QgsProject &project );
 %Docstring
 Returns the maximum number of atlas features which can be printed in a request

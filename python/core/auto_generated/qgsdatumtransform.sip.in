@@ -82,15 +82,42 @@ and ``destinationTransformId`` transforms.
       bool isAvailable;
     };
 
+    struct SingleOperationDetails
+    {
+      QString scope;
+
+      QString remarks;
+
+      QString areaOfUse;
+
+      QString authority;
+
+      QString code;
+    };
+
     struct TransformDetails
     {
       QString proj;
       QString name;
       double accuracy;
 
+      QString authority;
+
+      QString code;
+
+      QString scope;
+
+      QString remarks;
+
       bool isAvailable;
 
+      QString areaOfUse;
+
+      QgsRectangle bounds;
+
       QList< QgsDatumTransform::GridDetails > grids;
+
+      QList< QgsDatumTransform::SingleOperationDetails > operationDetails;
     };
 
     static QList< QgsDatumTransform::TransformDetails > operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );

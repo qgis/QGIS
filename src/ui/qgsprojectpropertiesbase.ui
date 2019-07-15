@@ -236,7 +236,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -265,8 +265,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>537</width>
-                <height>795</height>
+                <width>535</width>
+                <height>740</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -863,8 +863,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>546</width>
-                <height>164</height>
+                <width>544</width>
+                <height>155</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -938,8 +938,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>269</width>
-                <height>553</height>
+                <width>266</width>
+                <height>524</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1514,8 +1514,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>167</width>
-                <height>55</height>
+                <width>165</width>
+                <height>52</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1575,9 +1575,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>598</width>
-                <height>2732</height>
+                <y>-793</y>
+                <width>671</width>
+                <height>2614</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2434,6 +2434,23 @@
                        <number>90</number>
                       </property>
                      </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="11" column="0" colspan="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_18">
+                    <item>
+                     <widget class="QLabel" name="label_33">
+                      <property name="toolTip">
+                       <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
+                      </property>
+                      <property name="text">
+                       <string>Tile buffer in pixels</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mWMSTileBufferSpinBox"/>
                     </item>
                    </layout>
                   </item>

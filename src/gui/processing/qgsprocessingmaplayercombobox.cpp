@@ -28,9 +28,9 @@
 
 ///@cond PRIVATE
 
-QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( QgsProcessingParameterDefinition *parameter, QWidget *parent )
+QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QWidget *parent )
   : QWidget( parent )
-  , mParameter( parameter )
+  , mParameter( parameter->clone() )
 {
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setMargin( 0 );
@@ -42,7 +42,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( QgsProcessingParam
   layout->setAlignment( mCombo, Qt::AlignTop );
 
   mSelectButton = new QToolButton();
-  mSelectButton->setText( QStringLiteral( "…" ) );
+  mSelectButton->setText( tr( "…" ) );
   mSelectButton->setToolTip( tr( "Select file" ) );
   connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::triggerFileSelection );
   layout->addWidget( mSelectButton );
@@ -68,9 +68,9 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( QgsProcessingParam
   {
     QList<int> dataTypes;
     if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
-      dataTypes = static_cast< QgsProcessingParameterFeatureSource *>( mParameter )->dataTypes();
+      dataTypes = static_cast< QgsProcessingParameterFeatureSource *>( mParameter.get() )->dataTypes();
     else if ( mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
-      dataTypes = static_cast< QgsProcessingParameterVectorLayer *>( mParameter )->dataTypes();
+      dataTypes = static_cast< QgsProcessingParameterVectorLayer *>( mParameter.get() )->dataTypes();
 
     if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.isEmpty() )
       filters = QgsMapLayerProxyModel::HasGeometry;
@@ -118,6 +118,8 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( QgsProcessingParam
 
   setAcceptDrops( true );
 }
+
+QgsProcessingMapLayerComboBox::~QgsProcessingMapLayerComboBox() = default;
 
 void QgsProcessingMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
@@ -195,6 +197,11 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
   if ( !found )
   {
     const QString string = val.toString();
+    if ( mUseSelectionCheckBox )
+    {
+      mUseSelectionCheckBox->setChecked( false );
+      mUseSelectionCheckBox->setEnabled( false );
+    }
     if ( !string.isEmpty() )
     {
       mBlockChangedSignal++;
@@ -271,8 +278,8 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
            || mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
          && u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
     {
-      QList< int > dataTypes =  mParameter->type() == QgsProcessingParameterFeatureSource::typeName() ? static_cast< QgsProcessingParameterFeatureSource * >( mParameter )->dataTypes()
-                                : ( mParameter->type() == QgsProcessingParameterVectorLayer::typeName() ? static_cast<QgsProcessingParameterVectorLayer *>( mParameter )->dataTypes()
+      QList< int > dataTypes =  mParameter->type() == QgsProcessingParameterFeatureSource::typeName() ? static_cast< QgsProcessingParameterFeatureSource * >( mParameter.get() )->dataTypes()
+                                : ( mParameter->type() == QgsProcessingParameterVectorLayer::typeName() ? static_cast<QgsProcessingParameterVectorLayer *>( mParameter.get() )->dataTypes()
                                     : QList< int >() );
       switch ( QgsWkbTypes::geometryType( u.wkbType ) )
       {

@@ -53,6 +53,8 @@
 #include "qgslocatorwidget.h"
 #include "qgslocatoroptionswidget.h"
 #include "qgsgui.h"
+#include "qgswelcomepage.h"
+#include "qgsnewsfeedparser.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -656,6 +658,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   chkAddedVisibility->setChecked( mSettings->value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
   cbxLegendClassifiers->setChecked( mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() );
   cbxHideSplash->setChecked( mSettings->value( QStringLiteral( "/qgis/hideSplash" ), false ).toBool() );
+  cbxShowNews->setChecked( !mSettings->value( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
   mDataSourceManagerNonModal->setChecked( mSettings->value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), false ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool() );
@@ -685,6 +688,17 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   spnRed->setValue( mSettings->value( QStringLiteral( "/Raster/defaultRedBand" ), 1 ).toInt() );
   spnGreen->setValue( mSettings->value( QStringLiteral( "/Raster/defaultGreenBand" ), 2 ).toInt() );
   spnBlue->setValue( mSettings->value( QStringLiteral( "/Raster/defaultBlueBand" ), 3 ).toInt() );
+
+  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ), QStringLiteral( "nearest neighbour" ) );
+  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ), QStringLiteral( "bilinear" ) );
+  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ), QStringLiteral( "cubic" ) );
+  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ), QStringLiteral( "nearest neighbour" ) );
+  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ), QStringLiteral( "bilinear" ) );
+  QString zoomedInResampling = mSettings->value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
+  mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( zoomedInResampling ) );
+  QString zoomedOutResampling = mSettings->value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
+  mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( zoomedOutResampling ) );
+  spnOversampling->setValue( mSettings->value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
 
   initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ),
                            QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::SINGLE_BAND_ENHANCEMENT_ALGORITHM ) );
@@ -1436,6 +1450,8 @@ void QgsOptions::saveOptions()
   bool showLegendClassifiers = mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool();
   mSettings->setValue( QStringLiteral( "/qgis/showLegendClassifiers" ), cbxLegendClassifiers->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/hideSplash" ), cbxHideSplash->isChecked() );
+  mSettings->setValue( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
+
   mSettings->setValue( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), mDataSourceManagerNonModal->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/checkVersion" ), cbxCheckVersion->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/dockAttributeTable" ), cbxAttributeTableDocked->isChecked() );
@@ -1523,6 +1539,10 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/Raster/defaultRedBand" ), spnRed->value() );
   mSettings->setValue( QStringLiteral( "/Raster/defaultGreenBand" ), spnGreen->value() );
   mSettings->setValue( QStringLiteral( "/Raster/defaultBlueBand" ), spnBlue->value() );
+
+  mSettings->setValue( QStringLiteral( "/Raster/defaultZoomedInResampling" ), mZoomedInResamplingComboBox->currentData().toString() );
+  mSettings->setValue( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), mZoomedOutResamplingComboBox->currentData().toString() );
+  mSettings->setValue( QStringLiteral( "/Raster/defaultOversampling" ), spnOversampling->value() );
 
   saveContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ) );
   saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );

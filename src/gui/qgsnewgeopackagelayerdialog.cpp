@@ -36,7 +36,6 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QLibrary>
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>

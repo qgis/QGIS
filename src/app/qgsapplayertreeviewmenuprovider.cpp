@@ -42,7 +42,6 @@
 #include "qgsxmlutils.h"
 
 
-
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
   , mCanvas( canvas )
@@ -241,10 +240,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( allEditsAction->isEnabled() )
           menu->addAction( allEditsAction );
 
-        // disable duplication of memory layers
-        if ( vlayer->storageType() == QLatin1String( "Memory storage" ) && mView->selectedLayerNodes().count() == 1 )
-          duplicateLayersAction->setEnabled( false );
-
         if ( vlayer->dataProvider()->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
@@ -299,7 +294,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( vlayer )
       {
-        if ( vlayer->dataProvider()->name() == QLatin1String( "memory" ) )
+        if ( vlayer->providerType() == QLatin1String( "memory" ) )
         {
           QAction *actionMakePermanent = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ), tr( "Make Permanent…" ), menu );
           connect( actionMakePermanent, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->makeMemoryLayerPermanent( vlayer ); } );

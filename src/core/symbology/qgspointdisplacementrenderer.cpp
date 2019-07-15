@@ -21,6 +21,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
 #include "qgspointclusterrenderer.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QPainter>
 #include <cmath>
@@ -237,6 +238,21 @@ QSet<QString> QgsPointDisplacementRenderer::usedAttributes( const QgsRenderConte
   if ( mCenterSymbol )
     attr.unite( mCenterSymbol->usedAttributes( context ) );
   return attr;
+}
+
+bool QgsPointDisplacementRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( !QgsPointDistanceRenderer::accept( visitor ) )
+    return false;
+
+  if ( mCenterSymbol )
+  {
+    QgsStyleSymbolEntity entity( mCenterSymbol.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "center" ), QObject::tr( "Center Symbol" ) ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbol *symbol )

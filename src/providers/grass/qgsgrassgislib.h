@@ -31,7 +31,6 @@ extern "C"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterprojector.h"
 
-#include <QLibrary>
 #include <QProcess>
 #include <QString>
 #include <QMap>
@@ -139,9 +138,6 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
   private:
     //! Pointer to canonical Singleton object
     static QgsGrassGisLib *_instance;
-
-    //! Original GRASS library handle
-    QLibrary mLibrary;
 
     //! Raster maps, key is fake file descriptor
     QMap<int, Raster> mRasters;

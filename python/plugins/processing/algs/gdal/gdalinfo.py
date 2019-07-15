@@ -25,6 +25,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFileDestination)
@@ -41,6 +43,7 @@ class gdalinfo(GdalAlgorithm):
     STATS = 'STATS'
     NO_GCP = 'NOGCP'
     NO_METADATA = 'NO_METADATA'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -61,6 +64,13 @@ class gdalinfo(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.NO_METADATA,
                                                         self.tr('Suppress metadata info'),
                                                         defaultValue=False))
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
                                                                 self.tr('Layer information'),
@@ -94,10 +104,14 @@ class gdalinfo(GdalAlgorithm):
             arguments.append('-nogcp')
         if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
             arguments.append('-nomd')
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
-
         arguments.append(raster.source())
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 

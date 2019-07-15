@@ -27,13 +27,7 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 
-#ifdef HAVE_GUI
-#include "qgsdb2newconnection.h"
-#include "qgsdb2sourceselect.h"
-#endif
-
 #include <QMessageBox>
-#include <QProgressDialog>
 
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 
@@ -249,75 +243,6 @@ bool QgsDb2ConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsDb2ConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh Connection" ), parent );
-  connect( actionRefresh, &QAction::triggered, this, &QgsDb2ConnectionItem::refreshConnection );
-  lst.append( actionRefresh );
-
-  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsDb2ConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsDb2ConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsDb2ConnectionItem::editConnection()
-{
-  QgsDb2NewConnection nc( nullptr, mName );
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refreshConnections();
-  }
-}
-
-void QgsDb2ConnectionItem::deleteConnection()
-{
-  QString key = "/DB2/connections/" + mName;
-  QgsSettings settings;
-  settings.remove( key + "/service" );
-  settings.remove( key + "/driver" );
-  settings.remove( key + "/port" );
-  settings.remove( key + "/host" );
-  settings.remove( key + "/database" );
-  settings.remove( key + "/username" );
-  settings.remove( key + "/password" );
-  settings.remove( key + "/environment" );
-  settings.remove( key );
-  mParent->refreshConnections();
-}
-
-void QgsDb2ConnectionItem::refreshConnection()
-{
-  QString errMsg;
-  QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errMsg );
-  Q_UNUSED( db )
-  if ( errMsg.isEmpty() )
-  {
-    QgsDebugMsg( QStringLiteral( "successful get db2 connection on refresh" ) );
-  }
-  else
-  {
-    QgsDebugMsg( "failed get db2 connection on refresh " + errMsg + " " + mPath + "/error" );
-  }
-  refresh();
-}
-#endif
-
-
-bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  return handleDrop( data, QString() );
-}
-
 bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
@@ -428,35 +353,6 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
   return connections;
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsDb2RootItem::actions( QWidget *parent )
-{
-  QList<QAction *> actionList;
-
-  QAction *action = new QAction( tr( "New Connection…" ), parent );
-  connect( action, &QAction::triggered, this, &QgsDb2RootItem::newConnection );
-  actionList.append( action );
-
-  return actionList;
-}
-
-QWidget *QgsDb2RootItem::paramWidget()
-{
-  return nullptr;
-}
-
-void QgsDb2RootItem::newConnection()
-{
-  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; New Connection dialog requested." ) );
-  QgsDb2NewConnection newConnection( nullptr, mName );
-  if ( newConnection.exec() )
-  {
-    refreshConnections();
-  }
-
-}
-#endif
-
 // ---------------------------------------------------------------------------
 QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperty )
   : QgsLayerItem( parent, name, path, QString(), layerType, PROVIDER_KEY )
@@ -528,15 +424,6 @@ void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )
   }
 }
 
-bool QgsDb2SchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  QgsDb2ConnectionItem *conn = qobject_cast<QgsDb2ConnectionItem *>( parent() );
-  if ( !conn )
-    return false;
-
-  return conn->handleDrop( data, mName );
-}
-
 QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
 {
   QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
@@ -585,4 +472,21 @@ QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
     addChild( layerItem );
 
   return layerItem;
+}
+
+QString QgsDb2DataItemProvider::name()
+{
+  return QStringLiteral( "DB2" );
+}
+
+int QgsDb2DataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
+QgsDataItem *QgsDb2DataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn );
+  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; data item detected." ) );
+  return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
 }

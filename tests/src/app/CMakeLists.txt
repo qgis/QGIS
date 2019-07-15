@@ -3,6 +3,7 @@
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -124,3 +125,4 @@ ADD_QGIS_TEST(projectproperties testqgsprojectproperties.cpp)
 ADD_QGIS_TEST(layoutvaliditychecks testqgsapplayoutvaliditychecks.cpp)
 ADD_QGIS_TEST(meshcalculator testqgsmeshcalculatordialog.cpp)
 ADD_QGIS_TEST(meshlayerpropertiesdialog testqgsmeshlayerpropertiesdialog.cpp)
+ADD_QGIS_TEST(gpsinformationwidget testqgsgpsinformationwidget.cpp)

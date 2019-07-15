@@ -15,6 +15,7 @@
 
 #include "qgslayertreeembeddedwidgetsimpl.h"
 
+#include <QFontMetrics>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
@@ -34,9 +35,14 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   QLabel *l = new QLabel( QStringLiteral( "Opacity" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 1000 );
+  int sliderW = static_cast< int >( QFontMetricsF( font() ).width( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
+  mSlider->setMinimumWidth( sliderW / 2 );
+  mSlider->setMaximumWidth( sliderW );
   QHBoxLayout *lay = new QHBoxLayout();
+  QSpacerItem *spacerItem = new QSpacerItem( 1, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   lay->addWidget( l );
   lay->addWidget( mSlider );
+  lay->addItem( spacerItem );
   setLayout( lay );
 
   // timer for delayed transparency update - for more responsive GUI

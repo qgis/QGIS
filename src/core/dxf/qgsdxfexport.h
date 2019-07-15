@@ -34,6 +34,10 @@ class QgsPointXY;
 class QgsSymbolLayer;
 class QIODevice;
 class QgsPalLayerSettings;
+class QgsCurve;
+class QgsCurvePolygon;
+class QgsCircularString;
+class QgsCompoundCurve;
 
 #define DXF_HANDSEED 100
 #define DXF_HANDMAX 9999999
@@ -333,6 +337,18 @@ class CORE_EXPORT QgsDxfExport
     void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 ) SIP_SKIP;
 
     /**
+     * Draw dxf primitives (LWPOLYLINE)
+     * \param curve polyline (including curved)
+     * \param layer layer name to use
+     * \param lineStyleName line type to use
+     * \param color color to use
+     * \param width line width to use
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    void writePolyline( const QgsCurve &curve, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 ) SIP_SKIP;
+
+    /**
      * Draw dxf filled polygon (HATCH)
      * \param polygon polygon
      * \param layer layer name to use
@@ -342,6 +358,17 @@ class CORE_EXPORT QgsDxfExport
      * \since QGIS 2.15
      */
     void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color ) SIP_SKIP;
+
+    /**
+     * Draw dxf curved filled polygon (HATCH)
+     * \param polygon polygon (including curves)
+     * \param layer layer name to use
+     * \param hatchPattern hatchPattern to use
+     * \param color color to use
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    void writePolygon( const QgsCurvePolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor &color ) SIP_SKIP;
 
     /**
      * Write line (as a polyline)
@@ -511,6 +538,10 @@ class CORE_EXPORT QgsDxfExport
 
     QgsDxfExport::Flags mFlags = nullptr;
 
+    void appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QVector<double> &bulges );
+    void appendLineString( const QgsLineString &ls, QVector<QgsPoint> &points, QVector<double> &bulges );
+    void appendCircularString( const QgsCircularString &cs, QVector<QgsPoint> &points, QVector<double> &bulges );
+    void appendCompoundCurve( const QgsCompoundCurve &cc, QVector<QgsPoint> &points, QVector<double> &bulges );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )

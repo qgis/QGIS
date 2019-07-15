@@ -51,6 +51,7 @@ class contour(GdalAlgorithm):
     IGNORE_NODATA = 'IGNORE_NODATA'
     NODATA = 'NODATA'
     OFFSET = 'OFFSET'
+    EXTRA = 'EXTRA'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -102,11 +103,19 @@ class contour(GdalAlgorithm):
         nodata_param.setFlags(offset_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(offset_param)
 
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
+
+        # TODO: remove in QGIS 4
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(
@@ -169,12 +178,17 @@ class contour(GdalAlgorithm):
         if offset:
             arguments.append('-off {}'.format(offset))
 
+        if outFormat:
+            arguments.append('-f {}'.format(outFormat))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        # TODO: remove in QGIS 4
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.append(options)
-
-        if outFormat:
-            arguments.append('-f {}'.format(outFormat))
 
         arguments.append(inLayer.source())
         arguments.append(output)
