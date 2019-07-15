@@ -400,7 +400,10 @@ void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewInd
   if ( !mIndicators[node].contains( indicator ) )
   {
     mIndicators[node].append( indicator );
-    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [ = ] { update(); } );
+    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [ = ]
+    {
+      update();
+    } );
     update();
   }
 }
