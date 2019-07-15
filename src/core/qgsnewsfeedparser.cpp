@@ -159,6 +159,10 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     newEntry.content = entryMap.value( QStringLiteral( "content" ) ).toString();
     newEntry.link = entryMap.value( QStringLiteral( "url" ) ).toString();
     newEntry.sticky = entryMap.value( QStringLiteral( "sticky" ) ).toBool();
+    bool ok = false;
+    const uint expiry = entryMap.value( QStringLiteral( "publish_to" ) ).toUInt( &ok );
+    if ( ok )
+      newEntry.expiry.setTime_t( expiry );
     newEntries.append( newEntry );
 
     if ( !newEntry.imageUrl.isEmpty() )
@@ -201,6 +205,7 @@ QgsNewsFeedParser::Entry QgsNewsFeedParser::readEntryFromSettings( const int key
   entry.content = settings.value( QStringLiteral( "content" ) ).toString();
   entry.link = settings.value( QStringLiteral( "link" ) ).toString();
   entry.sticky = settings.value( QStringLiteral( "sticky" ) ).toBool();
+  entry.expiry = settings.value( QStringLiteral( "expiry" ) ).toDateTime();
   if ( !entry.imageUrl.isEmpty() )
   {
     const QString previewDir = QStringLiteral( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
@@ -227,6 +232,8 @@ void QgsNewsFeedParser::storeEntryInSettings( const QgsNewsFeedParser::Entry &en
   settings.setValue( QStringLiteral( "%1/content" ).arg( baseSettingsKey ), entry.content, QgsSettings::Core );
   settings.setValue( QStringLiteral( "%1/link" ).arg( baseSettingsKey ), entry.link, QgsSettings::Core );
   settings.setValue( QStringLiteral( "%1/sticky" ).arg( baseSettingsKey ), entry.sticky, QgsSettings::Core );
+  if ( entry.expiry.isValid() )
+    settings.setValue( QStringLiteral( "%1/expiry" ).arg( baseSettingsKey ), entry.expiry, QgsSettings::Core );
 }
 
 void QgsNewsFeedParser::fetchImageForEntry( const QgsNewsFeedParser::Entry &entry )

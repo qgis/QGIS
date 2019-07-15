@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QPixmap>
+#include <QDateTime>
 
 class QgsNetworkContentFetcher;
 
@@ -66,6 +67,9 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 
         //! TRUE if entry is "sticky" and should always be shown at the top
         bool sticky = false;
+
+        //! Optional auto-expiry time for entry
+        QDateTime expiry;
     };
 
     /**

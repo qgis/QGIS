@@ -50,6 +50,8 @@ Represents a single entry from a news feed.
         QUrl link;
 
         bool sticky;
+
+        QDateTime expiry;
     };
 
     QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg = QString(), QObject *parent /TransferThis/ = 0 );
