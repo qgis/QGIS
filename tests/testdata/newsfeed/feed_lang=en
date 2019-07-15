@@ -2,7 +2,7 @@
   {
     "pk": 4,
     "publish_from": 1557073748.13,
-    "publish_to": null,
+    "publish_to": 1798761600.0,
     "title": "Next Microsoft Windows code name revealed",
     "image": "",
     "content": "<p>Rumors from a whistleblower revealed the next Windows release code name: <strong>Winux</strong></p>\r\n<p>The next version of the popular operating system will ship a modified version of Wine that will run inside a docker container virtualized on Vagrant on VirtualBox running on Alpine Linux on the bare metal.</p>",
@@ -12,7 +12,7 @@
   {
     "pk": 6,
     "publish_from": 915196568.0,
-    "publish_to": 32472144000.0,
+    "publish_to": null,
     "title": "QGIS core will be rewritten in Rust",
     "image": "http://0.0.0.0:8000/media/feedimages/rust.png",
     "content": "<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>, since Qt is not available for Rust, the new GUI will be based on Tcl/Tk.</p>",

@@ -97,7 +97,10 @@ void TestQgsNewsFeedParser::testFetch()
 
   QCOMPARE( parser.entries().count(), 5 );
   QCOMPARE( parser.entries().at( 0 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QVERIFY( parser.entries().at( 0 ).expiry.isValid() );
+  QCOMPARE( parser.entries().at( 0 ).expiry.toUTC(), QDateTime( QDate( 2027, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
   QCOMPARE( parser.entries().at( 1 ).title, QStringLiteral( "QGIS core will be rewritten in Rust" ) );
+  QVERIFY( !parser.entries().at( 1 ).expiry.isValid() );
   QCOMPARE( parser.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
   QCOMPARE( parser.entries().at( 3 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
   QCOMPARE( parser.entries().at( 4 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
@@ -128,7 +131,10 @@ void TestQgsNewsFeedParser::testFetch()
   // check only new entries are present
   QCOMPARE( entries.count(), 4 );
   QCOMPARE( entries.at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
+  QVERIFY( parser.entries().at( 0 ).expiry.isValid() );
+  QCOMPARE( parser.entries().at( 0 ).expiry.toUTC(), QDateTime( QDate( 2027, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
   QCOMPARE( entries.at( 1 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QVERIFY( !parser.entries().at( 1 ).expiry.isValid() );
   QCOMPARE( entries.at( 2 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
   QCOMPARE( entries.at( 3 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
 
@@ -145,7 +151,10 @@ void TestQgsNewsFeedParser::testFetch()
   // previous entries should be automatically read
   QCOMPARE( parser3.entries().count(), 4 );
   QCOMPARE( parser3.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
+  QVERIFY( parser.entries().at( 0 ).expiry.isValid() );
+  QCOMPARE( parser.entries().at( 0 ).expiry.toUTC(), QDateTime( QDate( 2027, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
   QCOMPARE( parser3.entries().at( 1 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QVERIFY( !parser.entries().at( 1 ).expiry.isValid() );
   QCOMPARE( parser3.entries().at( 2 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
   QCOMPARE( parser3.entries().at( 3 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
 
