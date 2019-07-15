@@ -162,6 +162,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     QString mSettingsKey;
 
     QList< Entry > mEntries;
+    bool mBlockSignals = false;
 
     void readStoredEntries();
     Entry readEntryFromSettings( int key );
