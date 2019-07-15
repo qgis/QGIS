@@ -5679,8 +5679,8 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QgsSpatialIndex spatialIndex;
   std::shared_ptr<QgsVectorLayer> cachedTarget;
 
-  QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( targetLayerValue, parent );
-  if ( !layer ) // No layer, no joy
+  QgsVectorLayer *targetLayer = QgsExpressionUtils::getVectorLayer( targetLayerValue, parent );
+  if ( !targetLayer ) // No layer, no joy
   {
     parent->setEvalErrorString( QObject::tr( "Layer '%1' could not be loaded." ).arg( targetLayerValue.toString() ) );
     return QVariant();
@@ -5694,6 +5694,12 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   if ( filterString != "NULL" )
   {
     request.setFilterExpression( filterString ); //filter cached features
+  }
+
+  if (targetLayer->crs().authid() != sourceLayer->crs().authid())
+  {
+      QgsCoordinateTransformContext TransformContext;
+      request.setDestinationCrs(sourceLayer->crs(), TransformContext); //if crs are not the same, cached target will be reprojected to source crs
   }
 
   node = QgsExpressionUtils::getNode( values.at( 3 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
@@ -5719,13 +5725,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   }
   */
 
-  const QString cacheBase { QStringLiteral( "%1:%2" ).arg( layer->id(), subExpression ) };
+  const QString cacheBase { QStringLiteral( "%1:%2" ).arg( targetLayer->id(), subExpression ) };
   const QString cacheLayer { QStringLiteral( "ovrlaylyr:%1" ).arg( cacheBase ) };
   const QString cacheIndex { QStringLiteral( "ovrlayidx:%1" ).arg( cacheBase ) };
 
   if ( !context->hasCachedValue( cacheLayer ) ) // should check for same crs. if not the same we could think to reproject target layer before charging cache
   {
-    cachedTarget.reset( layer->materialize( request ) );
+    cachedTarget.reset( targetLayer->materialize( request ) );
     if ( layerCanBeCached )
       context->setCachedValue( cacheLayer, QVariant::fromValue( cachedTarget ) );
   }
