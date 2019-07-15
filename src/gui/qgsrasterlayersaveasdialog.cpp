@@ -150,6 +150,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   }
 
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterLayerSaveAsDialog::showHelp );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterLayerSaveAsDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRasterLayerSaveAsDialog::reject );
 
   mExtentGroupBox->setOutputCrs( outputCrs() );
   mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
