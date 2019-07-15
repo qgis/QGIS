@@ -52,7 +52,7 @@ from PyQt5.QtWidgets import (QDialog,
 import struct
 import glob
 
-dash_url = 'https://dash.orfeo-toolbox.org'
+dash_url = 'https://cdash.orfeo-toolbox.org'
 
 
 def error(msg):
