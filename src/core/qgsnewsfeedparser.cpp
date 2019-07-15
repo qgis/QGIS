@@ -92,7 +92,8 @@ void QgsNewsFeedParser::dismissEntry( int key )
     }
   }
 
-  emit entryDismissed( dismissed );
+  if ( !mBlockSignals )
+    emit entryDismissed( dismissed );
 }
 
 void QgsNewsFeedParser::dismissAll()
@@ -189,7 +190,16 @@ void QgsNewsFeedParser::readStoredEntries()
   mEntries.reserve( existing.size() );
   for ( const QString &entry : existing )
   {
-    mEntries.append( readEntryFromSettings( entry.toInt() ) );
+    const Entry e = readEntryFromSettings( entry.toInt() );
+    if ( !e.expiry.isValid() || e.expiry > QDateTime::currentDateTime() )
+      mEntries.append( e );
+    else
+    {
+      // expired entry, prune it
+      mBlockSignals = true;
+      dismissEntry( e.key );
+      mBlockSignals = false;
+    }
   }
 }
 

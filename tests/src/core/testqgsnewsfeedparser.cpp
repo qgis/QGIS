@@ -35,6 +35,7 @@ class TestQgsNewsFeedParser: public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testFetch();
+    void testAutoExpiry();
     void testModel();
     void testProxyModel();
 
@@ -191,6 +192,32 @@ void TestQgsNewsFeedParser::testFetch()
 
   QgsNewsFeedParser parser5( url );
   QCOMPARE( parser5.entries().count(), 0 );
+}
+
+void TestQgsNewsFeedParser::testAutoExpiry()
+{
+  const QUrl url( QStringLiteral( "xxx" ) );
+  const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
+  QgsSettings().remove( feedKey, QgsSettings::Core );
+
+  // ensure entries "auto expire" when past their use-by date
+  QgsNewsFeedParser::Entry testEntry;
+  testEntry.key = 1;
+  testEntry.title = QStringLiteral( "test entry" );
+  QgsNewsFeedParser::Entry testEntry2;
+  testEntry2.key = 2;
+  testEntry2.title = QStringLiteral( "test entry2" );
+  testEntry2.expiry = QDateTime( QDate( 1997, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+  QgsNewsFeedParser parser( url );
+  parser.storeEntryInSettings( testEntry );
+  parser.storeEntryInSettings( testEntry2 );
+
+  // on relaunch, expired entries should be auto-pruned
+  QgsNewsFeedParser parser2( url );
+  QCOMPARE( parser2.entries().count(), 1 );
+  QCOMPARE( parser2.entries().at( 0 ).title, QStringLiteral( "test entry" ) );
+  QVERIFY( !parser2.entries().at( 0 ).expiry.isValid() );
 }
 
 void TestQgsNewsFeedParser::testModel()
