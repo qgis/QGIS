@@ -594,7 +594,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
                  '-of JPEG -cutline ' +
-                 mask + ' -crop_to_cutline ' + source + ' ' +
+                 mask + ' -cl polys2 -crop_to_cutline ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with NODATA value
             self.assertEqual(
@@ -604,7 +604,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
                  '-of JPEG -cutline ' +
-                 mask + ' -crop_to_cutline -dstnodata 9999.0 ' + source + ' ' +
+                 mask + ' -cl polys2 -crop_to_cutline -dstnodata 9999.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value
             self.assertEqual(
@@ -614,7 +614,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
                  '-of JPEG -cutline ' +
-                 mask + ' -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
+                 mask + ' -cl polys2 -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value and custom data type
             self.assertEqual(
@@ -625,7 +625,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
                  '-ot Float32 -of JPEG -cutline ' +
-                 mask + ' -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
+                 mask + ' -cl polys2 -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
 
     def testContour(self):
