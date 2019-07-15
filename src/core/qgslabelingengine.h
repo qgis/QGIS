@@ -74,6 +74,20 @@ class CORE_EXPORT QgsAbstractLabelProvider
     virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const = 0;
 
     /**
+     * Draw the background for the specified \a label.
+     *
+     * This is called in turn for each label provider before any actual labels are rendered,
+     * and allows the provider to render content which should be drawn below ALL map labels
+     * (such as background rectangles or callout lines).
+     *
+     * Before any calls to drawLabelBackground(), a provider should be prepared for rendering by a call to
+     * startRender() and a corresponding call to stopRender().
+     *
+     * \since QGIS 3.10
+     */
+    virtual void drawLabelBackground( QgsRenderContext &context, pal::LabelPosition *label ) const;
+
+    /**
      * To be called before rendering of labels begins. Must be accompanied by
      * a corresponding call to stopRender()
      * \since QGIS 3.10

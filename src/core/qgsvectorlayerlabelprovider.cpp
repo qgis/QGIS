@@ -278,6 +278,36 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
   return QgsGeometry( std::move( obstacleGeom ) );
 }
 
+void QgsVectorLayerLabelProvider::drawLabelBackground( QgsRenderContext &context, LabelPosition *label ) const
+{
+  if ( !mSettings.drawLabels )
+    return;
+
+  // render callout
+  if ( mSettings.callout() && mSettings.callout()->drawOrder() == QgsCallout::OrderBelowAllLabels )
+  {
+    drawCallout( context, label );
+  }
+}
+
+void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::LabelPosition *label ) const
+{
+  context.expressionContext().setOriginalValueVariable( mSettings.callout()->enabled() );
+  const bool enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::CalloutDraw, context.expressionContext(), mSettings.callout()->enabled() );
+  if ( enabled )
+  {
+    QgsMapToPixel xform = context.mapToPixel();
+    xform.setMapRotation( 0, 0, 0 );
+    QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QRectF rect( outPt.x(), outPt.y(), outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+
+    QgsGeometry g( QgsGeos::fromGeos( label->getFeaturePart()->feature()->geometry() ) );
+    g.transform( xform.transform() );
+    mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g );
+  }
+}
+
 void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
   if ( !mSettings.drawLabels )
@@ -349,22 +379,9 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   //   (backgrounds -> text)
 
   // render callout
-  if ( mSettings.callout() )// && label->getFeaturePart()->hasFixedPosition() )
+  if ( mSettings.callout() && mSettings.callout()->drawOrder() == QgsCallout::OrderBelowIndividualLabels )
   {
-    context.expressionContext().setOriginalValueVariable( mSettings.callout()->enabled() );
-    const bool enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::CalloutDraw, context.expressionContext(), mSettings.callout()->enabled() );
-    if ( enabled )
-    {
-      QgsMapToPixel xform = context.mapToPixel();
-      xform.setMapRotation( 0, 0, 0 );
-      QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
-      QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
-      QRectF rect( outPt.x(), outPt.y(), outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
-
-      QgsGeometry g( QgsGeos::fromGeos( label->getFeaturePart()->feature()->geometry() ) );
-      g.transform( xform.transform() );
-      mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g );
-    }
+    drawCallout( context, label );
   }
 
   if ( tmpLyr.format().shadow().enabled() && tmpLyr.format().shadow().shadowPlacement() == QgsTextShadowSettings::ShadowLowest )

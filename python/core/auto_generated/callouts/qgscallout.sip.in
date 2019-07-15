@@ -46,6 +46,12 @@ relevant symbology elements to render them.
       MinimumCalloutLength,
     };
 
+    enum DrawOrder
+    {
+      OrderBelowAllLabels,
+      OrderBelowIndividualLabels,
+    };
+
     QgsCallout();
 %Docstring
 Constructor for QgsCallout.
@@ -141,6 +147,13 @@ required by any data defined properties associated with the callout.
 
    This must only be called after a corresponding call to startRender() with
    the same render ``context``.
+%End
+
+    virtual DrawOrder drawOrder() const;
+%Docstring
+Returns the desired drawing order (stacking) to use while rendering this callout.
+
+The default order is QgsCallout.OrderBelowIndividualLabels.
 %End
 
     void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );

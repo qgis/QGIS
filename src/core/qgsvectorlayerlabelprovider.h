@@ -51,6 +51,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
+    void drawLabelBackground( QgsRenderContext &context, pal::LabelPosition *label ) const override;
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
     void startRender( QgsRenderContext &context ) override;
     void stopRender( QgsRenderContext &context ) override;
@@ -118,6 +119,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
   private:
 
     friend class TestQgsLabelingEngine;
+    void drawCallout( QgsRenderContext &context, pal::LabelPosition *label ) const;
 };
 
 #endif // QGSVECTORLAYERLABELPROVIDER_H

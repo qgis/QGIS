@@ -94,6 +94,11 @@ QSet<QString> QgsCallout::referencedFields( const QgsRenderContext &context ) co
   return mDataDefinedProperties.referencedFields( context.expressionContext() );
 }
 
+QgsCallout::DrawOrder QgsCallout::drawOrder() const
+{
+  return OrderBelowAllLabels;
+}
+
 void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor )
 {
   if ( !mEnabled )
