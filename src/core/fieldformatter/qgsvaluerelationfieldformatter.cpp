@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerref.h"
+#include "qgsarrayutils.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -173,50 +174,18 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
   {
     checkList = value.toStringList();
   }
-  else if ( value.type() == QVariant::String )
+  else
   {
-    // This must be an array representation
-    auto newVal { value };
-    if ( newVal.toString().trimmed().startsWith( '{' ) )
+    QVariantList valuesList;
+    if ( value.type() == QVariant::String )
     {
-      newVal = QVariant( newVal.toString().trimmed().mid( 1 ).mid( 0, newVal.toString().length() - 2 ).prepend( '[' ).append( ']' ) );
-
-      if ( !json::accept( newVal.toString().toStdString() ) )
-      {
-        //fallback for wrongly stored string data without quotes
-        checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
-      }
+      // This must be an array representation
+      valuesList = QgsArrayUtils::parse( value.toString() );
     }
-
-    if ( newVal.toString().trimmed().startsWith( '[' ) )
+    else if ( value.type() == QVariant::List )
     {
-      try
-      {
-        for ( auto &element : json::parse( newVal.toString().toStdString() ) )
-        {
-          if ( element.is_number_integer() )
-          {
-            checkList << QString::number( element.get<int>() );
-          }
-          else if ( element.is_number_unsigned() )
-          {
-            checkList << QString::number( element.get<unsigned>() );
-          }
-          else if ( element.is_string() )
-          {
-            checkList << QString::fromStdString( element.get<std::string>() );
-          }
-        }
-      }
-      catch ( json::parse_error &ex )
-      {
-        qDebug() << QString::fromStdString( ex.what() );
-      }
+      valuesList = value.toList( );
     }
-  }
-  else if ( value.type() == QVariant::List )
-  {
-    QVariantList valuesList( value.toList( ) );
     checkList.reserve( valuesList.size() );
     for ( const QVariant &listItem : qgis::as_const( valuesList ) )
     {
