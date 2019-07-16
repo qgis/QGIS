@@ -529,12 +529,17 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionCopyExpr );
     mDefineMenu->addAction( mActionPasteExpr );
-    mDefineMenu->addAction( mActionClearExpr );
   }
   else
   {
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionPasteExpr );
+  }
+
+  if ( hasExp || !mFieldName.isEmpty() )
+  {
+    mDefineMenu->addSeparator();
+    mDefineMenu->addAction( mActionClearExpr );
   }
 
   if ( !mDefinition.name().isEmpty() && mDefinition.supportsAssistant() )
