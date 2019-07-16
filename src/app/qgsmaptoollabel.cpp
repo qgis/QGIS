@@ -225,17 +225,8 @@ void QgsMapToolLabel::currentAlignment( QString &hali, QString &vali )
     return;
   }
 
-  int haliIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Hali, mCurrentLabel.settings, vlayer );
-  if ( haliIndx != -1 )
-  {
-    hali = f.attribute( haliIndx ).toString();
-  }
-
-  int valiIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Vali, mCurrentLabel.settings, vlayer );
-  if ( valiIndx != -1 )
-  {
-    vali = f.attribute( valiIndx ).toString();
-  }
+  hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Hali, mCurrentLabel.settings, f, hali ).toString();
+  vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Vali, mCurrentLabel.settings, f, vali ).toString();
 }
 
 bool QgsMapToolLabel::currentFeature( QgsFeature &f, bool fetchGeom )
@@ -457,6 +448,14 @@ int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, co
   if ( !fieldname.isEmpty() )
     return vlayer->fields().lookupField( fieldname );
   return -1;
+}
+
+QVariant QgsMapToolLabel::evaluateDataDefinedProperty( QgsPalLayerSettings::Property property, const QgsPalLayerSettings &labelSettings, const QgsFeature &feature, const QVariant &defaultValue ) const
+{
+  QgsExpressionContext context = mCanvas->mapSettings().expressionContext();
+  context.setFeature( feature );
+  context.setFields( feature.fields() );
+  return labelSettings.dataDefinedProperties().value( property, context, defaultValue );
 }
 
 bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const
