@@ -15,6 +15,9 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsRulebasedRenderer -V
+
 """
 
 __author__ = 'Matthias Kuhn'
@@ -369,6 +372,24 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.assertEqual(len(rootrule.rulesForFeature(ft, ctx)), 1)
         self.assertEqual(rootrule.rulesForFeature(ft, ctx)[0], self.rx3)
         renderer.stopRender(ctx)
+
+    def testUsedAttributes(self):
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+
+        # Create rulebased style
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
+
+        self.rx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 200')
+        self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 1000, 100000000, 'ELSE')
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.rx2)
+        rootrule.appendChild(self.rx3)
+
+        renderer = QgsRuleBasedRenderer(rootrule)
+
+        self.assertCountEqual(renderer.usedAttributes(ctx), {'id'})
 
 
 if __name__ == '__main__':
