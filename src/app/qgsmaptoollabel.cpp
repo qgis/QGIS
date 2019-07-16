@@ -48,18 +48,49 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
 {
   QgsPointXY pt = toMapCoordinates( e->pos() );
   const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
-  if ( labelingResults )
+  if ( !labelingResults )
+    return false;
+
+  QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
+  if ( labelPosList.empty() )
+    return false;
+
+  // prioritise labels in the current selected layer, in case of overlaps
+  QList<QgsLabelPosition> activeLayerLabels;
+  if ( const QgsVectorLayer *currentLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() ) )
   {
-    QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
-    QList<QgsLabelPosition>::const_iterator posIt = labelPosList.constBegin();
-    if ( posIt != labelPosList.constEnd() )
+    for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
     {
-      p = *posIt;
-      return true;
+      if ( pos.layerID == currentLayer->id() )
+      {
+        activeLayerLabels.append( pos );
+      }
     }
   }
+  if ( !activeLayerLabels.empty() )
+    labelPosList = activeLayerLabels;
 
-  return false;
+  if ( labelPosList.count() > 1 )
+  {
+    // multiple candidates found, so choose the smallest (i.e. most difficult to select otherwise)
+    double minSize = std::numeric_limits< double >::max();
+    for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+    {
+      const double labelSize = pos.width * pos.height;
+      if ( labelSize < minSize )
+      {
+        minSize = labelSize;
+        p = pos;
+      }
+    }
+  }
+  else
+  {
+    // only one candidate
+    p = labelPosList.at( 0 );
+  }
+
+  return true;
 }
 
 void QgsMapToolLabel::createRubberBands()
