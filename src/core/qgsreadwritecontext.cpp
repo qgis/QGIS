@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsreadwritecontext.h"
 
+///@cond PRIVATE
 class DefaultTranslator : public QgsProjectTranslator
 {
     // QgsProjectTranslator interface
@@ -26,6 +27,8 @@ class DefaultTranslator : public QgsProjectTranslator
       return sourceText;
     }
 };
+
+///@endcond PRIVATE
 
 static DefaultTranslator sDefaultTranslator;
 

@@ -536,7 +536,7 @@ void QgsRubberBand::updateRect()
   if ( mSvgRenderer )
   {
     QRectF viewBox = mSvgRenderer->viewBoxF();
-    iconSize = qMax( qAbs( mSvgOffset.x() ) + .5 * viewBox.width(), qAbs( mSvgOffset.y() ) + .5 * viewBox.height() );
+    iconSize = qMax( std::fabs( mSvgOffset.x() ) + .5 * viewBox.width(), std::fabs( mSvgOffset.y() ) + .5 * viewBox.height() );
   }
 
   qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units

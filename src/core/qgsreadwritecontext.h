@@ -108,7 +108,7 @@ class CORE_EXPORT QgsReadWriteContext
     const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
 
     /**
-     * Sets the project translator. Means it shouldn't conform mDefaultTranslator anymore.
+     * Sets the project translator.
      * It's usually the QgsProject where the function with the context is made and won't be changed anymore.
      *
      * \since QGIS 3.4

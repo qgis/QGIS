@@ -1180,6 +1180,8 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
       return QStringLiteral( "soa" );
     case AngleTurn:
       return QStringLiteral( "tr" );
+    case AngleMil:
+      return QStringLiteral( "mil" );
     case AngleUnknownUnit:
       return QStringLiteral( "<unknown>" );
   }
@@ -1205,6 +1207,8 @@ QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString &string, bo
     return AngleSecondsOfArc;
   if ( normalized == encodeUnit( AngleTurn ) )
     return AngleTurn;
+  if ( normalized == encodeUnit( AngleMil ) )
+    return AngleMil;
   if ( normalized == encodeUnit( AngleUnknownUnit ) )
     return AngleUnknownUnit;
   if ( ok )
@@ -1434,6 +1438,7 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
       break;
     case AngleMil:
       unitLabel = QObject::tr( " mil", "angular mil" );
+      break;
     case AngleUnknownUnit:
       break;
   }
