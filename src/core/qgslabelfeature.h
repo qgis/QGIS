@@ -387,6 +387,23 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setFeature( const QgsFeature &feature );
 
+    /**
+     * Returns the feature symbol associated with this label.
+     * \see setSymbol()
+     *
+     * \since QGIS 3.10
+     */
+    const QgsSymbol *symbol() { return mSymbol.get(); }
+
+    /**
+     * Sets the feature \a symbol associated with this label.
+     * Ownership of \a symbol is transferred to the label feature.
+     * \see symbol()
+     *
+     * \since QGIS 3.10
+     */
+    void setSymbol( const QgsSymbol *symbol SIP_TRANSFER ) { mSymbol.reset( symbol ); }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -453,6 +470,8 @@ class CORE_EXPORT QgsLabelFeature
     geos::prepared_unique_ptr mPermissibleZoneGeosPrepared;
 
     QgsFeature mFeature;
+
+    std::unique_ptr<const QgsSymbol> mSymbol;
 
 };
 

@@ -39,6 +39,7 @@
 #include "qgspointxy.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
+#include "qgssymbol.h"
 #include "qgstextrenderer.h"
 #include "qgspropertycollection.h"
 
@@ -895,10 +896,11 @@ class CORE_EXPORT QgsPalLayerSettings
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels. Not available
      * in Python bindings.
+     * \param symbol feature symbol to label (ownership is transferred to the label feature)
      */
     void registerFeature( const QgsFeature &f, QgsRenderContext &context,
                           QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
-                          QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry() );
+                          QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry(), const QgsSymbol *symbol SIP_PYARGREMOVE = nullptr );
 
     /**
      * Read settings from a DOM element

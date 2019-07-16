@@ -357,6 +357,9 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
     provider->startRender( context );
   }
 
+  QgsExpressionContextScope *symbolScope = new QgsExpressionContextScope();
+  context.expressionContext().appendScope( symbolScope );
+
   // draw label backgrounds
   for ( pal::LabelPosition *label : qgis::as_const( labels ) )
   {
@@ -371,6 +374,10 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
 
     context.expressionContext().setFeature( lf->feature() );
     context.expressionContext().setFields( lf->feature().fields() );
+    if ( lf->symbol() )
+    {
+      symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+    }
     lf->provider()->drawLabelBackground( context, label );
   }
 
@@ -388,8 +395,14 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
 
     context.expressionContext().setFeature( lf->feature() );
     context.expressionContext().setFields( lf->feature().fields() );
+    if ( lf->symbol() )
+    {
+      symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+    }
     lf->provider()->drawLabel( context, label );
   }
+
+  context.expressionContext().popScope();
 
   // cleanup
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
