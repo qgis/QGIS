@@ -558,6 +558,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AngleMinutesOfArc,
                  QgsUnitTypes.AngleSecondsOfArc,
                  QgsUnitTypes.AngleTurn,
+                 QgsUnitTypes.AngleMil,
                  QgsUnitTypes.AngleUnknownUnit]
 
         for u in units:
@@ -583,6 +584,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AngleMinutesOfArc,
                  QgsUnitTypes.AngleSecondsOfArc,
                  QgsUnitTypes.AngleTurn,
+                 QgsUnitTypes.AngleMil,
                  QgsUnitTypes.AngleUnknownUnit]
 
         dupes = set()
@@ -629,6 +631,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, 4, QgsUnitTypes.AngleMinutesOfArc), '1.1111′')
         self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.AngleSecondsOfArc), '2.00″')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleTurn), '1.00 tr')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleMil), '1.00 mil')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnknownUnit), '1.00')
 
     def testEncodeDecodeLayoutUnits(self):
