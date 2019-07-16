@@ -38,10 +38,10 @@ bool QgsRuleBasedLabelProvider::prepare( QgsRenderContext &context, QSet<QString
   return true;
 }
 
-void QgsRuleBasedLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
+void QgsRuleBasedLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
   // will register the feature to relevant sub-providers
-  mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry );
+  mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry, symbol );
 }
 
 QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
@@ -345,18 +345,21 @@ void QgsRuleBasedLabeling::Rule::prepare( QgsRenderContext &context, QSet<QStrin
   }
 }
 
-QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry )
+QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
   if ( !isFilterOK( feature, context )
        || !isScaleOK( context.rendererScale() ) )
+  {
+    delete symbol;
     return Filtered;
+  }
 
   bool registered = false;
 
   // do we have active subprovider for the rule?
   if ( subProviders.contains( this ) && mIsActive )
   {
-    subProviders[this]->registerFeature( feature, context, obstacleGeometry );
+    subProviders[this]->registerFeature( feature, context, obstacleGeometry, symbol ? symbol->clone() : nullptr );
     registered = true;
   }
 
@@ -380,9 +383,11 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   {
     for ( Rule *rule : qgis::as_const( mElseRules ) )
     {
-      registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry ) != Filtered;
+      registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol ? symbol->clone() : nullptr ) != Filtered;
     }
   }
+
+  delete symbol;
 
   if ( !mIsActive )
     return Inactive;

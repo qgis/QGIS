@@ -309,7 +309,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
         {
           QgsGeometry obstacleGeometry;
           QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
-
+          std::unique_ptr< QgsSymbol > symbol;
           if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
           {
             obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols );
@@ -317,12 +317,13 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 
           if ( !symbols.isEmpty() )
           {
-            QgsExpressionContextUtils::updateSymbolScope( symbols.at( 0 ), symbolScope );
+            symbol.reset( symbols.at( 0 )->clone() );
+            QgsExpressionContextUtils::updateSymbolScope( symbol.get(), symbolScope );
           }
 
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry );
+            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry, symbol.release() );
           }
           if ( mDiagramProvider )
           {
@@ -393,7 +394,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     {
       QgsGeometry obstacleGeometry;
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
-
+      std::unique_ptr< QgsSymbol > symbol;
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
         obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols );
@@ -401,12 +402,13 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
       if ( !symbols.isEmpty() )
       {
-        QgsExpressionContextUtils::updateSymbolScope( symbols.at( 0 ), symbolScope );
+        symbol.reset( symbols.at( 0 )->clone() );
+        QgsExpressionContextUtils::updateSymbolScope( symbol.get(), symbolScope );
       }
 
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry );
+        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry, symbol.release() );
       }
       if ( mDiagramProvider )
       {
