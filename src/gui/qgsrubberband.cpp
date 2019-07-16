@@ -21,7 +21,6 @@
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include <QPainter>
-#include <QSvgRenderer>
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
   : QObject( nullptr )
