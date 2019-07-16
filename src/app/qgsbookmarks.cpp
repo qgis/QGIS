@@ -298,8 +298,7 @@ void QgsBookmarks::importFromXml()
 
   Q_ASSERT( mMergedModel );
 
-  QString queries;
-
+  QSqlQuery query( mQgisModel->database() );
   for ( int i = 0; i < nodeList.count(); i++ )
   {
     QDomNode bookmark = nodeList.at( i );
@@ -311,35 +310,24 @@ void QgsBookmarks::importFromXml()
     QDomElement ymax = bookmark.firstChildElement( QStringLiteral( "ymax" ) );
     QDomElement srid = bookmark.firstChildElement( QStringLiteral( "sr_id" ) );
 
-    queries += "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
-               "  VALUES (NULL,"
-               "'" + name.text() + "',"
-               "'" + prjname.text() + "',"
-               + xmin.text() + ','
-               + ymin.text() + ','
-               + xmax.text() + ','
-               + ymax.text() + ','
-               + srid.text() + ");";
-  }
-
-  QStringList queriesList = queries.split( ';' );
-  QSqlQuery query( mQgisModel->database() );
-
-  const auto constQueriesList = queriesList;
-  for ( const QString &queryTxt : constQueriesList )
-  {
-    if ( queryTxt.trimmed().isEmpty() )
-    {
-      continue;
-    }
-    if ( !query.exec( queryTxt ) )
+    query.prepare( QStringLiteral( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
+                                   " VALUES (NULL,:name,:project_name,:xmin,:ymin,:xmax,:ymax,:projection_srid)" ) );
+    query.bindValue( QStringLiteral( ":name" ), name.text() );
+    query.bindValue( QStringLiteral( ":project_name" ), prjname.text() );
+    query.bindValue( QStringLiteral( ":xmin" ), xmin.text() );
+    query.bindValue( QStringLiteral( ":ymin" ), ymin.text() );
+    query.bindValue( QStringLiteral( ":xmax" ), xmax.text() );
+    query.bindValue( QStringLiteral( ":ymax" ), ymax.text() );
+    query.bindValue( QStringLiteral( ":projection_srid" ), srid.text() );
+    if ( !query.exec() )
     {
       QMessageBox::warning( this, tr( "Import Bookmarks" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
                             .arg( query.lastError().driverText(),
                                   query.lastError().databaseText() ) );
     }
-    query.finish();
   }
+  query.finish();
+
   mQgisModel->setSort( 0, Qt::AscendingOrder );
   mQgisModel->select();
   mProxyModel->_resetModel();
@@ -425,6 +413,7 @@ void QgsBookmarks::exportToXml()
           else
             value = QString();
         }
+
         QDomText idText = doc.createTextNode( value );
         QDomElement id = doc.createElement( header );
         id.appendChild( idText );
