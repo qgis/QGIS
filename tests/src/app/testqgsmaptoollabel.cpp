@@ -155,7 +155,7 @@ class TestQgsMapToolLabel : public QObject
       canvas->show();
       loop.exec();
 
-      // should prioritise current layer
+      // should prioritize current layer
       canvas->setCurrentLayer( vl1.get() );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
       event = qgis::make_unique< QMouseEvent >(
