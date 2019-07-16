@@ -139,6 +139,11 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       \returns -1 if column does not exist or an expression is used instead */
     int dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *vlayer ) const;
 
+    /**
+     * Evaluates a labeling data defined property for the specified \a feature.
+     */
+    QVariant evaluateDataDefinedProperty( QgsPalLayerSettings::Property property, const QgsPalLayerSettings &labelSettings, const QgsFeature &feature, const QVariant &defaultValue ) const;
+
     //! Returns whether to preserve predefined rotation data during label pin/unpin operations
     bool currentLabelPreserveRotation();
 
