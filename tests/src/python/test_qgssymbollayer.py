@@ -15,6 +15,9 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsSymbolLayer -V
+
 """
 
 __author__ = 'Massimo Endrighi'
@@ -72,7 +75,9 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsProject,
                        QgsMultiRenderChecker,
                        QgsSingleSymbolRenderer,
-                       QgsProperty
+                       QgsProperty,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -406,11 +411,23 @@ class TestQgsSymbolLayer(unittest.TestCase):
         ms.setExtent(QgsRectangle(-133, 22, -70, 52))
         ms.setLayers([polys_layer])
 
+        # Test usedAttributes
+        ctx = QgsRenderContext.fromMapSettings(ms)
+        ctx.expressionContext().appendScope(polys_layer.createExpressionContextScope())
+        # for symbol layer
+        self.assertCountEqual(layer.usedAttributes(ctx), {'Name'})
+        # for symbol
+        self.assertCountEqual(symbol.usedAttributes(ctx), {'Name'})
+        # for symbol renderer
+        self.assertCountEqual(polys_layer.renderer().usedAttributes(ctx), {'Name'})
+
+        # Test rendering
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(ms)
         renderchecker.setControlPathPrefix('symbol_layer')
         renderchecker.setControlName('expected_filllayer_ddenabled')
         self.assertTrue(renderchecker.runTest('filllayer_ddenabled'))
+
         QgsProject.instance().removeMapLayer(polys_layer)
 
     def testRenderLineLayerDisabled(self):
@@ -471,11 +488,23 @@ class TestQgsSymbolLayer(unittest.TestCase):
         ms.setExtent(QgsRectangle(-133, 22, -70, 52))
         ms.setLayers([lines_layer])
 
+        # Test usedAttributes
+        ctx = QgsRenderContext.fromMapSettings(ms)
+        ctx.expressionContext().appendScope(lines_layer.createExpressionContextScope())
+        # for symbol layer
+        self.assertCountEqual(layer.usedAttributes(ctx), {'Name'})
+        # for symbol
+        self.assertCountEqual(symbol.usedAttributes(ctx), {'Name'})
+        # for symbol renderer
+        self.assertCountEqual(lines_layer.renderer().usedAttributes(ctx), {'Name'})
+
+        # Test rendering
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(ms)
         renderchecker.setControlPathPrefix('symbol_layer')
         renderchecker.setControlName('expected_linelayer_ddenabled')
         self.assertTrue(renderchecker.runTest('linelayer_ddenabled'))
+
         QgsProject.instance().removeMapLayer(lines_layer)
 
     def testRenderMarkerLayerDisabled(self):
@@ -535,11 +564,23 @@ class TestQgsSymbolLayer(unittest.TestCase):
         ms.setExtent(QgsRectangle(-133, 22, -70, 52))
         ms.setLayers([points_layer])
 
+        # Test usedAttributes
+        ctx = QgsRenderContext.fromMapSettings(ms)
+        ctx.expressionContext().appendScope(points_layer.createExpressionContextScope())
+        # for symbol layer
+        self.assertCountEqual(layer.usedAttributes(ctx), {'Class'})
+        # for symbol
+        self.assertCountEqual(symbol.usedAttributes(ctx), {'Class'})
+        # for symbol renderer
+        self.assertCountEqual(points_layer.renderer().usedAttributes(ctx), {'Class'})
+
+        # Test rendering
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(ms)
         renderchecker.setControlPathPrefix('symbol_layer')
         renderchecker.setControlName('expected_markerlayer_ddenabled')
         self.assertTrue(renderchecker.runTest('markerlayer_ddenabled'))
+
         QgsProject.instance().removeMapLayer(points_layer)
 
     def testQgsSimpleFillSymbolLayer(self):
@@ -580,6 +621,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mValue = mSymbolLayer.strokeWidth()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
+
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
 
     def testQgsGradientFillSymbolLayer(self):
         """Test setting and getting QgsGradientFillSymbolLayer properties.
@@ -663,6 +707,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mGradientLayer.usedAttributes(ctx), {})
+
     def testQgsCentroidFillSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
@@ -702,6 +749,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mValue = mSymbolLayer.pointOnAllParts()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
+
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
 
         # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer.setColor(QColor(150, 50, 100))
@@ -750,6 +800,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mValue = mSymbolLayer.lineAngle()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
+
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
 
         # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer.setColor(QColor(150, 50, 100))
@@ -807,13 +860,19 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
+
     def testQgsPointPatternFillSymbolLayer(self):
         """
         Test point pattern fill
         """
-        # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer = QgsPointPatternFillSymbolLayer.create()
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
+
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer.setColor(QColor(150, 50, 100))
         self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
@@ -850,6 +909,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mValue = mSymbolLayer.patternWidth()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
+
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
 
     def testQgsMarkerLineSymbolLayer(self):
         """
@@ -890,6 +952,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
+
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
 
         # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer.setColor(QColor(150, 50, 100))
@@ -949,6 +1014,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
+
     def testQgsEllipseSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
@@ -994,6 +1062,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
+
     def testQgsFontMarkerSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
@@ -1034,6 +1105,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
+
     def testQgsSvgMarkerSymbolLayer(self):
         """
         Create a new style from a .sld file and match test
@@ -1069,13 +1143,19 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
+
     def testQgsFilledMarkerSymbolLayer(self):
         """
         Test QgsFilledMarkerSymbolLayer
         """
-        # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer = QgsFilledMarkerSymbolLayer.create()
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
+
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer.setColor(QColor(150, 50, 100))
         self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
@@ -1087,9 +1167,12 @@ class TestQgsSymbolLayer(unittest.TestCase):
         """
         Test QgsVectorFieldSymbolLayer
         """
-        # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer = QgsVectorFieldSymbolLayer.create()
 
+        ctx = QgsRenderContext()
+        self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
+
+        # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer.setColor(QColor(150, 50, 100))
         self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(150, 50, 100))
