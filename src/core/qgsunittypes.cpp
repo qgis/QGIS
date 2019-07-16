@@ -520,7 +520,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
         case DistanceMeters:
           return CENTIMETERS_TO_METER;
         case DistanceKilometers:
-          return CENTIMETERS_TO_METER / KILOMETERS_TO_METER;;
+          return CENTIMETERS_TO_METER / KILOMETERS_TO_METER;
         case DistanceCentimeters:
           return 1.0;
         case DistanceMillimeters:
