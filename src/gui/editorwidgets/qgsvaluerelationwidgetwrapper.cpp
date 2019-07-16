@@ -240,6 +240,11 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   setFormFeature( feature );
   whileBlocking( this )->populate();
   whileBlocking( this )->setValue( feature.attribute( fieldIdx() ) );
+
+  // As we block any signals, possible depending widgets will not being updated
+  // so we force emit signal once and for all
+  emitValueChanged();
+
   // A bit of logic to set the default value if AllowNull is false and this is a new feature
   // Note that this needs to be here after the cache has been created/updated by populate()
   // and signals unblocked (we want this to propagate to the feature itself)

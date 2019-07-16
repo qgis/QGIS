@@ -165,7 +165,12 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
 
   QCOMPARE( w_municipality.mCache.size(), 2 );
   QCOMPARE( w_municipality.mComboBox->count(), 2 );
+
+  // check that valueChanged signal is correctly triggered
+  QSignalSpy spy( &w_municipality, &QgsEditorWidgetWrapper::valueChanged );
+
   w_municipality.setFeature( f3 );
+  QCOMPARE( spy.count(), 1 );
   QCOMPARE( w_municipality.mCache.size(), 1 );
 
   // Check first is selected
