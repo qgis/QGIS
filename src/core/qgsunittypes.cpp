@@ -1263,7 +1263,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
         case AngleTurn:
           return 1.0 / 360.0;
         case AngleMil:
-          return M_PI / 180.0 * 3200 / M_PI;
+          return M_PI / 180.0 * 1000;
         case AngleUnknownUnit:
           break;
       }
@@ -1286,7 +1286,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
         case AngleTurn:
           return 0.5 / M_PI;
         case AngleMil:
-          return 3200 / M_PI;
+          return 1000;
         case AngleUnknownUnit:
           break;
       }
@@ -1309,7 +1309,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
         case AngleTurn:
           return 1.0 / 400.0;
         case AngleMil:
-          return M_PI / 200.0 * 3200 / M_PI;
+          return M_PI / 200.0 * 1000;
         case AngleUnknownUnit:
           break;
       }
@@ -1332,7 +1332,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
         case AngleTurn:
           return 1.0 / 360.0 / 60.0;
         case AngleMil:
-          return M_PI / 180.0 / 60.0 * 3200 / M_PI;
+          return M_PI / 180.0 / 60.0 * 1000;
         case AngleUnknownUnit:
           break;
       }
@@ -1355,7 +1355,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
         case AngleTurn:
           return 1.0 / 360.0 / 3600.0;
         case AngleMil:
-          return M_PI / 180.0 / 3600.0 * 3200 / M_PI;
+          return M_PI / 180.0 / 3600.0 * 1000;
         case AngleUnknownUnit:
           break;
       }
@@ -1378,7 +1378,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
         case AngleTurn:
           return 1.0;
         case AngleMil:
-          return 2 * M_PI * 3200 / M_PI;
+          return 2 * M_PI * 1000;
         case AngleUnknownUnit:
           break;
       }
@@ -1389,17 +1389,17 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
       switch ( toUnit )
       {
         case AngleDegrees:
-          return 180.0 / M_PI * M_PI / 3200;
+          return 180.0 / M_PI / 1000;
         case AngleRadians:
-          return M_PI / 3200;
+          return 0.001;
         case AngleGon:
-          return 200.0 / M_PI * M_PI / 3200;
+          return 200.0 / M_PI / 1000;
         case AngleMinutesOfArc:
-          return 180.0 * 60.0 / M_PI * M_PI / 3200;
+          return 180.0 * 60.0 / M_PI / 1000;
         case AngleSecondsOfArc:
-          return 180.0 * 3600.0 / M_PI * M_PI / 3200;
+          return 180.0 * 3600.0 / M_PI / 1000;
         case AngleTurn:
-          return M_PI / 2 * M_PI / 3200;
+          return M_PI / 2 / 1000;
         case AngleMil:
           return 1.0;
         case AngleUnknownUnit:
