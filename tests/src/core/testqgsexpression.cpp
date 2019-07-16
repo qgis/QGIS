@@ -589,6 +589,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "'1E-23'!='1E-23'" ) << "'1E-23'!='1E-23'" << false << QVariant( 0 );
       QTest::newRow( "'1E-23'='2E-23'" ) << "'1E-23'='2E-23'" << false << QVariant( 0 );
       QTest::newRow( "'1E-23'!='2E-23'" ) << "'1E-23'!='2E-23'" << false << QVariant( 1 );
+      QTest::newRow( "to_interval('1 minute') < to_interval('20 days')" ) << "to_interval('1 minute') < to_interval('20 days')" << false << QVariant( 1 );
+      QTest::newRow( "to_interval('1 minute') > to_interval('20 days')" ) << "to_interval('1 minute') > to_interval('20 days')" << false << QVariant( 0 );
+      QTest::newRow( "to_interval('1 minute') = to_interval('20 days')" ) << "to_interval('1 minute') = to_interval('20 days')" << false << QVariant( 0 );
+      QTest::newRow( "to_interval('1 minute') != to_interval('20 days')" ) << "to_interval('1 minute') != to_interval('20 days')" << false << QVariant( 1 );
+      QTest::newRow( "to_interval('1 minute') = to_interval('60 seconds')" ) << "to_interval('1 minute') = to_interval('60 seconds')" << false << QVariant( 1 );
 
       // is, is not
       QTest::newRow( "is null,null" ) << "null is null" << false << QVariant( 1 );
