@@ -1233,6 +1233,8 @@ QString QgsUnitTypes::toString( QgsUnitTypes::AngleUnit unit )
       return QObject::tr( "seconds of arc", "angle" );
     case AngleTurn:
       return QObject::tr( "turns", "angle" );
+    case AngleMil:
+      return QObject::tr( "mil", "angle" );
     case AngleUnknownUnit:
       return QObject::tr( "<unknown>", "angle" );
   }
