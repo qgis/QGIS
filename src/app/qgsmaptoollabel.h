@@ -188,6 +188,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
     QList<QgsPalLayerSettings::Property> mPalProperties;
     QList<QgsDiagramLayerSettings::Property> mDiagramProperties;
+
+    friend class TestQgsMapToolLabel;
 };
 
 #endif // QGSMAPTOOLLABEL_H
