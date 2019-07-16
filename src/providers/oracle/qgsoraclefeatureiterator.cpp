@@ -57,8 +57,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
     mAttributeList = mRequest.subsetOfAttributes();
-    if ( mAttributeList.isEmpty() )
-      mAttributeList = mSource->mFields.allAttributesList();
 
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
