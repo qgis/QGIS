@@ -28,6 +28,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsgui.h"
 
 #include <QMouseEvent>
 
@@ -765,6 +766,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
   if ( !vlayer->auxiliaryLayer() )
     return false;
 
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   for ( const QgsPalLayerSettings::Property &p : qgis::as_const( mPalProperties ) )
   {
     int index = -1;
@@ -812,6 +814,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   if ( !vlayer->auxiliaryLayer() )
     return false;
 
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   for ( const QgsDiagramLayerSettings::Property &p : qgis::as_const( mDiagramProperties ) )
   {
     int index = -1;
