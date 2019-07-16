@@ -56,7 +56,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
   if ( labelPosList.empty() )
     return false;
 
-  // prioritise labels in the current selected layer, in case of overlaps
+  // prioritize labels in the current selected layer, in case of overlaps
   QList<QgsLabelPosition> activeLayerLabels;
   if ( const QgsVectorLayer *currentLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() ) )
   {
