@@ -26,6 +26,7 @@
 #include "qgsattributeform.h"
 #include "qgsattributes.h"
 #include "qgsjsonutils.h"
+#include "qgsarrayutils.h"
 
 #include <QHeaderView>
 #include <QComboBox>
@@ -75,52 +76,34 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
+    QVariantList vl;
+    //store as QVariantList because the field type supports data structure
+    for ( const QString &s : qgis::as_const( selection ) )
+    {
+      // Convert to proper type
+      const QVariant::Type type { fkType() };
+      switch ( type )
+      {
+        case QVariant::Type::Int:
+          vl.push_back( s.toInt() );
+          break;
+        case QVariant::Type::LongLong:
+          vl.push_back( s.toLongLong() );
+          break;
+        default:
+          vl.push_back( s );
+          break;
+      }
+    }
+
     if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
     {
-      QVariantList vl;
-      //store as QVariantList because the field type supports data structure
-      for ( const QString &s : qgis::as_const( selection ) )
-      {
-        // Convert to proper type
-        const QVariant::Type type { fkType() };
-        switch ( type )
-        {
-          case QVariant::Type::Int:
-            vl.push_back( s.toInt() );
-            break;
-          case QVariant::Type::LongLong:
-            vl.push_back( s.toLongLong() );
-            break;
-          default:
-            vl.push_back( s );
-            break;
-        }
-      }
       v = vl;
     }
     else
     {
-      QStringList sl;
-      for ( const QString &s : qgis::as_const( selection ) )
-      {
-        // Convert to proper type
-        const QVariant::Type type { fkType() };
-        switch ( type )
-        {
-          case QVariant::Type::Int:
-          case QVariant::Type::LongLong:
-            sl.push_back( s );
-            break;
-          default:
-            QString newS = s;
-            newS.replace( '\\', QStringLiteral( "\\\\" ) );
-            newS.replace( '\"', QStringLiteral( "\\\"" ) );
-            sl.push_back( "\"" + newS + "\"" );
-            break;
-        }
-      }
-      //store as a formatted string because the fields supports only string
-      v = sl.join( ',' ).prepend( '{' ).append( '}' );
+      //make string
+      v = QgsArrayUtils::build( vl );
     }
   }
 
