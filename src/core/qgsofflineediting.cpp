@@ -86,6 +86,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
   {
     return false;
   }
+
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
   if ( createOfflineDb( dbPath, containerType ) )
   {
@@ -132,6 +133,8 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         joinInfoBuffer.insert( vl->id(), joins );
       }
 
+      QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
+
       // copy selected vector layers to SpatiaLite
       for ( int i = 0; i < layerIds.count(); i++ )
       {
@@ -146,12 +149,18 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
+            //append individual layer setting on snapping settings
+            snappingConfig.setIndividualLayerSettings( newLayer, snappingConfig.individualLayerSettings( vl ) );
+            snappingConfig.removeLayers( QList<QgsMapLayer *>() << vl );
+
             // remove remote layer
             QgsProject::instance()->removeMapLayers(
               QStringList() << origLayerId );
           }
         }
       }
+
+      QgsProject::instance()->setSnappingConfig( snappingConfig );
 
       // restore join info on new SpatiaLite layer
       QMap<QString, QgsVectorJoinList >::ConstIterator it;
@@ -174,7 +183,6 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
           }
         }
       }
-
 
       emit progressStopped();
 
@@ -211,6 +219,8 @@ void QgsOfflineEditing::synchronize()
   }
 
   emit progressStarted();
+
+  QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
 
   // restore and sync remote layers
   QList<QgsMapLayer *> offlineLayers;
@@ -260,6 +270,10 @@ void QgsOfflineEditing::synchronize()
       updateRelations( offlineLayer, remoteLayer );
       updateMapThemes( offlineLayer, remoteLayer );
       updateLayerOrder( offlineLayer, remoteLayer );
+
+      //append individual layer setting on snapping settings
+      snappingConfig.setIndividualLayerSettings( remoteLayer, snappingConfig.individualLayerSettings( offlineLayer ) );
+      snappingConfig.removeLayers( QList<QgsMapLayer *>() << offlineLayer );
 
       //set QgsLayerTreeNode properties back
       QgsLayerTreeLayer *layerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( offlineLayer->id() );
@@ -338,6 +352,8 @@ void QgsOfflineEditing::synchronize()
   // reset commitNo
   QString sql = QStringLiteral( "UPDATE 'log_indices' SET 'last_index' = 0 WHERE \"name\" = 'commit_no'" );
   sqlExec( database.get(), sql );
+
+  QgsProject::instance()->setSnappingConfig( snappingConfig );
 
   emit progressStopped();
 }
