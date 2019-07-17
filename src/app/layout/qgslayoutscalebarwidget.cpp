@@ -19,6 +19,7 @@
 #include "qgslayoutitemscalebar.h"
 #include "qgslayout.h"
 #include "qgsguiutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -50,7 +51,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   setPanelTitle( tr( "Scalebar Properties" ) );
 
-  mFontButton->setMode( QgsFontButton::ModeQFont );
+  mFontButton->registerExpressionContextGenerator( mScalebar );
 
   connectUpdateSignal();
 
@@ -138,6 +139,11 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   setGuiElements(); //set the GUI elements to the state of scaleBar
 
   connect( mFontButton, &QgsFontButton::changed, this, &QgsLayoutScaleBarWidget::textFormatChanged );
+  mFontButton->setLayer( coverageLayer() );
+  if ( mScalebar->layout() )
+  {
+    connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFontButton, &QgsFontButton::setLayer );
+  }
 }
 
 bool QgsLayoutScaleBarWidget::setNewItem( QgsLayoutItem *item )
