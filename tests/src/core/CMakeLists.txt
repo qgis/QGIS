@@ -221,7 +221,8 @@ SET(TESTS
  testqgsofflineediting.cpp
  testqgstranslateproject.cpp
  testqobjectuniqueptr.cpp
-   )
+ testqgsarrayutils.cpp
+)
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS}
