@@ -287,9 +287,16 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      */
     QgsTextFormat format() const;
 
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
+
   private:
 
     QgsTextFormatWidget *mFormatWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 };
 
 /**

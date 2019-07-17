@@ -177,17 +177,17 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   searchBox->setPlaceholderText( tr( "Filter symbols…" ) );
 
   connect( this, &QDialog::finished, this, &QgsStyleManagerDialog::onFinished );
+  connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
+  connect( btnEditItem, &QPushButton::clicked, this, [ = ]( bool ) { editItem(); }
+         );
+  connect( actnEditItem, &QAction::triggered, this, [ = ]( bool ) { editItem(); }
+         );
 
   if ( !mReadOnly )
   {
-    connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
-
     connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
            );
-    connect( btnEditItem, &QPushButton::clicked, this, [ = ]( bool ) { editItem(); }
-           );
-    connect( actnEditItem, &QAction::triggered, this, [ = ]( bool ) { editItem(); }
-           );
+
     connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
            );
     connect( actnRemoveItem, &QAction::triggered, this, [ = ]( bool ) { removeItem(); }
@@ -1264,10 +1264,11 @@ bool QgsStyleManagerDialog::editSymbol()
 
   // let the user edit the symbol and update list when done
   QgsSymbolSelectorDialog dlg( symbol.get(), mStyle, nullptr, this );
-  if ( dlg.exec() == 0 )
-  {
+  if ( mReadOnly )
+    dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  if ( !dlg.exec() )
     return false;
-  }
 
   // by adding symbol to style with the same name the old effectively gets overwritten
   mStyle->addSymbol( symbolName, symbol.release(), true );
@@ -1287,6 +1288,9 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( ramp.get() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
+    if ( mReadOnly )
+      dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
     if ( !dlg.exec() )
     {
       return false;
@@ -1297,6 +1301,9 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsLimitedRandomColorRamp *randRamp = static_cast<QgsLimitedRandomColorRamp *>( ramp.get() );
     QgsLimitedRandomColorRampDialog dlg( *randRamp, this );
+    if ( mReadOnly )
+      dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
     if ( !dlg.exec() )
     {
       return false;
@@ -1307,6 +1314,9 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsColorBrewerColorRamp *brewerRamp = static_cast<QgsColorBrewerColorRamp *>( ramp.get() );
     QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
+    if ( mReadOnly )
+      dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
     if ( !dlg.exec() )
     {
       return false;
@@ -1317,6 +1327,9 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsPresetSchemeColorRamp *presetRamp = static_cast<QgsPresetSchemeColorRamp *>( ramp.get() );
     QgsPresetColorRampDialog dlg( *presetRamp, this );
+    if ( mReadOnly )
+      dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
     if ( !dlg.exec() )
     {
       return false;
@@ -1327,6 +1340,9 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsCptCityColorRamp *cptCityRamp = static_cast<QgsCptCityColorRamp *>( ramp.get() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
+    if ( mReadOnly )
+      dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
     if ( !dlg.exec() )
     {
       return false;
@@ -1360,6 +1376,9 @@ bool QgsStyleManagerDialog::editTextFormat()
 
   // let the user edit the format and update list when done
   QgsTextFormatDialog dlg( format, nullptr, this );
+  if ( mReadOnly )
+    dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
   if ( !dlg.exec() )
     return false;
 
@@ -1373,6 +1392,9 @@ bool QgsStyleManagerDialog::addLabelSettings( QgsWkbTypes::GeometryType type )
 {
   QgsPalLayerSettings settings;
   QgsLabelSettingsDialog settingsDlg( settings, nullptr, nullptr, this, type );
+  if ( mReadOnly )
+    settingsDlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
   if ( !settingsDlg.exec() )
     return false;
 

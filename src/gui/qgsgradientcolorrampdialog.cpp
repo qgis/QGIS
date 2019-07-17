@@ -155,7 +155,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   connect( mStopEditor, &QgsGradientStopEditor::selectedStopChanged, this, &QgsGradientColorRampDialog::selectedStopChanged );
   mStopEditor->selectStop( 0 );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGradientColorRampDialog::showHelp );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsGradientColorRampDialog::showHelp );
 }
 
 QgsGradientColorRampDialog::~QgsGradientColorRampDialog()
@@ -177,6 +177,11 @@ void QgsGradientColorRampDialog::setRamp( const QgsGradientColorRamp &ramp )
   updatePlot();
 
   emit changed();
+}
+
+QDialogButtonBox *QgsGradientColorRampDialog::buttonBox() const
+{
+  return mButtonBox;
 }
 
 void QgsGradientColorRampDialog::cboType_currentIndexChanged( int index )

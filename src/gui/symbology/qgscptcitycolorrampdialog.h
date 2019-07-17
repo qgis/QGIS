@@ -79,6 +79,12 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
      */
     bool saveAsGradientRamp() const;
 
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
+
     bool eventFilter( QObject *obj, QEvent *event ) override;
 
   signals:

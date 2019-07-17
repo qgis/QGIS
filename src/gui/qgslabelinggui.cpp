@@ -1070,12 +1070,17 @@ QgsLabelSettingsDialog::QgsLabelSettingsDialog( const QgsPalLayerSettings &setti
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsLabelingGui( layer, mapCanvas, settings, nullptr, geomType );
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal );
-  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  vLayout->addWidget( bbox );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
   setWindowTitle( tr( "Label Settings" ) );
+}
+
+QDialogButtonBox *QgsLabelSettingsDialog::buttonBox() const
+{
+  return mButtonBox;
 }
 
 
