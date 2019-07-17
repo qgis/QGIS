@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsarrayutils.h                                             *
+ * src/core/qgspostgresstringutils.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,10 +9,10 @@
 
 
 %ModuleHeaderCode
-#include "qgsarrayutils.h"
+#include "qgspostgresstringutils.h"
 %End
 
-namespace QgsArrayUtils
+namespace QgsPostgresStringUtils
 {
 
   QVariantList parse( const QString &string );
@@ -34,13 +34,22 @@ Build a postgres array like formatted list in a string from a QVariantList
 %End
 
   QString getNextString( const QString &txt, int &i, const QString &sep );
+%Docstring
+get the string until the separator
+
+:param txt: the input text
+:param i: the current position
+:param sep: the separator
+
+.. versionadded:: 3.8
+%End
 
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsarrayutils.h                                             *
+ * src/core/qgspostgresstringutils.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

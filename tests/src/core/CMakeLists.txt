@@ -224,7 +224,7 @@ SET(TESTS
  testqgsofflineediting.cpp
  testqgstranslateproject.cpp
  testqobjectuniqueptr.cpp
- testqgsarrayutils.cpp
+ testqgspostgresstringutils.cpp
 )
 
 IF(WITH_QTWEBKIT)

@@ -1,5 +1,5 @@
 /***************************************************************************
-                                  qgsarrayutils.h
+                                  qgspostgresstringutils.cpp
                               ---------------------
     begin                : July 2019
     copyright            : (C) 2019 by David Signer
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsarrayutils.h"
+#include "qgspostgresstringutils.h"
 #include "qgsmessagelog.h"
 #include <QDebug>
 #include <nlohmann/json.hpp>
@@ -25,7 +25,7 @@ static void jumpSpace( const QString &txt, int &i )
     ++i;
 }
 
-QString QgsArrayUtils::getNextString( const QString &txt, int &i, const QString &sep )
+QString QgsPostgresStringUtils::getNextString( const QString &txt, int &i, const QString &sep )
 {
   jumpSpace( txt, i );
   QString cur = txt.mid( i );
@@ -60,7 +60,7 @@ QString QgsArrayUtils::getNextString( const QString &txt, int &i, const QString 
   }
 }
 
-QVariantList QgsArrayUtils::parse( const QString &string )
+QVariantList QgsPostgresStringUtils::parse( const QString &string )
 {
   QVariantList variantList;
 
@@ -145,7 +145,7 @@ QVariantList QgsArrayUtils::parse( const QString &string )
 
 }
 
-QString QgsArrayUtils::build( const QVariantList &list )
+QString QgsPostgresStringUtils::build( const QVariantList &list )
 {
   QStringList sl;
   for ( const QVariant &v : qgis::as_const( list ) )

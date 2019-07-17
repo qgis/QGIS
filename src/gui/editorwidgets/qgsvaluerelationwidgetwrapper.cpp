@@ -26,7 +26,7 @@
 #include "qgsattributeform.h"
 #include "qgsattributes.h"
 #include "qgsjsonutils.h"
-#include "qgsarrayutils.h"
+#include "qgspostgresstringutils.h"
 
 #include <QHeaderView>
 #include <QComboBox>
@@ -103,7 +103,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     else
     {
       //make string
-      v = QgsArrayUtils::build( vl );
+      v = QgsPostgresStringUtils::build( vl );
     }
   }
 
