@@ -155,6 +155,7 @@
 %Include auto_generated/qgsmaptooladvanceddigitizing.sip
 %Include auto_generated/qgsmaptoolcapture.sip
 %Include auto_generated/qgsmaptooledit.sip
+%Include auto_generated/qgsmaptooldigitizefeature.sip
 %Include auto_generated/qgsmaptoolemitpoint.sip
 %Include auto_generated/qgsmaptoolextent.sip
 %Include auto_generated/qgsmaptoolidentify.sip

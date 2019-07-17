@@ -14505,7 +14505,8 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
     return QgsFeature();
   }
 
-  QgsMapToolDigitizeFeature *digitizeFeature = new QgsMapToolDigitizeFeature( mMapCanvas, mlayer, QgsMapToolCapture::CaptureNone );
+  QgsMapToolDigitizeFeature *digitizeFeature = new QgsMapToolDigitizeFeature( mMapCanvas, mAdvancedDigitizingDockWidget, QgsMapToolCapture::CaptureNone );
+  digitizeFeature->setLayer( layer );
 
   mMapCanvas->setMapTool( digitizeFeature );
   mMapCanvas->window()->raise();

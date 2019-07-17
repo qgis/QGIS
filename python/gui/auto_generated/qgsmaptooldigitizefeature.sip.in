@@ -1,0 +1,89 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptooldigitizefeature.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMapToolDigitizeFeature : QgsMapToolCapture
+{
+%Docstring
+This tool digitizes geometry of new point/line/polygon features on already existing vector layers
+Once the map tool is enabled, user can digitize the feature geometry.
+A signal will then be emitted.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsmaptooldigitizefeature.h"
+%End
+  public:
+
+    QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = QgsMapToolCapture::CaptureNone );
+%Docstring
+QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
+
+:param canvas: the map canvas
+:param cadDockWidget: widget to setup advanced digitizing parameters
+:param mode: type of geometry to capture (point/line/polygon), QgsMapToolCapture.CaptureNone to autodetect geometry
+%End
+
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
+
+
+    void setLayer( QgsMapLayer *vl );
+%Docstring
+Change the layer edited by the map tool
+
+:param vl: the layer to be edited by the map tool
+%End
+
+    virtual void activate();
+
+    virtual void deactivate();
+
+
+  signals:
+
+    void digitizingCompleted( const QgsFeature &feature );
+%Docstring
+Emitted whenever the digitizing has been successfully completed
+
+:param feature: the new digitized feature
+%End
+
+    void digitizingFinished( );
+%Docstring
+Emitted whenever the digitizing has been ended without digitizing
+any feature
+%End
+
+  protected:
+
+    bool checkGeometryType() const;
+%Docstring
+Check if CaptureMode matches layer type. Default is true.
+
+.. versionadded:: 3.0
+%End
+
+    void setCheckGeometryType( bool checkGeometryType );
+%Docstring
+Check if CaptureMode matches layer type. Default is true.
+
+.. versionadded:: 3.0
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptooldigitizefeature.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

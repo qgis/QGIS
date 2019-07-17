@@ -31,22 +31,19 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
-#include "qgsfeatureaction.h"
-#include "qgisapp.h"
 
 #include <QSettings>
 
-QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsMapLayer *layer, CaptureMode mode )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
+QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
+  : QgsMapToolCapture( canvas, cadDockWidget, mode )
   , mCheckGeometryType( true )
 {
-  mLayer = layer;
   mToolName = tr( "Digitize feature" );
-  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolDigitizeFeature::stopCapturing );
-  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolDigitizeFeature::stopCapturing );
+  connect( QgsProject::instance(), &QgsProject::cleared, this, &QgsMapToolDigitizeFeature::stopCapturing );
+  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsMapToolDigitizeFeature::stopCapturing );
 }
 
-void QgsMapToolDigitizeFeature::digitized( QgsFeature &f )
+void QgsMapToolDigitizeFeature::digitized( const QgsFeature &f )
 {
   emit digitizingCompleted( f );
 }
@@ -343,4 +340,9 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       stopCapturing();
     }
   }
+}
+
+void QgsMapToolDigitizeFeature::setLayer( QgsMapLayer *vl )
+{
+  mLayer = vl;
 }

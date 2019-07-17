@@ -81,7 +81,6 @@ SET(QGIS_APP_SRCS
   qgswelcomepage.cpp
 
   qgsmaptooladdfeature.cpp
-  qgsmaptooldigitizefeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolfillring.cpp
@@ -325,7 +324,6 @@ SET (QGIS_APP_MOC_HDRS
   qgswelcomepage.h
 
   qgsmaptooladdfeature.h
-  qgsmaptooldigitizefeature.h
   qgsmaptoolannotation.h
   qgsmaptoolcircularstringradius.h
   qgsmaptooladdpart.h

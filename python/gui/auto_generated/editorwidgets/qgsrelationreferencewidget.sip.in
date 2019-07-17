@@ -163,6 +163,13 @@ Returns the current relation, which might be invalid
 .. versionadded:: 3.10
 %End
 
+    void setFormFeature( const QgsFeature &formFeature );
+%Docstring
+Set the current form feature (from the referencing layer)
+
+.. versionadded:: 3.10
+%End
+
   public slots:
     void openForm();
 %Docstring
