@@ -59,8 +59,10 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \param format initial formatting settings to show in widget
      * \param mapCanvas associated map canvas
      * \param parent parent widget
+     * \param layer associated vector layer
      */
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                         QgsVectorLayer *layer = nullptr );
 
     ~QgsTextFormatWidget() override;
 
@@ -117,7 +119,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \param parent parent widget
      * \param mode widget mode
      */
-    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS, Mode mode );
+    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS, Mode mode, QgsVectorLayer *layer = nullptr );
 
     /**
      * Updates the widget's state to reflect the settings in a QgsTextFormat.
@@ -162,6 +164,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
 
+    //! Associated vector layer
+    QgsVectorLayer *mLayer = nullptr;
   protected slots:
 
     //! Updates line placement options to reflect current state of widget
@@ -202,6 +206,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     bool mDockMode;
 
     bool mLoadSvgParams = false;
+    QgsExpressionContext mPreviewExpressionContext;
 
     void initWidget();
     void setWidgetMode( Mode mode );
@@ -279,13 +284,21 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * \param mapCanvas optional associated map canvas
      * \param parent parent widget
      * \param fl window flags for dialog
+     * \param layer associated vector layer
      */
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsVectorLayer *layer = nullptr );
 
     /**
      * Returns the current formatting settings defined by the widget.
      */
     QgsTextFormat format() const;
+
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see context()
+     * \since QGIS 3.10
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
 
     /**
      * Returns a reference to the dialog's button box.
@@ -322,13 +335,21 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
      * \param format initial format settings to show in dialog
      * \param mapCanvas optional associated map canvas
      * \param parent parent widget
+     * \param layer associated layer
      */
-    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsVectorLayer *layer = nullptr );
 
     /**
      * Returns the current formatting settings defined by the widget.
      */
     QgsTextFormat format() const;
+
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see context()
+     * \since QGIS 3.10
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
 
     void setDockMode( bool dockMode ) override;
 

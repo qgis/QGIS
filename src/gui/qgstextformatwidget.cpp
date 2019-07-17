@@ -31,22 +31,25 @@
 #include "qgsstylesavedialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgsvectorlayer.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
 
-QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
+QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
   , mMapCanvas( mapCanvas )
+  , mLayer( layer )
 {
   initWidget();
   setWidgetMode( Text );
   updateWidgetForFormat( format );
 }
 
-QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode )
+QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode, QgsVectorLayer *layer )
   : QWidget( parent )
   , mMapCanvas( mapCanvas )
+  , mLayer( layer )
   , mWidgetMode( mode )
 {
   initWidget();
@@ -941,6 +944,14 @@ void QgsTextFormatWidget::optionsStackedWidget_CurrentChanged( int indx )
 void QgsTextFormatWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
+
+  if ( mContext.expressionContext() )
+  {
+    mPreviewExpressionContext = *mContext.expressionContext();
+    if ( mLayer )
+      mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mLayer ) );
+  }
+
   const auto symbolButtonWidgets = findChildren<QgsSymbolButton *>();
   for ( QgsSymbolButton *symbolWidget : symbolButtonWidgets )
   {
@@ -1660,12 +1671,21 @@ void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
 
 QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
 {
+  if ( mContext.expressionContext() )
+    return *mContext.expressionContext();
+
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
              << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
     expContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+
+  if ( mLayer )
+    expContext << QgsExpressionContextUtils::layerScope( mLayer );
+
+  //TODO - show actual value
+  expContext.setOriginalValueVariable( QVariant() );
 
   return expContext;
 }
@@ -1675,12 +1695,12 @@ QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
 // QgsTextFormatDialog
 //
 
-QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl )
+QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl, QgsVectorLayer *layer )
   : QDialog( parent, fl )
 {
   setWindowTitle( tr( "Text Settings" ) );
 
-  mFormatWidget = new QgsTextFormatWidget( format, mapCanvas, this );
+  mFormatWidget = new QgsTextFormatWidget( format, mapCanvas, this, layer );
   mFormatWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
@@ -1701,13 +1721,18 @@ QgsTextFormat QgsTextFormatDialog::format() const
   return mFormatWidget->format();
 }
 
+void QgsTextFormatDialog::setContext( const QgsSymbolWidgetContext &context )
+{
+  mFormatWidget->setContext( context );
+}
+
 QDialogButtonBox *QgsTextFormatDialog::buttonBox() const
 {
   return mButtonBox;
 }
 
-QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
-  : QgsPanelWidgetWrapper( new QgsTextFormatWidget( format, mapCanvas ), parent )
+QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsVectorLayer *layer )
+  : QgsPanelWidgetWrapper( new QgsTextFormatWidget( format, mapCanvas, nullptr, layer ), parent )
 {
   mFormatWidget = qobject_cast< QgsTextFormatWidget * >( widget() );
   connect( mFormatWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
@@ -1716,6 +1741,11 @@ QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format,
 QgsTextFormat QgsTextFormatPanelWidget::format() const
 {
   return mFormatWidget->format();
+}
+
+void QgsTextFormatPanelWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  mFormatWidget->setContext( context );
 }
 
 void QgsTextFormatPanelWidget::setDockMode( bool dockMode )

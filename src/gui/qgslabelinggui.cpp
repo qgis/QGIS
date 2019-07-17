@@ -135,8 +135,7 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
 }
 
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, QgsWkbTypes::GeometryType geomType )
-  : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling )
-  , mLayer( layer )
+  : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
   , mGeomType( geomType )
   , mSettings( layerSettings )
   , mMode( NoLabels )
