@@ -118,6 +118,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \param mapCanvas associated map canvas
      * \param parent parent widget
      * \param mode widget mode
+     * \param layer associated vector layer
      */
     QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS, Mode mode, QgsVectorLayer *layer = nullptr );
 

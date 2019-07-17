@@ -108,6 +108,7 @@ Constructor for QgsTextFormatWidget.
 :param mapCanvas: associated map canvas
 :param parent: parent widget
 :param mode: widget mode
+:param layer: associated vector layer
 %End
 
     void updateWidgetForFormat( const QgsTextFormat &format );
