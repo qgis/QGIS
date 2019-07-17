@@ -414,7 +414,7 @@ void TestQgsRelationReferenceWidget::testAddEntry()
   w.setEditorContext( context, nullptr, nullptr );
   w.addEntry();
 
-  QCOMPARE( w.mComboBox->identifierValue(), 13 );
+  QCOMPARE( w.mComboBox->identifierValue().toInt(), 13 );
 }
 
 
