@@ -205,7 +205,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     // Index of the referenced layer key
     int mReferencedFieldIdx = -1;
     QString mReferencedField;
-    int mReferencingFieldIdx = -1;
     bool mAllowNull = true;
     QgsHighlight *mHighlight = nullptr;
     QgsMapToolIdentifyFeature *mMapTool = nullptr;
