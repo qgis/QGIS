@@ -42,11 +42,13 @@ namespace QgsArrayUtils
   CORE_EXPORT QVariantList parse( const QString &string );
 
   /**
-   * Build a hstore-formatted string from a QVariantMap.
-   * \param map The map to format as a string
+   * Build a postgres array like formatted list in a string from a QVariantList
+   * \param list The list that needs to be stored to the string
    * \since QGIS 3.8
    */
   CORE_EXPORT QString build( const QVariantList &list );
+
+  QString getNextString( const QString &txt, int &i, const QString &sep );
 
 };
 

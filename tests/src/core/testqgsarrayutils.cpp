@@ -22,12 +22,14 @@ class TestQgsArrayUtils : public QObject
     Q_OBJECT
   private slots:
 
-    void testListToPgArrayStringAndBack();
-    void testFallbackPgArrayStringToList();
+    void testPgArrayStringToListAndBack();
+    void testUnquotedPgArrayStringToListAndBack();
+    void testNumberArrayStringToListAndBack();
+    void testMultidimensionalPgArrayStringToListAndBack();
 };
 
 
-void TestQgsArrayUtils::testListToPgArrayStringAndBack()
+void TestQgsArrayUtils::testPgArrayStringToListAndBack()
 {
 
   QVariantList vl;
@@ -41,14 +43,13 @@ void TestQgsArrayUtils::testListToPgArrayStringAndBack()
   vl.push_back( QStringLiteral( "...all the etceteras" ) );
 
   QString string = QStringLiteral( "{\"one\",\"}two{\",\"thr\\\"ee\",\"fo,ur\",\"fiv'e\",6,\"and 7garcìa][\",\"...all the etceteras\"}" );
-
-  QCOMPARE( QgsArrayUtils::build( vl ), string );
+  QCOMPARE( QgsArrayUtils::parse( string ), vl );
 
   // and back
-  QCOMPARE( QgsArrayUtils::parse( string ), vl );
+  QCOMPARE( QgsArrayUtils::build( vl ), string );
 }
 
-void TestQgsArrayUtils::testFallbackPgArrayStringToList()
+void TestQgsArrayUtils::testUnquotedPgArrayStringToListAndBack()
 {
   //there might have been used
   QVariantList vl;
@@ -60,12 +61,42 @@ void TestQgsArrayUtils::testFallbackPgArrayStringToList()
   vl.push_back( QStringLiteral( "that genius" ) );
 
   QString fallback_string = QStringLiteral( "{one,two,three,four,five,that genius}" );
-
   QCOMPARE( QgsArrayUtils::parse( fallback_string ), vl );
 
-  // and back with quotes
+  // and back including quotes
   QString new_string = QStringLiteral( "{\"one\",\"two\",\"three\",\"four\",\"five\",\"that genius\"}" );
   QCOMPARE( QgsArrayUtils::build( vl ), new_string );
+}
+
+void TestQgsArrayUtils::testNumberArrayStringToListAndBack()
+{
+  //there might have been used
+  QVariantList vl;
+  vl.push_back( 1 );
+  vl.push_back( 2 );
+  vl.push_back( 3 );
+  vl.push_back( 4 );
+
+  QString number_string = QStringLiteral( "{1,2,3,4}" );
+  QCOMPARE( QgsArrayUtils::parse( number_string ), vl );
+
+  // and back without quotes
+  QCOMPARE( QgsArrayUtils::build( vl ), number_string );
+}
+
+void TestQgsArrayUtils::testMultidimensionalPgArrayStringToListAndBack()
+{
+  //there might have been used
+  QVariantList vl;
+  vl.push_back( QStringLiteral( "{one one third,one two third,one three third}" ) );
+  vl.push_back( QStringLiteral( "{\"two one third\",\"two two third\",\"two three third\"}" ) );
+  vl.push_back( QStringLiteral( "{three one third,three two third,three three third}" ) );
+
+  QString string = QStringLiteral( "{{one one third,one two third,one three third},{\"two one third\",\"two two third\",\"two three third\"},{three one third,three two third,three three third}}" );
+  QCOMPARE( QgsArrayUtils::parse( string ), vl );
+
+  // and back without quotes
+  QCOMPARE( QgsArrayUtils::build( vl ), string );
 }
 
 QGSTEST_MAIN( TestQgsArrayUtils )
