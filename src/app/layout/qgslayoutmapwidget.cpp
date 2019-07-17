@@ -182,6 +182,7 @@ void QgsLayoutMapWidget::setReportTypeString( const QString &string )
 void QgsLayoutMapWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
 {
   mInterface = iface;
+  QgsLayoutItemBaseWidget::setDesignerInterface( iface );
 }
 
 bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
@@ -1125,6 +1126,7 @@ void QgsLayoutMapWidget::mGridPropertiesButton_clicked()
   }
 
   QgsLayoutMapGridWidget *w = new QgsLayoutMapGridWidget( grid, mMapItem );
+  w->setDesignerInterface( mInterface );
   openPanel( w );
 }
 
