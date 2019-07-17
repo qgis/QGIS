@@ -954,7 +954,11 @@ QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
+#if PROJ_VERSION_MAJOR>=6
     QString tempCopy = QDir::tempPath() + "/srs.db";
+#else
+    QString tempCopy = QDir::tempPath() + "/srs6.db";
+#endif
 
     if ( !QFile( tempCopy ).exists() )
     {
