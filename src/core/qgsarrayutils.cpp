@@ -14,33 +14,109 @@
  ***************************************************************************/
 
 #include "qgsarrayutils.h"
+#include "qgsmessagelog.h"
 #include <QDebug>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
+
+static void jumpSpace( const QString &txt, int &i )
+{
+  while ( i < txt.length() && txt.at( i ).isSpace() )
+    ++i;
+}
+
+QString QgsArrayUtils::getNextString( const QString &txt, int &i, const QString &sep )
+{
+  jumpSpace( txt, i );
+  QString cur = txt.mid( i );
+  if ( cur.startsWith( '"' ) )
+  {
+    QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
+    if ( !stringRe.exactMatch( cur ) )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Cannot find end of double quoted string: %1" ).arg( txt ), QObject::tr( "PostgresStringUtils" ) );
+      return QString();
+    }
+    i += stringRe.cap( 1 ).length() + 2;
+    jumpSpace( txt, i );
+    if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Cannot find separator: %1" ).arg( txt.mid( i ) ), QObject::tr( "PostgresStringUtils" ) );
+      return QString();
+    }
+    i += sep.length();
+    return stringRe.cap( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
+  }
+  else
+  {
+    int sepPos = cur.indexOf( sep );
+    if ( sepPos < 0 )
+    {
+      i += cur.length();
+      return cur.trimmed();
+    }
+    i += sepPos + sep.length();
+    return cur.left( sepPos ).trimmed();
+  }
+}
 
 QVariantList QgsArrayUtils::parse( const QString &string )
 {
   QVariantList variantList;
 
-  QString newVal = string;
-  if ( newVal.trimmed().startsWith( '{' ) )
+  if ( string.trimmed().startsWith( '{' ) )
   {
-    newVal =  newVal.trimmed().mid( 1 ).mid( 0, newVal.length() - 2 ).prepend( '[' ).append( ']' );
+    //it's a postgres array
+    QString newVal = string.mid( 1, string.length() - 2 );
 
-    if ( !json::accept( newVal.toStdString() ) )
+    if ( newVal.trimmed().startsWith( '{' ) )
     {
-      //fallback for wrongly stored string data without quotes
-      newVal = string;
-      const QStringList stringList = newVal.remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
-      for ( const QString &s : qgis::as_const( stringList ) )
+      //it's a multidimensional array
+      QStringList values;
+      QString subarray = newVal;
+      while ( !subarray.isEmpty() )
       {
-        variantList.push_back( s );
+        bool escaped = false;
+        int openedBrackets = 1;
+        int i = 0;
+        while ( i < subarray.length()  && openedBrackets > 0 )
+        {
+          ++i;
+
+          if ( subarray.at( i ) == '}' && !escaped ) openedBrackets--;
+          else if ( subarray.at( i ) == '{' && !escaped ) openedBrackets++;
+
+          escaped = !escaped ? subarray.at( i ) == '\\' : false;
+        }
+
+        variantList.append( subarray.left( ++i ) );
+        i = subarray.indexOf( ',', i );
+        i = i > 0 ? subarray.indexOf( '{', i ) : -1;
+        if ( i == -1 )
+          break;
+
+        subarray = subarray.mid( i );
+      }
+    }
+    else
+    {
+      int i = 0;
+      while ( i < newVal.length() )
+      {
+        const QString value = getNextString( newVal, i, QStringLiteral( "," ) );
+        if ( value.isNull() )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Error parsing PG like array: %1" ).arg( newVal ), QObject::tr( "PostgresStringUtils" ) );
+          break;
+        }
+        variantList.append( value );
       }
     }
   }
-
-  if ( newVal.trimmed().startsWith( '[' ) )
+  else if ( string.trimmed().startsWith( '[' ) )
   {
+    //it's a json array
+    QString newVal = string;
     try
     {
       for ( auto &element : json::parse( newVal.toStdString() ) )
@@ -62,9 +138,11 @@ QVariantList QgsArrayUtils::parse( const QString &string )
     catch ( json::parse_error &ex )
     {
       qDebug() << QString::fromStdString( ex.what() );
+      QgsMessageLog::logMessage( QObject::tr( "Error parsing JSON like array: %1 %2" ).arg( newVal, ex.what() ), QObject::tr( "PostgresStringUtils" ) );
     }
   }
   return variantList;
+
 }
 
 QString QgsArrayUtils::build( const QVariantList &list )
@@ -81,9 +159,16 @@ QString QgsArrayUtils::build( const QVariantList &list )
         break;
       default:
         QString newS = v.toString();
-        newS.replace( '\\', QStringLiteral( R"(\\)" ) );
-        newS.replace( '\"', QStringLiteral( R"(\")" ) );
-        sl.push_back( "\"" + newS + "\"" );
+        if ( newS.startsWith( '{' ) )
+        {
+          sl.push_back( newS );
+        }
+        else
+        {
+          newS.replace( '\\', QStringLiteral( R"(\\)" ) );
+          newS.replace( '\"', QStringLiteral( R"(\")" ) );
+          sl.push_back( "\"" + newS + "\"" );
+        }
         break;
     }
   }
