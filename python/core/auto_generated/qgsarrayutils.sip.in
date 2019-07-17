@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsarrayutils.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+%ModuleHeaderCode
+#include "qgsarrayutils.h"
+%End
+
+namespace QgsArrayUtils
+{
+
+  QVariantList parse( const QString &string );
+%Docstring
+Returns a QVariantList created out of a string containing an array in postgres array format {1,2,3} or {"a","b","c"}
+
+:param string: The formatted list in a string
+
+.. versionadded:: 3.8
+%End
+
+  QString build( const QVariantList &list );
+%Docstring
+Build a hstore-formatted string from a QVariantMap.
+
+:param map: The map to format as a string
+
+.. versionadded:: 3.8
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsarrayutils.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
