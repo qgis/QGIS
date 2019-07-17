@@ -1140,7 +1140,7 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( DistanceUnit distanceUn
       return AreaSquareCentimeters;
 
     case DistanceMillimeters:
-      return AreaSquareCentimeters;
+      return AreaSquareMillimeters;
 
     case DistanceFeet:
       return AreaSquareFeet;
@@ -1162,6 +1162,46 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( DistanceUnit distanceUn
   }
 
   return AreaUnknownUnit;
+}
+
+QgsUnitTypes::DistanceUnit QgsUnitTypes::areaToDistanceUnit( AreaUnit areaUnit )
+{
+  switch ( areaUnit )
+  {
+    case AreaSquareMeters:
+    case AreaHectares:
+      return DistanceMeters;
+
+    case AreaSquareKilometers:
+      return DistanceKilometers;
+
+    case AreaSquareCentimeters:
+      return DistanceCentimeters;
+
+    case AreaSquareMillimeters:
+      return DistanceMillimeters;
+
+    case AreaSquareFeet:
+      return DistanceFeet;
+
+    case AreaSquareYards:
+    case AreaAcres:
+      return DistanceYards;
+
+    case AreaSquareMiles:
+      return DistanceMiles;
+
+    case AreaSquareDegrees:
+      return DistanceDegrees;
+
+    case AreaUnknownUnit:
+      return DistanceUnknownUnit;
+
+    case AreaSquareNauticalMiles:
+      return DistanceNauticalMiles;
+  }
+
+  return DistanceUnknownUnit;
 }
 
 QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
