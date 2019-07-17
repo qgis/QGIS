@@ -202,6 +202,13 @@ Constructor for QgsTextFormatDialog.
 Returns the current formatting settings defined by the widget.
 %End
 
+    QDialogButtonBox *buttonBox() const;
+%Docstring
+Returns a reference to the dialog's button box.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 

@@ -59,6 +59,13 @@ Returns the name of the ramp currently selected in the dialog.
 Returns ``True`` if the ramp should be converted to a :py:class:`QgsGradientColorRamp`.
 %End
 
+    QDialogButtonBox *buttonBox() const;
+%Docstring
+Returns a reference to the dialog's button box.
+
+.. versionadded:: 3.10
+%End
+
     virtual bool eventFilter( QObject *obj, QEvent *event );
 
 

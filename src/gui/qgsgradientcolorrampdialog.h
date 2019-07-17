@@ -63,6 +63,12 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
      */
     void setRamp( const QgsGradientColorRamp &ramp );
 
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
+
   signals:
 
     //! Emitted when the dialog settings change

@@ -912,6 +912,11 @@ void QgsSymbolSelectorDialog::changeLayer( QgsSymbolLayer *layer )
   mSelectorWidget->changeLayer( layer );
 }
 
+QDialogButtonBox *QgsSymbolSelectorDialog::buttonBox() const
+{
+  return mButtonBox;
+}
+
 void QgsSymbolSelectorDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-symbol-selector" ) );

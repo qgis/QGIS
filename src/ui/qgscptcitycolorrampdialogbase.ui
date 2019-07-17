@@ -36,7 +36,16 @@
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -508,7 +517,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
+      <widget class="QDialogButtonBox" name="mButtonBox">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -539,13 +548,13 @@
   <tabstop>lblLicenseName</tabstop>
   <tabstop>pbtnLicenseDetails</tabstop>
   <tabstop>cboConvertStandard</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mButtonBox</tabstop>
   <tabstop>mBrowserView</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>QgsCptCityColorRampDialogBase</receiver>
    <slot>accept()</slot>
@@ -561,7 +570,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsCptCityColorRampDialogBase</receiver>
    <slot>reject()</slot>

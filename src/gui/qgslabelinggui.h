@@ -23,6 +23,8 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgis_gui.h"
 
+class QDialogButtonBox;
+
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
@@ -132,9 +134,15 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
 
     QgsPalLayerSettings settings() const { return mWidget->layerSettings(); }
 
+    /**
+     * Returns a reference to the dialog's button box.
+     */
+    QDialogButtonBox *buttonBox() const;
+
   private:
 
     QgsLabelingGui *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 
 };
 

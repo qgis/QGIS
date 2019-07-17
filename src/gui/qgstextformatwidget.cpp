@@ -1686,19 +1686,24 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->addWidget( mFormatWidget );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  layout->addWidget( buttonBox );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  layout->addWidget( mButtonBox );
 
   setLayout( layout );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
-  connect( buttonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
-  connect( buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
+  connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
+  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
 }
 
 QgsTextFormat QgsTextFormatDialog::format() const
 {
   return mFormatWidget->format();
+}
+
+QDialogButtonBox *QgsTextFormatDialog::buttonBox() const
+{
+  return mButtonBox;
 }
 
 QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
