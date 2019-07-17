@@ -10,6 +10,7 @@
 %Include auto_generated/qgsactionscope.sip
 %Include auto_generated/qgsactionmanager.sip
 %Include auto_generated/qgsaggregatecalculator.sip
+%Include auto_generated/qgsarrayutils.sip
 %Include auto_generated/qgsattributes.sip
 %Include auto_generated/qgsattributetableconfig.sip
 %Include auto_generated/qgsattributeeditorelement.sip
