@@ -295,7 +295,6 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
 
     /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
-     * \see context()
      * \since QGIS 3.10
      */
     void setContext( const QgsSymbolWidgetContext &context );
@@ -346,7 +345,6 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
 
     /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
-     * \see context()
      * \since QGIS 3.10
      */
     void setContext( const QgsSymbolWidgetContext &context );

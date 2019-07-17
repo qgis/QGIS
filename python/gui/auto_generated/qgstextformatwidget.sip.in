@@ -209,8 +209,6 @@ Returns the current formatting settings defined by the widget.
 %Docstring
 Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
 
-.. seealso:: :py:func:`context`
-
 .. versionadded:: 3.10
 %End
 
@@ -259,8 +257,6 @@ Returns the current formatting settings defined by the widget.
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
-
-.. seealso:: :py:func:`context`
 
 .. versionadded:: 3.10
 %End
