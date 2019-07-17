@@ -300,7 +300,6 @@ override_dh_auto_install:
 
 	# Don't ship srs.db, automatically updated in postinst with crssync
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
-	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs6.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs6-template.db
 
 	# Mime info
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
