@@ -22,7 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerref.h"
-#include "qgsarrayutils.h"
+#include "qgspostgresstringutils.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -180,7 +180,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     if ( value.type() == QVariant::String )
     {
       // This must be an array representation
-      valuesList = QgsArrayUtils::parse( value.toString() );
+      valuesList = QgsPostgresStringUtils::parse( value.toString() );
     }
     else if ( value.type() == QVariant::List )
     {

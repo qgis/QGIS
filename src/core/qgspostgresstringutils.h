@@ -1,5 +1,5 @@
 /***************************************************************************
-                                  qgsarrayutils.h
+                                  qgspostgresstringutils.h
                               ---------------------
     begin                : July 2019
     copyright            : (C) 2019 by David Signer
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSARRAYUTILS_H
-#define QGSARRAYUTILS_H
+#ifndef QGSPOSTGRESSTRINGUTILS_H
+#define QGSPOSTGRESSTRINGUTILS_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -22,16 +22,16 @@
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
-#include "qgsarrayutils.h"
+#include "qgspostgresstringutils.h"
 % End
 #endif
 
 /**
  * \ingroup core
- * The QgsArrayUtils namespace provides functions to handle postgres array like formatted lists in strings.
+ * The QgsPostgresStringUtils namespace provides functions to handle postgres array like formatted lists in strings.
  * \since QGIS 3.4
  */
-namespace QgsArrayUtils
+namespace QgsPostgresStringUtils
 {
 
   /**
@@ -48,8 +48,15 @@ namespace QgsArrayUtils
    */
   CORE_EXPORT QString build( const QVariantList &list );
 
-  QString getNextString( const QString &txt, int &i, const QString &sep );
+  /**
+   * get the string until the separator
+   * \param txt the input text
+   * \param i the current position
+   * \param sep the separator
+   * \since QGIS 3.8
+   */
+  CORE_EXPORT QString getNextString( const QString &txt, int &i, const QString &sep );
 
 };
 
-#endif //QGSARRAYUTILS_H
+#endif //QGSPOSTGRESSTRINGUTILS_H

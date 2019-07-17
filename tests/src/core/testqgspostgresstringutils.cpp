@@ -15,9 +15,9 @@
 
 #include <QString>
 #include "qgstest.h"
-#include "qgsarrayutils.h"
+#include "qgspostgresstringutils.h"
 
-class TestQgsArrayUtils : public QObject
+class TestQgsPostgresStringUtils : public QObject
 {
     Q_OBJECT
   private slots:
@@ -29,7 +29,7 @@ class TestQgsArrayUtils : public QObject
 };
 
 
-void TestQgsArrayUtils::testPgArrayStringToListAndBack()
+void TestQgsPostgresStringUtils::testPgArrayStringToListAndBack()
 {
 
   QVariantList vl;
@@ -43,13 +43,13 @@ void TestQgsArrayUtils::testPgArrayStringToListAndBack()
   vl.push_back( QStringLiteral( "...all the etceteras" ) );
 
   QString string = QStringLiteral( "{\"one\",\"}two{\",\"thr\\\"ee\",\"fo,ur\",\"fiv'e\",6,\"and 7garcìa][\",\"...all the etceteras\"}" );
-  QCOMPARE( QgsArrayUtils::parse( string ), vl );
+  QCOMPARE( QgsPostgresStringUtils::parse( string ), vl );
 
   // and back
-  QCOMPARE( QgsArrayUtils::build( vl ), string );
+  QCOMPARE( QgsPostgresStringUtils::build( vl ), string );
 }
 
-void TestQgsArrayUtils::testUnquotedPgArrayStringToListAndBack()
+void TestQgsPostgresStringUtils::testUnquotedPgArrayStringToListAndBack()
 {
   //there might have been used
   QVariantList vl;
@@ -61,14 +61,14 @@ void TestQgsArrayUtils::testUnquotedPgArrayStringToListAndBack()
   vl.push_back( QStringLiteral( "that genius" ) );
 
   QString fallback_string = QStringLiteral( "{one,two,three,four,five,that genius}" );
-  QCOMPARE( QgsArrayUtils::parse( fallback_string ), vl );
+  QCOMPARE( QgsPostgresStringUtils::parse( fallback_string ), vl );
 
   // and back including quotes
   QString new_string = QStringLiteral( "{\"one\",\"two\",\"three\",\"four\",\"five\",\"that genius\"}" );
-  QCOMPARE( QgsArrayUtils::build( vl ), new_string );
+  QCOMPARE( QgsPostgresStringUtils::build( vl ), new_string );
 }
 
-void TestQgsArrayUtils::testNumberArrayStringToListAndBack()
+void TestQgsPostgresStringUtils::testNumberArrayStringToListAndBack()
 {
   //there might have been used
   QVariantList vl;
@@ -78,13 +78,13 @@ void TestQgsArrayUtils::testNumberArrayStringToListAndBack()
   vl.push_back( 4 );
 
   QString number_string = QStringLiteral( "{1,2,3,4}" );
-  QCOMPARE( QgsArrayUtils::parse( number_string ), vl );
+  QCOMPARE( QgsPostgresStringUtils::parse( number_string ), vl );
 
   // and back without quotes
-  QCOMPARE( QgsArrayUtils::build( vl ), number_string );
+  QCOMPARE( QgsPostgresStringUtils::build( vl ), number_string );
 }
 
-void TestQgsArrayUtils::testMultidimensionalPgArrayStringToListAndBack()
+void TestQgsPostgresStringUtils::testMultidimensionalPgArrayStringToListAndBack()
 {
   //there might have been used
   QVariantList vl;
@@ -93,11 +93,11 @@ void TestQgsArrayUtils::testMultidimensionalPgArrayStringToListAndBack()
   vl.push_back( QStringLiteral( "{three one third,three two third,three three third}" ) );
 
   QString string = QStringLiteral( "{{one one third,one two third,one three third},{\"two one third\",\"two two third\",\"two three third\"},{three one third,three two third,three three third}}" );
-  QCOMPARE( QgsArrayUtils::parse( string ), vl );
+  QCOMPARE( QgsPostgresStringUtils::parse( string ), vl );
 
   // and back without quotes
-  QCOMPARE( QgsArrayUtils::build( vl ), string );
+  QCOMPARE( QgsPostgresStringUtils::build( vl ), string );
 }
 
-QGSTEST_MAIN( TestQgsArrayUtils )
-#include "testqgsarrayutils.moc"
+QGSTEST_MAIN( TestQgsPostgresStringUtils )
+#include "testqgspostgresstringutils.moc"
