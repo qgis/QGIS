@@ -460,6 +460,139 @@ Qt3DCore::QTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D positio
 
 // --------------
 
+//* BILLBOARD RENDERING *//
+
+class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
+{
+  public:
+    QgsPoint3DBillboardSymbolHandler( const QgsPoint3DSymbol &symbol, const QgsFeatureIds &selectedIds )
+      : mSymbol( symbol ), mSelectedIds( selectedIds ) {}
+
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
+    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+
+  private:
+
+    static void addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent );
+    static void addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool are_selected );
+    static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol &symbol );
+
+    //! temporary data we will pass to the tessellator
+    struct PointData
+    {
+      QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
+    };
+
+    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
+
+    // input specific for this class
+    const QgsPoint3DSymbol &mSymbol;
+    // inputs - generic
+    QgsFeatureIds mSelectedIds;
+
+    // outputs
+    PointData outNormal;  //!< Features that are not selected
+    PointData outSelected;  //!< Features that are selected
+};
+
+bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
+{
+  Q_UNUSED( context )
+  Q_UNUSED( attributeNames )
+  return true;
+}
+
+void QgsPoint3DBillboardSymbolHandler::processFeature( QgsFeature &feature, const Qgs3DRenderContext &context )
+{
+  PointData &out = mSelectedIds.contains( feature.id() ) ? outSelected : outNormal;
+
+  if ( feature.geometry().isNull() )
+    return;
+
+  Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol.altitudeClamping(), out.positions );
+}
+
+void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+{
+  makeEntity( parent, context, outNormal, false );
+  makeEntity( parent, context, outSelected, true );
+}
+
+void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
+{
+  if ( selected )
+  {
+    addMeshEntities( context.map(), out.positions, mSymbol, parent, true );
+  }
+  else
+  {
+    if ( mSymbol.shapeProperties()[QStringLiteral( "overwriteMaterial" )].toBool() )
+    {
+      addMeshEntities( context.map(), out.positions, mSymbol, parent, false );
+    }
+    else
+    {
+      addSceneEntities( context.map(), out.positions, mSymbol, parent );
+    }
+  }
+}
+
+void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent )
+{
+  Q_UNUSED( map )
+  for ( const QVector3D &position : positions )
+  {
+    // build the entity
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+
+    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
+    Qt3DRender::QSceneLoader *modelLoader = new Qt3DRender::QSceneLoader;
+    modelLoader->setSource( url );
+
+    entity->addComponent( modelLoader );
+    entity->addComponent( transform( position, symbol ) );
+    entity->setParent( parent );
+  }
+}
+
+void QgsPoint3DBillboardSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool are_selected )
+{
+  // build the default material
+  Qt3DExtras::QPhongMaterial *mat = Qgs3DUtils::phongMaterial( symbol.material() );
+
+  if ( are_selected )
+  {
+    mat->setDiffuse( map.selectionColor() );
+    mat->setAmbient( map.selectionColor().darker() );
+  }
+
+  // get nodes
+  for ( const QVector3D &position : positions )
+  {
+    // build the entity
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+
+    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
+    Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
+    mesh->setSource( url );
+
+    entity->addComponent( mesh );
+    entity->addComponent( mat );
+    entity->addComponent( transform( position, symbol ) );
+    entity->setParent( parent );
+  }
+}
+
+Qt3DCore::QTransform *QgsPoint3DBillboardSymbolHandler::transform( QVector3D position, const QgsPoint3DSymbol &symbol )
+{
+  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  tr->setMatrix( symbol.transform() );
+  tr->setTranslation( position + tr->translation() );
+  return tr;
+}
+
+
 
 namespace Qgs3DSymbolImpl
 {
@@ -470,7 +603,7 @@ namespace Qgs3DSymbolImpl
       return new QgsModelPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
     // Add proper handler for billboard
     else if ( symbol.shape() == QgsPoint3DSymbol::Billboard )
-      return new QgsModelPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+      return new QgsPoint3DBillboardSymbolHandler( symbol, layer->selectedFeatureIds() );
     else
       return new QgsInstancedPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
   }
