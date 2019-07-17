@@ -34,13 +34,15 @@ of Labeling.
 %End
   public:
 
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0,
+                         QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
 :param format: initial formatting settings to show in widget
 :param mapCanvas: associated map canvas
 :param parent: parent widget
+:param layer: associated vector layer
 %End
 
     ~QgsTextFormatWidget();
@@ -99,7 +101,7 @@ Emitted when the text format defined by the widget changes
       Labeling,
     };
 
-    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode );
+    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
@@ -187,7 +189,7 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 %End
   public:
 
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatDialog.
 
@@ -195,11 +197,21 @@ Constructor for QgsTextFormatDialog.
 :param mapCanvas: optional associated map canvas
 :param parent: parent widget
 :param fl: window flags for dialog
+:param layer: associated vector layer
 %End
 
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.
+%End
+
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+
+.. versionadded:: 3.10
 %End
 
     QDialogButtonBox *buttonBox() const;
@@ -229,18 +241,28 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 %End
   public:
 
-    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatPanelWidget.
 
 :param format: initial format settings to show in dialog
 :param mapCanvas: optional associated map canvas
 :param parent: parent widget
+:param layer: associated layer
 %End
 
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.
+%End
+
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+
+.. versionadded:: 3.10
 %End
 
     virtual void setDockMode( bool dockMode );
