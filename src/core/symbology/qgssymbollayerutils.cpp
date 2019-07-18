@@ -186,9 +186,13 @@ QString QgsSymbolLayerUtils::encodePenJoinStyle( Qt::PenJoinStyle style )
 
 Qt::PenJoinStyle QgsSymbolLayerUtils::decodePenJoinStyle( const QString &str )
 {
-  if ( str == QLatin1String( "bevel" ) ) return Qt::BevelJoin;
-  if ( str == QLatin1String( "miter" ) ) return Qt::MiterJoin;
-  if ( str == QLatin1String( "round" ) ) return Qt::RoundJoin;
+  const QString cleaned = str.toLower().trimmed();
+  if ( cleaned == QLatin1String( "bevel" ) )
+    return Qt::BevelJoin;
+  if ( cleaned == QLatin1String( "miter" ) )
+    return Qt::MiterJoin;
+  if ( cleaned == QLatin1String( "round" ) )
+    return Qt::RoundJoin;
   return Qt::BevelJoin;
 }
 

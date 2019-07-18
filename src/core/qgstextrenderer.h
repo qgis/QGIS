@@ -35,6 +35,7 @@ class QgsTextSettingsPrivate;
 class QgsVectorLayer;
 class QgsPaintEffect;
 class QgsMarkerSymbol;
+class QgsPropertyCollection;
 
 /**
  * \class QgsTextBufferSettings
@@ -43,7 +44,6 @@ class QgsMarkerSymbol;
   * \note QgsTextBufferSettings objects are implicitly shared.
   * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsTextBufferSettings
 {
   public:
@@ -225,6 +225,12 @@ class CORE_EXPORT QgsTextBufferSettings
      * \see paintEffect()
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
+
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
 
   private:
 
@@ -700,6 +706,12 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
   private:
 
     QSharedDataPointer<QgsTextBackgroundSettingsPrivate> d;
@@ -979,6 +991,12 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see readXml()
      */
     QDomElement writeXml( QDomDocument &doc ) const;
+
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
 
   private:
 
@@ -1307,6 +1325,35 @@ class CORE_EXPORT QgsTextFormat
     QString resolvedFontFamily() const { return mTextFontFamily; }
 
     /**
+     * Returns a reference to the format's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \since QGIS 3.10
+     */
+    QgsPropertyCollection &dataDefinedProperties();
+
+    /**
+     * Returns a reference to the format's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP;
+
+    /**
+     * Sets the format's property collection, used for data defined overrides.
+     * \param collection property collection. Existing properties will be replaced.
+     * \see dataDefinedProperties()
+     * \since QGIS 3.10
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context );
+
+    /**
     * Returns a pixmap preview for a text \a format.
     * \param format text format
     * \param size target pixmap size
@@ -1549,5 +1596,38 @@ class CORE_EXPORT QgsTextRenderer
 
 
 };
+
+/**
+ * \class QgsTextRendererUtils
+  * \ingroup core
+  * Utility functions for text rendering.
+  * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsTextRendererUtils
+{
+  public:
+
+    /**
+     * Decodes a string representation of a background shape type to a type.
+     */
+    static QgsTextBackgroundSettings::ShapeType decodeShapeType( const QString &string );
+
+    /**
+     * Decodes a string representation of a background size type to a type.
+     */
+    static QgsTextBackgroundSettings::SizeType decodeBackgroundSizeType( const QString &string );
+
+    /**
+     * Decodes a string representation of a background rotation type to a type.
+     */
+    static QgsTextBackgroundSettings::RotationType decodeBackgroundRotationType( const QString &string );
+
+    /**
+     * Decodes a string representation of a shadow placement type to a type.
+     */
+    static QgsTextShadowSettings::ShadowPlacement decodeShadowPlacementType( const QString &string );
+
+};
+
 
 #endif // QGSTEXTRENDERER_H

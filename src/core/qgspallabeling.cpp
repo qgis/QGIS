@@ -591,13 +591,6 @@ QgsExpression *QgsPalLayerSettings::getLabelExpression()
   return expression;
 }
 
-static Qt::PenJoinStyle _decodePenJoinStyle( const QString &str )
-{
-  if ( str.compare( QLatin1String( "Miter" ), Qt::CaseInsensitive ) == 0 ) return Qt::MiterJoin;
-  if ( str.compare( QLatin1String( "Round" ), Qt::CaseInsensitive ) == 0 ) return Qt::RoundJoin;
-  return Qt::BevelJoin; // "Bevel"
-}
-
 QString updateDataDefinedString( const QString &value )
 {
   // TODO: update or remove this when project settings for labeling are migrated to better XML layout
@@ -2530,7 +2523,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
 
         if ( !joinstr.isEmpty() )
         {
-          dataDefinedValues.insert( p, QVariant( static_cast< int >( _decodePenJoinStyle( joinstr ) ) ) );
+          dataDefinedValues.insert( p, QVariant( static_cast< int >( QgsSymbolLayerUtils::decodePenJoinStyle( joinstr ) ) ) );
           return true;
         }
         return false;
@@ -2920,31 +2913,8 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
 
     if ( !skind.isEmpty() )
     {
-      // "Rectangle"
-      QgsTextBackgroundSettings::ShapeType shpkind = QgsTextBackgroundSettings::ShapeRectangle;
-
-      if ( skind.compare( QLatin1String( "Square" ), Qt::CaseInsensitive ) == 0 )
-      {
-        shpkind = QgsTextBackgroundSettings::ShapeSquare;
-      }
-      else if ( skind.compare( QLatin1String( "Ellipse" ), Qt::CaseInsensitive ) == 0 )
-      {
-        shpkind = QgsTextBackgroundSettings::ShapeEllipse;
-      }
-      else if ( skind.compare( QLatin1String( "Circle" ), Qt::CaseInsensitive ) == 0 )
-      {
-        shpkind = QgsTextBackgroundSettings::ShapeCircle;
-      }
-      else if ( skind.compare( QLatin1String( "SVG" ), Qt::CaseInsensitive ) == 0 )
-      {
-        shpkind = QgsTextBackgroundSettings::ShapeSVG;
-      }
-      else if ( skind.compare( QLatin1String( "marker" ), Qt::CaseInsensitive ) == 0 )
-      {
-        shpkind = QgsTextBackgroundSettings::ShapeMarkerSymbol;
-      }
-      shapeKind = shpkind;
-      dataDefinedValues.insert( QgsPalLayerSettings::ShapeKind, QVariant( static_cast< int >( shpkind ) ) );
+      shapeKind = QgsTextRendererUtils::decodeShapeType( skind );
+      dataDefinedValues.insert( QgsPalLayerSettings::ShapeKind, QVariant( static_cast< int >( shapeKind ) ) );
     }
   }
 
@@ -2972,15 +2942,8 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
 
     if ( !stype.isEmpty() )
     {
-      // "Buffer"
-      QgsTextBackgroundSettings::SizeType sizType = QgsTextBackgroundSettings::SizeBuffer;
-
-      if ( stype.compare( QLatin1String( "Fixed" ), Qt::CaseInsensitive ) == 0 )
-      {
-        sizType = QgsTextBackgroundSettings::SizeFixed;
-      }
-      shpSizeType = sizType;
-      dataDefinedValues.insert( QgsPalLayerSettings::ShapeSizeType, QVariant( static_cast< int >( sizType ) ) );
+      shpSizeType = QgsTextRendererUtils::decodeBackgroundSizeType( stype );
+      dataDefinedValues.insert( QgsPalLayerSettings::ShapeSizeType, QVariant( static_cast< int >( shpSizeType ) ) );
     }
   }
 
@@ -3048,16 +3011,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
     if ( !rotstr.isEmpty() )
     {
       // "Sync"
-      QgsTextBackgroundSettings::RotationType rottype = QgsTextBackgroundSettings::RotationSync;
-
-      if ( rotstr.compare( QLatin1String( "Offset" ), Qt::CaseInsensitive ) == 0 )
-      {
-        rottype = QgsTextBackgroundSettings::RotationOffset;
-      }
-      else if ( rotstr.compare( QLatin1String( "Fixed" ), Qt::CaseInsensitive ) == 0 )
-      {
-        rottype = QgsTextBackgroundSettings::RotationFixed;
-      }
+      QgsTextBackgroundSettings::RotationType rottype = QgsTextRendererUtils::decodeBackgroundRotationType( rotstr );
       dataDefinedValues.insert( QgsPalLayerSettings::ShapeRotationType, QVariant( static_cast< int >( rottype ) ) );
     }
   }
@@ -3156,21 +3110,7 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
 
     if ( !str.isEmpty() )
     {
-      // "Lowest"
-      QgsTextShadowSettings::ShadowPlacement shdwtype = QgsTextShadowSettings::ShadowLowest;
-
-      if ( str.compare( QLatin1String( "Text" ), Qt::CaseInsensitive ) == 0 )
-      {
-        shdwtype = QgsTextShadowSettings::ShadowText;
-      }
-      else if ( str.compare( QLatin1String( "Buffer" ), Qt::CaseInsensitive ) == 0 )
-      {
-        shdwtype = QgsTextShadowSettings::ShadowBuffer;
-      }
-      else if ( str.compare( QLatin1String( "Background" ), Qt::CaseInsensitive ) == 0 )
-      {
-        shdwtype = QgsTextShadowSettings::ShadowShape;
-      }
+      QgsTextShadowSettings::ShadowPlacement shdwtype = QgsTextRendererUtils::decodeShadowPlacementType( str );
       dataDefinedValues.insert( QgsPalLayerSettings::ShadowUnder, QVariant( static_cast< int >( shdwtype ) ) );
     }
   }
