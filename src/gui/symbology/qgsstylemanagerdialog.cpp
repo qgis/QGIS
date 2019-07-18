@@ -504,9 +504,15 @@ void QgsStyleManagerDialog::copyItemsToDefault()
   if ( !items.empty() )
   {
     bool ok = false;
-    const QString tags = QInputDialog::getText( this, tr( "Import Items" ),
-                         tr( "Additional tags to add (comma separated)" ), QLineEdit::Normal,
-                         mBaseName, &ok );
+    QStringList options;
+    if ( !mBaseName.isEmpty() )
+      options.append( mBaseName );
+
+    QStringList defaultTags = QgsStyle::defaultStyle()->tags();
+    defaultTags.sort( Qt::CaseInsensitive );
+    options.append( defaultTags );
+    const QString tags = QInputDialog::getItem( this, tr( "Import Items" ),
+                         tr( "Additional tags to add (comma separated)" ), options, mBaseName.isEmpty() ? -1 : 0, true, &ok );
     if ( !ok )
       return;
 
