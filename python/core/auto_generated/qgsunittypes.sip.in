@@ -79,7 +79,8 @@ Helper functions for various unit types.
       AngleMinutesOfArc,
       AngleSecondsOfArc,
       AngleTurn,
-      AngleMil,
+      AngleMilliradiansSI,
+      AngleMilNATO,
       AngleUnknownUnit,
     };
 
