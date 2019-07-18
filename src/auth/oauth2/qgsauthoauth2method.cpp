@@ -436,8 +436,10 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   if ( !reply )
   {
+#ifdef QGISDEBUG
     msg = tr( "Network error but no reply object accessible" );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    QgsDebugMsg( msg );
+#endif
     return;
   }
   if ( err != QNetworkReply::NoError && err != QNetworkReply::OperationCanceledError )
@@ -461,8 +463,11 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
   QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
   if ( phrase.isValid() )
   {
-    msg = tr( "Network error, HTTP status: %1" ).arg( phrase.toString() );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+    if ( err != QNetworkReply::OperationCanceledError )
+    {
+      msg = tr( "Network error, HTTP status: %1" ).arg( phrase.toString() );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+    }
   }
 
 
