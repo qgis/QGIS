@@ -180,7 +180,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     if ( value.type() == QVariant::String )
     {
       // This must be an array representation
-      valuesList = QgsPostgresStringUtils::parse( value.toString() );
+      valuesList = QgsPostgresStringUtils::parseArray( value.toString() );
     }
     else if ( value.type() == QVariant::List )
     {
