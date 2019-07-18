@@ -544,8 +544,6 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent )
 {
   Q_UNUSED( map )
-  QgsDebugMsg( QString( "number of positions" ).arg( positions.count() ) );
-
 
   // Billboard Geometry
   QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
@@ -575,30 +573,35 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
 
 void QgsPoint3DBillboardSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool are_selected )
 {
-  // build the default material
-  Qt3DExtras::QPhongMaterial *mat = Qgs3DUtils::phongMaterial( symbol.material() );
+  Q_UNUSED( symbol )
+  // Billboard Geometry
+  QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
+  billboardGeometry->setPoints( positions );
 
+  // Billboard Geometry Renderer
+  Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+  billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+  billboardGeometryRenderer->setGeometry( billboardGeometry );
+  billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
+
+  // Billboard Material
+  QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
   if ( are_selected )
   {
-    mat->setDiffuse( map.selectionColor() );
-    mat->setAmbient( map.selectionColor().darker() );
+    billboardMaterial->setSize( billboardMaterial->size() + billboardMaterial->size() );
   }
 
-  // get nodes
-  for ( const QVector3D &position : positions )
-  {
-    // build the entity
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+  // Billboard Transform
+  Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
+  billboardTransform->setTranslation( QVector3D( 0.0f, 1.5f, 0.0f ) );
 
-    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()[QStringLiteral( "model" )].toString() );
-    Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
-    mesh->setSource( url );
+  // Build the entity
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-    entity->addComponent( mesh );
-    entity->addComponent( mat );
-    entity->addComponent( transform( position, symbol ) );
-    entity->setParent( parent );
-  }
+  entity->addComponent( billboardMaterial );
+  entity->addComponent( billboardTransform );
+  entity->addComponent( billboardGeometryRenderer );
+  entity->setParent( parent );
 }
 
 Qt3DCore::QTransform *QgsPoint3DBillboardSymbolHandler::transform( QVector3D position, const QgsPoint3DSymbol &symbol )
