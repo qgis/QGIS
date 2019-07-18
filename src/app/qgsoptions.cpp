@@ -535,7 +535,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAngleUnitsComboBox->addItem( tr( "Minutes of arc" ), QgsUnitTypes::AngleMinutesOfArc );
   mAngleUnitsComboBox->addItem( tr( "Seconds of arc" ), QgsUnitTypes::AngleSecondsOfArc );
   mAngleUnitsComboBox->addItem( tr( "Turns/revolutions" ), QgsUnitTypes::AngleTurn );
-  mAngleUnitsComboBox->addItem( tr( "Milliradians (mil)" ), QgsUnitTypes::AngleMil );
+  mAngleUnitsComboBox->addItem( tr( "Milliradians (SI definition)" ), QgsUnitTypes::AngleMilliradiansSI );
+  mAngleUnitsComboBox->addItem( tr( "Mil (NATO/military definition)" ), QgsUnitTypes::AngleMilNATO );
 
   QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( mSettings->value( QStringLiteral( "/qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
   mAngleUnitsComboBox->setCurrentIndex( mAngleUnitsComboBox->findData( unit ) );

@@ -1180,7 +1180,9 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
       return QStringLiteral( "soa" );
     case AngleTurn:
       return QStringLiteral( "tr" );
-    case AngleMil:
+    case AngleMilliradiansSI:
+      return QStringLiteral( "milliradians" );
+    case AngleMilNATO:
       return QStringLiteral( "mil" );
     case AngleUnknownUnit:
       return QStringLiteral( "<unknown>" );
@@ -1207,8 +1209,10 @@ QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString &string, bo
     return AngleSecondsOfArc;
   if ( normalized == encodeUnit( AngleTurn ) )
     return AngleTurn;
-  if ( normalized == encodeUnit( AngleMil ) )
-    return AngleMil;
+  if ( normalized == encodeUnit( AngleMilliradiansSI ) )
+    return AngleMilliradiansSI;
+  if ( normalized == encodeUnit( AngleMilNATO ) )
+    return AngleMilNATO;
   if ( normalized == encodeUnit( AngleUnknownUnit ) )
     return AngleUnknownUnit;
   if ( ok )
@@ -1233,7 +1237,9 @@ QString QgsUnitTypes::toString( QgsUnitTypes::AngleUnit unit )
       return QObject::tr( "seconds of arc", "angle" );
     case AngleTurn:
       return QObject::tr( "turns", "angle" );
-    case AngleMil:
+    case AngleMilliradiansSI:
+      return QObject::tr( "milliradians", "angle" );
+    case AngleMilNATO:
       return QObject::tr( "mil", "angle" );
     case AngleUnknownUnit:
       return QObject::tr( "<unknown>", "angle" );
@@ -1262,8 +1268,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
           return 3600;
         case AngleTurn:
           return 1.0 / 360.0;
-        case AngleMil:
+        case AngleMilliradiansSI:
           return M_PI / 180.0 * 1000;
+        case AngleMilNATO:
+          return 3200.0 / 180;
         case AngleUnknownUnit:
           break;
       }
@@ -1285,8 +1293,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
           return 3600 * 180.0 / M_PI;
         case AngleTurn:
           return 0.5 / M_PI;
-        case AngleMil:
+        case AngleMilliradiansSI:
           return 1000;
+        case AngleMilNATO:
+          return 3200.0 / M_PI;
         case AngleUnknownUnit:
           break;
       }
@@ -1308,8 +1318,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
           return 3600 * 360.0 / 400.0;
         case AngleTurn:
           return 1.0 / 400.0;
-        case AngleMil:
+        case AngleMilliradiansSI:
           return M_PI / 200.0 * 1000;
+        case AngleMilNATO:
+          return 3200.0 / 200.0;
         case AngleUnknownUnit:
           break;
       }
@@ -1331,8 +1343,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
           return 60.0;
         case AngleTurn:
           return 1.0 / 360.0 / 60.0;
-        case AngleMil:
+        case AngleMilliradiansSI:
           return M_PI / 180.0 / 60.0 * 1000;
+        case AngleMilNATO:
+          return 3200.0 / 180.0 / 60.0;
         case AngleUnknownUnit:
           break;
       }
@@ -1354,8 +1368,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
           return 1.0;
         case AngleTurn:
           return 1.0 / 360.0 / 3600.0;
-        case AngleMil:
+        case AngleMilliradiansSI:
           return M_PI / 180.0 / 3600.0 * 1000;
+        case AngleMilNATO:
+          return 3200.0 / 180.0 / 3600.0;
         case AngleUnknownUnit:
           break;
       }
@@ -1377,14 +1393,16 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
           return 360.0 * 3600.0;
         case AngleTurn:
           return 1.0;
-        case AngleMil:
+        case AngleMilliradiansSI:
           return 2 * M_PI * 1000;
+        case AngleMilNATO:
+          return 2 * 3200;
         case AngleUnknownUnit:
           break;
       }
       break;
     }
-    case AngleMil:
+    case AngleMilliradiansSI:
     {
       switch ( toUnit )
       {
@@ -1400,7 +1418,35 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
           return 180.0 * 3600.0 / M_PI / 1000;
         case AngleTurn:
           return M_PI / 2 / 1000;
-        case AngleMil:
+        case AngleMilliradiansSI:
+          return 1.0;
+        case AngleMilNATO:
+          return 3200.0 / 1000.0 / M_PI;
+        case AngleUnknownUnit:
+          break;
+      }
+      break;
+    }
+
+    case AngleMilNATO:
+    {
+      switch ( toUnit )
+      {
+        case AngleDegrees:
+          return 180.0 / 3200;
+        case AngleRadians:
+          return M_PI / 3200;
+        case AngleGon:
+          return 200.0 / 3200;
+        case AngleMinutesOfArc:
+          return 60 * 180.0 / 3200;
+        case AngleSecondsOfArc:
+          return 3600.0 * 180 / 3200;
+        case AngleTurn:
+          return 1.0 / ( 2 * 32000 );
+        case AngleMilliradiansSI:
+          return 1000.0 * M_PI / 3200.0;
+        case AngleMilNATO:
           return 1.0;
         case AngleUnknownUnit:
           break;
@@ -1438,8 +1484,11 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
     case AngleTurn:
       unitLabel = QObject::tr( " tr", "angle turn" );
       break;
-    case AngleMil:
-      unitLabel = QObject::tr( " mil", "angular mil" );
+    case AngleMilliradiansSI:
+      unitLabel = QObject::tr( " millirad", "angular mil SI" );
+      break;
+    case AngleMilNATO:
+      unitLabel = QObject::tr( " mil", "angular mil NATO" );
       break;
     case AngleUnknownUnit:
       break;
