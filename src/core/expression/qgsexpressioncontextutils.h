@@ -349,7 +349,7 @@ class QgsExpressionContextScopePopper
      * end of \a context. \a scope will be automatically popped and deleted when this QgsExpressionContextScopePopper
      * is destroyed.
      *
-     * Ownership of \a scope is transferred to the popper, but it is gauranteed to exist of the lifetime
+     * Ownership of \a scope is transferred to the popper, but it is guaranteed to exist of the lifetime
      * of the popper.
      */
     QgsExpressionContextScopePopper( QgsExpressionContext &context, QgsExpressionContextScope *scope )
