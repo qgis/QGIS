@@ -244,8 +244,6 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
 
         layer->labeling()->setSettings( settings, providerId );
       }
-
-      emit layer->styleChanged();
     }
 
     index = layer->fields().lookupField( fieldName );
@@ -274,8 +272,6 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
       settings.setDataDefinedProperties( c );
 
       layer->setDiagramLayerSettings( settings );
-      emit layer->styleChanged();
-
       index = layer->fields().lookupField( fieldName );
     }
   }
