@@ -531,12 +531,14 @@ void QgsRubberBand::updateRect()
 
   const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
 
+#if 0 // unused?
   double iconSize = ( mIconSize + 1 ) / 2.;
   if ( mSvgRenderer )
   {
     QRectF viewBox = mSvgRenderer->viewBoxF();
     iconSize = std::max( std::fabs( mSvgOffset.x() ) + .5 * viewBox.width(), std::fabs( mSvgOffset.y() ) + .5 * viewBox.height() );
   }
+#endif
 
   qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
