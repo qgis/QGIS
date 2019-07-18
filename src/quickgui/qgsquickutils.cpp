@@ -139,7 +139,8 @@ const QUrl QgsQuickUtils::getEditorComponentSource( const QString &widgetName )
                                    QStringLiteral( "valuerelation" ),
                                    QStringLiteral( "checkbox" ),
                                    QStringLiteral( "externalresource" ),
-                                   QStringLiteral( "datetime" )
+                                   QStringLiteral( "datetime" ),
+                                   QStringLiteral( "range" )
                                  };
   if ( supportedWidgets.contains( widgetName ) )
   {
