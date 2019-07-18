@@ -341,7 +341,7 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
   QString stylesheet;
   if ( !isEnabled() )
   {
-    stylesheet = QStringLiteral( "QLineEdit { color: %1; } Qt::gray );" ).arg( QColor( Qt::gray ).name() );
+    stylesheet = QStringLiteral( "QLineEdit { color: %1; }" ).arg( QColor( Qt::gray ).name() );
   }
   else
   {
@@ -361,7 +361,7 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 
     if ( isExpression && !isValid )
     {
-      stylesheet = QStringLiteral( "QLineEdit { color: %1; } Qt::gray );" ).arg( QColor( Qt::red ).name() );
+      stylesheet = QStringLiteral( "QLineEdit { color: %1; }" ).arg( QColor( Qt::red ).name() );
     }
   }
   mCombo->lineEdit()->setStyleSheet( stylesheet );
