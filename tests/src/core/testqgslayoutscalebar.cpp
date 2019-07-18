@@ -27,6 +27,7 @@
 #include "qgsfontutils.h"
 #include "qgsproperty.h"
 #include "qgsproject.h"
+#include "qgspallabeling.h"
 
 #include <QLocale>
 #include <QObject>
@@ -50,6 +51,7 @@ class TestQgsLayoutScaleBar : public QObject
     void numeric();
     void tick();
     void dataDefined();
+    void textFormat();
 
   private:
     QString mReport;
@@ -263,8 +265,36 @@ void TestQgsLayoutScaleBar::tick()
 void TestQgsLayoutScaleBar::dataDefined()
 {
   QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
   QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
+  scalebar->setTextFormat( format );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 0 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 5 );
+  scalebar->setLineWidth( 1.0 );
+  scalebar->setStyle( QStringLiteral( "Single Box" ) );
+
+  QFont newFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  newFont.setPointSizeF( 12 );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( newFont ) );
+
+  scalebar->setStyle( QStringLiteral( "Numeric" ) );
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_numeric" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  bool result = checker.testLayout( mReport, 0, 0 );
+  QVERIFY( result );
 
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor, QgsProperty::fromExpression( QStringLiteral( "'red'" ) ) );
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor2, QgsProperty::fromExpression( QStringLiteral( "'blue'" ) ) );
@@ -276,6 +306,39 @@ void TestQgsLayoutScaleBar::dataDefined()
   QCOMPARE( scalebar->pen().color().name(), QColor( 255, 255, 0 ).name() );
   QCOMPARE( scalebar->pen().widthF(), 1.2 );
 }
+
+void TestQgsLayoutScaleBar::textFormat()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 0 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 5 );
+  scalebar->setLineWidth( 1.0 );
+  scalebar->setStyle( QStringLiteral( "Single Box" ) );
+
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 16 );
+  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "case when @scale_value = 2000 then '#ff00ff' else '#ffff00' end" ) ) );
+  scalebar->setTextFormat( format );
+
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_textformat" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
 
 QGSTEST_MAIN( TestQgsLayoutScaleBar )
 #include "testqgslayoutscalebar.moc"

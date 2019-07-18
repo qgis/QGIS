@@ -28,13 +28,14 @@ class QgsLayoutItemScaleBar;
  * \ingroup app
  * A widget to define the properties of a QgsLayoutItemScaleBar.
  */
-class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutScaleBarWidgetBase
+class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
 {
     Q_OBJECT
 
   public:
     explicit QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar );
 
+    QgsExpressionContext createExpressionContext() const override;
   protected:
 
     bool setNewItem( QgsLayoutItem *item ) override;

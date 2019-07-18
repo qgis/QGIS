@@ -51,7 +51,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   setPanelTitle( tr( "Scalebar Properties" ) );
 
-  mFontButton->registerExpressionContextGenerator( mScalebar );
+  mFontButton->registerExpressionContextGenerator( this );
 
   connectUpdateSignal();
 
@@ -144,6 +144,16 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   {
     connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFontButton, &QgsFontButton::setLayer );
   }
+}
+
+QgsExpressionContext QgsLayoutScaleBarWidget::createExpressionContext() const
+{
+  QgsExpressionContext context = mScalebar->createExpressionContext();
+  QgsExpressionContextScope *scaleScope = new QgsExpressionContextScope( QStringLiteral( "scalebar_text" ) );
+  scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), 0, true, false ) );
+  context.appendScope( scaleScope );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "scale_value" ) );
+  return context;
 }
 
 bool QgsLayoutScaleBarWidget::setNewItem( QgsLayoutItem *item )
