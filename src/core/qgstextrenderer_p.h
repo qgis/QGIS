@@ -218,6 +218,7 @@ class QgsTextSettingsPrivate : public QSharedData
       , blendMode( other.blendMode )
       , multilineHeight( other.multilineHeight )
       , previewBackgroundColor( other.previewBackgroundColor )
+      , mDataDefinedProperties( other.mDataDefinedProperties )
     {
     }
 
@@ -231,6 +232,10 @@ class QgsTextSettingsPrivate : public QSharedData
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
     double multilineHeight = 1.0 ; //0.0 to 10.0, leading between lines as multiplyer of line height
     QColor previewBackgroundColor = Qt::white;
+
+    //! Property collection for data defined settings
+    QgsPropertyCollection mDataDefinedProperties;
+
 
 };
 
