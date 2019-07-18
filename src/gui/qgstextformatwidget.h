@@ -68,8 +68,11 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     /**
      * Returns the current formatting settings defined by the widget.
+     *
+     * If \a includateDataDefinedProperties is TRUE, then data defined properties
+     * specified in the widget will be included in the format definition.
      */
-    QgsTextFormat format() const;
+    QgsTextFormat format( bool includeDataDefinedProperties = true ) const;
 
     /**
      * Sets the current formatting settings
@@ -91,6 +94,16 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      */
     QgsSymbolWidgetContext context() const;
 
+    /**
+     * Deactivate a field from data defined properties and update the
+     * corresponding button.
+     *
+     * \param key The property key to deactivate
+     *
+     * \since QGIS 3.0
+     */
+    void deactivateField( QgsPalLayerSettings::Property key );
+
   public slots:
 
     /**
@@ -103,6 +116,12 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     //! Emitted when the text format defined by the widget changes
     void widgetChanged();
+
+    /**
+     * Emitted when an auxiliary field is creatd in the widget.
+     * \since QGIS 3.10
+     */
+    void auxiliaryFieldCreated();
 
   protected:
 
@@ -165,6 +184,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
 
+    //! Data defined properties as defined in the widget
+    QgsPropertyCollection mDataDefinedProperties;
+
     //! Associated vector layer
     QgsVectorLayer *mLayer = nullptr;
   protected slots:
@@ -192,6 +214,17 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     */
     void updatePreview();
 
+#ifndef SIP_RUN
+
+    /**
+     * Sets up connections required for data defined buttons, or updates the existing
+     * definition of these buttons.
+     *
+     * \since QGIS 3.10
+     */
+    void populateDataDefinedButtons();
+#endif
+
   private:
     Mode mWidgetMode = Text;
 
@@ -209,6 +242,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     bool mLoadSvgParams = false;
     QgsExpressionContext mPreviewExpressionContext;
 
+    QMap<QgsPalLayerSettings::Property, QgsPropertyOverrideButton *> mButtons;
+
     void initWidget();
     void setWidgetMode( Mode mode );
     void toggleDDButtons( bool visible );
@@ -217,6 +252,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void populateFontStyleComboBox();
     void updateFont( const QFont &font );
     void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
 
   private slots:
     void optionsStackedWidget_CurrentChanged( int indx );
@@ -257,7 +294,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
     void updateAvailableShadowPositions();
-
+    void updateProperty();
+    void createAuxiliaryField();
 };
 
 

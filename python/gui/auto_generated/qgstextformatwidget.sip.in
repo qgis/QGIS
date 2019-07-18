@@ -47,9 +47,12 @@ Constructor for QgsTextFormatWidget.
 
     ~QgsTextFormatWidget();
 
-    QgsTextFormat format() const;
+    QgsTextFormat format( bool includeDataDefinedProperties = true ) const;
 %Docstring
 Returns the current formatting settings defined by the widget.
+
+If ``includateDataDefinedProperties`` is ``True``, then data defined properties
+specified in the widget will be included in the format definition.
 %End
 
     void setFormat( const QgsTextFormat &format );
@@ -77,6 +80,16 @@ Returns the context in which the widget is shown, e.g., the associated map canva
 .. versionadded:: 3.10
 %End
 
+    void deactivateField( QgsPalLayerSettings::Property key );
+%Docstring
+Deactivate a field from data defined properties and update the
+corresponding button.
+
+:param key: The property key to deactivate
+
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void setDockMode( bool enabled );
@@ -91,6 +104,13 @@ Sets whether the widget should be shown in a compact dock mode.
     void widgetChanged();
 %Docstring
 Emitted when the text format defined by the widget changes
+%End
+
+    void auxiliaryFieldCreated();
+%Docstring
+Emitted when an auxiliary field is creatd in the widget.
+
+.. versionadded:: 3.10
 %End
 
   protected:
@@ -138,6 +158,7 @@ Controls whether data defined alignment buttons are enabled.
 
 
 
+
   protected slots:
 
     void updateLinePlacementOptions();
@@ -168,6 +189,7 @@ Updates the text preview.
 
 .. versionadded:: 3.10
 %End
+
 
 };
 
