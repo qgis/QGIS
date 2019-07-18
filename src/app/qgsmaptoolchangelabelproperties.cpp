@@ -21,6 +21,8 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
+#include "qgisapp.h"
+#include "qgsmessagebar.h"
 
 QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas ): QgsMapToolLabel( canvas )
 {
@@ -123,6 +125,31 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &chang
 
   if ( !changes.isEmpty() )
   {
+    if ( !vlayer->isEditable() )
+    {
+      bool needsEdit = false;
+      for ( auto it = changes.constBegin(); it != changes.constEnd(); ++it )
+      {
+        if ( vlayer->fields().fieldOrigin( it.key() ) != QgsFields::OriginJoin )
+        {
+          needsEdit = true;
+          break;
+        }
+      }
+      if ( needsEdit )
+      {
+        if ( vlayer->startEditing() )
+        {
+          QgisApp::instance()->messageBar()->pushInfo( tr( "Change Label" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
+        }
+        else
+        {
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Change Label" ), tr( "Cannot change “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, vlayer->name() ) );
+          return;
+        }
+      }
+    }
+
     vlayer->beginEditCommand( tr( "Changed properties for label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
 
     QgsAttributeMap::const_iterator changeIt = changes.constBegin();
