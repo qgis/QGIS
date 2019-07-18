@@ -83,7 +83,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     //! Shows label fixpoint (left/bottom by default)
     QgsRubberBand *mFixPointRubberBand = nullptr;
 
-    struct LabelDetails
+    struct APP_EXPORT LabelDetails
     {
       LabelDetails() = default;
       explicit LabelDetails( const QgsLabelPosition &p );
