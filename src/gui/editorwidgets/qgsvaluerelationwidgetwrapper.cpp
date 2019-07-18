@@ -103,7 +103,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     else
     {
       //make string
-      v = QgsPostgresStringUtils::build( vl );
+      v = QgsPostgresStringUtils::buildArray( vl );
     }
   }
 

@@ -28,35 +28,38 @@
 
 /**
  * \ingroup core
- * The QgsPostgresStringUtils namespace provides functions to handle postgres array like formatted lists in strings.
- * \since QGIS 3.4
+ * The QgsPostgresStringUtils provides functions to handle postgres array like formatted lists in strings.
+ * \since QGIS 3.8
  */
-namespace QgsPostgresStringUtils
+class CORE_EXPORT QgsPostgresStringUtils
 {
 
-  /**
-   * Returns a QVariantList created out of a string containing an array in postgres array format {1,2,3} or {"a","b","c"}
-   * \param string The formatted list in a string
-   * \since QGIS 3.8
-   */
-  CORE_EXPORT QVariantList parse( const QString &string );
+  public:
 
-  /**
-   * Build a postgres array like formatted list in a string from a QVariantList
-   * \param list The list that needs to be stored to the string
-   * \since QGIS 3.8
-   */
-  CORE_EXPORT QString build( const QVariantList &list );
+    /**
+     * Returns a QVariantList created out of a string containing an array in postgres array format {1,2,3} or {"a","b","c"}
+     * \param string The formatted list in a string
+     * \since QGIS 3.8
+     */
+    static QVariantList parseArray( const QString &string );
 
-  /**
-   * get the string until the separator
-   * \param txt the input text
-   * \param i the current position
-   * \param sep the separator
-   * \since QGIS 3.8
-   */
-  CORE_EXPORT QString getNextString( const QString &txt, int &i, const QString &sep );
+    /**
+     * Build a postgres array like formatted list in a string from a QVariantList
+     * \param list The list that needs to be stored to the string
+     * \since QGIS 3.8
+     */
+    static QString buildArray( const QVariantList &list );
 
+  private:
+
+    /**
+     * get the string until the separator
+     * \param txt the input text
+     * \param i the current position
+     * \param sep the separator
+     * \since QGIS 3.8
+     */
+    static QString getNextString( const QString &txt, int &i, const QString &sep );
 };
 
 #endif //QGSPOSTGRESSTRINGUTILS_H

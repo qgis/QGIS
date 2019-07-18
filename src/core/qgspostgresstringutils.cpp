@@ -60,7 +60,7 @@ QString QgsPostgresStringUtils::getNextString( const QString &txt, int &i, const
   }
 }
 
-QVariantList QgsPostgresStringUtils::parse( const QString &string )
+QVariantList QgsPostgresStringUtils::parseArray( const QString &string )
 {
   QVariantList variantList;
 
@@ -145,7 +145,7 @@ QVariantList QgsPostgresStringUtils::parse( const QString &string )
 
 }
 
-QString QgsPostgresStringUtils::build( const QVariantList &list )
+QString QgsPostgresStringUtils::buildArray( const QVariantList &list )
 {
   QStringList sl;
   for ( const QVariant &v : qgis::as_const( list ) )
