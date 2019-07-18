@@ -767,6 +767,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     return false;
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+  bool changed = false;
   for ( const QgsPalLayerSettings::Property &p : qgis::as_const( mPalProperties ) )
   {
     int index = -1;
@@ -780,10 +781,13 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     else
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      changed = true;
     }
 
     indexes[p] = index;
   }
+  if ( changed )
+    emit vlayer->styleChanged();
 
   details.settings = vlayer->labeling()->settings( providerId );
 
@@ -815,6 +819,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     return false;
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+  bool changed = false;
   for ( const QgsDiagramLayerSettings::Property &p : qgis::as_const( mDiagramProperties ) )
   {
     int index = -1;
@@ -828,10 +833,13 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     else
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      changed = true;
     }
 
     indexes[p] = index;
   }
+  if ( changed )
+    emit vlayer->styleChanged();
 
   return newAuxiliaryLayer;
 }
