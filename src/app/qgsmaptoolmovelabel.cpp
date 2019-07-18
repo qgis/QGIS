@@ -20,7 +20,8 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
-
+#include "qgisapp.h"
+#include "qgsmessagebar.h"
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
   : QgsMapToolLabel( canvas )
@@ -106,6 +107,21 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
     if ( xCol >= 0 && yCol >= 0 )
     {
+      const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
+                                 && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
+      if ( !usesAuxFields && !vlayer->isEditable() )
+      {
+        if ( vlayer->startEditing() )
+        {
+          QgisApp::instance()->messageBar()->pushInfo( tr( "Move Label" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
+        }
+        else
+        {
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Cannot move “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, vlayer->name() ) );
+          return;
+        }
+      }
+
       mStartPointMapCoords = toMapCoordinates( e->pos() );
       QgsPointXY referencePoint;
       if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
@@ -180,8 +196,23 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
         }
 
         vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
-        vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, xPosNew );
-        vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, yPosNew );
+        bool success = vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, xPosNew );
+        success = vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, yPosNew ) && success;
+        if ( !success )
+        {
+          // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
+          // and the layer isn't in edit mode
+          if ( !vlayer->isEditable() )
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
+          }
+          else
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Error encountered while storing new label position" ) );
+          }
+          vlayer->endEditCommand();
+          break;
+        }
 
         // set rotation to that of label, if data-defined and no rotation set yet
         // honor whether to preserve preexisting data on pin
