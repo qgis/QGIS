@@ -100,7 +100,6 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void calloutTypeChanged();
 
   private:
-    QgsVectorLayer *mLayer = nullptr;
     QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
     QgsPalLayerSettings mSettings;
     QgsPropertyCollection mDataDefinedProperties;
