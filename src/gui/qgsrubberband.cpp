@@ -77,7 +77,7 @@ void QgsRubberBand::setIcon( IconType icon )
   mIconType = icon;
 }
 
-void QgsRubberBand::setSvgIcon( const QString &path, const QPoint &drawOffset )
+void QgsRubberBand::setSvgIcon( const QString &path, QPoint drawOffset )
 {
   setIcon( ICON_SVG );
   mSvgRenderer = qgis::make_unique<QSvgRenderer>( path );
@@ -395,9 +395,11 @@ void QgsRubberBand::paint( QPainter *p )
     return;
 
   QVector< QVector<QPointF> > shapes;
+  shapes.reserve( mPoints.size() );
   for ( const QList<QgsPointXY> &line : qgis::as_const( mPoints ) )
   {
     QVector<QPointF> pts;
+    pts.reserve( line.size() );
     for ( const QgsPointXY &pt : line )
     {
       const QPointF cur = toCanvasCoordinates( QgsPointXY( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
@@ -474,11 +476,11 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
             break;
 
           case ICON_FULL_BOX:
-            p->drawRect( x - s, y - s, mIconSize, mIconSize );
+            p->drawRect( static_cast< int>( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize );
             break;
 
           case ICON_CIRCLE:
-            p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
+            p->drawEllipse( static_cast< int >( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize );
             break;
 
           case ICON_DIAMOND:

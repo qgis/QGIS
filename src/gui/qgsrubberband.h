@@ -180,7 +180,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      * \param drawOffset The offset where to draw the image origin
      * \since QGIS 3.10
      */
-    void setSvgIcon( const QString &path, const QPoint &drawOffset );
+    void setSvgIcon( const QString &path, QPoint drawOffset );
 
 
     /**
