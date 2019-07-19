@@ -647,15 +647,18 @@ QgsCoordinateReferenceSystem QgsProject::crs() const
   return mCrs;
 }
 
-void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid )
 {
-  if ( crs == mCrs )
-    return;
+  if ( crs != mCrs )
+  {
+    mCrs = crs;
+    writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
+    setDirty( true );
+    emit crsChanged();
+  }
 
-  mCrs = crs;
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
-  setDirty( true );
-  emit crsChanged();
+  if ( adjustEllipsoid )
+    setEllipsoid( crs.ellipsoidAcronym() );
 }
 
 QString QgsProject::ellipsoid() const
@@ -668,6 +671,9 @@ QString QgsProject::ellipsoid() const
 
 void QgsProject::setEllipsoid( const QString &ellipsoid )
 {
+  if ( ellipsoid == readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ) ) )
+    return;
+
   writeEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), ellipsoid );
   emit ellipsoidChanged( ellipsoid );
 }

@@ -44,6 +44,7 @@ class TestQgsProject : public QObject
     void testLocalFiles();
     void testLocalUrlFiles();
     void testReadFlags();
+    void testSetGetCrs();
 };
 
 void TestQgsProject::init()
@@ -456,6 +457,73 @@ void TestQgsProject::testReadFlags()
   QVERIFY( !layers.value( QStringLiteral( "polys20170310142652234" ) )->isValid() );
   QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
   QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+}
+
+void TestQgsProject::testSetGetCrs()
+{
+  QgsProject p;
+
+  // Set 4326
+  //  - CRS changes
+  //  - ellipsoid stays as NONE
+  QSignalSpy crsChangedSpy( &p, &QgsProject::crsChanged );
+  QSignalSpy ellipsoidChangedSpy( &p, &QgsProject::ellipsoidChanged );
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "NONE" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 21781
+  //  - CRS changes
+  //  - ellipsoid stays as NONE
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "NONE" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 21781 again, including adjustEllipsoid flag
+  //  - CRS changes
+  //  - ellipsoid changes to Bessel
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 21781 ), true );
+
+  QCOMPARE( crsChangedSpy.count(), 0 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 1 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 2056, including adjustEllipsoid flag
+  //  - CRS changes
+  //  - ellipsoid stays
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ), true );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
 }
 
 

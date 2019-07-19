@@ -164,9 +164,11 @@ Returns the project's native coordinate reference system.
 .. versionadded:: 3.0
 %End
 
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 %Docstring
 Sets the project's native coordinate reference system.
+If ``adjustEllipsoid`` is set to ``True``, the ellpsoid of this project will be set to
+the ellipsoid imposed by the CRS.
 
 .. seealso:: :py:func:`crs`
 
