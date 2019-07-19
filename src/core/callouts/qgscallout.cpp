@@ -99,7 +99,7 @@ QgsCallout::DrawOrder QgsCallout::drawOrder() const
   return OrderBelowAllLabels;
 }
 
-void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor )
+void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
   if ( !mEnabled )
     return;
@@ -123,7 +123,7 @@ void QgsCallout::render( QgsRenderContext &context, QRectF rect, const double an
   painter->drawRect( anchor.boundingBox( ).buffered( 30 ).toRectF() );
 #endif
 
-  draw( context, rect, angle, anchor );
+  draw( context, rect, angle, anchor, calloutContext );
 }
 
 void QgsCallout::setEnabled( bool enabled )
@@ -245,7 +245,7 @@ void QgsSimpleLineCallout::setLineSymbol( QgsLineSymbol *symbol )
   mLineSymbol.reset( symbol );
 }
 
-void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor )
+void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor, QgsCalloutContext & )
 {
   QgsGeometry label( QgsGeometry::fromRect( rect ) );
   QgsGeometry line;
@@ -320,7 +320,7 @@ QgsManhattanLineCallout *QgsManhattanLineCallout::clone() const
   return new QgsManhattanLineCallout( *this );
 }
 
-void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor )
+void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, const double, const QgsGeometry &anchor, QgsCalloutContext & )
 {
   QgsGeometry label( QgsGeometry::fromRect( rect ) );
   QgsGeometry line;
