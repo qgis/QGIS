@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCategorizedSymbolRenderer
 
+From build dir, run: ctest -R PyQgsCategorizedSymbolRenderer -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -11,6 +13,8 @@ __date__ = '2/12/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
+
+import os
 
 from qgis.testing import unittest, start_app
 from qgis.core import (QgsCategorizedSymbolRenderer,
@@ -26,13 +30,24 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsStyle,
                        QgsVectorLayer,
                        QgsEditorWidgetSetup,
-                       QgsReadWriteContext
+                       QgsReadWriteContext,
+                       QgsProject,
+                       QgsSimpleMarkerSymbolLayer,
+                       QgsSymbolLayer,
+                       QgsProperty,
+                       QgsMapSettings,
+                       QgsRectangle,
+                       QgsRenderContext
                        )
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import Qt, QVariant, QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 
+from utilities import unitTestDataPath
+
 start_app()
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 def createMarkerSymbol():
@@ -573,6 +588,56 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(renderer.usedAttributes(ctx), {"value", "value - 1"})
         renderer.setClassAttribute("valuea - valueb")
         self.assertEqual(renderer.usedAttributes(ctx), {"valuea", "valuea - valueb", "valueb"})
+
+    def testPointsUsedAttributes(self):
+        points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
+        points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
+        QgsProject.instance().addMapLayer(points_layer)
+
+        cats = []
+        sym1 = QgsMarkerSymbol()
+        l1 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l1.setColor(QColor(255, 0, 0))
+        l1.setStrokeStyle(Qt.NoPen)
+        l1.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym1.changeSymbolLayer(0, l1)
+        cats.append(QgsRendererCategory("B52", sym1, "B52"))
+        sym2 = QgsMarkerSymbol()
+        l2 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l2.setColor(QColor(0, 255, 0))
+        l2.setStrokeStyle(Qt.NoPen)
+        l2.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym2.changeSymbolLayer(0, l2)
+        cats.append(QgsRendererCategory("Biplane", sym2, "Biplane"))
+        sym3 = QgsMarkerSymbol()
+        l3 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l3.setColor(QColor(0, 0, 255))
+        l3.setStrokeStyle(Qt.NoPen)
+        l3.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym3.changeSymbolLayer(0, l3)
+        cats.append(QgsRendererCategory("Jet", sym3, "Jet"))
+
+        renderer = QgsCategorizedSymbolRenderer("Class", cats)
+
+        points_layer.setRenderer(renderer)
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([points_layer])
+
+        ctx = QgsRenderContext.fromMapSettings(ms)
+        ctx.expressionContext().appendScope(points_layer.createExpressionContextScope())
+
+        # for symbol layer
+        self.assertCountEqual(l1.usedAttributes(ctx), {'Heading'})
+        # for symbol
+        self.assertCountEqual(sym1.usedAttributes(ctx), {'Heading'})
+        # for symbol renderer
+        self.assertCountEqual(renderer.usedAttributes(ctx), {'Class', 'Heading'})
+
+        QgsProject.instance().removeMapLayer(points_layer)
 
     def testFilterNeedsGeometry(self):
         renderer = QgsCategorizedSymbolRenderer()
