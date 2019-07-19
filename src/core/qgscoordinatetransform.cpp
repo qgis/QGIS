@@ -23,6 +23,7 @@
 #include "qgsrectangle.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
+#include "qgsreadwritelocker.h"
 
 //qt includes
 #include <QDomNode>
@@ -46,6 +47,7 @@
 
 QReadWriteLock QgsCoordinateTransform::sCacheLock;
 QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTransform::sTransforms; //same auth_id pairs might have different datum transformations
+bool QgsCoordinateTransform::sDisableCache = false;
 
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
@@ -858,7 +860,10 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return false;
 
-  sCacheLock.lockForRead();
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Read );
+  if ( sDisableCache )
+    return false;
+
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( src.authid(), dest.authid() ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
@@ -872,7 +877,7 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
       bool hasContext = mHasContext;
 #endif
       *this = *valIt;
-      sCacheLock.unlock();
+      locker.unlock();
 
       mContext = context;
 #ifdef QGISDEBUG
@@ -883,7 +888,6 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
     }
     Q_NOWARN_DEPRECATED_POP
   }
-  sCacheLock.unlock();
   return false;
 }
 #endif
@@ -901,9 +905,11 @@ void QgsCoordinateTransform::addToCache()
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return;
 
-  sCacheLock.lockForWrite();
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  if ( sDisableCache )
+    return;
+
   sTransforms.insertMulti( qMakePair( sourceKey, destKey ), *this );
-  sCacheLock.unlock();
 }
 
 int QgsCoordinateTransform::sourceDatumTransformId() const
@@ -936,11 +942,18 @@ void QgsCoordinateTransform::setDestinationDatumTransformId( int dt )
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsCoordinateTransform::invalidateCache()
+void QgsCoordinateTransform::invalidateCache( bool disableCache )
 {
-  sCacheLock.lockForWrite();
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  if ( sDisableCache )
+    return;
+
+  if ( disableCache )
+  {
+    sDisableCache = true;
+  }
+
   sTransforms.clear();
-  sCacheLock.unlock();
 }
 
 double QgsCoordinateTransform::scaleFactor( const QgsRectangle &ReferenceExtent ) const
