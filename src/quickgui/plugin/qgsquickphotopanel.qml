@@ -22,7 +22,12 @@ import QtGraphicalEffects 1.0
 import QgsQuick 0.1 as QgsQuick
 
 Drawer {
+  // Capture path
   property var targetDir
+  // Path to project
+  property var homePath
+  // Along with lastPhotName creates an absolute path to a photo. Its either project path or defaultRoot.
+  property var prefixToRelativePath
   property var lastPhotoName
   property int iconSize: photoPanel.width/20
   property var fieldItem
@@ -114,6 +119,7 @@ Drawer {
           id: mouseArea
           anchors.fill: parent
           onClicked: {
+            console.log("!!!mouseAreamouseArea@#!#Q@#TRGEWR TOOR", targetDir)
             if (targetDir !== "") {
               camera.imageCapture.captureToLocation(photoPanel.targetDir);
             } else {
@@ -200,9 +206,9 @@ Drawer {
             onClicked: {
               captureItem.saveImage = true
               photoPanel.visible = false
-              photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.targetDir)
+              photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.prefixToRelativePath)
               if (photoPanel.lastPhotoName !== "") {
-                fieldItem.image.source = photoPanel.targetDir + "/" + photoPanel.lastPhotoName
+                fieldItem.image.source = photoPanel.prefixToRelativePath + "/" + photoPanel.lastPhotoName
                 fieldItem.valueChanged(photoPanel.lastPhotoName, photoPanel.lastPhotoName === "" || photoPanel.lastPhotoName === null)
               }
             }

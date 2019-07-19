@@ -36,6 +36,14 @@ Item {
   property var notAvailableImageIcon: customStyle.icons.notAvailable
   property real iconSize:  customStyle.fields.height
   property real textMargin: QgsQuick.Utils.dp * 10
+  /**
+   * 0 - Relative path disabled
+   * 1 - Relative path to defualtRoot (targetDir)
+   * 2 - Relative path to project
+   */
+  property int relativeStorageMode: config["RelativeStorage"]
+  property string targetDir: config["DefaultRoot"] ? config["DefaultRoot"] : homePath
+  property string prefixToRelativePath: relativeStorageMode === 1 ? targetDir : homePath
   // Meant to be use with the save callback - stores image source
   property string sourceToDelete
 
@@ -97,7 +105,7 @@ Item {
 
       MouseArea {
         anchors.fill: parent
-        onClicked: externalResourceHandler.previewImage(homePath + "/" + image.currentValue)
+        onClicked: externalResourceHandler.previewImage(prefixToRelativePath + "/" + image.currentValue)
       }
 
       onCurrentValueChanged: {
@@ -111,16 +119,16 @@ Item {
           fieldItem.state = "notAvailable"
           return ""
         }
-        else if (image.currentValue && QgsQuick.Utils.fileExists(homePath + "/" + image.currentValue)) {
+        else if (image.currentValue && QgsQuick.Utils.fileExists(prefixToRelativePath + "/" + image.currentValue)) {
           fieldItem.state = "valid"
-          return homePath + "/" + image.currentValue
+          return prefixToRelativePath + "/" + image.currentValue
         }
         else if (!image.currentValue) {
           fieldItem.state = "notSet"
           return ""
         }
         fieldItem.state = "notAvailable"
-        return homePath + "/" + image.currentValue
+        return prefixToRelativePath + "/" + image.currentValue
       }
     }
   }
@@ -136,7 +144,7 @@ Item {
     anchors.bottom: imageContainer.bottom
     anchors.margins: buttonsContainer.itemHeight/4
 
-    onClicked: externalResourceHandler.removeImage(fieldItem, homePath + "/" + image.currentValue)
+    onClicked: externalResourceHandler.removeImage(fieldItem, prefixToRelativePath + "/" + image.currentValue)
 
     background: Image {
       id: deleteIcon
@@ -189,7 +197,9 @@ Item {
           anchors.fill: parent
           onClicked: {
             photoCapturePanel.visible = true
-            photoCapturePanel.targetDir = homePath
+            photoCapturePanel.targetDir = targetDir
+            photoCapturePanel.homePath = homePath
+            photoCapturePanel.prefixToRelativePath = prefixToRelativePath
             photoCapturePanel.fieldItem = fieldItem
           }
         }
