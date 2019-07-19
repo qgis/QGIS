@@ -455,7 +455,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
   return extract( extent, mapBoundary );
 }
 
-QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll )
+QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll, QList<LabelPosition *> *unlabeled )
 {
   if ( !prob )
     return QList<LabelPosition *>();
@@ -476,7 +476,7 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll )
     return QList<LabelPosition *>();
   }
 
-  return prob->getSolution( displayAll );
+  return prob->getSolution( displayAll, unlabeled );
 }
 
 

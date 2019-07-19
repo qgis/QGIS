@@ -2216,7 +2216,7 @@ bool Problem::compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 )
   return l1->getWidth() * l1->getHeight() > l2->getWidth() * l2->getHeight();
 }
 
-QList<LabelPosition *> Problem::getSolution( bool returnInactive )
+QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled )
 {
   int i;
   QList<LabelPosition *> solList;
@@ -2237,6 +2237,10 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive )
               || mLabelPositions.at( featStartId[i] )->getFeaturePart()->alwaysShow() )
     {
       solList.push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
+    }
+    else if ( unlabeled )
+    {
+      unlabeled->push_back( mLabelPositions.at( featStartId[i] ) );
     }
   }
 
