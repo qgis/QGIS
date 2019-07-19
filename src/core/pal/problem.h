@@ -150,7 +150,19 @@ namespace pal
        */
       void chain_search();
 
-      QList<LabelPosition *> getSolution( bool returnInactive );
+      /**
+       * Solves the labeling problem, selecting the best candidate locations for all labels and returns a list of these
+       * calculated label positions.
+       *
+       * If \a returnInactive is true, then the best positions for ALL labels will be returned, regardless of whether these
+       * labels overlap other labels.
+       *
+       * If the optional \a unlabeled list is specified, it will be filled with a list of all feature labels which could
+       * not be placed in the returned solution (e.g. due to overlaps or other constraints).
+       *
+       * Ownership of the returned labels is not transferred - it resides with the pal object.
+       */
+      QList<LabelPosition *> getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled = nullptr );
 
       PalStat *getStats();
 
