@@ -101,7 +101,8 @@ Depends:
  ${misc:Depends},
  python3-qgis (= ${binary:Version}),
  qgis-providers (= ${binary:Version}),
- qgis-common (= ${source:Version})
+ qgis-common (= ${source:Version}),
+ qt5-image-formats-plugins
 Recommends:
  qgis-plugin-grass
 Suggests: gpsbabel
