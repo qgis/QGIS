@@ -337,7 +337,8 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
 
   // find the solution
-  QList<pal::LabelPosition *> labels = p.solveProblem( problem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
+  QList<pal::LabelPosition *> unlabeled;
+  QList<pal::LabelPosition *> labels = p.solveProblem( problem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ), settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) ? &unlabeled : nullptr );
 
   QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels.size() ), 4 );
   t.restart();
@@ -402,6 +403,29 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
     lf->provider()->drawLabel( context, label );
   }
 
+  // draw unplaced labels. These are always rendered on top
+  if ( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) )
+  {
+    for ( pal::LabelPosition *label : qgis::as_const( unlabeled ) )
+    {
+      if ( context.renderingStopped() )
+        break;
+      QgsLabelFeature *lf = label->getFeaturePart()->feature();
+      if ( !lf )
+      {
+        continue;
+      }
+
+      context.expressionContext().setFeature( lf->feature() );
+      context.expressionContext().setFields( lf->feature().fields() );
+      if ( lf->symbol() )
+      {
+        symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+      }
+      lf->provider()->drawUnplacedLabel( context, label );
+    }
+  }
+
   context.expressionContext().popScope();
 
   // cleanup
@@ -440,6 +464,11 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   , mObstacleType( QgsPalLayerSettings::PolygonInterior )
   , mUpsidedownLabels( QgsPalLayerSettings::Upright )
 {
+}
+
+void QgsAbstractLabelProvider::drawUnplacedLabel( QgsRenderContext &, pal::LabelPosition * ) const
+{
+
 }
 
 void QgsAbstractLabelProvider::drawLabelBackground( QgsRenderContext &, pal::LabelPosition * ) const

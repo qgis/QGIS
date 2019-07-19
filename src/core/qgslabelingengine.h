@@ -74,6 +74,19 @@ class CORE_EXPORT QgsAbstractLabelProvider
     virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const = 0;
 
     /**
+     * Draw an unplaced label. These correspond to features which were registered for labeling,
+     * but which could not be labeled (e.g. due to conflicting labels).
+     *
+     * The default behavior is to draw nothing for these labels.
+     *
+     * \note This method is only used if the QgsLabelingEngineSettings::DrawUnplacedLabels flag
+     * is set on the labeling engine.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void drawUnplacedLabel( QgsRenderContext &context, pal::LabelPosition *label ) const;
+
+    /**
      * Draw the background for the specified \a label.
      *
      * This is called in turn for each label provider before any actual labels are rendered,

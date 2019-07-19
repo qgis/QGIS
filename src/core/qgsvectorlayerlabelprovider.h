@@ -53,6 +53,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     void drawLabelBackground( QgsRenderContext &context, pal::LabelPosition *label ) const override;
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void drawUnplacedLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
     void startRender( QgsRenderContext &context ) override;
     void stopRender( QgsRenderContext &context ) override;
 

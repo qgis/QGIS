@@ -424,6 +424,23 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition(), mProviderId );
 }
 
+void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
+{
+  if ( !mSettings.drawLabels )
+    return;
+
+  QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+
+  QgsPalLayerSettings tmpLyr( mSettings );
+  QgsTextFormat format = tmpLyr.format();
+  format.setColor( mEngine->engineSettings().unplacedLabelColor() );
+  tmpLyr.setFormat( format );
+  drawLabelPrivate( label, context, tmpLyr, QgsTextRenderer::Text );
+
+  // add to the results
+  QString labeltext = label->getFeaturePart()->feature()->labelText();
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, tmpLyr.format().font(), false, lf->hasFixedPosition(), mProviderId );
+}
 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, QgsTextRenderer::TextPart drawType, double dpiRatio ) const
 {

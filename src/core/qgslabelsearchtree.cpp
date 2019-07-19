@@ -113,7 +113,7 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
 
   if ( pal::LabelPosition *next = labelPos->getNextPart() )
   {
-    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId );
+    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId, isUnplaced );
   }
   return true;
 }
