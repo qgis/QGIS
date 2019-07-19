@@ -423,9 +423,13 @@ class CORE_EXPORT QgsCoordinateTransform
      * Clears the internal cache used to initialize QgsCoordinateTransform objects.
      * This should be called whenever the srs database has
      * been modified in order to ensure that outdated CRS transforms are not created.
+     *
+     * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
+     * argument is for internal use only.
+     *
      * \since QGIS 3.0
      */
-    static void invalidateCache();
+    static void invalidateCache( bool disableCache = false );
 
     /**
      * Computes an *estimated* conversion factor between source and destination units:
@@ -536,6 +540,7 @@ class CORE_EXPORT QgsCoordinateTransform
     // cache
     static QReadWriteLock sCacheLock;
     static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
+    static bool sDisableCache;
 
 };
 
