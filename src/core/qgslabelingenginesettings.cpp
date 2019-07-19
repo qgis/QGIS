@@ -16,7 +16,7 @@
 #include "qgslabelingenginesettings.h"
 
 #include "qgsproject.h"
-
+#include "qgssymbollayerutils.h"
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings()
   : mFlags( UsePartialCandidates )
@@ -41,6 +41,7 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), false, &saved ) ) mFlags |= DrawLabelRectOnly;
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), false, &saved ) ) mFlags |= UseAllLabels;
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), true, &saved ) ) mFlags |= UsePartialCandidates;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawUnplaced" ), false, &saved ) ) mFlags |= DrawUnplacedLabels;
 
   mDefaultTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
   // if users have disabled the older PAL "DrawOutlineLabels" setting, respect that
@@ -50,6 +51,8 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
   const int projectTextFormat = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/TextFormat" ), -1 );
   if ( projectTextFormat >= 0 )
     mDefaultTextRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( projectTextFormat );
+
+  mUnplacedLabelColor = QgsSymbolLayerUtils::decodeColor( prj->readEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QStringLiteral( "#ff0000" ) ) );
 }
 
 void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
@@ -61,10 +64,23 @@ void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
 
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawUnplaced" ), mFlags.testFlag( DrawUnplacedLabels ) );
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( UseAllLabels ) );
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( UsePartialCandidates ) );
 
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/TextFormat" ), static_cast< int >( mDefaultTextRenderFormat ) );
+
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QgsSymbolLayerUtils::encodeColor( mUnplacedLabelColor ) );
+}
+
+QColor QgsLabelingEngineSettings::unplacedLabelColor() const
+{
+  return mUnplacedLabelColor;
+}
+
+void QgsLabelingEngineSettings::setUnplacedLabelColor( const QColor &unplacedLabelColor )
+{
+  mUnplacedLabelColor = unplacedLabelColor;
 }
 
 

@@ -38,6 +38,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
       RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
       DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
+      DrawUnplacedLabels    = 1 << 6,  //!< Whether to render unplaced labels as an indicator/warning for users
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -109,6 +110,22 @@ class CORE_EXPORT QgsLabelingEngineSettings
       mDefaultTextRenderFormat = format;
     }
 
+    /**
+     * Returns the color to use when rendering unplaced labels.
+     *
+     * \see setUnplacedLabelColor()
+     * \since QGIS 3.10
+     */
+    QColor unplacedLabelColor() const;
+
+    /**
+     * Sets the \a color to use when rendering unplaced labels.
+     *
+     * \see unplacedLabelColor()
+     * \since QGIS 3.10
+     */
+    void setUnplacedLabelColor( const QColor &color );
+
   private:
     //! Flags
     Flags mFlags;
@@ -116,6 +133,8 @@ class CORE_EXPORT QgsLabelingEngineSettings
     Search mSearchMethod = Chain;
     //! Number of candedate positions that will be generated for features
     int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
+
+    QColor mUnplacedLabelColor = QColor( 255, 0, 0 );
 
     QgsRenderContext::TextRenderFormat mDefaultTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 

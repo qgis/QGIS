@@ -48,8 +48,13 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
 
   chkShowCandidates->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) );
   chkShowAllLabels->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
-
+  chkShowUnplaced->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
   chkShowPartialsLabels->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
+
+  mUnplacedColorButton->setColor( engineSettings.unplacedLabelColor() );
+  mUnplacedColorButton->setAllowOpacity( false );
+  mUnplacedColorButton->setDefaultColor( QColor( 255, 0, 0 ) );
+  mUnplacedColorButton->setWindowTitle( tr( "Unplaced Label Color" ) );
 
   mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( engineSettings.defaultTextRenderFormat() ) );
 }
@@ -59,15 +64,18 @@ void QgsLabelEngineConfigDialog::onOK()
   QgsLabelingEngineSettings engineSettings;
 
   // save
-  engineSettings.setSearchMethod( ( QgsLabelingEngineSettings::Search ) cboSearchMethod->currentIndex() );
+  engineSettings.setSearchMethod( static_cast< QgsLabelingEngineSettings::Search >( cboSearchMethod->currentIndex() ) );
 
   engineSettings.setNumCandidatePositions( spinCandPoint->value(), spinCandLine->value(), spinCandPolygon->value() );
 
   engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, chkShowCandidates->isChecked() );
   engineSettings.setFlag( QgsLabelingEngineSettings::UseAllLabels, chkShowAllLabels->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, chkShowUnplaced->isChecked() );
   engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, chkShowPartialsLabels->isChecked() );
 
   engineSettings.setDefaultTextRenderFormat( static_cast< QgsRenderContext::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() ) );
+
+  engineSettings.setUnplacedLabelColor( mUnplacedColorButton->color() );
 
   QgsProject::instance()->setLabelingEngineSettings( engineSettings );
 
