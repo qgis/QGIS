@@ -28,6 +28,7 @@ Stores global configuration for labeling engine
       RenderOutlineLabels,
       DrawLabelRectOnly,
       DrawCandidates,
+      DrawUnplacedLabels,
     };
     typedef QFlags<QgsLabelingEngineSettings::Flag> Flags;
 
@@ -109,6 +110,24 @@ Sets the default text rendering ``format`` for the labels.
 .. seealso:: :py:func:`defaultTextRenderFormat`
 
 .. versionadded:: 3.4.3
+%End
+
+    QColor unplacedLabelColor() const;
+%Docstring
+Returns the color to use when rendering unplaced labels.
+
+.. seealso:: :py:func:`setUnplacedLabelColor`
+
+.. versionadded:: 3.10
+%End
+
+    void setUnplacedLabelColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use when rendering unplaced labels.
+
+.. seealso:: :py:func:`unplacedLabelColor`
+
+.. versionadded:: 3.10
 %End
 
 };

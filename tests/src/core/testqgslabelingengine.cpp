@@ -123,18 +123,32 @@ void TestQgsLabelingEngine::testEngineSettings()
   settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
   QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
 
+  settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
+  QVERIFY( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
+  settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, false );
+  QVERIFY( !settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
+
+  settings.setUnplacedLabelColor( QColor( 0, 255, 0 ) );
+  QCOMPARE( settings.unplacedLabelColor().name(), QStringLiteral( "#00ff00" ) );
+
   // reading from project
   QgsProject p;
   settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
+  settings.setUnplacedLabelColor( QColor( 0, 255, 0 ) );
   settings.writeSettingsToProject( &p );
   QgsLabelingEngineSettings settings2;
   settings2.readSettingsFromProject( &p );
   QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  QVERIFY( settings2.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
+  QCOMPARE( settings2.unplacedLabelColor().name(), QStringLiteral( "#00ff00" ) );
 
   settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, false );
   settings.writeSettingsToProject( &p );
   settings2.readSettingsFromProject( &p );
   QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  QVERIFY( !settings2.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
 
   // test that older setting is still respected as a fallback
   QgsProject p2;
