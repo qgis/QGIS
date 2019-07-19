@@ -20,7 +20,7 @@ class QgsLabelPosition
   public:
 
     QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
-                      const QgsGeometry &labelGeometry = QgsGeometry() );
+                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false );
 %Docstring
 Constructor for QgsLabelPosition.
 
@@ -38,6 +38,7 @@ Constructor for QgsLabelPosition.
 :param pinned: ``True`` if label has pinned placement
 :param providerId: ID of associated label provider
 :param labelGeometry: polygon geometry of label boundary
+:param isUnplaced: set to ``True`` if label was unplaced (e.g. due to collisions with other labels)
 %End
 
     QgsLabelPosition();
@@ -71,6 +72,8 @@ Constructor for QgsLabelPosition
     bool isPinned;
 
     QString providerID;
+
+    bool isUnplaced;
 };
 
 

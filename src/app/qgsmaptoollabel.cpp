@@ -71,6 +71,18 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
   if ( !activeLayerLabels.empty() )
     labelPosList = activeLayerLabels;
 
+  // prioritize unplaced labels
+  QList<QgsLabelPosition> unplacedLabels;
+  for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+  {
+    if ( pos.isUnplaced )
+    {
+      unplacedLabels.append( pos );
+    }
+  }
+  if ( !unplacedLabels.empty() )
+    labelPosList = unplacedLabels;
+
   if ( labelPosList.count() > 1 )
   {
     // multiple candidates found, so choose the smallest (i.e. most difficult to select otherwise)

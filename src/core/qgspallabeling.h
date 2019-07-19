@@ -97,9 +97,10 @@ class CORE_EXPORT QgsLabelPosition
      * \param pinned TRUE if label has pinned placement
      * \param providerId ID of associated label provider
      * \param labelGeometry polygon geometry of label boundary
+     * \param isUnplaced set to TRUE if label was unplaced (e.g. due to collisions with other labels)
      */
     QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
-                      const QgsGeometry &labelGeometry = QgsGeometry() )
+                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false )
       : featureId( id )
       , rotation( r )
       , cornerPoints( corners )
@@ -114,6 +115,7 @@ class CORE_EXPORT QgsLabelPosition
       , isDiagram( diagram )
       , isPinned( pinned )
       , providerID( providerId )
+      , isUnplaced( isUnplaced )
     {}
 
     //! Constructor for QgsLabelPosition
@@ -183,6 +185,12 @@ class CORE_EXPORT QgsLabelPosition
      * \since QGIS 2.14
      */
     QString providerID;
+
+    /**
+     * TRUE if label position corresponds to an unplaced label.
+     * \since QGIS 3.10
+     */
+    bool isUnplaced = false;
 };
 
 
