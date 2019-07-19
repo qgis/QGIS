@@ -447,24 +447,27 @@ void QgsDualView::updateEditSelectionProgress( int progress, int count )
 void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
 {
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
-  if ( canvas )
+  if ( canvas && view() == AttributeEditor && featureset != mLastFeatureSet )
   {
-    if ( mAutoPanButton->isChecked() )
-      QTimer::singleShot( 0, this, [ = ]()
+    if ( filterMode() != QgsAttributeTableFilterModel::ShowVisible )
     {
-      canvas->panToFeatureIds( mLayer, featureset, false );
-    } );
-    else if ( mAutoZoomButton->isChecked() )
-      QTimer::singleShot( 0, this, [ = ]()
-    {
-      canvas->zoomToFeatureIds( mLayer, featureset );
-    } );
-
+      if ( mAutoPanButton->isChecked() )
+        QTimer::singleShot( 0, this, [ = ]()
+      {
+        canvas->panToFeatureIds( mLayer, featureset, false );
+      } );
+      else if ( mAutoZoomButton->isChecked() )
+        QTimer::singleShot( 0, this, [ = ]()
+      {
+        canvas->zoomToFeatureIds( mLayer, featureset );
+      } );
+    }
     if ( mFlashButton->isChecked() )
       QTimer::singleShot( 0, this, [ = ]()
     {
       canvas->flashFeatureIds( mLayer, featureset );
     } );
+    mLastFeatureSet = featureset;
   }
 }
 
