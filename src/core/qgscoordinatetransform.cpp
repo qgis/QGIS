@@ -821,7 +821,10 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return false;
 
-  sCacheLock.lockForRead();
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Read );
+  if ( sDisableCache )
+    return false;
+
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( sourceKey, destKey ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
@@ -833,7 +836,7 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
       bool hasContext = mHasContext;
 #endif
       *this = *valIt;
-      sCacheLock.unlock();
+      locker.unlock();
 
       mContext = context;
 #ifdef QGISDEBUG
@@ -843,7 +846,6 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
       return true;
     }
   }
-  sCacheLock.unlock();
   return false;
 }
 #else
