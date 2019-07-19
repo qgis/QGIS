@@ -703,6 +703,7 @@ Returns a list of recently used projections
 .. versionadded:: 2.7
 %End
 
+
     static void invalidateCache();
 %Docstring
 Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.

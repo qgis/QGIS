@@ -631,13 +631,30 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QStringList recentProjections();
 
+#ifndef SIP_RUN
+
     /**
      * Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
      * This should be called whenever the srs database has been modified in order to ensure
      * that outdated CRS objects are not created.
+     *
+     * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
+     * argument is for internal use only.
+     *
      * \since QGIS 3.0
      */
-    static void invalidateCache();
+    static void invalidateCache( bool disableCache = false );
+#else
+
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
+     * This should be called whenever the srs database has been modified in order to ensure
+     * that outdated CRS objects are not created.
+     *
+     * \since QGIS 3.0
+     */
+    static void invalidateCache( bool disableCache SIP_PYARGREMOVE = false );
+#endif
 
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they won't create
@@ -762,16 +779,27 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     static QReadWriteLock sSrIdCacheLock;
     static QHash< long, QgsCoordinateReferenceSystem > sSrIdCache;
+    static bool sDisableSrIdCache;
+
     static QReadWriteLock sOgcLock;
     static QHash< QString, QgsCoordinateReferenceSystem > sOgcCache;
+    static bool sDisableOgcCache;
+
     static QReadWriteLock sProj4CacheLock;
     static QHash< QString, QgsCoordinateReferenceSystem > sProj4Cache;
+    static bool sDisableProj4Cache;
+
     static QReadWriteLock sCRSWktLock;
     static QHash< QString, QgsCoordinateReferenceSystem > sWktCache;
+    static bool sDisableWktCache;
+
     static QReadWriteLock sCRSSrsIdLock;
     static QHash< long, QgsCoordinateReferenceSystem > sSrsIdCache;
+    static bool sDisableSrsIdCache;
+
     static QReadWriteLock sCrsStringLock;
     static QHash< QString, QgsCoordinateReferenceSystem > sStringCache;
+    static bool sDisableStringCache;
 
     friend class TestQgsCoordinateReferenceSystem;
 };

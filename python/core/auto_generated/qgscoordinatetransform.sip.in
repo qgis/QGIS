@@ -349,6 +349,7 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`setSourceDatumTransformId`
 %End
 
+
     static void invalidateCache();
 %Docstring
 Clears the internal cache used to initialize QgsCoordinateTransform objects.
