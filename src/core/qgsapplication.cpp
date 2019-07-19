@@ -312,10 +312,10 @@ QgsApplication::~QgsApplication()
   // is destroyed before the static variables of the cache, we might use freed memory.
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
-  // and there's just a *chance* that in between an exitQgis call and this destructor
-  // something else's destructor has caused a new entry in the caches...
-  QgsCoordinateTransform::invalidateCache();
-  QgsCoordinateReferenceSystem::invalidateCache();
+  // and there's just a *chance* that someone hasn't properly called exitQgis prior to
+  // this destructor...
+  QgsCoordinateTransform::invalidateCache( true );
+  QgsCoordinateReferenceSystem::invalidateCache( true );
 }
 
 QgsApplication *QgsApplication::instance()
@@ -1196,11 +1196,11 @@ void QgsApplication::exitQgis()
 
   delete QgsProviderRegistry::instance();
 
-  // invalidate coordinate cache while the PROJ context held by the thread-locale
+  // invalidate coordinate cache AND DISABLE THEM! while the PROJ context held by the thread-locale
   // QgsProjContextStore object is still alive. Otherwise if this later object
   // is destroyed before the static variables of the cache, we might use freed memory.
-  QgsCoordinateTransform::invalidateCache();
-  QgsCoordinateReferenceSystem::invalidateCache();
+  QgsCoordinateTransform::invalidateCache( true );
+  QgsCoordinateReferenceSystem::invalidateCache( true );
 
   QgsStyle::cleanDefaultStyle();
 
