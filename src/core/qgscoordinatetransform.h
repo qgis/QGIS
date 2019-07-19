@@ -419,6 +419,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     Q_DECL_DEPRECATED void setDestinationDatumTransformId( int datumId ) SIP_DEPRECATED;
 
+#ifndef SIP_RUN
+
     /**
      * Clears the internal cache used to initialize QgsCoordinateTransform objects.
      * This should be called whenever the srs database has
@@ -430,6 +432,17 @@ class CORE_EXPORT QgsCoordinateTransform
      * \since QGIS 3.0
      */
     static void invalidateCache( bool disableCache = false );
+#else
+
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateTransform objects.
+     * This should be called whenever the srs database has
+     * been modified in order to ensure that outdated CRS transforms are not created.
+     *
+     * \since QGIS 3.0
+     */
+    static void invalidateCache( bool disableCache SIP_PYARGREMOVE = false );
+#endif
 
     /**
      * Computes an *estimated* conversion factor between source and destination units:
