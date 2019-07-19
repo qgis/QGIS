@@ -406,6 +406,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     // If the current feature is set, while the form is still not initialized
     // we will temporarily save it in here and set it on init
     QgsFeature mTempAttributeFormFeature;
+    QgsFeatureIds mLastFeatureSet;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;
