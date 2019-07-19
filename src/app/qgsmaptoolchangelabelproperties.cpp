@@ -38,6 +38,7 @@ QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *
   mPalProperties << QgsPalLayerSettings::Underline;
   mPalProperties << QgsPalLayerSettings::Color;
   mPalProperties << QgsPalLayerSettings::Strikeout;
+  mPalProperties << QgsPalLayerSettings::MultiLineAlignment;
   mPalProperties << QgsPalLayerSettings::BufferSize;
   mPalProperties << QgsPalLayerSettings::BufferColor;
   mPalProperties << QgsPalLayerSettings::LabelDistance;
