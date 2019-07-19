@@ -135,7 +135,8 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
 
     // Add error
     double area = gapGeom->area();
-    errors.append( new QgsGeometryGapCheckError( this, QString(), QgsGeometry( gapGeom.release() ), neighboringIds, area, gapAreaBBox ) );
+    QgsRectangle gapBbox = gapGeom->boundingBox();
+    errors.append( new QgsGeometryGapCheckError( this, QString(), QgsGeometry( gapGeom.release() ), neighboringIds, area, gapBbox, gapAreaBBox ) );
   }
 }
 
@@ -293,6 +294,11 @@ QgsGeometryCheck::CheckType QgsGeometryGapCheck::factoryCheckType()
   return QgsGeometryCheck::LayerCheck;
 }
 ///@endcond private
+
+QgsRectangle QgsGeometryGapCheckError::contextBoundingBox() const
+{
+  return mContextBoundingBox;
+}
 
 bool QgsGeometryGapCheckError::isEqual( QgsGeometryCheckError *other ) const
 {
