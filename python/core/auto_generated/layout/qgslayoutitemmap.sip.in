@@ -34,6 +34,7 @@ Layout graphical items for displaying a map.
     enum MapItemFlag
     {
       ShowPartialLabels,
+      ShowUnplacedLabels,
     };
     typedef QFlags<QgsLayoutItemMap::MapItemFlag> MapItemFlags;
 
