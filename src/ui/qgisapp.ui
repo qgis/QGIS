@@ -611,6 +611,7 @@
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
+   <addaction name="mActionShowUnplacedLabels"/>
   </widget>
   <widget class="QToolBar" name="mVectorToolBar">
    <property name="windowTitle">
@@ -3186,6 +3187,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>New Virtual Layer</string>
+   </property>
+  </action>
+  <action name="mActionShowUnplacedLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show Unplaced Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggles Display of Unplaced Labels</string>
    </property>
   </action>
  </widget>

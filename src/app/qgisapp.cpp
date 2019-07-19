@@ -2316,6 +2316,17 @@ void QgisApp::createActions()
   connect( mActionSponsors, &QAction::triggered, this, &QgisApp::sponsors );
 
   connect( mActionShowPinnedLabels, &QAction::toggled, this, &QgisApp::showPinnedLabels );
+  connect( mActionShowUnplacedLabels, &QAction::toggled, this, [ = ]( bool active )
+  {
+    QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
+    engineSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, active );
+    QgsProject::instance()->setLabelingEngineSettings( engineSettings );
+    refreshMapCanvas( true );
+  } );
+  connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged, this, [ = ]
+  {
+    whileBlocking( mActionShowUnplacedLabels )->setChecked( QgsProject::instance()->labelingEngineSettings().testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
+  } );
   connect( mActionPinLabels, &QAction::triggered, this, &QgisApp::pinLabels );
   connect( mActionShowHideLabels, &QAction::triggered, this, &QgisApp::showHideLabels );
   connect( mActionMoveLabel, &QAction::triggered, this, &QgisApp::moveLabel );
