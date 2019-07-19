@@ -392,14 +392,12 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. deprecated:: Unused on builds based on Proj 6.0 or later
 %End
 
-    static void invalidateCache( bool disableCache = false );
+
+    static void invalidateCache();
 %Docstring
 Clears the internal cache used to initialize QgsCoordinateTransform objects.
 This should be called whenever the srs database has
 been modified in order to ensure that outdated CRS transforms are not created.
-
-If ``disableCache`` is ``True`` then the inbuilt cache will be completely disabled. This
-argument is for internal use only.
 
 .. versionadded:: 3.0
 %End
