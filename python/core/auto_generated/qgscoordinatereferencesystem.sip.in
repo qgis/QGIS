@@ -705,14 +705,12 @@ Returns a list of recently used projections
 .. versionadded:: 2.7
 %End
 
-    static void invalidateCache( bool disableCache = false );
+
+    static void invalidateCache();
 %Docstring
 Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
 This should be called whenever the srs database has been modified in order to ensure
 that outdated CRS objects are not created.
-
-If ``disableCache`` is ``True`` then the inbuilt cache will be completely disabled. This
-argument is for internal use only.
 
 .. versionadded:: 3.0
 %End

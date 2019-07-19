@@ -671,6 +671,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QStringList recentProjections();
 
+#ifndef SIP_RUN
+
     /**
      * Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
      * This should be called whenever the srs database has been modified in order to ensure
@@ -682,6 +684,17 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.0
      */
     static void invalidateCache( bool disableCache = false );
+#else
+
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
+     * This should be called whenever the srs database has been modified in order to ensure
+     * that outdated CRS objects are not created.
+     *
+     * \since QGIS 3.0
+     */
+    static void invalidateCache( bool disableCache SIP_PYARGREMOVE = false );
+#endif
 
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they won't create
