@@ -15,6 +15,9 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsPointDisplacementRenderer -V
+
 """
 
 __author__ = 'Nyall Dawson'
@@ -45,7 +48,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapSettings,
                        QgsProperty,
                        QgsReadWriteContext,
-                       QgsSymbolLayer
+                       QgsSymbolLayer,
+                       QgsRenderContext
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -225,6 +229,11 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_adjust_grid')
         self.assertTrue(renderchecker.runTest('expected_displacement_adjust_grid'))
+
+    def testUsedAttributes(self):
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+
+        self.assertCountEqual(self.layer.renderer().usedAttributes(ctx), {})
 
 
 if __name__ == '__main__':
