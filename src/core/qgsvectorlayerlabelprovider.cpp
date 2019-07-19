@@ -306,7 +306,8 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
 
     QgsGeometry g( QgsGeos::fromGeos( label->getFeaturePart()->feature()->geometry() ) );
     g.transform( xform.transform() );
-    mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g );
+    QgsCallout::QgsCalloutContext calloutContext;
+    mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
   }
 }
 

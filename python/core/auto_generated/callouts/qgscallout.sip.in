@@ -156,7 +156,12 @@ Returns the desired drawing order (stacking) to use while rendering this callout
 The default order is QgsCallout.OrderBelowIndividualLabels.
 %End
 
-    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
+    struct QgsCalloutContext
+    {
+      bool temporary;
+    };
+
+    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
 %Docstring
 Renders the callout onto the specified render ``context``.
 
@@ -171,6 +176,9 @@ E.g. a subclass may prefer to attach to the centroid of the ``anchor``, while an
 prefer to attach to the closest point on ``anchor`` instead.
 
 Both ``rect`` and ``anchor`` must be specified in painter coordinates (i.e. pixels).
+
+The ``calloutContext`` argument is used to specify additional contextual information about
+how a callout is being rendered.
 
 .. warning::
 
@@ -218,7 +226,7 @@ Returns the definitions for data defined properties available for use in callout
 
   protected:
 
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) = 0;
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 %Docstring
 Performs the actual rendering of the callout implementation onto the specified render ``context``.
 
@@ -233,6 +241,9 @@ E.g. a subclass may prefer to attach to the centroid of the ``anchor``, while an
 prefer to attach to the closest point on ``anchor`` instead.
 
 Both ``rect`` and ``anchor`` are specified in painter coordinates (i.e. pixels).
+
+The ``calloutContext`` argument is used to specify additional contextual information about
+how a callout is being rendered.
 %End
 
 };
@@ -352,7 +363,7 @@ Returns the map unit scale for the minimum callout length.
 %End
 
   protected:
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor );
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
 
   private:
@@ -390,7 +401,7 @@ QgsManhattanLineCallout.properties() ).
 
 
   protected:
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor );
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
 
   private:

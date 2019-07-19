@@ -174,6 +174,19 @@ class CORE_EXPORT QgsCallout
     virtual DrawOrder drawOrder() const;
 
     /**
+     * Contains additional contextual information about the context in which a callout is
+     * being rendered.
+     * \ingroup core
+     * \since QGIS 3.10
+     */
+    struct CORE_EXPORT QgsCalloutContext
+    {
+      ///@cond PRIVATE
+      bool temporary = false; // Temporary member only, required for building on some platforms
+      ///@endcond
+    };
+
+    /**
      * Renders the callout onto the specified render \a context.
      *
      * The \a rect argument gives the desired size and position of the body of the callout (e.g. the
@@ -188,10 +201,13 @@ class CORE_EXPORT QgsCallout
      *
      * Both \a rect and \a anchor must be specified in painter coordinates (i.e. pixels).
      *
+     * The \a calloutContext argument is used to specify additional contextual information about
+     * how a callout is being rendered.
+     *
      * \warning A prior call to startRender() must have been made before calling this method, and
      * after all render() operations are complete a call to stopRender() must be made.
      */
-    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor );
+    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
 
     /**
      * Returns TRUE if the the callout is enabled.
@@ -250,8 +266,11 @@ class CORE_EXPORT QgsCallout
      * prefer to attach to the closest point on \a anchor instead.
      *
      * Both \a rect and \a anchor are specified in painter coordinates (i.e. pixels).
+     *
+     * The \a calloutContext argument is used to specify additional contextual information about
+     * how a callout is being rendered.
      */
-    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) = 0;
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 
   private:
 
@@ -365,7 +384,7 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     const QgsMapUnitScale &minimumLengthMapUnitScale() const { return mMinCalloutLengthScale; }
 
   protected:
-    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) override;
+    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
   private:
 
@@ -414,7 +433,7 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout *clone() const override;
 
   protected:
-    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor ) override;
+    void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
   private:
 #ifdef SIP_RUN
