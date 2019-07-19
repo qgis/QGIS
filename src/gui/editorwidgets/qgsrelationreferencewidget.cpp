@@ -205,7 +205,6 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
       mComboBox->setIdentifierField( mReferencedField );
 
     mReferencedFieldIdx = mReferencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
-    mReferencingFieldIdx = mReferencingLayer->fields().lookupField( relation.fieldPairs().at( 0 ).first );
     mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
 
 
@@ -900,7 +899,7 @@ void QgsRelationReferenceWidget::addEntry()
 
   if ( mEditorContext.vectorLayerTools()->addFeature( mReferencedLayer, attributes, QgsGeometry(), &f ) )
   {
-    mComboBox->setIdentifierValue( f.attribute( mReferencingFieldIdx ) );
+    mComboBox->setIdentifierValue( f.attribute( mReferencedFieldIdx ) );
     mAddEntryButton->setEnabled( false );
   }
 }
