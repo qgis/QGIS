@@ -45,6 +45,7 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::Underline,
   QgsPalLayerSettings::Color,
   QgsPalLayerSettings::Strikeout,
+  QgsPalLayerSettings::MultiLineAlignment,
   QgsPalLayerSettings::BufferSize,
   QgsPalLayerSettings::BufferColor,
   QgsPalLayerSettings::LabelDistance,
@@ -53,7 +54,8 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::ScaleVisibility,
   QgsPalLayerSettings::MinScale,
   QgsPalLayerSettings::MaxScale,
-  QgsPalLayerSettings::AlwaysShow
+  QgsPalLayerSettings::AlwaysShow,
+  QgsPalLayerSettings::CalloutDraw
 };
 
 //

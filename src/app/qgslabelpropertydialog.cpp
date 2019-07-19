@@ -58,10 +58,12 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mRotationSpinBox_valueChanged );
   connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsLabelPropertyDialog::mFontColorButton_colorChanged );
   connect( mBufferColorButton, &QgsColorButton::colorChanged, this, &QgsLabelPropertyDialog::mBufferColorButton_colorChanged );
+  connect( mMultiLineAlignComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mMultiLineAlignComboBox_currentIndexChanged );
   connect( mHaliComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mHaliComboBox_currentIndexChanged );
   connect( mValiComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mValiComboBox_currentIndexChanged );
   connect( mLabelTextLineEdit, &QLineEdit::textChanged, this, &QgsLabelPropertyDialog::mLabelTextLineEdit_textChanged );
   mRotationSpinBox->setClearValue( 0 );
+  fillMultiLineAlignComboBox();
   fillHaliComboBox();
   fillValiComboBox();
 
@@ -178,8 +180,28 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   mBufferColorButton->setColor( buffer.color() );
   mMinScaleWidget->setScale( layerSettings.minimumScale );
   mMaxScaleWidget->setScale( layerSettings.maximumScale );
-  mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "Left" ) );
-  mValiComboBox->setCurrentIndex( mValiComboBox->findData( "Bottom" ) );
+
+  QString defaultMultilineAlign;
+  switch ( layerSettings.multilineAlign )
+  {
+    case QgsPalLayerSettings::MultiLeft:
+      defaultMultilineAlign = QStringLiteral( "left" );
+      break;
+    case QgsPalLayerSettings::MultiCenter:
+      defaultMultilineAlign = QStringLiteral( "center" );
+      break;
+    case QgsPalLayerSettings::MultiRight:
+      defaultMultilineAlign = QStringLiteral( "right" );
+      break;
+    case QgsPalLayerSettings::MultiFollowPlacement:
+      defaultMultilineAlign = QStringLiteral( "follow label placement" );
+      break;
+  }
+  mMultiLineAlignComboBox->setItemText( mMultiLineAlignComboBox->findData( "" ), tr( "Layer default (%1)" ).arg( defaultMultilineAlign ) );
+  mMultiLineAlignComboBox->setCurrentIndex( mMultiLineAlignComboBox->findData( "" ) );
+
+  mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "left", Qt::UserRole, Qt::MatchFixedString ) );
+  mValiComboBox->setCurrentIndex( mValiComboBox->findData( "bottom", Qt::UserRole, Qt::MatchFixedString ) );
   mFontColorButton->setColorDialogTitle( tr( "Font Color" ) );
   mBufferColorButton->setColorDialogTitle( tr( "Buffer Color" ) );
 
@@ -215,6 +237,7 @@ void QgsLabelPropertyDialog::disableGuiElements()
   mLabelDistanceSpinBox->setEnabled( false );
   mXCoordSpinBox->setEnabled( false );
   mYCoordSpinBox->setEnabled( false );
+  mMultiLineAlignComboBox->setEnabled( false );
   mHaliComboBox->setEnabled( false );
   mValiComboBox->setEnabled( false );
   mRotationSpinBox->setEnabled( false );
@@ -240,6 +263,7 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
   mLabelDistanceSpinBox->blockSignals( block );
   mXCoordSpinBox->blockSignals( block );
   mYCoordSpinBox->blockSignals( block );
+  mMultiLineAlignComboBox->blockSignals( block );
   mHaliComboBox->blockSignals( block );
   mValiComboBox->blockSignals( block );
   mRotationSpinBox->blockSignals( block );
@@ -344,11 +368,14 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
         }
         break;
       }
+      case QgsPalLayerSettings::MultiLineAlignment:
+        mMultiLineAlignComboBox->setCurrentIndex( mMultiLineAlignComboBox->findData( result.toString(), Qt::UserRole, Qt::MatchFixedString ) );
+        break;
       case QgsPalLayerSettings::Hali:
-        mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( result.toString() ) );
+        mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( result.toString(), Qt::UserRole, Qt::MatchFixedString ) );
         break;
       case QgsPalLayerSettings::Vali:
-        mValiComboBox->setCurrentIndex( mValiComboBox->findData( result.toString() ) );
+        mValiComboBox->setCurrentIndex( mValiComboBox->findData( result.toString(), Qt::UserRole, Qt::MatchFixedString ) );
         break;
       case QgsPalLayerSettings::BufferColor:
         mBufferColorButton->setColor( QColor( result.toString() ) );
@@ -438,6 +465,9 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::LabelDistance:
         mLabelDistanceSpinBox->setEnabled( true );
         break;
+      case QgsPalLayerSettings::MultiLineAlignment:
+        mMultiLineAlignComboBox->setEnabled( true );
+        break;
       case QgsPalLayerSettings::Hali:
         mHaliComboBox->setEnabled( true );
         break;
@@ -522,6 +552,14 @@ void QgsLabelPropertyDialog::populateFontStyleComboBox()
   }
 
   mFontStyleCmbBx->setCurrentIndex( curIndx );
+}
+
+void QgsLabelPropertyDialog::fillMultiLineAlignComboBox()
+{
+  mMultiLineAlignComboBox->addItem( tr( "Layer default" ), "" );
+  mMultiLineAlignComboBox->addItem( tr( "Left" ), "Left" );
+  mMultiLineAlignComboBox->addItem( tr( "Center" ), "Center" );
+  mMultiLineAlignComboBox->addItem( tr( "Right" ), "Right" );
 }
 
 void QgsLabelPropertyDialog::fillHaliComboBox()
@@ -681,6 +719,11 @@ void QgsLabelPropertyDialog::mFontColorButton_colorChanged( const QColor &color 
 void QgsLabelPropertyDialog::mBufferColorButton_colorChanged( const QColor &color )
 {
   insertChangedValue( QgsPalLayerSettings::BufferColor, color.name() );
+}
+
+void QgsLabelPropertyDialog::mMultiLineAlignComboBox_currentIndexChanged( const int index )
+{
+  insertChangedValue( QgsPalLayerSettings::MultiLineAlignment, mMultiLineAlignComboBox->itemData( index ) );
 }
 
 void QgsLabelPropertyDialog::mHaliComboBox_currentIndexChanged( const int index )
