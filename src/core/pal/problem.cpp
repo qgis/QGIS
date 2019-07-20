@@ -82,6 +82,8 @@ Problem::~Problem()
   qDeleteAll( mLabelPositions );
   mLabelPositions.clear();
 
+  qDeleteAll( mPositionsWithNoCandidates );
+
   delete[] inactiveCost;
 
   delete candidates;
@@ -2221,11 +2223,6 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
   int i;
   QList<LabelPosition *> solList;
 
-  if ( nbft == 0 )
-  {
-    return solList;
-  }
-
   for ( i = 0; i < nbft; i++ )
   {
     if ( sol->s[i] != -1 )
@@ -2243,6 +2240,10 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
       unlabeled->push_back( mLabelPositions.at( featStartId[i] ) );
     }
   }
+
+  // unlabeled features also include those with no candidates
+  if ( unlabeled )
+    unlabeled->append( mPositionsWithNoCandidates );
 
   // if features collide, order by size, so smaller ones appear on top
   if ( returnInactive )

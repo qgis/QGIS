@@ -198,6 +198,17 @@ namespace pal
 
       static bool compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 );
 
+      /**
+       * Returns a reference to the list of label positions which correspond to
+       * features with no candidates.
+       *
+       * Ownership of positions added to this list is transferred to the problem.
+       */
+      QList<LabelPosition *> *positionsWithNoCandidates()
+      {
+        return &mPositionsWithNoCandidates;
+      }
+
     private:
 
       /**
@@ -244,6 +255,8 @@ namespace pal
       RTree<LabelPosition *, double, 2, double> *candidates = nullptr; // index all candidates
       RTree<LabelPosition *, double, 2, double> *candidates_sol = nullptr; // index active candidates
       RTree<LabelPosition *, double, 2, double> *candidates_subsol = nullptr; // idem for subparts
+
+      QList< LabelPosition * > mPositionsWithNoCandidates;
 
       //int *feat;        // [nblp]
       int *featStartId = nullptr; // [nbft]

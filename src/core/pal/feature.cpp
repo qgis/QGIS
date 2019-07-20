@@ -300,6 +300,29 @@ int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosi
   return nbp;
 }
 
+std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( PointSet *mapShape )
+{
+  double px, py;
+  try
+  {
+    GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+    geos::unique_ptr pointGeom( GEOSPointOnSurface_r( geosctxt, mapShape->geos() ) );
+    if ( pointGeom )
+    {
+      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
+      GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
+      GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
+    }
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return nullptr;
+  }
+
+  return qgis::make_unique< LabelPosition >( 0, px, py, getLabelWidth(), getLabelHeight(), 0.0, 0.0, this );
+}
+
 int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle )
 {
   QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
@@ -1534,10 +1557,10 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
   return nbp;
 }
 
-int FeaturePart::createCandidates( QList< LabelPosition *> &lPos,
-                                   const GEOSPreparedGeometry *mapBoundary,
-                                   PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates )
+QList<LabelPosition *> FeaturePart::createCandidates( const GEOSPreparedGeometry *mapBoundary,
+    PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates )
 {
+  QList<LabelPosition *> lPos;
   double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
 
   if ( mLF->hasFixedPosition() )
@@ -1612,7 +1635,7 @@ int FeaturePart::createCandidates( QList< LabelPosition *> &lPos,
   }
 
   std::sort( lPos.begin(), lPos.end(), CostCalculator::candidateSortGrow );
-  return lPos.count();
+  return lPos;
 }
 
 void FeaturePart::addSizePenalty( int nbp, QList< LabelPosition * > &lPos, double bbx[4], double bby[4] )
