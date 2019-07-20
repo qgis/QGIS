@@ -922,6 +922,16 @@ void QgsRasterLayer::computeMinMax( int band,
 
 }
 
+bool QgsRasterLayer::ignoreExtent() const
+{
+  return mIgnoreExtent;
+}
+
+void QgsRasterLayer::setIgnoreExtent( bool ignoreExtent )
+{
+  mIgnoreExtent = ignoreExtent;
+}
+
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
 {
@@ -1702,6 +1712,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
   }
 
+  QDomElement ignoreExtentElement = layer_node.namedItem( QStringLiteral( "ignoreExtent" ) ).toElement();
+  mIgnoreExtent = ignoreExtentElement.text() == QStringLiteral( "1" );
+
   readCustomProperties( layer_node );
 
   return true;
@@ -1892,6 +1905,9 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
+  QDomElement ignoreExtentElement = document.createElement( QStringLiteral( "ignoreExtent" ) );
+  ignoreExtentElement.appendChild( document.createTextNode( mIgnoreExtent ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  layer_node.appendChild( ignoreExtentElement );
 
   return true;
 }
