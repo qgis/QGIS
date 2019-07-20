@@ -60,7 +60,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   }
 
   // Read necessary extent only
-  QgsRectangle tmpExtent = extent().intersect( boundingBox );
+  QgsRectangle tmpExtent = boundingBox;
 
   if ( tmpExtent.isEmpty() )
   {
