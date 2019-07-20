@@ -606,12 +606,12 @@
    <addaction name="mActionLabeling"/>
    <addaction name="mActionDiagramProperties"/>
    <addaction name="mActionShowPinnedLabels"/>
+   <addaction name="mActionShowUnplacedLabels"/>
    <addaction name="mActionPinLabels"/>
    <addaction name="mActionShowHideLabels"/>
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
-   <addaction name="mActionShowUnplacedLabels"/>
   </widget>
   <widget class="QToolBar" name="mVectorToolBar">
    <property name="windowTitle">
