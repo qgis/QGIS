@@ -71,7 +71,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
   if ( !mCurrentLabel.layer->isEditable() )
   {
     QgsPalIndexes indexes;
-    bool newAuxiliaryLayer = createAuxiliaryFields( indexes );
+    bool newAuxiliaryLayer = createAuxiliaryFields( indexes, false );
 
     if ( !newAuxiliaryLayer && !mCurrentLabel.layer->auxiliaryLayer() )
     {
