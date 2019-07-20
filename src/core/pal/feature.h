@@ -129,13 +129,12 @@ namespace pal
 
       /**
        * Generic method to generate label candidates for the feature.
-       * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapBoundary map boundary geometry
        * \param mapShape generate candidates for this spatial entity
        * \param candidates index for candidates
-       * \returns the number of candidates generated in lPos
+       * \returns a list of generated candidates positions
        */
-      int createCandidates( QList<LabelPosition *> &lPos, const GEOSPreparedGeometry *mapBoundary, PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
+      QList<LabelPosition *> createCandidates( const GEOSPreparedGeometry *mapBoundary, PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
 
       /**
        * Generate candidates for point feature, located around a specified point.
@@ -156,6 +155,14 @@ namespace pal
        * \returns the number of generated candidates (always 1)
        */
       int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
+
+      /**
+       * Creates a single candidate using the "point on sruface" algorithm.
+       *
+       * \note Unlike the other create candidates methods, this method
+       * bypasses the usual candidate filtering steps and ALWAYS returns a single candidate.
+       */
+      std::unique_ptr< LabelPosition > createCandidatePointOnSurface( PointSet *mapShape );
 
       /**
        * Generates candidates following a prioritized list of predefined positions around a point.

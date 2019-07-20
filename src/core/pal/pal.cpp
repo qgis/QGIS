@@ -119,6 +119,7 @@ typedef struct _featCbackCtx
   QLinkedList<Feats *> *fFeats;
   RTree<FeaturePart *, double, 2, double> *obstacles;
   RTree<LabelPosition *, double, 2, double> *candidates;
+  QList<LabelPosition *> *positionsWithNoCandidates;
   const GEOSPreparedGeometry *mapBoundary = nullptr;
 } FeatCallBackCtx;
 
@@ -147,8 +148,8 @@ bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   }
 
   // generate candidates for the feature part
-  QList< LabelPosition * > lPos;
-  if ( ft_ptr->createCandidates( lPos, context->mapBoundary, ft_ptr, context->candidates ) )
+  const QList< LabelPosition * > lPos = ft_ptr->createCandidates( context->mapBoundary, ft_ptr, context->candidates );
+  if ( !lPos.empty() )
   {
     // valid features are added to fFeats
     Feats *ft = new Feats();
@@ -160,8 +161,10 @@ bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   }
   else
   {
-    // Others are deleted
-    qDeleteAll( lPos );
+    // features with no candidates are recorded in the unlabeled feature list
+    std::unique_ptr< LabelPosition > unplacedPosition = ft_ptr->createCandidatePointOnSurface( ft_ptr );
+    if ( unplacedPosition )
+      context->positionsWithNoCandidates->append( unplacedPosition.release() );
   }
 
   return true;
@@ -219,8 +222,7 @@ bool filteringCallback( FeaturePart *featurePart, void *ctx )
 std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
   // to store obstacles
-  RTree<FeaturePart *, double, 2, double> *obstacles = new RTree<FeaturePart *, double, 2, double>();
-
+  RTree<FeaturePart *, double, 2, double> obstacles;
   std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
 
   int i, j;
@@ -242,7 +244,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   prob->pal = this;
 
-  QLinkedList<Feats *> *fFeats = new QLinkedList<Feats *>;
+  QLinkedList<Feats *> fFeats;
 
   FeatCallBackCtx context;
 
@@ -250,13 +252,14 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   geos::unique_ptr mapBoundaryGeos( QgsGeos::asGeos( mapBoundary ) );
   geos::prepared_unique_ptr mapBoundaryPrepared( GEOSPrepare_r( QgsGeos::getGEOSHandler(), mapBoundaryGeos.get() ) );
 
-  context.fFeats = fFeats;
-  context.obstacles = obstacles;
+  context.fFeats = &fFeats;
+  context.obstacles = &obstacles;
   context.candidates = prob->candidates;
+  context.positionsWithNoCandidates = prob->positionsWithNoCandidates();
   context.mapBoundary = mapBoundaryPrepared.get();
 
   ObstacleCallBackCtx obstacleContext;
-  obstacleContext.obstacles = obstacles;
+  obstacleContext.obstacles = &obstacles;
   obstacleContext.obstacleCount = 0;
 
   // first step : extract features from layers
@@ -308,138 +311,124 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   prob->nbLabelledLayers = layersWithFeaturesInBBox.size();
   prob->labelledLayersName = layersWithFeaturesInBBox;
 
-  if ( fFeats->isEmpty() )
-  {
-    delete fFeats;
-    delete obstacles;
-    return nullptr;
-  }
-
-  prob->nbft = fFeats->size();
+  prob->nbft = fFeats.size();
   prob->nblp = 0;
   prob->featNbLp = new int [prob->nbft];
   prob->featStartId = new int [prob->nbft];
   prob->inactiveCost = new double[prob->nbft];
 
-  Feats *feat = nullptr;
 
-  // Filtering label positions against obstacles
-  amin[0] = amin[1] = std::numeric_limits<double>::lowest();
-  amax[0] = amax[1] = std::numeric_limits<double>::max();
-  FilterContext filterCtx;
-  filterCtx.cdtsIndex = prob->candidates;
-  filterCtx.pal = this;
-  obstacles->Search( amin, amax, filteringCallback, static_cast< void * >( &filterCtx ) );
-
-  if ( isCanceled() )
+  if ( !fFeats.isEmpty() )
   {
-    const auto constFFeats = *fFeats;
-    for ( Feats *feat : constFFeats )
-    {
-      qDeleteAll( feat->lPos );
-      feat->lPos.clear();
-    }
+    Feats *feat = nullptr;
 
-    qDeleteAll( *fFeats );
-    delete fFeats;
-    delete obstacles;
-    return nullptr;
-  }
+    // Filtering label positions against obstacles
+    amin[0] = amin[1] = std::numeric_limits<double>::lowest();
+    amax[0] = amax[1] = std::numeric_limits<double>::max();
+    FilterContext filterCtx;
+    filterCtx.cdtsIndex = prob->candidates;
+    filterCtx.pal = this;
+    obstacles.Search( amin, amax, filteringCallback, static_cast< void * >( &filterCtx ) );
 
-  int idlp = 0;
-  for ( i = 0; i < prob->nbft; i++ ) /* foreach feature into prob */
-  {
-    feat = fFeats->takeFirst();
-
-    prob->featStartId[i] = idlp;
-    prob->inactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
-
-    switch ( feat->feature->getGeosType() )
-    {
-      case GEOS_POINT:
-        max_p = point_p;
-        break;
-      case GEOS_LINESTRING:
-        max_p = line_p;
-        break;
-      case GEOS_POLYGON:
-        max_p = poly_p;
-        break;
-    }
-
-    // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
-    max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, obstacles, bbx, bby );
-
-    // only keep the 'max_p' best candidates
-    while ( feat->lPos.count() > max_p )
-    {
-      // TODO remove from index
-      feat->lPos.last()->removeFromIndex( prob->candidates );
-      delete feat->lPos.takeLast();
-    }
-
-    // update problem's # candidate
-    prob->featNbLp[i] = feat->lPos.count();
-    prob->nblp += feat->lPos.count();
-
-    // add all candidates into a rtree (to speed up conflicts searching)
-    for ( j = 0; j < feat->lPos.count(); j++, idlp++ )
-    {
-      lp = feat->lPos.at( j );
-      //lp->insertIntoIndex(prob->candidates);
-      lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
-    }
-    fFeats->append( feat );
-  }
-
-  int nbOverlaps = 0;
-
-  while ( !fFeats->isEmpty() ) // foreach feature
-  {
     if ( isCanceled() )
     {
-      const auto constFFeats = *fFeats;
-      for ( Feats *feat : constFFeats )
+      for ( Feats *feat : qgis::as_const( fFeats ) )
       {
         qDeleteAll( feat->lPos );
         feat->lPos.clear();
       }
 
-      qDeleteAll( *fFeats );
-      delete fFeats;
-      delete obstacles;
+      qDeleteAll( fFeats );
       return nullptr;
     }
 
-    feat = fFeats->takeFirst();
-    while ( !feat->lPos.isEmpty() ) // foreach label candidate
+    int idlp = 0;
+    for ( i = 0; i < prob->nbft; i++ ) /* foreach feature into prob */
     {
-      lp = feat->lPos.takeFirst();
-      lp->resetNumOverlaps();
+      feat = fFeats.takeFirst();
 
-      // make sure that candidate's cost is less than 1
-      lp->validateCost();
+      prob->featStartId[i] = idlp;
+      prob->inactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
 
-      prob->addCandidatePosition( lp );
-      //prob->feat[idlp] = j;
+      switch ( feat->feature->getGeosType() )
+      {
+        case GEOS_POINT:
+          max_p = point_p;
+          break;
+        case GEOS_LINESTRING:
+          max_p = line_p;
+          break;
+        case GEOS_POLYGON:
+          max_p = poly_p;
+          break;
+      }
 
-      lp->getBoundingBox( amin, amax );
+      // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
+      max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, &obstacles, bbx, bby );
 
-      // lookup for overlapping candidate
-      prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp ) );
+      // only keep the 'max_p' best candidates
+      while ( feat->lPos.count() > max_p )
+      {
+        // TODO remove from index
+        feat->lPos.constLast()->removeFromIndex( prob->candidates );
+        delete feat->lPos.takeLast();
+      }
 
-      nbOverlaps += lp->getNumOverlaps();
+      // update problem's # candidate
+      prob->featNbLp[i] = feat->lPos.count();
+      prob->nblp += feat->lPos.count();
+
+      // add all candidates into a rtree (to speed up conflicts searching)
+      for ( j = 0; j < feat->lPos.count(); j++, idlp++ )
+      {
+        lp = feat->lPos.at( j );
+        //lp->insertIntoIndex(prob->candidates);
+        lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
+      }
+      fFeats.append( feat );
     }
-    delete feat;
+
+    int nbOverlaps = 0;
+
+    while ( !fFeats.isEmpty() ) // foreach feature
+    {
+      if ( isCanceled() )
+      {
+        for ( Feats *feat : qgis::as_const( fFeats ) )
+        {
+          qDeleteAll( feat->lPos );
+          feat->lPos.clear();
+        }
+
+        qDeleteAll( fFeats );
+        return nullptr;
+      }
+
+      feat = fFeats.takeFirst();
+      while ( !feat->lPos.isEmpty() ) // foreach label candidate
+      {
+        lp = feat->lPos.takeFirst();
+        lp->resetNumOverlaps();
+
+        // make sure that candidate's cost is less than 1
+        lp->validateCost();
+
+        prob->addCandidatePosition( lp );
+        //prob->feat[idlp] = j;
+
+        lp->getBoundingBox( amin, amax );
+
+        // lookup for overlapping candidate
+        prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, static_cast< void * >( lp ) );
+
+        nbOverlaps += lp->getNumOverlaps();
+      }
+      delete feat;
+    }
+    nbOverlaps /= 2;
+    prob->all_nblp = prob->nblp;
+    prob->nbOverlap = nbOverlaps;
   }
-  delete fFeats;
-
-  //delete candidates;
-  delete obstacles;
-
-  nbOverlaps /= 2;
-  prob->all_nblp = prob->nblp;
-  prob->nbOverlap = nbOverlaps;
 
   return prob;
 }
