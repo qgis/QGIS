@@ -110,6 +110,11 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
       labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry );
   mSpatialIndex.Insert( c_min, c_max, newEntry.get() );
   mOwnedPositions.emplace_back( std::move( newEntry ) );
+
+  if ( pal::LabelPosition *next = labelPos->getNextPart() )
+  {
+    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId );
+  }
   return true;
 }
 
