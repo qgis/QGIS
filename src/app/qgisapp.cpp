@@ -13474,6 +13474,13 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
   // QgsDebugMsg( QStringLiteral( "%1 (keypress received)" ).arg( e->text() ) );
   emit keyPressed( e );
 
+#if 0 && defined(_MSC_VER) && defined(QGISDEBUG)
+  if ( e->key() == Qt::Key_Backslash && e->modifiers() == Qt::ControlModifier )
+  {
+    QgsCrashHandler::handle( 0 );
+  }
+#endif
+
   //cancel rendering progress with esc key
   if ( e->key() == Qt::Key_Escape )
   {

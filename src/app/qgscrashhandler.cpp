@@ -39,20 +39,19 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   QString symbolPath;
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
-    symbolPath = getenv( "QGIS_PREFIX_PATH" );
-    symbolPath = symbolPath + "\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
+    symbolPath = QStringLiteral( "%1\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/%2/symstores/%3" )
+                 .arg( getenv( "QGIS_PREFIX_PATH" ) )
+                 .arg( QSysInfo::WordSize == 64 ? QStringLiteral( "x86_64" ) : QStringLiteral( "x86" ) )
+                 .arg( QFileInfo( getenv( "QGIS_PREFIX_PATH" ) ).baseName() );
   }
   else
   {
-    QString pdbPath = getenv( "QGIS_PDB_PATH" );
-    QString appPath = QgsApplication::applicationDirPath();
-    symbolPath += QString( "%1;%2;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore" )
-                  .arg( appPath )
-                  .arg( pdbPath );
+    symbolPath = QStringLiteral( "%1;%2;http://msdl.microsoft.com/download/symbols" )
+                 .arg( getenv( "QGIS_PDB_PATH" ) )
+                 .arg( QgsApplication::applicationDirPath() );
   }
 
-  QString ptrStr = QString( "0x%1" ).arg( ( quintptr )exception,
-                                          QT_POINTER_SIZE * 2, 16, QChar( '0' ) );
+  QString ptrStr = QString( "0x%1" ).arg( ( quintptr )exception, QT_POINTER_SIZE * 2, 16, QChar( '0' ) );
   QString fileName = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 ) + "/qgis-crash-info-" + QString::number( processID );
   QgsDebugMsg( fileName );
 
