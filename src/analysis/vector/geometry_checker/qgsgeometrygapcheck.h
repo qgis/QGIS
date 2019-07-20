@@ -43,12 +43,16 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
                               const QgsGeometry &geometry,
                               const QMap<QString, QgsFeatureIds> &neighbors,
                               double area,
-                              const QgsRectangle &gapAreaBBox )
+                              const QgsRectangle &gapAreaBBox,
+                              const QgsRectangle &contextArea )
       : QgsGeometryCheckError( check, layerId, FID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
+      , mContextBoundingBox( contextArea )
     {
     }
+
+    QgsRectangle contextBoundingBox() const override;
 
     /**
      * A map of layers and feature ids of the neighbors of the gap.
@@ -72,6 +76,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
   private:
     QMap<QString, QgsFeatureIds> mNeighbors;
     QgsRectangle mGapAreaBBox;
+    QgsRectangle mContextBoundingBox;
 };
 
 

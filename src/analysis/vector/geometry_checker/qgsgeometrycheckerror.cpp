@@ -85,6 +85,11 @@ QgsGeometry QgsGeometryCheckError::geometry() const
   return mGeometry;
 }
 
+QgsRectangle QgsGeometryCheckError::contextBoundingBox() const
+{
+  return QgsRectangle();
+}
+
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 {
   return mGeometry.boundingBox();
