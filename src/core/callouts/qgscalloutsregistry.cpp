@@ -84,7 +84,7 @@ QgsCalloutAbstractMetadata *QgsCalloutRegistry::calloutMetadata( const QString &
 
 QgsCallout *QgsCalloutRegistry::defaultCallout()
 {
-  return new QgsManhattanLineCallout();
+  return new QgsSimpleLineCallout();
 }
 
 QgsCallout *QgsCalloutRegistry::createCallout( const QString &name, const QVariantMap &properties, const QgsReadWriteContext &context ) const

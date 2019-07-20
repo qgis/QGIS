@@ -89,9 +89,6 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="specialValueText">
-        <string>Hairline</string>
-       </property>
        <property name="decimals">
         <number>6</number>
        </property>
