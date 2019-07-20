@@ -5498,8 +5498,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set project CRS
   const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString() );
   // write the projections _proj string_ to project settings
-  prj->setCrs( srs );
-  prj->setEllipsoid( srs.ellipsoidAcronym() );
+  prj->setCrs( srs, true );
 
   /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */

@@ -211,11 +211,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the project's native coordinate reference system.
+     * If \a adjustEllipsoid is set to TRUE, the ellpsoid of this project will be set to
+     * the ellipsoid imposed by the CRS.
+     *
      * \see crs()
      * \see setEllipsoid()
      * \since QGIS 3.0
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 
     /**
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".

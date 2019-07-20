@@ -115,7 +115,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     switch ( projectCrsBehavior )
     {
       case QgsGui::UseCrsOfFirstLayerAdded:
-        QgsProject::instance()->setCrs( mFirstCRS );
+        QgsProject::instance()->setCrs( mFirstCRS, true );
         break;
 
       case QgsGui::UsePresetCrs:
