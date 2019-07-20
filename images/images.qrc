@@ -770,6 +770,7 @@
         <file>themes/default/mIconArrangeSymbolsRight.svg</file>
         <file>themes/default/mIconClearItem.svg</file>
         <file>themes/default/mIndicatorLayerError.svg</file>
+        <file>themes/default/mActionShowUnplacedLabel.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
