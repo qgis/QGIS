@@ -30,6 +30,7 @@
 #include <Qt3DExtras/QTorusGeometry>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QSceneLoader>
+#include <Qt3DRender/QPaintedTextureImage>
 
 #include <Qt3DRender/QMesh>
 
@@ -49,6 +50,8 @@
 #include "qgsbillboardgeometry.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgslogger.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 
 /// @cond PRIVATE
 
@@ -557,6 +560,13 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
 
   // Billboard Material
   QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
+
+  // Default texture
+  QgsSymbol *defaultSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( defaultSymbol, QSize( 100, 100 ), 0 );
+  QImage symbolImage = symbolPixmap.toImage();
+
+  billboardMaterial->setTexture2DFromImage( symbolImage );
 
   // Billboard Transform
   Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();

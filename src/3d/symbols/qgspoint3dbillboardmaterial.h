@@ -19,6 +19,7 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QPaintedTextureImage>
 
 class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 {
@@ -38,10 +39,25 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     void setTexture2DFromImagePath( QString imagePath );
 
+    void setTexture2DFromImage( QImage image );
+
   private:
     Qt3DRender::QParameter *mSize = nullptr;
     Qt3DRender::QParameter *mWindowSize = nullptr;
     Qt3DRender::QParameter *mTexture2D = nullptr;
 };
+
+
+class QgsBillboardTextureImage : public Qt3DRender::QPaintedTextureImage
+{
+  public:
+    void paint( QPainter *painter );
+    void setImage( QImage *image );
+    QImage *image();
+
+  private:
+    QImage *mImage = nullptr;
+};
+
 
 #endif // QGSPOINT3DBILLBOARDMATERIAL_H

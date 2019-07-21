@@ -18,6 +18,7 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QEffect>
+#include <QPainter>
 
 #include "qgspoint3dbillboardmaterial.h"
 
@@ -120,4 +121,41 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
   texture2D->addTextureImage( image );
 
   setTexture2D( texture2D );
+}
+
+void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image )
+{
+  // Store it as QgsBillboardTextureImage
+  QgsBillboardTextureImage *billboardTextureImage = new QgsBillboardTextureImage();
+  billboardTextureImage->setImage( &image );
+
+  // Texture2D
+  Qt3DRender::QTexture2D *texture2D = new Qt3DRender::QTexture2D;
+  texture2D->setGenerateMipMaps( false );
+  texture2D->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+  texture2D->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+
+  texture2D->addTextureImage( billboardTextureImage );
+
+  setTexture2D( texture2D );
+}
+
+
+void QgsBillboardTextureImage::paint( QPainter *painter )
+{
+  QRect rectangle = QRect( 0, 0, mImage->width(), mImage->height() );
+  painter->drawImage( rectangle, *mImage, rectangle );
+}
+
+void QgsBillboardTextureImage::setImage( QImage *image )
+{
+  mImage = image;
+  setSize( image->size() );
+  QPainter *painter = new QPainter();
+  paint( painter );
+}
+
+QImage *QgsBillboardTextureImage::image()
+{
+  return  mImage;
 }
