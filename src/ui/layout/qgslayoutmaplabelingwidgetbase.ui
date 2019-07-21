@@ -123,9 +123,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="mDrawUnplacedCheckBox">
+    <widget class="QCheckBox" name="mShowUnplacedCheckBox">
      <property name="text">
-      <string>Draw unplaced labels</string>
+      <string>Show unplaced labels</string>
      </property>
     </widget>
    </item>

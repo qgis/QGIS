@@ -1601,7 +1601,7 @@ QgsLayoutMapLabelingWidget::QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map )
   connect( mLabelBoundaryUnitsCombo, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutMapLabelingWidget::labelMarginUnitsChanged );
   connect( mLabelBoundarySpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapLabelingWidget::labelMarginChanged );
   connect( mShowPartialLabelsCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showPartialsToggled );
-  connect( mDrawUnplacedCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showUnplacedToggled );
+  connect( mShowUnplacedCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showUnplacedToggled );
 
   registerDataDefinedButton( mLabelMarginDDBtn, QgsLayoutObject::MapLabelMargin );
 
@@ -1635,7 +1635,7 @@ void QgsLayoutMapLabelingWidget::updateGuiElements()
   whileBlocking( mLabelBoundarySpinBox )->setValue( mMapItem->labelMargin().length() );
   whileBlocking( mLabelBoundaryUnitsCombo )->setUnit( mMapItem->labelMargin().units() );
   whileBlocking( mShowPartialLabelsCheckBox )->setChecked( mMapItem->mapFlags() & QgsLayoutItemMap::ShowPartialLabels );
-  whileBlocking( mDrawUnplacedCheckBox )->setChecked( mMapItem->mapFlags() & QgsLayoutItemMap::ShowUnplacedLabels );
+  whileBlocking( mShowUnplacedCheckBox )->setChecked( mMapItem->mapFlags() & QgsLayoutItemMap::ShowUnplacedLabels );
 
   if ( mBlockingItemsListView->model() )
   {
