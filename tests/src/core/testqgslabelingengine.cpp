@@ -1494,6 +1494,16 @@ void TestQgsLabelingEngine::drawUnplaced()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
+  // test a label with 0 candidates (line is too short for label)
+  std::unique_ptr< QgsVectorLayer> vl3( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl3->setRenderer( new QgsNullSymbolRenderer() );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(-6.250851540391068 60.6, -6.250851640391068 60.6 )" ) ) );
+  QVERIFY( vl3->dataProvider()->addFeature( f ) );
+
+  settings.placement = QgsPalLayerSettings::Curved;
+  vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl3->setLabelsEnabled( true );
+
   // make a fake render context
   QSize size( 640, 480 );
   QgsMapSettings mapSettings;
@@ -1503,7 +1513,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( QgsRectangle( -4348530.5, 5618594.3, 2516176.1, 12412237.9 ) );
   mapSettings.setRotation( 60 );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() << vl3.get() );
   mapSettings.setOutputDpi( 96 );
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
