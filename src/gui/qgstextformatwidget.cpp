@@ -530,8 +530,9 @@ void QgsTextFormatWidget::setDockMode( bool enabled )
   mOptionsTab->setTabToolTip( 2, tr( "Buffer" ) );
   mOptionsTab->setTabToolTip( 3, tr( "Background" ) );
   mOptionsTab->setTabToolTip( 4, tr( "Shadow" ) );
-  mOptionsTab->setTabToolTip( 5, tr( "Placement" ) );
-  mOptionsTab->setTabToolTip( 6, tr( "Rendering" ) );
+  mOptionsTab->setTabToolTip( 5, tr( "Callouts" ) );
+  mOptionsTab->setTabToolTip( 6, tr( "Placement" ) );
+  mOptionsTab->setTabToolTip( 7, tr( "Rendering" ) );
 
   mLabelingOptionsListFrame->setVisible( !enabled );
   groupBox_mPreview->setVisible( !enabled );
