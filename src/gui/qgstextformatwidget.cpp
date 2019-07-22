@@ -1599,7 +1599,7 @@ void QgsTextFormatWidget::createAuxiliaryField()
   button->updateFieldLists();
   button->setToProperty( property );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
-
+  updatePreview();
   emit auxiliaryFieldCreated();
 }
 
