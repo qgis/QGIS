@@ -130,6 +130,8 @@ class TestQgsCallout: public QObject
     void calloutDataDefinedMinimumDistance();
     void calloutOffsetFromAnchor();
     void calloutDataDefinedOffsetFromAnchor();
+    void calloutOffsetFromLabel();
+    void calloutDataDefinedOffsetFromLabel();
     void calloutBehindLabel();
     void calloutBehindIndividualLabels();
     void manhattan();
@@ -820,6 +822,112 @@ void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
   p.end();
 
   QVERIFY( imageCheck( "callout_data_defined_offset_from_anchor", img, 20 ) );
+}
+
+void TestQgsCallout::calloutOffsetFromLabel()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setRotation( 45 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 10;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->setOffsetFromAnchor( 4 );
+  callout->setOffsetFromLabel( 4 );
+  settings.setCallout( callout );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_offset_from_label", img, 20 ) );
+}
+
+void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setRotation( 45 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 10;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->dataDefinedProperties().setProperty( QgsCallout::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::OffsetFromLabel, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 3 else 4 end" ) ) );
+  settings.setCallout( callout );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "callout_data_defined_offset_from_label", img, 20 ) );
 }
 
 void TestQgsCallout::calloutBehindLabel()

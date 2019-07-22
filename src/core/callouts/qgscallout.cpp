@@ -22,6 +22,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include <QPainter>
 #include <mutex>
 
@@ -164,6 +165,9 @@ QgsSimpleLineCallout::QgsSimpleLineCallout( const QgsSimpleLineCallout &other )
   , mOffsetFromAnchorDistance( other.mOffsetFromAnchorDistance )
   , mOffsetFromAnchorUnit( other.mOffsetFromAnchorUnit )
   , mOffsetFromAnchorScale( other.mOffsetFromAnchorScale )
+  , mOffsetFromLabelDistance( other.mOffsetFromLabelDistance )
+  , mOffsetFromLabelUnit( other.mOffsetFromLabelUnit )
+  , mOffsetFromLabelScale( other.mOffsetFromLabelScale )
 {
 
 }
@@ -200,6 +204,9 @@ QVariantMap QgsSimpleLineCallout::properties( const QgsReadWriteContext &context
   props[ QStringLiteral( "offsetFromAnchor" ) ] = mOffsetFromAnchorDistance;
   props[ QStringLiteral( "offsetFromAnchorUnit" ) ] = QgsUnitTypes::encodeUnit( mOffsetFromAnchorUnit );
   props[ QStringLiteral( "offsetFromAnchorMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromAnchorScale );
+  props[ QStringLiteral( "offsetFromLabel" ) ] = mOffsetFromLabelDistance;
+  props[ QStringLiteral( "offsetFromLabelUnit" ) ] = QgsUnitTypes::encodeUnit( mOffsetFromLabelUnit );
+  props[ QStringLiteral( "offsetFromLabelMapUnitScale" ) ] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromLabelScale );
 
   return props;
 }
@@ -223,6 +230,9 @@ void QgsSimpleLineCallout::readProperties( const QVariantMap &props, const QgsRe
   mOffsetFromAnchorDistance = props.value( QStringLiteral( "offsetFromAnchor" ), 0 ).toDouble();
   mOffsetFromAnchorUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offsetFromAnchorUnit" ) ).toString() );
   mOffsetFromAnchorScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offsetFromAnchorMapUnitScale" ) ).toString() );
+  mOffsetFromLabelDistance = props.value( QStringLiteral( "offsetFromLabel" ), 0 ).toDouble();
+  mOffsetFromLabelUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offsetFromLabelUnit" ) ).toString() );
+  mOffsetFromLabelScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offsetFromLabelMapUnitScale" ) ).toString() );
 }
 
 void QgsSimpleLineCallout::startRender( QgsRenderContext &context )
@@ -302,11 +312,17 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
   }
   const double offsetFromAnchorPixels = context.convertToPainterUnits( offsetFromAnchor, mOffsetFromAnchorUnit, mOffsetFromAnchorScale );
 
-  if ( offsetFromAnchorPixels > 0 )
+  double offsetFromLabel = mOffsetFromLabelDistance;
+  if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromLabel ) )
+  {
+    offsetFromLabel = dataDefinedProperties().valueAsDouble( QgsCallout::OffsetFromLabel, context.expressionContext(), offsetFromLabel );
+  }
+  const double offsetFromLabelPixels = context.convertToPainterUnits( offsetFromLabel, mOffsetFromLabelUnit, mOffsetFromLabelScale );
+  if ( offsetFromAnchorPixels > 0 || offsetFromLabelPixels > 0 )
   {
     if ( QgsLineString *ls = qgsgeometry_cast< QgsLineString * >( line.get() ) )
     {
-      line = QgsGeometry( ls->curveSubstring( 0, ls->length() - offsetFromAnchorPixels ) );
+      line = QgsGeometry( ls->curveSubstring( offsetFromLabelPixels, ls->length() - offsetFromAnchorPixels ) );
     }
   }
 
@@ -397,11 +413,18 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
   }
   const double offsetFromAnchorPixels = context.convertToPainterUnits( offsetFromAnchorDist, offsetFromAnchorUnit(), offsetFromAnchorMapUnitScale() );
 
-  if ( offsetFromAnchorPixels > 0 )
+  double offsetFromLabelDist = offsetFromLabel();
+  if ( dataDefinedProperties().isActive( QgsCallout::OffsetFromLabel ) )
+  {
+    offsetFromLabelDist = dataDefinedProperties().valueAsDouble( QgsCallout::OffsetFromLabel, context.expressionContext(), offsetFromLabelDist );
+  }
+  const double offsetFromLabelPixels = context.convertToPainterUnits( offsetFromLabelDist, offsetFromAnchorUnit(), offsetFromAnchorMapUnitScale() );
+
+  if ( offsetFromAnchorPixels > 0 || offsetFromLabelPixels > 0 )
   {
     if ( QgsLineString *ls = qgsgeometry_cast< QgsLineString * >( line.get() ) )
     {
-      line = QgsGeometry( ls->curveSubstring( 0, ls->length() - offsetFromAnchorPixels ) );
+      line = QgsGeometry( ls->curveSubstring( offsetFromLabelPixels, ls->length() - offsetFromAnchorPixels ) );
     }
   }
 

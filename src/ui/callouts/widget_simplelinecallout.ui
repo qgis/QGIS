@@ -158,6 +158,58 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_47">
+       <property name="text">
+        <string>Offset from label area</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QgsDoubleSpinBox" name="mOffsetFromLabelSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mOffsetFromLabelDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QgsUnitSelectionWidget" name="mOffsetFromLabelUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -206,6 +258,9 @@
   <tabstop>mOffsetFromAnchorSpin</tabstop>
   <tabstop>mOffsetFromAnchorUnitWidget</tabstop>
   <tabstop>mOffsetFromAnchorDDBtn</tabstop>
+  <tabstop>mOffsetFromLabelSpin</tabstop>
+  <tabstop>mOffsetFromLabelUnitWidget</tabstop>
+  <tabstop>mOffsetFromLabelDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>
