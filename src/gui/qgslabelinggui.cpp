@@ -155,7 +155,8 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   const QStringList calloutTypes = QgsApplication::calloutRegistry()->calloutTypes();
   for ( const QString &type : calloutTypes )
   {
-    mCalloutStyleComboBox->addItem( QgsApplication::calloutRegistry()->calloutMetadata( type )->visibleName(), type );
+    mCalloutStyleComboBox->addItem( QgsApplication::calloutRegistry()->calloutMetadata( type )->icon(),
+                                    QgsApplication::calloutRegistry()->calloutMetadata( type )->visibleName(), type );
   }
 
   mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );

@@ -28,11 +28,13 @@ Stores metadata about one callout renderer class.
 %End
   public:
 
-    QgsCalloutAbstractMetadata( const QString &name, const QString &visibleName );
+    QgsCalloutAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsCalloutAbstractMetadata, with the specified ``name``.
 
 The ``visibleName`` argument gives a translated, user friendly string identifying the callout type.
+
+The ``icon`` argument can be used to specify an icon representing the callout.
 %End
 
     virtual ~QgsCalloutAbstractMetadata();
@@ -49,6 +51,20 @@ Returns the unique name of the callout type. This value is not translated.
 Returns a friendly display name of the callout type. This value is translated.
 
 .. seealso:: :py:func:`name`
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns an icon representing the callout.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+    void setIcon( const QIcon &icon );
+%Docstring
+Sets an ``icon`` representing the callout.
+
+.. seealso:: :py:func:`icon`
 %End
 
     virtual QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) = 0 /Factory/;

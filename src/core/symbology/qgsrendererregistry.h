@@ -55,6 +55,13 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     };
     Q_DECLARE_FLAGS( LayerTypes, LayerType )
 
+    /**
+     * Constructor for QgsRendererAbstractMetadata, with the specified \a name.
+     *
+     * The \a visibleName argument gives a translated, user friendly string identifying the renderer type.
+     *
+     * The \a icon argument can be used to specify an icon representing the renderer.
+     */
     QgsRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() )
       : mName( name )
       , mVisibleName( visibleName )
@@ -62,10 +69,28 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     {}
     virtual ~QgsRendererAbstractMetadata() = default;
 
+    /**
+     * Returns the unique name of the renderer. This value is not translated.
+     * \see visibleName()
+     */
     QString name() const { return mName; }
+
+    /**
+     * Returns a friendly display name of the renderer. This value is translated.
+     * \see name()
+     */
     QString visibleName() const { return mVisibleName; }
 
+    /**
+     * Returns an icon representing the renderer.
+     * \see setIcon()
+     */
     QIcon icon() const { return mIcon; }
+
+    /**
+     * Sets an \a icon representing the renderer.
+     * \see icon()
+     */
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /**
