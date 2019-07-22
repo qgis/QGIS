@@ -58,6 +58,7 @@ except:
 from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 
 import re
+import copy
 
 
 class DlgSqlWindow(QWidget, Ui_Dialog):
@@ -609,10 +610,29 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         lines = []
         for line in sql.split('\n'):
             if not line.strip().startswith('--'):
-                comment_idx = line.find('--')
-                if comment_idx > 1:
-                    line = line[:comment_idx]
-                lines.append(line)
+                if '--' in line:
+                    comment_positions = []
+                    comments = re.finditer(r'--',line)
+                    for match in comments:
+                        comment_positions.append(match.start())
+                    quote_positions = []
+                    identifiers = re.finditer(r'"(?:[^"]|"")*"',line)
+                    quotes = re.finditer(r"'(?:[^']|'')*'",line)
+                    for match in identifiers:
+                        quote_positions.append((match.start(),match.end()))
+                    for match in quotes:
+                        quote_positions.append((match.start(),match.end()))
+                    unquoted_comments = copy.deepcopy(comment_positions)
+                    for comment in comment_positions:
+                        for quote_position in quote_positions:
+                            if comment >= quote_position[0] and comment < quote_position[1]:
+                                unquoted_comments.remove(comment)
+                    if len(unquoted_comments) > 0:
+                        lines.append(line[:unquoted_comments[0]])
+                    else:
+                        lines.append(line)
+                else:
+                    lines.append(line)
         sql = ' '.join(lines)
         return sql.strip()
 
