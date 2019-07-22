@@ -103,7 +103,7 @@ class CORE_EXPORT QgsPathResolver
     static void setPathPreprocessor( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
     Py_BEGIN_ALLOW_THREADS
-
+    Py_XINCREF( a0 );
     QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg )->QString
     {
       QString res;
