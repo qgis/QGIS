@@ -27,7 +27,7 @@ class QgsServerOgcApiHandler;
  * QGIS Server OGC API endpoint. QgsServerOgcApi provides the foundation for
  * the new generation of REST-API based OGC services (e.g. WFS3).
  *
- * This class can be instanciated directly and configured by registering handlers
+ * This class can be used directly and configured by registering handlers
  * as instances of QgsServerOgcApiHandler.
  *
  * \code{.py}
@@ -61,7 +61,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
       items, //! Refers to a resource that is comprised of members of the collection represented by the link’s context.
       conformance, //! The target IRI points to a resource which represents the collection resource for the context IRI.
-      data,
+      data //! The target IRI points to resource data
     };
     Q_ENUM( Rel )
 
@@ -119,6 +119,11 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 
     // Utilities
 #ifndef SIP_RUN
+
+    /**
+     * Register an OGC API handler passing \a Args to the constructor
+     * \note not available in Python bindings
+     */
     template<class T, typename... Args>
     void registerHandler( Args... args )
     {
@@ -127,7 +132,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 #endif
 
     /**
-     * Registers an OGC API \a handler
+     * Registers an OGC API \a handler, ownership of the handler is transfered to the API
      */
     void registerHandler( QgsServerOgcApiHandler *handler SIP_TRANSFER );
 

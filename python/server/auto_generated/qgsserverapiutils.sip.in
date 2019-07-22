@@ -15,7 +15,7 @@
 class QgsServerApiUtils
 {
 %Docstring
-The QgsServerApiUtils class contains helper functions to handle API common operations.
+The QgsServerApiUtils class contains helper functions to handle common API operations.
 
 .. versionadded:: 3.10
 %End
@@ -37,7 +37,7 @@ Parses a comma separated ``bbox`` into a (possibily empty) :py:class:`QgsRectang
 
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 %Docstring
-Pasrses the CRS URI ``bboxCrs`` (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
+Parses the CRS URI ``bboxCrs`` (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
 %End
 
     static const QgsFields publishedFields( const QgsVectorLayer *layer );
@@ -69,7 +69,7 @@ In case of failure returns an empty string.
 
     static const QStringList publishedCrsList( const QgsProject *project );
 %Docstring
-Return the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) available for this ``project``.
+Returns the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) available for this ``project``.
 Information is read from project WMS configuration.
 %End
 

@@ -35,10 +35,11 @@ class QgsServerApiBadRequestException;
 
 
 /**
- * The QgsServerQueryStringParameter class holds the information regarding a query string input parameter
- * and its validation.
+ * The QgsServerQueryStringParameter class holds the information regarding
+ * a query string input parameter and its validation.
  *
- * The class is extendable through custom validators and/or by subclassing and overriding the value() method.
+ * The class is extendable through custom validators (C++ only) and/or by
+ * subclassing and overriding the value() method.
  *
  * \ingroup server
  * \since QGIS 3.10
@@ -58,11 +59,11 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      */
     enum class Type
     {
-      String = QVariant::String,   //! parameter is a string
-      Integer = QVariant::LongLong,    //! parameter is an integer
-      Double = QVariant::Double,   //! parameter is a double
-      Boolean = QVariant::Bool,       //! parameter is a boolean
-      List = QVariant::StringList, //! parameter is a list of strings, the handler will perform any further required conversion of the list values
+      String = QVariant::String,    //! parameter is a string
+      Integer = QVariant::LongLong, //! parameter is an integer
+      Double = QVariant::Double,    //! parameter is a double
+      Boolean = QVariant::Bool,     //! parameter is a boolean
+      List = QVariant::StringList,  //! parameter is a (comma separated) list of strings, the handler will perform any further required conversion of the list values
     };
     Q_ENUM( Type )
 

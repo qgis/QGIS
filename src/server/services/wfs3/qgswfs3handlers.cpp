@@ -546,7 +546,7 @@ json Wfs3DescribeCollectionHandler::schema( const QgsServerApiContext &context )
   Q_ASSERT( context.project() );
 
   const auto layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer>( context.project() ) };
-  // Construct the context with collecion id
+  // Construct the context with collection id
   for ( const auto &mapLayer : layers )
   {
     const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
@@ -702,7 +702,7 @@ json Wfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context ) c
   Q_ASSERT( context.project() );
 
   const auto layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer>( context.project() ) };
-  // Construct the context with collecion id
+  // Construct the context with collection id
   for ( const auto &mapLayer : layers )
   {
     const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
@@ -1088,7 +1088,7 @@ json Wfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &context )
   Q_ASSERT( context.project() );
 
   const auto layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer>( context.project() ) };
-  // Construct the context with collecion id
+  // Construct the context with collection id
   for ( const auto &mapLayer : layers )
   {
     const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };

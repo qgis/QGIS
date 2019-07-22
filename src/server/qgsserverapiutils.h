@@ -37,7 +37,7 @@ using json = nlohmann::json;
 
 /**
  * \ingroup server
- * The QgsServerApiUtils class contains helper functions to handle API common operations.
+ * The QgsServerApiUtils class contains helper functions to handle common API operations.
  * \since QGIS 3.10
  */
 class SERVER_EXPORT QgsServerApiUtils
@@ -61,7 +61,7 @@ class SERVER_EXPORT QgsServerApiUtils
     static json layerExtent( const QgsVectorLayer *layer ) SIP_SKIP;
 
     /**
-     * Pasrses the CRS URI \a bboxCrs (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
+     * Parses the CRS URI \a bboxCrs (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
      */
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 
@@ -128,7 +128,7 @@ class SERVER_EXPORT QgsServerApiUtils
     static const QString sanitizedFieldValue( const QString &value );
 
     /**
-     * Return the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) available for this \a project.
+     * Returns the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) available for this \a project.
      * Information is read from project WMS configuration.
      */
     static const QStringList publishedCrsList( const QgsProject *project );

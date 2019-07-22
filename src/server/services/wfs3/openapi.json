@@ -72,7 +72,7 @@
             }
           },
           "default" : {
-            "description" : "An error occured.",
+            "description" : "An error occurred.",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -106,7 +106,7 @@
             }
           },
           "default" : {
-            "description" : "An error occured.",
+            "description" : "An error occurred.",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -156,7 +156,7 @@
             }
           },
           "default" : {
-            "description" : "An error occured.",
+            "description" : "An error occurred.",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -245,7 +245,7 @@
             }
           },
           "default" : {
-            "description" : "An error occured.",
+            "description" : "An error occurred.",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -305,7 +305,7 @@
             }
           },
           "default" : {
-            "description" : "An error occured.",
+            "description" : "An error occurred.",
             "content" : {
               "application/json" : {
                 "schema" : {

@@ -467,7 +467,7 @@ json QgsServerOgcApiHandler::defaultResponse()
   {
     {
       "default", {
-        { "description", "An error occured." },
+        { "description", "An error occurred." },
         {
           "content", {
             {

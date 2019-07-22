@@ -31,12 +31,13 @@ class QgsServerApiContext;
 
 /**
  * \ingroup server
- * The QgsServerOgcApiHandler abstract class represents a OGC API handler to be used in QgsServerOgcApi class.
+ * The QgsServerOgcApiHandler abstract class represents a OGC API handler to be registered
+ * in QgsServerOgcApi class.
  *
  * Subclasses must override operational and informative methods and define
  * the core functionality in handleRequest() method.
  *
- * The following methods also MUST be implemented:
+ * The following methods MUST be implemented:
  * - path
  * - operationId
  * - summary
@@ -52,7 +53,6 @@ class QgsServerApiContext;
  * - defaultContentType
  *
  *
- * \note not available in Python bindings
  * \since QGIS 3.10
  */
 class SERVER_EXPORT QgsServerOgcApiHandler
@@ -160,7 +160,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     // /////////////////////////////////////////////////////
     // Utility methods: override should not be required
 
-#ifndef SIP_RUN
+#ifndef SIP_RUN  // Skip SIP
 
     /**
      * Writes \a data to the \a context response stream, content-type it is calculated from the \a context request,
@@ -253,7 +253,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     QgsVectorLayer *layerFromContext( const QgsServerApiContext &context ) const;
 
 
-#endif
+#endif  // SIP skipped
 
     /**
      * Returns handler information as (id, description and other metadata) as QVariant.
@@ -339,7 +339,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     static QgsVectorLayer *layerFromCollection( const QgsServerApiContext &context, const QString &collectionId );
 
     /**
-     * Return the defaultResponse as JSON
+     * Returns the defaultResponse as JSON
      */
     static json defaultResponse() SIP_SKIP;
 
