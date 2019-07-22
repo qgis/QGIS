@@ -69,6 +69,7 @@ class CORE_EXPORT QgsCallout
     enum Property
     {
       MinimumCalloutLength, //!< Minimum length of callouts
+      OffsetFromAnchor, //!< Distance to offset lines from anchor points
     };
 
     //! Options for draw order (stacking) of callouts
@@ -383,6 +384,51 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      */
     const QgsMapUnitScale &minimumLengthMapUnitScale() const { return mMinCalloutLengthScale; }
 
+
+    /**
+     * Returns the offset distance from the anchor point at which to start the line. Units are specified through offsetFromAnchorUnit().
+     * \see setOffsetFromAnchor()
+     * \see offsetFromAnchorUnit()
+     */
+    double offsetFromAnchor() const { return mOffsetFromAnchorDistance; }
+
+    /**
+     * Sets the offset \a distance from the anchor point at which to start the line. Units are specified through setOffsetFromAnchorUnit().
+     * \see offsetFromAnchor()
+     * \see setOffsetFromAnchorUnit()
+     */
+    void setOffsetFromAnchor( double length ) { mOffsetFromAnchorDistance = length; }
+
+    /**
+     * Sets the \a unit for the offset from anchor distance.
+     * \see offsetFromAnchor()
+     * \see setOffsetFromAnchor()
+    */
+    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetFromAnchorUnit = unit; }
+
+    /**
+     * Returns the units for the offset from anchor point.
+     * \see setOffsetFromAnchorUnit()
+     * \see offsetFromAnchor()
+    */
+    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const { return mOffsetFromAnchorUnit; }
+
+    /**
+     * Sets the map unit \a scale for the offset from anchor.
+     * \see offsetFromAnchorMapUnitScale()
+     * \see setOffsetFromAnchorUnit()
+     * \see setOffsetFromAnchor()
+     */
+    void setOffsetFromAnchorMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetFromAnchorScale = scale; }
+
+    /**
+     * Returns the map unit scale for the minimum callout length.
+     * \see setOffsetFromAnchorMapUnitScale()
+     * \see offsetFromAnchorUnit()
+     * \see offsetFromAnchor()
+     */
+    const QgsMapUnitScale &offsetFromAnchorMapUnitScale() const { return mOffsetFromAnchorScale; }
+
   protected:
     void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
@@ -397,6 +443,10 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     double mMinCalloutLength = 0;
     QgsUnitTypes::RenderUnit mMinCalloutLengthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mMinCalloutLengthScale;
+
+    double mOffsetFromAnchorDistance = 0;
+    QgsUnitTypes::RenderUnit mOffsetFromAnchorUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetFromAnchorScale;
 };
 
 
