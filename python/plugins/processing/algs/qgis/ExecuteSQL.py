@@ -21,8 +21,6 @@ __author__ = 'Hugo Mercier'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Hugo Mercier'
 
-import tempfile
-
 from qgis.core import (QgsVirtualLayerDefinition,
                        QgsVectorLayer,
                        QgsWkbTypes,
@@ -30,6 +28,7 @@ from qgis.core import (QgsVirtualLayerDefinition,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDefinition,
                        QgsExpression,
+                       QgsProcessingUtils,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterCrs,
@@ -135,10 +134,9 @@ class ExecuteSQL(QgisAlgorithm):
             # access (thanks the QgsVirtualLayerProvider) to memory layer that
             # belongs to temporary QgsMapLayerStore, not project.
             # So, we write them to disk is this is the case.
-            if not QgsProject.instance().mapLayer(layer.id()):
-                suffix = "." + QgsVectorFileWriter.supportedFormatExtensions()[0]
-                tf = tempfile.NamedTemporaryFile(suffix=suffix)
-                tmp_path = tf.name
+            if not context.project().mapLayer(layer.id()):
+                basename = "memorylayer." + QgsVectorFileWriter.supportedFormatExtensions()[0]
+                tmp_path = QgsProcessingUtils.generateTempFilename(basename)
                 QgsVectorFileWriter.writeAsVectorFormat(
                     layer, tmp_path, layer.dataProvider().encoding())
                 df.addSource('input{}'.format(layerIdx + 1), tmp_path, "ogr")
