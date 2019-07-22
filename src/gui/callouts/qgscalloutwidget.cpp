@@ -145,9 +145,15 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   mCalloutLineStyleButton->setLayer( vl );
   mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   connect( mMinCalloutWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::minimumLengthUnitWidgetChanged );
   connect( mMinCalloutLengthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::minimumLengthChanged );
+
+  connect( mOffsetFromAnchorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::offsetFromAnchorUnitWidgetChanged );
+  connect( mOffsetFromAnchorSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::offsetFromAnchorChanged );
+
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsSimpleLineCalloutWidget::lineSymbolChanged );
 }
 
@@ -167,9 +173,17 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
 
   whileBlocking( mMinCalloutLengthSpin )->setValue( mCallout->minimumLength() );
 
+  mOffsetFromAnchorUnitWidget->blockSignals( true );
+  mOffsetFromAnchorUnitWidget->setUnit( mCallout->offsetFromAnchorUnit() );
+  mOffsetFromAnchorUnitWidget->setMapUnitScale( mCallout->offsetFromAnchorMapUnitScale() );
+  mOffsetFromAnchorUnitWidget->blockSignals( false );
+
+  whileBlocking( mOffsetFromAnchorSpin )->setValue( mCallout->offsetFromAnchor() );
+
   whileBlocking( mCalloutLineStyleButton )->setSymbol( mCallout->lineSymbol()->clone() );
 
   registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::MinimumCalloutLength );
+  registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
 }
 
 QgsCallout *QgsSimpleLineCalloutWidget::callout()
@@ -187,6 +201,19 @@ void QgsSimpleLineCalloutWidget::minimumLengthUnitWidgetChanged()
 {
   mCallout->setMinimumLengthUnit( mMinCalloutWidthUnitWidget->unit() );
   mCallout->setMinimumLengthMapUnitScale( mMinCalloutWidthUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::offsetFromAnchorUnitWidgetChanged()
+{
+  mCallout->setOffsetFromAnchorUnit( mOffsetFromAnchorUnitWidget->unit() );
+  mCallout->setOffsetFromAnchorMapUnitScale( mOffsetFromAnchorUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::offsetFromAnchorChanged()
+{
+  mCallout->setOffsetFromAnchor( mOffsetFromAnchorSpin->value() );
   emit changed();
 }
 

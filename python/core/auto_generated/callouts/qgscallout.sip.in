@@ -44,6 +44,7 @@ relevant symbology elements to render them.
     enum Property
     {
       MinimumCalloutLength,
+      OffsetFromAnchor,
     };
 
     enum DrawOrder
@@ -360,6 +361,65 @@ Returns the map unit scale for the minimum callout length.
 .. seealso:: :py:func:`minimumLengthUnit`
 
 .. seealso:: :py:func:`minimumLength`
+%End
+
+
+    double offsetFromAnchor() const;
+%Docstring
+Returns the offset distance from the anchor point at which to start the line. Units are specified through offsetFromAnchorUnit().
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+
+.. seealso:: :py:func:`offsetFromAnchorUnit`
+%End
+
+    void setOffsetFromAnchor( double length );
+%Docstring
+Sets the offset ``distance`` from the anchor point at which to start the line. Units are specified through setOffsetFromAnchorUnit().
+
+.. seealso:: :py:func:`offsetFromAnchor`
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+%End
+
+    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the offset from anchor distance.
+
+.. seealso:: :py:func:`offsetFromAnchor`
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+%End
+
+    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const;
+%Docstring
+Returns the units for the offset from anchor point.
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+
+.. seealso:: :py:func:`offsetFromAnchor`
+%End
+
+    void setOffsetFromAnchorMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the offset from anchor.
+
+.. seealso:: :py:func:`offsetFromAnchorMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+%End
+
+    const QgsMapUnitScale &offsetFromAnchorMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum callout length.
+
+.. seealso:: :py:func:`setOffsetFromAnchorMapUnitScale`
+
+.. seealso:: :py:func:`offsetFromAnchorUnit`
+
+.. seealso:: :py:func:`offsetFromAnchor`
 %End
 
   protected:
