@@ -357,20 +357,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString settingProxyType = mSettings->value( QStringLiteral( "proxy/proxyType" ), QStringLiteral( "DefaultProxy" ) ).toString();
   mProxyTypeComboBox->setCurrentIndex( mProxyTypeComboBox->findText( settingProxyType ) );
 
-  //URLs excluded not going through proxies
-  const QStringList excludedUrlPathList = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ) ).toStringList();
-  for ( const QString &path : excludedUrlPathList )
+  //url with no proxy at all
+  const QStringList noProxyUrlPathList = mSettings->value( QStringLiteral( "proxy/noProxyUrls" ) ).toStringList();
+  for ( const QString &path : noProxyUrlPathList )
   {
     if ( path.trimmed().isEmpty() )
       continue;
 
-    QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
+    QListWidgetItem *newItem = new QListWidgetItem( mNoProxyUrlListWidget );
     newItem->setText( path );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mExcludeUrlListWidget->addItem( newItem );
+    mNoProxyUrlListWidget->addItem( newItem );
   }
-  connect( mAddUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::addExcludedUrl );
-  connect( mRemoveUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::removeExcludedUrl );
+  connect( mAddUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::addNoProxyUrl );
+  connect( mRemoveUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::removeNoProxyUrl );
 
   // cache settings
   mCacheDirectory->setText( mSettings->value( QStringLiteral( "cache/directory" ) ).toString() );
@@ -1410,16 +1410,16 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value() * 1024L ) );
 
-  //url to exclude from proxys
-  QStringList excludedUrls;
-  excludedUrls.reserve( mExcludeUrlListWidget->count() );
-  for ( int i = 0; i < mExcludeUrlListWidget->count(); ++i )
+  //url with no proxy at all
+  QStringList noProxyUrls;
+  noProxyUrls.reserve( mNoProxyUrlListWidget->count() );
+  for ( int i = 0; i < mNoProxyUrlListWidget->count(); ++i )
   {
-    const QString host = mExcludeUrlListWidget->item( i )->text();
+    const QString host = mNoProxyUrlListWidget->item( i )->text();
     if ( !host.trimmed().isEmpty() )
-      excludedUrls << host;
+      noProxyUrls << host;
   }
-  mSettings->setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), excludedUrls );
+  mSettings->setValue( QStringLiteral( "proxy/noProxyUrls" ), noProxyUrls );
 
   QgisApp::instance()->namUpdate();
 
@@ -2108,19 +2108,19 @@ void QgsOptions::removeSVGPath()
   delete itemToRemove;
 }
 
-void QgsOptions::addExcludedUrl()
+void QgsOptions::addNoProxyUrl()
 {
-  QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
+  QListWidgetItem *newItem = new QListWidgetItem( mNoProxyUrlListWidget );
   newItem->setText( QStringLiteral( "URL" ) );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-  mExcludeUrlListWidget->addItem( newItem );
-  mExcludeUrlListWidget->setCurrentItem( newItem );
+  mNoProxyUrlListWidget->addItem( newItem );
+  mNoProxyUrlListWidget->setCurrentItem( newItem );
 }
 
-void QgsOptions::removeExcludedUrl()
+void QgsOptions::removeNoProxyUrl()
 {
-  int currentRow = mExcludeUrlListWidget->currentRow();
-  QListWidgetItem *itemToRemove = mExcludeUrlListWidget->takeItem( currentRow );
+  int currentRow = mNoProxyUrlListWidget->currentRow();
+  QListWidgetItem *itemToRemove = mNoProxyUrlListWidget->takeItem( currentRow );
   delete itemToRemove;
 }
 
