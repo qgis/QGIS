@@ -447,6 +447,24 @@ class TestQgsShortcutsManager(unittest.TestCase):
         self.assertFalse(s.actionByName('shortcut2'))
         self.assertEqual(s.actionByName('action2'), action2)
 
+    def testTooltip(self):
+        """" test action tooltips """
+        action1 = QAction('action1', None)
+        action1.setToolTip('my tooltip')
+        action2 = QAction('action2', None)
+        action2.setToolTip('my multiline\ntooltip')
+        action3 = QAction('action3', None)
+        action3.setToolTip('my tooltip (Ctrl+S)')
+
+        s = QgsShortcutsManager(None)
+        s.registerAction(action1)
+        s.registerAction(action2)
+        s.registerAction(action3, 'Ctrl+S')
+
+        self.assertEqual(action1.toolTip(), '<b>my tooltip</b>')
+        self.assertEqual(action2.toolTip(), '<b>my multiline</b><p>tooltip</p>')
+        self.assertEqual(action3.toolTip(), '<b>my tooltip </b> (Ctrl+S)')
+
 
 if __name__ == '__main__':
     unittest.main()
