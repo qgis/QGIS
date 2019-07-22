@@ -20,6 +20,7 @@
 #include <QFileInfo>
 #include <QUrl>
 
+std::function< QString( const QString & ) > QgsPathResolver::sCustomResolver = []( const QString &a )->QString { return a; };
 
 QgsPathResolver::QgsPathResolver( const QString &baseFileName )
   : mBaseFileName( baseFileName )
@@ -27,8 +28,9 @@ QgsPathResolver::QgsPathResolver( const QString &baseFileName )
 }
 
 
-QString QgsPathResolver::readPath( const QString &filename ) const
+QString QgsPathResolver::readPath( const QString &f ) const
 {
+  QString filename = sCustomResolver( f );
   if ( filename.isEmpty() )
     return QString();
 
@@ -140,6 +142,11 @@ QString QgsPathResolver::readPath( const QString &filename ) const
 #endif
 
   return vsiPrefix + projElems.join( QStringLiteral( "/" ) );
+}
+
+void QgsPathResolver::setPathPreprocessor( const std::function<QString( const QString & )> &processor )
+{
+  sCustomResolver = processor;
 }
 
 QString QgsPathResolver::writePath( const QString &src ) const
