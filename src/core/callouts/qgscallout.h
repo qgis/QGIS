@@ -70,6 +70,7 @@ class CORE_EXPORT QgsCallout
     {
       MinimumCalloutLength, //!< Minimum length of callouts
       OffsetFromAnchor, //!< Distance to offset lines from anchor points
+      OffsetFromLabel, //!< Distance to offset lines from label area
     };
 
     //! Options for draw order (stacking) of callouts
@@ -429,6 +430,50 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      */
     const QgsMapUnitScale &offsetFromAnchorMapUnitScale() const { return mOffsetFromAnchorScale; }
 
+    /**
+     * Returns the offset distance from label area at which to end the line. Units are specified through offsetFromLabelUnit().
+     * \see setOffsetFromLabel()
+     * \see offsetFromLabelUnit()
+     */
+    double offsetFromLabel() const { return mOffsetFromLabelDistance; }
+
+    /**
+     * Sets the offset \a distance from label area at which to end the line. Units are specified through setOffsetFromLabelUnit().
+     * \see offsetFromLabel()
+     * \see setOffsetFromLabelUnit()
+     */
+    void setOffsetFromLabel( double distance ) { mOffsetFromLabelDistance = distance; }
+
+    /**
+     * Sets the \a unit for the offset from label area distance.
+     * \see offsetFromLabel()
+     * \see setOffsetFromLabel()
+    */
+    void setOffsetFromLabelUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetFromLabelUnit = unit; }
+
+    /**
+     * Returns the units for the offset from label area.
+     * \see setOffsetFromLabelUnit()
+     * \see offsetFromLabel()
+    */
+    QgsUnitTypes::RenderUnit offsetFromLabelUnit() const { return mOffsetFromLabelUnit; }
+
+    /**
+     * Sets the map unit \a scale for the offset from label area.
+     * \see offsetFromLabelMapUnitScale()
+     * \see setOffsetFromLabelUnit()
+     * \see setOffsetFromLabel()
+     */
+    void setOffsetFromLabelMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetFromLabelScale = scale; }
+
+    /**
+     * Returns the map unit scale for the minimum callout length.
+     * \see setOffsetFromLabelMapUnitScale()
+     * \see offsetFromLabelUnit()
+     * \see offsetFromLabel()
+     */
+    const QgsMapUnitScale &offsetFromLabelMapUnitScale() const { return mOffsetFromLabelScale; }
+
   protected:
     void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
@@ -447,6 +492,10 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     double mOffsetFromAnchorDistance = 0;
     QgsUnitTypes::RenderUnit mOffsetFromAnchorUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetFromAnchorScale;
+
+    double mOffsetFromLabelDistance = 0;
+    QgsUnitTypes::RenderUnit mOffsetFromLabelUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetFromLabelScale;
 };
 
 

@@ -45,6 +45,7 @@ relevant symbology elements to render them.
     {
       MinimumCalloutLength,
       OffsetFromAnchor,
+      OffsetFromLabel,
     };
 
     enum DrawOrder
@@ -420,6 +421,64 @@ Returns the map unit scale for the minimum callout length.
 .. seealso:: :py:func:`offsetFromAnchorUnit`
 
 .. seealso:: :py:func:`offsetFromAnchor`
+%End
+
+    double offsetFromLabel() const;
+%Docstring
+Returns the offset distance from label area at which to end the line. Units are specified through offsetFromLabelUnit().
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+
+.. seealso:: :py:func:`offsetFromLabelUnit`
+%End
+
+    void setOffsetFromLabel( double distance );
+%Docstring
+Sets the offset ``distance`` from label area at which to end the line. Units are specified through setOffsetFromLabelUnit().
+
+.. seealso:: :py:func:`offsetFromLabel`
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+%End
+
+    void setOffsetFromLabelUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the offset from label area distance.
+
+.. seealso:: :py:func:`offsetFromLabel`
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+%End
+
+    QgsUnitTypes::RenderUnit offsetFromLabelUnit() const;
+%Docstring
+Returns the units for the offset from label area.
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+
+.. seealso:: :py:func:`offsetFromLabel`
+%End
+
+    void setOffsetFromLabelMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the offset from label area.
+
+.. seealso:: :py:func:`offsetFromLabelMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+%End
+
+    const QgsMapUnitScale &offsetFromLabelMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum callout length.
+
+.. seealso:: :py:func:`setOffsetFromLabelMapUnitScale`
+
+.. seealso:: :py:func:`offsetFromLabelUnit`
+
+.. seealso:: :py:func:`offsetFromLabel`
 %End
 
   protected:

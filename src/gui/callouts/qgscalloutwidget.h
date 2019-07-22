@@ -143,6 +143,8 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     void minimumLengthUnitWidgetChanged();
     void offsetFromAnchorUnitWidgetChanged();
     void offsetFromAnchorChanged();
+    void offsetFromLabelUnitWidgetChanged();
+    void offsetFromLabelChanged();
     void lineSymbolChanged();
 
   private:
