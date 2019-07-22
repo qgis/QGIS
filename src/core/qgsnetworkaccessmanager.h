@@ -356,21 +356,35 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      *
      * This list consists of the beginning of URL strings which will not use the fallback proxy.
      *
+     * \see noProxyList()
      * \see fallbackProxy()
      * \see setFallbackProxyAndExcludes()
      */
     QStringList excludeList() const;
 
     /**
+     * Returns the no proxy list.
+     *
+     * This list consists of the beginning of URL strings which will not use any proxy at all
+     *
+     * \see excludeList()
+     * \see fallbackProxy()
+     * \see setFallbackProxyAndExcludes()
+     */
+    QStringList noProxyList() const;
+
+    /**
      * Sets the fallback \a proxy and URLs which shouldn't use it.
      *
      * The fallback proxy is used for URLs which no other proxy factory returned proxies for.
      * The \a excludes list specifies the beginning of URL strings which will not use this fallback proxy.
+     * The \a noProxyURLs list specifies the beginning of URL strings which will not use any proxy at all
      *
      * \see fallbackProxy()
      * \see excludeList()
+     * \see noProxyList()
      */
-    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
+    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes, const QStringList &noProxyURLs );
 
     /**
      * Returns the name for QNetworkRequest::CacheLoadControl.
@@ -637,6 +651,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
+    QStringList mNoProxyURLs;
     bool mUseSystemProxy = false;
     bool mInitialized = false;
     static QgsNetworkAccessManager *sMainNAM;
@@ -657,4 +672,3 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
-
