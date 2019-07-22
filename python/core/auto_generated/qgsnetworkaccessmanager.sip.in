@@ -77,12 +77,43 @@ retrieve fall back proxy (for urls that no factory returned proxies for)
 
     QStringList excludeList() const;
 %Docstring
-retrieve exclude list (urls shouldn't use the fallback proxy)
+Returns the proxy exclude list.
+
+This list consists of the beginning of URL strings which will not use the fallback proxy.
+
+.. seealso:: :py:func:`noProxyList`
+
+.. seealso:: :py:func:`fallbackProxy`
+
+.. seealso:: :py:func:`setFallbackProxyAndExcludes`
 %End
 
-    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
+    QStringList noProxyList() const;
 %Docstring
-Sets fallback proxy and URL that shouldn't use it.
+Returns the no proxy list.
+
+This list consists of the beginning of URL strings which will not use any proxy at all
+
+.. seealso:: :py:func:`excludeList`
+
+.. seealso:: :py:func:`fallbackProxy`
+
+.. seealso:: :py:func:`setFallbackProxyAndExcludes`
+%End
+
+    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes, const QStringList &noProxyURLs );
+%Docstring
+Sets the fallback ``proxy`` and URLs which shouldn't use it.
+
+The fallback proxy is used for URLs which no other proxy factory returned proxies for.
+The ``excludes`` list specifies the beginning of URL strings which will not use this fallback proxy.
+The ``noProxyURLs`` list specifies the beginning of URL strings which will not use any proxy at all
+
+.. seealso:: :py:func:`fallbackProxy`
+
+.. seealso:: :py:func:`excludeList`
+
+.. seealso:: :py:func:`noProxyList`
 %End
 
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
@@ -119,7 +150,6 @@ Returns whether the system proxy should be used
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

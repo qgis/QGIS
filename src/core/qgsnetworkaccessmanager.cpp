@@ -73,12 +73,21 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 
       QString url = query.url().toString();
 
+      Q_FOREACH ( const QString &noProxy, nam->noProxyList() )
+      {
+        if ( !noProxy.trimmed().isEmpty() && url.startsWith( noProxy ) )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "don't using any proxy for %1 [exclude %2]" ).arg( url, noProxy ), 4 );
+          return QList<QNetworkProxy>() << QNetworkProxy( QNetworkProxy::NoProxy );
+        }
+      }
+
       Q_FOREACH ( const QString &exclude, nam->excludeList() )
       {
         if ( !exclude.trimmed().isEmpty() && url.startsWith( exclude ) )
         {
           QgsDebugMsgLevel( QStringLiteral( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ), 4 );
-          return QList<QNetworkProxy>() << QNetworkProxy( QNetworkProxy::NoProxy );
+          return QList<QNetworkProxy>() << QNetworkProxy( QNetworkProxy::DefaultProxy );
         }
       }
 
@@ -143,12 +152,17 @@ QStringList QgsNetworkAccessManager::excludeList() const
   return mExcludedURLs;
 }
 
+QStringList QgsNetworkAccessManager::noProxyList() const
+{
+  return mNoProxyURLs;
+}
+
 const QNetworkProxy &QgsNetworkAccessManager::fallbackProxy() const
 {
   return mFallbackProxy;
 }
 
-void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes )
+void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes, const QStringList &noProxyURLs )
 {
   QgsDebugMsgLevel( QStringLiteral( "proxy settings: (type:%1 host: %2:%3, user:%4, password:%5" )
                     .arg( proxy.type() == QNetworkProxy::DefaultProxy ? QStringLiteral( "DefaultProxy" ) :
@@ -172,6 +186,12 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
     return url.trimmed().isEmpty();
   } ), mExcludedURLs.end() ); // clazy:exclude=detaching-member
 
+  mNoProxyURLs = noProxyURLs;
+  mNoProxyURLs.erase( std::remove_if( mNoProxyURLs.begin(), mNoProxyURLs.end(), // clazy:exclude=detaching-member
+                                      []( const QString & url )
+  {
+    return url.trimmed().isEmpty();
+  } ), mNoProxyURLs.end() ); // clazy:exclude=detaching-member
 }
 
 QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
@@ -320,11 +340,16 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   QgsSettings settings;
   QNetworkProxy proxy;
   QStringList excludes;
+  QStringList noProxyURLs;
 
   bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
   if ( proxyEnabled )
   {
+    // This settings is keep for retrocompatibility, the returned proxy for these URL is the default one,
+    // meaning the system one
     excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), QStringList() ).toStringList();
+
+    noProxyURLs = settings.value( QStringLiteral( "proxy/noProxyUrls" ), QStringList() ).toStringList();
 
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), "" ).toString();
@@ -383,7 +408,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     }
   }
 
-  setFallbackProxyAndExcludes( proxy, excludes );
+  setFallbackProxyAndExcludes( proxy, excludes, noProxyURLs );
 
   QgsNetworkDiskCache *newcache = qobject_cast<QgsNetworkDiskCache *>( cache() );
   if ( !newcache )
@@ -401,4 +426,3 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   if ( cache() != newcache )
     setCache( newcache );
 }
-
