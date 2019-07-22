@@ -14,6 +14,7 @@ import qgis  # NOQA
 
 import tempfile
 import os
+import gc
 from qgis.core import QgsPathResolver, QgsVectorLayer, QgsProject
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -22,20 +23,23 @@ start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
 
-PROCESSOR = None
-
 
 class TestQgsPathResolver(unittest.TestCase):
 
     def testCustomPreprocessor(self):
         self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'aaaaa')
 
-        def my_processor(path):
-            return path.upper()
+        def run_test():
+            def my_processor(path):
+                return path.upper()
 
-        global PROCESSOR
-        PROCESSOR = my_processor
-        QgsPathResolver.setPathPreprocessor(PROCESSOR)
+            QgsPathResolver.setPathPreprocessor(my_processor)
+            self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'AAAAA')
+
+        run_test()
+        gc.collect()
+        # my_processor should be out of scope and cleaned up, unless things are working
+        # correctly and ownership was transferred
         self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'AAAAA')
 
     def testLoadLayerWithPreprocessor(self):
@@ -63,9 +67,7 @@ class TestQgsPathResolver(unittest.TestCase):
         def my_processor(path):
             return path.replace('moooooo', 'lines')
 
-        global PROCESSOR
-        PROCESSOR = my_processor
-        QgsPathResolver.setPathPreprocessor(PROCESSOR)
+        QgsPathResolver.setPathPreprocessor(my_processor)
         p3 = QgsProject()
         self.assertTrue(p3.read(temp_project_path))
         l = p3.mapLayersByName('Lines')[0]
