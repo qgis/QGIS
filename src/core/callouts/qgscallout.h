@@ -398,7 +398,7 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      * \see offsetFromAnchor()
      * \see setOffsetFromAnchorUnit()
      */
-    void setOffsetFromAnchor( double length ) { mOffsetFromAnchorDistance = length; }
+    void setOffsetFromAnchor( double distance ) { mOffsetFromAnchorDistance = distance; }
 
     /**
      * Sets the \a unit for the offset from anchor distance.
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     void setOffsetFromAnchorMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetFromAnchorScale = scale; }
 
     /**
-     * Returns the map unit scale for the minimum callout length.
+     * Returns the map unit scale for the offset from anchor.
      * \see setOffsetFromAnchorMapUnitScale()
      * \see offsetFromAnchorUnit()
      * \see offsetFromAnchor()

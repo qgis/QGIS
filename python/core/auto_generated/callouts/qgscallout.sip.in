@@ -374,7 +374,7 @@ Returns the offset distance from the anchor point at which to start the line. Un
 .. seealso:: :py:func:`offsetFromAnchorUnit`
 %End
 
-    void setOffsetFromAnchor( double length );
+    void setOffsetFromAnchor( double distance );
 %Docstring
 Sets the offset ``distance`` from the anchor point at which to start the line. Units are specified through setOffsetFromAnchorUnit().
 
@@ -414,7 +414,7 @@ Sets the map unit ``scale`` for the offset from anchor.
 
     const QgsMapUnitScale &offsetFromAnchorMapUnitScale() const;
 %Docstring
-Returns the map unit scale for the minimum callout length.
+Returns the map unit scale for the offset from anchor.
 
 .. seealso:: :py:func:`setOffsetFromAnchorMapUnitScale`
 
