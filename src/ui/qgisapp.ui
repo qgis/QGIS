@@ -1884,7 +1884,8 @@
     <string>Move Label and Diagram</string>
    </property>
    <property name="toolTip">
-    <string>Move Label and Diagram</string>
+    <string>Moves a Label or Diagram
+Acts on all editable layers.</string>
    </property>
   </action>
   <action name="mActionRotateLabel">
@@ -1899,8 +1900,9 @@
     <string>Rotate Label</string>
    </property>
    <property name="toolTip">
-    <string>Rotate Label
-Holding Ctrl (Cmd) while rotating increments by 15 deg.</string>
+    <string>Rotates a Label
+Holding Ctrl (Cmd) while rotating increments by 15 deg.
+Acts on all editable layers.</string>
    </property>
   </action>
   <action name="mActionChangeLabelProperties">
@@ -1916,7 +1918,8 @@ Holding Ctrl (Cmd) while rotating increments by 15 deg.</string>
    </property>
    <property name="toolTip">
     <string>Change Label Properties
-Allows customization of individual label properties such as font size and color.</string>
+Allows customization of individual label properties such as font size and color.
+Acts on all editable layers.</string>
    </property>
   </action>
   <action name="mActionStyleManager">
