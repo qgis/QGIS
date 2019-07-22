@@ -605,8 +605,10 @@
    </attribute>
    <addaction name="mActionLabeling"/>
    <addaction name="mActionDiagramProperties"/>
+   <addaction name="separator"/>
    <addaction name="mActionShowPinnedLabels"/>
    <addaction name="mActionShowUnplacedLabels"/>
+   <addaction name="separator"/>
    <addaction name="mActionPinLabels"/>
    <addaction name="mActionShowHideLabels"/>
    <addaction name="mActionMoveLabel"/>
