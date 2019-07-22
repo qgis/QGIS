@@ -174,11 +174,6 @@ json QgsServerOgcApiHandler::schema( const QgsServerApiContext &context ) const
   return nullptr;
 }
 
-QVariant QgsServerOgcApiHandler::handlerDataAsQVariant( const QgsServerApiContext &context ) const
-{
-  return QgsJsonUtils::parseJson( schema( context ).dump() );
-}
-
 json QgsServerOgcApiHandler::link( const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType, const QgsServerOgcApi::ContentType contentType, const std::string &title ) const
 {
   json l

@@ -60,8 +60,6 @@ class SERVER_EXPORT QgsServerOgcApiHandler
 
   public:
 
-    QgsServerOgcApiHandler() = default;
-
     virtual ~QgsServerOgcApiHandler();
 
     // /////////////////////////////////////////////
@@ -252,18 +250,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      */
     QgsVectorLayer *layerFromContext( const QgsServerApiContext &context ) const;
 
-
 #endif  // SIP skipped
-
-    /**
-     * Returns handler information as (id, description and other metadata) as QVariant.
-     *
-     * \note This is meant for Python plugins to consume, C++ code must use the faster
-     * implementation in handlerData().
-     *
-     * \see handlerData()
-     */
-    QVariant handlerDataAsQVariant( const QgsServerApiContext &context ) const SIP_PYNAME( schema );
 
     /**
      * Writes \a data to the \a context response stream, content-type it is calculated from the \a context request,
@@ -334,7 +321,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     static std::string parentLink( const QUrl &url, int levels = 1 );
 
     /**
-     * Returns a vector layer from the \a collectionId in the given \a context     *
+     * Returns a vector layer from the \a collectionId in the given \a context
      */
     static QgsVectorLayer *layerFromCollection( const QgsServerApiContext &context, const QString &collectionId );
 

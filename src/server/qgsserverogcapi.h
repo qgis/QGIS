@@ -112,7 +112,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     static const QMap<QgsServerOgcApi::ContentType, QString> contentTypeMimes() SIP_SKIP;
 
     /**
-     * Return contenType specializations (e.g. JSON => [GEOJSON, OPENAPI3], XML => [GML])
+     * Returns contenType specializations (e.g. JSON => [GEOJSON, OPENAPI3], XML => [GML])
      * \note not available in Python bindings
      */
     static const QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType> > contentTypeAliases() SIP_SKIP;
@@ -132,7 +132,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 #endif
 
     /**
-     * Registers an OGC API \a handler, ownership of the handler is transfered to the API
+     * Registers an OGC API \a handler, ownership of the handler is transferred to the API
      */
     void registerHandler( QgsServerOgcApiHandler *handler SIP_TRANSFER );
 
