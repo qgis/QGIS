@@ -220,7 +220,15 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
 {
   // culled from QgsMapToolSelectUtils::setSelectFeatures()
 
-  QgsGeometry selectGeometry = mRubberBand->asGeometry();
+  QgsGeometry selectGeometry;
+  if ( mDragging )
+  {
+    selectGeometry = mRubberBand->asGeometry();
+  }
+  else
+  {
+    selectGeometry = QgsGeometry::fromRect( QgsMapToolSelectUtils::expandSelectRectangle( mRubberBand->asGeometry().centroid().asPoint(), canvas(), vlayer ) );
+  }
 
   // toLayerCoordinates will throw an exception for any 'invalid' points in
   // the rubber band.
