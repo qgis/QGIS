@@ -237,7 +237,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         settings = QgsSettings()
         lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
 
-        query = self._getSqlQuery()
+        query = self.editSql.text()
         if query == "":
             return
 
