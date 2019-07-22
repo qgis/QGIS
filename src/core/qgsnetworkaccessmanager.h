@@ -84,11 +84,48 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! retrieve fall back proxy (for urls that no factory returned proxies for)
     const QNetworkProxy &fallbackProxy() const;
 
+<<<<<<< HEAD
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
     QStringList excludeList() const;
 
     //! Sets fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
+=======
+    /**
+     * Returns the proxy exclude list.
+     *
+     * This list consists of the beginning of URL strings which will not use the fallback proxy.
+     *
+     * \see noProxyList()
+     * \see fallbackProxy()
+     * \see setFallbackProxyAndExcludes()
+     */
+    QStringList excludeList() const;
+
+    /**
+     * Returns the no proxy list.
+     *
+     * This list consists of the beginning of URL strings which will not use any proxy at all
+     *
+     * \see excludeList()
+     * \see fallbackProxy()
+     * \see setFallbackProxyAndExcludes()
+     */
+    QStringList noProxyList() const;
+
+    /**
+     * Sets the fallback \a proxy and URLs which shouldn't use it.
+     *
+     * The fallback proxy is used for URLs which no other proxy factory returned proxies for.
+     * The \a excludes list specifies the beginning of URL strings which will not use this fallback proxy.
+     * The \a noProxyURLs list specifies the beginning of URL strings which will not use any proxy at all
+     *
+     * \see fallbackProxy()
+     * \see excludeList()
+     * \see noProxyList()
+     */
+    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes, const QStringList &noProxyURLs );
+>>>>>>> 0dfa77ddb3... Add a new settings noProxyUrls and change UI to edit this setting
 
     //! Gets name for QNetworkRequest::CacheLoadControl
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
@@ -123,10 +160,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
+    QStringList mNoProxyURLs;
     bool mUseSystemProxy = false;
     bool mInitialized = false;
     static QgsNetworkAccessManager *sMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
-
