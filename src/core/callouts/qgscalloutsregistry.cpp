@@ -16,6 +16,7 @@
 #include "qgscalloutsregistry.h"
 #include "qgscallout.h"
 #include "qgsxmlutils.h"
+#include "qgsapplication.h"
 
 //
 // QgsCalloutAbstractMetadata
@@ -48,8 +49,8 @@ QgsCalloutWidget *QgsCalloutMetadata::createCalloutWidget( QgsVectorLayer *vl )
 QgsCalloutRegistry::QgsCalloutRegistry()
 {
   // init registry with known callouts
-  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "simple" ), QObject::tr( "Simple lines" ), QgsSimpleLineCallout::create ) );
-  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "manhattan" ), QObject::tr( "Manhattan lines" ), QgsManhattanLineCallout::create ) );
+  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "simple" ), QObject::tr( "Simple lines" ), QgsApplication::getThemeIcon( QStringLiteral( "mIconSnappingSegment.svg" ) ), QgsSimpleLineCallout::create ) );
+  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "manhattan" ), QObject::tr( "Manhattan lines" ), QgsApplication::getThemeIcon( QStringLiteral( "mIconSnappingSegment.svg" ) ), QgsManhattanLineCallout::create ) );
 }
 
 QgsCalloutRegistry::~QgsCalloutRegistry()

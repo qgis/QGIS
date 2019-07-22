@@ -157,7 +157,7 @@ void TestQgsCallout::initTestCase()
   mReport += QLatin1String( "<h1>Callout Tests</h1>\n" );
 
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
-  registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), DummyCallout::create ) );
+  registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), QIcon(), DummyCallout::create ) );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';

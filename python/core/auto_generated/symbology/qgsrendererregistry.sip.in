@@ -37,13 +37,42 @@ Stores metadata about one renderer class.
 
 
     QgsRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
+%Docstring
+Constructor for QgsRendererAbstractMetadata, with the specified ``name``.
+
+The ``visibleName`` argument gives a translated, user friendly string identifying the renderer type.
+
+The ``icon`` argument can be used to specify an icon representing the renderer.
+%End
     virtual ~QgsRendererAbstractMetadata();
 
     QString name() const;
+%Docstring
+Returns the unique name of the renderer. This value is not translated.
+
+.. seealso:: :py:func:`visibleName`
+%End
+
     QString visibleName() const;
+%Docstring
+Returns a friendly display name of the renderer. This value is translated.
+
+.. seealso:: :py:func:`name`
+%End
 
     QIcon icon() const;
+%Docstring
+Returns an icon representing the renderer.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
     void setIcon( const QIcon &icon );
+%Docstring
+Sets an ``icon`` representing the renderer.
+
+.. seealso:: :py:func:`icon`
+%End
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 %Docstring
