@@ -323,6 +323,7 @@ class Repositories(QObject):
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "Relay")
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
