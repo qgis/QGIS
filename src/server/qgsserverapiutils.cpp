@@ -122,13 +122,16 @@ const QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project
 {
   // This must be always available in OGC APIs
   QStringList result { { QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" )}};
-  const QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
-  for ( const QString &crsId : outputCrsList )
+  if ( project )
   {
-    const auto crsUri { crsToOgcUri( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsId ) ) };
-    if ( ! crsUri.isEmpty() )
+    const QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
+    for ( const QString &crsId : outputCrsList )
     {
-      result.push_back( crsUri );
+      const auto crsUri { crsToOgcUri( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsId ) ) };
+      if ( ! crsUri.isEmpty() )
+      {
+        result.push_back( crsUri );
+      }
     }
   }
   return result;

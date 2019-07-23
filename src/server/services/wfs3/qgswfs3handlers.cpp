@@ -338,6 +338,11 @@ Wfs3CollectionsHandler::Wfs3CollectionsHandler()
 
 void Wfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context ) const
 {
+  json crss = json::array();
+  for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
+  {
+    crss.push_back( crs.toStdString() );
+  }
   json data
   {
     {
@@ -345,10 +350,7 @@ void Wfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context )
     },  // TODO: add XSD or other schema?
     { "collections", json::array() },
     {
-      "crs", {
-        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-        "http://www.opengis.net/def/crs/EPSG/0/4326"
-      }
+      "crs", crss
     }
   };
 
@@ -368,10 +370,7 @@ void Wfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context )
         // a description of the features in the collection
         { "description", layer->abstract().toStdString() },
         {
-          "crs", {
-            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-            "http://www.opengis.net/def/crs/EPSG/0/4326"
-          }
+          "crs", crss
         },
         // TODO: "relations" ?
         {
