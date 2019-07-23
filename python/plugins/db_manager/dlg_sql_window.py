@@ -612,16 +612,16 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             if not line.strip().startswith('--'):
                 if '--' in line:
                     comment_positions = []
-                    comments = re.finditer(r'--',line)
+                    comments = re.finditer(r'--', line)
                     for match in comments:
                         comment_positions.append(match.start())
                     quote_positions = []
-                    identifiers = re.finditer(r'"(?:[^"]|"")*"',line)
-                    quotes = re.finditer(r"'(?:[^']|'')*'",line)
+                    identifiers = re.finditer(r'"(?:[^"]|"")*"', line)
+                    quotes = re.finditer(r"'(?:[^']|'')*'", line)
                     for match in identifiers:
-                        quote_positions.append((match.start(),match.end()))
+                        quote_positions.append((match.start(), match.end()))
                     for match in quotes:
-                        quote_positions.append((match.start(),match.end()))
+                        quote_positions.append((match.start(), match.end()))
                     unquoted_comments = copy.deepcopy(comment_positions)
                     for comment in comment_positions:
                         for quote_position in quote_positions:
