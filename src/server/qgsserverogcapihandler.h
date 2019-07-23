@@ -179,8 +179,6 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * - links_filter( links, key, value ): Returns filtered links from a link list
      * - content_type_name( content_type ): Returns a short name from a content type for example "text/html" will return "HTML"
      *
-     * \note use xmlDump for XML output
-     * \see xmlDump()
      * \note not available in Python bindings
      */
     void write( json &data, const QgsServerApiContext &context, const json &htmlMetadata = nullptr ) const;
@@ -188,6 +186,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     /**
      * Writes \a data to the \a context response stream as JSON
      * (indented if debug is active), an optional \a contentType can be specified.
+     *
      * \note not available in Python bindings
      */
     void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = QStringLiteral( "application/json" ) ) const;
@@ -203,16 +202,11 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     /**
      * Returns handler information from the \a context for the OPENAPI description (id, description and other metadata) as JSON.
      * It may return a NULL JSON object in case the handler does not need to be included in the API.
+     *
      * \note requires a valid project to be present in the context
      * \note not available in Python bindings
      */
     virtual json schema( const QgsServerApiContext &context ) const;
-
-    /**
-     * Writes \a data to the \a response stream as XML (indented if debug is active).
-     * \note not available in Python bindings
-     */
-    void xmlDump( const json &data, QgsServerResponse *response ) const;
 
     /**
      * Utility method that builds and returns a link to the resource.
@@ -233,6 +227,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * The base implementation returns the alternate and self links, subclasses may
      * add other links.
+     *
      * \note not available in Python bindings
      */
     json links( const QgsServerApiContext &context ) const;
@@ -243,6 +238,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * requires a valid project instance in the context.
      *
      * \note not available in Python bindings
+     *
      * \throws QgsServerApiNotFoundError if the layer could not be found
      * \throws QgsServerApiImproperlyConfiguredException if project is not set
      */
@@ -262,15 +258,13 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * Available custom template functions:
      * - path_append( path ): appends a directory path to the current url
-     * - path_chomp(n):removes the specified number "n" of directory components from the current url path
+     * - path_chomp( n ): removes the specified number "n" of directory components from the current url path
      * - json_dump(): prints current JSON data passed to the template
-     * - static( path): returns the full URL to the specified static <path>, for example:
+     * - static( path): returns the full URL to the specified static path, for example:
      *   static("/style/black.css") will return something like "/wfs3/static/style/black.css".
-     * - links_filter( links, key, value ): eturns filtered links from a link list
-     * - content_type_name( content_type ): Returns a short name from a content type for example "text/html" will return "HTML"
+     * - links_filter( links, key, value ): returns filtered links from a link list
+     * - content_type_name( content_type ): returns a short name from a content type for example "text/html" will return "HTML"
      *
-     * \note use xmlDump for XML output
-     * \see xmlDump()
      */
     void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const;
 
@@ -325,12 +319,16 @@ class SERVER_EXPORT QgsServerOgcApiHandler
 
     /**
      * Returns the defaultResponse as JSON
+     *
+     * \note not available in Python bindings
      */
     static json defaultResponse() SIP_SKIP;
 
     /**
      * Returns tags as JSON
+     *
      * \see tags()
+     *
      * \note not available in Python bindings
      */
     json jsonTags( ) const SIP_SKIP;

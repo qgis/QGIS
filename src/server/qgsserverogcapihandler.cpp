@@ -84,7 +84,6 @@ QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) co
 
 void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &context, const json &htmlMetadata ) const
 {
-  // TODO: accept GML and XML?
   const auto contentType { contentTypeFromRequest( context.request() ) };
   switch ( contentType )
   {
@@ -101,9 +100,6 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::OPENAPI3:
       jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ) );
       break;
-    case QgsServerOgcApi::ContentType::GML:
-    case QgsServerOgcApi::ContentType::XML:
-      throw QgsServerApiNotImplementedException( QStringLiteral( "Requested content type is not yet implemented" ) );
   }
 }
 void QgsServerOgcApiHandler::write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata ) const

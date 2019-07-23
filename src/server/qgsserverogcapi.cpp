@@ -28,8 +28,6 @@ QMap<QgsServerOgcApi::ContentType, QString> QgsServerOgcApi::sContentTypeMime = 
   map[QgsServerOgcApi::ContentType::JSON] = QStringLiteral( "application/json" );
   map[QgsServerOgcApi::ContentType::GEOJSON] = QStringLiteral( "application/geo+json" );
   map[QgsServerOgcApi::ContentType::HTML] = QStringLiteral( "text/html" );
-  map[QgsServerOgcApi::ContentType::XML] = QStringLiteral( "application/xml" );
-  map[QgsServerOgcApi::ContentType::GML] = QStringLiteral( "application/gml+xml" );
   map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringLiteral( "application/openapi+json;version=3.0" );
   return map;
 }();
@@ -38,7 +36,6 @@ QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> QgsServ
 {
   QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> map;
   map[ContentType::JSON] = { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::OPENAPI3 };
-  map[QgsServerOgcApi::ContentType::XML] = { QgsServerOgcApi::ContentType::GML };
   return map;
 }();
 

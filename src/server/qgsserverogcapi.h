@@ -72,9 +72,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       GEOJSON,
       OPENAPI3, //! "application/openapi+json;version=3.0"
       JSON,
-      HTML,
-      GML,
-      XML
+      HTML
     };
     Q_ENUM( ContentType )
 
