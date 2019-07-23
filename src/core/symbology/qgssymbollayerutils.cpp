@@ -32,6 +32,7 @@
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgseffectstack.h"
 
 #include <QColor>
 #include <QFont>
@@ -1025,7 +1026,9 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
     QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
     if ( !effectElem.isNull() )
     {
-      layer->setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+      std::unique_ptr< QgsPaintEffect > effect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+      if ( effect && !QgsPaintEffectRegistry::isDefaultStack( effect.get() ) )
+        layer->setPaintEffect( effect.release() );
     }
 
     // restore data defined properties
@@ -1086,7 +1089,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
     QgsApplication::symbolLayerRegistry()->resolvePaths( layer->layerType(), props, context.pathResolver(), true );
 
     saveProperties( props, doc, layerEl );
-    if ( !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
+    if ( layer->paintEffect() && !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
       layer->paintEffect()->saveProperties( doc, layerEl );
 
     QDomElement ddProps = doc.createElement( QStringLiteral( "data_defined_properties" ) );
