@@ -17,6 +17,7 @@
 #include <QWidget>
 #include <QEvent>
 #include <QObject>
+#include <QVariant>
 #include "qgsguiutils.h"
 #include "qgslogger.h"
 
@@ -30,9 +31,14 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
   if ( event->type() == QEvent::Close || event->type() == QEvent::Destroy )
   {
     QWidget *widget = qobject_cast<QWidget *>( object );
-    QString name = widgetSafeName( widget );
-    QString key = mKeys[name];
-    QgsGuiUtils::saveGeometry( widget, key );
+
+    // don't save geometry for windows which were never shown
+    if ( widget->property( "widgetStateHelperWasShown" ).toBool() )
+    {
+      QString name = widgetSafeName( widget );
+      QString key = mKeys[name];
+      QgsGuiUtils::saveGeometry( widget, key );
+    }
   }
   else if ( event->type() == QEvent::Show )
   {
@@ -40,6 +46,7 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
     QString name = widgetSafeName( widget );
     QString key = mKeys[name];
     QgsGuiUtils::restoreGeometry( widget, key );
+    widget->setProperty( "widgetStateHelperWasShown", QVariant( true ) );
   }
   return QObject::eventFilter( object, event );
 }
