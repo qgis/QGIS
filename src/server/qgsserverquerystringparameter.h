@@ -75,7 +75,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      * \param required
      * \param type the parameter type
      * \param description parameter description
-     * \param defaultValue, it is ignored if the parameter is required
+     * \param defaultValue default value, it is ignored if the parameter is required
      */
     QgsServerQueryStringParameter( const QString name,
                                    bool required = false,

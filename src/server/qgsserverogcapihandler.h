@@ -171,13 +171,13 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * See: https://github.com/pantor/inja#tutorial
      *
      * Available custom template functions:
-     * - path_append(<path>): appends a directory <path> to the current url
-     * - path_chomp(n):removes the specified number "n" of directory components from the current url path
-     * - json_dump(): prints current JSON data passed to the template
-     * - static(<path>): returns the full URL to the specified static <path>, for example:
-     *   static("/style/black.css") will return something like "/wfs3/static/style/black.css".
-     * - links_filter( <links>, <key>, <value> ): eturns filtered links from a link list
-     * - content_type_name( <content_type> ): Returns a short name from a content type for example "text/html" will return "HTML"
+     * - path_append( path ): appends a directory path to the current url
+     * - path_chomp( n ):removes the specified number "n" of directory components from the current url path
+     * - json_dump( ): prints current JSON data passed to the template
+     * - static( path ): returns the full URL to the specified static path, for example:
+     *   static( "/style/black.css" ) will return something like "/wfs3/static/style/black.css".
+     * - links_filter( links, key, value ): Returns filtered links from a link list
+     * - content_type_name( content_type ): Returns a short name from a content type for example "text/html" will return "HTML"
      *
      * \note use xmlDump for XML output
      * \see xmlDump()
@@ -193,17 +193,15 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = QStringLiteral( "application/json" ) ) const;
 
     /**
-     * Writes \a data to the \a response stream as HTML (indented if debug is active) using a template.
+     * Writes \a data as HTML to the response stream in \a context using a template.
      *
-     * \param api parent Api instance
-     * \param context the API request context object
      * \see templatePath()
      * \note not available in Python bindings
      */
     void htmlDump( const json &data, const QgsServerApiContext &context ) const;
 
     /**
-     * Returns handler information for the OPENAPI description (id, description and other metadata) as JSON.
+     * Returns handler information from the \a context for the OPENAPI description (id, description and other metadata) as JSON.
      * It may return a NULL JSON object in case the handler does not need to be included in the API.
      * \note requires a valid project to be present in the context
      * \note not available in Python bindings
@@ -220,9 +218,9 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * Utility method that builds and returns a link to the resource.
      *
      * \param context request context
-     * \param linkType type of the link (rel attribute), default to "self"
-     * \param contentType, default to objects's linkType
-     * \param title default to "This documents as <content type>"
+     * \param linkType type of the link (rel attribute), default to SELF
+     * \param contentType content type of the link (default to JSON)
+     * \param title title of the link
      * \note not available in Python bindings
      */
     json link( const QgsServerApiContext &context,
@@ -231,7 +229,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
                const std::string &title = "" ) const;
 
     /**
-     * Returns all the links for the given request \a api and \a context.
+     * Returns all the links for the given request \a context.
      *
      * The base implementation returns the alternate and self links, subclasses may
      * add other links.
