@@ -4730,7 +4730,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
         delete layer;
 
         for ( QgsMapLayer *l : addedLayers )
-          askUserForDatumTransform( l->crs(), QgsProject::instance()->crs() );
+          askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
       }
       else if ( !sublayers.isEmpty() ) // there is 1 layer of data available
       {
@@ -4783,7 +4783,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
     bool ok;
     l->loadDefaultStyle( ok );
     l->loadDefaultMetadata( ok );
-    askUserForDatumTransform( l->crs(), QgsProject::instance()->crs() );
+    askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
   }
   activateDeactivateLayerRelatedActions( activeLayer() );
 
@@ -4828,7 +4828,7 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
 
   QgsProject::instance()->addMapLayer( layer.get() );
 
-  askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs() );
+  askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer.get() );
 
   bool ok;
   layer->loadDefaultStyle( ok );
@@ -9911,7 +9911,7 @@ void QgisApp::projectCrsChanged()
     {
       alreadyAsked.append( it.value()->crs() );
       askUserForDatumTransform( it.value()->crs(),
-                                QgsProject::instance()->crs() );
+                                QgsProject::instance()->crs(), it.value() );
     }
   }
 }
@@ -10246,7 +10246,7 @@ void QgisApp::setLayerCrs()
       {
         if ( child->layer() )
         {
-          askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+          askUserForDatumTransform( crs, QgsProject::instance()->crs(), child->layer() );
           child->layer()->setCrs( crs );
           child->layer()->triggerRepaint();
         }
@@ -10257,7 +10257,7 @@ void QgisApp::setLayerCrs()
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->layer() )
       {
-        askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+        askUserForDatumTransform( crs, QgsProject::instance()->crs(), nodeLayer->layer() );
         nodeLayer->layer()->setCrs( crs );
         nodeLayer->layer()->triggerRepaint();
       }
@@ -11115,7 +11115,7 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
       delete layer;
       layer = addedLayers.isEmpty() ? nullptr : qobject_cast< QgsVectorLayer * >( addedLayers.at( 0 ) );
       for ( QgsMapLayer *l : addedLayers )
-        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs() );
+        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
     }
     else
     {
@@ -11133,7 +11133,7 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
       myList << layer;
       QgsProject::instance()->addMapLayers( myList );
 
-      askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs() );
+      askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer );
 
       bool ok;
       layer->loadDefaultStyle( ok );
@@ -11171,7 +11171,7 @@ void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
     myList << mapLayer;
     QgsProject::instance()->addMapLayers( myList );
 
-    askUserForDatumTransform( mapLayer->crs(), QgsProject::instance()->crs() );
+    askUserForDatumTransform( mapLayer->crs(), QgsProject::instance()->crs(), mapLayer );
   }
   else
   {
@@ -13178,7 +13178,7 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *rasterLayer )
   myList << rasterLayer;
   QgsProject::instance()->addMapLayers( myList );
 
-  askUserForDatumTransform( rasterLayer->crs(), QgsProject::instance()->crs() );
+  askUserForDatumTransform( rasterLayer->crs(), QgsProject::instance()->crs(), rasterLayer );
 
   return true;
 }
@@ -13240,7 +13240,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
       // the list if he wants to load it.
       delete layer;
       for ( QgsMapLayer *l : qgis::as_const( subLayers ) )
-        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs() );
+        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
       layer = !subLayers.isEmpty() ? qobject_cast< QgsRasterLayer * >( subLayers.at( 0 ) ) : nullptr;
     }
   }
@@ -13708,11 +13708,38 @@ void QgisApp::writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &ele
   elem.setAttribute( QStringLiteral( "area" ), dockWidgetArea( dockWidget ) );
 }
 
-bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
+bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsMapLayer *layer )
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
-  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this, mMapCanvas );
+  QString title;
+  if ( layer )
+  {
+    // try to make a user-friendly (short!) identifier for the layer
+    QString layerIdentifier;
+    if ( !layer->name().isEmpty() )
+    {
+      layerIdentifier = layer->name();
+    }
+    else
+    {
+      const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+      if ( parts.contains( QStringLiteral( "path" ) ) )
+      {
+        const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+        layerIdentifier = fi.fileName();
+      }
+      else if ( layer->dataProvider() )
+      {
+        const QgsDataSourceUri uri( layer->source() );
+        layerIdentifier = uri.table();
+      }
+    }
+    if ( !layerIdentifier.isEmpty() )
+      title = tr( "Select Transformation for %1" ).arg( layerIdentifier );
+  }
+
+  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this, mMapCanvas, title );
 }
 
 void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
