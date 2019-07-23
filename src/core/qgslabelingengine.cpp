@@ -401,6 +401,8 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
       symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
     }
     lf->provider()->drawLabel( context, label );
+    // finished with symbol -- we can't keep it around after this, it may be deleted
+    lf->setSymbol( nullptr );
   }
 
   // draw unplaced labels. These are always rendered on top
@@ -423,6 +425,8 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
         symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
       }
       lf->provider()->drawUnplacedLabel( context, label );
+      // finished with symbol -- we can't keep it around after this, it may be deleted
+      lf->setSymbol( nullptr );
     }
   }
 

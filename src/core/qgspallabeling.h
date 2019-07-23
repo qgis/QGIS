@@ -904,7 +904,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels. Not available
      * in Python bindings.
-     * \param symbol feature symbol to label (ownership is transferred to the label feature)
+     * \param symbol feature symbol to label (ownership is not transferred, and \a symbol must exist until the labeling is complete)
      */
     void registerFeature( const QgsFeature &f, QgsRenderContext &context,
                           QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
