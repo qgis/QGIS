@@ -195,6 +195,11 @@ int QgsGeometryCollection::vertexNumberFromVertexId( QgsVertexId id ) const
   return -1; // should not happen
 }
 
+void QgsGeometryCollection::reserve( int size )
+{
+  mGeometries.reserve( size );
+}
+
 QgsAbstractGeometry *QgsGeometryCollection::geometryN( int n )
 {
   clearCache();
@@ -317,6 +322,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   QVector<QgsAbstractGeometry *> geometryListBackup = mGeometries;
   mGeometries.clear();
+  mGeometries.reserve( nGeometries );
   for ( int i = 0; i < nGeometries; ++i )
   {
     std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkb( wkbPtr ) );  // also updates wkbPtr
@@ -706,6 +712,7 @@ QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, Segmen
     return clone();
   }
 
+  geomCollection->reserve( mGeometries.size() );
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
   for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
   {
@@ -887,6 +894,7 @@ void QgsGeometryCollection::swapXy()
 QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
 {
   std::unique_ptr< QgsGeometryCollection > newCollection( new QgsGeometryCollection() );
+  newCollection->reserve( mGeometries.size() );
   for ( QgsAbstractGeometry *geom : mGeometries )
   {
     newCollection->addGeometry( geom->toCurveType() );

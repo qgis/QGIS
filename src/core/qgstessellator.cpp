@@ -554,6 +554,7 @@ std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
 {
   std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
   const QVector<float> data = mData;
+  mp->reserve( mData.size() );
   for ( auto it = data.constBegin(); it != data.constEnd(); )
   {
     QgsPoint p1 = getPointFromData( it );

@@ -180,6 +180,7 @@ bool QgsMultiSurface::insertGeometry( QgsAbstractGeometry *g, int index )
 QgsAbstractGeometry *QgsMultiSurface::boundary() const
 {
   std::unique_ptr< QgsMultiCurve > multiCurve( new QgsMultiCurve() );
+  multiCurve->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsSurface *surface = qgsgeometry_cast<QgsSurface *>( mGeometries.at( i ) ) )
