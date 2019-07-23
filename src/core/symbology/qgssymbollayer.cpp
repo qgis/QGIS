@@ -26,6 +26,7 @@
 #include "qgsproperty.h"
 #include "qgsexpressioncontext.h"
 #include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
 
 #include <QSize>
 #include <QPainter>
@@ -163,23 +164,21 @@ Qt::BrushStyle QgsSymbolLayer::dxfBrushStyle() const
 
 QgsPaintEffect *QgsSymbolLayer::paintEffect() const
 {
-  return mPaintEffect;
+  return mPaintEffect.get();
 }
 
 void QgsSymbolLayer::setPaintEffect( QgsPaintEffect *effect )
 {
-  delete mPaintEffect;
-  mPaintEffect = effect;
+  if ( effect == mPaintEffect.get() )
+    return;
+
+  mPaintEffect.reset( effect );
 }
 
 QgsSymbolLayer::QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked )
   : mType( type )
-  , mEnabled( true )
   , mLocked( locked )
-
 {
-  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
-  mPaintEffect->setEnabled( false );
 }
 
 void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext &context )
@@ -204,10 +203,7 @@ const QgsPropertiesDefinition &QgsSymbolLayer::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
-QgsSymbolLayer::~QgsSymbolLayer()
-{
-  delete mPaintEffect;
-}
+QgsSymbolLayer::~QgsSymbolLayer() = default;
 
 bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
 {
@@ -392,7 +388,10 @@ void QgsSymbolLayer::copyPaintEffect( QgsSymbolLayer *destLayer ) const
   if ( !destLayer || !mPaintEffect )
     return;
 
-  destLayer->setPaintEffect( mPaintEffect->clone() );
+  if ( !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+    destLayer->setPaintEffect( mPaintEffect->clone() );
+  else
+    destLayer->setPaintEffect( nullptr );
 }
 
 QgsMarkerSymbolLayer::QgsMarkerSymbolLayer( bool locked )

@@ -187,6 +187,12 @@ class CORE_EXPORT QgsSymbolLayer
 
     virtual ~QgsSymbolLayer();
 
+    //! QgsSymbolLayer cannot be copied
+    QgsSymbolLayer( const QgsSymbolLayer &other ) = delete;
+
+    //! QgsSymbolLayer cannot be copied
+    QgsSymbolLayer &operator=( const QgsSymbolLayer &other ) = delete;
+
     /**
      * Returns TRUE if symbol layer is enabled and will be drawn.
      * \see setEnabled()
@@ -427,15 +433,15 @@ class CORE_EXPORT QgsSymbolLayer
     QgsSymbol::SymbolType mType;
 
     //! True if layer is enabled and should be drawn
-    bool mEnabled;
+    bool mEnabled = true;
 
-    bool mLocked;
+    bool mLocked = false;
     QColor mColor;
     int mRenderingPass = 0;
 
     QgsPropertyCollection mDataDefinedProperties;
 
-    QgsPaintEffect *mPaintEffect = nullptr;
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
     QgsFields mFields;
 
     // Configuration of selected symbology implementation
@@ -471,6 +477,10 @@ class CORE_EXPORT QgsSymbolLayer
     //! Property definitions
     static QgsPropertiesDefinition sPropertyDefinitions;
 
+#ifdef SIP_RUN
+    QgsSymbolLayer( const QgsSymbolLayer &other );
+#endif
+
 };
 
 //////////////////////
@@ -499,6 +509,12 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
       VCenter, //!< Align to vertical center of symbol
       Bottom, //!< Align to bottom of symbol
     };
+
+    //! QgsMarkerSymbolLayer cannot be copied
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other ) = delete;
+
+    //! QgsMarkerSymbolLayer cannot be copied
+    QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;
 
     void startRender( QgsSymbolRenderContext &context ) override;
 
@@ -783,6 +799,10 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
   private:
     static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
     static QgsMarkerSymbolLayer::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
+
+#ifdef SIP_RUN
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other );
+#endif
 };
 
 /**
@@ -800,6 +820,12 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
       ExteriorRingOnly, //!< Render the exterior ring only
       InteriorRingsOnly, //!< Render the interior rings only
     };
+
+    //! QgsLineSymbolLayer cannot be copied
+    QgsLineSymbolLayer( const QgsLineSymbolLayer &other ) = delete;
+
+    //! QgsLineSymbolLayer cannot be copied
+    QgsLineSymbolLayer &operator=( const QgsLineSymbolLayer &other ) = delete;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -970,6 +996,11 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     QgsMapUnitScale mOffsetMapUnitScale;
 
     RenderRingFilter mRingFilter = AllRings;
+
+  private:
+#ifdef SIP_RUN
+    QgsLineSymbolLayer( const QgsLineSymbolLayer &other );
+#endif
 };
 
 /**
@@ -979,6 +1010,13 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 {
   public:
+
+    //! QgsFillSymbolLayer cannot be copied
+    QgsFillSymbolLayer( const QgsFillSymbolLayer &other ) = delete;
+
+    //! QgsFillSymbolLayer cannot be copied
+    QgsFillSymbolLayer &operator=( const QgsFillSymbolLayer &other ) = delete;
+
     virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
@@ -992,6 +1030,11 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
     void _renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     double mAngle = 0.0;
+
+  private:
+#ifdef SIP_RUN
+    QgsFillSymbolLayer( const QgsFillSymbolLayer &other );
+#endif
 };
 
 class QgsSymbolLayerWidget;  // why does SIP fail, when this isn't here
