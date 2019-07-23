@@ -420,6 +420,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
             if ( cacheEntry->fileModified != modified )
               continue;
+            else
+              cacheEntry->fileModifiedLastCheckTimer.restart();
           }
           currentEntry = cacheEntry;
           break;
