@@ -218,6 +218,12 @@ QgsSvgCacheEntry *QgsSvgCache::insertSvg( const QString &path, double size, cons
 
   replaceParamsAndCacheSvg( entry );
 
+  if ( !entry->path.startsWith( QStringLiteral( "base64:" ) ) )
+  {
+    entry->fileModified = QFileInfo( entry->path ).lastModified();
+    entry->fileModifiedLastCheckTimer.start();
+  }
+
   mEntryLookup.insert( path, entry );
 
   //insert to most recent place in entry list
