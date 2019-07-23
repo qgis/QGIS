@@ -147,6 +147,7 @@ Drawer {
         width: parent.width
         height: parent.height
         fillMode: Image.PreserveAspectFit
+        onVisibleChanged: if (!photoPreview.visible) photoPreview.source = ""
 
         // Cancel button
         Rectangle {
