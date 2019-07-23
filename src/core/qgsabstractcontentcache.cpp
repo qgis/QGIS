@@ -23,9 +23,7 @@
 
 QgsAbstractContentCacheEntry::QgsAbstractContentCacheEntry( const QString &path )
   : path( path )
-  , fileModified( path.startsWith( QStringLiteral( "base64:" ) ) ? QDateTime() : QFileInfo( path ).lastModified() )
 {
-  fileModifiedLastCheckTimer.start();
 }
 
 //
