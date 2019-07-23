@@ -64,83 +64,53 @@ QVariantList QgsPostgresStringUtils::parseArray( const QString &string )
 {
   QVariantList variantList;
 
-  if ( string.trimmed().startsWith( '{' ) )
+  //it's a postgres array
+  QString newVal = string.mid( 1, string.length() - 2 );
+
+  if ( newVal.trimmed().startsWith( '{' ) )
   {
-    //it's a postgres array
-    QString newVal = string.mid( 1, string.length() - 2 );
-
-    if ( newVal.trimmed().startsWith( '{' ) )
+    //it's a multidimensional array
+    QStringList values;
+    QString subarray = newVal;
+    while ( !subarray.isEmpty() )
     {
-      //it's a multidimensional array
-      QStringList values;
-      QString subarray = newVal;
-      while ( !subarray.isEmpty() )
-      {
-        bool escaped = false;
-        int openedBrackets = 1;
-        int i = 0;
-        while ( i < subarray.length()  && openedBrackets > 0 )
-        {
-          ++i;
-
-          if ( subarray.at( i ) == '}' && !escaped ) openedBrackets--;
-          else if ( subarray.at( i ) == '{' && !escaped ) openedBrackets++;
-
-          escaped = !escaped ? subarray.at( i ) == '\\' : false;
-        }
-
-        variantList.append( subarray.left( ++i ) );
-        i = subarray.indexOf( ',', i );
-        i = i > 0 ? subarray.indexOf( '{', i ) : -1;
-        if ( i == -1 )
-          break;
-
-        subarray = subarray.mid( i );
-      }
-    }
-    else
-    {
+      bool escaped = false;
+      int openedBrackets = 1;
       int i = 0;
-      while ( i < newVal.length() )
+      while ( i < subarray.length()  && openedBrackets > 0 )
       {
-        const QString value = getNextString( newVal, i, QStringLiteral( "," ) );
-        if ( value.isNull() )
-        {
-          QgsMessageLog::logMessage( QObject::tr( "Error parsing PG like array: %1" ).arg( newVal ), QObject::tr( "PostgresStringUtils" ) );
-          break;
-        }
-        variantList.append( value );
+        ++i;
+
+        if ( subarray.at( i ) == '}' && !escaped ) openedBrackets--;
+        else if ( subarray.at( i ) == '{' && !escaped ) openedBrackets++;
+
+        escaped = !escaped ? subarray.at( i ) == '\\' : false;
       }
+
+      variantList.append( subarray.left( ++i ) );
+      i = subarray.indexOf( ',', i );
+      i = i > 0 ? subarray.indexOf( '{', i ) : -1;
+      if ( i == -1 )
+        break;
+
+      subarray = subarray.mid( i );
     }
   }
-  else if ( string.trimmed().startsWith( '[' ) )
+  else
   {
-    //it's a json array
-    QString newVal = string;
-    try
+    int i = 0;
+    while ( i < newVal.length() )
     {
-      for ( auto &element : json::parse( newVal.toStdString() ) )
+      const QString value = getNextString( newVal, i, QStringLiteral( "," ) );
+      if ( value.isNull() )
       {
-        if ( element.is_number_integer() )
-        {
-          variantList.push_back( element.get<int>() );
-        }
-        else if ( element.is_number_unsigned() )
-        {
-          variantList.push_back( element.get<unsigned>() );
-        }
-        else if ( element.is_string() )
-        {
-          variantList.push_back( QString::fromStdString( element.get<std::string>() ) );
-        }
+        QgsMessageLog::logMessage( QObject::tr( "Error parsing PG like array: %1" ).arg( newVal ), QObject::tr( "PostgresStringUtils" ) );
+        break;
       }
-    }
-    catch ( json::parse_error &ex )
-    {
-      qDebug() << QString::fromStdString( ex.what() );
-      QgsMessageLog::logMessage( QObject::tr( "Error parsing JSON like array: %1 %2" ).arg( newVal, ex.what() ), QObject::tr( "PostgresStringUtils" ) );
+      variantList.append( value );
     }
   }
+
   return variantList;
 
 }
