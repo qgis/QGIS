@@ -183,7 +183,10 @@ bool QgsPropertyCollection::hasProperty( int key ) const
   if ( mProperties.isEmpty() )
     return false;
 
-  return mProperties.contains( key ) && mProperties.value( key );
+  auto it = mProperties.constFind( key );
+  if ( it != mProperties.constEnd() )
+    return ( *it );
+  return false;
 }
 
 QgsProperty QgsPropertyCollection::property( int key ) const
@@ -245,7 +248,10 @@ bool QgsPropertyCollection::isActive( int key ) const
   if ( mProperties.isEmpty() )
     return false;
 
-  return mProperties.value( key ).isActive();
+  auto it = mProperties.constFind( key );
+  if ( it != mProperties.constEnd() )
+    return ( *it ).isActive();
+  return false;
 }
 
 void QgsPropertyCollection::rescan() const
