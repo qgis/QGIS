@@ -3021,6 +3021,17 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mChrWidth = mFontMetrics->width( mString );
   mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
   mOrigSize = mSize; // save in case the size would be data defined
+
+  // use caching only when not using a data defined character
+  mUseCachedPath = !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCharacter );
+  if ( mUseCachedPath )
+  {
+    QPointF chrOffset = mChrOffset;
+    double chrWidth;
+    QString charToRender = characterToRender( context, chrOffset, chrWidth );
+    mCachedPath = QPainterPath();
+    mCachedPath.addText( -chrOffset.x(), -chrOffset.y(), mFont, charToRender );
+  }
 }
 
 void QgsFontMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -3165,6 +3176,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     }
   }
 
+  p->save();
   p->setBrush( mBrush );
   if ( !qgsDoubleNear( penWidth, 0.0 ) )
   {
@@ -3176,7 +3188,6 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   {
     p->setPen( Qt::NoPen );
   }
-  p->save();
 
   QPointF chrOffset = mChrOffset;
   double chrWidth;
@@ -3189,7 +3200,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   double angle = 0;
   calculateOffsetAndRotation( context, sizeToRender, hasDataDefinedRotation, offset, angle );
 
-  transform.translate( point.x() + offset.x(), point.y() + offset.y() );
+  p->translate( point.x() + offset.x(), point.y() + offset.y() );
 
   if ( !qgsDoubleNear( angle, 0.0 ) )
     transform.rotate( angle );
@@ -3200,9 +3211,17 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     transform.scale( s, s );
   }
 
-  QPainterPath path;
-  path.addText( -chrOffset.x(), -chrOffset.y(), mFont, charToRender );
-  p->drawPath( transform.map( path ) );
+  if ( mUseCachedPath )
+  {
+    p->drawPath( transform.map( mCachedPath ) );
+  }
+  else
+  {
+    QPainterPath path;
+    path.addText( -chrOffset.x(), -chrOffset.y(), mFont, charToRender );
+    p->drawPath( transform.map( path ) );
+  }
+
   p->restore();
 }
 
