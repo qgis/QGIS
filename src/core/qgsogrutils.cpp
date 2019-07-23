@@ -20,6 +20,7 @@
 #include "qgsfields.h"
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
+#include "qgsmultilinestring.h"
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -382,6 +383,19 @@ std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
   return qgis::make_unique< QgsLineString>( x, y, z, m, wkbType == QgsWkbTypes::LineString25D );
 }
 
+std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsMultiLineString > mp = qgis::make_unique< QgsMultiLineString >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  for ( int i = 0; i < count; ++i )
+  {
+    mp->addGeometry( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return mp;
+}
+
 QgsWkbTypes::Type QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType )
 {
   switch ( ogrGeomType )
@@ -494,6 +508,12 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
     {
       // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsLineString( geom ) );
+    }
+
+    case QgsWkbTypes::MultiLineString:
+    {
+      // optimised case for line -- avoid wkb conversion
+      return QgsGeometry( ogrGeometryToQgsMultiLineString( geom ) );
     }
 
     default:
