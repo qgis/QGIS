@@ -261,13 +261,13 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * See: https://github.com/pantor/inja#tutorial
      *
      * Available custom template functions:
-     * - path_append(<path>): appends a directory <path> to the current url
+     * - path_append( path ): appends a directory path to the current url
      * - path_chomp(n):removes the specified number "n" of directory components from the current url path
      * - json_dump(): prints current JSON data passed to the template
-     * - static(<path>): returns the full URL to the specified static <path>, for example:
+     * - static( path): returns the full URL to the specified static <path>, for example:
      *   static("/style/black.css") will return something like "/wfs3/static/style/black.css".
-     * - links_filter( <links>, <key>, <value> ): eturns filtered links from a link list
-     * - content_type_name( <content_type> ): Returns a short name from a content type for example "text/html" will return "HTML"
+     * - links_filter( links, key, value ): eturns filtered links from a link list
+     * - content_type_name( content_type ): Returns a short name from a content type for example "text/html" will return "HTML"
      *
      * \note use xmlDump for XML output
      * \see xmlDump()
