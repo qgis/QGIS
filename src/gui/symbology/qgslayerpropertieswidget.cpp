@@ -23,6 +23,7 @@
 
 #include "qgssymbollayer.h"
 #include "qgssymbollayerregistry.h"
+#include "qgspainteffectregistry.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -132,6 +133,11 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
 
   this->connectChildPanel( mEffectWidget );
 
+  if ( !mLayer->paintEffect() )
+  {
+    mLayer->setPaintEffect( QgsPaintEffectRegistry::defaultStack() );
+    mLayer->paintEffect()->setEnabled( false );
+  }
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 
   registerDataDefinedButton( mEnabledDDBtn, QgsSymbolLayer::PropertyLayerEnabled );
