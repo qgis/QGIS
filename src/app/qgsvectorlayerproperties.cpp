@@ -950,7 +950,7 @@ void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString 
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs(), mLayer );
   mLayer->setCrs( crs );
   mMetadataFilled = false;
   mMetadataWidget->crsChanged();

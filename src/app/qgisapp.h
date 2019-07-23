@@ -689,7 +689,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       * \returns true if a datum transform has been specifically chosen by user or only one is available.
       * \since 3.0
       */
-    bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
+    bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsMapLayer *layer = nullptr );
 
     //! Gets map of bookmarks
     QMap<QString, QModelIndex> getBookmarkIndexMap();
