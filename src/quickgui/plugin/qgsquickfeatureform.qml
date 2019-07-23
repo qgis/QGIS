@@ -62,6 +62,17 @@ Item {
           */
         property var removeImage: function removeImage(itemWidget, imagePath) {
         }
+
+        /**
+          * Called when clicked on the OK icon after taking a photo with the Photo panel.
+          * \param itemWidget editorWidget for modified field to send valueChanged signal.
+          * \param prefixToRelativePath Absolute path to the image extracted by current value.
+          * \param value Relative path of taken photo.
+          */
+        property var confirmImage: function confirmImage(itemWidget, prefixToRelativePath, value) {
+          itemWidget.image.source = prefixToRelativePath + "/" + value
+          itemWidget.valueChanged(value, value === "" || value === null)
+        }
     }
 
   /**

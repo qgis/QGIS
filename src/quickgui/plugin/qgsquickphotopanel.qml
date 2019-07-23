@@ -38,12 +38,13 @@ Drawer {
 
   // icons:
   property var captureButtonIcon: QgsQuick.Utils.getThemeIcon("ic_camera_alt_border")
-  property var okButtonIcon: QgsQuick.Utils.getThemeIcon("ic_check_black")
+  property var confirmButtonIcon: QgsQuick.Utils.getThemeIcon("ic_check_black")
   property var cancelButtonIcon: QgsQuick.Utils.getThemeIcon("ic_clear_black")
   property real imageButtonSize: 45 * QgsQuick.Utils.dp
   property real buttonSize: imageButtonSize * 1.2
   property var buttonsPosition
 
+  signal confirmButtonClicked(string path, string filename)
 
   id: photoPanel
   visible: false
@@ -119,7 +120,6 @@ Drawer {
           id: mouseArea
           anchors.fill: parent
           onClicked: {
-            console.log("!!!mouseAreamouseArea@#!#Q@#TRGEWR TOOR", targetDir)
             if (targetDir !== "") {
               camera.imageCapture.captureToLocation(photoPanel.targetDir);
             } else {
@@ -185,7 +185,7 @@ Drawer {
           }
         }
 
-        // OK button
+        // Confirm button
         Rectangle {
           id: confirmButton
           visible: camera.imageCapture.capturedImagePath != ""
@@ -207,10 +207,7 @@ Drawer {
               captureItem.saveImage = true
               photoPanel.visible = false
               photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.prefixToRelativePath)
-              if (photoPanel.lastPhotoName !== "") {
-                fieldItem.image.source = photoPanel.prefixToRelativePath + "/" + photoPanel.lastPhotoName
-                fieldItem.valueChanged(photoPanel.lastPhotoName, photoPanel.lastPhotoName === "" || photoPanel.lastPhotoName === null)
-              }
+              confirmButtonClicked(photoPanel.prefixToRelativePath, photoPanel.lastPhotoName)
             }
           }
 
@@ -221,7 +218,7 @@ Drawer {
             sourceSize.width: imageButtonSize
             height: imageButtonSize
             width: imageButtonSize
-            source: photoPanel.okButtonIcon
+            source: photoPanel.confirmButtonIcon
           }
         }
       }

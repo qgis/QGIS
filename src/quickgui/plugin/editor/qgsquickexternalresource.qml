@@ -38,12 +38,12 @@ Item {
   property real textMargin: QgsQuick.Utils.dp * 10
   /**
    * 0 - Relative path disabled
-   * 1 - Relative path to defualtRoot (targetDir)
-   * 2 - Relative path to project
+   * 1 - Relative path to project
+   * 2 - Relative path to defualtRoot (targetDir)
    */
   property int relativeStorageMode: config["RelativeStorage"]
   property string targetDir: config["DefaultRoot"] ? config["DefaultRoot"] : homePath
-  property string prefixToRelativePath: relativeStorageMode === 1 ? targetDir : homePath
+  property string prefixToRelativePath: relativeStorageMode === 2 ? targetDir : homePath
   // Meant to be use with the save callback - stores image source
   property string sourceToDelete
 
@@ -82,6 +82,7 @@ Item {
     width: window.width
     edge: Qt.RightEdge
     imageButtonSize: fieldItem.iconSize
+    onConfirmButtonClicked: externalResourceHandler.confirmImage(fieldItem, path, filename)
   }
 
   Rectangle {
