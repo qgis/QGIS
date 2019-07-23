@@ -393,16 +393,16 @@ class CORE_EXPORT QgsLabelFeature
      *
      * \since QGIS 3.10
      */
-    const QgsSymbol *symbol() { return mSymbol.get(); }
+    const QgsSymbol *symbol() { return mSymbol; }
 
     /**
      * Sets the feature \a symbol associated with this label.
-     * Ownership of \a symbol is transferred to the label feature.
+     * Ownership of \a symbol is not transferred to the label feature, .
      * \see symbol()
      *
      * \since QGIS 3.10
      */
-    void setSymbol( const QgsSymbol *symbol SIP_TRANSFER ) { mSymbol.reset( symbol ); }
+    void setSymbol( const QgsSymbol *symbol ) { mSymbol = symbol; }
 
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
@@ -471,7 +471,7 @@ class CORE_EXPORT QgsLabelFeature
 
     QgsFeature mFeature;
 
-    std::unique_ptr<const QgsSymbol> mSymbol;
+    const QgsSymbol *mSymbol = nullptr;
 
 };
 

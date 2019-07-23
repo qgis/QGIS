@@ -359,7 +359,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   // do we have active subprovider for the rule?
   if ( subProviders.contains( this ) && mIsActive )
   {
-    subProviders[this]->registerFeature( feature, context, obstacleGeometry, symbol ? symbol->clone() : nullptr );
+    subProviders[this]->registerFeature( feature, context, obstacleGeometry, symbol );
     registered = true;
   }
 
@@ -383,11 +383,9 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   {
     for ( Rule *rule : qgis::as_const( mElseRules ) )
     {
-      registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol ? symbol->clone() : nullptr ) != Filtered;
+      registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol ) != Filtered;
     }
   }
-
-  delete symbol;
 
   if ( !mIsActive )
     return Inactive;
