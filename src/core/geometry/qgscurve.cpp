@@ -139,6 +139,7 @@ QgsAbstractGeometry *QgsCurve::boundary() const
     return nullptr;
 
   QgsMultiPoint *multiPoint = new QgsMultiPoint();
+  multiPoint->reserve( 2 );
   multiPoint->addGeometry( new QgsPoint( startPoint() ) );
   multiPoint->addGeometry( new QgsPoint( endPoint() ) );
   return multiPoint;

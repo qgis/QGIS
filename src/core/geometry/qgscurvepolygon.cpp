@@ -499,8 +499,9 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
   else
   {
     QgsMultiCurve *multiCurve = new QgsMultiCurve();
-    multiCurve->addGeometry( mExteriorRing->clone() );
     int nInteriorRings = mInteriorRings.size();
+    multiCurve->reserve( nInteriorRings + 1 );
+    multiCurve->addGeometry( mExteriorRing->clone() );
     for ( int i = 0; i < nInteriorRings; ++i )
     {
       multiCurve->addGeometry( mInteriorRings.at( i )->clone() );

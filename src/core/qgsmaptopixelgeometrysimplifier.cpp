@@ -352,6 +352,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
     const QgsGeometryCollection &srcCollection = dynamic_cast<const QgsGeometryCollection &>( geometry );
     std::unique_ptr<QgsGeometryCollection> collection( srcCollection.createEmptyWithSameType() );
     const int numGeoms = srcCollection.numGeometries();
+    collection->reserve( numGeoms );
     for ( int i = 0; i < numGeoms; ++i )
     {
       const QgsAbstractGeometry *sub = srcCollection.geometryN( i );
