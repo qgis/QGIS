@@ -19,6 +19,7 @@
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include "qgslinestring.h"
+#include "qgsmultipoint.h"
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -342,6 +343,19 @@ std::unique_ptr< QgsPoint > ogrGeometryToQgsPoint( OGRGeometryH geom )
   return qgis::make_unique< QgsPoint >( wkbType, x, y, z, m );
 }
 
+std::unique_ptr< QgsMultiPoint > ogrGeometryToQgsMultiPoint( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  for ( int i = 0; i < count; ++i )
+  {
+    mp->addGeometry( ogrGeometryToQgsPoint( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return mp;
+}
+
 std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
 {
   QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
@@ -469,6 +483,11 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
     case QgsWkbTypes::Point:
     {
       return QgsGeometry( ogrGeometryToQgsPoint( geom ) );
+    }
+
+    case QgsWkbTypes::MultiPoint:
+    {
+      return QgsGeometry( ogrGeometryToQgsMultiPoint( geom ) );
     }
 
     case QgsWkbTypes::LineString:
