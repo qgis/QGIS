@@ -757,6 +757,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
               {
                 newGC = new QgsMultiPolygon();
               }
+              newGC->reserve( gc->numGeometries() );
               for ( int i = 0; i < gc->numGeometries(); ++i )
               {
                 newGC->addGeometry( gc->geometryN( i )->clone() );

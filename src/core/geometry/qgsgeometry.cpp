@@ -1381,6 +1381,7 @@ bool QgsGeometry::convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType
   if ( !resGeom )
     return false;
 
+  resGeom->reserve( origGeom->numGeometries() );
   for ( int i = 0; i < origGeom->numGeometries(); ++i )
   {
     const QgsAbstractGeometry *g = origGeom->geometryN( i );
@@ -2441,6 +2442,7 @@ QgsGeometry QgsGeometry::forceRHR() const
   {
     const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
     std::unique_ptr< QgsGeometryCollection > newCollection( collection->createEmptyWithSameType() );
+    newCollection->reserve( collection->numGeometries() );
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
       const QgsAbstractGeometry *g = collection->geometryN( i );
@@ -2953,6 +2955,7 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
       QgsMultiLineString *multiLine = static_cast< QgsMultiLineString * >( d->geometry.get() );
 
       std::unique_ptr< QgsMultiLineString > resultMultiline = qgis::make_unique< QgsMultiLineString> ();
+      resultMultiline->reserve( multiLine->numGeometries() );
       for ( int i = 0; i < multiLine->numGeometries(); ++i )
       {
         resultMultiline->addGeometry( smoothLine( *( static_cast< QgsLineString * >( multiLine->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
@@ -2971,6 +2974,7 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
       QgsMultiPolygon *multiPoly = static_cast< QgsMultiPolygon * >( d->geometry.get() );
 
       std::unique_ptr< QgsMultiPolygon > resultMultiPoly = qgis::make_unique< QgsMultiPolygon >();
+      resultMultiPoly->reserve( multiPoly->numGeometries() );
       for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
         resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygon * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );

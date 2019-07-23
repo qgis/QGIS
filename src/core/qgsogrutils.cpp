@@ -349,6 +349,7 @@ std::unique_ptr< QgsMultiPoint > ogrGeometryToQgsMultiPoint( OGRGeometryH geom )
   std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
 
   const int count = OGR_G_GetGeometryCount( geom );
+  mp->reserve( count );
   for ( int i = 0; i < count; ++i )
   {
     mp->addGeometry( ogrGeometryToQgsPoint( OGR_G_GetGeometryRef( geom, i ) ).release() );
@@ -388,6 +389,7 @@ std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeomet
   std::unique_ptr< QgsMultiLineString > mp = qgis::make_unique< QgsMultiLineString >();
 
   const int count = OGR_G_GetGeometryCount( geom );
+  mp->reserve( count );
   for ( int i = 0; i < count; ++i )
   {
     mp->addGeometry( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, i ) ).release() );

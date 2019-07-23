@@ -1109,6 +1109,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
+      multiPoint->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
         const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
@@ -1123,6 +1124,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       std::unique_ptr< QgsMultiLineString > multiLineString( new QgsMultiLineString() );
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
+      multiLineString->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
         std::unique_ptr< QgsLineString >line( sequenceToLinestring( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ), hasZ, hasM ) );
@@ -1138,6 +1140,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       std::unique_ptr< QgsMultiPolygon > multiPolygon( new QgsMultiPolygon() );
 
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
+      multiPolygon->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
         std::unique_ptr< QgsPolygon > poly = fromGeosPolygon( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
@@ -1152,6 +1155,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       std::unique_ptr< QgsGeometryCollection > geomCollection( new QgsGeometryCollection() );
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
+      geomCollection->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
         std::unique_ptr< QgsAbstractGeometry > geom( fromGeos( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) ) );
