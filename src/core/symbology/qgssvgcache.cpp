@@ -610,6 +610,8 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
 
         if ( cacheEntry->fileModified != modified )
           continue;
+        else
+          cacheEntry->fileModifiedLastCheckTimer.restart();
       }
       currentEntry = cacheEntry;
       break;
