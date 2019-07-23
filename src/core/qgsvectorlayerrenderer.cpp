@@ -381,7 +381,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     features[sym].append( fet );
 
     // new labeling engine
-    if ( mContext.labelingEngine() )
+    if ( mContext.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
     {
       QgsGeometry obstacleGeometry;
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
