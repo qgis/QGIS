@@ -550,7 +550,7 @@ class CORE_EXPORT QgsSymbolRenderContext
 {
   public:
 
-    //TODO QGIS 4.0 - remove mapUnitScale
+    //TODO QGIS 4.0 - remove mapUnitScale and renderunit
 
     /**
      * Constructor for QgsSymbolRenderContext
