@@ -112,6 +112,54 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "Point (1.1 2.2)" ) );
 
+  ogrGeom = nullptr;
+  wkt = QByteArray( "point z ( 1.1 2.2 3)" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointZ (1.1 2.2 3)" ) );
+
+  ogrGeom = nullptr;
+  wkt = QByteArray( "point m ( 1.1 2.2 3)" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointM (1.1 2.2 3)" ) );
+
+  ogrGeom = nullptr;
+  wkt = QByteArray( "point zm ( 1.1 2.2 3 4)" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointZM (1.1 2.2 3 4)" ) );
+
+  ogrGeom = nullptr;
+  wkt = QByteArray( "multipoint( 1.1 2.2, 3.3 4.4)" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPoint ((1.1 2.2),(3.3 4.4))" ) );
+
+  ogrGeom = nullptr;
+  wkt = QByteArray( "multipoint z ((1.1 2.2 3), (3.3 4.4 4))" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointZ ((1.1 2.2 3),(3.3 4.4 4))" ) );
+
+  ogrGeom = nullptr;
+  wkt = QByteArray( "multipoint m ((1.1 2.2 3), (3.3 4.4 4))" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointM ((1.1 2.2 3),(3.3 4.4 4))" ) );
+
+  ogrGeom = nullptr;
+  wkt = QByteArray( "multipoint zm ((1.1 2.2 3 4), (3.3 4.4 4 5))" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointZM ((1.1 2.2 3 4),(3.3 4.4 4 5))" ) );
 }
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
