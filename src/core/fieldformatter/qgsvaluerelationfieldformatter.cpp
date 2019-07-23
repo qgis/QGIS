@@ -180,12 +180,44 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     if ( value.type() == QVariant::String )
     {
       // This must be an array representation
-      valuesList = QgsPostgresStringUtils::parseArray( value.toString() );
+      auto newVal { value };
+      if ( newVal.toString().trimmed().startsWith( '{' ) )
+      {
+        //normal case
+        valuesList = QgsPostgresStringUtils::parseArray( newVal.toString() );
+      }
+      else if ( newVal.toString().trimmed().startsWith( '[' ) )
+      {
+        //fallback, in case it's a json array
+        try
+        {
+          for ( auto &element : json::parse( newVal.toString().toStdString() ) )
+          {
+            if ( element.is_number_integer() )
+            {
+              valuesList.push_back( element.get<int>() );
+            }
+            else if ( element.is_number_unsigned() )
+            {
+              valuesList.push_back( element.get<unsigned>() );
+            }
+            else if ( element.is_string() )
+            {
+              valuesList.push_back( QString::fromStdString( element.get<std::string>() ) );
+            }
+          }
+        }
+        catch ( json::parse_error &ex )
+        {
+          qDebug() << QString::fromStdString( ex.what() );
+        }
+      }
     }
     else if ( value.type() == QVariant::List )
     {
       valuesList = value.toList( );
     }
+
     checkList.reserve( valuesList.size() );
     for ( const QVariant &listItem : qgis::as_const( valuesList ) )
     {
