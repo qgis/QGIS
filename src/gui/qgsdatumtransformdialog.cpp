@@ -33,7 +33,7 @@
 #include <proj.h>
 #endif
 
-bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent, QgsMapCanvas *mapCanvas )
+bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent, QgsMapCanvas *mapCanvas, const QString &windowTitle )
 {
   if ( sourceCrs == destinationCrs )
     return true;
@@ -45,6 +45,9 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
   }
 
   QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, true, qMakePair( -1, -1 ), parent, nullptr, QString(), mapCanvas );
+  if ( !windowTitle.isEmpty() )
+    dlg.setWindowTitle( windowTitle );
+
   if ( dlg.shouldAskUserForSelection() )
   {
     if ( dlg.exec() )
