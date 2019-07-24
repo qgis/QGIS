@@ -254,7 +254,7 @@ Item {
     id: text
     height: parent.height
     width: imageContainer.width - 2* fieldItem.textMargin
-    wrapMode: Text.WordWrap
+    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
     minimumPixelSize: 50 * QgsQuick.Utils.dp
     text: qsTr("Image is not available: ") + image.currentValue
     font.pixelSize: buttonsContainer.itemHeight * 0.75
