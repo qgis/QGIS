@@ -91,13 +91,12 @@ Item {
     }
   ]
 
-  QgsQuick.PhotoCapture {
-    id: photoCapturePanel
-    visible: false
-    height: window.height
-    width: window.width
-    edge: Qt.RightEdge
-    imageButtonSize: fieldItem.iconSize
+  Loader {
+    id: photoCaptuePanelLoader
+  }
+
+  Connections {
+    target: photoCaptuePanelLoader.item
     onConfirmButtonClicked: externalResourceHandler.confirmImage(fieldItem, path, filename)
   }
 
@@ -213,11 +212,20 @@ Item {
         MouseArea {
           anchors.fill: parent
           onClicked: {
-            photoCapturePanel.visible = true
-            photoCapturePanel.targetDir = targetDir
-            photoCapturePanel.homePath = homePath
-            photoCapturePanel.prefixToRelativePath = prefixToRelativePath
-            photoCapturePanel.fieldItem = fieldItem
+            var photoCapturePanel = photoCaptuePanelLoader.item
+            if (!photoCaptuePanelLoader.item) {
+              // Load the photo capture panel if not loaded yet
+              photoCaptuePanelLoader.setSource("qgsquickphotopanel.qml")
+              photoCaptuePanelLoader.item.height = window.height
+              photoCaptuePanelLoader.item.width = window.width
+              photoCaptuePanelLoader.item.edge = Qt.RightEdge
+              photoCaptuePanelLoader.item.imageButtonSize = fieldItem.iconSize
+            }
+            photoCaptuePanelLoader.item.visible = true
+            photoCaptuePanelLoader.item.targetDir = targetDir
+            photoCaptuePanelLoader.item.homePath = homePath
+            photoCaptuePanelLoader.item.prefixToRelativePath = prefixToRelativePath
+            photoCaptuePanelLoader.item.fieldItem = fieldItem
           }
         }
       }
