@@ -92,7 +92,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     if ( settings.contains( key + "/save" ) )
     {
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
-      mAuthSettings->setStoreUsernameChecked( ! mAuthSettings->username().isEmpty() );
+      mAuthSettings->setStoreUsernameChecked( !mAuthSettings->username().isEmpty() );
 
       if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
         mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
