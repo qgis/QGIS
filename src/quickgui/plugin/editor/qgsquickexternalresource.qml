@@ -42,7 +42,23 @@ Item {
    * 2 - Relative path to defualtRoot (targetDir)
    */
   property int relativeStorageMode: config["RelativeStorage"]
-  property string targetDir: config["DefaultRoot"] ? config["DefaultRoot"] : homePath
+  property string targetDir: {
+    var expression = undefined
+    var collection = config["PropertyCollection"]
+    var props = collection["properties"]
+    if (props) {
+      if(props["propertyRootPath"]) {
+        var rootPathProps = props["propertyRootPath"]
+        expression = rootPathProps["expression"]
+      }
+    }
+
+    if (expression) {
+      QgsQuick.Utils.evaluateExpression(featurePair, activeProject, expression)
+    } else {
+      config["DefaultRoot"] ? config["DefaultRoot"] : homePath
+    }
+  }
   property string prefixToRelativePath: relativeStorageMode === 2 ? targetDir : homePath
   // Meant to be use with the save callback - stores image source
   property string sourceToDelete

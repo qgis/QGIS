@@ -387,6 +387,8 @@ Item {
           property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
+          property var featurePair: form.model.attributeModel.featureLayerPair
+          property var activeProject: form.project
 
           active: widget !== 'Hidden'
 

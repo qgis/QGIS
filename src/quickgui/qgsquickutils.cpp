@@ -343,6 +343,19 @@ QVariantMap QgsQuickUtils::createValueRelationCache( const QVariantMap &config, 
   return valueMap;
 }
 
+QString QgsQuickUtils::evaluateExpression( const QgsQuickFeatureLayerPair &pair, QgsProject *activeProject, const QString &expression )
+{
+  QList<QgsExpressionContextScope *> scopes;
+  scopes << QgsExpressionContextUtils::globalScope();
+  scopes << QgsExpressionContextUtils::projectScope( activeProject );
+  scopes << QgsExpressionContextUtils::layerScope( pair.layer() );
+
+  QgsExpressionContext context( scopes );
+  context.setFeature( pair.feature() );
+  QgsExpression expr( expression );
+  return expr.evaluate( &context ).toString();
+}
+
 qreal QgsQuickUtils::screenDensity() const
 {
   return mScreenDensity;
