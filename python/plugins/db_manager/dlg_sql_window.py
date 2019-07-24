@@ -58,7 +58,6 @@ except:
 from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 
 import re
-import copy
 
 
 class DlgSqlWindow(QWidget, Ui_Dialog):
@@ -622,7 +621,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                         quote_positions.append((match.start(), match.end()))
                     for match in quotes:
                         quote_positions.append((match.start(), match.end()))
-                    unquoted_comments = copy.deepcopy(comment_positions)
+                    unquoted_comments = comment_positions.copy()
                     for comment in comment_positions:
                         for quote_position in quote_positions:
                             if comment >= quote_position[0] and comment < quote_position[1]:
