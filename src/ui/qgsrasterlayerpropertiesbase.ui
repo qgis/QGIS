@@ -1440,16 +1440,6 @@ border-radius: 2px;</string>
             </layout>
            </item>
            <item>
-            <widget class="QCheckBox" name="mIgnoreProviderExtent">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Always render full canvas extent and ignore extent reported by provider&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Activating this option will always request the complete canvas extent when rendering. Even when the extent announced by the provider is smaller than the canvas extent or outside the canvas extent.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;This is useful if a WMS server announes the extent of the data, but the symbology or labeling takes additional space outside the bounding box.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Always render full canvas extent</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <spacer name="verticalSpacer_6">
              <property name="orientation">
               <enum>Qt::Vertical</enum>

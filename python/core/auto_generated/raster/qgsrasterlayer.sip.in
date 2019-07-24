@@ -382,7 +382,7 @@ Writes the symbology of the layer into the document provided in SLD 1.0.0 format
 .. versionadded:: 3.6
 %End
 
-    bool ignoreExtent() const;
+    bool ignoreExtents() const;
 %Docstring
 If the ignoreExtent flag is set, the layer will also render outside the
 bounding box reported by the data provider.
@@ -391,17 +391,6 @@ to be drawn outside the data extent.
 
 .. versionadded:: 3.10
 %End
-
-    void setIgnoreExtent( bool ignoreExtent );
-%Docstring
-If the ignoreExtent flag is set, the layer will also render outside the
-bounding box reported by the data provider.
-To be used for example for WMS layers with labels or symbology that happens
-to be drawn outside the data extent.
-
-.. versionadded:: 3.10
-%End
-
 
   public slots:
     void showStatusMessage( const QString &message );

@@ -442,18 +442,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * \since QGIS 3.10
      */
-    bool ignoreExtent() const;
-
-    /**
-     * If the ignoreExtent flag is set, the layer will also render outside the
-     * bounding box reported by the data provider.
-     * To be used for example for WMS layers with labels or symbology that happens
-     * to be drawn outside the data extent.
-     *
-     * \since QGIS 3.10
-     */
-    void setIgnoreExtent( bool ignoreExtent );
-
+    bool ignoreExtents() const;
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -521,8 +510,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
-
-    bool mIgnoreExtent = false;
 };
 
 // clazy:excludeall=qstring-allocations

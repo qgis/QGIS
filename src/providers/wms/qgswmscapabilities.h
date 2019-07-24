@@ -593,6 +593,7 @@ class QgsWmsSettings
 
     bool mIgnoreGetMapUrl;
     bool mIgnoreGetFeatureInfoUrl;
+    bool mIgnoreReportedLayerExtents = false;
     bool mSmoothPixmapTransform;
     enum QgsWmsDpiMode mDpiMode;
 

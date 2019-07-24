@@ -4075,6 +4075,11 @@ void QgsWmsProvider::setSRSQueryItem( QUrl &url )
   setQueryItem( url, crsKey, mImageCrs );
 }
 
+bool QgsWmsProvider::ignoreExtents() const
+{
+  return mSettings.mIgnoreReportedLayerExtents;
+}
+
 // ----------
 
 QgsWmsLegendDownloadHandler::QgsWmsLegendDownloadHandler( QgsNetworkAccessManager &networkAccessManager, const QgsWmsSettings &settings, const QUrl &url )
