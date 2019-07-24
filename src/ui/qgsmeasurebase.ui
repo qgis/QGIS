@@ -23,7 +23,7 @@
    <iconset>
     <normaloff>.</normaloff>.</iconset>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QGridLayout" name="mGrid">
    <property name="leftMargin">
     <number>9</number>
    </property>
@@ -106,7 +106,7 @@
     </widget>
    </item>
    <item row="7" column="0" colspan="4">
-    <spacer name="verticalSpacer">
+    <spacer name="mSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
