@@ -107,7 +107,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
     }
   }
 
-  QgsDebugMsg( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo() ) );
+  QgsDebugMsg( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ) );
   QgsDebugMsg( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ) );
   QgsDebugMsg( QStringLiteral( "Owner is: %1" ).arg( mOwnerName ) );
   QgsDebugMsg( QStringLiteral( "Table name is: %1" ).arg( mTableName ) );
@@ -198,7 +198,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   if ( mValid )
   {
     mUri.setKeyColumn( key );
-    setDataSourceUri( mUri.uri() );
+    setDataSourceUri( mUri.uri( false ) );
   }
   else
   {
@@ -233,12 +233,12 @@ void QgsOracleProvider::setWorkspace( const QString &workspace )
   if ( !conn )
   {
     mUri = prevUri;
-    QgsDebugMsg( QStringLiteral( "restoring previous uri:%1" ).arg( mUri.uri() ) );
+    QgsDebugMsg( QStringLiteral( "restoring previous uri:%1" ).arg( mUri.uri( false ) ) );
     conn = QgsOracleConn::connectDb( mUri );
   }
   else
   {
-    setDataSourceUri( mUri.uri() );
+    setDataSourceUri( mUri.uri( false ) );
   }
 }
 
@@ -2158,7 +2158,7 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   mUri.setSql( theSQL );
   // Update yet another copy of the uri. Why are there 3 copies of the
   // uri? Perhaps this needs some rationalisation.....
-  setDataSourceUri( mUri.uri() );
+  setDataSourceUri( mUri.uri( false ) );
 
   if ( updateFeatureCount )
   {
@@ -2646,7 +2646,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   QgsDataSourceUri dsUri( uri );
   QString ownerName = dsUri.schema();
 
-  QgsDebugMsg( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo() ) );
+  QgsDebugMsg( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ) );
 
   // create the table
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
@@ -2873,7 +2873,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   dsUri.setDataSource( ownerName, tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri(), providerOptions );
+  QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri( false ), providerOptions );
   if ( !provider->isValid() )
   {
     errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( ownerTableName );

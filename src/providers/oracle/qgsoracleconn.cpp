@@ -59,7 +59,9 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
   , mCurrentUser( QString() )
   , mHasSpatial( -1 )
 {
-  QgsDebugMsg( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo() );
+  QgsDebugMsg( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo( false ) );
+
+  uri = QgsDataSourceUri( uri.connectionInfo( true ) );
 
   QString database = databaseName( uri.database(), uri.host(), uri.port() );
   QgsDebugMsg( QStringLiteral( "New Oracle database " ) + database );
@@ -162,7 +164,7 @@ QgsOracleConn::~QgsOracleConn()
 
 QString QgsOracleConn::toPoolName( const QgsDataSourceUri &uri )
 {
-  QString conninfo = uri.connectionInfo();
+  QString conninfo = uri.connectionInfo( false );
   if ( uri.hasParam( QStringLiteral( "dbworkspace" ) ) )
     conninfo += QStringLiteral( " dbworkspace=" ) + uri.param( QStringLiteral( "dbworkspace" ) );
   return conninfo;
@@ -762,8 +764,6 @@ QgsDataSourceUri QgsOracleConn::connUri( const QString &connName )
     port = QStringLiteral( "1521" );
   }
 
-  bool useEstimatedMetadata = settings.value( key + QStringLiteral( "/estimatedMetadata" ), false ).toBool();
-
   QString username;
   QString password;
   if ( settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() == QLatin1String( "true" ) )
@@ -778,7 +778,10 @@ QgsDataSourceUri QgsOracleConn::connUri( const QString &connName )
 
   QgsDataSourceUri uri;
   uri.setConnection( host, port, database, username, password );
+
+  bool useEstimatedMetadata = settings.value( key + QStringLiteral( "/estimatedMetadata" ), false ).toBool();
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
+
   if ( !settings.value( key + QStringLiteral( "/dboptions" ) ).toString().isEmpty() )
   {
     uri.setParam( QStringLiteral( "dboptions" ), settings.value( key + QStringLiteral( "/dboptions" ) ).toString() );
@@ -786,6 +789,12 @@ QgsDataSourceUri QgsOracleConn::connUri( const QString &connName )
   if ( !settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString().isEmpty() )
   {
     uri.setParam( QStringLiteral( "dbworkspace" ), settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString() );
+  }
+
+  QString authcfg = settings.value( key + "/authcfg" ).toString();
+  if ( !authcfg.isEmpty() )
+  {
+    uri.setAuthConfigId( authcfg );
   }
 
   return uri;

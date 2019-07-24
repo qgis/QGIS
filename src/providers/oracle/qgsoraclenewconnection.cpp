@@ -36,6 +36,9 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleNewConnection::showHelp );
   connect( btnConnect, &QPushButton::clicked, this, &QgsOracleNewConnection::testConnection );
 
+  mAuthSettings->setDataprovider( QStringLiteral( "oracle" ) );
+  mAuthSettings->showStoreCheckboxes( true );
+
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -63,27 +66,30 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
 
     if ( settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() == QLatin1String( "true" ) )
     {
-      txtUsername->setText( settings.value( key + QStringLiteral( "/username" ) ).toString() );
-      chkStoreUsername->setChecked( true );
+      mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
+      mAuthSettings->setStoreUsernameChecked( true );
     }
 
     if ( settings.value( key + QStringLiteral( "/savePassword" ) ).toString() == QLatin1String( "true" ) )
     {
-      txtPassword->setText( settings.value( key + QStringLiteral( "/password" ) ).toString() );
-      chkStorePassword->setChecked( true );
+      mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
+      mAuthSettings->setStorePasswordChecked( true );
     }
 
     // Old save setting
     if ( settings.contains( key + QStringLiteral( "/save" ) ) )
     {
-      txtUsername->setText( settings.value( key + QStringLiteral( "/username" ) ).toString() );
-      chkStoreUsername->setChecked( !txtUsername->text().isEmpty() );
+      mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
+      mAuthSettings->setStoreUsernameChecked( ! mAuthSettings->username().isEmpty() );
 
-      if ( settings.value( key + QStringLiteral( "/save" ) ).toString() == QLatin1String( "true" ) )
-        txtPassword->setText( settings.value( key + QStringLiteral( "/password" ) ).toString() );
+      if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
+        mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
 
-      chkStorePassword->setChecked( true );
+      mAuthSettings->setStorePasswordChecked( true );
     }
+
+    QString authcfg = settings.value( key + "/authcfg" ).toString();
+    mAuthSettings->setConfigId( authcfg );
 
     txtName->setText( connName );
   }
@@ -95,8 +101,9 @@ void QgsOracleNewConnection::accept()
   QgsSettings settings;
   QString baseKey = QStringLiteral( "/Oracle/connections/" );
   settings.setValue( baseKey + QStringLiteral( "selected" ), txtName->text() );
+  bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
 
-  if ( chkStorePassword->isChecked() &&
+  if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked() &&
        QMessageBox::question( this,
                               tr( "Saving Passwords" ),
                               tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
@@ -128,16 +135,17 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + QStringLiteral( "/database" ), txtDatabase->text() );
   settings.setValue( baseKey + QStringLiteral( "/host" ), txtHost->text() );
   settings.setValue( baseKey + QStringLiteral( "/port" ), txtPort->text() );
-  settings.setValue( baseKey + QStringLiteral( "/username" ), chkStoreUsername->isChecked() ? txtUsername->text() : QString() );
-  settings.setValue( baseKey + QStringLiteral( "/password" ), chkStorePassword->isChecked() ? txtPassword->text() : QString() );
+  settings.setValue( baseKey + QStringLiteral( "/username" ), mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QString() );
+  settings.setValue( baseKey + QStringLiteral( "/password" ), mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ? mAuthSettings->password() : QString() );
+  settings.setValue( baseKey + QStringLiteral( "/authcfg" ), mAuthSettings->configId() );
   settings.setValue( baseKey + QStringLiteral( "/userTablesOnly" ), cb_userTablesOnly->isChecked() );
   settings.setValue( baseKey + QStringLiteral( "/geometryColumnsOnly" ), cb_geometryColumnsOnly->isChecked() );
   settings.setValue( baseKey + QStringLiteral( "/allowGeometrylessTables" ), cb_allowGeometrylessTables->isChecked() );
   settings.setValue( baseKey + QStringLiteral( "/estimatedMetadata" ), cb_useEstimatedMetadata->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   settings.setValue( baseKey + QStringLiteral( "/onlyExistingTypes" ), cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   settings.setValue( baseKey + QStringLiteral( "/includeGeoAttributes" ), cb_includeGeoAttributes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  settings.setValue( baseKey + QStringLiteral( "/saveUsername" ), chkStoreUsername->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  settings.setValue( baseKey + QStringLiteral( "/savePassword" ), chkStorePassword->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  settings.setValue( baseKey + QStringLiteral( "/saveUsername" ), mAuthSettings->storeUsernameIsChecked( ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  settings.setValue( baseKey + QStringLiteral( "/savePassword" ), mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   settings.setValue( baseKey + QStringLiteral( "/dboptions" ), txtOptions->text() );
   settings.setValue( baseKey + QStringLiteral( "/dbworkspace" ), txtWorkspace->text() );
   settings.setValue( baseKey + QStringLiteral( "/schema" ), txtSchema->text() );
@@ -148,7 +156,10 @@ void QgsOracleNewConnection::accept()
 void QgsOracleNewConnection::testConnection()
 {
   QgsDataSourceUri uri;
-  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text() );
+  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(),
+                     mAuthSettings->username(), mAuthSettings->password(),
+                     QgsDataSourceUri::SslPrefer /* meaningless for oracle */,
+                     mAuthSettings->configId() );
   if ( !txtOptions->text().isEmpty() )
     uri.setParam( QStringLiteral( "dboptions" ), txtOptions->text() );
   if ( !txtWorkspace->text().isEmpty() )
