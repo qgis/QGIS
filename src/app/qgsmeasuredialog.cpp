@@ -555,7 +555,8 @@ void QgsMeasureDialog::updateUi()
     {
       area = mDa.measurePolygon( mTool->points() );
     }
-    mTable->hide(); // Hide the table, only show summary.
+    mTable->hide(); // Hide the table, only show summary
+    mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Expanding );
     editTotal->setText( formatArea( area ) );
   }
   else
@@ -592,6 +593,7 @@ void QgsMeasureDialog::updateUi()
 
     mTotal = mDa.measureLine( mTool->points() );
     mTable->show(); // Show the table with items
+    mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Maximum );
     editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
   }
 }
