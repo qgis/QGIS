@@ -25,8 +25,8 @@ import os
 import math
 from uuid import uuid4
 
-import gdal
 import sqlite3
+from osgeo import gdal
 from qgis.PyQt.QtCore import QSize, Qt, QByteArray, QBuffer
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (QgsProcessingException,
@@ -75,6 +75,7 @@ def num2deg(xtile, ytile, zoom):
 
 
 class Tile:
+
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
@@ -87,6 +88,7 @@ class Tile:
 
 
 class MetaTile:
+
     def __init__(self):
         # list of tuple(row index, column index, Tile)
         self.tiles = []
@@ -290,6 +292,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 # MBTiles
 ########################################################################
 class MBTilesWriter:
+
     def __init__(self, filename):
         base_dir = os.path.dirname(filename)
         os.makedirs(base_dir, exist_ok=True)
@@ -451,6 +454,7 @@ LEAFLET_TEMPLATE = '''
 
 
 class DirectoryWriter:
+
     def __init__(self, folder, is_tms):
         self.folder = folder
         self.is_tms = is_tms
