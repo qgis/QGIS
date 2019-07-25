@@ -1456,11 +1456,8 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 
   // FEATURE 1
   w_favoriteauthors.setFeature( vl_json->getFeature( 1 ) );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { "1gamma", "3johnson\"quote" } ) ) );
-#else
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"3johnson\\\"quote\"}" ) ) );
-#endif
+
   //check if first feature checked correctly (1,3)                                          pk
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );   // 1
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked ); // 2
@@ -1475,11 +1472,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   w_favoriteauthors.mTableWidget->item( 4, 0 )->setCheckState( Qt::Checked );
 
   //check if first feature checked correctly (1,2,3,5) ) );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { "1gamma", "2helm,comma", "3johnson\"quote", "5adams'singlequote" } ) ) );
-#else
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\"}" ) ) );
-#endif
 
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
@@ -1496,19 +1489,11 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   QVariant attribute = f.attribute( fk_field );
   QVariantList value = attribute.toList();
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( value, QVariantList( { "1gamma", "2helm,comma", "3johnson\"quote", "5adams'singlequote" } ) );
-#else
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"1gamma\",\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\"}" ) ) );
-#endif
 
   // FEATURE 2
   w_favoriteauthors.setFeature( vl_json->getFeature( 2 ) );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { "2helm,comma", "5adams'singlequote" } ) ) );
-#else
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"2helm,comma\",\"5adams'singlequote\"}" ) ) );
-#endif
 
   //check if second feature checked correctly
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
@@ -1523,11 +1508,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   w_favoriteauthors.setFeature( vl_json->getFeature( 4 ) );
 
   //check if first feature checked correctly (NULL)
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( ) ) );
-#else
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{}" ) ) );
-#endif
 
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
@@ -1541,11 +1522,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   w_favoriteauthors.setFeature( vl_json->getFeature( 5 ) );
 
   //check if first feature checked correctly (blank)
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList() ) );
-#else
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{}" ) ) );
-#endif
 
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
