@@ -116,6 +116,16 @@ namespace pal
                                  double xrm, double yrm );
 
       /**
+       * Extends linestrings by the specified amount at the start and end of the line,
+       * by extending the existing lines following the same direction as the original line
+       * start or end.
+       *
+       * The \a smoothDistance argument specifies the distance over which to smooth the direction
+       * of the line at its start and end points.
+       */
+      void extendLineByDistance( double startDistance, double endDistance, double smoothDistance );
+
+      /**
        * Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).
        * \param px x coordinate of the point
@@ -168,13 +178,13 @@ namespace pal
        */
       bool isClosed() const;
 
-    protected:
-      mutable GEOSGeometry *mGeos = nullptr;
-      mutable bool mOwnsGeom = false;
-
       int nbPoints;
       std::vector< double > x;
       std::vector< double > y;   // points order is counterclockwise
+
+    protected:
+      mutable GEOSGeometry *mGeos = nullptr;
+      mutable bool mOwnsGeom = false;
 
       int *cHull = nullptr;
       int cHullSize = 0;
