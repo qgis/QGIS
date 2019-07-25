@@ -383,20 +383,44 @@ void Layer::chopFeaturesAtRepeatDistance()
     std::unique_ptr< FeaturePart > fpart( mFeatureParts.takeFirst() );
     const GEOSGeometry *geom = fpart->geos();
     double chopInterval = fpart->repeatDistance();
-    bool shouldChop = false;
+
+    // whether we CAN chop
+    bool canChop = false;
+    double featureLen = 0;
     if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
     {
-      double featureLen = 0;
       ( void )GEOSLength_r( geosctxt, geom, &featureLen );
       if ( featureLen > chopInterval )
-        shouldChop = true;
+        canChop = true;
+    }
+
+    // whether we SHOULD chop
+    bool shouldChop = canChop;
+    if ( canChop )
+    {
+      // never chop into segments smaller than required for the actual label text
+      chopInterval *= std::ceil( fpart->getLabelWidth() / fpart->repeatDistance() );
+
+      // now work out how many full segments we could chop this line into
+      int possibleSegments = static_cast< int >( std::floor( featureLen / chopInterval ) );
+
+      // ... and use this to work out the actual chop distance for this line. Otherwise, we risk the
+      // situation of:
+      // 1. Line length of 3cm
+      // 2. Repeat distance of 2cm
+      // 3. Label size is 1.5 cm
+      //
+      //      2cm    1cm
+      // /--Label--/----/
+      //
+      // i.e. the labels would be off center and gravitate toward line starts
+      chopInterval = featureLen / possibleSegments;
+
+      shouldChop = possibleSegments > 1;
     }
 
     if ( shouldChop )
     {
-      QList<FeaturePart *> repeatParts;
-      chopInterval *= std::ceil( fpart->getLabelWidth() / fpart->repeatDistance() );
-
       double bmin[2], bmax[2];
       fpart->getBoundingBox( bmin, bmax );
       mFeatureIndex->Remove( bmin, bmax, fpart.get() );
