@@ -56,7 +56,8 @@ class QgsCalculateVectorOverlapsAlgorithm : public QgsProcessingAlgorithm
   private:
 
     std::unique_ptr< QgsProcessingFeatureSource > mSource;
-    std::map< QString, std::unique_ptr< QgsVectorLayerFeatureSource > > mOverlayerSources;
+    QStringList mLayerNames;
+    std::vector< std::unique_ptr< QgsVectorLayerFeatureSource > > mOverlayerSources;
     QgsFields mOutputFields;
     QgsWkbTypes::Type mOutputType = QgsWkbTypes::Unknown;
     QgsCoordinateReferenceSystem mCrs;
