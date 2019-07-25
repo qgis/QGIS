@@ -223,8 +223,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mCopyToDefaultButton->hide();
   }
 
-  mActionCopySymbol = new QAction( tr( "Copy Item" ), this );
-  connect( mActionCopySymbol, &QAction::triggered, this, &QgsStyleManagerDialog::copyItem );
+  mActionCopyItem = new QAction( tr( "Copy Item" ), this );
+  connect( mActionCopyItem, &QAction::triggered, this, &QgsStyleManagerDialog::copyItem );
+  mActionPasteItem = new QAction( tr( "Paste Item…" ), this );
+  connect( mActionPasteItem, &QAction::triggered, this, &QgsStyleManagerDialog::pasteItem );
 
   shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
@@ -370,7 +372,8 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mGroupMenu->addSeparator()->setParent( this );
     mGroupMenu->addAction( actnRemoveItem );
     mGroupMenu->addAction( actnEditItem );
-    mGroupMenu->addAction( mActionCopySymbol );
+    mGroupMenu->addAction( mActionCopyItem );
+    mGroupMenu->addAction( mActionPasteItem );
     mGroupMenu->addSeparator()->setParent( this );
   }
   else
@@ -382,7 +385,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     btnAddTag->setVisible( false );
     btnManageGroups->setVisible( false );
 
-    mGroupMenu->addAction( mActionCopySymbol );
+    mGroupMenu->addAction( mActionCopyItem );
   }
   if ( mActionCopyToDefault )
   {
@@ -577,6 +580,69 @@ void QgsStyleManagerDialog::copyItem()
       return;
 
   };
+}
+
+void QgsStyleManagerDialog::pasteItem()
+{
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data().toString() : QString();
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( tempSymbol )
+  {
+    QgsStyleSaveDialog saveDlg( this );
+    saveDlg.setWindowTitle( tr( "Paste Symbol" ) );
+    saveDlg.setDefaultTags( defaultTag );
+    if ( !saveDlg.exec() || saveDlg.name().isEmpty() )
+      return;
+
+    if ( mStyle->symbolNames().contains( saveDlg.name() ) )
+    {
+      int res = QMessageBox::warning( this, tr( "Paste Symbol" ),
+                                      tr( "A symbol with the name '%1' already exists. Overwrite?" )
+                                      .arg( saveDlg.name() ),
+                                      QMessageBox::Yes | QMessageBox::No );
+      if ( res != QMessageBox::Yes )
+      {
+        return;
+      }
+      mStyle->removeSymbol( saveDlg.name() );
+    }
+
+    QStringList symbolTags = saveDlg.tags().split( ',' );
+    mStyle->addSymbol( saveDlg.name(), tempSymbol->clone() );
+    // make sure the symbol is stored
+    mStyle->saveSymbol( saveDlg.name(), tempSymbol->clone(), saveDlg.isFavorite(), symbolTags );
+    return;
+  }
+
+  bool ok = false;
+  const QgsTextFormat format = QgsTextFormat::fromMimeData( QApplication::clipboard()->mimeData(), &ok );
+  if ( ok )
+  {
+    QgsStyleSaveDialog saveDlg( this );
+    saveDlg.setDefaultTags( defaultTag );
+    saveDlg.setWindowTitle( tr( "Paste Text Format" ) );
+    if ( !saveDlg.exec() || saveDlg.name().isEmpty() )
+      return;
+
+    if ( mStyle->textFormatNames().contains( saveDlg.name() ) )
+    {
+      int res = QMessageBox::warning( this, tr( "Paste Text Format" ),
+                                      tr( "A format with the name '%1' already exists. Overwrite?" )
+                                      .arg( saveDlg.name() ),
+                                      QMessageBox::Yes | QMessageBox::No );
+      if ( res != QMessageBox::Yes )
+      {
+        return;
+      }
+      mStyle->removeTextFormat( saveDlg.name() );
+    }
+
+    QStringList symbolTags = saveDlg.tags().split( ',' );
+    mStyle->addTextFormat( saveDlg.name(), format );
+    // make sure the foprmatis stored
+    mStyle->saveTextFormat( saveDlg.name(), format, saveDlg.isFavorite(), symbolTags );
+    return;
+  }
 }
 
 int QgsStyleManagerDialog::selectedItemType()
@@ -2123,7 +2189,8 @@ void QgsStyleManagerDialog::enableItemsForGroupingMode( bool enable )
   // The actions
   actnRemoveItem->setEnabled( enable );
   actnEditItem->setEnabled( enable );
-  mActionCopySymbol->setEnabled( enable );
+  mActionCopyItem->setEnabled( enable );
+  mActionPasteItem->setEnabled( enable );
 }
 
 void QgsStyleManagerDialog::grouptreeContextMenu( QPoint point )
@@ -2169,7 +2236,17 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   }
 
   const QList< ItemDetails > items = selectedItems();
-  mActionCopySymbol->setEnabled( !items.isEmpty() && ( items.at( 0 ).entityType != QgsStyle::ColorrampEntity ) );
+  mActionCopyItem->setEnabled( !items.isEmpty() && ( items.at( 0 ).entityType != QgsStyle::ColorrampEntity ) );
+
+  bool enablePaste = false;
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( tempSymbol )
+    enablePaste = true;
+  else
+  {
+    ( void )QgsTextFormat::fromMimeData( QApplication::clipboard()->mimeData(), &enablePaste );
+  }
+  mActionPasteItem->setEnabled( enablePaste );
 
   mGroupMenu->popup( globalPos );
 }
