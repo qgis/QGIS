@@ -24,10 +24,10 @@
 
 QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
-  , mWindowSize( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF( 800, 600 ), this ) )
+  , mViewportSize( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF( 800, 600 ), this ) )
 {
   addParameter( mSize );
-  addParameter( mWindowSize );
+  addParameter( mViewportSize );
 
   Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage;
   image->setSource( QUrl( QStringLiteral( "qrc:/shaders/success-kid.png" ) ) );
@@ -85,14 +85,14 @@ QSizeF QgsPoint3DBillboardMaterial::size() const
   return mSize->value().value<QSizeF>();
 }
 
-void QgsPoint3DBillboardMaterial::setWindowSize( const QSizeF size )
+void QgsPoint3DBillboardMaterial::setViewportSize( const QSizeF size )
 {
-  mWindowSize->setValue( size );
+  mViewportSize->setValue( size );
 }
 
 QSizeF QgsPoint3DBillboardMaterial::windowSize() const
 {
-  return mWindowSize->value().value<QSizeF>();
+  return mViewportSize->value().value<QSizeF>();
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2D( Qt3DRender::QTexture2D *texture2D )
@@ -134,6 +134,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image )
   texture2D->setGenerateMipMaps( false );
   texture2D->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   texture2D->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+  // check the format of texture
 
   texture2D->addTextureImage( billboardTextureImage );
 

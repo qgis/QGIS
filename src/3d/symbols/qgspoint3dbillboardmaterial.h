@@ -31,7 +31,7 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
     void setSize( const QSizeF size );
     QSizeF size() const;
 
-    void setWindowSize( const QSizeF size );
+    void setViewportSize( const QSizeF size );
     QSizeF windowSize() const;
 
     void setTexture2D( Qt3DRender::QTexture2D *texture2D );
@@ -43,7 +43,7 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
   private:
     Qt3DRender::QParameter *mSize = nullptr;
-    Qt3DRender::QParameter *mWindowSize = nullptr;
+    Qt3DRender::QParameter *mViewportSize = nullptr;
     Qt3DRender::QParameter *mTexture2D = nullptr;
 };
 
