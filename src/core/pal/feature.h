@@ -180,7 +180,7 @@ namespace pal
        * \param mapShape a pointer to the line
        * \returns the number of generated candidates
        */
-      int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
+      int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape, bool allowOverrun = false );
 
       /**
        * Generate candidates for line feature, by trying to place candidates towards the middle of the longest
@@ -221,7 +221,7 @@ namespace pal
        * \param mapShape a pointer to the line
        * \returns the number of generated candidates
        */
-      int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
+      int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape, bool allowOverrun = false );
 
       /**
        * Generate candidates for polygon features.

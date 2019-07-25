@@ -404,6 +404,46 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setSymbol( const QgsSymbol *symbol ) { mSymbol = symbol; }
 
+    /**
+     * Returns the permissible distance (in map units) which labels are allowed to overrun the start
+     * or end of linear features.
+     *
+     * \see setOverrunDistance()
+     * \see overrunSmoothDistance()
+     * \since QGIS 3.10
+     */
+    double overrunDistance() const;
+
+    /**
+     * Sets the permissible \a distance (in map units) which labels are allowed to overrun the start
+     * or end of linear features.
+     *
+     * \see overrunDistance()
+     * \see setOverrunSmoothDistance()
+     * \since QGIS 3.10
+     */
+    void setOverrunDistance( double distance );
+
+    /**
+     * Returns the distance (in map units) with which the ends of linear features are averaged over when
+     * calculating the direction at which to overrun labels.
+     *
+     * \see setOverrunSmoothDistance()
+     * \see overrunDistance()
+     * \since QGIS 3.10
+     */
+    double overrunSmoothDistance() const;
+
+    /**
+     * Sets the \a distance (in map units) with which the ends of linear features are averaged over when
+     * calculating the direction at which to overrun labels.
+     *
+     * \see overrunSmoothDistance()
+     * \see setOverrunDistance()
+     * \since QGIS 3.10
+     */
+    void setOverrunSmoothDistance( double distance );
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -458,6 +498,11 @@ class CORE_EXPORT QgsLabelFeature
     QString mLabelText;
     //! extra information for curved labels (may be NULLPTR)
     pal::LabelInfo *mInfo = nullptr;
+
+    //! Distance to allow label to overrun linear features
+    double mOverrunDistance = 0;
+    //! Distance to smooth angle of line start and end when calculating overruns
+    double mOverrunSmoothDistance = 0;
 
     pal::LineArrangementFlags mArrangementFlags = nullptr;
 

@@ -431,6 +431,7 @@ class CORE_EXPORT QgsPalLayerSettings
       Priority = 87,
       PredefinedPositionOrder = 91,
       LinePlacementOptions = 99, //!< Line placement flags
+      OverrunDistance = 102, //!< Distance which labels can extend past the end of linear features
 
       // rendering
       ScaleVisibility = 23,
@@ -694,6 +695,30 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see repeatDistanceUnit
      */
     QgsMapUnitScale repeatDistanceMapUnitScale;
+
+    /**
+     * Distance which labels are allowed to overrun past the start or end of line features.
+     * \see overrunDistanceUnit
+     * \see repeatDistanceMapUnitScale
+     * \since QGIS 3.10
+     */
+    double overrunDistance = 0;
+
+    /**
+     * Units for label overrun distance.
+     * \see overrunDistance
+     * \see overrunDistanceMapUnitScale
+     * \since QGIS 3.10
+     */
+    QgsUnitTypes::RenderUnit overrunDistanceUnit = QgsUnitTypes::RenderMillimeters;
+
+    /**
+     * Map unit scale for label overrun distance.
+     * \see overrunDistance
+     * \see overrunDistanceUnit
+     * \since QGIS 3.10
+     */
+    QgsMapUnitScale overrunDistanceMapUnitScale;
 
     /**
      * Sets the quadrant in which to offset labels from feature.

@@ -278,6 +278,7 @@ class QgsPalLayerSettings
       Priority,
       PredefinedPositionOrder,
       LinePlacementOptions,
+      OverrunDistance,
 
       // rendering
       ScaleVisibility,
@@ -404,6 +405,12 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
     QgsUnitTypes::RenderUnit repeatDistanceUnit;
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
+
+    double overrunDistance;
+
+    QgsUnitTypes::RenderUnit overrunDistanceUnit;
+
+    QgsMapUnitScale overrunDistanceMapUnitScale;
 
     QuadrantPosition quadOffset;
 
