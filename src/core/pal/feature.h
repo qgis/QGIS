@@ -307,6 +307,18 @@ namespace pal
       bool nextCharPosition( double charWidth, double segmentLength, PointSet *path_positions, int &index, double &currentDistanceAlongSegment,
                              double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY ) const;
 
+      /**
+       * Returns the total number of repeating labels associated with this label.
+       * \see setTotalRepeats()
+       */
+      int totalRepeats() const;
+
+      /**
+       * Returns the total number of repeating labels associated with this label.
+       * \see totalRepeats()
+       */
+      void setTotalRepeats( int repeats );
+
     protected:
 
       QgsLabelFeature *mLF = nullptr;
@@ -318,6 +330,8 @@ namespace pal
     private:
 
       LabelPosition::Quadrant quadrantFromOffset() const;
+
+      int mTotalRepeats = 0;
   };
 
 } // end namespace pal

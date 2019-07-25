@@ -221,6 +221,16 @@ LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
   }
 }
 
+int FeaturePart::totalRepeats() const
+{
+  return mTotalRepeats;
+}
+
+void FeaturePart::setTotalRepeats( int totalRepeats )
+{
+  mTotalRepeats = totalRepeats;
+}
+
 int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosition *> &lPos, double angle )
 {
   int nbp = 1;
