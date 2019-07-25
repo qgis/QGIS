@@ -396,13 +396,14 @@ void Layer::chopFeaturesAtRepeatDistance()
 
     // whether we SHOULD chop
     bool shouldChop = canChop;
+    int possibleSegments = 0;
     if ( canChop )
     {
       // never chop into segments smaller than required for the actual label text
       chopInterval *= std::ceil( fpart->getLabelWidth() / fpart->repeatDistance() );
 
       // now work out how many full segments we could chop this line into
-      int possibleSegments = static_cast< int >( std::floor( featureLen / chopInterval ) );
+      possibleSegments = static_cast< int >( std::floor( featureLen / chopInterval ) );
 
       // ... and use this to work out the actual chop distance for this line. Otherwise, we risk the
       // situation of:
@@ -452,7 +453,8 @@ void Layer::chopFeaturesAtRepeatDistance()
       unsigned int cur = 0;
       double lambda = 0;
       QVector<Point> part;
-      for ( ;; )
+
+      for ( int segment = 0; segment < possibleSegments; segment++ )
       {
         lambda += chopInterval;
         for ( ; cur < n && lambda > len[cur]; ++cur )
@@ -461,6 +463,18 @@ void Layer::chopFeaturesAtRepeatDistance()
         }
         if ( cur >= n )
         {
+          // Create final part
+          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
+          for ( int i = 0; i < part.size(); ++i )
+          {
+            GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
+            GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
+          }
+          GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
+          FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
+          newFeatureParts.append( newfpart );
+          newfpart->getBoundingBox( bmin, bmax );
+          mFeatureIndex->Insert( bmin, bmax, newfpart );
           break;
         }
         double c = ( lambda - len[cur - 1] ) / ( len[cur] - len[cur - 1] );
@@ -483,19 +497,6 @@ void Layer::chopFeaturesAtRepeatDistance()
         part.clear();
         part.push_back( p );
       }
-      // Create final part
-      GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
-      for ( int i = 0; i < part.size(); ++i )
-      {
-        GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
-        GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
-      }
-
-      GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
-      FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
-      newFeatureParts.append( newfpart );
-      newfpart->getBoundingBox( bmin, bmax );
-      mFeatureIndex->Insert( bmin, bmax, newfpart );
     }
     else
     {
