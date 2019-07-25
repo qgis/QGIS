@@ -2211,8 +2211,11 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   // Clear all actions and create new actions for every group
   mGroupListMenu->clear();
 
+  const QModelIndexList indices = listItems->selectionModel()->selectedRows();
+
   if ( !mReadOnly )
   {
+    const QStringList currentTags = indices.count() == 1 ? indices.at( 0 ).data( QgsStyleModel::TagRole ).toStringList() : QStringList();
     QAction *a = nullptr;
     QStringList tags = mStyle->tags();
     tags.sort();
@@ -2220,6 +2223,11 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
     {
       a = new QAction( tag, mGroupListMenu );
       a->setData( tag );
+      if ( indices.count() == 1 )
+      {
+        a->setCheckable( true );
+        a->setChecked( currentTags.contains( tag ) );
+      }
       connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols(); }
              );
       mGroupListMenu->addAction( a );
