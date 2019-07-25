@@ -99,7 +99,6 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
          layer()->fields().at( fieldIdx() ).type() == QVariant::List )
     {
-      //because of json it's stored as QVariantList with type QVariant::Map or QVariant::List
       v = vl;
     }
     else
@@ -191,7 +190,6 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
     if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
          layer()->fields().at( fieldIdx() ).type() == QVariant::List )
     {
-      //because of json it's stored as QVariantList with type QVariant::Map or QVariant::List
       checkList = value.toStringList();
     }
     else
