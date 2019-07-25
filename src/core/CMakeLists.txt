@@ -169,6 +169,7 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
+  qgspostgresstringutils.cpp
   qgsattributes.cpp
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
@@ -881,6 +882,7 @@ SET(QGIS_CORE_HDRS
   qgsactionscope.h
   qgsactionmanager.h
   qgsaggregatecalculator.h
+  qgspostgresstringutils.h
   qgsattributes.h
   qgsattributetableconfig.h
   qgsattributeeditorelement.h
