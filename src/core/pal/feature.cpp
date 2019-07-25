@@ -127,8 +127,8 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
 
   // initialize coordinate arrays
   deleteCoords();
-  x = new double[nbPoints];
-  y = new double[nbPoints];
+  x.resize( nbPoints );
+  y.resize( nbPoints );
 
   for ( int i = 0; i < nbPoints; ++i )
   {
@@ -639,8 +639,8 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   QVector< int > extremeAngleNodes;
   PointSet *line = mapShape;
   int numberNodes = line->nbPoints;
-  double *x = line->x;
-  double *y = line->y;
+  std::vector< double > &x = line->x;
+  std::vector< double > &y = line->y;
 
   // closed line? if so, we need to handle the final node angle
   bool closedLine = qgsDoubleNear( x[0], x[ numberNodes - 1] ) && qgsDoubleNear( y[0], y[numberNodes - 1 ] );
@@ -866,8 +866,8 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
 
   PointSet *line = mapShape;
   int nbPoints = line->nbPoints;
-  double *x = line->x;
-  double *y = line->y;
+  std::vector< double > &x = line->x;
+  std::vector< double > &y = line->y;
 
   double *segmentLengths = new double[nbPoints - 1]; // segments lengths distance bw pt[i] && pt[i+1]
   double *distanceToSegment = new double[nbPoints]; // absolute distance bw pt[0] and pt[i] along the line

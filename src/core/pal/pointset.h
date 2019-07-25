@@ -37,6 +37,8 @@
 #include <cmath>
 #include <QLinkedList>
 #include <geos_c.h>
+#include <memory>
+#include <vector>
 
 #include "qgis_core.h"
 
@@ -166,11 +168,11 @@ namespace pal
       mutable bool mOwnsGeom = false;
 
       int nbPoints;
-      double *x = nullptr;
-      double *y = nullptr;   // points order is counterclockwise
+      std::vector< double > x;
+      std::vector< double > y;   // points order is counterclockwise
 
       int *cHull = nullptr;
-      int cHullSize;
+      int cHullSize = 0;
 
       int type;
 
