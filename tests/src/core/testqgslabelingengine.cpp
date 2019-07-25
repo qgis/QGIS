@@ -1271,6 +1271,7 @@ void TestQgsLabelingEngine::testRepeatDistanceWithSmallLine()
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
   engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
   engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
   //engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
   mapSettings.setLabelingEngineSettings( engineSettings );
 
