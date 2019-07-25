@@ -151,7 +151,8 @@ void QgsTextFormatWidget::initWidget()
                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mRepeatDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-
+  mOverrunDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mFontLineHeightSpinBox->setClearValue( 1.0 );
   mShapeRotationDblSpnBx->setClearValue( 0.0 );
   mShapeOffsetXSpnBx->setClearValue( 0.0 );
@@ -387,6 +388,8 @@ void QgsTextFormatWidget::initWidget()
           << mPrioritySlider
           << mRepeatDistanceSpinBox
           << mRepeatDistanceUnitWidget
+          << mOverrunDistanceSpinBox
+          << mOverrunDistanceUnitWidget
           << mScaleBasedVisibilityChkBx
           << mMaxScaleWidget
           << mMinScaleWidget
@@ -712,6 +715,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mMaxCharAngleDDBtn, QgsPalLayerSettings::CurvedCharAngleInOut );
   registerDataDefinedButton( mRepeatDistanceDDBtn, QgsPalLayerSettings::RepeatDistance );
   registerDataDefinedButton( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::RepeatDistanceUnit );
+  registerDataDefinedButton( mOverrunDistanceDDBtn, QgsPalLayerSettings::OverrunDistance );
 
   // data defined-only
   QString ddPlaceInfo = tr( "In edit mode, layer's relevant labeling map tool is:<br>"
@@ -1234,6 +1238,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementRotationFrame->setVisible( showRotationFrame );
   mPlacementRepeatDistanceFrame->setVisible( curWdgt == pageLine || ( curWdgt == pagePolygon &&
       ( radPolygonPerimeter->isChecked() || radPolygonPerimeterCurved->isChecked() ) ) );
+  mPlacementOverrunDistanceFrame->setVisible( curWdgt == pageLine );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );

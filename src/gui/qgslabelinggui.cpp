@@ -273,6 +273,10 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mRepeatDistanceUnitWidget->setUnit( mSettings.repeatDistanceUnit );
   mRepeatDistanceUnitWidget->setMapUnitScale( mSettings.repeatDistanceMapUnitScale );
 
+  mOverrunDistanceSpinBox->setValue( mSettings.overrunDistance );
+  mOverrunDistanceUnitWidget->setUnit( mSettings.overrunDistanceUnit );
+  mOverrunDistanceUnitWidget->setMapUnitScale( mSettings.overrunDistanceMapUnitScale );
+
   mPrioritySlider->setValue( mSettings.priority );
   mChkNoObstacle->setChecked( mSettings.obstacle );
   mObstacleFactorSlider->setValue( mSettings.obstacleFactor * 50 );
@@ -469,6 +473,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.repeatDistance = mRepeatDistanceSpinBox->value();
   lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit();
   lyr.repeatDistanceMapUnitScale = mRepeatDistanceUnitWidget->getMapUnitScale();
+
+  lyr.overrunDistance = mOverrunDistanceSpinBox->value();
+  lyr.overrunDistanceUnit = mOverrunDistanceUnitWidget->unit();
+  lyr.overrunDistanceMapUnitScale = mOverrunDistanceUnitWidget->getMapUnitScale();
 
   lyr.priority = mPrioritySlider->value();
   lyr.obstacle = mChkNoObstacle->isChecked() || mMode == ObstaclesOnly;
