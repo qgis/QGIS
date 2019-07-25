@@ -454,6 +454,9 @@ void Layer::chopFeaturesAtRepeatDistance()
       double lambda = 0;
       QVector<Point> part;
 
+      QList<FeaturePart *> repeatParts;
+      repeatParts.reserve( possibleSegments );
+
       for ( int segment = 0; segment < possibleSegments; segment++ )
       {
         lambda += chopInterval;
@@ -475,6 +478,8 @@ void Layer::chopFeaturesAtRepeatDistance()
           newFeatureParts.append( newfpart );
           newfpart->getBoundingBox( bmin, bmax );
           mFeatureIndex->Insert( bmin, bmax, newfpart );
+          repeatParts.push_back( newfpart );
+
           break;
         }
         double c = ( lambda - len[cur - 1] ) / ( len[cur] - len[cur - 1] );
@@ -496,7 +501,11 @@ void Layer::chopFeaturesAtRepeatDistance()
         mFeatureIndex->Insert( bmin, bmax, newfpart );
         part.clear();
         part.push_back( p );
+        repeatParts.push_back( newfpart );
       }
+
+      for ( FeaturePart *part : repeatParts )
+        part->setTotalRepeats( repeatParts.count() );
     }
     else
     {
