@@ -400,7 +400,7 @@ void Layer::chopFeaturesAtRepeatDistance()
   QLinkedList<FeaturePart *> newFeatureParts;
   while ( !mFeatureParts.isEmpty() )
   {
-    FeaturePart *fpart = mFeatureParts.takeFirst();
+    std::unique_ptr< FeaturePart > fpart( mFeatureParts.takeFirst() );
     const GEOSGeometry *geom = fpart->geos();
     double chopInterval = fpart->repeatDistance();
     if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
@@ -409,7 +409,7 @@ void Layer::chopFeaturesAtRepeatDistance()
 
       double bmin[2], bmax[2];
       fpart->getBoundingBox( bmin, bmax );
-      mFeatureIndex->Remove( bmin, bmax, fpart );
+      mFeatureIndex->Remove( bmin, bmax, fpart.get() );
 
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
@@ -482,11 +482,10 @@ void Layer::chopFeaturesAtRepeatDistance()
       newFeatureParts.append( newfpart );
       newfpart->getBoundingBox( bmin, bmax );
       mFeatureIndex->Insert( bmin, bmax, newfpart );
-      delete fpart;
     }
     else
     {
-      newFeatureParts.append( fpart );
+      newFeatureParts.append( fpart.release() );
     }
   }
 
