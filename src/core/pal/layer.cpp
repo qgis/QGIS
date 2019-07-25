@@ -403,8 +403,18 @@ void Layer::chopFeaturesAtRepeatDistance()
     std::unique_ptr< FeaturePart > fpart( mFeatureParts.takeFirst() );
     const GEOSGeometry *geom = fpart->geos();
     double chopInterval = fpart->repeatDistance();
+    bool shouldChop = false;
     if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
     {
+      double featureLen = 0;
+      ( void )GEOSLength_r( geosctxt, geom, &featureLen );
+      if ( featureLen > chopInterval )
+        shouldChop = true;
+    }
+
+    if ( shouldChop )
+    {
+      QList<FeaturePart *> repeatParts;
       chopInterval *= std::ceil( fpart->getLabelWidth() / fpart->repeatDistance() );
 
       double bmin[2], bmax[2];
