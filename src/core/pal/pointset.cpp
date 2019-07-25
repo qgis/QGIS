@@ -228,6 +228,11 @@ PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int f
   return newShape;
 }
 
+std::unique_ptr<PointSet> PointSet::clone() const
+{
+  return std::unique_ptr< PointSet>( new PointSet( *this ) );
+}
+
 bool PointSet::containsPoint( double x, double y ) const
 {
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();

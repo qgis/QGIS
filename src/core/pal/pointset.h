@@ -83,6 +83,11 @@ namespace pal
       PointSet *extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
       /**
+       * Returns a copy of the point set.
+       */
+      std::unique_ptr< PointSet > clone() const;
+
+      /**
        * Tests whether point set contains a specified point.
        * \param x x-coordinate of point
        * \param y y-coordinate of point
