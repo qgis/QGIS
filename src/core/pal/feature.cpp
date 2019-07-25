@@ -613,8 +613,20 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
   return candidates.count();
 }
 
-int FeaturePart::createCandidatesAlongLine( QList< LabelPosition * > &lPos, PointSet *mapShape )
+int FeaturePart::createCandidatesAlongLine( QList< LabelPosition * > &lPos, PointSet *mapShape, bool allowOverrun )
 {
+  if ( allowOverrun )
+  {
+    double shapeLength = mapShape->length();
+    if ( totalRepeats() > 1 && shapeLength < getLabelWidth() )
+      return 0;
+    else if ( shapeLength < getLabelWidth() - 2 * std::min( getLabelWidth(), mLF->overrunDistance() ) )
+    {
+      // label doesn't fit on this line, don't waste time trying to make candidates
+      return 0;
+    }
+  }
+
   //prefer to label along straightish segments:
   int candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape );
 
@@ -1185,13 +1197,48 @@ static LabelPosition *_createCurvedCandidate( LabelPosition *lp, double angle, d
   return newLp;
 }
 
-int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos, PointSet *mapShape )
+int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos, PointSet *mapShape, bool allowOverrun )
 {
   LabelInfo *li = mLF->curvedLabelInfo();
 
   // label info must be present
   if ( !li || li->char_num == 0 )
     return 0;
+
+  // TODO - we may need an explicit penalty for overhanging labels. Currently, they are penalized just because they
+  // are further from the line center, so non-overhanding placements are picked where possible.
+
+  double totalCharacterWidth = 0;
+  for ( int i = 0; i < li->char_num; ++i )
+    totalCharacterWidth += li->char_info[ i ].width;
+
+  std::unique_ptr< PointSet > expanded;
+  double shapeLength = mapShape->length();
+
+  if ( totalRepeats() > 1 )
+    allowOverrun = false;
+
+  // label overrun should NEVER exceed the label length (or labels would sit off in space).
+  // in fact, let's require that a minimum of 5% of the label text has to sit on the feature,
+  // as we don't want a label sitting right at the start or end corner of a line
+  double overrun = std::min( mLF->overrunDistance(), totalCharacterWidth * 0.95 );
+  if ( totalCharacterWidth > shapeLength )
+  {
+    if ( !allowOverrun || shapeLength < totalCharacterWidth - 2 * overrun )
+    {
+      // label doesn't fit on this line, don't waste time trying to make candidates
+      return 0;
+    }
+  }
+
+  if ( allowOverrun && overrun > 0 )
+  {
+    // expand out line on either side to fit label
+    expanded = mapShape->clone();
+    expanded->extendLineByDistance( overrun, overrun, mLF->overrunSmoothDistance() );
+    mapShape = expanded.get();
+    shapeLength = mapShape->length();
+  }
 
   // distance calculation
   std::unique_ptr< double [] > path_distances = qgis::make_unique<double[]>( mapShape->nbPoints );
@@ -1211,17 +1258,6 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
 
   if ( qgsDoubleNear( total_distance, 0.0 ) )
   {
-    return 0;
-  }
-
-  double totalCharacterWidth = 0;
-  for ( int i = 0; i < li->char_num; ++i )
-    totalCharacterWidth += li->char_info[ i ].width;
-
-  if ( totalCharacterWidth > total_distance )
-  {
-    // label doesn't fit on this line, don't waste time trying to make candidates
-    // TODO: in future allow this, and allow label to overlap end of line
     return 0;
   }
 
@@ -1591,9 +1627,9 @@ QList<LabelPosition *> FeaturePart::createCandidates( const GEOSPreparedGeometry
         break;
       case GEOS_LINESTRING:
         if ( mLF->layer()->isCurved() )
-          createCurvedCandidatesAlongLine( lPos, mapShape );
+          createCurvedCandidatesAlongLine( lPos, mapShape, true );
         else
-          createCandidatesAlongLine( lPos, mapShape );
+          createCandidatesAlongLine( lPos, mapShape, true );
         break;
 
       case GEOS_POLYGON:

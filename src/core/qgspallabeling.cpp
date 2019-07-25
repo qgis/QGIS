@@ -202,6 +202,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::CurvedCharAngleInOut, QgsPropertyDefinition( "CurvedCharAngleInOut", QgsPropertyDefinition::DataTypeString, QObject::tr( "Curved character angles" ), QObject::tr( "double coord [<b>in,out</b> as 20.0-60.0,20.0-95.0]" ), origin ) },
     { QgsPalLayerSettings::RepeatDistance, QgsPropertyDefinition( "RepeatDistance", QObject::tr( "Repeat distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsPalLayerSettings::RepeatDistanceUnit, QgsPropertyDefinition( "RepeatDistanceUnit", QObject::tr( "Repeat distance unit" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::OverrunDistance, QgsPropertyDefinition( "OverrunDistance", QObject::tr( "Overrun distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsPalLayerSettings::Priority, QgsPropertyDefinition( "Priority", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label priority" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
     { QgsPalLayerSettings::IsObstacle, QgsPropertyDefinition( "IsObstacle", QObject::tr( "Feature is a label obstacle" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::ObstacleFactor, QgsPropertyDefinition( "ObstacleFactor", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Obstacle factor" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
@@ -376,6 +377,9 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   repeatDistance = s.repeatDistance;
   repeatDistanceUnit = s.repeatDistanceUnit;
   repeatDistanceMapUnitScale = s.repeatDistanceMapUnitScale;
+  overrunDistance = s.overrunDistance;
+  overrunDistanceUnit = s.overrunDistanceUnit;
+  overrunDistanceMapUnitScale = s.overrunDistanceMapUnitScale;
 
   // rendering
   scaleVisibility = s.scaleVisibility;
@@ -1046,6 +1050,10 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "repeatDistanceMapUnitScale" ) ) );
   }
 
+  overrunDistance = placementElem.attribute( QStringLiteral( "overrunDistance" ), QStringLiteral( "0" ) ).toDouble();
+  overrunDistanceUnit = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "overrunDistanceUnit" ) ) );
+  overrunDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "overrunDistanceMapUnitScale" ) ) );
+
   geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
   geometryGeneratorType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::PointGeometry );
@@ -1191,6 +1199,9 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "repeatDistance" ), repeatDistance );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceUnits" ), QgsUnitTypes::encodeUnit( repeatDistanceUnit ) );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
+  placementElem.setAttribute( QStringLiteral( "overrunDistance" ), overrunDistance );
+  placementElem.setAttribute( QStringLiteral( "overrunDistanceUnit" ), QgsUnitTypes::encodeUnit( overrunDistanceUnit ) );
+  placementElem.setAttribute( QStringLiteral( "overrunDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( overrunDistanceMapUnitScale ) );
 
   placementElem.setAttribute( QStringLiteral( "geometryGenerator" ), geometryGenerator );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorEnabled" ), geometryGeneratorEnabled );
@@ -2183,6 +2194,19 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
+  // data defined overrun distance
+  context.expressionContext().setOriginalValueVariable( overrunDistance );
+  double overrunDistanceEval = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::OverrunDistance, context.expressionContext(), overrunDistance );
+  if ( !qgsDoubleNear( overrunDistanceEval, 0.0 ) )
+  {
+    overrunDistanceEval = context.convertToMapUnits( overrunDistanceEval, overrunDistanceUnit, overrunDistanceMapUnitScale );
+  }
+
+  // we smooth out the overrun label extensions by 1 mm, to avoid little jaggies right at the start or end of the lines
+  // causing the overrun extension to extend out in an undesirable direction. This is hard coded, we don't want to overload
+  // users with options they likely don't need to see...
+  const double overrunSmoothDist = context.convertToMapUnits( 1, QgsUnitTypes::RenderMillimeters );
+
   //  feature to the layer
   QgsTextLabelFeature *lf = new QgsTextLabelFeature( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
   lf->setFeature( feature );
@@ -2202,6 +2226,8 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setRepeatDistance( repeatDist );
   ( *labelFeature )->setLabelText( labelText );
   ( *labelFeature )->setPermissibleZone( permissibleZone );
+  ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
+  ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   if ( geosObstacleGeomClone )
   {
     ( *labelFeature )->setObstacleGeometry( std::move( geosObstacleGeomClone ) );
