@@ -434,6 +434,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 
+    /**
+     * If the ignoreExtent flag is set, the layer will also render outside the
+     * bounding box reported by the data provider.
+     * To be used for example for WMS layers with labels or symbology that happens
+     * to be drawn outside the data extent.
+     *
+     * \since QGIS 3.10
+     */
+    bool ignoreExtents() const;
 
   public slots:
     void showStatusMessage( const QString &message );

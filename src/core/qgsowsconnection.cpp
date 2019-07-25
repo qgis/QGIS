@@ -127,6 +127,10 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   {
     uri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
   }
+  if ( settings.value( settingsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "IgnoreReportedLayerExtents" ), QStringLiteral( "1" ) );
+  }
   QString dpiMode = settings.value( settingsKey + QStringLiteral( "/dpiMode" ), QStringLiteral( "all" ) ).toString();
   if ( !dpiMode.isEmpty() )
   {

@@ -282,6 +282,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   QString wmsKey = wmsSettingsKey( mBaseKey, mOriginalConnName );
 
   cbxIgnoreGetMapURI->setChecked( settings.value( wmsKey + "/ignoreGetMapURI", false ).toBool() );
+  cbxWmsIgnoreReportedLayerExtents->setChecked( settings.value( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() );
   cbxWfsIgnoreAxisOrientation->setChecked( settings.value( wfsKey + "/ignoreAxisOrientation", false ).toBool() );
   cbxWfsInvertAxisOrientation->setChecked( settings.value( wfsKey + "/invertAxisOrientation", false ).toBool() );
   cbxWmsIgnoreAxisOrientation->setChecked( settings.value( wmsKey + "/ignoreAxisOrientation", false ).toBool() );
@@ -396,6 +397,7 @@ void QgsNewHttpConnection::accept()
     settings.setValue( wmsKey + "/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
     settings.setValue( wmsKey + "/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
 
+    settings.setValue( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), cbxWmsIgnoreReportedLayerExtents->isChecked() );
     settings.setValue( wmsKey + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
     settings.setValue( wmsKey + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
 

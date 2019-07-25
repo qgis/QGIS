@@ -87,6 +87,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
   mIgnoreGetMapUrl = uri.hasParam( QStringLiteral( "IgnoreGetMapUrl" ) );
   mIgnoreGetFeatureInfoUrl = uri.hasParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ) );
+  mIgnoreReportedLayerExtents = uri.hasParam( QStringLiteral( "IgnoreReportedLayerExtents" ) );
   mParserSettings.ignoreAxisOrientation = uri.hasParam( QStringLiteral( "IgnoreAxisOrientation" ) ); // must be before parsing!
   mParserSettings.invertAxisOrientation = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) ); // must be before parsing!
   mSmoothPixmapTransform = uri.hasParam( QStringLiteral( "SmoothPixmapTransform" ) );

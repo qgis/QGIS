@@ -922,6 +922,10 @@ void QgsRasterLayer::computeMinMax( int band,
 
 }
 
+bool QgsRasterLayer::ignoreExtents() const
+{
+  return mDataProvider ? mDataProvider->ignoreExtents() : false;
+}
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
 {
@@ -1892,7 +1896,6 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
-
   return true;
 }
 
