@@ -57,15 +57,14 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( QgsWkbTypes::Type type,
-                QList<QgsWkbTypes::Type>()
-                << QgsWkbTypes::Point
-                << QgsWkbTypes::LineString
-                << QgsWkbTypes::Polygon
-                << QgsWkbTypes::MultiPoint
-                << QgsWkbTypes::MultiLineString
-                << QgsWkbTypes::MultiPolygon
-                << QgsWkbTypes::NoGeometry )
+    static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point
+                                            , QgsWkbTypes::LineString
+                                            , QgsWkbTypes::Polygon
+                                            , QgsWkbTypes::MultiPoint
+                                            , QgsWkbTypes::MultiLineString
+                                            , QgsWkbTypes::MultiPolygon
+                                            , QgsWkbTypes::NoGeometry };
+    for ( QgsWkbTypes::Type type : types )
     {
       cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
@@ -74,7 +73,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
 
   if ( index.column() == QgsPgTableModel::DbtmPkCol )
   {
-    QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
+    const QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
     if ( !values.isEmpty() )
     {
@@ -84,8 +83,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
       QStandardItemModel *model = new QStandardItemModel( values.size(), 1, cb );
 
       int row = 0;
-      const auto constValues = values;
-      for ( const QString &value : constValues )
+      for ( const QString &value : values )
       {
         QStandardItem *item = new QStandardItem( value );
         item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
