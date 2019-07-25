@@ -98,18 +98,20 @@ bool QgsQuickUtils::fileExists( const QString &path )
 
 QString QgsQuickUtils::getRelativePath( const QString &path, const QString &prefixPath )
 {
-  QString resultPath = path;
-  QString prefixPathWithSlash;
-  if ( !prefixPath.endsWith( "/" ) )
-    prefixPathWithSlash = QStringLiteral( "%1/" ).arg( prefixPath );
-  else
-    prefixPathWithSlash = prefixPath;
+  QDir absoluteDir(path);
+  QDir prefixDir(prefixPath);
 
-  if ( resultPath.startsWith( prefixPathWithSlash ) )
-    return resultPath.replace( prefixPathWithSlash, QString() );
-  QString filePrefixPath = QStringLiteral( "file://%1" ).arg( prefixPathWithSlash );
-  if ( resultPath.startsWith( filePrefixPath ) )
-    return resultPath.replace( filePrefixPath, QString() );
+  QString canonicalPath = absoluteDir.canonicalPath();
+  QString prefixCanonicalPath = prefixDir.canonicalPath() + "/";
+
+  if (canonicalPath.startsWith(prefixCanonicalPath)) {
+      return canonicalPath.replace(prefixCanonicalPath, QString());
+  }
+
+  QString filePrefixPath = QStringLiteral( "file://%1" ).arg( prefixCanonicalPath );
+  if ( canonicalPath.startsWith( filePrefixPath ) ) {
+      return canonicalPath.replace( filePrefixPath, QString() );
+  }
 
   return QString();
 }
