@@ -21,6 +21,7 @@
 #include <QPainter>
 
 #include "qgspoint3dbillboardmaterial.h"
+#include "qgsterraintextureimage_p.h"
 
 QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
@@ -125,9 +126,8 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image )
 {
-  // Store it as QgsBillboardTextureImage
-  QgsBillboardTextureImage *billboardTextureImage = new QgsBillboardTextureImage();
-  billboardTextureImage->setImage( &image );
+  QgsRectangle dummyExtent = QgsRectangle( 0, 0, 100, 100 );
+  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, QStringLiteral( "Billboard image" ) );
 
   // Texture2D
   Qt3DRender::QTexture2D *texture2D = new Qt3DRender::QTexture2D;
@@ -139,24 +139,4 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image )
   texture2D->addTextureImage( billboardTextureImage );
 
   setTexture2D( texture2D );
-}
-
-
-void QgsBillboardTextureImage::paint( QPainter *painter )
-{
-  QRect rectangle = QRect( 0, 0, mImage->width(), mImage->height() );
-  painter->drawImage( rectangle, *mImage, rectangle );
-}
-
-void QgsBillboardTextureImage::setImage( QImage *image )
-{
-  mImage = image;
-  setSize( image->size() );
-  QPainter *painter = new QPainter();
-  paint( painter );
-}
-
-QImage *QgsBillboardTextureImage::image()
-{
-  return  mImage;
 }

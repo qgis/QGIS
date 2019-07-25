@@ -48,16 +48,4 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 };
 
 
-class QgsBillboardTextureImage : public Qt3DRender::QPaintedTextureImage
-{
-  public:
-    void paint( QPainter *painter );
-    void setImage( QImage *image );
-    QImage *image();
-
-  private:
-    QImage *mImage = nullptr;
-};
-
-
 #endif // QGSPOINT3DBILLBOARDMATERIAL_H

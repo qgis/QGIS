@@ -565,6 +565,7 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
   QgsSymbol *defaultSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
   QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( defaultSymbol, QSize( 100, 100 ), 0 );
   QImage symbolImage = symbolPixmap.toImage();
+  QgsDebugMsg( symbolImage.format() );
 
   billboardMaterial->setTexture2DFromImage( symbolImage );
 
