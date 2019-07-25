@@ -333,6 +333,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     void copyItem();
 
+    void pasteItem();
+
   private:
     int selectedItemType();
 
@@ -393,7 +395,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     QAction *mActionCopyToDefault = nullptr;
 
-    QAction *mActionCopySymbol = nullptr;
+    QAction *mActionCopyItem = nullptr;
+    QAction *mActionPasteItem = nullptr;
 
     int mBlockGroupUpdates = 0;
 
