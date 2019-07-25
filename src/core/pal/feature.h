@@ -178,6 +178,7 @@ namespace pal
        * Generate candidates for line feature.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
+       * \param allowOverrun set to TRUE to allow labels to overrun features
        * \returns the number of generated candidates
        */
       int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape, bool allowOverrun = false );
@@ -219,6 +220,7 @@ namespace pal
        * Generate curved candidates for line features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
+       * \param allowOverrun set to TRUE to allow labels to overrun features
        * \returns the number of generated candidates
        */
       int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape, bool allowOverrun = false );
