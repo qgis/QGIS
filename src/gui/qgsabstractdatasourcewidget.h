@@ -70,7 +70,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     /**
      * Called when this source select widget is being shown in a "new and clean" dialog.
      *
-     * The data source manager recycles exisiting source select widgets but will call
+     * The data source manager recycles existing source select widgets but will call
      * this method on every reopening.
      * This should clear any selection that has previously been done.
      *
