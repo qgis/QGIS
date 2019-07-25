@@ -272,7 +272,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsPgSourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() ?
+  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addPostgisDC" ), true ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
@@ -386,7 +386,7 @@ void QgsPgSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
 void QgsPgSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() )
+  if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), true ).toBool() )
   {
     addButtonClicked();
   }
