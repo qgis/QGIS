@@ -331,6 +331,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     void copyItemsToDefault();
 
+    void copyItem();
+
   private:
     int selectedItemType();
 
@@ -390,6 +392,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QMenu *mMenuBtnAddItemLabelSettings = nullptr;
 
     QAction *mActionCopyToDefault = nullptr;
+
+    QAction *mActionCopySymbol = nullptr;
 
     int mBlockGroupUpdates = 0;
 

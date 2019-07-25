@@ -41,6 +41,7 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QMenu>
+#include <QClipboard>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -222,6 +223,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mCopyToDefaultButton->hide();
   }
 
+  mActionCopySymbol = new QAction( tr( "Copy Item" ), this );
+  connect( mActionCopySymbol, &QAction::triggered, this, &QgsStyleManagerDialog::copyItem );
+
   shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
   shareMenu->addAction( actnExportAsSVG );
@@ -366,6 +370,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mGroupMenu->addSeparator()->setParent( this );
     mGroupMenu->addAction( actnRemoveItem );
     mGroupMenu->addAction( actnEditItem );
+    mGroupMenu->addAction( mActionCopySymbol );
     mGroupMenu->addSeparator()->setParent( this );
   }
   else
@@ -376,6 +381,8 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     btnAddSmartgroup->setVisible( false );
     btnAddTag->setVisible( false );
     btnManageGroups->setVisible( false );
+
+    mGroupMenu->addAction( mActionCopySymbol );
   }
   if ( mActionCopyToDefault )
   {
@@ -530,6 +537,46 @@ void QgsStyleManagerDialog::copyItemsToDefault()
       mMessageBar->pushSuccess( tr( "Import Items" ), count > 1 ? tr( "Successfully imported %1 items." ).arg( count ) : tr( "Successfully imported item." ) );
     }
   }
+}
+
+void QgsStyleManagerDialog::copyItem()
+{
+  const QList< ItemDetails > items = selectedItems();
+  if ( items.empty() )
+    return;
+
+  ItemDetails details = items.at( 0 );
+  switch ( details.entityType )
+  {
+    case QgsStyle::SymbolEntity:
+    {
+      std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( details.name ) );
+      if ( !symbol )
+        return;
+      QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbol.get() ) );
+      break;
+    }
+
+    case QgsStyle::TextFormatEntity:
+    {
+      const QgsTextFormat format( mStyle->textFormat( details.name ) );
+      QApplication::clipboard()->setMimeData( format.toMimeData() );
+      break;
+    }
+
+    case QgsStyle::LabelSettingsEntity:
+    {
+      const QgsTextFormat format( mStyle->labelSettings( details.name ).format() );
+      QApplication::clipboard()->setMimeData( format.toMimeData() );
+      break;
+    }
+
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+      return;
+
+  };
 }
 
 int QgsStyleManagerDialog::selectedItemType()
@@ -2076,6 +2123,7 @@ void QgsStyleManagerDialog::enableItemsForGroupingMode( bool enable )
   // The actions
   actnRemoveItem->setEnabled( enable );
   actnEditItem->setEnabled( enable );
+  mActionCopySymbol->setEnabled( enable );
 }
 
 void QgsStyleManagerDialog::grouptreeContextMenu( QPoint point )
@@ -2119,6 +2167,9 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
            );
     mGroupListMenu->addAction( a );
   }
+
+  const QList< ItemDetails > items = selectedItems();
+  mActionCopySymbol->setEnabled( !items.isEmpty() && ( items.at( 0 ).entityType != QgsStyle::ColorrampEntity ) );
 
   mGroupMenu->popup( globalPos );
 }
