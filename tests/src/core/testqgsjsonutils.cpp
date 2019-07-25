@@ -124,7 +124,7 @@ void TestQgsJsonUtils::testParseJson()
 
   for ( const auto &testJson : tests )
   {
-    const auto parsed { QgsJsonUtils::parseJson( testJson ) };
+    const auto parsed = QgsJsonUtils::parseJson( testJson );
     QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( parsed ).dump() ), testJson );
   }
 
@@ -195,7 +195,7 @@ void TestQgsJsonUtils::testExportAttributesJson()
   {
     QBENCHMARK
     {
-      const auto json { QgsJsonUtils::exportAttributes( feature, &vl ) };
+      const auto json = QgsJsonUtils::exportAttributes( feature, &vl );
       QCOMPARE( json, QStringLiteral( "{\"fldtxt\":\"a value\",\n\"fldint\":1,\n\"flddbl\":2}" ) );
     }
   }
@@ -220,7 +220,7 @@ void TestQgsJsonUtils::testExportFeatureJson()
 
   const auto j( exporter.exportFeatureToJsonObject( feature ) );
   QCOMPARE( QString::fromStdString( j.dump() ),  expectedJson );
-  const auto json { exporter.exportFeature( feature ) };
+  const auto json = exporter.exportFeature( feature );
   QCOMPARE( json, expectedJson );
 
   QgsJsonExporter exporterPrecision { &vl, 1 };
