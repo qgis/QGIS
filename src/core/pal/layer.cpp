@@ -450,7 +450,6 @@ void Layer::chopFeaturesAtRepeatDistance()
         part.push_back( p );
       }
       // Create final part
-      part.push_back( points[n - 1] );
       GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, part.size(), 2 );
       for ( int i = 0; i < part.size(); ++i )
       {
