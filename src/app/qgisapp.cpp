@@ -1892,6 +1892,10 @@ void QgisApp::dataSourceManager( const QString &pageName )
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::openFile, this, &QgisApp::openFile );
 
   }
+  else
+  {
+    mDataSourceManagerDialog->reset();
+  }
   // Try to open the dialog on a particular page
   if ( ! pageName.isEmpty() )
   {

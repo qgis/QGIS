@@ -89,6 +89,8 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Refresh the browser view
     void refresh();
 
+    void reset();
+
   protected:
     void showEvent( QShowEvent *event ) override;
 

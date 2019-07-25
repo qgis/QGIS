@@ -592,6 +592,11 @@ void QgsWMSSourceSelect::addButtonClicked()
                        QStringLiteral( "wms" ) );
 }
 
+void QgsWMSSourceSelect::reset()
+{
+  lstLayers->clearSelection();
+}
+
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
 {
   QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();

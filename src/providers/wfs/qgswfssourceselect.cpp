@@ -126,6 +126,11 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   delete mBuildQueryButton;
 }
 
+void QgsWFSSourceSelect::reset()
+{
+  treeView->clearSelection();
+}
+
 void QgsWFSSourceSelect::populateConnectionList()
 {
   QStringList keys = QgsWfsConnection::connectionList();

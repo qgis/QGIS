@@ -595,6 +595,11 @@ void QgsPgSourceSelect::columnThreadFinished()
   finishList();
 }
 
+void QgsPgSourceSelect::reset()
+{
+  mTablesTreeView->clearSelection();
+}
+
 QStringList QgsPgSourceSelect::selectedTables()
 {
   return mSelectedTables;
