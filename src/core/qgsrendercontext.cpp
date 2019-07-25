@@ -157,8 +157,10 @@ bool QgsRenderContext::testFlag( QgsRenderContext::Flag flag ) const
 QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSettings )
 {
   QgsRenderContext ctx;
+  QgsRectangle extent = mapSettings.visibleExtent();
+  extent.grow( mapSettings.extentBuffer() );
   ctx.setMapToPixel( mapSettings.mapToPixel() );
-  ctx.setExtent( mapSettings.visibleExtent() );
+  ctx.setExtent( extent );
   ctx.setMapExtent( mapSettings.visibleExtent() );
   ctx.setFlag( DrawEditingInfo, mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
   ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
