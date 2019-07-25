@@ -1991,20 +1991,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxAddPostgisDC">
-                    <property name="text">
-                     <string>Add PostGIS layers with double-click and select in extended mode</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxAddOracleDC">
-                    <property name="text">
-                     <string>Add Oracle layers with double-click and select in extended mode</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="2">
                    <widget class="QComboBox" name="cmbScanZipInBrowser">
                     <property name="currentIndex">
