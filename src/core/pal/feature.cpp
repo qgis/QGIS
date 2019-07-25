@@ -1193,7 +1193,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   }
 
   QLinkedList<LabelPosition *> positions;
-  double delta = std::max( li->label_height, total_distance / mLF->layer()->pal->line_p );
+  double delta = std::max( li->label_height / 6, total_distance / mLF->layer()->pal->line_p );
 
   pal::LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
