@@ -33,6 +33,7 @@
 #include "geomfunction.h"
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
+#include "qgsgeometryutils.h"
 #include <qglobal.h>
 
 using namespace pal;
@@ -534,6 +535,93 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
     }
     delete[] pts;
   }
+}
+
+void PointSet::extendLineByDistance( double startDistance, double endDistance, double smoothDistance )
+{
+  if ( nbPoints < 2 )
+    return;
+
+  double x0 = x[0];
+  double y0 = y[0];
+  if ( startDistance > 0 )
+  {
+    // trace forward by smoothDistance
+    double x1 = x[1];
+    double y1 = y[1];
+
+    double distanceConsumed = 0;
+    double lastX = x0;
+    double lastY = y0;
+    for ( int i = 1; i < nbPoints; ++i )
+    {
+      double thisX = x[i];
+      double thisY = y[i];
+      const double thisSegmentLength = std::sqrt( ( thisX - lastX ) * ( thisX - lastX ) + ( thisY - lastY ) * ( thisY - lastY ) );
+      distanceConsumed += thisSegmentLength;
+      if ( distanceConsumed >= smoothDistance )
+      {
+        double c = ( distanceConsumed - smoothDistance ) / thisSegmentLength;
+        x1 = lastX + c * ( thisX - lastX );
+        y1 = lastY + c * ( thisY - lastY );
+        break;
+      }
+      lastX = thisX;
+      lastY = thisY;
+    }
+
+    const double distance = std::sqrt( ( x1 - x0 ) * ( x1 - x0 ) + ( y1 - y0 ) * ( y1 - y0 ) );
+    const double extensionFactor = ( startDistance + distance ) / distance;
+    const QgsPointXY newStart = QgsGeometryUtils::interpolatePointOnLine( x1, y1, x0, y0, extensionFactor );
+    x0 = newStart.x();
+    y0 = newStart.y();
+    // defer actually changing the stored start until we've calculated the new end point
+  }
+
+  if ( endDistance > 0 )
+  {
+    double xend0 = x[nbPoints - 1];
+    double yend0 = y[nbPoints - 1];
+    double xend1 = x[nbPoints - 2];
+    double yend1 = y[nbPoints - 2];
+
+    // trace backward by smoothDistance
+    double distanceConsumed = 0;
+    double lastX = x0;
+    double lastY = y0;
+    for ( int i = nbPoints - 2; i >= 0; --i )
+    {
+      double thisX = x[i];
+      double thisY = y[i];
+      const double thisSegmentLength = std::sqrt( ( thisX - lastX ) * ( thisX - lastX ) + ( thisY - lastY ) * ( thisY - lastY ) );
+      distanceConsumed += thisSegmentLength;
+      if ( distanceConsumed >= smoothDistance )
+      {
+        double c = ( distanceConsumed - smoothDistance ) / thisSegmentLength;
+        xend1 = lastX + c * ( thisX - lastX );
+        yend1 = lastY + c * ( thisY - lastY );
+        break;
+      }
+      lastX = thisX;
+      lastY = thisY;
+    }
+
+    const double distance = std::sqrt( ( xend1 - xend0 ) * ( xend1 - xend0 ) + ( yend1 - yend0 ) * ( yend1 - yend0 ) );
+    const double extensionFactor = ( endDistance + distance ) / distance;
+    const QgsPointXY newEnd = QgsGeometryUtils::interpolatePointOnLine( xend1, yend1, xend0, yend0, extensionFactor );
+    x.emplace_back( newEnd.x() );
+    y.emplace_back( newEnd.y() );
+    nbPoints++;
+  }
+
+  if ( startDistance > 0 )
+  {
+    x.insert( x.begin(), x0 );
+    y.insert( y.begin(), y0 );
+    nbPoints++;
+  }
+
+  invalidateGeos();
 }
 
 CHullBox *PointSet::compute_chull_bbox()
