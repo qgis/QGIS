@@ -95,13 +95,24 @@ void QgsMapToolCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     QgsPointXY p1, p2;
     match.edgePoints( p1, p2 );
-    std::unique_ptr<QgsLineString> line( new QgsLineString() );
+    if ( mPoints.size() == 4 )
+    {
+      mCircle = QgsCircle().from3Tangents( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), mPoints.at( 3 ), QgsPoint( p1 ), QgsPoint( p2 ) );
+      mTempRubberBand->setGeometry( mCircle.toLineString() );
+      mTempRubberBand->show();
+    }
+    else
+    {
+      std::unique_ptr<QgsLineString> line( new QgsLineString() );
 
-    line->addVertex( mapPoint( p1 ) );
-    line->addVertex( mapPoint( p2 ) );
+      line->addVertex( mapPoint( p1 ) );
+      line->addVertex( mapPoint( p2 ) );
 
-    mTempRubberBand->setGeometry( line.release() );
-    mTempRubberBand->show();
+      mTempRubberBand->setGeometry( line.release() );
+      mTempRubberBand->show();
+
+
+    }
   }
 
 }
