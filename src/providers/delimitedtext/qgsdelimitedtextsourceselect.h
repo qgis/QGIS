@@ -20,10 +20,10 @@
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsdelimitedtextfile.h"
 
 class QButtonGroup;
 class QgisInterface;
-class QgsDelimitedTextFile;
 
 /**
  * \class QgsDelimitedTextSourceSelect
@@ -34,9 +34,6 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
 
   public:
     QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    ~QgsDelimitedTextSourceSelect() override;
-
-    QStringList splitLine( QString line );
 
   private:
     bool loadDelimitedFileDefinition();
@@ -50,10 +47,10 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString &xname, const QString &yname );
 
   private:
-    QgsDelimitedTextFile *mFile = nullptr;
+    std::unique_ptr<QgsDelimitedTextFile> mFile;
     int mExampleRowCount = 20;
     int mBadRowCount = 0;
-    QString mPluginKey;
+    QString mSettingsKey;
     QString mLastFileType;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;

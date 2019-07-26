@@ -63,10 +63,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Constructor
     QgsOWSSourceSelect( const QString &service, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-  public slots:
-
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
+
+    void reset() override;
 
   protected slots:
     //! show whatever error is exposed.

@@ -652,6 +652,11 @@ QString QgsMssqlSourceSelect::connectionInfo()
   return mConnInfo;
 }
 
+void QgsMssqlSourceSelect::reset()
+{
+  mTablesTreeView->clearSelection();
+}
+
 void QgsMssqlSourceSelect::refresh()
 {
   populateConnectionList();
