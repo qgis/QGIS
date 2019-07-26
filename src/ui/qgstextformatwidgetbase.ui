@@ -400,7 +400,7 @@
             <widget class="QWidget" name="callouts">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/mIconSnappingSegment.svg</normaloff>:/images/themes/default/mIconSnappingSegment.svg</iconset>
+               <normaloff>:/images/themes/default/propertyicons/labelcallout.svg</normaloff>:/images/themes/default/propertyicons/labelcallout.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
