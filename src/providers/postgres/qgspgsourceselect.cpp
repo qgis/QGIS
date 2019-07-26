@@ -271,15 +271,13 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsPgSourceSelect::treeWidgetSelectionChanged );
 
-  QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection :
-                                     QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
+  QgsSettings settings;
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
@@ -383,17 +381,9 @@ void QgsPgSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsPgSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsPgSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() )
-  {
-    addButtonClicked();
-  }
-  else
-  {
-    setSql( index );
-  }
+  addButtonClicked();
 }
 
 void QgsPgSourceSelect::mSearchGroupBox_toggled( bool checked )
