@@ -431,7 +431,7 @@ class CORE_EXPORT QgsPalLayerSettings
       Priority = 87,
       PredefinedPositionOrder = 91,
       LinePlacementOptions = 99, //!< Line placement flags
-      OverrunDistance = 102, //!< Distance which labels can extend past the end of linear features
+      OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
 
       // rendering
       ScaleVisibility = 23,
