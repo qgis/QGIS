@@ -342,6 +342,30 @@ void TestQgsCoordinateTransform::transform_data()
       << QgsCoordinateReferenceSystem::fromEpsgId( 3059 )
       << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
       << 27.61113711 << 55.87910378 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 725865.850 << 198519.947 << 0.001;
+  QTest::newRow( "From BNG to WGS84" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 7467023.96 << -5527971.74 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 51.400222 << 0.000025 << 0.4;
+  QTest::newRow( "From BNG to WGS84 (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 51.400222 << 0.000025 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 7467023.96 << -5527971.74 << 22000.0;
+  QTest::newRow( "From WGS84 to BNG (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << 7467023.96 << -5527971.74 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 51.400222 << 0.000025 << 0.4;
+  QTest::newRow( "From WGS84 to BNG" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << 51.400222 << 0.000025 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 7467023.96 << -5527971.74 << 22000.0;
+  QTest::newRow( "From BNG to 3857" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3857 )
+      << 7467023.96 << -5527971.74 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 5721846.47 << 2.78 << 43000.0;
+  QTest::newRow( "From BNG to 3857 (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 27700 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3857 )
+      << 5721846.47 << 2.78 << static_cast< int >( QgsCoordinateTransform::ReverseTransform )  << 7467023.96 << -5527971.74 << 22000.0;
 }
 
 void TestQgsCoordinateTransform::transform()
