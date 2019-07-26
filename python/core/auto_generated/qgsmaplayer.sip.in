@@ -1653,11 +1653,6 @@ Sets error message
 
 
 
-    bool hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const;
-%Docstring
-Checks whether a new set of dependencies will introduce a cycle
-%End
-
 
 
 

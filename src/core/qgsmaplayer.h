@@ -1499,9 +1499,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! List of layers that may modify this layer on modification
     QSet<QgsMapLayerDependency> mDependencies;
 
-    //! Checks whether a new set of dependencies will introduce a cycle
-    bool hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const;
-
     bool mIsRefreshOnNofifyEnabled = false;
     QString mRefreshOnNofifyMessage;
 
@@ -1585,7 +1582,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString mOriginalXmlProperties;
 
-
+    //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
+    bool mRepaintRequestedFired = false;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )

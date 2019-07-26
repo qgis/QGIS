@@ -30,6 +30,7 @@ from qgis.core import (QgsProject,
 from qgis.testing import start_app, unittest
 
 from qgis.PyQt.QtCore import QSize, QPoint
+from qgis.PyQt.QtTest import QSignalSpy
 
 import tempfile
 
@@ -175,11 +176,79 @@ class TestLayerDependencies(unittest.TestCase):
         self.pointsLayer.setDependencies([])
         self.pointsLayer2.setDependencies([])
 
-    def test_cycleDetection(self):
+    def test_circularDependencies_with_2_layers(self):
+
+        spy_points_data_changed = QSignalSpy(self.pointsLayer.dataChanged)
+        spy_lines_data_changed = QSignalSpy(self.linesLayer.dataChanged)
+        spy_points_repaint_requested = QSignalSpy(self.pointsLayer.repaintRequested)
+        spy_lines_repaint_requested = QSignalSpy(self.linesLayer.repaintRequested)
+
+        # only points fire dataChanged because we change its dependencies
         self.assertTrue(self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())]))
-        self.assertFalse(self.linesLayer.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())]))
-        self.pointsLayer.setDependencies([])
-        self.linesLayer.setDependencies([])
+        self.assertEqual(len(spy_points_data_changed), 1)
+        self.assertEqual(len(spy_lines_data_changed), 0)
+
+        # lines fire dataChanged because we changes its dependencies
+        # points fire dataChanged because it depends on line
+        self.assertTrue(self.linesLayer.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())]))
+        self.assertEqual(len(spy_points_data_changed), 2)
+        self.assertEqual(len(spy_lines_data_changed), 1)
+
+        f = QgsFeature(self.pointsLayer.fields())
+        f.setId(1)
+        geom = QgsGeometry.fromWkt("POINT(0 0)")
+        f.setGeometry(geom)
+        self.pointsLayer.startEditing()
+
+        # new point fire featureAdded so dependening line fire dataChanged
+        # point depends on line, so fire dataChanged
+        self.pointsLayer.addFeatures([f])
+        self.assertEqual(len(spy_points_data_changed), 3)
+        self.assertEqual(len(spy_lines_data_changed), 2)
+
+        # added feature is deleted and added with its new defined id
+        # (it was -1 before) so it fires 2 more signal dataChanged on
+        # depending line (on featureAdded and on featureDeleted)
+        # and so 2 more signal on points because it depends on line
+        self.pointsLayer.commitChanges()
+        self.assertEqual(len(spy_points_data_changed), 5)
+        self.assertEqual(len(spy_lines_data_changed), 4)
+
+        # repaintRequested is called on commit changes on point
+        # so it is on depending line
+        self.assertEqual(len(spy_lines_repaint_requested), 1)
+        self.assertEqual(len(spy_points_repaint_requested), 1)
+
+    def test_circularDependencies_with_1_layer(self):
+
+        # You can define a layer dependent on it self (for instance, a line
+        # layer that trigger connected lines modifications when you modify
+        # one line)
+        spy_lines_data_changed = QSignalSpy(self.linesLayer.dataChanged)
+        spy_lines_repaint_requested = QSignalSpy(self.linesLayer.repaintRequested)
+
+        # line fire dataChanged because we change its dependencies
+        self.assertTrue(self.linesLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())]))
+        self.assertEqual(len(spy_lines_data_changed), 1)
+
+        f = QgsFeature(self.linesLayer.fields())
+        f.setId(1)
+        geom = QgsGeometry.fromWkt("LINESTRING(0 0,1 1)")
+        f.setGeometry(geom)
+        self.linesLayer.startEditing()
+
+        # line fire featureAdded so dependening line fire dataChanged once more
+        self.pointsLayer.addFeatures([f])
+        self.assertEqual(len(spy_lines_data_changed), 2)
+
+        # added feature is deleted and added with its new defined id
+        # (it was -1 before) so it fires 2 more signal dataChanged on
+        # depending line (on featureAdded and on featureDeleted)
+        self.pointsLayer.commitChanges()
+        self.assertEqual(len(spy_lines_data_changed), 4)
+
+        # repaintRequested is called only once on commit changes on line
+        self.assertEqual(len(spy_lines_repaint_requested), 1)
 
     def test_layerDefinitionRewriteId(self):
         tmpfile = os.path.join(tempfile.tempdir, "test.qlr")
