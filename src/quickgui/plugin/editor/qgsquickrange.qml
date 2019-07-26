@@ -22,7 +22,7 @@ Item {
   signal valueChanged(var value, bool isNull)
 
   property real customMargin: 10 * QgsQuick.Utils.dp
-  property string widgetStyle: config["Style"] ? config["Style"] : "SpinBox" // Slider
+  property string widgetStyle: config["Style"] ? config["Style"] : "SpinBox"
   property int precision: config["Precision"]
   property real from: config["Min"]
   property real to: config["Max"]
@@ -73,9 +73,9 @@ Item {
       visible: fieldItem.widgetStyle === "SpinBox"
 
       onValueChanged: {
-         if (visible) {
-           fieldItem.valueChanged(spinbox.value / multiplier, false)
-         }
+        if (visible) {
+          fieldItem.valueChanged(spinbox.value / multiplier, false)
+        }
       }
 
       validator: DoubleValidator {
