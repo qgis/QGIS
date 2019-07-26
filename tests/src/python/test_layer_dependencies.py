@@ -176,7 +176,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.pointsLayer.setDependencies([])
         self.pointsLayer2.setDependencies([])
 
-    def test_circularDependencies_with_2_layers(self):
+    def test_circular_dependencies_with_2_layers(self):
 
         spy_points_data_changed = QSignalSpy(self.pointsLayer.dataChanged)
         spy_lines_data_changed = QSignalSpy(self.linesLayer.dataChanged)
@@ -219,7 +219,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.assertEqual(len(spy_lines_repaint_requested), 1)
         self.assertEqual(len(spy_points_repaint_requested), 1)
 
-    def test_circularDependencies_with_1_layer(self):
+    def test_circular_dependencies_with_1_layer(self):
 
         # You can define a layer dependent on it self (for instance, a line
         # layer that trigger connected lines modifications when you modify
@@ -237,14 +237,14 @@ class TestLayerDependencies(unittest.TestCase):
         f.setGeometry(geom)
         self.linesLayer.startEditing()
 
-        # line fire featureAdded so dependening line fire dataChanged once more
-        self.pointsLayer.addFeatures([f])
+        # line fire featureAdded so depending line fire dataChanged once more
+        self.linesLayer.addFeatures([f])
         self.assertEqual(len(spy_lines_data_changed), 2)
 
         # added feature is deleted and added with its new defined id
         # (it was -1 before) so it fires 2 more signal dataChanged on
         # depending line (on featureAdded and on featureDeleted)
-        self.pointsLayer.commitChanges()
+        self.linesLayer.commitChanges()
         self.assertEqual(len(spy_lines_data_changed), 4)
 
         # repaintRequested is called only once on commit changes on line
