@@ -313,7 +313,7 @@ void QgsMssqlSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsMssqlSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsMssqlSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
 {
   addButtonClicked();
 }

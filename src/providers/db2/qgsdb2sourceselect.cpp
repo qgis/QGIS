@@ -314,7 +314,7 @@ void QgsDb2SourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
 {
   addButtonClicked();
 }
