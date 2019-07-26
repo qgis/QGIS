@@ -226,6 +226,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
+  QgsSettings settings;
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
@@ -344,7 +345,7 @@ void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex & )
 {
   addButtonClicked();
 }
