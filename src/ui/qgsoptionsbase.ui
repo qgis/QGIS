@@ -5238,7 +5238,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </spacer>
                   </item>
                   <item row="2" column="0" colspan="5">
-                   <widget class="QListWidget" name="mExcludeUrlListWidget"/>
+                   <widget class="QListWidget" name="mNoProxyUrlListWidget"/>
                   </item>
                  </layout>
                 </widget>
@@ -5757,7 +5757,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>leProxyPort</tabstop>
   <tabstop>mAddUrlPushButton</tabstop>
   <tabstop>mRemoveUrlPushButton</tabstop>
-  <tabstop>mExcludeUrlListWidget</tabstop>
+  <tabstop>mNoProxyUrlListWidget</tabstop>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
   <tabstop>mGPUEnableCheckBox</tabstop>
   <tabstop>mOpenClDevicesCombo</tabstop>
