@@ -206,10 +206,7 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mConditionalStyles;
 
   if ( mFeatureCounter )
-  {
     mFeatureCounter->cancel();
-  }
-
 }
 
 QgsVectorLayer *QgsVectorLayer::clone() const
