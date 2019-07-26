@@ -571,12 +571,29 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QString ellipsoidAcronym() const;
 
+    //! WKT formatting variants, only used for builds based on Proj >= 6
+    enum WktVariant
+    {
+      WKT1_GDAL, //!< WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
+      WKT1_ESRI, //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
+      WKT2_2015, //!< Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
+      WKT2_2015_SIMPLIFIED, //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
+      WKT2_2018, //!< Full WKT2 string, conforming to ISO 19162:2018 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2018 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+      WKT2_2018_SIMPLIFIED, //!< WKT2_2018 with the simplification rule of WKT2_SIMPLIFIED
+    };
+
     /**
      * Returns a WKT representation of this CRS.
-     * \returns string containing WKT of the CRS
+     *
+     * The \a variant argument specifies the formatting variant to use when creating the WKT string. This is
+     * only used on builds based on Proj >= 6, with earlier versions always using WKT1_GDAL.
+     *
+     * If \a multiline is TRUE then a formatted multiline string will be returned, using the specified \a indentationWidth.
+     * This is only used on builds based on Proj >= 6.
+     *
      * \see toProj4()
      */
-    QString toWkt() const;
+    QString toWkt( WktVariant variant = WKT1_GDAL, bool multiline = false, int indentationWidth = 4 ) const;
 
     /**
      * Returns a Proj4 string representation of this CRS.
