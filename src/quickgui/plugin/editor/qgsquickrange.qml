@@ -21,8 +21,14 @@ import QgsQuick 0.1 as QgsQuick
 Item {
   signal valueChanged(var value, bool isNull)
 
-  property var currentValue: value
   property real customMargin: 10 * QgsQuick.Utils.dp
+  property string widgetStyle: config["Style"] ? config["Style"] : "SpinBox" // Slider
+  property int precision: config["Precision"]
+  property real from: config["Min"]
+  property real to: config["Max"]
+  property real step: config["Step"] ? config["Step"] : 1
+  property var locale: Qt.locale()
+  property string suffix: config["Suffix"] ? config["Suffix"] : ""
 
   id: fieldItem
   enabled: !readOnly
@@ -49,12 +55,78 @@ Item {
     anchors.rightMargin: fieldItem.customMargin
     anchors.leftMargin: fieldItem.customMargin
 
+    // SpinBox
+    SpinBox {
+      property int multiplier: fieldItem.precision === 0 ? 1 : Math.pow(10, spinbox.precision)
+      property int precision: fieldItem.precision
+      property int intValue: fieldItem.parent.value * multiplier
+
+      id: spinbox
+      locale: fieldItem.locale
+      from: fieldItem.from
+      value: intValue
+      to: fieldItem.to * multiplier
+      stepSize: fieldItem.step * multiplier
+      width: parent.width
+      height: parent.height
+      editable: true
+      visible: fieldItem.widgetStyle === "SpinBox"
+
+      onValueChanged: {
+         if (visible) {
+           fieldItem.valueChanged(spinbox.value / multiplier, false)
+         }
+      }
+
+      validator: DoubleValidator {
+        bottom: Math.min(spinbox.from, spinbox.to)
+        top:  Math.max(spinbox.from, spinbox.to)
+        decimals: spinbox.precision
+        locale: spinbox.locale.name
+      }
+
+      textFromValue: function(value, locale) {
+        try {
+          return Number(value / multiplier).toLocaleString(spinbox.locale, 'f', spinbox.precision) + fieldItem.suffix
+        } catch(error) {
+          return spinbox.textFromValue(spinbox.value, spinbox.locale)
+        }
+      }
+
+      valueFromText: function(text, locale) {
+        if (fieldItem.suffix) {
+          text = text.replace(suffix, "")
+        }
+        try {
+          return Number.fromLocaleString(spinbox.locale, text) * multiplier
+        } catch (error) {
+          return spinbox.value
+        }
+      }
+
+      contentItem: TextInput {
+        z: 2
+        text: spinbox.textFromValue(spinbox.value, spinbox.locale)
+        font.pixelSize: customStyle.fields.fontPixelSize
+        color: customStyle.fields.fontColor
+        selectionColor: customStyle.fields.fontColor
+        selectedTextColor: "#ffffff"
+        horizontalAlignment: Qt.AlignHCenter
+        verticalAlignment: Qt.AlignVCenter
+        readOnly: !spinbox.editable
+        validator: spinbox.validator
+        inputMethodHints: Qt.ImhFormattedNumbersOnly
+      }
+    }
+
+    // Slider
     Text {
       id: valueLabel
+      visible: fieldItem.widgetStyle === "Slider"
       width: rowLayout.width/3
       height: fieldItem.height
       elide: Text.ElideRight
-      text: Number(control.value).toFixed(config["Precision"]).toLocaleString(Qt.locale())
+      text: Number(slider.value).toFixed(precision).toLocaleString(fieldItem.locale) + fieldItem.suffix
       verticalAlignment: Text.AlignVCenter
       horizontalAlignment: Text.AlignLeft
       font.pixelSize: customStyle.fields.fontPixelSize
@@ -64,25 +136,28 @@ Item {
     }
 
     Slider {
-      id: control
-      value: fieldItem.currentValue
+      id: slider
+      visible: fieldItem.widgetStyle === "Slider"
+      value: fieldItem.parent.value
       width: parent.width - valueLabel.width
       height: fieldItem.height
       implicitWidth: width
-      from: config["Min"]
-      to: config["Max"]
-      stepSize: config["Step"] ? config["Step"] : 1
+      from: fieldItem.from
+      to: fieldItem.to
+      stepSize: fieldItem.step
 
       onValueChanged: {
-        fieldItem.valueChanged(control.value, false)
+        if (visible) {
+          fieldItem.valueChanged(slider.value, false)
+        }
       }
 
       background: Rectangle {
-        x: control.leftPadding
-        y: control.topPadding + control.availableHeight / 2 - height / 2
-        implicitWidth: control.width
-        implicitHeight: control.height * 0.1
-        width: control.availableWidth
+        x: slider.leftPadding
+        y: slider.topPadding + slider.availableHeight / 2 - height / 2
+        implicitWidth: slider.width
+        implicitHeight: slider.height * 0.1
+        width: slider.availableWidth
         height: implicitHeight
         radius: 2 * QgsQuick.Utils.dp
         color:  fieldItem.enabled ? customStyle.fields.fontColor : customStyle.fields.backgroundColorInactive
