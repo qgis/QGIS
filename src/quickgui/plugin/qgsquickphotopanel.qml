@@ -24,9 +24,7 @@ import QgsQuick 0.1 as QgsQuick
 Drawer {
   // Capture path
   property var targetDir
-  // Path to project
-  property var homePath
-  // Along with lastPhotName creates an absolute path to a photo. Its either project path or defaultRoot.
+  // Along with lastPhotoName creates an absolute path to a photo. Its either project path or defaultRoot.
   property var prefixToRelativePath
   property var lastPhotoName
   property int iconSize: photoPanel.width/20

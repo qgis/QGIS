@@ -66,7 +66,7 @@ Item {
         /**
           * Called when clicked on the OK icon after taking a photo with the Photo panel.
           * \param itemWidget editorWidget for modified field to send valueChanged signal.
-          * \param prefixToRelativePath Absolute path to the image extracted by current value.
+          * \param prefixToRelativePath Together with the value creates absolute path
           * \param value Relative path of taken photo.
           */
         property var confirmImage: function confirmImage(itemWidget, prefixToRelativePath, value) {

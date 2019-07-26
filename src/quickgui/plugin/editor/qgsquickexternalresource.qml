@@ -39,9 +39,16 @@ Item {
   /**
    * 0 - Relative path disabled
    * 1 - Relative path to project
-   * 2 - Relative path to defualtRoot (targetDir)
+   * 2 - Relative path to defaultRoot defined in the config - Default path field in the widget configuration form
    */
   property int relativeStorageMode: config["RelativeStorage"]
+
+  /**
+   * This evaluates the "default path" with the following order:
+   * 1. evaluate default path expression if defined,
+   * 2. use default path value if not empty,
+   * 3. use project home folder
+   */
   property string targetDir: {
     var expression = undefined
     var collection = config["PropertyCollection"]
@@ -59,7 +66,16 @@ Item {
       config["DefaultRoot"] ? config["DefaultRoot"] : homePath
     }
   }
-  property string prefixToRelativePath: relativeStorageMode === 2 ? targetDir : homePath
+  property string prefixToRelativePath: {
+    if (relativeStorageMode === 1 ) {
+      return homePath
+    } else if (relativeStorageMode === 2 ) {
+      return targetDir
+    }
+
+    // Prefix for absolute paths is empty
+    return ""
+  }
   // Meant to be use with the save callback - stores image source
   property string sourceToDelete
 
@@ -92,11 +108,11 @@ Item {
   ]
 
   Loader {
-    id: photoCaptuePanelLoader
+    id: photoCapturePanelLoader
   }
 
   Connections {
-    target: photoCaptuePanelLoader.item
+    target: photoCapturePanelLoader.item
     onConfirmButtonClicked: externalResourceHandler.confirmImage(fieldItem, path, filename)
   }
 
@@ -212,20 +228,20 @@ Item {
         MouseArea {
           anchors.fill: parent
           onClicked: {
-            var photoCapturePanel = photoCaptuePanelLoader.item
-            if (!photoCaptuePanelLoader.item) {
+            var photoCapturePanel = photoCapturePanelLoader.item
+            if (!photoCapturePanelLoader.item) {
               // Load the photo capture panel if not loaded yet
-              photoCaptuePanelLoader.setSource("qgsquickphotopanel.qml")
-              photoCaptuePanelLoader.item.height = window.height
-              photoCaptuePanelLoader.item.width = window.width
-              photoCaptuePanelLoader.item.edge = Qt.RightEdge
-              photoCaptuePanelLoader.item.imageButtonSize = fieldItem.iconSize
+              photoCapturePanelLoader.setSource("qgsquickphotopanel.qml")
+              photoCapturePanelLoader.item.height = window.height
+              photoCapturePanelLoader.item.width = window.width
+              photoCapturePanelLoader.item.edge = Qt.RightEdge
+              photoCapturePanelLoader.item.imageButtonSize = fieldItem.iconSize
             }
-            photoCaptuePanelLoader.item.visible = true
-            photoCaptuePanelLoader.item.targetDir = targetDir
-            photoCaptuePanelLoader.item.homePath = homePath
-            photoCaptuePanelLoader.item.prefixToRelativePath = prefixToRelativePath
-            photoCaptuePanelLoader.item.fieldItem = fieldItem
+            photoCapturePanelLoader.item.visible = true
+            photoCapturePanelLoader.item.targetDir = targetDir
+            photoCapturePanelLoader.item.homePath = homePath
+            photoCapturePanelLoader.item.prefixToRelativePath = prefixToRelativePath
+            photoCapturePanelLoader.item.fieldItem = fieldItem
           }
         }
       }
