@@ -199,7 +199,7 @@ run( "git tag $ltrtag -m 'Long term release $release'", "ltr tag failed" ) if $d
 
 print "Producing archive...\n";
 run( "git archive --format tar --prefix=qgis-$version/ $reltag | bzip2 -c >qgis-$version.tar.bz2", "git archive failed" );
-run( "md5sum qgis-$version.tar.bz2 >qgis-$version.tar.bz2.md5", "md5sum failed" );
+run( "sha256sum qgis-$version.tar.bz2 >qgis-$version.tar.bz2.sha256", "sha256sum failed" );
 
 my @topush;
 unless( $dopoint ) {
