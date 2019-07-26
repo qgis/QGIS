@@ -184,9 +184,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDb2SourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection :
-                                     QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
 
   //for Qt < 4.3.2, passing -1 to include all model columns
@@ -318,15 +316,7 @@ void QgsDb2SourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
 
 void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() )
-  {
-    addButtonClicked();
-  }
-  else
-  {
-    setSql( index );
-  }
+  addButtonClicked();
 }
 
 void QgsDb2SourceSelect::mSearchGroupBox_toggled( bool checked )
