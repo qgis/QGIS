@@ -2457,8 +2457,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
   private slots:
     void invalidateSymbolCountedFlag();
-    void onFeatureCounterCompleted();
-    void onFeatureCounterTerminated();
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
@@ -2603,9 +2601,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     // Features in renderer classes counted
     bool mSymbolFeatureCounted = false;
-
-    // Feature counts for each renderer legend key
-    QHash<QString, long> mSymbolFeatureCountMap;
 
     //! True while an undo command is active
     bool mEditCommandActive = false;
