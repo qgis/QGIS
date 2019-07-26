@@ -1737,18 +1737,45 @@ bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSyste
   return  !( *this == srs );
 }
 
-QString QgsCoordinateReferenceSystem::toWkt() const
+QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline, int indentationWidth ) const
 {
   if ( d->mWkt.isEmpty() )
   {
 #if PROJ_VERSION_MAJOR>=6
-    // TODO QGIS 4.0 - upgrade to wkt2 (this would be an API break).
     if ( d->mPj )
     {
-      const char *const options[] = {"MULTILINE=NO", "INDENTATION_WIDTH=0", nullptr};
-      d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), PJ_WKT1_GDAL, options ) );
+      PJ_WKT_TYPE type;
+      switch ( variant )
+      {
+        case WKT1_GDAL:
+          type = PJ_WKT1_GDAL;
+          break;
+        case WKT1_ESRI:
+          type = PJ_WKT1_ESRI;
+          break;
+        case WKT2_2015:
+          type = PJ_WKT2_2015;
+          break;
+        case WKT2_2015_SIMPLIFIED:
+          type = PJ_WKT2_2015_SIMPLIFIED;
+          break;
+        case WKT2_2018:
+          type = PJ_WKT2_2018;
+          break;
+        case WKT2_2018_SIMPLIFIED:
+          type = PJ_WKT2_2018_SIMPLIFIED;
+          break;
+      }
+
+      const QString multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) );
+      const QString indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) );
+      const char *const options[] = {multiLineOption.toLocal8Bit().constData(), indentatationWidthOption.toLocal8Bit().constData(), nullptr};
+      d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
     }
 #else
+    Q_UNUSED( variant )
+    Q_UNUSED( multiline )
+    Q_UNUSED( indentationWidth )
     char *wkt = nullptr;
     if ( OSRExportToWkt( d->mCRS, &wkt ) == OGRERR_NONE )
     {
