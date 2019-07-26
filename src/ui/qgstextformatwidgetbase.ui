@@ -355,7 +355,7 @@
             <widget class="QWidget" name="textTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/mIconFieldText.svg</normaloff>:/images/themes/default/mIconFieldText.svg</iconset>
+               <normaloff>:/images/themes/default/propertyicons/labeltext.svg</normaloff>:/images/themes/default/propertyicons/labeltext.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -555,7 +555,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/mIconSnappingSegment.svg</normaloff>:/images/themes/default/mIconSnappingSegment.svg</iconset>
+                   <normaloff>:/images/themes/default/propertyicons/labelcallout.svg</normaloff>:/images/themes/default/propertyicons/labelcallout.svg</iconset>
                  </property>
                 </item>
                 <item>
