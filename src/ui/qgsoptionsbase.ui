@@ -1793,6 +1793,24 @@
                  </layout>
                 </widget>
                </item>
+               <item row="5" column="0">
+                <widget class="QGroupBox" name="mOverrideDefaultEllipsoid">
+                 <property name="toolTip">
+                  <string>If the default ellipsoid is disabled, the project will take the ellipsoid imposed by the project CRS.</string>
+                 </property>
+                 <property name="title">
+                  <string>Default Ellipsoid for Measurement</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_30">
+                  <item row="0" column="0">
+                   <widget class="QComboBox" name="mEllipsoidComboBox"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
               </layout>
              </widget>
             </widget>

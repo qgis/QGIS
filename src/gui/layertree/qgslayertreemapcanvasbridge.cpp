@@ -115,8 +115,11 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     switch ( projectCrsBehavior )
     {
       case QgsGui::UseCrsOfFirstLayerAdded:
-        QgsProject::instance()->setCrs( mFirstCRS, true );
+      {
+        const bool ellipsoidFollowProjectCrs = QgsSettings().value( QStringLiteral( "/qgis/measure/followProjectCrs" ), true ).toBool();
+        QgsProject::instance()->setCrs( mFirstCRS, ellipsoidFollowProjectCrs );
         break;
+      }
 
       case QgsGui::UsePresetCrs:
         break;

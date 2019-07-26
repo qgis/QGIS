@@ -5514,7 +5514,10 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set project CRS
   const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString() );
   // write the projections _proj string_ to project settings
-  prj->setCrs( srs, true );
+  const bool ellipsoidFollowProjectCrs = settings.value( QStringLiteral( "/qgis/measure/followProjectCrs" ), true ).toBool();
+  prj->setCrs( srs, ellipsoidFollowProjectCrs );
+  if ( !ellipsoidFollowProjectCrs )
+    prj->setEllipsoid( settings.value( QStringLiteral( "/qgis/measure/defaultCrs" ), GEO_NONE ).toString() );
 
   /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */

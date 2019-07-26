@@ -2393,8 +2393,7 @@ void QgsProjectProperties::populateEllipsoidList()
   }
   // Add all items to selector
 
-  const auto constMEllipsoidList = mEllipsoidList;
-  for ( const EllipsoidDefs &i : constMEllipsoidList )
+  for ( const EllipsoidDefs &i : qgis::as_const( mEllipsoidList ) )
   {
     cmbEllipsoid->addItem( i.description );
   }

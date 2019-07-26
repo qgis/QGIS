@@ -83,6 +83,9 @@
 
 #include "qgsconfig.h"
 
+// TODO Move to generic place
+const char *QgsOptions::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
+
 /**
  * \class QgsOptions - Set user options and preferences
  * Constructor
@@ -556,6 +559,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   {
     mKeepBaseUnitCheckBox->setChecked( false );
   }
+  initEllipsoidList();
+  mOverrideDefaultEllipsoid->setChecked( !mSettings->value( QStringLiteral( "/qgis/measure/followProjectCrs" ), true ).toBool() );
+  const QString defaultEllipsoid = mSettings->value( QStringLiteral( "/qgis/measure/defaultCrs" ), GEO_NONE ).toString();
+  mEllipsoidComboBox->setCurrentIndex( mEllipsoidComboBox->findData( defaultEllipsoid ) );
 
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( mSettings->value( QStringLiteral( "qgis/iconSize" ), QGIS_ICON_SIZE ).toString() ) );
 
@@ -1579,6 +1586,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), mShowDatumTransformDialogCheckBox->isChecked(), QgsSettings::App );
 
   //measurement settings
+  mSettings->setValue( QStringLiteral( "/qgis/measure/followProjectCrs" ), ! mOverrideDefaultEllipsoid->isChecked() );
+  mSettings->setValue( QStringLiteral( "/qgis/measure/defaultCrs" ), mEllipsoidComboBox->currentData().toString() );
 
   QgsUnitTypes::DistanceUnit distanceUnit = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( distanceUnit ) );
@@ -1901,6 +1910,17 @@ QStringList QgsOptions::i18nList()
     myList << myFileName.remove( QStringLiteral( "qgis_" ) ).remove( QStringLiteral( ".qm" ) );
   }
   return myList;
+}
+
+void QgsOptions::initEllipsoidList()
+{
+  mEllipsoidComboBox->addItem( tr( GEO_NONE_DESC ), GEO_NONE );
+
+  const auto definitions {QgsEllipsoidUtils::definitions()};
+  for ( const QgsEllipsoidUtils::EllipsoidDefinition &def : definitions )
+  {
+    mEllipsoidComboBox->addItem( def.description, def.acronym );
+  }
 }
 
 void QgsOptions::restoreDefaultWindowState()
