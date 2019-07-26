@@ -208,7 +208,6 @@ QgsVectorLayer::~QgsVectorLayer()
   if ( mFeatureCounter )
   {
     mFeatureCounter->cancel();
-    delete mFeatureCounter;
   }
 
 }
