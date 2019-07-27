@@ -2208,11 +2208,14 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // users with options they likely don't need to see...
   const double overrunSmoothDist = context.convertToMapUnits( 1, QgsUnitTypes::RenderMillimeters );
 
-  bool labelAll = labelPerPart;
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LabelAllParts ) )
+  bool labelAll = labelPerPart && !dataDefinedPosition;
+  if ( !dataDefinedPosition )
   {
-    context.expressionContext().setOriginalValueVariable( labelPerPart );
-    labelAll = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::LabelAllParts, context.expressionContext(), labelPerPart );
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LabelAllParts ) )
+    {
+      context.expressionContext().setOriginalValueVariable( labelPerPart );
+      labelAll = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::LabelAllParts, context.expressionContext(), labelPerPart );
+    }
   }
 
   //  feature to the layer
