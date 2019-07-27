@@ -20,8 +20,11 @@
 #include <Qt3DRender/QEffect>
 #include <QPainter>
 
+#include "qgslogger.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsterraintextureimage_p.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgssymbollayerutils.h"
 
 QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
@@ -126,17 +129,41 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image )
 {
-  QgsRectangle dummyExtent = QgsRectangle( 0, 0, 100, 100 );
+  // Create texture image
+  QgsRectangle dummyExtent = QgsRectangle( 0 );
   QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, QStringLiteral( "Billboard image" ) );
 
-  // Texture2D
-  Qt3DRender::QTexture2D *texture2D = new Qt3DRender::QTexture2D;
-  texture2D->setGenerateMipMaps( false );
-  texture2D->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture2D->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-  // check the format of texture
+  // Create texture 2D from the texture image
+  Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
+  texture->setGenerateMipMaps( false );
+  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+  texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+//  texture->setSize(image.size().width(), image.size().height());
+  texture->addTextureImage( billboardTextureImage );
 
-  texture2D->addTextureImage( billboardTextureImage );
+  // Set texture 2D
+  setTexture2D( texture );
+}
 
-  setTexture2D( texture2D );
+void QgsPoint3DBillboardMaterial::useDefaultSymbol()
+{
+  // Default texture
+  QgsMarkerSymbol *defaultSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  defaultSymbol->setSizeUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  defaultSymbol->setSize( 20 );
+
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( defaultSymbol, QSize( int( defaultSymbol->size() ) + 5, int( defaultSymbol->size() ) + 5 ), 0 );
+  QImage symbolImage = symbolPixmap.toImage();
+
+  symbolImage.save( QStringLiteral( "/home/ismailsunni/dev/cpp/symbolImage.png" ) );
+
+  // Probably not needed
+//    QgsDebugMsg( QStringLiteral("Default symbol format: %1").arg( symbolImage.format() ));
+//    symbolImage = symbolImage.convertToFormat(QImage::Format::Format_ARGB32);
+
+//    symbolImage.save(QStringLiteral("/home/ismailsunni/dev/cpp/convertedSymbolImage.png"));
+  QgsDebugMsg( QStringLiteral( "Converted default symbol format: %1" ).arg( symbolImage.format() ) );
+
+  setTexture2DFromImage( symbolImage );
+
 }

@@ -560,14 +560,7 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
 
   // Billboard Material
   QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
-
-  // Default texture
-  QgsSymbol *defaultSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
-  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( defaultSymbol, QSize( 100, 100 ), 0 );
-  QImage symbolImage = symbolPixmap.toImage();
-  QgsDebugMsg( symbolImage.format() );
-
-  billboardMaterial->setTexture2DFromImage( symbolImage );
+  billboardMaterial->useDefaultSymbol();
 
   // Billboard Transform
   Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();

@@ -41,6 +41,8 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     void setTexture2DFromImage( QImage image );
 
+    void useDefaultSymbol();
+
   private:
     Qt3DRender::QParameter *mSize = nullptr;
     Qt3DRender::QParameter *mViewportSize = nullptr;
