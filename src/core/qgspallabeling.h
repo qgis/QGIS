@@ -432,6 +432,7 @@ class CORE_EXPORT QgsPalLayerSettings
       PredefinedPositionOrder = 91,
       LinePlacementOptions = 99, //!< Line placement flags
       OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
+      LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
 
       // rendering
       ScaleVisibility = 23,

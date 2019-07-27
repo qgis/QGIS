@@ -71,6 +71,7 @@ class TestQgsLabelingEngine : public QObject
     void pointsetExtend();
     void curvedOverrun();
     void parallelOverrun();
+    void testDataDefinedLabelAllParts();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -2134,6 +2135,64 @@ void TestQgsLabelingEngine::parallelOverrun()
 
   img = job3.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_curved_no_overrun" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testDataDefinedLabelAllParts()
+{
+  // test a small line with curved labels allows overruns when specified
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.labelPerPart = false;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190080 5000000, 190084 5000000 )" ) ).buffer( 10, 5 ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  f.setAttributes( QgsAttributes() << 2 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190080 5000060, 190084 5000060 )" ) ).buffer( 10, 5 ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\" = 2" ) ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( 190000, 5000000, 190200, 5000010 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  //engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_datadefined_label_all_parts" ), img, 20 ) );
+
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

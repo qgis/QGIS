@@ -133,9 +133,6 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
                               flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
                               flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
 
-  // set label mode (label per feature is the default)
-  l->setLabelMode( flags.testFlag( QgsAbstractLabelProvider::LabelPerFeaturePart ) ? pal::Layer::LabelPerFeaturePart : pal::Layer::LabelPerFeature );
-
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( flags.testFlag( QgsAbstractLabelProvider::MergeConnectedLines ) );
 

@@ -51,7 +51,6 @@ Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLay
   , mDisplayAll( displayAll )
   , mCentroidInside( false )
   , mArrangement( arrangement )
-  , mMode( LabelPerFeature )
   , mMergeLines( false )
   , mUpsidedownLabels( Upright )
 {
@@ -180,7 +179,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       continue;
     }
 
-    if ( mMode == LabelPerFeature && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
+    if ( !lf->labelAllParts() && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
     {
       if ( type == GEOS_LINESTRING )
         GEOSLength_r( geosctxt, geom, &geom_size );
@@ -249,7 +248,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   locker.unlock();
 
   // if using only biggest parts...
-  if ( ( mMode == LabelPerFeature || lf->hasFixedPosition() ) && biggest_part )
+  if ( ( !lf->labelAllParts() || lf->hasFixedPosition() ) && biggest_part )
   {
     addFeaturePart( biggest_part.release(), lf->labelText() );
     addedFeature = true;
