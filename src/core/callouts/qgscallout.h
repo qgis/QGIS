@@ -183,9 +183,8 @@ class CORE_EXPORT QgsCallout
      */
     struct CORE_EXPORT QgsCalloutContext
     {
-      ///@cond PRIVATE
-      bool temporary = false; // Temporary member only, required for building on some platforms
-      ///@endcond
+      //! TRUE if all parts of associated feature were labeled
+      bool allFeaturePartsLabeled = false;
     };
 
     /**

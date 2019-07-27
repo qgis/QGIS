@@ -160,7 +160,7 @@ The default order is QgsCallout.OrderBelowIndividualLabels.
 
     struct QgsCalloutContext
     {
-      bool temporary;
+      bool allFeaturePartsLabeled;
     };
 
     void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
