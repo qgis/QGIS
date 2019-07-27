@@ -158,6 +158,8 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   connect( mOffsetFromLabelUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::offsetFromLabelUnitWidgetChanged );
   connect( mOffsetFromLabelSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::offsetFromLabelChanged );
 
+  connect( mDrawToAllPartsCheck, &QCheckBox::toggled, this, &QgsSimpleLineCalloutWidget::drawToAllPartsToggled );
+
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsSimpleLineCalloutWidget::lineSymbolChanged );
 }
 
@@ -190,9 +192,12 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
 
   whileBlocking( mCalloutLineStyleButton )->setSymbol( mCallout->lineSymbol()->clone() );
 
+  whileBlocking( mDrawToAllPartsCheck )->setChecked( mCallout->drawCalloutToAllParts() );
+
   registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::MinimumCalloutLength );
   registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
   registerDataDefinedButton( mOffsetFromLabelDDBtn, QgsCallout::OffsetFromLabel );
+  registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::DrawCalloutToAllParts );
 }
 
 QgsCallout *QgsSimpleLineCalloutWidget::callout()
@@ -242,6 +247,12 @@ void QgsSimpleLineCalloutWidget::offsetFromLabelChanged()
 void QgsSimpleLineCalloutWidget::lineSymbolChanged()
 {
   mCallout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  emit changed();
+}
+
+void QgsSimpleLineCalloutWidget::drawToAllPartsToggled( bool active )
+{
+  mCallout->setDrawCalloutToAllParts( active );
   emit changed();
 }
 

@@ -71,6 +71,7 @@ class CORE_EXPORT QgsCallout
       MinimumCalloutLength, //!< Minimum length of callouts
       OffsetFromAnchor, //!< Distance to offset lines from anchor points
       OffsetFromLabel, //!< Distance to offset lines from label area
+      DrawCalloutToAllParts, //!< Whether callout lines should be drawn to all feature parts
     };
 
     //! Options for draw order (stacking) of callouts
@@ -473,6 +474,20 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
      */
     const QgsMapUnitScale &offsetFromLabelMapUnitScale() const { return mOffsetFromLabelScale; }
 
+    /**
+     * Returns TRUE if callout lines should be drawn to all feature parts.
+     *
+     * \see setDrawCalloutToAllParts()
+     */
+    bool drawCalloutToAllParts() const { return mDrawCalloutToAllParts; }
+
+    /**
+     * Sets whether callout lines should be drawn to all feature parts.
+     *
+     * \see drawCalloutToAllParts()
+     */
+    void setDrawCalloutToAllParts( bool drawToAllParts ) { mDrawCalloutToAllParts = drawToAllParts; }
+
   protected:
     void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) override;
 
@@ -495,6 +510,8 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     double mOffsetFromLabelDistance = 0;
     QgsUnitTypes::RenderUnit mOffsetFromLabelUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetFromLabelScale;
+
+    bool mDrawCalloutToAllParts = false;
 };
 
 
