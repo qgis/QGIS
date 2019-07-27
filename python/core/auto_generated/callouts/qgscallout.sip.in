@@ -46,6 +46,7 @@ relevant symbology elements to render them.
       MinimumCalloutLength,
       OffsetFromAnchor,
       OffsetFromLabel,
+      DrawCalloutToAllParts,
     };
 
     enum DrawOrder
@@ -479,6 +480,20 @@ Returns the map unit scale for the minimum callout length.
 .. seealso:: :py:func:`offsetFromLabelUnit`
 
 .. seealso:: :py:func:`offsetFromLabel`
+%End
+
+    bool drawCalloutToAllParts() const;
+%Docstring
+Returns ``True`` if callout lines should be drawn to all feature parts.
+
+.. seealso:: :py:func:`setDrawCalloutToAllParts`
+%End
+
+    void setDrawCalloutToAllParts( bool drawToAllParts );
+%Docstring
+Sets whether callout lines should be drawn to all feature parts.
+
+.. seealso:: :py:func:`drawCalloutToAllParts`
 %End
 
   protected:

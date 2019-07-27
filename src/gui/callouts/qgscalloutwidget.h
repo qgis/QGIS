@@ -146,6 +146,7 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     void offsetFromLabelUnitWidgetChanged();
     void offsetFromLabelChanged();
     void lineSymbolChanged();
+    void drawToAllPartsToggled( bool active );
 
   private:
     std::unique_ptr< QgsSimpleLineCallout > mCallout;

@@ -34,49 +34,23 @@
      <property name="topMargin">
       <number>0</number>
      </property>
-     <item row="1" column="3">
-      <widget class="QgsPropertyOverrideButton" name="mMinCalloutLengthDDBtn">
+     <item row="2" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mOffsetFromAnchorDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QgsDoubleSpinBox" name="mMinCalloutLengthSpin">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+     <item row="3" column="2">
+      <widget class="QgsUnitSelectionWidget" name="mOffsetFromLabelUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
        </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>100000.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="value">
-        <double>1.000000000000000</double>
-       </property>
-       <property name="showClearButton" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_45">
-       <property name="text">
-        <string>Minimum length</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Line style</string>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
        </property>
       </widget>
      </item>
@@ -90,26 +64,6 @@
        </property>
        <property name="text">
         <string>Symbol…</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QgsUnitSelectionWidget" name="mMinCalloutWidthUnitWidget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>10</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_46">
-       <property name="text">
-        <string>Offset from feature</string>
        </property>
       </widget>
      </item>
@@ -138,10 +92,10 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="3">
-      <widget class="QgsPropertyOverrideButton" name="mOffsetFromAnchorDDBtn">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_46">
        <property name="text">
-        <string>…</string>
+        <string>Offset from feature</string>
        </property>
       </widget>
      </item>
@@ -158,10 +112,17 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_47">
+     <item row="1" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mMinCalloutLengthDDBtn">
        <property name="text">
-        <string>Offset from label area</string>
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mOffsetFromLabelDDBtn">
+       <property name="text">
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -190,15 +151,33 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="3">
-      <widget class="QgsPropertyOverrideButton" name="mOffsetFromLabelDDBtn">
-       <property name="text">
-        <string>…</string>
+     <item row="1" column="1">
+      <widget class="QgsDoubleSpinBox" name="mMinCalloutLengthSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="3" column="2">
-      <widget class="QgsUnitSelectionWidget" name="mOffsetFromLabelUnitWidget" native="true">
+     <item row="1" column="2">
+      <widget class="QgsUnitSelectionWidget" name="mMinCalloutWidthUnitWidget" native="true">
        <property name="minimumSize">
         <size>
          <width>10</width>
@@ -207,6 +186,41 @@
        </property>
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_47">
+       <property name="text">
+        <string>Offset from label area</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_45">
+       <property name="text">
+        <string>Minimum length</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Line style</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="3">
+      <widget class="QCheckBox" name="mDrawToAllPartsCheck">
+       <property name="text">
+        <string>Draw lines to all feature parts</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mDrawToAllPartsDDBtn">
+       <property name="text">
+        <string>…</string>
        </property>
       </widget>
      </item>
