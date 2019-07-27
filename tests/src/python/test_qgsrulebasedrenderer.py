@@ -439,14 +439,10 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         # for symbol layer
         self.assertCountEqual(l1.usedAttributes(ctx), {'Heading'})
-        self.assertIn('Heading', l1.usedAttributes(ctx))
         # for symbol
         self.assertCountEqual(sym1.usedAttributes(ctx), {'Heading'})
-        self.assertIn('Heading', sym1.usedAttributes(ctx))
         # for symbol renderer
         self.assertCountEqual(renderer.usedAttributes(ctx), {'Class', 'Heading'})
-        self.assertIn('Class', renderer.usedAttributes(ctx))
-        self.assertIn('Heading', renderer.usedAttributes(ctx))
 
         QgsProject.instance().removeMapLayer(points_layer)
 
