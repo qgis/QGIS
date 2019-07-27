@@ -241,6 +241,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::Show, QgsPropertyDefinition( "Show", QObject::tr( "Show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::AlwaysShow, QgsPropertyDefinition( "AlwaysShow", QObject::tr( "Always show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::CalloutDraw, QgsPropertyDefinition( "CalloutDraw", QObject::tr( "Draw callout" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::LabelAllParts, QgsPropertyDefinition( "LabelAllParts", QObject::tr( "Label all parts" ), QgsPropertyDefinition::Boolean, origin ) },
   };
 }
 
@@ -2207,6 +2208,13 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // users with options they likely don't need to see...
   const double overrunSmoothDist = context.convertToMapUnits( 1, QgsUnitTypes::RenderMillimeters );
 
+  bool labelAll = labelPerPart;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LabelAllParts ) )
+  {
+    context.expressionContext().setOriginalValueVariable( labelPerPart );
+    labelAll = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::LabelAllParts, context.expressionContext(), labelPerPart );
+  }
+
   //  feature to the layer
   QgsTextLabelFeature *lf = new QgsTextLabelFeature( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
   lf->setFeature( feature );
@@ -2228,6 +2236,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setPermissibleZone( permissibleZone );
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
+  ( *labelFeature )->setLabelAllParts( labelAll );
   if ( geosObstacleGeomClone )
   {
     ( *labelFeature )->setObstacleGeometry( std::move( geosObstacleGeomClone ) );

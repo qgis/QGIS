@@ -348,6 +348,7 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setArrangementFlags( pal::LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
+
     /**
      * Text of the label
      *
@@ -444,6 +445,20 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setOverrunSmoothDistance( double distance );
 
+    /**
+     * Returns TRUE if all parts of the feature should be labeled.
+     * \see setLabelAllParts()
+     * \since QGIS 3.10
+     */
+    bool labelAllParts() const { return mLabelAllParts; }
+
+    /**
+     * Sets whether all parts of the feature should be labeled.
+     * \see labelAllParts()
+     * \since QGIS 3.10
+     */
+    void setLabelAllParts( bool labelAllParts ) { mLabelAllParts = labelAllParts; }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -517,6 +532,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsFeature mFeature;
 
     const QgsSymbol *mSymbol = nullptr;
+
+    bool mLabelAllParts = false;
 
 };
 
