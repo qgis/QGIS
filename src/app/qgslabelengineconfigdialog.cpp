@@ -33,9 +33,6 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
 
   QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
 
-  // search method
-  cboSearchMethod->setCurrentIndex( engineSettings.searchMethod() );
-
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Text" ), QgsRenderContext::TextFormatAlwaysText );
 
@@ -64,8 +61,6 @@ void QgsLabelEngineConfigDialog::onOK()
   QgsLabelingEngineSettings engineSettings;
 
   // save
-  engineSettings.setSearchMethod( static_cast< QgsLabelingEngineSettings::Search >( cboSearchMethod->currentIndex() ) );
-
   engineSettings.setNumCandidatePositions( spinCandPoint->value(), spinCandLine->value(), spinCandPolygon->value() );
 
   engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, chkShowCandidates->isChecked() );
@@ -85,7 +80,6 @@ void QgsLabelEngineConfigDialog::onOK()
 void QgsLabelEngineConfigDialog::setDefaults()
 {
   pal::Pal p;
-  cboSearchMethod->setCurrentIndex( static_cast<int>( p.getSearch() ) );
   spinCandPoint->setValue( p.getPointP() );
   spinCandLine->setValue( p.getLineP() );
   spinCandPolygon->setValue( p.getPolyP() );

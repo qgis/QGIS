@@ -208,21 +208,6 @@ namespace pal
        */
       int getPolyP();
 
-      /**
-       * \brief Select the search method to use.
-       *
-       * For interactive mapping using CHAIN is a good
-       * idea because it is the fastest. Other methods, ordered by speedness, are POPMUSIC_TABU,
-       * POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN, defined in pal::_searchMethod enumeration
-       * \param method the method to use
-       */
-      void setSearch( SearchMethod method );
-
-      /**
-       * Returns the search method in use.
-       */
-      SearchMethod getSearch();
-
     private:
 
       QHash< QgsAbstractLabelProvider *, Layer * > mLayers;
@@ -232,39 +217,37 @@ namespace pal
       /**
        * \brief maximum # candidates for a point
        */
-      int point_p;
+      int point_p = 16;
 
       /**
        * \brief maximum # candidates for a line
        */
-      int line_p;
+      int line_p = 50;
 
       /**
        * \brief maximum # candidates for a polygon
        */
-      int poly_p;
-
-      SearchMethod searchMethod;
+      int poly_p = 30;
 
       /*
        * POPMUSIC Tuning
        */
-      int popmusic_r;
+      int popmusic_r = 30;
 
-      int tabuMaxIt;
-      int tabuMinIt;
+      int tabuMaxIt = 4;
+      int tabuMinIt = 2;
 
-      int ejChainDeg;
-      int tenure;
-      double candListSize;
+      int ejChainDeg = 50;
+      int tenure = 10;
+      double candListSize = 0.2;
 
       /**
        * \brief show partial labels (cut-off by the map canvas) or not
        */
-      bool showPartial;
+      bool showPartial = true;
 
       //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
-      FnIsCanceled fnIsCanceled;
+      FnIsCanceled fnIsCanceled = nullptr;
       //! Application-specific context for the cancellation check function
       void *fnIsCanceledContext = nullptr;
 

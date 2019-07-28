@@ -49,28 +49,6 @@ Pal::Pal()
 {
   // do not init and exit GEOS - we do it inside QGIS
   //initGEOS( geosNotice, geosError );
-
-  fnIsCanceled = nullptr;
-  fnIsCanceledContext = nullptr;
-
-  ejChainDeg = 50;
-  tenure = 10;
-  candListSize = 0.2;
-
-  tabuMinIt = 3;
-  tabuMaxIt = 4;
-  searchMethod = POPMUSIC_CHAIN;
-  popmusic_r = 30;
-
-  searchMethod = CHAIN;
-
-  setSearch( CHAIN );
-
-  point_p = 16;
-  line_p = 50;
-  poly_p = 30;
-
-  showPartial = true;
 }
 
 void Pal::removeLayer( Layer *layer )
@@ -453,12 +431,7 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll, QList<
 
   try
   {
-    if ( searchMethod == FALP )
-      prob->init_sol_falp();
-    else if ( searchMethod == CHAIN )
-      prob->chain_search();
-    else
-      prob->popmusic();
+    prob->chain_search();
   }
   catch ( InternalException::Empty & )
   {
@@ -555,51 +528,3 @@ bool Pal::getShowPartial()
 {
   return showPartial;
 }
-
-SearchMethod Pal::getSearch()
-{
-  return searchMethod;
-}
-
-void Pal::setSearch( SearchMethod method )
-{
-  switch ( method )
-  {
-    case POPMUSIC_CHAIN:
-      searchMethod = method;
-      popmusic_r = 30;
-      tabuMinIt = 2;
-      tabuMaxIt = 4;
-      tenure = 10;
-      ejChainDeg = 50;
-      candListSize = 0.2;
-      break;
-    case CHAIN:
-      searchMethod      = method;
-      ejChainDeg         = 50;
-      break;
-    case POPMUSIC_TABU:
-      searchMethod = method;
-      popmusic_r = 25;
-      tabuMinIt = 2;
-      tabuMaxIt = 4;
-      tenure = 10;
-      ejChainDeg = 50;
-      candListSize = 0.2;
-      break;
-    case POPMUSIC_TABU_CHAIN:
-      searchMethod = method;
-      popmusic_r = 25;
-      tabuMinIt = 2;
-      tabuMaxIt = 4;
-      tenure = 10;
-      ejChainDeg = 50;
-      candListSize = 0.2;
-      break;
-    case FALP:
-      searchMethod = method;
-      break;
-  }
-}
-
-
