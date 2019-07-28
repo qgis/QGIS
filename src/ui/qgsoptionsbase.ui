@@ -5660,8 +5660,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbScanZipInBrowser</tabstop>
   <tabstop>cmbPromptRasterSublayers</tabstop>
   <tabstop>cbxIgnoreShapeEncoding</tabstop>
-  <tabstop>cbxAddPostgisDC</tabstop>
-  <tabstop>cbxAddOracleDC</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
   <tabstop>cbxEvaluateDefaultValues</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
