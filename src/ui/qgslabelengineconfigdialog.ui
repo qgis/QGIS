@@ -6,60 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
-    <height>358</height>
+    <width>437</width>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Automated Placement Engine</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Search method</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cboSearchMethod">
-       <item>
-        <property name="text">
-         <string>Chain (fast)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Popmusic Tabu</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Popmusic Chain</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Popmusic Tabu Chain</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>FALP (fastest)</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -328,7 +282,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>cboSearchMethod</tabstop>
   <tabstop>spinCandPoint</tabstop>
   <tabstop>spinCandLine</tabstop>
   <tabstop>spinCandPolygon</tabstop>

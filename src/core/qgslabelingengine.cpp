@@ -190,26 +190,6 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
   pal::Pal p;
-  pal::SearchMethod s;
-  switch ( settings.searchMethod() )
-  {
-    case QgsLabelingEngineSettings::Chain:
-      s = pal::CHAIN;
-      break;
-    case QgsLabelingEngineSettings::Popmusic_Tabu:
-      s = pal::POPMUSIC_TABU;
-      break;
-    case QgsLabelingEngineSettings::Popmusic_Chain:
-      s = pal::POPMUSIC_CHAIN;
-      break;
-    case QgsLabelingEngineSettings::Popmusic_Tabu_Chain:
-      s = pal::POPMUSIC_TABU_CHAIN;
-      break;
-    case QgsLabelingEngineSettings::Falp:
-      s = pal::FALP;
-      break;
-  }
-  p.setSearch( s );
 
   // set number of candidates generated per feature
   int candPoint, candLine, candPolygon;
