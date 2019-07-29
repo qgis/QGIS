@@ -446,7 +446,7 @@
            <widget class="QgsPenCapStyleComboBox" name="mLineCapStyleCombo"/>
           </item>
           <item row="5" column="1" colspan="2">
-           <widget class="QComboBox" name="mAlignmentComboBox"/>
+           <widget class="QgsAlignmentComboBox" name="mAlignmentComboBox"/>
           </item>
          </layout>
         </widget>
@@ -682,6 +682,11 @@
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsAlignmentComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsalignmentcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
