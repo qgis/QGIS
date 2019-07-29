@@ -55,7 +55,8 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::MinScale,
   QgsPalLayerSettings::MaxScale,
   QgsPalLayerSettings::AlwaysShow,
-  QgsPalLayerSettings::CalloutDraw
+  QgsPalLayerSettings::CalloutDraw,
+  QgsPalLayerSettings::LabelAllParts
 };
 
 //

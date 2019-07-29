@@ -49,6 +49,7 @@ QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *
   mPalProperties << QgsPalLayerSettings::MaxScale;
   mPalProperties << QgsPalLayerSettings::AlwaysShow;
   mPalProperties << QgsPalLayerSettings::CalloutDraw;
+  mPalProperties << QgsPalLayerSettings::LabelAllParts;
 }
 
 void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
@@ -107,6 +108,7 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
                               mCurrentLabel.pos.labelFont,
                               labeltext,
                               mCurrentLabel.pos.isPinned,
+                              mCurrentLabel.settings,
                               nullptr );
     d.setMapCanvas( canvas() );
 

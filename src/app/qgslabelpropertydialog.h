@@ -32,10 +32,11 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
   public:
     QgsLabelPropertyDialog( const QString &layerId,
                             const QString &providerId,
-                            int featureId,
+                            QgsFeatureId featureId,
                             const QFont &labelFont,
                             const QString &labelText,
                             bool isPinned,
+                            const QgsPalLayerSettings &layerSettings,
                             QWidget *parent = nullptr,
                             Qt::WindowFlags f = nullptr );
 
@@ -56,6 +57,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void buttonBox_clicked( QAbstractButton *button );
     void mShowLabelChkbx_toggled( bool chkd );
     void mAlwaysShowChkbx_toggled( bool chkd );
+    void labelAllPartsToggled( bool checked );
     void showCalloutToggled( bool chkd );
     void minScaleChanged( double scale );
     void maxScaleChanged( double scale );
@@ -80,7 +82,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 
   private:
     //! Sets activation / values to the gui elements depending on the label settings and feature values
-    void init( const QString &layerId, const QString &providerId, int featureId, const QString &labelText );
+    void init( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QString &labelText );
     void disableGuiElements();
     //! Block / unblock all input element signals
     void blockElementSignals( bool block );
