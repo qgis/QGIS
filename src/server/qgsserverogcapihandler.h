@@ -40,8 +40,8 @@ class QgsServerApiContext;
  * The following methods MUST be implemented:
  * - path
  * - operationId
- * - summary
- * - description
+ * - summary  (shorter text)
+ * - description (longer text)
  * - linkTitle
  * - linkType
  * - schema

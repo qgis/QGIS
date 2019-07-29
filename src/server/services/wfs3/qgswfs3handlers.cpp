@@ -49,6 +49,7 @@ void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
   const auto metadata { context.project()->metadata() };
   json data
   {
+    { "links", links( context ) },
     { "openapi", "3.0.1" },
     {
       "tags", {{
@@ -86,17 +87,21 @@ void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
       }
     }
   };
+
   assert( data.is_object() );
+
+  // Gather path information from handlers
   json paths = json::array();
-  // Gather information from handlers
   for ( const auto &h : mApi->handlers() )
   {
     // Skip null schema
     const auto hSchema { h->schema( context ) };
     if ( ! hSchema.is_null() )
-      paths.push_back( hSchema );
+      paths.merge_patch( hSchema );
   }
   data[ "paths" ] = paths;
+
+  // Schema
   static json schema;
   if ( schema.is_null() )
   {
@@ -107,7 +112,8 @@ void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
       schema = json::parse( in.readAll().toStdString() );
     }
   }
-  // Fill crss
+
+  // Fill CRSs
   json crss = json::array();
   for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
   {
@@ -115,7 +121,8 @@ void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
   }
   schema[ "components" ][ "parameters" ][ "bbox-crs" ][ "schema" ][ "enum" ] = crss;
   schema[ "components" ][ "parameters" ][ "crs" ][ "schema" ][ "enum" ] = crss;
-  data[ "schema" ] = schema;
+  data[ "components" ] = schema["components"];
+
   // Add schema refs
   json navigation = json::array();
   const auto url { context.request()->url() };
@@ -133,6 +140,7 @@ json Wfs3APIHandler::schema( const QgsServerApiContext &context ) const
       "get", {
         { "tags", jsonTags() },
         { "summary", summary() },
+        { "description", description() },
         { "operationId", operationId() },
         {
           "responses", {
@@ -219,6 +227,7 @@ json Wfs3LandingPageHandler::schema( const QgsServerApiContext &context ) const
       "get", {
         { "tags", jsonTags() },
         { "summary", summary() },
+        { "description", description() },
         { "operationId", operationId() },
         {
           "responses", {
@@ -293,6 +302,7 @@ json Wfs3ConformanceHandler::schema( const QgsServerApiContext &context ) const
       "get", {
         { "tags", jsonTags() },
         { "summary", summary() },
+        { "description", description() },
         { "operationId", operationId() },
         {
           "responses", {
@@ -421,6 +431,7 @@ json Wfs3CollectionsHandler::schema( const QgsServerApiContext &context ) const
       "get", {
         { "tags", jsonTags() },
         { "summary", summary() },
+        { "description", description() },
         { "operationId", operationId() },
         {
           "responses", {
@@ -558,6 +569,7 @@ json Wfs3DescribeCollectionHandler::schema( const QgsServerApiContext &context )
         "get", {
           { "tags", jsonTags() },
           { "summary", "Describe the '" + title + "' feature collection"},
+          { "description", description() },
           { "operationId", operationId() + '_' + shortName.toStdString() },
           {
             "responses", {
@@ -706,7 +718,23 @@ json Wfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context ) c
   {
     const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
     const auto title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
-    const auto path { ( context.apiRootPath() + QStringLiteral( "collections/%1/items" ).arg( shortName ) ).toStdString() };
+    const auto path { ( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ) ).toStdString() };
+
+    json parameters = {{
+        {{ "$ref", "#/components/parameters/limit" }},
+        {{ "$ref", "#/components/parameters/offset" }},
+        {{ "$ref", "#/components/parameters/resultType" }},
+        {{ "$ref", "#/components/parameters/bbox" }},
+        {{ "$ref", "#/components/parameters/bbox-crs" }},
+        // TODO: {{ "$ref", "#/components/parameters/time" }},
+      }
+    };
+
+    for ( const auto &p : fieldParameters( mapLayer ) )
+    {
+      const auto name { p.name().toStdString() };
+      parameters.push_back( p.data() );
+    }
 
     data[ path ] =
     {
@@ -714,7 +742,9 @@ json Wfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context ) c
         "get", {
           { "tags", jsonTags() },
           { "summary", "Retrieve features of '" + title + "' feature collection" },
+          { "description", description() },
           { "operationId", operationId() + '_' + shortName.toStdString() },
+          { "parameters", parameters },
           {
             "responses", {
               {
@@ -750,20 +780,6 @@ json Wfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context ) c
         }
       }
     };
-    data[ "parameters" ] = {{
-        {{ "$ref", "#/components/parameters/limit" }},
-        {{ "$ref", "#/components/parameters/offset" }},
-        {{ "$ref", "#/components/parameters/resultType" }},
-        {{ "$ref", "#/components/parameters/bbox" }},
-        {{ "$ref", "#/components/parameters/bbox-crs" }},
-        // TODO: {{ "$ref", "#/components/parameters/time" }},
-      }
-    };
-    for ( const auto &p : fieldParameters( mapLayer ) )
-    {
-      const auto name { p.name().toStdString() };
-      data[ "parameters" ].push_back( p.data() );
-    }
   }
   return data;
 }
@@ -1099,7 +1115,8 @@ json Wfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &context )
       {
         "get", {
           { "tags", jsonTags() },
-          { "summary", "Describe the '" + title + "' feature collection"},
+          { "summary", "Retrieve a single feature from the '" + title + "' feature collection"},
+          { "description", description() },
           { "operationId", operationId() + '_' + shortName.toStdString() },
           {
             "responses", {

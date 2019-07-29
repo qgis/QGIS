@@ -21,8 +21,8 @@ the core functionality in handleRequest() method.
 The following methods MUST be implemented:
 - path
 - operationId
-- summary
-- description
+- summary  (shorter text)
+- description (longer text)
 - linkTitle
 - linkType
 - schema
