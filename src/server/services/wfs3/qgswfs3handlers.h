@@ -50,7 +50,7 @@ class Wfs3APIHandler: public QgsServerOgcApiHandler
 
 
 /**
- * The StaticHandler class Wfs3serves static files from the static path (resources/server/api/wfs3/static)
+ * The StaticHandler class Wfs3 serves static files from the static path (resources/server/api/wfs3/static)
  * \see staticPath()
  */
 class Wfs3StaticHandler: public QgsServerOgcApiHandler
