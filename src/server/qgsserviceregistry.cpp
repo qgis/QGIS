@@ -189,7 +189,7 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
     }
     else
     {
-      QString key = makeServiceKey( name, version );
+      const QString key = makeServiceKey( name, version );
       ApiTable::iterator found = mApis.find( key );
       if ( found != mApis.end() )
       {
