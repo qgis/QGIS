@@ -402,7 +402,7 @@ Sets the ``space`` (margin) between the scalebar box and content in millimeters.
 %Docstring
 Returns the vertical placement of text labels.
 
-.. seealso:: :py:func:`setLabelPlacement`
+.. seealso:: :py:func:`setLabelVerticalPlacement`
 
 .. versionadded:: 3.10
 %End
@@ -411,7 +411,7 @@ Returns the vertical placement of text labels.
 %Docstring
 Sets the vertical ``placement`` of text labels.
 
-.. seealso:: :py:func:`labelPlacement`
+.. seealso:: :py:func:`labelVerticalPlacement`
 
 .. versionadded:: 3.10
 %End

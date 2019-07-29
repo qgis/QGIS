@@ -54,6 +54,17 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   QString currentNumericLabel;
   QList<double> positions = segmentPositions( scaleContext, settings );
 
+  bool drawZero = true;
+  switch ( settings.labelHorizontalPlacement() )
+  {
+    case QgsScaleBarSettings::LabelCenteredSegment:
+      drawZero = false;
+      break;
+    case QgsScaleBarSettings::LabelCenteredEdge:
+      drawZero = true;
+      break;
+  }
+
   for ( int i = 0; i < positions.size(); ++i )
   {
     if ( segmentCounter == 0 && nSegmentsLeft > 0 )
@@ -70,8 +81,6 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     {
       currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
     }
-
-    bool drawZero = settings.labelHorizontalPlacement() != QgsScaleBarSettings::LabelCenteredSegment;
 
     //don't draw label for intermediate left segments or the zero label when it needs to be skipped
     if ( ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) && ( currentNumericLabel != QStringLiteral( "0" ) || drawZero ) )
