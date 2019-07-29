@@ -57,6 +57,15 @@ class CORE_EXPORT QgsScaleBarSettings
     };
 
     /**
+     * Label vertical placement.
+     */
+    enum LabelVerticalPlacement
+    {
+      LabelAboveSegment = 0, //!< Labels are drawn above the scalebar
+      LabelBelowSegment, //!< Labels are drawn below the scalebar
+    };
+
+    /**
      * Constructor for QgsScaleBarSettings.
      */
     QgsScaleBarSettings()
@@ -391,6 +400,20 @@ class CORE_EXPORT QgsScaleBarSettings
     void setLabelBarSpace( double space ) { mLabelBarSpace = space; }
 
     /**
+     * Returns the vertical placement of text labels.
+     * \see setLabelVerticalPlacement()
+     * \since QGIS 3.10
+     */
+    LabelVerticalPlacement labelVerticalPlacement() const { return mLabelVerticalPlacement; }
+
+    /**
+     * Sets the vertical \a placement of text labels.
+     * \see labelVerticalPlacement()
+     * \since QGIS 3.10
+     */
+    void setLabelVerticalPlacement( LabelVerticalPlacement placement ) { mLabelVerticalPlacement = placement; }
+
+    /**
      * Returns the spacing (margin) between the scalebar box and content in millimeters.
      * \see setBoxContentSpace()
      */
@@ -480,6 +503,8 @@ class CORE_EXPORT QgsScaleBarSettings
 
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;
+    //! Labels placement
+    LabelVerticalPlacement mLabelVerticalPlacement = LabelAboveSegment;
 
     //! Space between content and item box
     double mBoxContentSpace = 1.0;

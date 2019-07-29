@@ -398,6 +398,24 @@ Sets the ``space`` (margin) between the scalebar box and content in millimeters.
 .. seealso:: :py:func:`boxContentSpace`
 %End
 
+    QgsScaleBarSettings::LabelVerticalPlacement labelVerticalPlacement() const;
+%Docstring
+Returns the vertical placement of text labels.
+
+.. seealso:: :py:func:`setLabelPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement placement );
+%Docstring
+Sets the vertical ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelPlacement`
+
+.. versionadded:: 3.10
+%End
+
     QgsScaleBarSettings::Alignment alignment() const;
 %Docstring
 Returns the scalebar alignment.
