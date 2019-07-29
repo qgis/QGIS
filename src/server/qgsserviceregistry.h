@@ -88,7 +88,7 @@ class SERVER_EXPORT QgsServiceRegistry
     void registerApi( QgsServerApi *api SIP_TRANSFER );
 
     /**
-     * Unregister API from its name and version
+     * Unregisters API from its name and version
      *
      * \param name the name of the service
      * \param version (optional) the specific version to unload
