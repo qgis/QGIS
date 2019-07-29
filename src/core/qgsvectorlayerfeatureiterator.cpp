@@ -172,10 +172,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   {
     // prepare list of attributes to match provider fields
     QSet<int> providerSubset;
-    QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
+    const QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
     int nPendingFields = mSource->mFields.count();
-    const auto constSubset = subset;
-    for ( int attrIndex : constSubset )
+    for ( int attrIndex : subset )
     {
       if ( attrIndex < 0 || attrIndex >= nPendingFields )
         continue;
@@ -641,26 +640,24 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   if ( !mExpressionContext )
     createExpressionContext();
   exp->prepare( mExpressionContext.get() );
-  const auto referencedColumns = exp->referencedColumns();
-  for ( const QString &col : referencedColumns )
-  {
-    if ( mSource->fields().lookupField( col ) == fieldIdx )
-    {
-      // circular reference - expression depends on column itself
-      return;
-    }
-  }
+  const QSet<int> referencedColumns = exp->referencedAttributeIndexes( mSource->fields() );
 
-  for ( const QString &col : referencedColumns )
+  QSet<int> requestedAttributes = mRequest.subsetOfAttributes().toSet();
+
+  for ( int dependentFieldIdx : referencedColumns )
   {
-    int dependentFieldIdx = mSource->mFields.lookupField( col );
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
-      mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << dependentFieldIdx );
+      requestedAttributes += dependentFieldIdx;
     }
     // also need to fetch this dependent field
     if ( !mPreparedFields.contains( dependentFieldIdx ) && !mFieldsToPrepare.contains( dependentFieldIdx ) )
       mFieldsToPrepare << dependentFieldIdx;
+  }
+
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+  {
+    mRequest.setSubsetOfAttributes( requestedAttributes.toList() );
   }
 
   if ( exp->needsGeometry() )
