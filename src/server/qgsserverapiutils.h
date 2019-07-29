@@ -131,7 +131,7 @@ class SERVER_EXPORT QgsServerApiUtils
      * Returns the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) available for this \a project.
      * Information is read from project WMS configuration.
      */
-    static const QStringList publishedCrsList( const QgsProject *project );
+    static QStringList publishedCrsList( const QgsProject *project );
 
     /**
      * Returns a \a crs into OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
