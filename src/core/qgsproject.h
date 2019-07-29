@@ -805,7 +805,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Retrieves a list of matching registered layers by layer \a shortName with a specified layer type,
      * if layer's short name is empty a match with layer's name is attempted.
      *
-     * \param shortName short name of layers to match,
+     * \param shortName short name of layers to match
      * \returns list of matching layers
      * \see mapLayer()
      * \see mapLayers()
