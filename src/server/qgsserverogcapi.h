@@ -119,7 +119,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 #ifndef SIP_RUN
 
     /**
-     * Register an OGC API handler passing \a Args to the constructor
+     * Registers an OGC API handler passing \a Args to the constructor
      * \note not available in Python bindings
      */
     template<class T, typename... Args>

@@ -350,7 +350,7 @@ void QgsServiceRegistry::registerApi( QgsServerApi *api )
 {
 
   const QString name = api->name();
-  QString version = api->version();
+  const QString version = api->version();
 
   // Test if service is already registered
   const QString key = makeServiceKey( name, version );

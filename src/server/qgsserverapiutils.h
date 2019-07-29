@@ -122,7 +122,7 @@ class SERVER_EXPORT QgsServerApiUtils
 #endif
 
     /**
-     * Sanitize the input \a value by removing URL encoding and checking for malicious content.
+     * Sanitizes the input \a value by removing URL encoding and checking for malicious content.
      * In case of failure returns an empty string.
      */
     static QString sanitizedFieldValue( const QString &value );

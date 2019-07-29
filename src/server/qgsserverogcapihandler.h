@@ -76,7 +76,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      */
     virtual QRegularExpression path() const = 0;
 
-    //! Operation id for template file names and other internal references
+    //! Returns the operation id for template file names and other internal references
     virtual std::string operationId() const = 0;
 
     /**
@@ -106,7 +106,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     virtual QStringList tags() const { return {}; }
 
     /**
-     * Default response content type in case the client did not specifically
+     * Returns the default response content type in case the client did not specifically
      * ask for any particular content type.
      */
     virtual QgsServerOgcApi::ContentType defaultContentType() const  { return QgsServerOgcApi::ContentType::JSON; }
@@ -129,7 +129,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     virtual void handleRequest( const QgsServerApiContext &context ) const = 0;
 
     /**
-     * Analyze the incoming request \a context and returns the validated
+     * Analyzes the incoming request \a context and returns the validated
      * parameter map, throws QgsServerApiBadRequestError in case of errors.
      *
      * Path fragments from the named groups in the path() regular expression
@@ -140,7 +140,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \returns the validated parameters map by extracting captured
      *          named parameters from the path (no validation is performed on
-     *          the type because the regurlar expression can do it),
+     *          the type because the regular expression can do it),
      *          and the query string parameters.
      *
      * \see path()
