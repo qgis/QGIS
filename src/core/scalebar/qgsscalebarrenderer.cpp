@@ -43,6 +43,8 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   double xOffset = fontMetrics.width( firstLabel ) / 2.0;
 
   double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
+  double scaledHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
 
   double currentLabelNumber = 0.0;
 
@@ -72,9 +74,10 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     if ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) //don't draw label for intermediate left segments
     {
       scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), currentNumericLabel, true, false ) );
-      QgsTextRenderer::drawText( QPointF( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset,
-                                          fontMetrics.ascent() + scaledBoxContentSpace ), 0, QgsTextRenderer::AlignCenter,
-                                 QStringList() << currentNumericLabel, context, format );
+      QPointF pos;
+      pos.setX( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset );
+      pos.setY( fontMetrics.ascent() + scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelBelowSegment ? scaledHeight + scaledLabelBarSpace : 0 ) );
+      QgsTextRenderer::drawText( pos, 0, QgsTextRenderer::AlignCenter, QStringList() << currentNumericLabel, context, format );
     }
 
     if ( segmentCounter >= nSegmentsLeft )
@@ -92,10 +95,11 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     // horizontally centering just the numeric portion.
     currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
     scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), currentNumericLabel, true, false ) );
-    QgsTextRenderer::drawText( QPointF( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
-                                        - fontMetrics.width( currentNumericLabel ) / 2.0,
-                                        fontMetrics.ascent() + scaledBoxContentSpace ), 0, QgsTextRenderer::AlignLeft,
-                               QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
+    QPointF pos;
+    pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
+              - fontMetrics.width( currentNumericLabel ) / 2.0 );
+    pos.setY( fontMetrics.ascent() + scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelBelowSegment ? scaledHeight + scaledLabelBarSpace : 0 ) );
+    QgsTextRenderer::drawText( pos, 0, QgsTextRenderer::AlignLeft, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
   }
 
   painter->restore();

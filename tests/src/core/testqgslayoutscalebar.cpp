@@ -46,6 +46,7 @@ class TestQgsLayoutScaleBar : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void singleBox();
+    void singleBoxLabelBelowSegment();
     void singleBoxAlpha();
     void doubleBox();
     void numeric();
@@ -125,6 +126,35 @@ void TestQgsLayoutScaleBar::singleBox()
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutScaleBar::singleBoxLabelBelowSegment()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 0 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 5 );
+  scalebar->setLineWidth( 1.0 );
+  scalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelBelowSegment );
+
+  scalebar->setStyle( QStringLiteral( "Single Box" ) );
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_labelbelowsegment" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }

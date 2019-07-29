@@ -31,7 +31,7 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
   double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
-  double barTopPosition = fontMetrics.ascent() + scaledLabelBarSpace + scaledBoxContentSpace;
+  double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
   double segmentHeight = context.convertToPainterUnits( settings.height() / 2, QgsUnitTypes::RenderMillimeters );
 
   painter->save();
