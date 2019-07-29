@@ -49,6 +49,7 @@ class TestQgsLayoutScaleBar : public QObject
     void singleBoxLabelBelowSegment();
     void singleBoxAlpha();
     void doubleBox();
+    void doubleBoxLabelCenteredSegment();
     void numeric();
     void tick();
     void dataDefined();
@@ -225,6 +226,45 @@ void TestQgsLayoutScaleBar::doubleBox()
   scalebar->setStyle( QStringLiteral( "Double Box" ) );
 
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
+  format.setColor( Qt::black );
+  scalebar->setTextFormat( format );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 0 );
+  scalebar->setNumberOfSegments( 3 );
+  scalebar->setHeight( 5 );
+  scalebar->setLineWidth( 1.0 );
+
+  scalebar->setFillColor( Qt::black );
+  scalebar->setFillColor2( Qt::white );
+  scalebar->setLineColor( Qt::black );
+  scalebar->setLineWidth( 1.0 );
+  scalebar->setStyle( QStringLiteral( "Double Box" ) );
+
+  scalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelBelowSegment );
+  scalebar->setLabelHorizontalPlacement( QgsScaleBarSettings::LabelCenteredSegment );
+  scalebar->setUnitLabel( QStringLiteral( "units" ) );
+
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox_labelcenteredsegment" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }

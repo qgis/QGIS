@@ -41,6 +41,12 @@ for scalebar drawing with QgsScaleBarRenderer.
       LabelBelowSegment,
     };
 
+    enum LabelHorizontalPlacement
+    {
+      LabelCenteredEdge,
+      LabelCenteredSegment,
+    };
+
     QgsScaleBarSettings();
 %Docstring
 Constructor for QgsScaleBarSettings.
@@ -428,6 +434,24 @@ Returns the vertical placement of text labels.
 Sets the vertical ``placement`` of text labels.
 
 .. seealso:: :py:func:`labelVerticalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    LabelHorizontalPlacement labelHorizontalPlacement() const;
+%Docstring
+Returns the horizontal placement of text labels.
+
+.. seealso:: :py:func:`setLabelHorizontalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelHorizontalPlacement( LabelHorizontalPlacement placement );
+%Docstring
+Sets the horizontal ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelHorizontalPlacement`
 
 .. versionadded:: 3.10
 %End

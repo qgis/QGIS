@@ -47,7 +47,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   double middlePosition = barTopPosition + context.convertToPainterUnits( settings.height() / 2.0, QgsUnitTypes::RenderMillimeters );
   double bottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
 
-  double xOffset = firstLabelXOffset( settings, context );
+  double xOffset = firstLabelXOffset( settings, context, scaleContext );
 
   painter->save();
   if ( context.flags() & QgsRenderContext::Antialiasing )
