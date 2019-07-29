@@ -27,10 +27,13 @@
 #include "qgsmultipolygon.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaskidprovider.h"
 
 #include "feature.h"
 #include "labelposition.h"
 #include "callouts/qgscallout.h"
+
+#include "pal/layer.h"
 
 #include <QPicture>
 
@@ -372,6 +375,9 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   // update tmpLyr with any data defined text buffer values
   QgsPalLabeling::dataDefinedTextBuffer( tmpLyr, ddValues );
 
+  // update tmpLyr with any data defined text mask values
+  QgsPalLabeling::dataDefinedTextMask( tmpLyr, ddValues );
+
   // update tmpLyr with any data defined text formatting values
   QgsPalLabeling::dataDefinedTextFormatting( tmpLyr, ddValues );
 
@@ -535,6 +541,13 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     QgsTextLabelFeature *lf = static_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
     QString txt = lf->text( label->getPartId() );
     QFontMetricsF *labelfm = lf->labelFontMetrics();
+
+    if ( context.maskIdProvider() )
+    {
+      int maskId = context.maskIdProvider()->maskId( label->getFeaturePart()->layer()->provider()->layerId(),
+                   label->getFeaturePart()->layer()->provider()->providerId() );
+      context.setCurrentMaskId( maskId );
+    }
 
     //add the direction symbol if needed
     if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line &&

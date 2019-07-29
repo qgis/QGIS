@@ -34,6 +34,12 @@
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgspallabeling.h"
+#include "qgsrenderer.h"
+#include "qgssymbollayer.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsstyle.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -932,4 +938,94 @@ bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fiel
   }
   else
     return _fieldIsEditable( layer, fieldIndex, feature );
+}
+
+QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> QgsVectorLayerUtils::labelMasks( const QgsVectorLayer *layer )
+{
+  class LabelMasksVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+      {
+        if ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
+        {
+          currentRule = node.identifier;
+          return true;
+        }
+        return false;
+      }
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::LabelSettingsEntity )
+        {
+          auto labelSettingsEntity = static_cast<const QgsStyleLabelSettingsEntity *>( leaf.entity );
+          if ( labelSettingsEntity->settings().format().mask().enabled() )
+          {
+            for ( const auto &r : labelSettingsEntity->settings().format().mask().maskedSymbolLayers() )
+            {
+              masks[currentRule][r.layerId()].insert( r.symbolLayerId() );
+            }
+          }
+        }
+        return true;
+      }
+
+      QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> masks;
+      // Current label rule, empty string for a simple labeling
+      QString currentRule;
+  };
+
+  if ( ! layer->labeling() )
+    return {};
+
+  LabelMasksVisitor visitor;
+  layer->labeling()->accept( &visitor );
+  return std::move( visitor.masks );
+}
+
+QHash<QString, QSet<QgsSymbolLayerId>> QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *layer )
+{
+  if ( ! layer->renderer() )
+    return {};
+
+  class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+      {
+        return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule );
+      }
+
+      void visitSymbol( const QgsSymbol *symbol )
+      {
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          for ( const auto &mask : sl->masks() )
+          {
+            masks[mask.layerId()].insert( mask.symbolLayerId() );
+          }
+          // recurse over sub symbols
+          const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
+          if ( subSymbol )
+            visitSymbol( subSymbol );
+        }
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+          if ( symbolEntity->symbol() )
+            visitSymbol( symbolEntity->symbol() );
+        }
+        return true;
+      }
+      QHash<QString, QSet<QgsSymbolLayerId>> masks;
+  };
+
+  SymbolLayerVisitor visitor;
+  layer->renderer()->accept( &visitor );
+  return visitor.masks;
 }

@@ -50,6 +50,8 @@ SET(QGIS_CORE_SRCS
   symbology/qgslegendsymbolitem.cpp
   symbology/qgslinesymbollayer.cpp
   symbology/qgsmarkersymbollayer.cpp
+  symbology/qgsmasksymbollayer.cpp
+  symbology/qgspainterswapper.cpp
   symbology/qgsnullsymbolrenderer.cpp
   symbology/qgspointclusterrenderer.cpp
   symbology/qgspointdisplacementrenderer.cpp
@@ -63,6 +65,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgsstylemodel.cpp
   symbology/qgssvgcache.cpp
   symbology/qgssymbollayer.cpp
+  symbology/qgssymbollayerreference.cpp
   symbology/qgssymbollayerregistry.cpp
   symbology/qgssymbollayerutils.cpp
   symbology/qgssymbol.cpp
@@ -290,6 +293,7 @@ SET(QGIS_CORE_SRCS
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmapunitscale.cpp
   qgsmargins.cpp
+  qgsmaskidprovider.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -1214,6 +1218,7 @@ SET(QGIS_CORE_HDRS
   symbology/qgssvgcache.h
   symbology/qgssymbol.h
   symbology/qgssymbollayer.h
+  symbology/qgssymbollayerreference.h
   symbology/qgssymbollayerregistry.h
   symbology/qgssymbollayerutils.h
   symbology/qgsvectorfieldsymbollayer.h

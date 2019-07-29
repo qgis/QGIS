@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgssymbollayerreference.h"
+
+class QgsFeatureRenderer;
+class QgsSymbolLayer;
 
 /**
  * \ingroup core
@@ -283,7 +287,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
 
-
     /**
      * \return true if the \param feature field at index \param fieldIndex from \param layer
      * is editable, false if the field is readonly
@@ -292,6 +295,23 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
 
+    /**
+      * Returns masks defined in labeling options of a layer.
+      * The returned type associates a labeling rule identifier to a set of layers that are masked given by their layer id,
+      * and a set of masked symbol layers if associated to each masked layers.
+      * \note Not available in Python bindings
+      * \since QGIS 3.12
+      */
+    static QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
+
+    /**
+     * Returns all masks that may be defined on symbol layers for a given vector layer.
+     * The hash key is a layer id.
+     * The hash value is the set of symbol layers masked in the key's layer.
+     * \note Not available in Python bindings
+     * \since QGIS 3.12
+     */
+    static QHash<QString, QSet<QgsSymbolLayerId>> symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
 };
 
 

@@ -150,6 +150,13 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::BufferOpacity, QgsPropertyDefinition( "BufferOpacity", QObject::tr( "Buffer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
     { QgsPalLayerSettings::BufferJoinStyle, QgsPropertyDefinition( "BufferJoinStyle", QObject::tr( "Buffer join style" ), QgsPropertyDefinition::PenJoinStyle, origin ) },
     { QgsPalLayerSettings::BufferBlendMode, QgsPropertyDefinition( "BufferBlendMode", QObject::tr( "Buffer blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
+
+    { QgsPalLayerSettings::MaskEnabled, QgsPropertyDefinition( "MaskEnabled", QObject::tr( "Enable mask" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::MaskBufferSize, QgsPropertyDefinition( "MaskBufferSize", QObject::tr( "Mask buffer size" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::MaskBufferUnit, QgsPropertyDefinition( "MaskBufferUnit", QObject::tr( "Mask buffer unit" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::MaskOpacity, QgsPropertyDefinition( "MaskOpacity", QObject::tr( "Mask opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::MaskJoinStyle, QgsPropertyDefinition( "MaskJoinStyle", QObject::tr( "Mask join style" ), QgsPropertyDefinition::PenJoinStyle, origin ) },
+
     { QgsPalLayerSettings::ShapeDraw, QgsPropertyDefinition( "ShapeDraw", QObject::tr( "Draw shape" ), QgsPropertyDefinition::Boolean, origin ) },
     {
       QgsPalLayerSettings::ShapeKind, QgsPropertyDefinition( "ShapeKind", QgsPropertyDefinition::DataTypeString, QObject::tr( "Shape type" ), QObject::tr( "string " ) + QStringLiteral( "[<b>Rectangle</b>|<b>Square</b>|<br>"
@@ -1787,11 +1794,13 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // calculate rest of font attributes and store any data defined values
   // this is done here for later use in making label backgrounds part of collision management (when implemented)
   labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling as it breaks with curved labels
+
   if ( mDataDefinedProperties.hasActiveProperties() )
   {
     parseTextStyle( labelFont, fontunits, context );
     parseTextFormatting( context );
     parseTextBuffer( context );
+    parseTextMask( context );
     parseShapeBackground( context );
     parseDropShadow( context );
   }
@@ -3025,6 +3034,55 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   dataDefinedValEval( DDBlendMode, QgsPalLayerSettings::BufferBlendMode, exprVal, context.expressionContext() );
 }
 
+void QgsPalLayerSettings::parseTextMask( QgsRenderContext &context )
+{
+  QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
+
+  QgsTextMaskSettings mask = mFormat.mask();
+
+  // data defined enabled mask?
+  bool maskEnabled = mask.enabled();
+  if ( dataDefinedValEval( DDBool, QgsPalLayerSettings::MaskEnabled, exprVal, context.expressionContext(), mask.enabled() ) )
+  {
+    maskEnabled = exprVal.toBool();
+  }
+
+  if ( !maskEnabled )
+  {
+    return;
+  }
+
+  // data defined buffer size?
+  double bufrSize = mask.size();
+  if ( dataDefinedValEval( DDDoublePos, QgsPalLayerSettings::MaskBufferSize, exprVal, context.expressionContext(), mask.size() ) )
+  {
+    bufrSize = exprVal.toDouble();
+  }
+
+  // data defined opacity?
+  double opacity = mask.opacity() * 100;
+  if ( dataDefinedValEval( DDOpacity, QgsPalLayerSettings::MaskOpacity, exprVal, context.expressionContext(), opacity ) )
+  {
+    opacity = exprVal.toDouble();
+  }
+
+  maskEnabled = ( maskEnabled && bufrSize > 0.0 && opacity > 0 );
+
+  if ( !maskEnabled )
+  {
+    dataDefinedValues.insert( QgsPalLayerSettings::MaskEnabled, QVariant( false ) ); // trigger value
+    dataDefinedValues.remove( QgsPalLayerSettings::MaskBufferSize );
+    dataDefinedValues.remove( QgsPalLayerSettings::MaskOpacity );
+    return; // don't bother evaluating values that won't be used
+  }
+
+  // data defined buffer units?
+  dataDefinedValEval( DDUnits, QgsPalLayerSettings::MaskBufferUnit, exprVal, context.expressionContext() );
+
+  // data defined buffer pen join style?
+  dataDefinedValEval( DDJoinStyle, QgsPalLayerSettings::MaskJoinStyle, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( mask.joinStyle() ) );
+}
+
 void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
@@ -3813,6 +3871,72 @@ void QgsPalLabeling::dataDefinedTextBuffer( QgsPalLayerSettings &tmpLyr,
   {
     QgsTextFormat format = tmpLyr.format();
     format.setBuffer( buffer );
+    tmpLyr.setFormat( format );
+  }
+}
+
+void QgsPalLabeling::dataDefinedTextMask( QgsPalLayerSettings &tmpLyr,
+    const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues )
+{
+  if ( ddValues.isEmpty() )
+    return;
+
+  QgsTextMaskSettings mask = tmpLyr.format().mask();
+  bool changed = false;
+
+  // enabled ?
+  if ( ddValues.contains( QgsPalLayerSettings::MaskEnabled ) )
+  {
+    mask.setEnabled( ddValues.value( QgsPalLayerSettings::MaskEnabled ).toBool() );
+    changed = true;
+  }
+
+  if ( !mask.enabled() )
+  {
+    if ( changed )
+    {
+      QgsTextFormat format = tmpLyr.format();
+      format.setMask( mask );
+      tmpLyr.setFormat( format );
+    }
+
+    // tmpLyr.bufferSize > 0.0 && tmpLyr.bufferTransp < 100 figured in during evaluation
+    return; // don't continue looking for unused values
+  }
+
+  // buffer size
+  if ( ddValues.contains( QgsPalLayerSettings::MaskBufferSize ) )
+  {
+    mask.setSize( ddValues.value( QgsPalLayerSettings::MaskBufferSize ).toDouble() );
+    changed = true;
+  }
+
+  // opacity
+  if ( ddValues.contains( QgsPalLayerSettings::MaskOpacity ) )
+  {
+    mask.setOpacity( ddValues.value( QgsPalLayerSettings::MaskOpacity ).toDouble() / 100.0 );
+    changed = true;
+  }
+
+  // buffer size units
+  if ( ddValues.contains( QgsPalLayerSettings::MaskBufferUnit ) )
+  {
+    QgsUnitTypes::RenderUnit bufunit = static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::MaskBufferUnit ).toInt() );
+    mask.setSizeUnit( bufunit );
+    changed = true;
+  }
+
+  // pen join style
+  if ( ddValues.contains( QgsPalLayerSettings::MaskJoinStyle ) )
+  {
+    mask.setJoinStyle( static_cast< Qt::PenJoinStyle >( ddValues.value( QgsPalLayerSettings::MaskJoinStyle ).toInt() ) );
+    changed = true;
+  }
+
+  if ( changed )
+  {
+    QgsTextFormat format = tmpLyr.format();
+    format.setMask( mask );
     tmpLyr.setFormat( format );
   }
 }

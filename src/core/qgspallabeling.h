@@ -374,6 +374,13 @@ class CORE_EXPORT QgsPalLayerSettings
       BufferJoinStyle = 44,
       BufferBlendMode = 45,
 
+      // mask buffer
+      MaskEnabled = 104, //!< Whether the mask is enabled
+      MaskBufferSize = 105, //!< Mask buffer size
+      MaskBufferUnit = 106, //!< Mask buffer size unit
+      MaskOpacity = 107, //!< Mask opacity
+      MaskJoinStyle = 108, //!< Mask join style
+
       // background
       ShapeDraw = 46,
       ShapeKind = 47,
@@ -1083,6 +1090,8 @@ class CORE_EXPORT QgsPalLayerSettings
 
     void parseTextBuffer( QgsRenderContext &context );
 
+    void parseTextMask( QgsRenderContext &context );
+
     void parseTextFormatting( QgsRenderContext &context );
 
     void parseShapeBackground( QgsRenderContext &context );
@@ -1250,6 +1259,10 @@ class CORE_EXPORT QgsPalLabeling
     //! Update temporary QgsPalLayerSettings with any data defined text buffer values
     static void dataDefinedTextBuffer( QgsPalLayerSettings &tmpLyr,
                                        const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
+
+    //! Update temporary QgsPalLayerSettings with any data defined mask values
+    static void dataDefinedTextMask( QgsPalLayerSettings &tmpLyr,
+                                     const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
 
     //! Update temporary QgsPalLayerSettings with any data defined shape background values
     static void dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr,
