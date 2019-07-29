@@ -1163,7 +1163,6 @@ Wfs3StaticHandler::Wfs3StaticHandler()
 
 void Wfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) const
 {
-
   const auto match { path().match( context.request()->url().path( ) ) };
   if ( ! match.hasMatch() )
   {
