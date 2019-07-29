@@ -31,12 +31,16 @@
 #include <QMimeDatabase>
 
 
-Wfs3APIHandler::Wfs3APIHandler( const QgsServerOgcApi *api ):
+// Maximum number of features that can be retrieved
+// TODO: make this an environment configurable variable
+const int QGIS_SERVER_WFS3_MAX_LIMIT = 10000;
+
+QgsWfs3APIHandler::QgsWfs3APIHandler( const QgsServerOgcApi *api ):
   mApi( api )
 {
 }
 
-void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
+void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   if ( ! context.project() )
   {
@@ -130,7 +134,7 @@ void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
-json Wfs3APIHandler::schema( const QgsServerApiContext &context ) const
+json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
   const auto path { ( context.apiRootPath() + QStringLiteral( "api" ) ).toStdString() };
@@ -180,12 +184,12 @@ json Wfs3APIHandler::schema( const QgsServerApiContext &context ) const
   return data;
 }
 
-Wfs3LandingPageHandler::Wfs3LandingPageHandler()
+QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
 {
 
 }
 
-void Wfs3LandingPageHandler::handleRequest( const QgsServerApiContext &context ) const
+void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json data
   {
@@ -216,7 +220,7 @@ void Wfs3LandingPageHandler::handleRequest( const QgsServerApiContext &context )
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
 }
 
-json Wfs3LandingPageHandler::schema( const QgsServerApiContext &context ) const
+json QgsWfs3LandingPageHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
   const auto path { context.apiRootPath().toStdString() };
@@ -268,11 +272,11 @@ json Wfs3LandingPageHandler::schema( const QgsServerApiContext &context ) const
 }
 
 
-Wfs3ConformanceHandler::Wfs3ConformanceHandler()
+QgsWfs3ConformanceHandler::QgsWfs3ConformanceHandler()
 {
 }
 
-void Wfs3ConformanceHandler::handleRequest( const QgsServerApiContext &context ) const
+void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json data
   {
@@ -292,7 +296,7 @@ void Wfs3ConformanceHandler::handleRequest( const QgsServerApiContext &context )
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
-json Wfs3ConformanceHandler::schema( const QgsServerApiContext &context ) const
+json QgsWfs3ConformanceHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
   const auto path { ( context.apiRootPath() + QStringLiteral( "/conformance" ) ).toStdString() };
@@ -342,11 +346,11 @@ json Wfs3ConformanceHandler::schema( const QgsServerApiContext &context ) const
   return data;
 }
 
-Wfs3CollectionsHandler::Wfs3CollectionsHandler()
+QgsWfs3CollectionsHandler::QgsWfs3CollectionsHandler()
 {
 }
 
-void Wfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context ) const
+void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json crss = json::array();
   for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
@@ -421,7 +425,7 @@ void Wfs3CollectionsHandler::handleRequest( const QgsServerApiContext &context )
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
-json Wfs3CollectionsHandler::schema( const QgsServerApiContext &context ) const
+json QgsWfs3CollectionsHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
   const auto path { ( context.apiRootPath() + QStringLiteral( "/collections" ) ).toStdString() };
@@ -471,11 +475,11 @@ json Wfs3CollectionsHandler::schema( const QgsServerApiContext &context ) const
   return data;
 }
 
-Wfs3DescribeCollectionHandler::Wfs3DescribeCollectionHandler()
+QgsWfs3DescribeCollectionHandler::QgsWfs3DescribeCollectionHandler()
 {
 }
 
-void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &context ) const
+void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   if ( ! context.project() )
   {
@@ -494,8 +498,8 @@ void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &co
 
   const auto title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
   const auto shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
-  json _links { links( context ) };
-  _links.push_back(
+  json linksList { links( context ) };
+  linksList.push_back(
   {
     { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) )  },
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
@@ -503,7 +507,7 @@ void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &co
     { "title", title }
   } );
 
-  _links.push_back(
+  linksList.push_back(
   {
     { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) )  },
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
@@ -540,7 +544,7 @@ void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &co
       }
     },
     {
-      "links", _links
+      "links", linksList
     }
   };
   json navigation = json::array();
@@ -550,7 +554,7 @@ void Wfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext &co
   write( data, context, {{ "pageTitle", title }, { "navigation", navigation }} );
 }
 
-json Wfs3DescribeCollectionHandler::schema( const QgsServerApiContext &context ) const
+json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
   Q_ASSERT( context.project() );
@@ -610,22 +614,22 @@ json Wfs3DescribeCollectionHandler::schema( const QgsServerApiContext &context )
   return data;
 }
 
-Wfs3CollectionsItemsHandler::Wfs3CollectionsItemsHandler()
+QgsWfs3CollectionsItemsHandler::QgsWfs3CollectionsItemsHandler()
 {
 }
 
-QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::parameters( const QgsServerApiContext &context ) const
+QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters( const QgsServerApiContext &context ) const
 {
   QList<QgsServerQueryStringParameter> params;
 
   // Limit
   QgsServerQueryStringParameter limit { QStringLiteral( "limit" ), false,
                                         QgsServerQueryStringParameter::Type::Integer,
-                                        QStringLiteral( "Number of features to retrieve [0-10000]" ),
+                                        QStringLiteral( "Number of features to retrieve [0-%1]" ).arg( QGIS_SERVER_WFS3_MAX_LIMIT ),
                                         10 };
   limit.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
   {
-    return value >= 0 && value <= 10000;   // TODO: make this configurable!
+    return value >= 0 && value <= QGIS_SERVER_WFS3_MAX_LIMIT;   // TODO: make this configurable!
   } );
   params.push_back( limit );
 
@@ -707,7 +711,7 @@ QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::parameters( co
   return params;
 }
 
-json Wfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context ) const
+json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
   Q_ASSERT( context.project() );
@@ -784,7 +788,7 @@ json Wfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context ) c
   return data;
 }
 
-const QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::fieldParameters( const QgsVectorLayer *mapLayer ) const
+const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::fieldParameters( const QgsVectorLayer *mapLayer ) const
 {
   QList<QgsServerQueryStringParameter> params;
   if ( mapLayer )
@@ -816,7 +820,7 @@ const QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::fieldPar
   return params;
 }
 
-void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context ) const
+void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   if ( ! context.project() )
   {
@@ -936,7 +940,7 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
     QgsJsonExporter exporter { mapLayer };
     exporter.setSourceCrs( mapLayer->crs() );
     QgsFeatureList featureList;
-    auto features { mapLayer->getFeatures( req ) };
+    QgsFeatureIterator features { mapLayer->getFeatures( req ) };
     QgsFeature feat;
     long i { 0 };
     while ( features.nextFeature( feat ) )
@@ -1040,11 +1044,11 @@ void Wfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &cont
 
 }
 
-Wfs3CollectionsFeatureHandler::Wfs3CollectionsFeatureHandler()
+QgsWfs3CollectionsFeatureHandler::QgsWfs3CollectionsFeatureHandler()
 {
 }
 
-void Wfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &context ) const
+void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   if ( ! context.project() )
   {
@@ -1066,7 +1070,7 @@ void Wfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &co
   {
     const auto featureId { match.captured( QStringLiteral( "featureId" ) ) };
     QgsJsonExporter exporter { mapLayer };
-    const auto feature { mapLayer->getFeature( featureId.toLongLong() ) };
+    const QgsFeature feature { mapLayer->getFeature( featureId.toLongLong() ) };
     if ( ! feature.isValid() )
     {
       QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
@@ -1096,7 +1100,7 @@ void Wfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &co
   }
 }
 
-json Wfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &context ) const
+json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
   Q_ASSERT( context.project() );
@@ -1156,11 +1160,11 @@ json Wfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &context )
   return data;
 }
 
-Wfs3StaticHandler::Wfs3StaticHandler()
+QgsWfs3StaticHandler::QgsWfs3StaticHandler()
 {
 }
 
-void Wfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) const
+void QgsWfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   const auto match { path().match( context.request()->url().path( ) ) };
   if ( ! match.hasMatch() )

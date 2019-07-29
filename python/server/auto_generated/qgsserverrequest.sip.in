@@ -158,6 +158,8 @@ Set the request method
     const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
 %Docstring
 Returns the query string parameter with the given ``name`` from the request URL, a ``defaultValue`` can be specified.
+
+.. versionadded:: 3.10
 %End
 
   protected:

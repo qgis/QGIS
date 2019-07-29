@@ -107,7 +107,7 @@ const QVector<QgsMapLayer *> QgsServerApiUtils::publishedWfsLayers( const QgsPro
   return result;
 }
 
-const QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
+QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
 {
   QString result { QUrl( value ).toString() };
   static const QRegularExpression re( R"raw(;.*(DROP|DELETE|INSERT|UPDATE|CREATE|INTO))raw" );
@@ -118,7 +118,7 @@ const QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
   return result.replace( '\'', QStringLiteral( "\'" ) );
 }
 
-const QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project )
+QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project )
 {
   // This must be always available in OGC APIs
   QStringList result { { QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" )}};
@@ -137,7 +137,7 @@ const QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project
   return result;
 }
 
-const QString QgsServerApiUtils::crsToOgcUri( const QgsCoordinateReferenceSystem &crs )
+QString QgsServerApiUtils::crsToOgcUri( const QgsCoordinateReferenceSystem &crs )
 {
   const auto parts { crs.authid().split( ':' ) };
   if ( parts.length() == 2 )

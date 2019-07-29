@@ -57,7 +57,7 @@ named parameter.
 
     virtual std::string operationId() const = 0;
 %Docstring
-Operation id for template file names and other internal references
+Returns the operation id for template file names and other internal references
 %End
 
     virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const;
@@ -97,13 +97,13 @@ Tags
 
     virtual QgsServerOgcApi::ContentType defaultContentType() const;
 %Docstring
-Default response content type in case the client did not specifically
+Returns the default response content type in case the client did not specifically
 ask for any particular content type.
 %End
 
     virtual QList<QgsServerOgcApi::ContentType> contentTypes() const;
 %Docstring
-List of content types this handler can serve, default to JSON and HTML.
+Returns the list of content types this handler can serve, default to JSON and HTML.
 In case a specialized type (such as GEOJSON) is supported,
 the generic type (such as JSON) should not be listed.
 %End
@@ -120,7 +120,7 @@ extract validated parameters from the request.
 
     virtual QVariantMap values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
 %Docstring
-Analyze the incoming request ``context`` and returns the validated
+Analyzes the incoming request ``context`` and returns the validated
 parameter map, throws QgsServerApiBadRequestError in case of errors.
 
 Path fragments from the named groups in the path() regular expression
@@ -131,7 +131,7 @@ the parameters map.
 
 :return: the validated parameters map by extracting captured
          named parameters from the path (no validation is performed on
-         the type because the regurlar expression can do it),
+         the type because the regular expression can do it),
          and the query string parameters.
 
 .. seealso:: :py:func:`path`
@@ -150,7 +150,7 @@ returns an empty string if there are not matches.
 
     void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const;
 %Docstring
-Writes ``data`` to the ``context`` response stream, content-type it is calculated from the ``context`` request,
+Writes ``data`` to the ``context`` response stream, content-type is calculated from the ``context`` request,
 optional ``htmlMetadata`` for the HTML templates can be specified and will be added as "metadata" to
 the HTML template variables.
 

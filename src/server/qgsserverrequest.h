@@ -174,6 +174,7 @@ class SERVER_EXPORT QgsServerRequest
 
     /**
      * Returns the query string parameter with the given \a name from the request URL, a \a defaultValue can be specified.
+     * \since QGIS 3.10
      */
     const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
 

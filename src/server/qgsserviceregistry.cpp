@@ -224,7 +224,7 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
   return removed;
 }
 
-QgsServerApi *QgsServiceRegistry::getApiForRequest( const QgsServerRequest &request ) const
+QgsServerApi *QgsServiceRegistry::apiForRequest( const QgsServerRequest &request ) const
 {
   for ( const auto &api : mApis )
   {
@@ -346,7 +346,7 @@ void QgsServiceRegistry::cleanUp()
   mNativeLoader.unloadModules();
 }
 
-void QgsServiceRegistry::registerApi( QgsServerApi *api )
+bool QgsServiceRegistry::registerApi( QgsServerApi *api )
 {
 
   const QString name = api->name();
@@ -357,7 +357,7 @@ void QgsServiceRegistry::registerApi( QgsServerApi *api )
   if ( mApis.constFind( key ) != mApis.constEnd() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Error API %1 %2 is already registered" ).arg( name, version ) );
-    return;
+    return false;
   }
 
   QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2" ).arg( name, version ) );
@@ -374,4 +374,5 @@ void QgsServiceRegistry::registerApi( QgsServerApi *api )
     // Insert the service as the default one
     mApiVersions.insert( name, VersionTable::mapped_type( version, key ) );
   }
+  return true;
 }

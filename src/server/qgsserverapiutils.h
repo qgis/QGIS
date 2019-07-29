@@ -95,7 +95,6 @@ class SERVER_EXPORT QgsServerApiUtils
      * TODO: implement ACL
      * \note not available in Python bindings
      * \see publishedWfsLayers()
-     * \since QGIS 3.10
      */
     template <typename T>
     static const QVector<T *> publishedWfsLayers( const QgsProject *project )

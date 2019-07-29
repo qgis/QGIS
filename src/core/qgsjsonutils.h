@@ -231,7 +231,7 @@ class CORE_EXPORT QgsJsonExporter
     QString exportFeatures( const QgsFeatureList &features, int indent = -1 ) const;
 
     /**
-     * Returns a QJsonObject representation of a list of features (feature collection).
+     * Returns a JSON object representation of a list of features (feature collection).
      * \param features features to convert
      * \returns json object
      * \see exportFeatures()

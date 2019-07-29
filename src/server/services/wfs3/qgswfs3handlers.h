@@ -25,11 +25,11 @@ class QgsServerOgcApi;
 /**
  * The APIHandler class Wfs3handles the API definition
  */
-class Wfs3APIHandler: public QgsServerOgcApiHandler
+class QgsWfs3APIHandler: public QgsServerOgcApiHandler
 {
   public:
 
-    Wfs3APIHandler( const QgsServerOgcApi *api );
+    QgsWfs3APIHandler( const QgsServerOgcApi *api );
 
     // QgsServerOgcApiHandler interface
     void handleRequest( const QgsServerApiContext &context ) const override;
@@ -53,11 +53,11 @@ class Wfs3APIHandler: public QgsServerOgcApiHandler
  * The StaticHandler class Wfs3 serves static files from the static path (resources/server/api/wfs3/static)
  * \see staticPath()
  */
-class Wfs3StaticHandler: public QgsServerOgcApiHandler
+class QgsWfs3StaticHandler: public QgsServerOgcApiHandler
 {
   public:
 
-    Wfs3StaticHandler( );
+    QgsWfs3StaticHandler( );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -74,11 +74,11 @@ class Wfs3StaticHandler: public QgsServerOgcApiHandler
 };
 
 
-class Wfs3LandingPageHandler: public QgsServerOgcApiHandler
+class QgsWfs3LandingPageHandler: public QgsServerOgcApiHandler
 {
   public:
 
-    Wfs3LandingPageHandler( );
+    QgsWfs3LandingPageHandler( );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -103,11 +103,11 @@ class Wfs3LandingPageHandler: public QgsServerOgcApiHandler
 };
 
 
-class Wfs3ConformanceHandler: public QgsServerOgcApiHandler
+class QgsWfs3ConformanceHandler: public QgsServerOgcApiHandler
 {
   public:
 
-    Wfs3ConformanceHandler( );
+    QgsWfs3ConformanceHandler( );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -133,11 +133,11 @@ class Wfs3ConformanceHandler: public QgsServerOgcApiHandler
  * The CollectionsHandler lists all available collections for the current project
  * Path: /collections
  */
-class Wfs3CollectionsHandler: public QgsServerOgcApiHandler
+class QgsWfs3CollectionsHandler: public QgsServerOgcApiHandler
 {
   public:
 
-    Wfs3CollectionsHandler( );
+    QgsWfs3CollectionsHandler( );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -165,10 +165,10 @@ class Wfs3CollectionsHandler: public QgsServerOgcApiHandler
  * The DescribeCollectionHandler describes a single collection
  * Path: /collections/{collectionId}
  */
-class Wfs3DescribeCollectionHandler: public QgsServerOgcApiHandler
+class QgsWfs3DescribeCollectionHandler: public QgsServerOgcApiHandler
 {
   public:
-    Wfs3DescribeCollectionHandler( );
+    QgsWfs3DescribeCollectionHandler( );
     void handleRequest( const QgsServerApiContext &context ) const override;
 
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+?)(\.json|\.html)?$)re" ); }
@@ -187,10 +187,10 @@ class Wfs3DescribeCollectionHandler: public QgsServerOgcApiHandler
  * The CollectionsItemsHandler list all items in the collection
  * Path: /collections/{collectionId}
  */
-class Wfs3CollectionsItemsHandler: public QgsServerOgcApiHandler
+class QgsWfs3CollectionsItemsHandler: public QgsServerOgcApiHandler
 {
   public:
-    Wfs3CollectionsItemsHandler( );
+    QgsWfs3CollectionsItemsHandler( );
     void handleRequest( const QgsServerApiContext &context ) const override;
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html)?$)re" ); }
     std::string operationId() const override { return "getFeatures"; }
@@ -218,10 +218,10 @@ class Wfs3CollectionsItemsHandler: public QgsServerOgcApiHandler
 };
 
 
-class Wfs3CollectionsFeatureHandler: public QgsServerOgcApiHandler
+class QgsWfs3CollectionsFeatureHandler: public QgsServerOgcApiHandler
 {
   public:
-    Wfs3CollectionsFeatureHandler( );
+    QgsWfs3CollectionsFeatureHandler( );
     void handleRequest( const QgsServerApiContext &context ) const override;
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html)?$)re" ); }
     std::string operationId() const override { return "getFeature"; }

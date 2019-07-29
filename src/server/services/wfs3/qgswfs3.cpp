@@ -36,15 +36,15 @@ class QgsWfs3Module: public QgsServiceModule
                                                        QStringLiteral( "1.0.0" )
                                                      };
       // Register handlers
-      wfs3Api->registerHandler<Wfs3CollectionsItemsHandler>();
-      wfs3Api->registerHandler<Wfs3CollectionsFeatureHandler>();
-      wfs3Api->registerHandler<Wfs3CollectionsHandler>();
-      wfs3Api->registerHandler<Wfs3DescribeCollectionHandler>();
-      wfs3Api->registerHandler<Wfs3ConformanceHandler>();
-      wfs3Api->registerHandler<Wfs3StaticHandler>();
+      wfs3Api->registerHandler<QgsWfs3CollectionsItemsHandler>();
+      wfs3Api->registerHandler<QgsWfs3CollectionsFeatureHandler>();
+      wfs3Api->registerHandler<QgsWfs3CollectionsHandler>();
+      wfs3Api->registerHandler<QgsWfs3DescribeCollectionHandler>();
+      wfs3Api->registerHandler<QgsWfs3ConformanceHandler>();
+      wfs3Api->registerHandler<QgsWfs3StaticHandler>();
       // API handler must access to the whole API
-      wfs3Api->registerHandler<Wfs3APIHandler>( wfs3Api );
-      wfs3Api->registerHandler<Wfs3LandingPageHandler>();
+      wfs3Api->registerHandler<QgsWfs3APIHandler>( wfs3Api );
+      wfs3Api->registerHandler<QgsWfs3LandingPageHandler>();
 
       // Register API
       registry.registerApi( wfs3Api );
