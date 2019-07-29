@@ -33,15 +33,26 @@ QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
   const auto parts { bbox.split( ',', QString::SplitBehavior::SkipEmptyParts ) };
   // Note: Z is ignored
   auto ok { true };
-  if ( parts.count() >= 4 )
+  if ( parts.count() == 4 ||  parts.count() == 6 )
   {
+    const auto hasZ { parts.count() == 6 };
     auto toDouble = [ & ]( const int i ) -> double
     {
       if ( ! ok )
         return 0;
       return parts[i].toDouble( &ok );
     };
-    const auto rect { QgsRectangle( toDouble( 0 ), toDouble( 1 ), toDouble( 2 ), toDouble( 3 ) ) };
+    QgsRectangle rect;
+    if ( hasZ )
+    {
+      rect = QgsRectangle( toDouble( 0 ), toDouble( 1 ),
+                           toDouble( 3 ), toDouble( 4 ) );
+    }
+    else
+    {
+      rect = QgsRectangle( toDouble( 0 ), toDouble( 1 ),
+                           toDouble( 2 ), toDouble( 3 ) );
+    }
     if ( ok )
     {
       return rect;

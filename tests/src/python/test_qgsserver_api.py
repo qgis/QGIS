@@ -54,7 +54,7 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         self.assertEquals(bbox.xMaximum(), 8.203497)
         self.assertEquals(bbox.yMaximum(), 44.901484)
 
-        bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,8.203497,44.901484,100,120')
+        bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,100,8.203497,44.901484,120')
         self.assertEquals(bbox.xMinimum(), 8.203495)
         self.assertEquals(bbox.yMinimum(), 44.901482)
         self.assertEquals(bbox.xMaximum(), 8.203497)
