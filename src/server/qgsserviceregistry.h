@@ -107,7 +107,7 @@ class SERVER_EXPORT QgsServiceRegistry
     QgsServerApi *getApiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
 
     /**
-     * Retrieve an API from its name
+     * Retrieves an API from its name
      * \param name the name of the API
      * \param version the version string (optional)
      * \returns QgsServerApi
