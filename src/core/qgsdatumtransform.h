@@ -268,12 +268,15 @@ class CORE_EXPORT QgsDatumTransform
      * first. Operations may require grid transformation files which are not available on the local
      * install.
      *
+     * If \a includeSuperseded is TRUE, superseded (but not deprecated) transforms will be included
+     * in the results. This requires Proj >= 6.2.
+     *
      * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return an empty list,
      * and the deprecated API from QgsDatumTransform must be used instead.
      *
      * \since QGIS 3.8
      */
-    static QList< QgsDatumTransform::TransformDetails > operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+    static QList< QgsDatumTransform::TransformDetails > operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded = false );
 
     /**
      * Returns a list of datum transformations which are available for the given \a source and \a destination CRS.

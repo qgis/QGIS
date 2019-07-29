@@ -25,12 +25,13 @@
 #include <proj.h>
 #endif
 
-QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
+QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded )
 {
   QList< QgsDatumTransform::TransformDetails > res;
 #if PROJ_VERSION_MAJOR<6
   Q_UNUSED( source )
   Q_UNUSED( destination )
+  Q_UNUSED( includeSuperseded )
 #else
   if ( !source.projObject() || !destination.projObject() )
     return res;
@@ -43,8 +44,14 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   proj_operation_factory_context_set_grid_availability_use( pjContext, operationContext, PROJ_GRID_AVAILABILITY_IGNORED );
 
   // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
-  proj_operation_factory_context_set_spatial_criterion( pjContext,   operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
+  proj_operation_factory_context_set_spatial_criterion( pjContext, operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
 
+#if PROJ_VERSION_MAJOR> 6 or PROJ_VERSION_MINOR >= 2
+  if ( includeSuperseded )
+    proj_operation_factory_context_set_discard_superseded( pjContext, operationContext, false );
+#else
+  Q_UNUSED( includeSuperseded )
+#endif
   if ( PJ_OBJ_LIST *ops = proj_create_operations( pjContext, source.projObject(), destination.projObject(), operationContext ) )
   {
     int count = proj_list_get_count( ops );

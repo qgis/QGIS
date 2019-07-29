@@ -107,6 +107,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void tableCurrentItemChanged( QTableWidgetItem *, QTableWidgetItem * );
     void setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs );
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
+    void showSupersededToggled( bool toggled );
 
   private:
 
