@@ -342,14 +342,14 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     /**
      * Returns the vertical placement of text labels.
-     * \see setLabelPlacement()
+     * \see setLabelVerticalPlacement()
      * \since QGIS 3.10
      */
     QgsScaleBarSettings::LabelVerticalPlacement labelVerticalPlacement() const { return mSettings.labelVerticalPlacement(); }
 
     /**
      * Sets the vertical \a placement of text labels.
-     * \see labelPlacement()
+     * \see labelVerticalPlacement()
      * \since QGIS 3.10
      */
     void setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement placement );
