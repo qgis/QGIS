@@ -789,7 +789,6 @@ const QList<QgsServerQueryStringParameter> Wfs3CollectionsItemsHandler::fieldPar
   QList<QgsServerQueryStringParameter> params;
   if ( mapLayer )
   {
-
     const auto constFields { QgsServerApiUtils::publishedFields( mapLayer ) };
     for ( const auto &f : constFields )
     {
