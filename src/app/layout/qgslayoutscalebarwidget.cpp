@@ -43,7 +43,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mStyleComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged );
   connect( mLabelBarSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged );
   connect( mBoxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mBoxSizeSpinBox_valueChanged );
-  connect( mAlignmentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mAlignmentComboBox_currentIndexChanged );
+  connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, &QgsLayoutScaleBarWidget::alignmentChanged );
   connect( mUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged );
   connect( mLineJoinStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged );
   connect( mLineCapStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineCapStyleCombo_currentIndexChanged );
@@ -74,9 +74,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
 
   //alignment combo box
-  mAlignmentComboBox->insertItem( 0, tr( "Left" ) );
-  mAlignmentComboBox->insertItem( 1, tr( "Middle" ) );
-  mAlignmentComboBox->insertItem( 2, tr( "Right" ) );
+  mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
   //units combo box
   mUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
@@ -213,7 +211,21 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   toggleStyleSpecificControls( style );
 
   //alignment
-  mAlignmentComboBox->setCurrentIndex( static_cast< int >( mScalebar->alignment() ) );
+
+  Qt::Alignment a = Qt::AlignLeft;
+  switch ( mScalebar->alignment() )
+  {
+    case QgsScaleBarSettings::AlignLeft:
+      a = Qt::AlignLeft;
+      break;
+    case QgsScaleBarSettings::AlignRight:
+      a = Qt::AlignRight;
+      break;
+    case QgsScaleBarSettings::AlignMiddle:
+      a = Qt::AlignHCenter;
+      break;
+  }
+  mAlignmentComboBox->setCurrentAlignment( a );
 
   //units
   mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( static_cast< int >( mScalebar->units() ) ) );
@@ -528,7 +540,7 @@ void QgsLayoutScaleBarWidget::mBoxSizeSpinBox_valueChanged( double d )
   mScalebar->endCommand();
 }
 
-void QgsLayoutScaleBarWidget::mAlignmentComboBox_currentIndexChanged( int index )
+void QgsLayoutScaleBarWidget::alignmentChanged()
 {
   if ( !mScalebar )
   {
@@ -537,7 +549,10 @@ void QgsLayoutScaleBarWidget::mAlignmentComboBox_currentIndexChanged( int index 
 
   mScalebar->beginCommand( tr( "Set Scalebar Alignment" ) );
   disconnectUpdateSignal();
-  mScalebar->setAlignment( static_cast< QgsScaleBarSettings::Alignment >( index ) );
+
+  const QgsScaleBarSettings::Alignment a = mAlignmentComboBox->currentAlignment() & Qt::AlignLeft ? QgsScaleBarSettings::AlignLeft
+      : mAlignmentComboBox->currentAlignment() & Qt::AlignRight ? QgsScaleBarSettings::AlignRight : QgsScaleBarSettings::AlignMiddle;
+  mScalebar->setAlignment( a );
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
