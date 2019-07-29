@@ -44,7 +44,7 @@ void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
   }
 
   const QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *context.project() );
-  QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *context.project() );
+  const QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *context.project() );
 
   const auto metadata { context.project()->metadata() };
   json data
