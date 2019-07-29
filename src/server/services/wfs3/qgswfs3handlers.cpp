@@ -1067,7 +1067,7 @@ void Wfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &co
   {
     const auto featureId { match.captured( QStringLiteral( "featureId" ) ) };
     QgsJsonExporter exporter { mapLayer };
-    auto feature { mapLayer->getFeature( featureId.toLongLong() ) };
+    const auto feature { mapLayer->getFeature( featureId.toLongLong() ) };
     if ( ! feature.isValid() )
     {
       QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
