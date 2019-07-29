@@ -112,7 +112,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     virtual QgsServerOgcApi::ContentType defaultContentType() const  { return QgsServerOgcApi::ContentType::JSON; }
 
     /**
-     * List of content types this handler can serve, default to JSON and HTML.
+     * Returns the list of content types this handler can serve, default to JSON and HTML.
      * In case a specialized type (such as GEOJSON) is supported,
      * the generic type (such as JSON) should not be listed.
      */
