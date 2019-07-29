@@ -137,7 +137,7 @@ class SERVER_EXPORT QgsServerApiUtils
      * Returns a \a crs into OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
      * Returns an empty string on failure.
      */
-    static const QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs );
+    static QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs );
 
 
 };
