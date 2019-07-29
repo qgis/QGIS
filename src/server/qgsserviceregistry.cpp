@@ -353,7 +353,7 @@ void QgsServiceRegistry::registerApi( QgsServerApi *api )
   QString version = api->version();
 
   // Test if service is already registered
-  QString key = makeServiceKey( name, version );
+  const QString key = makeServiceKey( name, version );
   if ( mApis.constFind( key ) != mApis.constEnd() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Error API %1 %2 is already registered" ).arg( name, version ) );
