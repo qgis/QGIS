@@ -125,7 +125,7 @@ class SERVER_EXPORT QgsServerApiUtils
      * Sanitize the input \a value by removing URL encoding and checking for malicious content.
      * In case of failure returns an empty string.
      */
-    static const QString sanitizedFieldValue( const QString &value );
+    static QString sanitizedFieldValue( const QString &value );
 
     /**
      * Returns the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) available for this \a project.
