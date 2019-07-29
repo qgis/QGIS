@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsnewauxiliarylayerdialog.h"
-#include "qgsproject.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsproject.h"
+#include "qgsgui.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -27,6 +28,7 @@ QgsNewAuxiliaryLayerDialog::QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, Q
   , mLayer( layer )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   const QgsFields fields = mLayer->fields();
   for ( const QgsField &field : fields )
