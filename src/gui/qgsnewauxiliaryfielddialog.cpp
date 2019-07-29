@@ -17,6 +17,7 @@
 
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsgui.h"
 
 #include <QMessageBox>
 
@@ -27,6 +28,7 @@ QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinit
   , mPropertyDefinition( def )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   mType->addItem( tr( "String" ) );
   mType->addItem( tr( "Real" ) );
