@@ -13,7 +13,6 @@
 %Include auto_generated/qgsbufferserverrequest.sip
 %Include auto_generated/qgsbufferserverresponse.sip
 %Include auto_generated/qgsfcgiserverrequest.sip
-%Include auto_generated/qgsfilterresponsedecorator.sip
 %Include auto_generated/qgsrequesthandler.sip
 %Include auto_generated/qgsserver.sip
 %Include auto_generated/qgsserverapiutils.sip

@@ -19,10 +19,10 @@
 #include "qgis_server.h"
 #include <QString>
 
+class QgsServerResponse;
 class QgsServerRequest;
 class QgsServerInterface;
 class QgsProject;
-class QgsFilterResponseDecorator;
 
 /**
  * \ingroup server
@@ -45,11 +45,11 @@ class SERVER_EXPORT QgsServerApiContext
     * \param apiRootPath is the API root path, this information is used by the
     *        handlers to build the href links to the resources and to the HTML templates.
     * \param request the incoming request
-    * \param responseDecorator the response decorator
+    * \param response the response
     * \param project the project (might be NULL)
     * \param serverInterface the server interface
     */
-    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsFilterResponseDecorator *responseDecorator,
+    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response,
                          const QgsProject *project, QgsServerInterface *serverInterface );
 
     /**
@@ -58,9 +58,9 @@ class SERVER_EXPORT QgsServerApiContext
     const QgsServerRequest *request() const;
 
     /**
-     * Returns the server response decorator object
+     * Returns the server response object
      */
-    QgsFilterResponseDecorator *responseDecorator() const;
+    QgsServerResponse *response() const;
 
     /**
      * Returns the (possibly NULL) project
@@ -105,7 +105,7 @@ class SERVER_EXPORT QgsServerApiContext
 
     QString mApiRootPath;
     const QgsServerRequest *mRequest = nullptr;
-    QgsFilterResponseDecorator *mResponseDecorator = nullptr;
+    QgsServerResponse *mResponse = nullptr;
     const QgsProject *mProject = nullptr;
     QgsServerInterface *mServerInterface = nullptr;
 };

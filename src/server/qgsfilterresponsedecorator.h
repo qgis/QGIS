@@ -19,7 +19,9 @@
 #ifndef QGSFILTERRESPONSEDECORATOR_H
 #define QGSFILTERRESPONSEDECORATOR_H
 
-#include "qgis_server.h"
+#define SIP_NO_FILE
+
+
 #include "qgsserverresponse.h"
 #include "qgsserverfilter.h"
 
@@ -29,7 +31,7 @@
  * \brief Class defining decorator for calling filter's hooks
  * \since QGIS 3.0
  */
-class SERVER_EXPORT QgsFilterResponseDecorator: public QgsServerResponse
+class QgsFilterResponseDecorator: public QgsServerResponse
 {
   public:
 

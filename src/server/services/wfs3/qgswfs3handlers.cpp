@@ -19,7 +19,7 @@
 #include "qgsserverogcapi.h"
 #include "qgsserverapicontext.h"
 #include "qgsserverrequest.h"
-#include "qgsfilterresponsedecorator.h"
+#include "qgsserverresponse.h"
 #include "qgsserverapiutils.h"
 #include "qgsfeaturerequest.h"
 #include "qgsjsonutils.h"
@@ -1190,8 +1190,8 @@ void QgsWfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) c
   const qint64 size { f.size() };
   const QByteArray content { f.readAll() };
   const QMimeType mimeType { QMimeDatabase().mimeTypeForFile( filePath )};
-  context.responseDecorator()->setHeader( QStringLiteral( "Content-Type" ), mimeType.name() );
-  context.responseDecorator()->setHeader( QStringLiteral( "Content-Length" ), QString::number( size ) );
-  context.responseDecorator()->write( content );
+  context.response()->setHeader( QStringLiteral( "Content-Type" ), mimeType.name() );
+  context.response()->setHeader( QStringLiteral( "Content-Length" ), QString::number( size ) );
+  context.response()->write( content );
 }
 
