@@ -209,7 +209,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     virtual json schema( const QgsServerApiContext &context ) const;
 
     /**
-     * Utility method that builds and returns a link to the resource.
+     * Builds and returns a link to the resource.
      *
      * \param context request context
      * \param linkType type of the link (rel attribute), default to SELF
