@@ -161,7 +161,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
 #ifndef SIP_RUN  // Skip SIP
 
     /**
-     * Writes \a data to the \a context response stream, content-type it is calculated from the \a context request,
+     * Writes \a data to the \a context response stream, content-type is calculated from the \a context request,
      * optional \a htmlMetadata for the HTML templates can be specified and will be added as "metadata" to
      * the HTML template variables.
      *
