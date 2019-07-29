@@ -43,7 +43,7 @@ void Wfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
     throw  QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project not found, please check your server configuration." ) );
   }
 
-  QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *context.project() );
+  const QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *context.project() );
   QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *context.project() );
 
   const auto metadata { context.project()->metadata() };
