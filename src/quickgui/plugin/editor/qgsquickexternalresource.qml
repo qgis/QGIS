@@ -114,7 +114,7 @@ Item {
   }
 
   function getAbsolutePath(prefix, pathFromValue) {
-    return (prefix) ? prefixToRelativePath + "/" + pathFromValue : pathFromValue
+    return (prefix) ? prefix + "/" + pathFromValue : pathFromValue
   }
 
   id: fieldItem
@@ -271,7 +271,6 @@ Item {
             }
             photoCapturePanelLoader.item.visible = true
             photoCapturePanelLoader.item.targetDir = targetDir
-            photoCapturePanelLoader.item.homePath = homePath
             photoCapturePanelLoader.item.prefixToRelativePath = prefixToRelativePath
             photoCapturePanelLoader.item.fieldItem = fieldItem
           }
