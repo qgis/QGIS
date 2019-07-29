@@ -34,13 +34,16 @@
 #include <QDialogButtonBox>
 
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, int featureId, const QFont &labelFont, const QString &labelText, bool isPinned, QWidget *parent, Qt::WindowFlags f ):
-  QDialog( parent, f )
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
   , mLabelFont( labelFont )
   , mIsPinned( isPinned )
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
+
+  // set defaults to layer defaults
+  mLabelAllPartsCheckBox->setChecked( layerSettings.labelPerPart );
 
   connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsLabelPropertyDialog::buttonBox_clicked );
   connect( mShowLabelChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mShowLabelChkbx_toggled );
@@ -64,6 +67,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   connect( mHaliComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mHaliComboBox_currentIndexChanged );
   connect( mValiComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mValiComboBox_currentIndexChanged );
   connect( mLabelTextLineEdit, &QLineEdit::textChanged, this, &QgsLabelPropertyDialog::mLabelTextLineEdit_textChanged );
+  connect( mLabelAllPartsCheckBox, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::labelAllPartsToggled );
 
   mRotationSpinBox->setClearValue( 0 );
   fillMultiLineAlignComboBox();
@@ -92,7 +96,7 @@ void QgsLabelPropertyDialog::buttonBox_clicked( QAbstractButton *button )
   }
 }
 
-void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, int featureId, const QString &labelText )
+void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QString &labelText )
 {
   //get feature attributes
   QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
@@ -244,6 +248,7 @@ void QgsLabelPropertyDialog::disableGuiElements()
   mHaliComboBox->setEnabled( false );
   mValiComboBox->setEnabled( false );
   mRotationSpinBox->setEnabled( false );
+  mLabelAllPartsCheckBox->setEnabled( false );
 }
 
 void QgsLabelPropertyDialog::blockElementSignals( bool block )
@@ -270,6 +275,7 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
   mHaliComboBox->blockSignals( block );
   mValiComboBox->blockSignals( block );
   mRotationSpinBox->blockSignals( block );
+  mLabelAllPartsCheckBox->blockSignals( block );
 }
 
 void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
@@ -315,6 +321,10 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 
       case QgsPalLayerSettings::CalloutDraw:
         mShowCalloutChkbx->setChecked( result.toBool() );
+        break;
+
+      case QgsPalLayerSettings::LabelAllParts:
+        mLabelAllPartsCheckBox->setChecked( result.toBool() );
         break;
 
       case QgsPalLayerSettings::MinimumScale:
@@ -514,6 +524,9 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::CalloutDraw:
         mShowCalloutChkbx->setEnabled( true );
         break;
+      case QgsPalLayerSettings::LabelAllParts:
+        mLabelAllPartsCheckBox->setEnabled( true );
+        break;
       default:
         break;
     }
@@ -592,6 +605,11 @@ void QgsLabelPropertyDialog::mShowLabelChkbx_toggled( bool chkd )
 void QgsLabelPropertyDialog::mAlwaysShowChkbx_toggled( bool chkd )
 {
   insertChangedValue( QgsPalLayerSettings::AlwaysShow, ( chkd ? 1 : 0 ) );
+}
+
+void QgsLabelPropertyDialog::labelAllPartsToggled( bool checked )
+{
+  insertChangedValue( QgsPalLayerSettings::LabelAllParts, ( checked ? 1 : 0 ) );
 }
 
 void QgsLabelPropertyDialog::showCalloutToggled( bool chkd )
