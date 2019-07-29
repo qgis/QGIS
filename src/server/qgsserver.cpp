@@ -374,7 +374,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QgsServerApi *api = nullptr;
       if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
       {
-        QgsServerApiContext context { api->rootPath(), &request, &response, project, sServerInterface };
+        QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
         api->executeRequest( context );
       }
       else
