@@ -349,7 +349,7 @@ void QgsServiceRegistry::cleanUp()
 void QgsServiceRegistry::registerApi( QgsServerApi *api )
 {
 
-  QString name    = api->name();
+  const QString name = api->name();
   QString version = api->version();
 
   // Test if service is already registered
