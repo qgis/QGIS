@@ -66,6 +66,15 @@ class CORE_EXPORT QgsScaleBarSettings
     };
 
     /**
+     * Label horizontal placement.
+     */
+    enum LabelHorizontalPlacement
+    {
+      LabelCenteredEdge = 0, //!< Labels are drawn centered relative to segment's edge
+      LabelCenteredSegment, //!< Labels are drawn centered relative to segment
+    };
+
+    /**
      * Constructor for QgsScaleBarSettings.
      */
     QgsScaleBarSettings()
@@ -414,6 +423,20 @@ class CORE_EXPORT QgsScaleBarSettings
     void setLabelVerticalPlacement( LabelVerticalPlacement placement ) { mLabelVerticalPlacement = placement; }
 
     /**
+     * Returns the horizontal placement of text labels.
+     * \see setLabelHorizontalPlacement()
+     * \since QGIS 3.10
+     */
+    LabelHorizontalPlacement labelHorizontalPlacement() const { return mLabelHorizontalPlacement; }
+
+    /**
+     * Sets the horizontal \a placement of text labels.
+     * \see labelHorizontalPlacement()
+     * \since QGIS 3.10
+     */
+    void setLabelHorizontalPlacement( LabelHorizontalPlacement placement ) { mLabelHorizontalPlacement = placement; }
+
+    /**
      * Returns the spacing (margin) between the scalebar box and content in millimeters.
      * \see setBoxContentSpace()
      */
@@ -503,8 +526,10 @@ class CORE_EXPORT QgsScaleBarSettings
 
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;
-    //! Labels placement
+    //! Labels vertical placement
     LabelVerticalPlacement mLabelVerticalPlacement = LabelAboveSegment;
+    //! Labels horizontal placement
+    LabelHorizontalPlacement mLabelHorizontalPlacement = LabelCenteredEdge;
 
     //! Space between content and item box
     double mBoxContentSpace = 1.0;

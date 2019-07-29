@@ -416,6 +416,24 @@ Sets the vertical ``placement`` of text labels.
 .. versionadded:: 3.10
 %End
 
+    QgsScaleBarSettings::LabelHorizontalPlacement labelHorizontalPlacement() const;
+%Docstring
+Returns the horizontal placement of text labels.
+
+.. seealso:: :py:func:`setLabelHorizontalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement placement );
+%Docstring
+Sets the horizontal ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelHorizontalPlacement`
+
+.. versionadded:: 3.10
+%End
+
     QgsScaleBarSettings::Alignment alignment() const;
 %Docstring
 Returns the scalebar alignment.

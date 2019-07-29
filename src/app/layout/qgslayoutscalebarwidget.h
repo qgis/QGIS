@@ -55,7 +55,8 @@ class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpress
     void mStyleComboBox_currentIndexChanged( const QString &text );
     void mLabelBarSpaceSpinBox_valueChanged( double d );
     void mBoxSizeSpinBox_valueChanged( double d );
-    void mLabelPlacementComboBox_currentIndexChanged( int index );
+    void mLabelVerticalPlacementComboBox_currentIndexChanged( int index );
+    void mLabelHorizontalPlacementComboBox_currentIndexChanged( int index );
     void alignmentChanged();
     void mUnitsComboBox_currentIndexChanged( int index );
     void mLineJoinStyleCombo_currentIndexChanged( int index );
