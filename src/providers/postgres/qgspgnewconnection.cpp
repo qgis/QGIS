@@ -115,6 +115,7 @@ void QgsPgNewConnection::accept()
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
+  testConnection();
 
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
@@ -204,6 +205,18 @@ void QgsPgNewConnection::testConnection()
   }
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), true );
+
+  if ( conn->postgresVersion() < 95000 )
+  {
+    cb_projectsInDatabase->setChecked( false );
+    cb_projectsInDatabase->setEnabled( false );
+    cb_projectsInDatabase->setToolTip( QStringLiteral( "Saving projects in databases not available for Postgres databases earlier than 9.5" ) );
+  }
+  else
+  {
+    cb_projectsInDatabase->setEnabled( true );
+    cb_projectsInDatabase->setToolTip( QStringLiteral( "" ) );
+  }
 
   if ( conn )
   {
