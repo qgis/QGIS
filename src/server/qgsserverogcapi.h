@@ -65,7 +65,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     };
     Q_ENUM( Rel )
 
-    // Note: non a scoped enum or qHash fails
+    // Note: cannot be a scoped enum because qHash does not support them
     //! Media types used for content negotiation, insert more specific first
     enum ContentType
     {
