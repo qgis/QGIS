@@ -30,7 +30,14 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 {
     Q_OBJECT
   public:
-    QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, int featureId, const QFont &labelFont, const QString &labelText, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsLabelPropertyDialog( const QString &layerId,
+                            const QString &providerId,
+                            int featureId,
+                            const QFont &labelFont,
+                            const QString &labelText,
+                            bool isPinned,
+                            QWidget *parent = nullptr,
+                            Qt::WindowFlags f = nullptr );
 
     //! Returns properties changed by the user
     const QgsAttributeMap &changedProperties() const { return mChangedProperties; }
@@ -94,6 +101,8 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     //! Insert changed value into mChangedProperties
     void insertChangedValue( QgsPalLayerSettings::Property p, const QVariant &value );
 
+    void enableWidgetsForPinnedLabels();
+
     QgsAttributeMap mChangedProperties;
     QgsPropertyCollection mDataDefinedProperties;
     QFont mLabelFont;
@@ -101,10 +110,14 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     QFontDatabase mFontDB;
 
     //! Label field for the current layer (or -1 if none)
-    int mCurLabelField;
+    int mCurLabelField = -1;
 
     //! Current feature
     QgsFeature mCurLabelFeat;
+
+    bool mIsPinned = false;
+    bool mCanSetHAlignment = false;
+    bool mCanSetVAlignment = false;
 };
 
 #endif // QGSLAYERPROPERTYDIALOG_H
