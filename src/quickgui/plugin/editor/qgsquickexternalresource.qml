@@ -24,6 +24,33 @@ import QgsQuick 0.1 as QgsQuick
  * Requires various global properties set to function, see qgsquickfeatureform Loader section
  * Do not use directly from Application QML
  * The widget is interactive which allows interactions even in readOnly state (e.g showing preview), but no edit!
+ *
+ * Overview of path handling
+ * -------------------------
+ *
+ * Project home path: comes from QgsProject::homePath() - by default it points to the folder where
+ * the .qgs/.qgz project file is stored, but can be changed manually by the user.
+ *
+ * Default path: defined in the field's configuration. This is the path where newly captured images will be stored.
+ * It has to be an absolute path. It can be defined as an expression (e.g. @project_home || '/photos') or
+ * by plain path (e.g. /home/john/photos). If not defined, project home path is used.
+ *
+ * In the field's configuration, there are three ways how path to pictures is stored in field values:
+ * absolute paths, relative to default path and relative to project path. Below is an example of how
+ * the final field values of paths are calculated.
+ *
+ *   variable         |     value
+ * -------------------+--------------------------------
+ * project home path  |  /home/john
+ * default path       |  /home/john/photos
+ * image path         |  /home/john/photos/img0001.jpg
+ *
+ *
+ *    storage type          |   calculation of field value    |      final field value
+ * -------------------------+---------------------------------+--------------------------------
+ * absolute path            |  image path                     |   /home/john/photos/img0001.jpg
+ * relative to default path |  image path - default path      |   img0001.jpg
+ * relative to project path |  image path - project home path |   photos/img0001.jpg
  */
 Item {
   signal valueChanged(var value, bool isNull)
@@ -86,6 +113,10 @@ Item {
     externalResourceHandler.onFormCanceled(fieldItem)
   }
 
+  function getAbsolutePath(prefix, pathFromValue) {
+    return (prefix) ? prefixToRelativePath + "/" + pathFromValue : pathFromValue
+  }
+
   id: fieldItem
   enabled: true // its interactive widget
   height: customStyle.fields.height * 3
@@ -137,7 +168,7 @@ Item {
 
       MouseArea {
         anchors.fill: parent
-        onClicked: externalResourceHandler.previewImage(prefixToRelativePath + "/" + image.currentValue)
+        onClicked: externalResourceHandler.previewImage(getAbsolutePath(prefixToRelativePath, image.currentValue))
       }
 
       onCurrentValueChanged: {
@@ -147,20 +178,21 @@ Item {
       Component.onCompleted: image.source = getSource()
 
       function getSource() {
+        var absolutePath = getAbsolutePath(prefixToRelativePath, image.currentValue)
         if (image.status === Image.Error) {
           fieldItem.state = "notAvailable"
           return ""
         }
-        else if (image.currentValue && QgsQuick.Utils.fileExists(prefixToRelativePath + "/" + image.currentValue)) {
+        else if (image.currentValue && QgsQuick.Utils.fileExists(absolutePath)) {
           fieldItem.state = "valid"
-          return prefixToRelativePath + "/" + image.currentValue
+          return absolutePath
         }
         else if (!image.currentValue) {
           fieldItem.state = "notSet"
           return ""
         }
         fieldItem.state = "notAvailable"
-        return prefixToRelativePath + "/" + image.currentValue
+        return absolutePath
       }
     }
   }
@@ -176,7 +208,7 @@ Item {
     anchors.bottom: imageContainer.bottom
     anchors.margins: buttonsContainer.itemHeight/4
 
-    onClicked: externalResourceHandler.removeImage(fieldItem, prefixToRelativePath + "/" + image.currentValue)
+    onClicked: externalResourceHandler.removeImage(fieldItem, getAbsolutePath(prefixToRelativePath, image.currentValue))
 
     background: Image {
       id: deleteIcon
