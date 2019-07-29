@@ -26,7 +26,7 @@ request handlers chain.
 %End
   public:
 
-    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response,
+    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsFilterResponseDecorator *responseDecorator,
                          const QgsProject *project, QgsServerInterface *serverInterface );
 %Docstring
 QgsServerApiContext constructor
@@ -34,7 +34,7 @@ QgsServerApiContext constructor
 :param apiRootPath: is the API root path, this information is used by the
                     handlers to build the href links to the resources and to the HTML templates.
 :param request: the incoming request
-:param response: the response
+:param responseDecorator: the response decorator
 :param project: the project (might be NULL)
 :param serverInterface: the server interface
 %End
@@ -44,9 +44,9 @@ QgsServerApiContext constructor
 Returns the server request object
 %End
 
-    QgsServerResponse *response() const;
+    QgsFilterResponseDecorator *responseDecorator() const;
 %Docstring
-Returns the server response object
+Returns the server response decorator object
 %End
 
     const QgsProject *project() const;

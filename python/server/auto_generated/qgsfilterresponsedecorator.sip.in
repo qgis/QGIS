@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsfilterresponsedecorator.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFilterResponseDecorator: QgsServerResponse
+{
+%Docstring
+Class defining decorator for calling filter's hooks
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfilterresponsedecorator.h"
+%End
+  public:
+
+    QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response );
+%Docstring
+Constructor for QgsFilterResponseDecorator.
+
+:param filters: Map of filters to apply before terminating the response
+:param response: Server response
+%End
+
+    void start();
+%Docstring
+Call filters requestReady() method
+%End
+
+
+    virtual void setHeader( const QString &key, const QString &value );
+
+    virtual void removeHeader( const QString &key );
+
+    virtual QString header( const QString &key ) const;
+
+    virtual QMap<QString, QString> headers() const;
+
+    virtual bool headersSent() const;
+
+    virtual void setStatusCode( int code );
+
+    virtual int statusCode() const;
+
+    virtual void sendError( int code,  const QString &message );
+
+    virtual QIODevice *io();
+
+    virtual void finish();
+
+
+    virtual void flush();
+
+
+    virtual void clear();
+
+    virtual QByteArray data() const;
+
+    virtual void truncate();
+
+};
+
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsfilterresponsedecorator.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

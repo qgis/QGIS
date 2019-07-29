@@ -119,8 +119,7 @@ std::string QgsServerOgcApi::relToString( const Rel &rel )
 QString QgsServerOgcApi::contentTypeToString( const ContentType &ct )
 {
   static QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
-  QString result { metaEnum.valueToKey( ct ) };
-  return result.replace( '_', '-' );
+  return metaEnum.valueToKey( ct );
 }
 
 std::string QgsServerOgcApi::contentTypeToStdString( const ContentType &ct )

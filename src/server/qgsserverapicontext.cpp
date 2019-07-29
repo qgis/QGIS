@@ -16,14 +16,14 @@
 #include "qgsserverapicontext.h"
 
 #include "qgsserverrequest.h"
-#include "qgsserverresponse.h"
+#include "qgsfilterresponsedecorator.h"
 #include "qgsproject.h"
 #include "qgsserverinterface.h"
 
-QgsServerApiContext::QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface ):
+QgsServerApiContext::QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsFilterResponseDecorator *responseDecorator, const QgsProject *project, QgsServerInterface *serverInterface ):
   mApiRootPath( apiRootPath ),
   mRequest( request ),
-  mResponse( response ),
+  mResponseDecorator( responseDecorator ),
   mProject( project ),
   mServerInterface( serverInterface )
 {
@@ -36,9 +36,9 @@ const QgsServerRequest *QgsServerApiContext::request() const
 }
 
 
-QgsServerResponse *QgsServerApiContext::response() const
+QgsFilterResponseDecorator *QgsServerApiContext::responseDecorator() const
 {
-  return mResponse;
+  return mResponseDecorator;
 }
 
 

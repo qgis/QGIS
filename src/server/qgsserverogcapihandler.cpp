@@ -25,7 +25,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgsserverogcapihandler.h"
-#include "qgsserverresponse.h"
+#include "qgsfilterresponsedecorator.h"
 
 
 #include "nlohmann/json.hpp"
@@ -156,9 +156,9 @@ void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &co
   QDateTime time { QDateTime::currentDateTime() };
   time.setTimeSpec( Qt::TimeSpec::UTC );
   data["timeStamp"] = time.toString( Qt::DateFormat::ISODate ).toStdString() ;
-  context.response()->setHeader( QStringLiteral( "Content-Type" ), contentType );
+  context.responseDecorator()->setHeader( QStringLiteral( "Content-Type" ), contentType );
 #ifdef QGISDEBUG
-  context.response()->write( data.dump( 2 ) );
+  context.responseDecorator()->write( data.dump( 2 ) );
 #else
   context.response()->write( data.dump( ) );
 #endif
@@ -192,9 +192,10 @@ json QgsServerOgcApiHandler::links( const QgsServerApiContext &context ) const
   const auto constCts { contentTypes() };
   for ( const auto &ct : constCts )
   {
+    const std::string linkType { QgsServerOgcApi::contentTypeToStdString( ct ) };
     links.push_back( link( context, ( ct == currentCt ? QgsServerOgcApi::Rel::self :
                                       QgsServerOgcApi::Rel::alternate ), ct,
-                           linkTitle()  + " as " + QgsServerOgcApi::contentTypeToStdString( ct ) ) );
+                           linkTitle()  + " as " +  linkType ) );
   }
   return links;
 }
@@ -238,7 +239,7 @@ const QString QgsServerOgcApiHandler::templatePath( const QgsServerApiContext &c
 
 void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiContext &context ) const
 {
-  context.response()->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html" ) );
+  context.responseDecorator()->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html" ) );
   auto path { templatePath( context ) };
   if ( ! QFile::exists( path ) )
   {
@@ -335,7 +336,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       return context.matchedPath().toStdString() + "/static/" + asset;
     } );
 
-    context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
+    context.responseDecorator()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
   }
   catch ( std::exception &e )
   {

@@ -27,6 +27,7 @@ from qgis.server import (
     QgsServerApiBadRequestException,
     QgsServerQueryStringParameter,
     QgsServerApiContext,
+    QgsFilterResponseDecorator,
     QgsServerOgcApi,
     QgsServerOgcApiHandler,
     QgsServerApiUtils,
@@ -104,7 +105,7 @@ class API(QgsServerApi):
         return "/testapi"
 
     def executeRequest(self, request_context):
-        request_context.response().write(b"\"Test API\"")
+        request_context.responseDecorator().write(b"\"Test API\"")
 
 
 class QgsServerAPITestBase(QgsServerTestBase):
@@ -505,8 +506,9 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=-1')
         response = QgsBufferServerResponse()
+        decorator = QgsFilterResponseDecorator({}, response)
 
-        ctx = QgsServerApiContext('/services/api1', request, response, project, self.server.serverInterface())
+        ctx = QgsServerApiContext('/services/api1', request, decorator, project, self.server.serverInterface())
         h = Handler1()
         self.assertTrue(h.staticPath().endswith('/resources/server/api/ogc/static'))
         self.assertEqual(h.path(), QtCore.QRegularExpression("/handlerone"))
@@ -519,7 +521,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             h.handleRequest(ctx)
         self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
 
-        r = ctx.response()
+        r = ctx.responseDecorator()
         self.assertEqual(r.data(), '')
 
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
@@ -527,7 +529,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
 
         # Add handler to API and test for /api2
-        ctx = QgsServerApiContext('/services/api2', request, response, project, self.server.serverInterface())
+        ctx = QgsServerApiContext('/services/api2', request, decorator, project, self.server.serverInterface())
         api = QgsServerOgcApi(self.server.serverInterface(), '/api2', 'apitwo', 'a second api', '1.2')
         api.registerHandler(h)
         # Add a second handler (will be tested later)
@@ -558,7 +560,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         params = h.values(ctx)
         self.assertEqual(params, {'value1': 1.2345})
         api.executeRequest(ctx)
-        self.assertEqual(json.loads(bytes(ctx.response().data()))['value1'], 1.2345)
+        self.assertEqual(json.loads(bytes(ctx.responseDecorator().data()))['value1'], 1.2345)
 
         # Test path fragments extraction
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345'))
