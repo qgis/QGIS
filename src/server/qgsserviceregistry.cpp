@@ -215,7 +215,7 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
         if ( !maxVer.isEmpty() )
         {
           // Set the new default service
-          QString key = makeServiceKey( name, maxVer );
+          const QString key = makeServiceKey( name, maxVer );
           mApiVersions.insert( name, VersionTable::mapped_type( version, key ) );
         }
       }
