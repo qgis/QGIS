@@ -26,7 +26,7 @@ Point geometry type, with support for z-dimension and m-values.
 
   public:
 
-    QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
 %Docstring
 Construct a point with the provided initial coordinate values.
 
@@ -53,8 +53,28 @@ based on the following rules:
        pt.wkbType() # QgsWkbTypes.PointZ
 %End
 %MethodCode
+    double x;
+    double y;
     double z;
     double m;
+
+    if ( a0 == Py_None )
+    {
+      x = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      x = PyFloat_AsDouble( a0 );
+    }
+
+    if ( a1 == Py_None )
+    {
+      y = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      y = PyFloat_AsDouble( a1 );
+    }
 
     if ( a2 == Py_None )
     {
@@ -74,7 +94,7 @@ based on the following rules:
       m = PyFloat_AsDouble( a3 );
     }
 
-    sipCpp = new sipQgsPoint( a0, a1, z, m, a4 );
+    sipCpp = new sipQgsPoint( x, y, z, m, a4 );
 %End
 
     explicit QgsPoint( const QgsPointXY &p );

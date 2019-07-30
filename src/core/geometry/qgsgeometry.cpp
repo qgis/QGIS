@@ -1065,7 +1065,7 @@ static QgsCircle __recMinimalEnclosingCircle( QgsMultiPointXY points, QgsMultiPo
 
 QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &radius, unsigned int segments ) const
 {
-  center = QgsPointXY( );
+  center = QgsPointXY();
   radius = 0;
 
   if ( !d->geometry )
@@ -1675,21 +1675,21 @@ double QgsGeometry::hausdorffDistanceDensify( const QgsGeometry &geom, double de
 
 QgsAbstractGeometry::vertex_iterator QgsGeometry::vertices_begin() const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || d->geometry.get()->isEmpty() )
     return QgsAbstractGeometry::vertex_iterator();
   return d->geometry->vertices_begin();
 }
 
 QgsAbstractGeometry::vertex_iterator QgsGeometry::vertices_end() const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || d->geometry.get()->isEmpty() )
     return QgsAbstractGeometry::vertex_iterator();
   return d->geometry->vertices_end();
 }
 
 QgsVertexIterator QgsGeometry::vertices() const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || d->geometry.get()->isEmpty() )
     return QgsVertexIterator();
   return QgsVertexIterator( d->geometry.get() );
 }

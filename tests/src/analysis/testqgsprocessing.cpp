@@ -2863,13 +2863,15 @@ void TestQgsProcessing::parameterPoint()
   // nonsense string
   params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
   point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
-  QCOMPARE( point.x(), 0.0 );
-  QCOMPARE( point.y(), 0.0 );
+  QVERIFY( point.isEmpty() );
+  QGSCOMPARENEAR( point.x(), 0.0, 0.001 );
+  QGSCOMPARENEAR( point.y(), 0.0, 0.001 );
 
   params.insert( "non_optional", QString( "   (   )  " ) );
   point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
-  QCOMPARE( point.x(), 0.0 );
-  QCOMPARE( point.y(), 0.0 );
+  QVERIFY( point.isEmpty() );
+  QGSCOMPARENEAR( point.x(), 0.0, 0.001 );
+  QGSCOMPARENEAR( point.y(), 0.0, 0.001 );
 
   // QgsPointXY
   params.insert( "non_optional", QgsPointXY( 11.1, 12.2 ) );

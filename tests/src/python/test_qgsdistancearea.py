@@ -813,7 +813,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('PointM(1 2 3)'))
         self.assertEqual(g.asWkt(), 'PointM (1 2 3)')
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString()'))
-        self.assertEqual(g.asWkt(), 'MultiLineString ()')
+        self.assertEqual(g.asWkt(), 'MultiLineString EMPTY')
 
         # lines
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(0 0, -170 0)'))

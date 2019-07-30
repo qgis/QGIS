@@ -1168,7 +1168,7 @@ QList<QgsGeometryCheckError *> TestQgsGeometryChecks::searchCheckErrors( const Q
     {
       continue;
     }
-    if ( pos != QgsPointXY() && ( !qgsDoubleNear( error->location().x(), pos.x(), tol ) || !qgsDoubleNear( error->location().y(), pos.y(), tol ) ) )
+    if ( !pos.isEmpty() && ( !qgsDoubleNear( error->location().x(), pos.x(), tol ) || !qgsDoubleNear( error->location().y(), pos.y(), tol ) ) )
     {
       continue;
     }
