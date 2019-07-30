@@ -58,6 +58,8 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
   connect( mCustomizationEnabledCheckBox, &QCheckBox::toggled, this, &QgsCustomizationDialog::enableCustomization );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsCustomizationDialog::filterItems );
 
+  mLeFilter->setShowSearchIcon( true );
+
   init();
   QStringList myHeaders;
   myHeaders << tr( "Object name" ) << tr( "Label" );
@@ -137,7 +139,7 @@ bool QgsCustomizationDialog::filterItems( const QString &text )
   success = !items.empty();
   mTreeInitialExpand.clear();
 
-  for ( QTreeWidgetItem *item : items )
+  for ( QTreeWidgetItem *item : qgis::as_const( items ) )
   {
     setChildrenVisible( item, true );
 

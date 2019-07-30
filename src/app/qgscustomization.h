@@ -104,8 +104,8 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     QSettings *mSettings = nullptr;
 
   protected:
-    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
-    QMap<QTreeWidgetItem *, bool> mTreeInitialVisible = QMap<QTreeWidgetItem *, bool>();
+    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand;
+    QMap<QTreeWidgetItem *, bool> mTreeInitialVisible;
 };
 
 class APP_EXPORT QgsCustomization : public QObject
