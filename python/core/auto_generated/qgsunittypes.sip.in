@@ -290,6 +290,8 @@ Converts an area unit to its corresponding distance unit, e.g., square meters to
 :param areaUnit: area unit to convert
 
 :return: matching distance unit
+
+.. versionadded:: 3.10
 %End
 
 

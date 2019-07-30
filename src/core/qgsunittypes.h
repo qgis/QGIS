@@ -310,6 +310,7 @@ class CORE_EXPORT QgsUnitTypes
      * Converts an area unit to its corresponding distance unit, e.g., square meters to meters
      * \param areaUnit area unit to convert
      * \returns matching distance unit
+     * \since QGIS 3.10
      */
     Q_INVOKABLE static QgsUnitTypes::DistanceUnit areaToDistanceUnit( QgsUnitTypes::AreaUnit areaUnit );
 
