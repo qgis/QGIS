@@ -206,7 +206,7 @@ void QgsPgNewConnection::testConnection()
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), true );
 
-  if ( conn->postgresVersion() < 95000 )
+  if ( conn->pgVersion() < 90500 )
   {
     cb_projectsInDatabase->setChecked( false );
     cb_projectsInDatabase->setEnabled( false );
@@ -215,7 +215,7 @@ void QgsPgNewConnection::testConnection()
   else
   {
     cb_projectsInDatabase->setEnabled( true );
-    cb_projectsInDatabase->setToolTip( QStringLiteral( "" ) );
+    cb_projectsInDatabase->setToolTip( QString() );
   }
 
   if ( conn )
