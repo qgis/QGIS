@@ -871,11 +871,6 @@ bool QgsPostgresConn::hasPointcloud()
   return mPointcloudAvailable;
 }
 
-int QgsPostgresConn::postgresVersion()
-{
-  return PQserverVersion( mConn );
-}
-
 /* Functions for determining available features in postGIS */
 QString QgsPostgresConn::postgisVersion()
 {

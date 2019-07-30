@@ -198,9 +198,6 @@ class QgsPostgresConn : public QObject
     void ref() { ++mRef; }
     void unref();
 
-    //! Gets postgres version number
-    int postgresVersion();
-
     //! Gets postgis version string
     QString postgisVersion();
 
