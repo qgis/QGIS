@@ -230,8 +230,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsSettings *mSettings = nullptr;
     QStringList i18nList();
 
-    void initEllipsoidList();
-
     void initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal );
     void saveContrastEnhancement( QComboBox *cbox, const QString &name );
     void initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal );
@@ -269,8 +267,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void updateActionsForCurrentColorScheme( QgsColorScheme *scheme );
 
     void checkPageWidgetNameMap();
-
-    static const char *GEO_NONE_DESC;
 
     friend class QgsAppScreenShots;
 };
