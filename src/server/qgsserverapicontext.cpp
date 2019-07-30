@@ -60,7 +60,7 @@ QgsServerInterface *QgsServerApiContext::serverInterface() const
 const QString QgsServerApiContext::matchedPath() const
 {
   auto path { mRequest->url().path( )};
-  const auto idx { path.indexOf( mApiRootPath )};
+  const int idx { path.indexOf( mApiRootPath )};
   if ( idx != -1 )
   {
     path.truncate( idx + mApiRootPath.length() );

@@ -113,8 +113,8 @@ class SERVER_EXPORT QgsServiceRegistry
      *
      * \param name the name of the API
      * \param version the version string (optional)
-     * \since QGIS 3.10
      * \returns QgsServerApi
+     * \since QGIS 3.10
      */
     QgsServerApi *getApi( const QString &name, const QString &version = QString() );
 

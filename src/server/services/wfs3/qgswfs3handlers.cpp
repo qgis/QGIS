@@ -49,8 +49,10 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
 
   const QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *context.project() );
   const QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *context.project() );
+  const QString projectTitle = QgsServerProjectUtils::owsServiceTitle( *context.project() );
+  const QString projectDescription = QgsServerProjectUtils::owsServiceAbstract( *context.project() );
 
-  const auto metadata { context.project()->metadata() };
+  const QgsProjectMetadata metadata { context.project()->metadata() };
   json data
   {
     { "links", links( context ) },
@@ -67,8 +69,8 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
     },
     {
       "info", {
-        { "title", context.project()->title().toStdString() },
-        { "description", metadata.abstract().toStdString() },
+        { "title", projectTitle.toStdString() },
+        { "description", projectDescription.toStdString() },
         {
           "contact",  {
             { "name", contactPerson.toStdString() },

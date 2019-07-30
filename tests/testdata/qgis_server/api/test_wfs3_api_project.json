@@ -471,11 +471,11 @@ Content-Type: application/openapi+json;version=3.0
       "name": "Alessandro Pasotti",
       "url": ""
     },
-    "description": "",
+    "description": "Some UTF8 text èòù",
     "license": {
       "name": ""
     },
-    "title": "QGIS Test Project",
+    "title": "QGIS TestProject",
     "version": ""
   },
   "links": [
@@ -877,5 +877,5 @@ Content-Type: application/openapi+json;version=3.0
       "name": "Features"
     }
   ],
-  "timeStamp": "2019-07-29T12:28:56Z"
+  "timeStamp": "2019-07-30T09:17:49Z"
 }

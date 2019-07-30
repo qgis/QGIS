@@ -187,9 +187,9 @@ json QgsServerOgcApiHandler::link( const QgsServerApiContext &context, const Qgs
 
 json QgsServerOgcApiHandler::links( const QgsServerApiContext &context ) const
 {
-  const auto currentCt { contentTypeFromRequest( context.request() ) };
+  const QgsServerOgcApi::ContentType currentCt { contentTypeFromRequest( context.request() ) };
   json links = json::array();
-  const auto constCts { contentTypes() };
+  const QList<QgsServerOgcApi::ContentType> constCts { contentTypes() };
   for ( const auto &ct : constCts )
   {
     links.push_back( link( context, ( ct == currentCt ? QgsServerOgcApi::Rel::self :
@@ -206,12 +206,12 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromContext( const QgsServerApiCont
     throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project is invalid or undefined" ) );
   }
   // Check collectionId
-  const auto match { path().match( context.request()->url().path( ) ) };
+  const QRegularExpressionMatch match { path().match( context.request()->url().path( ) ) };
   if ( ! match.hasMatch() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
   }
-  const auto collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
+  const QString collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
   // May throw if not found
   return layerFromCollection( context, collectionId );
 
@@ -349,12 +349,12 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
   QgsServerOgcApi::ContentType result { defaultContentType() };
   bool found { false };
   // First file extension ...
-  const auto extension { QFileInfo( request->url().path() ).completeSuffix().toUpper() };
+  const QString extension { QFileInfo( request->url().path() ).completeSuffix().toUpper() };
   if ( ! extension.isEmpty() )
   {
     static QMetaEnum metaEnum { QMetaEnum::fromType<QgsServerOgcApi::ContentType>() };
-    auto ok { false };
-    const auto ct  { metaEnum.keyToValue( extension.toLocal8Bit().constData(), &ok ) };
+    bool ok { false };
+    const int ct  { metaEnum.keyToValue( extension.toLocal8Bit().constData(), &ok ) };
     if ( ok )
     {
       result = static_cast<QgsServerOgcApi::ContentType>( ct );
@@ -366,10 +366,10 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
   }
   // ... then "Accept"
-  const auto accept { request->header( QStringLiteral( "Accept" ) ) };
+  const QString accept { request->header( QStringLiteral( "Accept" ) ) };
   if ( ! found && ! accept.isEmpty() )
   {
-    const auto ctFromAccept { contentTypeForAccept( accept ) };
+    const QString ctFromAccept { contentTypeForAccept( accept ) };
     if ( ! ctFromAccept.isEmpty() )
     {
       result = QgsServerOgcApi::contentTypeMimes().key( ctFromAccept );
@@ -387,7 +387,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     bool found { false };
     if ( QgsServerOgcApi::contentTypeAliases().keys().contains( result ) )
     {
-      const auto constCt { contentTypes() };
+      const QList<QgsServerOgcApi::ContentType> constCt { contentTypes() };
       for ( const auto &ct : constCt )
       {
         if ( QgsServerOgcApi::contentTypeAliases()[result].contains( ct ) )
@@ -410,9 +410,9 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
 
 std::string QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
 {
-  auto path { url.path() };
+  QString path { url.path() };
   const QFileInfo fi { path };
-  const auto suffix { fi.suffix() };
+  const QString suffix { fi.suffix() };
   if ( ! suffix.isEmpty() )
   {
     path.chop( suffix.length() + 1 );
