@@ -143,8 +143,8 @@ class SERVER_EXPORT QgsServerResponse
      * This is a convenient method that will write directly
      * to the underlying I/O device
      * \returns the number of bytes written
-     * \since QGIS 3.10
      * \note not available in Python bindings
+     * \since QGIS 3.10
      */
     virtual qint64 write( std::string data ) SIP_SKIP;
 
