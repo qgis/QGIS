@@ -30,6 +30,7 @@
 #include "qgsunittypes.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
+#include "qgsimageoperation.h"
 
 #include <QPainter>
 #include <QFile>
@@ -1251,7 +1252,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   //apply blur if desired
   if ( blurRadius > 0 )
   {
-    QgsSymbolLayerUtils::blurImageInPlace( *fillImage, QRect( 0, 0, fillImage->width(), fillImage->height() ), blurRadius, false );
+    QgsImageOperation::stackBlur( *fillImage, blurRadius, false );
   }
 
   //apply alpha channel to distance transform image, so that areas outside the polygon are transparent
