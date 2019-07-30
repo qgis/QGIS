@@ -1057,6 +1057,14 @@ QString QgsApplication::osName()
   return QLatin1String( "windows" );
 #elif defined(Q_OS_LINUX)
   return QStringLiteral( "linux" );
+#elif defined(Q_OS_FREEBSD)
+  return QStringLiteral( "freebsd" );
+#elif defined(Q_OS_OPENBSD)
+  return QStringLiteral( "openbsd" );
+#elif defined(Q_OS_NETBSD)
+  return QStringLiteral( "netbsd" );
+#elif defined(Q_OS_UNIX)
+  return QLatin1String( "unix" );
 #else
   return QLatin1String( "unknown" );
 #endif
