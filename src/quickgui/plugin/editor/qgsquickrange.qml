@@ -70,11 +70,11 @@ Item {
       editable: true
       visible: fieldItem.widgetStyle === "SpinBox"
 
-      background:   Rectangle {
+      background: Rectangle {
         anchors.fill: parent
         border.color: customStyle.fields.normalColor
         border.width: 1 * QgsQuick.Utils.dp
-        color: customStyle.fields.backgroundColor
+        color: fieldItem.enabled ? "#ffffff" : customStyle.fields.backgroundColor
         radius: customStyle.fields.cornerRadius
       }
 
