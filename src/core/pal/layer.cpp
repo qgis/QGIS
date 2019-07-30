@@ -200,7 +200,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     addedFeature = true;
   }
 
-  if ( !featureGeomIsObstacleGeom )
+  if ( lf->isObstacle() && !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
     simpleGeometries.reset( Util::unmulti( lf->obstacleGeometry() ) );
