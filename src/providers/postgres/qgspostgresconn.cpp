@@ -543,6 +543,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString relkind = result.PQgetvalue( idx, 6 );
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
       bool isMaterializedView = relkind == QLatin1String( "m" );
+      bool isForeignTable = relkind == QLatin1String( "f" );
       QString comment = result.PQgetvalue( idx, 7 );
 
       int srid = ssrid.isEmpty() ? std::numeric_limits<int>::min() : ssrid.toInt();
@@ -577,7 +578,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.isView = isView;
       layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
-      addColumnInfo( layerProperty, schemaName, tableName, isView );
+      addColumnInfo( layerProperty, schemaName, tableName, isView || isForeignTable );
 
       if ( isView && layerProperty.pkCols.empty() )
       {
@@ -665,6 +666,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString coltype    = result.PQgetvalue( i, 4 ); // column type
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
       bool isMaterializedView = relkind == QLatin1String( "m" );
+      bool isForeignTable = relkind == QLatin1String( "f" );
       QString comment    = result.PQgetvalue( i, 5 ); // table comment
 
       //QgsDebugMsg( QStringLiteral( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
@@ -699,7 +701,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         Q_ASSERT( !"Unknown geometry type" );
       }
 
-      addColumnInfo( layerProperty, schemaName, tableName, isView );
+      addColumnInfo( layerProperty, schemaName, tableName, isView || isForeignTable );
       if ( isView && layerProperty.pkCols.empty() )
       {
         //QgsDebugMsg( QStringLiteral( "no key columns found." ) );
@@ -754,6 +756,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString relkind = result.PQgetvalue( i, 2 ); // relation kind
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
       bool isMaterializedView = relkind == QLatin1String( "m" );
+      bool isForeignTable = relkind == QLatin1String( "f" );
       QString comment = result.PQgetvalue( i, 3 ); // table comment
 
       //QgsDebugMsg( QStringLiteral( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
@@ -784,7 +787,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       if ( alreadyFound )
         continue;
 
-      addColumnInfo( layerProperty, schema, table, isView );
+      addColumnInfo( layerProperty, schema, table, isView || isForeignTable );
       layerProperty.sql.clear();
 
       mLayersSupported << layerProperty;
