@@ -71,6 +71,20 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
     virtual void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const;
 
     /**
+     * Returns TRUE if the handler is capable of handling the provided mime \a data.
+     * The base class implementation returns FALSE regardless of mime data.
+     *
+     * This method is called when mime data is dragged over the QGIS window, in order
+     * to determine whether any handlers are capable of handling the data and to
+     * determine whether the drag action should be accepted.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool canHandleMimeData( const QMimeData *data );
+
+    // TODO QGIS 4.0 - return bool
+
+    /**
      * Called when the specified mime \a data has been dropped onto QGIS.
      *
      * The base class implementation does nothing.

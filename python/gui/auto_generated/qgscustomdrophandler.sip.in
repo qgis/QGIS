@@ -60,6 +60,19 @@ value which the handler accepts.
 .. seealso:: :py:func:`customUriProviderKey`
 %End
 
+    virtual bool canHandleMimeData( const QMimeData *data );
+%Docstring
+Returns ``True`` if the handler is capable of handling the provided mime ``data``.
+The base class implementation returns ``False`` regardless of mime data.
+
+This method is called when mime data is dragged over the QGIS window, in order
+to determine whether any handlers are capable of handling the data and to
+determine whether the drag action should be accepted.
+
+.. versionadded:: 3.10
+%End
+
+
     virtual void handleMimeData( const QMimeData *data );
 %Docstring
 Called when the specified mime ``data`` has been dropped onto QGIS.
