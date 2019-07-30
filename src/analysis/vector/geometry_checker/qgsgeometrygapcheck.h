@@ -106,6 +106,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
      */
     explicit QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 
+    void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) override;
+
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
@@ -115,6 +117,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     QString id() const override;
     QgsGeometryCheck::Flags flags() const override;
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    std::unique_ptr<QgsVectorLayerFeatureSource> mAllowedGapsSource;
+    double mAllowedGapsBuffer;
 
 ///@cond private
     static QString factoryDescription() SIP_SKIP;

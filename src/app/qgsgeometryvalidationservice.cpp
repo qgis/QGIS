@@ -223,7 +223,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
       precision = 8;
   }
 
-  checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext() );
+  checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext(), mProject );
 
   QList<QgsGeometryCheck *> layerChecks;
 
@@ -424,7 +424,10 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 
   QHash<const QgsGeometryCheck *, QgsFeedback *> feedbacks;
   for ( QgsGeometryCheck *check : checks )
+  {
     feedbacks.insert( check, new QgsFeedback() );
+    check->prepare( mLayerChecks[layer].context.get(), layer->geometryOptions()->checkConfiguration( check->id() ) );
+  }
 
   mLayerChecks[layer].topologyCheckFeedbacks = feedbacks.values();
 

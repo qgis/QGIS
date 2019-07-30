@@ -12,7 +12,8 @@ struct QgsGeometryCheckContext
 {
     QgsGeometryCheckContext( int precision,
                              const QgsCoordinateReferenceSystem &mapCrs,
-                             const QgsCoordinateTransformContext &transformContext );
+                             const QgsCoordinateTransformContext &transformContext,
+                             const QgsProject *project );
 
     const double tolerance;
 
@@ -21,6 +22,8 @@ struct QgsGeometryCheckContext
     const QgsCoordinateReferenceSystem mapCrs;
 
     const QgsCoordinateTransformContext transformContext;
+
+    const QgsProject *project;
 
   private:
     QgsGeometryCheckContext( const QgsGeometryCheckContext &rh );

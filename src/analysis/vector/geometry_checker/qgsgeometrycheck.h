@@ -253,6 +253,11 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
     virtual ~QgsGeometryCheck() = default;
 
+    /**
+     * Will be run in the main thread before collectErrors is called (which may be run from a background thread).
+     */
+    virtual void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+
 #ifndef SIP_RUN
 
     /**

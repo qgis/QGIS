@@ -936,7 +936,7 @@ void TestQgsGeometryChecks::testSelfContactCheck()
 
   // https://github.com/qgis/QGIS/issues/28228
   // test with a linestring which collapses to an empty linestring
-  QgsGeometryCheckContext context( 1, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
+  QgsGeometryCheckContext context( 1, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext(), nullptr );
   QgsGeometrySelfContactCheck check2( &context, QVariantMap() );
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((2988987 10262483, 2988983 10262480, 2988991 10262432, 2988990 10262419, 2988977 10262419, 2988976 10262420, 2988967 10262406, 2988970 10262421, 2988971 10262424),(2995620 10301368))" ) );
   QList<QgsSingleGeometryCheckError *> errors = check2.processGeometry( g );
@@ -1128,7 +1128,7 @@ QPair<QgsGeometryCheckContext *, QMap<QString, QgsFeaturePool *> > TestQgsGeomet
     layer->dataProvider()->enterUpdateMode();
     featurePools.insert( layer->id(), createFeaturePool( layer ) );
   }
-  return qMakePair( new QgsGeometryCheckContext( prec, mapCrs, QgsProject::instance()->transformContext() ), featurePools );
+  return qMakePair( new QgsGeometryCheckContext( prec, mapCrs, QgsProject::instance()->transformContext(), nullptr ), featurePools );
 }
 
 void TestQgsGeometryChecks::cleanupTestContext( QPair<QgsGeometryCheckContext *, QMap<QString, QgsFeaturePool *> > ctx ) const

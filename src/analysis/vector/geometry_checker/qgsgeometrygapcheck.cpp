@@ -21,15 +21,30 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 
 #include "geos_c.h"
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
   ,  mGapThresholdMapUnits( configuration.value( QStringLiteral( "gapThreshold" ) ).toDouble() )
-
 {
 
+}
+
+void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
+{
+  if ( configuration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
+  {
+    QgsVectorLayer *layer = context->project->mapLayer<QgsVectorLayer *>( configuration.value( "allowedGapsLayer" ).toString() );
+    mAllowedGapsSource = qgis::make_unique<QgsVectorLayerFeatureSource>( layer );
+
+    mAllowedGapsBuffer = configuration.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble();
+  }
+  else
+  {
+    mAllowedGapsSource.reset();
+  }
 }
 
 void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
@@ -39,6 +54,20 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
 
   QVector<QgsGeometry> geomList;
 
+  if ( mAllowedGapsSource )
+  {
+    QgsFeatureRequest request;
+    request.setSubsetOfAttributes( QgsAttributeList() );
+    QgsFeatureIterator iterator = mAllowedGapsSource->getFeatures( request );
+    QgsFeature feature;
+
+    while ( iterator.nextFeature( feature ) )
+    {
+      QgsGeometry geom = feature.geometry();
+      QgsGeometry gg = geom.buffer( mAllowedGapsBuffer, 20 );
+      geomList.append( gg );
+    }
+  }
 
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );

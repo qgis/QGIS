@@ -31,7 +31,8 @@ struct ANALYSIS_EXPORT QgsGeometryCheckContext
 {
     QgsGeometryCheckContext( int precision,
                              const QgsCoordinateReferenceSystem &mapCrs,
-                             const QgsCoordinateTransformContext &transformContext );
+                             const QgsCoordinateTransformContext &transformContext,
+                             const QgsProject *project );
 
     /**
      * The tolerance to allow for in geometry checks.
@@ -57,6 +58,12 @@ struct ANALYSIS_EXPORT QgsGeometryCheckContext
      * The coordinate transform context with which transformations will be done.
      */
     const QgsCoordinateTransformContext transformContext;
+
+    /**
+     * The project ... blablabla
+     * Only to be used in the main thread (prepare method)
+     */
+    const QgsProject *project;
 
   private:
 #ifdef SIP_RUN
