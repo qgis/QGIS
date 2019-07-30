@@ -598,32 +598,6 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
   }
 }
 
-void QgsImageOperation::StackBlurLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine )
-{
-  unsigned char *p = reinterpret_cast< unsigned char * >( startRef );
-  int rgba[4];
-  int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
-  if ( !mForwardDirection )
-  {
-    p += ( lineLength - 1 ) * increment;
-    increment = -increment;
-  }
-
-  for ( int i = mi1; i <= mi2; ++i )
-  {
-    rgba[i] = p[i] << 4;
-  }
-
-  p += increment;
-  for ( int j = 1; j < lineLength; ++j, p += increment )
-  {
-    for ( int i = mi1; i <= mi2; ++i )
-    {
-      p[i] = ( rgba[i] += ( ( p[i] << 4 ) - rgba[i] ) * mAlpha / 16 ) >> 4;
-    }
-  }
-}
-
 //gaussian blur
 
 QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius )
