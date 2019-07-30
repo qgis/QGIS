@@ -1573,7 +1573,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   }
 
   geos::unique_ptr geosObstacleGeomClone;
-  if ( !obstacleGeometry.isNull() )
+  if ( isObstacle && !obstacleGeometry.isNull() )
   {
     geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
   }

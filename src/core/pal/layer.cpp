@@ -213,7 +213,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   }
   delete simpleGeometries;
 
-  if ( !featureGeomIsObstacleGeom )
+  if ( lf->isObstacle() && !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
     simpleGeometries = Util::unmulti( lf->obstacleGeometry() );
