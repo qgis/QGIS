@@ -1662,6 +1662,17 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
     if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
       event->acceptProposedAction();
   }
+
+  // check if any custom handlers can operate on the data
+  const QVector<QPointer<QgsCustomDropHandler >> handlers = mCustomDropHandlers;
+  for ( QgsCustomDropHandler *handler : handlers )
+  {
+    if ( handler && handler->canHandleMimeData( event->mimeData() ) )
+    {
+      event->acceptProposedAction();
+      return;
+    }
+  }
 }
 
 void QgisApp::dropEvent( QDropEvent *event )
