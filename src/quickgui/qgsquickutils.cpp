@@ -108,14 +108,25 @@ QString QgsQuickUtils::getRelativePath( const QString &path, const QString &pref
 
   if ( prefixPath.isEmpty() ) return modPath;
 
-  QDir absoluteDir( modPath );
-  QDir prefixDir( prefixPath );
-  QString canonicalPath = absoluteDir.canonicalPath();
-  QString prefixCanonicalPath = prefixDir.canonicalPath() + "/";
-
-  if ( prefixCanonicalPath.length() > 1 && canonicalPath.startsWith( prefixCanonicalPath ) )
+  // Do not use a canonical path for non-existing path
+  if ( !QFileInfo( path ).exists() )
   {
-    return canonicalPath.replace( prefixCanonicalPath, QString() );
+    if ( !prefixPath.isEmpty() && modPath.startsWith( prefixPath ) )
+    {
+      return modPath.replace( prefixPath, QString() );
+    }
+  }
+  else
+  {
+    QDir absoluteDir( modPath );
+    QDir prefixDir( prefixPath );
+    QString canonicalPath = absoluteDir.canonicalPath();
+    QString prefixCanonicalPath = prefixDir.canonicalPath() + "/";
+
+    if ( prefixCanonicalPath.length() > 1 && canonicalPath.startsWith( prefixCanonicalPath ) )
+    {
+      return canonicalPath.replace( prefixCanonicalPath, QString() );
+    }
   }
 
   return QString();
