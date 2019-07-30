@@ -81,6 +81,8 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
      */
     const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
+    virtual void setGeometryType( QgsWkbTypes::GeometryType type ) = 0;
+
   protected:
 
     /**
@@ -135,7 +137,10 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleLineCalloutWidget( vl ); }
 
     void setCallout( QgsCallout *callout ) override;
+
     QgsCallout *callout() override;
+
+    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
 
   private slots:
 
@@ -146,6 +151,7 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     void offsetFromLabelUnitWidgetChanged();
     void offsetFromLabelChanged();
     void lineSymbolChanged();
+    void mAnchorPointComboBox_currentIndexChanged( int index );
     void drawToAllPartsToggled( bool active );
 
   private:

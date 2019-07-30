@@ -47,12 +47,21 @@ relevant symbology elements to render them.
       OffsetFromAnchor,
       OffsetFromLabel,
       DrawCalloutToAllParts,
+      AnchorPointPosition,
     };
 
     enum DrawOrder
     {
       OrderBelowAllLabels,
       OrderBelowIndividualLabels,
+    };
+
+    enum AnchorPoint
+    {
+      PoleOfInaccessibility,
+      PointOnExterior,
+      PointOnSurface,
+      Centroid,
     };
 
     QgsCallout();
@@ -225,6 +234,42 @@ Any existing properties will be discarded.
     static QgsPropertiesDefinition propertyDefinitions();
 %Docstring
 Returns the definitions for data defined properties available for use in callouts.
+%End
+
+    AnchorPoint anchorPoint() const;
+%Docstring
+Returns the feature's anchor point position.
+
+.. seealso:: :py:func:`setAnchorPoint`
+%End
+
+    void setAnchorPoint( AnchorPoint anchor );
+%Docstring
+Sets the feature's ``anchor`` point position.
+
+.. seealso:: :py:func:`drawCalloutToAllParts`
+%End
+
+    static QString encodeAnchorPoint( AnchorPoint anchor );
+%Docstring
+Encodes an ``anchor`` point to its string representation.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeAnchorPoint`
+%End
+
+    static QgsCallout::AnchorPoint decodeAnchorPoint( const QString &name, bool *ok = 0 );
+%Docstring
+Attempts to decode a string representation of an anchoir point name to the corresponding
+anchor point.
+
+:param name: encoded anchoir point name
+:param ok: if specified, will be set to ``True`` if the anchoir point was successfully decoded
+
+:return: decoded name
+
+.. seealso:: :py:func:`encodeAnchorPoint`
 %End
 
   protected:

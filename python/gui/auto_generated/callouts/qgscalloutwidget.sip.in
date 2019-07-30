@@ -71,6 +71,8 @@ Returns the vector layer associated with the widget.
 .. versionadded:: 2.12
 %End
 
+    virtual void setGeometryType( QgsWkbTypes::GeometryType type ) = 0;
+
   protected:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
