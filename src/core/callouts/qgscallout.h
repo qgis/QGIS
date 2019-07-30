@@ -85,10 +85,10 @@ class CORE_EXPORT QgsCallout
     //! Feature's anchor point position
     enum AnchorPoint
     {
-      PoleOfInaccessibility = 0, //!< The surface's pole of inaccessibility used as anchor
-      PointOnExterior, //!< A point on the surface's outline closest to the label is used as anchor
-      PointOnSurface, //!< A point guaranteed to be on the surface is used as anchor
-      Centroid, //!< The surface's centroid is used as anchor
+      PoleOfInaccessibility = 0, //!< The surface's pole of inaccessibility used as anchor for polygon geometries
+      PointOnExterior, //!< A point on the surface's outline closest to the label is used as anchor for polygon geometries
+      PointOnSurface, //!< A point guaranteed to be on the surface is used as anchor for polygon geometries
+      Centroid, //!< The surface's centroid is used as anchor for polygon geometries
     };
 
     /**
@@ -272,7 +272,7 @@ class CORE_EXPORT QgsCallout
     /**
      * Sets the feature's \a anchor point position.
      *
-     * \see drawCalloutToAllParts()
+     * \see anchorPoint()
      */
     void setAnchorPoint( AnchorPoint anchor ) { mAnchorPoint = anchor; }
 
@@ -284,10 +284,10 @@ class CORE_EXPORT QgsCallout
     static QString encodeAnchorPoint( AnchorPoint anchor );
 
     /**
-     * Attempts to decode a string representation of an anchoir point name to the corresponding
+     * Attempts to decode a string representation of an anchor point name to the corresponding
      * anchor point.
-     * \param name encoded anchoir point name
-     * \param ok if specified, will be set to TRUE if the anchoir point was successfully decoded
+     * \param name encoded anchor point name
+     * \param ok if specified, will be set to TRUE if the anchor point was successfully decoded
      * \returns decoded name
      * \see encodeAnchorPoint()
      */

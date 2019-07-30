@@ -247,7 +247,7 @@ Returns the feature's anchor point position.
 %Docstring
 Sets the feature's ``anchor`` point position.
 
-.. seealso:: :py:func:`drawCalloutToAllParts`
+.. seealso:: :py:func:`anchorPoint`
 %End
 
     static QString encodeAnchorPoint( AnchorPoint anchor );
@@ -261,11 +261,11 @@ Encodes an ``anchor`` point to its string representation.
 
     static QgsCallout::AnchorPoint decodeAnchorPoint( const QString &name, bool *ok = 0 );
 %Docstring
-Attempts to decode a string representation of an anchoir point name to the corresponding
+Attempts to decode a string representation of an anchor point name to the corresponding
 anchor point.
 
-:param name: encoded anchoir point name
-:param ok: if specified, will be set to ``True`` if the anchoir point was successfully decoded
+:param name: encoded anchor point name
+:param ok: if specified, will be set to ``True`` if the anchor point was successfully decoded
 
 :return: decoded name
 
