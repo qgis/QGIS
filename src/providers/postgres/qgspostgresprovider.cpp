@@ -1368,7 +1368,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           }
         }
       }
-      else if ( type == Relkind::View || type == Relkind::MaterializedView )
+      else if ( type == Relkind::View || type == Relkind::MaterializedView || type == Relkind::ForeignTable )
       {
         determinePrimaryKeyFromUriKeyColumn();
       }
