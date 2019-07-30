@@ -80,7 +80,6 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
   public:
     GetNamedProjectColor( const QgsProject *project )
       : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
-      , mProject( project )
     {
       if ( !project )
         return;
@@ -106,6 +105,17 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
       }
     }
 
+    /**
+     * Optimized constructor for GetNamedProjectColor when a list of map is already available
+     * and does not need to be read from a project.
+     */
+    GetNamedProjectColor( const QHash< QString, QColor > &colors )
+      : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+      , mColors( colors )
+    {
+    }
+
+
     QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       QString colorName = values.at( 0 ).toString().toLower();
@@ -119,12 +129,11 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 
     QgsScopedExpressionFunction *clone() const override
     {
-      return new GetNamedProjectColor( mProject );
+      return new GetNamedProjectColor( mColors );
     }
 
   private:
 
-    const QgsProject *mProject = nullptr;
     QHash< QString, QColor > mColors;
 
 };
