@@ -25,6 +25,11 @@ void QgsCustomDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri
   Q_UNUSED( uri )
 }
 
+bool QgsCustomDropHandler::canHandleMimeData( const QMimeData * )
+{
+  return false;
+}
+
 void QgsCustomDropHandler::handleMimeData( const QMimeData *data )
 {
   Q_UNUSED( data )
