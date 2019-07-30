@@ -1420,7 +1420,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
         }
       }
-      else if ( type == Relkind::View || type == Relkind::MaterializedView )
+      else if ( type == Relkind::View || type == Relkind::MaterializedView || type == Relkind::ForeignTable )
       {
         determinePrimaryKeyFromUriKeyColumn();
       }
