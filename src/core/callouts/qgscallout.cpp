@@ -38,7 +38,7 @@ void QgsCallout::initPropertyDefinitions()
     { QgsCallout::OffsetFromAnchor, QgsPropertyDefinition( "OffsetFromAnchor", QObject::tr( "Offset from feature" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsCallout::OffsetFromLabel, QgsPropertyDefinition( "OffsetFromLabel", QObject::tr( "Offset from label" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsCallout::DrawCalloutToAllParts, QgsPropertyDefinition( "DrawCalloutToAllParts", QObject::tr( "Draw lines to all feature parts" ), QgsPropertyDefinition::Boolean, origin ) },
-    { QgsCallout::AnchorPointPosition, QgsPropertyDefinition( "AnchorPointPosition", QObject::tr( "Feature's anchor point position" ), QgsPropertyDefinition::String, origin ) },
+    { QgsCallout::AnchorPointPosition, QgsPropertyDefinition( "AnchorPointPosition", QgsPropertyDefinition::DataTypeString, QObject::tr( "Feature's anchor point position" ), QObject::tr( "string " ) + "[<b>pole_of_inaccessibility</b>|<b>point_on_exterior</b>|<b>point_on_surface</b>|<b>centroid</b>]", origin ) },
   };
 }
 
@@ -74,7 +74,6 @@ bool QgsCallout::saveProperties( QDomDocument &doc, QDomElement &element, const 
 
   QDomElement calloutElement = doc.createElement( QStringLiteral( "callout" ) );
   calloutElement.setAttribute( QStringLiteral( "type" ), type() );
-  calloutElement.setAttribute( QStringLiteral( "anchorPoint" ), encodeAnchorPoint( mAnchorPoint ) );
   calloutElement.appendChild( calloutPropsElement );
 
   element.appendChild( calloutElement );
@@ -352,7 +351,6 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
             line = label.shortestLine( partAnchor );
             break;
           case QgsCallout::Centroid:
-          default:
             line = label.shortestLine( partAnchor.centroid() );
             break;
         }
@@ -492,7 +490,6 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
             line = label.shortestLine( partAnchor );
             break;
           case QgsCallout::Centroid:
-          default:
             line = label.shortestLine( partAnchor.centroid() );
             break;
         }
