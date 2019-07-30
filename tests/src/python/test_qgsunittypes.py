@@ -543,12 +543,33 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceYards: QgsUnitTypes.AreaSquareYards,
                     QgsUnitTypes.DistanceMiles: QgsUnitTypes.AreaSquareMiles,
                     QgsUnitTypes.DistanceDegrees: QgsUnitTypes.AreaSquareDegrees,
+                    QgsUnitTypes.DistanceCentimeters: QgsUnitTypes.AreaSquareCentimeters,
+                    QgsUnitTypes.DistanceMillimeters: QgsUnitTypes.AreaSquareMillimeters,
                     QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.AreaUnknownUnit,
                     QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.AreaSquareNauticalMiles
                     }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.distanceToAreaUnit(t), expected[t])
+
+    def testAreaToDistanceUnit(self):
+        """Test areaToDistanceUnit conversion"""
+        expected = {QgsUnitTypes.AreaSquareMeters: QgsUnitTypes.DistanceMeters,
+                    QgsUnitTypes.AreaSquareKilometers: QgsUnitTypes.DistanceKilometers,
+                    QgsUnitTypes.AreaSquareFeet: QgsUnitTypes.DistanceFeet,
+                    QgsUnitTypes.AreaSquareYards: QgsUnitTypes.DistanceYards,
+                    QgsUnitTypes.AreaSquareMiles: QgsUnitTypes.DistanceMiles,
+                    QgsUnitTypes.AreaHectares: QgsUnitTypes.DistanceMeters,
+                    QgsUnitTypes.AreaAcres: QgsUnitTypes.DistanceYards,
+                    QgsUnitTypes.AreaSquareDegrees: QgsUnitTypes.DistanceDegrees,
+                    QgsUnitTypes.AreaSquareCentimeters: QgsUnitTypes.DistanceCentimeters,
+                    QgsUnitTypes.AreaSquareMillimeters: QgsUnitTypes.DistanceMillimeters,
+                    QgsUnitTypes.AreaUnknownUnit: QgsUnitTypes.DistanceUnknownUnit,
+                    QgsUnitTypes.AreaSquareNauticalMiles: QgsUnitTypes.DistanceNauticalMiles
+                    }
+
+        for t in list(expected.keys()):
+            self.assertEqual(QgsUnitTypes.areaToDistanceUnit(t), expected[t])
 
     def testEncodeDecodeAngleUnits(self):
         """Test encoding and decoding angle units"""
