@@ -1964,7 +1964,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   geos::unique_ptr geosObstacleGeomClone;
-  if ( !obstacleGeometry.isNull() )
+  if ( isObstacle && !obstacleGeometry.isNull() )
   {
     geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
   }
@@ -2442,7 +2442,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setIsObstacle( isObstacle );
 
   double featObstacleFactor = obstacleFactor;
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
+  if ( isObstacle && mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
   {
     context.expressionContext().setOriginalValueVariable( featObstacleFactor );
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ObstacleFactor, context.expressionContext() );
