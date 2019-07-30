@@ -616,7 +616,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     double *distanceTransform( QImage *im, QgsRenderContext &context );
 
     /* fills a QImage with values from an array of doubles containing squared distance transform values */
-    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
+    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, bool useWholeShape = true, int maxPixelDistance = 0 );
 
 #ifdef SIP_RUN
     QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );
