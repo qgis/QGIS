@@ -33,7 +33,7 @@ bool QgsGpsInformation::isValid() const
   bool valid = false;
   if ( status == 'V' || fixType == NMEA_FIX_BAD || quality == 0 ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
-    return false;
+    valid = false;
   }
   else if ( fixType == NMEA_FIX_2D )
   {
