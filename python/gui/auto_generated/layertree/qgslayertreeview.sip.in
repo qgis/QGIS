@@ -79,7 +79,9 @@ Returns the currently selected layer, or ``None`` if no layers is selected.
 
     void setLayerVisible( QgsMapLayer *layer, bool visible );
 %Docstring
-Sets the visible state of the specified layer
+Convenience methods which sets the visible state of the specified map ``layer``.
+
+.. seealso:: :py:func:`QgsLayerTreeNode.setItemVisibilityChecked`
 
 .. versionadded:: 3.10
 %End
