@@ -292,8 +292,12 @@ void QgsVectorLayerLabelProvider::drawLabelBackground( QgsRenderContext &context
 
 void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
-  context.expressionContext().setOriginalValueVariable( mSettings.callout()->enabled() );
-  const bool enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::CalloutDraw, context.expressionContext(), mSettings.callout()->enabled() );
+  bool enabled = mSettings.callout()->enabled();
+  if ( mSettings.dataDefinedProperties().isActive( QgsPalLayerSettings::CalloutDraw ) )
+  {
+    context.expressionContext().setOriginalValueVariable( enabled );
+    enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::CalloutDraw, context.expressionContext(), enabled );
+  }
   if ( enabled )
   {
     QgsMapToPixel xform = context.mapToPixel();

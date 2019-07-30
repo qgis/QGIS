@@ -1440,28 +1440,49 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   }
   else // called externally with passed-in feature, evaluate data defined
   {
-    rc->expressionContext().setOriginalValueVariable( wrapChar );
-    wrapchr = mDataDefinedProperties.value( QgsPalLayerSettings::MultiLineWrapChar, rc->expressionContext(), wrapchr ).toString();
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::MultiLineWrapChar ) )
+    {
+      rc->expressionContext().setOriginalValueVariable( wrapChar );
+      wrapchr = mDataDefinedProperties.value( QgsPalLayerSettings::MultiLineWrapChar, rc->expressionContext(), wrapchr ).toString();
+    }
 
-    rc->expressionContext().setOriginalValueVariable( evalAutoWrapLength );
-    evalAutoWrapLength = mDataDefinedProperties.value( QgsPalLayerSettings::AutoWrapLength, rc->expressionContext(), evalAutoWrapLength ).toInt();
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::AutoWrapLength ) )
+    {
+      rc->expressionContext().setOriginalValueVariable( evalAutoWrapLength );
+      evalAutoWrapLength = mDataDefinedProperties.value( QgsPalLayerSettings::AutoWrapLength, rc->expressionContext(), evalAutoWrapLength ).toInt();
+    }
 
-    rc->expressionContext().setOriginalValueVariable( multilineH );
-    multilineH = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MultiLineHeight, rc->expressionContext(), multilineH );
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::MultiLineHeight ) )
+    {
+      rc->expressionContext().setOriginalValueVariable( multilineH );
+      multilineH = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MultiLineHeight, rc->expressionContext(), multilineH );
+    }
 
-    rc->expressionContext().setOriginalValueVariable( addDirSymb );
-    addDirSymb = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::DirSymbDraw, rc->expressionContext(), addDirSymb );
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::DirSymbDraw ) )
+    {
+      rc->expressionContext().setOriginalValueVariable( addDirSymb );
+      addDirSymb = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::DirSymbDraw, rc->expressionContext(), addDirSymb );
+    }
 
     if ( addDirSymb ) // don't do extra evaluations if not adding a direction symbol
     {
-      rc->expressionContext().setOriginalValueVariable( leftDirSymb );
-      leftDirSymb = mDataDefinedProperties.value( QgsPalLayerSettings::DirSymbLeft, rc->expressionContext(), leftDirSymb ).toString();
+      if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::DirSymbLeft ) )
+      {
+        rc->expressionContext().setOriginalValueVariable( leftDirSymb );
+        leftDirSymb = mDataDefinedProperties.value( QgsPalLayerSettings::DirSymbLeft, rc->expressionContext(), leftDirSymb ).toString();
+      }
 
-      rc->expressionContext().setOriginalValueVariable( rightDirSymb );
-      rightDirSymb = mDataDefinedProperties.value( QgsPalLayerSettings::DirSymbLeft, rc->expressionContext(), rightDirSymb ).toString();
+      if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::DirSymbRight ) )
+      {
+        rc->expressionContext().setOriginalValueVariable( rightDirSymb );
+        rightDirSymb = mDataDefinedProperties.value( QgsPalLayerSettings::DirSymbRight, rc->expressionContext(), rightDirSymb ).toString();
+      }
 
-      rc->expressionContext().setOriginalValueVariable( static_cast< int >( placeDirSymb ) );
-      placeDirSymb = static_cast< QgsPalLayerSettings::DirectionSymbols >( mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::DirSymbPlacement, rc->expressionContext(), placeDirSymb ) );
+      if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::DirSymbPlacement ) )
+      {
+        rc->expressionContext().setOriginalValueVariable( static_cast< int >( placeDirSymb ) );
+        placeDirSymb = static_cast< QgsPalLayerSettings::DirectionSymbols >( mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::DirSymbPlacement, rc->expressionContext(), placeDirSymb ) );
+      }
     }
 
   }
@@ -1523,7 +1544,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   mCurFeat = &f;
 
   // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
-  bool isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::IsObstacle, context.expressionContext(), obstacle ); // default to layer default
+  bool isObstacle = obstacle;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::IsObstacle ) )
+    isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::IsObstacle, context.expressionContext(), obstacle ); // default to layer default
 
   if ( !drawLabels )
   {
@@ -1557,20 +1580,29 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   dataDefinedValues.clear();
 
   // data defined show label? defaults to show label if not set
-  context.expressionContext().setOriginalValueVariable( true );
-  if ( !mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Show, context.expressionContext(), true ) )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Show ) )
   {
-    return;
+    context.expressionContext().setOriginalValueVariable( true );
+    if ( !mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Show, context.expressionContext(), true ) )
+    {
+      return;
+    }
   }
 
   // data defined scale visibility?
-  bool useScaleVisibility = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::ScaleVisibility, context.expressionContext(), scaleVisibility );
+  bool useScaleVisibility = scaleVisibility;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ScaleVisibility ) )
+    useScaleVisibility = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::ScaleVisibility, context.expressionContext(), scaleVisibility );
 
   if ( useScaleVisibility )
   {
     // data defined min scale?
-    context.expressionContext().setOriginalValueVariable( maximumScale );
-    double maxScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MaximumScale, context.expressionContext(), maximumScale );
+    double maxScale = maximumScale;
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::MaximumScale ) )
+    {
+      context.expressionContext().setOriginalValueVariable( maximumScale );
+      maxScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MaximumScale, context.expressionContext(), maxScale );
+    }
 
     // scales closer than 1:1
     if ( maxScale < 0 )
@@ -1583,9 +1615,13 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
       return;
     }
 
-    // data defined max scale?
-    context.expressionContext().setOriginalValueVariable( minimumScale );
-    double minScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MinimumScale, context.expressionContext(), minimumScale );
+    // data defined min scale?
+    double minScale = minimumScale;
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::MinimumScale ) )
+    {
+      context.expressionContext().setOriginalValueVariable( minimumScale );
+      minScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MinimumScale, context.expressionContext(), minScale );
+    }
 
     // scales closer than 1:1
     if ( minScale < 0 )
@@ -1618,8 +1654,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   //data defined label size?
-  context.expressionContext().setOriginalValueVariable( mFormat.size() );
-  double fontSize = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::Size, context.expressionContext(), mFormat.size() );
+  double fontSize = mFormat.size();
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Size ) )
+  {
+    context.expressionContext().setOriginalValueVariable( fontSize );
+    fontSize = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::Size, context.expressionContext(), fontSize );
+  }
   if ( fontSize <= 0.0 )
   {
     return;
@@ -1656,11 +1696,14 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // calculate rest of font attributes and store any data defined values
   // this is done here for later use in making label backgrounds part of collision management (when implemented)
   labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling as it breaks with curved labels
-  parseTextStyle( labelFont, fontunits, context );
-  parseTextFormatting( context );
-  parseTextBuffer( context );
-  parseShapeBackground( context );
-  parseDropShadow( context );
+  if ( mDataDefinedProperties.hasActiveProperties() )
+  {
+    parseTextStyle( labelFont, fontunits, context );
+    parseTextFormatting( context );
+    parseTextBuffer( context );
+    parseShapeBackground( context );
+    parseDropShadow( context );
+  }
 
   QString labelText;
 
@@ -1702,36 +1745,39 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     capitalization = static_cast< QgsStringUtils::Capitalization >( mFormat.font().capitalization() );
   }
   // data defined font capitalization?
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::FontCase, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontCase ) )
   {
-    QString fcase = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal FontCase:%1" ).arg( fcase ), 4 );
-
-    if ( !fcase.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::FontCase, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      if ( fcase.compare( QLatin1String( "NoChange" ), Qt::CaseInsensitive ) == 0 )
+      QString fcase = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal FontCase:%1" ).arg( fcase ), 4 );
+
+      if ( !fcase.isEmpty() )
       {
-        capitalization = QgsStringUtils::MixedCase;
-      }
-      else if ( fcase.compare( QLatin1String( "Upper" ), Qt::CaseInsensitive ) == 0 )
-      {
-        capitalization = QgsStringUtils::AllUppercase;
-      }
-      else if ( fcase.compare( QLatin1String( "Lower" ), Qt::CaseInsensitive ) == 0 )
-      {
-        capitalization = QgsStringUtils::AllLowercase;
-      }
-      else if ( fcase.compare( QLatin1String( "Capitalize" ), Qt::CaseInsensitive ) == 0 )
-      {
-        capitalization = QgsStringUtils::ForceFirstLetterToCapital;
+        if ( fcase.compare( QLatin1String( "NoChange" ), Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = QgsStringUtils::MixedCase;
+        }
+        else if ( fcase.compare( QLatin1String( "Upper" ), Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = QgsStringUtils::AllUppercase;
+        }
+        else if ( fcase.compare( QLatin1String( "Lower" ), Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = QgsStringUtils::AllLowercase;
+        }
+        else if ( fcase.compare( QLatin1String( "Capitalize" ), Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = QgsStringUtils::ForceFirstLetterToCapital;
+        }
       }
     }
   }
   labelText = QgsStringUtils::capitalize( labelText, capitalization );
 
   // format number if label text is coercible to a number
-  if ( mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::NumFormat, context.expressionContext(), formatNumbers ) )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::NumFormat ) && mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::NumFormat, context.expressionContext(), formatNumbers ) )
   {
     // data defined decimal places?
     int decimalPlaces = mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::NumDecimals, context.expressionContext(), decimals );
@@ -1773,17 +1819,20 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     maxcharangleout = maxCurvedCharAngleOut;
 
     //data defined maximum angle between curved label characters?
-    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::CurvedCharAngleInOut, context.expressionContext() );
-    if ( exprVal.isValid() )
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::CurvedCharAngleInOut ) )
     {
-      QString ptstr = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal CurvedCharAngleInOut:%1" ).arg( ptstr ), 4 );
-
-      if ( !ptstr.isEmpty() )
+      exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::CurvedCharAngleInOut, context.expressionContext() );
+      if ( exprVal.isValid() )
       {
-        QPointF maxcharanglePt = QgsSymbolLayerUtils::decodePoint( ptstr );
-        maxcharanglein = qBound( 20.0, static_cast< double >( maxcharanglePt.x() ), 60.0 );
-        maxcharangleout = qBound( 20.0, static_cast< double >( maxcharanglePt.y() ), 95.0 );
+        QString ptstr = exprVal.toString().trimmed();
+        QgsDebugMsgLevel( QStringLiteral( "exprVal CurvedCharAngleInOut:%1" ).arg( ptstr ), 4 );
+
+        if ( !ptstr.isEmpty() )
+        {
+          QPointF maxcharanglePt = QgsSymbolLayerUtils::decodePoint( ptstr );
+          maxcharanglein = qBound( 20.0, static_cast< double >( maxcharanglePt.x() ), 60.0 );
+          maxcharangleout = qBound( 20.0, static_cast< double >( maxcharanglePt.y() ), 95.0 );
+        }
       }
     }
     // make sure maxcharangleout is always negative
@@ -1792,21 +1841,24 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   // data defined centroid whole or clipped?
   bool wholeCentroid = centroidWhole;
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::CentroidWhole, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::CentroidWhole ) )
   {
-    QString str = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal CentroidWhole:%1" ).arg( str ), 4 );
-
-    if ( !str.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::CentroidWhole, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      if ( str.compare( QLatin1String( "Visible" ), Qt::CaseInsensitive ) == 0 )
+      QString str = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal CentroidWhole:%1" ).arg( str ), 4 );
+
+      if ( !str.isEmpty() )
       {
-        wholeCentroid = false;
-      }
-      else if ( str.compare( QLatin1String( "Whole" ), Qt::CaseInsensitive ) == 0 )
-      {
-        wholeCentroid = true;
+        if ( str.compare( QLatin1String( "Visible" ), Qt::CaseInsensitive ) == 0 )
+        {
+          wholeCentroid = false;
+        }
+        else if ( str.compare( QLatin1String( "Whole" ), Qt::CaseInsensitive ) == 0 )
+        {
+          wholeCentroid = true;
+        }
       }
     }
   }
@@ -1930,17 +1982,19 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   //data defined quadrant offset?
   bool ddFixedQuad = false;
   QuadrantPosition quadOff = quadOffset;
-  context.expressionContext().setOriginalValueVariable( static_cast< int >( quadOff ) );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetQuad, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::OffsetQuad ) )
   {
-    bool ok;
-    int quadInt = exprVal.toInt( &ok );
-    QgsDebugMsgLevel( QStringLiteral( "exprVal OffsetQuad:%1" ).arg( quadInt ), 4 );
-    if ( ok && 0 <= quadInt && quadInt <= 8 )
+    context.expressionContext().setOriginalValueVariable( static_cast< int >( quadOff ) );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetQuad, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      quadOff = static_cast< QuadrantPosition >( quadInt );
-      ddFixedQuad = true;
+      bool ok;
+      int quadInt = exprVal.toInt( &ok );
+      if ( ok && 0 <= quadInt && quadInt <= 8 )
+      {
+        quadOff = static_cast< QuadrantPosition >( quadInt );
+        ddFixedQuad = true;
+      }
     }
   }
 
@@ -1986,35 +2040,38 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   //data defined label offset?
   double xOff = xOffset;
   double yOff = yOffset;
-  context.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( QPointF( xOffset, yOffset ) ) );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetXY, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::OffsetXY ) )
   {
-    QString ptstr = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal OffsetXY:%1" ).arg( ptstr ), 4 );
-
-    if ( !ptstr.isEmpty() )
+    context.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( QPointF( xOffset, yOffset ) ) );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetXY, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      QPointF ddOffPt = QgsSymbolLayerUtils::decodePoint( ptstr );
-      xOff = ddOffPt.x();
-      yOff = ddOffPt.y();
+      QString ptstr = exprVal.toString().trimmed();
+      if ( !ptstr.isEmpty() )
+      {
+        QPointF ddOffPt = QgsSymbolLayerUtils::decodePoint( ptstr );
+        xOff = ddOffPt.x();
+        yOff = ddOffPt.y();
+      }
     }
   }
 
   // data defined label offset units?
   QgsUnitTypes::RenderUnit offUnit = offsetUnits;
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetUnits, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::OffsetUnits ) )
   {
-    QString units = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal OffsetUnits:%1" ).arg( units ), 4 );
-    if ( !units.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetUnits, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      bool ok = false;
-      QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
-      if ( ok )
+      QString units = exprVal.toString().trimmed();
+      if ( !units.isEmpty() )
       {
-        offUnit = decodedUnits;
+        bool ok = false;
+        QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+        if ( ok )
+        {
+          offUnit = decodedUnits;
+        }
       }
     }
   }
@@ -2035,154 +2092,173 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   const QgsMapToPixel &m2p = context.mapToPixel();
   //data defined rotation?
-  context.expressionContext().setOriginalValueVariable( angleOffset );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::LabelRotation, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LabelRotation ) )
   {
-    bool ok;
-    double rotD = exprVal.toDouble( &ok );
-    QgsDebugMsgLevel( QStringLiteral( "exprVal Rotation:%1" ).arg( rotD ), 4 );
-    if ( ok )
+    context.expressionContext().setOriginalValueVariable( angleOffset );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::LabelRotation, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      dataDefinedRotation = true;
-      // TODO: add setting to disable having data defined rotation follow
-      //       map rotation ?
-      rotD += m2p.mapRotation();
-      angle = ( 360 - rotD ) * M_PI / 180.0;
+      bool ok;
+      double rotD = exprVal.toDouble( &ok );
+      if ( ok )
+      {
+        dataDefinedRotation = true;
+        // TODO: add setting to disable having data defined rotation follow
+        //       map rotation ?
+        rotD += m2p.mapRotation();
+        angle = ( 360 - rotD ) * M_PI / 180.0;
+      }
     }
   }
 
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionX ) )
   {
-    if ( !exprVal.isNull() )
-      xPos = exprVal.toDouble( &ddXPos );
-    QgsDebugMsgLevel( QStringLiteral( "exprVal PositionX:%1" ).arg( xPos ), 4 );
-
-    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() );
     if ( exprVal.isValid() )
     {
-      //data defined position. But field values could be NULL -> positions will be generated by PAL
       if ( !exprVal.isNull() )
-        yPos = exprVal.toDouble( &ddYPos );
-      QgsDebugMsgLevel( QStringLiteral( "exprVal PositionY:%1" ).arg( yPos ), 4 );
+        xPos = exprVal.toDouble( &ddXPos );
 
-      if ( ddXPos && ddYPos )
+      if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionY ) )
       {
-        dataDefinedPosition = true;
-        // layer rotation set, but don't rotate pinned labels unless data defined
-        if ( layerDefinedRotation && !dataDefinedRotation )
-        {
-          angle = 0.0;
-        }
-
-        //x/y shift in case of alignment
-        double xdiff = 0.0;
-        double ydiff = 0.0;
-
-        //horizontal alignment
-        exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Hali, context.expressionContext() );
+        exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() );
         if ( exprVal.isValid() )
         {
-          QString haliString = exprVal.toString();
-          QgsDebugMsgLevel( QStringLiteral( "exprVal Hali:%1" ).arg( haliString ), 4 );
-          if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
-          {
-            xdiff -= labelX / 2.0;
-          }
-          else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
-          {
-            xdiff -= labelX;
-          }
-        }
+          //data defined position. But field values could be NULL -> positions will be generated by PAL
+          if ( !exprVal.isNull() )
+            yPos = exprVal.toDouble( &ddYPos );
 
-        //vertical alignment
-        exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Vali, context.expressionContext() );
-        if ( exprVal.isValid() )
-        {
-          QString valiString = exprVal.toString();
-          QgsDebugMsgLevel( QStringLiteral( "exprVal Vali:%1" ).arg( valiString ), 4 );
-
-          if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
+          if ( ddXPos && ddYPos )
           {
-            if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+            dataDefinedPosition = true;
+            // layer rotation set, but don't rotate pinned labels unless data defined
+            if ( layerDefinedRotation && !dataDefinedRotation )
             {
-              ydiff -= labelY;
+              angle = 0.0;
             }
-            else
+
+            //x/y shift in case of alignment
+            double xdiff = 0.0;
+            double ydiff = 0.0;
+
+            //horizontal alignment
+            if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Hali ) )
             {
-              double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
-              if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+              exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Hali, context.expressionContext() );
+              if ( exprVal.isValid() )
               {
-                ydiff -= labelY * descentRatio;
-              }
-              else //'Cap' or 'Half'
-              {
-                double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
-                ydiff -= labelY * capHeightRatio;
-                if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+                QString haliString = exprVal.toString();
+                if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
                 {
-                  ydiff += labelY * ( capHeightRatio - descentRatio ) / 2.0;
+                  xdiff -= labelX / 2.0;
+                }
+                else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+                {
+                  xdiff -= labelX;
                 }
               }
             }
+
+            //vertical alignment
+            if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Vali ) )
+            {
+              exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Vali, context.expressionContext() );
+              if ( exprVal.isValid() )
+              {
+                QString valiString = exprVal.toString();
+                if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
+                {
+                  if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+                  {
+                    ydiff -= labelY;
+                  }
+                  else
+                  {
+                    double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
+                    if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+                    {
+                      ydiff -= labelY * descentRatio;
+                    }
+                    else //'Cap' or 'Half'
+                    {
+                      double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
+                      ydiff -= labelY * capHeightRatio;
+                      if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+                      {
+                        ydiff += labelY * ( capHeightRatio - descentRatio ) / 2.0;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            if ( dataDefinedRotation )
+            {
+              //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
+              double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
+              double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
+              xdiff = xd;
+              ydiff = yd;
+            }
+
+            //project xPos and yPos from layer to map CRS, handle rotation
+            QgsGeometry ddPoint( new QgsPoint( xPos, yPos ) );
+            if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
+            {
+              ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
+              xPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->x();
+              yPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->y();
+            }
+
+            xPos += xdiff;
+            yPos += ydiff;
           }
-        }
-
-        if ( dataDefinedRotation )
-        {
-          //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
-          double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
-          double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
-          xdiff = xd;
-          ydiff = yd;
-        }
-
-        //project xPos and yPos from layer to map CRS, handle rotation
-        QgsGeometry ddPoint( new QgsPoint( xPos, yPos ) );
-        if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
-        {
-          ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
-          xPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->x();
-          yPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->y();
-        }
-
-        xPos += xdiff;
-        yPos += ydiff;
-      }
-      else
-      {
-        // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
-        if ( dataDefinedRotation && placement != QgsPalLayerSettings::OverPoint )
-        {
-          angle = 0.0;
+          else
+          {
+            // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+            if ( dataDefinedRotation && placement != QgsPalLayerSettings::OverPoint )
+            {
+              angle = 0.0;
+            }
+          }
         }
       }
     }
   }
 
   // data defined always show?
-  bool alwaysShow = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::AlwaysShow, context.expressionContext(), false );
+  bool alwaysShow = false;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::AlwaysShow ) )
+  {
+    alwaysShow = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::AlwaysShow, context.expressionContext(), false );
+  }
 
   // set repeat distance
   // data defined repeat distance?
-  context.expressionContext().setOriginalValueVariable( repeatDistance );
-  double repeatDist = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::RepeatDistance, context.expressionContext(), repeatDistance );
+  double repeatDist = repeatDistance;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::RepeatDistance ) )
+  {
+    context.expressionContext().setOriginalValueVariable( repeatDist );
+    repeatDist = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::RepeatDistance, context.expressionContext(), repeatDist );
+  }
 
   // data defined label-repeat distance units?
   QgsUnitTypes::RenderUnit repeatUnits = repeatDistanceUnit;
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::RepeatDistanceUnit, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::RepeatDistanceUnit ) )
   {
-    QString units = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal RepeatDistanceUnits:%1" ).arg( units ), 4 );
-    if ( !units.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::RepeatDistanceUnit, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      bool ok = false;
-      QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
-      if ( ok )
+      QString units = exprVal.toString().trimmed();
+      if ( !units.isEmpty() )
       {
-        repeatUnits = decodedUnits;
+        bool ok = false;
+        QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+        if ( ok )
+        {
+          repeatUnits = decodedUnits;
+        }
       }
     }
   }
@@ -2196,8 +2272,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   // data defined overrun distance
-  context.expressionContext().setOriginalValueVariable( overrunDistance );
-  double overrunDistanceEval = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::OverrunDistance, context.expressionContext(), overrunDistance );
+  double overrunDistanceEval = overrunDistance;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::OverrunDistance ) )
+  {
+    context.expressionContext().setOriginalValueVariable( overrunDistanceEval );
+    overrunDistanceEval = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::OverrunDistance, context.expressionContext(), overrunDistanceEval );
+  }
   if ( !qgsDoubleNear( overrunDistanceEval, 0.0 ) )
   {
     overrunDistanceEval = context.convertToMapUnits( overrunDistanceEval, overrunDistanceUnit, overrunDistanceMapUnitScale );
@@ -2273,23 +2353,30 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // TODO: allow layer-wide feature dist in PAL...?
 
   // data defined label-feature distance?
-  context.expressionContext().setOriginalValueVariable( dist );
-  double distance = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::LabelDistance, context.expressionContext(), dist );
+  double distance = dist;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LabelDistance ) )
+  {
+    context.expressionContext().setOriginalValueVariable( distance );
+    distance = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::LabelDistance, context.expressionContext(), distance );
+  }
 
   // data defined label-feature distance units?
   QgsUnitTypes::RenderUnit distUnit = distUnits;
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::DistanceUnits, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::DistanceUnits ) )
   {
-    QString units = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal DistanceUnits:%1" ).arg( units ), 4 );
-    if ( !units.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::DistanceUnits, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      bool ok = false;
-      QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
-      if ( ok )
+      QString units = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal DistanceUnits:%1" ).arg( units ), 4 );
+      if ( !units.isEmpty() )
       {
-        distUnit = decodedUnits;
+        bool ok = false;
+        QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+        if ( ok )
+        {
+          distUnit = decodedUnits;
+        }
       }
     }
   }
@@ -2314,48 +2401,61 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   pal::LineArrangementFlags featureArrangementFlags = static_cast< pal::LineArrangementFlags >( placementFlags );
-  context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodeLinePlacementFlags( featureArrangementFlags ) );
-  const QString dataDefinedLineArrangement = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::LinePlacementOptions, context.expressionContext() );
-  if ( !dataDefinedLineArrangement.isEmpty() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LinePlacementOptions ) )
   {
-    featureArrangementFlags = QgsLabelingUtils::decodeLinePlacementFlags( dataDefinedLineArrangement );
+    context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodeLinePlacementFlags( featureArrangementFlags ) );
+    const QString dataDefinedLineArrangement = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::LinePlacementOptions, context.expressionContext() );
+    if ( !dataDefinedLineArrangement.isEmpty() )
+    {
+      featureArrangementFlags = QgsLabelingUtils::decodeLinePlacementFlags( dataDefinedLineArrangement );
+    }
   }
   ( *labelFeature )->setArrangementFlags( featureArrangementFlags );
 
   // data defined z-index?
-  context.expressionContext().setOriginalValueVariable( zIndex );
-  double z = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::ZIndex, context.expressionContext(), zIndex );
+  double z = zIndex;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ZIndex ) )
+  {
+    context.expressionContext().setOriginalValueVariable( z );
+    z = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::ZIndex, context.expressionContext(), z );
+  }
   ( *labelFeature )->setZIndex( z );
 
   // data defined priority?
-  context.expressionContext().setOriginalValueVariable( priority );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Priority, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Priority ) )
   {
-    bool ok;
-    double priorityD = exprVal.toDouble( &ok );
-    if ( ok )
+    context.expressionContext().setOriginalValueVariable( priority );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Priority, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      priorityD = qBound( 0.0, priorityD, 10.0 );
-      priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
-      ( *labelFeature )->setPriority( priorityD );
+      bool ok;
+      double priorityD = exprVal.toDouble( &ok );
+      if ( ok )
+      {
+        priorityD = qBound( 0.0, priorityD, 10.0 );
+        priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
+        ( *labelFeature )->setPriority( priorityD );
+      }
     }
   }
 
   ( *labelFeature )->setIsObstacle( isObstacle );
 
   double featObstacleFactor = obstacleFactor;
-  context.expressionContext().setOriginalValueVariable( obstacleFactor );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ObstacleFactor, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
   {
-    bool ok;
-    double factorD = exprVal.toDouble( &ok );
-    if ( ok )
+    context.expressionContext().setOriginalValueVariable( featObstacleFactor );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ObstacleFactor, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      factorD = qBound( 0.0, factorD, 10.0 );
-      factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
-      featObstacleFactor = factorD;
+      bool ok;
+      double factorD = exprVal.toDouble( &ok );
+      if ( ok )
+      {
+        factorD = qBound( 0.0, factorD, 10.0 );
+        factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
+        featObstacleFactor = factorD;
+      }
     }
   }
   ( *labelFeature )->setObstacleFactor( featObstacleFactor );
@@ -2364,11 +2464,14 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   if ( positionOrder.isEmpty() )
     positionOrder = QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER;
 
-  context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) );
-  QString dataDefinedOrder = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::PredefinedPositionOrder, context.expressionContext() );
-  if ( !dataDefinedOrder.isEmpty() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PredefinedPositionOrder ) )
   {
-    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( dataDefinedOrder );
+    context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) );
+    QString dataDefinedOrder = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::PredefinedPositionOrder, context.expressionContext() );
+    if ( !dataDefinedOrder.isEmpty() )
+    {
+      positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( dataDefinedOrder );
+    }
   }
   ( *labelFeature )->setPredefinedPositionOrder( positionOrder );
 
@@ -2618,41 +2721,55 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
 
   // data defined font family?
   QString ddFontFamily;
-  context.expressionContext().setOriginalValueVariable( labelFont.family() );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Family, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Family ) )
   {
-    QString family = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal Font family:%1" ).arg( family ), 4 );
-
-    if ( labelFont.family() != family )
+    context.expressionContext().setOriginalValueVariable( labelFont.family() );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Family, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      // testing for ddFontFamily in QFontDatabase.families() may be slow to do for every feature
-      // (i.e. don't use QgsFontUtils::fontFamilyMatchOnSystem( family ) here)
-      if ( QgsFontUtils::fontFamilyOnSystem( family ) )
+      QString family = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal Font family:%1" ).arg( family ), 4 );
+
+      if ( labelFont.family() != family )
       {
-        ddFontFamily = family;
+        // testing for ddFontFamily in QFontDatabase.families() may be slow to do for every feature
+        // (i.e. don't use QgsFontUtils::fontFamilyMatchOnSystem( family ) here)
+        if ( QgsFontUtils::fontFamilyOnSystem( family ) )
+        {
+          ddFontFamily = family;
+        }
       }
     }
   }
 
   // data defined named font style?
   QString ddFontStyle;
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::FontStyle, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontStyle ) )
   {
-    QString fontstyle = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal Font style:%1" ).arg( fontstyle ), 4 );
-    ddFontStyle = fontstyle;
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::FontStyle, context.expressionContext() );
+    if ( exprVal.isValid() )
+    {
+      QString fontstyle = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal Font style:%1" ).arg( fontstyle ), 4 );
+      ddFontStyle = fontstyle;
+    }
   }
 
   // data defined bold font style?
-  context.expressionContext().setOriginalValueVariable( labelFont.bold() );
-  bool ddBold = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Bold, context.expressionContext(), false );
+  bool ddBold = false;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Bold ) )
+  {
+    context.expressionContext().setOriginalValueVariable( labelFont.bold() );
+    ddBold = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Bold, context.expressionContext(), false );
+  }
 
   // data defined italic font style?
-  context.expressionContext().setOriginalValueVariable( labelFont.italic() );
-  bool ddItalic = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Italic, context.expressionContext(), false );
+  bool ddItalic = false;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Italic ) )
+  {
+    context.expressionContext().setOriginalValueVariable( labelFont.italic() );
+    ddItalic = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Italic, context.expressionContext(), false );
+  }
 
   // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
   //       (currently defaults to what has been read in from layer settings)
@@ -2717,16 +2834,22 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
   }
 
   // data defined word spacing?
-  double wordspace = labelFont.wordSpacing();
-  context.expressionContext().setOriginalValueVariable( wordspace );
-  wordspace = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::FontWordSpacing, context.expressionContext(), wordspace );
-  labelFont.setWordSpacing( context.convertToPainterUnits( wordspace, fontunits, mFormat.sizeMapUnitScale() ) );
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontWordSpacing ) )
+  {
+    double wordspace = labelFont.wordSpacing();
+    context.expressionContext().setOriginalValueVariable( wordspace );
+    wordspace = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::FontWordSpacing, context.expressionContext(), wordspace );
+    labelFont.setWordSpacing( context.convertToPainterUnits( wordspace, fontunits, mFormat.sizeMapUnitScale() ) );
+  }
 
   // data defined letter spacing?
-  double letterspace = labelFont.letterSpacing();
-  context.expressionContext().setOriginalValueVariable( letterspace );
-  letterspace = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::FontLetterSpacing, context.expressionContext(), letterspace );
-  labelFont.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( letterspace, fontunits, mFormat.sizeMapUnitScale() ) );
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontLetterSpacing ) )
+  {
+    double letterspace = labelFont.letterSpacing();
+    context.expressionContext().setOriginalValueVariable( letterspace );
+    letterspace = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::FontLetterSpacing, context.expressionContext(), letterspace );
+    labelFont.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( letterspace, fontunits, mFormat.sizeMapUnitScale() ) );
+  }
 
   // data defined strikeout font style?
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Strikeout ) )
@@ -2833,31 +2956,34 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
   dataDefinedValEval( DDDouble, QgsPalLayerSettings::MultiLineHeight, exprVal, context.expressionContext() );
 
   // data defined multiline text align?
-  context.expressionContext().setOriginalValueVariable( mFormat.lineHeight() );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::MultiLineAlignment, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::MultiLineAlignment ) )
   {
-    QString str = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal MultiLineAlignment:%1" ).arg( str ), 4 );
-
-    if ( !str.isEmpty() )
+    context.expressionContext().setOriginalValueVariable( mFormat.lineHeight() );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::MultiLineAlignment, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      // "Left"
-      QgsPalLayerSettings::MultiLineAlign aligntype = QgsPalLayerSettings::MultiLeft;
+      QString str = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal MultiLineAlignment:%1" ).arg( str ), 4 );
 
-      if ( str.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+      if ( !str.isEmpty() )
       {
-        aligntype = QgsPalLayerSettings::MultiCenter;
+        // "Left"
+        QgsPalLayerSettings::MultiLineAlign aligntype = QgsPalLayerSettings::MultiLeft;
+
+        if ( str.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+        {
+          aligntype = QgsPalLayerSettings::MultiCenter;
+        }
+        else if ( str.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+        {
+          aligntype = QgsPalLayerSettings::MultiRight;
+        }
+        else if ( str.compare( QLatin1String( "Follow" ), Qt::CaseInsensitive ) == 0 )
+        {
+          aligntype = QgsPalLayerSettings::MultiFollowPlacement;
+        }
+        dataDefinedValues.insert( QgsPalLayerSettings::MultiLineAlignment, QVariant( static_cast< int >( aligntype ) ) );
       }
-      else if ( str.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
-      {
-        aligntype = QgsPalLayerSettings::MultiRight;
-      }
-      else if ( str.compare( QLatin1String( "Follow" ), Qt::CaseInsensitive ) == 0 )
-      {
-        aligntype = QgsPalLayerSettings::MultiFollowPlacement;
-      }
-      dataDefinedValues.insert( QgsPalLayerSettings::MultiLineAlignment, QVariant( static_cast< int >( aligntype ) ) );
     }
   }
 
@@ -2943,45 +3069,54 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
 
   // data defined shape kind?
   QgsTextBackgroundSettings::ShapeType shapeKind = background.type();
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShapeKind, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ShapeKind ) )
   {
-    QString skind = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeKind:%1" ).arg( skind ), 4 );
-
-    if ( !skind.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShapeKind, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      shapeKind = QgsTextRendererUtils::decodeShapeType( skind );
-      dataDefinedValues.insert( QgsPalLayerSettings::ShapeKind, QVariant( static_cast< int >( shapeKind ) ) );
+      QString skind = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeKind:%1" ).arg( skind ), 4 );
+
+      if ( !skind.isEmpty() )
+      {
+        shapeKind = QgsTextRendererUtils::decodeShapeType( skind );
+        dataDefinedValues.insert( QgsPalLayerSettings::ShapeKind, QVariant( static_cast< int >( shapeKind ) ) );
+      }
     }
   }
 
   // data defined shape SVG path?
   QString svgPath = background.svgFile();
-  context.expressionContext().setOriginalValueVariable( svgPath );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShapeSVGFile, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ShapeSVGFile ) )
   {
-    QString svgfile = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeSVGFile:%1" ).arg( svgfile ), 4 );
+    context.expressionContext().setOriginalValueVariable( svgPath );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShapeSVGFile, context.expressionContext() );
+    if ( exprVal.isValid() )
+    {
+      QString svgfile = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeSVGFile:%1" ).arg( svgfile ), 4 );
 
-    // '' empty paths are allowed
-    svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgfile, context.pathResolver() );
-    dataDefinedValues.insert( QgsPalLayerSettings::ShapeSVGFile, QVariant( svgPath ) );
+      // '' empty paths are allowed
+      svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgfile, context.pathResolver() );
+      dataDefinedValues.insert( QgsPalLayerSettings::ShapeSVGFile, QVariant( svgPath ) );
+    }
   }
 
   // data defined shape size type?
   QgsTextBackgroundSettings::SizeType shpSizeType = background.sizeType();
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShapeSizeType, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ShapeSizeType ) )
   {
-    QString stype = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeSizeType:%1" ).arg( stype ), 4 );
-
-    if ( !stype.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShapeSizeType, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      shpSizeType = QgsTextRendererUtils::decodeBackgroundSizeType( stype );
-      dataDefinedValues.insert( QgsPalLayerSettings::ShapeSizeType, QVariant( static_cast< int >( shpSizeType ) ) );
+      QString stype = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeSizeType:%1" ).arg( stype ), 4 );
+
+      if ( !stype.isEmpty() )
+      {
+        shpSizeType = QgsTextRendererUtils::decodeBackgroundSizeType( stype );
+        dataDefinedValues.insert( QgsPalLayerSettings::ShapeSizeType, QVariant( static_cast< int >( shpSizeType ) ) );
+      }
     }
   }
 
@@ -3040,17 +3175,20 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   dataDefinedValEval( DDUnits, QgsPalLayerSettings::ShapeSizeUnits, exprVal, context.expressionContext() );
 
   // data defined shape rotation type?
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShapeRotationType, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ShapeRotationType ) )
   {
-    QString rotstr = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeRotationType:%1" ).arg( rotstr ), 4 );
-
-    if ( !rotstr.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShapeRotationType, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      // "Sync"
-      QgsTextBackgroundSettings::RotationType rottype = QgsTextRendererUtils::decodeBackgroundRotationType( rotstr );
-      dataDefinedValues.insert( QgsPalLayerSettings::ShapeRotationType, QVariant( static_cast< int >( rottype ) ) );
+      QString rotstr = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeRotationType:%1" ).arg( rotstr ), 4 );
+
+      if ( !rotstr.isEmpty() )
+      {
+        // "Sync"
+        QgsTextBackgroundSettings::RotationType rottype = QgsTextRendererUtils::decodeBackgroundRotationType( rotstr );
+        dataDefinedValues.insert( QgsPalLayerSettings::ShapeRotationType, QVariant( static_cast< int >( rottype ) ) );
+      }
     }
   }
 
@@ -3140,16 +3278,19 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
   }
 
   // data defined shadow under type?
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShadowUnder, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::ShadowUnder ) )
   {
-    QString str = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "exprVal ShadowUnder:%1" ).arg( str ), 4 );
-
-    if ( !str.isEmpty() )
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::ShadowUnder, context.expressionContext() );
+    if ( exprVal.isValid() )
     {
-      QgsTextShadowSettings::ShadowPlacement shdwtype = QgsTextRendererUtils::decodeShadowPlacementType( str );
-      dataDefinedValues.insert( QgsPalLayerSettings::ShadowUnder, QVariant( static_cast< int >( shdwtype ) ) );
+      QString str = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal ShadowUnder:%1" ).arg( str ), 4 );
+
+      if ( !str.isEmpty() )
+      {
+        QgsTextShadowSettings::ShadowPlacement shdwtype = QgsTextRendererUtils::decodeShadowPlacementType( str );
+        dataDefinedValues.insert( QgsPalLayerSettings::ShadowUnder, QVariant( static_cast< int >( shdwtype ) ) );
+      }
     }
   }
 
