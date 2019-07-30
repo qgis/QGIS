@@ -38,6 +38,7 @@ void QgsCallout::initPropertyDefinitions()
     { QgsCallout::OffsetFromAnchor, QgsPropertyDefinition( "OffsetFromAnchor", QObject::tr( "Offset from feature" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsCallout::OffsetFromLabel, QgsPropertyDefinition( "OffsetFromLabel", QObject::tr( "Offset from label" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsCallout::DrawCalloutToAllParts, QgsPropertyDefinition( "DrawCalloutToAllParts", QObject::tr( "Draw lines to all feature parts" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsCallout::AnchorPointPosition, QgsPropertyDefinition( "AnchorPointPosition", QObject::tr( "Feature's anchor point position" ), QgsPropertyDefinition::String, origin ) },
   };
 }
 
@@ -50,6 +51,7 @@ QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
 {
   QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "anchorPoint" ), encodeAnchorPoint( mAnchorPoint ) );
   props.insert( QStringLiteral( "ddProperties" ), mDataDefinedProperties.toVariant( propertyDefinitions() ) );
   return props;
 }
@@ -57,6 +59,7 @@ QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
 void QgsCallout::readProperties( const QVariantMap &props, const QgsReadWriteContext & )
 {
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
+  mAnchorPoint = decodeAnchorPoint( props.value( QStringLiteral( "anchorPoint" ), QString( "" ) ).toString() );
   mDataDefinedProperties.loadVariant( props.value( QStringLiteral( "ddProperties" ) ), propertyDefinitions() );
 }
 
@@ -71,6 +74,7 @@ bool QgsCallout::saveProperties( QDomDocument &doc, QDomElement &element, const 
 
   QDomElement calloutElement = doc.createElement( QStringLiteral( "callout" ) );
   calloutElement.setAttribute( QStringLiteral( "type" ), type() );
+  calloutElement.setAttribute( QStringLiteral( "anchorPoint" ), encodeAnchorPoint( mAnchorPoint ) );
   calloutElement.appendChild( calloutPropsElement );
 
   element.appendChild( calloutElement );
@@ -145,6 +149,41 @@ QgsPropertiesDefinition QgsCallout::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
+QgsCallout::AnchorPoint QgsCallout::decodeAnchorPoint( const QString &name, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+  QString cleaned = name.toLower().trimmed();
+
+  if ( cleaned == QLatin1String( "pole_of_inaccessibility" ) )
+    return PoleOfInaccessibility;
+  else if ( cleaned == QLatin1String( "point_on_exterior" ) )
+    return PointOnExterior;
+  else if ( cleaned == QLatin1String( "point_on_surface" ) )
+    return PointOnSurface;
+  else if ( cleaned == QLatin1String( "centroid" ) )
+    return Centroid;
+
+  if ( ok )
+    *ok = false;
+  return PoleOfInaccessibility;
+}
+
+QString QgsCallout::encodeAnchorPoint( AnchorPoint anchor )
+{
+  switch ( anchor )
+  {
+    case PoleOfInaccessibility:
+      return QStringLiteral( "pole_of_inaccessibility" );
+    case PointOnExterior:
+      return QStringLiteral( "point_on_exterior" );
+    case PointOnSurface:
+      return QStringLiteral( "point_on_surface" );
+    case Centroid:
+      return QStringLiteral( "centroid" );
+  }
+  return QString();
+}
 
 //
 // QgsSimpleLineCallout
@@ -280,6 +319,13 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
   auto drawCalloutLine = [this, &context, &label]( const QgsGeometry & partAnchor )
   {
     QgsGeometry line;
+    AnchorPoint anchor = anchorPoint();
+    if ( dataDefinedProperties().isActive( QgsCallout::AnchorPointPosition ) )
+    {
+      QString encodedAnchor = encodeAnchorPoint( anchor );
+      context.expressionContext().setOriginalValueVariable( encodedAnchor );
+      anchor = decodeAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::AnchorPointPosition, context.expressionContext(), encodedAnchor ) );
+    }
     switch ( partAnchor.type() )
     {
       case QgsWkbTypes::PointGeometry:
@@ -294,7 +340,22 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, QRectF rect, const d
         if ( label.intersects( partAnchor ) )
           return;
 
-        line = label.shortestLine( partAnchor.poleOfInaccessibility( std::max( partAnchor.boundingBox().width(), partAnchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
+        switch ( anchor )
+        {
+          case QgsCallout::PoleOfInaccessibility:
+            line = label.shortestLine( partAnchor.poleOfInaccessibility( std::max( partAnchor.boundingBox().width(), partAnchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
+            break;
+          case QgsCallout::PointOnSurface:
+            line = label.shortestLine( partAnchor.pointOnSurface() );
+            break;
+          case QgsCallout::PointOnExterior:
+            line = label.shortestLine( partAnchor );
+            break;
+          case QgsCallout::Centroid:
+          default:
+            line = label.shortestLine( partAnchor.centroid() );
+            break;
+        }
         break;
 
       case QgsWkbTypes::NullGeometry:
@@ -398,6 +459,13 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
   auto drawCalloutLine = [this, &context, &label]( const QgsGeometry & partAnchor )
   {
     QgsGeometry line;
+    AnchorPoint anchor = anchorPoint();
+    if ( dataDefinedProperties().isActive( QgsCallout::AnchorPointPosition ) )
+    {
+      QString encodedAnchor = encodeAnchorPoint( anchor );
+      context.expressionContext().setOriginalValueVariable( encodedAnchor );
+      anchor = decodeAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::AnchorPointPosition, context.expressionContext(), encodedAnchor ) );
+    }
     switch ( partAnchor.type() )
     {
       case QgsWkbTypes::PointGeometry:
@@ -412,7 +480,22 @@ void QgsManhattanLineCallout::draw( QgsRenderContext &context, QRectF rect, cons
         if ( label.intersects( partAnchor ) )
           return;
 
-        line = label.shortestLine( partAnchor.poleOfInaccessibility( std::max( partAnchor.boundingBox().width(), partAnchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
+        switch ( anchor )
+        {
+          case QgsCallout::PoleOfInaccessibility:
+            line = label.shortestLine( partAnchor.poleOfInaccessibility( std::max( partAnchor.boundingBox().width(), partAnchor.boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
+            break;
+          case QgsCallout::PointOnSurface:
+            line = label.shortestLine( partAnchor.pointOnSurface() );
+            break;
+          case QgsCallout::PointOnExterior:
+            line = label.shortestLine( partAnchor );
+            break;
+          case QgsCallout::Centroid:
+          default:
+            line = label.shortestLine( partAnchor.centroid() );
+            break;
+        }
         break;
 
       case QgsWkbTypes::NullGeometry:

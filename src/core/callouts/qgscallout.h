@@ -72,6 +72,7 @@ class CORE_EXPORT QgsCallout
       OffsetFromAnchor, //!< Distance to offset lines from anchor points
       OffsetFromLabel, //!< Distance to offset lines from label area
       DrawCalloutToAllParts, //!< Whether callout lines should be drawn to all feature parts
+      AnchorPointPosition, //!< Feature's anchor point position
     };
 
     //! Options for draw order (stacking) of callouts
@@ -79,6 +80,15 @@ class CORE_EXPORT QgsCallout
     {
       OrderBelowAllLabels, //!< Render callouts below all labels
       OrderBelowIndividualLabels, //!< Render callouts below their individual associated labels, some callouts may be drawn over other labels
+    };
+
+    //! Feature's anchor point position
+    enum AnchorPoint
+    {
+      PoleOfInaccessibility = 0, //!< The surface's pole of inaccessibility used as anchor
+      PointOnExterior, //!< A point on the surface's outline closest to the label is used as anchor
+      PointOnSurface, //!< A point guaranteed to be on the surface is used as anchor
+      Centroid, //!< The surface's centroid is used as anchor
     };
 
     /**
@@ -252,6 +262,37 @@ class CORE_EXPORT QgsCallout
      */
     static QgsPropertiesDefinition propertyDefinitions();
 
+    /**
+     * Returns the feature's anchor point position.
+     *
+     * \see setAnchorPoint()
+     */
+    AnchorPoint anchorPoint() const { return mAnchorPoint; }
+
+    /**
+     * Sets the feature's \a anchor point position.
+     *
+     * \see drawCalloutToAllParts()
+     */
+    void setAnchorPoint( AnchorPoint anchor ) { mAnchorPoint = anchor; }
+
+    /**
+     * Encodes an \a anchor point to its string representation.
+     * \returns encoded string
+     * \see decodeAnchorPoint()
+     */
+    static QString encodeAnchorPoint( AnchorPoint anchor );
+
+    /**
+     * Attempts to decode a string representation of an anchoir point name to the corresponding
+     * anchor point.
+     * \param name encoded anchoir point name
+     * \param ok if specified, will be set to TRUE if the anchoir point was successfully decoded
+     * \returns decoded name
+     * \see encodeAnchorPoint()
+     */
+    static QgsCallout::AnchorPoint decodeAnchorPoint( const QString &name, bool *ok = nullptr );
+
   protected:
 
     /**
@@ -277,6 +318,8 @@ class CORE_EXPORT QgsCallout
   private:
 
     bool mEnabled = false;
+
+    AnchorPoint mAnchorPoint = PoleOfInaccessibility;
 
     //! Property collection for data defined callout settings
     QgsPropertyCollection mDataDefinedProperties;

@@ -103,6 +103,13 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
   {
     if ( QgsCalloutWidget *w = am->createCalloutWidget( mLayer ) )
     {
+
+      QgsWkbTypes::GeometryType geometryType = mGeomType;
+      if ( mGeometryGeneratorGroupBox->isChecked() )
+        geometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+      else if ( mLayer )
+        geometryType = mLayer->geometryType();
+      w->setGeometryType( geometryType );
       w->setCallout( callout );
 
       w->setContext( context() );
