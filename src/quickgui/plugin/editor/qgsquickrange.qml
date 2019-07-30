@@ -52,8 +52,6 @@ Item {
   Row {
     id: rowLayout
     anchors.fill: parent
-    anchors.rightMargin: fieldItem.customMargin
-    anchors.leftMargin: fieldItem.customMargin
 
     // SpinBox
     SpinBox {
@@ -71,6 +69,14 @@ Item {
       height: parent.height
       editable: true
       visible: fieldItem.widgetStyle === "SpinBox"
+
+      background:   Rectangle {
+        anchors.fill: parent
+        border.color: customStyle.fields.normalColor
+        border.width: 1 * QgsQuick.Utils.dp
+        color: customStyle.fields.backgroundColor
+        radius: customStyle.fields.cornerRadius
+      }
 
       onValueChanged: {
         if (visible) {
@@ -117,6 +123,14 @@ Item {
         validator: spinbox.validator
         inputMethodHints: Qt.ImhFormattedNumbersOnly
       }
+
+      Component.onCompleted: {
+        up.indicator.color = customStyle.fields.backgroundColor
+        up.indicator.radius = customStyle.fields.cornerRadius
+        down.indicator.radius = customStyle.fields.cornerRadius
+        down.indicator.color = customStyle.fields.backgroundColor
+      }
+
     }
 
     // Slider
@@ -131,8 +145,7 @@ Item {
       horizontalAlignment: Text.AlignLeft
       font.pixelSize: customStyle.fields.fontPixelSize
       color: customStyle.fields.fontColor
-      topPadding: fieldItem.customMargin
-      bottomPadding: fieldItem.customMargin
+      padding: fieldItem.customMargin
     }
 
     Slider {
