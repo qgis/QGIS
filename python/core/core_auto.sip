@@ -253,6 +253,7 @@
 %Include auto_generated/scalebar/qgssingleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsticksscalebarrenderer.sip
 %Include auto_generated/symbology/qgs25drenderer.sip
+%Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/symbology/qgscategorizedsymbolrenderer.sip
 %Include auto_generated/symbology/qgscolorbrewerpalette.sip
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
@@ -471,5 +472,4 @@
 %Include auto_generated/layertree/qgslayertreenode.sip
 %Include auto_generated/layertree/qgslayertreeregistrybridge.sip
 %Include auto_generated/qgsuserprofilemanager.sip
-%Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/qgsuserprofile.sip
