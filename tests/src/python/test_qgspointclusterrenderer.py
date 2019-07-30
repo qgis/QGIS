@@ -15,6 +15,9 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsPointClusterRenderer -V
+
 """
 
 __author__ = 'Nyall Dawson'
@@ -40,7 +43,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsPointDisplacementRenderer,
                        QgsMapSettings,
                        QgsProperty,
-                       QgsSymbolLayer
+                       QgsSymbolLayer,
+                       QgsRenderContext
                        )
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -179,6 +183,11 @@ class TestQgsPointClusterRenderer(unittest.TestCase):
         result = renderchecker.runTest('expected_cluster_variables')
         self.layer.renderer().setClusterSymbol(old_marker)
         self.assertTrue(result)
+
+    def testUsedAttributes(self):
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+
+        self.assertCountEqual(self.renderer.usedAttributes(ctx), {})
 
 
 if __name__ == '__main__':
