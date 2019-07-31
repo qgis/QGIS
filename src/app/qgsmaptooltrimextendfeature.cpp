@@ -228,13 +228,15 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         {
           filter.setLayer( mVlayer );
           match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter );
+          if ( match.layer() )
+          {
+            match.layer()->beginEditCommand( tr( "Trim/Extend feature" ) );
+            match.layer()->changeGeometry( match.featureId(), mGeom );
+            match.layer()->endEditCommand();
+            match.layer()->triggerRepaint();
 
-          match.layer()->beginEditCommand( tr( "Trim/Extend feature" ) );
-          match.layer()->changeGeometry( match.featureId(), mGeom );
-          match.layer()->endEditCommand();
-          match.layer()->triggerRepaint();
-
-          emit messageEmitted( tr( "Feature trimmed/extended." ) );
+            emit messageEmitted( tr( "Feature trimmed/extended." ) );
+          }
         }
         else
         {
