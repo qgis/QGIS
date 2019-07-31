@@ -35,6 +35,11 @@ void QgsCustomDropHandler::handleMimeData( const QMimeData *data )
   Q_UNUSED( data )
 }
 
+bool QgsCustomDropHandler::handleMimeDataV2( const QMimeData * )
+{
+  return false;
+}
+
 bool QgsCustomDropHandler::handleFileDrop( const QString &file )
 {
   Q_UNUSED( file )
