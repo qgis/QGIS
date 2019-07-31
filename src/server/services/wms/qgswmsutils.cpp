@@ -123,8 +123,8 @@ namespace QgsWms
         QImage img256 = img.convertToFormat( QImage::Format_ARGB32 );
         medianCut( colorTable, 256, img256 );
         result = img256.convertToFormat( QImage::Format_Indexed8, colorTable,
-                                      Qt::ColorOnly | Qt::ThresholdDither |
-                                      Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+                                         Qt::ColorOnly | Qt::ThresholdDither |
+                                         Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       }
       contentType = "image/png";
       saveFormat = "PNG";
