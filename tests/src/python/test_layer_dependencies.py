@@ -45,12 +45,20 @@ class TestLayerDependencies(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        pass
 
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+        pass
+
+    def setUp(self):
+        """Run before each test."""
         # create a temp SpatiaLite db with a trigger
         fo = tempfile.NamedTemporaryFile()
         fn = fo.name
         fo.close()
-        cls.fn = fn
+        self.fn = fn
         con = spatialite_connect(fn)
         cur = con.cursor()
         cur.execute("SELECT InitSpatialMetadata(1)")
@@ -67,33 +75,25 @@ class TestLayerDependencies(unittest.TestCase):
         con.commit()
         con.close()
 
-        cls.pointsLayer = QgsVectorLayer("dbname='%s' table=\"node\" (geom) sql=" % fn, "points", "spatialite")
-        assert (cls.pointsLayer.isValid())
-        cls.linesLayer = QgsVectorLayer("dbname='%s' table=\"section\" (geom) sql=" % fn, "lines", "spatialite")
-        assert (cls.linesLayer.isValid())
-        cls.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % fn, "_points2", "spatialite")
-        assert (cls.pointsLayer2.isValid())
-        QgsProject.instance().addMapLayers([cls.pointsLayer, cls.linesLayer, cls.pointsLayer2])
+        self.pointsLayer = QgsVectorLayer("dbname='%s' table=\"node\" (geom) sql=" % fn, "points", "spatialite")
+        assert (self.pointsLayer.isValid())
+        self.linesLayer = QgsVectorLayer("dbname='%s' table=\"section\" (geom) sql=" % fn, "lines", "spatialite")
+        assert (self.linesLayer.isValid())
+        self.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % fn, "_points2", "spatialite")
+        assert (self.pointsLayer2.isValid())
+        QgsProject.instance().addMapLayers([self.pointsLayer, self.linesLayer, self.pointsLayer2])
 
         # save the project file
         fo = tempfile.NamedTemporaryFile()
         fn = fo.name
         fo.close()
-        cls.projectFile = fn
-        QgsProject.instance().setFileName(cls.projectFile)
+        self.projectFile = fn
+        QgsProject.instance().setFileName(self.projectFile)
         QgsProject.instance().write()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
-
-    def setUp(self):
-        """Run before each test."""
-        pass
 
     def tearDown(self):
         """Run after each test."""
+        QgsProject.instance().clear()
         pass
 
     def test_resetSnappingIndex(self):
