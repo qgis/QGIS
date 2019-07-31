@@ -221,6 +221,7 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         {
           getPoints( match, pLimit1, pLimit2 );
           mStep = StepExtend;
+          mLimitLayer = match.layer();
         }
         break;
       case StepExtend:
@@ -231,6 +232,8 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
           match.layer()->beginEditCommand( tr( "Trim/Extend feature" ) );
           match.layer()->changeGeometry( match.featureId(), mGeom );
+          match.layer()->addTopologicalPoints( mIntersection );
+          mLimitLayer->addTopologicalPoints( mIntersection );
           match.layer()->endEditCommand();
           match.layer()->triggerRepaint();
 
