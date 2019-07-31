@@ -94,7 +94,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     enum ResolutionMethod
     {
       MergeLongestEdge, //!< Merge the gap with the polygon with the longest shared edge.
-      NoChange //!< Do not handle the error.
+      NoChange, //!< Do not handle the error.
+      AddToAllowedGaps
     };
     Q_ENUM( ResolutionMethod )
 
@@ -117,8 +118,6 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     QString id() const override;
     QgsGeometryCheck::Flags flags() const override;
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
-    std::unique_ptr<QgsVectorLayerFeatureSource> mAllowedGapsSource;
-    double mAllowedGapsBuffer;
 
 ///@cond private
     static QString factoryDescription() SIP_SKIP;
@@ -134,6 +133,10 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
                             QgsGeometryGapCheckError *err, Changes &changes, QString &errMsg ) const;
 
     const double mGapThresholdMapUnits;
+    QgsWeakMapLayerPointer mAllowedGapsLayer;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mAllowedGapsSource;
+    double mAllowedGapsBuffer;
+
 };
 
 #endif // QGS_GEOMETRY_GAP_CHECK_H

@@ -19,6 +19,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
@@ -37,6 +38,7 @@ void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const
   if ( configuration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
   {
     QgsVectorLayer *layer = context->project->mapLayer<QgsVectorLayer *>( configuration.value( "allowedGapsLayer" ).toString() );
+    mAllowedGapsLayer = layer;
     mAllowedGapsSource = qgis::make_unique<QgsVectorLayerFeatureSource>( layer );
 
     mAllowedGapsBuffer = configuration.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble();
@@ -184,7 +186,9 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
       case NoChange:
         error->setFixed( method );
         break;
+
       case MergeLongestEdge:
+      {
         QString errMsg;
         if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg ) )
         {
@@ -195,6 +199,36 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
           error->setFixFailed( tr( "Failed to merge with neighbor: %1" ).arg( errMsg ) );
         }
         break;
+      }
+
+      case AddToAllowedGaps:
+      {
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mAllowedGapsLayer.data() );
+        if ( layer )
+        {
+          if ( !layer->startEditing() )
+          {
+            error->setFixFailed( tr( "Could not start editing layer %1" ).arg( layer->name() ) );
+          }
+          else
+          {
+            QgsFeature feature = QgsVectorLayerUtils::createFeature( layer, error->geometry() );
+            if ( !layer->addFeature( feature ) )
+            {
+              error->setFixFailed( tr( "Could not add feature to layer %1" ).arg( layer->name() ) );
+            }
+            else
+            {
+              error->setFixed( method );
+            }
+          }
+        }
+        else
+        {
+          error->setFixFailed( tr( "Allowed gaps layer could not be resolved" ) );
+        }
+        break;
+      }
     }
   }
 }
@@ -273,10 +307,13 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
 
 QStringList QgsGeometryGapCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList()
-                               << tr( "Add gap area to neighboring polygon with longest shared edge" )
-                               << tr( "Add gap area to " )
-                               << tr( "No action" );
+  QStringList methods = QStringList()
+                        << tr( "Add gap area to neighboring polygon with longest shared edge" )
+                        << tr( "Add gap area to " )
+                        << tr( "No action" );
+  if ( mAllowedGapsSource )
+    methods << tr( "Add gap to allowed exceptions" );
+
   return methods;
 }
 
