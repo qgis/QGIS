@@ -165,12 +165,9 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
   topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 0, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0)));" ) );
-  qDebug() << topoFeat.geometry().asWkt() << "\n";
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
-
-  qDebug() << mLayerTopoZ->getFeature( 1 ).geometry().asWkt() << "\n";
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM << mLayerTopoZ );
 
@@ -423,8 +420,6 @@ void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-
-  qDebug() << mLayerTopoZ->getFeature( 0 ).geometry().asWkt() << "\n";
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   bool topologicalEditing = cfg.project()->topologicalEditing();
