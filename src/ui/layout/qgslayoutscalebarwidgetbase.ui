@@ -387,14 +387,14 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_21">
             <property name="text">
-             <string>Label's margin</string>
+             <string>Label margin</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0" colspan="3">
            <widget class="QLabel" name="label_22">
             <property name="text">
-             <string>Label's vertical placement</string>
+             <string>Vertical label placement</string>
             </property>
            </widget>
           </item>
@@ -404,7 +404,7 @@
           <item row="4" column="0" colspan="3">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Label's horizontal placement</string>
+             <string>Horizontal label placement</string>
             </property>
            </widget>
           </item>

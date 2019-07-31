@@ -76,10 +76,10 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
 
   //label vertical/horizontal placement combo box
-  mLabelVerticalPlacementComboBox->addItem( tr( "Above segments" ), static_cast< int >( QgsScaleBarSettings::LabelAboveSegment ) );
-  mLabelVerticalPlacementComboBox->addItem( tr( "Below segments" ), static_cast< int >( QgsScaleBarSettings::LabelBelowSegment ) );
-  mLabelHorizontalPlacementComboBox->addItem( tr( "Centered at segment edge" ), static_cast< int >( QgsScaleBarSettings::LabelCenteredEdge ) );
-  mLabelHorizontalPlacementComboBox->addItem( tr( "Centered at center of segment" ), static_cast< int >( QgsScaleBarSettings::LabelCenteredSegment ) );
+  mLabelVerticalPlacementComboBox->addItem( tr( "Above Segments" ), static_cast< int >( QgsScaleBarSettings::LabelAboveSegment ) );
+  mLabelVerticalPlacementComboBox->addItem( tr( "Below Segments" ), static_cast< int >( QgsScaleBarSettings::LabelBelowSegment ) );
+  mLabelHorizontalPlacementComboBox->addItem( tr( "Centered at Segment Edge" ), static_cast< int >( QgsScaleBarSettings::LabelCenteredEdge ) );
+  mLabelHorizontalPlacementComboBox->addItem( tr( "Centered at Center of Segment" ), static_cast< int >( QgsScaleBarSettings::LabelCenteredSegment ) );
 
   //alignment combo box
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );

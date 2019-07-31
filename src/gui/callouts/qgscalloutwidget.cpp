@@ -161,9 +161,9 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   connect( mDrawToAllPartsCheck, &QCheckBox::toggled, this, &QgsSimpleLineCalloutWidget::drawToAllPartsToggled );
 
   // Anchor point options
-  mAnchorPointComboBox->addItem( tr( "Pole of inaccessibility" ), static_cast< int >( QgsCallout::PoleOfInaccessibility ) );
-  mAnchorPointComboBox->addItem( tr( "Point on exterior" ), static_cast< int >( QgsCallout::PointOnExterior ) );
-  mAnchorPointComboBox->addItem( tr( "Point on surface" ), static_cast< int >( QgsCallout::PointOnSurface ) );
+  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast< int >( QgsCallout::PoleOfInaccessibility ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast< int >( QgsCallout::PointOnExterior ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast< int >( QgsCallout::PointOnSurface ) );
   mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::Centroid ) );
   connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mAnchorPointComboBox_currentIndexChanged );
 
