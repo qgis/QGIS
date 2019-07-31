@@ -67,20 +67,26 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     //! Returns the current vector layer of the map canvas or 0
     QgsVectorLayer *currentVectorLayer();
 
-    /**
-     * Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
-     * \param geom list of points (in layer coordinate system)
-     * \returns 0 in case of success
-     */
-    int addTopologicalPoints( const QVector<QgsPointXY> &geom );
+    //! Result of addTopologicalPoints
+    enum TopologicalResult
+    {
+      Success = 0, //!< AddTopologicalPoints was successful
+      InvalidCanvas = 1, //!< AddTopologicalPoints failed due to an invalid canvas
+      InvalidLayer = 2, //!< AddTopologicalPoints failed due to an invalid canvas
+    };
 
     /**
      * Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
      * \param geom list of points (in layer coordinate system)
-     * \returns 0 in case of success
+     */
+    TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &geom );
+
+    /**
+     * Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+     * \param geom list of points (in layer coordinate system)
      * \since QGIS 3.10
      */
-    int addTopologicalPoints( const QVector<QgsPoint> &geom );
+    TopologicalResult addTopologicalPoints( const QVector<QgsPoint> &geom );
 
     //! Display a timed message bar noting the active layer is not vector.
     void notifyNotVectorLayer();
