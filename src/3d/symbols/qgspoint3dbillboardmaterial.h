@@ -21,6 +21,8 @@
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QPaintedTextureImage>
 
+#include "qgsmarkersymbollayer.h"
+
 class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
@@ -42,6 +44,8 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
     void setTexture2DFromImage( QImage image );
 
     void useDefaultSymbol();
+
+    void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol );
 
   private:
     Qt3DRender::QParameter *mSize = nullptr;

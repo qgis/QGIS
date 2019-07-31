@@ -152,18 +152,12 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol()
   defaultSymbol->setSizeUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   defaultSymbol->setSize( 20 );
 
-  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( defaultSymbol, QSize( int( defaultSymbol->size() ) + 5, int( defaultSymbol->size() ) + 5 ), 0 );
+  setTexture2DFromSymbol( defaultSymbol );
+}
+
+void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol )
+{
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( markerSymbol->size() ) + 5, int( markerSymbol->size() ) + 5 ), 0 );
   QImage symbolImage = symbolPixmap.toImage();
-
-  symbolImage.save( QStringLiteral( "/home/ismailsunni/dev/cpp/symbolImage.png" ) );
-
-  // Probably not needed
-//    QgsDebugMsg( QStringLiteral("Default symbol format: %1").arg( symbolImage.format() ));
-//    symbolImage = symbolImage.convertToFormat(QImage::Format::Format_ARGB32);
-
-//    symbolImage.save(QStringLiteral("/home/ismailsunni/dev/cpp/convertedSymbolImage.png"));
-  QgsDebugMsg( QStringLiteral( "Converted default symbol format: %1" ).arg( symbolImage.format() ) );
-
   setTexture2DFromImage( symbolImage );
-
 }
