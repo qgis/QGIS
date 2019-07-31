@@ -81,15 +81,14 @@ void QgsRendererWidget::contextMenuViewCategories( QPoint )
 
 void QgsRendererWidget::changeSymbolColor()
 {
-  QList<QgsSymbol *> symbolList = selectedSymbols();
+  const QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
   QgsSymbol *firstSymbol = nullptr;
-  const auto constSymbolList = symbolList;
-  for ( QgsSymbol *symbol : constSymbolList )
+  for ( QgsSymbol *symbol : symbolList )
   {
     if ( symbol )
     {
@@ -100,16 +99,38 @@ void QgsRendererWidget::changeSymbolColor()
   if ( !firstSymbol )
     return;
 
-  QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
-  if ( color.isValid() )
+  QColor currentColor = firstSymbol->color();
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  if ( panel && panel->dockMode() )
   {
-    const auto constSymbolList = symbolList;
-    for ( QgsSymbol *symbol : constSymbolList )
+    QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
+    colorWidget->setPanelTitle( tr( "Change Symbol Color" ) );
+    colorWidget->setAllowOpacity( true );
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & color )
     {
-      if ( symbol )
-        symbol->setColor( color );
+      for ( QgsSymbol *symbol : symbolList )
+      {
+        if ( symbol )
+          symbol->setColor( color );
+      }
+      refreshSymbolView();
+    } );
+    panel->openPanel( colorWidget );
+  }
+  else
+  {
+    // modal dialog version... yuck
+    QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
+    if ( color.isValid() )
+    {
+      for ( QgsSymbol *symbol : symbolList )
+      {
+        if ( symbol )
+          symbol->setColor( color );
+      }
+      refreshSymbolView();
     }
-    refreshSymbolView();
   }
 }
 
