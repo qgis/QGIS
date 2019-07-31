@@ -1499,6 +1499,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! List of layers that may modify this layer on modification
     QSet<QgsMapLayerDependency> mDependencies;
 
+    /**
+     * Checks whether a new set of dependencies will introduce a cycle
+     * \deprecated since QGIS 3.10, this method always return false, because circular dependencies
+     * are now correctly managed.
+     */
+    Q_DECL_DEPRECATED bool hasDependencyCycle( const QSet<QgsMapLayerDependency> & ) const {return false;}
+
     bool mIsRefreshOnNofifyEnabled = false;
     QString mRefreshOnNofifyMessage;
 
