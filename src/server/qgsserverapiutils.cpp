@@ -171,3 +171,26 @@ QString QgsServerApiUtils::crsToOgcUri( const QgsCoordinateReferenceSystem &crs 
   return QString();
 }
 
+QString QgsServerApiUtils::appendMapParameter( const QString &path, const QUrl &requestUrl )
+{
+  QList<QPair<QString, QString> > qi;
+  QString result { path };
+  const auto constItems { requestUrl.queryItems( ) };
+  for ( const auto &i : constItems )
+  {
+    if ( i.first.compare( QStringLiteral( "MAP" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+    {
+      qi.push_back( i );
+    }
+  }
+  if ( ! qi.empty() )
+  {
+    if ( ! path.endsWith( '?' ) )
+    {
+      result += '?';
+    }
+    result.append( QStringLiteral( "MAP=%1" ).arg( qi.first().second ) );
+  }
+  return result;
+}
+

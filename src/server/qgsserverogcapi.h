@@ -170,14 +170,6 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     static std::string mimeType( const QgsServerOgcApi::ContentType &contentType );
 
     /**
-     * Returns the absolute path to base directory where resources for
-     * OGC APIs are stored.
-     *
-     * TODO: make this path configurable by env and/or settings
-     */
-    static const QString resourcesPath();
-
-    /**
      * Returns registered handlers
      */
     const std::vector<std::shared_ptr<QgsServerOgcApiHandler> > handlers() const SIP_SKIP;

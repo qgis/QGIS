@@ -27,13 +27,10 @@
 #include "qgsmessagelog.h"
 #include "qgsbufferserverrequest.h"
 #include "qgsserverprojectutils.h"
+#include "qgsserverinterface.h"
 
 #include <QMimeDatabase>
 
-
-// Maximum number of features that can be retrieved
-// TODO: make this an environment configurable variable
-const int QGIS_SERVER_WFS3_MAX_LIMIT = 10000;
 
 QgsWfs3APIHandler::QgsWfs3APIHandler( const QgsServerOgcApi *api ):
   mApi( api )
@@ -88,7 +85,7 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
     },
     {
       "servers", {{
-          { "url", parentLink( context.request()->url(), 1 ) }
+          { "url", parentLink( context.request()->url(), 1 ).toStdString() }
         }
       }
     }
@@ -107,16 +104,19 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   }
   data[ "paths" ] = paths;
 
-  // Schema
+  // Schema: load common part from file schema.json
   static json schema;
-  if ( schema.is_null() )
+
+  QFile f( context.serverInterface()->serverSettings()->apiResourcesDirectory() + "/ogc/schema.json" );
+  if ( f.open( QFile::ReadOnly | QFile::Text ) )
   {
-    QFile f( QgsServerOgcApi::resourcesPath() + "/schema.json" );
-    if ( f.open( QFile::ReadOnly | QFile::Text ) )
-    {
-      QTextStream in( &f );
-      schema = json::parse( in.readAll().toStdString() );
-    }
+    QTextStream in( &f );
+    schema = json::parse( in.readAll().toStdString() );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Could not find schema.json in %1, please check your server configuration" ).arg( f.fileName() ), QStringLiteral( "Server" ), Qgis::Critical );
+    throw QgsServerApiInternalServerError( QStringLiteral( "Could not find schema.json" ) );
   }
 
   // Fill CRSs
@@ -132,14 +132,14 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   // Add schema refs
   json navigation = json::array();
   const QUrl url { context.request()->url() };
-  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ) }} ) ;
+  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ).toStdString() }} ) ;
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
 json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
-  const std::string path { ( context.apiRootPath() + QStringLiteral( "api" ) ).toStdString() };
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "api" ), context.request()->url() ).toStdString() };
   data[ path ] =
   {
     {
@@ -225,7 +225,7 @@ void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &contex
 json QgsWfs3LandingPageHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
-  const std::string path { context.apiRootPath().toStdString() };
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath(), context.request()->url() ).toStdString() };
 
   data[ path ] =
   {
@@ -294,14 +294,14 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
   };
   json navigation = json::array();
   const QUrl url { context.request()->url() };
-  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ) }} ) ;
+  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ).toStdString() }} ) ;
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
 json QgsWfs3ConformanceHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
-  const std::string path { ( context.apiRootPath() + QStringLiteral( "/conformance" ) ).toStdString() };
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/conformance" ), context.request()->url() ).toStdString() };
   data[ path ] =
   {
     {
@@ -423,14 +423,14 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
   }
   json navigation = json::array();
   const QUrl url { context.request()->url() };
-  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ) }} ) ;
+  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 1 ).toStdString() }} ) ;
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", navigation }} );
 }
 
 json QgsWfs3CollectionsHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
-  const std::string path { ( context.apiRootPath() + QStringLiteral( "/collections" ) ).toStdString() };
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections" ), context.request()->url() ).toStdString() };
   data[ path ] =
   {
     {
@@ -551,8 +551,8 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   };
   json navigation = json::array();
   const QUrl url { context.request()->url() };
-  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 2 ) }} ) ;
-  navigation.push_back( {{ "title",  "Collections" }, { "href", parentLink( url, 1 ) }} ) ;
+  navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 2 ).toStdString() }} ) ;
+  navigation.push_back( {{ "title",  "Collections" }, { "href", parentLink( url, 1 ).toStdString() }} ) ;
   write( data, context, {{ "pageTitle", title }, { "navigation", navigation }} );
 }
 
@@ -567,7 +567,7 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
   {
     const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
-    const std::string path { ( context.apiRootPath() + QStringLiteral( "collections/%1" ).arg( shortName ) ).toStdString() };
+    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "collections/%1" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     data[ path ] =
     {
@@ -625,13 +625,14 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
   QList<QgsServerQueryStringParameter> params;
 
   // Limit
+  const qlonglong maxLimit { context.serverInterface()->serverSettings()->apiWfs3MaxLimit() };
   QgsServerQueryStringParameter limit { QStringLiteral( "limit" ), false,
                                         QgsServerQueryStringParameter::Type::Integer,
-                                        QStringLiteral( "Number of features to retrieve [0-%1]" ).arg( QGIS_SERVER_WFS3_MAX_LIMIT ),
+                                        QStringLiteral( "Number of features to retrieve [0-%1]" ).arg( maxLimit ),
                                         10 };
-  limit.setCustomValidator( [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
+  limit.setCustomValidator( [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
   {
-    return value >= 0 && value <= QGIS_SERVER_WFS3_MAX_LIMIT;   // TODO: make this configurable!
+    return value >= 0 && value <= maxLimit;   // TODO: make this configurable!
   } );
   params.push_back( limit );
 
@@ -724,7 +725,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
   {
     const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
-    const std::string path { ( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ) ).toStdString() };
+    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     json parameters = {{
         {{ "$ref", "#/components/parameters/limit" }},
@@ -1024,9 +1025,9 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     }
 
     json navigation = json::array();
-    navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 3 ) }} ) ;
-    navigation.push_back( {{ "title",  "Collections" }, { "href", parentLink( url, 2 ) }} ) ;
-    navigation.push_back( {{ "title",   title }, { "href", parentLink( url, 1 )  }} ) ;
+    navigation.push_back( {{ "title",  "Landing page" }, { "href", parentLink( url, 3 ).toStdString() }} ) ;
+    navigation.push_back( {{ "title",  "Collections" }, { "href", parentLink( url, 2 ).toStdString() }} ) ;
+    navigation.push_back( {{ "title",   title }, { "href", parentLink( url, 1 ).toStdString()  }} ) ;
     json htmlMetadata
     {
       { "pageTitle", "Features in layer " + title },
@@ -1081,10 +1082,10 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     data["links"] = links( context );
     json navigation = json::array();
     const QUrl url { context.request()->url() };
-    navigation.push_back( {{ "title", "Landing page" }, { "href", parentLink( url, 4 ) }} ) ;
-    navigation.push_back( {{ "title", "Collections" }, { "href", parentLink( url, 3 ) }} ) ;
-    navigation.push_back( {{ "title", title }, { "href", parentLink( url, 2 )  }} ) ;
-    navigation.push_back( {{ "title", "Items of " + title }, { "href", parentLink( url ) }} ) ;
+    navigation.push_back( {{ "title", "Landing page" }, { "href", parentLink( url, 4 ).toStdString() }} ) ;
+    navigation.push_back( {{ "title", "Collections" }, { "href", parentLink( url, 3 ).toStdString() }} ) ;
+    navigation.push_back( {{ "title", title }, { "href", parentLink( url, 2 ).toStdString()  }} ) ;
+    navigation.push_back( {{ "title", "Items of " + title }, { "href", parentLink( url ).toStdString() }} ) ;
     json htmlMetadata
     {
       { "pageTitle", title + " - feature " + featureId.toStdString() },
@@ -1113,7 +1114,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
   {
     const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
-    const std::string path { ( context.apiRootPath() + QStringLiteral( "collections/%1/items/{featureId}" ).arg( shortName ) ).toStdString() };
+    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "collections/%1/items/{featureId}" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     data[ path ] =
     {
@@ -1176,7 +1177,7 @@ void QgsWfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) c
 
   const QString staticFilePath { match.captured( QStringLiteral( "staticFilePath" ) ) };
   // Calculate real path
-  const QString filePath { staticPath() + '/' + staticFilePath };
+  const QString filePath { staticPath( context ) + '/' + staticFilePath };
   if ( ! QFile::exists( filePath ) )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Static file was not found: %1" ).arg( filePath ), QStringLiteral( "Server" ), Qgis::Info );

@@ -144,11 +144,6 @@ std::string QgsServerOgcApi::mimeType( const QgsServerOgcApi::ContentType &conte
   return sContentTypeMime.value( contentType, QString() ).toStdString();
 }
 
-const QString QgsServerOgcApi::resourcesPath()
-{
-  return QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/server/api/ogc" ) );
-}
-
 const std::vector<std::shared_ptr<QgsServerOgcApiHandler> > QgsServerOgcApi::handlers() const
 {
   return mHandlers;

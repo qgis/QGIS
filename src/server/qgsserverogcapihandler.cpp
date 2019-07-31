@@ -25,7 +25,9 @@
 #include "qgsvectorlayer.h"
 
 #include "qgsserverogcapihandler.h"
+#include "qgsserverapiutils.h"
 #include "qgsserverresponse.h"
+#include "qgsserverinterface.h"
 
 
 #include "nlohmann/json.hpp"
@@ -217,17 +219,17 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromContext( const QgsServerApiCont
 
 }
 
-const QString QgsServerOgcApiHandler::staticPath( ) const
+const QString QgsServerOgcApiHandler::staticPath( const QgsServerApiContext &context ) const
 {
   // resources/server/api + /static
-  return QgsServerOgcApi::resourcesPath() + QStringLiteral( "/static" );
+  return context.serverInterface()->serverSettings()->apiResourcesDirectory() + QStringLiteral( "/ogc/static" );
 }
 
 const QString QgsServerOgcApiHandler::templatePath( const QgsServerApiContext &context ) const
 {
-  // resources/server/api/ogc + /templates/ + operationId + .html
-  auto path { QgsServerOgcApi::resourcesPath() };
-  path += QStringLiteral( "/templates" );
+  // resources/server/api + /ogc/templates/ + operationId + .html
+  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
+  path += QStringLiteral( "/ogc/templates" );
   path += context.apiRootPath();
   path += '/';
   path += QString::fromStdString( operationId() );
@@ -408,7 +410,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
   return result;
 }
 
-std::string QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
+QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
 {
   QString path { url.path() };
   const QFileInfo fi { path };
@@ -438,8 +440,7 @@ std::string QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
   }
   result.setQueryItems( qi );
   result.setPath( path );
-  return result.toString().toStdString();
-
+  return result.toString();
 }
 
 QgsVectorLayer *QgsServerOgcApiHandler::layerFromCollection( const QgsServerApiContext &context, const QString &collectionId )

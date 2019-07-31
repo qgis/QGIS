@@ -48,6 +48,7 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
     """ QGIS API server utils tests"""
 
     def test_parse_bbox(self):
+
         bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,8.203497,44.901484')
         self.assertEquals(bbox.xMinimum(), 8.203495)
         self.assertEquals(bbox.yMinimum(), 44.901482)
@@ -76,6 +77,7 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         self.assertTrue('http://www.opengis.net/def/crs/EPSG/9.6.2/4326' in crss)
 
     def test_parse_crs(self):
+
         crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/OGC/1.3/CRS84')
         self.assertTrue(crs.isValid())
         self.assertEquals(crs.postgisSrid(), 4326)
@@ -86,6 +88,11 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
 
         crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/something_wrong_here')
         self.assertFalse(crs.isValid())
+
+    def test_append_path(self):
+
+        path = QgsServerApiUtils.appendMapParameter('/wfs3', QtCore.QUrl('https://www.qgis.org/wfs3?MAP=/some/path'))
+        self.assertEquals(path, '/wfs3?MAP=/some/path')
 
 
 class API(QgsServerApi):
@@ -508,7 +515,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
 
         ctx = QgsServerApiContext('/services/api1', request, response, project, self.server.serverInterface())
         h = Handler1()
-        self.assertTrue(h.staticPath().endswith('/resources/server/api/ogc/static'))
+        self.assertTrue(h.staticPath(ctx).endswith('/resources/server/api/ogc/static'))
         self.assertEqual(h.path(), QtCore.QRegularExpression("/handlerone"))
         self.assertEqual(h.description(), 'The first handler ever')
         self.assertEqual(h.operationId(), 'handlerOne')

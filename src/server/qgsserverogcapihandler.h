@@ -290,11 +290,10 @@ class SERVER_EXPORT QgsServerOgcApiHandler
 
     /**
      * Returns the absolute path to the base directory where static resources for
-     * this handler are stored.
+     * this handler are stored in the given \a context.
      *
-     * TODO: make this path configurable by env and/or settings
      */
-    const QString staticPath() const;
+    const QString staticPath( const QgsServerApiContext &context ) const;
 
     /**
      * Returns the content type from the \a request.
@@ -310,7 +309,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     /**
      * Returns a link to the parent page up to \a levels in the HTML hierarchy from the given \a url, MAP query argument is preserved
      */
-    static std::string parentLink( const QUrl &url, int levels = 1 );
+    static QString parentLink( const QUrl &url, int levels = 1 );
 
     /**
      * Returns a vector layer from the \a collectionId in the given \a context

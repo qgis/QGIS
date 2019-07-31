@@ -133,11 +133,15 @@ class SERVER_EXPORT QgsServerApiUtils
     static QStringList publishedCrsList( const QgsProject *project );
 
     /**
-     * Returns a \a crs into OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
+     * Returns a \a crs as OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
      * Returns an empty string on failure.
      */
     static QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Appends MAP query string parameter from current \a requestUrl to the given \a path
+     */
+    static QString appendMapParameter( const QString &path, const QUrl &requestUrl );
 
 };
 #endif // QGSSERVERAPIUTILS_H

@@ -190,12 +190,10 @@ will be QgsServerOgcApi.resourcesPath() + "/ogc/templates/wfs3/collectionItems.h
 .. seealso:: :py:func:`QgsServerOgcApi.resourcesPath`
 %End
 
-    const QString staticPath() const;
+    const QString staticPath( const QgsServerApiContext &context ) const;
 %Docstring
 Returns the absolute path to the base directory where static resources for
-this handler are stored.
-
-TODO: make this path configurable by env and/or settings
+this handler are stored in the given ``context``.
 %End
 
     QgsServerOgcApi::ContentType contentTypeFromRequest( const QgsServerRequest *request ) const;
@@ -209,7 +207,7 @@ Fallback to the default content type of the handler if none of the above matches
 \throws QgsServerApiBadRequestError if the content type of the request is not compatible with the handler (:py:func:`contentTypes` member)
 %End
 
-    static std::string parentLink( const QUrl &url, int levels = 1 );
+    static QString parentLink( const QUrl &url, int levels = 1 );
 %Docstring
 Returns a link to the parent page up to ``levels`` in the HTML hierarchy from the given ``url``, MAP query argument is preserved
 %End

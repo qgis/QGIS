@@ -128,14 +128,6 @@ Returns the Content-Type value corresponding to ``extension``.
 Returns the mime-type for the ``contentType`` or an empty string if not found
 %End
 
-    static const QString resourcesPath();
-%Docstring
-Returns the absolute path to base directory where resources for
-OGC APIs are stored.
-
-TODO: make this path configurable by env and/or settings
-%End
-
 
 };
 
