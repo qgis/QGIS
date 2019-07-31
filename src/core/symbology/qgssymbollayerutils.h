@@ -287,7 +287,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
     static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     //! Writes a symbol definition to XML
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
+    static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
      * Returns a string representing the symbol. Can be used to test for equality
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolFromMimeData()
      * \since QGIS 3.0
      */
-    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) SIP_FACTORY;
+    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) SIP_FACTORY;
 
     /**
      * Attempts to parse \a mime data as a symbol. A new symbol instance will be returned
