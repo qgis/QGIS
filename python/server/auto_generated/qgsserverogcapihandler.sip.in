@@ -182,12 +182,10 @@ Returns an URL to self, to be used for links to the current resources and as a b
 %Docstring
 Returns the HTML template path for the handler in the given ``context``
 
-The template path is calculated as follow:
-QgsServerOgcApi.resourcesPath() + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
+The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
+apiResourcesDirectory() + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
 e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
-will be QgsServerOgcApi.resourcesPath() + "/ogc/templates/wfs3/collectionItems.html"
-
-.. seealso:: :py:func:`QgsServerOgcApi.resourcesPath`
+will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
 %End
 
     const QString staticPath( const QgsServerApiContext &context ) const;

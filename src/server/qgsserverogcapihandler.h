@@ -280,11 +280,10 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     /**
      * Returns the HTML template path for the handler in the given \a context
      *
-     * The template path is calculated as follow:
-     * QgsServerOgcApi::resourcesPath() + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
+     * The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
+     * apiResourcesDirectory() + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
      * e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
-     * will be QgsServerOgcApi::resourcesPath() + "/ogc/templates/wfs3/collectionItems.html"
-     * \see QgsServerOgcApi::resourcesPath()
+     * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
      */
     const QString templatePath( const QgsServerApiContext &context ) const;
 
