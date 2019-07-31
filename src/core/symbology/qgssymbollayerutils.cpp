@@ -1079,7 +1079,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
 
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
-    QgsSymbolLayer *layer = symbol->symbolLayer( i );
+    const QgsSymbolLayer *layer = const_cast< QgsSymbol * >( symbol )->symbolLayer( i );
 
     QDomElement layerEl = doc.createElement( QStringLiteral( "layer" ) );
     layerEl.setAttribute( QStringLiteral( "class" ), layer->layerType() );
@@ -1100,10 +1100,10 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
     layer->dataDefinedProperties().writeXml( ddProps, QgsSymbolLayer::propertyDefinitions() );
     layerEl.appendChild( ddProps );
 
-    if ( layer->subSymbol() )
+    if ( const QgsSymbol *subSymbol = const_cast< QgsSymbolLayer * >( layer )->subSymbol() )
     {
       QString subname = QStringLiteral( "@%1@%2" ).arg( name ).arg( i );
-      QDomElement subEl = saveSymbol( subname, layer->subSymbol(), doc, context );
+      QDomElement subEl = saveSymbol( subname, subSymbol, doc, context );
       layerEl.appendChild( subEl );
     }
     symEl.appendChild( layerEl );
@@ -2928,7 +2928,7 @@ void QgsSymbolLayerUtils::clearSymbolMap( QgsSymbolMap &symbols )
   symbols.clear();
 }
 
-QMimeData *QgsSymbolLayerUtils::symbolToMimeData( QgsSymbol *symbol )
+QMimeData *QgsSymbolLayerUtils::symbolToMimeData( const QgsSymbol *symbol )
 {
   if ( !symbol )
     return nullptr;
