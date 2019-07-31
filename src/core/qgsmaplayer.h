@@ -1501,8 +1501,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Checks whether a new set of dependencies will introduce a cycle
-     * \deprecated since QGIS 3.10, this method always return false, because circular dependencies
-     * are now correctly managed.
+     * this method is now deprecated and always return false, because circular dependencies are now correctly managed.
+     * \deprecated since QGIS 3.10
      */
     Q_DECL_DEPRECATED bool hasDependencyCycle( const QSet<QgsMapLayerDependency> & ) const {return false;}
 

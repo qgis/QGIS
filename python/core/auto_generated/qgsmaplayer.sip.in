@@ -1656,9 +1656,9 @@ Sets error message
  bool hasDependencyCycle( const QSet<QgsMapLayerDependency> & ) const;
 %Docstring
 Checks whether a new set of dependencies will introduce a cycle
+this method is now deprecated and always return false, because circular dependencies are now correctly managed.
 
-.. deprecated:: since QGIS 3.10, this method always return false, because circular dependencies
-are now correctly managed.
+.. deprecated:: since QGIS 3.10
 %End
 
 
