@@ -25,10 +25,12 @@
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QMenu>
+#include <QClipboard>
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   : mLayer( layer )
@@ -36,10 +38,19 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
-  mCopyAction = contextMenu->addAction( tr( "Copy" ), this, SLOT( copy() ) );
+  mCopyAction = new QAction( tr( "Copy" ), this );
+  connect( mCopyAction, &QAction::triggered, this, &QgsRendererWidget::copy );
   mCopyAction->setShortcut( QKeySequence( QKeySequence::Copy ) );
-  mPasteAction = contextMenu->addAction( tr( "Paste" ), this, SLOT( paste() ) );
+  mPasteAction = new QAction( tr( "Paste" ), this );
   mPasteAction->setShortcut( QKeySequence( QKeySequence::Paste ) );
+  connect( mPasteAction, &QAction::triggered, this, &QgsRendererWidget::paste );
+
+  mCopySymbolAction = new QAction( tr( "Copy Symbol" ), this );
+  contextMenu->addAction( mCopySymbolAction );
+  connect( mCopySymbolAction, &QAction::triggered, this, &QgsRendererWidget::copySymbol );
+  mPasteSymbolAction = new QAction( tr( "Paste Symbol" ), this );
+  contextMenu->addAction( mPasteSymbolAction );
+  connect( mPasteSymbolAction, &QAction::triggered, this, &QgsRendererWidget::pasteSymbolToSelection );
 
   contextMenu->addSeparator();
   contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeSymbolColor() ) );
@@ -55,6 +66,12 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
     contextMenu->addAction( tr( "Change Size…" ), this, SLOT( changeSymbolSize() ) );
     contextMenu->addAction( tr( "Change Angle…" ), this, SLOT( changeSymbolAngle() ) );
   }
+
+  connect( contextMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+    mPasteSymbolAction->setEnabled( static_cast< bool >( tempSymbol ) );
+  } );
 }
 
 void QgsRendererWidget::contextMenuViewCategories( QPoint )
@@ -256,6 +273,22 @@ void QgsRendererWidget::changeSymbolAngle()
     }
     refreshSymbolView();
   }
+}
+
+void QgsRendererWidget::pasteSymbolToSelection()
+{
+
+}
+
+void QgsRendererWidget::copySymbol()
+{
+  QList<QgsSymbol *> symbolList = selectedSymbols();
+  if ( symbolList.isEmpty() )
+  {
+    return;
+  }
+
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbolList.at( 0 ) ) );
 }
 
 void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )

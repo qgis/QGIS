@@ -38,6 +38,7 @@
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QClipboard>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -51,6 +52,7 @@ QgsRendererWidget *QgsRuleBasedRendererWidget::create( QgsVectorLayer *layer, Qg
 
 QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
+  , mContextMenu( new QMenu( this ) )
 {
   mRenderer = nullptr;
   // try to recognize the previous renderer
@@ -90,7 +92,6 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   mRefineMenu->addAction( tr( "Add Categories to Rule" ), this, SLOT( refineRuleCategories() ) );
   mRefineMenu->addAction( tr( "Add Ranges to Rule" ), this, SLOT( refineRuleRanges() ) );
   btnRefineRule->setMenu( mRefineMenu );
-  contextMenu->addMenu( mRefineMenu );
 
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
@@ -99,7 +100,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast < void ( QgsRuleBasedRendererWidget::* )( const QModelIndex &index ) > ( &QgsRuleBasedRendererWidget::editRule ) );
 
   // support for context menu (now handled generically)
-  connect( viewRules, &QWidget::customContextMenuRequested,  this, &QgsRuleBasedRendererWidget::contextMenuViewCategories );
+  connect( viewRules, &QWidget::customContextMenuRequested,  this, &QgsRuleBasedRendererWidget::showContextMenu );
 
   connect( viewRules->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsRuleBasedRendererWidget::currentRuleChanged );
   connect( viewRules->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRuleBasedRendererWidget::selectedRulesChanged );
@@ -124,6 +125,11 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   restoreSectionWidths();
 
+  connect( mContextMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+    mPasteSymbolAction->setEnabled( static_cast< bool >( tempSymbol ) );
+  } );
 }
 
 QgsRuleBasedRendererWidget::~QgsRuleBasedRendererWidget()
@@ -483,6 +489,26 @@ void QgsRuleBasedRendererWidget::paste()
   mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
 }
 
+void QgsRuleBasedRendererWidget::pasteSymbolToSelection()
+{
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( !tempSymbol )
+    return;
+
+  const QModelIndexList indexList = viewRules->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : indexList )
+  {
+    if ( QgsRuleBasedRenderer::Rule *rule = mModel->ruleForIndex( index ) )
+    {
+      if ( !rule->symbol() || rule->symbol()->type() != tempSymbol->type() )
+        continue;
+
+      mModel->setSymbol( index, tempSymbol->clone() );
+    }
+  }
+  emit widgetChanged();
+}
+
 void QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted( QgsPanelWidget *panel )
 {
   QgsCategorizedSymbolRendererWidget *w = qobject_cast<QgsCategorizedSymbolRendererWidget *>( panel );
@@ -533,6 +559,23 @@ void QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted( QgsPanelWidget *panel 
 void QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel()
 {
   ruleWidgetPanelAccepted( qobject_cast<QgsPanelWidget *>( sender() ) );
+}
+
+void QgsRuleBasedRendererWidget::showContextMenu( QPoint )
+{
+  mContextMenu->clear();
+  mContextMenu->addAction( mCopyAction );
+  mContextMenu->addAction( mPasteAction );
+
+  const QList< QAction * > actions = contextMenu->actions();
+  for ( QAction *act : actions )
+  {
+    mContextMenu->addAction( act );
+  }
+
+  mContextMenu->addMenu( mRefineMenu );
+
+  mContextMenu->exec( QCursor::pos() );
 }
 
 
@@ -1273,6 +1316,13 @@ void QgsRuleBasedRendererModel::removeRule( const QModelIndex &index )
   rule->parent()->removeChild( rule );
 
   endRemoveRows();
+}
+
+void QgsRuleBasedRendererModel::setSymbol( const QModelIndex &index, QgsSymbol *symbol )
+{
+  QgsRuleBasedRenderer::Rule *rule = ruleForIndex( index );
+  rule->setSymbol( symbol );
+  emit dataChanged( index, index );
 }
 
 void QgsRuleBasedRendererModel::willAddRules( const QModelIndex &parent, int count )

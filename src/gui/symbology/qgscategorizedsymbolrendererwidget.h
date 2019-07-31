@@ -148,6 +148,10 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      */
     void matchToSymbolsFromXml();
 
+  protected slots:
+
+    void pasteSymbolToSelection() override;
+
   private slots:
 
     void cleanUpSymbolSelector( QgsPanelWidget *container );

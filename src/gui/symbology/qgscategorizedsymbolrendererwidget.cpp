@@ -48,6 +48,7 @@
 #include <QPen>
 #include <QPainter>
 #include <QFileDialog>
+#include <QClipboard>
 
 ///@cond PRIVATE
 
@@ -583,6 +584,12 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( mMergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::mergeSelectedCategories );
   mUnmergeCategoriesAction = new QAction( tr( "Unmerge Categories" ), this );
   connect( mUnmergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::unmergeSelectedCategories );
+
+  connect( mContextMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+    mPasteSymbolAction->setEnabled( static_cast< bool >( tempSymbol ) );
+  } );
 }
 
 QgsCategorizedSymbolRendererWidget::~QgsCategorizedSymbolRendererWidget()
@@ -1070,6 +1077,32 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   {
     QMessageBox::warning( this, tr( "Match to Symbols from File" ),
                           tr( "No categories could be matched to symbols in file." ) );
+  }
+}
+
+void QgsCategorizedSymbolRendererWidget::pasteSymbolToSelection()
+{
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( !tempSymbol )
+    return;
+
+  const QList<int> selectedCats = selectedCategories();
+  if ( !selectedCats.isEmpty() )
+  {
+    for ( int idx : selectedCats )
+    {
+      if ( mRenderer->categories().at( idx ).symbol()->type() != tempSymbol->type() )
+        continue;
+
+      std::unique_ptr< QgsSymbol > newCatSymbol( tempSymbol->clone() );
+      if ( selectedCats.count() > 1 )
+      {
+        //if updating multiple categories, retain the existing category colors
+        newCatSymbol->setColor( mRenderer->categories().at( idx ).symbol()->color() );
+      }
+      mRenderer->updateCategorySymbol( idx, newCatSymbol.release() );
+    }
+    emit widgetChanged();
   }
 }
 
