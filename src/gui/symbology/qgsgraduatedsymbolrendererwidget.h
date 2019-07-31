@@ -130,6 +130,10 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void toggleMethodWidgets( int idx );
     void dataDefinedSizeLegend();
 
+  protected slots:
+
+    void pasteSymbolToSelection() override;
+
   protected:
     void updateUiFromRenderer( bool updateCount = true );
     void connectUpdateHandlers();

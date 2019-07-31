@@ -42,7 +42,7 @@
 #include <QStandardItem>
 #include <QPen>
 #include <QPainter>
-
+#include <QClipboard>
 // ------------------------------ Model ------------------------------------
 
 ///@cond PRIVATE
@@ -1401,4 +1401,35 @@ void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
     } );
     openPanel( panel );  // takes ownership of the panel
   }
+}
+
+void QgsGraduatedSymbolRendererWidget::pasteSymbolToSelection()
+{
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( !tempSymbol )
+    return;
+
+  const QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : selectedRows )
+  {
+    if ( !index.isValid() )
+      continue;
+
+    const int row = index.row();
+    if ( !mRenderer || mRenderer->ranges().size() <= row )
+      continue;
+
+    if ( mRenderer->ranges().at( row ).symbol()->type() != tempSymbol->type() )
+      continue;
+
+    std::unique_ptr< QgsSymbol > newCatSymbol( tempSymbol->clone() );
+    if ( selectedRows.count() > 1 )
+    {
+      //if updating multiple ranges, retain the existing category colors
+      newCatSymbol->setColor( mRenderer->ranges().at( row ).symbol()->color() );
+    }
+
+    mRenderer->updateRangeSymbol( row, newCatSymbol.release() );
+  }
+  emit widgetChanged();
 }

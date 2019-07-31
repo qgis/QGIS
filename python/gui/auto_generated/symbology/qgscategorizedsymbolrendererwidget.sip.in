@@ -86,6 +86,11 @@ from the XML file with a matching name.
 .. versionadded:: 2.9
 %End
 
+  protected slots:
+
+    virtual void pasteSymbolToSelection();
+
+
   protected:
 
     void updateUiFromRenderer();

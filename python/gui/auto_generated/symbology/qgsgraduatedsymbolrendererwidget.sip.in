@@ -60,6 +60,11 @@ Toggle the link between classes boundaries
     void modelDataChanged();
     void refreshRanges( bool reset = false );
 
+  protected slots:
+
+    virtual void pasteSymbolToSelection();
+
+
   protected:
     void updateUiFromRenderer( bool updateCount = true );
     void connectUpdateHandlers();
