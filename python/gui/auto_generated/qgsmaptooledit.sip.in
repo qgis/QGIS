@@ -61,22 +61,25 @@ returned object
 Returns the current vector layer of the map canvas or 0
 %End
 
-    int addTopologicalPoints( const QVector<QgsPointXY> &geom );
+    enum TopologicalResult
+    {
+      Success,
+      InvalidCanvas,
+      InvalidLayer,
+    };
+
+    TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &geom );
 %Docstring
 Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
 
 :param geom: list of points (in layer coordinate system)
-
-:return: 0 in case of success
 %End
 
-    int addTopologicalPoints( const QVector<QgsPoint> &geom );
+    TopologicalResult addTopologicalPoints( const QVector<QgsPoint> &geom );
 %Docstring
 Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
 
 :param geom: list of points (in layer coordinate system)
-
-:return: 0 in case of success
 
 .. versionadded:: 3.10
 %End
