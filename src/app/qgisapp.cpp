@@ -1682,7 +1682,18 @@ void QgisApp::dropEvent( QDropEvent *event )
   for ( QgsCustomDropHandler *handler : handlers )
   {
     if ( handler )
+    {
+      if ( handler->handleMimeDataV2( event->mimeData() ) )
+      {
+        // custom handler completely handled this data, no further processing required
+        event->acceptProposedAction();
+        return;
+      }
+
+      Q_NOWARN_DEPRECATED_PUSH
       handler->handleMimeData( event->mimeData() );
+      Q_NOWARN_DEPRECATED_POP
+    }
   }
 
   // get the file list
