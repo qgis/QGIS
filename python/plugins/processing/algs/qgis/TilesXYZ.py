@@ -187,7 +187,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         if self.feedback.isCanceled():
             return
             # Haven't found a better way to break than to make all the new threads return instantly
- 
+
         if "Dummy" in threading.current_thread().name: # single thread testing
             threadSpecificSettings = list(self.settingsDictionary.values())[0]
         else:
@@ -196,14 +196,14 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                 threadSpecificSettings = self.settingsDictionary[threading.current_thread().name[-1]] # last number only
             except:
                 print("Exception! our threads don't match with our settings! ")
- 
+
         size = QSize(self.tile_width * metatile.rows(), self.tile_height * metatile.columns())
         extent = QgsRectangle(*metatile.extent())
         threadSpecificSettings.setExtent(self.wgs_to_dest.transformBoundingBox(extent))
         threadSpecificSettings.setOutputSize(size)
- 
+
         image = QImage(size, QImage.Format_ARGB32_Premultiplied)
-        image.fill(self.color) 
+        image.fill(self.color)
         dpm = threadSpecificSettings.outputDpi() / 25.4 * 1000
         image.setDotsPerMeterX(dpm)
         image.setDotsPerMeterY(dpm)
@@ -211,7 +211,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         job = QgsMapRendererCustomPainterJob(threadSpecificSettings, painter)
         job.renderSynchronously()
         painter.end()
- 
+
         ## For analysing metatiles (labels, etc.)
         ## metatile_dir = os.path.join(output_dir, str(zoom))
         ## os.makedirs(metatile_dir, exist_ok=True)
@@ -225,7 +225,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         with self.progressThreadLock:
             self.progress += 1
             self.feedback.setProgress(100 * (self.progress / self.totalMetatiles))
-
 
     def generate(self, writer, parameters, context, feedback):
         self.feedback = feedback
@@ -255,7 +254,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 
         self.maxThreads = cpu_count() # from multithreading
         #self.maxThreads = 2
-                # without re-writing, we need a different settings for each thread to stop async errors
+        # without re-writing, we need a different settings for each thread to stop async errors
         # naming doesn't always line up, but the last number does
         #self.settingsDictionary = {'ThreadPoolExecutor-o_' + str(i): QgsMapSettings() for i in range(self.maxThreads)}
         self.settingsDictionary = {str(i): QgsMapSettings() for i in range(self.maxThreads)}
@@ -277,7 +276,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                            self.wgs_extent.yMaximum()]
 
         metatiles_by_zoom = {}
-        self.totalMetatiles =  0
+        self.totalMetatiles = 0
         allMetatiles = []
         for zoom in range(self.min_zoom, self.max_zoom + 1):
             metatiles = get_metatiles(self.wgs_extent, zoom, self.metatilesize)
@@ -308,11 +307,9 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         # single thread testing
         #for zoom in range(self.min_zoom, self.max_zoom + 1):
             #for i, metatile in enumerate(metatiles_by_zoom[zoom]):
-                #self.renderSingleMetatile(metatile)
-
+            #self.renderSingleMetatile(metatile)
 
         writer.close()
-
 
     def checkParameterValues(self, parameters, context):
         min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
