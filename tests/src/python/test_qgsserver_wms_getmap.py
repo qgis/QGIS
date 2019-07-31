@@ -1634,7 +1634,6 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Tiled_True")
 
-
     def test_mode8bit_with_transparency(self):
 
         # 8 bits
