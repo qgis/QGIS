@@ -526,9 +526,9 @@ class CORE_EXPORT QgsScaleBarSettings
 
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;
-    //! Labels vertical placement
+    //! Label's vertical placement
     LabelVerticalPlacement mLabelVerticalPlacement = LabelAboveSegment;
-    //! Labels horizontal placement
+    //! Label's horizontal placement
     LabelHorizontalPlacement mLabelHorizontalPlacement = LabelCenteredEdge;
 
     //! Space between content and item box
