@@ -24,6 +24,8 @@ qgis:aggregate: >
 
   Output attributes are computed depending on each given aggregate definition.
 
+qgis:barplot:
+
 qgis:basicstatisticsforfields: >
   This algorithm generates basic statistics from the analysis of a values in a field in the attribute table of a vector layer. Numeric, date, time and string fields are supported.
 
