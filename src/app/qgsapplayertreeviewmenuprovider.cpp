@@ -752,6 +752,8 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol( const QString &layerId )
     singleRenderer->setSymbol( symbol.release() );
     layer->triggerRepaint();
     mView->refreshLayerSymbology( layer->id() );
+    layer->emitStyleChanged();
+    QgsProject::instance()->setDirty( true );
   }
 }
 
@@ -787,7 +789,9 @@ void QgsAppLayerTreeViewMenuProvider::pasteVectorSymbol( const QString &layerId 
 
   singleRenderer->setSymbol( tempSymbol.release() );
   layer->triggerRepaint();
+  layer->emitStyleChanged();
   mView->refreshLayerSymbology( layer->id() );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color )
@@ -833,6 +837,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color 
   layer->triggerRepaint();
   layer->emitStyleChanged();
   mView->refreshLayerSymbology( layer->id() );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )
@@ -860,6 +865,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString 
     {
       vlayer->emitStyleChanged();
     }
+    QgsProject::instance()->setDirty( true );
   }
 }
 
@@ -896,6 +902,7 @@ void QgsAppLayerTreeViewMenuProvider::pasteSymbolLegendNodeSymbol( const QString
     {
       vlayer->emitStyleChanged();
     }
+    QgsProject::instance()->setDirty( true );
   }
 }
 
@@ -923,6 +930,7 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   {
     layer->emitStyleChanged();
   }
+  QgsProject::instance()->setDirty( true );
 }
 
 bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
