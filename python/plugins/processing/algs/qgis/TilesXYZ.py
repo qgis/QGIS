@@ -45,7 +45,8 @@ from qgis.core import (QgsProcessingException,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
                        QgsMapRendererCustomPainterJob,
-                       QgsLabelingEngineSettings)
+                       QgsLabelingEngineSettings,
+                       QgsApplication)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -238,6 +239,8 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
         self.quality = self.parameterAsInt(parameters, self.QUALITY, context)
         self.metatilesize = self.parameterAsInt(parameters, self.METATILESIZE, context)
+        self.maxThreads = QgsApplication.maxThreads()
+        self.maxThreads = cpu_count() if self.maxThreads == -1 else self.maxThreads # if unbound, maxThreads() returns -1
         try:
             self.tile_width = self.parameterAsInt(parameters, self.TILE_WIDTH, context)
             self.tile_height = self.parameterAsInt(parameters, self.TILE_HEIGHT, context)
@@ -251,12 +254,8 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         project = context.project()
         self.src_to_wgs = QgsCoordinateTransform(project.crs(), wgs_crs, context.transformContext())
         self.wgs_to_dest = QgsCoordinateTransform(wgs_crs, dest_crs, context.transformContext())
-
-        self.maxThreads = cpu_count() # from multithreading
-        #self.maxThreads = 2
         # without re-writing, we need a different settings for each thread to stop async errors
         # naming doesn't always line up, but the last number does
-        #self.settingsDictionary = {'ThreadPoolExecutor-o_' + str(i): QgsMapSettings() for i in range(self.maxThreads)}
         self.settingsDictionary = {str(i): QgsMapSettings() for i in range(self.maxThreads)}
         for thread in self.settingsDictionary:
             self.settingsDictionary[thread].setOutputImageFormat(QImage.Format_ARGB32_Premultiplied)
@@ -299,15 +298,18 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         writer.set_parameters(tile_params)
         self.writer = writer
 
-        feedback.pushConsoleInfo('Using %s CPU Threads:' % self.maxThreads)
-        feedback.pushConsoleInfo('Pushing all tiles at once: %s tiles!' % len(allMetatiles))
         self.progressThreadLock = threading.Lock()
-        with ThreadPoolExecutor(max_workers=self.maxThreads) as threadPool:
-            threadPool.map(self.renderSingleMetatile, allMetatiles)
-        # single thread testing
-        #for zoom in range(self.min_zoom, self.max_zoom + 1):
-            #for i, metatile in enumerate(metatiles_by_zoom[zoom]):
-            #self.renderSingleMetatile(metatile)
+        if self.maxThreads > 1:
+            feedback.pushConsoleInfo('Using %s CPU Threads:' % self.maxThreads)
+            feedback.pushConsoleInfo('Pushing all tiles at once: %s tiles.' % len(allMetatiles))
+            with ThreadPoolExecutor(max_workers=self.maxThreads) as threadPool:
+                threadPool.map(self.renderSingleMetatile, allMetatiles)
+        else:
+            feedback.pushConsoleInfo('Using 1 CPU Thread:')
+            for zoom in range(self.min_zoom, self.max_zoom + 1):
+                feedback.pushConsoleInfo('Generating tiles for zoom level: %s' % zoom)
+                for i, metatile in enumerate(metatiles_by_zoom[zoom]):
+                    self.renderSingleMetatile(metatile)
 
         writer.close()
 
