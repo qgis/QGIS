@@ -62,24 +62,36 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     QString tip;
     bool withTipButSelectable = false;
-    if ( wkbType == QgsWkbTypes::Unknown )
+    if ( ! layerProperty.isRaster )
     {
-      tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
-    }
-    else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
-    {
-      tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
-    }
-    else if ( !layerProperty.pkCols.isEmpty() )
-    {
-      tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
-      withTipButSelectable = true;
+      if ( wkbType == QgsWkbTypes::Unknown )
+      {
+        tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
+      }
+      else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
+      {
+        tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
+      }
+      else if ( !layerProperty.pkCols.isEmpty() )
+      {
+        tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
+        withTipButSelectable = true;
+      }
     }
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+    QStandardItem *typeItem = nullptr;
+    if ( layerProperty.isRaster )
+    {
+      typeItem = new QStandardItem( QgsApplication::getThemeIcon( "/mIconRasterLayer.svg" ), tr( "Raster" ) );
+    }
+    else
+    {
+      typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+    }
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
+    typeItem->setData( layerProperty.isRaster, Qt::UserRole + 3 );
     if ( wkbType == QgsWkbTypes::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
@@ -145,6 +157,16 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
 
     QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
+
+    // For rasters, disable
+    if ( layerProperty.isRaster )
+    {
+      selItem->setFlags( selItem->flags() & ~ Qt::ItemIsUserCheckable );
+      selItem->setCheckState( Qt::Unchecked );
+      checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~ Qt::ItemIsUserCheckable );
+      checkPkUnicityItem->setCheckState( Qt::Unchecked );
+      sqlItem->setEnabled( false );
+    }
 
     QList<QStandardItem *> childItemList;
 
@@ -359,12 +381,28 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     return QString();
   }
 
-  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  bool isRaster = itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 3 ).toBool();
+  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
   if ( wkbType == QgsWkbTypes::Unknown )
   {
-    QgsDebugMsg( QStringLiteral( "unknown geometry type" ) );
-    // no geometry type selected
-    return QString();
+    if ( isRaster )
+    {
+      // GDAL connection string
+      const QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
+      const QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
+      const QString geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
+      return QStringLiteral( "PG:  %1 mode=2 schema='%2' column='%3' table='%4'" )
+             .arg( connInfo )
+             .arg( schemaName )
+             .arg( geomColumnName )
+             .arg( tableName );
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "unknown geometry type" ) );
+      // no geometry type selected
+      return QString();
+    }
   }
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
