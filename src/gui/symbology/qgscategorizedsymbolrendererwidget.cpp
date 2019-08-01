@@ -517,6 +517,8 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mExpressionWidget->setLayer( mLayer );
+  btnChangeCategorizedSymbol->setLayer( mLayer );
+  btnChangeCategorizedSymbol->registerExpressionContextGenerator( this );
 
   // initiate color ramp button to random
   btnColorRamp->setShowRandomColorRamp( true );
@@ -533,6 +535,8 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   }
 
   mCategorizedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
+  btnChangeCategorizedSymbol->setSymbolType( mCategorizedSymbol->type() );
+  btnChangeCategorizedSymbol->setSymbol( mCategorizedSymbol->clone() );
 
   mModel = new QgsCategorizedSymbolRendererModel( this );
   mModel->setRenderer( mRenderer.get() );
@@ -546,6 +550,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   viewCategories->resizeColumnToContents( 2 );
 
   viewCategories->setStyle( new QgsCategorizedSymbolRendererViewStyle( viewCategories ) );
+  connect( viewCategories->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsCategorizedSymbolRendererWidget::selectionChanged );
 
   connect( mModel, &QgsCategorizedSymbolRendererModel::rowsMoved, this, &QgsCategorizedSymbolRendererWidget::rowsMoved );
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
@@ -555,7 +560,8 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( viewCategories, &QAbstractItemView::doubleClicked, this, &QgsCategorizedSymbolRendererWidget::categoriesDoubleClicked );
   connect( viewCategories, &QTreeView::customContextMenuRequested, this, &QgsCategorizedSymbolRendererWidget::showContextMenu );
 
-  connect( btnChangeCategorizedSymbol, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol );
+  connect( btnChangeCategorizedSymbol, &QgsSymbolButton::changed, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromButton );
+
   connect( btnAddCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::addCategories );
   connect( btnDeleteCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::deleteCategories );
   connect( btnDeleteAllCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::deleteAllCategories );
@@ -603,8 +609,6 @@ void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
   // yet been connected, so that the updates to color ramp, symbol, etc
   // don't override existing customizations.
 
-  updateCategorizedSymbolIcon();
-
   //mModel->setRenderer ( mRenderer ); // necessary?
 
   // set column
@@ -615,7 +619,7 @@ void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
   if ( mRenderer->sourceSymbol() )
   {
     mCategorizedSymbol.reset( mRenderer->sourceSymbol()->clone() );
-    updateCategorizedSymbolIcon();
+    whileBlocking( btnChangeCategorizedSymbol )->setSymbol( mCategorizedSymbol->clone() );
   }
 
   // if a color ramp attached to the renderer, enable the color ramp button
@@ -628,6 +632,13 @@ void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
 QgsFeatureRenderer *QgsCategorizedSymbolRendererWidget::renderer()
 {
   return mRenderer.get();
+}
+
+void QgsCategorizedSymbolRendererWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsRendererWidget::setContext( context );
+  btnChangeCategorizedSymbol->setMapCanvas( context.mapCanvas() );
+  btnChangeCategorizedSymbol->setMessageBar( context.messageBar() );
 }
 
 void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
@@ -669,7 +680,6 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
     dlg->setContext( mContext );
     connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
     connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
-    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::updateCategorizedSymbolIcon );
     openPanel( dlg );
   }
   else
@@ -682,19 +692,10 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
     }
 
     mCategorizedSymbol = std::move( newSymbol );
-    updateCategorizedSymbolIcon();
     applyChangeToSymbol();
   }
 }
 
-void QgsCategorizedSymbolRendererWidget::updateCategorizedSymbolIcon()
-{
-  if ( !mCategorizedSymbol )
-    return;
-
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mCategorizedSymbol.get(), btnChangeCategorizedSymbol->iconSize() );
-  btnChangeCategorizedSymbol->setIcon( icon );
-}
 
 void QgsCategorizedSymbolRendererWidget::populateCategories()
 {
@@ -1123,6 +1124,13 @@ void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
   applyChangeToSymbol();
 }
 
+void QgsCategorizedSymbolRendererWidget::updateSymbolsFromButton()
+{
+  mCategorizedSymbol.reset( btnChangeCategorizedSymbol->symbol()->clone() );
+
+  applyChangeToSymbol();
+}
+
 void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
 {
   // When there is a selection, change the selected symbols only
@@ -1146,7 +1154,6 @@ void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
         }
         mRenderer->updateCategorySymbol( idx, newCatSymbol );
       }
-      emit widgetChanged();
     }
   }
   else
@@ -1154,6 +1161,7 @@ void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
     mRenderer->updateSymbols( mCategorizedSymbol.get() );
   }
 
+  mModel->updateSymbology();
   emit widgetChanged();
 }
 
@@ -1329,4 +1337,18 @@ void QgsCategorizedSymbolRendererWidget::showContextMenu( QPoint )
   }
 
   mContextMenu->exec( QCursor::pos() );
+}
+
+void QgsCategorizedSymbolRendererWidget::selectionChanged( const QItemSelection &, const QItemSelection & )
+{
+  QList<int> selectedCats = selectedCategories();
+  if ( !selectedCats.isEmpty() )
+  {
+    whileBlocking( btnChangeCategorizedSymbol )->setSymbol( mRenderer->categories().at( selectedCats.at( 0 ) ).symbol()->clone() );
+  }
+  else
+  {
+    whileBlocking( btnChangeCategorizedSymbol )->setSymbol( mRenderer->sourceSymbol()->clone() );
+  }
+  btnChangeCategorizedSymbol->setDialogTitle( selectedCats.size() == 1 ? mRenderer->categories().at( selectedCats.at( 0 ) ).label() : tr( "Symbol Settings" ) );
 }

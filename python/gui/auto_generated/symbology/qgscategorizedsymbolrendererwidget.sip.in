@@ -26,6 +26,8 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 
     virtual QgsFeatureRenderer *renderer();
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
 
     int matchToSymbols( QgsStyle *style );
 %Docstring
@@ -94,8 +96,6 @@ from the XML file with a matching name.
   protected:
 
     void updateUiFromRenderer();
-
-    void updateCategorizedSymbolIcon();
 
     void populateCategories();
 
