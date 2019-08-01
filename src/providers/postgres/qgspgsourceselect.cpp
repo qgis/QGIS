@@ -493,6 +493,9 @@ void QgsPgSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
+  QStringList dbTables;
+  QList<QPair<QString, QString>> rasterTables;
+
   const auto constIndexes = mTablesTreeView->selectionModel()->selection().indexes();
   for ( const QModelIndex &idx : constIndexes )
   {
@@ -504,6 +507,14 @@ void QgsPgSourceSelect::addButtonClicked()
       continue;
 
     mSelectedTables << uri;
+    if ( uri.startsWith( QStringLiteral( "PG: " ) ) )
+    {
+      rasterTables.append( QPair<QString, QString>( idx.data().toString(), uri ) );
+    }
+    else
+    {
+      dbTables.append( uri );
+    }
   }
 
   if ( mSelectedTables.empty() )
@@ -512,7 +523,18 @@ void QgsPgSourceSelect::addButtonClicked()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "postgres" ) );
+    if ( ! dbTables.isEmpty() )
+    {
+      emit addDatabaseLayers( dbTables, QStringLiteral( "postgres" ) );
+    }
+    if ( ! rasterTables.isEmpty() )
+    {
+      for ( const auto &u : qgis::as_const( rasterTables ) )
+      {
+        emit addRasterLayer( u.second, u.first, QLatin1String( "gdal" ) );
+      }
+    }
+
     if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();

@@ -26,6 +26,7 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "providers/gdal/qgsgdaldataitems.h"
 
 #ifdef HAVE_GUI
 #include "qgspgsourceselect.h"
@@ -406,7 +407,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       continue;
 
     if ( !layerProperty.geometryColName.isNull() &&
-         ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
+         ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown  ||
            layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
       if ( dontResolveType )
@@ -420,7 +421,21 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 
     for ( int i = 0; i < layerProperty.size(); i++ )
     {
-      QgsPGLayerItem *layerItem = createLayer( layerProperty.at( i ) );
+      QgsDataItem *layerItem = nullptr;
+      if ( !  layerProperty.isRaster )
+      {
+        layerItem = createLayer( layerProperty.at( i ) );
+      }
+      else
+      {
+        const QString connInfo = conn->connInfo();
+        const QString uri = QStringLiteral( "PG:  %1 mode=2 schema='%2' column='%3' table='%4'" )
+                            .arg( connInfo )
+                            .arg( layerProperty.schemaName )
+                            .arg( layerProperty.geometryColName )
+                            .arg( layerProperty.tableName );
+        layerItem = new QgsGdalLayerItem( this, layerProperty.tableName, QString(), uri );
+      }
       if ( layerItem )
         items.append( layerItem );
     }
@@ -460,12 +475,21 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   {
     tip = tr( "Materialized view" );
   }
+  else if ( layerProperty.isRaster )
+  {
+    tip = tr( "Raster (GDAL)" );
+  }
   else
   {
     tip = tr( "Table" );
   }
+
   QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
-  tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) );
+  if ( ! layerProperty.isRaster )
+  {
+    tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) );
+  }
+
   if ( layerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     tip += tr( " (srid %1)" ).arg( layerProperty.srids.at( 0 ) );
   else
@@ -476,25 +500,29 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
     tip = layerProperty.tableComment + '\n' + tip;
   }
 
-  QgsLayerItem::LayerType layerType;
-  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( ( QgsWkbTypes::Type )wkbType );
-  switch ( geomType )
-  {
-    case QgsWkbTypes::PointGeometry:
-      layerType = QgsLayerItem::Point;
-      break;
-    case QgsWkbTypes::LineGeometry:
-      layerType = QgsLayerItem::Line;
-      break;
-    case QgsWkbTypes::PolygonGeometry:
-      layerType = QgsLayerItem::Polygon;
-      break;
-    default:
-      if ( !layerProperty.geometryColName.isEmpty() )
-        return nullptr;
 
-      layerType = QgsLayerItem::TableLayer;
-      tip = tr( "as geometryless table" );
+  QgsLayerItem::LayerType layerType = QgsLayerItem::Raster;
+  if ( ! layerProperty.isRaster )
+  {
+    QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( ( QgsWkbTypes::Type )wkbType );
+    switch ( geomType )
+    {
+      case QgsWkbTypes::PointGeometry:
+        layerType = QgsLayerItem::Point;
+        break;
+      case QgsWkbTypes::LineGeometry:
+        layerType = QgsLayerItem::Line;
+        break;
+      case QgsWkbTypes::PolygonGeometry:
+        layerType = QgsLayerItem::Polygon;
+        break;
+      default:
+        if ( !layerProperty.geometryColName.isEmpty() )
+          return nullptr;
+
+        layerType = QgsLayerItem::TableLayer;
+        tip = tr( "as geometryless table" );
+    }
   }
 
   QgsPGLayerItem *layerItem = new QgsPGLayerItem( this, layerProperty.defaultName(), mPath + '/' + layerProperty.tableName, layerType, layerProperty );
