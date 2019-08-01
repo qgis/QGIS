@@ -116,10 +116,15 @@ namespace QgsWms
       case PNG8:
       {
         QVector<QRgb> colorTable;
-        medianCut( colorTable, 256, img );
-        result = img.convertToFormat( QImage::Format_Indexed8, colorTable,
-                                      Qt::ColorOnly | Qt::ThresholdDither |
-                                      Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+
+        // Rendering is made with the format QImage::Format_ARGB32_Premultiplied
+        // So we need to convert it in QImage::Format_ARGB32 in order to properly build
+        // the color table.
+        QImage img256 = img.convertToFormat( QImage::Format_ARGB32 );
+        medianCut( colorTable, 256, img256 );
+        result = img256.convertToFormat( QImage::Format_Indexed8, colorTable,
+                                         Qt::ColorOnly | Qt::ThresholdDither |
+                                         Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       }
       contentType = "image/png";
       saveFormat = "PNG";
