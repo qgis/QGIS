@@ -350,7 +350,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
   }
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  mContext.expressionContext().appendScope( symbolScope );
+  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( mContext.expressionContext(), symbolScope );
 
   // 1. fetch features
   QgsFeature fet;
@@ -360,7 +360,6 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     {
       qDebug( "rendering stop!" );
       stopRenderer( selRenderer );
-      delete mContext.expressionContext().popScope();
       return;
     }
 
@@ -407,7 +406,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     }
   }
 
-  delete mContext.expressionContext().popScope();
+  scopePopper.reset();
 
   if ( features.empty() )
   {
