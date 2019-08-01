@@ -1514,6 +1514,26 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Group_Layer_Order")
 
+    def test_mode8bit_with_transparency(self):
+
+        # 8 bits
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.testdata_path + 'test_project_wms_8bit_with_transparency.qgs'),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "test_layer",
+            "STYLES": "",
+            "FORMAT": "image/png; mode=8bit",
+            "BBOX": "913204.62,5606011.36,913217.45,5606025.58",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TRANSPARENT": "TRUE"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit_with_transparency")
 
 if __name__ == '__main__':
     unittest.main()
