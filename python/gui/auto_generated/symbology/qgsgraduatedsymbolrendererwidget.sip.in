@@ -24,9 +24,10 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 
     virtual QgsFeatureRenderer *renderer();
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
 
   public slots:
-    void changeGraduatedSymbol();
     void graduatedColumnChanged( const QString &field );
     void classifyGraduated();
     void reapplyColorRamp();
@@ -70,8 +71,6 @@ Toggle the link between classes boundaries
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();
     bool rowsOrdered();
-
-    void updateGraduatedSymbolIcon();
 
     QList<int> selectedClasses();
 %Docstring

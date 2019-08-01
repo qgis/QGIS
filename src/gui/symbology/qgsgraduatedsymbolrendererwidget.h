@@ -94,9 +94,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     ~QgsGraduatedSymbolRendererWidget() override;
 
     QgsFeatureRenderer *renderer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
-    void changeGraduatedSymbol();
     void graduatedColumnChanged( const QString &field );
     void classifyGraduated();
     void reapplyColorRamp();
@@ -129,6 +129,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void updateSymbolsFromWidget();
     void toggleMethodWidgets( int idx );
     void dataDefinedSizeLegend();
+    void changeGraduatedSymbol();
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   protected slots:
 
@@ -139,8 +141,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();
     bool rowsOrdered();
-
-    void updateGraduatedSymbolIcon();
 
     //! Returns a list of indexes for the classes under selection
     QList<int> selectedClasses();
