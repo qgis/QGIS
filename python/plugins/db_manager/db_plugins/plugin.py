@@ -30,8 +30,7 @@ from qgis.gui import QgsMessageBar
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsSettings,
-    QgsMapLayerType
+    QgsSettings
 )
 from ..db_plugins import createDbPlugin
 
