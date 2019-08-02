@@ -192,11 +192,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         if "Dummy" in threading.current_thread().name: # single thread testing
             threadSpecificSettings = list(self.settingsDictionary.values())[0]
         else:
-            try:
-                # guess we're not the only one using TPE in QGIS, cannot assume 0_#, it's sometimes 3 or 4_#
-                threadSpecificSettings = self.settingsDictionary[threading.current_thread().name[-1]] # last number only
-            except:
-                print("Exception! our threads don't match with our settings! ")
+            threadSpecificSettings = self.settingsDictionary[threading.current_thread().name[-1]] # last number only
 
         size = QSize(self.tile_width * metatile.rows(), self.tile_height * metatile.columns())
         extent = QgsRectangle(*metatile.extent())
