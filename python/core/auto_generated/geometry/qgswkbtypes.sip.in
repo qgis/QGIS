@@ -126,7 +126,7 @@ Returns the multi type for a WKB type. For example, for Polygon WKB types the mu
 
     static Type curveType( Type type );
 %Docstring
-Returns the curve type for a WKB type. For example, for Polygon WKB types the multi type would be CurvePolygon.
+Returns the curve type for a WKB type. For example, for Polygon WKB types the curve type would be CurvePolygon.
 
 .. seealso:: :py:func:`isMultiType`
 

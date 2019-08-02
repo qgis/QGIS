@@ -422,7 +422,7 @@ class CORE_EXPORT QgsWkbTypes
 
 
     /**
-     * Returns the curve type for a WKB type. For example, for Polygon WKB types the multi type would be CurvePolygon.
+     * Returns the curve type for a WKB type. For example, for Polygon WKB types the curve type would be CurvePolygon.
      * \see isMultiType()
      * \see singleType()
      * \see flatType()
