@@ -25,6 +25,7 @@
 #include <limits>
 
 #include "qgis.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
 #include "qgspoint.h"
 #include "qgspointxy.h"
@@ -240,6 +241,17 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
      * \since QGIS 3.6
      */
     Q_INVOKABLE static QVariantMap createValueRelationCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature() );
+
+    /**
+     * Evaluates expression.
+     * \param pair Used to define a context scope.
+     * \param activeProject Used to define a context scope.
+     * \param expression
+     * \return Evaluated expression
+     *
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QString evaluateExpression( const QgsQuickFeatureLayerPair &pair, QgsProject *activeProject, const QString &expression );
 
   private:
     static void formatToMetricDistance( double srcDistance,

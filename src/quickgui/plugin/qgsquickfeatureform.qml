@@ -62,6 +62,17 @@ Item {
           */
         property var removeImage: function removeImage(itemWidget, imagePath) {
         }
+
+        /**
+          * Called when clicked on the OK icon after taking a photo with the Photo panel.
+          * \param itemWidget editorWidget for modified field to send valueChanged signal.
+          * \param prefixToRelativePath Together with the value creates absolute path
+          * \param value Relative path of taken photo.
+          */
+        property var confirmImage: function confirmImage(itemWidget, prefixToRelativePath, value) {
+          itemWidget.image.source = prefixToRelativePath + "/" + value
+          itemWidget.valueChanged(value, value === "" || value === null)
+        }
     }
 
   /**
@@ -376,6 +387,8 @@ Item {
           property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
+          property var featurePair: form.model.attributeModel.featureLayerPair
+          property var activeProject: form.project
 
           active: widget !== 'Hidden'
 

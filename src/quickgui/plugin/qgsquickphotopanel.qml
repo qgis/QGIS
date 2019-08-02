@@ -22,7 +22,10 @@ import QtGraphicalEffects 1.0
 import QgsQuick 0.1 as QgsQuick
 
 Drawer {
+  // Capture path
   property var targetDir
+  // Along with lastPhotoName creates an absolute path to a photo. Its either project path or defaultRoot.
+  property var prefixToRelativePath
   property var lastPhotoName
   property int iconSize: photoPanel.width/20
   property var fieldItem
@@ -33,12 +36,13 @@ Drawer {
 
   // icons:
   property var captureButtonIcon: QgsQuick.Utils.getThemeIcon("ic_camera_alt_border")
-  property var okButtonIcon: QgsQuick.Utils.getThemeIcon("ic_check_black")
+  property var confirmButtonIcon: QgsQuick.Utils.getThemeIcon("ic_check_black")
   property var cancelButtonIcon: QgsQuick.Utils.getThemeIcon("ic_clear_black")
   property real imageButtonSize: 45 * QgsQuick.Utils.dp
   property real buttonSize: imageButtonSize * 1.2
   property var buttonsPosition
 
+  signal confirmButtonClicked(string path, string filename)
 
   id: photoPanel
   visible: false
@@ -141,6 +145,7 @@ Drawer {
         width: parent.width
         height: parent.height
         fillMode: Image.PreserveAspectFit
+        onVisibleChanged: if (!photoPreview.visible) photoPreview.source = ""
 
         // Cancel button
         Rectangle {
@@ -179,7 +184,7 @@ Drawer {
           }
         }
 
-        // OK button
+        // Confirm button
         Rectangle {
           id: confirmButton
           visible: camera.imageCapture.capturedImagePath != ""
@@ -200,11 +205,8 @@ Drawer {
             onClicked: {
               captureItem.saveImage = true
               photoPanel.visible = false
-              photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.targetDir)
-              if (photoPanel.lastPhotoName !== "") {
-                fieldItem.image.source = photoPanel.targetDir + "/" + photoPanel.lastPhotoName
-                fieldItem.valueChanged(photoPanel.lastPhotoName, photoPanel.lastPhotoName === "" || photoPanel.lastPhotoName === null)
-              }
+              photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.prefixToRelativePath)
+              confirmButtonClicked(photoPanel.prefixToRelativePath, photoPanel.lastPhotoName)
             }
           }
 
@@ -215,7 +217,7 @@ Drawer {
             sourceSize.width: imageButtonSize
             height: imageButtonSize
             width: imageButtonSize
-            source: photoPanel.okButtonIcon
+            source: photoPanel.confirmButtonIcon
           }
         }
       }
