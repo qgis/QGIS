@@ -33,7 +33,8 @@ QgsGeometryCheck::QgsGeometryCheck( const QgsGeometryCheckContext *context, cons
 
 void QgsGeometryCheck::prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
 {
-
+  Q_UNUSED( context )
+  Q_UNUSED( configuration )
 }
 
 bool QgsGeometryCheck::isCompatible( QgsVectorLayer *layer ) const
