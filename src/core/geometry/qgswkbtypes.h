@@ -150,6 +150,7 @@ class CORE_EXPORT QgsWkbTypes
      * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
      * \see isSingleType()
      * \see multiType()
+     * \see curveType()
      * \see flatType()
      */
     static Type singleType( Type type )
@@ -294,6 +295,7 @@ class CORE_EXPORT QgsWkbTypes
      * Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
      * \see isMultiType()
      * \see singleType()
+     * \see curveType()
      * \see flatType()
      */
     static Type multiType( Type type )
@@ -423,10 +425,17 @@ class CORE_EXPORT QgsWkbTypes
 
 
     /**
-     * Returns the curve type for a WKB type. For example, for Polygon WKB types the multi type would be CurvePolygon.
+     * Returns the curve type for a WKB type. For example, for Polygon WKB types the curve type would be CurvePolygon.
+     *
+     * \note Returns `CompoundCurve` for `CircularString` (and its Z/M variants)
+     *
      * \see isMultiType()
+     * \see isCurvedType()
      * \see singleType()
      * \see flatType()
+     * \see multiType()
+     *
+     * \since QGIS 3.10
      */
     static Type curveType( Type type )
     {
@@ -566,6 +575,7 @@ class CORE_EXPORT QgsWkbTypes
      * For example, for PolygonZM WKB types the single type would be Polygon.
      * \see singleType()
      * \see multiType()
+     * \see curveType()
      */
     static Type flatType( Type type )
     {
