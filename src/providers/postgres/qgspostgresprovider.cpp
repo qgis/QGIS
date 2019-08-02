@@ -38,6 +38,7 @@
 #include "qgspostgrestransaction.h"
 #include "qgspostgreslistener.h"
 #include "qgspostgresprojectstorage.h"
+#include "qgspostgresproviderconnection.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgssettings.h"
@@ -5029,6 +5030,17 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, QString s
 QgsTransaction *QgsPostgresProviderMetadata::createTransaction( const QString &connString )
 {
   return new QgsPostgresTransaction( connString );
+}
+
+QMap<QString, QgsAbstractProviderConnection> QgsPostgresProviderMetadata::connections( QString &errCause )
+{
+  QMap<QString, QgsAbstractProviderConnection> conns;
+  const auto connNames { QgsPostgresConn::connectionList() };
+  for ( const auto &cname : connNames )
+  {
+    conns.insert( cname, QgsPostgresProviderConnection( QgsPostgresConn::connUri( cname ) ) );
+  }
+  return conns;
 }
 
 

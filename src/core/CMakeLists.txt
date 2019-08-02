@@ -162,6 +162,8 @@ SET(QGIS_CORE_SRCS
 
   qgis.cpp
   qgsabstractcontentcache.cpp
+  qgsabstractproviderconnection.cpp
+  qgsabstractdatabaseproviderconnection.cpp
   qgsapplication.cpp
   qgsaction.cpp
   qgsactionscope.cpp
@@ -627,6 +629,8 @@ ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsabstractcontentcache.h
+  qgsabstractproviderconnection.h
+  qgsabstractdatabaseproviderconnection.h
   qgsapplication.h
   qgsactionmanager.h
   qgsactionscoperegistry.h
@@ -882,6 +886,8 @@ SET(QGIS_CORE_HDRS
 
   qgis.h
   qgis_sip.h
+  qgsabstractproviderconnection.h
+  qgsabstractdatabaseproviderconnection.h
   qgsaction.h
   qgsactionscope.h
   qgsactionmanager.h

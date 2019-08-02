@@ -152,11 +152,18 @@ QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
 
 bool QgsProviderMetadata::createDb( const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "errCause" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createDb" ) );
   return false;
 }
 
 QgsTransaction *QgsProviderMetadata::createTransaction( const QString & )
 {
   return nullptr;
+}
+
+QMap<QString, QgsAbstractProviderConnection> QgsProviderMetadata::connections( QString &errCause )
+{
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connections" ) );
+  return QMap<QString, QgsAbstractProviderConnection>();
+
 }

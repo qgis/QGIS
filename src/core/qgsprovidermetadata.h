@@ -32,6 +32,7 @@
 #include "qgis_core.h"
 #include <functional>
 #include "qgsvectorlayerexporter.h"
+#include "qgsabstractproviderconnection.h"
 #include "qgsfields.h"
 
 class QgsDataItem;
@@ -248,6 +249,13 @@ class CORE_EXPORT QgsProviderMetadata
      * \since QGIS 3.10
      */
     virtual QgsTransaction *createTransaction( const QString &connString ) SIP_FACTORY;
+
+    /**
+     * Returns a dictionary of provider connections,
+     * the dictionary key is the connection identifier.
+     * \since QGIS 3.10
+     */
+    virtual QMap<QString, QgsAbstractProviderConnection> connections( QString &errCause );
 
 
   private:
