@@ -476,7 +476,7 @@ void QgsFieldCalculator::populateFields()
 
       //insert into field list and field combo box
       mFieldMap.insert( fieldName, idx );
-      mExistingFieldComboBox->addItem( fieldName );
+      mExistingFieldComboBox->addItem( fields.iconForField( idx ), fieldName );
     }
   }
 
