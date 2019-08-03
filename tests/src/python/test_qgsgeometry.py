@@ -2725,11 +2725,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurfaceZM)
         self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
         self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Point25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.LineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Polygon25D), QgsWkbTypes.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.LineString25D), QgsWkbTypes.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Polygon25D), QgsWkbTypes.CurvePolygonZ)
         self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiSurfaceZ)
 
         # test flatType method
         self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
