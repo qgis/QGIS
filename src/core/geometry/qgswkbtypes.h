@@ -487,10 +487,12 @@ class CORE_EXPORT QgsWkbTypes
         case LineStringZ:
         case CompoundCurveZ:
         case CircularStringZ:
+        case LineString25D:
           return CompoundCurveZ;
 
         case MultiLineStringZ:
         case MultiCurveZ:
+        case MultiLineString25D:
           return MultiCurveZ;
 
         case LineStringM:
@@ -521,10 +523,12 @@ class CORE_EXPORT QgsWkbTypes
 
         case PolygonZ:
         case CurvePolygonZ:
+        case Polygon25D:
           return CurvePolygonZ;
 
         case MultiPolygonZ:
         case MultiSurfaceZ:
+        case MultiPolygon25D:
           return MultiSurfaceZ;
 
         case PolygonM:
@@ -549,14 +553,6 @@ class CORE_EXPORT QgsWkbTypes
         case Point25D:
         case MultiPoint25D:
           return MultiPoint25D;
-
-        case LineString25D:
-        case MultiLineString25D:
-          return MultiLineString25D;
-
-        case Polygon25D:
-        case MultiPolygon25D:
-          return MultiPolygon25D;
       }
       return Unknown;
     }
