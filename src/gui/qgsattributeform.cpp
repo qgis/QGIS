@@ -544,7 +544,7 @@ bool QgsAttributeForm::saveMultiEdits()
       continue;
 
     if ( !w->currentValue().isValid() // if the widget returns invalid (== do not change)
-         || mLayer->editFormConfig().readOnly( wIt.key() ) ) // or the field cannot be edited ...
+         || !fieldIsEditable( wIt.key() ) ) // or the field cannot be edited ...
     {
       continue;
     }
