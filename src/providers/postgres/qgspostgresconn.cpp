@@ -1542,12 +1542,11 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
   else
   {
     // Query
-    table = quotedIdentifier( layerProperty.tableName );
+    table = layerProperty.tableName;
   }
 
   if ( !layerProperty.geometryColName.isEmpty() )
   {
-
     if ( layerProperty.isRaster )
     {
       bool ok = false;
