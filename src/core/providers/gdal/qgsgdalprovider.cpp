@@ -272,7 +272,7 @@ QString QgsGdalProvider::dataSourceUri( bool expandAuthConfig ) const
   {
     QString uri( QgsDataProvider::dataSourceUri() );
     // Check for authcfg
-    QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+    QRegularExpression authcfgRe( R"raw(authcfg='?([^'\s]+)'?)raw" );
     QRegularExpressionMatch match;
     if ( uri.contains( authcfgRe, &match ) )
     {
