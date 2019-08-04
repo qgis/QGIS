@@ -16,9 +16,14 @@
 #include "qgspoint3dsymbolwidget.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include "qgsreadwritecontext.h"
 #include "qgssettings.h"
 
 #include "qgspoint3dsymbol.h"
+#include "qgssymbolbutton.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsxmlutils.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : QWidget( parent )
@@ -143,10 +148,21 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
     }
     // TODO: Fix this for billboard
     case 7:  // billboard
-      lineEditModel->setText( vm[QStringLiteral( "model" )].toString() );
-      bool overwriteMaterialX = vm[QStringLiteral( "overwriteMaterial" )].toBool();
-      widgetMaterial->setEnabled( overwriteMaterialX );
-      cbOverwriteMaterial->setChecked( overwriteMaterialX );
+      if ( vm.contains( QStringLiteral( "billboard" ) ) )
+      {
+        QgsDebugMsg( "Set button billboard" );
+        QDomDocument doc( QStringLiteral( "dummy" ) );
+        QDomElement billboardDomElement = QgsXmlUtils::writeVariant( vm[QStringLiteral( "billboard" )], doc );
+
+        QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( billboardDomElement, QgsReadWriteContext() );
+        btnChangeSymbol->setSymbol( s );
+      }
+      else
+      {
+        QgsMarkerSymbol *defaultSymbol = new QgsMarkerSymbol();
+        defaultSymbol->setColor( QColor( 0, 0, 255 ) );
+        btnChangeSymbol->setSymbol( defaultSymbol );
+      }
       break;
   }
 
@@ -212,8 +228,9 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
       break;
     case 7:  // billboard
-      vm[QStringLiteral( "model" )] = lineEditModel->text();
-      vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
+      QDomDocument doc( QStringLiteral( "dummy" ) );
+      QDomElement symbolDomElement = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Billboard Symbol" ), btnChangeSymbol->symbol(), doc, QgsReadWriteContext() );
+      vm[QStringLiteral( "billboard" )] = QgsXmlUtils::readVariant( symbolDomElement );
       break;
   }
 

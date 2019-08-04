@@ -52,6 +52,8 @@
 #include "qgslogger.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgssymbollayer.h"
+#include "qgsxmlutils.h"
 
 /// @cond PRIVATE
 
@@ -561,6 +563,22 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
   // Billboard Material
   QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
   billboardMaterial->useDefaultSymbol();
+
+  QVariant symbolVariant = symbol.shapeProperties()[QStringLiteral( "billboard" )];
+  QDomDocument doc( QStringLiteral( "dummy" ) );
+  QDomElement billboardDomElement = QgsXmlUtils::writeVariant( symbolVariant, doc );
+  QgsDebugMsg( "set billboard material" );
+  QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( billboardDomElement, QgsReadWriteContext() );
+  if ( s )
+  {
+    billboardMaterial->setTexture2DFromSymbol( static_cast<QgsMarkerSymbol *>( s ) );
+  }
+  else
+  {
+    QgsMarkerSymbol *defaultSymbol = new QgsMarkerSymbol();
+    billboardMaterial->setTexture2DFromSymbol( defaultSymbol );
+  }
+
 
   // Billboard Transform
   Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
