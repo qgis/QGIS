@@ -34,6 +34,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
+#include "qgshelp.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -1878,7 +1879,7 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->addWidget( mFormatWidget );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, Qt::Horizontal, this );
   layout->addWidget( mButtonBox );
 
   setLayout( layout );
@@ -1886,11 +1887,17 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
+  connect( mButtonBox->button( QDialogButtonBox::Help ), &QAbstractButton::clicked, this, &QgsTextFormatDialog::showHelp );
 }
 
 QgsTextFormat QgsTextFormatDialog::format() const
 {
   return mFormatWidget->format();
+}
+
+void QgsTextFormatDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#formatting-the-label-text" ) );
 }
 
 void QgsTextFormatDialog::setContext( const QgsSymbolWidgetContext &context )
