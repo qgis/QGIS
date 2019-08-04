@@ -610,25 +610,25 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's symbol layer registry, used for managing symbol layers.
      * \since QGIS 3.0
      */
-    static QgsSymbolLayerRegistry *symbolLayerRegistry();
+    static QgsSymbolLayerRegistry *symbolLayerRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's layout item registry, used for layout item types.
      * \since QGIS 3.0
      */
-    static QgsLayoutItemRegistry *layoutItemRegistry();
+    static QgsLayoutItemRegistry *layoutItemRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
      * \since QGIS 3.0
      */
-    static QgsGpsConnectionRegistry *gpsConnectionRegistry();
+    static QgsGpsConnectionRegistry *gpsConnectionRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
      * \since QGIS 3.0
      */
-    static QgsPluginLayerRegistry *pluginLayerRegistry();
+    static QgsPluginLayerRegistry *pluginLayerRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's message log.
@@ -649,13 +649,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * algorithms, and various parameters and outputs.
      * \since QGIS 3.0
      */
-    static QgsProcessingRegistry *processingRegistry();
+    static QgsProcessingRegistry *processingRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's page size registry, used for managing layout page sizes.
      * \since QGIS 3.0
      */
-    static QgsPageSizeRegistry *pageSizeRegistry();
+    static QgsPageSizeRegistry *pageSizeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
