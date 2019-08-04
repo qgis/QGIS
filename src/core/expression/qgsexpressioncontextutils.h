@@ -332,4 +332,40 @@ class CORE_EXPORT QgsExpressionContextUtils
 
 };
 
+#ifndef SIP_RUN
+
+/**
+ * \class QgsExpressionContextScopePopper
+ * RAII class to pop scope from an expression context on destruction
+ * \ingroup core
+ * \since QGIS 3.10
+ */
+class QgsExpressionContextScopePopper
+{
+  public:
+
+    /**
+     * Constructor for QgsExpressionContextScopePopper. Appends the specified \a scope to the
+     * end of \a context. \a scope will be automatically popped and deleted when this QgsExpressionContextScopePopper
+     * is destroyed.
+     *
+     * Ownership of \a scope is transferred to the popper, but it is gauranteed to exist of the lifetime
+     * of the popper.
+     */
+    QgsExpressionContextScopePopper( QgsExpressionContext &context, QgsExpressionContextScope *scope )
+      : mContext( context )
+    {
+      mContext.appendScope( scope );
+    }
+
+    ~QgsExpressionContextScopePopper()
+    {
+      delete mContext.popScope();
+    }
+
+  private:
+    QgsExpressionContext &mContext;
+};
+#endif
+
 #endif // QGSEXPRESSIONCONTEXTUTILS_H
