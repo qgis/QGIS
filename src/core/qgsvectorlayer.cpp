@@ -2651,6 +2651,8 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
   {
     case QgsFields::OriginJoin:
       result = mJoinBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+      if ( result )
+        emit attributeValueChanged( fid, field, newValue );
       break;
 
     case QgsFields::OriginProvider:
