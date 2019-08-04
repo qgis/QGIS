@@ -24,6 +24,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgshelp.h"
 #include "qgsstylesavedialog.h"
 #include "qgscallout.h"
 #include "qgsapplication.h"
@@ -877,9 +878,10 @@ QgsLabelSettingsDialog::QgsLabelSettingsDialog( const QgsPalLayerSettings &setti
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsLabelingGui( layer, mapCanvas, settings, nullptr, geomType );
   vLayout->addWidget( mWidget );
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelSettingsDialog::showHelp );
   vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
   setWindowTitle( tr( "Label Settings" ) );
@@ -888,6 +890,11 @@ QgsLabelSettingsDialog::QgsLabelSettingsDialog( const QgsPalLayerSettings &setti
 QDialogButtonBox *QgsLabelSettingsDialog::buttonBox() const
 {
   return mButtonBox;
+}
+
+void QgsLabelSettingsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html" ) );
 }
 
 

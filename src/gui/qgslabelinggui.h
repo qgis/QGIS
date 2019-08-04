@@ -121,6 +121,9 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
     QgsLabelingGui *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 
+  private slots:
+    void showHelp();
+
 };
 
 ///@endcond PRIVATE
