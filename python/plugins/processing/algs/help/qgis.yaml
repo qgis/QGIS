@@ -94,23 +94,11 @@ qgis:createconstantrasterlayer: >
   Given an input raster layer and a value, this algorithm generates a new layer with the same extent and cell size as the input one, and all cells with the specified value.
 
 qgis:creategrid: >
-  This algorithm creates a vector layer with a grid covering a given extent. Elements in the grid can be points, lines or polygons.
+  This algorithm creates a vector layer with a grid covering a given extent. Elements in the grid can be points, lines or polygons (rectangles, diamonds or hexagons).
 
   The size of each element in the grid is defined using a horizontal and vertical spacing.
 
   The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS.
-
-qgis:creategridpolygon: >
-  This algorithm creates a polygon vector layer with a grid covering a given extent. The grid shape can be rectangles, diamond or hexagons.
-
-  The size of each element in the grid is defined using a horizontal and vertical spacing.
-
-  The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS.
-
-qgis:createpointsalonglines: >
-  This algorithm creates a points layer, with points distributed along the lines of an input vector layer. the distance between points (measured along the line) is defined as a parameter.
-
-  Start and end points can be defined, so the first and last point do not fall on the line first and last node. Start and end points are defined as distances, measured from the first and last nodes of the lines, in the units of the projection used by the lines layer.
 
 qgis:createspatialindex: >
   Creates an index to speed up access to the features in a layer based on their spatial location. Support for spatial index creation is dependent on the layer's data provider.
