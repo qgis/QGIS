@@ -37,6 +37,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
 
 #include <QPicture>
 
@@ -107,6 +108,12 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
   mAttrNames = mRenderer->usedAttributes( context );
+  if ( context.hasRenderedFeatureHandlers() )
+  {
+    const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
+    for ( QgsRenderedFeatureHandlerInterface *handler : handlers )
+      mAttrNames.unite( handler->usedAttributes( layer, context ) );
+  }
 
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );

@@ -17,9 +17,13 @@
 #define QGSRENDEREDFEATUREHANDLERINTERFACE_H
 
 #include "qgis_core.h"
+#include <QSet>
+#include <QString>
 
 class QgsFeature;
 class QgsGeometry;
+class QgsRenderContext;
+class QgsVectorLayer;
 
 /**
  * \ingroup core
@@ -67,6 +71,11 @@ class CORE_EXPORT QgsRenderedFeatureHandlerInterface
      */
     virtual void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) = 0;
 
+    /**
+     * Returns a list of attributes required by this handler, for the specified \a layer. Attributes not listed in here may
+     * not be requested from the provider at rendering time.
+     */
+    virtual QSet<QString> usedAttributes( QgsVectorLayer *layer, const QgsRenderContext &context ) const { Q_UNUSED( layer ); Q_UNUSED( context ); return QSet< QString >(); }
 };
 
 #endif // QGSRENDEREDFEATUREHANDLERINTERFACE_H
