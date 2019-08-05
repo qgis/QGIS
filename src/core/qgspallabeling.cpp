@@ -132,6 +132,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::AutoWrapLength, QgsPropertyDefinition( "AutoWrapLength", QObject::tr( "Automatic word wrap line length" ), QgsPropertyDefinition::IntegerPositive, origin ) },
     { QgsPalLayerSettings::MultiLineHeight, QgsPropertyDefinition( "MultiLineHeight", QObject::tr( "Line height" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsPalLayerSettings::MultiLineAlignment, QgsPropertyDefinition( "MultiLineAlignment", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>|<b>Follow</b>]", origin ) },
+    { QgsPalLayerSettings::TextOrientation, QgsPropertyDefinition( "TextOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Text orientation" ), QObject::tr( "string " ) + "[<b>horizontal</b>|<b>vertical</b>]", origin ) },
     { QgsPalLayerSettings::DirSymbDraw, QgsPropertyDefinition( "DirSymbDraw", QObject::tr( "Draw direction symbol" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::DirSymbLeft, QgsPropertyDefinition( "DirSymbLeft", QObject::tr( "Left direction symbol" ), QgsPropertyDefinition::String, origin ) },
     { QgsPalLayerSettings::DirSymbRight, QgsPropertyDefinition( "DirSymbRight", QObject::tr( "Right direction symbol" ), QgsPropertyDefinition::String, origin ) },
@@ -1390,6 +1391,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   QString wrapchr = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
   double multilineH = mFormat.lineHeight();
+  QgsTextFormat::TextOrientation orientation = mFormat.orientation();
 
   bool addDirSymb = addDirectionSymbol;
   QString leftDirSymb = leftDirectionSymbol;
@@ -1411,6 +1413,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineHeight ) )
     {
       multilineH = dataDefinedValues.value( QgsPalLayerSettings::MultiLineHeight ).toDouble();
+    }
+
+    if ( dataDefinedValues.contains( QgsPalLayerSettings::TextOrientation ) )
+    {
+      orientation = QgsTextRendererUtils::decodeTextOrientation( dataDefinedValues.value( QgsPalLayerSettings::TextOrientation ).toString() );
     }
 
     if ( dataDefinedValues.contains( QgsPalLayerSettings::DirSymbDraw ) )
@@ -1456,6 +1463,13 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     {
       rc->expressionContext().setOriginalValueVariable( multilineH );
       multilineH = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MultiLineHeight, rc->expressionContext(), multilineH );
+    }
+
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::TextOrientation ) )
+    {
+      QString encoded = QgsTextRendererUtils::encodeTextOrientation( orientation );
+      rc->expressionContext().setOriginalValueVariable( encoded );
+      orientation = QgsTextRendererUtils::decodeTextOrientation( mDataDefinedProperties.valueAsString( QgsPalLayerSettings::TextOrientation, rc->expressionContext(), encoded ) );
     }
 
     if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::DirSymbDraw ) )
@@ -1512,16 +1526,32 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   }
 
   double w = 0.0, h = 0.0;
+  double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
   const QStringList multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
   int lines = multiLineSplit.size();
 
-  double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
-
-  h += fm->height() + static_cast< double >( ( lines - 1 ) * labelHeight * multilineH );
-
-  for ( const QString &line : multiLineSplit )
+  switch ( orientation )
   {
-    w = std::max( w, fm->width( line ) );
+    case QgsTextFormat::HorizontalOrientation:
+      h += fm->height() + static_cast< double >( ( lines - 1 ) * labelHeight * multilineH );
+
+      for ( const auto &line : multiLineSplit )
+      {
+        w = std::max( w, fm->width( line ) );
+      }
+      break;
+    case QgsTextFormat::VerticalOrientation:
+      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+      double labelWidth = fm->maxWidth();
+      w = labelWidth + ( lines - 1 ) * labelWidth * multilineH;
+
+      int maxLineLength = 0;
+      for ( const auto &line : multiLineSplit )
+      {
+        maxLineLength = std::max( maxLineLength, line.length() );
+      }
+      h = labelHeight * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
+      break;
   }
 
 #if 0 // XXX strk
@@ -2987,6 +3017,20 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     }
   }
 
+  // data defined text orientation?
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::TextOrientation ) )
+  {
+    const QString encoded = QgsTextRendererUtils::encodeTextOrientation( mFormat.orientation() );
+    context.expressionContext().setOriginalValueVariable( encoded );
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::TextOrientation, context.expressionContext() );
+    if ( exprVal.isValid() )
+    {
+      QString str = exprVal.toString().trimmed();
+      if ( !str.isEmpty() )
+        dataDefinedValues.insert( QgsPalLayerSettings::TextOrientation, str );
+    }
+  }
+
   // data defined direction symbol?
   bool drawDirSymb = addDirectionSymbol;
   if ( dataDefinedValEval( DDBool, QgsPalLayerSettings::DirSymbDraw, exprVal, context.expressionContext(), addDirectionSymbol ) )
@@ -3596,6 +3640,13 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
   if ( ddValues.contains( QgsPalLayerSettings::MultiLineAlignment ) )
   {
     tmpLyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( ddValues.value( QgsPalLayerSettings::MultiLineAlignment ).toInt() );
+  }
+
+  if ( ddValues.contains( QgsPalLayerSettings::TextOrientation ) )
+  {
+    QgsTextFormat format = tmpLyr.format();
+    format.setOrientation( QgsTextRendererUtils::decodeTextOrientation( ddValues.value( QgsPalLayerSettings::TextOrientation ).toString() ) );
+    tmpLyr.setFormat( format );
   }
 
   if ( ddValues.contains( QgsPalLayerSettings::DirSymbDraw ) )

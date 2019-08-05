@@ -2158,6 +2158,38 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertNotIn('<text', lines)
         self.assertNotIn('>my test text<', lines)
 
+    def testDrawTextVerticalRectMode(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRender(format, 'text_vertical_rect_mode', QgsTextRenderer.Text, text=['1234'], rect=QRectF(40, 20, 350, 350))
+
+    def testDrawTextVerticalRectModeCenterAligned(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRender(format, 'text_vertical_rect_mode_center_aligned', QgsTextRenderer.Text, text=['1234', '5678'], rect=QRectF(40, 20, 350, 350), alignment=QgsTextRenderer.AlignCenter)
+
+    def testDrawTextVerticalRectModeRightAligned(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRender(format, 'text_vertical_rect_mode_right_aligned', QgsTextRenderer.Text, text=['1234', '5678'], rect=QRectF(40, 20, 350, 350), alignment=QgsTextRenderer.AlignRight)
+
+    def testDrawTextVerticalPointMode(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_vertical_point_mode', QgsTextRenderer.Text, text=['1234', '5678'], point=QPointF(40, 380))
+
 
 if __name__ == '__main__':
     unittest.main()

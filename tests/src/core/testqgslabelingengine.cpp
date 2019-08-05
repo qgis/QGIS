@@ -72,6 +72,8 @@ class TestQgsLabelingEngine : public QObject
     void curvedOverrun();
     void parallelOverrun();
     void testDataDefinedLabelAllParts();
+    void testVerticalOrientation();
+    void testVerticalOrientationLetterLineSpacing();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -2193,6 +2195,99 @@ void TestQgsLabelingEngine::testDataDefinedLabelAllParts()
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_datadefined_label_all_parts" ), img, 20 ) );
 
+}
+
+void TestQgsLabelingEngine::testVerticalOrientation()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+
+  // first render the map and labeling separately
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  setDefaultLabelParams( settings );
+  QgsTextFormat format = settings.format();
+  format.setOrientation( QgsTextFormat::VerticalOrientation );
+  settings.setFormat( format );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "labeling_vertical", img, 20 ) );
+
+  vl->setLabeling( nullptr );
+}
+
+void TestQgsLabelingEngine::testVerticalOrientationLetterLineSpacing()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+
+  // first render the map and labeling separately
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "\"Class\" || '\n' || \"Heading\"" );
+  settings.isExpression = true;
+  setDefaultLabelParams( settings );
+  QgsTextFormat format = settings.format();
+  format.setOrientation( QgsTextFormat::VerticalOrientation );
+  format.setLineHeight( 1.5 );
+  QFont font = format.font();
+  font.setLetterSpacing( QFont::AbsoluteSpacing, 5 );
+  format.setFont( font );
+  settings.setFormat( format );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "labeling_vertical_letter_line_spacing", img, 20 ) );
+
+  vl->setLabeling( nullptr );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )
