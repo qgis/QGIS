@@ -38,6 +38,7 @@ class QPainter;
 class QgsCoordinateTransform;
 class QgsScaleCalculator;
 class QgsMapRendererJob;
+class QgsRenderedFeatureHandlerInterface;
 
 /**
  * \class QgsLabelBlockingRegion
@@ -578,6 +579,24 @@ class CORE_EXPORT QgsMapSettings
      */
     const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
+    /**
+     * Adds a rendered feature \a handler to use while rendering the map settings.
+     *
+     * Ownership of \a handler is NOT transferred, and it is the caller's responsibility to ensure
+     * that the handler exists for the lifetime of the map render job.
+     *
+     * \see renderedFeatureHandlers()
+     * \since QGIS 3.10
+     */
+    void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+
+    /**
+     * Returns the list of rendered feature handlers to use while rendering the map settings.
+     * \see addRenderedFeatureHandler()
+     * \since QGIS 3.10
+     */
+    QList< QgsRenderedFeatureHandlerInterface * > renderedFeatureHandlers() const;
+
   protected:
 
     double mDpi;
@@ -642,6 +661,7 @@ class CORE_EXPORT QgsMapSettings
   private:
 
     QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
+    QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )

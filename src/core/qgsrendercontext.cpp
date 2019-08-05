@@ -59,6 +59,8 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mTransformContext( rh.mTransformContext )
   , mPathResolver( rh.mPathResolver )
   , mTextRenderFormat( rh.mTextRenderFormat )
+  , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
+  , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -88,6 +90,8 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mTransformContext = rh.mTransformContext;
   mPathResolver = rh.mPathResolver;
   mTextRenderFormat = rh.mTextRenderFormat;
+  mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
+  mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
@@ -185,6 +189,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setPathResolver( mapSettings.pathResolver() );
   ctx.setTextRenderFormat( mapSettings.textRenderFormat() );
   ctx.setVectorSimplifyMethod( mapSettings.simplifyMethod() );
+  ctx.mRenderedFeatureHandlers = mapSettings.renderedFeatureHandlers();
+  ctx.mHasRenderedFeatureHandlers = !mapSettings.renderedFeatureHandlers().isEmpty();
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
@@ -458,6 +464,11 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
   }
   return meters;
+}
+
+QList<QgsRenderedFeatureHandlerInterface *> QgsRenderContext::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
 }
 
 
