@@ -50,7 +50,7 @@ from qgis.core import (QgsProcessingException,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from multiprocessing import cpu_count
+from processing.core.ProcessingConfig import ProcessingConfig
 
 
 # TMS functions taken from https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/ #spellok
@@ -235,8 +235,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
         self.quality = self.parameterAsInt(parameters, self.QUALITY, context)
         self.metatilesize = self.parameterAsInt(parameters, self.METATILESIZE, context)
-        self.maxThreads = QgsApplication.maxThreads()
-        self.maxThreads = cpu_count() if self.maxThreads == -1 else self.maxThreads # if unbound, maxThreads() returns -1
+        self.maxThreads = int(ProcessingConfig.getSetting(ProcessingConfig.MAX_THREADS))
         try:
             self.tile_width = self.parameterAsInt(parameters, self.TILE_WIDTH, context)
             self.tile_height = self.parameterAsInt(parameters, self.TILE_HEIGHT, context)

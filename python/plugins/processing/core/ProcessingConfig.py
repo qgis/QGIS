@@ -31,6 +31,7 @@ from qgis.core import (NULL,
                        QgsRasterFileWriter)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
+from multiprocessing import cpu_count
 
 
 class SettingsWatcher(QObject):
@@ -56,6 +57,7 @@ class ProcessingConfig:
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
     SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
+    MAX_THREADS = 'MAX_THREADS'
 
     settings = {}
     settingIcons = {}
@@ -134,6 +136,14 @@ class ProcessingConfig:
             invalidFeaturesOptions[2],
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
+
+        threads = QgsApplication.maxThreads() # if user specified limit for rendering, lets keep that as default here, otherwise max
+        threads = cpu_count() if threads == -1 else threads # if unset, maxThreads() returns -1
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.MAX_THREADS,
+            ProcessingConfig.tr('Max Threads'), threads,
+            valuetype=Setting.INT))
 
     @staticmethod
     def setGroupIcon(group, icon):
