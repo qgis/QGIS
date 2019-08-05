@@ -562,21 +562,29 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
 
   // Billboard Material
   QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
-  billboardMaterial->useDefaultSymbol();
 
   QVariant symbolVariant = symbol.shapeProperties()[QStringLiteral( "billboard" )];
-  QDomDocument doc( QStringLiteral( "dummy" ) );
-  QDomElement billboardDomElement = QgsXmlUtils::writeVariant( symbolVariant, doc );
-  QgsDebugMsg( "set billboard material" );
-  QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( billboardDomElement, QgsReadWriteContext() );
+  QString symbolString = symbolVariant.toString();
+
+  QDomDocument doc;
+  QDomElement elem;
+
+  if ( doc.setContent( symbolString ) )
+  {
+    elem = doc.documentElement();
+  }
+
+  QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( elem, QgsReadWriteContext() );
   if ( s )
   {
+    QgsDebugMsg( "Non empty symbol" );
+    QgsDebugMsg( s->color().name() );
     billboardMaterial->setTexture2DFromSymbol( static_cast<QgsMarkerSymbol *>( s ) );
   }
   else
   {
-    QgsMarkerSymbol *defaultSymbol = new QgsMarkerSymbol();
-    billboardMaterial->setTexture2DFromSymbol( defaultSymbol );
+    QgsDebugMsg( "Symbol can not be loaded or empty or null pointer" );
+    billboardMaterial->useDefaultSymbol();
   }
 
 

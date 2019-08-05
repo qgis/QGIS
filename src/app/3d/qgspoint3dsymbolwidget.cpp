@@ -67,6 +67,8 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( btnModel, static_cast<void ( QToolButton::* )( bool )>( &QToolButton::clicked ), this, &QgsPoint3DSymbolWidget::onChooseModelClicked );
   connect( cbOverwriteMaterial, static_cast<void ( QCheckBox::* )( int )>( &QCheckBox::stateChanged ), this, &QgsPoint3DSymbolWidget::onOverwriteMaterialChecked );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( btnChangeSymbol, &QgsSymbolButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( btnChangeSymbol, &QgsSymbolButton::changed, this, &QgsPoint3DSymbolWidget::onBillboardSymbolChanged );
 }
 
 void QgsPoint3DSymbolWidget::onChooseModelClicked( bool )
@@ -103,6 +105,11 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
     widgetMaterial->setEnabled( false );
   }
   emit changed();
+}
+
+void QgsPoint3DSymbolWidget::onBillboardSymbolChanged()
+{
+  QgsDebugMsg( QStringLiteral( "Symbol changed: %1" ).arg( btnChangeSymbol->symbol()->color().name() ) );
 }
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
@@ -151,10 +158,18 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
       if ( vm.contains( QStringLiteral( "billboard" ) ) )
       {
         QgsDebugMsg( "Set button billboard" );
-        QDomDocument doc( QStringLiteral( "dummy" ) );
-        QDomElement billboardDomElement = QgsXmlUtils::writeVariant( vm[QStringLiteral( "billboard" )], doc );
+        QVariant symbolVariant = vm[QStringLiteral( "billboard" )];
+        QString symbolString = symbolVariant.toString();
 
-        QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( billboardDomElement, QgsReadWriteContext() );
+        QDomDocument doc;
+        QDomElement elem;
+        if ( doc.setContent( symbolString ) )
+        {
+          elem = doc.documentElement();
+        }
+
+        QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( elem, QgsReadWriteContext() );
+
         btnChangeSymbol->setSymbol( s );
       }
       else
@@ -228,9 +243,11 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
       break;
     case 7:  // billboard
-      QDomDocument doc( QStringLiteral( "dummy" ) );
+      QgsDebugMsg( QStringLiteral( "Set billboard from symbol." ) );
+      QDomDocument doc;
       QDomElement symbolDomElement = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Billboard Symbol" ), btnChangeSymbol->symbol(), doc, QgsReadWriteContext() );
-      vm[QStringLiteral( "billboard" )] = QgsXmlUtils::readVariant( symbolDomElement );
+      doc.appendChild( symbolDomElement );
+      vm[QStringLiteral( "billboard" )] = QVariant( doc.toString() );
       break;
   }
 

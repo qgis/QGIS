@@ -157,7 +157,10 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol()
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol )
 {
+  markerSymbol->setSizeUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  markerSymbol->setSize( 20 );
   QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( markerSymbol->size() ) + 5, int( markerSymbol->size() ) + 5 ), 0 );
   QImage symbolImage = symbolPixmap.toImage();
+  symbolImage.save( "/home/ismailsunni/dev/cpp/test.png" );
   setTexture2DFromImage( symbolImage );
 }
