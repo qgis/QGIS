@@ -33,6 +33,7 @@
 #include <functional>
 #include "qgsvectorlayerexporter.h"
 #include "qgsabstractproviderconnection.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsfields.h"
 
 class QgsDataItem;
@@ -253,10 +254,42 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of provider connections,
      * the dictionary key is the connection identifier.
+     * TODO: cached?
      * \since QGIS 3.10
      */
-    virtual QMap<QString, QgsAbstractProviderConnection> connections( QString &errCause );
+    virtual QMap<QString, QgsAbstractProviderConnection *> connections( QString &errCause );
 
+    /**
+     * Returns a dictionary of DB provider connections,
+     * the dictionary key is the connection identifier.
+     * TODO: cached?
+     * \since QGIS 3.10
+     */
+    virtual QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( QString &errCause );
+
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns a dictionary of provider connections of the specified type T,
+     * the dictionary key is the connection identifier.
+     * TODO: cached?
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    template <typename T> QMap<QString, T *>connections( QString &errCause );
+
+#endif
+
+    /**
+     * Creates a new connection by loading the connection with the given \a name from the settings
+     */
+    virtual QgsAbstractProviderConnection *connection( const QString &name, QString &errCause ) SIP_FACTORY;
+
+    /**
+     * Creates a new connection with the given \a name and data source \a uri
+     */
+    virtual QgsAbstractProviderConnection *connection( const QString &name, const QgsDataSourceUri &uri, QString &errCause ) SIP_FACTORY;
 
   private:
 

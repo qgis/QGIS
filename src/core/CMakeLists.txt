@@ -629,7 +629,6 @@ ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsabstractcontentcache.h
-  qgsabstractproviderconnection.h
   qgsabstractdatabaseproviderconnection.h
   qgsapplication.h
   qgsactionmanager.h

@@ -385,6 +385,11 @@ QString QgsDataSourceUri::escape( const QString &val, QChar delim = '\'' ) const
   return escaped;
 }
 
+void QgsDataSourceUri::setTable( const QString &table )
+{
+  mTable = table;
+}
+
 void QgsDataSourceUri::skipBlanks( const QString &uri, int &i )
 {
   // skip space before value

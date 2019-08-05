@@ -564,7 +564,11 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     bool deleteStyleById( const QString &uri, QString styleId, QString &errCause ) override;
     QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
     QgsTransaction *createTransaction( const QString &connString ) override;
-    QMap<QString, QgsAbstractProviderConnection> connections( QString &errCause ) override;
+    QMap<QString, QgsAbstractProviderConnection *> connections( QString &errCause ) override;
+    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( QString &errCause ) override;
+    QgsAbstractProviderConnection *connection( const QString &name, QString &errCause ) override;
+    QgsAbstractProviderConnection *connection( const QString &name, const QgsDataSourceUri &uri, QString &errCause ) override;
+
     void initProvider() override;
     void cleanupProvider() override;
 };

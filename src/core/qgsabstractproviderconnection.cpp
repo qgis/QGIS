@@ -14,75 +14,33 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractproviderconnection.h"
-#include <QObject>
-#include <QVariant>
 
-QgsAbstractProviderConnection::QgsAbstractProviderConnection()
+
+QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name ):
+  mConnectionName( name )
+{
+  // Note: concrete classed must implement the logic to read the configuration from the settings
+  //       and create mUri
+}
+
+QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name, const QgsDataSourceUri &uri ):
+  mConnectionName( name ),
+  mUri( uri )
 {
 
 }
 
-QgsAbstractProviderConnection::Capabilities QgsAbstractProviderConnection::capabilities() const
+QString QgsAbstractProviderConnection::connectionName() const
 {
-  return mCapabilities;
+  return mConnectionName;
 }
 
-bool QgsAbstractProviderConnection::createTable( const QString &, QString &errCause )
+QgsDataSourceUri QgsAbstractProviderConnection::uri() const
 {
-  errCause = QObject::tr( "Operation 'createTable' is not supported" );
-  return false;
+  return mUri;
 }
 
-bool QgsAbstractProviderConnection::dropTable( const QString &, QString &errCause )
+void QgsAbstractProviderConnection::setUri( const QgsDataSourceUri &uri )
 {
-  errCause = QObject::tr( "Operation 'dropTable' is not supported" );
-  return false;
-}
-
-bool QgsAbstractProviderConnection::renameTable( const QString &, const QString &, QString &errCause )
-{
-  errCause = QObject::tr( "Operation 'renameTable' is not supported" );
-  return false;
-}
-
-bool QgsAbstractProviderConnection::createSchema( const QString &, QString &errCause )
-{
-  errCause = QObject::tr( "Operation 'createSchema' is not supported" );
-  return false;
-}
-
-bool QgsAbstractProviderConnection::dropSchema( const QString &, QString &errCause )
-{
-  errCause = QObject::tr( "Operation 'dropSchema' is not supported" );
-  return false;
-}
-
-bool QgsAbstractProviderConnection::renameSchema( const QString &, const QString &newName, QString &errCause )
-{
-  errCause = QObject::tr( "Operation 'renameSchema' is not supported" );
-  return false;
-}
-
-QVariant QgsAbstractProviderConnection::executeSql( const QString &, QString &errCause )
-{
-  errCause = QObject::tr( "Operation 'executeSql' is not supported" );
-  return QVariant();
-}
-
-bool QgsAbstractProviderConnection::vacuum( const QString &, QString &errCause )
-{
-  errCause = QObject::tr( "Operation 'vacuum' is not supported" );
-  return false;
-}
-
-QStringList QgsAbstractProviderConnection::tables( const QString, QString &errCause )
-{
-  errCause = QObject::tr( "Operation 'tables' is not supported" );
-  return QStringList();
-}
-
-QStringList QgsAbstractProviderConnection::schemas( QString &errCause )
-{
-  errCause = QObject::tr( "Operation 'schemas' is not supported" );
-  return QStringList();
+  mUri = uri;
 }

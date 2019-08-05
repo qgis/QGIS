@@ -16,7 +16,6 @@
 #include "qgsowsdataitems.h"
 #include "qgsowsprovider.h"
 #include "qgslogger.h"
-#include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
 #include "qgsdataitemprovider.h"
 

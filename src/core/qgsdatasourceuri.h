@@ -289,6 +289,12 @@ class CORE_EXPORT QgsDataSourceUri
      */
     static QString encodeSslMode( SslMode sslMode );
 
+    /**
+     * Sets table to \a table
+     * \since QGIS 3.10
+     */
+    void setTable( const QString &table );
+
   private:
     void skipBlanks( const QString &uri, int &i );
     QString getValue( const QString &uri, int &i );

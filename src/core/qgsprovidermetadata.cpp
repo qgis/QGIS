@@ -161,9 +161,44 @@ QgsTransaction *QgsProviderMetadata::createTransaction( const QString & )
   return nullptr;
 }
 
-QMap<QString, QgsAbstractProviderConnection> QgsProviderMetadata::connections( QString &errCause )
+QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections( QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connections" ) );
-  return QMap<QString, QgsAbstractProviderConnection>();
+  return QMap<QString, QgsAbstractProviderConnection *>();
 
+}
+
+QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( QString &errCause )
+{
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "dbConnections" ) );
+}
+
+QgsAbstractProviderConnection *QgsProviderMetadata::connection( const QString &name, QString &errCause )
+{
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) );
+  return nullptr;
+}
+
+
+QgsAbstractProviderConnection *QgsProviderMetadata::connection( const QString &name, const QgsDataSourceUri &uri, QString &errCause )
+{
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) );
+  return nullptr;
+}
+
+template<typename T>
+QMap<QString, T *> QgsProviderMetadata::connections( QString &errCause )
+{
+  QMap<QString, T> result;
+  const QMap<QString, T> constConns { connections( errCause ) };
+  const QStringList constConnKeys { constConns.keys() };
+  for ( const auto &c : constConnKeys )
+  {
+    const T &casted { qobject_cast<T>( constConns.value( c ) ) };
+    if ( casted )
+    {
+      result.insert( c, casted );
+    }
+  }
+  return result;
 }

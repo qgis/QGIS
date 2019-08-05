@@ -322,6 +322,13 @@ Encodes SSL mode enum value into a string.
 .. versionadded:: 3.2
 %End
 
+    void setTable( const QString &table );
+%Docstring
+Sets table to ``table``
+
+.. versionadded:: 3.10
+%End
+
 };
 
 

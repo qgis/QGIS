@@ -16,72 +16,75 @@
 #ifndef QGSABSTRACTPROVIDERCONNECTION_H
 #define QGSABSTRACTPROVIDERCONNECTION_H
 
-#include <QObject>
-#include "qgis_core.h"
+#include <QString>
+#include <QVariantMap>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsdatasourceuri.h"
 
 /**
  * The QgsAbstractProviderConnection provides an interface for data provider connections
+ * Connections objects can be created by passing the connection name and in this case
+ * they are loaded from the settings, or by passing a data source URI in the constructor.
+ *
+ * Concrete classes must implement methods to retrieve, save and remove connections from
+ * the settings.
  */
 class CORE_EXPORT QgsAbstractProviderConnection
 {
-    Q_GADGET
 
   public:
 
     /**
-     * The Capability enum represent the operations supported by the connection
+     * Creates a new QgsAbstractProviderConnection with \a name by reading its configuration from the settings.
+     * If a connection with this name cannot be found, an empty connection will be returned.
      */
-    enum Capability
-    {
-      CreateTable = 1 << 1,   //!< Can create a table/layer
-      DropTable = 1 << 2,     //!< Can drop a table/layer
-      RenameTable = 1 << 3,   //!< Can rename a table/layer
-      CreateSchema = 1 << 4,  //!< Can create a schema
-      DropSchema = 1 << 5,    //!< Can drop a schema
-      RenameSchema = 1 << 6,  //!< Can rename a schema
-      ExecuteSQL = 1 << 7,    //!< Can execute raw SQL queries
-      // TODO Transaction = 1 << 8,   //!< Supports transactions when executing operations
-      Vacuum = 1 << 9,        //!< Can run vacuum
-      Tables = 1 << 10,       //!< Can list tables
-      Schemas = 1 << 11,      //!< Can list schemas
-    };
+    QgsAbstractProviderConnection( const QString &name );
 
-    Q_ENUMS( Capability )
-    Q_DECLARE_FLAGS( Capabilities, Capability )
-    Q_FLAGS( Capabilities )
-
-    QgsAbstractProviderConnection();
+    /**
+     * Creates a new QgsAbstractProviderConnection with \a name and initialised the connection from the \a uri.
+     * The connection is not automatically stored in the settings.
+     * \see store()
+     */
+    QgsAbstractProviderConnection( const QString &name, const QgsDataSourceUri &uri );
 
     virtual ~QgsAbstractProviderConnection() = default;
 
-    // Public interface
+    /**
+     * Stores the connection in the settings.
+     * Returns TRUE on success.
+     * \param guiConfig stores additional connection settings that are used by the
+     * source select dialog and are not part of the data source URI
+     */
+    virtual bool store( QVariantMap guiConfig = QVariantMap() ) = 0;
 
     /**
-     * Returns connection capabilities
+     * Deletes the connection from the settings.
+     * Returns TRUE on success.
      */
-    Capabilities capabilities() const;
+    virtual bool remove( ) = 0;
 
-    // Operations interface
+    /**
+     * Returns the connection name
+     */
+    QString connectionName() const;
 
-    virtual bool createTable( const QString &name, const QString schema, QString &errCause );
-    virtual bool dropTable( const QString &name, const QString schema, QString &errCause );
-    virtual bool renameTable( const QString &name, const QString schema, const QString &newName, QString &errCause );
-    virtual bool createSchema( const QString &name, QString &errCause );
-    virtual bool dropSchema( const QString &name, QString &errCause );
-    virtual bool renameSchema( const QString &name, const QString &newName, QString &errCause );
-    virtual QVariant executeSql( const QString &sql, QString &errCause );
-    virtual bool vacuum( const QString &name, QString &errCause );
-    virtual QStringList tables( const QString schema, QString &errCause );
-    virtual QStringList schemas( QString &errCause );
+    /**
+     * Returns the connection data source URI
+     */
+    QgsDataSourceUri uri() const;
 
-  protected:
+    /**
+     * Sets the connection data source URI to \a uri
+     */
+    void setUri( const QgsDataSourceUri &uri );
 
-    Capabilities mCapabilities = nullptr;
+  private:
 
+    QString mConnectionName;
+    QgsDataSourceUri mUri;
 
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractProviderConnection::Capabilities )
 
 #endif // QGSABSTRACTPROVIDERCONNECTION_H

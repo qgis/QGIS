@@ -46,6 +46,7 @@
 
 #include "qgspostgresprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgspostgresproviderconnection.h"
 
 
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
@@ -5032,15 +5033,41 @@ QgsTransaction *QgsPostgresProviderMetadata::createTransaction( const QString &c
   return new QgsPostgresTransaction( connString );
 }
 
-QMap<QString, QgsAbstractProviderConnection> QgsPostgresProviderMetadata::connections( QString &errCause )
+QMap<QString, QgsAbstractProviderConnection *> QgsPostgresProviderMetadata::connections( QString &errCause )
 {
-  QMap<QString, QgsAbstractProviderConnection> conns;
+  Q_UNUSED( errCause );
+  QMap<QString, QgsAbstractProviderConnection *> conns;
   const auto connNames { QgsPostgresConn::connectionList() };
   for ( const auto &cname : connNames )
   {
-    conns.insert( cname, QgsPostgresProviderConnection( QgsPostgresConn::connUri( cname ) ) );
+    conns.insert( cname, new QgsPostgresProviderConnection( cname ) );
   }
   return conns;
+}
+
+QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsPostgresProviderMetadata::dbConnections( QString &errCause )
+{
+  Q_UNUSED( errCause );
+  const auto connections( errCause );
+  QMap<QString, QgsAbstractDatabaseProviderConnection *> conns;
+  const auto connNames { QgsPostgresConn::connectionList() };
+  for ( const auto &cname : connNames )
+  {
+    conns.insert( cname, new QgsPostgresProviderConnection( cname ) );
+  }
+  return conns;
+}
+
+QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name, const QgsDataSourceUri &uri, QString &errCause )
+{
+  Q_UNUSED( errCause );
+  return new QgsPostgresProviderConnection( name, uri );
+}
+
+QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name, QString &errCause )
+{
+  Q_UNUSED( errCause );
+  return new QgsPostgresProviderConnection( name );
 }
 
 
