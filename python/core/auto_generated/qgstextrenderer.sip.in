@@ -1210,6 +1210,12 @@ Container for all settings relating to text rendering.
 %End
   public:
 
+    enum TextOrientation
+    {
+      HorizontalOrientation,
+      VerticalOrientation,
+    };
+
     QgsTextFormat();
 
     QgsTextFormat( const QgsTextFormat &other );
@@ -1469,6 +1475,24 @@ Sets the line height for text.
                multiplier of line height.
 
 .. seealso:: :py:func:`lineHeight`
+%End
+
+    TextOrientation orientation() const;
+%Docstring
+Returns the orientation of the text.
+
+.. seealso:: :py:func:`setOrientation`
+
+.. versionadded:: 3.10
+%End
+
+    void setOrientation( TextOrientation orientation );
+%Docstring
+Sets the ``orientation`` for the text.
+
+.. seealso:: :py:func:`orientation`
+
+.. versionadded:: 3.10
 %End
 
     QColor previewBackgroundColor() const;
@@ -1808,6 +1832,26 @@ Decodes a string representation of a background rotation type to a type.
 Decodes a string representation of a shadow placement type to a type.
 %End
 
+    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+%Docstring
+Encodes a text ``orientation``.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeTextOrientation`
+%End
+
+    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = 0 );
+%Docstring
+Attempts to decode a string representation of a text orientation.
+
+:param name: encoded text orientation name
+:param ok: if specified, will be set to ``True`` if the name was successfully decoded
+
+:return: decoded text orientation
+
+.. seealso:: :py:func:`encodeTextOrientation`
+%End
 };
 
 

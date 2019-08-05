@@ -1017,6 +1017,13 @@ class CORE_EXPORT QgsTextFormat
 {
   public:
 
+    //! Text orientation
+    enum TextOrientation
+    {
+      HorizontalOrientation, //!< Vertically oriented text
+      VerticalOrientation, //!< Horizontally oriented text
+    };
+
     QgsTextFormat();
 
     /**
@@ -1238,6 +1245,20 @@ class CORE_EXPORT QgsTextFormat
      * \see lineHeight()
      */
     void setLineHeight( double height );
+
+    /**
+     * Returns the orientation of the text.
+     * \see setOrientation()
+     * \since QGIS 3.10
+     */
+    TextOrientation orientation() const;
+
+    /**
+     * Sets the \a orientation for the text.
+     * \see orientation()
+     * \since QGIS 3.10
+     */
+    void setOrientation( TextOrientation orientation );
 
     /**
      * Returns the background color for text previews.
@@ -1564,7 +1585,8 @@ class CORE_EXPORT QgsTextRenderer
 
     static void drawBuffer( QgsRenderContext &context,
                             const Component &component,
-                            const QgsTextFormat &format );
+                            const QgsTextFormat &format,
+                            const QFontMetricsF *fontMetrics );
 
     static void drawBackground( QgsRenderContext &context,
                                 Component component,
@@ -1627,6 +1649,21 @@ class CORE_EXPORT QgsTextRendererUtils
      */
     static QgsTextShadowSettings::ShadowPlacement decodeShadowPlacementType( const QString &string );
 
+    /**
+     * Encodes a text \a orientation.
+     * \returns encoded string
+     * \see decodeTextOrientation()
+     */
+    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+
+    /**
+     * Attempts to decode a string representation of a text orientation.
+     * \param name encoded text orientation name
+     * \param ok if specified, will be set to TRUE if the name was successfully decoded
+     * \returns decoded text orientation
+     * \see encodeTextOrientation()
+     */
+    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = nullptr );
 };
 
 
