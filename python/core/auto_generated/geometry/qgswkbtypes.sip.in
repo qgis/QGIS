@@ -109,6 +109,8 @@ Returns the single type for a WKB type. For example, for MultiPolygon WKB types 
 
 .. seealso:: :py:func:`multiType`
 
+.. seealso:: :py:func:`curveType`
+
 .. seealso:: :py:func:`flatType`
 %End
 
@@ -120,7 +122,32 @@ Returns the multi type for a WKB type. For example, for Polygon WKB types the mu
 
 .. seealso:: :py:func:`singleType`
 
+.. seealso:: :py:func:`curveType`
+
 .. seealso:: :py:func:`flatType`
+%End
+
+
+    static Type curveType( Type type );
+%Docstring
+Returns the curve type for a WKB type. For example, for Polygon WKB types the curve type would be CurvePolygon.
+
+.. note::
+
+   Returns `CompoundCurve` for `CircularString` (and its Z/M variants)
+
+.. seealso:: :py:func:`isMultiType`
+
+.. seealso:: :py:func:`isCurvedType`
+
+.. seealso:: :py:func:`singleType`
+
+.. seealso:: :py:func:`flatType`
+
+.. seealso:: :py:func:`multiType`
+
+
+.. versionadded:: 3.10
 %End
 
     static Type flatType( Type type );
@@ -131,6 +158,8 @@ For example, for PolygonZM WKB types the single type would be Polygon.
 .. seealso:: :py:func:`singleType`
 
 .. seealso:: :py:func:`multiType`
+
+.. seealso:: :py:func:`curveType`
 %End
 
     static Type zmType( Type type, bool hasZ, bool hasM );

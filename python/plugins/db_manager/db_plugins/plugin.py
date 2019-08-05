@@ -985,7 +985,6 @@ class VectorTable(Table):
 
     def uri(self):
         uri = super().uri()
-        uri.setSrid(str(self.srid))
         for f in self.fields():
             if f.primaryKey:
                 uri.setKeyColumn(f.name)
