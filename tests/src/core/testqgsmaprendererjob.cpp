@@ -338,9 +338,10 @@ class TestHandler : public QgsRenderedFeatureHandlerInterface
 {
   public:
 
-    TestHandler( QList< QgsFeature > &features, QList< QgsGeometry > &geometries )
+    TestHandler( QList< QgsFeature > &features, QList< QgsGeometry > &geometries, bool allAttributes = false )
       : features( features )
       , geometries( geometries )
+      , mAllAttributes( allAttributes )
     {}
 
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &geom, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext & ) override
@@ -349,8 +350,18 @@ class TestHandler : public QgsRenderedFeatureHandlerInterface
       geometries.append( geom );
     }
 
+    QSet< QString > usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
+    {
+      if ( !mAllAttributes )
+        return QSet< QString >();
+      else
+        return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
+    }
+
     QList< QgsFeature > &features;
     QList< QgsGeometry > &geometries;
+
+    bool mAllAttributes = false;
 
 };
 
@@ -437,6 +448,34 @@ void TestQgsMapRendererJob::testRenderedFeatureHandlers()
   QCOMPARE( wkts.at( 2 ), QStringLiteral( "MultiPolygon (((26.5 151.7, 31.3 153.8, 32.2 155.7, 32.8 156.3, 38 156.6, 41.3 156.6, 43.8 156.6, 48.3 157.5, 50.8 158.7, 52.9 160.8, 55 165.1, 55 165.1, 52.6 180.6, 52.6 182.7, 52.3 186.4, 50.2 190.3, 47.7 192.8, 45.9 194, 45 194.3, 30.4 193.7, 25.8 192.8, 20.4 190.9, 15.8 190, 13.4 188.8, 12.8 188.5, 11.6 187.9, 9.7 186.1, 8.8 184.9, 7.9 183.6, 7 181.8, 6.7 180.3, 7 177.9, 7.6 176.3, 8.5 173.9, 8.5 172.4, 7.9 170.6, 6.7 170, 4 168.4, -0.3 165.7, -1.8 163, -1.8 159.6, -1.5 156.6, 0 152.3, 7.6 147.5, 18.9 148.4, 25.2 150.5, 26.5 151.7)))" ) );
   QCOMPARE( wkts.at( 3 ), QStringLiteral( "Polygon ((122.4 105.6, 165.2 105.6, 165.2 148.4, 122.4 148.4, 122.4 105.6))" ) );
   QCOMPARE( wkts.at( 4 ), QStringLiteral( "Polygon ((4.2 59.5, 73.5 59.5, 73.5 128.8, 4.2 128.8, 4.2 59.5))" ) );
+
+  // now, use a handler which requires all attributes to be fetched
+  QList< QgsFeature > features3;
+  QList< QgsGeometry > geometries3;
+  TestHandler handler3( features3, geometries3, true );
+  mapSettings.addRenderedFeatureHandler( &handler3 );
+
+  QgsMapRendererSequentialJob renderJob3( mapSettings );
+  renderJob3.start();
+  renderJob3.waitForFinished();
+
+  QCOMPARE( features3.count(), 5 );
+  QCOMPARE( geometries3.count(), 5 );
+  attributes.clear();
+  for ( const QgsFeature &f : qgis::as_const( features3 ) )
+  {
+    QStringList bits;
+    for ( const QVariant &v : f.attributes() )
+      bits << v.toString();
+    attributes << bits.join( ',' );
+  }
+  attributes.sort();
+  QCOMPARE( attributes.at( 0 ), QStringLiteral( "Biplane,240,1,3,2,5" ) );
+  QCOMPARE( attributes.at( 1 ), QStringLiteral( "Dam,13" ) );
+  QCOMPARE( attributes.at( 2 ), QStringLiteral( "Highway,1" ) );
+  QCOMPARE( attributes.at( 3 ), QStringLiteral( "Highway,1" ) );
+  QCOMPARE( attributes.at( 4 ), QStringLiteral( "Jet,95,3,1,1,2" ) );
+
 }
 
 

@@ -57,6 +57,11 @@ map units).
 The ``context`` argument is used to provide additional context relating to the rendering of a feature.
 %End
 
+    virtual QSet<QString> usedAttributes( QgsVectorLayer *layer, const QgsRenderContext &context ) const;
+%Docstring
+Returns a list of attributes required by this handler, for the specified ``layer``. Attributes not listed in here may
+not be requested from the provider at rendering time.
+%End
 };
 
 /************************************************************************
