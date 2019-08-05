@@ -1570,6 +1570,8 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
         // so that st_multi can be applied if necessary.
         QgsWkbTypes::Type wkbType0 = QgsWkbTypes::flatType( QgsPostgresConn::wkbTypeFromPostgis( type ) );
         QgsWkbTypes::Type multiType0 = QgsWkbTypes::multiType( wkbType0 );
+        QgsWkbTypes::Type curveType0 = QgsWkbTypes::curveType( wkbType0 );
+        QgsWkbTypes::Type multicurveType0 = QgsWkbTypes::curveType( multiType0 );
 
         int j;
         for ( j = 0; j < layerProperty.size(); j++ )
@@ -1579,9 +1581,22 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 
           QgsWkbTypes::Type wkbType1 = layerProperty.types.at( j );
           QgsWkbTypes::Type multiType1 = QgsWkbTypes::multiType( wkbType1 );
-          if ( multiType0 == multiType1 && wkbType0 != wkbType1 )
+          QgsWkbTypes::Type curveType1 = QgsWkbTypes::curveType( wkbType1 );
+          QgsWkbTypes::Type multicurveType1 = QgsWkbTypes::curveType( multiType1 );
+
+          if ( multicurveType0 == multicurveType1 && wkbType0 != wkbType1 )
+          {
+            layerProperty.types[j] = multicurveType0;
+            break;
+          }
+          else if ( multiType0 == multiType1 && wkbType0 != wkbType1 )
           {
             layerProperty.types[j] = multiType0;
+            break;
+          }
+          else if ( curveType0 == curveType1 && wkbType0 != wkbType1 )
+          {
+            layerProperty.types[j] = curveType0;
             break;
           }
         }

@@ -123,6 +123,18 @@ Returns the multi type for a WKB type. For example, for Polygon WKB types the mu
 .. seealso:: :py:func:`flatType`
 %End
 
+
+    static Type curveType( Type type );
+%Docstring
+Returns the curve type for a WKB type. For example, for Polygon WKB types the curve type would be CurvePolygon.
+
+.. seealso:: :py:func:`isMultiType`
+
+.. seealso:: :py:func:`singleType`
+
+.. seealso:: :py:func:`flatType`
+%End
+
     static Type flatType( Type type );
 %Docstring
 Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
