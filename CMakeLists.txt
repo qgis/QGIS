@@ -176,6 +176,14 @@ IF(WITH_CORE)
     MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
   ENDIF()
 
+  IF ( WITH_DESKTOP )
+    # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
+    # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
+    ADD_CUSTOM_TARGET(qgis_desktop
+    	DEPENDS qgis qgispython pycore pygui pyanalysis postgresprovider staged-plugins pyplugin-installer
+    )
+  ENDIF ()
+
   # try to configure and build MDAL support
   SET (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL support should be built")
   IF (NOT WITH_INTERNAL_MDAL)
