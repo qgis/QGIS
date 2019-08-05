@@ -571,6 +571,24 @@ Sets the text render ``format``, which dictates how text is rendered (e.g. as pa
 .. versionadded:: 3.4.3
 %End
 
+    QList<QgsRenderedFeatureHandlerInterface *> renderedFeatureHandlers() const;
+%Docstring
+Returns the list of rendered feature handlers to use while rendering map layers.
+
+.. seealso:: :py:func:`hasRenderedFeatureHandlers`
+
+.. versionadded:: 3.10
+%End
+
+    bool hasRenderedFeatureHandlers() const;
+%Docstring
+Returns ``True`` if the context has any rendered feature handlers.
+
+.. seealso:: :py:func:`renderedFeatureHandlers`
+
+.. versionadded:: 3.10
+%End
+
 };
 
 QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);

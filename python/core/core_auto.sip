@@ -112,6 +112,7 @@
 %Include auto_generated/qgsreadwritelocker.sip
 %Include auto_generated/qgsrenderchecker.sip
 %Include auto_generated/qgsrendercontext.sip
+%Include auto_generated/qgsrenderedfeaturehandlerinterface.sip
 %Include auto_generated/qgsrulebasedlabeling.sip
 %Include auto_generated/qgsruntimeprofiler.sip
 %Include auto_generated/qgsscalecalculator.sip

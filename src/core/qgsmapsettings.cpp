@@ -677,3 +677,13 @@ void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary )
 {
   mLabelBoundaryGeometry = boundary;
 }
+
+void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.append( handler );
+}
+
+QList<QgsRenderedFeatureHandlerInterface *> QgsMapSettings::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
+}

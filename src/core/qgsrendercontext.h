@@ -38,6 +38,7 @@ class QPainter;
 class QgsAbstractGeometry;
 class QgsLabelingEngine;
 class QgsMapSettings;
+class QgsRenderedFeatureHandlerInterface;
 
 
 /**
@@ -595,6 +596,20 @@ class CORE_EXPORT QgsRenderContext
       mTextRenderFormat = format;
     }
 
+    /**
+     * Returns the list of rendered feature handlers to use while rendering map layers.
+     * \see hasRenderedFeatureHandlers()
+     * \since QGIS 3.10
+     */
+    QList<QgsRenderedFeatureHandlerInterface *> renderedFeatureHandlers() const;
+
+    /**
+     * Returns TRUE if the context has any rendered feature handlers.
+     * \see renderedFeatureHandlers()
+     * \since QGIS 3.10
+     */
+    bool hasRenderedFeatureHandlers() const { return mHasRenderedFeatureHandlers; }
+
   private:
 
     Flags mFlags;
@@ -653,6 +668,8 @@ class CORE_EXPORT QgsRenderContext
     QgsPathResolver mPathResolver;
 
     TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
+    QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
+    bool mHasRenderedFeatureHandlers = false;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

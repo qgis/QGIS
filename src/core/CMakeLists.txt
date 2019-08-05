@@ -994,6 +994,7 @@ SET(QGIS_CORE_HDRS
   qgsreadwritelocker.h
   qgsrenderchecker.h
   qgsrendercontext.h
+  qgsrenderedfeaturehandlerinterface.h
   qgsrulebasedlabeling.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h

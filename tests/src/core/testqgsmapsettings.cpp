@@ -29,6 +29,15 @@
 #include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+
+class TestHandler : public QgsRenderedFeatureHandlerInterface
+{
+  public:
+
+    void handleRenderedFeature( const QgsFeature &, const QgsGeometry &, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext & ) override {}
+
+};
 
 class TestQgsMapSettings: public QObject
 {
@@ -50,6 +59,7 @@ class TestQgsMapSettings: public QObject
     void testSetLayers();
     void testLabelBoundary();
     void testExpressionContext();
+    void testRenderedFeatureHandlers();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -485,6 +495,22 @@ void TestQgsMapSettings::testExpressionContext()
   e = QgsExpression( QStringLiteral( "@map_crs_ellipsoid" ) );
   r = e.evaluate( &c );
   QCOMPARE( r.toString(), QStringLiteral( "WGS84" ) );
+}
+
+void TestQgsMapSettings::testRenderedFeatureHandlers()
+{
+  std::unique_ptr< TestHandler > testHandler = qgis::make_unique< TestHandler >();
+  std::unique_ptr< TestHandler > testHandler2 = qgis::make_unique< TestHandler >();
+
+  std::unique_ptr< QgsMapSettings> mapSettings = qgis::make_unique< QgsMapSettings >();
+  QVERIFY( mapSettings->renderedFeatureHandlers().isEmpty() );
+  mapSettings->addRenderedFeatureHandler( testHandler.get() );
+  mapSettings->addRenderedFeatureHandler( testHandler2.get() );
+  QCOMPARE( mapSettings->renderedFeatureHandlers(), QList< QgsRenderedFeatureHandlerInterface * >() << testHandler.get() << testHandler2.get() );
+
+  //ownership should NOT be transferred, i.e. it won't delete the registered handlers upon QgsMapSettings destruction
+  mapSettings.reset();
+  // should be no double-delete here
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
