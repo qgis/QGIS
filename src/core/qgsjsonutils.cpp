@@ -119,12 +119,12 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
     if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
     {
-      featureJson[ "bbox" ] = { {
-          box.xMinimum(),
-          box.yMinimum(),
-          box.xMaximum(),
-          box.yMaximum()
-        }
+      featureJson[ "bbox" ] =
+      {
+        qgsRound( box.xMinimum(), mPrecision ),
+        qgsRound( box.yMinimum(), mPrecision ),
+        qgsRound( box.xMaximum(), mPrecision ),
+        qgsRound( box.yMaximum(), mPrecision )
       };
     }
     featureJson[ "geometry" ] = geom.asJsonObject( mPrecision );
