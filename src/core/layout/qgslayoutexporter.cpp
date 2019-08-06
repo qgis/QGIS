@@ -301,6 +301,7 @@ class LayoutContextSettingsRestorer
       , mPreviousFlags( layout->renderContext().flags() )
       , mPreviousTextFormat( layout->renderContext().textRenderFormat() )
       , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
+      , mPreviousSimplifyMethod( layout->renderContext().simplifyMethod() )
     {
     }
 
@@ -310,6 +311,7 @@ class LayoutContextSettingsRestorer
       mLayout->renderContext().setFlags( mPreviousFlags );
       mLayout->renderContext().setTextRenderFormat( mPreviousTextFormat );
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
+      mLayout->renderContext().setSimplifyMethod( mPreviousSimplifyMethod );
     }
 
     LayoutContextSettingsRestorer( const LayoutContextSettingsRestorer &other ) = delete;
@@ -321,6 +323,8 @@ class LayoutContextSettingsRestorer
     QgsLayoutRenderContext::Flags mPreviousFlags = nullptr;
     QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
     int mPreviousExportLayer = 0;
+    QgsVectorSimplifyMethod mPreviousSimplifyMethod;
+
 };
 ///@endcond PRIVATE
 

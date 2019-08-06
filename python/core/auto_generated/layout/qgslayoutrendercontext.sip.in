@@ -223,6 +223,45 @@ Sets the text render ``format``, which dictates how text is rendered (e.g. as pa
 .. versionadded:: 3.4.3
 %End
 
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method );
+%Docstring
+Sets the simplification setting to use when rendering vector layers.
+
+If the simplify ``method`` is enabled, it apply to all vector layers rendered inside map items.
+
+This can be used to specify global simplification methods to apply during map exports,
+e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+during PDF exports (avoiding excessive PDF size due to huge numbers of vertices).
+
+The default is to use no simplification.
+
+.. note::
+
+   This simplification method is only used during non-preview renders.
+
+.. seealso:: :py:func:`simplifyMethod`
+
+
+.. versionadded:: 3.10
+%End
+
+    const QgsVectorSimplifyMethod &simplifyMethod() const;
+%Docstring
+Returns the simplification settings to use when rendering vector layers.
+
+If enabled, it will apply to all vector layers rendered for the map.
+
+The default is to use no simplification.
+
+.. note::
+
+   This simplification method is only used during non-preview renders.
+
+.. seealso:: :py:func:`setSimplifyMethod`
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutRenderContext::Flags flags );
