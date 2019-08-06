@@ -153,7 +153,7 @@ class TestQgsExpression: public QObject
       af1.setAttribute( QStringLiteral( "col4" ), QVariant( QVariant::String ) );
       QgsFeature af2( mAggregatesLayer->dataProvider()->fields(), 2 );
       af2.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 0 ) ) );
-      af2.setAttribute( QStringLiteral( "col1" ), 2 );
+      af2.setAttribute( QStringLiteral( "col1" ), 1 );
       af2.setAttribute( QStringLiteral( "col2" ), QVariant( QVariant::String ) );
       af2.setAttribute( QStringLiteral( "col3" ), 1 );
       af2.setAttribute( QStringLiteral( "col4" ), QVariant( QVariant::String ) );
@@ -183,7 +183,7 @@ class TestQgsExpression: public QObject
       af6.setAttribute( QStringLiteral( "col4" ), "test" );
       QgsFeature af7( mAggregatesLayer->dataProvider()->fields(), 7 );
       af7.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 6, 0 ) ) );
-      af7.setAttribute( QStringLiteral( "col1" ), 11 );
+      af7.setAttribute( QStringLiteral( "col1" ), 19 );
       af7.setAttribute( QStringLiteral( "col2" ), "test7" );
       af7.setAttribute( QStringLiteral( "col3" ), 1961 );
       af7.setAttribute( QStringLiteral( "col4" ), "Sputnik" );
@@ -230,15 +230,13 @@ class TestQgsExpression: public QObject
       mChildLayer2 = new QgsVectorLayer( QStringLiteral( "Point?field=name:string"
                                          "&field=year:integer"
                                          "&field=my_value:integer" ),
-                                         QStringLiteral( "aggregate_layer" ), QStringLiteral( "memory" ) );
+                                         QStringLiteral( "child_layer_2" ), QStringLiteral( "memory" ) );
       QVERIFY( mChildLayer2->isValid() );
       QgsFeature afc1( mChildLayer2->dataProvider()->fields(), 1 );
-      afc1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 0, 0 ) ) );
       afc1.setAttribute( QStringLiteral( "year" ), 1961 );
       afc1.setAttribute( QStringLiteral( "name" ), QStringLiteral( "Sputnik" ) );
       afc1.setAttribute( QStringLiteral( "my_value" ), 21070000 );
       QgsFeature afc2( mChildLayer2->dataProvider()->fields(), 2 );
-      afc2.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 0 ) ) );
       afc2.setAttribute( QStringLiteral( "year" ), 1961 );
       afc2.setAttribute( QStringLiteral( "name" ), QStringLiteral( "Sputnik" ) );
       afc2.setAttribute( QStringLiteral( "my_value" ), 1969 );
@@ -1870,15 +1868,15 @@ class TestQgsExpression: public QObject
       QTest::addColumn<QVariant>( "result" );
 
       QTest::newRow( "count" ) << "count(\"col1\")" << false << QVariant( 7.0 );
-      QTest::newRow( "count_distinct" ) << "count_distinct(\"col1\")" << false << QVariant( 6.0 );
+      QTest::newRow( "count_distinct" ) << "count_distinct(\"col3\")" << false << QVariant( 4.0 );
       QTest::newRow( "count_missing" ) << "count_missing(\"col2\")" << false << QVariant( 2 );
-      QTest::newRow( "sum" ) << "sum(\"col1\")" << false << QVariant( 35.0 );
-      QTest::newRow( "minimum" ) << "minimum(\"col1\")" << false << QVariant( 2.0 );
-      QTest::newRow( "maximum" ) << "maximum(\"col1\")" << false << QVariant( 11.0 );
-      QTest::newRow( "mean" ) << "mean(\"col1\")" << false << QVariant( 5.0 );
+      QTest::newRow( "sum" ) << "sum(\"col1\")" << false << QVariant( 42.0 );
+      QTest::newRow( "minimum" ) << "minimum(\"col1\")" << false << QVariant( 1.0 );
+      QTest::newRow( "maximum" ) << "maximum(\"col1\")" << false << QVariant( 19.0 );
+      QTest::newRow( "mean" ) << "mean(\"col1\")" << false << QVariant( 6.0 );
       QTest::newRow( "median" ) << "median(\"col1\")" << false << QVariant( 4.0 );
-      QTest::newRow( "stdev" ) << "round(stdev(\"col1\")*10000)" << false << QVariant( 33665 );
-      QTest::newRow( "range" ) << "range(\"col1\")" << false << QVariant( 9.0 );
+      QTest::newRow( "stdev" ) << "round(stdev(\"col1\")*10000)" << false << QVariant( 61644 );
+      QTest::newRow( "range" ) << "range(\"col1\")" << false << QVariant( 18.0 );
       QTest::newRow( "minority" ) << "minority(\"col3\")" << false << QVariant( 1 );
       QTest::newRow( "majority" ) << "majority(\"col3\")" << false << QVariant( 2 );
       QTest::newRow( "q1" ) << "q1(\"col1\")" << false << QVariant( 2.5 );
@@ -1887,11 +1885,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "min_length" ) << "min_length(\"col2\")" << false << QVariant( 0 );
       QTest::newRow( "max_length" ) << "max_length(\"col2\")" << false << QVariant( 7 );
       QTest::newRow( "concatenate" ) << "concatenate(\"col2\",concatenator:=',')" << false << QVariant( "test,,test333,test4,,test4,test7" );
-      QTest::newRow( "concatenate with order" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col1)" << false << QVariant( ",test4,,test333,test,,test4,test7" );
-      QTest::newRow( "concatenate with order" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col2)" << false << QVariant( "test,test333,test4,test4,test7,," );
+      QTest::newRow( "concatenate with order 1" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col1)" << false << QVariant( ",test4,test333,test,,test4,test7" );
+      QTest::newRow( "concatenate with order 2" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col2)" << false << QVariant( "test,test333,test4,test4,test7,," );
       QTest::newRow( "concatenate unique" ) << "concatenate_unique(\"col4\",concatenator:=',')" << false << QVariant( ",test,Sputnik" );
       QTest::newRow( "concatenate unique 2" ) << "concatenate_unique(\"col2\",concatenator:=',')" << false << QVariant( "test,,test333,test4,test7" );
-      QTest::newRow( "concatenate unique with order" ) << "concatenate_unique(\"col2\",concatenator:=',', order_by:=col2)" << false << QVariant( ",,test,test333,test4,test7," );
+      QTest::newRow( "concatenate unique with order" ) << "concatenate_unique(\"col2\",concatenator:=',', order_by:=col2)" << false << QVariant( "test,test333,test4,test7," );
 
       QTest::newRow( "array agg" ) << "array_agg(\"col2\")" << false << QVariant( QVariantList() << "test" << "" << "test333" << "test4" << "" << "test4" << "test7" );
       QTest::newRow( "array agg with order" ) << "array_agg(\"col2\",order_by:=col2)" << false << QVariant( QVariantList() << "test" << "test333" << "test4" << "test4" << "test7" << "" << "" );
@@ -1900,22 +1898,22 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geometry collect with null geometry first" ) << "geom_to_wkt(collect($geometry, filter:=\"col3\"=3))" << false << QVariant( QStringLiteral( "MultiPoint ((5 0))" ) );
 
       QTest::newRow( "bad expression" ) << "sum(\"xcvxcvcol1\")" << true << QVariant();
-      QTest::newRow( "aggregate named" ) << "sum(expression:=\"col1\")" << false << QVariant( 35.0 );
+      QTest::newRow( "aggregate named" ) << "sum(expression:=\"col1\")" << false << QVariant( 42.0 );
       QTest::newRow( "string aggregate on int" ) << "max_length(\"col1\")" << true << QVariant();
 
-      QTest::newRow( "sub expression" ) << "sum(\"col1\" * 2)" << false << QVariant( 70 );
+      QTest::newRow( "sub expression" ) << "sum(\"col1\" * 2)" << false << QVariant( 84 );
       QTest::newRow( "bad sub expression" ) << "sum(\"xcvxcv\" * 2)" << true << QVariant();
 
-      QTest::newRow( "filter" ) << "sum(\"col1\", NULL, \"col1\" >= 5)" << false << QVariant( 24 );
-      QTest::newRow( "filter named" ) << "sum(expression:=\"col1\", filter:=\"col1\" >= 5)" << false << QVariant( 24 );
+      QTest::newRow( "filter" ) << "sum(\"col1\", NULL, \"col1\" >= 5)" << false << QVariant( 32 );
+      QTest::newRow( "filter named" ) << "sum(expression:=\"col1\", filter:=\"col1\" >= 5)" << false << QVariant( 32 );
       QTest::newRow( "filter no matching" ) << "sum(expression:=\"col1\", filter:=\"col1\" <= -5)" << false << QVariant( 0 );
       QTest::newRow( "filter no matching max" ) << "maximum(\"col1\", filter:=\"col1\" <= -5)" << false << QVariant();
 
       QTest::newRow( "group by" ) << "sum(\"col1\", \"col3\")" << false << QVariant( 9 );
       QTest::newRow( "group by and filter" ) << "sum(\"col1\", \"col3\", \"col1\">=3)" << false << QVariant( 7 );
       QTest::newRow( "group by and filter named" ) << "sum(expression:=\"col1\", group_by:=\"col3\", filter:=\"col1\">=3)" << false << QVariant( 7 );
-      QTest::newRow( "group by expression" ) << "sum(\"col1\", \"col1\" % 2)" << false << QVariant( 16 );
-      QTest::newRow( "group by with null value" ) << "sum(\"col1\", \"col4\")" << false << QVariant( 9 );
+      QTest::newRow( "group by expression" ) << "sum(\"col1\", \"col1\" % 2)" << false << QVariant( 14 );
+      QTest::newRow( "group by with null value" ) << "sum(\"col1\", \"col4\")" << false << QVariant( 8 );
     }
 
     void selection()
