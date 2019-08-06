@@ -98,6 +98,13 @@ void TestQgsMapSettings::testGettersSetters()
   QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
   ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
   QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+
+  // must default to no simplification
+  QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QgsVectorSimplifyMethod simplify;
+  simplify.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  ms.setSimplifyMethod( simplify );
+  QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
 }
 
 void TestQgsMapSettings::testLabelingEngineSettings()

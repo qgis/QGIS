@@ -455,8 +455,29 @@ class CORE_EXPORT QgsRenderContext
 
     void setUseRenderingOptimization( bool enabled );
 
-    //! Added in QGIS v2.4
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * The default is to use no simplification.
+     *
+     * \see setVectorSimplifyMethod()
+     * \since QGIS 2.4
+     */
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
+
+    /**
+     * Sets the simplification setting to use when rendering vector layers.
+     *
+     * This can be used to specify simplification methods to apply during map exports and renders,
+     * e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+     * during PDF exports or to speed up layer rendering
+     *
+     * The default is to use no simplification.
+     *
+     * \see vectorSimplifyMethod()
+     *
+     * \since QGIS 2.4
+     */
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
 
     /**

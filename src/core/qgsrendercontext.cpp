@@ -184,6 +184,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setTransformContext( mapSettings.transformContext() );
   ctx.setPathResolver( mapSettings.pathResolver() );
   ctx.setTextRenderFormat( mapSettings.textRenderFormat() );
+  ctx.setVectorSimplifyMethod( mapSettings.simplifyMethod() );
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
