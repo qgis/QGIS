@@ -1510,7 +1510,7 @@ QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, con
   hl->addWidget( mLineEdit, 1 );
 
   mToolButton = new QToolButton();
-  mToolButton->setText( tr( "…" ) );
+  mToolButton->setText( QStringLiteral( "…" ) );
   hl->addWidget( mToolButton );
 
   setLayout( hl );
