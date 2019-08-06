@@ -92,7 +92,7 @@ QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 }
 
 
-QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPoint> &geom )
+QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPoint> &vertices )
 {
   if ( !mCanvas )
   {
@@ -107,15 +107,15 @@ QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QV
     return QgsMapToolEdit::InvalidLayer;
   }
 
-  QVector<QgsPoint>::const_iterator list_it = geom.constBegin();
-  for ( ; list_it != geom.constEnd(); ++list_it )
+  QVector<QgsPoint>::const_iterator list_it = vertices.constBegin();
+  for ( ; list_it != vertices.constEnd(); ++list_it )
   {
     vlayer->addTopologicalPoints( *list_it );
   }
   return QgsMapToolEdit::Success;
 }
 
-QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &geom )
+QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &vertices )
 {
   if ( !mCanvas )
   {
@@ -130,8 +130,8 @@ QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QV
     return QgsMapToolEdit::InvalidLayer;
   }
 
-  QVector<QgsPointXY>::const_iterator list_it = geom.constBegin();
-  for ( ; list_it != geom.constEnd(); ++list_it )
+  QVector<QgsPointXY>::const_iterator list_it = vertices.constBegin();
+  for ( ; list_it != vertices.constEnd(); ++list_it )
   {
     vlayer->addTopologicalPoints( *list_it );
   }
