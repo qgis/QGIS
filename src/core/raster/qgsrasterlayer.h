@@ -510,6 +510,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
+
+    QDomDocument mOriginalStyleDocument;
+    QDomElement mOriginalStyleElement;
 };
 
 // clazy:excludeall=qstring-allocations
