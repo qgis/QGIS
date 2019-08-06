@@ -21,7 +21,9 @@ QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )
   : QObject( layout )
   , mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
   , mLayout( layout )
-{}
+{
+  mSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+}
 
 void QgsLayoutRenderContext::setFlags( const QgsLayoutRenderContext::Flags flags )
 {
