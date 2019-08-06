@@ -18,6 +18,8 @@
 #ifndef QGSMAPSERVICEEXCEPTION
 #define QGSMAPSERVICEEXCEPTION
 
+#define SIP_NO_FILE
+
 #include <QString>
 
 #include "qgsserverexception.h"
@@ -36,7 +38,6 @@
  *  * "OperationNotSupported"
  * \deprecated Use QsgServerException
  */
-
 class SERVER_EXPORT QgsMapServiceException : public QgsOgcServiceException
 {
   public:

@@ -225,6 +225,11 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
 QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int indent ) const
 {
+  return QString::fromStdString( exportFeaturesToJsonObject( features ).dump( indent ) );
+}
+
+json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features ) const
+{
   json data
   {
     { "type", "FeatureCollection" },
@@ -235,7 +240,7 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int ind
   {
     data["features"].push_back( exportFeatureToJsonObject( feature ) );
   }
-  return QString::fromStdString( data.dump( indent ) );
+  return data;
 }
 
 //

@@ -26,6 +26,11 @@ SET(QGIS_SERVER_SRCS
   qgsfilterrestorer.cpp
   qgsrequesthandler.cpp
   qgsserver.cpp
+  qgsserverapi.cpp
+  qgsserverogcapi.cpp
+  qgsserverogcapihandler.cpp
+  qgsserverapiutils.cpp
+  qgsserverapicontext.cpp
   qgsserverparameters.cpp
   qgsserverexception.cpp
   qgsserverinterface.cpp
@@ -42,11 +47,17 @@ SET(QGIS_SERVER_SRCS
   qgsfeaturefilterprovidergroup.cpp
   qgsfeaturefilter.cpp
   qgsstorebadlayerinfo.cpp
+  qgsserverquerystringparameter.cpp
 )
 
 SET (QGIS_SERVER_HDRS
   qgsservicemodule.h
   qgsmapserviceexception.h
+  qgsserverapi.h
+  qgsserverogcapi.h
+  qgsserverogcapihandler.h
+  qgsserverapicontext.h
+  qgsserverquerystringparameter.h
 )
 
 
@@ -54,8 +65,10 @@ SET (QGIS_SERVER_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
   qgsserverlogger.h
+  qgsserverogcapi.h
   qgsserversettings.h
   qgsserverparameters.h
+  qgsserverquerystringparameter.h
 )
 
 
@@ -99,6 +112,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/dxf

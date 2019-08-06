@@ -2715,6 +2715,25 @@ QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) con
   return mLayerStore->mapLayersByName( layerName );
 }
 
+QList<QgsMapLayer *> QgsProject::mapLayersByShortName( const QString &shortName ) const
+{
+  QList<QgsMapLayer *> layers;
+  const auto constMapLayers { mLayerStore->mapLayers() };
+  for ( const auto &l : constMapLayers )
+  {
+    if ( ! l->shortName().isEmpty() )
+    {
+      if ( l->shortName() == shortName )
+        layers << l;
+    }
+    else if ( l->name() == shortName )
+    {
+      layers << l;
+    }
+  }
+  return layers;
+}
+
 bool QgsProject::unzip( const QString &filename, QgsProject::ReadFlags flags )
 {
   clearError();

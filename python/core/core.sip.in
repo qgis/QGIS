@@ -103,6 +103,8 @@ done:
 %Include conversions.sip
 %Include qgsexception.sip
 %Include typedefs.sip
+%Include std.sip
+
 
 %Include core_auto.sip
 

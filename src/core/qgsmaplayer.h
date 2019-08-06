@@ -261,7 +261,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  used by QGIS Server to identify the layer.
      * \see setShortName()
      */
-    QString shortName() const { return mShortName; }
+    QString shortName() const;
 
     /**
      * Sets the title of the layer

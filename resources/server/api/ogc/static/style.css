@@ -1,0 +1,11 @@
+a { color: green; }
+
+#mapid.small {
+    width: 100%;
+    height: 400px;
+}
+
+
+.card-header span.small {
+   font-size: 70%;
+}
