@@ -78,6 +78,15 @@ QgsFeature QgsLabelFeature::feature() const
   return mFeature;
 }
 
+QSizeF QgsLabelFeature::size( double angle ) const
+{
+  if ( mRotatedSize.isEmpty() )
+    return mSize;
+
+  // Between 45 to 135 and 235 to 315 degrees, return the rotated size
+  return ( angle >= 0.785398 && angle <= 2.35619 ) || ( angle >= 3.92699 && angle <= 5.49779 ) ? mRotatedSize : mSize;
+}
+
 void QgsLabelFeature::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;

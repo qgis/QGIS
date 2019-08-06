@@ -1214,6 +1214,7 @@ Container for all settings relating to text rendering.
     {
       HorizontalOrientation,
       VerticalOrientation,
+      RotationBasedOrientation,
     };
 
     QgsTextFormat();

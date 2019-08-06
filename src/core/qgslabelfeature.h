@@ -114,7 +114,7 @@ class CORE_EXPORT QgsLabelFeature
     const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared.get(); }
 
     //! Size of the label (in map units)
-    QSizeF size() const { return mSize; }
+    QSizeF size( double angle = 0.0 ) const;
 
     /**
      * Sets the visual margin for the label feature. The visual margin represents a margin
@@ -459,6 +459,13 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setLabelAllParts( bool labelAllParts ) { mLabelAllParts = labelAllParts; }
 
+    /**
+     * Sets an alternate label \a size to be used when a label rotation angle is between 45 to 135
+     * and 235 to 313 degrees and the text rotation mode is set to rotation-based.
+     * \since QGIS 3.10
+     */
+    void setRotatedSize( QSizeF size ) { mRotatedSize = size; }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -473,6 +480,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsGeometry mPermissibleZone;
     //! Width and height of the label
     QSizeF mSize;
+    //! Width and height of the label when rotated between 45 to 135 and 235 to 315 degrees;
+    QSizeF mRotatedSize;
     //! Visual margin of label contents
     QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable

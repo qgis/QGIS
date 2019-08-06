@@ -236,8 +236,8 @@ int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosi
   int nbp = 1;
 
   // get from feature
-  double labelW = getLabelWidth();
-  double labelH = getLabelHeight();
+  double labelW = getLabelWidth( angle );
+  double labelH = getLabelHeight( angle );
 
   double cost = 0.0001;
   int id = 0;
@@ -336,8 +336,8 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
 int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle )
 {
   QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
-  double labelWidth = getLabelWidth();
-  double labelHeight = getLabelHeight();
+  double labelWidth = getLabelWidth( angle );
+  double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
   const QgsMargins &visualMargin = mLF->visualMargin();
 
@@ -462,8 +462,8 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
 
 int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPosition * > &lPos, double angle )
 {
-  double labelWidth = getLabelWidth();
-  double labelHeight = getLabelHeight();
+  double labelWidth = getLabelWidth( angle );
+  double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
 
   int numberCandidates = mLF->layer()->pal->point_p;
@@ -806,6 +806,8 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
       else
         angle = std::atan2( candidateEndY - candidateStartY, candidateEndX - candidateStartX );
 
+      labelWidth = getLabelWidth( angle );
+      labelHeight = getLabelHeight( angle );
       beta = angle + M_PI_2;
 
       if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Line )
@@ -958,6 +960,8 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
     else
       angle = std::atan2( candidateEndY - candidateStartY, candidateEndX - candidateStartX );
 
+    labelWidth = getLabelWidth( angle );
+    labelHeight = getLabelHeight( angle );
     beta = angle + M_PI_2;
 
     if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Line )
@@ -1611,7 +1615,7 @@ QList<LabelPosition *> FeaturePart::createCandidates( const GEOSPreparedGeometry
 
   if ( mLF->hasFixedPosition() )
   {
-    lPos << new LabelPosition( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth(), getLabelHeight(), angle, 0.0, this );
+    lPos << new LabelPosition( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angle ), getLabelHeight( angle ), angle, 0.0, this );
   }
   else
   {

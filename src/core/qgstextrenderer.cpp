@@ -2572,18 +2572,36 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRender
 {
   QPainter *p = context.painter();
 
+  QgsTextFormat::TextOrientation orientation = format.orientation();
+  if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
+  {
+    if ( component.rotation >= -315 && component.rotation < -90 )
+    {
+      orientation = QgsTextFormat::VerticalOrientation;
+    }
+    else if ( component.rotation >= -90 && component.rotation < -45 )
+    {
+      orientation = QgsTextFormat::VerticalOrientation;
+    }
+    else
+    {
+      orientation = QgsTextFormat::HorizontalOrientation;
+    }
+  }
+
   QgsTextBufferSettings buffer = format.buffer();
 
   double penSize = context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
-  switch ( format.orientation() )
+  switch ( orientation )
   {
     case QgsTextFormat::HorizontalOrientation:
       path.addText( 0, 0, format.scaledFont( context ), component.text );
       break;
     case QgsTextFormat::VerticalOrientation:
+    case QgsTextFormat::RotationBasedOrientation:
       double letterSpacing = format.scaledFont( context ).letterSpacing();
       double labelWidth = fontMetrics->maxWidth();
       const QStringList parts = QgsPalLabeling::splitToGraphemes( component.text );
@@ -2592,7 +2610,7 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRender
       {
         double partXOffset = ( labelWidth - ( fontMetrics->width( part ) - letterSpacing ) ) / 2;
         path.addText( partXOffset, partYOffset, format.scaledFont( context ), part );
-        partYOffset += fontMetrics->descent() + fontMetrics->ascent() + letterSpacing;
+        partYOffset += fontMetrics->ascent() + letterSpacing;
       }
   }
 
@@ -2682,10 +2700,19 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
       width = maxLineWidth;
       break;
     }
+
     case QgsTextFormat::VerticalOrientation:
+    {
       double labelWidth = fontMetrics->maxWidth();
       width = labelWidth + ( textLines.size() - 1 ) * labelWidth * format.lineHeight();
       break;
+    }
+
+    case QgsTextFormat::RotationBasedOrientation:
+    {
+      // label mode only
+      break;
+    }
   }
 
   return width;
@@ -2701,10 +2728,11 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
     fontMetrics = newFm.get();
   }
 
-  double labelHeight = fontMetrics->ascent() + fontMetrics->descent(); // ignore +1 for baseline
   switch ( format.orientation() )
   {
     case QgsTextFormat::HorizontalOrientation:
+    {
+      double labelHeight = fontMetrics->ascent() + fontMetrics->descent(); // ignore +1 for baseline
       switch ( mode )
       {
         case Label:
@@ -2719,7 +2747,11 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
           return labelHeight + ( textLines.size() - 1 ) * fontMetrics->lineSpacing() * format.lineHeight();
       }
       break;
+    }
+
     case QgsTextFormat::VerticalOrientation:
+    {
+      double labelHeight = fontMetrics->ascent();
       double letterSpacing = format.scaledFont( context ).letterSpacing();
       int maxLineLength = 0;
       for ( const auto &line : textLines )
@@ -2729,6 +2761,13 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
       }
       return labelHeight * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
       break;
+    }
+
+    case QgsTextFormat::RotationBasedOrientation:
+    {
+      // label mode only
+      break;
+    }
   }
 
   return 0;
@@ -3281,7 +3320,28 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
     return;
   }
 
-  switch ( format.orientation() )
+  QgsTextFormat::TextOrientation orientation = format.orientation();
+  double rotation = -component.rotation * 180 / M_PI;
+  if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
+  {
+    // Between 45 to 135 and 235 to 315 degrees, rely on vertical orientation
+    if ( rotation >= -315 && rotation < -90 )
+    {
+      rotation -= 90;
+      orientation = QgsTextFormat::VerticalOrientation;
+    }
+    else if ( rotation >= -90 && rotation < -45 )
+    {
+      rotation += 90;
+      orientation = QgsTextFormat::VerticalOrientation;
+    }
+    else
+    {
+      orientation = QgsTextFormat::HorizontalOrientation;
+    }
+  }
+
+  switch ( orientation )
   {
     case QgsTextFormat::HorizontalOrientation:
     {
@@ -3324,8 +3384,8 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
           context.painter()->setRenderHint( QPainter::Antialiasing );
         }
         context.painter()->translate( component.origin );
-        if ( !qgsDoubleNear( component.rotation, 0.0 ) )
-          context.painter()->rotate( -component.rotation * 180 / M_PI );
+        if ( !qgsDoubleNear( rotation, 0.0 ) )
+          context.painter()->rotate( rotation );
 
         // figure x offset for horizontal alignment of multiple lines
         double xMultiLineOffset = 0.0;
@@ -3459,6 +3519,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
     }
 
     case QgsTextFormat::VerticalOrientation:
+    case QgsTextFormat::RotationBasedOrientation:
     {
       double letterSpacing = format.scaledFont( context ).letterSpacing();
 
@@ -3482,7 +3543,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
       {
         maxLineLength = std::max( maxLineLength, line.length() );
       }
-      double actualLabelHeight = fontMetrics->ascent() + fontMetrics->descent() + ( fontMetrics->ascent() + fontMetrics->descent() + letterSpacing ) * ( maxLineLength - 1 );
+      double actualLabelHeight = fontMetrics->ascent() + ( fontMetrics->ascent() + letterSpacing ) * ( maxLineLength - 1 );
       double ascentOffset = fontMetrics->ascent();
 
       int i = 0;
@@ -3498,8 +3559,8 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
           context.painter()->setRenderHint( QPainter::Antialiasing );
         }
         context.painter()->translate( component.origin );
-        if ( !qgsDoubleNear( component.rotation, 0.0 ) )
-          context.painter()->rotate( -component.rotation * 180 / M_PI );
+        if ( !qgsDoubleNear( rotation, 0.0 ) )
+          context.painter()->rotate( rotation );
 
         // figure x offset of multiple lines
         double xOffset = actualLabelWidest - labelWidth - ( i * labelWidth * format.lineHeight() );
@@ -3526,6 +3587,24 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
         switch ( mode )
         {
           case Label:
+            if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
+            {
+              if ( rotation >= -405 && rotation < -180 )
+              {
+                yOffset = ascentOffset;
+              }
+              else if ( rotation >= 0 && rotation < 45 )
+              {
+                xOffset -= actualLabelWidest;
+                yOffset = -actualLabelHeight + ascentOffset + fontMetrics->descent();
+              }
+            }
+            else
+            {
+              yOffset = -actualLabelHeight + ascentOffset;
+            }
+            break;
+
           case Point:
             yOffset = -actualLabelHeight + ascentOffset;
             break;
@@ -3537,7 +3616,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
 
         context.painter()->translate( QPointF( xOffset, yOffset ) );
 
-        double labelHeight = fontMetrics->ascent() + fontMetrics->descent() + ( fontMetrics->ascent() + fontMetrics->descent() + letterSpacing ) * ( line.length() - 1 );
+        double labelHeight = fontMetrics->ascent() + ( fontMetrics->ascent() + letterSpacing ) * ( line.length() - 1 );
 
         Component subComponent;
         subComponent.text = line;
@@ -3561,7 +3640,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
           {
             double partXOffset = ( labelWidth - ( fontMetrics->width( part ) - letterSpacing ) ) / 2;
             path.addText( partXOffset, partYOffset, format.scaledFont( context ), part );
-            partYOffset += fontMetrics->descent() + fontMetrics->ascent() + letterSpacing;
+            partYOffset += fontMetrics->ascent() + letterSpacing;
           }
 
           // store text's drawing in QPicture for drop shadow call
@@ -3719,6 +3798,8 @@ QString QgsTextRendererUtils::encodeTextOrientation( QgsTextFormat::TextOrientat
       return QStringLiteral( "horizontal" );
     case QgsTextFormat::VerticalOrientation:
       return QStringLiteral( "vertical" );
+    case QgsTextFormat::RotationBasedOrientation:
+      return QStringLiteral( "rotation-based" );
   }
   return QString();
 }
@@ -3734,6 +3815,8 @@ QgsTextFormat::TextOrientation QgsTextRendererUtils::decodeTextOrientation( cons
     return QgsTextFormat::HorizontalOrientation;
   else if ( cleaned == QLatin1String( "vertical" ) )
     return QgsTextFormat::VerticalOrientation;
+  else if ( cleaned == QLatin1String( "rotation-based" ) )
+    return QgsTextFormat::RotationBasedOrientation;
 
   if ( ok )
     *ok = false;

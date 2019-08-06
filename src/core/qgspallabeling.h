@@ -916,8 +916,10 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
+     * If the text orientation is set to rotation-based, the spaced taken to render
+     * vertically oriented text will be written to \a rotatedLabelX and \a rotatedLabelY .
      */
-    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
+    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr );
 
     /**
      * Register a feature for labeling.
