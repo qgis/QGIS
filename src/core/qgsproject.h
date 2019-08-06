@@ -763,6 +763,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \returns list of matching layers
      * \see mapLayer()
      * \see mapLayers()
+     * \since QGIS 3.10
      */
     QList<QgsMapLayer *> mapLayersByShortName( const QString &shortName ) const;
 
