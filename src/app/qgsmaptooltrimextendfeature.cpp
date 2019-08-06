@@ -255,8 +255,11 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
             match.layer()->beginEditCommand( tr( "Trim/Extend feature" ) );
             match.layer()->changeGeometry( match.featureId(), mGeom );
-            match.layer()->addTopologicalPoints( mIntersection );
-            mLimitLayer->addTopologicalPoints( mIntersection );
+            if ( QgsProject::instance()->topologicalEditing() )
+            {
+              match.layer()->addTopologicalPoints( mIntersection );
+              mLimitLayer->addTopologicalPoints( mIntersection );
+            }
             match.layer()->endEditCommand();
             match.layer()->triggerRepaint();
 
