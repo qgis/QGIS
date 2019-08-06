@@ -577,16 +577,17 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
   QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( elem, QgsReadWriteContext() );
   if ( s )
   {
-    QgsDebugMsg( "Non empty symbol" );
-    QgsDebugMsg( s->color().name() );
-    billboardMaterial->setTexture2DFromSymbol( static_cast<QgsMarkerSymbol *>( s ) );
+    QgsMarkerSymbol *ms = static_cast<QgsMarkerSymbol *>( s );
+    QgsDebugMsg( QStringLiteral( "Use symbol from symbol.shapeProperties. The color is %1" ).arg( ms->color().name() ) );
+    billboardMaterial->setTexture2DFromSymbol( ms );
+//    billboardMaterial->setTexture2DFromImagePath(QStringLiteral( "qrc:/shaders/success-kid.png" ));
   }
   else
   {
-    QgsDebugMsg( "Symbol can not be loaded or empty or null pointer" );
+    QgsDebugMsg( "Use symbol from default" );
     billboardMaterial->useDefaultSymbol();
+//    billboardMaterial->setTexture2DFromImagePath(QStringLiteral( "qrc:/shaders/success-kid.png" ));
   }
-
 
   // Billboard Transform
   Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();

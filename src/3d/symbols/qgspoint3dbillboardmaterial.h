@@ -47,10 +47,15 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol );
 
+    QString name() {return mName;}
+
+    void debug();
+
   private:
     Qt3DRender::QParameter *mSize = nullptr;
     Qt3DRender::QParameter *mViewportSize = nullptr;
     Qt3DRender::QParameter *mTexture2D = nullptr;
+    QString mName = QStringLiteral( "Default" );
 };
 
 

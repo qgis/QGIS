@@ -101,6 +101,11 @@ QSizeF QgsPoint3DBillboardMaterial::windowSize() const
 
 void QgsPoint3DBillboardMaterial::setTexture2D( Qt3DRender::QTexture2D *texture2D )
 {
+//  removeParameter(mTexture2D);
+
+//  mTexture2D = new Qt3DRender::QParameter( "tex0", texture2D, this );
+
+//  addParameter( mTexture2D );
   mTexture2D->setValue( QVariant::fromValue( texture2D ) );
 }
 
@@ -131,7 +136,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image )
 {
   // Create texture image
   QgsRectangle dummyExtent = QgsRectangle( 0 );
-  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, QStringLiteral( "Billboard image" ) );
+  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, mName );
 
   // Create texture 2D from the texture image
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
@@ -153,6 +158,7 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol()
   defaultSymbol->setSize( 20 );
 
   setTexture2DFromSymbol( defaultSymbol );
+  mName = QStringLiteral( "default symbol" );
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol )
@@ -161,6 +167,24 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   markerSymbol->setSize( 20 );
   QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( markerSymbol->size() ) + 5, int( markerSymbol->size() ) + 5 ), 0 );
   QImage symbolImage = symbolPixmap.toImage();
-  symbolImage.save( "/home/ismailsunni/dev/cpp/test.png" );
+//  symbolImage.save( "/home/ismailsunni/dev/cpp/test.png" );
   setTexture2DFromImage( symbolImage );
+  mName = markerSymbol->color().name();
+}
+
+void QgsPoint3DBillboardMaterial::debug()
+{
+  QVector<Qt3DRender::QAbstractTextureImage *> textureImages = texture2D()->textureImages();
+  QgsDebugMsg( "Name or color: " + name() );
+//    QVectorIterator<Qt3DRender::QAbstractTextureImage *> i(textureImages);
+//    int p = 0;
+//    while (i.hasNext())
+//    {
+//        p++;
+//        QgsTerrainTextureImage* tti = dynamic_cast<QgsTerrainTextureImage *>(i.next());
+////        QgsDebugMsg("Terrain Texture Image " + QString::number(p) + " : " + tti->imageDebugText());
+//        QgsDebugMsg(i.next()->metaObject()->className() );
+//        i.next();
+//    }
+//    QgsDebugMsg("Number of texture: " + QString::number(p));
 }

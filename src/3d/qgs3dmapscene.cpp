@@ -630,17 +630,19 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     lm->setViewportSize( cameraController()->viewport().size() );
   }
   // for to get the billboard also
+  int i = 0;
   for ( QgsPoint3DBillboardMaterial *bm : newEntity->findChildren<QgsPoint3DBillboardMaterial *>() )
   {
+    i = i + 1;
+    bm->debug();
     connect( mCameraController, &QgsCameraController::viewportChanged, bm, [bm, this]
     {
-//      bm->setViewportSize( mCameraController->viewport().size() );
       bm->setViewportSize( mCameraController->viewport().size() );
     } );
 
-//    lm->setViewportSize( cameraController()->viewport().size() );
     bm->setViewportSize( mCameraController->viewport().size() );
   }
+  QgsDebugMsg( QStringLiteral( "Number of Billboard material %1" ).arg( i ) );
 }
 
 void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
