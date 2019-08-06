@@ -286,14 +286,41 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     LayerType rasterType() { return mRasterType; }
 
-    //! Sets raster renderer. Takes ownership of the renderer object
+    /**
+     * Sets the raster's \a renderer. Takes ownership of the renderer object.
+     * \see renderer()
+     */
     void setRenderer( QgsRasterRenderer *renderer SIP_TRANSFER );
+
+    /**
+     * Returns the raster's renderer.
+     *
+     * \see setRenderer()
+     */
     QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
-    //! Sets raster resample filter. Takes ownership of the resample filter object
+    /**
+     * Returns the raster's resample filter.
+     *
+     * \see brightnessFilter()
+     * \see hueSaturationFilter()
+     */
     QgsRasterResampleFilter *resampleFilter() const { return mPipe.resampleFilter(); }
 
+    /**
+     * Returns the raster's brightness/contrast filter.
+     *
+     * \see resampleFilter()
+     * \see hueSaturationFilter()
+     */
     QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
+
+    /**
+     * Returns the raster's hue/saturation filter.
+     *
+     * \see resampleFilter()
+     * \see brightnessFilter()
+     */
     QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
     /**
@@ -323,10 +350,18 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     QString bandName( int bandNoInt ) const;
 
-    // Returns nullptr if not using the data provider model (i.e. directly using GDAL)
+    /**
+     * Returns the source data provider.
+     *
+     * This may be NULLPTR if not the provider is not available.
+     */
     QgsRasterDataProvider *dataProvider() override;
 
-    // Returns nullptr if not using the data provider model (i.e. directly using GDAL)
+    /**
+     * Returns the source data provider.
+     *
+     * This may be NULLPTR if not the provider is not available.
+     */
     const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 
     void reload() override;
