@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdiscoverrelationsdlg.h"
+#include "qgsdiscoverrelationsdialog.h"
 #include "qgsrelationadddlg.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
@@ -140,7 +140,7 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
 
 void QgsRelationManagerDialog::mBtnDiscoverRelations_clicked()
 {
-  QgsDiscoverRelationsDlg discoverDlg( relations(), mLayers, this );
+  QgsDiscoverRelationsDialog discoverDlg( relations(), mLayers, this );
   if ( discoverDlg.exec() )
   {
     const auto constRelations = discoverDlg.relations();

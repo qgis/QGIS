@@ -12,20 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdiscoverrelationsdlg.h"
+#include "qgsdiscoverrelationsdialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsrelationmanager.h"
 
 #include <QPushButton>
 
-QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent )
+QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent )
   : QDialog( parent )
   , mLayers( layers )
 {
   setupUi( this );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDlg::onSelectionChanged );
+  connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDialog::onSelectionChanged );
 
   mFoundRelations = QgsRelationManager::discoverRelations( existingRelations, layers );
   for ( const QgsRelation &relation : qgis::as_const( mFoundRelations ) )
@@ -34,7 +34,7 @@ QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation> &exis
   mRelationsTable->resizeColumnsToContents();
 }
 
-void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
+void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
 {
   const int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
@@ -55,7 +55,7 @@ void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
   mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );
 }
 
-QList<QgsRelation> QgsDiscoverRelationsDlg::relations() const
+QList<QgsRelation> QgsDiscoverRelationsDialog::relations() const
 {
   QList<QgsRelation> result;
   const auto constSelectedRows = mRelationsTable->selectionModel()->selectedRows();
@@ -66,7 +66,7 @@ QList<QgsRelation> QgsDiscoverRelationsDlg::relations() const
   return result;
 }
 
-void QgsDiscoverRelationsDlg::onSelectionChanged()
+void QgsDiscoverRelationsDialog::onSelectionChanged()
 {
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mRelationsTable->selectionModel()->hasSelection() );
 }
