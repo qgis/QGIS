@@ -201,6 +201,7 @@ class QgsPalLayerSettings
       AutoWrapLength,
       MultiLineHeight,
       MultiLineAlignment,
+      TextOrientation,
       DirSymbDraw,
       DirSymbLeft,
       DirSymbRight,

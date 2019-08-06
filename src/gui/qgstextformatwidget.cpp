@@ -200,6 +200,9 @@ void QgsTextFormatWidget::initWidget()
   connect( chkLineBelow, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
   connect( chkLineOn, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
 
+  mTextOrientationComboBox->addItem( tr( "Horizontal" ), QgsTextFormat::HorizontalOrientation );
+  mTextOrientationComboBox->addItem( tr( "Vertical" ), QgsTextFormat::VerticalOrientation );
+
   populateFontCapitalsComboBox();
 
   // color buttons
@@ -363,6 +366,7 @@ void QgsTextFormatWidget::initWidget()
           << mFontMultiLineAlignComboBox
           << mFontSizeSpinBox
           << mFontStyleComboBox
+          << mTextOrientationComboBox
           << mTextOpacityWidget
           << mFontWordSpacingSpinBox
           << mFormatNumChkBx
@@ -637,6 +641,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mAutoWrapLengthDDBtn, QgsPalLayerSettings::AutoWrapLength );
   registerDataDefinedButton( mFontLineHeightDDBtn, QgsPalLayerSettings::MultiLineHeight );
   registerDataDefinedButton( mFontMultiLineAlignDDBtn, QgsPalLayerSettings::MultiLineAlignment );
+  registerDataDefinedButton( mTextOrientationDDBtn, QgsPalLayerSettings::TextOrientation );
 
   registerDataDefinedButton( mDirectSymbDDBtn, QgsPalLayerSettings::DirSymbDraw );
   mDirectSymbDDBtn->registerCheckedWidget( mDirectSymbChkBx );
@@ -808,6 +813,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   btnTextColor->setColor( format.color() );
   mTextOpacityWidget->setOpacity( format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );
+  mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( format.orientation() ) );
 
   mFontWordSpacingSpinBox->setValue( format.font().wordSpacing() );
   mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
@@ -929,6 +935,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
   format.setLineHeight( mFontLineHeightSpinBox->value() );
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
+  format.setOrientation( static_cast< QgsTextFormat::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
 
   // buffer
   QgsTextBufferSettings buffer;

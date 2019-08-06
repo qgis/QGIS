@@ -36,6 +36,8 @@ It can be associated with a QgsMapLayerModel to dynamically display a layer and 
       FieldTypeRole,
       FieldOriginRole,
       IsEmptyRole,
+      EditorWidgetType,
+      JoinedFieldIsEditable,
     };
 
     explicit QgsFieldModel( QObject *parent /TransferThis/ = 0 );

@@ -354,6 +354,7 @@ class CORE_EXPORT QgsPalLayerSettings
       AutoWrapLength = 101,
       MultiLineHeight = 32,
       MultiLineAlignment = 33,
+      TextOrientation = 104,
       DirSymbDraw = 34,
       DirSymbLeft = 35,
       DirSymbRight = 36,

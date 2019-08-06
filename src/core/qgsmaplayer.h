@@ -1247,7 +1247,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMapLayer: %1>" ).arg( sipCpp->name() );
+    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider()->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
