@@ -245,10 +245,10 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertEqual(1, len(self.relMgr.discoverRelations([], [self.vl_authors, self.vl_link_books_authors])))
 
         # composite keys relation
-        relations = self.relMgr.discoverRelations([], [self.vl_authors, self.vl_editors])
+        relations = self.relMgr.discoverRelations([], [self.vl_books, self.vl_editors])
         self.assertEqual(len(relations), 1)
         relation = relations[0]
-        self.assertEqual({'books_fk_editor_fkey'}, relation.name())
+        self.assertEqual('books_fk_editor_fkey', relation.name())
         self.assertTrue(relation.isValid())
         self.assertEqual('books', relation.referencingLayer().name())
         self.assertEqual('editors', relation.referencedLayer().name())
