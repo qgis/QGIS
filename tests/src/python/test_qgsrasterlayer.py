@@ -1167,6 +1167,33 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
         self.assertEqual(rl2.renderer().opacity(), 0.6)
 
+        # another test
+        rl = QgsRasterLayer(source_path, 'test_raster', 'gdal')
+        self.assertTrue(rl.isValid())
+        renderer = QgsSingleBandPseudoColorRenderer(rl.dataProvider(), 1)
+        color_ramp = QgsGradientColorRamp(QColor(255, 255, 0), QColor(0, 0, 255))
+        renderer.setClassificationMin(101)
+        renderer.setClassificationMax(131)
+        renderer.createShader(color_ramp)
+        renderer.setOpacity(0.6)
+        rl.setRenderer(renderer)
+        rl.resampleFilter().setZoomedInResampler(QgsCubicRasterResampler())
+        rl.resampleFilter().setZoomedOutResampler(QgsBilinearRasterResampler())
+
+        # break path
+        rl.setDataSource(tmp_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+
+        # fix path
+        rl.setDataSource(source_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+        self.assertIsInstance(rl.renderer(), QgsSingleBandPseudoColorRenderer)
+        self.assertEqual(rl.renderer().classificationMin(), 101)
+        self.assertEqual(rl.renderer().classificationMax(), 131)
+        self.assertEqual(rl.renderer().shader().rasterShaderFunction().sourceColorRamp().color1().name(), '#ffff00')
+        self.assertEqual(rl.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
+        self.assertIsInstance(rl.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
+        self.assertIsInstance(rl.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
+        self.assertEqual(rl.renderer().opacity(), 0.6)
+
 
 class TestQgsRasterLayerTransformContext(unittest.TestCase):
 
