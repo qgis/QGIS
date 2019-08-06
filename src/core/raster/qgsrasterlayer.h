@@ -353,14 +353,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**
      * Returns the source data provider.
      *
-     * This may be NULLPTR if not the provider is not available.
+     * This will be NULLPTR if the layer is invalid.
      */
     QgsRasterDataProvider *dataProvider() override;
 
     /**
      * Returns the source data provider.
      *
-     * This may be NULLPTR if not the provider is not available.
+     * This will be NULLPTR if the layer is invalid.
      */
     const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 

@@ -296,7 +296,7 @@ Returns the name of a band given its number.
 %Docstring
 Returns the source data provider.
 
-This may be ``None`` if not the provider is not available.
+This will be ``None`` if the layer is invalid.
 %End
 
     virtual const QgsRasterDataProvider *dataProvider() const /PyName=constDataProvider/;
@@ -304,7 +304,7 @@ This may be ``None`` if not the provider is not available.
 %Docstring
 Returns the source data provider.
 
-This may be ``None`` if not the provider is not available.
+This will be ``None`` if the layer is invalid.
 %End
 
     virtual void reload();
