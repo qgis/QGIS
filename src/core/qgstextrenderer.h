@@ -1022,6 +1022,7 @@ class CORE_EXPORT QgsTextFormat
     {
       HorizontalOrientation, //!< Vertically oriented text
       VerticalOrientation, //!< Horizontally oriented text
+      RotationBasedOrientation, //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
     };
 
     QgsTextFormat();

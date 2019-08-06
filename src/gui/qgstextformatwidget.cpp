@@ -496,6 +496,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
     case Labeling:
       toggleDDButtons( true );
       mTextFormatsListWidget->setEntityTypes( QList< QgsStyle::StyleEntity >() << QgsStyle::TextFormatEntity << QgsStyle::LabelSettingsEntity );
+      mTextOrientationComboBox->addItem( tr( "Rotation-based" ), QgsTextFormat::RotationBasedOrientation );
       break;
 
     case Text:
@@ -515,7 +516,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mSubstitutionsFrame->hide();
       mFontBoldBtn->hide();
       mFontItalicBtn->hide();
-
+      mTextOrientationComboBox->removeItem( mTextOrientationComboBox->findData( QgsTextFormat::RotationBasedOrientation ) );
       break;
   }
 }

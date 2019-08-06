@@ -250,8 +250,22 @@ namespace pal
       void print();
 #endif
 
-      double getLabelWidth() const { return mLF->size().width(); }
-      double getLabelHeight() const { return mLF->size().height(); }
+      /**
+       * Returns the width of the label, optionally taking an \a angle into account.
+       * \returns the width of the label
+       */
+      double getLabelWidth( double angle = 0.0 ) const { return mLF->size( angle ).width(); }
+
+      /**
+       * Returns the height of the label, optionally taking an \a angle into account.
+       * \returns the hieght of the label
+       */
+      double getLabelHeight( double angle = 0.0 ) const { return mLF->size( angle ).height(); }
+
+      /**
+       * Returns the distance from the anchor point to the label
+       * \returns the distance to the label
+       */
       double getLabelDistance() const { return mLF->distLabel(); }
 
       //! Returns TRUE if the feature's label has a fixed rotation
