@@ -36,13 +36,20 @@ QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation>
 
 void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
 {
+  QString referencingFields, referencedFields;
+  for ( int i = 0; i < rel.fieldPairs().count(); i++ )
+  {
+    referencingFields.append( QStringLiteral( "%1%2" ).arg( referencingFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( QStringLiteral( "%1%2" ).arg( referencedFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+  }
+
   const int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
   mRelationsTable->setItem( row, 0, new QTableWidgetItem( rel.name() ) );
   mRelationsTable->setItem( row, 1, new QTableWidgetItem( rel.referencingLayer()->name() ) );
-  mRelationsTable->setItem( row, 2, new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() ) );
+  mRelationsTable->setItem( row, 2, new QTableWidgetItem( referencingFields ) );
   mRelationsTable->setItem( row, 3, new QTableWidgetItem( rel.referencedLayer()->name() ) );
-  mRelationsTable->setItem( row, 4, new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() ) );
+  mRelationsTable->setItem( row, 4, new QTableWidgetItem( referencedFields ) );
   if ( rel.strength() == QgsRelation::RelationStrength::Composition )
   {
     mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Composition" ) ) );
