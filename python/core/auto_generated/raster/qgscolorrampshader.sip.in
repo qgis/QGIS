@@ -105,8 +105,6 @@ Whether the color ramp contains any items
 %Docstring
 Returns the source color ramp.
 
-Ownership remains with the shader.
-
 .. seealso:: :py:func:`setSourceColorRamp`
 
 .. versionadded:: 3.0
