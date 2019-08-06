@@ -4587,7 +4587,7 @@ QgsAttrPalIndexNameHash QgsPostgresProvider::palAttributeIndexNames() const
 
 QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
 {
-  if ( mIsQuery )
+  if ( mIsQuery || !connectionRO() )
     return Relkind::Unknown;
 
   QString sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
