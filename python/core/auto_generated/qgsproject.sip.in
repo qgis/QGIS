@@ -757,6 +757,8 @@ If layer's short name is empty a match with layer's name is attempted.
 .. seealso:: :py:func:`mapLayer`
 
 .. seealso:: :py:func:`mapLayers`
+
+.. versionadded:: 3.10
 %End
 
 
