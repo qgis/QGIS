@@ -235,6 +235,7 @@ class CORE_EXPORT QgsJsonExporter
      * \param features features to convert
      * \returns json object
      * \see exportFeatures()
+     * \since QGIS 3.10
      */
     json exportFeaturesToJsonObject( const QgsFeatureList &features ) const SIP_SKIP;
 
