@@ -125,8 +125,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /**
      * Returns the source color ramp.
      *
-     * Ownership remains with the shader.
-     *
      * \see setSourceColorRamp()
      * \since QGIS 3.0
      */
