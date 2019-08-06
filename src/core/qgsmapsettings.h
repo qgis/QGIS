@@ -547,6 +547,37 @@ class CORE_EXPORT QgsMapSettings
      */
     QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
 
+    /**
+     * Sets the simplification setting to use when rendering vector layers.
+     *
+     * If the simplify \a method is enabled, it will override all other layer-specific simplification
+     * settings and will apply to all vector layers rendered for the map.
+     *
+     * This can be used to specify global simplification methods to apply during map exports,
+     * e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+     * during PDF exports.
+     *
+     * The default is to use no global simplification, and fallback to individual layer's settings instead.
+     *
+     * \see simplifyMethod()
+     *
+     * \since QGIS 3.10
+     */
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method ) { mSimplifyMethod = method; }
+
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * If enabled, it will override all other layer-specific simplification
+     * settings and will apply to all vector layers rendered for the map.
+     *
+     * The default is to use no global simplification, and fallback to individual layer's settings instead.
+     *
+     * \see setSimplifyMethod()
+     * \since QGIS 3.10
+     */
+    const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
+
   protected:
 
     double mDpi;
@@ -599,6 +630,8 @@ class CORE_EXPORT QgsMapSettings
     QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
     QgsGeometry mLabelBoundaryGeometry;
+
+    QgsVectorSimplifyMethod mSimplifyMethod;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

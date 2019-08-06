@@ -20,7 +20,8 @@ from qgis.core import (QgsRenderContext,
                        QgsMapUnitScale,
                        QgsUnitTypes,
                        QgsProject,
-                       QgsRectangle)
+                       QgsRectangle,
+                       QgsVectorSimplifyMethod)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
@@ -109,6 +110,30 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
 
         self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
+
+    def testVectorSimplification(self):
+        """
+        Test vector simplification hints, ensure they are copied correctly from map settings
+        """
+        rc = QgsRenderContext()
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.NoSimplification)
+
+        ms = QgsMapSettings()
+
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.NoSimplification)
+        rc2 = QgsRenderContext(rc)
+        self.assertEqual(rc2.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.NoSimplification)
+
+        method = QgsVectorSimplifyMethod()
+        method.setSimplifyHints(QgsVectorSimplifyMethod.GeometrySimplification)
+        ms.setSimplifyMethod(method)
+
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.GeometrySimplification)
+
+        rc2 = QgsRenderContext(rc)
+        self.assertEqual(rc2.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.GeometrySimplification)
 
     def testRenderMetersInMapUnits(self):
 

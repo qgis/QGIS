@@ -60,8 +60,20 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mGeometryType = layer->geometryType();
 
   mFeatureBlendMode = layer->featureBlendMode();
-  mSimplifyMethod = layer->simplifyMethod();
-  mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
+
+  // if there's already a simplification method specified via the context, we respect that. Otherwise, we fall back
+  // to the layer's individual setting
+  if ( mContext.vectorSimplifyMethod().simplifyHints() != QgsVectorSimplifyMethod::NoSimplification )
+  {
+    mSimplifyMethod = mContext.vectorSimplifyMethod();
+    mSimplifyGeometry = mContext.vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::GeometrySimplification ||
+                        mContext.vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::FullSimplification;
+  }
+  else
+  {
+    mSimplifyMethod = layer->simplifyMethod();
+    mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
+  }
 
   QgsSettings settings;
   mVertexMarkerOnlyForSelection = settings.value( QStringLiteral( "qgis/digitizing/marker_only_for_selected" ), true ).toBool();
