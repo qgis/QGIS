@@ -109,14 +109,23 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
       QgsMapLayer *currentLayer = mCanvas->currentLayer();
       if ( !currentLayer )
+      {
+        mIsModified = false;
         break;
+      }
 
       mVlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( !mVlayer )
+      {
+        mIsModified = false;
         break;
+      }
 
       if ( !mVlayer->isEditable() )
+      {
+        mIsModified = false;
         break;
+      }
 
       filter.setLayer( mVlayer );
       match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter );
@@ -189,6 +198,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
           if ( mIsModified )
           {
+            mGeom.removeDuplicateNodes();
             mRubberBandExtend->setToGeometry( mGeom );
             mRubberBandExtend->show();
           }
