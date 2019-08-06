@@ -1244,6 +1244,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider()->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   signals:
 
     //! Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar)
