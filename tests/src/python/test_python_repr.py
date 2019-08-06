@@ -150,8 +150,8 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsMapLayerRepr(self):
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-            'my funky name', 'memory')
-        assert (vl.__repr__(), "<QgsMapLayer: 'my funky name'>")
+            'QGIS搖滾', 'memory')
+        assert (vl.__repr__(), "<QgsMapLayer: 'QGIS搖滾' (memory)>")
 
 
 if __name__ == "__main__":
