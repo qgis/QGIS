@@ -286,6 +286,14 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
+      /**
+       * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,
+       * such as vertices which are not visible at the specified dpi of the output.
+       *
+       * \since QGIS 3.10
+       */
+      bool simplifyGeometries = true;
+
     };
 
     /**
@@ -433,6 +441,14 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
+      /**
+       * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,
+       * such as vertices which are not visible at the specified dpi of the output.
+       *
+       * \since QGIS 3.10
+       */
+      bool simplifyGeometries = true;
+
     };
 
     /**
@@ -576,6 +592,7 @@ class CORE_EXPORT QgsLayoutExporter
     bool georeferenceOutputPrivate( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
                                     const QRectF &exportRegion = QRectF(), double dpi = -1, bool includeGeoreference = true, bool includeMetadata = false ) const;
 
+    static QgsVectorSimplifyMethod createExportSimplifyMethod();
     friend class TestQgsLayout;
 
 };

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>276</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,6 +44,16 @@
        <widget class="QCheckBox" name="mIncludeMetadataCheckbox">
         <property name="text">
          <string>Export RDF metadata</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="mSimplifyGeometriesCheckbox">
+        <property name="text">
+         <string>Simplify geometries to reduce output file size</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -111,7 +121,9 @@
  <tabstops>
   <tabstop>mForceVectorCheckBox</tabstop>
   <tabstop>mIncludeMetadataCheckbox</tabstop>
+  <tabstop>mSimplifyGeometriesCheckbox</tabstop>
   <tabstop>mTextRenderFormatComboBox</tabstop>
+  <tabstop>mDisableRasterTilingCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

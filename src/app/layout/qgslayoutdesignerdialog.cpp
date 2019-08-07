@@ -4068,6 +4068,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   double leftMargin = 0.0;
   bool includeMetadata = true;
   bool disableRasterTiles = false;
+  bool simplify = true;
   if ( mLayout )
   {
     settings.flags = mLayout->renderContext().flags();
@@ -4081,6 +4082,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     leftMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt();
     includeMetadata = mLayout->customProperty( QStringLiteral( "svgIncludeMetadata" ), 1 ).toBool();
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "svgDisableRasterTiles" ), 0 ).toBool();
+    simplify = mLayout->customProperty( QStringLiteral( "svgSimplify" ), 1 ).toBool();
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "svgTextFormat" ), -1 ).toInt();
     if ( prevLayoutSettingLabelsAsOutlines >= 0 )
     {
@@ -4113,6 +4115,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   options.mLeftMarginSpinBox->setValue( leftMargin );
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
   options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
+  options.mSimplifyGeometriesCheckbox->setChecked( simplify );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4126,6 +4129,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
   forceVector = options.mForceVectorCheckBox->isChecked();
   disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
+  simplify = options.mSimplifyGeometriesCheckbox->isChecked();
   QgsRenderContext::TextRenderFormat textRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
 
   if ( mLayout )
@@ -4141,6 +4145,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     mLayout->setCustomProperty( QStringLiteral( "forceVector" ), forceVector ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "svgTextFormat" ), static_cast< int >( textRenderFormat ) );
     mLayout->setCustomProperty( QStringLiteral( "svgDisableRasterTiles" ), disableRasterTiles ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "svgSimplify" ), simplify ? 1 : 0 );
   }
 
   settings.cropToContents = clipToContent;
@@ -4149,6 +4154,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   settings.exportAsLayers = groupLayers;
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
+  settings.simplifyGeometries = simplify;
 
   if ( disableRasterTiles )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
@@ -4164,12 +4170,14 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool forceVector = false;
   bool includeMetadata = true;
   bool disableRasterTiles = false;
+  bool simplify = true;
   if ( mLayout )
   {
     settings.flags = mLayout->renderContext().flags();
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), 0 ).toBool();
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
+    simplify = mLayout->customProperty( QStringLiteral( "pdfSimplify" ), 1 ).toBool();
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "pdfTextFormat" ), -1 ).toInt();
     if ( prevLayoutSettingLabelsAsOutlines >= 0 )
     {
@@ -4196,6 +4204,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   options.mForceVectorCheckBox->setChecked( forceVector );
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
   options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
+  options.mSimplifyGeometriesCheckbox->setChecked( simplify );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4203,6 +4212,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
   forceVector = options.mForceVectorCheckBox->isChecked();
   disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
+  simplify = options.mSimplifyGeometriesCheckbox->isChecked();
   QgsRenderContext::TextRenderFormat textRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
 
   if ( mLayout )
@@ -4212,11 +4222,13 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfIncludeMetadata" ), includeMetadata ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfDisableRasterTiles" ), disableRasterTiles ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast< int >( textRenderFormat ) );
+    mLayout->setCustomProperty( QStringLiteral( "pdfSimplify" ), simplify ? 1 : 0 );
   }
 
   settings.forceVectorOutput = forceVector;
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
+  settings.simplifyGeometries = simplify;
   if ( disableRasterTiles )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
   else
