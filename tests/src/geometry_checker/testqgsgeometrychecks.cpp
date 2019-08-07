@@ -84,6 +84,7 @@ class TestQgsGeometryChecks: public QObject
     void testDuplicateNodesCheck();
     void testFollowBoundariesCheck();
     void testGapCheck();
+    void testAllowedGaps();
     void testMissingVertexCheck();
     void testHoleCheck();
     void testLineIntersectionCheck();
@@ -530,6 +531,64 @@ void TestQgsGeometryChecks::testGapCheck()
   QList<QgsGeometryCheckError *> errs1;
 
   QCOMPARE( checkErrors.size(), 5 );
+  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).size(), 1 );
+  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.4238, -0.7479 ), QgsVertexId(), 0.0071 ).size(), 1 );
+  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.0094, -0.4448 ), QgsVertexId(), 0.0033 ).size(), 1 );
+  errs1 = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2939, -0.4694 ), QgsVertexId(), 0.0053 );
+  QCOMPARE( errs1.size(), 1 );
+  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.6284, -0.3641 ), QgsVertexId(), 0.0018 ).size(), 1 );
+
+  //  TestQgsGeometryChecks::testGapCheck()
+  QgsGeometryCheckError *error = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).first();
+
+  QCOMPARE( error->contextBoundingBox().snappedToGrid( 0.0001 ), QgsRectangle( -0.0259, -1.0198, 0.6178, -0.4481 ) );
+  QCOMPARE( error->affectedAreaBBox().snappedToGrid( 0.0001 ), QgsRectangle( 0.246, -0.9998, 0.3939, -0.77 ) );
+
+  // Test fixes
+  QgsFeature f;
+
+  testContext.second[layers["gap_layer.shp"]]->getFeature( 0, f );
+  double areaOld = f.geometry().area();
+  QVERIFY( fixCheckError( testContext.second,  errs1[0],
+                          QgsGeometryGapCheck::MergeLongestEdge, QgsGeometryCheckError::StatusFixed,
+  {
+    {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
+    {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
+  } ) );
+  testContext.second[layers["gap_layer.shp"]]->getFeature( 0, f );
+  QVERIFY( f.geometry().area() > areaOld );
+
+  cleanupTestContext( testContext );
+}
+
+void TestQgsGeometryChecks::testAllowedGaps()
+{
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( "gap_layer.shp", "" );
+  auto testContext = createTestContext( dir, layers );
+
+  // Allowed gaps layer
+  std::unique_ptr<QgsVectorLayer> allowedGaps = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
+
+  // Test detection
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  QVariantMap configuration;
+  configuration.insert( "gapThreshold", 0.01 );
+  configuration.insert( QStringLiteral( "allowedGapsEnabled" ), true );
+  configuration.insert( QStringLiteral( "allowedGapsLayer" ), allowedGaps->id() );
+  configuration.insert( QStringLiteral( "allowedGapsBuffer" ), 10 );
+
+  QgsGeometryGapCheck check( testContext.first, configuration );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  QList<QgsGeometryCheckError *> errs1;
+
+  QCOMPARE( checkErrors.size(), 5 );
   QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.4238, -0.7479 ), QgsVertexId(), 0.0071 ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.0094, -0.4448 ), QgsVertexId(), 0.0033 ).size() == 1 );
@@ -555,6 +614,10 @@ void TestQgsGeometryChecks::testGapCheck()
   } ) );
   testContext.second[layers["gap_layer.shp"]]->getFeature( 0, f );
   QVERIFY( f.geometry().area() > areaOld );
+
+  QgsGeometryCheck::Changes changes;
+  check.fixError( testContext.second, error, 2, QMap<QString, int>(), changes );
+
 
   cleanupTestContext( testContext );
 }
