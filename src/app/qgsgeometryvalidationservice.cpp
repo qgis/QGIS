@@ -269,6 +269,14 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     {
       const QVariantMap checkConfiguration = layer->geometryOptions()->checkConfiguration( checkId );
       topologyChecks.append( factory->createGeometryCheck( checkInformation.context.get(), checkConfiguration ) );
+
+      if ( checkConfiguration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
+      {
+        QgsVectorLayer *gapsLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( checkConfiguration.value( "allowedGapsLayer" ).toString() );
+        connect( layer, &QgsVectorLayer::editingStarted, gapsLayer, [gapsLayer] { gapsLayer->startEditing(); } );
+        connect( layer, &QgsVectorLayer::beforeRollBack, gapsLayer, [gapsLayer] { gapsLayer->rollBack(); } );
+        connect( layer, &QgsVectorLayer::editingStopped, gapsLayer, [gapsLayer] { gapsLayer->commitChanges(); } );
+      }
     }
   }
 
