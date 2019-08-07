@@ -141,7 +141,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 context = dataobjects.createContext(feedback)
 
                 alg_start_time = time.time()
-
+                multi_feedback.errors = []
                 results, ok = self.algorithm().run(parameters, context, multi_feedback)
                 if ok:
                     self.setInfo(
@@ -157,7 +157,6 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     handleAlgorithmResults(self.algorithm(), context, multi_feedback, False, parameters)
                 else:
                     err = [e for e in multi_feedback.errors]
-                    multi_feedback.errors = []
                     self.setInfo(
                         QCoreApplication.translate('BatchAlgorithmDialog', 'Algorithm {0} failed…').format(
                             self.algorithm().displayName()), escapeHtml=False)
