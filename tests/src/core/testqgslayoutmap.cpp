@@ -60,6 +60,7 @@ class TestQgsLayoutMap : public QObject
     void expressionContext();
     void layoutToMapCoordsTransform();
     void labelBlockingRegions();
+    void testSimplificationMethod();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -765,6 +766,40 @@ void TestQgsLayoutMap::labelBlockingRegions()
   QCOMPARE( regions.count(), 1 );
   QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875, 2450 2875))" ) );
 
+}
+
+void TestQgsLayoutMap::testSimplificationMethod()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsLayout l( QgsProject::instance() );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
+
+  l.renderContext().mIsPreviewRender = false;
+  QgsMapSettings settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
+  // should default to no simplification during exports
+  QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QVERIFY( !( settings.flags() & QgsMapSettings::UseRenderingOptimization ) );
+  // set a simplification method to use
+  QgsVectorSimplifyMethod method;
+  method.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  l.renderContext().setSimplifyMethod( method );
+
+  // should still have no simplification override for preview renders
+  l.renderContext().mIsPreviewRender = true;
+  settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
+  QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QVERIFY( settings.flags() & QgsMapSettings::UseRenderingOptimization );
+
+  // for exports, we respect the layout context's simplify method
+  l.renderContext().mIsPreviewRender = false;
+  settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
+  QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
+  QVERIFY( settings.flags() & QgsMapSettings::UseRenderingOptimization );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )
