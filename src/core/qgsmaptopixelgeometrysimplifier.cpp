@@ -227,6 +227,12 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
         break;
       }
 
+      case SnappedToGridGlobal:
+      {
+        output.reset( qgsgeometry_cast< QgsCurve * >( srcCurve.snappedToGrid( map2pixelTol, map2pixelTol ) ) );
+        break;
+      }
+
       case Visvalingam:
       {
         map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'Area' calculations.
