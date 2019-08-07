@@ -105,10 +105,13 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param dx The translation on x
      * \param dy The translation on y
      * \param errorMsg If given, it will contain the error message
+     * \param topologicalEditing If true, the function will perform topological
+     * editing of the vertices of \a layer on \a layer and \a topologicalLayer
+     * \param topologicalLayer The layer where vertices from the moved features of \a layer will be added
      * \returns TRUE if all features could be copied.
      *
      */
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr ) const;
+    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr ) const;
 
 };
 
