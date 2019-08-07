@@ -25,7 +25,7 @@
 #include "qgspostgresstringutils.h"
 
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
+using namespace nlohmann;
 
 #include <QSettings>
 

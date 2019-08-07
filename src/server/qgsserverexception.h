@@ -28,7 +28,7 @@
 #include "nlohmann/json.hpp"
 
 #ifndef SIP_RUN
-using json = nlohmann::json;
+using namespace nlohmann;
 #endif
 
 

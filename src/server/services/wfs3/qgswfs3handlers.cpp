@@ -893,10 +893,10 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     // limit & offset
     // Apparently the standard set limits 0-10000 (and does not implement paging,
     // so we do our own paging with "offset")
-    const long offset { params.value( QStringLiteral( "offset" ) ).toLongLong( &ok ) };
+    const qlonglong offset { params.value( QStringLiteral( "offset" ) ).toLongLong( &ok ) };
 
     // TODO: make the max limit configurable
-    const long limit {  params.value( QStringLiteral( "limit" ) ).toLongLong( &ok ) };
+    const qlonglong limit {  params.value( QStringLiteral( "limit" ) ).toLongLong( &ok ) };
 
     // TODO: implement time
     const QString time { context.request()->queryParameter( QStringLiteral( "time" ) ) };

@@ -17,7 +17,8 @@
 #include "qgsmessagelog.h"
 #include <QDebug>
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
+
+using namespace nlohmann;
 
 static void jumpSpace( const QString &txt, int &i )
 {

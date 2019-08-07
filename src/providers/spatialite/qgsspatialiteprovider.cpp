@@ -42,7 +42,7 @@ email                : a.furieri@lqt.it
 #include <QRegularExpression>
 
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
+using namespace nlohmann;
 
 
 const QString QgsSpatiaLiteProvider::SPATIALITE_KEY = QStringLiteral( "spatialite" );

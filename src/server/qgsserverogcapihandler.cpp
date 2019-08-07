@@ -29,11 +29,10 @@
 #include "qgsserverresponse.h"
 #include "qgsserverinterface.h"
 
-
 #include "nlohmann/json.hpp"
 #include "inja/inja.hpp"
 
-using json = nlohmann::json;
+using namespace nlohmann;
 using namespace inja;
 
 

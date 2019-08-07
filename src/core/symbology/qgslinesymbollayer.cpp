@@ -1232,7 +1232,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
   QgsRenderContext &rc = context.renderContext();
 
   double origAngle = symbolAngle();
-  int i, maxCount;
+  int i = -1, maxCount = 0;
   bool isRing = false;
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();

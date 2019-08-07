@@ -32,7 +32,7 @@ class QgsVectorLayer;
 
 #ifndef SIP_RUN
 #include "nlohmann/json_fwd.hpp"
-using json = nlohmann::json;
+using namespace nlohmann;
 #endif
 
 /**

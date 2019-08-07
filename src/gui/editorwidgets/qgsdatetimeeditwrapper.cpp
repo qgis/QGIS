@@ -187,7 +187,9 @@ QVariant QgsDateTimeEditWrapper::value() const
       }
       break;
   }
+#ifndef _MSC_VER // avoid warnings
   return QVariant(); // avoid warnings
+#endif
 }
 
 void QgsDateTimeEditWrapper::setValue( const QVariant &value )
