@@ -198,7 +198,7 @@ class QgsPostgresConn : public QObject
      */
     static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
 
-    void ref() { ++mRef; }
+    void ref();
     void unref();
 
     //! Gets postgis version string
