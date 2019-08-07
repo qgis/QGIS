@@ -514,7 +514,7 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
     mGeometryGeneratorExpression.prepare( &context.expressionContext() );
     if ( mGeometryGeneratorExpression.hasParserError() )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.parserErrorString() );
+      QgsMessageLog::logMessage( mGeometryGeneratorExpression.parserErrorString(), QObject::tr( "Labeling" ) );
       return false;
     }
 
@@ -1592,7 +1592,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
     if ( mGeometryGeneratorExpression.hasEvalError() )
-      QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.evalErrorString() );
+      QgsMessageLog::logMessage( mGeometryGeneratorExpression.evalErrorString(), QObject::tr( "Labeling" ) );
 
     if ( obstacleGeometry.isNull() )
     {
