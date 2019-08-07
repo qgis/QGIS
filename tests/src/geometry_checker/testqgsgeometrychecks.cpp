@@ -570,6 +570,7 @@ void TestQgsGeometryChecks::testAllowedGaps()
 
   // Allowed gaps layer
   std::unique_ptr<QgsVectorLayer> allowedGaps = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( allowedGaps.get(), true, false );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -579,45 +580,52 @@ void TestQgsGeometryChecks::testAllowedGaps()
   configuration.insert( "gapThreshold", 0.01 );
   configuration.insert( QStringLiteral( "allowedGapsEnabled" ), true );
   configuration.insert( QStringLiteral( "allowedGapsLayer" ), allowedGaps->id() );
-  configuration.insert( QStringLiteral( "allowedGapsBuffer" ), 10 );
+  configuration.insert( QStringLiteral( "allowedGapsBuffer" ), 0.01 );
 
   QgsGeometryGapCheck check( testContext.first, configuration );
+  check.prepare( testContext.first, configuration );
+
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
-  QList<QgsGeometryCheckError *> errs1;
-
   QCOMPARE( checkErrors.size(), 5 );
-  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).size() == 1 );
-  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.4238, -0.7479 ), QgsVertexId(), 0.0071 ).size() == 1 );
-  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.0094, -0.4448 ), QgsVertexId(), 0.0033 ).size() == 1 );
-  QVERIFY( ( errs1 = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2939, -0.4694 ), QgsVertexId(), 0.0053 ) ).size() == 1 );
-  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.6284, -0.3641 ), QgsVertexId(), 0.0018 ).size() == 1 );
 
   //  TestQgsGeometryChecks::testGapCheck()
   QgsGeometryCheckError *error = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).first();
 
-  QCOMPARE( error->contextBoundingBox().snappedToGrid( 0.0001 ), QgsRectangle( -0.0259, -1.0198, 0.6178, -0.4481 ) );
-  QCOMPARE( error->affectedAreaBBox().snappedToGrid( 0.0001 ), QgsRectangle( 0.246, -0.9998, 0.3939, -0.77 ) );
-
-  // Test fixes
-  QgsFeature f;
-
-  testContext.second[layers["gap_layer.shp"]]->getFeature( 0, f );
-  double areaOld = f.geometry().area();
-  QVERIFY( fixCheckError( testContext.second,  errs1[0],
-                          QgsGeometryGapCheck::MergeLongestEdge, QgsGeometryCheckError::StatusFixed,
-  {
-    {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
-    {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
-  } ) );
-  testContext.second[layers["gap_layer.shp"]]->getFeature( 0, f );
-  QVERIFY( f.geometry().area() > areaOld );
-
   QgsGeometryCheck::Changes changes;
   check.fixError( testContext.second, error, 2, QMap<QString, int>(), changes );
 
+  QgsFeature f;
+  QgsFeatureIterator it = allowedGaps->getFeatures();
+  QVERIFY( it.nextFeature( f ) );
+
+  QCOMPARE( f.geometry().asWkt( 4 ), QgsGeometry::fromWkt( "Polygon ((0.393901 -0.769953, 0.25997 -0.88388, 0.26997 -0.99981, 0.24598 -0.865897, 0.3939 -0.76995))" ).asWkt( 4 ) );
+
+  // Run check again after adding the gap geometry to the allowed gaps layer: one less error
+  check.prepare( testContext.first, configuration );
+  qDeleteAll( checkErrors );
+  checkErrors.clear();
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+  QCOMPARE( checkErrors.size(), 4 );
+
+  // Make the gap geometry a bit smaller (0.0001), but still in the buffer tolerance of 0.01 specified in the check configuration
+  // Watch out: buffering with only 0.001 sounds like a good idea on first sight but fails at the corners
+  allowedGaps->startEditing();
+  QgsGeometry g = f.geometry();
+  g = g.buffer( -0.0001, 10 );
+  f.setGeometry( g );
+  allowedGaps->updateFeature( f );
+
+  // Still, this gap should not be reported
+  check.prepare( testContext.first, configuration );
+  qDeleteAll( checkErrors );
+  checkErrors.clear();
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+  QCOMPARE( checkErrors.size(), 4 );
 
   cleanupTestContext( testContext );
 }
@@ -1191,7 +1199,7 @@ QPair<QgsGeometryCheckContext *, QMap<QString, QgsFeaturePool *> > TestQgsGeomet
     layer->dataProvider()->enterUpdateMode();
     featurePools.insert( layer->id(), createFeaturePool( layer ) );
   }
-  return qMakePair( new QgsGeometryCheckContext( prec, mapCrs, QgsProject::instance()->transformContext(), nullptr ), featurePools );
+  return qMakePair( new QgsGeometryCheckContext( prec, mapCrs, QgsProject::instance()->transformContext(), QgsProject::instance() ), featurePools );
 }
 
 void TestQgsGeometryChecks::cleanupTestContext( QPair<QgsGeometryCheckContext *, QMap<QString, QgsFeaturePool *> > ctx ) const
