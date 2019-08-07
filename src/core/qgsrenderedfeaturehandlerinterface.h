@@ -17,6 +17,7 @@
 #define QGSRENDEREDFEATUREHANDLERINTERFACE_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QSet>
 #include <QString>
 
@@ -51,7 +52,7 @@ class CORE_EXPORT QgsRenderedFeatureHandlerInterface
     {
       ///@cond PRIVATE
       // required to allow compilation only until real members are present
-      bool dummy;
+      bool dummy; SIP_SKIP
       ///@endcond
     };
 
