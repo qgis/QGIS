@@ -75,7 +75,7 @@ Should be called, when the features should be committed but the editing session 
 %End
 
 
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString *errorMsg /Out/ = 0 ) const;
+    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString *errorMsg /Out/ = 0, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = 0 ) const;
 %Docstring
 Copy and move features with defined translation.
 
@@ -83,6 +83,9 @@ Copy and move features with defined translation.
 :param request: The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
 :param dx: The translation on x
 :param dy: The translation on y
+:param topologicalEditing: If true, the function will perform topological
+                           editing of the vertices of ``layer`` on ``layer`` and ``topologicalLayer``
+:param topologicalLayer: The layer where vertices from the moved features of ``layer`` will be added
 
 :return: - ``True`` if all features could be copied.
          - errorMsg: If given, it will contain the error message

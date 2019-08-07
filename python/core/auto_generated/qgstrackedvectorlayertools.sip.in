@@ -28,7 +28,7 @@ Constructor for QgsTrackedVectorLayerTools.
 
     virtual bool saveEdits( QgsVectorLayer *layer ) const;
 
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = 0 ) const;
+    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = 0, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = 0 ) const;
 
 
     void setVectorLayerTools( const QgsVectorLayerTools *tools );
