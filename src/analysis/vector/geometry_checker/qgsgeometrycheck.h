@@ -302,7 +302,8 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
 
     /**
-     * Fix the error \a error with the specified \a method.
+     * Fixes the error \a error with the specified \a method.
+     * Is executed on the main thread.
      *
      * \since QGIS 3.4
      */
