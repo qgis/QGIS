@@ -49,7 +49,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Mose move
     void mouseMove( const QgsPointXY &point );
 
-    //! Remove last point
+    //! Removes the last point
     void removeLastPoint();
 
   public slots:
