@@ -36,7 +36,6 @@ of all features rendered on a map.
 
     struct RenderedFeatureContext
     {
-      bool dummy;
     };
 
     virtual void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) = 0;
