@@ -496,6 +496,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  if ( settings.simplifyGeometries )
+  {
+    mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+  }
+
   mLayout->renderContext().setFlags( settings.flags );
 
   // If we are not printing as raster, temporarily disable advanced effects
@@ -570,6 +575,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
     iterator->layout()->renderContext().setFlags( settings.flags );
+
+    if ( settings.simplifyGeometries )
+    {
+      iterator->layout()->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+    }
 
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
@@ -800,6 +810,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mLayout->renderContext().setFlags( settings.flags );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
+
+  if ( settings.simplifyGeometries )
+  {
+    mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+  }
 
   QFileInfo fi( filePath );
   PageExportDetails pageDetails;
@@ -1449,6 +1464,16 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
 
   return true;
+}
+
+QgsVectorSimplifyMethod QgsLayoutExporter::createExportSimplifyMethod()
+{
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  simplifyMethod.setForceLocalOptimization( true );
+  simplifyMethod.setSimplifyAlgorithm( QgsVectorSimplifyMethod::SnapToGrid );
+  simplifyMethod.setThreshold( 0.5 ); // pixels
+  return simplifyMethod;
 }
 
 void QgsLayoutExporter::computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi ) const
