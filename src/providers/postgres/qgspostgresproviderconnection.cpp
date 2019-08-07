@@ -18,15 +18,22 @@
 #include "qgspostgresconnpool.h"
 #include "qgssettings.h"
 #include "qgspostgresprovider.h"
+#include "qgsexception.h"
+
+
+extern "C"
+{
+#include <libpq-fe.h>
+}
 
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name ):
   QgsAbstractDatabaseProviderConnection( name )
 {
-  setUri( QgsPostgresConn::connUri( name ) );
+  setUri( QgsPostgresConn::connUri( name ).uri() );
   setDefaultCapabilities();
 }
 
-QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name, const QgsDataSourceUri &uri ):
+QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name, const QString &uri ):
   QgsAbstractDatabaseProviderConnection( name, uri )
 {
   setUri( uri );
@@ -59,23 +66,23 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
 
 
 
-bool QgsPostgresProviderConnection::createVectorTable( const QString &schema,
+void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString,
-    QVariant> *options,
-    QString &errCause )
+    QVariant> *options )
 {
 
   if ( capabilities().testFlag( Capability::CreateVectorTable ) )
   {
-    auto newUri { uri() };
+    QgsDataSourceUri newUri { uri() };
     newUri.setSchema( schema );
     newUri.setTable( name );
     QMap<int, int> map;
+    QString errCause;
     QgsVectorLayerExporter::ExportError errCode = QgsPostgresProvider::createEmptyLayer(
           newUri.uri(),
           fields,
@@ -86,151 +93,206 @@ bool QgsPostgresProviderConnection::createVectorTable( const QString &schema,
           &errCause,
           options
         );
-    return errCode == QgsVectorLayerExporter::ExportError::NoError;
+    if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+    {
+      throw new QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
+    }
   }
-  return false;
 }
 
-bool QgsPostgresProviderConnection::dropTable( const QString &schema, const QString &name, QString &errCause )
+void QgsPostgresProviderConnection::dropTable( const QString &schema, const QString &name )
 {
-  return capabilities().testFlag( Capability::DropTable ) &&
-         executeSql( QStringLiteral( "DROP TABLE %1.%2" )
+  if ( ! capabilities().testFlag( Capability::DropTable ) )
+  {
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+  executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
                      .arg( QgsPostgresConn::quotedIdentifier( schema ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) ), errCause );
+                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
-bool QgsPostgresProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName, QString &errCause )
+void QgsPostgresProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName )
 {
-  return capabilities().testFlag( Capability::RenameTable ) &&
-         executeSql( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
+  if ( ! capabilities().testFlag( Capability::RenameTable ) )
+  {
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+  executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
                      .arg( QgsPostgresConn::quotedIdentifier( schema ) )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( newName ) ), errCause );
+                     .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
-bool QgsPostgresProviderConnection::createSchema( const QString &name, QString &errCause )
+void QgsPostgresProviderConnection::createSchema( const QString &name )
 {
-  return capabilities().testFlag( Capability::CreateSchema ) &&
-         executeSql( QStringLiteral( "CREATE SCHEMA %1" )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) ), errCause );
+  if ( ! capabilities().testFlag( Capability::CreateSchema ) )
+  {
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+  executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
+                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
 
 }
 
-bool QgsPostgresProviderConnection::dropSchema( const QString &name, QString &errCause )
+void QgsPostgresProviderConnection::dropSchema( const QString &name )
 {
-  return capabilities().testFlag( Capability::DropSchema ) &&
-         executeSql( QStringLiteral( "DROP SCHEMA %1" )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) ), errCause );
+  if ( ! capabilities().testFlag( Capability::DropSchema ) )
+  {
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+  executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1" )
+                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
-bool QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName, QString &errCause )
+void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName )
 {
-  return capabilities().testFlag( Capability::RenameSchema ) &&
-         executeSql( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
+  if ( ! capabilities().testFlag( Capability::RenameSchema ) )
+  {
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+  executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( newName ) ), errCause );
+                     .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
-bool QgsPostgresProviderConnection::executeSql( const QString &sql, QString &errCause )
+void QgsPostgresProviderConnection::executeSql( const QString &sql )
 {
-  return capabilities().testFlag( Capability::ExecuteSql ) &&
-         executeSqlPrivate( sql, errCause );
+  if ( ! capabilities().testFlag( Capability::ExecuteSql ) )
+  {
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+  executeSqlPrivate( sql );
 }
 
-bool QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, QString &errCause )
+void QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql )
 {
-  bool ok = false;
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri().connectionInfo( false ) );
+  const QgsDataSourceUri dsUri { uri() };
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
   if ( !conn )
   {
-    errCause = QObject::tr( "Connection failed: %1" ).arg( uri().uri() );
+    throw new QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
   }
   else
   {
-    ok = conn->PQexecNR( sql );
-    if ( ! ok )
+    PGresult *res = conn->PQexec( sql );
+    QString errCause;
+    if ( conn->PQstatus() != CONNECTION_OK || ! res )
     {
-      errCause = QObject::tr( "Could not execute SQL %1: %2" ).arg( sql ).arg( conn->PQerrorMessage() );
-    }
-    QgsPostgresConnPool::instance()->releaseConnection( conn );
-  }
-  return  ok;
-}
-
-bool QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name,  QString &errCause )
-{
-  return capabilities().testFlag( Capability::Vacuum ) &&
-         executeSql( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( schema ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) ), errCause );
-}
-
-QStringList QgsPostgresProviderConnection::tables( const QString &schema, QString &errCause )
-{
-
-  QStringList tables;
-  if ( capabilities().testFlag( Capability::Tables ) )
-  {
-    QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri().connectionInfo( false ) );
-    if ( !conn )
-    {
-      errCause = QObject::tr( "Connection failed: %1" ).arg( uri().uri() );
+      errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
+                 .arg( sql ).arg( conn->PQstatus() )
+                 .arg( conn->PQerrorMessage() );
     }
     else
     {
-      bool ok = conn->getTableInfo( false, false, true, schema );
-      if ( ! ok )
+      const QString err { conn->PQerrorMessage() };
+      if ( ! err.isEmpty() )
       {
-        errCause = QObject::tr( "Could not retrieve tables: %1" ).arg( uri().uri() );
+        errCause = QObject::tr( "SQL error: %1 returned %2 [%3]" )
+                   .arg( sql )
+                   .arg( conn->PQstatus() )
+                   .arg( err );
       }
-      else
-      {
-        QVector<QgsPostgresLayerProperty> properties;
-        conn->supportedLayers( properties, false, false, true, schema );
-        for ( const auto &p : qgis::as_const( properties ) )
-        {
-          tables.push_back( p.tableName );
-        }
-      }
-      QgsPostgresConnPool::instance()->releaseConnection( conn );
     }
+    QgsPostgresConnPool::instance()->releaseConnection( conn );
+    if ( ! errCause.isEmpty() )
+    {
+      throw new QgsProviderConnectionException( errCause );
+    }
+  }
+}
+
+void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name )
+{
+  if ( ! capabilities().testFlag( Capability::Vacuum ) )
+  {
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+  executeSql( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
+              .arg( QgsPostgresConn::quotedIdentifier( schema ) )
+              .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+}
+
+QStringList QgsPostgresProviderConnection::tables( const QString &schema )
+{
+  if ( ! capabilities().testFlag( Capability::Tables ) )
+  {
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+
+  QStringList tables;
+  QString errCause;
+  const QgsDataSourceUri dsUri { uri() };
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection failed: %1" ).arg( uri() );
+  }
+  else
+  {
+    bool ok = conn->getTableInfo( false, false, true, schema );
+    if ( ! ok )
+    {
+      errCause = QObject::tr( "Could not retrieve tables: %1" ).arg( uri() );
+    }
+    else
+    {
+      QVector<QgsPostgresLayerProperty> properties;
+      conn->supportedLayers( properties, false, false, true, schema );
+      for ( const auto &p : qgis::as_const( properties ) )
+      {
+        tables.push_back( p.tableName );
+      }
+    }
+    QgsPostgresConnPool::instance()->releaseConnection( conn );
+  }
+  if ( ! errCause.isEmpty() )
+  {
+    throw new QgsProviderConnectionException( errCause );
   }
   return tables;
 }
 
-QStringList QgsPostgresProviderConnection::schemas( QString &errCause )
+QStringList QgsPostgresProviderConnection::schemas( )
 {
-  QStringList schemas;
-  if ( capabilities().testFlag( Capability::Schemas ) )
+  if ( ! capabilities().testFlag( Capability::Schemas ) )
   {
-    QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri().connectionInfo( false ) );
-    if ( !conn )
+    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+  }
+
+  QStringList schemas;
+  QString errCause;
+  const QgsDataSourceUri dsUri { uri() };
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection failed: %1" ).arg( uri() );
+  }
+  else
+  {
+    QList<QgsPostgresSchemaProperty> schemaProperties;
+    bool ok = conn->getSchemas( schemaProperties );
+    QgsPostgresConnPool::instance()->releaseConnection( conn );
+    if ( ! ok )
     {
-      errCause = QObject::tr( "Connection failed: %1" ).arg( uri().uri() );
+      errCause = QObject::tr( "Could not retrieve schemas: %1" ).arg( uri() );
     }
     else
     {
-      QList<QgsPostgresSchemaProperty> schemaProperties;
-      bool ok = conn->getSchemas( schemaProperties );
-      QgsPostgresConnPool::instance()->releaseConnection( conn );
-      if ( ! ok )
+      for ( const auto &s : qgis::as_const( schemaProperties ) )
       {
-        errCause = QObject::tr( "Could not retrieve schemas: %1" ).arg( uri().uri() );
-      }
-      else
-      {
-        for ( const auto &s : qgis::as_const( schemaProperties ) )
-        {
-          schemas.push_back( s.name );
-        }
+        schemas.push_back( s.name );
       }
     }
+  }
+  if ( ! errCause.isEmpty() )
+  {
+    throw new QgsProviderConnectionException( errCause );
   }
   return schemas;
 }
 
 
-bool QgsPostgresProviderConnection::store( QVariantMap guiConfig )
+void QgsPostgresProviderConnection::store( QVariantMap guiConfig )
 {
   // TODO: move this to class configuration?
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
@@ -239,17 +301,18 @@ bool QgsPostgresProviderConnection::store( QVariantMap guiConfig )
 
   QgsSettings settings;
   settings.beginGroup( baseKey );
-  settings.beginGroup( connectionName() );
+  settings.beginGroup( name() );
 
   // From URI
-  settings.setValue( "service", uri().service() );
-  settings.setValue( "host",  uri().host() );
-  settings.setValue( "port", uri().port() );
-  settings.setValue( "database", uri().database() );
-  settings.setValue( "username", uri().username() );
-  settings.setValue( "password", uri().password() );
-  settings.setValue( "authcfg", uri().authConfigId() );
-  settings.setValue( "sslmode", uri().sslMode() );
+  const QgsDataSourceUri dsUri { uri() };
+  settings.setValue( "service", dsUri.service() );
+  settings.setValue( "host",  dsUri.host() );
+  settings.setValue( "port", dsUri.port() );
+  settings.setValue( "database", dsUri.database() );
+  settings.setValue( "username", dsUri.username() );
+  settings.setValue( "password", dsUri.password() );
+  settings.setValue( "authcfg", dsUri.authConfigId() );
+  settings.setValue( "sslmode", dsUri.sslMode() );
 
   // From GUI config
   static const QStringList guiParameters
@@ -272,12 +335,10 @@ bool QgsPostgresProviderConnection::store( QVariantMap guiConfig )
   }
   settings.endGroup();
   settings.endGroup();
-  return true;
 }
 
-bool QgsPostgresProviderConnection::remove()
+void QgsPostgresProviderConnection::remove()
 {
-  QgsPostgresConn::deleteConnection( connectionName() );
-  return true;
+  QgsPostgresConn::deleteConnection( name() );
 }
 

@@ -22,17 +22,38 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsdatasourceuri.h"
+#include "qgsexception.h"
 
 /**
- * The QgsAbstractProviderConnection provides an interface for data provider connections
+ * The QgsAbstractProviderConnection provides an interface for data provider connections.
+ *
  * Connections objects can be created by passing the connection name and in this case
- * they are loaded from the settings, or by passing a data source URI in the constructor.
+ * they are automatically loaded from the settings, or by passing a data source URI
+ * in the constructor.
  *
  * Concrete classes must implement methods to retrieve, save and remove connections from
  * the settings.
+ * \since QGIS 3.10
  */
 class CORE_EXPORT QgsAbstractProviderConnection
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsAbstractDatabaseProviderConnection *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsAbstractDatabaseProviderConnection;
+    }
+    else if ( dynamic_cast<QgsAbstractProviderConnection *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsAbstractProviderConnection;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
 
   public:
 
@@ -43,47 +64,45 @@ class CORE_EXPORT QgsAbstractProviderConnection
     QgsAbstractProviderConnection( const QString &name );
 
     /**
-     * Creates a new QgsAbstractProviderConnection with \a name and initialised the connection from the \a uri.
+     * Creates a new QgsAbstractProviderConnection with \a name and initialises the connection from the \a uri.
      * The connection is not automatically stored in the settings.
      * \see store()
      */
-    QgsAbstractProviderConnection( const QString &name, const QgsDataSourceUri &uri );
+    QgsAbstractProviderConnection( const QString &name, const QString &uri );
 
     virtual ~QgsAbstractProviderConnection() = default;
 
     /**
      * Stores the connection in the settings.
-     * Returns TRUE on success.
      * \param guiConfig stores additional connection settings that are used by the
      * source select dialog and are not part of the data source URI
      */
-    virtual bool store( QVariantMap guiConfig = QVariantMap() ) = 0;
+    virtual void store( QVariantMap guiConfig = QVariantMap() ) = 0;
 
     /**
      * Deletes the connection from the settings.
-     * Returns TRUE on success.
      */
-    virtual bool remove( ) = 0;
+    virtual void remove( ) = 0;
 
     /**
      * Returns the connection name
      */
-    QString connectionName() const;
+    QString name() const;
 
     /**
-     * Returns the connection data source URI
+     * Returns the connection data source URI string representation
      */
-    QgsDataSourceUri uri() const;
+    QString uri() const;
 
     /**
      * Sets the connection data source URI to \a uri
      */
-    void setUri( const QgsDataSourceUri &uri );
+    void setUri( const QString &uri );
 
   private:
 
     QString mConnectionName;
-    QgsDataSourceUri mUri;
+    QString mUri;
 
 };
 

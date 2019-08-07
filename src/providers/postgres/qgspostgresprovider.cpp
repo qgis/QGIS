@@ -5033,40 +5033,43 @@ QgsTransaction *QgsPostgresProviderMetadata::createTransaction( const QString &c
   return new QgsPostgresTransaction( connString );
 }
 
-QMap<QString, QgsAbstractProviderConnection *> QgsPostgresProviderMetadata::connections( QString &errCause )
+QMap<QString, QgsAbstractProviderConnection *> QgsPostgresProviderMetadata::connections( bool cached )
 {
-  Q_UNUSED( errCause );
-  QMap<QString, QgsAbstractProviderConnection *> conns;
-  const auto connNames { QgsPostgresConn::connectionList() };
-  for ( const auto &cname : connNames )
+  if ( ! cached || mConnections.isEmpty() )
   {
-    conns.insert( cname, new QgsPostgresProviderConnection( cname ) );
+    qDeleteAll( mConnections );
+    mConnections.clear();
+    const auto connNames { QgsPostgresConn::connectionList() };
+    for ( const auto &cname : connNames )
+    {
+      mConnections.insert( cname, new QgsPostgresProviderConnection( cname ) );
+    }
   }
-  return conns;
+  return mConnections;
 }
 
-QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsPostgresProviderMetadata::dbConnections( QString &errCause )
+QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name, const QString &uri )
 {
-  Q_UNUSED( errCause );
-  const auto connections( errCause );
-  QMap<QString, QgsAbstractDatabaseProviderConnection *> conns;
-  const auto connNames { QgsPostgresConn::connectionList() };
-  for ( const auto &cname : connNames )
-  {
-    conns.insert( cname, new QgsPostgresProviderConnection( cname ) );
-  }
-  return conns;
-}
-
-QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name, const QgsDataSourceUri &uri, QString &errCause )
-{
-  Q_UNUSED( errCause );
   return new QgsPostgresProviderConnection( name, uri );
 }
 
-QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name, QString &errCause )
+void QgsPostgresProviderMetadata::deleteConnection( const QString &name )
 {
-  Q_UNUSED( errCause );
+  QgsPostgresProviderConnection conn( name );
+  conn.remove();
+  // Re-read the connections from the settings
+  connections( false );
+}
+
+void QgsPostgresProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, QVariantMap guiConfig )
+{
+  conn->store( guiConfig );
+  // Re-read the connections from the settings
+  connections( false );
+}
+
+QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name )
+{
   return new QgsPostgresProviderConnection( name );
 }
 
@@ -5210,6 +5213,11 @@ void QgsPostgresSharedData::setFieldSupportsEnumValues( int index, bool isSuppor
 QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
   : QgsProviderMetadata( QgsPostgresProvider::POSTGRES_KEY, QgsPostgresProvider::POSTGRES_DESCRIPTION )
 {
+}
+
+QgsPostgresProviderMetadata::~QgsPostgresProviderMetadata()
+{
+  qDeleteAll( mConnections );
 }
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

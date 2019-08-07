@@ -43,6 +43,8 @@ email                : sherman at mrcc.com
 #include "qgsgeopackageprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsogrdbconnection.h"
+#include "qgsgeopackageproviderconnection.h"
 
 #include "qgis.h"
 
@@ -251,116 +253,10 @@ QgsVectorLayerExporter::ExportError QgsOgrProviderMetadata::createEmptyLayer( co
     QString &errorMessage,
     const QMap<QString, QVariant> *options )
 {
-  QString encoding;
-  QString driverName = QStringLiteral( "GPKG" );
-  QStringList dsOptions, layerOptions;
-  QString layerName;
-
-  if ( options )
-  {
-    if ( options->contains( QStringLiteral( "fileEncoding" ) ) )
-      encoding = options->value( QStringLiteral( "fileEncoding" ) ).toString();
-
-    if ( options->contains( QStringLiteral( "driverName" ) ) )
-      driverName = options->value( QStringLiteral( "driverName" ) ).toString();
-
-    if ( options->contains( QStringLiteral( "datasourceOptions" ) ) )
-      dsOptions << options->value( QStringLiteral( "datasourceOptions" ) ).toStringList();
-
-    if ( options->contains( QStringLiteral( "layerOptions" ) ) )
-      layerOptions << options->value( QStringLiteral( "layerOptions" ) ).toStringList();
-
-    if ( options->contains( QStringLiteral( "layerName" ) ) )
-      layerName = options->value( QStringLiteral( "layerName" ) ).toString();
-  }
-
-  oldToNewAttrIdxMap.clear();
-  errorMessage.clear();
-
-  QgsVectorFileWriter::ActionOnExistingFile action( QgsVectorFileWriter::CreateOrOverwriteFile );
-
-  bool update = false;
-  if ( options && options->contains( QStringLiteral( "update" ) ) )
-  {
-    update = options->value( QStringLiteral( "update" ) ).toBool();
-    if ( update )
-    {
-      if ( !overwrite && !layerName.isEmpty() )
-      {
-        gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
-        if ( hDS )
-        {
-          if ( GDALDatasetGetLayerByName( hDS.get(), layerName.toUtf8().constData() ) )
-          {
-            errorMessage += QObject::tr( "Layer %2 of %1 exists and overwrite flag is false." )
-                            .arg( uri, layerName );
-            return QgsVectorLayerExporter::ErrCreateDataSource;
-          }
-        }
-      }
-      if ( QFileInfo::exists( uri ) )
-        action = QgsVectorFileWriter::CreateOrOverwriteLayer;
-    }
-  }
-
-  if ( !overwrite && !update )
-  {
-    if ( QFileInfo::exists( uri ) )
-    {
-      errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
-                      .arg( uri );
-      return QgsVectorLayerExporter::ErrCreateDataSource;
-    }
-  }
-
-  QString newLayerName( layerName );
-  std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >(
-        uri, encoding, fields, wkbType,
-        srs, driverName, dsOptions, layerOptions, nullptr,
-        QgsVectorFileWriter::NoSymbology, nullptr,
-        layerName, action, &newLayerName );
-  layerName = newLayerName;
-
-  QgsVectorFileWriter::WriterError error = writer->hasError();
-  if ( error )
-  {
-    errorMessage += writer->errorMessage();
-
-    return ( QgsVectorLayerExporter::ExportError ) error;
-  }
-
-  QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
-  writer.reset();
-
-  {
-    bool firstFieldIsFid = false;
-    if ( !layerName.isEmpty() )
-    {
-      gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
-      if ( hDS )
-      {
-        OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), layerName.toUtf8().constData() );
-        if ( hLayer )
-        {
-          // Expose the OGR FID if it comes from a "real" column (typically GPKG)
-          // and make sure that this FID column is not exposed as a regular OGR field (shouldn't happen normally)
-          firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) ) &&
-                            OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), OGR_L_GetFIDColumn( hLayer ) ) < 0 &&
-                            fields.indexFromName( OGR_L_GetFIDColumn( hLayer ) ) < 0;
-
-        }
-      }
-    }
-
-    for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.constBegin(); attrIt != attrIdxMap.constEnd(); ++attrIt )
-    {
-      oldToNewAttrIdxMap.insert( attrIt.key(), *attrIt + ( firstFieldIsFid ? 1 : 0 ) );
-    }
-  }
-
-  QgsOgrProviderUtils::invalidateCachedLastModifiedDate( uri );
-
-  return QgsVectorLayerExporter::NoError;
+  return QgsOgrProvider::createEmptyLayer(
+           uri, fields, wkbType, srs, overwrite,
+           &oldToNewAttrIdxMap, &errorMessage, options
+         );
 }
 
 static QString AnalyzeURI( QString const &uri,
@@ -437,6 +333,131 @@ static QString AnalyzeURI( QString const &uri,
     return filePath;
   }
 
+}
+
+QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QString &uri,
+    const QgsFields &fields,
+    QgsWkbTypes::Type wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    QMap<int, int> *oldToNewAttrIdxMap,
+    QString *errorMessage,
+    const QMap<QString, QVariant> *options )
+{
+  QString encoding;
+  QString driverName = QStringLiteral( "GPKG" );
+  QStringList dsOptions, layerOptions;
+  QString layerName;
+
+  if ( options )
+  {
+    if ( options->contains( QStringLiteral( "fileEncoding" ) ) )
+      encoding = options->value( QStringLiteral( "fileEncoding" ) ).toString();
+
+    if ( options->contains( QStringLiteral( "driverName" ) ) )
+      driverName = options->value( QStringLiteral( "driverName" ) ).toString();
+
+    if ( options->contains( QStringLiteral( "datasourceOptions" ) ) )
+      dsOptions << options->value( QStringLiteral( "datasourceOptions" ) ).toStringList();
+
+    if ( options->contains( QStringLiteral( "layerOptions" ) ) )
+      layerOptions << options->value( QStringLiteral( "layerOptions" ) ).toStringList();
+
+    if ( options->contains( QStringLiteral( "layerName" ) ) )
+      layerName = options->value( QStringLiteral( "layerName" ) ).toString();
+  }
+
+  oldToNewAttrIdxMap->clear();
+  if ( errorMessage )
+    errorMessage->clear();
+
+  QgsVectorFileWriter::ActionOnExistingFile action( QgsVectorFileWriter::CreateOrOverwriteFile );
+
+  bool update = false;
+  if ( options && options->contains( QStringLiteral( "update" ) ) )
+  {
+    update = options->value( QStringLiteral( "update" ) ).toBool();
+    if ( update )
+    {
+      if ( !overwrite && !layerName.isEmpty() )
+      {
+        gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+        if ( hDS )
+        {
+          if ( GDALDatasetGetLayerByName( hDS.get(), layerName.toUtf8().constData() ) )
+          {
+            if ( errorMessage )
+              *errorMessage += QObject::tr( "Layer %2 of %1 exists and overwrite flag is false." )
+                               .arg( uri, layerName );
+            return QgsVectorLayerExporter::ErrCreateDataSource;
+          }
+        }
+      }
+      if ( QFileInfo::exists( uri ) )
+        action = QgsVectorFileWriter::CreateOrOverwriteLayer;
+    }
+  }
+
+  if ( !overwrite && !update )
+  {
+    if ( QFileInfo::exists( uri ) )
+    {
+      if ( errorMessage )
+        *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
+                         .arg( uri );
+      return QgsVectorLayerExporter::ErrCreateDataSource;
+    }
+  }
+
+  QString newLayerName( layerName );
+  std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >(
+        uri, encoding, fields, wkbType,
+        srs, driverName, dsOptions, layerOptions, nullptr,
+        QgsVectorFileWriter::NoSymbology, nullptr,
+        layerName, action, &newLayerName );
+  layerName = newLayerName;
+
+  QgsVectorFileWriter::WriterError error = writer->hasError();
+  if ( error )
+  {
+    if ( errorMessage )
+      *errorMessage += writer->errorMessage();
+
+    return static_cast<QgsVectorLayerExporter::ExportError>( error );
+  }
+
+  QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+  writer.reset();
+
+  {
+    bool firstFieldIsFid = false;
+    if ( !layerName.isEmpty() )
+    {
+      gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+      if ( hDS )
+      {
+        OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), layerName.toUtf8().constData() );
+        if ( hLayer )
+        {
+          // Expose the OGR FID if it comes from a "real" column (typically GPKG)
+          // and make sure that this FID column is not exposed as a regular OGR field (shouldn't happen normally)
+          firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) ) &&
+                            OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), OGR_L_GetFIDColumn( hLayer ) ) < 0 &&
+                            fields.indexFromName( OGR_L_GetFIDColumn( hLayer ) ) < 0;
+
+        }
+      }
+    }
+
+    for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.constBegin(); attrIt != attrIdxMap.constEnd(); ++attrIt )
+    {
+      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt + ( firstFieldIsFid ? 1 : 0 ) );
+    }
+  }
+
+  QgsOgrProviderUtils::invalidateCachedLastModifiedDate( uri );
+
+  return QgsVectorLayerExporter::NoError;
 }
 
 QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &options )
@@ -6646,4 +6667,46 @@ QString QgsOgrProviderMetadata::filters( FilterType type )
   }
 }
 
+
+QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )
+{
+  if ( ! cached || mConnections.isEmpty() )
+  {
+
+    const QStringList connList( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) );
+    for ( const QString &connName : connList )
+    {
+      mConnections.insert( connName, new QgsGeoPackageProviderConnection( connName ) );
+    }
+  }
+  return mConnections;
+}
+
+QgsAbstractProviderConnection *QgsOgrProviderMetadata::connection( const QString &connName )
+{
+  return new QgsGeoPackageProviderConnection( connName );
+}
+
+QgsAbstractProviderConnection *QgsOgrProviderMetadata::connection( const QString &connName, const QString &uri )
+{
+  return new QgsGeoPackageProviderConnection( connName, uri );
+}
+
+void QgsOgrProviderMetadata::deleteConnection( const QString &name )
+{
+  QgsGeoPackageProviderConnection conn( name );
+  conn.remove();
+  // Re-read the connections from the settings
+  connections( false );
+
+}
+
+void QgsOgrProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, QVariantMap guiConfig )
+{
+  conn->store( guiConfig );
+  // Re-read the connections from the settings
+  connections( false );
+}
+
 ///@endcond
+

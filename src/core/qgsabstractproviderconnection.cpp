@@ -23,24 +23,24 @@ QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &nam
   //       and create mUri
 }
 
-QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name, const QgsDataSourceUri &uri ):
+QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name, const QString &uri ):
   mConnectionName( name ),
   mUri( uri )
 {
 
 }
 
-QString QgsAbstractProviderConnection::connectionName() const
+QString QgsAbstractProviderConnection::name() const
 {
   return mConnectionName;
 }
 
-QgsDataSourceUri QgsAbstractProviderConnection::uri() const
+QString QgsAbstractProviderConnection::uri() const
 {
   return mUri;
 }
 
-void QgsAbstractProviderConnection::setUri( const QgsDataSourceUri &uri )
+void QgsAbstractProviderConnection::setUri( const QString &uri )
 {
   mUri = uri;
 }

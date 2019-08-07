@@ -160,12 +160,22 @@ class CORE_EXPORT QgsProviderMetadata
      */
     virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
 
+#ifndef SIP_RUN
+
     /**
      * Creates new empty vector layer
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    SIP_SKIP virtual QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
+    virtual QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
+        const QgsFields &fields,
+        QgsWkbTypes::Type wkbType,
+        const QgsCoordinateReferenceSystem &srs,
+        bool overwrite,
+        QMap<int, int> &oldToNewAttrIdxMap,
+        QString &errorMessage,
+        const QMap<QString, QVariant> *options );
+#endif
 
     /**
      * Creates a new instance of the raster data provider.
@@ -254,18 +264,18 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of provider connections,
      * the dictionary key is the connection identifier.
-     * TODO: cached?
+     * \param cached if FALSE connections will be re-read from the settings
      * \since QGIS 3.10
      */
-    virtual QMap<QString, QgsAbstractProviderConnection *> connections( QString &errCause );
+    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true );
 
     /**
-     * Returns a dictionary of DB provider connections,
+     * Returns a dictionary of database provider connections,
      * the dictionary key is the connection identifier.
-     * TODO: cached?
+     * \param cached if FALSE connections will be re-read from the settings
      * \since QGIS 3.10
      */
-    virtual QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( QString &errCause );
+    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true );
 
 
 #ifndef SIP_RUN
@@ -273,23 +283,40 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of provider connections of the specified type T,
      * the dictionary key is the connection identifier.
-     * TODO: cached?
+     * \param cached if FALSE connections will be re-read from the settings
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    template <typename T> QMap<QString, T *>connections( QString &errCause );
+    template <typename T> QMap<QString, T *>connections( bool cached = true );
 
 #endif
 
     /**
      * Creates a new connection by loading the connection with the given \a name from the settings
+     * \since QGIS 3.10
      */
-    virtual QgsAbstractProviderConnection *connection( const QString &name, QString &errCause ) SIP_FACTORY;
+    virtual QgsAbstractProviderConnection *connection( const QString &name ) SIP_FACTORY ;
 
     /**
      * Creates a new connection with the given \a name and data source \a uri
+     * \since QGIS 3.10
      */
-    virtual QgsAbstractProviderConnection *connection( const QString &name, const QgsDataSourceUri &uri, QString &errCause ) SIP_FACTORY;
+    virtual QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) SIP_FACTORY;
+
+    /**
+     * Removes the connection with the given \a name from the settings
+     * \since QGIS 3.10
+     */
+    virtual void deleteConnection( const QString &name );
+
+    /**
+     * Stores the connection \a connection in the settings
+     * \param guiConfig stores additional connection settings that are used by the
+     * source select dialog and are not part of the data source URI
+     *
+     * \since QGIS 3.10
+     */
+    virtual void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() );
 
   private:
 
@@ -304,6 +331,8 @@ class CORE_EXPORT QgsProviderMetadata
     QString mLibrary;
 
     CreateDataProviderFunction mCreateFunction = nullptr;
+
+    QMap<QString, QgsAbstractProviderConnection *> mProviderConnections;
 };
 
 #endif //QGSPROVIDERMETADATA_H

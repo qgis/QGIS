@@ -20,12 +20,18 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_core.h"
 #include "qgsfields.h"
+#include "qgsexception.h"
 
 #include <QObject>
 
 /**
  * The QgsAbstractDatabaseProviderConnection class provides common functionality
- * for DB based connections
+ * for DB based connections, it performs low level DB operations without asking
+ * the user for confirmation or handling currently opened layers and the registry
+ * entries, it is responsability of the client code to keep layers in sync.
+ * The class methods will throw exceptions in case the operation could not be
+ * performed.
+ * \since QGIS 3.10
  */
 class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProviderConnection
 {
@@ -48,7 +54,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       RenameSchema = 1 << 7,        //!< Can rename a schema
       ExecuteSql = 1 << 8,          //!< Can execute raw SQL queries
       // TODO Transaction = 1 << 9,   //!< Supports transactions when executing operations
-      Vacuum = 1 << 10,              //!< Can run vacuum
+      Vacuum = 1 << 10,             //!< Can run vacuum
       Tables = 1 << 11,             //!< Can list tables
       Schemas = 1 << 12,            //!< Can list schemas
       SqlLayers = 1 << 13,          //!< Can create layers from SQL queries
@@ -59,7 +65,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     Q_FLAG( Capabilities )
 
     QgsAbstractDatabaseProviderConnection( const QString &name );
-    QgsAbstractDatabaseProviderConnection( const QString &name, const QgsDataSourceUri &uri );
+    QgsAbstractDatabaseProviderConnection( const QString &name, const QString &uri );
 
     // Public interface
 
@@ -71,31 +77,85 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     // Operations interface
 
     /**
-     * Creates an empty table with \a name in the given \a schema
+     * Creates an empty table with \a name in the given \a schema (may be empty if not supported by the backend)
      */
-    virtual bool createVectorTable( const QString &schema,
+    virtual void createVectorTable( const QString &schema,
                                     const QString &name,
                                     const QgsFields &fields,
                                     QgsWkbTypes::Type wkbType,
                                     const QgsCoordinateReferenceSystem &srs,
                                     bool overwrite,
-                                    const QMap<QString, QVariant> *options,
-                                    QString &errCause );
-    // TODO
-    virtual bool createRasterTable( const QString &schema,
-                                    const QString &name,
-                                    QString &errCause );
-    virtual bool dropTable( const QString &schema, const QString &name, QString &errCause );
-    virtual bool renameTable( const QString &schema, const QString &name, const QString &newName, QString &errCause );
-    virtual bool createSchema( const QString &name, QString &errCause );
-    virtual bool dropSchema( const QString &name, QString &errCause );
-    virtual bool renameSchema( const QString &name, const QString &newName, QString &errCause );
-    virtual bool executeSql( const QString &sql, QString &errCause );
-    virtual bool vacuum( const QString &schema, const QString &name, QString &errCause );
+                                    const QMap<QString, QVariant> *options
+                                  ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Create a new raster table with given \a schema and \a name (may be empty if not supported by the backend)
+     * \throws QgsProviderConnectionException
+     */
+    virtual void createRasterTable( const QString &schema,
+                                    const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Drops a table with given \a schema (may be empty if not supported by the backend) and \a name
+     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \throws QgsProviderConnectionException
+     */
+    virtual void dropTable( const QString &schema, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Renames a table with given \a schema (may be empty if not supported by the backend) and \a name
+     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \throws QgsProviderConnectionException
+     */
+    virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Creates anew schema \a schema
+     * \throws QgsProviderConnectionException
+     */
+    virtual void createSchema( const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Drops an entire \a schema
+     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \throws QgsProviderConnectionException
+     */
+    virtual void dropSchema( const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Renames a \a schema
+     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \throws QgsProviderConnectionException
+     */
+    virtual void renameSchema( const QString &name, const QString &newName ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Executes raw \a sql
+     * \throws QgsProviderConnectionException
+     */
+    virtual void executeSql( const QString &sql ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Vacuum the database table with given \a schema (may be empty if not supported by the backend) and \a name
+     * \throws QgsProviderConnectionException
+     */
+    virtual void vacuum( const QString &schema, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
     // TODO: return table information and not just the name
-    virtual QStringList tables( const QString &schema, QString &errCause );
+
+    /**
+     * Returns tables information for the given \a schema (may be empty if not supported by the backend)
+     * \throws QgsProviderConnectionException
+     */
+    virtual QStringList tables( const QString &schema = QString() ) SIP_THROW( QgsProviderConnectionException );
+
     // TODO: return schema information and not just the name
-    virtual QStringList schemas( QString &errCause );
+
+    /**
+     * Returns information about the existing schemas
+     * \throws QgsProviderConnectionException
+     */
+    virtual QStringList schemas( ) SIP_THROW( QgsProviderConnectionException );
 
   protected:
 

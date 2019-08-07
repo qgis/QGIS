@@ -218,34 +218,57 @@ Returns new instance of transaction. Ownership is transferred to the caller
 .. versionadded:: 3.10
 %End
 
-    virtual QMap<QString, QgsAbstractProviderConnection *> connections( QString &errCause );
+    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true );
 %Docstring
 Returns a dictionary of provider connections,
 the dictionary key is the connection identifier.
-TODO: cached?
+
+:param cached: if ``False`` connections will be re-read from the settings
 
 .. versionadded:: 3.10
 %End
 
-    virtual QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( QString &errCause );
+    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true );
 %Docstring
-Returns a dictionary of DB provider connections,
+Returns a dictionary of database provider connections,
 the dictionary key is the connection identifier.
-TODO: cached?
+
+:param cached: if ``False`` connections will be re-read from the settings
 
 .. versionadded:: 3.10
 %End
 
 
 
-    virtual QgsAbstractProviderConnection *connection( const QString &name, QString &errCause ) /Factory/;
+    virtual QgsAbstractProviderConnection *connection( const QString &name ) /Factory/;
 %Docstring
 Creates a new connection by loading the connection with the given ``name`` from the settings
+
+.. versionadded:: 3.10
 %End
 
-    virtual QgsAbstractProviderConnection *connection( const QString &name, const QgsDataSourceUri &uri, QString &errCause ) /Factory/;
+    virtual QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) /Factory/;
 %Docstring
 Creates a new connection with the given ``name`` and data source ``uri``
+
+.. versionadded:: 3.10
+%End
+
+    virtual void deleteConnection( const QString &name );
+%Docstring
+Removes the connection with the given ``name`` from the settings
+
+.. versionadded:: 3.10
+%End
+
+    virtual void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() );
+%Docstring
+Stores the connection ``connection`` in the settings
+
+:param guiConfig: stores additional connection settings that are used by the
+                  source select dialog and are not part of the data source URI
+
+.. versionadded:: 3.10
 %End
 
 };

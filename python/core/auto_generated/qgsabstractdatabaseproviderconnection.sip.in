@@ -1,0 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsabstractdatabaseproviderconnection.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
+{
+%Docstring
+The QgsAbstractDatabaseProviderConnection class provides common functionality
+for DB based connections, it performs low level DB operations without asking
+the user for confirmation or handling currently opened layers and the registry
+entries, it is responsability of the client code to keep layers in sync.
+The class methods will throw exceptions in case the operation could not be
+performed.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsabstractdatabaseproviderconnection.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum Capability
+    {
+      CreateVectorTable,
+      CreateRasterTable,
+      DropTable,
+      RenameTable,
+      CreateSchema,
+      DropSchema,
+      RenameSchema,
+      ExecuteSql,
+      // TODO Transaction = 1 << 9,   //!< Supports transactions when executing operations
+      Vacuum,
+      Tables,
+      Schemas,
+      SqlLayers,
+    };
+
+    typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
+
+
+    QgsAbstractDatabaseProviderConnection( const QString &name );
+    QgsAbstractDatabaseProviderConnection( const QString &name, const QString &uri );
+
+
+    Capabilities capabilities() const;
+%Docstring
+Returns connection capabilities
+%End
+
+
+    virtual void createVectorTable( const QString &schema,
+                                    const QString &name,
+                                    const QgsFields &fields,
+                                    QgsWkbTypes::Type wkbType,
+                                    const QgsCoordinateReferenceSystem &srs,
+                                    bool overwrite,
+                                    const QMap<QString, QVariant> *options
+                                  ) throw( QgsProviderConnectionException );
+
+    virtual void createRasterTable( const QString &schema,
+                                    const QString &name ) throw( QgsProviderConnectionException );
+
+    virtual void dropTable( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
+
+    virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) throw( QgsProviderConnectionException );
+
+    virtual void createSchema( const QString &name ) throw( QgsProviderConnectionException );
+
+    virtual void dropSchema( const QString &name ) throw( QgsProviderConnectionException );
+
+    virtual void renameSchema( const QString &name, const QString &newName ) throw( QgsProviderConnectionException );
+
+    virtual void executeSql( const QString &sql ) throw( QgsProviderConnectionException );
+
+    virtual void vacuum( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
+
+
+    virtual QStringList tables( const QString &schema = QString() ) throw( QgsProviderConnectionException );
+
+
+    virtual QStringList schemas( ) throw( QgsProviderConnectionException );
+
+  protected:
+
+
+};
+
+QFlags<QgsAbstractDatabaseProviderConnection::Capability> operator|(QgsAbstractDatabaseProviderConnection::Capability f1, QFlags<QgsAbstractDatabaseProviderConnection::Capability> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsabstractdatabaseproviderconnection.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

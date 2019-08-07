@@ -77,7 +77,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
@@ -772,6 +772,19 @@ class QgsOgrProviderMetadata: public QgsProviderMetadata
 
     // -----
     QgsTransaction *createTransaction( const QString &connString ) override;
+
+    // QgsProviderMetadata interface
+  public:
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) override;
+    QgsAbstractProviderConnection *connection( const QString &name ) override;
+    QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig ) override;
+
+  private:
+
+    QMap<QString, QgsAbstractProviderConnection *> mConnections;
+
 };
 
 ///@endcond

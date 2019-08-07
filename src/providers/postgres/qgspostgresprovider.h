@@ -84,7 +84,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
@@ -549,6 +549,7 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsPostgresProviderMetadata();
+    ~QgsPostgresProviderMetadata() override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
@@ -564,13 +565,17 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     bool deleteStyleById( const QString &uri, QString styleId, QString &errCause ) override;
     QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
     QgsTransaction *createTransaction( const QString &connString ) override;
-    QMap<QString, QgsAbstractProviderConnection *> connections( QString &errCause ) override;
-    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( QString &errCause ) override;
-    QgsAbstractProviderConnection *connection( const QString &name, QString &errCause ) override;
-    QgsAbstractProviderConnection *connection( const QString &name, const QgsDataSourceUri &uri, QString &errCause ) override;
-
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
+    QgsAbstractProviderConnection *connection( const QString &name ) override;
+    QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() ) override;
     void initProvider() override;
     void cleanupProvider() override;
+
+  private:
+
+    QMap<QString, QgsAbstractProviderConnection *> mConnections;
 };
 
 // clazy:excludeall=qstring-allocations

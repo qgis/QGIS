@@ -16,43 +16,42 @@
 #ifndef QGSPOSTGRESPROVIDERCONNECTION_H
 #define QGSPOSTGRESPROVIDERCONNECTION_H
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsdatasourceuri.h"
+
 
 class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
   public:
 
     QgsPostgresProviderConnection( const QString &name );
-    QgsPostgresProviderConnection( const QString &name, const QgsDataSourceUri &uri );
+    QgsPostgresProviderConnection( const QString &name, const QString &uri );
 
     // QgsAbstractProviderConnection interface
 
   public:
 
-    bool createVectorTable( const QString &schema,
+    void createVectorTable( const QString &schema,
                             const QString &name,
                             const QgsFields &fields,
                             QgsWkbTypes::Type wkbType,
                             const QgsCoordinateReferenceSystem &srs, bool overwrite,
-                            const QMap<QString, QVariant> *options,
-                            QString &errCause ) override;
+                            const QMap<QString, QVariant> *options ) override;
 
-    bool dropTable( const QString &schema, const QString &name, QString &errCause ) override;
-    bool renameTable( const QString &schema, const QString &name, const QString &newName, QString &errCause ) override;
-    bool createSchema( const QString &name, QString &errCause ) override;
-    bool dropSchema( const QString &name, QString &errCause ) override;
-    bool renameSchema( const QString &name, const QString &newName, QString &errCause ) override;
-    bool executeSql( const QString &sql, QString &errCause ) override;
-    bool vacuum( const QString &schema, const QString &name, QString &errCause ) override;
-    QStringList tables( const QString &schema, QString &errCause ) override;
-    QStringList schemas( QString &errCause ) override;
-    bool store( QVariantMap guiConfig = QVariantMap() ) override;
-    bool remove() override;
+    void dropTable( const QString &schema, const QString &name ) override;
+    void renameTable( const QString &schema, const QString &name, const QString &newName ) override;
+    void createSchema( const QString &name ) override;
+    void dropSchema( const QString &name ) override;
+    void renameSchema( const QString &name, const QString &newName ) override;
+    void executeSql( const QString &sql ) override;
+    void vacuum( const QString &schema, const QString &name ) override;
+    QStringList tables( const QString &schema ) override;
+    QStringList schemas( ) override;
+    void store( QVariantMap guiConfig = QVariantMap() ) override;
+    void remove() override;
 
 
   private:
 
-    bool executeSqlPrivate( const QString &sql, QString &errCause );
+    void executeSqlPrivate( const QString &sql );
     void setDefaultCapabilities();
 };
 
