@@ -162,11 +162,24 @@ void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QStri
 static int collect_table_info( void *tableProperties, int, char **argv, char ** )
 {
   QgsGeoPackageProviderConnection::TableProperty property;
-  property.tableName = QString::fromUtf8( argv[ 0 ] );
+  property.name = QString::fromUtf8( argv[ 0 ] );
   property.pkColumns << QLatin1String( "fid" );
-  property.geometryColumnName = QStringLiteral( "geom" );
+  property.geometryColumn = QStringLiteral( "geom" );
+  property.spatialColumnCount = 1;
+  static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
   const auto data_type = QString::fromUtf8( argv[ 1 ] );
-  property.isRaster = data_type == QStringLiteral( "tiles" );
+  if ( data_type == QStringLiteral( "tiles" ) )
+  {
+    property.flags.setFlag( QgsGeoPackageProviderConnection::Raster );
+  }
+  else
+  {
+    property.flags.setFlag( QgsGeoPackageProviderConnection::Vector );
+  }
+  if ( aspatialTypes.contains( data_type ) )
+  {
+    property.flags.setFlag( QgsGeoPackageProviderConnection::Aspatial );
+  }
   property.tableComment = QString::fromUtf8( argv[ 2 ] );
   bool ok;
   property.srids << QString::fromUtf8( argv[ 3 ] ).toInt( &ok );
@@ -178,7 +191,7 @@ static int collect_table_info( void *tableProperties, int, char **argv, char ** 
   return 0;
 }
 
-QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema )
+QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags )
 {
   if ( ! schema.isEmpty() )
   {
@@ -225,6 +238,19 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
   if ( ! errCause.isEmpty() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( name() ).arg( errCause ) );
+  }
+  // Filters
+  if ( flags != TableFlag::None )
+  {
+    QList<QgsGeoPackageProviderConnection::TableProperty> filteredTableInfo;
+    for ( const auto &ti : qgis::as_const( tableInfo ) )
+    {
+      if ( ti.flags ^ flags )
+      {
+        filteredTableInfo.push_back( ti );
+      }
+    }
+    tableInfo = filteredTableInfo;
   }
   return tableInfo ;
 }

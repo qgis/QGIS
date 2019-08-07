@@ -329,6 +329,13 @@ Sets table to ``table``
 .. versionadded:: 3.10
 %End
 
+    void setGeometryColumn( const QString &geometryColumn );
+%Docstring
+Sets geometry column name to ``geometryColumn``
+
+.. versionadded:: 3.10
+%End
+
 };
 
 

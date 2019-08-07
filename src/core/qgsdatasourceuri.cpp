@@ -385,6 +385,11 @@ QString QgsDataSourceUri::escape( const QString &val, QChar delim = '\'' ) const
   return escaped;
 }
 
+void QgsDataSourceUri::setGeometryColumn( const QString &geometryColumn )
+{
+  mGeometryColumn = geometryColumn;
+}
+
 void QgsDataSourceUri::setTable( const QString &table )
 {
   mTable = table;

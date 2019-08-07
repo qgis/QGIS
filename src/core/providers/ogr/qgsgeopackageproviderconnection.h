@@ -38,7 +38,8 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     void renameTable( const QString &schema, const QString &name, const QString &newName ) override;
     void executeSql( const QString &sql ) override;
     void vacuum( const QString &schema, const QString &name ) override;
-    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString() ) override;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
+        const TableFlags &flags = TableFlag::None ) override;
 
   private:
 

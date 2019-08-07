@@ -95,7 +95,7 @@ struct QgsPostgresLayerProperty
     return n;
   }
 
-  QgsPostgresLayerProperty at( int i ) const
+  QgsPostgresLayerProperty at( unsigned int i ) const
   {
     QgsPostgresLayerProperty property;
 

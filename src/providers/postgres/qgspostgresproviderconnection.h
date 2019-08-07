@@ -39,11 +39,12 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void dropTable( const QString &schema, const QString &name ) override;
     void renameTable( const QString &schema, const QString &name, const QString &newName ) override;
     void createSchema( const QString &name ) override;
-    void dropSchema( const QString &name ) override;
+    void dropSchema( const QString &name, bool force = false ) override;
     void renameSchema( const QString &name, const QString &newName ) override;
     void executeSql( const QString &sql ) override;
     void vacuum( const QString &schema, const QString &name ) override;
-    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema ) override;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
+        const TableFlags &flags = TableFlag::None ) override;
     QStringList schemas( ) override;
     void store( QVariantMap guiConfig = QVariantMap() ) override;
     void remove() override;

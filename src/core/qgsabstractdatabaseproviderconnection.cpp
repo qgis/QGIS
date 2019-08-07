@@ -73,7 +73,7 @@ void QgsAbstractDatabaseProviderConnection::createSchema( const QString & )
   throw QgsProviderConnectionException( QObject::tr( "Operation 'createSchema' is not supported" ) );
 }
 
-void QgsAbstractDatabaseProviderConnection::dropSchema( const QString & )
+void QgsAbstractDatabaseProviderConnection::dropSchema( const QString &, bool )
 {
   throw QgsProviderConnectionException( QObject::tr( "Operation 'dropSchema' is not supported" ) );
 }
@@ -93,7 +93,7 @@ void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QStri
   throw QgsProviderConnectionException( QObject::tr( "Operation 'vacuum' is not supported" ) );
 }
 
-QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString & )
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags & )
 {
   throw QgsProviderConnectionException( QObject::tr( "Operation 'tables' is not supported" ) );
 }

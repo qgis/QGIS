@@ -15,8 +15,8 @@ The QgsAbstractDatabaseProviderConnection class provides common functionality
 for DB based connections, it performs low level DB operations without asking
 the user for confirmation or handling currently opened layers and the registry
 entries, it is responsability of the client code to keep layers in sync.
-The class methods will throw exceptions in case the operation could not be
-performed.
+The class methods will throw exceptions in case the requested operation
+is not supported or cannot be performed without errors.
 
 .. versionadded:: 3.10
 %End
@@ -29,25 +29,47 @@ performed.
 
   public:
 
+    enum TableFlag
+    {
+      None,
+      Aspatial,
+      Vector,
+      Raster,
+      View,
+      MaterializedView,
+    };
+    typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
+
+
     struct TableProperty
     {
+
+      SIP_PYOBJECT __repr__();
+%MethodCode
+      QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->name );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
       QList<QgsWkbTypes::Type>      types;
-      QString                       schemaName;
-      QString                       tableName;
-      QString                       geometryColumnName;
+      QString                       schema;
+      QString                       name;
+      QString                       geometryColumn;
       QStringList                   pkColumns;
       QList<int>                    srids;
-      unsigned int                  nSpColumns;
-      QString                       sql;
-      bool                          isAspatial;
-      bool                          isView;
-      bool                          isMaterializedView;
-      bool                          isRaster;
+      unsigned int                  spatialColumnCount;
+      TableFlags                    flags;
       QString                       tableComment;
+      QString                       sql;
 
       int geometryColumnCount() const;
 
-      QString   defaultName() const;
+      QString  defaultName() const;
+%Docstring
+Returns the default name for the layer.
+It is usually the table name but in case there are multiple geometry
+columns, the geometry column name is appendend to the table name.
+@return
+%End
 
       TableProperty at( int i ) const;
     };
@@ -62,11 +84,12 @@ performed.
       DropSchema,
       RenameSchema,
       ExecuteSql,
-      // TODO Transaction = 1 << 9,   //!< Supports transactions when executing operations
+      // TODO: Transaction = 1 << 9,   //!< Supports transactions when executing operations
       Vacuum,
       Tables,
       Schemas,
       SqlLayers,
+      // TODO: TruncateTable = 1 << 14,      //!< Can TRUNCATE a table
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
@@ -100,7 +123,7 @@ Returns connection capabilities
 
     virtual void createSchema( const QString &name ) throw( QgsProviderConnectionException );
 
-    virtual void dropSchema( const QString &name ) throw( QgsProviderConnectionException );
+    virtual void dropSchema( const QString &name, bool force = false ) throw( QgsProviderConnectionException );
 
     virtual void renameSchema( const QString &name, const QString &newName ) throw( QgsProviderConnectionException );
 
@@ -108,8 +131,8 @@ Returns connection capabilities
 
     virtual void vacuum( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
 
-
-    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString() ) throw( QgsProviderConnectionException );
+    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
+        const QgsAbstractDatabaseProviderConnection::TableFlags &flags = QgsAbstractDatabaseProviderConnection::TableFlag::None ) throw( QgsProviderConnectionException );
 
 
     virtual QStringList schemas( ) throw( QgsProviderConnectionException );

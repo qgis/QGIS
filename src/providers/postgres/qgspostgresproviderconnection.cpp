@@ -81,6 +81,11 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
     QgsDataSourceUri newUri { uri() };
     newUri.setSchema( schema );
     newUri.setTable( name );
+    // Set geometry column if it's not aspatial
+    if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
+    {
+      newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
+    }
     QMap<int, int> map;
     QString errCause;
     QgsVectorLayerExporter::ExportError errCode = QgsPostgresProvider::createEmptyLayer(
@@ -134,14 +139,15 @@ void QgsPostgresProviderConnection::createSchema( const QString &name )
 
 }
 
-void QgsPostgresProviderConnection::dropSchema( const QString &name )
+void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force )
 {
   if ( ! capabilities().testFlag( Capability::DropSchema ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
-  executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1" )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+  executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1 %2" )
+                     .arg( QgsPostgresConn::quotedIdentifier( name ) )
+                     .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
 }
 
 void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName )
@@ -212,7 +218,7 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
               .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
-QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema )
+QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags )
 {
   if ( ! capabilities().testFlag( Capability::Tables ) )
   {
@@ -237,24 +243,62 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
     else
     {
       QVector<QgsPostgresLayerProperty> properties;
-      conn->supportedLayers( properties, false, false, true, schema );
-      for ( const auto &p : qgis::as_const( properties ) )
+      const bool aspatial { flags == TableFlag::None || flags.testFlag( TableFlag::Aspatial ) };
+      conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
+
+      // Utility to create a TableProperty and insert in the result list
+      auto fetch_property = [ &flags, &tables ]( const QgsPostgresLayerProperty & p )
       {
         QgsPostgresProviderConnection::TableProperty property;
-        property.types = p.types;
-        property.tableName = p.tableName;
-        property.schemaName = p.schemaName;
-        property.geometryColumnName = p.geometryColName;
-        property.pkColumns = p.pkCols;
-        property.srids = p.srids;
-        property.nSpColumns = p.nSpCols;
-        property.sql = p.sql;
-        property.isView = p.isView;
-        property.isMaterializedView = p.isMaterializedView;
-        property.isRaster = p.isRaster;
-        property.isAspatial = ! p.isRaster && p.nSpCols == 0;
-        property.tableComment = p.tableComment;
-        tables.push_back( property );
+        if ( p.isView )
+        {
+          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::View );
+        }
+        if ( p.isMaterializedView )
+        {
+          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
+        }
+        if ( p.isRaster )
+        {
+          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );
+        }
+        else
+        {
+          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Vector );
+        }
+        if ( ! p.isRaster && p.nSpCols == 0 )
+        {
+          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Aspatial );
+        }
+        // Filters
+        if ( flags == TableFlag::None || ( property.flags ^ flags ) )
+        {
+          property.types = p.types;
+          property.name = p.tableName;
+          property.schema = p.schemaName;
+          property.geometryColumn = p.geometryColName;
+          property.pkColumns = p.pkCols;
+          property.srids = p.srids;
+          property.spatialColumnCount = p.nSpCols;
+          property.sql = p.sql;
+          property.tableComment = p.tableComment;
+          tables.push_back( property );
+        }
+      };
+
+      for ( const auto &pr : qgis::as_const( properties ) )
+      {
+        // Aspatial
+        if ( pr.size() == 0 )
+        {
+          fetch_property( pr );
+        }
+        // Handle multiple geometry columns
+        for ( unsigned int i = 0; i < pr.nSpCols; i++ )
+        {
+          const auto prAt { pr.at( i ) };
+          fetch_property( prAt );
+        }
       }
     }
     QgsPostgresConnPool::instance()->releaseConnection( conn );

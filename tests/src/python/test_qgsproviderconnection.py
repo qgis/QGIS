@@ -71,7 +71,7 @@ class TestPyQgsProviderConnection(unittest.TestCase):
 
     def _table_names(self, tables):
         """Return table names from table property list"""
-        return [p.tableName for p in tables]
+        return [p.name for p in tables]
 
     def _test_save_load(self, md, uri):
         """Common tests on connection save and load"""
@@ -92,7 +92,7 @@ class TestPyQgsProviderConnection(unittest.TestCase):
                 and capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema ):
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
-                conn.dropSchema('myNewSchema')
+                conn.dropSchema('myNewSchema', True)
             # Create
             conn.createSchema('myNewSchema')
             schemas = conn.schemas()
@@ -114,14 +114,14 @@ class TestPyQgsProviderConnection(unittest.TestCase):
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropTable ):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
-                conn.dropSchema('myNewSchema')
+                conn.dropSchema('myNewSchema', True)
             if capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema:
                 schema = 'myNewSchema'
                 conn.createSchema('myNewSchema')
             else:
                 schema = 'public'
 
-            if 'myNewTable' in self._table_names(conn.tables('qgis_test')):
+            if 'myNewTable' in self._table_names(conn.tables(schema)):
                 conn.dropTable(schema, 'myNewTable')
             fields = QgsFields()
             fields.append(QgsField("string", QVariant.String))
@@ -136,8 +136,44 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             typ = QgsWkbTypes.LineString
             # Create
             conn.createVectorTable(schema, 'myNewTable', fields, typ, crs, True, options)
-            tables = self._table_names(conn.tables(schema))
-            self.assertTrue('myNewTable' in tables)
+            table_names = self._table_names(conn.tables(schema))
+            self.assertTrue('myNewTable' in table_names)
+
+            # Check table information
+            table_properties = conn.tables(schema)
+            self.assertEqual(len(table_properties), 1)
+            table_property = table_properties[0]
+            self.assertEqual(table_property.name, 'myNewTable')
+            self.assertEqual(table_property.spatialColumnCount, 1)
+            self.assertEqual(table_property.defaultName(), 'myNewTable')
+
+            if False:
+                # Check aspatial tables
+                conn.createVectorTable(schema, 'myNewAspatialTable', fields, QgsWkbTypes.NoGeometry, crs, True, options)
+                table_properties = conn.tables(schema, QgsAbstractDatabaseProviderConnection.Aspatial)
+                self.assertEqual(len(table_properties), 1)
+                table_property = table_properties[0]
+                self.assertEqual(table_property.name, 'myNewAspatiaTable')
+                self.assertEqual(table_property.spatialColumnCount, 1)
+                self.assertEqual(table_property.defaultName(), 'myNewAspatiaTable')
+                self.assertFalse(table_property.flags & QgsAbstractDatabaseProviderConnection.Raster)
+                self.assertTrue(table_property.flags & QgsAbstractDatabaseProviderConnection.Vector)
+                self.assertTrue(table_property.flags & QgsAbstractDatabaseProviderConnection.Aspatial)
+
+                # Check that we also get the aspatial when querying for vectors
+                table_names = self._table_names(conn.tables(schema, QgsAbstractDatabaseProviderConnection.Vector))
+                self.assertTrue('myNewTable' in table_names)
+                self.assertTrue('myNewAspatiaTable' in table_names)
+
+            # Query for rasters
+            table_properties = conn.tables(schema, QgsAbstractDatabaseProviderConnection.Raster)
+            # one raster should be there
+            self.assertEqual(len(table_properties), 1)
+            table_property = table_properties[0]
+            self.assertTrue(table_property.flags & QgsAbstractDatabaseProviderConnection.Raster)
+            self.assertFalse(table_property.flags & QgsAbstractDatabaseProviderConnection.Vector)
+            self.assertFalse(table_property.flags & QgsAbstractDatabaseProviderConnection.Aspatial)
+
             # Rename
             conn.renameTable(schema, 'myNewTable', 'myVeryNewTable')
             tables = self._table_names(conn.tables(schema))
@@ -146,10 +182,21 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             # Vacuum
             if capabilities & QgsAbstractDatabaseProviderConnection.Vacuum:
                 conn.vacuum('myNewSchema', 'myVeryNewTable')
-            # Drop
+
+            if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema:
+                # Drop schema (should fail)
+                with self.assertRaises(QgsProviderConnectionException) as ex:
+                    conn.dropSchema('myNewSchema')
+
+            # Drop table
             conn.dropTable(schema, 'myVeryNewTable')
-            tables = self._table_names(conn.tables(schema))
-            self.assertFalse('myVeryNewTable' in tables)
+            table_names = self._table_names(conn.tables(schema))
+            self.assertFalse('myVeryNewTable' in table_names)
+
+            if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema:
+                # Drop schema
+                conn.dropSchema('myNewSchema')
+                self.assertFalse('myNewSchema' in conn.schemas())
 
         conns = md.connections()
         self.assertTrue(isinstance(list(conns.values())[0], QgsAbstractDatabaseProviderConnection))
@@ -158,7 +205,7 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         md.deleteConnection(conn.name())
         self.assertEqual(list(md.connections().values()), [])
 
-    def ___test_postgis_connections(self):
+    def test_postgis_connections(self):
         """Create some connections and retrieve them"""
 
         md = QgsProviderRegistry.instance().providerMetadata('postgres')

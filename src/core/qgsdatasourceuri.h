@@ -295,6 +295,12 @@ class CORE_EXPORT QgsDataSourceUri
      */
     void setTable( const QString &table );
 
+    /**
+     * Sets geometry column name to \a geometryColumn
+     * \since QGIS 3.10
+     */
+    void setGeometryColumn( const QString &geometryColumn );
+
   private:
     void skipBlanks( const QString &uri, int &i );
     QString getValue( const QString &uri, int &i );
