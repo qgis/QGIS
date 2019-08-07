@@ -176,7 +176,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
       continue;
     }
 
-    if ( allowedGapsGeomEngine->contains( gapGeom ) )
+    if ( allowedGapsGeomEngine && allowedGapsGeomEngine->contains( gapGeom ) )
     {
       continue;
     }
