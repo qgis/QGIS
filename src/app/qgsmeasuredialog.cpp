@@ -267,7 +267,8 @@ void QgsMeasureDialog::removeLastPoint()
     if ( numPoints > 1 )
     {
       QVector<QgsPointXY> tmpPoints = mTool->points();
-      tmpPoints.append( mLastMousePoint );
+      if ( !mTool->done() )
+        tmpPoints.append( mLastMousePoint );
       double area = mDa.measurePolygon( tmpPoints );
       editTotal->setText( formatArea( area ) );
     }
