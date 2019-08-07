@@ -6656,6 +6656,11 @@ QgsOgrProviderMetadata::QgsOgrProviderMetadata()
 
 }
 
+QgsOgrProviderMetadata::~QgsOgrProviderMetadata()
+{
+  qDeleteAll( mConnections );
+}
+
 QString QgsOgrProviderMetadata::filters( FilterType type )
 {
   switch ( type )
@@ -6672,7 +6677,8 @@ QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connectio
 {
   if ( ! cached || mConnections.isEmpty() )
   {
-
+    qDeleteAll( mConnections );
+    mConnections.clear();
     const QStringList connList( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) );
     for ( const QString &connName : connList )
     {
@@ -6696,16 +6702,13 @@ void QgsOgrProviderMetadata::deleteConnection( const QString &name )
 {
   QgsGeoPackageProviderConnection conn( name );
   conn.remove();
-  // Re-read the connections from the settings
-  connections( false );
-
+  mConnections.clear();
 }
 
 void QgsOgrProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, QVariantMap guiConfig )
 {
   conn->store( guiConfig );
-  // Re-read the connections from the settings
-  connections( false );
+  mConnections.clear();
 }
 
 ///@endcond

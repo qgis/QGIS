@@ -69,6 +69,10 @@ class TestPyQgsProviderConnection(unittest.TestCase):
     def setUp(self):
         QgsSettings().clear()
 
+    def _table_names(self, tables):
+        """Return table names from table property list"""
+        return [p.tableName for p in tables]
+
     def _test_save_load(self, md, uri):
         """Common tests on connection save and load"""
         conn = md.connection('qgis_test1', uri)
@@ -117,7 +121,7 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             else:
                 schema = 'public'
 
-            if 'myNewTable' in conn.tables('qgis_test')[0]:
+            if 'myNewTable' in self._table_names(conn.tables('qgis_test')):
                 conn.dropTable(schema, 'myNewTable')
             fields = QgsFields()
             fields.append(QgsField("string", QVariant.String))
@@ -132,11 +136,11 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             typ = QgsWkbTypes.LineString
             # Create
             conn.createVectorTable(schema, 'myNewTable', fields, typ, crs, True, options)
-            tables = conn.tables(schema)
+            tables = self._table_names(conn.tables(schema))
             self.assertTrue('myNewTable' in tables)
             # Rename
             conn.renameTable(schema, 'myNewTable', 'myVeryNewTable')
-            tables = conn.tables(schema)
+            tables = self._table_names(conn.tables(schema))
             self.assertFalse('myNewTable' in tables)
             self.assertTrue('myVeryNewTable' in tables)
             # Vacuum
@@ -144,7 +148,7 @@ class TestPyQgsProviderConnection(unittest.TestCase):
                 conn.vacuum('myNewSchema', 'myVeryNewTable')
             # Drop
             conn.dropTable(schema, 'myVeryNewTable')
-            tables = conn.tables(schema)
+            tables = self._table_names(conn.tables(schema))
             self.assertFalse('myVeryNewTable' in tables)
 
         conns = md.connections()
@@ -192,7 +196,7 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         # Run common tests
         conn = self._test_save_load(md, uri)
         # Check that the raster is in the tables
-        self.assertTrue('osm' in conn.tables())
+        self.assertTrue('osm' in self._table_names(conn.tables()))
         # Run common tests
         self._test_operations(md, conn)
 

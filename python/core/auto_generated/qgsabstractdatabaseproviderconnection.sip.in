@@ -29,6 +29,29 @@ performed.
 
   public:
 
+    struct TableProperty
+    {
+      QList<QgsWkbTypes::Type>      types;
+      QString                       schemaName;
+      QString                       tableName;
+      QString                       geometryColumnName;
+      QStringList                   pkColumns;
+      QList<int>                    srids;
+      unsigned int                  nSpColumns;
+      QString                       sql;
+      bool                          isAspatial;
+      bool                          isView;
+      bool                          isMaterializedView;
+      bool                          isRaster;
+      QString                       tableComment;
+
+      int geometryColumnCount() const;
+
+      QString   defaultName() const;
+
+      TableProperty at( int i ) const;
+    };
+
     enum Capability
     {
       CreateVectorTable,
@@ -86,7 +109,7 @@ Returns connection capabilities
     virtual void vacuum( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
 
 
-    virtual QStringList tables( const QString &schema = QString() ) throw( QgsProviderConnectionException );
+    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString() ) throw( QgsProviderConnectionException );
 
 
     virtual QStringList schemas( ) throw( QgsProviderConnectionException );

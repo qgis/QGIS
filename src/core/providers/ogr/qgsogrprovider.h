@@ -743,7 +743,10 @@ class QgsOgrLayer
 class QgsOgrProviderMetadata: public QgsProviderMetadata
 {
   public:
+
     QgsOgrProviderMetadata();
+    ~QgsOgrProviderMetadata() override;
+
     void initProvider() override;
     void cleanupProvider() override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;

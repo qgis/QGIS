@@ -5057,15 +5057,13 @@ void QgsPostgresProviderMetadata::deleteConnection( const QString &name )
 {
   QgsPostgresProviderConnection conn( name );
   conn.remove();
-  // Re-read the connections from the settings
-  connections( false );
+  mConnections.clear();
 }
 
 void QgsPostgresProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, QVariantMap guiConfig )
 {
   conn->store( guiConfig );
-  // Re-read the connections from the settings
-  connections( false );
+  mConnections.clear( );
 }
 
 QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name )

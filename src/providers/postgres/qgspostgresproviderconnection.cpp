@@ -212,14 +212,14 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
               .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
-QStringList QgsPostgresProviderConnection::tables( const QString &schema )
+QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema )
 {
   if ( ! capabilities().testFlag( Capability::Tables ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
 
-  QStringList tables;
+  QList<QgsPostgresProviderConnection::TableProperty> tables;
   QString errCause;
   const QgsDataSourceUri dsUri { uri() };
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
@@ -240,7 +240,21 @@ QStringList QgsPostgresProviderConnection::tables( const QString &schema )
       conn->supportedLayers( properties, false, false, true, schema );
       for ( const auto &p : qgis::as_const( properties ) )
       {
-        tables.push_back( p.tableName );
+        QgsPostgresProviderConnection::TableProperty property;
+        property.types = p.types;
+        property.tableName = p.tableName;
+        property.schemaName = p.schemaName;
+        property.geometryColumnName = p.geometryColName;
+        property.pkColumns = p.pkCols;
+        property.srids = p.srids;
+        property.nSpColumns = p.nSpCols;
+        property.sql = p.sql;
+        property.isView = p.isView;
+        property.isMaterializedView = p.isMaterializedView;
+        property.isRaster = p.isRaster;
+        property.isAspatial = ! p.isRaster && p.nSpCols == 0;
+        property.tableComment = p.tableComment;
+        tables.push_back( property );
       }
     }
     QgsPostgresConnPool::instance()->releaseConnection( conn );

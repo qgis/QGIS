@@ -38,14 +38,14 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     void renameTable( const QString &schema, const QString &name, const QString &newName ) override;
     void executeSql( const QString &sql ) override;
     void vacuum( const QString &schema, const QString &name ) override;
-    QStringList tables( const QString &schema = QString() ) override;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString() ) override;
 
   private:
 
     void setDefaultCapabilities();
-    //!< Use GDAL to execute SQL
+    //! Use GDAL to execute SQL
     void executeGdalSqlPrivate( const QString &sql );
-    //!< Use sqlite to execute SQL
+    //! Use sqlite to execute SQL
     void executeSqliteSqlPrivate( const QString &sql );
 
 };

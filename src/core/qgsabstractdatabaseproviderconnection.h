@@ -41,6 +41,58 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
   public:
 
     /**
+     * The TableProperty struct represents a database table
+     */
+    struct TableProperty
+    {
+      QList<QgsWkbTypes::Type>      types;
+      QString                       schemaName;
+      QString                       tableName;
+      QString                       geometryColumnName;
+      QStringList                   pkColumns;
+      QList<int>                    srids;
+      unsigned int                  nSpColumns;
+      QString                       sql;
+      bool                          isAspatial = false;
+      bool                          isView = false;
+      bool                          isMaterializedView = false;
+      bool                          isRaster = false;
+      QString                       tableComment;
+
+      int geometryColumnCount() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+
+      QString   defaultName() const
+      {
+        QString n = tableName;
+        if ( nSpColumns > 1 ) n += '.' + geometryColumnName;
+        return n;
+      }
+
+      TableProperty at( int i ) const
+      {
+        TableProperty property;
+
+        Q_ASSERT( i >= 0 && i < geometryColumnCount() );
+
+        property.types << types[ i ];
+        property.srids << srids[ i ];
+        property.schemaName      = schemaName;
+        property.tableName       = tableName;
+        property.geometryColumnName = geometryColumnName;
+        property.pkColumns       = pkColumns;
+        property.nSpColumns      = nSpColumns;
+        property.sql             = sql;
+        property.isView          = isView;
+        property.isAspatial      = isAspatial;
+        property.isRaster        = isRaster;
+        property.isMaterializedView = isMaterializedView;
+        property.tableComment    = tableComment;
+
+        return property;
+      }
+    };
+
+    /**
      * The Capability enum represent the operations supported by the connection
      */
     enum Capability
@@ -147,7 +199,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Returns tables information for the given \a schema (may be empty if not supported by the backend)
      * \throws QgsProviderConnectionException
      */
-    virtual QStringList tables( const QString &schema = QString() ) SIP_THROW( QgsProviderConnectionException );
+    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString() ) SIP_THROW( QgsProviderConnectionException );
 
     // TODO: return schema information and not just the name
 

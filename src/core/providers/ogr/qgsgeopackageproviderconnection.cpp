@@ -50,6 +50,10 @@ void QgsGeoPackageProviderConnection::store( QVariantMap guiConfig )
   settings.beginGroup( QStringLiteral( "connections" ) );
   settings.beginGroup( name() );
   settings.setValue( QStringLiteral( "path" ), uri() );
+  settings.endGroup();
+  settings.endGroup();
+  settings.endGroup();
+  settings.endGroup();
 }
 
 void QgsGeoPackageProviderConnection::remove()
@@ -59,6 +63,9 @@ void QgsGeoPackageProviderConnection::remove()
   settings.beginGroup( QStringLiteral( "GPKG" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
   settings.remove( name() );
+  settings.endGroup();
+  settings.endGroup();
+  settings.endGroup();
 }
 
 
@@ -104,8 +111,8 @@ void QgsGeoPackageProviderConnection::dropTable( const QString &schema, const QS
   }
   QString errCause;
   // TODO: this won't work for rasters
-  QgsOgrProviderUtils::deleteLayer( uri(), errCause );
-  if ( ! errCause.isEmpty() )
+
+  if ( ! QgsOgrProviderUtils::deleteLayer( uri(), errCause ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error deleting table %1: %2" ).arg( name ).arg( errCause ) );
   }
@@ -152,19 +159,32 @@ void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QStri
   executeGdalSqlPrivate( QStringLiteral( "VACUUM" ) );
 }
 
-static int collect_strings( void *names, int, char **argv, char ** )
+static int collect_table_info( void *tableProperties, int, char **argv, char ** )
 {
-  *static_cast<QList<QString>*>( names ) << QString::fromUtf8( argv[ 0 ] );
+  QgsGeoPackageProviderConnection::TableProperty property;
+  property.tableName = QString::fromUtf8( argv[ 0 ] );
+  property.pkColumns << QLatin1String( "fid" );
+  property.geometryColumnName = QStringLiteral( "geom" );
+  const auto data_type = QString::fromUtf8( argv[ 1 ] );
+  property.isRaster = data_type == QStringLiteral( "tiles" );
+  property.tableComment = QString::fromUtf8( argv[ 2 ] );
+  bool ok;
+  property.srids << QString::fromUtf8( argv[ 3 ] ).toInt( &ok );
+  if ( !ok )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( QString::fromUtf8( argv[ 3 ] ) ) );
+  }
+  *static_cast<QList<QgsGeoPackageProviderConnection::TableProperty>*>( tableProperties ) << property ;
   return 0;
 }
 
-QStringList QgsGeoPackageProviderConnection::tables( const QString &schema )
+QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema )
 {
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  QStringList names;
+  QList<QgsGeoPackageProviderConnection::TableProperty> tableInfo;
   QString errCause;
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( QLatin1String( "ogr" ), uri() ) );
   QString baseUri = pieces[QStringLiteral( "path" )].toString();
@@ -175,14 +195,21 @@ QStringList QgsGeoPackageProviderConnection::tables( const QString &schema )
     int status = database.open_v2( baseUri, SQLITE_OPEN_READONLY, nullptr );
     if ( status == SQLITE_OK )
     {
-      char *sql = sqlite3_mprintf( "SELECT table_name FROM gpkg_contents;" );
-      status = sqlite3_exec(
-                 database.get(),              /* An open database */
-                 sql,                         /* SQL to be evaluated */
-                 collect_strings,             /* Callback function */
-                 &names,                      /* 1st argument to callback */
-                 &errmsg                      /* Error msg written here */
-               );
+      char *sql = sqlite3_mprintf( "SELECT table_name, data_type, description, srs_id FROM gpkg_contents;" );
+      try
+      {
+        status = sqlite3_exec(
+                   database.get(),              /* An open database */
+                   sql,                         /* SQL to be evaluated */
+                   collect_table_info,          /* Callback function */
+                   &tableInfo,                  /* 1st argument to callback */
+                   &errmsg                      /* Error msg written here */
+                 );
+      }
+      catch ( QgsProviderConnectionException &ex )
+      {
+        errCause = ex.what();
+      }
       sqlite3_free( sql );
       if ( status != SQLITE_OK )
       {
@@ -199,7 +226,7 @@ QStringList QgsGeoPackageProviderConnection::tables( const QString &schema )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( name() ).arg( errCause ) );
   }
-  return  names;
+  return tableInfo ;
 }
 
 void QgsGeoPackageProviderConnection::setDefaultCapabilities()

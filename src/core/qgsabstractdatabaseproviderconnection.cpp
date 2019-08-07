@@ -93,7 +93,7 @@ void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QStri
   throw QgsProviderConnectionException( QObject::tr( "Operation 'vacuum' is not supported" ) );
 }
 
-QStringList QgsAbstractDatabaseProviderConnection::tables( const QString & )
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString & )
 {
   throw QgsProviderConnectionException( QObject::tr( "Operation 'tables' is not supported" ) );
 }
