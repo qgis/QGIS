@@ -371,8 +371,15 @@ QgsPostgresConn::~QgsPostgresConn()
   mConn = nullptr;
 }
 
+void QgsPostgresConn::ref()
+{
+  QMutexLocker locker( &mLock );
+  ++mRef;
+}
+
 void QgsPostgresConn::unref()
 {
+  QMutexLocker locker( &mLock );
   if ( --mRef > 0 )
     return;
 
@@ -386,6 +393,8 @@ void QgsPostgresConn::unref()
     connections.remove( key );
   }
 
+  // to avoid destroying locked mutex
+  locker.unlock();
   delete this;
 }
 
@@ -429,6 +438,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, co
 
 bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema )
 {
+  QMutexLocker locker( &mLock );
   int nColumns = 0;
   int foundInTables = 0;
   QgsPostgresResult result;
@@ -832,6 +842,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
 bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema )
 {
+  QMutexLocker locker( &mLock );
+
   // Get the list of supported tables
   if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, schema ) )
   {
@@ -913,6 +925,7 @@ bool QgsPostgresConn::hasRaster()
 /* Functions for determining available features in postGIS */
 QString QgsPostgresConn::postgisVersion()
 {
+  QMutexLocker locker( &mLock );
   if ( mGotPostgisVersion )
     return mPostgisVersionInfo;
 
@@ -1333,12 +1346,14 @@ QString QgsPostgresConn::PQerrorMessage() const
 
 int QgsPostgresConn::PQsendQuery( const QString &query )
 {
+  QMutexLocker locker( &mLock );
   Q_ASSERT( mConn );
   return ::PQsendQuery( mConn, query.toUtf8() );
 }
 
 bool QgsPostgresConn::begin()
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return PQexecNR( QStringLiteral( "SAVEPOINT transaction_savepoint" ) );
@@ -1351,6 +1366,7 @@ bool QgsPostgresConn::begin()
 
 bool QgsPostgresConn::commit()
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return PQexecNR( QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" ) );
@@ -1363,6 +1379,7 @@ bool QgsPostgresConn::commit()
 
 bool QgsPostgresConn::rollback()
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return PQexecNR( QStringLiteral( "ROLLBACK TO SAVEPOINT transaction_savepoint" ) )
@@ -1376,6 +1393,7 @@ bool QgsPostgresConn::rollback()
 
 qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, int col )
 {
+  QMutexLocker locker( &mLock );
   quint64 oid;
   char *p = PQgetvalue( queryResult.result(), row, col );
   size_t s = PQgetlength( queryResult.result(), row, col );
@@ -1495,6 +1513,7 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
 
 void QgsPostgresConn::deduceEndian()
 {
+  QMutexLocker locker( &mLock );
   // need to store the PostgreSQL endian format used in binary cursors
   // since it appears that starting with
   // version 7.4, binary cursors return data in XDR whereas previous versions
@@ -1996,6 +2015,7 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
 
 bool QgsPostgresConn::cancel()
 {
+  QMutexLocker locker( &mLock );
   PGcancel *c = ::PQgetCancel( mConn );
   if ( !c )
   {
@@ -2016,6 +2036,7 @@ bool QgsPostgresConn::cancel()
 
 QString QgsPostgresConn::currentDatabase() const
 {
+  QMutexLocker locker( &mLock );
   QString database;
   QString sql = "SELECT current_database()";
   QgsPostgresResult res( PQexec( sql ) );
