@@ -1471,8 +1471,9 @@ QgsVectorSimplifyMethod QgsLayoutExporter::createExportSimplifyMethod()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
   simplifyMethod.setForceLocalOptimization( true );
-  simplifyMethod.setSimplifyAlgorithm( QgsVectorSimplifyMethod::SnapToGrid );
-  simplifyMethod.setThreshold( 0.5 ); // pixels
+  // we use SnappedToGridGlobal, because it avoids gaps and slivers between previously adjacent polygons
+  simplifyMethod.setSimplifyAlgorithm( QgsVectorSimplifyMethod::SnappedToGridGlobal );
+  simplifyMethod.setThreshold( 0.1f ); // (pixels). We are quite conservative here. This could possibly be bumped all the way up to 1. But let's play it safe.
   return simplifyMethod;
 }
 
