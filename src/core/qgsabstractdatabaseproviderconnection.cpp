@@ -50,55 +50,55 @@ void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &sc
   Q_UNUSED( overwrite );
   Q_UNUSED( options );
   Q_UNUSED( wkbType );
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'createVectorTable' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'createVectorTable' is not supported" ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::renameTable( const QString &, const QString &, const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'renameTable' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'renameTable' is not supported" ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::createRasterTable( const QString &, const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'createRasterTable' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'createRasterTable' is not supported" ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::dropTable( const QString &, const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'dropTable' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'dropTable' is not supported" ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::createSchema( const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'createSchema' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'createSchema' is not supported" ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::dropSchema( const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'dropSchema' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'dropSchema' is not supported" ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::renameSchema( const QString &, const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'renameSchema' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'renameSchema' is not supported" ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::executeSql( const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'executeSql' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'executeSql' is not supported" ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'vacuum' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'vacuum' is not supported" ) );
 }
 
 QStringList QgsAbstractDatabaseProviderConnection::tables( const QString & )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'tables' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'tables' is not supported" ) );
 }
 
 QStringList QgsAbstractDatabaseProviderConnection::schemas( )
 {
-  throw new QgsProviderConnectionException( QObject::tr( "Operation 'schemas' is not supported" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'schemas' is not supported" ) );
 }

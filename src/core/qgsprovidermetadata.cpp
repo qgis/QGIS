@@ -165,7 +165,7 @@ QgsTransaction *QgsProviderMetadata::createTransaction( const QString & )
 QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections( bool cached )
 {
   Q_UNUSED( cached );
-  throw new QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connections" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connections" ) ) );
 }
 
 QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( bool cached )
@@ -176,7 +176,7 @@ QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbCo
 QgsAbstractProviderConnection *QgsProviderMetadata::connection( const QString &name )
 {
   Q_UNUSED( name );
-  throw new QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
 }
 
 
@@ -184,20 +184,20 @@ QgsAbstractProviderConnection *QgsProviderMetadata::connection( const QString &n
 {
   Q_UNUSED( name );
   Q_UNUSED( uri );
-  throw new QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
 }
 
 void QgsProviderMetadata::deleteConnection( const QString &name )
 {
   Q_UNUSED( name );
-  throw new QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteConnection" ) ) );
 }
 
 void QgsProviderMetadata::saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig )
 {
   Q_UNUSED( connection );
   Q_UNUSED( guiConfig );
-  throw new QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
 }
 
 template<typename T>

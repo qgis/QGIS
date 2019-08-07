@@ -95,7 +95,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
         );
     if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
     {
-      throw new QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
+      throw QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
     }
   }
 }
@@ -104,7 +104,7 @@ void QgsPostgresProviderConnection::dropTable( const QString &schema, const QStr
 {
   if ( ! capabilities().testFlag( Capability::DropTable ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
   executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
                      .arg( QgsPostgresConn::quotedIdentifier( schema ) )
@@ -115,7 +115,7 @@ void QgsPostgresProviderConnection::renameTable( const QString &schema, const QS
 {
   if ( ! capabilities().testFlag( Capability::RenameTable ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
                      .arg( QgsPostgresConn::quotedIdentifier( schema ) )
@@ -127,7 +127,7 @@ void QgsPostgresProviderConnection::createSchema( const QString &name )
 {
   if ( ! capabilities().testFlag( Capability::CreateSchema ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
   executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
@@ -138,7 +138,7 @@ void QgsPostgresProviderConnection::dropSchema( const QString &name )
 {
   if ( ! capabilities().testFlag( Capability::DropSchema ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
   executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1" )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
@@ -148,7 +148,7 @@ void QgsPostgresProviderConnection::renameSchema( const QString &name, const QSt
 {
   if ( ! capabilities().testFlag( Capability::RenameSchema ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
   executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) )
@@ -159,7 +159,7 @@ void QgsPostgresProviderConnection::executeSql( const QString &sql )
 {
   if ( ! capabilities().testFlag( Capability::ExecuteSql ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
   executeSqlPrivate( sql );
 }
@@ -170,7 +170,7 @@ void QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql )
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
   if ( !conn )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
   }
   else
   {
@@ -196,7 +196,7 @@ void QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql )
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     if ( ! errCause.isEmpty() )
     {
-      throw new QgsProviderConnectionException( errCause );
+      throw QgsProviderConnectionException( errCause );
     }
   }
 }
@@ -205,7 +205,7 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
 {
   if ( ! capabilities().testFlag( Capability::Vacuum ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
   executeSql( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
               .arg( QgsPostgresConn::quotedIdentifier( schema ) )
@@ -216,7 +216,7 @@ QStringList QgsPostgresProviderConnection::tables( const QString &schema )
 {
   if ( ! capabilities().testFlag( Capability::Tables ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
 
   QStringList tables;
@@ -247,7 +247,7 @@ QStringList QgsPostgresProviderConnection::tables( const QString &schema )
   }
   if ( ! errCause.isEmpty() )
   {
-    throw new QgsProviderConnectionException( errCause );
+    throw QgsProviderConnectionException( errCause );
   }
   return tables;
 }
@@ -256,7 +256,7 @@ QStringList QgsPostgresProviderConnection::schemas( )
 {
   if ( ! capabilities().testFlag( Capability::Schemas ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
 
   QStringList schemas;
@@ -286,7 +286,7 @@ QStringList QgsPostgresProviderConnection::schemas( )
   }
   if ( ! errCause.isEmpty() )
   {
-    throw new QgsProviderConnectionException( errCause );
+    throw QgsProviderConnectionException( errCause );
   }
   return schemas;
 }

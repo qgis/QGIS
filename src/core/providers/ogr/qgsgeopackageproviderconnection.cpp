@@ -86,7 +86,7 @@ void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema, 
         );
     if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
     {
-      throw new QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
+      throw QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
     }
   }
 }
@@ -100,14 +100,14 @@ void QgsGeoPackageProviderConnection::dropTable( const QString &schema, const QS
   }
   if ( ! capabilities().testFlag( Capability::DropTable ) )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
+    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
   }
   QString errCause;
   // TODO: this won't work for rasters
   QgsOgrProviderUtils::deleteLayer( uri(), errCause );
   if ( ! errCause.isEmpty() )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Error deleting table %1: %2" ).arg( name ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error deleting table %1: %2" ).arg( name ).arg( errCause ) );
   }
 }
 
@@ -132,7 +132,7 @@ void QgsGeoPackageProviderConnection::renameTable( const QString &schema, const 
   }
   catch ( QgsProviderConnectionException &ex )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Warning: error while updating the styles, perhaps there are no styles in this GPKG: %1" ).arg( ex.what() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Warning: error while updating the styles, perhaps there are no styles stored in this GPKG: %1" ).arg( ex.what() ), 4 );
   }
 }
 
@@ -144,10 +144,12 @@ void QgsGeoPackageProviderConnection::executeSql( const QString &sql )
 
 void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QString &name )
 {
+  Q_UNUSED( name );
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
+  executeGdalSqlPrivate( QStringLiteral( "VACUUM" ) );
 }
 
 static int collect_strings( void *names, int, char **argv, char ** )
@@ -195,7 +197,7 @@ QStringList QgsGeoPackageProviderConnection::tables( const QString &schema )
   }
   if ( ! errCause.isEmpty() )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( name() ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( name() ).arg( errCause ) );
   }
   return  names;
 }
@@ -230,11 +232,11 @@ void QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql 
   }
   if ( ! errCause.isEmpty() )
   {
-    throw new QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errCause ) );
   }
 }
 
 void QgsGeoPackageProviderConnection::executeSqliteSqlPrivate( const QString &sql )
 {
-
+  // TODO
 }

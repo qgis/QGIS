@@ -196,7 +196,6 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         # Run common tests
         self._test_operations(md, conn)
 
-    @unittest.skip('Still have to find a way to get QgsProviderConnectionException instead of "unknown"')
     def test_errors(self):
         """Test SQL errors"""
 
