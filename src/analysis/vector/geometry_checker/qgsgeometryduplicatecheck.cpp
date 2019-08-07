@@ -70,7 +70,7 @@ void QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePoo
       }
       QString errMsg;
       QgsGeometry geomB = layerFeatureB.geometry();
-      QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( geomB.constGet(), &errMsg );
+      std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngineA->symDifference( geomB.constGet(), &errMsg ) );
       if ( errMsg.isEmpty() && diffGeom && diffGeom->isEmpty() )
       {
         duplicates[layerFeatureB.layer()->id()].append( layerFeatureB.feature().id() );
@@ -79,7 +79,6 @@ void QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePoo
       {
         messages.append( tr( "Duplicate check failed for (%1, %2): %3" ).arg( layerFeatureA.id(), layerFeatureB.id(), errMsg ) );
       }
-      delete diffGeom;
     }
     if ( !duplicates.isEmpty() )
     {
