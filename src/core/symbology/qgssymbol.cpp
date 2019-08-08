@@ -1091,7 +1091,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
   if ( context.hasRenderedFeatureHandlers() )
   {
-    QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext;
+    QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( &context );
     const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
     for ( QgsRenderedFeatureHandlerInterface *handler : handlers )
       handler->handleRenderedFeature( feature, renderedBoundsGeom, featureContext );
