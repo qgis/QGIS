@@ -155,7 +155,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( pointFeature3.attribute( 3 ).toInt(), 1 );
   QCOMPARE( pointFeature3.attribute( 4 ).toInt(), 1 );
   QCOMPARE( pointFeature3.attribute( 5 ).toInt(), 2 );
-  QCOMPARE( pointGeometry3.asWkt( 1 ), QStringLiteral( "Polygon ((123.8 63.8, 135.1 63.8, 135.1 75, 123.8 75, 123.8 63.8))" ) );
+  QCOMPARE( pointGeometry3.asWkt( 1 ), QStringLiteral( "MultiPolygon (((123.8 63.8, 135.1 63.8, 135.1 75, 123.8 75, 123.8 63.8)))" ) );
 
   // check second map
   pointFeatures = geoPdfExporter.renderedFeatures( map2 ).value( pointsLayer->id() );
@@ -178,7 +178,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( pointFeature3b.attribute( 3 ).toInt(), 1 );
   QCOMPARE( pointFeature3b.attribute( 4 ).toInt(), 1 );
   QCOMPARE( pointFeature3b.attribute( 5 ).toInt(), 2 );
-  QCOMPARE( pointGeometry3b.asWkt( 1 ), QStringLiteral( "Polygon ((167 102, 178.2 102, 178.2 113.3, 167 113.3, 167 102))" ) );
+  QCOMPARE( pointGeometry3b.asWkt( 1 ), QStringLiteral( "MultiPolygon (((167 102, 178.2 102, 178.2 113.3, 167 113.3, 167 102)))" ) );
 
   // finalize and test collation
   geoPdfExporter.finalize();
@@ -187,6 +187,22 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( collatedFeatures.count(), 2 );
   QCOMPARE( collatedFeatures.value( pointsLayer->id() ).count(), 32 );
   QCOMPARE( collatedFeatures.value( linesLayer->id() ).count(), 6 );
+
+  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
+  QVERIFY( geoPdfExporter.errorMessage().isEmpty() );
+
+  // check layers were written
+  QCOMPARE( geoPdfExporter.mTemporaryFilePaths.count(), 2 );
+  std::unique_ptr< QgsVectorLayer > pointTemp = qgis::make_unique< QgsVectorLayer >( geoPdfExporter.mTemporaryFilePaths.value( pointsLayer->id(), QString() ) );
+  QVERIFY( pointTemp->isValid() );
+  QCOMPARE( pointTemp->featureCount(), 32 );
+  QCOMPARE( pointTemp->wkbType(), QgsWkbTypes::MultiPolygon );
+  pointTemp.reset();
+  std::unique_ptr< QgsVectorLayer > lineTemp = qgis::make_unique< QgsVectorLayer >( geoPdfExporter.mTemporaryFilePaths.value( linesLayer->id(), QString() ) );
+  QVERIFY( lineTemp->isValid() );
+  QCOMPARE( lineTemp->featureCount(), 6 );
+  QCOMPARE( lineTemp->wkbType(), QgsWkbTypes::MultiLineString );
+  lineTemp.reset();
 }
 
 QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )

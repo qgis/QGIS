@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgslogger.h"
 #include "qgsgeometry.h"
+#include "qgsvectorfilewriter.h"
 #include <QMutex>
 #include <QMutexLocker>
 
@@ -53,6 +54,9 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       transformed.transform( pixelToMapItemTransform );
       // transform from map item coordinates to page coordinates
       transformed.transform( mMapToLayoutTransform );
+
+      // always convert to multitype, to make things consistent
+      transformed.convertToMultiType();
 
       // we (currently) don't REALLY need a mutex here, because layout maps are always rendered using a single threaded operation.
       // but we'll play it safe, just in case this changes in future.
@@ -102,7 +106,7 @@ QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPd
   return mMapHandlers.value( map )->renderedFeatures;
 }
 
-void QgsLayoutGeoPdfExporter::finalize()
+bool QgsLayoutGeoPdfExporter::finalize()
 {
   // collate all the features from different maps which belong to the same layer, replace their geometries with the rendered feature bounds
   for ( auto mapIt = mMapHandlers.constBegin(); mapIt != mMapHandlers.constEnd(); ++mapIt )
@@ -121,5 +125,37 @@ void QgsLayoutGeoPdfExporter::finalize()
       }
     }
   }
+
+  return saveTemporaryLayers();
+}
+
+bool QgsLayoutGeoPdfExporter::saveTemporaryLayers()
+{
+  for ( auto it = mCollatedFeatures.constBegin(); it != mCollatedFeatures.constEnd(); ++it )
+  {
+    const QString filePath = mTemporaryDir.filePath( it.key() + QStringLiteral( ".gpkg" ) );
+
+    mTemporaryFilePaths.insert( it.key(), filePath );
+    // write out features to disk
+    const QgsFeatureList features = it.value();
+    QgsVectorFileWriter writer( filePath, QString(), features.first().fields(), features.first().geometry().wkbType() );
+    if ( writer.hasError() )
+    {
+      mErrorMessage = writer.errorMessage();
+      QgsDebugMsg( mErrorMessage );
+      return false;
+    }
+    for ( const QgsFeature &feature : features )
+    {
+      QgsFeature f = feature;
+      if ( !writer.addFeature( f, QgsFeatureSink::FastInsert ) )
+      {
+        mErrorMessage = writer.errorMessage();
+        QgsDebugMsg( mErrorMessage );
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
