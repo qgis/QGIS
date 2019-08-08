@@ -19,19 +19,34 @@
 #include "qgsfeaturerequest.h"
 #include "qgslayout.h"
 #include "qgslogger.h"
+#include <QMutex>
+#include <QMutexLocker>
 
 class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 {
   public:
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
     {
-      QgsDebugMsg( QStringLiteral( "%1: %2" ).arg( context.renderContext->expressionContext().variable( QStringLiteral( "layer_id" ) ).toString() ).arg( feature.attribute( 0 ).toString() ) );
+      // is it a hack retrieving the layer ID from an expression context like this? possibly... BUT
+      // the alternative is adding a layer ID member to QgsRenderContext, and that's just asking for people to abuse it
+      // and use it to retrieve QgsMapLayers mid-way through a render operation. Lesser of two evils it is!
+      const QString layerId = context.renderContext->expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
+
+      // we (currently) don't REALLY need a mutex here, because layout maps are always rendered using a single threaded operation.
+      // but we'll play it safe, just in case this changes in future.
+      QMutexLocker locker( &mMutex );
+      renderedFeatures[ layerId ].append( QgsLayoutGeoPdfExporter::RenderedFeature( feature, renderedBounds ) );
     }
 
     QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
     {
       return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
     }
+
+    QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures;
+
+  private:
+    QMutex mMutex;
 };
 
 
@@ -54,5 +69,10 @@ QgsLayoutGeoPdfExporter::~QgsLayoutGeoPdfExporter()
   {
     map->removeRenderedFeatureHandler( mHandler.get() );
   }
+}
+
+QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPdfExporter::renderedFeatures() const
+{
+  return mHandler->renderedFeatures;
 }
 

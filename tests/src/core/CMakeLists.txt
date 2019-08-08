@@ -140,6 +140,7 @@ SET(TESTS
  testqgslayouthtml.cpp
  testqgslayoutitem.cpp
  testqgslayoutitemgroup.cpp
+ testqgslayoutgeopdfexport.cpp
  testqgslayoutlabel.cpp
  testqgslayoutmap.cpp
  testqgslayoutmapgrid.cpp
