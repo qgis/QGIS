@@ -23,6 +23,9 @@
 #include "qgsvectorfilewriter.h"
 #include <QMutex>
 #include <QMutexLocker>
+#include <QDomDocument>
+#include <QDomElement>
+
 
 class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 {
@@ -126,7 +129,14 @@ bool QgsLayoutGeoPdfExporter::finalize()
     }
   }
 
-  return saveTemporaryLayers();
+  if ( !saveTemporaryLayers() )
+    return false;
+
+  const QString composition = createCompositionXml();
+  if ( composition.isEmpty() )
+    return false;
+
+  return true;
 }
 
 bool QgsLayoutGeoPdfExporter::saveTemporaryLayers()
@@ -157,5 +167,92 @@ bool QgsLayoutGeoPdfExporter::saveTemporaryLayers()
     }
   }
   return true;
+}
+
+QString QgsLayoutGeoPdfExporter::createCompositionXml()
+{
+  QDomDocument doc;
+
+  QDomElement compositionElem = doc.createElement( QStringLiteral( "PDFComposition" ) );
+
+  // metadata tags
+  QDomElement metadata = doc.createElement( QStringLiteral( "Metadata" ) );
+  QDomElement author = doc.createElement( QStringLiteral( "Author" ) );
+  author.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
+  metadata.appendChild( author );
+  QDomElement producer = doc.createElement( QStringLiteral( "Producer" ) );
+  producer.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
+  metadata.appendChild( producer );
+  QDomElement creator = doc.createElement( QStringLiteral( "Creator" ) );
+  creator.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
+  metadata.appendChild( creator );
+  QDomElement creationDate = doc.createElement( QStringLiteral( "CreationDate" ) );
+  //creationDate.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
+  metadata.appendChild( creationDate );
+  QDomElement subject = doc.createElement( QStringLiteral( "Subject" ) );
+  //subject.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
+  metadata.appendChild( subject );
+  QDomElement title = doc.createElement( QStringLiteral( "Title" ) );
+  //title.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
+  metadata.appendChild( title );
+  QDomElement keywords = doc.createElement( QStringLiteral( "Keywords" ) );
+  //keywords.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
+  metadata.appendChild( keywords );
+  compositionElem.appendChild( metadata );
+
+  // layertree
+  QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
+  //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
+  for ( auto it = mTemporaryFilePaths.constBegin(); it != mTemporaryFilePaths.constEnd(); ++it )
+  {
+    QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
+    layer.setAttribute( QStringLiteral( "id" ), it.key() );
+    layer.setAttribute( QStringLiteral( "name" ), it.key() ); // TODO
+    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
+    layerTree.appendChild( layer );
+  }
+  compositionElem.appendChild( layerTree );
+
+  // pages
+  QDomElement page = doc.createElement( QStringLiteral( "Page" ) );
+  QDomElement dpi = doc.createElement( QStringLiteral( "DPI" ) );
+  dpi.appendChild( doc.createTextNode( QStringLiteral( "300" ) ) );
+  page.appendChild( dpi );
+  QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
+  width.appendChild( doc.createTextNode( QStringLiteral( "297" ) ) );
+  page.appendChild( width );
+  QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
+  height.appendChild( doc.createTextNode( QStringLiteral( "210" ) ) );
+  page.appendChild( height );
+  // georeferencing - TODO
+
+  // content
+  QDomElement content = doc.createElement( QStringLiteral( "Content" ) );
+
+  for ( auto it = mTemporaryFilePaths.constBegin(); it != mTemporaryFilePaths.constEnd(); ++it )
+  {
+    QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
+    ifLayerOn.setAttribute( QStringLiteral( "layerId" ), it.key() );
+    QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
+    vectorDataset.setAttribute( QStringLiteral( "dataset" ), it.value() );
+    vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "true" ) ); // actually false!
+    QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
+    logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), it.key() );
+    //logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), it.key() );
+    vectorDataset.appendChild( logicalStructure );
+    ifLayerOn.appendChild( vectorDataset );
+    content.appendChild( ifLayerOn );
+  }
+
+  page.appendChild( content );
+  compositionElem.appendChild( page );
+
+  doc.appendChild( compositionElem );
+
+  QString composition;
+  QTextStream stream( &composition );
+  doc.save( stream, -1 );
+
+  return composition;
 }
 
