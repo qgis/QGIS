@@ -100,10 +100,12 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
   }
 }
 
+///@cond PRIVATE
 QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent, Qt::WindowFlags flags )
   : QgsOrganizeTableColumnsDialog( vl, vl->attributeTableConfig(), parent, flags )
 {
 }
+///@endcond
 
 QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
 {

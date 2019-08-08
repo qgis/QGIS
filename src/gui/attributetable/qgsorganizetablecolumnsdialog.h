@@ -48,6 +48,8 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      */
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
 
+    ///@cond PRIVATE
+
     /**
      * Constructor
      * \param vl The concerned vector layer
@@ -55,6 +57,7 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      * \param flags window flags
      */
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
+    ///@endcond
 
     /**
      * Gets the updated configuration
