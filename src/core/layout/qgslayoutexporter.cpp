@@ -25,6 +25,7 @@
 #include "qgslayoutguidecollection.h"
 #include "qgsabstractlayoutiterator.h"
 #include "qgsfeedback.h"
+#include "qgslayoutgeopdfexporter.h"
 #include <QImageWriter>
 #include <QSize>
 #include <QSvgGenerator>
@@ -516,6 +517,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   {
     mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
   }
+
+  std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
+  if ( settings.writeGeoPdf )
+    geoPdfExporter = qgis::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
 

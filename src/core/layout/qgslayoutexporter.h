@@ -302,6 +302,19 @@ class CORE_EXPORT QgsLayoutExporter
        */
       bool simplifyGeometries = true;
 
+      /**
+       * TRUE if GeoPDF files should be created, instead of normal PDF files.
+       *
+       * Whilst GeoPDF files can include some desirable properties like the ability to interactively
+       * query map features, they also can result in lower-quality output files, or forced rasterization
+       * of layers.
+       *
+       * \note Requires builds based on GDAL 3.0 or greater.
+       *
+       * \since QGIS 3.10
+       */
+      bool writeGeoPdf = true;
+
     };
 
     /**

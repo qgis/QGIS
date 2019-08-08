@@ -194,6 +194,8 @@ Constructor for PdfExportSettings
 
       bool simplifyGeometries;
 
+      bool writeGeoPdf;
+
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
