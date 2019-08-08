@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgslayoutitemmap.h"
 #include <QList>
+#include <QTemporaryDir>
 
 #define SIP_NO_FILE
 
@@ -88,8 +89,16 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
 
     /**
      * To be called after the rendering operation is complete.
+     *
+     * Returns TRUE if the operation was successful, or FALSE if an error occurred. If an error occurred, it
+     * can be retrieved by calling errorMessage().
      */
-    void finalize();
+    bool finalize();
+
+    /**
+     * Returns the last error message encountered during the export.
+     */
+    QString errorMessage() { return mErrorMessage; }
 
   private:
 
@@ -97,6 +106,12 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
     QHash< QgsLayoutItemMap *, QgsGeoPdfRenderedFeatureHandler * > mMapHandlers;
 
     QMap< QString, QgsFeatureList > mCollatedFeatures;
+    QMap< QString, QString> mTemporaryFilePaths;
+
+    QString mErrorMessage;
+    QTemporaryDir mTemporaryDir;
+
+    bool saveTemporaryLayers();
 
     friend class TestQgsLayoutGeoPdfExport;
 };
