@@ -467,7 +467,7 @@ void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, Qgs
     {
       const QgsGeometry bounds( QgsGeometry::fromRect( QgsRectangle( groupIt->symbol()->bounds( *symbolPosIt, context, groupIt->feature ) ) ) );
       const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
-      QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext;
+      QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( &context );
       for ( QgsRenderedFeatureHandlerInterface *handler : handlers )
         handler->handleRenderedFeature( groupIt->feature, bounds, featureContext );
     }

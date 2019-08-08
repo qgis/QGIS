@@ -50,10 +50,19 @@ class CORE_EXPORT QgsRenderedFeatureHandlerInterface
 
     struct CORE_EXPORT RenderedFeatureContext
     {
-      ///@cond PRIVATE
-      // required to allow compilation only until real members are present
-      bool dummy; SIP_SKIP
-      ///@endcond
+
+      /**
+       * Constructor for RenderedFeatureContext.
+       * \param renderContext The render context which was used while rendering feature.
+       */
+      RenderedFeatureContext( const QgsRenderContext *renderContext = nullptr )
+        : renderContext( renderContext )
+      {}
+
+      /**
+       * The render context which was used while rendering feature.
+       */
+      const QgsRenderContext *renderContext = nullptr;
     };
 
     /**
