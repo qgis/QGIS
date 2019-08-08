@@ -98,6 +98,15 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   map->zoomToExtent( linesLayer->extent() );
   l.addLayoutItem( map );
 
+  QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
+  map2->attemptSetSceneRect( QRectF( 150, 80, 40, 50 ) );
+  map2->setFrameEnabled( true );
+  map2->setLayers( QList<QgsMapLayer *>() << pointsLayer );
+  map2->setCrs( linesLayer->crs() );
+  map2->zoomToExtent( pointsLayer->extent() );
+  map2->setMapRotation( 45 );
+  l.addLayoutItem( map2 );
+
   QgsLayoutGeoPdfExporter geoPdfExporter( &l );
 
   // trigger render
@@ -124,7 +133,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( lineFeature1.attribute( 0 ).toString(), QStringLiteral( "Highway" ) );
   QCOMPARE( lineFeature1.attribute( 1 ).toDouble(), 1.0 );
   QgsDebugMsg( lineGeometry1.asWkt( 1 ) );
-  QCOMPARE( lineGeometry1.asWkt( 1 ), QStringLiteral( "MultiLineString ((79.2 0.4, 79.9 2.2, 80.3 2.9, 80.6 3.5, 81.9 4.6, 85.6 6.4, 89.4 8, 90.5 8.9, 92.3 10.8, 92.5 11.1, 92.9 13.3, 93.1 14.4, 93.6 16.1, 93.8 16.8, 94 18.6, 94.3 19.2, 94.9 20.3, 95.4 21.3, 96.7 22.8, 96.9 23.2, 97.1 24.3, 97.1 25.9, 97.1 26.6, 97.4 28.1, 97.8 28.8, 99.3 29.9, 100.5 30.7, 101.8 31.4, 103.1 31.9, 103.3 33, 103.3 33.8, 102.5 35, 102.2 35.4, 101.6 36.5, 101.1 37.2, 100.5 37.8, 100.4 38.1, 100.2 39, 100 39.8, 100 40.5, 100.5 41.8, 100.9 42.5, 100.9 42.5, 102.7 46.5, 101.8 48.4, 101.1 49.1, 99.8 51.3, 99.8 52.7, 98.2 54.2, 97.6 55.1, 96.7 56.6, 96.7 57.3, 96.7 58.2, 96.7 58.9, 96.7 59.8, 97.3 60.6, 97.4 61.5, 97.8 62.2, 98.5 63, 99.3 64, 100.4 65.3, 102.2 68.8, 102.4 69, 103.6 70.2, 104.2 70.8, 105.5 72.6, 106.4 73.4, 108 74.4, 109.1 75.4, 110.4 76.6, 111.3 77.2, 112.6 78.3, 114.2 79.2, 115.5 80.1, 117.5 81.6, 118.2 82.3, 118.8 83.6, 118.8 84.7, 118.8 85.8, 118.6 86.1, 117.9 87.2, 116.8 88.9, 116 89.6, 115.9 90.3, 115.9 91.2, 116 92, 116.6 93.4, 116.8 94.2, 117.9 95.4, 118.4 96, 119.2 97.1, 120.2 98.7, 123.2 100))" ) );
+  QCOMPARE( lineGeometry1.asWkt( 1 ), QStringLiteral( "MultiLineString ((99.2 20.4, 99.9 22.2, 100.3 22.9, 100.6 23.5, 101.9 24.6, 105.6 26.4, 109.4 28, 110.5 28.9, 112.3 30.8, 112.5 31.1, 112.9 33.3, 113.1 34.4, 113.6 36.1, 113.8 36.8, 114 38.6, 114.3 39.2, 114.9 40.3, 115.4 41.3, 116.7 42.8, 116.9 43.2, 117.1 44.3, 117.1 45.9, 117.1 46.6, 117.4 48.1, 117.8 48.8, 119.3 49.9, 120.5 50.7, 121.8 51.4, 123.1 51.9, 123.3 53, 123.3 53.8, 122.5 55, 122.2 55.4, 121.6 56.5, 121.1 57.2, 120.5 57.8, 120.4 58.1, 120.2 59, 120 59.8, 120 60.5, 120.5 61.8, 120.9 62.5, 120.9 62.5, 122.7 66.5, 121.8 68.4, 121.1 69.1, 119.8 71.3, 119.8 72.7, 118.2 74.2, 117.6 75.1, 116.7 76.6, 116.7 77.3, 116.7 78.2, 116.7 78.9, 116.7 79.8, 117.3 80.6, 117.4 81.5, 117.8 82.2, 118.5 83, 119.3 84, 120.4 85.3, 122.2 88.8, 122.4 89, 123.6 90.2, 124.2 90.8, 125.5 92.6, 126.4 93.4, 128 94.4, 129.1 95.4, 130.4 96.6, 131.3 97.2, 132.6 98.3, 134.2 99.2, 135.5 100.1, 137.5 101.6, 138.2 102.3, 138.8 103.6, 138.8 104.7, 138.8 105.8, 138.6 106.1, 137.9 107.2, 136.8 108.9, 136 109.6, 135.9 110.3, 135.9 111.2, 136 112, 136.6 113.4, 136.8 114.2, 137.9 115.4, 138.4 116, 139.2 117.1, 140.2 118.7, 143.2 120))" ) );
 
   QVector< QgsLayoutGeoPdfExporter::RenderedFeature > pointFeatures = renderedFeatures.value( pointsLayer->id() );
   QCOMPARE( pointFeatures.count(), 15 );
@@ -146,7 +155,30 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( pointFeature3.attribute( 3 ).toInt(), 1 );
   QCOMPARE( pointFeature3.attribute( 4 ).toInt(), 1 );
   QCOMPARE( pointFeature3.attribute( 5 ).toInt(), 2 );
-  QCOMPARE( pointGeometry3.asWkt( 1 ), QStringLiteral( "Polygon ((103.8 43.8, 115.1 43.8, 115.1 55, 103.8 55, 103.8 43.8))" ) );
+  QCOMPARE( pointGeometry3.asWkt( 1 ), QStringLiteral( "Polygon ((123.8 63.8, 135.1 63.8, 135.1 75, 123.8 75, 123.8 63.8))" ) );
+
+  // check second map
+  pointFeatures = geoPdfExporter.renderedFeatures( map2 ).value( pointsLayer->id() );
+  QCOMPARE( pointFeatures.count(), 17 );
+
+  QgsFeature pointFeature3b;
+  QgsGeometry pointGeometry3b;
+  for ( auto it = pointFeatures.constBegin(); it != pointFeatures.constEnd(); ++it )
+  {
+    if ( it->feature.id() == 3 )
+    {
+      pointFeature3b = it->feature;
+      pointGeometry3b = it->renderedBounds;
+    }
+  }
+  QVERIFY( pointFeature3b.isValid() );
+  QCOMPARE( pointFeature3b.attribute( 0 ).toString(), QStringLiteral( "Jet" ) );
+  QCOMPARE( pointFeature3b.attribute( 1 ).toInt(), 95 );
+  QCOMPARE( pointFeature3b.attribute( 2 ).toDouble(), 3 );
+  QCOMPARE( pointFeature3b.attribute( 3 ).toInt(), 1 );
+  QCOMPARE( pointFeature3b.attribute( 4 ).toInt(), 1 );
+  QCOMPARE( pointFeature3b.attribute( 5 ).toInt(), 2 );
+  QCOMPARE( pointGeometry3b.asWkt( 1 ), QStringLiteral( "Polygon ((167 102, 178.2 102, 178.2 113.3, 167 113.3, 167 102))" ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )

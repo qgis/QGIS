@@ -28,9 +28,16 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
   public:
 
     QgsGeoPdfRenderedFeatureHandler( QgsLayoutItemMap *map )
-      : mMap( map )
-      , mMapToLayoutTransform( mMap->transform() )
     {
+      QTransform mapTransform;
+      QPolygonF mapRectPoly = QPolygonF( QRectF( 0, 0, map->rect().width(), map->rect().height() ) );
+      //workaround QT Bug #21329
+      mapRectPoly.pop_back();
+
+      QPolygonF mapRectInLayout = map->mapToScene( mapRectPoly );
+
+      //create transform from layout coordinates to map coordinates
+      QTransform::quadToQuad( mapRectPoly, mapRectInLayout, mMapToLayoutTransform );
     }
 
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
@@ -61,7 +68,6 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
     QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures;
 
   private:
-    QgsLayoutItemMap *mMap = nullptr;
     QTransform mMapToLayoutTransform;
     QMutex mMutex;
 };
