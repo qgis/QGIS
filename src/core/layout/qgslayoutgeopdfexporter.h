@@ -82,15 +82,14 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
     };
 
     /**
-     * Returns a map of rendered features, with layer IDs as map keys.
+     * Returns a dict of rendered features, with layer IDs as dict keys for the specified \a map item.
      */
-    QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures() const;
+    QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures( QgsLayoutItemMap *map ) const;
 
   private:
 
     QgsLayout *mLayout = nullptr;
-    QList< QgsLayoutItemMap * > mMaps;
-    std::unique_ptr< QgsGeoPdfRenderedFeatureHandler > mHandler;
+    QHash< QgsLayoutItemMap *, QgsGeoPdfRenderedFeatureHandler * > mMapHandlers;
 
 };
 
