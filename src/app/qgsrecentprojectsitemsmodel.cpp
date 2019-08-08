@@ -86,6 +86,12 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       return thumbnail.pixmap();
     }
 
+    case Qt::BackgroundColorRole:
+      return QColor( 238, 242, 131 );
+
+    case Qt::ForegroundRole:
+      return QColor( 234, 226, 118 );
+
     case Qt::ToolTipRole:
       return mRecentProjects.at( index.row() ).path;
 

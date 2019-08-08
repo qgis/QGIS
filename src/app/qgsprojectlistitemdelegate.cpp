@@ -41,33 +41,32 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   QAbstractTextDocumentLayout::PaintContext ctx;
   QStyleOptionViewItem optionV4 = option;
 
-  QColor color = optionV4.palette.color( QPalette::Active, QPalette::Window );
+  QColor color = index.data( Qt::BackgroundColorRole ).value< QColor >();
+  color.setAlpha( 50 );
+  QColor stroke = index.data( Qt::ForegroundRole ).value< QColor >();
   if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )
   {
-    color.setAlpha( 40 );
-    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::HighlightedText ) );
+    stroke = stroke.darker( 130 );
+    ctx.palette.setColor( QPalette::Text, QColor( 30, 30, 30 ) );
 
     QStyle *style = QApplication::style();
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
   }
   else if ( option.state & QStyle::State_Enabled )
   {
-    if ( option.state & QStyle::State_Selected )
-    {
-      color.setAlpha( 40 );
-    }
-    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::Text ) );
+    stroke = stroke.darker( 110 );
+    ctx.palette.setColor( QPalette::Text, QColor( 80, 80, 80 ) );
 
     QStyle *style = QApplication::style();
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
   }
   else
   {
-    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Disabled, QPalette::Text ) );
+    ctx.palette.setColor( QPalette::Text, QColor( 150, 150, 150 ) );
   }
 
   painter->setRenderHint( QPainter::Antialiasing );
-  painter->setPen( QColor( 0, 0, 0, 0 ) );
+  painter->setPen( stroke );
   painter->setBrush( QBrush( color ) );
   painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
                             option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
@@ -197,11 +196,13 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
   QAbstractTextDocumentLayout::PaintContext ctx;
   QStyleOptionViewItem optionV4 = option;
 
-  QColor color = optionV4.palette.color( QPalette::Active, QPalette::Window );
+  QColor color = index.data( Qt::BackgroundColorRole ).value< QColor >();
+  color.setAlpha( 50 );
+  QColor stroke = index.data( Qt::ForegroundRole ).value< QColor >();
   if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )
   {
-    color.setAlpha( 40 );
-    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::HighlightedText ) );
+    stroke = stroke.darker( 130 );
+    ctx.palette.setColor( QPalette::Text, QColor( 30, 30, 30 ) );
 
     QStyle *style = QApplication::style();
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
@@ -212,18 +213,19 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
     {
       color.setAlpha( 40 );
     }
-    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::Text ) );
+    stroke = stroke.darker( 110 );
+    ctx.palette.setColor( QPalette::Text, QColor( 80, 80, 80 ) );
 
     QStyle *style = QApplication::style();
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
   }
   else
   {
-    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Disabled, QPalette::Text ) );
+    ctx.palette.setColor( QPalette::Text, QColor( 150, 150, 150 ) );
   }
 
   painter->setRenderHint( QPainter::Antialiasing );
-  painter->setPen( QColor( 0, 0, 0, 0 ) );
+  painter->setPen( stroke );
   painter->setBrush( QBrush( color ) );
   painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
                             option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );

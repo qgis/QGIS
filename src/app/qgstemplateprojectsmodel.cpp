@@ -55,6 +55,10 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   emptyProjectItem->setData( tr( "New Empty Project" ), QgsProjectListItemDelegate::TitleRole );
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().description(), QgsProjectListItemDelegate::CrsRole ); } );
   emptyProjectItem->setData( QgsProject::instance()->crs().description(), QgsProjectListItemDelegate::CrsRole );
+
+  emptyProjectItem->setData( QColor( 172, 196, 114 ), Qt::BackgroundColorRole );
+  emptyProjectItem->setData( QColor( 90, 140, 90 ), Qt::ForegroundRole );
+
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
   QSize previewSize( 250, 177 );
   QImage image( previewSize, QImage::Format_ARGB32 );
@@ -113,6 +117,9 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
     }
     item->setData( file.baseName(), QgsProjectListItemDelegate::TitleRole );
     item->setData( file.filePath(), QgsProjectListItemDelegate::NativePathRole );
+
+    item->setData( QColor( 172, 196, 114 ), Qt::BackgroundColorRole );
+    item->setData( QColor( 90, 140, 90 ), Qt::ForegroundRole );
 
     item->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
     appendRow( item.release() );

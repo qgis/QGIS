@@ -70,6 +70,12 @@ QVariant QgsNewsFeedModel::data( const QModelIndex &index, int role ) const
       if ( entry.image.isNull() )
         return QVariant();
       return entry.image;
+
+    case Qt::BackgroundColorRole:
+      return QColor( 232, 186, 140 );
+
+    case Qt::ForegroundRole:
+      return QColor( 248, 135, 33 );
   }
   return QVariant();
 }
