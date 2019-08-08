@@ -1393,7 +1393,7 @@ void TestQgsLabelingEngine::labelingResults()
   job.waitForFinished();
 
   std::unique_ptr< QgsLabelingResults > results( job.takeLabelingResults() );
-  QVERIFY( results );
+  QVERIFY( results != nullptr );
 
   // retrieve some labels
   QList<QgsLabelPosition> labels = results->labelsAtPosition( QgsPointXY( -654732, 7003282 ) );
@@ -1446,7 +1446,7 @@ void TestQgsLabelingEngine::labelingResults()
   job2.start();
   job2.waitForFinished();
   results.reset( job2.takeLabelingResults() );
-  QVERIFY( results );
+  QVERIFY( results != nullptr );
   labels = results->labelsAtPosition( QgsPointXY( -654732, 7003282 ) );
   QCOMPARE( labels.count(), 1 );
   QCOMPARE( labels.at( 0 ).featureId, 1 );
