@@ -44,34 +44,53 @@ is not supported or cannot be performed without errors.
     struct TableProperty
     {
 
-      SIP_PYOBJECT __repr__();
+        SIP_PYOBJECT __repr__();
 %MethodCode
-      QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->name );
-      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->name );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-      QList<QgsWkbTypes::Type>      types;
-      QString                       schema;
-      QString                       name;
-      QString                       geometryColumn;
-      QStringList                   pkColumns;
-      QList<int>                    srids;
-      unsigned int                  spatialColumnCount;
-      TableFlags                    flags;
-      QString                       tableComment;
-      QString                       sql;
+        QString                       schema;
+        QString                       name;
+        QString                       geometryColumn;
+        QStringList                   pkColumns;
+        QList<int>                    srids;
+        unsigned int                  geometryColumnCount;
+        TableFlags                    flags;
+        QString                       tableComment;
+        QString                       sql;
 
-      int geometryColumnCount() const;
+      public:
 
-      QString  defaultName() const;
+        void appendGeometryColumnType( const QgsWkbTypes::Type &type );
+%Docstring
+Appends the geometry column ``type`` to the geometry column types list
+%End
+
+        QList<int> geometryTypes();
+%Docstring
+Returns the list of geometry column types
+%End
+
+        int layerTypeCount() const;
+%Docstring
+Returns the number of layers that should be generated for this table.
+
+The returned value is normally "1" but it may be greater in case the layer
+is a vector layer and it contains more than a single geometry type.
+%End
+
+        QString  defaultName() const;
 %Docstring
 Returns the default name for the layer.
 It is usually the table name but in case there are multiple geometry
 columns, the geometry column name is appendend to the table name.
-@return
 %End
 
-      TableProperty at( int i ) const;
+        TableProperty at( int i ) const;
+%Docstring
+Returns the table property corresponding to the geometry type a the given indext ``i``
+%End
     };
 
     enum Capability

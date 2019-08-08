@@ -79,6 +79,7 @@ void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema, 
   {
     auto opts { *options };
     opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
+    opts[ QStringLiteral( "update" ) ] = true;
     QMap<int, int> map;
     QString errCause;
     QgsVectorLayerExporter::ExportError errCode = QgsOgrProvider::createEmptyLayer(
@@ -111,8 +112,9 @@ void QgsGeoPackageProviderConnection::dropTable( const QString &schema, const QS
   }
   QString errCause;
   // TODO: this won't work for rasters
-
-  if ( ! QgsOgrProviderUtils::deleteLayer( uri(), errCause ) )
+  QString layerUri { uri() };
+  layerUri.append( QStringLiteral( "|layername=%1" ).arg( name ) );
+  if ( ! QgsOgrProviderUtils::deleteLayer( layerUri, errCause ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error deleting table %1: %2" ).arg( name ).arg( errCause ) );
   }
@@ -164,22 +166,30 @@ static int collect_table_info( void *tableProperties, int, char **argv, char ** 
   QgsGeoPackageProviderConnection::TableProperty property;
   property.name = QString::fromUtf8( argv[ 0 ] );
   property.pkColumns << QLatin1String( "fid" );
-  property.geometryColumn = QStringLiteral( "geom" );
-  property.spatialColumnCount = 1;
+  property.geometryColumnCount = 0;
   static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
   const auto data_type = QString::fromUtf8( argv[ 1 ] );
+  // Table type
   if ( data_type == QStringLiteral( "tiles" ) )
   {
     property.flags.setFlag( QgsGeoPackageProviderConnection::Raster );
   }
-  else
+  else if ( data_type == QStringLiteral( "features" ) )
   {
     property.flags.setFlag( QgsGeoPackageProviderConnection::Vector );
+    property.geometryColumn = QStringLiteral( "geom" );
+    property.geometryColumnCount = 1;
   }
   if ( aspatialTypes.contains( data_type ) )
   {
     property.flags.setFlag( QgsGeoPackageProviderConnection::Aspatial );
+    property.appendGeometryColumnType( QgsWkbTypes::Type::NoGeometry );
   }
+  else
+  {
+    property.appendGeometryColumnType( QgsWkbTypes::parseType( QString::fromUtf8( argv[ 4 ] ) ) );
+  }
+
   property.tableComment = QString::fromUtf8( argv[ 2 ] );
   bool ok;
   property.srids << QString::fromUtf8( argv[ 3 ] ).toInt( &ok );
@@ -187,7 +197,7 @@ static int collect_table_info( void *tableProperties, int, char **argv, char ** 
   {
     throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( QString::fromUtf8( argv[ 3 ] ) ) );
   }
-  *static_cast<QList<QgsGeoPackageProviderConnection::TableProperty>*>( tableProperties ) << property ;
+  static_cast<QList<QgsGeoPackageProviderConnection::TableProperty>*>( tableProperties )->push_back( property );
   return 0;
 }
 
@@ -208,7 +218,8 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
     int status = database.open_v2( baseUri, SQLITE_OPEN_READONLY, nullptr );
     if ( status == SQLITE_OK )
     {
-      char *sql = sqlite3_mprintf( "SELECT table_name, data_type, description, srs_id FROM gpkg_contents;" );
+      char *sql = sqlite3_mprintf( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name "
+                                   "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name);" );
       try
       {
         status = sqlite3_exec(
@@ -245,7 +256,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
     QList<QgsGeoPackageProviderConnection::TableProperty> filteredTableInfo;
     for ( const auto &ti : qgis::as_const( tableInfo ) )
     {
-      if ( ti.flags ^ flags )
+      if ( ti.flags & flags )
       {
         filteredTableInfo.push_back( ti );
       }

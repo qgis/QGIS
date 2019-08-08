@@ -102,3 +102,50 @@ QStringList QgsAbstractDatabaseProviderConnection::schemas( )
 {
   throw QgsProviderConnectionException( QObject::tr( "Operation 'schemas' is not supported" ) );
 }
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::appendGeometryColumnType( const QgsWkbTypes::Type &type )
+{
+  geometryColumnTypes.push_back( type );
+}
+
+QList<int> QgsAbstractDatabaseProviderConnection::TableProperty::geometryTypes()
+{
+  QList<int> types;
+  for ( const auto &t : qgis::as_const( geometryColumnTypes ) )
+  {
+    types.push_back( static_cast<int>( t ) );
+  }
+  return types;
+}
+
+int QgsAbstractDatabaseProviderConnection::TableProperty::layerTypeCount() const
+{
+  Q_ASSERT( geometryColumnTypes.size() == srids.size() );
+  return geometryColumnTypes.size();
+}
+
+QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
+{
+  QString n = name;
+  if ( geometryColumnCount > 1 ) n += '.' + geometryColumn;
+  return n;
+}
+
+QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProviderConnection::TableProperty::at( int i ) const
+{
+  TableProperty property;
+
+  Q_ASSERT( i >= 0 && i < layerTypeCount() );
+
+  property.geometryColumnTypes << geometryColumnTypes[ i ];
+  property.srids << srids[ i ];
+  property.schema = schema;
+  property.name = name;
+  property.geometryColumn = geometryColumn;
+  property.pkColumns = pkColumns;
+  property.geometryColumnCount = geometryColumnCount;
+  property.sql = sql;
+  property.tableComment = tableComment;
+  property.flags = flags;
+  return property;
+}

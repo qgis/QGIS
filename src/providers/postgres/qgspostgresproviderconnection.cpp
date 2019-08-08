@@ -247,7 +247,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
       conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
 
       // Utility to create a TableProperty and insert in the result list
-      auto fetch_property = [ &flags, &tables ]( const QgsPostgresLayerProperty & p )
+      auto fetch_property = [ & ]( const QgsPostgresLayerProperty & p )
       {
         QgsPostgresProviderConnection::TableProperty property;
         if ( p.isView )
@@ -258,28 +258,32 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
         {
           property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
         }
+        // Table type
         if ( p.isRaster )
         {
           property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );
         }
-        else
+        else if ( p.nSpCols != 0 )
         {
           property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Vector );
         }
-        if ( ! p.isRaster && p.nSpCols == 0 )
+        else
         {
           property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Aspatial );
         }
         // Filters
-        if ( flags == TableFlag::None || ( property.flags ^ flags ) )
+        if ( flags == TableFlag::None || ( property.flags & flags ) )
         {
-          property.types = p.types;
+          for ( const auto &t : qgis::as_const( p.types ) )
+          {
+            property.appendGeometryColumnType( t );
+          }
           property.name = p.tableName;
           property.schema = p.schemaName;
           property.geometryColumn = p.geometryColName;
           property.pkColumns = p.pkCols;
           property.srids = p.srids;
-          property.spatialColumnCount = p.nSpCols;
+          property.geometryColumnCount = p.nSpCols;
           property.sql = p.sql;
           property.tableComment = p.tableComment;
           tables.push_back( property );
@@ -289,7 +293,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
       for ( const auto &pr : qgis::as_const( properties ) )
       {
         // Aspatial
-        if ( pr.size() == 0 )
+        if ( pr.nSpCols == 0 )
         {
           fetch_property( pr );
         }

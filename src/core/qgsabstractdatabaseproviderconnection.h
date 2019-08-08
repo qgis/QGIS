@@ -31,6 +31,7 @@
  * entries, it is responsability of the client code to keep layers in sync.
  * The class methods will throw exceptions in case the requested operation
  * is not supported or cannot be performed without errors.
+ *
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProviderConnection
@@ -41,13 +42,16 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
   public:
 
     /**
-     * Flags for table properties
+     * Flags for table properties.
+     *
+     * Flags can be useful for filtering the tables returned
+     * from tables().
      */
     enum TableFlag
     {
       None = 0,                   //!< No flags
-      Aspatial = 1 << 1,          //!< Aspatial table
-      Vector = 1 << 2,            //!< Vector table
+      Aspatial = 1 << 1,          //!< Aspatial table (it does not contain any geometry column)
+      Vector = 1 << 2,            //!< Vector table (it does contain at least one geometry column)
       Raster = 1 << 3,            //!< Raster table
       View = 1 << 4,              //!< View table
       MaterializedView = 1 << 5,  //!< Materialized view table
@@ -63,57 +67,59 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     {
 
 #ifdef SIP_RUN
-      SIP_PYOBJECT __repr__();
-      % MethodCode
-      QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->name );
-      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-      % End
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->name );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
 #endif
 
-      QList<QgsWkbTypes::Type>      types;
-      QString                       schema;
-      QString                       name;
-      QString                       geometryColumn;
-      QStringList                   pkColumns;
-      QList<int>                    srids;
-      unsigned int                  spatialColumnCount;
-      TableFlags                    flags;
-      QString                       tableComment;
-      QString                       sql;
+        QString                       schema;
+        QString                       name;
+        QString                       geometryColumn;
+        QStringList                   pkColumns;
+        QList<int>                    srids;
+        //! This property holds the number of geometry columns for vector layers
+        unsigned int                  geometryColumnCount;
+        TableFlags                    flags;
+        QString                       tableComment;
+        QString                       sql;
 
-      int geometryColumnCount() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+      private:
+        // Hide from Python because of ENUM limitations in SIP
+        QList<QgsWkbTypes::Type>    geometryColumnTypes;
 
-      /**
-       * Returns the default name for the layer.
-       * It is usually the table name but in case there are multiple geometry
-       * columns, the geometry column name is appendend to the table name.
-       * @return
-       */
-      QString  defaultName() const
-      {
-        QString n = name;
-        if ( spatialColumnCount > 1 ) n += '.' + geometryColumn;
-        return n;
-      }
+      public:
 
-      TableProperty at( int i ) const
-      {
-        TableProperty property;
+        /**
+         * Appends the geometry column \a type to the geometry column types list
+         */
+        void appendGeometryColumnType( const QgsWkbTypes::Type &type );
 
-        Q_ASSERT( i >= 0 && i < geometryColumnCount() );
+        /**
+         * Returns the list of geometry column types
+         */
+        QList<int> geometryTypes();
 
-        property.types << types[ i ];
-        property.srids << srids[ i ];
-        property.schema = schema;
-        property.name = name;
-        property.geometryColumn = geometryColumn;
-        property.pkColumns = pkColumns;
-        property.spatialColumnCount = spatialColumnCount;
-        property.sql = sql;
-        property.tableComment = tableComment;
-        property.flags = flags;
-        return property;
-      }
+        /**
+         * Returns the number of layers that should be generated for this table.
+         *
+         * The returned value is normally "1" but it may be greater in case the layer
+         * is a vector layer and it contains more than a single geometry type.
+         */
+        int layerTypeCount() const;
+
+        /**
+         * Returns the default name for the layer.
+         * It is usually the table name but in case there are multiple geometry
+         * columns, the geometry column name is appendend to the table name.
+         */
+        QString  defaultName() const;
+
+        /**
+         * Returns the table property corresponding to the geometry type a the given indext \a i
+         */
+        TableProperty at( int i ) const;
     };
 
     /**
