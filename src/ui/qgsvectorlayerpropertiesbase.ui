@@ -173,7 +173,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Source Fields</string>
+           <string>Fields</string>
           </property>
           <property name="toolTip">
            <string>Manage fields</string>
