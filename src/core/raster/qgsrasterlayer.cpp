@@ -809,30 +809,34 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
 void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-
-  bool wasValid( isValid() );
+  bool hadRenderer( renderer() );
 
   QDomImplementation domImplementation;
   QDomDocumentType documentType;
   QString errorMsg;
 
   // Store the original style
-  if ( wasValid && ! loadDefaultStyleFlag )
+  if ( hadRenderer && ! loadDefaultStyleFlag )
   {
     documentType = domImplementation.createDocumentType(
                      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
 
-    mOriginalStyleDocument = QDomDocument( documentType );
-    mOriginalStyleElement = mOriginalStyleDocument.createElement( QStringLiteral( "qgis" ) );
-    mOriginalStyleElement.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
-    mOriginalStyleDocument.appendChild( mOriginalStyleElement );
+    QDomDocument doc = QDomDocument( documentType );
+    QDomElement styleElem = doc.createElement( QStringLiteral( "qgis" ) );
+    styleElem.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
     QgsReadWriteContext writeContext;
-    if ( ! writeSymbology( mOriginalStyleElement, mOriginalStyleDocument, errorMsg, writeContext ) )
+    if ( ! writeSymbology( styleElem, doc, errorMsg, writeContext ) )
     {
       QgsDebugMsg( QStringLiteral( "Could not store symbology for layer %1: %2" )
-                   .arg( name() )
-                   .arg( errorMsg ) );
-      mOriginalStyleElement = QDomElement();
+                   .arg( name(),
+                         errorMsg ) );
+    }
+    else
+    {
+      doc.appendChild( styleElem );
+
+      mOriginalStyleDocument = doc;
+      mOriginalStyleElement = styleElem;
     }
   }
 
@@ -1874,14 +1878,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   readStyleManager( layer_node );
 
   return res;
-} // QgsRasterLayer::readXml( QDomNode & layer_node )
+}
 
-/*
- * \param QDomNode the node that will have the style element added to it.
- * \param QDomDocument the document that will have the QDomNode added.
- * \param errorMessage reference to string that will be updated with any error messages
- * \return true in case of success.
- */
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage,
                                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
