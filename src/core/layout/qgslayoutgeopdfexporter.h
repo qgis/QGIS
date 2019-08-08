@@ -51,11 +51,45 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
 
     ~QgsLayoutGeoPdfExporter();
 
+    /**
+     * Contains information about a feature rendered inside the layout.
+     */
+    struct RenderedFeature
+    {
+
+      /**
+       * Constructor for RenderedFeature.
+       */
+      RenderedFeature() = default;
+
+      /**
+       * Constructor for RenderedFeature.
+       */
+      RenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds )
+        : feature( feature )
+        , renderedBounds( renderedBounds )
+      {}
+
+      /**
+       * Rendered feature.
+       */
+      QgsFeature feature;
+
+      /**
+       * Bounds, in layout units, of rendered feature.
+       */
+      QgsGeometry renderedBounds;
+    };
+
+    /**
+     * Returns a map of rendered features, with layer IDs as map keys.
+     */
+    QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures() const;
+
   private:
 
     QgsLayout *mLayout = nullptr;
     QList< QgsLayoutItemMap * > mMaps;
-
     std::unique_ptr< QgsGeoPdfRenderedFeatureHandler > mHandler;
 
 };
