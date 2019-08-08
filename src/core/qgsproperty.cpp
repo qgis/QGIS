@@ -475,7 +475,6 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
 
     case ExpressionBasedProperty:
     {
-      d.detach();
       if ( d->expressionIsInvalid )
         return defaultValue;
 
