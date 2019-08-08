@@ -30,7 +30,7 @@
     }
     if (PyUnicode_Check(sipPy))	{
       Py_ssize_t size;
-      char *s = PyUnicode_AsUTF8AndSize(sipPy, &size);
+      const char *s = PyUnicode_AsUTF8AndSize(sipPy, &size);
       if (!s) {
           return NULL;
       }
