@@ -1107,15 +1107,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertFalse(rl2.isValid())
         self.assertEqual(rl2.name(), 'test_raster')
 
-        # ideally this would still be set, but raster renderers are very heavily tied to dataproviders currently
-        self.assertIsNone(rl2.renderer())
-
-        # now, fix path
-        rl2.setDataSource(source_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
-        self.assertTrue(rl2.isValid())
-        self.assertEqual(rl2.name(), 'test_raster')
-
-        # at this stage, the original style should be recreated...
+        # invalid layers should still have renderer available
         self.assertIsInstance(rl2.renderer(), QgsSingleBandPseudoColorRenderer)
         self.assertEqual(rl2.renderer().classificationMin(), 101)
         self.assertEqual(rl2.renderer().classificationMax(), 131)
@@ -1124,6 +1116,24 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
         self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
         self.assertEqual(rl2.renderer().opacity(), 0.6)
+        # make a little change
+        rl2.renderer().setOpacity(0.8)
+
+        # now, fix path
+        rl2.setDataSource(source_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+        self.assertTrue(rl2.isValid())
+        self.assertEqual(rl2.name(), 'test_raster')
+
+        # at this stage, the original style should be retained...
+        self.assertIsInstance(rl2.renderer(), QgsSingleBandPseudoColorRenderer)
+        self.assertEqual(rl2.renderer().classificationMin(), 101)
+        self.assertEqual(rl2.renderer().classificationMax(), 131)
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color1().name(), '#ffff00')
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
+        self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
+        self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
+        # the opacity change (and other renderer changes made while the layer was invalid) should be retained
+        self.assertEqual(rl2.renderer().opacity(), 0.8)
 
         # break path
         rl2.setDataSource(tmp_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
@@ -1140,7 +1150,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
         self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
         self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
-        self.assertEqual(rl2.renderer().opacity(), 0.6)
+        self.assertEqual(rl2.renderer().opacity(), 0.8)
 
         # break again
         rl2.setDataSource(tmp_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
@@ -1165,7 +1175,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
         self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
         self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
-        self.assertEqual(rl2.renderer().opacity(), 0.6)
+        self.assertEqual(rl2.renderer().opacity(), 0.8)
 
         # another test
         rl = QgsRasterLayer(source_path, 'test_raster', 'gdal')
