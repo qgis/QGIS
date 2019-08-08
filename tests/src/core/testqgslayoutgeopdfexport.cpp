@@ -193,16 +193,25 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
 
   // check layers were written
   QCOMPARE( geoPdfExporter.mTemporaryFilePaths.count(), 2 );
-  std::unique_ptr< QgsVectorLayer > pointTemp = qgis::make_unique< QgsVectorLayer >( geoPdfExporter.mTemporaryFilePaths.value( pointsLayer->id(), QString() ) );
+  std::unique_ptr< QgsVectorLayer > pointTemp = qgis::make_unique< QgsVectorLayer >( geoPdfExporter.mTemporaryFilePaths.value( pointsLayer->id() ) );
   QVERIFY( pointTemp->isValid() );
   QCOMPARE( pointTemp->featureCount(), 32 );
   QCOMPARE( pointTemp->wkbType(), QgsWkbTypes::MultiPolygon );
   pointTemp.reset();
-  std::unique_ptr< QgsVectorLayer > lineTemp = qgis::make_unique< QgsVectorLayer >( geoPdfExporter.mTemporaryFilePaths.value( linesLayer->id(), QString() ) );
+  std::unique_ptr< QgsVectorLayer > lineTemp = qgis::make_unique< QgsVectorLayer >( geoPdfExporter.mTemporaryFilePaths.value( linesLayer->id() ) );
   QVERIFY( lineTemp->isValid() );
   QCOMPARE( lineTemp->featureCount(), 6 );
   QCOMPARE( lineTemp->wkbType(), QgsWkbTypes::MultiLineString );
   lineTemp.reset();
+
+  // test creation of the composition xml
+  QString composition = geoPdfExporter.createCompositionXml();
+  QgsDebugMsg( composition );
+  QVERIFY( composition.contains( QStringLiteral( "id=\"%1\"" ).arg( linesLayer->id() ) ) );
+  QVERIFY( composition.contains( QStringLiteral( "id=\"%1\"" ).arg( pointsLayer->id() ) ) );
+  QVERIFY( composition.contains( QStringLiteral( "dataset=\"%1\"" ).arg( geoPdfExporter.mTemporaryFilePaths.value( pointsLayer->id() ) ) ) );
+  QVERIFY( composition.contains( QStringLiteral( "dataset=\"%1\"" ).arg( geoPdfExporter.mTemporaryFilePaths.value( linesLayer->id() ) ) ) );
+
 }
 
 QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )

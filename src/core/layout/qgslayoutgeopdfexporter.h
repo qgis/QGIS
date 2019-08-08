@@ -113,6 +113,8 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
 
     bool saveTemporaryLayers();
 
+    QString createCompositionXml();
+
     friend class TestQgsLayoutGeoPdfExport;
 };
 
