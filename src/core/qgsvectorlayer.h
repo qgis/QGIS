@@ -1373,9 +1373,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
-     * \deprecated in QGIS 3.10 - will be removed in QGIS 4.0
      */
-    Q_DECL_DEPRECATED int addTopologicalPoints( const QgsPointXY &p )  SIP_DEPRECATED;
+    int addTopologicalPoints( const QgsPointXY &p );
 
     /**
      * Adds a vertex to segments which intersect point p but don't
