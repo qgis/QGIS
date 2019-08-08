@@ -546,6 +546,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
+  if ( geoPdfExporter )
+    geoPdfExporter->finalize();
+
   bool shouldAppendGeoreference = settings.appendGeoreference && mLayout && mLayout->referenceMap() && mLayout->referenceMap()->page() == 0;
   if ( settings.appendGeoreference || settings.exportMetadata )
   {

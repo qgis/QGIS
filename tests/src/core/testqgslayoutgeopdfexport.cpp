@@ -179,6 +179,14 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( pointFeature3b.attribute( 4 ).toInt(), 1 );
   QCOMPARE( pointFeature3b.attribute( 5 ).toInt(), 2 );
   QCOMPARE( pointGeometry3b.asWkt( 1 ), QStringLiteral( "Polygon ((167 102, 178.2 102, 178.2 113.3, 167 113.3, 167 102))" ) );
+
+  // finalize and test collation
+  geoPdfExporter.finalize();
+
+  QMap< QString, QgsFeatureList > collatedFeatures = geoPdfExporter.mCollatedFeatures;
+  QCOMPARE( collatedFeatures.count(), 2 );
+  QCOMPARE( collatedFeatures.value( pointsLayer->id() ).count(), 32 );
+  QCOMPARE( collatedFeatures.value( linesLayer->id() ).count(), 6 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )

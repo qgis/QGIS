@@ -102,3 +102,24 @@ QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPd
   return mMapHandlers.value( map )->renderedFeatures;
 }
 
+void QgsLayoutGeoPdfExporter::finalize()
+{
+  // collate all the features from different maps which belong to the same layer, replace their geometries with the rendered feature bounds
+  for ( auto mapIt = mMapHandlers.constBegin(); mapIt != mMapHandlers.constEnd(); ++mapIt )
+  {
+    QgsGeoPdfRenderedFeatureHandler *handler = mapIt.value();
+    for ( auto layerIt = handler->renderedFeatures.constBegin(); layerIt != handler->renderedFeatures.constEnd(); ++layerIt )
+    {
+      const QString layerId = layerIt.key();
+      const QVector< QgsLayoutGeoPdfExporter::RenderedFeature > features = layerIt.value();
+      for ( auto featureIt = features.constBegin(); featureIt != features.constEnd(); ++featureIt )
+      {
+        // replace feature geometry with transformed rendered bounds
+        QgsFeature f = featureIt->feature;
+        f.setGeometry( featureIt->renderedBounds );
+        mCollatedFeatures[ layerId ].append( f );
+      }
+    }
+  }
+}
+
