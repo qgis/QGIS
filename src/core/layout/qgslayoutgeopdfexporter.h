@@ -93,7 +93,7 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
      * Returns TRUE if the operation was successful, or FALSE if an error occurred. If an error occurred, it
      * can be retrieved by calling errorMessage().
      */
-    bool finalize();
+    bool finalize( const QString &sourcePdf );
 
     /**
      * Returns the last error message encountered during the export.
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
 
     bool saveTemporaryLayers();
 
-    QString createCompositionXml();
+    QString createCompositionXml( const QString &sourcePdf );
 
     friend class TestQgsLayoutGeoPdfExport;
 };

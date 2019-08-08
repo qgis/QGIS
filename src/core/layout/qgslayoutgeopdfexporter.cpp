@@ -21,6 +21,11 @@
 #include "qgslogger.h"
 #include "qgsgeometry.h"
 #include "qgsvectorfilewriter.h"
+
+#include <gdal.h>
+#include "qgsgdalutils.h"
+#include "cpl_string.h"
+
 #include <QMutex>
 #include <QMutexLocker>
 #include <QDomDocument>
@@ -109,7 +114,7 @@ QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPd
   return mMapHandlers.value( map )->renderedFeatures;
 }
 
-bool QgsLayoutGeoPdfExporter::finalize()
+bool QgsLayoutGeoPdfExporter::finalize( const QString &sourcePdf )
 {
   // collate all the features from different maps which belong to the same layer, replace their geometries with the rendered feature bounds
   for ( auto mapIt = mMapHandlers.constBegin(); mapIt != mMapHandlers.constEnd(); ++mapIt )
@@ -132,11 +137,43 @@ bool QgsLayoutGeoPdfExporter::finalize()
   if ( !saveTemporaryLayers() )
     return false;
 
-  const QString composition = createCompositionXml();
+  const QString composition = createCompositionXml( sourcePdf );
   if ( composition.isEmpty() )
     return false;
 
-  return true;
+  // do the creation!
+  GDALDriverH driver = GDALGetDriverByName( "PDF" );
+  if ( !driver )
+  {
+    mErrorMessage = QObject::tr( "Cannot load GDAL PDF driver" );
+    return false;
+  }
+
+  const QString xmlFilePath = mTemporaryDir.filePath( QStringLiteral( "composition.xml" ) );
+  QFile file( xmlFilePath );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    QTextStream out( &file );
+    out << composition;
+  }
+  else
+  {
+    mErrorMessage = QObject::tr( "Could not create GeoPDF composition file" );
+    return false;
+  }
+
+  char **papszOptions = CSLSetNameValue( nullptr, "COMPOSITION_FILE", xmlFilePath.toUtf8().constData() );
+
+  QString outputFile = "/home/nyall/Temporary/geopdf/test.pdf";
+
+  // return a non-null (fake) dataset in case of success, nullptr otherwise.
+  gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, outputFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
+  bool res = outputDataset.get();
+  outputDataset.reset();
+
+  CSLDestroy( papszOptions );
+
+  return res;
 }
 
 bool QgsLayoutGeoPdfExporter::saveTemporaryLayers()
@@ -169,7 +206,7 @@ bool QgsLayoutGeoPdfExporter::saveTemporaryLayers()
   return true;
 }
 
-QString QgsLayoutGeoPdfExporter::createCompositionXml()
+QString QgsLayoutGeoPdfExporter::createCompositionXml( const QString &sourcePdf )
 {
   QDomDocument doc;
 
@@ -235,12 +272,19 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml()
     ifLayerOn.setAttribute( QStringLiteral( "layerId" ), it.key() );
     QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
     vectorDataset.setAttribute( QStringLiteral( "dataset" ), it.value() );
+    QFileInfo fi( it.value() );
+    vectorDataset.setAttribute( QStringLiteral( "layer" ), fi.completeBaseName() );
     vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "true" ) ); // actually false!
     QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
     logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), it.key() );
     //logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), it.key() );
     vectorDataset.appendChild( logicalStructure );
     ifLayerOn.appendChild( vectorDataset );
+
+    QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
+    pdfDataset.setAttribute( QStringLiteral( "dataset" ), sourcePdf );
+    ifLayerOn.appendChild( pdfDataset );
+
     content.appendChild( ifLayerOn );
   }
 
