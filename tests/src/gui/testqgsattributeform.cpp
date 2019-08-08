@@ -50,6 +50,7 @@ class TestQgsAttributeForm : public QObject
     void testEditableJoin();
     void testUpsertOnEdit();
     void testAttributeFormInterface();
+    void testDefaultValueUpdate();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -906,6 +907,107 @@ void TestQgsAttributeForm::testAttributeFormInterface()
 }
 
 
+void TestQgsAttributeForm::testDefaultValueUpdate()
+{
+  // make a temporary layer to check through
+  QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+
+  //set defaultValueDefinitions
+  //col0 - no default value
+  //col1 - "col0"+1
+  //col2 - "col0"+"col1"
+  //col3 - "col2"
+
+  // set constraints for each field
+  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ) ) );
+  layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col0\"+\"col1\"" ) ) );
+  layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"" ) ) );
+
+  // build a form for this feature
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 0 );
+  QgsAttributeForm form( layer );
+  form.setMode( QgsAttributeEditorContext::AddFeatureMode );
+  form.setFeature( ft );
+
+  // get wrappers for each widget
+  QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
+  ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  ww1 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[3] );
+
+  //set value in col0:
+  ww0->setValue( 5 );
+
+  //we expect
+  //col0 - 5
+  //col1 - 6
+  //col2 - 11
+  //col3 - 11
+
+  QCOMPARE( ww0->value().toInt(), 5 );
+  QCOMPARE( ww1->value().toInt(), 6 );
+  QCOMPARE( ww2->value().toInt(), 11 );
+  QCOMPARE( ww3->value().toInt(), 11 );
+
+  //set value in col1:
+  ww1->setValue( 10 );
+
+  //we expect
+  //col0 - 5
+  //col1 - 10
+  //col2 - 15
+  //col3 - 15
+
+  QCOMPARE( ww0->value().toInt(), 5 );
+  QCOMPARE( ww1->value().toInt(), 10 );
+  QCOMPARE( ww2->value().toInt(), 15 );
+  QCOMPARE( ww3->value().toInt(), 15 );
+
+  /*
+  //let's make a recursion
+  //col0 - COALESCE( 0, "col3"+1)
+  //col1 - COALESCE( 0, "col0"+1)
+  //col2 - COALESCE( 0, "col1"+1)
+  //col3 - COALESCE( 0, "col2"+1)
+
+  // set constraints for each field
+  layer->setDefaultValueDefinition( 0, QgsDefaultValue( QStringLiteral("\"col3\"+1") ) );
+  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral("\"col0\"+1") ) );
+  layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral("\"col1\"+1") ) );
+  layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral("\"col2\"+1") ) );
+
+  //set value in col0:
+  ww0->setValue( 20 );
+
+  //we expect
+  //col0 - 20
+  //col1 - 21
+  //col2 - 22
+  //col3 - 23
+
+  QCOMPARE( ww0->value().toInt(), 20 );
+  QCOMPARE( ww1->value().toInt(), 21 );
+  QCOMPARE( ww2->value().toInt(), 22 );
+  QCOMPARE( ww3->value().toInt(), 23 );
+
+  //set value in col2:
+  ww2->setValue( 30 );
+
+  //we expect
+  //col0 - 32
+  //col1 - 33
+  //col2 - 30
+  //col3 - 31
+
+  QCOMPARE( ww0->value().toInt(), 32 );
+  QCOMPARE( ww1->value().toInt(), 33 );
+  QCOMPARE( ww2->value().toInt(), 30 );
+  QCOMPARE( ww3->value().toInt(), 31 );
+  */
+}
 
 QGSTEST_MAIN( TestQgsAttributeForm )
 #include "testqgsattributeform.moc"
