@@ -127,9 +127,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     enum Capability
     {
-      CreateVectorTable = 1 << 1,   //!< Can CREATE a vector table/layer
-      CreateRasterTable = 1 << 2,   //!< Can CREATE a raster table/layer
-      DropTable = 1 << 3,           //!< Can DROP a table/layer
+      CreateVectorTable = 1 << 1,   //!< Can CREATE a vector (or aspatial) table/layer
+      // CreateRasterTable does not make much sense, skip it for now:
+      DropRasterTable = 1 << 2,     //!< Can DROP a raster table/layer
+      DropVectorTable = 1 << 3,     //!< Can DROP a vector (or aspatial) table/layer
       RenameTable = 1 << 4,         //!< Can RENAME a table/layer
       CreateSchema = 1 << 5,        //!< Can CREATE a schema
       DropSchema = 1 << 6,          //!< Can DROP a schema
@@ -143,7 +144,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       // TODO: TruncateTable = 1 << 14,      //!< Can TRUNCATE a table
     };
 
-    Q_ENUMS( Capability )
+    Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
     Q_FLAG( Capabilities )
 
@@ -171,19 +172,20 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
                                     const QMap<QString, QVariant> *options
                                   ) SIP_THROW( QgsProviderConnectionException );
 
-    /**
-     * Create a new raster table with given \a schema and \a name (may be empty if not supported by the backend)
-     * \throws QgsProviderConnectionException
-     */
-    virtual void createRasterTable( const QString &schema,
-                                    const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops a table with given \a schema (may be empty if not supported by the backend) and \a name
+     * Drops a vector (or aspatial) table with given \a schema (may be empty if not supported by the backend) and \a name
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void dropTable( const QString &schema, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+    virtual void dropVectorTable( const QString &schema, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Drops a raster table with given \a schema (may be empty if not supported by the backend) and \a name
+     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \throws QgsProviderConnectionException
+     */
+    virtual void dropRasterTable( const QString &schema, const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Renames a table with given \a schema (may be empty if not supported by the backend) and \a name
@@ -243,6 +245,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
   protected:
 
+    void checkCapability( Capability cap );
     Capabilities mCapabilities = nullptr;
 
 };

@@ -549,7 +549,6 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsPostgresProviderMetadata();
-    ~QgsPostgresProviderMetadata() override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
@@ -573,9 +572,6 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     void initProvider() override;
     void cleanupProvider() override;
 
-  private:
-
-    QMap<QString, QgsAbstractProviderConnection *> mConnections;
 };
 
 // clazy:excludeall=qstring-allocations

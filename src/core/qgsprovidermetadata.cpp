@@ -37,7 +37,7 @@ QgsProviderMetadata::QgsProviderMetadata( const QString &key, const QString &des
 
 QgsProviderMetadata::~QgsProviderMetadata()
 {
-
+  qDeleteAll( mProviderConnections );
 }
 
 QString QgsProviderMetadata::key() const
@@ -200,6 +200,12 @@ void QgsProviderMetadata::saveConnection( QgsAbstractProviderConnection *connect
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
 }
 
+void QgsProviderMetadata::saveConnectionProtected( QgsAbstractProviderConnection *conn, QVariantMap guiConfig )
+{
+  conn->store( guiConfig );
+  mProviderConnections.clear();
+}
+
 template<typename T>
 QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 {
@@ -216,3 +222,7 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
   }
   return result;
 }
+
+
+
+

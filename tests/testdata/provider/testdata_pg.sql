@@ -617,11 +617,3 @@ CREATE OR REPLACE VIEW qgis_test.b21839_pk_unicity_view AS
     b21839_pk_unicity.geom
    FROM qgis_test.b21839_pk_unicity;
 
-
-
----------------------------------------------
---
--- Table and view for tests on connections
---
-
-CREATE TABLE qgis_test.rasters(rid serial primary key, rast raster);

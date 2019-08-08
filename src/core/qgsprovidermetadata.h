@@ -289,6 +289,7 @@ class CORE_EXPORT QgsProviderMetadata
      */
     template <typename T> QMap<QString, T *>connections( bool cached = true );
 
+
 #endif
 
     /**
@@ -318,6 +319,40 @@ class CORE_EXPORT QgsProviderMetadata
      */
     virtual void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() );
 
+  protected:
+
+///@cond PRIVATE
+
+    // Common functionality for connections management
+    // T_provider_conn: subclass of QgsAbstractProviderConnection,
+    // T_conn: provider connection class (such as QgsOgrDbConnection or QgsPostgresConn)
+    // TODO QGIS4: remove all old provider conn classes and move functionality into QgsAbstractProviderConnection subclasses
+    template <class T_provider_conn, class T_conn> QMap<QString, QgsAbstractProviderConnection *> connectionsProtected( bool cached = true )
+    {
+      if ( ! cached || mProviderConnections.isEmpty() )
+      {
+        qDeleteAll( mProviderConnections );
+        mProviderConnections.clear();
+        const auto connNames { T_conn::connectionList() };
+        for ( const auto &cname : connNames )
+        {
+          mProviderConnections.insert( cname, new T_provider_conn( cname ) );
+        }
+      }
+      return mProviderConnections;
+    }
+
+    template <class T_provider_conn> void deleteConnectionProtected( const QString &name )
+    {
+      T_provider_conn conn( name );
+      conn.remove();
+      mProviderConnections.clear();
+    }
+    virtual void saveConnectionProtected( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() );
+    QMap<QString, QgsAbstractProviderConnection *> mProviderConnections;
+
+/// @endcond
+
   private:
 
     /// unique key for data provider
@@ -332,7 +367,6 @@ class CORE_EXPORT QgsProviderMetadata
 
     CreateDataProviderFunction mCreateFunction = nullptr;
 
-    QMap<QString, QgsAbstractProviderConnection *> mProviderConnections;
 };
 
 #endif //QGSPROVIDERMETADATA_H

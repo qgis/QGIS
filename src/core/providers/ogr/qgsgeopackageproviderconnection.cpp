@@ -71,57 +71,63 @@ void QgsGeoPackageProviderConnection::remove()
 
 void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options )
 {
+  checkCapability( Capability::CreateVectorTable );
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  if ( capabilities().testFlag( Capability::CreateVectorTable ) )
+  auto opts { *options };
+  opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
+  opts[ QStringLiteral( "update" ) ] = true;
+  QMap<int, int> map;
+  QString errCause;
+  QgsVectorLayerExporter::ExportError errCode = QgsOgrProvider::createEmptyLayer(
+        uri(),
+        fields,
+        wkbType,
+        srs,
+        overwrite,
+        &map,
+        &errCause,
+        &opts
+      );
+  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
   {
-    auto opts { *options };
-    opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
-    opts[ QStringLiteral( "update" ) ] = true;
-    QMap<int, int> map;
-    QString errCause;
-    QgsVectorLayerExporter::ExportError errCode = QgsOgrProvider::createEmptyLayer(
-          uri(),
-          fields,
-          wkbType,
-          srs,
-          overwrite,
-          &map,
-          &errCause,
-          &opts
-        );
-    if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
-    {
-      throw QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
-    }
+    throw QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
   }
 }
 
-
-void QgsGeoPackageProviderConnection::dropTable( const QString &schema, const QString &name )
+void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, const QString &name )
 {
+  checkCapability( Capability::DropVectorTable );
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  if ( ! capabilities().testFlag( Capability::DropTable ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
   QString errCause;
-  // TODO: this won't work for rasters
   QString layerUri { uri() };
   layerUri.append( QStringLiteral( "|layername=%1" ).arg( name ) );
   if ( ! QgsOgrProviderUtils::deleteLayer( layerUri, errCause ) )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error deleting table %1: %2" ).arg( name ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name ).arg( errCause ) );
   }
 }
 
+
+void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, const QString &name )
+{
+  checkCapability( Capability::DropRasterTable );
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+  }
+  executeGdalSqlPrivate( QStringLiteral( "DROP TABLE %1" ).arg( name ) );
+}
+
+
 void QgsGeoPackageProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName )
 {
+  checkCapability( Capability::RenameTable );
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
@@ -147,6 +153,7 @@ void QgsGeoPackageProviderConnection::renameTable( const QString &schema, const 
 
 void QgsGeoPackageProviderConnection::executeSql( const QString &sql )
 {
+  checkCapability( Capability::ExecuteSql );
   // TODO: check if this is the right approach
   executeSqliteSqlPrivate( sql );
 }
@@ -154,6 +161,7 @@ void QgsGeoPackageProviderConnection::executeSql( const QString &sql )
 void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QString &name )
 {
   Q_UNUSED( name );
+  checkCapability( Capability::Vacuum );
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
@@ -203,6 +211,7 @@ static int collect_table_info( void *tableProperties, int, char **argv, char ** 
 
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags )
 {
+  checkCapability( Capability::Tables );
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
@@ -272,10 +281,13 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   {
     Capability::Tables,
     Capability::CreateVectorTable,
+    Capability::DropVectorTable,
     Capability::RenameTable,
-    Capability::DropTable,
     Capability::Vacuum,
   };
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+  mCapabilities |= Capability::DropRasterTable;
+#endif
 }
 
 void QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql )

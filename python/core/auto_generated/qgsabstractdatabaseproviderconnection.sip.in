@@ -96,8 +96,9 @@ Returns the table property corresponding to the geometry type a the given indext
     enum Capability
     {
       CreateVectorTable,
-      CreateRasterTable,
-      DropTable,
+      // CreateRasterTable does not make much sense, skip it for now:
+      DropRasterTable,
+      DropVectorTable,
       RenameTable,
       CreateSchema,
       DropSchema,
@@ -133,10 +134,10 @@ Returns connection capabilities
                                     const QMap<QString, QVariant> *options
                                   ) throw( QgsProviderConnectionException );
 
-    virtual void createRasterTable( const QString &schema,
-                                    const QString &name ) throw( QgsProviderConnectionException );
 
-    virtual void dropTable( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
+    virtual void dropVectorTable( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
+
+    virtual void dropRasterTable( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
 
     virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) throw( QgsProviderConnectionException );
 
@@ -158,6 +159,7 @@ Returns connection capabilities
 
   protected:
 
+    void checkCapability( Capability cap );
 
 };
 

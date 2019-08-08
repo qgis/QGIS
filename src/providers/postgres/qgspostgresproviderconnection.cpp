@@ -48,7 +48,7 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   //       properly filtered capabilities instead of all of them
   mCapabilities =
   {
-    Capability::DropTable,
+    Capability::DropVectorTable,
     Capability::CreateVectorTable,
     // Capability::CreateRasterTable,
     Capability::RenameSchema,
@@ -64,7 +64,12 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   };
 }
 
-
+void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, const QString &name )
+{
+  executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ) )
+                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+}
 
 void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
@@ -76,52 +81,49 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
     QVariant> *options )
 {
 
-  if ( capabilities().testFlag( Capability::CreateVectorTable ) )
+  checkCapability( Capability::CreateVectorTable );
+
+  QgsDataSourceUri newUri { uri() };
+  newUri.setSchema( schema );
+  newUri.setTable( name );
+  // Set geometry column if it's not aspatial
+  if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
   {
-    QgsDataSourceUri newUri { uri() };
-    newUri.setSchema( schema );
-    newUri.setTable( name );
-    // Set geometry column if it's not aspatial
-    if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
-    {
-      newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
-    }
-    QMap<int, int> map;
-    QString errCause;
-    QgsVectorLayerExporter::ExportError errCode = QgsPostgresProvider::createEmptyLayer(
-          newUri.uri(),
-          fields,
-          wkbType,
-          srs,
-          overwrite,
-          &map,
-          &errCause,
-          options
-        );
-    if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
-    {
-      throw QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
-    }
+    newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
+  }
+  QMap<int, int> map;
+  QString errCause;
+  QgsVectorLayerExporter::ExportError errCode = QgsPostgresProvider::createEmptyLayer(
+        newUri.uri(),
+        fields,
+        wkbType,
+        srs,
+        overwrite,
+        &map,
+        &errCause,
+        options
+      );
+  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
   }
 }
 
-void QgsPostgresProviderConnection::dropTable( const QString &schema, const QString &name )
+void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, const QString &name )
 {
-  if ( ! capabilities().testFlag( Capability::DropTable ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
-  executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( schema ) )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+  checkCapability( Capability::DropVectorTable );
+  dropTablePrivate( schema, name );
+}
+
+void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, const QString &name )
+{
+  checkCapability( Capability::DropRasterTable );
+  dropTablePrivate( schema, name );
 }
 
 void QgsPostgresProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName )
 {
-  if ( ! capabilities().testFlag( Capability::RenameTable ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
+  checkCapability( Capability::RenameTable );
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
                      .arg( QgsPostgresConn::quotedIdentifier( schema ) )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) )
@@ -130,10 +132,7 @@ void QgsPostgresProviderConnection::renameTable( const QString &schema, const QS
 
 void QgsPostgresProviderConnection::createSchema( const QString &name )
 {
-  if ( ! capabilities().testFlag( Capability::CreateSchema ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
+  checkCapability( Capability::CreateSchema );
   executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
 
@@ -141,10 +140,7 @@ void QgsPostgresProviderConnection::createSchema( const QString &name )
 
 void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force )
 {
-  if ( ! capabilities().testFlag( Capability::DropSchema ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
+  checkCapability( Capability::DropSchema );
   executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1 %2" )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) )
                      .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
@@ -152,10 +148,7 @@ void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force
 
 void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName )
 {
-  if ( ! capabilities().testFlag( Capability::RenameSchema ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
+  checkCapability( Capability::RenameSchema );
   executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) )
                      .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
@@ -163,10 +156,7 @@ void QgsPostgresProviderConnection::renameSchema( const QString &name, const QSt
 
 void QgsPostgresProviderConnection::executeSql( const QString &sql )
 {
-  if ( ! capabilities().testFlag( Capability::ExecuteSql ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
+  checkCapability( Capability::ExecuteSql );
   executeSqlPrivate( sql );
 }
 
@@ -209,10 +199,7 @@ void QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql )
 
 void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name )
 {
-  if ( ! capabilities().testFlag( Capability::Vacuum ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
+  checkCapability( Capability::Vacuum );
   executeSql( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
               .arg( QgsPostgresConn::quotedIdentifier( schema ) )
               .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
@@ -220,11 +207,7 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
 
 QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags )
 {
-  if ( ! capabilities().testFlag( Capability::Tables ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
-
+  checkCapability( Capability::Tables );
   QList<QgsPostgresProviderConnection::TableProperty> tables;
   QString errCause;
   const QgsDataSourceUri dsUri { uri() };
@@ -316,11 +299,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
 
 QStringList QgsPostgresProviderConnection::schemas( )
 {
-  if ( ! capabilities().testFlag( Capability::Schemas ) )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Method is not supported for this connection" ) );
-  }
-
+  checkCapability( Capability::Schemas );
   QStringList schemas;
   QString errCause;
   const QgsDataSourceUri dsUri { uri() };

@@ -36,7 +36,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
                             const QgsCoordinateReferenceSystem &srs, bool overwrite,
                             const QMap<QString, QVariant> *options ) override;
 
-    void dropTable( const QString &schema, const QString &name ) override;
+    void dropVectorTable( const QString &schema, const QString &name ) override;
+    void dropRasterTable( const QString &schema, const QString &name ) override;
     void renameTable( const QString &schema, const QString &name, const QString &newName ) override;
     void createSchema( const QString &name ) override;
     void dropSchema( const QString &name, bool force = false ) override;
@@ -54,6 +55,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
 
     void executeSqlPrivate( const QString &sql );
     void setDefaultCapabilities();
+    void dropTablePrivate( const QString &schema, const QString &name );
 };
 
 #endif // QGSPOSTGRESPROVIDERCONNECTION_H

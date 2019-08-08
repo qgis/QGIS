@@ -5035,17 +5035,7 @@ QgsTransaction *QgsPostgresProviderMetadata::createTransaction( const QString &c
 
 QMap<QString, QgsAbstractProviderConnection *> QgsPostgresProviderMetadata::connections( bool cached )
 {
-  if ( ! cached || mConnections.isEmpty() )
-  {
-    qDeleteAll( mConnections );
-    mConnections.clear();
-    const auto connNames { QgsPostgresConn::connectionList() };
-    for ( const auto &cname : connNames )
-    {
-      mConnections.insert( cname, new QgsPostgresProviderConnection( cname ) );
-    }
-  }
-  return mConnections;
+  return connectionsProtected<QgsPostgresProviderConnection, QgsPostgresConn>( cached );
 }
 
 QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name, const QString &uri )
@@ -5055,15 +5045,12 @@ QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QS
 
 void QgsPostgresProviderMetadata::deleteConnection( const QString &name )
 {
-  QgsPostgresProviderConnection conn( name );
-  conn.remove();
-  mConnections.clear();
+  deleteConnectionProtected<QgsPostgresProviderConnection>( name );
 }
 
 void QgsPostgresProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, QVariantMap guiConfig )
 {
-  conn->store( guiConfig );
-  mConnections.clear( );
+  saveConnectionProtected( conn, guiConfig );
 }
 
 QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name )
@@ -5211,11 +5198,6 @@ void QgsPostgresSharedData::setFieldSupportsEnumValues( int index, bool isSuppor
 QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
   : QgsProviderMetadata( QgsPostgresProvider::POSTGRES_KEY, QgsPostgresProvider::POSTGRES_DESCRIPTION )
 {
-}
-
-QgsPostgresProviderMetadata::~QgsPostgresProviderMetadata()
-{
-  qDeleteAll( mConnections );
 }
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

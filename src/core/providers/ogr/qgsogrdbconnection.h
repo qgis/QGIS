@@ -37,7 +37,7 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     //! Constructor
     explicit QgsOgrDbConnection( const QString &connName, const QString &settingsKey );
 
-    static const QStringList connectionList( const QString &settingsKey );
+    static const QStringList connectionList( const QString &driverName = QStringLiteral( "GPKG" ) );
     static void deleteConnection( const QString &connName, const QString &settingsKey );
     static QString selectedConnection( const QString &settingsKey );
     static void setSelectedConnection( const QString &connName, const QString &settingsKey );

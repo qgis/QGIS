@@ -92,10 +92,10 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         capabilities = conn.capabilities()
 
         # Schema operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema and
-                capabilities & QgsAbstractDatabaseProviderConnection.Schemas and
-                capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema and
-                capabilities & QgsAbstractDatabaseProviderConnection.DropSchema ):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema
+                and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
+                and capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema
+                and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema ):
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
             # Create
@@ -113,10 +113,10 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             self.assertFalse('myVeryNewSchema' in schemas)
 
         # Table operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable and
-                capabilities & QgsAbstractDatabaseProviderConnection.Tables and
-                capabilities & QgsAbstractDatabaseProviderConnection.RenameTable and
-                capabilities & QgsAbstractDatabaseProviderConnection.DropTable ):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable
+                and capabilities & QgsAbstractDatabaseProviderConnection.Tables
+                and capabilities & QgsAbstractDatabaseProviderConnection.RenameTable
+                and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable ):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
@@ -127,7 +127,7 @@ class TestPyQgsProviderConnection(unittest.TestCase):
                 schema = 'public'
 
             if 'myNewTable' in self._table_names(conn.tables(schema)):
-                conn.dropTable(schema, 'myNewTable')
+                conn.dropVectorTable(schema, 'myNewTable')
             fields = QgsFields()
             fields.append(QgsField("string", QVariant.String))
             fields.append(QgsField("long", QVariant.LongLong))
@@ -199,8 +199,8 @@ class TestPyQgsProviderConnection(unittest.TestCase):
                     conn.dropSchema('myNewSchema')
 
             # Drop table
-            conn.dropTable(schema, 'myVeryNewTable')
-            conn.dropTable(schema, 'myNewAspatialTable')
+            conn.dropVectorTable(schema, 'myVeryNewTable')
+            conn.dropVectorTable(schema, 'myNewAspatialTable')
             table_names = self._table_names(conn.tables(schema))
             self.assertFalse('myVeryNewTable' in table_names)
 
@@ -230,14 +230,13 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Tables))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
-        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateRasterTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameTable))
 
         # Run common tests
         self._test_operations(md, conn)
 
-    def ______test_spatialite_connections(self):
+    def __test_spatialite_connections(self):
         """Test spatialite connections"""
 
         md = QgsProviderRegistry.instance().providerMetadata('spatialite')
@@ -267,7 +266,7 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         md.saveConnection(conn)
 
         with self.assertRaises(QgsProviderConnectionException) as ex:
-            conn.createRasterTable('notExists', 'notReally')
+            conn.createVectorTable('notExists', 'notReally', QgsFields(), QgsWkbTypes.Point, QgsCoordinateReferenceSystem(), False, {})
 
         with self.assertRaises(QgsProviderConnectionException) as ex:
             conn.executeSql('DROP TABLE "notExists"')

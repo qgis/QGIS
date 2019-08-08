@@ -271,6 +271,32 @@ Stores the connection ``connection`` in the settings
 .. versionadded:: 3.10
 %End
 
+  protected:
+
+
+    template <class T_provider_conn, class T_conn> QMap<QString, QgsAbstractProviderConnection *> connectionsProtected( bool cached = true )
+    {
+      if ( ! cached || mProviderConnections.isEmpty() )
+      {
+        qDeleteAll( mProviderConnections );
+        mProviderConnections.clear();
+        auto connNames;
+        for ( const auto &cname : connNames )
+        {
+          mProviderConnections.insert( cname, new T_provider_conn( cname ) );
+        }
+      }
+    }
+
+    template <T_provider_conn> void deleteConnectionProtected( const QString &name )
+    {
+      T_provider_conn conn( name );
+      conn.remove();
+      mProviderConnections.clear();
+    }
+    virtual void saveConnectionProtected( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() );
+
+
 };
 
 /************************************************************************
