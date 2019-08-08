@@ -332,6 +332,9 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   // prepare for rendering
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
   {
+    // provider will require the correct layer scope for expression preparation - at this stage, the existing expression context
+    // only contains generic scopes
+    QgsExpressionContextScopePopper popper( context.expressionContext(), QgsExpressionContextUtils::layerScope( provider->layer() ) );
     provider->startRender( context );
   }
 
