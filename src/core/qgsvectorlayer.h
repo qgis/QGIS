@@ -1364,7 +1364,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Adds a vertex to segments which intersect point p but don't
-     * already have a vertex there. If a feature already has a vertex at position p,
+     * already have a vertex there. If a feature already has a vertex at position \a p,
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \param p position of the vertex
@@ -1378,7 +1378,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Adds a vertex to segments which intersect point p but don't
-     * already have a vertex there. If a feature already has a vertex at position p,
+     * already have a vertex there. If a feature already has a vertex at position \a p,
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \param p position of the vertex
