@@ -32,7 +32,7 @@
       Py_ssize_t size;
       const char *s = PyUnicode_AsUTF8AndSize(sipPy, &size);
       if (!s) {
-          return NULL;
+          return 0;
       }
       *sipCppPtr = new std::string(s);
       return 1;
