@@ -1221,6 +1221,11 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     jobMapSettings.setLabelBlockingRegions( createLabelBlockingRegions( jobMapSettings ) );
   }
 
+  for ( QgsRenderedFeatureHandlerInterface *handler : qgis::as_const( mRenderedFeatureHandlers ) )
+  {
+    jobMapSettings.addRenderedFeatureHandler( handler );
+  }
+
   return jobMapSettings;
 }
 
@@ -1378,6 +1383,16 @@ bool QgsLayoutItemMap::accept( QgsStyleEntityVisitorInterface *visitor ) const
     return false;
 
   return true;
+}
+
+void QgsLayoutItemMap::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.append( handler );
+}
+
+void QgsLayoutItemMap::removeRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.removeAll( handler );
 }
 
 QPointF QgsLayoutItemMap::mapToItemCoords( QPointF mapCoords ) const

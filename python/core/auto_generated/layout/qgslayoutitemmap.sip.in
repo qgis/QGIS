@@ -580,6 +580,30 @@ Returns map rendering errors
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
+    void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+%Docstring
+Adds a rendered feature ``handler`` to use while rendering the map.
+
+Ownership of ``handler`` is NOT transferred, and it is the caller's responsibility to ensure
+that the handler exists for as long as it is registered with the map item.
+
+Callers should call removeRenderedFeatureHandler() to remove the handler before
+destroying the ``handler``.
+
+.. seealso:: :py:func:`removeRenderedFeatureHandler`
+
+.. versionadded:: 3.10
+%End
+
+    void removeRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+%Docstring
+Removes a previously added rendered feature ``handler``.
+
+.. seealso:: :py:func:`addRenderedFeatureHandler`
+
+.. versionadded:: 3.10
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );

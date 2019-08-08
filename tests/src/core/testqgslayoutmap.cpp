@@ -30,6 +30,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitempolyline.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -61,6 +62,7 @@ class TestQgsLayoutMap : public QObject
     void layoutToMapCoordsTransform();
     void labelBlockingRegions();
     void testSimplificationMethod();
+    void testRenderedFeatureHandler();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -800,6 +802,73 @@ void TestQgsLayoutMap::testSimplificationMethod()
   settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
   QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
   QVERIFY( settings.flags() & QgsMapSettings::UseRenderingOptimization );
+}
+
+class TestHandler : public QgsRenderedFeatureHandlerInterface
+{
+  public:
+
+    TestHandler( QList< QgsFeature > &features, QList< QgsGeometry > &geometries )
+      : features( features )
+      , geometries( geometries )
+    {}
+
+    void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &geom, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext & ) override
+    {
+      features.append( feature );
+      geometries.append( geom );
+    }
+
+    QList< QgsFeature > &features;
+    QList< QgsGeometry > &geometries;
+
+};
+
+
+void TestQgsLayoutMap::testRenderedFeatureHandler()
+{
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QVERIFY( linesLayer->isValid() );
+
+  QgsProject p;
+  p.addMapLayer( linesLayer );
+
+  QgsLayout l( &p );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( QList<QgsMapLayer *>() << linesLayer );
+  map->setCrs( linesLayer->crs() );
+  map->zoomToExtent( linesLayer->extent() );
+  l.addLayoutItem( map );
+
+  // register a handler
+  QList< QgsFeature > features1;
+  QList< QgsGeometry > geometries1;
+  TestHandler handler1( features1, geometries1 );
+  // not added yet, no crash
+  map->removeRenderedFeatureHandler( nullptr );
+  map->removeRenderedFeatureHandler( &handler1 );
+  map->addRenderedFeatureHandler( &handler1 );
+
+  // trigger render
+  QgsLayoutExporter exporter( &l );
+  exporter.renderPageToImage( 0 );
+
+  QCOMPARE( features1.count(), 6 );
+  QCOMPARE( geometries1.count(), 6 );
+
+  // remove handler
+  map->removeRenderedFeatureHandler( &handler1 );
+  features1.clear();
+
+  // shouldn't be used anymore
+  QgsLayoutExporter exporter2( &l );
+  exporter2.renderPageToImage( 0 );
+
+  QVERIFY( features1.isEmpty() );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )
