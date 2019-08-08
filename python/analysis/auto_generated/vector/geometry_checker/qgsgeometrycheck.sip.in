@@ -177,6 +177,8 @@ Create a new geometry check.
     virtual void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 %Docstring
 Will be run in the main thread before collectErrors is called (which may be run from a background thread).
+
+.. versionadded:: 3.10
 %End
 
 

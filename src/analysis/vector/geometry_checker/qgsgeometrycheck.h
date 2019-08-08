@@ -255,6 +255,8 @@ class ANALYSIS_EXPORT QgsGeometryCheck
 
     /**
      * Will be run in the main thread before collectErrors is called (which may be run from a background thread).
+     *
+     * \since QGIS 3.10
      */
     virtual void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 

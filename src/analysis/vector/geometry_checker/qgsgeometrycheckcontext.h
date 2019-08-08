@@ -60,8 +60,11 @@ struct ANALYSIS_EXPORT QgsGeometryCheckContext
     const QgsCoordinateTransformContext transformContext;
 
     /**
-     * The project ... blablabla
-     * Only to be used in the main thread (prepare method)
+     * The project can be used to resolve additional layers.
+     *
+     * This must only be accessed from the main thread (i.e. do not access from the collectError method)
+     *
+     * \since QGIS 3.10
      */
     const QgsProject *project;
 
