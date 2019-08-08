@@ -22,7 +22,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsFieldConstraints,
-                       QgsPointXY,
+                       QgsPoint,
                        NULL,
                        QgsRectangle)
 from qgis.testing import start_app, unittest
@@ -374,7 +374,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertTrue(layer.isSpatial())
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
         layer.startEditing()
-        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPoint(0.5, 0), QgsPoint(0.5, 1)], 0), 0)
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 2)
 

@@ -738,16 +738,14 @@ int QgsMapToolCapture::size()
   return mCaptureCurve.numPoints();
 }
 
-QVector<QgsPointXY> QgsMapToolCapture::points() const
+QgsPointSequence QgsMapToolCapture::points() const
 {
   QgsPointSequence pts;
-  QVector<QgsPointXY> points;
   mCaptureCurve.points( pts );
-  QgsGeometry::convertPointList( pts, points );
-  return points;
+  return pts;
 }
 
-void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
+void QgsMapToolCapture::setPoints( const QgsPointSequence &pointList )
 {
   QgsLineString *line = new QgsLineString( pointList );
   mCaptureCurve.clear();

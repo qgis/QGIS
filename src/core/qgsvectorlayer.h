@@ -1253,7 +1253,28 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr );
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr ) SIP_DEPRECATED;
+
+
+    /**
+     * Adds a ring to polygon/multipolygon features
+     * \param ring ring to add
+     * \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - AddRingNotInExistingFeature
+     * - InvalidInputGeometryType
+     * - AddRingNotClosed
+     * - AddRingNotValid
+     * - AddRingCrossesExistingRings
+     *
+     * \note Calls to addRing() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     */
+    QgsGeometry::OperationResult addRing( const QgsPointSequence &ring, QgsFeatureId *featureId = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features (takes ownership)
@@ -1293,6 +1314,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * changes can be discarded by calling rollBack().
      */
     QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring );
+
+    /**
+     * Adds a new part polygon to a multipart feature
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - SelectionIsEmpty
+     * - SelectionIsGreaterThanOne
+     * - AddPartSelectedGeometryNotFound
+     * - AddPartNotMultiGeometry
+     * - InvalidBaseGeometry
+     * - InvalidInputGeometryType
+     * \note available in Python bindings as addPartV2
+     * \note Calls to addPart() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     */
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) SIP_PYNAME( addPartV2 ) SIP_DEPRECATED;
 
     /**
      * Adds a new part polygon to a multipart feature
@@ -1352,7 +1392,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
+
+    /**
+     * Splits parts cut by the given line
+     * \param splitLine line that splits the layer features
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
+     * \note Calls to splitParts() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     */
+    QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 
     /**
      * Splits features cut by the given line
@@ -1371,7 +1430,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    Q_DECL_DEPRECATED QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
+
+    /**
+     * Splits features cut by the given line
+     * \param splitLine line that splits the layer features
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
+     * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     */
+    QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
@@ -1396,8 +1474,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
+     * \deprecated in QGIS 3.10 - will be removed in QGIS 4.0
      */
-    int addTopologicalPoints( const QgsPointXY &p );
+    Q_DECL_DEPRECATED int addTopologicalPoints( const QgsPointXY &p )  SIP_DEPRECATED;
 
     /**
      * Adds a vertex to segments which intersect point \a p but don't

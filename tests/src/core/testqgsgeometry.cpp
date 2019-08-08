@@ -2571,7 +2571,7 @@ void TestQgsGeometry::circularString()
 
   //removing a vertex from a 3 point circular string should remove the whole line
   QgsCircularString l39;
-  l39.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  l39.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
   QCOMPARE( l39.numPoints(), 3 );
   l39.deleteVertex( QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( l39.numPoints(), 0 );
@@ -2579,7 +2579,7 @@ void TestQgsGeometry::circularString()
   //boundary
   QgsCircularString boundary1;
   QVERIFY( !boundary1.boundary() );
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   QgsAbstractGeometry *boundary = boundary1.boundary();
   QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
@@ -2590,11 +2590,11 @@ void TestQgsGeometry::circularString()
   delete boundary;
 
   // closed string = no boundary
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   QVERIFY( !boundary1.boundary() );
 
   //boundary with z
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   boundary = boundary1.boundary();
   mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
@@ -3033,11 +3033,11 @@ void TestQgsGeometry::lineString()
   QCOMPARE( *( fromArray8.mData() + 2 ), 33.0 );
 
   // from QList<QgsPointXY>
-  QgsLineString fromPtsA = QgsLineString( QVector< QgsPoint >() );
+  QgsLineString fromPtsA = QgsLineString( QgsPointSequence() );
   QVERIFY( fromPtsA.isEmpty() );
   QCOMPARE( fromPtsA.wkbType(), QgsWkbTypes::LineString );
 
-  fromPtsA = QgsLineString( QVector< QgsPoint >()  << QgsPoint( 1, 2, 0, 4, QgsWkbTypes::PointM ) );
+  fromPtsA = QgsLineString( QgsPointSequence()  << QgsPoint( 1, 2, 0, 4, QgsWkbTypes::PointM ) );
   QCOMPARE( fromPtsA.numPoints(), 1 );
   QCOMPARE( fromPtsA.wkbType(), QgsWkbTypes::LineStringM );
 
@@ -3053,8 +3053,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromPts.xAt( 2 ), 21.0 );
   QCOMPARE( fromPts.yAt( 2 ), 22.0 );
 
-  // from QVector<QgsPoint>
-  QVector<QgsPoint> ptsVector;
+  // from QgsPointSequence
+  QgsPointSequence ptsVector;
   ptsVector << QgsPoint( 10, 20 ) << QgsPoint( 30, 40 );
   QgsLineString fromVector( ptsVector );
   QCOMPARE( fromVector.wkbType(), QgsWkbTypes::LineString );
@@ -3063,7 +3063,7 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromVector.yAt( 0 ), 20.0 );
   QCOMPARE( fromVector.xAt( 1 ), 30.0 );
   QCOMPARE( fromVector.yAt( 1 ), 40.0 );
-  QVector<QgsPoint> ptsVector3D;
+  QgsPointSequence ptsVector3D;
   ptsVector3D << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 30, 40, 200 );
   QgsLineString fromVector3D( ptsVector3D );
   QCOMPARE( fromVector3D.wkbType(), QgsWkbTypes::LineStringZ );
@@ -4620,7 +4620,7 @@ void TestQgsGeometry::lineString()
 
   //removing the second to last vertex should remove the whole line
   QgsLineString l39;
-  l39.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) );
+  l39.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) );
   QVERIFY( l39.numPoints() == 2 );
   l39.deleteVertex( QgsVertexId( 0, 0, 1 ) );
   QVERIFY( l39.numPoints() == 0 );
@@ -4628,7 +4628,7 @@ void TestQgsGeometry::lineString()
   //boundary
   QgsLineString boundary1;
   QVERIFY( !boundary1.boundary() );
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   QgsAbstractGeometry *boundary = boundary1.boundary();
   QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
@@ -4639,12 +4639,12 @@ void TestQgsGeometry::lineString()
   delete boundary;
 
   // closed string = no boundary
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   QVERIFY( !boundary1.boundary() );
   \
 
   //boundary with z
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   boundary = boundary1.boundary();
   mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
@@ -4661,7 +4661,7 @@ void TestQgsGeometry::lineString()
   //extend
   QgsLineString extend1;
   extend1.extend( 10, 10 ); //test no crash
-  extend1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
+  extend1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   extend1.extend( 1, 2 );
   QCOMPARE( extend1.pointN( 0 ), QgsPoint( QgsWkbTypes::Point, -1, 0 ) );
   QCOMPARE( extend1.pointN( 1 ), QgsPoint( QgsWkbTypes::Point, 1, 0 ) );
@@ -5647,7 +5647,7 @@ void TestQgsGeometry::polygon()
   //removing the fourth to last vertex removes the whole ring
   QgsPolygon p20;
   QgsLineString *p20ExteriorRing = new QgsLineString();
-  p20ExteriorRing->setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  p20ExteriorRing->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   p20.setExteriorRing( p20ExteriorRing );
   QVERIFY( p20.exteriorRing() );
   p20.deleteVertex( QgsVertexId( 0, 0, 2 ) );
@@ -5655,7 +5655,7 @@ void TestQgsGeometry::polygon()
 
   //boundary
   QgsLineString boundary1;
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
   QgsPolygon boundaryPolygon;
   QVERIFY( !boundaryPolygon.boundary() );
 
@@ -5676,9 +5676,9 @@ void TestQgsGeometry::polygon()
 
   // add interior rings
   QgsLineString boundaryRing1;
-  boundaryRing1.setPoints( QVector<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 )  << QgsPoint( 0.1, 0.1 ) );
+  boundaryRing1.setPoints( QgsPointSequence() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 )  << QgsPoint( 0.1, 0.1 ) );
   QgsLineString boundaryRing2;
-  boundaryRing2.setPoints( QVector<QgsPoint>() << QgsPoint( 0.8, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 )  << QgsPoint( 0.8, 0.8 ) );
+  boundaryRing2.setPoints( QgsPointSequence() << QgsPoint( 0.8, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 )  << QgsPoint( 0.8, 0.8 ) );
   boundaryPolygon.setInteriorRings( QVector< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
   boundary = boundaryPolygon.boundary();
   QgsMultiLineString *multiLineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
@@ -5715,7 +5715,7 @@ void TestQgsGeometry::polygon()
   delete boundary;
 
   //test boundary with z
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
                        << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 )  << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) );
   boundaryPolygon.setExteriorRing( boundary1.clone() );
   boundary = boundaryPolygon.boundary();
@@ -5732,7 +5732,7 @@ void TestQgsGeometry::polygon()
   // point distance to boundary
 
   QgsLineString pd1;
-  pd1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  pd1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
   QgsPolygon pd;
   // no meaning, but let's not crash
   ( void )pd.pointDistanceToBoundary( 0, 0 );
@@ -5743,7 +5743,7 @@ void TestQgsGeometry::polygon()
   QGSCOMPARENEAR( pd.pointDistanceToBoundary( -0.1, 0.5 ), -0.1, 0.0000000001 );
   // with a ring
   QgsLineString pdRing1;
-  pdRing1.setPoints( QVector<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.6 )  << QgsPoint( 0.1, 0.6 ) << QgsPoint( 0.1, 0.1 ) );
+  pdRing1.setPoints( QgsPointSequence() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.6 )  << QgsPoint( 0.1, 0.6 ) << QgsPoint( 0.1, 0.1 ) );
   pd.setInteriorRings( QVector< QgsCurve * >() << pdRing1.clone() );
   QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0, 0.5 ), 0.0, 0.0000000001 );
   QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.1, 0.5 ), 0.0, 0.0000000001 );
@@ -5754,7 +5754,7 @@ void TestQgsGeometry::polygon()
 
   // remove interior rings
   QgsLineString removeRingsExt;
-  removeRingsExt.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
+  removeRingsExt.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
   QgsPolygon removeRings1;
   removeRings1.removeInteriorRings();
 
@@ -5764,9 +5764,9 @@ void TestQgsGeometry::polygon()
 
   // add interior rings
   QgsLineString removeRingsRing1;
-  removeRingsRing1.setPoints( QVector<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 )  << QgsPoint( 0.1, 0.1 ) );
+  removeRingsRing1.setPoints( QgsPointSequence() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 )  << QgsPoint( 0.1, 0.1 ) );
   QgsLineString removeRingsRing2;
-  removeRingsRing2.setPoints( QVector<QgsPoint>() << QgsPoint( 0.6, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 )  << QgsPoint( 0.6, 0.8 ) );
+  removeRingsRing2.setPoints( QgsPointSequence() << QgsPoint( 0.6, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 )  << QgsPoint( 0.6, 0.8 ) );
   removeRings1.setInteriorRings( QVector< QgsCurve * >() << removeRingsRing1.clone() << removeRingsRing2.clone() );
 
   // remove ring with size filter
@@ -6454,7 +6454,7 @@ void TestQgsGeometry::polygon()
 
   // test adjacent vertices - should wrap around!
   QgsLineString *closedRing1 = new QgsLineString();
-  closedRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  closedRing1->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
   QgsPolygon p28;
   QgsVertexId previous( 1, 2, 3 );
   QgsVertexId next( 4, 5, 6 );
@@ -6518,7 +6518,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
 
   QgsLineString *closedRing2 = new QgsLineString();
-  closedRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  closedRing2->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
   QgsPolygon p29;
   QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
   QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
@@ -7465,7 +7465,7 @@ void TestQgsGeometry::ellipse()
 
   // test quadrant
   QgsEllipse elpq( QgsPoint( 5, 10 ), 3, 2, 45 );
-  QVector<QgsPoint> q = elpq.quadrant();
+  QgsPointSequence q = elpq.quadrant();
   QGSCOMPARENEARPOINT( q.at( 0 ), QgsPoint( 7.1213, 12.1213 ), 0.001 );
   QGSCOMPARENEARPOINT( q.at( 3 ), QgsPoint( 3.5858, 11.4142 ), 0.001 );
   QGSCOMPARENEARPOINT( q.at( 2 ), QgsPoint( 2.8787, 7.8787 ), 0.001 );
@@ -7723,7 +7723,7 @@ void TestQgsGeometry::circle()
 
 
 // test quadrant
-  QVector<QgsPoint> quad = QgsCircle( QgsPoint( 0, 0 ), 5 ).northQuadrant();
+  QgsPointSequence quad = QgsCircle( QgsPoint( 0, 0 ), 5 ).northQuadrant();
   QVERIFY( quad.at( 0 ) == QgsPoint( 0, 5 ) );
   QVERIFY( quad.at( 1 ) == QgsPoint( 5, 0 ) );
   QVERIFY( quad.at( 2 ) == QgsPoint( 0, -5 ) );
@@ -9032,7 +9032,7 @@ void TestQgsGeometry::curvePolygon()
   //removing the fourth to last vertex removes the whole ring
   QgsCurvePolygon p20;
   QgsCircularString *p20ExteriorRing = new QgsCircularString();
-  p20ExteriorRing->setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  p20ExteriorRing->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   p20.setExteriorRing( p20ExteriorRing );
   QVERIFY( p20.exteriorRing() );
   p20.deleteVertex( QgsVertexId( 0, 0, 2 ) );
@@ -9064,9 +9064,9 @@ void TestQgsGeometry::curvePolygon()
 
   // add interior rings
   QgsCircularString boundaryRing1;
-  boundaryRing1.setPoints( QVector<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 ) );
+  boundaryRing1.setPoints( QgsPointSequence() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 ) );
   QgsCircularString boundaryRing2;
-  boundaryRing2.setPoints( QVector<QgsPoint>() << QgsPoint( 0.8, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 ) );
+  boundaryRing2.setPoints( QgsPointSequence() << QgsPoint( 0.8, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 ) );
   boundaryPolygon.setInteriorRings( QVector< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
   boundary = boundaryPolygon.boundary();
   QgsMultiCurve *multiLineBoundary = dynamic_cast< QgsMultiCurve * >( boundary );
@@ -9101,7 +9101,7 @@ void TestQgsGeometry::curvePolygon()
   delete boundary;
 
   //test boundary with z
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
                        << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   boundaryPolygon.setExteriorRing( boundary1.clone() );
   boundary = boundaryPolygon.boundary();
@@ -9116,7 +9116,7 @@ void TestQgsGeometry::curvePolygon()
 
   // remove interior rings
   QgsCircularString removeRingsExt;
-  removeRingsExt.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
+  removeRingsExt.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
   QgsCurvePolygon removeRings1;
   removeRings1.removeInteriorRings();
 
@@ -11398,7 +11398,7 @@ void TestQgsGeometry::compoundCurve()
   //removing a vertex from a 3 point comound curveshould remove the whole line
   QgsCircularString l39;
   QgsCompoundCurve c39;
-  l39.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  l39.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
   c39.addCurve( l39.clone() );
   QCOMPARE( c39.numPoints(), 3 );
   c39.deleteVertex( QgsVertexId( 0, 0, 2 ) );
@@ -11408,7 +11408,7 @@ void TestQgsGeometry::compoundCurve()
   QgsCompoundCurve cBoundary1;
   QgsCircularString boundary1;
   QVERIFY( !cBoundary1.boundary() );
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   cBoundary1.addCurve( boundary1.clone() );
   QgsAbstractGeometry *boundary = cBoundary1.boundary();
   QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
@@ -11420,13 +11420,13 @@ void TestQgsGeometry::compoundCurve()
   delete boundary;
 
   // closed string = no boundary
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   cBoundary1.clear();
   cBoundary1.addCurve( boundary1.clone() );
   QVERIFY( !cBoundary1.boundary() );
 
   //boundary with z
-  boundary1.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   cBoundary1.clear();
   cBoundary1.addCurve( boundary1.clone() );
   boundary = cBoundary1.boundary();
@@ -12773,7 +12773,7 @@ void TestQgsGeometry::multiLineString()
   QgsMultiLineString multiLine1;
   QVERIFY( !multiLine1.boundary() );
   QgsLineString boundaryLine1;
-  boundaryLine1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
+  boundaryLine1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   multiLine1.addGeometry( boundaryLine1.clone() );
   QgsAbstractGeometry *boundary = multiLine1.boundary();
   QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
@@ -12786,7 +12786,7 @@ void TestQgsGeometry::multiLineString()
   delete boundary;
   // add another linestring
   QgsLineString boundaryLine2;
-  boundaryLine2.setPoints( QVector<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) );
+  boundaryLine2.setPoints( QgsPointSequence() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) );
   multiLine1.addGeometry( boundaryLine2.clone() );
   boundary = multiLine1.boundary();
   mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
@@ -12843,7 +12843,7 @@ void TestQgsGeometry::multiLineString()
 
   // add a closed string = no boundary
   QgsLineString boundaryLine3;
-  boundaryLine3.setPoints( QVector<QgsPoint>() << QgsPoint( 20, 20 ) << QgsPoint( 21, 20 ) << QgsPoint( 21, 21 ) << QgsPoint( 20, 20 ) );
+  boundaryLine3.setPoints( QgsPointSequence() << QgsPoint( 20, 20 ) << QgsPoint( 21, 20 ) << QgsPoint( 21, 21 ) << QgsPoint( 20, 20 ) );
   multiLine1.addGeometry( boundaryLine3.clone() );
   boundary = multiLine1.boundary();
   mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
@@ -12861,9 +12861,9 @@ void TestQgsGeometry::multiLineString()
 
   //boundary with z
   QgsLineString boundaryLine4;
-  boundaryLine4.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
+  boundaryLine4.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   QgsLineString boundaryLine5;
-  boundaryLine5.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 150 ) << QgsPoint( QgsWkbTypes::PointZ, 20, 20, 200 ) );
+  boundaryLine5.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 150 ) << QgsPoint( QgsWkbTypes::PointZ, 20, 20, 200 ) );
   QgsMultiLineString multiLine2;
   multiLine2.addGeometry( boundaryLine4.clone() );
   multiLine2.addGeometry( boundaryLine5.clone() );
@@ -13431,7 +13431,7 @@ void TestQgsGeometry::multiCurve()
   QgsMultiCurve multiLine1;
   QVERIFY( !multiLine1.boundary() );
   QgsCircularString boundaryLine1;
-  boundaryLine1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
+  boundaryLine1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   multiLine1.addGeometry( boundaryLine1.clone() );
   QgsAbstractGeometry *boundary = multiLine1.boundary();
   QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
@@ -13444,7 +13444,7 @@ void TestQgsGeometry::multiCurve()
   delete boundary;
   // add another QgsCircularString
   QgsCircularString boundaryLine2;
-  boundaryLine2.setPoints( QVector<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) );
+  boundaryLine2.setPoints( QgsPointSequence() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) );
   multiLine1.addGeometry( boundaryLine2.clone() );
   boundary = multiLine1.boundary();
   mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
@@ -13462,7 +13462,7 @@ void TestQgsGeometry::multiCurve()
 
   // add a closed string = no boundary
   QgsCircularString boundaryLine3;
-  boundaryLine3.setPoints( QVector<QgsPoint>() << QgsPoint( 20, 20 ) << QgsPoint( 21, 20 ) <<  QgsPoint( 20, 20 ) );
+  boundaryLine3.setPoints( QgsPointSequence() << QgsPoint( 20, 20 ) << QgsPoint( 21, 20 ) <<  QgsPoint( 20, 20 ) );
   multiLine1.addGeometry( boundaryLine3.clone() );
   boundary = multiLine1.boundary();
   mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
@@ -13480,9 +13480,9 @@ void TestQgsGeometry::multiCurve()
 
   //boundary with z
   QgsCircularString boundaryLine4;
-  boundaryLine4.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
+  boundaryLine4.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   QgsCircularString boundaryLine5;
-  boundaryLine5.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 150 ) << QgsPoint( QgsWkbTypes::PointZ, 20, 20, 200 ) );
+  boundaryLine5.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 150 ) << QgsPoint( QgsWkbTypes::PointZ, 20, 20, 200 ) );
   QgsMultiCurve multiLine2;
   multiLine2.addGeometry( boundaryLine4.clone() );
   multiLine2.addGeometry( boundaryLine5.clone() );
@@ -14090,7 +14090,7 @@ void TestQgsGeometry::multiSurface()
   QgsMultiSurface multiSurface;
   QVERIFY( !multiSurface.boundary() );
   QgsCircularString boundaryLine1;
-  boundaryLine1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  boundaryLine1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
   part.clear();
   part.setExteriorRing( boundaryLine1.clone() );
   multiSurface.addGeometry( part.clone() );
@@ -14102,7 +14102,7 @@ void TestQgsGeometry::multiSurface()
   delete boundary;
   // add another QgsCircularString
   QgsCircularString boundaryLine2;
-  boundaryLine2.setPoints( QVector<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 10, 10 ) );
+  boundaryLine2.setPoints( QgsPointSequence() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 10, 10 ) );
   QgsCurvePolygon part2;
   part2.setExteriorRing( boundaryLine2.clone() );
   multiSurface.addGeometry( part2.clone() );
@@ -14116,11 +14116,11 @@ void TestQgsGeometry::multiSurface()
 
   //boundary with z
   QgsCircularString boundaryLine4;
-  boundaryLine4.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) );
+  boundaryLine4.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) );
   part.clear();
   part.setExteriorRing( boundaryLine4.clone() );
   QgsCircularString boundaryLine5;
-  boundaryLine5.setPoints( QVector<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 150 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 ) );
+  boundaryLine5.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 150 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 100 ) );
   part2.clear();
   part2.setExteriorRing( boundaryLine5.clone() );
   QgsMultiSurface multiSurface2;
@@ -14724,7 +14724,7 @@ void TestQgsGeometry::multiPolygon()
   QVERIFY( !multiPolygon1.boundary() );
 
   QgsLineString ring1;
-  ring1.setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
+  ring1.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
   QgsPolygon polygon1;
   polygon1.setExteriorRing( ring1.clone() );
   multiPolygon1.addGeometry( polygon1.clone() );
@@ -14745,13 +14745,13 @@ void TestQgsGeometry::multiPolygon()
 
   // add polygon with interior rings
   QgsLineString ring2;
-  ring2.setPoints( QVector<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 )  << QgsPoint( 10, 10 ) );
+  ring2.setPoints( QgsPointSequence() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 )  << QgsPoint( 10, 10 ) );
   QgsPolygon polygon2;
   polygon2.setExteriorRing( ring2.clone() );
   QgsLineString boundaryRing1;
-  boundaryRing1.setPoints( QVector<QgsPoint>() << QgsPoint( 10.1, 10.1 ) << QgsPoint( 10.2, 10.1 ) << QgsPoint( 10.2, 10.2 )  << QgsPoint( 10.1, 10.1 ) );
+  boundaryRing1.setPoints( QgsPointSequence() << QgsPoint( 10.1, 10.1 ) << QgsPoint( 10.2, 10.1 ) << QgsPoint( 10.2, 10.2 )  << QgsPoint( 10.1, 10.1 ) );
   QgsLineString boundaryRing2;
-  boundaryRing2.setPoints( QVector<QgsPoint>() << QgsPoint( 10.8, 10.8 ) << QgsPoint( 10.9, 10.8 ) << QgsPoint( 10.9, 10.9 )  << QgsPoint( 10.8, 10.8 ) );
+  boundaryRing2.setPoints( QgsPointSequence() << QgsPoint( 10.8, 10.8 ) << QgsPoint( 10.9, 10.8 ) << QgsPoint( 10.9, 10.9 )  << QgsPoint( 10.8, 10.8 ) );
   polygon2.setInteriorRings( QVector< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
   multiPolygon1.addGeometry( polygon2.clone() );
 
@@ -16053,7 +16053,7 @@ void TestQgsGeometry::geometryCollection()
   QVERIFY( !boundaryCollection.boundary() );
   // add a geometry and retest, should still be undefined
   QgsLineString *lineBoundary = new QgsLineString();
-  lineBoundary->setPoints( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) );
+  lineBoundary->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) );
   boundaryCollection.addGeometry( lineBoundary );
   QVERIFY( !boundaryCollection.boundary() );
 
@@ -17270,13 +17270,13 @@ void TestQgsGeometry::reshapeGeometryLineMerge()
   QgsGeometry g3D = QgsGeometry::fromWkt( QStringLiteral( "LINESTRINGZ(10 10 1, 20 20 2)" ) );
 
   // prepare 2D reshaping line
-  QVector<QgsPoint> v2D_1, v2D_2;
+  QgsPointSequence v2D_1, v2D_2;
   v2D_1 << QgsPoint( 20, 20 ) << QgsPoint( 30, 30 );
   v2D_2 << QgsPoint( 10, 10 ) << QgsPoint( -10, -10 );
   QgsLineString line2D_1( v2D_1 ), line2D_2( v2D_2 );
 
   // prepare 3D reshaping line
-  QVector<QgsPoint> v3D_1, v3D_2;
+  QgsPointSequence v3D_1, v3D_2;
   v3D_1 << QgsPoint( QgsWkbTypes::PointZ, 20, 20, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 30, 30, 3 );
   v3D_2 << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZ, -10, -10, -1 );
   QgsLineString line3D_1( v3D_1 ), line3D_2( v3D_2 );
@@ -17407,8 +17407,8 @@ void TestQgsGeometry::splitGeometry()
 {
   QgsGeometry g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((492980.38648063864093274 7082334.45244149677455425, 493082.65415841294452548 7082319.87918917648494244, 492980.38648063858272508 7082334.45244149677455425, 492980.38648063864093274 7082334.45244149677455425))" ) );
   QVector<QgsGeometry> newGeoms;
-  QVector<QgsPointXY> testPoints;
-  QCOMPARE( g1.splitGeometry( QVector< QgsPointXY >() << QgsPointXY( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPointXY( 492955.04876351181883365, 7082338.06309300474822521 ),
+  QgsPointSequence testPoints;
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
                               newGeoms, false, testPoints ), QgsGeometry::NothingHappened );
   QVERIFY( newGeoms.isEmpty() );
 }

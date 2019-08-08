@@ -1152,7 +1152,23 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
   return deleted == count;
 }
 
+static const QgsPointSequence vectorPointXY2pointSequence( const QVector<QgsPointXY> &points )
+{
+  QgsPointSequence pts;
+  QVector<const QgsPointXY>::iterator it = points.constBegin();
+  while ( it != points.constEnd() )
+  {
+    pts.append( QgsPoint( *it ) );
+    it++;
+  }
+  return pts;
+}
 QgsGeometry::OperationResult QgsVectorLayer::addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId )
+{
+  return addRing( vectorPointXY2pointSequence( ring ), featureId );
+}
+
+QgsGeometry::OperationResult QgsVectorLayer::addRing( const QgsPointSequence &ring, QgsFeatureId *featureId )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return QgsGeometry::OperationResult::LayerNotEditable;
@@ -1239,6 +1255,11 @@ QgsGeometry::OperationResult QgsVectorLayer::addPart( const QList<QgsPointXY> &p
   return result;
 }
 
+QgsGeometry::OperationResult QgsVectorLayer::addPart( const QVector<QgsPointXY> &points )
+{
+
+  return addPart( vectorPointXY2pointSequence( points ) );
+}
 QgsGeometry::OperationResult QgsVectorLayer::addPart( const QgsPointSequence &points )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
@@ -1306,14 +1327,22 @@ int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double 
 
 QgsGeometry::OperationResult QgsVectorLayer::splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
 {
+  return splitParts( vectorPointXY2pointSequence( splitLine ), topologicalEditing );
+}
+QgsGeometry::OperationResult QgsVectorLayer::splitParts( const QgsPointSequence &splitLine, bool topologicalEditing )
+{
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return QgsGeometry::OperationResult::LayerNotEditable;
 
   QgsVectorLayerEditUtils utils( this );
   return utils.splitParts( splitLine, topologicalEditing );
 }
-
 QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
+{
+  return splitFeatures( vectorPointXY2pointSequence( splitLine ), topologicalEditing );
+}
+
+QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return QgsGeometry::OperationResult::LayerNotEditable;

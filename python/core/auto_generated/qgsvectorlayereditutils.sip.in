@@ -60,7 +60,7 @@ Deletes a vertex from a feature.
 .. versionadded:: 2.14
 %End
 
-    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
+    QgsGeometry::OperationResult addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
 %Docstring
 Adds a ring to polygon/multipolygon features
 
@@ -140,7 +140,7 @@ Translates feature by dx, dy
 :return: 0 in case of success
 %End
 
-    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 %Docstring
 Splits parts cut by the given line
 
@@ -156,7 +156,7 @@ Splits parts cut by the given line
          - QgsGeometry.SplitCannotSplitPoint
 %End
 
-    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 %Docstring
 Splits features cut by the given line
 
