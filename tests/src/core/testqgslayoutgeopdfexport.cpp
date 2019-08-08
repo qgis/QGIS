@@ -111,7 +111,10 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
 
   // trigger render
   QgsLayoutExporter exporter( &l );
-  exporter.renderPageToImage( 0 );
+  QString outputFile = "/home/nyall/Temporary/geopdf/test_src.pdf";
+  QgsLayoutExporter::PdfExportSettings settings;
+  settings.writeGeoPdf = false;
+  exporter.exportToPdf( outputFile, settings );
 
   // check that features were collected
   QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures = geoPdfExporter.renderedFeatures( map );
@@ -181,7 +184,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( pointGeometry3b.asWkt( 1 ), QStringLiteral( "MultiPolygon (((167 102, 178.2 102, 178.2 113.3, 167 113.3, 167 102)))" ) );
 
   // finalize and test collation
-  geoPdfExporter.finalize();
+  QVERIFY( geoPdfExporter.finalize( outputFile ) );
 
   QMap< QString, QgsFeatureList > collatedFeatures = geoPdfExporter.mCollatedFeatures;
   QCOMPARE( collatedFeatures.count(), 2 );
@@ -205,7 +208,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   lineTemp.reset();
 
   // test creation of the composition xml
-  QString composition = geoPdfExporter.createCompositionXml();
+  QString composition = geoPdfExporter.createCompositionXml( outputFile );
   QgsDebugMsg( composition );
   QVERIFY( composition.contains( QStringLiteral( "id=\"%1\"" ).arg( linesLayer->id() ) ) );
   QVERIFY( composition.contains( QStringLiteral( "id=\"%1\"" ).arg( pointsLayer->id() ) ) );
