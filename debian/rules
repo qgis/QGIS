@@ -243,10 +243,11 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build || \
-			cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log || \
-			ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit || \
-			false
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build
+	! grep -q "<Error>" $(QGIS_BUILDDIR)/Testing/$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG)/Build.xml || { \
+		cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log; \
+		ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit; \
+		false; }
 else
 	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)
 endif
