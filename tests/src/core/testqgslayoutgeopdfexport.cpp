@@ -105,7 +105,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   exporter.renderPageToImage( 0 );
 
   // check that features were collected
-  QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures = geoPdfExporter.renderedFeatures();
+  QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures = geoPdfExporter.renderedFeatures( map );
   QCOMPARE( renderedFeatures.count(), 2 );
   QVector< QgsLayoutGeoPdfExporter::RenderedFeature > lineFeatures = renderedFeatures.value( linesLayer->id() );
   QCOMPARE( lineFeatures.count(), 6 );

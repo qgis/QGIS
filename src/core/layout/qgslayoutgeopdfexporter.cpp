@@ -19,6 +19,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgslayout.h"
 #include "qgslogger.h"
+#include "qgsgeometry.h"
 #include <QMutex>
 #include <QMutexLocker>
 
@@ -31,6 +32,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       // the alternative is adding a layer ID member to QgsRenderContext, and that's just asking for people to abuse it
       // and use it to retrieve QgsMapLayers mid-way through a render operation. Lesser of two evils it is!
       const QString layerId = context.renderContext->expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
+
 
       // we (currently) don't REALLY need a mutex here, because layout maps are always rendered using a single threaded operation.
       // but we'll play it safe, just in case this changes in future.
@@ -52,27 +54,30 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 
 QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
   : mLayout( layout )
-  , mHandler( qgis::make_unique< QgsGeoPdfRenderedFeatureHandler >() )
 {
   // on construction, we install a rendered feature handler on layout item maps
-  mLayout->layoutItems( mMaps );
-  for ( QgsLayoutItemMap *map : qgis::as_const( mMaps ) )
+  QList< QgsLayoutItemMap * > maps;
+  mLayout->layoutItems( maps );
+  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
   {
-    map->addRenderedFeatureHandler( mHandler.get() );
+    QgsGeoPdfRenderedFeatureHandler *handler = new QgsGeoPdfRenderedFeatureHandler();
+    mMapHandlers.insert( map, handler );
+    map->addRenderedFeatureHandler( handler );
   }
 }
 
 QgsLayoutGeoPdfExporter::~QgsLayoutGeoPdfExporter()
 {
   // cleanup - remove rendered feature handler from all maps
-  for ( QgsLayoutItemMap *map : qgis::as_const( mMaps ) )
+  for ( auto it = mMapHandlers.constBegin(); it != mMapHandlers.constEnd(); ++it )
   {
-    map->removeRenderedFeatureHandler( mHandler.get() );
+    it.key()->removeRenderedFeatureHandler( it.value() );
+    delete it.value();
   }
 }
 
-QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPdfExporter::renderedFeatures() const
+QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPdfExporter::renderedFeatures( QgsLayoutItemMap *map ) const
 {
-  return mHandler->renderedFeatures;
+  return mMapHandlers.value( map )->renderedFeatures;
 }
 
