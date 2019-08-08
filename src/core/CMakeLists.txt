@@ -402,6 +402,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutgridsettings.cpp
   layout/qgslayoutguidecollection.cpp
   layout/qgslayoutframe.cpp
+  layout/qgslayoutgeopdfexporter.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemattributetable.cpp
   layout/qgslayoutitemgroup.cpp
@@ -1091,6 +1092,7 @@ SET(QGIS_CORE_HDRS
   layout/qgsmasterlayoutinterface.h
   layout/qgslayoutaligner.h
   layout/qgslayoutexporter.h
+  layout/qgslayoutgeopdfexporter.h
   layout/qgslayoutgridsettings.h
   layout/qgslayoutitemundocommand.h
   layout/qgslayoutmeasurement.h
