@@ -213,14 +213,16 @@ Number of points digitized
 :return: Number of points
 %End
 
-    QVector<QgsPointXY> points() const;
+    QgsPointSequence points() const;
 %Docstring
 List of digitized points
 
 :return: List of points
+
+.. versionadded:: 3.10
 %End
 
-    void setPoints( const QVector<QgsPointXY> &pointList );
+    void setPoints( const QgsPointSequence &pointList );
 %Docstring
 Set the points on which to work
 

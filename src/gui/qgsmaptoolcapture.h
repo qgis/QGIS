@@ -224,15 +224,16 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * List of digitized points
      * \returns List of points
+     * \since 3.10
      */
-    QVector<QgsPointXY> points() const;
+    QgsPointSequence points() const;
 
     /**
      * Set the points on which to work
      *
      * \param pointList A list of points
      */
-    void setPoints( const QVector<QgsPointXY> &pointList );
+    void setPoints( const QgsPointSequence &pointList );
 
     /**
      * Close an open polygon

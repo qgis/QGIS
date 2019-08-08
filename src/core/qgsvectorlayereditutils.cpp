@@ -118,7 +118,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
   return !geometry.isNull() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
-QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
   QgsLineString *ringLine = new QgsLineString( ring );
   return addRing( ringLine, targetFeatureIds,  modifiedFeatureId );
@@ -275,7 +275,7 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
 }
 
 
-QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
   if ( !mLayer->isSpatial() )
     return QgsGeometry::InvalidBaseGeometry;
@@ -344,7 +344,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
       continue;
     }
     QVector<QgsGeometry> newGeometries;
-    QVector<QgsPointXY> topologyTestPoints;
+    QgsPointSequence topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
     splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == QgsGeometry::OperationResult::Success )
@@ -362,7 +362,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
 
       if ( topologicalEditing )
       {
-        QVector<QgsPointXY>::const_iterator topol_it = topologyTestPoints.constBegin();
+        QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
         for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
         {
           addTopologicalPoints( *topol_it );
@@ -386,7 +386,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
   return returnCode;
 }
 
-QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
   if ( !mLayer->isSpatial() )
     return QgsGeometry::InvalidBaseGeometry;
@@ -452,7 +452,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
   while ( fit.nextFeature( feat ) )
   {
     QVector<QgsGeometry> newGeometries;
-    QVector<QgsPointXY> topologyTestPoints;
+    QgsPointSequence topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
     splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == 0 )
@@ -478,7 +478,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
 
       if ( topologicalEditing )
       {
-        QVector<QgsPointXY>::const_iterator topol_it = topologyTestPoints.constBegin();
+        QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
         for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
         {
           addTopologicalPoints( *topol_it );
@@ -608,7 +608,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
 }
 
 
-bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QVector<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const
+bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QgsPointSequence &list, double &xmin, double &ymin, double &xmax, double &ymax ) const
 {
   if ( list.empty() )
   {
@@ -620,7 +620,7 @@ bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QVector<QgsPointXY
   ymin = std::numeric_limits<double>::max();
   ymax = -std::numeric_limits<double>::max();
 
-  for ( QVector<QgsPointXY>::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
+  for ( QgsPointSequence::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
   {
     if ( it->x() < xmin )
     {

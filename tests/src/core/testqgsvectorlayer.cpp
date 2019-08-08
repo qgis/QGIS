@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
@@ -358,19 +359,19 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QCOMPARE( layerLine->undoStack()->index(), 1 );
 
   // outside of the linestring - nothing should happen
-  layerLine->addTopologicalPoints( QgsPointXY( 2, 2 ) );
+  layerLine->addTopologicalPoints( QgsPoint( 2, 2 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ).asWkt() );
 
   // add point at an existing vertex
-  layerLine->addTopologicalPoints( QgsPointXY( 1, 1 ) );
+  layerLine->addTopologicalPoints( QgsPoint( 1, 1 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ).asWkt() );
 
   // add point on segment of linestring
-  layerLine->addTopologicalPoints( QgsPointXY( 1, 2 ) );
+  layerLine->addTopologicalPoints( QgsPoint( 1, 2 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 2 );
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3)" ).asWkt() );
