@@ -86,11 +86,19 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
      */
     QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures( QgsLayoutItemMap *map ) const;
 
+    /**
+     * To be called after the rendering operation is complete.
+     */
+    void finalize();
+
   private:
 
     QgsLayout *mLayout = nullptr;
     QHash< QgsLayoutItemMap *, QgsGeoPdfRenderedFeatureHandler * > mMapHandlers;
 
+    QMap< QString, QgsFeatureList > mCollatedFeatures;
+
+    friend class TestQgsLayoutGeoPdfExport;
 };
 
 #endif //QGSLAYOUTGEOPDFEXPORTER_H
