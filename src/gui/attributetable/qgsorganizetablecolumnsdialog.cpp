@@ -42,7 +42,7 @@
 #include "qgsgui.h"
 
 
-QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QgsAttributeTableConfig config, QWidget *parent, Qt::WindowFlags flags )
+QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setupUi( this );
