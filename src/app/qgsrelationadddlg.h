@@ -69,7 +69,7 @@ class APP_EXPORT QgsFieldPairWidget : public QWidget
 
 
 /**
- * QgsRelationAddDlg allows to configure a new relation.
+ * QgsRelationAddDlg allows configuring a new relation.
  * Multiple field pairs can be set.
  */
 class APP_EXPORT QgsRelationAddDlg : public QDialog
