@@ -21,6 +21,7 @@
 #include "qgsmargins.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutitem.h"
 #include <QPointer>
 #include <QSize>
 #include <QRectF>

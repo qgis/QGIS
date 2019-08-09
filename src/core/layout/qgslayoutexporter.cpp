@@ -533,26 +533,65 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
-  QPrinter printer;
-  preparePrintAsPdf( mLayout, printer, filePath );
-  preparePrint( mLayout, printer, false );
-  QPainter p;
-  if ( !p.begin( &printer ) )
+  ExportResult result = Success;
+  if ( settings.writeGeoPdf )
   {
-    //error beginning print
-    return FileError;
+    // here we need to export layers to individual PDFs
+    PdfExportSettings subSettings = settings;
+    subSettings.writeGeoPdf = false;
+
+    const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
+
+    QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > pdfComponents;
+
+    auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
+    {
+      ExportResult layerExportResult = Success;
+      QPrinter printer;
+      QgsLayoutGeoPdfExporter::ComponentLayerDetail component;
+      component.name = layerDetail.name;
+      component.mapLayerId = layerDetail.mapLayerId;
+      component.sourcePdfPath = geoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) );
+      pdfComponents << component;
+      preparePrintAsPdf( mLayout, printer, component.sourcePdfPath );
+      preparePrint( mLayout, printer, false );
+      QPainter p;
+      if ( !p.begin( &printer ) )
+      {
+        //error beginning print
+        return FileError;
+      }
+
+      layerExportResult = printPrivate( printer, p, false, subSettings.dpi, subSettings.rasterizeWholeImage );
+      p.end();
+      return layerExportResult;
+    };
+    result = handleLayeredExport( items, exportFunc );
+    if ( result != Success )
+      return result;
+
+    geoPdfExporter->finalize( pdfComponents );
   }
-
-  ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
-  p.end();
-
-  if ( geoPdfExporter )
-    geoPdfExporter->finalize( filePath );
-
-  bool shouldAppendGeoreference = settings.appendGeoreference && mLayout && mLayout->referenceMap() && mLayout->referenceMap()->page() == 0;
-  if ( settings.appendGeoreference || settings.exportMetadata )
+  else
   {
-    georeferenceOutputPrivate( filePath, nullptr, QRectF(), settings.dpi, shouldAppendGeoreference, settings.exportMetadata );
+    QPrinter printer;
+    preparePrintAsPdf( mLayout, printer, filePath );
+    preparePrint( mLayout, printer, false );
+    QPainter p;
+    if ( !p.begin( &printer ) )
+    {
+      //error beginning print
+      return FileError;
+    }
+
+    result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
+    p.end();
+
+    bool shouldAppendGeoreference = settings.appendGeoreference && mLayout && mLayout->referenceMap() && mLayout->referenceMap()->page() == 0;
+    if ( settings.appendGeoreference || settings.exportMetadata )
+    {
+      georeferenceOutputPrivate( filePath, nullptr, QRectF(), settings.dpi, shouldAppendGeoreference, settings.exportMetadata );
+    }
   }
   return result;
 }

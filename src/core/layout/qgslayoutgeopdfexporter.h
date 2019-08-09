@@ -83,6 +83,25 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
     };
 
     /**
+     * Contains details of a particular input component to be used during PDF composition.
+     * \ingroup core
+     * \since QGIS 3.10
+     */
+    struct CORE_EXPORT ComponentLayerDetail
+    {
+
+      //! User-friendly name for the generated PDF layer
+      QString name;
+
+      //! Associated map layer ID, or an empty string if this component layer is not associated with a map layer
+      QString mapLayerId;
+
+      //! File path to the (already created) PDF to use as the source for this component layer
+      QString sourcePdfPath;
+
+    };
+
+    /**
      * Returns a dict of rendered features, with layer IDs as dict keys for the specified \a map item.
      */
     QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures( QgsLayoutItemMap *map ) const;
@@ -93,12 +112,17 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
      * Returns TRUE if the operation was successful, or FALSE if an error occurred. If an error occurred, it
      * can be retrieved by calling errorMessage().
      */
-    bool finalize( const QString &sourcePdf );
+    bool finalize( const QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > &components );
 
     /**
      * Returns the last error message encountered during the export.
      */
     QString errorMessage() { return mErrorMessage; }
+
+    /**
+     * Returns a file path to use for temporary files required for GeoPDF creation.
+     */
+    QString generateTemporaryFilepath( const QString &filename ) const;
 
   private:
 
@@ -106,14 +130,31 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
     QHash< QgsLayoutItemMap *, QgsGeoPdfRenderedFeatureHandler * > mMapHandlers;
 
     QMap< QString, QgsFeatureList > mCollatedFeatures;
-    QMap< QString, QString> mTemporaryFilePaths;
+
+    struct VectorComponentDetail
+    {
+      //! User-friendly name for the generated PDF layer
+      QString name;
+
+      //! Associated map layer ID
+      QString mapLayerId;
+
+      //! File path to the (already created) vector dataset to use as the source for this component layer
+      QString sourceVectorPath;
+
+      //! Layer name in vector dataset to use as the source
+      QString sourceVectorLayer;
+
+    };
+
+    QList< VectorComponentDetail > mVectorComponents;
 
     QString mErrorMessage;
     QTemporaryDir mTemporaryDir;
 
     bool saveTemporaryLayers();
 
-    QString createCompositionXml( const QString &sourcePdf );
+    QString createCompositionXml( const QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > &components );
 
     friend class TestQgsLayoutGeoPdfExport;
 };
