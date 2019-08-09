@@ -63,6 +63,7 @@ class TestQgsLayoutMap : public QObject
     void labelBlockingRegions();
     void testSimplificationMethod();
     void testRenderedFeatureHandler();
+    void testLayeredExport();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -869,6 +870,228 @@ void TestQgsLayoutMap::testRenderedFeatureHandler()
   exporter2.renderPageToImage( 0 );
 
   QVERIFY( features1.isEmpty() );
+}
+
+void TestQgsLayoutMap::testLayeredExport()
+{
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QVERIFY( linesLayer->isValid() );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() );
+
+  QgsProject p;
+  p.addMapLayer( linesLayer );
+  p.addMapLayer( pointsLayer );
+
+  QgsLayout l( &p );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( false );
+  map->setBackgroundEnabled( false );
+  map->setCrs( linesLayer->crs() );
+  map->zoomToExtent( linesLayer->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << linesLayer );
+  l.addLayoutItem( map );
+
+  QCOMPARE( map->numberExportLayers(), 1 );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  l.renderContext().setCurrentExportLayer( 0 );
+  QCOMPARE( map->exportLayerName( 0 ), QStringLiteral( "lines" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  map->setFrameEnabled( true );
+  QCOMPARE( map->numberExportLayers(), 2 );
+  l.renderContext().setCurrentExportLayer( 0 );
+  QCOMPARE( map->exportLayerName( 0 ), QStringLiteral( "lines" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 1 );
+  QCOMPARE( map->exportLayerName( 1 ), QStringLiteral( "Map Frame" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  map->setBackgroundEnabled( true );
+  QCOMPARE( map->numberExportLayers(), 3 );
+  l.renderContext().setCurrentExportLayer( 0 );
+  QCOMPARE( map->exportLayerName( 0 ), QStringLiteral( "Map Background" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 1 );
+  QCOMPARE( map->exportLayerName( 1 ), QStringLiteral( "lines" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 2 );
+  QCOMPARE( map->exportLayerName( 2 ), QStringLiteral( "Map Frame" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  map->setBackgroundEnabled( false );
+  map->grid()->setEnabled( true );
+  QCOMPARE( map->numberExportLayers(), 3 );
+  l.renderContext().setCurrentExportLayer( 0 );
+  QCOMPARE( map->exportLayerName( 0 ), QStringLiteral( "lines" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 1 );
+  QCOMPARE( map->exportLayerName( 1 ), QStringLiteral( "Map Grids" ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 2 );
+  QCOMPARE( map->exportLayerName( 2 ), QStringLiteral( "Map Frame" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  map->setBackgroundEnabled( false );
+  map->overview()->setEnabled( true );
+  QCOMPARE( map->numberExportLayers(), 4 );
+  l.renderContext().setCurrentExportLayer( 0 );
+  QCOMPARE( map->exportLayerName( 0 ), QStringLiteral( "lines" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 1 );
+  QCOMPARE( map->exportLayerName( 1 ), QStringLiteral( "Map Grids" ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 2 );
+  QCOMPARE( map->exportLayerName( 2 ), QStringLiteral( "Map Overviews" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 3 );
+  QCOMPARE( map->exportLayerName( 3 ), QStringLiteral( "Map Frame" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  // add second layer
+  map->setLayers( QList<QgsMapLayer *>() << linesLayer << pointsLayer );
+  QCOMPARE( map->numberExportLayers(), 5 );
+  l.renderContext().setCurrentExportLayer( 0 );
+  QCOMPARE( map->exportLayerName( 0 ), QStringLiteral( "points" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 1 );
+  QCOMPARE( map->exportLayerName( 1 ), QStringLiteral( "lines" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 2 );
+  QCOMPARE( map->exportLayerName( 2 ), QStringLiteral( "Map Grids" ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 3 );
+  QCOMPARE( map->exportLayerName( 3 ), QStringLiteral( "Map Overviews" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 4 );
+  QCOMPARE( map->exportLayerName( 4 ), QStringLiteral( "Map Frame" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  map->setBackgroundEnabled( true );
+  QCOMPARE( map->numberExportLayers(), 6 );
+  l.renderContext().setCurrentExportLayer( 0 );
+  QCOMPARE( map->exportLayerName( 0 ), QStringLiteral( "Map Background" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 1 );
+  QCOMPARE( map->exportLayerName( 1 ), QStringLiteral( "points" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 2 );
+  QCOMPARE( map->exportLayerName( 2 ), QStringLiteral( "lines" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 3 );
+  QCOMPARE( map->exportLayerName( 3 ), QStringLiteral( "Map Grids" ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 4 );
+  QCOMPARE( map->exportLayerName( 4 ), QStringLiteral( "Map Overviews" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  l.renderContext().setCurrentExportLayer( 5 );
+  QCOMPARE( map->exportLayerName( 5 ), QStringLiteral( "Map Frame" ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )
