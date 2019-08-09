@@ -6059,28 +6059,3 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsSpatiaLiteProviderMetadata();
 }
 
-
-QMap<QString, QgsAbstractProviderConnection *> QgsSpatiaLiteProviderMetadata::connections( bool cached )
-{
-  const QStringList &staticConns { QgsSpatiaLiteConnection::connectionList() };
-  for ( const auto &connName : staticConns )
-  {
-
-  }
-}
-
-QgsAbstractProviderConnection *QgsSpatiaLiteProviderMetadata::connection( const QString &name )
-{
-}
-
-QgsAbstractProviderConnection *QgsSpatiaLiteProviderMetadata::connection( const QString &name, const QString &uri )
-{
-}
-
-void QgsSpatiaLiteProviderMetadata::deleteConnection( const QString &name )
-{
-}
-
-void QgsSpatiaLiteProviderMetadata::saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig )
-{
-}

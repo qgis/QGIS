@@ -31,24 +31,22 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
 
     // QgsAbstractProviderConnection interface
   public:
-    void store( QVariantMap guiConfig ) override;
-    void remove() override;
-    void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) override;
-    void dropVectorTable( const QString &schema, const QString &name ) override;
-    void dropRasterTable( const QString &schema, const QString &name ) override;
-    void renameTable( const QString &schema, const QString &name, const QString &newName ) override;
-    void executeSql( const QString &sql ) override;
-    void vacuum( const QString &schema, const QString &name ) override;
+    void store( QVariantMap guiConfig ) const override;
+    void remove() const override;
+    void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
+    void dropVectorTable( const QString &schema, const QString &name ) const override;
+    void dropRasterTable( const QString &schema, const QString &name ) const override;
+    void renameTable( const QString &schema, const QString &name, const QString &newName ) const override;
+    QList<QVariantList> executeSql( const QString &sql ) const override;
+    void vacuum( const QString &schema, const QString &name ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const TableFlags &flags = TableFlag::None ) override;
+        const TableFlags &flags = nullptr ) const override;
 
   private:
 
     void setDefaultCapabilities();
     //! Use GDAL to execute SQL
-    void executeGdalSqlPrivate( const QString &sql );
-    //! Use sqlite to execute SQL
-    void executeSqliteSqlPrivate( const QString &sql );
+    QList<QVariantList> executeGdalSqlPrivate( const QString &sql ) const;
 
 };
 

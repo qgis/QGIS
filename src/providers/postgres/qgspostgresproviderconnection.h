@@ -34,28 +34,28 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
                             const QgsFields &fields,
                             QgsWkbTypes::Type wkbType,
                             const QgsCoordinateReferenceSystem &srs, bool overwrite,
-                            const QMap<QString, QVariant> *options ) override;
+                            const QMap<QString, QVariant> *options ) const override;
 
-    void dropVectorTable( const QString &schema, const QString &name ) override;
-    void dropRasterTable( const QString &schema, const QString &name ) override;
-    void renameTable( const QString &schema, const QString &name, const QString &newName ) override;
-    void createSchema( const QString &name ) override;
-    void dropSchema( const QString &name, bool force = false ) override;
-    void renameSchema( const QString &name, const QString &newName ) override;
-    void executeSql( const QString &sql ) override;
-    void vacuum( const QString &schema, const QString &name ) override;
+    void dropVectorTable( const QString &schema, const QString &name ) const override;
+    void dropRasterTable( const QString &schema, const QString &name ) const override;
+    void renameTable( const QString &schema, const QString &name, const QString &newName ) const override;
+    void createSchema( const QString &name ) const override;
+    void dropSchema( const QString &name, bool force = false ) const override;
+    void renameSchema( const QString &name, const QString &newName ) const override;
+    QList<QVariantList> executeSql( const QString &sql ) const override;
+    void vacuum( const QString &schema, const QString &name ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
-        const TableFlags &flags = TableFlag::None ) override;
-    QStringList schemas( ) override;
-    void store( QVariantMap guiConfig = QVariantMap() ) override;
-    void remove() override;
+        const TableFlags &flags = nullptr ) const override;
+    QStringList schemas( ) const override;
+    void store( QVariantMap guiConfig = QVariantMap() ) const override;
+    void remove() const override;
 
 
   private:
 
-    void executeSqlPrivate( const QString &sql );
+    QList<QVariantList> executeSqlPrivate( const QString &sql ) const;
     void setDefaultCapabilities();
-    void dropTablePrivate( const QString &schema, const QString &name );
+    void dropTablePrivate( const QString &schema, const QString &name ) const;
 };
 
 #endif // QGSPOSTGRESPROVIDERCONNECTION_H

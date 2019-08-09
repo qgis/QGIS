@@ -50,7 +50,6 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   {
     Capability::DropVectorTable,
     Capability::CreateVectorTable,
-    // Capability::CreateRasterTable,
     Capability::RenameSchema,
     Capability::DropSchema,
     Capability::CreateSchema,
@@ -60,11 +59,13 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::SqlLayers,
     //Capability::Transaction,
     Capability::Tables,
-    Capability::Schemas
+    Capability::Schemas,
+    Capability::Spatial,
+    Capability::TableExists
   };
 }
 
-void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, const QString &name )
+void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
 {
   executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
                      .arg( QgsPostgresConn::quotedIdentifier( schema ) )
@@ -78,7 +79,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString,
-    QVariant> *options )
+    QVariant> *options ) const
 {
 
   checkCapability( Capability::CreateVectorTable );
@@ -109,19 +110,19 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
   }
 }
 
-void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, const QString &name )
+void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );
   dropTablePrivate( schema, name );
 }
 
-void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, const QString &name )
+void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropRasterTable );
   dropTablePrivate( schema, name );
 }
 
-void QgsPostgresProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName )
+void QgsPostgresProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameTable );
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
@@ -130,7 +131,7 @@ void QgsPostgresProviderConnection::renameTable( const QString &schema, const QS
                      .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
-void QgsPostgresProviderConnection::createSchema( const QString &name )
+void QgsPostgresProviderConnection::createSchema( const QString &name ) const
 {
   checkCapability( Capability::CreateSchema );
   executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
@@ -138,7 +139,7 @@ void QgsPostgresProviderConnection::createSchema( const QString &name )
 
 }
 
-void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force )
+void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force ) const
 {
   checkCapability( Capability::DropSchema );
   executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1 %2" )
@@ -146,7 +147,7 @@ void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force
                      .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
 }
 
-void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName )
+void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameSchema );
   executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
@@ -154,15 +155,16 @@ void QgsPostgresProviderConnection::renameSchema( const QString &name, const QSt
                      .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
-void QgsPostgresProviderConnection::executeSql( const QString &sql )
+QList<QVariantList> QgsPostgresProviderConnection::executeSql( const QString &sql ) const
 {
   checkCapability( Capability::ExecuteSql );
-  executeSqlPrivate( sql );
+  return executeSqlPrivate( sql );
 }
 
-void QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql )
+QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql ) const
 {
   const QgsDataSourceUri dsUri { uri() };
+  QList<QVariantList> results;
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
   if ( !conn )
   {
@@ -170,9 +172,9 @@ void QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql )
   }
   else
   {
-    PGresult *res = conn->PQexec( sql );
+    QgsPostgresResult res( conn->PQexec( sql ) );
     QString errCause;
-    if ( conn->PQstatus() != CONNECTION_OK || ! res )
+    if ( conn->PQstatus() != CONNECTION_OK || ! res.result() )
     {
       errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
                  .arg( sql ).arg( conn->PQstatus() )
@@ -189,15 +191,25 @@ void QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql )
                    .arg( err );
       }
     }
+    for ( int rowIdx = 0; rowIdx < res.PQntuples(); rowIdx++ )
+    {
+      QVariantList row;
+      for ( int colIdx = 0; colIdx < res.PQnfields(); colIdx++ )
+      {
+        row.push_back( res.PQgetvalue( rowIdx, colIdx ) );
+      }
+      results.push_back( row );
+    }
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     if ( ! errCause.isEmpty() )
     {
       throw QgsProviderConnectionException( errCause );
     }
   }
+  return results;
 }
 
-void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name )
+void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::Vacuum );
   executeSql( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
@@ -205,7 +217,7 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
               .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
-QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags )
+QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
   checkCapability( Capability::Tables );
   QList<QgsPostgresProviderConnection::TableProperty> tables;
@@ -226,7 +238,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
     else
     {
       QVector<QgsPostgresLayerProperty> properties;
-      const bool aspatial { flags == TableFlag::None || flags.testFlag( TableFlag::Aspatial ) };
+      const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
       conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
 
       // Utility to create a TableProperty and insert in the result list
@@ -235,40 +247,39 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
         QgsPostgresProviderConnection::TableProperty property;
         if ( p.isView )
         {
-          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::View );
+          property.setFlag( QgsPostgresProviderConnection::TableFlag::View );
         }
         if ( p.isMaterializedView )
         {
-          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
+          property.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
         }
         // Table type
         if ( p.isRaster )
         {
-          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );
+          property.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );
         }
         else if ( p.nSpCols != 0 )
         {
-          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Vector );
+          property.setFlag( QgsPostgresProviderConnection::TableFlag::Vector );
         }
         else
         {
-          property.flags.setFlag( QgsPostgresProviderConnection::TableFlag::Aspatial );
+          property.setFlag( QgsPostgresProviderConnection::TableFlag::Aspatial );
         }
         // Filters
-        if ( flags == TableFlag::None || ( property.flags & flags ) )
+        if ( ! flags || ( property.flags() & flags ) )
         {
-          for ( const auto &t : qgis::as_const( p.types ) )
+          for ( int i = 0; i < std::min( p.types.size(), p.srids.size() ) ; i++ )
           {
-            property.appendGeometryColumnType( t );
+            property.addGeometryType( p.types.at( i ), p.srids.at( i ) );
           }
-          property.name = p.tableName;
-          property.schema = p.schemaName;
-          property.geometryColumn = p.geometryColName;
-          property.pkColumns = p.pkCols;
-          property.srids = p.srids;
-          property.geometryColumnCount = p.nSpCols;
-          property.sql = p.sql;
-          property.tableComment = p.tableComment;
+          property.setTableName( p.tableName );
+          property.setSchema( p.schemaName );
+          property.setGeometryColumn( p.geometryColName );
+          property.setPkColumns( p.pkCols );
+          property.setGeometryColumnCount( static_cast<int>( p.nSpCols ) );
+          property.setSql( p.sql );
+          property.setComment( p.tableComment );
           tables.push_back( property );
         }
       };
@@ -297,7 +308,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
   return tables;
 }
 
-QStringList QgsPostgresProviderConnection::schemas( )
+QStringList QgsPostgresProviderConnection::schemas( ) const
 {
   checkCapability( Capability::Schemas );
   QStringList schemas;
@@ -333,7 +344,7 @@ QStringList QgsPostgresProviderConnection::schemas( )
 }
 
 
-void QgsPostgresProviderConnection::store( QVariantMap guiConfig )
+void QgsPostgresProviderConnection::store( QVariantMap guiConfig ) const
 {
   // TODO: move this to class configuration?
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
@@ -378,7 +389,7 @@ void QgsPostgresProviderConnection::store( QVariantMap guiConfig )
   settings.endGroup();
 }
 
-void QgsPostgresProviderConnection::remove()
+void QgsPostgresProviderConnection::remove() const
 {
   QgsPostgresConn::deleteConnection( name() );
 }

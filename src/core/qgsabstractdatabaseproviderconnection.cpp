@@ -34,7 +34,7 @@ QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderC
   return mCapabilities;
 }
 
-void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability cap )
+void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability cap ) const
 {
   if ( ! mCapabilities & cap )
   {
@@ -51,7 +51,7 @@ void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &sc
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     const QMap<QString, QVariant> *
-    options )
+    options ) const
 {
   Q_UNUSED( schema );
   Q_UNUSED( name );
@@ -63,99 +63,212 @@ void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &sc
   throw QgsProviderConnectionException( QObject::tr( "Operation 'createVectorTable' is not supported" ) );
 }
 
-void QgsAbstractDatabaseProviderConnection::renameTable( const QString &, const QString &, const QString & )
+void QgsAbstractDatabaseProviderConnection::renameTable( const QString &, const QString &, const QString & ) const
 {
   checkCapability( Capability::RenameTable );
 }
 
-void QgsAbstractDatabaseProviderConnection::dropVectorTable( const QString &, const QString & )
+void QgsAbstractDatabaseProviderConnection::dropVectorTable( const QString &, const QString & ) const
 {
   checkCapability( Capability::DropVectorTable );
 }
 
-void QgsAbstractDatabaseProviderConnection::dropRasterTable( const QString &, const QString & )
+bool QgsAbstractDatabaseProviderConnection::tableExists( const QString &schema, const QString &name ) const
+{
+  checkCapability( Capability::TableExists );
+  const auto constTables { tables( schema ) };
+  for ( const auto &t : constTables )
+  {
+    if ( t.tableName() == name )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+void QgsAbstractDatabaseProviderConnection::dropRasterTable( const QString &, const QString & ) const
 {
   checkCapability( Capability::DropRasterTable );
 }
 
-void QgsAbstractDatabaseProviderConnection::createSchema( const QString & )
+void QgsAbstractDatabaseProviderConnection::createSchema( const QString & ) const
 {
   checkCapability( Capability::CreateSchema );
 }
 
-void QgsAbstractDatabaseProviderConnection::dropSchema( const QString &, bool )
+void QgsAbstractDatabaseProviderConnection::dropSchema( const QString &, bool ) const
 {
   checkCapability( Capability::DropSchema );
 }
 
-void QgsAbstractDatabaseProviderConnection::renameSchema( const QString &, const QString & )
+void QgsAbstractDatabaseProviderConnection::renameSchema( const QString &, const QString & ) const
 {
   checkCapability( Capability::RenameSchema );
 }
 
-void QgsAbstractDatabaseProviderConnection::executeSql( const QString & )
+QList<QVariantList> QgsAbstractDatabaseProviderConnection::executeSql( const QString & ) const
 {
   checkCapability( Capability::ExecuteSql );
+  return QList<QVariantList>();
 }
 
-void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QString & )
+void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QString & ) const
 {
   checkCapability( Capability::Vacuum );
 }
 
-QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags & )
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags & ) const
 {
-  throw QgsProviderConnectionException( QObject::tr( "Operation 'tables' is not supported" ) );
+  checkCapability( Capability::Tables );
+  return QList<QgsAbstractDatabaseProviderConnection::TableProperty>();
 }
 
-QStringList QgsAbstractDatabaseProviderConnection::schemas( )
+QStringList QgsAbstractDatabaseProviderConnection::schemas( ) const
 {
-  throw QgsProviderConnectionException( QObject::tr( "Operation 'schemas' is not supported" ) );
+  checkCapability( Capability::Schemas );
+  return QStringList();
 }
 
-void QgsAbstractDatabaseProviderConnection::TableProperty::appendGeometryColumnType( const QgsWkbTypes::Type &type )
+QString QgsAbstractDatabaseProviderConnection::TableProperty::tableName() const
 {
-  geometryColumnTypes.push_back( type );
+  return mTableName;
 }
 
-QList<int> QgsAbstractDatabaseProviderConnection::TableProperty::geometryTypes()
+void QgsAbstractDatabaseProviderConnection::TableProperty::setTableName( const QString &name )
 {
-  QList<int> types;
-  for ( const auto &t : qgis::as_const( geometryColumnTypes ) )
-  {
-    types.push_back( static_cast<int>( t ) );
-  }
-  return types;
+  mTableName = name;
 }
 
-int QgsAbstractDatabaseProviderConnection::TableProperty::layerTypeCount() const
+void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryType( const QgsWkbTypes::Type &type, const int srid )
 {
-  Q_ASSERT( geometryColumnTypes.size() == srids.size() );
-  return geometryColumnTypes.size();
+  mGeometryTypes.push_back( qMakePair<int, int>( static_cast<int>( type ), srid ) );
+}
+
+QList<QPair<int, int> > QgsAbstractDatabaseProviderConnection::TableProperty::geometryTypes() const
+{
+  return mGeometryTypes;
 }
 
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
-  QString n = name;
-  if ( geometryColumnCount > 1 ) n += '.' + geometryColumn;
+  QString n = mTableName;
+  if ( mGeometryTypes.size() > 1 ) n += '.' + mGeometryColumn;
   return n;
 }
 
-QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProviderConnection::TableProperty::at( int i ) const
+QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProviderConnection::TableProperty::at( int index ) const
 {
   TableProperty property;
 
-  Q_ASSERT( i >= 0 && i < layerTypeCount() );
+  Q_ASSERT( index >= 0 && index < geometryTypes().size() );
 
-  property.geometryColumnTypes << geometryColumnTypes[ i ];
-  property.srids << srids[ i ];
-  property.schema = schema;
-  property.name = name;
-  property.geometryColumn = geometryColumn;
-  property.pkColumns = pkColumns;
-  property.geometryColumnCount = geometryColumnCount;
-  property.sql = sql;
-  property.tableComment = tableComment;
-  property.flags = flags;
+  property.mGeometryTypes << mGeometryTypes[ index ];
+  property.mSchema = mSchema;
+  property.mTableName = mTableName;
+  property.mGeometryColumn = mGeometryColumn;
+  property.mPkColumns = mPkColumns;
+  property.mGeometryColumnCount = mGeometryColumnCount;
+  property.mFlags = mFlags;
+  property.mSql = mSql;
+  property.mComment = mComment;
+  property.mInfo = mInfo;
   return property;
 }
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setFlag( const QgsAbstractDatabaseProviderConnection::TableFlag &flag )
+{
+  mFlags.setFlag( flag );
+}
+
+
+int QgsAbstractDatabaseProviderConnection::TableProperty::geometryColumnCount() const
+{
+  return mGeometryColumnCount;
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setGeometryColumnCount( int geometryColumnCount )
+{
+  mGeometryColumnCount = geometryColumnCount;
+}
+
+QList<QVariantMap> QgsAbstractDatabaseProviderConnection::TableProperty::info() const
+{
+  return mInfo;
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setInfo( const QList<QVariantMap> &info )
+{
+  mInfo = info;
+}
+
+QString QgsAbstractDatabaseProviderConnection::TableProperty::sql() const
+{
+  return mSql;
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setSql( const QString &sql )
+{
+  mSql = sql;
+}
+
+QString QgsAbstractDatabaseProviderConnection::TableProperty::comment() const
+{
+  return mComment;
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setComment( const QString &comment )
+{
+  mComment = comment;
+}
+
+QgsAbstractDatabaseProviderConnection::TableFlags QgsAbstractDatabaseProviderConnection::TableProperty::flags() const
+{
+  return mFlags;
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setFlags( const QgsAbstractDatabaseProviderConnection::TableFlags &flags )
+{
+  mFlags = flags;
+}
+
+QList<int> QgsAbstractDatabaseProviderConnection::TableProperty::srids() const
+{
+  QList<int> srIds;
+  for ( const auto &t : qgis::as_const( mGeometryTypes ) )
+  {
+    srIds.push_back( t.second );
+  }
+  return srIds;
+}
+
+QStringList QgsAbstractDatabaseProviderConnection::TableProperty::pkColumns() const
+{
+  return mPkColumns;
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setPkColumns( const QStringList &pkColumns )
+{
+  mPkColumns = pkColumns;
+}
+
+QString QgsAbstractDatabaseProviderConnection::TableProperty::geometryColumn() const
+{
+  return mGeometryColumn;
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setGeometryColumn( const QString &geometryColumn )
+{
+  mGeometryColumn = geometryColumn;
+}
+
+QString QgsAbstractDatabaseProviderConnection::TableProperty::schema() const
+{
+  return mSchema;
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setSchema( const QString &schema )
+{
+  mSchema = schema;
+}
+

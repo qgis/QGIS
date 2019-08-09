@@ -49,11 +49,6 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         # Create test layers
         vl = QgsVectorLayer(cls.postgres_conn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert vl.isValid()
-        sl_original_path = '{}/provider/spatialite.db'.format(TEST_DATA_DIR)
-        cls.spatialite_path = '{}/provider/spatialite_test.db'.format(TEST_DATA_DIR)
-        shutil.copy(sl_original_path, cls.spatialite_path)
-        vl = QgsVectorLayer('dbname=\'{}\' table="somedata" (geom) sql='.format(cls.spatialite_path), 'test', 'spatialite')
-        assert vl.isValid()
         gpkg_original_path = '{}/qgis_server/test_project_wms_grouped_layers.gpkg'.format(TEST_DATA_DIR)
         cls.gpkg_path = '{}/qgis_server/test_project_wms_grouped_layers_test.gpkg'.format(TEST_DATA_DIR)
         shutil.copy(gpkg_original_path, cls.gpkg_path)
@@ -63,7 +58,6 @@ class TestPyQgsProviderConnection(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        os.unlink(cls.spatialite_path)
         os.unlink(cls.gpkg_path)
 
     def setUp(self):
@@ -77,12 +71,12 @@ class TestPyQgsProviderConnection(unittest.TestCase):
 
     def _table_names(self, table_properties):
         """Return table names from table property list"""
-        return [p.name for p in table_properties]
+        return [p.tableName() for p in table_properties]
 
     def _table_by_name(self, table_properties, name):
         """Filter table properties by table name"""
         try:
-            return [p for p in table_properties if p.name == name][0]
+            return [p for p in table_properties if p.tableName() == name][0]
         except IndexError:
             return None
 
@@ -92,10 +86,10 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         capabilities = conn.capabilities()
 
         # Schema operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema
-                and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
-                and capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema
-                and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema ):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema and
+                capabilities & QgsAbstractDatabaseProviderConnection.Schemas and
+                capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema and
+                capabilities & QgsAbstractDatabaseProviderConnection.DropSchema ):
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
             # Create
@@ -113,10 +107,10 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             self.assertFalse('myVeryNewSchema' in schemas)
 
         # Table operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable
-                and capabilities & QgsAbstractDatabaseProviderConnection.Tables
-                and capabilities & QgsAbstractDatabaseProviderConnection.RenameTable
-                and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable ):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable and
+                capabilities & QgsAbstractDatabaseProviderConnection.Tables and
+                capabilities & QgsAbstractDatabaseProviderConnection.RenameTable and
+                capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable ):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
@@ -148,10 +142,9 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             table_properties = conn.tables(schema)
             table_property = self._table_by_name(table_properties, 'myNewTable')
             self.assertIsNotNone(table_property)
-            self.assertEqual(table_property.name, 'myNewTable')
-            self.assertEqual(table_property.geometryColumnCount, 1)
-            self.assertEqual(table_property.geometryTypes()[0], QgsWkbTypes.LineString)
-            self.assertEqual(table_property.srids[0], 3857)
+            self.assertEqual(table_property.tableName(), 'myNewTable')
+            self.assertEqual(table_property.geometryColumnCount(), 1)
+            self.assertEqual(table_property.geometryTypes()[0], (QgsWkbTypes.LineString, 3857))
             self.assertEqual(table_property.defaultName(), 'myNewTable')
 
             # Check aspatial tables
@@ -159,16 +152,35 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             table_properties = conn.tables(schema, QgsAbstractDatabaseProviderConnection.Aspatial)
             table_property = self._table_by_name(table_properties, 'myNewAspatialTable')
             self.assertIsNotNone(table_property)
-            self.assertEqual(table_property.name, 'myNewAspatialTable')
-            self.assertEqual(table_property.geometryColumnCount, 0)
-            self.assertEqual(table_property.layerTypeCount(), 1)
-            self.assertEqual(table_property.geometryColumn, '')
+            self.assertEqual(table_property.tableName(), 'myNewAspatialTable')
+            self.assertEqual(table_property.geometryColumnCount(), 0)
+            self.assertEqual(table_property.geometryColumn(), '')
             self.assertEqual(table_property.defaultName(), 'myNewAspatialTable')
-            self.assertEqual(table_property.geometryTypes()[0], QgsWkbTypes.NoGeometry)
-            self.assertTrue(table_property.srids[0] <= 0)
-            self.assertFalse(table_property.flags & QgsAbstractDatabaseProviderConnection.Raster)
-            self.assertFalse(table_property.flags & QgsAbstractDatabaseProviderConnection.Vector)
-            self.assertTrue(table_property.flags & QgsAbstractDatabaseProviderConnection.Aspatial)
+            self.assertEqual(table_property.geometryTypes()[0][0], QgsWkbTypes.NoGeometry)
+            self.assertTrue(table_property.geometryTypes()[0][1] <= 0)
+            self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Raster)
+            self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Vector)
+            self.assertTrue(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)
+
+            # Check executeSql
+            has_schema = capabilities & QgsAbstractDatabaseProviderConnection.Schemas
+            if capabilities & QgsAbstractDatabaseProviderConnection.ExecuteSql:
+                if has_schema:
+                    table = "\"%s\".\"myNewAspatialTable\"" % schema
+                else:
+                    table = 'myNewAspatialTable'
+                sql = "INSERT INTO %s (string, integer) VALUES ('QGIS Rocks - \U0001f604', 666)" % table
+                res = conn.executeSql(sql)
+                self.assertEqual(res, [])
+                sql = "SELECT string, integer FROM %s" % table
+                res = conn.executeSql(sql)
+                self.assertEqual(res, [['QGIS Rocks - \U0001f604', '666']])
+                sql = "DELETE FROM %s WHERE string = 'QGIS Rocks - \U0001f604'" % table
+                res = conn.executeSql(sql)
+                self.assertEqual(res, [])
+                sql = "SELECT string, integer FROM %s" % table
+                res = conn.executeSql(sql)
+                self.assertEqual(res, [])
 
             # Check that we do NOT get the aspatial table when querying for vectors
             table_names = self._table_names(conn.tables(schema, QgsAbstractDatabaseProviderConnection.Vector))
@@ -180,9 +192,9 @@ class TestPyQgsProviderConnection(unittest.TestCase):
             # At leasy one raster should be there
             self.assertTrue(len(table_properties) >= 1)
             table_property = table_properties[0]
-            self.assertTrue(table_property.flags & QgsAbstractDatabaseProviderConnection.Raster)
-            self.assertFalse(table_property.flags & QgsAbstractDatabaseProviderConnection.Vector)
-            self.assertFalse(table_property.flags & QgsAbstractDatabaseProviderConnection.Aspatial)
+            self.assertTrue(table_property.flags() & QgsAbstractDatabaseProviderConnection.Raster)
+            self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Vector)
+            self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)
 
             # Rename
             conn.renameTable(schema, 'myNewTable', 'myVeryNewTable')
@@ -236,13 +248,24 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         # Run common tests
         self._test_operations(md, conn)
 
-    def __test_spatialite_connections(self):
-        """Test spatialite connections"""
+        # Check filters and special cases
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
+        self.assertTrue('Raster1' in table_names)
+        self.assertFalse('geometryless_table' in table_names)
+        self.assertFalse('geometries_table' in table_names)
+        self.assertFalse('geometries_view' in table_names)
 
-        md = QgsProviderRegistry.instance().providerMetadata('spatialite')
-        uri = 'dbname=\'{}\' table="somedata" (geom) sql='.format(self.spatialite_path)
-        conn = md.connection('qgis_test1', uri)
-        md.saveConnection(conn)
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.View))
+        self.assertFalse('Raster1' in table_names)
+        self.assertFalse('geometryless_table' in table_names)
+        self.assertFalse('geometries_table' in table_names)
+        self.assertTrue('geometries_view' in table_names)
+
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial))
+        self.assertFalse('Raster1' in table_names)
+        self.assertTrue('geometryless_table' in table_names)
+        self.assertFalse('geometries_table' in table_names)
+        self.assertTrue('geometries_view' in table_names)
 
     def test_geopackage_connections(self):
         """Test geopackage connections"""

@@ -26,7 +26,9 @@
 
 /**
  * The QgsAbstractDatabaseProviderConnection class provides common functionality
- * for DB based connections, it performs low level DB operations without asking
+ * for DB based connections.
+ *
+ * This class performs low level DB operations without asking
  * the user for confirmation or handling currently opened layers and the registry
  * entries, it is responsability of the client code to keep layers in sync.
  * The class methods will throw exceptions in case the requested operation
@@ -49,19 +51,27 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     enum TableFlag
     {
-      None = 0,                   //!< No flags
       Aspatial = 1 << 1,          //!< Aspatial table (it does not contain any geometry column)
-      Vector = 1 << 2,            //!< Vector table (it does contain at least one geometry column)
+      Vector = 1 << 2,            //!< Vector table (it does contain one geometry column)
       Raster = 1 << 3,            //!< Raster table
       View = 1 << 4,              //!< View table
       MaterializedView = 1 << 5,  //!< Materialized view table
     };
+
     Q_ENUMS( TableFlag )
     Q_DECLARE_FLAGS( TableFlags, TableFlag )
     Q_FLAG( TableFlags )
 
     /**
-     * The TableProperty struct represents a database table
+     * The TableProperty class represents a database table or view.
+     *
+     * In case the table is a vector spatial table and it has multiple
+     * geometry columns, separate entries for each geometry column must
+     * be created.
+     *
+     * In case the table is a vector spatial table and the geometry column
+     * can contain multiple geometry types and/or SRIDs, a clone of the property
+     * for the individual geometry type/SRID can be retrieved with at(i)
      */
     struct TableProperty
     {
@@ -69,58 +79,171 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->name );
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->tableName() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
 
-        QString                       schema;
-        QString                       name;
-        QString                       geometryColumn;
-        QStringList                   pkColumns;
-        QList<int>                    srids;
-        //! This property holds the number of geometry columns for vector layers
-        unsigned int                  geometryColumnCount;
-        TableFlags                    flags;
-        QString                       tableComment;
-        QString                       sql;
-
-      private:
-        // Hide from Python because of ENUM limitations in SIP
-        QList<QgsWkbTypes::Type>    geometryColumnTypes;
-
       public:
 
         /**
-         * Appends the geometry column \a type to the geometry column types list
+         * Returns the table name
+         * \see defaultName()
          */
-        void appendGeometryColumnType( const QgsWkbTypes::Type &type );
+        QString tableName() const;
 
         /**
-         * Returns the list of geometry column types
+         * Sets the table name to \a name
+         * \see defaultName()
          */
-        QList<int> geometryTypes();
+        void setTableName( const QString &name );
 
         /**
-         * Returns the number of layers that should be generated for this table.
+         * Appends the geometry column \a type with the given \a srid to the geometry column types list
+         */
+        void addGeometryType( const QgsWkbTypes::Type &type, const int srid );
+
+        /**
+         * Returns the list of geometry column types and SRIDs.
+         * The method returns a list of tuples (QgsWkbTypes::Type, SRID)
+         */
+        QList<QPair<int, int>> geometryTypes() const;
+
+        /**
+         * Returns the default name for the table entry
          *
-         * The returned value is normally "1" but it may be greater in case the layer
-         * is a vector layer and it contains more than a single geometry type.
-         */
-        int layerTypeCount() const;
-
-        /**
-         * Returns the default name for the layer.
          * It is usually the table name but in case there are multiple geometry
          * columns, the geometry column name is appendend to the table name.
+         * \see geometryColumnCount()
          */
         QString  defaultName() const;
 
         /**
-         * Returns the table property corresponding to the geometry type a the given indext \a i
+         * Returns the table property corresponding to the geometry type a
+         * the given indext \a index
          */
-        TableProperty at( int i ) const;
+        TableProperty at( int index ) const;
+
+        /**
+         * Returns the schema or an empty string for backends that do not support a schema
+         */
+        QString schema() const;
+
+        /**
+         * Sets the \a schema
+         */
+        void setSchema( const QString &schema );
+
+        /**
+         * Returns the geometry column name
+         */
+        QString geometryColumn() const;
+
+        /**
+         * Sets the geometry column name to \a geometryColumn
+         */
+        void setGeometryColumn( const QString &geometryColumn );
+
+        /**
+         * Returns the list of primary key column names
+         */
+        QStringList pkColumns() const;
+
+        /**
+         * Sets the primary key column names to \a pkColumns
+         */
+        void setPkColumns( const QStringList &pkColumns );
+
+        /**
+         * Returs the list of SRIDs supported by the geometry column
+         */
+        QList<int> srids() const;
+
+        /**
+         * Returns the table flags
+         */
+        TableFlags flags() const;
+
+        /**
+         * Sets the table \a flags
+         */
+        void setFlags( const TableFlags &flags );
+
+        /**
+         * Returns the table comment
+         */
+        QString comment() const;
+
+        /**
+         * Sets the table \a comment
+         */
+        void setComment( const QString &comment );
+
+        /**
+         * Returns the SQL where condition for the table
+         */
+        QString sql() const;
+
+        /**
+         * Set the table SQL where condition to \a sql
+         */
+        void setSql( const QString &sql );
+
+        /**
+         * Returns additional information about the table
+         *
+         * Provider classes may use this property
+         * to store custom bits of information.
+         */
+        QList<QVariantMap> info() const;
+
+        /**
+         * Sets additional information about the table to \a info
+         *
+         * Provider classes may use this property
+         * to store custom bits of information.
+         */
+        void setInfo( const QList<QVariantMap> &info );
+
+        /**
+         * Returns the number of geometry columns in the original table this entry refers to
+         *
+         * This information is used internally to build the \see defaultName()
+         */
+        int geometryColumnCount() const;
+
+        /**
+         * Sets the \a geometryColumnCount
+         */
+        void setGeometryColumnCount( int geometryColumnCount );
+
+        /**
+         * Sets a \a flag
+         */
+        void setFlag( const TableFlag &flag );
+
+      private:
+
+        //! Holds the list of geometry wkb types and srids supported by the table
+        QList<QPair<int, int>>        mGeometryTypes;
+        //! Table schema
+        QString                       mSchema;
+        //! Table name
+        QString                       mTableName;
+        //! Name of the geometry column
+        QString                       mGeometryColumn;
+        //! The number of geometry columns in the table
+        int                           mGeometryColumnCount;
+        //! PK columns
+        QStringList                   mPkColumns;
+        TableFlags                    mFlags;
+        QString                       mComment;
+        //! SQL where condition
+        QString                       mSql;
+        //! Additional unstructured information about the table
+        QList<QVariantMap>            mInfo;
     };
+
 
     /**
      * The Capability enum represent the operations supported by the connection
@@ -142,6 +265,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       Schemas = 1 << 12,            //!< Can list schemas (if not set, the connection does not support schemas)
       SqlLayers = 1 << 13,          //!< Can create vector layers from SQL SELECT queries
       // TODO: TruncateTable = 1 << 14,      //!< Can TRUNCATE a table
+      TableExists = 1 << 15,        //!< Can check if table exists
+      Spatial = 1 << 16,            //!< The connection supports spatial tables
     };
 
     Q_ENUM( Capability )
@@ -170,35 +295,41 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
                                     const QgsCoordinateReferenceSystem &srs,
                                     bool overwrite,
                                     const QMap<QString, QVariant> *options
-                                  ) SIP_THROW( QgsProviderConnectionException );
+                                  ) const SIP_THROW( QgsProviderConnectionException );
 
+
+    /**
+     * Checks whether a table \a name exists in the given \a schema
+     * \throws QgsProviderConnectionException
+     */
+    virtual bool tableExists( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Drops a vector (or aspatial) table with given \a schema (may be empty if not supported by the backend) and \a name
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void dropVectorTable( const QString &schema, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+    virtual void dropVectorTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Drops a raster table with given \a schema (may be empty if not supported by the backend) and \a name
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void dropRasterTable( const QString &schema, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+    virtual void dropRasterTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Renames a table with given \a schema (may be empty if not supported by the backend) and \a name
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) SIP_THROW( QgsProviderConnectionException );
+    virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Creates anew schema \a schema
+     * Creates a new schema \a schema
      * \throws QgsProviderConnectionException
      */
-    virtual void createSchema( const QString &name ) SIP_THROW( QgsProviderConnectionException );
+    virtual void createSchema( const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Drops an entire \a schema
@@ -206,26 +337,26 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void dropSchema( const QString &name, bool force = false ) SIP_THROW( QgsProviderConnectionException );
+    virtual void dropSchema( const QString &name, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Renames a \a schema
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void renameSchema( const QString &name, const QString &newName ) SIP_THROW( QgsProviderConnectionException );
+    virtual void renameSchema( const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Executes raw \a sql
+     * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array
      * \throws QgsProviderConnectionException
      */
-    virtual void executeSql( const QString &sql ) SIP_THROW( QgsProviderConnectionException );
+    virtual QList<QList<QVariant>> executeSql( const QString &sql ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Vacuum the database table with given \a schema (may be empty if not supported by the backend) and \a name
      * \throws QgsProviderConnectionException
      */
-    virtual void vacuum( const QString &schema, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+    virtual void vacuum( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns information on the tables in the given \a schema (this parameter is ignored if not supported by the backend)
@@ -233,19 +364,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException
      */
     virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const QgsAbstractDatabaseProviderConnection::TableFlags &flags = QgsAbstractDatabaseProviderConnection::TableFlag::None ) SIP_THROW( QgsProviderConnectionException );
+        const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
-    // TODO: return schema information and not just the name
+    // TODO: return more schema information and not just the name
 
     /**
      * Returns information about the existing schemas
      * \throws QgsProviderConnectionException
      */
-    virtual QStringList schemas( ) SIP_THROW( QgsProviderConnectionException );
+    virtual QStringList schemas( ) const SIP_THROW( QgsProviderConnectionException );
 
   protected:
 
-    void checkCapability( Capability cap );
+    void checkCapability( Capability cap ) const;
     Capabilities mCapabilities = nullptr;
 
 };

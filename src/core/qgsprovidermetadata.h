@@ -321,9 +321,11 @@ class CORE_EXPORT QgsProviderMetadata
 
   protected:
 
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
-    // Common functionality for connections management
+    // Common functionality for connections management,to be moved into the class
+    // when all the providers are ready
     // T_provider_conn: subclass of QgsAbstractProviderConnection,
     // T_conn: provider connection class (such as QgsOgrDbConnection or QgsPostgresConn)
     // TODO QGIS4: remove all old provider conn classes and move functionality into QgsAbstractProviderConnection subclasses
@@ -349,9 +351,11 @@ class CORE_EXPORT QgsProviderMetadata
       mProviderConnections.clear();
     }
     virtual void saveConnectionProtected( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() );
+    //! Provider connections cache
     QMap<QString, QgsAbstractProviderConnection *> mProviderConnections;
 
 /// @endcond
+#endif
 
   private:
 

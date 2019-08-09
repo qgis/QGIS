@@ -12,7 +12,9 @@ class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
 {
 %Docstring
 The QgsAbstractDatabaseProviderConnection class provides common functionality
-for DB based connections, it performs low level DB operations without asking
+for DB based connections.
+
+This class performs low level DB operations without asking
 the user for confirmation or handling currently opened layers and the registry
 entries, it is responsability of the client code to keep layers in sync.
 The class methods will throw exceptions in case the requested operation
@@ -31,13 +33,13 @@ is not supported or cannot be performed without errors.
 
     enum TableFlag
     {
-      None,
       Aspatial,
       Vector,
       Raster,
       View,
       MaterializedView,
     };
+
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
 
 
@@ -46,52 +48,153 @@ is not supported or cannot be performed without errors.
 
         SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->name );
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->tableName() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-        QString                       schema;
-        QString                       name;
-        QString                       geometryColumn;
-        QStringList                   pkColumns;
-        QList<int>                    srids;
-        unsigned int                  geometryColumnCount;
-        TableFlags                    flags;
-        QString                       tableComment;
-        QString                       sql;
-
       public:
 
-        void appendGeometryColumnType( const QgsWkbTypes::Type &type );
+        QString tableName() const;
 %Docstring
-Appends the geometry column ``type`` to the geometry column types list
+Returns the table name
+
+.. seealso:: :py:func:`defaultName`
 %End
 
-        QList<int> geometryTypes();
+        void setTableName( const QString &name );
 %Docstring
-Returns the list of geometry column types
+Sets the table name to ``name``
+
+.. seealso:: :py:func:`defaultName`
 %End
 
-        int layerTypeCount() const;
+        void addGeometryType( const QgsWkbTypes::Type &type, const int srid );
 %Docstring
-Returns the number of layers that should be generated for this table.
+Appends the geometry column ``type`` with the given ``srid`` to the geometry column types list
+%End
 
-The returned value is normally "1" but it may be greater in case the layer
-is a vector layer and it contains more than a single geometry type.
+        QList<QPair<int, int>> geometryTypes() const;
+%Docstring
+Returns the list of geometry column types and SRIDs.
+The method returns a list of tuples (QgsWkbTypes.Type, SRID)
 %End
 
         QString  defaultName() const;
 %Docstring
-Returns the default name for the layer.
+Returns the default name for the table entry
+
 It is usually the table name but in case there are multiple geometry
 columns, the geometry column name is appendend to the table name.
+
+.. seealso:: :py:func:`geometryColumnCount`
 %End
 
-        TableProperty at( int i ) const;
+        TableProperty at( int index ) const;
 %Docstring
-Returns the table property corresponding to the geometry type a the given indext ``i``
+Returns the table property corresponding to the geometry type a
+the given indext ``index``
 %End
+
+        QString schema() const;
+%Docstring
+Returns the schema or an empty string for backends that do not support a schema
+%End
+
+        void setSchema( const QString &schema );
+%Docstring
+Sets the ``schema``
+%End
+
+        QString geometryColumn() const;
+%Docstring
+Returns the geometry column name
+%End
+
+        void setGeometryColumn( const QString &geometryColumn );
+%Docstring
+Sets the geometry column name to ``geometryColumn``
+%End
+
+        QStringList pkColumns() const;
+%Docstring
+Returns the list of primary key column names
+%End
+
+        void setPkColumns( const QStringList &pkColumns );
+%Docstring
+Sets the primary key column names to ``pkColumns``
+%End
+
+        QList<int> srids() const;
+%Docstring
+Returs the list of SRIDs supported by the geometry column
+%End
+
+        TableFlags flags() const;
+%Docstring
+Returns the table flags
+%End
+
+        void setFlags( const TableFlags &flags );
+%Docstring
+Sets the table ``flags``
+%End
+
+        QString comment() const;
+%Docstring
+Returns the table comment
+%End
+
+        void setComment( const QString &comment );
+%Docstring
+Sets the table ``comment``
+%End
+
+        QString sql() const;
+%Docstring
+Returns the SQL where condition for the table
+%End
+
+        void setSql( const QString &sql );
+%Docstring
+Set the table SQL where condition to ``sql``
+%End
+
+        QList<QVariantMap> info() const;
+%Docstring
+Returns additional information about the table
+
+Provider classes may use this property
+to store custom bits of information.
+%End
+
+        void setInfo( const QList<QVariantMap> &info );
+%Docstring
+Sets additional information about the table to ``info``
+
+Provider classes may use this property
+to store custom bits of information.
+%End
+
+        int geometryColumnCount() const;
+%Docstring
+Returns the number of geometry columns in the original table this entry refers to
+
+This information is used internally to build the :py:func:`defaultName`
+%End
+
+        void setGeometryColumnCount( int geometryColumnCount );
+%Docstring
+Sets the ``geometryColumnCount``
+%End
+
+        void setFlag( const TableFlag &flag );
+%Docstring
+Sets a ``flag``
+%End
+
     };
+
 
     enum Capability
     {
@@ -110,6 +213,8 @@ Returns the table property corresponding to the geometry type a the given indext
       Schemas,
       SqlLayers,
       // TODO: TruncateTable = 1 << 14,      //!< Can TRUNCATE a table
+      TableExists,
+      Spatial,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
@@ -132,34 +237,36 @@ Returns connection capabilities
                                     const QgsCoordinateReferenceSystem &srs,
                                     bool overwrite,
                                     const QMap<QString, QVariant> *options
-                                  ) throw( QgsProviderConnectionException );
+                                  ) const throw( QgsProviderConnectionException );
 
 
-    virtual void dropVectorTable( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
+    virtual bool tableExists( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 
-    virtual void dropRasterTable( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
+    virtual void dropVectorTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 
-    virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) throw( QgsProviderConnectionException );
+    virtual void dropRasterTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 
-    virtual void createSchema( const QString &name ) throw( QgsProviderConnectionException );
+    virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 
-    virtual void dropSchema( const QString &name, bool force = false ) throw( QgsProviderConnectionException );
+    virtual void createSchema( const QString &name ) const throw( QgsProviderConnectionException );
 
-    virtual void renameSchema( const QString &name, const QString &newName ) throw( QgsProviderConnectionException );
+    virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
 
-    virtual void executeSql( const QString &sql ) throw( QgsProviderConnectionException );
+    virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 
-    virtual void vacuum( const QString &schema, const QString &name ) throw( QgsProviderConnectionException );
+    virtual QList<QList<QVariant>> executeSql( const QString &sql ) const throw( QgsProviderConnectionException );
+
+    virtual void vacuum( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 
     virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const QgsAbstractDatabaseProviderConnection::TableFlags &flags = QgsAbstractDatabaseProviderConnection::TableFlag::None ) throw( QgsProviderConnectionException );
+        const QgsAbstractDatabaseProviderConnection::TableFlags &flags = 0 ) const throw( QgsProviderConnectionException );
 
 
-    virtual QStringList schemas( ) throw( QgsProviderConnectionException );
+    virtual QStringList schemas( ) const throw( QgsProviderConnectionException );
 
   protected:
 
-    void checkCapability( Capability cap );
+    void checkCapability( Capability cap ) const;
 
 };
 

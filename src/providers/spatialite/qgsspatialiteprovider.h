@@ -406,12 +406,6 @@ class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
         const QMap<QString, QVariant> *options ) override;
     bool createDb( const QString &dbPath, QString &errCause ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
-
-    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) override;
-    QgsAbstractProviderConnection *connection( const QString &name ) override;
-    QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) override;
-    void deleteConnection( const QString &name ) override;
-    void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig ) override;
 };
 
 // clazy:excludeall=qstring-allocations

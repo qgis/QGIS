@@ -41,7 +41,7 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
   setUri( uri );
 }
 
-void QgsGeoPackageProviderConnection::store( QVariantMap guiConfig )
+void QgsGeoPackageProviderConnection::store( QVariantMap guiConfig ) const
 {
   Q_UNUSED( guiConfig );
   QgsSettings settings;
@@ -50,26 +50,25 @@ void QgsGeoPackageProviderConnection::store( QVariantMap guiConfig )
   settings.beginGroup( QStringLiteral( "connections" ) );
   settings.beginGroup( name() );
   settings.setValue( QStringLiteral( "path" ), uri() );
-  settings.endGroup();
-  settings.endGroup();
-  settings.endGroup();
-  settings.endGroup();
 }
 
-void QgsGeoPackageProviderConnection::remove()
+void QgsGeoPackageProviderConnection::remove() const
 {
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
   settings.beginGroup( QStringLiteral( "GPKG" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
   settings.remove( name() );
-  settings.endGroup();
-  settings.endGroup();
-  settings.endGroup();
 }
 
 
-void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options )
+void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
+    const QString &name,
+    const QgsFields &fields,
+    QgsWkbTypes::Type wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    const QMap<QString, QVariant> *options ) const
 {
   checkCapability( Capability::CreateVectorTable );
   if ( ! schema.isEmpty() )
@@ -97,7 +96,7 @@ void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema, 
   }
 }
 
-void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, const QString &name )
+void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );
   if ( ! schema.isEmpty() )
@@ -114,7 +113,7 @@ void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, co
 }
 
 
-void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, const QString &name )
+void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropRasterTable );
   if ( ! schema.isEmpty() )
@@ -125,7 +124,7 @@ void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, co
 }
 
 
-void QgsGeoPackageProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName )
+void QgsGeoPackageProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameTable );
   if ( ! schema.isEmpty() )
@@ -151,14 +150,13 @@ void QgsGeoPackageProviderConnection::renameTable( const QString &schema, const 
   }
 }
 
-void QgsGeoPackageProviderConnection::executeSql( const QString &sql )
+QList<QVariantList> QgsGeoPackageProviderConnection::executeSql( const QString &sql ) const
 {
   checkCapability( Capability::ExecuteSql );
-  // TODO: check if this is the right approach
-  executeSqliteSqlPrivate( sql );
+  return executeGdalSqlPrivate( sql );
 }
 
-void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QString &name )
+void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QString &name ) const
 {
   Q_UNUSED( name );
   checkCapability( Capability::Vacuum );
@@ -172,44 +170,42 @@ void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QStri
 static int collect_table_info( void *tableProperties, int, char **argv, char ** )
 {
   QgsGeoPackageProviderConnection::TableProperty property;
-  property.name = QString::fromUtf8( argv[ 0 ] );
-  property.pkColumns << QLatin1String( "fid" );
-  property.geometryColumnCount = 0;
+  property.setTableName( QString::fromUtf8( argv[ 0 ] ) );
+  property.setPkColumns( { QLatin1String( "fid" ) } );
+  property.setGeometryColumnCount( 0 );
   static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
   const auto data_type = QString::fromUtf8( argv[ 1 ] );
   // Table type
   if ( data_type == QStringLiteral( "tiles" ) )
   {
-    property.flags.setFlag( QgsGeoPackageProviderConnection::Raster );
+    property.setFlag( QgsGeoPackageProviderConnection::Raster );
   }
   else if ( data_type == QStringLiteral( "features" ) )
   {
-    property.flags.setFlag( QgsGeoPackageProviderConnection::Vector );
-    property.geometryColumn = QStringLiteral( "geom" );
-    property.geometryColumnCount = 1;
+    property.setFlag( QgsGeoPackageProviderConnection::Vector );
+    property.setGeometryColumn( QStringLiteral( "geom" ) );
+    property.setGeometryColumnCount( 1 );
   }
   if ( aspatialTypes.contains( data_type ) )
   {
-    property.flags.setFlag( QgsGeoPackageProviderConnection::Aspatial );
-    property.appendGeometryColumnType( QgsWkbTypes::Type::NoGeometry );
+    property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
+    property.addGeometryType( QgsWkbTypes::Type::NoGeometry, 0 );
   }
   else
   {
-    property.appendGeometryColumnType( QgsWkbTypes::parseType( QString::fromUtf8( argv[ 4 ] ) ) );
+    bool ok;
+    property.addGeometryType( QgsWkbTypes::parseType( QString::fromUtf8( argv[ 4 ] ) ), QString::fromUtf8( argv[ 3 ] ).toInt( &ok ) );
+    if ( !ok )
+    {
+      throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( QString::fromUtf8( argv[ 3 ] ) ) );
+    }
   }
-
-  property.tableComment = QString::fromUtf8( argv[ 2 ] );
-  bool ok;
-  property.srids << QString::fromUtf8( argv[ 3 ] ).toInt( &ok );
-  if ( !ok )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( QString::fromUtf8( argv[ 3 ] ) ) );
-  }
+  property.setComment( QString::fromUtf8( argv[ 2 ] ) );
   static_cast<QList<QgsGeoPackageProviderConnection::TableProperty>*>( tableProperties )->push_back( property );
   return 0;
 }
 
-QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags )
+QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
   checkCapability( Capability::Tables );
   if ( ! schema.isEmpty() )
@@ -260,12 +256,12 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
     throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( name() ).arg( errCause ) );
   }
   // Filters
-  if ( flags != TableFlag::None )
+  if ( flags )
   {
     QList<QgsGeoPackageProviderConnection::TableProperty> filteredTableInfo;
     for ( const auto &ti : qgis::as_const( tableInfo ) )
     {
-      if ( ti.flags & flags )
+      if ( ti.flags() & flags )
       {
         filteredTableInfo.push_back( ti );
       }
@@ -284,23 +280,38 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::DropVectorTable,
     Capability::RenameTable,
     Capability::Vacuum,
+    Capability::Spatial,
+    Capability::TableExists,
+    Capability::ExecuteSql,
   };
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   mCapabilities |= Capability::DropRasterTable;
 #endif
 }
 
-void QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql )
+QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql ) const
 {
   QString errCause;
-  GDALDatasetH hDS = GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
+  QList<QVariantList> results;
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
-    OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS, sql.toUtf8().constData(), nullptr, nullptr ) );
+    OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
     if ( ogrLayer )
-      GDALDatasetReleaseResultSet( hDS, ogrLayer );
+    {
+      gdal::ogr_feature_unique_ptr fet;
+      while ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
+      {
+        QVariantList row;
+        for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
+        {
+          row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
+        }
+        results.push_back( row );
+      }
+      GDALDatasetReleaseResultSet( hDS.get(), ogrLayer );
+    }
     errCause = CPLGetLastErrorMsg( );
-    GDALClose( hDS );
   }
   else
   {
@@ -310,9 +321,6 @@ void QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql 
   {
     throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errCause ) );
   }
+  return results;
 }
 
-void QgsGeoPackageProviderConnection::executeSqliteSqlPrivate( const QString &sql )
-{
-  // TODO
-}
