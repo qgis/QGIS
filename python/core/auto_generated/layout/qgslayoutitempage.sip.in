@@ -97,6 +97,8 @@ page orientation.
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
 
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
 
   public slots:
 

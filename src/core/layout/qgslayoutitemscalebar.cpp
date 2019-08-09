@@ -884,3 +884,8 @@ bool QgsLayoutItemScaleBar::accept( QgsStyleEntityVisitorInterface *visitor ) co
 
   return true;
 }
+
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemScaleBar::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}

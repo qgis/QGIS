@@ -880,9 +880,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
                                            Qt::IntersectsItemBoundingRect,
                                            Qt::AscendingOrder );
 
-      auto exportFunc = [this, &settings, width, height, i, bounds, fileName, &svg, &svgDocRoot]( unsigned int layerId, const QString & layerName )->QgsLayoutExporter::ExportResult
+      auto exportFunc = [this, &settings, width, height, i, bounds, fileName, &svg, &svgDocRoot]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
       {
-        return renderToLayeredSvg( settings, width, height, i, bounds, fileName, layerId, layerName, svg, svgDocRoot, settings.exportMetadata );
+        return renderToLayeredSvg( settings, width, height, i, bounds, fileName, layerId, layerDetail.name, svg, svgDocRoot, settings.exportMetadata );
       };
       ExportResult res = handleLayeredExport( items, exportFunc );
       if ( res != Success )
@@ -1127,7 +1127,7 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &prin
   printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 }
 
-QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
+QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, unsigned int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
 {
   QBuffer svgBuffer;
   {
@@ -1430,52 +1430,123 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QList<QGraphicsItem *> &items,
-    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QString & )> &exportFunc )
+    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc )
 {
   LayoutItemHider itemHider( items );
   ( void )itemHider;
 
-  int layoutItemLayerIdx = 0;
-  auto it = items.constBegin();
-  for ( unsigned int layerId = 1; it != items.constEnd(); ++layerId )
+  int prevType = -1;
+  QgsLayoutItem::ExportLayerBehavior prevItemBehavior = QgsLayoutItem::CanGroupWithAnyOtherItem;
+  unsigned int layerId = 1;
+  QgsLayoutItem::ExportLayerDetail layerDetails;
+  layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
+  itemHider.hideAll();
+  bool haveUnexportedItems = false;
+  for ( auto it = items.constBegin(); it != items.constEnd(); ++it )
   {
-    itemHider.hideAll();
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
-    const QString layerName = QObject::tr( "Layer %1" ).arg( layerId );
-    if ( layoutItem && layoutItem->numberExportLayers() > 0 )
+
+    bool canPlaceInExistingLayer = false;
+    if ( layoutItem )
     {
-      layoutItem->show();
-      mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
-      ++layoutItemLayerIdx;
+      switch ( layoutItem->exportLayerBehavior() )
+      {
+        case QgsLayoutItem::CanGroupWithAnyOtherItem:
+        {
+          switch ( prevItemBehavior )
+          {
+            case QgsLayoutItem::CanGroupWithAnyOtherItem:
+              canPlaceInExistingLayer = true;
+              break;
+
+            case QgsLayoutItem::CanGroupWithItemsOfSameType:
+              canPlaceInExistingLayer = prevType == -1 || prevType == layoutItem->type();
+              break;
+
+            case QgsLayoutItem::MustPlaceInOwnLayer:
+            case QgsLayoutItem::ItemContainsSubLayers:
+              canPlaceInExistingLayer = false;
+              break;
+          }
+          break;
+        }
+
+        case QgsLayoutItem::CanGroupWithItemsOfSameType:
+        {
+          switch ( prevItemBehavior )
+          {
+            case QgsLayoutItem::CanGroupWithAnyOtherItem:
+            case QgsLayoutItem::CanGroupWithItemsOfSameType:
+              canPlaceInExistingLayer = prevType == -1 || prevType == layoutItem->type();
+              break;
+
+            case QgsLayoutItem::MustPlaceInOwnLayer:
+            case QgsLayoutItem::ItemContainsSubLayers:
+              canPlaceInExistingLayer = false;
+              break;
+          }
+          break;
+        }
+
+        case QgsLayoutItem::MustPlaceInOwnLayer:
+        case QgsLayoutItem::ItemContainsSubLayers:
+          canPlaceInExistingLayer = false;
+          break;
+      }
+      prevItemBehavior = layoutItem->exportLayerBehavior();
+      prevType = layoutItem->type();
     }
     else
     {
-      // show all items until the next item that renders on a separate layer
-      for ( ; it != items.constEnd(); ++it )
+      prevItemBehavior = QgsLayoutItem::MustPlaceInOwnLayer;
+    }
+
+    if ( canPlaceInExistingLayer )
+    {
+      ( *it )->show();
+      haveUnexportedItems = true;
+    }
+    else
+    {
+      if ( haveUnexportedItems )
       {
-        layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
-        if ( layoutItem && layoutItem->numberExportLayers() > 0 )
+        ExportResult result = exportFunc( layerId, layerDetails );
+        if ( result != Success )
+          return result;
+        layerId++;
+        layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
+        haveUnexportedItems = false;
+      }
+
+      itemHider.hideAll();
+      ( *it )->show();
+
+      if ( layoutItem && layoutItem->exportLayerBehavior() == QgsLayoutItem::ItemContainsSubLayers )
+      {
+        for ( int layoutItemLayerIdx = 0; layoutItemLayerIdx < layoutItem->numberExportLayers(); layoutItemLayerIdx++ )
         {
-          break;
+          mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
+          layerDetails = layoutItem->exportLayerDetails( layoutItemLayerIdx );
+          ExportResult result = exportFunc( layerId, layerDetails );
+          if ( result != Success )
+            return result;
+          layerId++;
+          layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
         }
-        else
-        {
-          ( *it )->show();
-        }
+        mLayout->renderContext().setCurrentExportLayer( -1 );
+        haveUnexportedItems = false;
+      }
+      else
+      {
+        haveUnexportedItems =    true;
       }
     }
-
-
-    ExportResult result = exportFunc( layerId, layerName );
+  }
+  if ( haveUnexportedItems )
+  {
+    ExportResult result = exportFunc( layerId, layerDetails );
     if ( result != Success )
       return result;
-
-    if ( layoutItem && layoutItem->numberExportLayers() > 0 && layoutItem->numberExportLayers() == layoutItemLayerIdx ) // restore and pass to next item
-    {
-      mLayout->renderContext().setCurrentExportLayer( -1 );
-      layoutItemLayerIdx = 0;
-      ++it;
-    }
   }
   return Success;
 }

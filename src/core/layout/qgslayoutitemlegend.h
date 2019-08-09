@@ -496,6 +496,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void finalizeRestoreFromXml() override;
 
     QgsExpressionContext createExpressionContext() const override;
+    ExportLayerBehavior exportLayerBehavior() const override;
 
   public slots:
 

@@ -415,12 +415,35 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
+     * Behavior of item when exporting to layered outputs.
+     * \since QGIS 3.10
+     */
+    enum ExportLayerBehavior
+    {
+      CanGroupWithAnyOtherItem, //!< Item can be placed on a layer with any other item (default behavior)
+      CanGroupWithItemsOfSameType, //!< Item can only be placed on layers with other items of the same type, but multiple items of this type can be grouped together
+      MustPlaceInOwnLayer, //!< Item must be placed in its own individual layer
+      ItemContainsSubLayers, //!< Item contains multiple sublayers which must be individually exported
+    };
+
+    /**
+     * Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+     * \see numberExportLayers()
+     * \see exportLayerDetails()
+     * \since QGIS 3.10
+     */
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
+    /**
      * Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
      * Returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
      *
      * Items which require multiply layers should check QgsLayoutContext::currentExportLayer() during
      * their rendering to determine which layer should be drawn.
+     *
+     * \see exportLayerBehavior()
+     * \see exportLayerDetails()
      */
     virtual int numberExportLayers() const { return 0; }
 

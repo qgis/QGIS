@@ -865,6 +865,11 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   return context;
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemLegend::exportLayerBehavior() const
+{
+  return MustPlaceInOwnLayer;
+}
+
 
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
