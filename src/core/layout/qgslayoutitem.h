@@ -425,11 +425,25 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual int numberExportLayers() const { return 0; }
 
     /**
-     * Returns a user-friendly name for the specified export \a layer.
+     * Contains details of a particular export layer relating to a layout item.
+     * \ingroup core
+     * \since QGIS 3.10
+     */
+    struct CORE_EXPORT ExportLayerDetail
+    {
+      //! User-friendly name for the export layer
+      QString name;
+
+      //! Associated map layer ID, or an empty string if this export layer is not associated with a map layer
+      QString mapLayerId;
+    };
+
+    /**
+     * Returns the details for the specified export \a layer.
      *
      * \since QGIS 3.10
      */
-    virtual QString exportLayerName( int layer ) const;
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails( int layer ) const;
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
