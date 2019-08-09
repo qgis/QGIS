@@ -139,6 +139,9 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
       //! Associated map layer ID
       QString mapLayerId;
 
+      //! Field name for display
+      QString displayAttribute;
+
       //! File path to the (already created) vector dataset to use as the source for this component layer
       QString sourceVectorPath;
 
