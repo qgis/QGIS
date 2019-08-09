@@ -880,50 +880,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
                                            Qt::IntersectsItemBoundingRect,
                                            Qt::AscendingOrder );
 
-      LayoutItemHider itemHider( items );
-      ( void )itemHider;
-
-      int layoutItemLayerIdx = 0;
-      auto it = items.constBegin();
-      for ( unsigned svgLayerId = 1; it != items.constEnd(); ++svgLayerId )
+      auto exportFunc = [this, &settings, width, height, i, bounds, fileName, &svg, &svgDocRoot]( unsigned int layerId, const QString & layerName )->QgsLayoutExporter::ExportResult
       {
-        itemHider.hideAll();
-        QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
-        QString layerName = QObject::tr( "Layer %1" ).arg( svgLayerId );
-        if ( layoutItem && layoutItem->numberExportLayers() > 0 )
-        {
-          layoutItem->show();
-          mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
-          ++layoutItemLayerIdx;
-        }
-        else
-        {
-          // show all items until the next item that renders on a separate layer
-          for ( ; it != items.constEnd(); ++it )
-          {
-            layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
-            if ( layoutItem && layoutItem->numberExportLayers() > 0 )
-            {
-              break;
-            }
-            else
-            {
-              ( *it )->show();
-            }
-          }
-        }
-
-        ExportResult result = renderToLayeredSvg( settings, width, height, i, bounds, fileName, svgLayerId, layerName, svg, svgDocRoot, settings.exportMetadata );
-        if ( result != Success )
-          return result;
-
-        if ( layoutItem && layoutItem->numberExportLayers() > 0 && layoutItem->numberExportLayers() == layoutItemLayerIdx ) // restore and pass to next item
-        {
-          mLayout->renderContext().setCurrentExportLayer( -1 );
-          layoutItemLayerIdx = 0;
-          ++it;
-        }
-      }
+        return renderToLayeredSvg( settings, width, height, i, bounds, fileName, layerId, layerName, svg, svgDocRoot, settings.exportMetadata );
+      };
+      ExportResult res = handleLayeredExport( items, exportFunc );
+      if ( res != Success )
+        return res;
 
       if ( settings.exportMetadata )
         appendMetadataToSvg( svg );
@@ -1464,6 +1427,57 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
 
   return true;
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QList<QGraphicsItem *> &items,
+    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QString & )> &exportFunc )
+{
+  LayoutItemHider itemHider( items );
+  ( void )itemHider;
+
+  int layoutItemLayerIdx = 0;
+  auto it = items.constBegin();
+  for ( unsigned int layerId = 1; it != items.constEnd(); ++layerId )
+  {
+    itemHider.hideAll();
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
+    const QString layerName = QObject::tr( "Layer %1" ).arg( layerId );
+    if ( layoutItem && layoutItem->numberExportLayers() > 0 )
+    {
+      layoutItem->show();
+      mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
+      ++layoutItemLayerIdx;
+    }
+    else
+    {
+      // show all items until the next item that renders on a separate layer
+      for ( ; it != items.constEnd(); ++it )
+      {
+        layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
+        if ( layoutItem && layoutItem->numberExportLayers() > 0 )
+        {
+          break;
+        }
+        else
+        {
+          ( *it )->show();
+        }
+      }
+    }
+
+
+    ExportResult result = exportFunc( layerId, layerName );
+    if ( result != Success )
+      return result;
+
+    if ( layoutItem && layoutItem->numberExportLayers() > 0 && layoutItem->numberExportLayers() == layoutItemLayerIdx ) // restore and pass to next item
+    {
+      mLayout->renderContext().setCurrentExportLayer( -1 );
+      layoutItemLayerIdx = 0;
+      ++it;
+    }
+  }
+  return Success;
 }
 
 QgsVectorSimplifyMethod QgsLayoutExporter::createExportSimplifyMethod()

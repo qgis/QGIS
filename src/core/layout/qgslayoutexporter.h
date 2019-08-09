@@ -24,6 +24,7 @@
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
+#include <functional>
 
 #ifndef QT_NO_PRINTER
 
@@ -591,6 +592,8 @@ class CORE_EXPORT QgsLayoutExporter
 
     bool georeferenceOutputPrivate( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
                                     const QRectF &exportRegion = QRectF(), double dpi = -1, bool includeGeoreference = true, bool includeMetadata = false ) const;
+
+    ExportResult handleLayeredExport( const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QString &layerName )> &exportFunc );
 
     static QgsVectorSimplifyMethod createExportSimplifyMethod();
     friend class TestQgsLayout;
