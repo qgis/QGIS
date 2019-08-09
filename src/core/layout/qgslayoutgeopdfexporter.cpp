@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgslogger.h"
 #include "qgsgeometry.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
 
 #include <gdal.h>
@@ -199,6 +200,10 @@ bool QgsLayoutGeoPdfExporter::saveTemporaryLayers()
     detail.name = layer ? layer->name() : it.key();
     detail.mapLayerId = it.key();
     detail.sourceVectorPath = filePath;
+    if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+    {
+      detail.displayAttribute = vl->displayField();
+    }
 
     // write out features to disk
     const QgsFeatureList features = it.value();
@@ -375,7 +380,8 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml( const QList<ComponentLaye
     vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "false" ) );
     QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
     logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), component.name );
-    //logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), it.key() ); // TODO
+    if ( !component.displayAttribute.isEmpty() )
+      logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), component.displayAttribute );
     vectorDataset.appendChild( logicalStructure );
     ifLayerOn.appendChild( vectorDataset );
     content.appendChild( ifLayerOn );

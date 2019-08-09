@@ -83,6 +83,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
       QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointsLayer->isValid() );
+  pointsLayer->setDisplayExpression( QStringLiteral( "Staff" ) );
 
   QgsProject p;
   p.addMapLayer( linesLayer );
