@@ -275,6 +275,13 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
     bool containsAdvancedEffects() const;
 
     /**
+     * Returns TRUE if the stack has any currently enabled items.
+     *
+     * \since QGIS 3.10
+     */
+    bool hasEnabledItems() const;
+
+    /**
      * Returns a reference to the item at the specified \a index within the stack.
      */
     QgsLayoutItemMapItem *item( int index ) const;

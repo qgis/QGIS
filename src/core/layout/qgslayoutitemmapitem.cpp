@@ -283,6 +283,18 @@ bool QgsLayoutItemMapItemStack::containsAdvancedEffects() const
   return false;
 }
 
+bool QgsLayoutItemMapItemStack::hasEnabledItems() const
+{
+  for ( QgsLayoutItemMapItem *item : mItems )
+  {
+    if ( item->enabled() )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 void QgsLayoutItemMapItemStack::removeItems()
 {
   qDeleteAll( mItems );

@@ -269,6 +269,13 @@ Returns whether any items within the stack contain advanced effects,
 such as blending modes.
 %End
 
+    bool hasEnabledItems() const;
+%Docstring
+Returns ``True`` if the stack has any currently enabled items.
+
+.. versionadded:: 3.10
+%End
+
     QgsLayoutItemMapItem *item( int index ) const;
 %Docstring
 Returns a reference to the item at the specified ``index`` within the stack.

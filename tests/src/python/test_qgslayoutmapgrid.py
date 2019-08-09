@@ -42,11 +42,14 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.setBackgroundColor(QColor(150, 100, 100))
         layout.addLayoutItem(map)
 
+        self.assertFalse(map.grids().hasEnabledItems())
+
         """Test that we can create a grid for a map."""
         myRectangle = QgsRectangle(781662.375, 3339523.125,
                                    793062.375, 3345223.125)
         map.setExtent(myRectangle)
         map.grid().setEnabled(True)
+        self.assertTrue(map.grids().hasEnabledItems())
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setAnnotationEnabled(True)
