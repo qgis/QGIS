@@ -18,6 +18,9 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QEffect>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QNoDepthMask>
 #include <QPainter>
 
 #include "qgslogger.h"
@@ -48,6 +51,14 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
 
   addParameter( mTexture2D );
 
+  // Blending for handling transparency
+  Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
+  blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
+  blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
+
+  Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
+  blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
+
   // Shader program
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
   shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.vert" ) ) ) );
@@ -57,6 +68,8 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   // Render Pass
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   renderPass->setShaderProgram( shaderProgram );
+  renderPass->addRenderState( blendState );
+  renderPass->addRenderState( blendEquation );
 
   // without this filter the default forward renderer would not render this
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
