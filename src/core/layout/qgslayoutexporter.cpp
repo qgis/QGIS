@@ -1442,6 +1442,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
   layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
   itemHider.hideAll();
   bool haveUnexportedItems = false;
+  QString pendingLayerName;
   for ( auto it = items.constBegin(); it != items.constEnd(); ++it )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
@@ -1489,7 +1490,15 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
         }
 
         case QgsLayoutItem::MustPlaceInOwnLayer:
+        {
+          layerDetails.name = pendingLayerName;
+          pendingLayerName = layoutItem->displayName(); // this one's easy - use the item's name
+          canPlaceInExistingLayer = false;
+          break;
+        }
+
         case QgsLayoutItem::ItemContainsSubLayers:
+          // no need to set the name here -- items with sublayers will individually give us names for layers in their exportLayerDetails implementations
           canPlaceInExistingLayer = false;
           break;
       }
@@ -1514,7 +1523,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
         if ( result != Success )
           return result;
         layerId++;
-        layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
+        layerDetails.name = pendingLayerName.isEmpty() ? QObject::tr( "Layer %1" ).arg( layerId ) : pendingLayerName;
+        pendingLayerName.clear();
         haveUnexportedItems = false;
       }
 
@@ -1531,14 +1541,15 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
           if ( result != Success )
             return result;
           layerId++;
-          layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
+          layerDetails.name = pendingLayerName.isEmpty() ? QObject::tr( "Layer %1" ).arg( layerId ) : pendingLayerName;
+          pendingLayerName.clear();
         }
         mLayout->renderContext().setCurrentExportLayer( -1 );
         haveUnexportedItems = false;
       }
       else
       {
-        haveUnexportedItems =    true;
+        haveUnexportedItems = true;
       }
     }
   }

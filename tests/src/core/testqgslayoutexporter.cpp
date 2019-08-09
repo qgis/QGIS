@@ -218,13 +218,37 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
 
   // add two legends -- legends are complex and must be placed in an isolated layer
   QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &l );
+  legend->setId( QStringLiteral( "my legend" ) );
   QgsLayoutItemLegend *legend2 = new QgsLayoutItemLegend( &l );
+  legend2->setId( QStringLiteral( "my legend 2" ) );
   items << legend << legend2;
   res = exporter.handleLayeredExport( items, exportFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
   QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Layer 1" ) << QStringLiteral( "Layer 2" ) << QStringLiteral( "Layer 3" ) << QStringLiteral( "Layer 4" ) << QStringLiteral( "Layer 5" ) << QStringLiteral( "Map Background" ) << QStringLiteral( "lines" ) << QStringLiteral( "Map Frame" ) << QStringLiteral( "Layer 9" ) << QStringLiteral( "Layer 10" ) );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Layer 1" ) << QStringLiteral( "Layer 2" ) << QStringLiteral( "Layer 3" ) << QStringLiteral( "Layer 4" ) << QStringLiteral( "Layer 5" ) << QStringLiteral( "Map Background" ) << QStringLiteral( "lines" ) << QStringLiteral( "Map Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() );
+  layerIds.clear();
+  layerNames.clear();
+  mapLayerIds.clear();
+
+  QgsLayoutItemLabel *label4 = new QgsLayoutItemLabel( &l );
+  items << label4;
+  res = exporter.handleLayeredExport( items, exportFunc );
+  QCOMPARE( res, QgsLayoutExporter::Success );
+  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Layer 1" ) << QStringLiteral( "Layer 2" ) << QStringLiteral( "Layer 3" ) << QStringLiteral( "Layer 4" ) << QStringLiteral( "Layer 5" ) << QStringLiteral( "Map Background" ) << QStringLiteral( "lines" ) << QStringLiteral( "Map Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) << QStringLiteral( "Layer 11" ) );
+  QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() << QString() );
+  layerIds.clear();
+  layerNames.clear();
+  mapLayerIds.clear();
+
+  QgsLayoutItemLabel *label5 = new QgsLayoutItemLabel( &l );
+  items << label5;
+  res = exporter.handleLayeredExport( items, exportFunc );
+  QCOMPARE( res, QgsLayoutExporter::Success );
+  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Layer 1" ) << QStringLiteral( "Layer 2" ) << QStringLiteral( "Layer 3" ) << QStringLiteral( "Layer 4" ) << QStringLiteral( "Layer 5" ) << QStringLiteral( "Map Background" ) << QStringLiteral( "lines" ) << QStringLiteral( "Map Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) << QStringLiteral( "Layer 11" ) );
+  QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
   mapLayerIds.clear();
