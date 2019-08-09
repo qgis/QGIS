@@ -256,10 +256,10 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml( const QString &sourcePdf 
   dpi.appendChild( doc.createTextNode( QStringLiteral( "300" ) ) );
   page.appendChild( dpi );
   QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
-  width.appendChild( doc.createTextNode( QStringLiteral( "297" ) ) );
+  width.appendChild( doc.createTextNode( QStringLiteral( "842" ) ) );
   page.appendChild( width );
   QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
-  height.appendChild( doc.createTextNode( QStringLiteral( "210" ) ) );
+  height.appendChild( doc.createTextNode( QStringLiteral( "595" ) ) );
   page.appendChild( height );
   // georeferencing - TODO
 
