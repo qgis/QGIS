@@ -396,9 +396,16 @@ Items which require multiply layers should check QgsLayoutContext.currentExportL
 their rendering to determine which layer should be drawn.
 %End
 
-    virtual QString exportLayerName( int layer ) const;
+    struct ExportLayerDetail
+    {
+      QString name;
+
+      QString mapLayerId;
+    };
+
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails( int layer ) const;
 %Docstring
-Returns a user-friendly name for the specified export ``layer``.
+Returns the details for the specified export ``layer``.
 
 .. versionadded:: 3.10
 %End

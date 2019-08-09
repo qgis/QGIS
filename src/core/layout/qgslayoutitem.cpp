@@ -244,9 +244,9 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
   setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
 }
 
-QString QgsLayoutItem::exportLayerName( int ) const
+QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails( int ) const
 {
-  return QString();
+  return QgsLayoutItem::ExportLayerDetail();
 }
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
