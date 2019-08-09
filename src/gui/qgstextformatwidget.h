@@ -22,6 +22,7 @@
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"
 #include "qgsguiutils.h"
+#include "qgssymbolwidgetcontext.h"
 #include <QFontDatabase>
 #include "qgis_gui.h"
 
@@ -58,21 +59,50 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \param format initial formatting settings to show in widget
      * \param mapCanvas associated map canvas
      * \param parent parent widget
+     * \param layer associated vector layer
      */
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                         QgsVectorLayer *layer = nullptr );
 
     ~QgsTextFormatWidget() override;
 
     /**
      * Returns the current formatting settings defined by the widget.
+     *
+     * If \a includateDataDefinedProperties is TRUE, then data defined properties
+     * specified in the widget will be included in the format definition.
      */
-    QgsTextFormat format() const;
+    QgsTextFormat format( bool includeDataDefinedProperties = true ) const;
 
     /**
      * Sets the current formatting settings
      * \since QGIS 3.2
      */
     void setFormat( const QgsTextFormat &format );
+
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see context()
+     * \since QGIS 3.10
+     */
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+    /**
+     * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see setContext()
+     * \since QGIS 3.10
+     */
+    QgsSymbolWidgetContext context() const;
+
+    /**
+     * Deactivate a field from data defined properties and update the
+     * corresponding button.
+     *
+     * \param key The property key to deactivate
+     *
+     * \since QGIS 3.0
+     */
+    void deactivateField( QgsPalLayerSettings::Property key );
 
   public slots:
 
@@ -86,6 +116,12 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     //! Emitted when the text format defined by the widget changes
     void widgetChanged();
+
+    /**
+     * Emitted when an auxiliary field is creatd in the widget.
+     * \since QGIS 3.10
+     */
+    void auxiliaryFieldCreated();
 
   protected:
 
@@ -101,8 +137,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \param mapCanvas associated map canvas
      * \param parent parent widget
      * \param mode widget mode
+     * \param layer associated vector layer
      */
-    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS, Mode mode );
+    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS, Mode mode, QgsVectorLayer *layer = nullptr );
 
     /**
      * Updates the widget's state to reflect the settings in a QgsTextFormat.
@@ -141,6 +178,17 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     //! Pixel size font limit
     int mMinPixelLimit = 0;
 
+    //! Associated map canvas
+    QgsMapCanvas *mMapCanvas = nullptr;
+
+    //! Context in which widget is shown
+    QgsSymbolWidgetContext mContext;
+
+    //! Data defined properties as defined in the widget
+    QgsPropertyCollection mDataDefinedProperties;
+
+    //! Associated vector layer
+    QgsVectorLayer *mLayer = nullptr;
   protected slots:
 
     //! Updates line placement options to reflect current state of widget
@@ -160,9 +208,26 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      */
     virtual void saveFormat();
 
+    /**
+     * Updates the text preview.
+     * \since QGIS 3.10
+    */
+    void updatePreview();
+
+#ifndef SIP_RUN
+
+    /**
+     * Sets up connections required for data defined buttons, or updates the existing
+     * definition of these buttons.
+     *
+     * \since QGIS 3.10
+     */
+    void populateDataDefinedButtons();
+#endif
+
   private:
     Mode mWidgetMode = Text;
-    QgsMapCanvas *mMapCanvas = nullptr;
+
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
     std::unique_ptr< QgsPaintEffect > mBufferEffect;
     std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
@@ -175,6 +240,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     bool mDockMode;
 
     bool mLoadSvgParams = false;
+    QgsExpressionContext mPreviewExpressionContext;
+
+    QMap<QgsPalLayerSettings::Property, QgsPropertyOverrideButton *> mButtons;
 
     void initWidget();
     void setWidgetMode( Mode mode );
@@ -184,6 +252,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void populateFontStyleComboBox();
     void updateFont( const QFont &font );
     void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
 
   private slots:
     void optionsStackedWidget_CurrentChanged( int indx );
@@ -221,11 +291,11 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void collapseSample( bool collapse );
     void changeTextColor( const QColor &color );
     void changeBufferColor( const QColor &color );
-    void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
     void updateAvailableShadowPositions();
-
+    void updateProperty();
+    void createAuxiliaryField();
 };
 
 
@@ -253,17 +323,31 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * \param mapCanvas optional associated map canvas
      * \param parent parent widget
      * \param fl window flags for dialog
+     * \param layer associated vector layer
      */
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsVectorLayer *layer = nullptr );
 
     /**
      * Returns the current formatting settings defined by the widget.
      */
     QgsTextFormat format() const;
 
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \since QGIS 3.10
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
+
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
+
   private:
 
     QgsTextFormatWidget *mFormatWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 };
 
 /**
@@ -289,13 +373,20 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
      * \param format initial format settings to show in dialog
      * \param mapCanvas optional associated map canvas
      * \param parent parent widget
+     * \param layer associated layer
      */
-    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsVectorLayer *layer = nullptr );
 
     /**
      * Returns the current formatting settings defined by the widget.
      */
     QgsTextFormat format() const;
+
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \since QGIS 3.10
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
 
     void setDockMode( bool dockMode ) override;
 

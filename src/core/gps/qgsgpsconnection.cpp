@@ -25,6 +25,48 @@
 
 #include "qgsnmeaconnection.h"
 #include "qgslogger.h"
+#include "info.h"
+
+
+bool QgsGpsInformation::isValid() const
+{
+  bool valid = false;
+  if ( status == 'V' || fixType == NMEA_FIX_BAD || quality == 0 ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  {
+    valid = false;
+  }
+  else if ( fixType == NMEA_FIX_2D )
+  {
+    valid = true;
+  }
+  else if ( status == 'A' || fixType == NMEA_FIX_3D || quality > 0 ) // good
+  {
+    valid = true;
+  }
+
+  return valid;
+}
+
+QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
+{
+  FixStatus fixStatus = NoData;
+
+  // no fix if any of the three report bad; default values are invalid values and won't be changed if the corresponding NMEA msg is not received
+  if ( status == 'V' || fixType == NMEA_FIX_BAD || quality == 0 ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  {
+    fixStatus = NoFix;
+  }
+  else if ( fixType == NMEA_FIX_2D ) // 2D indication (from GGA)
+  {
+    fixStatus = Fix2D;
+  }
+  else if ( status == 'A' || fixType == NMEA_FIX_3D || quality > 0 ) // good
+  {
+    fixStatus = Fix3D;
+  }
+  return fixStatus;
+}
+
 
 QgsGpsConnection::QgsGpsConnection( QIODevice *dev ): QObject( nullptr ), mSource( dev ), mStatus( NotConnected )
 {
@@ -82,24 +124,5 @@ void QgsGpsConnection::setSource( QIODevice *source )
 
 void QgsGpsConnection::clearLastGPSInformation()
 {
-  mLastGPSInformation.direction = 0;
-  mLastGPSInformation.elevation = 0;
-  mLastGPSInformation.hdop = 0;
-  mLastGPSInformation.latitude = 0;
-  mLastGPSInformation.longitude = 0;
-  mLastGPSInformation.pdop = 0;
-  mLastGPSInformation.satellitesInView.clear();
-  mLastGPSInformation.speed = 0;
-  mLastGPSInformation.vdop = 0;
-  mLastGPSInformation.hacc = -1;
-  mLastGPSInformation.vacc = -1;
-  mLastGPSInformation.quality = -1;  // valid values: 0,1,2, maybe others
-  mLastGPSInformation.satellitesUsed = 0;
-  mLastGPSInformation.fixMode = ' ';
-  mLastGPSInformation.fixType = 0; // valid values: 1,2,3
-  mLastGPSInformation.status = ' '; // valid values: A,V
-  mLastGPSInformation.utcDateTime.setDate( QDate() );
-  mLastGPSInformation.satPrn.clear();
-  mLastGPSInformation.utcDateTime.setTime( QTime() );
-  mLastGPSInformation.satInfoComplete = false;
+  mLastGPSInformation = QgsGpsInformation();
 }

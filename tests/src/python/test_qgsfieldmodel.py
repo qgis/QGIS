@@ -15,7 +15,11 @@ import qgis  # NOQA
 from qgis.core import (QgsField,
                        QgsFields,
                        QgsVectorLayer,
-                       QgsFieldModel)
+                       QgsFieldModel,
+                       QgsFieldProxyModel,
+                       QgsEditorWidgetSetup,
+                       QgsProject,
+                       QgsVectorLayerJoinInfo)
 from qgis.PyQt.QtCore import QVariant, Qt
 
 from qgis.testing import start_app, unittest
@@ -26,6 +30,8 @@ start_app()
 def create_layer():
     layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
                            "addfeat", "memory")
+    layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Hidden', {}))
+    layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('ValueMap', {}))
     assert layer.isValid()
     return layer
 
@@ -244,6 +250,86 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.data(m.indexFromName('an expression'), Qt.DisplayRole), 'an expression')
         m.setAllowEmptyFieldName(True)
         self.assertFalse(m.data(m.indexFromName(None), Qt.DisplayRole))
+
+    def testEditorWidgetTypeRole(self):
+        l, m = create_model()
+        self.assertEqual(m.data(m.indexFromName('fldtxt'), QgsFieldModel.EditorWidgetType), 'Hidden')
+        self.assertEqual(m.data(m.indexFromName('fldint'), QgsFieldModel.EditorWidgetType), 'ValueMap')
+        self.assertIsNone(m.data(m.indexFromName('an expression'), QgsFieldModel.EditorWidgetType))
+        self.assertIsNone(m.data(m.indexFromName(None), QgsFieldModel.EditorWidgetType))
+        m.setAllowExpression(True)
+        m.setExpression('an expression')
+        self.assertIsNone(m.data(m.indexFromName('an expression'), QgsFieldModel.EditorWidgetType))
+        m.setAllowEmptyFieldName(True)
+        self.assertIsNone(m.data(m.indexFromName(None), QgsFieldModel.EditorWidgetType))
+
+    def testJoinedFieldIsEditableRole(self):
+        layer = QgsVectorLayer("Point?field=id_a:integer",
+                               "addfeat", "memory")
+        layer2 = QgsVectorLayer("Point?field=id_b:integer&field=value_b",
+                                "addfeat", "memory")
+        QgsProject.instance().addMapLayers([layer, layer2])
+
+        # editable join
+        join_info = QgsVectorLayerJoinInfo()
+        join_info.setTargetFieldName("id_a")
+        join_info.setJoinLayer(layer2)
+        join_info.setJoinFieldName("id_b")
+        join_info.setPrefix("B_")
+        join_info.setEditable(True)
+        join_info.setUpsertOnEdit(True)
+        layer.addJoin(join_info)
+
+        m = QgsFieldModel()
+        m.setLayer(layer)
+
+        self.assertIsNone(m.data(m.indexFromName('id_a'), QgsFieldModel.JoinedFieldIsEditable))
+        self.assertTrue(m.data(m.indexFromName('B_value_b'), QgsFieldModel.JoinedFieldIsEditable))
+        self.assertIsNone(m.data(m.indexFromName('an expression'), QgsFieldModel.JoinedFieldIsEditable))
+        self.assertIsNone(m.data(m.indexFromName(None), QgsFieldModel.JoinedFieldIsEditable))
+        m.setAllowExpression(True)
+        m.setExpression('an expression')
+        self.assertIsNone(m.data(m.indexFromName('an expression'), QgsFieldModel.JoinedFieldIsEditable))
+        m.setAllowEmptyFieldName(True)
+        self.assertIsNone(m.data(m.indexFromName(None), QgsFieldModel.JoinedFieldIsEditable))
+
+        proxy_m = QgsFieldProxyModel()
+        proxy_m.setFilters(QgsFieldProxyModel.AllTypes | QgsFieldProxyModel.HideReadOnly)
+        proxy_m.sourceFieldModel().setLayer(layer)
+        self.assertEqual(proxy_m.rowCount(), 2)
+        self.assertEqual(proxy_m.data(proxy_m.index(0, 0)), 'id_a')
+        self.assertEqual(proxy_m.data(proxy_m.index(1, 0)), 'B_value_b')
+
+        # not editable join
+        layer3 = QgsVectorLayer("Point?field=id_a:integer",
+                                "addfeat", "memory")
+        QgsProject.instance().addMapLayers([layer3])
+        join_info = QgsVectorLayerJoinInfo()
+        join_info.setTargetFieldName("id_a")
+        join_info.setJoinLayer(layer2)
+        join_info.setJoinFieldName("id_b")
+        join_info.setPrefix("B_")
+        join_info.setEditable(False)
+
+        layer3.addJoin(join_info)
+        m = QgsFieldModel()
+        m.setLayer(layer3)
+
+        self.assertIsNone(m.data(m.indexFromName('id_a'), QgsFieldModel.JoinedFieldIsEditable))
+        self.assertFalse(m.data(m.indexFromName('B_value_b'), QgsFieldModel.JoinedFieldIsEditable))
+        self.assertIsNone(m.data(m.indexFromName('an expression'), QgsFieldModel.JoinedFieldIsEditable))
+        self.assertIsNone(m.data(m.indexFromName(None), QgsFieldModel.JoinedFieldIsEditable))
+        m.setAllowExpression(True)
+        m.setExpression('an expression')
+        self.assertIsNone(m.data(m.indexFromName('an expression'), QgsFieldModel.JoinedFieldIsEditable))
+        m.setAllowEmptyFieldName(True)
+        self.assertIsNone(m.data(m.indexFromName(None), QgsFieldModel.JoinedFieldIsEditable))
+
+        proxy_m = QgsFieldProxyModel()
+        proxy_m.sourceFieldModel().setLayer(layer3)
+        proxy_m.setFilters(QgsFieldProxyModel.AllTypes | QgsFieldProxyModel.HideReadOnly)
+        self.assertEqual(proxy_m.rowCount(), 1)
+        self.assertEqual(proxy_m.data(proxy_m.index(0, 0)), 'id_a')
 
     def testFieldTooltip(self):
         f = QgsField('my_string', QVariant.String, 'string')

@@ -148,7 +148,7 @@
         <x>0</x>
         <y>0</y>
         <width>850</width>
-        <height>492</height>
+        <height>494</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -316,7 +316,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
+      <widget class="QDialogButtonBox" name="mButtonBox">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -331,15 +331,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -392,7 +392,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>QgsGradientColorRampDialogBase</receiver>
    <slot>accept()</slot>
@@ -408,7 +408,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsGradientColorRampDialogBase</receiver>
    <slot>reject()</slot>

@@ -302,6 +302,12 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
      */
     QgsSymbol *symbol();
 
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
+
   protected:
     // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent *e ) override;

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WidgetSimpleLineCallout</class>
+ <widget class="QWidget" name="WidgetSimpleLineCallout">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>337</width>
+    <height>184</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0,0">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item row="2" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mOffsetFromAnchorDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QgsUnitSelectionWidget" name="mOffsetFromLabelUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QgsSymbolButton" name="mCalloutLineStyleButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Symbol…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsDoubleSpinBox" name="mOffsetFromAnchorSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_46">
+       <property name="text">
+        <string>Offset from feature</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QgsUnitSelectionWidget" name="mOffsetFromAnchorUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mMinCalloutLengthDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mOffsetFromLabelDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QgsDoubleSpinBox" name="mOffsetFromLabelSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsDoubleSpinBox" name="mMinCalloutLengthSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QgsUnitSelectionWidget" name="mMinCalloutWidthUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_47">
+       <property name="text">
+        <string>Offset from label area</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_45">
+       <property name="text">
+        <string>Minimum length</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Line style</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="3">
+      <widget class="QCheckBox" name="mDrawToAllPartsCheck">
+       <property name="text">
+        <string>Draw lines to all feature parts</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mDrawToAllPartsDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="mAnchorPointLbl">
+       <property name="text">
+        <string>Anchor point</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
+      <widget class="QComboBox" name="mAnchorPointComboBox"></widget>
+     </item>
+     <item row="5" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mAnchorPointDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mCalloutLineStyleButton</tabstop>
+  <tabstop>mMinCalloutLengthSpin</tabstop>
+  <tabstop>mMinCalloutWidthUnitWidget</tabstop>
+  <tabstop>mMinCalloutLengthDDBtn</tabstop>
+  <tabstop>mOffsetFromAnchorSpin</tabstop>
+  <tabstop>mOffsetFromAnchorUnitWidget</tabstop>
+  <tabstop>mOffsetFromAnchorDDBtn</tabstop>
+  <tabstop>mOffsetFromLabelSpin</tabstop>
+  <tabstop>mOffsetFromLabelUnitWidget</tabstop>
+  <tabstop>mOffsetFromLabelDDBtn</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

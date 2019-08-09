@@ -65,7 +65,18 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * Concrete classes should implement the right behavior depending on the layer
      * being added.
      */
-    virtual void addButtonClicked() { }
+    virtual void addButtonClicked();
+
+    /**
+     * Called when this source select widget is being shown in a "new and clean" dialog.
+     *
+     * The data source manager recycles existing source select widgets but will call
+     * this method on every reopening.
+     * This should clear any selection that has previously been done.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void reset();
 
   signals:
 

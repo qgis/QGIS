@@ -124,11 +124,11 @@ class TestServices(unittest.TestCase):
     def test_0_version_registration(self):
 
         reg = QgsServiceRegistry()
-        myserv1 = MyService("TEST", "1.1", "Hello")
-        myserv2 = MyService("TEST", "1.0", "Hello")
+        myserv11 = MyService("TEST", "1.1", "Hello")
+        myserv10 = MyService("TEST", "1.0", "Hello")
 
-        reg.registerService(myserv1)
-        reg.registerService(myserv2)
+        reg.registerService(myserv11)
+        reg.registerService(myserv10)
 
         service = reg.getService("TEST")
         self.assertIsNotNone(service)

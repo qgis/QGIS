@@ -565,7 +565,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
 
   // these extensions are trivial to read, so there's no need to rely on
   // the extension only scan here -- avoiding it always gives us the correct data type
-  // and sublayer visiblity
+  // and sublayer visibility
   static QStringList sSkipFastTrackExtensions { QStringLiteral( "xlsx" ),
       QStringLiteral( "ods" ),
       QStringLiteral( "csv" ),

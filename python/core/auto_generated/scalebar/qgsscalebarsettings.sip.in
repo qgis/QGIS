@@ -35,6 +35,18 @@ for scalebar drawing with QgsScaleBarRenderer.
       SegmentSizeFitWidth
     };
 
+    enum LabelVerticalPlacement
+    {
+      LabelAboveSegment,
+      LabelBelowSegment,
+    };
+
+    enum LabelHorizontalPlacement
+    {
+      LabelCenteredEdge,
+      LabelCenteredSegment,
+    };
+
     QgsScaleBarSettings();
 %Docstring
 Constructor for QgsScaleBarSettings.
@@ -406,6 +418,42 @@ Returns the spacing (in millimeters) between labels and the scalebar.
 Sets the spacing (in millimeters) between labels and the scalebar.
 
 .. seealso:: :py:func:`labelBarSpace`
+%End
+
+    LabelVerticalPlacement labelVerticalPlacement() const;
+%Docstring
+Returns the vertical placement of text labels.
+
+.. seealso:: :py:func:`setLabelVerticalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelVerticalPlacement( LabelVerticalPlacement placement );
+%Docstring
+Sets the vertical ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelVerticalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    LabelHorizontalPlacement labelHorizontalPlacement() const;
+%Docstring
+Returns the horizontal placement of text labels.
+
+.. seealso:: :py:func:`setLabelHorizontalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelHorizontalPlacement( LabelHorizontalPlacement placement );
+%Docstring
+Sets the horizontal ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelHorizontalPlacement`
+
+.. versionadded:: 3.10
 %End
 
     double boxContentSpace() const;

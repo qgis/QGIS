@@ -1,6 +1,10 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgsservicemodule.sip
-%Include auto_generated/qgsmapserviceexception.sip
+%Include auto_generated/qgsserverapi.sip
+%Include auto_generated/qgsserverogcapi.sip
+%Include auto_generated/qgsserverogcapihandler.sip
+%Include auto_generated/qgsserverapicontext.sip
+%Include auto_generated/qgsserverquerystringparameter.sip
 %Include auto_generated/qgscapabilitiescache.sip
 %Include auto_generated/qgsconfigcache.sip
 %Include auto_generated/qgsserverlogger.sip
@@ -11,6 +15,7 @@
 %Include auto_generated/qgsfcgiserverrequest.sip
 %Include auto_generated/qgsrequesthandler.sip
 %Include auto_generated/qgsserver.sip
+%Include auto_generated/qgsserverapiutils.sip
 %Include auto_generated/qgsserverexception.sip
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
 %Include auto_generated/qgsserverinterface.sip

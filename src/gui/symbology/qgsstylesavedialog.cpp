@@ -33,6 +33,10 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
 
   QgsGui::enableAutoGeometryRestore( this );
 
+  QStringList defaultTags = QgsStyle::defaultStyle()->tags();
+  defaultTags.sort( Qt::CaseInsensitive );
+  mTags->addItems( defaultTags );
+
   QList< QgsStyle::StyleEntity > possibleEntities;
   switch ( type )
   {
@@ -104,12 +108,12 @@ QString QgsStyleSaveDialog::name() const
 
 void QgsStyleSaveDialog::setDefaultTags( const QString &tags )
 {
-  mTags->setText( tags );
+  mTags->setCurrentText( tags );
 }
 
 QString QgsStyleSaveDialog::tags() const
 {
-  return mTags->text();
+  return mTags->currentText();
 }
 
 bool QgsStyleSaveDialog::isFavorite() const

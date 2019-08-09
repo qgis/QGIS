@@ -42,7 +42,7 @@
 #include <QStandardItem>
 #include <QPen>
 #include <QPainter>
-
+#include <QClipboard>
 // ------------------------------ Model ------------------------------------
 
 ///@cond PRIVATE
@@ -468,6 +468,9 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
   mExpressionWidget->setLayer( mLayer );
 
+  btnChangeGraduatedSymbol->setLayer( mLayer );
+  btnChangeGraduatedSymbol->registerExpressionContextGenerator( this );
+
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
@@ -493,6 +496,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   viewGraduated->setStyle( new QgsGraduatedSymbolRendererViewStyle( viewGraduated ) );
 
   mGraduatedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
+  btnChangeGraduatedSymbol->setSymbolType( mGraduatedSymbol->type() );
+  btnChangeGraduatedSymbol->setSymbol( mGraduatedSymbol->clone() );
 
   methodComboBox->blockSignals( true );
   methodComboBox->addItem( QStringLiteral( "Color" ) );
@@ -516,7 +521,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( viewGraduated, &QTreeView::customContextMenuRequested,  this, &QgsGraduatedSymbolRendererWidget::contextMenuViewCategories );
 
   connect( btnGraduatedClassify, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
-  connect( btnChangeGraduatedSymbol, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol );
+  connect( btnChangeGraduatedSymbol, &QgsSymbolButton::changed, this, &QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol );
   connect( btnGraduatedDelete, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::deleteClasses );
   connect( btnDeleteAllClasses, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::deleteAllClasses );
   connect( btnGraduatedAdd, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::addClass );
@@ -557,7 +562,6 @@ void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
   if ( !mGraduatedSymbol ) return;
   mGraduatedSymbol->setOutputUnit( mSizeUnitWidget->unit() );
   mGraduatedSymbol->setMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
-  updateGraduatedSymbolIcon();
   mRenderer->updateSymbols( mGraduatedSymbol.get() );
   refreshSymbolView();
 }
@@ -570,6 +574,13 @@ QgsGraduatedSymbolRendererWidget::~QgsGraduatedSymbolRendererWidget()
 QgsFeatureRenderer *QgsGraduatedSymbolRendererWidget::renderer()
 {
   return mRenderer.get();
+}
+
+void QgsGraduatedSymbolRendererWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsRendererWidget::setContext( context );
+  btnChangeGraduatedSymbol->setMapCanvas( context.mapCanvas() );
+  btnChangeGraduatedSymbol->setMessageBar( context.messageBar() );
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -617,7 +628,6 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 {
   disconnectUpdateHandlers();
-  updateGraduatedSymbolIcon();
   spinSymmetryPointForOtherMethods->setShowClearButton( false );
 
   // update UI from the graduated renderer (update combo boxes, view)
@@ -701,11 +711,13 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   if ( mRenderer->sourceSymbol() )
   {
     mGraduatedSymbol.reset( mRenderer->sourceSymbol()->clone() );
-    updateGraduatedSymbolIcon();
+    whileBlocking( btnChangeGraduatedSymbol )->setSymbol( mGraduatedSymbol->clone() );
   }
 
   mModel->setRenderer( mRenderer.get() );
   viewGraduated->setModel( mModel );
+
+  connect( viewGraduated->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsGraduatedSymbolRendererWidget::selectionChanged );
 
   if ( mGraduatedSymbol )
   {
@@ -1029,43 +1041,6 @@ void QgsGraduatedSymbolRendererWidget::reapplySizes()
   refreshSymbolView();
 }
 
-void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
-{
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  std::unique_ptr< QgsSymbol > newSymbol( mGraduatedSymbol->clone() );
-  if ( panel && panel->dockMode() )
-  {
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
-    dlg->setContext( mContext );
-
-    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
-    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
-    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::updateGraduatedSymbolIcon );
-    panel->openPanel( dlg );
-  }
-  else
-  {
-    QgsSymbolSelectorDialog dlg( newSymbol.get(), mStyle, mLayer, panel );
-    if ( !dlg.exec() || !newSymbol )
-    {
-      return;
-    }
-
-    mGraduatedSymbol = std::move( newSymbol );
-    updateGraduatedSymbolIcon();
-    applyChangeToSymbol();
-  }
-}
-
-void QgsGraduatedSymbolRendererWidget::updateGraduatedSymbolIcon()
-{
-  if ( !mGraduatedSymbol )
-    return;
-
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mGraduatedSymbol.get(), btnChangeGraduatedSymbol->iconSize() );
-  btnChangeGraduatedSymbol->setIcon( icon );
-}
-
 #if 0
 int QgsRendererPropertiesDialog::currentRangeRow()
 {
@@ -1151,6 +1126,7 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
     }
 
     mGraduatedSymbol = std::move( newSymbol );
+    whileBlocking( btnChangeGraduatedSymbol )->setSymbol( mGraduatedSymbol->clone() );
     applyChangeToSymbol();
   }
 }
@@ -1388,6 +1364,20 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
   }
 }
 
+void QgsGraduatedSymbolRendererWidget::selectionChanged( const QItemSelection &, const QItemSelection & )
+{
+  const QgsRangeList ranges = selectedRanges();
+  if ( !ranges.isEmpty() )
+  {
+    whileBlocking( btnChangeGraduatedSymbol )->setSymbol( ranges.at( 0 ).symbol()->clone() );
+  }
+  else if ( mRenderer->sourceSymbol() )
+  {
+    whileBlocking( btnChangeGraduatedSymbol )->setSymbol( mRenderer->sourceSymbol()->clone() );
+  }
+  btnChangeGraduatedSymbol->setDialogTitle( ranges.size() == 1 ? ranges.at( 0 ).label() : tr( "Symbol Settings" ) );
+}
+
 void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
 {
   QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mGraduatedSymbol.get() ); // this should be only enabled for marker symbols
@@ -1401,4 +1391,41 @@ void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
     } );
     openPanel( panel );  // takes ownership of the panel
   }
+}
+
+void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
+{
+  mGraduatedSymbol.reset( btnChangeGraduatedSymbol->symbol()->clone() );
+  applyChangeToSymbol();
+}
+
+void QgsGraduatedSymbolRendererWidget::pasteSymbolToSelection()
+{
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( !tempSymbol )
+    return;
+
+  const QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : selectedRows )
+  {
+    if ( !index.isValid() )
+      continue;
+
+    const int row = index.row();
+    if ( !mRenderer || mRenderer->ranges().size() <= row )
+      continue;
+
+    if ( mRenderer->ranges().at( row ).symbol()->type() != tempSymbol->type() )
+      continue;
+
+    std::unique_ptr< QgsSymbol > newCatSymbol( tempSymbol->clone() );
+    if ( selectedRows.count() > 1 )
+    {
+      //if updating multiple ranges, retain the existing category colors
+      newCatSymbol->setColor( mRenderer->ranges().at( row ).symbol()->color() );
+    }
+
+    mRenderer->updateRangeSymbol( row, newCatSymbol.release() );
+  }
+  emit widgetChanged();
 }

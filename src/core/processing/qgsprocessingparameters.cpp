@@ -4889,8 +4889,8 @@ QgsProcessingParameterFileDestination *QgsProcessingParameterFileDestination::fr
   return new QgsProcessingParameterFileDestination( name, description, QString(), definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
-QgsProcessingParameterFolderDestination::QgsProcessingParameterFolderDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
-  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
+QgsProcessingParameterFolderDestination::QgsProcessingParameterFolderDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
 {}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterFolderDestination::clone() const

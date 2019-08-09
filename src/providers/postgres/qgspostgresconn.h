@@ -43,7 +43,8 @@ enum QgsPostgresGeometryColumnType
   SctGeometry,
   SctGeography,
   SctTopoGeometry,
-  SctPcPatch
+  SctPcPatch,
+  SctRaster
 };
 
 enum QgsPostgresPrimaryKeyType
@@ -81,6 +82,7 @@ struct QgsPostgresLayerProperty
   QString                       relKind;
   bool                          isView = false;
   bool                          isMaterializedView = false;
+  bool                          isRaster = false;
   QString                       tableComment;
 
   // TODO: rename this !
@@ -110,6 +112,7 @@ struct QgsPostgresLayerProperty
     property.sql             = sql;
     property.relKind         = relKind;
     property.isView          = isView;
+    property.isRaster        = isRaster;
     property.isMaterializedView = isMaterializedView;
     property.tableComment    = tableComment;
 
@@ -209,6 +212,9 @@ class QgsPostgresConn : public QObject
 
     //! Gets status of Pointcloud capability
     bool hasPointcloud();
+
+    //! Gets status of Raster capability
+    bool hasRaster();
 
     //! Gets status of GIST capability
     bool hasGIST();
@@ -408,6 +414,9 @@ class QgsPostgresConn : public QObject
 
     //! pointcloud support available
     bool mPointcloudAvailable;
+
+    //! raster support available
+    bool mRasterAvailable;
 
     //! encode wkb in hex
     bool mUseWkbHex;

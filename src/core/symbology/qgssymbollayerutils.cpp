@@ -32,6 +32,7 @@
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgseffectstack.h"
 
 #include <QColor>
 #include <QFont>
@@ -53,7 +54,7 @@ QString QgsSymbolLayerUtils::encodeColor( const QColor &color )
 
 QColor QgsSymbolLayerUtils::decodeColor( const QString &str )
 {
-  QStringList lst = str.split( ',' );
+  const QStringList lst = str.split( ',' );
   if ( lst.count() < 3 )
   {
     return QColor( str );
@@ -186,9 +187,13 @@ QString QgsSymbolLayerUtils::encodePenJoinStyle( Qt::PenJoinStyle style )
 
 Qt::PenJoinStyle QgsSymbolLayerUtils::decodePenJoinStyle( const QString &str )
 {
-  if ( str == QLatin1String( "bevel" ) ) return Qt::BevelJoin;
-  if ( str == QLatin1String( "miter" ) ) return Qt::MiterJoin;
-  if ( str == QLatin1String( "round" ) ) return Qt::RoundJoin;
+  const QString cleaned = str.toLower().trimmed();
+  if ( cleaned == QLatin1String( "bevel" ) )
+    return Qt::BevelJoin;
+  if ( cleaned == QLatin1String( "miter" ) )
+    return Qt::MiterJoin;
+  if ( cleaned == QLatin1String( "round" ) )
+    return Qt::RoundJoin;
   return Qt::BevelJoin;
 }
 
@@ -716,7 +721,7 @@ double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbol *symbol, const Qgs
   return maxBleed;
 }
 
-QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale )
+QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale & )
 {
   QPicture picture;
   QPainter painter;
@@ -724,14 +729,14 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setForceVectorOutput( true );
-  QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, nullptr, nullptr, QgsFields(), scale );
+  QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, nullptr, nullptr );
   std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
   layerClone->drawPreviewIcon( symbolContext, size );
   painter.end();
   return picture;
 }
 
-QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale )
+QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale & )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -744,7 +749,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
   renderContext.setExpressionContext( expContext );
 
-  QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, nullptr, nullptr, QgsFields(), scale );
+  QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, nullptr, nullptr );
   std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
   layerClone->drawPreviewIcon( symbolContext, size );
   painter.end();
@@ -1025,7 +1030,9 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
     QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
     if ( !effectElem.isNull() )
     {
-      layer->setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+      std::unique_ptr< QgsPaintEffect > effect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+      if ( effect && !QgsPaintEffectRegistry::isDefaultStack( effect.get() ) )
+        layer->setPaintEffect( effect.release() );
     }
 
     // restore data defined properties
@@ -1059,7 +1066,7 @@ static QString _nameForSymbolType( QgsSymbol::SymbolType type )
   }
 }
 
-QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context )
+QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context )
 {
   Q_ASSERT( symbol );
   QDomElement symEl = doc.createElement( QStringLiteral( "symbol" ) );
@@ -1072,7 +1079,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
 
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
-    QgsSymbolLayer *layer = symbol->symbolLayer( i );
+    const QgsSymbolLayer *layer = const_cast< QgsSymbol * >( symbol )->symbolLayer( i );
 
     QDomElement layerEl = doc.createElement( QStringLiteral( "layer" ) );
     layerEl.setAttribute( QStringLiteral( "class" ), layer->layerType() );
@@ -1086,17 +1093,17 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
     QgsApplication::symbolLayerRegistry()->resolvePaths( layer->layerType(), props, context.pathResolver(), true );
 
     saveProperties( props, doc, layerEl );
-    if ( !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
+    if ( layer->paintEffect() && !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
       layer->paintEffect()->saveProperties( doc, layerEl );
 
     QDomElement ddProps = doc.createElement( QStringLiteral( "data_defined_properties" ) );
     layer->dataDefinedProperties().writeXml( ddProps, QgsSymbolLayer::propertyDefinitions() );
     layerEl.appendChild( ddProps );
 
-    if ( layer->subSymbol() )
+    if ( const QgsSymbol *subSymbol = const_cast< QgsSymbolLayer * >( layer )->subSymbol() )
     {
       QString subname = QStringLiteral( "@%1@%2" ).arg( name ).arg( i );
-      QDomElement subEl = saveSymbol( subname, layer->subSymbol(), doc, context );
+      QDomElement subEl = saveSymbol( subname, subSymbol, doc, context );
       layerEl.appendChild( subEl );
     }
     symEl.appendChild( layerEl );
@@ -2921,7 +2928,7 @@ void QgsSymbolLayerUtils::clearSymbolMap( QgsSymbolMap &symbols )
   symbols.clear();
 }
 
-QMimeData *QgsSymbolLayerUtils::symbolToMimeData( QgsSymbol *symbol )
+QMimeData *QgsSymbolLayerUtils::symbolToMimeData( const QgsSymbol *symbol )
 {
   if ( !symbol )
     return nullptr;

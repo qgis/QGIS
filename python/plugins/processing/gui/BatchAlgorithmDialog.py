@@ -33,7 +33,8 @@ from qgis.core import (QgsProcessingOutputHtml,
                        QgsProcessingOutputBoolean,
                        QgsProject,
                        QgsProcessingMultiStepFeedback,
-                       QgsScopedProxyProgressTask)
+                       QgsScopedProxyProgressTask,
+                       QgsProcessingException)
 
 from qgis.gui import QgsProcessingAlgorithmDialogBase
 from qgis.utils import OverrideCursor, iface
@@ -50,6 +51,17 @@ from processing.tools import dataobjects
 import codecs
 
 
+class BatchFeedback(QgsProcessingMultiStepFeedback):
+
+    def __init__(self, steps, feedback):
+        super().__init__(steps, feedback)
+        self.errors = []
+
+    def reportError(self, error: str, fatalError: bool):
+        self.errors.append(error)
+        super().reportError(error, fatalError)
+
+
 class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def __init__(self, alg, parent=None):
@@ -63,7 +75,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         self.btnRunSingle = QPushButton(QCoreApplication.translate('BatchAlgorithmDialog', "Run as Single Process…"))
         self.btnRunSingle.clicked.connect(self.runAsSingle)
-        self.buttonBox().addButton(self.btnRunSingle, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
+        self.buttonBox().addButton(self.btnRunSingle, QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
 
     def runAsSingle(self):
         self.close()
@@ -86,8 +98,11 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             alg_parameters.append(parameters)
 
         task = QgsScopedProxyProgressTask(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
-        multi_feedback = QgsProcessingMultiStepFeedback(len(alg_parameters), feedback)
+        multi_feedback = BatchFeedback(len(alg_parameters), feedback)
         feedback.progressChanged.connect(task.setProgress)
+
+        algorithm_results = []
+        errors = []
 
         with OverrideCursor(Qt.WaitCursor):
 
@@ -103,7 +118,6 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             start_time = time.time()
 
-            algorithm_results = []
             for count, parameters in enumerate(alg_parameters):
                 if feedback.isCanceled():
                     break
@@ -127,8 +141,9 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 context = dataobjects.createContext(feedback)
 
                 alg_start_time = time.time()
-                ret, results = execute(self.algorithm(), parameters, context, multi_feedback)
-                if ret:
+                multi_feedback.errors = []
+                results, ok = self.algorithm().run(parameters, context, multi_feedback)
+                if ok:
                     self.setInfo(
                         QCoreApplication.translate('BatchAlgorithmDialog', 'Algorithm {0} correctly executed…').format(
                             self.algorithm().displayName()), escapeHtml=False)
@@ -138,22 +153,31 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     feedback.pushCommandInfo(pformat(results))
                     feedback.pushInfo('')
                     algorithm_results.append({'parameters': parameters, 'results': results})
-                else:
-                    break
 
-                handleAlgorithmResults(self.algorithm(), context, multi_feedback, False, parameters)
+                    handleAlgorithmResults(self.algorithm(), context, multi_feedback, False, parameters)
+                else:
+                    err = [e for e in multi_feedback.errors]
+                    self.setInfo(
+                        QCoreApplication.translate('BatchAlgorithmDialog', 'Algorithm {0} failed…').format(
+                            self.algorithm().displayName()), escapeHtml=False)
+                    feedback.reportError(
+                        self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - alg_start_time)),
+                        fatalError=False)
+                    errors.append({'parameters': parameters, 'errors': err})
 
         feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+        if errors:
+            feedback.reportError(self.tr('{} executions failed. See log for further details.').format(len(errors)), fatalError=True)
         task = None
 
-        self.finish(algorithm_results)
+        self.finish(algorithm_results, errors)
         self.cancelButton().setEnabled(False)
 
-    def finish(self, algorithm_results):
+    def finish(self, algorithm_results, errors):
         for count, results in enumerate(algorithm_results):
             self.loadHTMLResults(results['results'], count)
 
-        self.createSummaryTable(algorithm_results)
+        self.createSummaryTable(algorithm_results, errors)
         self.mainWidget().setEnabled(True)
         self.resetGui()
 
@@ -163,7 +187,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 resultsList.addResult(icon=self.algorithm().icon(), name='{} [{}]'.format(out.description(), num),
                                       result=results[out.name()])
 
-    def createSummaryTable(self, algorithm_results):
+    def createSummaryTable(self, algorithm_results, errors):
         createTable = False
 
         for out in self.algorithm().outputDefinitions():
@@ -171,13 +195,35 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 createTable = True
                 break
 
-        if not createTable:
+        if not createTable and not errors:
             return
 
         outputFile = getTempFilename('html')
         with codecs.open(outputFile, 'w', encoding='utf-8') as f:
-            for i, res in enumerate(algorithm_results):
-                results = res['results']
+            if createTable:
+                for i, res in enumerate(algorithm_results):
+                    results = res['results']
+                    params = res['parameters']
+                    if i > 0:
+                        f.write('<hr>\n')
+                    f.write(self.tr('<h3>Parameters</h3>\n'))
+                    f.write('<table>\n')
+                    for param in self.algorithm().parameterDefinitions():
+                        if not param.isDestination():
+                            if param.name() in params:
+                                f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(param.description(),
+                                                                                   params[param.name()]))
+                    f.write('</table>\n')
+                    f.write(self.tr('<h3>Results</h3>\n'))
+                    f.write('<table>\n')
+                    for out in self.algorithm().outputDefinitions():
+                        if out.name() in results:
+                            f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(out.description(), results[out.name()]))
+                    f.write('</table>\n')
+            if errors:
+                f.write('<h2 style="color: red">{}</h2>\n'.format(self.tr('Errors')))
+            for i, res in enumerate(errors):
+                errors = res['errors']
                 params = res['parameters']
                 if i > 0:
                     f.write('<hr>\n')
@@ -186,14 +232,11 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 for param in self.algorithm().parameterDefinitions():
                     if not param.isDestination():
                         if param.name() in params:
-                            f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(param.description(), params[param.name()]))
+                            f.write(
+                                '<tr><th>{}</th><td>{}</td></tr>\n'.format(param.description(), params[param.name()]))
                 f.write('</table>\n')
-                f.write(self.tr('<h3>Results</h3>\n'))
-                f.write('<table>\n')
-                for out in self.algorithm().outputDefinitions():
-                    if out.name() in results:
-                        f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(out.description(), results[out.name()]))
-                f.write('</table>\n')
+                f.write('<h3>{}</h3>\n'.format(self.tr('Error')))
+                f.write('<p style="color: red">{}</p>\n'.format('<br>'.join(errors)))
 
         resultsList.addResult(icon=self.algorithm().icon(),
                               name='{} [summary]'.format(self.algorithm().name()), timestamp=time.localtime(),

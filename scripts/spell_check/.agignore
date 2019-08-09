@@ -23,7 +23,7 @@ src/plugins/grass/qtermwidget/
 *.*.prepare
 *.sld
 .agignore
-
+*.json
 
 
 #Specific files

@@ -28,7 +28,7 @@ QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVecto
   return new QgsVectorLayerLabelProvider( layer, providerId, withFeatureLoop, settings );
 }
 
-bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames )
+bool QgsRuleBasedLabelProvider::prepare( QgsRenderContext &context, QSet<QString> &attributeNames )
 {
   for ( QgsVectorLayerLabelProvider *provider : qgis::as_const( mSubProviders ) )
     provider->setEngine( mEngine );
@@ -38,10 +38,10 @@ bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext &context, QSet<Q
   return true;
 }
 
-void QgsRuleBasedLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
+void QgsRuleBasedLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
   // will register the feature to relevant sub-providers
-  mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry );
+  mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry, symbol );
 }
 
 QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
@@ -320,7 +320,7 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer *layer, QgsR
   }
 }
 
-void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, QgsRuleBasedLabeling::RuleToProviderMap &subProviders )
+void QgsRuleBasedLabeling::Rule::prepare( QgsRenderContext &context, QSet<QString> &attributeNames, QgsRuleBasedLabeling::RuleToProviderMap &subProviders )
 {
   if ( mSettings )
   {
@@ -345,18 +345,21 @@ void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext &context, QSet<
   }
 }
 
-QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry )
+QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
   if ( !isFilterOK( feature, context )
        || !isScaleOK( context.rendererScale() ) )
+  {
+    delete symbol;
     return Filtered;
+  }
 
   bool registered = false;
 
   // do we have active subprovider for the rule?
   if ( subProviders.contains( this ) && mIsActive )
   {
-    subProviders[this]->registerFeature( feature, context, obstacleGeometry );
+    subProviders[this]->registerFeature( feature, context, obstacleGeometry, symbol );
     registered = true;
   }
 
@@ -380,7 +383,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   {
     for ( Rule *rule : qgis::as_const( mElseRules ) )
     {
-      registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry ) != Filtered;
+      registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol ) != Filtered;
     }
   }
 

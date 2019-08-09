@@ -2699,7 +2699,8 @@ class CORE_EXPORT QgsProcessingParameterFolderDestination : public QgsProcessing
      */
     QgsProcessingParameterFolderDestination( const QString &name, const QString &description = QString(),
         const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false,
+        bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.

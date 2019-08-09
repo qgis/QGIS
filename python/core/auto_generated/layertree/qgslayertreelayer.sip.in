@@ -124,6 +124,20 @@ Resolves reference to layer from stored layer ID (if it has not been resolved al
 .. versionadded:: 3.0
 %End
 
+    void setLabelExpression( const QString &expression );
+%Docstring
+set the expression to evaluate
+
+.. versionadded:: 3.10
+%End
+
+    QString labelExpression() const;
+%Docstring
+Returns the expression member of the LayerTreeNode
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void layerLoaded();

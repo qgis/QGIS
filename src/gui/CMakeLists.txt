@@ -52,6 +52,8 @@ SET(QGIS_GUI_SRCS
   effects/qgspainteffectpropertieswidget.cpp
   effects/qgspainteffectwidget.cpp
 
+  callouts/qgscalloutwidget.cpp
+
   attributetable/qgsattributetabledelegate.cpp
   attributetable/qgsattributetablefiltermodel.cpp
   attributetable/qgsattributetablemodel.cpp
@@ -598,6 +600,8 @@ SET(QGIS_GUI_MOC_HDRS
   qgswidgetstatehelper_p.h
   qgsattributeeditorcontext.h
 
+  callouts/qgscalloutwidget.h
+
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
 
@@ -999,6 +1003,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/callouts
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/layertree

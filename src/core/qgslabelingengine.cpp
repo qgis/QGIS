@@ -133,9 +133,6 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
                               flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
                               flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
 
-  // set label mode (label per feature is the default)
-  l->setLabelMode( flags.testFlag( QgsAbstractLabelProvider::LabelPerFeaturePart ) ? pal::Layer::LabelPerFeaturePart : pal::Layer::LabelPerFeature );
-
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( flags.testFlag( QgsAbstractLabelProvider::MergeConnectedLines ) );
 
@@ -193,26 +190,6 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
   pal::Pal p;
-  pal::SearchMethod s;
-  switch ( settings.searchMethod() )
-  {
-    case QgsLabelingEngineSettings::Chain:
-      s = pal::CHAIN;
-      break;
-    case QgsLabelingEngineSettings::Popmusic_Tabu:
-      s = pal::POPMUSIC_TABU;
-      break;
-    case QgsLabelingEngineSettings::Popmusic_Chain:
-      s = pal::POPMUSIC_CHAIN;
-      break;
-    case QgsLabelingEngineSettings::Popmusic_Tabu_Chain:
-      s = pal::POPMUSIC_TABU_CHAIN;
-      break;
-    case QgsLabelingEngineSettings::Falp:
-      s = pal::FALP;
-      break;
-  }
-  p.setSearch( s );
 
   // set number of candidates generated per feature
   int candPoint, candLine, candPolygon;
@@ -337,7 +314,8 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
 
   // find the solution
-  QList<pal::LabelPosition *> labels = p.solveProblem( problem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
+  QList<pal::LabelPosition *> unlabeled;
+  QList<pal::LabelPosition *> labels = p.solveProblem( problem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ), settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) ? &unlabeled : nullptr );
 
   QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels.size() ), 4 );
   t.restart();
@@ -351,6 +329,39 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   // sort labels
   std::sort( labels.begin(), labels.end(), QgsLabelSorter( mMapSettings ) );
 
+  // prepare for rendering
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
+  {
+    // provider will require the correct layer scope for expression preparation - at this stage, the existing expression context
+    // only contains generic scopes
+    QgsExpressionContextScopePopper popper( context.expressionContext(), QgsExpressionContextUtils::layerScope( provider->layer() ) );
+    provider->startRender( context );
+  }
+
+  QgsExpressionContextScope *symbolScope = new QgsExpressionContextScope();
+  context.expressionContext().appendScope( symbolScope );
+
+  // draw label backgrounds
+  for ( pal::LabelPosition *label : qgis::as_const( labels ) )
+  {
+    if ( context.renderingStopped() )
+      break;
+
+    QgsLabelFeature *lf = label->getFeaturePart()->feature();
+    if ( !lf )
+    {
+      continue;
+    }
+
+    context.expressionContext().setFeature( lf->feature() );
+    context.expressionContext().setFields( lf->feature().fields() );
+    if ( lf->symbol() )
+    {
+      symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+    }
+    lf->provider()->drawLabelBackground( context, label );
+  }
+
   // draw the labels
   for ( pal::LabelPosition *label : qgis::as_const( labels ) )
   {
@@ -363,7 +374,48 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
       continue;
     }
 
+    context.expressionContext().setFeature( lf->feature() );
+    context.expressionContext().setFields( lf->feature().fields() );
+    if ( lf->symbol() )
+    {
+      symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+    }
     lf->provider()->drawLabel( context, label );
+    // finished with symbol -- we can't keep it around after this, it may be deleted
+    lf->setSymbol( nullptr );
+  }
+
+  // draw unplaced labels. These are always rendered on top
+  if ( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) )
+  {
+    for ( pal::LabelPosition *label : qgis::as_const( unlabeled ) )
+    {
+      if ( context.renderingStopped() )
+        break;
+      QgsLabelFeature *lf = label->getFeaturePart()->feature();
+      if ( !lf )
+      {
+        continue;
+      }
+
+      context.expressionContext().setFeature( lf->feature() );
+      context.expressionContext().setFields( lf->feature().fields() );
+      if ( lf->symbol() )
+      {
+        symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+      }
+      lf->provider()->drawUnplacedLabel( context, label );
+      // finished with symbol -- we can't keep it around after this, it may be deleted
+      lf->setSymbol( nullptr );
+    }
+  }
+
+  context.expressionContext().popScope();
+
+  // cleanup
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
+  {
+    provider->stopRender( context );
   }
 
   // Reset composition mode for further drawing operations
@@ -398,6 +450,33 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
 {
 }
 
+void QgsAbstractLabelProvider::drawUnplacedLabel( QgsRenderContext &, pal::LabelPosition * ) const
+{
+
+}
+
+void QgsAbstractLabelProvider::drawLabelBackground( QgsRenderContext &, pal::LabelPosition * ) const
+{
+
+}
+
+void QgsAbstractLabelProvider::startRender( QgsRenderContext &context )
+{
+  const auto subproviders = subProviders();
+  for ( QgsAbstractLabelProvider *subProvider : subproviders )
+  {
+    subProvider->startRender( context );
+  }
+}
+
+void QgsAbstractLabelProvider::stopRender( QgsRenderContext &context )
+{
+  const auto subproviders = subProviders();
+  for ( QgsAbstractLabelProvider *subProvider : subproviders )
+  {
+    subProvider->stopRender( context );
+  }
+}
 
 //
 // QgsLabelingUtils

@@ -57,6 +57,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/3d
       ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth
+      ${CMAKE_SOURCE_DIR}/src/core/callouts
       ${CMAKE_SOURCE_DIR}/src/core/diagram
       ${CMAKE_SOURCE_DIR}/src/core/dxf
       ${CMAKE_SOURCE_DIR}/src/core/effects
@@ -82,6 +83,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+      ${CMAKE_SOURCE_DIR}/src/gui/callouts
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
       ${CMAKE_SOURCE_DIR}/src/gui/effects

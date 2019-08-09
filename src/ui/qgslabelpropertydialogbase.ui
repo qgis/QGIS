@@ -37,9 +37,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-460</y>
         <width>417</width>
-        <height>680</height>
+        <height>760</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mLabelPropertiesLayout">
@@ -347,6 +347,26 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="0" colspan="3">
+           <layout class="QHBoxLayout" name="horizontalLayout_22">
+            <item>
+             <widget class="QLabel" name="mMultiLineAlignLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Multiline alignment</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mMultiLineAlignComboBox"/>
+            </item>
+           </layout>
+          </item>
           <item row="1" column="1" colspan="2">
            <widget class="QComboBox" name="mFontStyleCmbBx">
             <property name="toolTip">
@@ -422,24 +442,21 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="mShowCalloutChkbx">
+         <property name="text">
+          <string>Show callout</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QgsCollapsibleGroupBox" name="mPositionGroupBlox">
          <property name="title">
           <string>Position</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mLabelDistanceLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Label distance</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QgsDoubleSpinBox" name="mLabelDistanceSpinBox">
             <property name="specialValueText">
@@ -453,19 +470,6 @@
             </property>
             <property name="showClearButton" stdset="0">
              <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mXCoordLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>X Coordinate</string>
             </property>
            </widget>
           </item>
@@ -485,8 +489,11 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mYCoordLabel">
+          <item row="4" column="1">
+           <widget class="QComboBox" name="mValiComboBox"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mLabelDistanceLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -494,7 +501,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Y Coordinate</string>
+             <string>Label distance</string>
             </property>
            </widget>
           </item>
@@ -514,19 +521,6 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="mHaliLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Horizontal alignment</string>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="1">
            <widget class="QComboBox" name="mHaliComboBox"/>
           </item>
@@ -543,8 +537,31 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QComboBox" name="mValiComboBox"/>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mXCoordLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>X Coordinate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mYCoordLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Y Coordinate</string>
+            </property>
+           </widget>
           </item>
           <item row="5" column="0">
            <widget class="QLabel" name="mRotationLabel">
@@ -556,6 +573,19 @@
             </property>
             <property name="text">
              <string>Rotation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mHaliLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Horizontal alignment</string>
             </property>
            </widget>
           </item>
@@ -578,6 +608,16 @@
             </property>
             <property name="showClearButton" stdset="0">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QCheckBox" name="mLabelAllPartsCheckBox">
+            <property name="text">
+             <string>Label every part of feature</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
             </property>
            </widget>
           </item>

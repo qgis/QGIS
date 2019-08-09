@@ -26,6 +26,8 @@
 #include "qgsmenuheader.h"
 #include "qgsfontutils.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayer.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
@@ -71,19 +73,34 @@ void QgsFontButton::showSettingsDialog()
   {
     case ModeTextRenderer:
     {
+      QgsExpressionContext context;
+      if ( mExpressionContextGenerator )
+        context  = mExpressionContextGenerator->createExpressionContext();
+      else
+      {
+        context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer.data() ) );
+      }
+
+      QgsSymbolWidgetContext symbolContext;
+      symbolContext.setExpressionContext( &context );
+      symbolContext.setMapCanvas( mMapCanvas );
+      symbolContext.setMessageBar( mMessageBar );
+
       QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
       if ( panel && panel->dockMode() )
       {
-        QgsTextFormatPanelWidget *formatWidget = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this );
+        QgsTextFormatPanelWidget *formatWidget = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this, mLayer.data() );
         formatWidget->setPanelTitle( mDialogTitle );
+        formatWidget->setContext( symbolContext );
 
         connect( formatWidget, &QgsTextFormatPanelWidget::widgetChanged, this, [ this, formatWidget ] { this->setTextFormat( formatWidget->format() ); } );
         panel->openPanel( formatWidget );
         return;
       }
 
-      QgsTextFormatDialog dialog( mFormat, mMapCanvas, this );
+      QgsTextFormatDialog dialog( mFormat, mMapCanvas, this, QgsGuiUtils::ModalDialogFlags, mLayer.data() );
       dialog.setWindowTitle( mDialogTitle );
+      dialog.setContext( symbolContext );
       if ( dialog.exec() )
       {
         setTextFormat( dialog.format() );
@@ -118,6 +135,16 @@ QgsMapCanvas *QgsFontButton::mapCanvas() const
 void QgsFontButton::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
   mMapCanvas = mapCanvas;
+}
+
+void QgsFontButton::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsFontButton::messageBar() const
+{
+  return mMessageBar;
 }
 
 void QgsFontButton::setTextFormat( const QgsTextFormat &format )
@@ -690,6 +717,21 @@ void QgsFontButton::addRecentColor( const QColor &color )
 QFont QgsFontButton::currentFont() const
 {
   return mFont;
+}
+
+QgsVectorLayer *QgsFontButton::layer() const
+{
+  return mLayer;
+}
+
+void QgsFontButton::setLayer( QgsVectorLayer *layer )
+{
+  mLayer = layer;
+}
+
+void QgsFontButton::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator = generator;
 }
 
 void QgsFontButton::setCurrentFont( const QFont &font )

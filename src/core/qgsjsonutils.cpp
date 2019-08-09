@@ -119,12 +119,12 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
     if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
     {
-      featureJson[ "bbox" ] = { {
-          box.xMinimum(),
-          box.yMinimum(),
-          box.xMaximum(),
-          box.yMaximum()
-        }
+      featureJson[ "bbox" ] =
+      {
+        qgsRound( box.xMinimum(), mPrecision ),
+        qgsRound( box.yMinimum(), mPrecision ),
+        qgsRound( box.xMaximum(), mPrecision ),
+        qgsRound( box.yMaximum(), mPrecision )
       };
     }
     featureJson[ "geometry" ] = geom.asJsonObject( mPrecision );
@@ -225,6 +225,11 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
 QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int indent ) const
 {
+  return QString::fromStdString( exportFeaturesToJsonObject( features ).dump( indent ) );
+}
+
+json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features ) const
+{
   json data
   {
     { "type", "FeatureCollection" },
@@ -235,7 +240,7 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int ind
   {
     data["features"].push_back( exportFeatureToJsonObject( feature ) );
   }
-  return QString::fromStdString( data.dump( indent ) );
+  return data;
 }
 
 //

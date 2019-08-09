@@ -33,6 +33,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QEventLoop>
+#include <QPointer>
 #include <QString>
 #include <QMutexLocker>
 
@@ -435,8 +436,8 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
 {
   QMutexLocker locker( &mNetworkRequestMutex );
   QString msg;
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
-  if ( !reply )
+  QPointer<QNetworkReply> reply = qobject_cast<QNetworkReply *>( sender() );
+  if ( reply.isNull() )
   {
 #ifdef QGISDEBUG
     msg = tr( "Network error but no reply object accessible" );
@@ -444,16 +445,19 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
 #endif
     return;
   }
+
+  // Grab some reply properties before object is deleted elsewhere
+  QVariant replyStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  QVariant replyAuthProp = reply->property( "authcfg" );
+  const QString replyErrString = reply->errorString();
+
   if ( err != QNetworkReply::NoError && err != QNetworkReply::OperationCanceledError )
   {
-    msg = tr( "Network error: %1" ).arg( reply->errorString() );
+    msg = tr( "Network error: %1" ).arg( replyErrString );
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
   }
 
-  // TODO: update debug messages to output to QGIS
-
-  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-  if ( !status.isValid() )
+  if ( !replyStatus.isValid() )
   {
     if ( err != QNetworkReply::OperationCanceledError )
     {
@@ -462,23 +466,20 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
     }
     return;
   }
-  QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-  if ( phrase.isValid() )
-  {
-    if ( err != QNetworkReply::OperationCanceledError )
-    {
-      msg = tr( "Network error, HTTP status: %1" ).arg( phrase.toString() );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
-    }
-  }
 
-
-  if ( status.toInt() == 401 )
+  if ( replyStatus.toInt() == 401 )
   {
     msg = tr( "Attempting token refresh…" );
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
-    QString authcfg = reply->property( "authcfg" ).toString();
+
+    if ( !replyAuthProp.isValid() )
+    {
+      msg = tr( "Token refresh FAILED: authcfg property invalid" );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+      return;
+    }
+    QString authcfg = replyAuthProp.toString();
     if ( authcfg.isEmpty() )
     {
       msg = tr( "Token refresh FAILED: authcfg empty" );

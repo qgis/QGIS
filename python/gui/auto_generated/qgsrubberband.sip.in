@@ -43,6 +43,8 @@ for tracking the mouse while drawing polylines or polygons.
       ICON_DIAMOND,
 
       ICON_FULL_DIAMOND,
+
+      ICON_SVG
     };
 
     QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
@@ -124,6 +126,17 @@ Returns the current width of the line or stroke width for polygon.
 Sets the icon type to highlight point geometries.
 
 :param icon: The icon to visualize point geometries
+%End
+
+    void setSvgIcon( const QString &path, QPoint drawOffset );
+%Docstring
+Set the path to the svg file to use to draw points.
+Calling this function automatically calls setIcon(ICON_SVG)
+
+:param path: The path to the svg
+:param drawOffset: The offset where to draw the image origin
+
+.. versionadded:: 3.10
 %End
 
 

@@ -20,7 +20,9 @@ from qgis.core import (QgsRenderContext,
                        QgsMapUnitScale,
                        QgsUnitTypes,
                        QgsProject,
-                       QgsRectangle)
+                       QgsRectangle,
+                       QgsVectorSimplifyMethod,
+                       QgsRenderedFeatureHandlerInterface)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
@@ -29,6 +31,12 @@ import math
 # Convenience instances in case you may need them
 # to find the srs.db
 start_app()
+
+
+class TestFeatureHandler(QgsRenderedFeatureHandlerInterface):
+
+    def handleRenderedFeature(self, feature, geometry, context):
+        pass
 
 
 class TestQgsRenderContext(unittest.TestCase):
@@ -109,6 +117,53 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
 
         self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
+
+    def testVectorSimplification(self):
+        """
+        Test vector simplification hints, ensure they are copied correctly from map settings
+        """
+        rc = QgsRenderContext()
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.NoSimplification)
+
+        ms = QgsMapSettings()
+
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.NoSimplification)
+        rc2 = QgsRenderContext(rc)
+        self.assertEqual(rc2.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.NoSimplification)
+
+        method = QgsVectorSimplifyMethod()
+        method.setSimplifyHints(QgsVectorSimplifyMethod.GeometrySimplification)
+        ms.setSimplifyMethod(method)
+
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.GeometrySimplification)
+
+        rc2 = QgsRenderContext(rc)
+        self.assertEqual(rc2.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.GeometrySimplification)
+
+    def testRenderedFeatureHandlers(self):
+        rc = QgsRenderContext()
+        self.assertFalse(rc.renderedFeatureHandlers())
+        self.assertFalse(rc.hasRenderedFeatureHandlers())
+
+        ms = QgsMapSettings()
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertFalse(rc.renderedFeatureHandlers())
+        self.assertFalse(rc.hasRenderedFeatureHandlers())
+
+        handler = TestFeatureHandler()
+        handler2 = TestFeatureHandler()
+        ms.addRenderedFeatureHandler(handler)
+        ms.addRenderedFeatureHandler(handler2)
+
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.renderedFeatureHandlers(), [handler, handler2])
+        self.assertTrue(rc.hasRenderedFeatureHandlers())
+
+        rc2 = QgsRenderContext(rc)
+        self.assertEqual(rc2.renderedFeatureHandlers(), [handler, handler2])
+        self.assertTrue(rc2.hasRenderedFeatureHandlers())
 
     def testRenderMetersInMapUnits(self):
 

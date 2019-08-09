@@ -122,6 +122,8 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
 
     void columnThreadFinished();
 
+    void reset() override;
+
   private:
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;

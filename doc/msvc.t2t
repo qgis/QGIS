@@ -103,7 +103,7 @@ Running QGIS from within MSVC:
   Edit the properties of the project ALL_BUILD:
   Debugging -> Command -> D:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe
   Run.
-  Ignore the "These projects are out of date" message, it appeares even if no files were was changed.
+  Ignore the "These projects are out of date" message, it appears even if no files were changed.
 
 
 Old alternative method that might still work using cmake-gui:

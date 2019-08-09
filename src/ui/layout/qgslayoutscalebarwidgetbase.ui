@@ -342,7 +342,7 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,0">
-          <item row="2" column="1">
+          <item row="6" column="1">
            <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -377,7 +377,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="9" column="0">
            <widget class="QLabel" name="mAlignmentLabel">
             <property name="text">
              <string>Alignment</string>
@@ -385,34 +385,54 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="label_21">
             <property name="text">
-             <string>Labels margin</string>
+             <string>Label margin</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="2" column="0" colspan="3">
+           <widget class="QLabel" name="label_22">
+            <property name="text">
+             <string>Vertical label placement</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QComboBox" name="mLabelVerticalPlacementComboBox"/>
+          </item>
+          <item row="4" column="0" colspan="3">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Horizontal label placement</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="3">
+           <widget class="QComboBox" name="mLabelHorizontalPlacementComboBox"/>
+          </item>
+          <item row="6" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Line width</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Cap style</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Join style</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="6" column="2">
            <widget class="QgsPropertyOverrideButton" name="mLineWidthDDBtn">
             <property name="text">
              <string>…</string>
@@ -439,14 +459,14 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" colspan="2">
+          <item row="7" column="1" colspan="2">
            <widget class="QgsPenJoinStyleComboBox" name="mLineJoinStyleCombo"/>
           </item>
-          <item row="4" column="1" colspan="2">
+          <item row="8" column="1" colspan="2">
            <widget class="QgsPenCapStyleComboBox" name="mLineCapStyleCombo"/>
           </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QComboBox" name="mAlignmentComboBox"/>
+          <item row="9" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mAlignmentComboBox"/>
           </item>
          </layout>
         </widget>
@@ -682,6 +702,11 @@
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsAlignmentComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsalignmentcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>

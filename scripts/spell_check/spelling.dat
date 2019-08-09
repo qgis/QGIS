@@ -353,7 +353,6 @@ alcholic:alcoholic
 alcohal:alcohol
 alcoholical:alcoholic
 aleady:already
-alredy:already
 aledge:allege:*
 aledged:alleged
 aledges:alleges:*
@@ -428,6 +427,7 @@ alrady:already
 alraedy:already
 alreay:already
 alreayd:already
+alredy:already
 als:also
 alse:also
 alsot:also
@@ -440,8 +440,8 @@ althought:although
 altitide:altitude
 altough:although
 alusion:allusion
-alway:always
 alwasy:always
+alway:always
 alwyas:always
 amalgomated:amalgamated
 amatuer:amateur
@@ -544,6 +544,7 @@ appealling:appealing
 appeareance:appearance
 appearence:appearance
 appearences:appearances
+appeares:appears
 appeneded:appended
 apperance:appearance
 apperances:appearances
@@ -1443,6 +1444,7 @@ communcation:communication
 communciation:communication
 communiation:communication
 communites:communities
+comon:common
 comonent:component
 compability:compatibility
 compair:compare
@@ -1676,9 +1678,9 @@ consumate:consummate
 consumated:consummated
 contaiminate:contaminate
 containes:contains
-containint:containing
 containg:containing
 containging:containing
+containint:containing
 containting:containing
 containts:contains
 contaisn:contains
@@ -1872,6 +1874,7 @@ critisizing:criticizing
 critized:criticized
 critizing:criticizing
 crockodiles:crocodiles
+crolls:scrolls
 crowm:crown
 crtical:critical
 crticised:criticised
@@ -1890,8 +1893,8 @@ curcumstances:circumstances
 curent:current
 curently:currently
 currenly:currently
-currnt:current
 curriculem:curriculum
+currnt:current
 customicable:customizable
 customisation:customization
 customise:customize
@@ -1909,6 +1912,7 @@ dammage:damage
 Dardenelles:Dardanelles
 databse:database
 daugher:daughter
+deactive:deactivate
 deafault:default
 deafult:default
 deamon:daemon
@@ -1916,7 +1920,6 @@ deamons:daemons
 deatch:detach
 deatched:detached
 deatches:detaches
-deactive:deactivate
 deatching:detaching
 debain:Debian
 debateable:debatable
@@ -1953,7 +1956,6 @@ decribe:describe
 decribed:described
 decribes:describes
 decribing:describing
-desctiption:description
 decription:description
 decriptions:descriptions
 decriptor:descriptor
@@ -2093,6 +2095,7 @@ descritpion:description
 descritpions:descriptions
 descryption:description
 descryptions:descriptions
+desctiption:description
 desctiptor:descriptor
 desctiptors:descriptors
 desctruction:destruction
@@ -2398,11 +2401,11 @@ documetation:documentation
 documment:document
 documments:documents
 doens't:doesn't
-doesnot:doesn't
 doens:does
 does'nt:doesn't
 does't:doesn't
 doesen't:doesn't
+doesnot:doesn't
 doesnt':doesn't
 doesnt't:doesn't
 doesnt:doesn't
@@ -2771,7 +2774,6 @@ exagerrating:exaggerating
 examinated:examined
 exampt:exempt
 exapansion:expansion
-expaning:expanding
 exapmle:example
 exapmles:examples
 excact:exact
@@ -2865,6 +2867,7 @@ exmaple:example
 exonorate:exonerate
 exoskelaton:exoskeleton
 expalin:explain
+expaning:expanding
 expatriot:expatriate
 expeced:expected
 expecially:especially
@@ -2960,8 +2963,8 @@ favoutrable:favourable
 feasable:feasible
 featre:feature
 featue:feature
-feautre:feature
 featues:features
+feautre:feature
 feauture:feature
 feautures:features
 Febuary:February
@@ -3099,6 +3102,7 @@ frequncy:frequency
 frist:first
 frome:from
 fromed:formed:*
+fron:from
 froniter:frontier
 frontent:frontend
 frontents:frontends
@@ -3189,9 +3193,9 @@ genreated:generated
 genreates:generates
 genreating:generating
 genric:generic
+geoemtry:geometry
 geographich:geographic
 geographicial:geographical
-geoemtry:geometry
 geometrician:geometer
 geometricians:geometers
 geomtry:geometry
@@ -3285,7 +3289,6 @@ guranteeing:guaranteeing
 gurantees:guarantees
 guttaral:guttural
 gutteral:guttural
-hammmer:hammer
 habaeus:habeas
 habeus:habeas
 Habsbourg:Habsburg
@@ -3294,6 +3297,7 @@ haev:have
 halarious:hilarious
 halfs:halves
 halp:help
+hammmer:hammer
 hander:handler
 handfull:handful
 hanle:handle
@@ -3426,9 +3430,9 @@ hoook:hook
 hoooks:hooks
 hopefuly:hopefully
 hoppefully:hopefully
+horizonal:horizontal
 horrifing:horrifying
 horzontal:horizontal
-horizonal:horizontal
 horzontally:horizontally
 hosited:hoisted
 hospitible:hospitable
@@ -3440,6 +3444,7 @@ howerver:however
 howver:however
 hsitorians:historians
 hstory:history
+hte:the
 hten:then
 htere:there
 htey:they
@@ -3481,10 +3486,10 @@ idaeidae:idea
 idaes:ideas
 idealogies:ideologies
 idealogy:ideology
+identation:indentation
 identicial:identical
 identifer:identifier
 identifers:identifiers
-identation:indentation
 ideosyncratic:idiosyncratic
 idesa:ideas
 idicate:indicate
@@ -4029,8 +4034,8 @@ intutively:intuitively
 inudstry:industry
 inumerable:enumerable
 invaid:invalid
-invalide:invalid
 invaild:invalid
+invalide:invalid
 invalud:invalid
 invarient:invariant
 inventer:inventor
@@ -4132,12 +4137,11 @@ konw:know
 konwn:known
 konws:knows
 kwno:know
-leniant:lenient
 labatory:laboratory
 labelling:labeling
+lable:label
 labled:labeled
 lables:labels:*
-lable:label
 labour:labor
 labratory:laboratory
 laguage:language
@@ -4183,6 +4187,7 @@ lenght:length
 lenghts:lengths
 lenghty:lengthy
 lengthes:lengths
+leniant:lenient
 lenth:length
 leran:learn
 lerans:learns
@@ -4488,7 +4493,7 @@ missconfigure:misconfigure
 missconfigured:misconfigured
 missconfigures:misconfigures
 missconfiguring:misconfiguring
-missen:mizzen
+missen:mizzen:*
 Missisipi:Mississippi
 Missisippi:Mississippi
 missle:missile
@@ -4514,9 +4519,9 @@ modfies:modifies
 modfy:modify
 modfying:modifying
 modifed:modified
+modifer:modifier
 modifes:modifies
 modifing:modifying
-modifer:modifier
 modle:model
 moduel:module
 moduels:modules
@@ -4563,6 +4568,7 @@ mudering:murdering
 muhammadan:muslim
 mulitple:multiple
 mulitplied:multiplied
+multi thread:multithread
 multible:multiple
 multicultralism:multiculturalism
 multidimensionnal:multidimensional
@@ -4577,7 +4583,6 @@ multplies:multiplies
 multply:multiply
 multplying:multiplying
 multy-thread:multithread
-multi thread:multithread
 mumber:number
 mumbers:numbers
 munbers:numbers
@@ -5523,10 +5528,10 @@ protable:portable
 protaganist:protagonist
 protaganists:protagonists
 protcol:protocol
-protocl:protocol
 protecion:protection
 protocal:protocol
 protocals:protocols
+protocl:protocol
 protocoll:protocol
 protoganist:protagonist
 protoype:prototype
@@ -5791,9 +5796,9 @@ regarless:regardless
 registe:register
 registed:registered
 registeing:registering
-registing:registering
 registerd:registered:*
 registes:registers
+registing:registering
 registraration:registration
 registred:registered
 registrs:registers
@@ -6063,15 +6068,15 @@ resursive:recursive
 resursively:recursively
 retalitated:retaliated
 retalitation:retaliation
+retieve:retrieve
 retore:restore:*
 retored:restored
 retores:restores
 retoring:restoring
 retransmited:retransmitted
 retreive:retrieve
-retreiving:retrieving
-retieve:retrieve
 retreived:retrieved
+retreiving:retrieving
 retrive:retrieve
 retrived:retrieved
 retrives:retrieves
@@ -6212,7 +6217,6 @@ scince:science
 scinece:science
 scirpt:script
 scoll:scroll
-crolls:scrolls
 scolling:scrolling
 screenwrighter:screenwriter
 scriping:scripting
@@ -6357,6 +6361,7 @@ siezed:sized
 siezing:sizing
 siezure:seizure
 siezures:seizures
+sightly:slightly
 siginificant:significant
 siginificantly:significantly
 signficant:significant
@@ -6404,7 +6409,6 @@ slashs:slashes
 slaugterhouses:slaughterhouses
 slection:selection
 slighly:slightly
-sightly:slightly
 sligth:slight
 sligthly:slightly
 slippy:slippery
@@ -6878,9 +6882,6 @@ sytems:systems
 sythesis:synthesis
 sytle:style
 tabacco:tobacco
-triange:triangle
-toogle:toggle
-fron:from
 tahn:than
 taht:that
 talekd:talked
@@ -6900,7 +6901,6 @@ technitian:technician
 technnology:technology
 technolgy:technology
 teh:the
-hte:the
 tehy:they
 telelevision:television
 televsion:television
@@ -6935,10 +6935,10 @@ territorist:terrorist
 territoy:territory
 terroist:terrorist
 tesellate:tessellate
-tesselate:tessellate
 tesellation:tessellation
-tesselation:tessellation
 tesellator:tessellator
+tesselate:tessellate
+tesselation:tessellation
 tesselator:tessellator
 testiclular:testicular
 testomony:testimony
@@ -7043,6 +7043,7 @@ tomatos:tomatoes
 tommorow:tomorrow
 tommorrow:tomorrow
 tongiht:tonight
+toogle:toggle
 toriodal:toroidal
 tormenters:tormentors
 tornadoe:tornado
@@ -7141,6 +7142,7 @@ trasnaction:transaction
 tremelo:tremolo
 tremelos:tremolos
 treshold:threshold
+triange:triangle
 trigerring:triggering
 trigers:triggers
 triggerred:triggered
@@ -7175,7 +7177,6 @@ tyrranies:tyrannies
 tyrrany:tyranny
 ubiquitious:ubiquitous
 ublisher:publisher
-updat:update
 udpate:update
 udpated:updated
 udpates:updates
@@ -7203,7 +7204,6 @@ uncertainities:uncertainties
 uncertainity:uncertainty
 unchallengable:unchallengeable
 unchangable:unchangeable
-comon:common
 uncoment:uncomment
 uncomented:uncommented
 uncomenting:uncommenting
@@ -7379,6 +7379,7 @@ upated:updated
 upates:updates
 upating:updating
 upcomming:upcoming
+updat:update
 updateing:updating
 upgradded:upgraded
 uppstream:upstream
@@ -7418,7 +7419,6 @@ vaieties:varieties
 vaild:valid
 vailidty:validity
 valetta:valletta
-vlues:values
 validing:validating
 valied:valid
 valu:value
@@ -7506,6 +7506,7 @@ visting:visiting
 vistors:visitors
 vitories:victories
 vitual:virtual
+vlues:values
 volcanoe:volcano
 voleyball:volleyball
 volontary:voluntary
@@ -7555,8 +7556,8 @@ were'nt:wasn't
 wereabouts:whereabouts
 werent:weren't
 wether:whether
-whant:want
 whan:when
+whant:want
 whants:wants
 whataver:whatever
 whcih:which

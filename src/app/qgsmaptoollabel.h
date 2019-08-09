@@ -83,7 +83,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     //! Shows label fixpoint (left/bottom by default)
     QgsRubberBand *mFixPointRubberBand = nullptr;
 
-    struct LabelDetails
+    struct APP_EXPORT LabelDetails
     {
       LabelDetails() = default;
       explicit LabelDetails( const QgsLabelPosition &p );
@@ -139,6 +139,11 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       \returns -1 if column does not exist or an expression is used instead */
     int dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *vlayer ) const;
 
+    /**
+     * Evaluates a labeling data defined property for the specified \a feature.
+     */
+    QVariant evaluateDataDefinedProperty( QgsPalLayerSettings::Property property, const QgsPalLayerSettings &labelSettings, const QgsFeature &feature, const QVariant &defaultValue ) const;
+
     //! Returns whether to preserve predefined rotation data during label pin/unpin operations
     bool currentLabelPreserveRotation();
 
@@ -181,13 +186,15 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       */
     bool isPinned();
 
-    bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
-    bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;
-    bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes );
-    bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes );
+    bool createAuxiliaryFields( QgsPalIndexes &palIndexes, bool overwriteExpression = true );
+    bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes, bool overwriteExpression = true ) const;
+    bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
+    bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
 
     QList<QgsPalLayerSettings::Property> mPalProperties;
     QList<QgsDiagramLayerSettings::Property> mDiagramProperties;
+
+    friend class TestQgsMapToolLabel;
 };
 
 #endif // QGSMAPTOOLLABEL_H

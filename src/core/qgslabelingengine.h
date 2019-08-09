@@ -58,15 +58,60 @@ class CORE_EXPORT QgsAbstractLabelProvider
       DrawAllLabels           = 1 << 2,  //!< Whether all features will be labelled even though overlaps occur
       MergeConnectedLines     = 1 << 3,  //!< Whether adjacent lines (with the same label text) should be merged
       CentroidMustBeInside    = 1 << 4,  //!< Whether location of centroid must be inside of polygons
-      LabelPerFeaturePart     = 1 << 6,  //!< Whether to label each part of multi-part features separately
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Returns list of label features (they are owned by the provider and thus deleted on its destruction)
     virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) = 0;
 
-    //! draw this label at the position determined by the labeling engine
+    /**
+     * Draw this label at the position determined by the labeling engine.
+     *
+     * Before any calls to drawLabel(), a provider should be prepared for rendering by a call to
+     * startRender() and a corresponding call to stopRender().
+     */
     virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const = 0;
+
+    /**
+     * Draw an unplaced label. These correspond to features which were registered for labeling,
+     * but which could not be labeled (e.g. due to conflicting labels).
+     *
+     * The default behavior is to draw nothing for these labels.
+     *
+     * \note This method is only used if the QgsLabelingEngineSettings::DrawUnplacedLabels flag
+     * is set on the labeling engine.
+     *
+     * \since QGIS 3.10
+     */
+    virtual void drawUnplacedLabel( QgsRenderContext &context, pal::LabelPosition *label ) const;
+
+    /**
+     * Draw the background for the specified \a label.
+     *
+     * This is called in turn for each label provider before any actual labels are rendered,
+     * and allows the provider to render content which should be drawn below ALL map labels
+     * (such as background rectangles or callout lines).
+     *
+     * Before any calls to drawLabelBackground(), a provider should be prepared for rendering by a call to
+     * startRender() and a corresponding call to stopRender().
+     *
+     * \since QGIS 3.10
+     */
+    virtual void drawLabelBackground( QgsRenderContext &context, pal::LabelPosition *label ) const;
+
+    /**
+     * To be called before rendering of labels begins. Must be accompanied by
+     * a corresponding call to stopRender()
+     * \since QGIS 3.10
+     */
+    virtual void startRender( QgsRenderContext &context );
+
+    /**
+     * To be called after rendering is complete.
+     * \see startRender()
+     * \since QGIS 3.10
+     */
+    virtual void stopRender( QgsRenderContext &context );
 
     //! Returns list of child providers - useful if the provider needs to put labels into more layers with different configuration
     virtual QList<QgsAbstractLabelProvider *> subProviders() { return QList<QgsAbstractLabelProvider *>(); }

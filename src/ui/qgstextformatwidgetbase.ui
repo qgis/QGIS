@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>828</width>
-    <height>1081</height>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -335,7 +335,7 @@
              <enum>QTabWidget::Rounded</enum>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>5</number>
             </property>
             <property name="iconSize">
              <size>
@@ -355,7 +355,7 @@
             <widget class="QWidget" name="textTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/mIconFieldText.svg</normaloff>:/images/themes/default/mIconFieldText.svg</iconset>
+               <normaloff>:/images/themes/default/propertyicons/labeltext.svg</normaloff>:/images/themes/default/propertyicons/labeltext.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -395,6 +395,18 @@
              </attribute>
              <attribute name="title">
               <string/>
+             </attribute>
+            </widget>
+            <widget class="QWidget" name="callouts">
+             <attribute name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/propertyicons/labelcallout.svg</normaloff>:/images/themes/default/propertyicons/labelcallout.svg</iconset>
+             </attribute>
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>Callouts</string>
              </attribute>
             </widget>
             <widget class="QWidget" name="widget">
@@ -536,6 +548,18 @@
                 </item>
                 <item>
                  <property name="text">
+                  <string>Callouts</string>
+                 </property>
+                 <property name="toolTip">
+                  <string>Callouts</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../images/images.qrc">
+                   <normaloff>:/images/themes/default/propertyicons/labelcallout.svg</normaloff>:/images/themes/default/propertyicons/labelcallout.svg</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>Placement</string>
                  </property>
                  <property name="toolTip">
@@ -577,21 +601,21 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <property name="leftMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <property name="topMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <property name="rightMargin">
                <number>0</number>
               </property>
               <property name="bottomMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>4</number>
+                 <number>6</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -620,8 +644,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>866</height>
+                       <width>775</width>
+                       <height>405</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1203,8 +1227,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>847</height>
+                       <width>758</width>
+                       <height>509</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -1214,7 +1238,7 @@ font-style: italic;</string>
                       <property name="rightMargin">
                        <number>6</number>
                       </property>
-                      <item row="7" column="0" colspan="4">
+                      <item row="8" column="0" colspan="4">
                        <layout class="QGridLayout" name="gridLayout_34">
                         <property name="verticalSpacing">
                          <number>6</number>
@@ -1374,10 +1398,17 @@ font-style: italic;</string>
                         </item>
                        </layout>
                       </item>
-                      <item row="3" column="0">
+                      <item row="4" column="0">
                        <widget class="QLabel" name="labelBlendMode">
                         <property name="text">
                          <string>Blend mode</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="0">
+                       <widget class="QLabel" name="labelTextOrientation">
+                        <property name="text">
+                         <string>Text orientation</string>
                         </property>
                        </widget>
                       </item>
@@ -1446,10 +1477,13 @@ font-style: italic;</string>
                         </item>
                        </layout>
                       </item>
-                      <item row="3" column="1" colspan="2">
+                      <item row="4" column="1" colspan="2">
                        <widget class="QgsBlendModeComboBox" name="comboBlendMode"/>
                       </item>
-                      <item row="4" column="3">
+                      <item row="3" column="1" colspan="2">
+                       <widget class="QComboBox" name="mTextOrientationComboBox"/>
+                      </item>
+                      <item row="5" column="3">
                        <widget class="QToolButton" name="mToolButtonConfigureSubstitutes">
                         <property name="enabled">
                          <bool>false</bool>
@@ -1462,7 +1496,7 @@ font-style: italic;</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="6" column="0" colspan="4">
+                      <item row="7" column="0" colspan="4">
                        <widget class="QFrame" name="mDirectSymbolsFrame">
                         <layout class="QGridLayout" name="gridLayout_33">
                          <property name="leftMargin">
@@ -1762,14 +1796,21 @@ font-style: italic;</string>
                         </layout>
                        </widget>
                       </item>
-                      <item row="3" column="3">
+                      <item row="4" column="3">
                        <widget class="QgsPropertyOverrideButton" name="mFontBlendModeDDBtn">
                         <property name="text">
                          <string>…</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="8" column="3">
+                      <item row="3" column="3">
+                       <widget class="QgsPropertyOverrideButton" name="mTextOrientationDDBtn">
+                        <property name="text">
+                         <string>…</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="9" column="3">
                        <spacer name="verticalSpacer_6">
                         <property name="orientation">
                          <enum>Qt::Vertical</enum>
@@ -1811,7 +1852,7 @@ font-style: italic;</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="5" column="0" colspan="4">
+                      <item row="6" column="0" colspan="4">
                        <layout class="QGridLayout" name="gridLayout_35">
                         <property name="verticalSpacing">
                          <number>6</number>
@@ -2028,7 +2069,7 @@ font-style: italic;</string>
                         </item>
                        </layout>
                       </item>
-                      <item row="4" column="0" colspan="3">
+                      <item row="5" column="0" colspan="3">
                        <widget class="QCheckBox" name="mCheckBoxSubstituteText">
                         <property name="toolTip">
                          <string>If enabled, the label text will automatically be modified using a preset list of substitutes</string>
@@ -2078,8 +2119,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>866</height>
+                       <width>775</width>
+                       <height>405</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2424,8 +2465,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>866</height>
+                       <width>758</width>
+                       <height>633</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3185,8 +3226,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>770</width>
-                       <height>866</height>
+                       <width>775</width>
+                       <height>405</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3586,6 +3627,141 @@ font-style: italic;</string>
                   </item>
                  </layout>
                 </widget>
+                <widget class="QWidget" name="page">
+                 <layout class="QVBoxLayout" name="verticalLayout_14">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QScrollArea" name="scrollArea_6">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents_7">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>775</width>
+                       <height>405</height>
+                      </rect>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_46">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item row="0" column="0">
+                       <layout class="QGridLayout" name="gridLayout_43">
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label_51">
+                          <property name="text">
+                           <string>Callouts</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QgsPropertyOverrideButton" name="mCalloutDrawDDBtn">
+                          <property name="text">
+                           <string>…</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="0" colspan="3">
+                         <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0">
+                          <property name="leftMargin">
+                           <number>20</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <item row="0" column="1" colspan="2">
+                           <widget class="QComboBox" name="mCalloutStyleComboBox"/>
+                          </item>
+                          <item row="0" column="0">
+                           <widget class="QLabel" name="label_11">
+                            <property name="text">
+                             <string>Style</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="0" colspan="3">
+                           <widget class="QStackedWidget" name="mCalloutStackedWidget">
+                            <widget class="QWidget" name="pageDummy">
+                             <layout class="QVBoxLayout" name="verticalLayout_19">
+                              <item>
+                               <widget class="QLabel" name="label_45">
+                                <property name="text">
+                                 <string>This callout type doesn't have any editable properties</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
+                                <property name="wordWrap">
+                                 <bool>true</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QCheckBox" name="mCalloutsDrawCheckBox">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Draw callouts</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="2">
+                         <spacer name="horizontalSpacer_15">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>0</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                 <widget class="QWidget" name="mLabelPage_Placement">
                  <layout class="QVBoxLayout" name="verticalLayout_10">
                   <property name="leftMargin">
@@ -3625,9 +3801,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>335</width>
-                       <height>884</height>
+                       <y>-263</y>
+                       <width>758</width>
+                       <height>932</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4835,6 +5011,73 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
+                       <widget class="QFrame" name="mPlacementOverrunDistanceFrame">
+                        <property name="frameShape">
+                         <enum>QFrame::NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <layout class="QGridLayout" name="gridLayout_44">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="verticalSpacing">
+                          <number>12</number>
+                         </property>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_46">
+                           <property name="text">
+                            <string>Overrun feature</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1">
+                          <widget class="QgsDoubleSpinBox" name="mOverrunDistanceSpinBox">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="specialValueText">
+                            <string>No overrun</string>
+                           </property>
+                           <property name="decimals">
+                            <number>4</number>
+                           </property>
+                           <property name="maximum">
+                            <double>999999999.000000000000000</double>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mOverrunDistanceDDBtn">
+                           <property name="text">
+                            <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
+                          <widget class="QgsUnitSelectionWidget" name="mOverrunDistanceUnitWidget" native="true">
+                           <property name="focusPolicy">
+                            <enum>Qt::StrongFocus</enum>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
                        <widget class="QFrame" name="mPlacementMaxCharAngleFrame">
                         <layout class="QGridLayout" name="gridLayout_22">
                          <property name="leftMargin">
@@ -5334,7 +5577,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>302</width>
+                       <width>758</width>
                        <height>674</height>
                       </rect>
                      </property>
@@ -5869,28 +6112,117 @@ font-style: italic;</string>
                         <property name="syncGroup" stdset="0">
                          <string notr="true">labelrenderinggroup</string>
                         </property>
-                        <layout class="QVBoxLayout" name="verticalLayout">
+                        <layout class="QGridLayout" name="gridLayout_47">
                          <property name="leftMargin">
                           <number>8</number>
                          </property>
                          <property name="rightMargin">
                           <number>8</number>
                          </property>
-                         <item>
+                         <item row="0" column="0">
                           <widget class="QCheckBox" name="chkLabelPerFeaturePart">
                            <property name="text">
                             <string>Label every part of multi-part features</string>
                            </property>
                           </widget>
                          </item>
-                         <item>
+                         <item row="0" column="1">
+                          <widget class="QgsPropertyOverrideButton" name="mLabelAllPartsDDBtn">
+                           <property name="text">
+                            <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="0" colspan="2">
                           <widget class="QCheckBox" name="chkMergeLines">
                            <property name="text">
                             <string>Merge connected lines to avoid duplicate labels</string>
                            </property>
                           </widget>
                          </item>
-                         <item>
+                         <item row="4" column="0" colspan="2">
+                          <widget class="QFrame" name="mPolygonFeatureOptionsFrame">
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QHBoxLayout" name="horizontalLayout_12">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QCheckBox" name="mFitInsidePolygonCheckBox">
+                              <property name="text">
+                               <string>Only draw labels which fit completely within feature</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="3" column="0" colspan="2">
+                          <widget class="QFrame" name="mMinSizeFrame">
+                           <layout class="QGridLayout" name="gridLayout_21">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="verticalSpacing">
+                             <number>6</number>
+                            </property>
+                            <item row="1" column="0">
+                             <spacer name="horizontalSpacer_20">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>8</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="QgsDoubleSpinBox" name="mMinSizeSpinBox">
+                              <property name="suffix">
+                               <string> mm</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="0" colspan="2">
+                             <widget class="QLabel" name="label_19">
+                              <property name="text">
+                               <string>Suppress labeling of features smaller than</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="2" column="0" colspan="2">
                           <widget class="QFrame" name="mLimitLabelFrame">
                            <layout class="QGridLayout" name="gridLayout_20">
                             <property name="leftMargin">
@@ -5950,88 +6282,6 @@ font-style: italic;</string>
                              <widget class="QCheckBox" name="mLimitLabelChkBox">
                               <property name="text">
                                <string>Limit number of features to be labeled to</string>
-                              </property>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QFrame" name="mMinSizeFrame">
-                           <layout class="QGridLayout" name="gridLayout_21">
-                            <property name="leftMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="topMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="rightMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="bottomMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="verticalSpacing">
-                             <number>6</number>
-                            </property>
-                            <item row="1" column="0">
-                             <spacer name="horizontalSpacer_20">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeType">
-                               <enum>QSizePolicy::Fixed</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>8</width>
-                                <height>0</height>
-                               </size>
-                              </property>
-                             </spacer>
-                            </item>
-                            <item row="1" column="1">
-                             <widget class="QgsDoubleSpinBox" name="mMinSizeSpinBox">
-                              <property name="suffix">
-                               <string> mm</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="0" colspan="2">
-                             <widget class="QLabel" name="label_19">
-                              <property name="text">
-                               <string>Suppress labeling of features smaller than</string>
-                              </property>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QFrame" name="mPolygonFeatureOptionsFrame">
-                           <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
-                           </property>
-                           <property name="frameShadow">
-                            <enum>QFrame::Raised</enum>
-                           </property>
-                           <layout class="QHBoxLayout" name="horizontalLayout_12">
-                            <property name="leftMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="topMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="rightMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="bottomMargin">
-                             <number>0</number>
-                            </property>
-                            <item>
-                             <widget class="QCheckBox" name="mFitInsidePolygonCheckBox">
-                              <property name="text">
-                               <string>Only draw labels which fit completely within feature</string>
                               </property>
                              </widget>
                             </item>
@@ -6595,6 +6845,7 @@ font-style: italic;</string>
   <tabstop>mUpsidedownRadioDefined</tabstop>
   <tabstop>mUpsidedownRadioAll</tabstop>
   <tabstop>chkLabelPerFeaturePart</tabstop>
+  <tabstop>mLabelAllPartsDDBtn</tabstop>
   <tabstop>chkMergeLines</tabstop>
   <tabstop>mLimitLabelChkBox</tabstop>
   <tabstop>mLimitLabelSpinBox</tabstop>

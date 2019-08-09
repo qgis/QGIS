@@ -239,13 +239,20 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
   {
     QgsMapLayer *ml = li.previous();
 
-    QgsDebugMsgLevel( QStringLiteral( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
+    QgsDebugMsgLevel( QStringLiteral( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5 isValid:%6" )
                       .arg( ml->name() )
                       .arg( ml->minimumScale() )
                       .arg( ml->maximumScale() )
                       .arg( ml->hasScaleBasedVisibility() )
                       .arg( ml->blendMode() )
+                      .arg( ml->isValid() )
                       , 3 );
+
+    if ( !ml->isValid() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Invalid Layer skipped" ), 3 );
+      continue;
+    }
 
     if ( !ml->isInScaleRange( mSettings.scale() ) ) //|| mOverview )
     {

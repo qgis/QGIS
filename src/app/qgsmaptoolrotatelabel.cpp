@@ -24,6 +24,7 @@
 #include "qgsmapmouseevent.h"
 
 #include "qgisapp.h"
+#include "qgsmessagebar.h"
 #include "qgsapplication.h"
 
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas )
@@ -132,6 +133,22 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
           return;
       }
+      else
+      {
+        const bool usesAuxField = mCurrentLabel.layer->fields().fieldOrigin( rotationCol ) == QgsFields::OriginJoin;
+        if ( !usesAuxField && !mCurrentLabel.layer->isEditable() )
+        {
+          if ( mCurrentLabel.layer->startEditing() )
+          {
+            QgisApp::instance()->messageBar()->pushInfo( tr( "Rotate Label" ), tr( "Layer “%1” was made editable" ).arg( mCurrentLabel.layer->name() ) );
+          }
+          else
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Rotate Label" ), tr( "Cannot rotate “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, mCurrentLabel.layer->name() ) );
+            return;
+          }
+        }
+      }
 
       if ( currentLabelDataDefinedRotation( mCurrentRotation, hasRotationValue, rotationCol, true ) )
       {
@@ -194,7 +211,17 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         }
 
         vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
-        vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation );
+        if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation ) )
+        {
+          if ( !vlayer->isEditable() )
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Rotate Label" ), tr( "Layer “%1” must be editable in order to rotate labels from it" ).arg( vlayer->name() ) );
+          }
+          else
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Rotate Label" ), tr( "Error encountered while storing new label rotation" ) );
+          }
+        }
         vlayer->endEditCommand();
         vlayer->triggerRepaint();
         break;

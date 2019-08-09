@@ -164,7 +164,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual void clean();
 
     //! returns pointer to the tool's map canvas
-    QgsMapCanvas *canvas();
+    QgsMapCanvas *canvas() const;
 
     /**
      * Emit map tool changed with the old tool
@@ -235,7 +235,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 
     //! transformation from map coordinates to screen coordinates
-    QPoint toCanvasCoordinates( const QgsPointXY &point );
+    QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 
     //! pointer to map canvas
     QgsMapCanvas *mCanvas = nullptr;

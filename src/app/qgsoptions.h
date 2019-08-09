@@ -115,11 +115,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void mProxyTypeComboBox_currentIndexChanged( int idx );
 
-    //! Add a new URL to exclude from Proxy
-    void addExcludedUrl();
+    //! Add a new URL to no proxy URL list
+    void addNoProxyUrl();
 
-    //! Remove an URL to exclude from Proxy
-    void removeExcludedUrl();
+    //! Remove current URL from no proxy URL list
+    void removeNoProxyUrl();
 
     //! Slot to flag restoring/delete window state settings upon restart
     void restoreDefaultWindowState();
@@ -229,6 +229,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
   private:
     QgsSettings *mSettings = nullptr;
     QStringList i18nList();
+
     void initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal );
     void saveContrastEnhancement( QComboBox *cbox, const QString &name );
     void initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal );

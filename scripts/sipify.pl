@@ -405,6 +405,7 @@ sub fix_annotations {
     $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
+    $line =~ s/\bSIP_GETWRAPPER\b/\/GetWrapper\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/SIP_TYPEHINT\(\s*(\w+)\s*\)/\/TypeHint="$1"\//;

@@ -22,6 +22,7 @@
 #include "qgsmultipoint.h"
 #include "qgslogger.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -151,9 +152,8 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRender
   QPointF pt = centroid.asQPointF();
   context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
 
-  context.expressionContext().appendScope( createGroupScope( group ) );
+  QgsExpressionContextScopePopper scopePopper( context.expressionContext(), createGroupScope( group ) );
   drawGroup( pt, context, group );
-  delete context.expressionContext().popScope();
 }
 
 void QgsPointDistanceRenderer::setEmbeddedRenderer( QgsFeatureRenderer *r )

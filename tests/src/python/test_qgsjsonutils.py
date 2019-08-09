@@ -196,12 +196,10 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         expected = """{
   "bbox": [
-    [
-      5.0,
-      6.0,
-      15.0,
-      16.0
-    ]
+    5.0,
+    6.0,
+    15.0,
+    16.0
   ],
   "geometry": {
     "coordinates": [

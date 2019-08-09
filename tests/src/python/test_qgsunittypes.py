@@ -543,12 +543,33 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceYards: QgsUnitTypes.AreaSquareYards,
                     QgsUnitTypes.DistanceMiles: QgsUnitTypes.AreaSquareMiles,
                     QgsUnitTypes.DistanceDegrees: QgsUnitTypes.AreaSquareDegrees,
+                    QgsUnitTypes.DistanceCentimeters: QgsUnitTypes.AreaSquareCentimeters,
+                    QgsUnitTypes.DistanceMillimeters: QgsUnitTypes.AreaSquareMillimeters,
                     QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.AreaUnknownUnit,
                     QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.AreaSquareNauticalMiles
                     }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.distanceToAreaUnit(t), expected[t])
+
+    def testAreaToDistanceUnit(self):
+        """Test areaToDistanceUnit conversion"""
+        expected = {QgsUnitTypes.AreaSquareMeters: QgsUnitTypes.DistanceMeters,
+                    QgsUnitTypes.AreaSquareKilometers: QgsUnitTypes.DistanceKilometers,
+                    QgsUnitTypes.AreaSquareFeet: QgsUnitTypes.DistanceFeet,
+                    QgsUnitTypes.AreaSquareYards: QgsUnitTypes.DistanceYards,
+                    QgsUnitTypes.AreaSquareMiles: QgsUnitTypes.DistanceMiles,
+                    QgsUnitTypes.AreaHectares: QgsUnitTypes.DistanceMeters,
+                    QgsUnitTypes.AreaAcres: QgsUnitTypes.DistanceYards,
+                    QgsUnitTypes.AreaSquareDegrees: QgsUnitTypes.DistanceDegrees,
+                    QgsUnitTypes.AreaSquareCentimeters: QgsUnitTypes.DistanceCentimeters,
+                    QgsUnitTypes.AreaSquareMillimeters: QgsUnitTypes.DistanceMillimeters,
+                    QgsUnitTypes.AreaUnknownUnit: QgsUnitTypes.DistanceUnknownUnit,
+                    QgsUnitTypes.AreaSquareNauticalMiles: QgsUnitTypes.DistanceNauticalMiles
+                    }
+
+        for t in list(expected.keys()):
+            self.assertEqual(QgsUnitTypes.areaToDistanceUnit(t), expected[t])
 
     def testEncodeDecodeAngleUnits(self):
         """Test encoding and decoding angle units"""
@@ -558,6 +579,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AngleMinutesOfArc,
                  QgsUnitTypes.AngleSecondsOfArc,
                  QgsUnitTypes.AngleTurn,
+                 QgsUnitTypes.AngleMilliradiansSI,
+                 QgsUnitTypes.AngleMilNATO,
                  QgsUnitTypes.AngleUnknownUnit]
 
         for u in units:
@@ -583,6 +606,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AngleMinutesOfArc,
                  QgsUnitTypes.AngleSecondsOfArc,
                  QgsUnitTypes.AngleTurn,
+                 QgsUnitTypes.AngleMilliradiansSI,
+                 QgsUnitTypes.AngleMilNATO,
                  QgsUnitTypes.AngleUnknownUnit]
 
         dupes = set()
@@ -597,12 +622,21 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testAngleFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between angular units"""
 
-        expected = {QgsUnitTypes.AngleDegrees: {QgsUnitTypes.AngleDegrees: 1.0, QgsUnitTypes.AngleRadians: 0.0174533, QgsUnitTypes.AngleGon: 1.1111111, QgsUnitTypes.AngleMinutesOfArc: 60, QgsUnitTypes.AngleSecondsOfArc: 3600, QgsUnitTypes.AngleTurn: 0.00277777777778},
-                    QgsUnitTypes.AngleRadians: {QgsUnitTypes.AngleDegrees: 57.2957795, QgsUnitTypes.AngleRadians: 1.0, QgsUnitTypes.AngleGon: 63.6619772, QgsUnitTypes.AngleMinutesOfArc: 3437.7467708, QgsUnitTypes.AngleSecondsOfArc: 206264.8062471, QgsUnitTypes.AngleTurn: 0.159154943092},
-                    QgsUnitTypes.AngleGon: {QgsUnitTypes.AngleDegrees: 0.9000000, QgsUnitTypes.AngleRadians: 0.015707968623450838802, QgsUnitTypes.AngleGon: 1.0, QgsUnitTypes.AngleMinutesOfArc: 54.0000000, QgsUnitTypes.AngleSecondsOfArc: 3240.0000000, QgsUnitTypes.AngleTurn: 0.0025},
-                    QgsUnitTypes.AngleMinutesOfArc: {QgsUnitTypes.AngleDegrees: 0.016666672633390722247, QgsUnitTypes.AngleRadians: 0.00029088831280398030638, QgsUnitTypes.AngleGon: 0.018518525464057963154, QgsUnitTypes.AngleMinutesOfArc: 1.0, QgsUnitTypes.AngleSecondsOfArc: 60.0, QgsUnitTypes.AngleTurn: 4.62962962962963e-05},
-                    QgsUnitTypes.AngleSecondsOfArc: {QgsUnitTypes.AngleDegrees: 0.00027777787722304257169, QgsUnitTypes.AngleRadians: 4.848138546730629518e-6, QgsUnitTypes.AngleGon: 0.0003086420910674814405, QgsUnitTypes.AngleMinutesOfArc: 0.016666672633325253783, QgsUnitTypes.AngleSecondsOfArc: 1.0, QgsUnitTypes.AngleTurn: 7.71604938271605e-07},
-                    QgsUnitTypes.AngleTurn: {QgsUnitTypes.AngleDegrees: 360.0, QgsUnitTypes.AngleRadians: 6.2831853071795, QgsUnitTypes.AngleGon: 400.0, QgsUnitTypes.AngleMinutesOfArc: 21600, QgsUnitTypes.AngleSecondsOfArc: 1296000, QgsUnitTypes.AngleTurn: 1}
+        expected = {QgsUnitTypes.AngleDegrees: {QgsUnitTypes.AngleDegrees: 1.0, QgsUnitTypes.AngleRadians: 0.0174533, QgsUnitTypes.AngleGon: 1.1111111, QgsUnitTypes.AngleMinutesOfArc: 60, QgsUnitTypes.AngleSecondsOfArc: 3600, QgsUnitTypes.AngleTurn: 0.00277777777778, QgsUnitTypes.AngleMilliradiansSI: 17.453292519943297, QgsUnitTypes.AngleMilNATO: 17.77777777777778},
+                    QgsUnitTypes.AngleRadians: {QgsUnitTypes.AngleDegrees: 57.2957795, QgsUnitTypes.AngleRadians: 1.0, QgsUnitTypes.AngleGon: 63.6619772, QgsUnitTypes.AngleMinutesOfArc: 3437.7467708, QgsUnitTypes.AngleSecondsOfArc: 206264.8062471, QgsUnitTypes.AngleTurn: 0.159154943092, QgsUnitTypes.AngleMilliradiansSI: 1000.0, QgsUnitTypes.AngleMilNATO: 1018.5916357881301},
+                    QgsUnitTypes.AngleGon: {QgsUnitTypes.AngleDegrees: 0.9000000, QgsUnitTypes.AngleRadians: 0.015707968623450838802, QgsUnitTypes.AngleGon: 1.0, QgsUnitTypes.AngleMinutesOfArc: 54.0000000, QgsUnitTypes.AngleSecondsOfArc: 3240.0000000, QgsUnitTypes.AngleTurn: 0.0025, QgsUnitTypes.AngleMilliradiansSI: 15.707963267948967, QgsUnitTypes.AngleMilNATO: 16},
+                    QgsUnitTypes.AngleMinutesOfArc: {QgsUnitTypes.AngleDegrees: 0.016666672633390722247, QgsUnitTypes.AngleRadians: 0.00029088831280398030638, QgsUnitTypes.AngleGon: 0.018518525464057963154, QgsUnitTypes.AngleMinutesOfArc: 1.0, QgsUnitTypes.AngleSecondsOfArc: 60.0, QgsUnitTypes.AngleTurn: 4.62962962962963e-05, QgsUnitTypes.AngleMilliradiansSI: 0.29088820866572157, QgsUnitTypes.AngleMilNATO: 0.29629629629629634},
+                    QgsUnitTypes.AngleSecondsOfArc: {QgsUnitTypes.AngleDegrees: 0.00027777787722304257169, QgsUnitTypes.AngleRadians: 4.848138546730629518e-6, QgsUnitTypes.AngleGon: 0.0003086420910674814405, QgsUnitTypes.AngleMinutesOfArc: 0.016666672633325253783, QgsUnitTypes.AngleSecondsOfArc: 1.0, QgsUnitTypes.AngleTurn: 7.71604938271605e-07, QgsUnitTypes.AngleMilliradiansSI: 0.0048481482527009582897, QgsUnitTypes.AngleMilNATO: 0.0049382716049382715},
+                    QgsUnitTypes.AngleTurn: {QgsUnitTypes.AngleDegrees: 360.0, QgsUnitTypes.AngleRadians: 6.2831853071795, QgsUnitTypes.AngleGon: 400.0, QgsUnitTypes.AngleMinutesOfArc: 21600, QgsUnitTypes.AngleSecondsOfArc: 1296000, QgsUnitTypes.AngleTurn: 1, QgsUnitTypes.AngleMilliradiansSI: 6283.185307179586, QgsUnitTypes.AngleMilNATO: 6400},
+                    QgsUnitTypes.AngleMilliradiansSI: {QgsUnitTypes.AngleDegrees: 0.057295779513082325, QgsUnitTypes.AngleRadians: 0.001, QgsUnitTypes.AngleGon: 0.06366197723675814, QgsUnitTypes.AngleMinutesOfArc: 3.4377467707849396, QgsUnitTypes.AngleSecondsOfArc: 206.26480624709637, QgsUnitTypes.AngleTurn: 0.0015707963267948967, QgsUnitTypes.AngleMilliradiansSI: 1.0, QgsUnitTypes.AngleMilNATO: 1.0185916357881302},
+                    QgsUnitTypes.AngleMilNATO: {QgsUnitTypes.AngleDegrees: 0.05625,
+                                                QgsUnitTypes.AngleRadians: 0.0009817477042468104,
+                                                QgsUnitTypes.AngleGon: 0.0625,
+                                                QgsUnitTypes.AngleMinutesOfArc: 3.375,
+                                                QgsUnitTypes.AngleSecondsOfArc: 202.5,
+                                                QgsUnitTypes.AngleTurn: 0.000015625,
+                                                QgsUnitTypes.AngleMilliradiansSI: 0.9817477042468102,
+                                                QgsUnitTypes.AngleMilNATO: 1.0}
                     }
 
         for from_unit in list(expected.keys()):
@@ -629,6 +663,8 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, 4, QgsUnitTypes.AngleMinutesOfArc), '1.1111′')
         self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.AngleSecondsOfArc), '2.00″')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleTurn), '1.00 tr')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleMilliradiansSI), '1.00 millirad')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleMilNATO), '1.00 mil')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnknownUnit), '1.00')
 
     def testEncodeDecodeLayoutUnits(self):

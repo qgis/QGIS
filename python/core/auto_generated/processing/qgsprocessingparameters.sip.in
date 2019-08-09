@@ -2865,7 +2865,8 @@ A folder output parameter.
 
     QgsProcessingParameterFolderDestination( const QString &name, const QString &description = QString(),
         const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false,
+        bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingParameterFolderDestination.
 %End

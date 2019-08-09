@@ -198,11 +198,12 @@ void TestQgsGeometryUtils::testSegmentMidPoint_data()
   QTest::addColumn<double>( "pt2x" );
   QTest::addColumn<double>( "pt2y" );
   QTest::addColumn<double>( "radius" );
-  QTest::addColumn<bool>( "left" );
+  QTest::addColumn<double>( "mouseX" );
+  QTest::addColumn<double>( "mouseY" );
   QTest::addColumn<double>( "expectedX" );
   QTest::addColumn<double>( "expectedY" );
 
-  QTest::newRow( "testSegmentMidPoint1" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << true << 0.5 << 0.5;
+  QTest::newRow( "testSegmentMidPoint1" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << 1.0 << 0.0 << 0.5 << 0.5;
 }
 
 void TestQgsGeometryUtils::testSegmentMidPoint()
@@ -212,13 +213,14 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
   QFETCH( double, pt2x );
   QFETCH( double, pt2y );
   QFETCH( double, radius );
-  QFETCH( bool, left );
+  QFETCH( double, mouseX );
+  QFETCH( double, mouseY );
   QFETCH( double, expectedX );
   QFETCH( double, expectedY );
 
   QgsPoint midPoint;
   bool ok = QgsGeometryUtils::segmentMidPoint( QgsPoint( pt1x, pt1y ), QgsPoint( pt2x, pt2y ),
-            midPoint, radius, left );
+            midPoint, radius, QgsPoint( mouseX, mouseY ) );
 
   QVERIFY( ok );
   QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * std::numeric_limits<double>::epsilon() );

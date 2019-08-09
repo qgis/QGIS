@@ -101,8 +101,19 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
   QString sequence = settings.value( mSettingsPath + actionText, defaultSequence ).toString();
 
   action->setShortcut( sequence );
-  action->setToolTip( "<b>" + action->toolTip() + "</b>" );
-  updateActionToolTip( action, sequence );
+  if ( !action->toolTip().isEmpty() )
+  {
+    const QStringList parts = action->toolTip().split( '\n' );
+    QString formatted = QStringLiteral( "<b>%1</b>" ).arg( parts.at( 0 ) );
+    if ( parts.count() > 1 )
+    {
+      for ( int i = 1; i < parts.count(); ++i )
+        formatted += QStringLiteral( "<p>%1</p>" ).arg( parts.at( i ) );
+    }
+
+    action->setToolTip( formatted );
+    updateActionToolTip( action, sequence );
+  }
 
   return true;
 }

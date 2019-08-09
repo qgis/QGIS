@@ -28,6 +28,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsgui.h"
 
 #include <QMouseEvent>
 
@@ -48,18 +49,61 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
 {
   QgsPointXY pt = toMapCoordinates( e->pos() );
   const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
-  if ( labelingResults )
+  if ( !labelingResults )
+    return false;
+
+  QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
+  if ( labelPosList.empty() )
+    return false;
+
+  // prioritize labels in the current selected layer, in case of overlaps
+  QList<QgsLabelPosition> activeLayerLabels;
+  if ( const QgsVectorLayer *currentLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() ) )
   {
-    QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
-    QList<QgsLabelPosition>::const_iterator posIt = labelPosList.constBegin();
-    if ( posIt != labelPosList.constEnd() )
+    for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
     {
-      p = *posIt;
-      return true;
+      if ( pos.layerID == currentLayer->id() )
+      {
+        activeLayerLabels.append( pos );
+      }
     }
   }
+  if ( !activeLayerLabels.empty() )
+    labelPosList = activeLayerLabels;
 
-  return false;
+  // prioritize unplaced labels
+  QList<QgsLabelPosition> unplacedLabels;
+  for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+  {
+    if ( pos.isUnplaced )
+    {
+      unplacedLabels.append( pos );
+    }
+  }
+  if ( !unplacedLabels.empty() )
+    labelPosList = unplacedLabels;
+
+  if ( labelPosList.count() > 1 )
+  {
+    // multiple candidates found, so choose the smallest (i.e. most difficult to select otherwise)
+    double minSize = std::numeric_limits< double >::max();
+    for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+    {
+      const double labelSize = pos.width * pos.height;
+      if ( labelSize < minSize )
+      {
+        minSize = labelSize;
+        p = pos;
+      }
+    }
+  }
+  else
+  {
+    // only one candidate
+    p = labelPosList.at( 0 );
+  }
+
+  return true;
 }
 
 void QgsMapToolLabel::createRubberBands()
@@ -194,17 +238,8 @@ void QgsMapToolLabel::currentAlignment( QString &hali, QString &vali )
     return;
   }
 
-  int haliIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Hali, mCurrentLabel.settings, vlayer );
-  if ( haliIndx != -1 )
-  {
-    hali = f.attribute( haliIndx ).toString();
-  }
-
-  int valiIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Vali, mCurrentLabel.settings, vlayer );
-  if ( valiIndx != -1 )
-  {
-    vali = f.attribute( valiIndx ).toString();
-  }
+  hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Hali, mCurrentLabel.settings, f, hali ).toString();
+  vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Vali, mCurrentLabel.settings, f, vali ).toString();
 }
 
 bool QgsMapToolLabel::currentFeature( QgsFeature &f, bool fetchGeom )
@@ -426,6 +461,14 @@ int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, co
   if ( !fieldname.isEmpty() )
     return vlayer->fields().lookupField( fieldname );
   return -1;
+}
+
+QVariant QgsMapToolLabel::evaluateDataDefinedProperty( QgsPalLayerSettings::Property property, const QgsPalLayerSettings &labelSettings, const QgsFeature &feature, const QVariant &defaultValue ) const
+{
+  QgsExpressionContext context = mCanvas->mapSettings().expressionContext();
+  context.setFeature( feature );
+  context.setFields( feature.fields() );
+  return labelSettings.dataDefinedProperties().value( property, context, defaultValue );
 }
 
 bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const
@@ -711,12 +754,12 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
   }
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes, bool overwriteExpression )
 {
-  return createAuxiliaryFields( mCurrentLabel, indexes );
+  return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes ) const
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes, bool overwriteExpression ) const
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = details.layer;
@@ -735,6 +778,8 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
   if ( !vlayer->auxiliaryLayer() )
     return false;
 
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+  bool changed = false;
   for ( const QgsPalLayerSettings::Property &p : qgis::as_const( mPalProperties ) )
   {
     int index = -1;
@@ -745,26 +790,29 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || ( prop.propertyType() == QgsProperty::ExpressionBasedProperty && overwriteExpression ) )
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      changed = true;
     }
 
     indexes[p] = index;
   }
+  if ( changed )
+    emit vlayer->styleChanged();
 
   details.settings = vlayer->labeling()->settings( providerId );
 
   return newAuxiliaryLayer;
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes, bool overwriteExpression )
 {
-  return createAuxiliaryFields( mCurrentLabel, indexes );
+  return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
 }
 
 
-bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes )
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes, bool overwriteExpression )
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = details.layer;
@@ -782,6 +830,8 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   if ( !vlayer->auxiliaryLayer() )
     return false;
 
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+  bool changed = false;
   for ( const QgsDiagramLayerSettings::Property &p : qgis::as_const( mDiagramProperties ) )
   {
     int index = -1;
@@ -792,13 +842,16 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || ( prop.propertyType() == QgsProperty::ExpressionBasedProperty && overwriteExpression ) )
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      changed = true;
     }
 
     indexes[p] = index;
   }
+  if ( changed )
+    emit vlayer->styleChanged();
 
   return newAuxiliaryLayer;
 }

@@ -389,14 +389,23 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             return TVL_Unknown;
         }
       }
-      else if ( QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) &&
-                ( vL.type() != QVariant::String || vR.type() != QVariant::String ) )
+      else if ( ( vL.type() != QVariant::String || vR.type() != QVariant::String ) &&
+                QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
       {
         // do numeric comparison if both operators can be converted to numbers,
         // and they aren't both string
         double fL = QgsExpressionUtils::getDoubleValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
         double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( fL - fR ) ? TVL_True : TVL_False;
+      }
+      // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
+      else if ( vL.canConvert< QgsInterval >() && vR.canConvert< QgsInterval >() )
+      {
+        double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
+        ENSURE_NO_EVAL_ERROR;
+        double fR = QgsExpressionUtils::getInterval( vR, parent ).seconds();
         ENSURE_NO_EVAL_ERROR;
         return compare( fL - fR ) ? TVL_True : TVL_False;
       }

@@ -30,6 +30,7 @@
 #include "qgsunittypes.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
+#include "qgsimageoperation.h"
 
 #include <QPainter>
 #include <QFile>
@@ -1243,7 +1244,11 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
 
   //copy distance transform values back to QImage, shading by appropriate color ramp
   dtArrayToQImage( dtArray, fillImage.get(), mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor ? twoColorGradientRamp.get() : mGradientRamp.get(),
-                   context.renderContext(), context.opacity(), useWholeShape, outputPixelMaxDist );
+                   context.renderContext(), useWholeShape, outputPixelMaxDist );
+  if ( context.opacity() < 1 )
+  {
+    QgsImageOperation::multiplyOpacity( *fillImage, context.opacity() );
+  }
 
   //clean up some variables
   delete [] dtArray;
@@ -1251,7 +1256,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   //apply blur if desired
   if ( blurRadius > 0 )
   {
-    QgsSymbolLayerUtils::blurImageInPlace( *fillImage, QRect( 0, 0, fillImage->width(), fillImage->height() ), blurRadius, false );
+    QgsImageOperation::stackBlur( *fillImage, blurRadius, false );
   }
 
   //apply alpha channel to distance transform image, so that areas outside the polygon are transparent
@@ -1404,7 +1409,7 @@ double *QgsShapeburstFillSymbolLayer::distanceTransform( QImage *im, QgsRenderCo
   return dtArray;
 }
 
-void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, double layerAlpha, bool useWholeShape, int maxPixelDistance )
+void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, bool useWholeShape, int maxPixelDistance )
 {
   int width = im->width();
   int height = im->height();
@@ -1437,8 +1442,6 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
   int idx = 0;
   double squaredVal = 0;
   double pixVal = 0;
-  QColor pixColor;
-  bool layerHasAlpha = layerAlpha < 1.0;
 
   for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
   {
@@ -1462,18 +1465,8 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
       }
 
       //convert value to color from ramp
-      pixColor = ramp->color( pixVal );
-
-      int pixAlpha = pixColor.alpha();
-      if ( ( layerHasAlpha ) || ( pixAlpha != 255 ) )
-      {
-        //apply layer's transparency to alpha value
-        double alpha = pixAlpha * layerAlpha;
-        //premultiply ramp color since we are storing this in a ARGB32_Premultiplied QImage
-        QgsSymbolLayerUtils::premultiplyColor( pixColor, alpha );
-      }
-
-      scanLine[widthIndex] = pixColor.rgba();
+      //premultiply ramp color since we are storing this in a ARGB32_Premultiplied QImage
+      scanLine[widthIndex] = qPremultiply( ramp->color( pixVal ).rgba() );
       idx++;
     }
   }

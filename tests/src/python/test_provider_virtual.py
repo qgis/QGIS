@@ -749,6 +749,65 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         # make sure the 3 layers are loaded back
         self.assertEqual(len(QgsProject.instance().mapLayers()), 3)
 
+    def test_relative_paths(self):
+        """
+        Test whether paths to layer sources are stored as relative to the project path
+        """
+
+        # make a virtual layer with living references and save it to a project
+        QgsProject.instance().clear()
+        l0 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        self.assertEqual(l0.isValid(), True)
+        QgsProject.instance().addMapLayer(l0)
+
+        df = QgsVirtualLayerDefinition()
+        df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr")
+        l1 = QgsVectorLayer(df.toString(), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+
+        self.assertEqual(l1.isValid(), True)
+        QgsProject.instance().addMapLayer(l1)
+
+        temp = os.path.join(self.testDataDir, "qgstestproject_relative_path_test.qgs")
+
+        QgsProject.instance().setFileName(temp)
+        QgsProject.instance().write()
+
+        QgsProject.instance().removeAllMapLayers()
+        QgsProject.instance().clear()
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 0)
+
+        # Check that virtual layer source is stored with relative path
+        percent_path_relative = toPercent("./france_parts.shp")
+        with open(temp, 'r') as f:
+            content = ''.join(f.readlines())
+            print(content)
+            self.assertTrue('<datasource>?layer=ogr:{}'.format(percent_path_relative) in content)
+
+        # Check that project is correctly re-read with all layers
+        QgsProject.instance().setFileName(temp)
+        QgsProject.instance().read()
+        print(QgsProject.instance().mapLayers())
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 2)
+
+        # Store absolute
+        QgsProject.instance().writeEntryBool('Paths', '/Absolute', True)
+        QgsProject.instance().write()
+
+        QgsProject.instance().removeAllMapLayers()
+        QgsProject.instance().clear()
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 0)
+
+        # Check that virtual layer source is stored with absolute path
+        percent_path_absolute = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
+        with open(temp, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('<datasource>?layer=ogr:{}'.format(percent_path_absolute) in content)
+
+        # Check that project is correctly re-read with all layers
+        QgsProject.instance().setFileName(temp)
+        QgsProject.instance().read()
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 2)
+
     def test_qgisExpressionFunctions(self):
         QgsProject.instance().setTitle('project')
         self.assertEqual(QgsProject.instance().title(), 'project')

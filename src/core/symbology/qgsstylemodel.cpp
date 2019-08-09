@@ -315,8 +315,9 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
     default:
       return QVariant();
   }
-
-  return QVariant();
+#ifndef _MSC_VER // avoid warning
+  return QVariant();  // avoid warning
+#endif
 }
 
 bool QgsStyleModel::setData( const QModelIndex &index, const QVariant &value, int role )

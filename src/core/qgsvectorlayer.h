@@ -27,7 +27,7 @@
 #include <QFont>
 #include <QMutex>
 
-#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
@@ -41,6 +41,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontextscopegenerator.h"
+#include "qgsexpressioncontext.h"
 
 class QPainter;
 class QImage;

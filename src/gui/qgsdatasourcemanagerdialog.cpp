@@ -118,6 +118,19 @@ void QgsDataSourceManagerDialog::refresh()
   emit providerDialogsRefreshRequested();
 }
 
+void QgsDataSourceManagerDialog::reset()
+{
+  int pageCount = ui->mOptionsStackedWidget->count();
+  for ( int i = 0; i < pageCount; ++i )
+  {
+    QWidget *widget = ui->mOptionsStackedWidget->widget( i );
+    QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( widget );
+    if ( dataSourceWidget )
+      dataSourceWidget->reset();
+  }
+
+}
+
 void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )
 {
   emit addRasterLayer( uri, baseName, providerKey );

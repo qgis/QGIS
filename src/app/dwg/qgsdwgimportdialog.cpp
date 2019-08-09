@@ -57,6 +57,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
   mDatabaseFileWidget->setStorageMode( QgsFileWidget::SaveFile );
+  mDatabaseFileWidget->setConfirmOverwrite( false );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDwgImportDialog::buttonBox_accepted );
   connect( mDatabaseFileWidget, &QgsFileWidget::fileChanged, this, &QgsDwgImportDialog::mDatabaseFileWidget_textChanged );
@@ -446,7 +447,15 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
   }
 
   if ( !cbExpandInserts->isChecked() )
-    layer( layerGroup, layerFilter, QStringLiteral( "inserts" ) );
+  {
+    l = layer( layerGroup, layerFilter, QStringLiteral( "inserts" ) );
+    if ( l && l->renderer() )
+    {
+      QgsSingleSymbolRenderer *ssr = dynamic_cast<QgsSingleSymbolRenderer *>( l->renderer() );
+      if ( ssr && ssr->symbol() && ssr->symbol()->symbolLayer( 0 ) )
+        ssr->symbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "180-angle*180.0/pi()" ) ) );
+    }
+  }
 
   if ( !layerGroup->children().isEmpty() )
   {

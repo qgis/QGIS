@@ -26,6 +26,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryoptions.h"
+#include "qgsabstractgeometry.h"
 
 #include <limits>
 
@@ -514,101 +515,20 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
 
   int returnVal = 0;
 
-  QgsWkbTypes::Type wkbType = geom.wkbType();
-
-  switch ( QgsWkbTypes::geometryType( wkbType ) )
+  QgsAbstractGeometry::vertex_iterator it = geom.vertices_begin();
+  while ( it != geom.vertices_end() )
   {
-    //line
-    case QgsWkbTypes::LineGeometry:
+    if ( addTopologicalPoints( *it ) != 0 )
     {
-      if ( !QgsWkbTypes::isMultiType( wkbType ) )
-      {
-        QgsPolylineXY line = geom.asPolyline();
-        QgsPolylineXY::const_iterator line_it = line.constBegin();
-        for ( ; line_it != line.constEnd(); ++line_it )
-        {
-          if ( addTopologicalPoints( *line_it ) != 0 )
-          {
-            returnVal = 2;
-          }
-        }
-      }
-      else
-      {
-        QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
-        QgsPolylineXY currentPolyline;
-
-        for ( int i = 0; i < multiLine.size(); ++i )
-        {
-          QgsPolylineXY::const_iterator line_it = currentPolyline.constBegin();
-          for ( ; line_it != currentPolyline.constEnd(); ++line_it )
-          {
-            if ( addTopologicalPoints( *line_it ) != 0 )
-            {
-              returnVal = 2;
-            }
-          }
-        }
-      }
-      break;
+      returnVal = 2;
     }
-
-    case QgsWkbTypes::PolygonGeometry:
-    {
-      if ( !QgsWkbTypes::isMultiType( wkbType ) )
-      {
-        QgsPolygonXY polygon = geom.asPolygon();
-        QgsPolylineXY currentRing;
-
-        for ( int i = 0; i < polygon.size(); ++i )
-        {
-          currentRing = polygon.at( i );
-          QgsPolylineXY::const_iterator line_it = currentRing.constBegin();
-          for ( ; line_it != currentRing.constEnd(); ++line_it )
-          {
-            if ( addTopologicalPoints( *line_it ) != 0 )
-            {
-              returnVal = 2;
-            }
-          }
-        }
-      }
-      else
-      {
-        QgsMultiPolygonXY multiPolygon = geom.asMultiPolygon();
-        QgsPolygonXY currentPolygon;
-        QgsPolylineXY currentRing;
-
-        for ( int i = 0; i < multiPolygon.size(); ++i )
-        {
-          currentPolygon = multiPolygon.at( i );
-          for ( int j = 0; j < currentPolygon.size(); ++j )
-          {
-            currentRing = currentPolygon.at( j );
-            QgsPolylineXY::const_iterator line_it = currentRing.constBegin();
-            for ( ; line_it != currentRing.constEnd(); ++line_it )
-            {
-              if ( addTopologicalPoints( *line_it ) != 0 )
-              {
-                returnVal = 2;
-              }
-            }
-          }
-        }
-      }
-      break;
-    }
-
-    case QgsWkbTypes::PointGeometry:
-    case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NullGeometry:
-      break;
+    it++;
   }
+
   return returnVal;
 }
 
-
-int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
+int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
 {
   if ( !mLayer->isSpatial() )
     return 1;
@@ -673,13 +593,18 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
     if ( sqrDistVertexSnap < sqrSnappingTolerance )
       continue;  // the vertex already exists - do not insert it
 
-    if ( !mLayer->insertVertex( p.x(), p.y(), fid, segmentAfterVertex ) )
+    if ( !mLayer->insertVertex( p, fid, segmentAfterVertex ) )
     {
       QgsDebugMsg( QStringLiteral( "failed to insert topo point" ) );
     }
   }
 
   return 0;
+}
+
+int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
+{
+  return addTopologicalPoints( QgsPoint( p ) );
 }
 
 

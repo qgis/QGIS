@@ -777,7 +777,6 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-
   if ( !mValidExtent && mLazyExtent && mDataProvider && !mDataProvider->hasMetadata() && mReadExtentFromXml && !mXmlExtent.isNull() )
   {
     mExtent = mXmlExtent;
@@ -1436,9 +1435,12 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
 
   QgsDataProvider::ProviderOptions options { context.transformContext() };
-  if ( !setDataProvider( mProviderKey, options ) )
+  if ( ( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) || !setDataProvider( mProviderKey, options ) )
   {
-    QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
+    if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
+    }
     const QDomElement elem = layer_node.toElement();
 
     // for invalid layer sources, we fallback to stored wkbType if available
@@ -1830,6 +1832,35 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
     // Refetch the source from the provider, because adding fields actually changes the source for this provider.
     src = dataProvider()->dataSourceUri();
   }
+  else if ( providerType() == QLatin1String( "virtual" ) )
+  {
+    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
+    QStringList theURIParts;
+
+    QUrlQuery query = QUrlQuery( urlSource.query() );
+    QList<QPair<QString, QString> > queryItems = query.queryItems();
+
+    for ( int i = 0; i < queryItems.size(); i++ )
+    {
+      QString key = queryItems.at( i ).first;
+      QString value = queryItems.at( i ).second;
+      if ( key == QLatin1String( "layer" ) )
+      {
+        // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
+        theURIParts = value.split( ':' );
+        theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
+        theURIParts[1] = context.pathResolver().writePath( theURIParts[1] );
+        theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
+        queryItems[i].second =  theURIParts.join( QStringLiteral( ":" ) ) ;
+      }
+    }
+
+    query.setQueryItems( queryItems );
+
+    QUrl urlDest = QUrl( urlSource );
+    urlDest.setQuery( query.query() );
+    src = QString::fromLatin1( urlDest.toEncoded() );
+  }
   else
   {
     src = context.pathResolver().writePath( src );
@@ -1873,6 +1904,35 @@ QString QgsVectorLayer::decodedSource( const QString &source, const QString &pro
 
     QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
+    src = QString::fromLatin1( urlDest.toEncoded() );
+  }
+  else if ( provider == QLatin1String( "virtual" ) )
+  {
+    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
+    QStringList theURIParts;
+
+    QUrlQuery query = QUrlQuery( urlSource.query() );
+    QList<QPair<QString, QString> > queryItems = query.queryItems();
+
+    for ( int i = 0; i < queryItems.size(); i++ )
+    {
+      QString key = queryItems.at( i ).first;
+      QString value = queryItems.at( i ).second;
+      if ( key == QLatin1String( "layer" ) )
+      {
+        // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
+        theURIParts = value.split( ':' );
+        theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
+        theURIParts[1] = context.pathResolver().readPath( theURIParts[1] );
+        theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
+        queryItems[i].second =  theURIParts.join( QStringLiteral( ":" ) ) ;
+      }
+    }
+
+    query.setQueryItems( queryItems );
+
+    QUrl urlDest = QUrl( urlSource );
+    urlDest.setQuery( query.query() );
     src = QString::fromLatin1( urlDest.toEncoded() );
   }
   else
@@ -2130,7 +2190,10 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
   bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
 
-  if ( isSpatial() )
+  // we must try to restore a renderer if our geometry type is unknown
+  // as this allows the renderer to be correctly restored even for layers
+  // with broken sources
+  if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
   {
     // try renderer v2 first
     if ( categories.testFlag( Symbology ) )
@@ -2149,7 +2212,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
         }
       }
       // make sure layer has a renderer - if none exists, fallback to a default renderer
-      if ( !renderer() )
+      if ( isSpatial() && !renderer() )
       {
         setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
       }
@@ -2645,6 +2708,8 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
   {
     case QgsFields::OriginJoin:
       result = mJoinBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+      if ( result )
+        emit attributeValueChanged( fid, field, newValue );
       break;
 
     case QgsFields::OriginProvider:
@@ -3250,7 +3315,10 @@ bool QgsVectorLayer::isAuxiliaryField( int index, int &srcIndex ) const
 
 void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
 {
-  if ( !isSpatial() )
+  // we must allow setting a renderer if our geometry type is unknown
+  // as this allows the renderer to be correctly set even for layers
+  // with broken sources
+  if ( !isSpatial() && mWkbType != QgsWkbTypes::Unknown )
     return;
 
   if ( r != mRenderer )

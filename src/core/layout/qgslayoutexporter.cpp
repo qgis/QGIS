@@ -301,6 +301,7 @@ class LayoutContextSettingsRestorer
       , mPreviousFlags( layout->renderContext().flags() )
       , mPreviousTextFormat( layout->renderContext().textRenderFormat() )
       , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
+      , mPreviousSimplifyMethod( layout->renderContext().simplifyMethod() )
     {
     }
 
@@ -310,6 +311,7 @@ class LayoutContextSettingsRestorer
       mLayout->renderContext().setFlags( mPreviousFlags );
       mLayout->renderContext().setTextRenderFormat( mPreviousTextFormat );
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
+      mLayout->renderContext().setSimplifyMethod( mPreviousSimplifyMethod );
     }
 
     LayoutContextSettingsRestorer( const LayoutContextSettingsRestorer &other ) = delete;
@@ -321,6 +323,8 @@ class LayoutContextSettingsRestorer
     QgsLayoutRenderContext::Flags mPreviousFlags = nullptr;
     QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
     int mPreviousExportLayer = 0;
+    QgsVectorSimplifyMethod mPreviousSimplifyMethod;
+
 };
 ///@endcond PRIVATE
 
@@ -492,6 +496,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  if ( settings.simplifyGeometries )
+  {
+    mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+  }
+
   mLayout->renderContext().setFlags( settings.flags );
 
   // If we are not printing as raster, temporarily disable advanced effects
@@ -566,6 +575,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
     iterator->layout()->renderContext().setFlags( settings.flags );
+
+    if ( settings.simplifyGeometries )
+    {
+      iterator->layout()->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+    }
 
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
@@ -796,6 +810,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mLayout->renderContext().setFlags( settings.flags );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
+
+  if ( settings.simplifyGeometries )
+  {
+    mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+  }
 
   QFileInfo fi( filePath );
   PageExportDetails pageDetails;
@@ -1445,6 +1464,17 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
 
   return true;
+}
+
+QgsVectorSimplifyMethod QgsLayoutExporter::createExportSimplifyMethod()
+{
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  simplifyMethod.setForceLocalOptimization( true );
+  // we use SnappedToGridGlobal, because it avoids gaps and slivers between previously adjacent polygons
+  simplifyMethod.setSimplifyAlgorithm( QgsVectorSimplifyMethod::SnappedToGridGlobal );
+  simplifyMethod.setThreshold( 0.1f ); // (pixels). We are quite conservative here. This could possibly be bumped all the way up to 1. But let's play it safe.
+  return simplifyMethod;
 }
 
 void QgsLayoutExporter::computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi ) const

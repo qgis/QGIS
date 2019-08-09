@@ -23,6 +23,8 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgis_gui.h"
 
+class QDialogButtonBox;
+
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
@@ -50,25 +52,11 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 
     void setSettings( const QgsPalLayerSettings &settings );
 
-    /**
-     * Deactivate a field from data defined properties and update the
-     * corresponding button.
-     *
-     * \param key The property key to deactivate
-     *
-     * \since QGIS 3.0
-     */
-    void deactivateField( QgsPalLayerSettings::Property key );
-
-  signals:
-
-    void auxiliaryFieldCreated();
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
 
     void updateUi();
-
-    void createAuxiliaryField();
 
   protected slots:
     void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type ) override;
@@ -90,25 +78,25 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void validateGeometryGeneratorExpression();
     void determineGeometryGeneratorType();
 
+    /**
+     * Update widget when callout type changes
+     */
+    void calloutTypeChanged();
+
   private:
-    QgsVectorLayer *mLayer = nullptr;
+
     QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
     QgsPalLayerSettings mSettings;
-    QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
     QgsFeature mPreviewFeature;
     QgsMapCanvas *mCanvas = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 
-    void populateDataDefinedButtons();
-    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
-
-    QMap<QgsPalLayerSettings::Property, QgsPropertyOverrideButton *> mButtons;
-
   private slots:
 
-    void updateProperty();
+    void initCalloutWidgets();
+    void updateCalloutWidget( QgsCallout *callout );
 
 };
 
@@ -123,9 +111,15 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
 
     QgsPalLayerSettings settings() const { return mWidget->layerSettings(); }
 
+    /**
+     * Returns a reference to the dialog's button box.
+     */
+    QDialogButtonBox *buttonBox() const;
+
   private:
 
     QgsLabelingGui *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 
 };
 

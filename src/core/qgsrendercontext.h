@@ -38,6 +38,7 @@ class QPainter;
 class QgsAbstractGeometry;
 class QgsLabelingEngine;
 class QgsMapSettings;
+class QgsRenderedFeatureHandlerInterface;
 
 
 /**
@@ -455,8 +456,29 @@ class CORE_EXPORT QgsRenderContext
 
     void setUseRenderingOptimization( bool enabled );
 
-    //! Added in QGIS v2.4
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * The default is to use no simplification.
+     *
+     * \see setVectorSimplifyMethod()
+     * \since QGIS 2.4
+     */
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
+
+    /**
+     * Sets the simplification setting to use when rendering vector layers.
+     *
+     * This can be used to specify simplification methods to apply during map exports and renders,
+     * e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+     * during PDF exports or to speed up layer rendering
+     *
+     * The default is to use no simplification.
+     *
+     * \see vectorSimplifyMethod()
+     *
+     * \since QGIS 2.4
+     */
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
 
     /**
@@ -574,6 +596,20 @@ class CORE_EXPORT QgsRenderContext
       mTextRenderFormat = format;
     }
 
+    /**
+     * Returns the list of rendered feature handlers to use while rendering map layers.
+     * \see hasRenderedFeatureHandlers()
+     * \since QGIS 3.10
+     */
+    QList<QgsRenderedFeatureHandlerInterface *> renderedFeatureHandlers() const;
+
+    /**
+     * Returns TRUE if the context has any rendered feature handlers.
+     * \see renderedFeatureHandlers()
+     * \since QGIS 3.10
+     */
+    bool hasRenderedFeatureHandlers() const { return mHasRenderedFeatureHandlers; }
+
   private:
 
     Flags mFlags;
@@ -632,6 +668,8 @@ class CORE_EXPORT QgsRenderContext
     QgsPathResolver mPathResolver;
 
     TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
+    QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
+    bool mHasRenderedFeatureHandlers = false;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

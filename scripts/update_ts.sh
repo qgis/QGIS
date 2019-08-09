@@ -162,11 +162,11 @@ echo Updating python translations
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
 	cat <<EOF >python-i18n.pro
-SOURCES = $(find . -type f -name "*.py" -printf "	%p \
-")
+SOURCES = $(find . -type f -name "*.py" -print | sed -e 's/^/  /' -e 's/$/ \\/')
 
-FORMS = $(find . -type f -name "*.ui" -printf "	%p \
-")
+
+FORMS = $(find . -type f -name "*.ui" -print | sed -e 's/^/  /' -e 's/$/ \\/')
+
 
 TRANSLATIONS = python-i18n.ts
 EOF

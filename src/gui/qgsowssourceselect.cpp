@@ -124,6 +124,11 @@ void QgsOWSSourceSelect::refresh()
   populateConnectionList();
 }
 
+void QgsOWSSourceSelect::reset()
+{
+  mLayersTreeWidget->clearSelection();
+}
+
 void QgsOWSSourceSelect::clearFormats()
 {
   mFormatComboBox->clear();

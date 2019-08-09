@@ -17,6 +17,9 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
 
+  callouts/qgscallout.cpp
+  callouts/qgscalloutsregistry.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
@@ -166,6 +169,7 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
+  qgspostgresstringutils.cpp
   qgsattributes.cpp
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
@@ -279,6 +283,8 @@ SET(QGIS_CORE_SRCS
   qgsnetworkcontentfetchertask.cpp
   qgsnetworkreply.cpp
   qgsnetworkreplyparser.cpp
+  qgsnewsfeedmodel.cpp
+  qgsnewsfeedparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
@@ -669,6 +675,8 @@ SET(QGIS_CORE_MOC_HDRS
   qgsnetworkcontentfetcherregistry.h
   qgsnetworkcontentfetchertask.h
   qgsnetworkreplyparser.h
+  qgsnewsfeedmodel.h
+  qgsnewsfeedparser.h
   qgsofflineediting.h
   qgsowsconnection.h
   qgspluginlayer.h
@@ -874,6 +882,7 @@ SET(QGIS_CORE_HDRS
   qgsactionscope.h
   qgsactionmanager.h
   qgsaggregatecalculator.h
+  qgspostgresstringutils.h
   qgsattributes.h
   qgsattributetableconfig.h
   qgsattributeeditorelement.h
@@ -985,6 +994,7 @@ SET(QGIS_CORE_HDRS
   qgsreadwritelocker.h
   qgsrenderchecker.h
   qgsrendercontext.h
+  qgsrenderedfeaturehandlerinterface.h
   qgsrulebasedlabeling.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
@@ -1045,6 +1055,9 @@ SET(QGIS_CORE_HDRS
   auth/qgsauthmethod.h
   auth/qgsauthmethodmetadata.h
   auth/qgsauthmethodregistry.h
+
+  callouts/qgscallout.h
+  callouts/qgscalloutsregistry.h
 
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
@@ -1165,6 +1178,7 @@ SET(QGIS_CORE_HDRS
   scalebar/qgsticksscalebarrenderer.h
 
   symbology/qgs25drenderer.h
+  symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
   symbology/qgsellipsesymbollayer.h

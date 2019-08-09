@@ -690,7 +690,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       * \returns true if a datum transform has been specifically chosen by user or only one is available.
       * \since 3.0
       */
-    bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
+    bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsMapLayer *layer = nullptr );
 
     //! Gets map of bookmarks
     QMap<QString, QModelIndex> getBookmarkIndexMap();
@@ -1698,7 +1698,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void connectionsChanged();
 
     /**
-     * Emitted when a key is pressed and we want non widget sublasses to be able
+     * Emitted when a key is pressed and we want non widget subclasses to be able
       to pick up on this (e.g. maplayer) */
     void keyPressed( QKeyEvent *e );
 

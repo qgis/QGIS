@@ -361,6 +361,7 @@ Registers all known core functions provided by QgsExpressionContextScope objects
       public:
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

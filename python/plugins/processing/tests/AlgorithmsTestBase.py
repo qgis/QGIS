@@ -27,13 +27,13 @@ import qgis  # NOQA switch sip api
 import os
 import yaml
 import nose2
-import gdal
 import shutil
 import glob
 import hashlib
 import tempfile
 import re
 
+from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 from copy import deepcopy

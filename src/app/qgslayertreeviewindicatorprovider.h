@@ -56,6 +56,11 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
     //! Disconnect signals, default implementation disconnects layers from dataSourceChanged()
     virtual void disconnectSignals( QgsMapLayer *layer );
 
+    /**
+     * Updates the state of a the indicator for the given \a layer.
+     */
+    void updateLayerIndicator( QgsMapLayer *layer );
+
   protected slots:
 
     //! Action on indicator clicked, default implementation does nothing

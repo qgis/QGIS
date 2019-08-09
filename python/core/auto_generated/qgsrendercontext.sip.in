@@ -416,9 +416,29 @@ Returns ``True`` if the rendering optimization (geometry simplification) can be 
 
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const;
 %Docstring
-Added in QGIS v2.4
+Returns the simplification settings to use when rendering vector layers.
+
+The default is to use no simplification.
+
+.. seealso:: :py:func:`setVectorSimplifyMethod`
+
+.. versionadded:: 2.4
 %End
+
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
+%Docstring
+Sets the simplification setting to use when rendering vector layers.
+
+This can be used to specify simplification methods to apply during map exports and renders,
+e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+during PDF exports or to speed up layer rendering
+
+The default is to use no simplification.
+
+.. seealso:: :py:func:`vectorSimplifyMethod`
+
+.. versionadded:: 2.4
+%End
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
@@ -549,6 +569,24 @@ Sets the text render ``format``, which dictates how text is rendered (e.g. as pa
 .. seealso:: :py:func:`textRenderFormat`
 
 .. versionadded:: 3.4.3
+%End
+
+    QList<QgsRenderedFeatureHandlerInterface *> renderedFeatureHandlers() const;
+%Docstring
+Returns the list of rendered feature handlers to use while rendering map layers.
+
+.. seealso:: :py:func:`hasRenderedFeatureHandlers`
+
+.. versionadded:: 3.10
+%End
+
+    bool hasRenderedFeatureHandlers() const;
+%Docstring
+Returns ``True`` if the context has any rendered feature handlers.
+
+.. seealso:: :py:func:`renderedFeatureHandlers`
+
+.. versionadded:: 3.10
 %End
 
 };

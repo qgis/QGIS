@@ -39,6 +39,7 @@
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
+#include "callouts/qgscalloutsregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
@@ -53,6 +54,7 @@
 #include "qgsstyle.h"
 #include "qgsprojutils.h"
 #include "qgsvaliditycheckregistry.h"
+#include "qgsnewsfeedparser.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -218,6 +220,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
   qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
   qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
+  qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
 
   ( void ) resolvePkgPath();
 
@@ -347,10 +350,10 @@ QgsApplication::~QgsApplication()
   // is destroyed before the static variables of the cache, we might use freed memory.
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
-  // and there's just a *chance* that in between an exitQgis call and this destructor
-  // something else's destructor has caused a new entry in the caches...
-  QgsCoordinateTransform::invalidateCache();
-  QgsCoordinateReferenceSystem::invalidateCache();
+  // and there's just a *chance* that someone hasn't properly called exitQgis prior to
+  // this destructor...
+  QgsCoordinateTransform::invalidateCache( true );
+  QgsCoordinateReferenceSystem::invalidateCache( true );
 }
 
 QgsApplication *QgsApplication::instance()
@@ -449,7 +452,7 @@ void QgsApplication::setFileOpenEventReceiver( QObject *receiver )
 void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPaths )
 {
   ABISYM( mPrefixPath ) = prefixPath;
-#if defined(_MSC_VER)
+#if defined(Q_OS_WIN)
   if ( ABISYM( mPrefixPath ).endsWith( "/bin" ) )
   {
     ABISYM( mPrefixPath ).chop( 4 );
@@ -729,12 +732,12 @@ QString QgsApplication::resolvePkgPath()
     prefixPath = dir.absolutePath();
 #else
 
-#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACX)
     prefixPath = appPath;
-#if defined(_MSC_VER)
+#elif defined(Q_OS_WIN)
+    prefixPath = appPath;
     if ( prefixPath.endsWith( "/bin" ) )
       prefixPath.chop( 4 );
-#endif
 #else
     QDir dir( appPath );
     // Fix for server which is one level deeper in /usr/lib/cgi-bin
@@ -954,11 +957,19 @@ QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
+#if PROJ_VERSION_MAJOR>=6
+    QString tempCopy = QDir::tempPath() + "/srs6.db";
+#else
     QString tempCopy = QDir::tempPath() + "/srs.db";
+#endif
 
     if ( !QFile( tempCopy ).exists() )
     {
+#if PROJ_VERSION_MAJOR>=6
+      QFile f( pkgDataPath() + "/resources/srs6.db" );
+#else
       QFile f( pkgDataPath() + "/resources/srs.db" );
+#endif
       if ( !f.copy( tempCopy ) )
       {
         qFatal( "Could not create temporary copy" );
@@ -1096,6 +1107,14 @@ QString QgsApplication::osName()
   return QLatin1String( "windows" );
 #elif defined(Q_OS_LINUX)
   return QStringLiteral( "linux" );
+#elif defined(Q_OS_FREEBSD)
+  return QStringLiteral( "freebsd" );
+#elif defined(Q_OS_OPENBSD)
+  return QStringLiteral( "openbsd" );
+#elif defined(Q_OS_NETBSD)
+  return QStringLiteral( "netbsd" );
+#elif defined(Q_OS_UNIX)
+  return QLatin1String( "unix" );
 #else
   return QLatin1String( "unknown" );
 #endif
@@ -1237,11 +1256,11 @@ void QgsApplication::exitQgis()
   if ( QgsProviderRegistry::exists() )
     delete QgsProviderRegistry::instance();
 
-  // invalidate coordinate cache while the PROJ context held by the thread-locale
+  // invalidate coordinate cache AND DISABLE THEM! while the PROJ context held by the thread-locale
   // QgsProjContextStore object is still alive. Otherwise if this later object
   // is destroyed before the static variables of the cache, we might use freed memory.
-  QgsCoordinateTransform::invalidateCache();
-  QgsCoordinateReferenceSystem::invalidateCache();
+  QgsCoordinateTransform::invalidateCache( true );
+  QgsCoordinateReferenceSystem::invalidateCache( true );
 
   QgsStyle::cleanDefaultStyle();
 
@@ -1881,6 +1900,11 @@ QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
   return members()->mSymbolLayerRegistry;
 }
 
+QgsCalloutRegistry *QgsApplication::calloutRegistry()
+{
+  return members()->mCalloutRegistry;
+}
+
 QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
 {
   return members()->mLayoutItemRegistry;
@@ -1945,6 +1969,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mColorSchemeRegistry = new QgsColorSchemeRegistry();
   mPaintEffectRegistry = new QgsPaintEffectRegistry();
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+  mCalloutRegistry = new QgsCalloutRegistry();
   mRendererRegistry = new QgsRendererRegistry();
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
   mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
@@ -1981,6 +2006,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mRendererRegistry;
   delete mSvgCache;
   delete mImageCache;
+  delete mCalloutRegistry;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;

@@ -837,6 +837,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! emit a message (usually to be displayed in a message bar)
     void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::Info );
 
+    /**
+     * Emitted whenever an error is encountered during a map render operation.
+     *
+     * The \a layer argument indicates the associated map layer, if available.
+     *
+     * \since QGIS 3.10.0
+     */
+    void renderErrorOccurred( const QString &error, QgsMapLayer *layer );
+
   protected:
 
     //! Overridden standard event to be gestures aware

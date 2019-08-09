@@ -87,7 +87,7 @@ Returns parameters
 Set a parameter
 %End
 
-    QString parameter( const QString &key ) const;
+    QString parameter( const QString &key, const QString &defaultValue = QString() ) const;
 %Docstring
 Gets a parameter value
 %End
@@ -153,6 +153,13 @@ by default this is equal to the url seen by QGIS server
     void setMethod( QgsServerRequest::Method method );
 %Docstring
 Set the request method
+%End
+
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+%Docstring
+Returns the query string parameter with the given ``name`` from the request URL, a ``defaultValue`` can be specified.
+
+.. versionadded:: 3.10
 %End
 
   protected:

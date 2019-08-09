@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
 
   public:
 
-    //! Page orientiation
+    //! Page orientation
     enum Orientation
     {
       Portrait, //!< Portrait orientation
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     QgsLayoutSize pageSize() const;
 
     /**
-     * Returns the page orientiation.
+     * Returns the page orientation.
      * \note There is no direct setter for page orientation - use setPageSize() instead.
      */
     Orientation orientation() const;

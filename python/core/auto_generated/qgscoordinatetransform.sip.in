@@ -392,6 +392,7 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. deprecated:: Unused on builds based on Proj 6.0 or later
 %End
 
+
     static void invalidateCache();
 %Docstring
 Clears the internal cache used to initialize QgsCoordinateTransform objects.

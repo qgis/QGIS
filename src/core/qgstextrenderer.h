@@ -35,6 +35,7 @@ class QgsTextSettingsPrivate;
 class QgsVectorLayer;
 class QgsPaintEffect;
 class QgsMarkerSymbol;
+class QgsPropertyCollection;
 
 /**
  * \class QgsTextBufferSettings
@@ -43,7 +44,6 @@ class QgsMarkerSymbol;
   * \note QgsTextBufferSettings objects are implicitly shared.
   * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsTextBufferSettings
 {
   public:
@@ -225,6 +225,12 @@ class CORE_EXPORT QgsTextBufferSettings
      * \see paintEffect()
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
+
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
 
   private:
 
@@ -700,6 +706,12 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
   private:
 
     QSharedDataPointer<QgsTextBackgroundSettingsPrivate> d;
@@ -980,6 +992,12 @@ class CORE_EXPORT QgsTextShadowSettings
      */
     QDomElement writeXml( QDomDocument &doc ) const;
 
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
   private:
 
     QSharedDataPointer<QgsTextShadowSettingsPrivate> d;
@@ -998,6 +1016,14 @@ class CORE_EXPORT QgsTextShadowSettings
 class CORE_EXPORT QgsTextFormat
 {
   public:
+
+    //! Text orientation
+    enum TextOrientation
+    {
+      HorizontalOrientation, //!< Vertically oriented text
+      VerticalOrientation, //!< Horizontally oriented text
+      RotationBasedOrientation, //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
+    };
 
     QgsTextFormat();
 
@@ -1222,6 +1248,20 @@ class CORE_EXPORT QgsTextFormat
     void setLineHeight( double height );
 
     /**
+     * Returns the orientation of the text.
+     * \see setOrientation()
+     * \since QGIS 3.10
+     */
+    TextOrientation orientation() const;
+
+    /**
+     * Sets the \a orientation for the text.
+     * \see orientation()
+     * \since QGIS 3.10
+     */
+    void setOrientation( TextOrientation orientation );
+
+    /**
      * Returns the background color for text previews.
      * \see setPreviewBackgroundColor()
      * \since QGIS 3.10
@@ -1305,6 +1345,35 @@ class CORE_EXPORT QgsTextFormat
      * \see fontFound()
      */
     QString resolvedFontFamily() const { return mTextFontFamily; }
+
+    /**
+     * Returns a reference to the format's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \since QGIS 3.10
+     */
+    QgsPropertyCollection &dataDefinedProperties();
+
+    /**
+     * Returns a reference to the format's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP;
+
+    /**
+     * Sets the format's property collection, used for data defined overrides.
+     * \param collection property collection. Existing properties will be replaced.
+     * \see dataDefinedProperties()
+     * \since QGIS 3.10
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context );
 
     /**
     * Returns a pixmap preview for a text \a format.
@@ -1517,7 +1586,8 @@ class CORE_EXPORT QgsTextRenderer
 
     static void drawBuffer( QgsRenderContext &context,
                             const Component &component,
-                            const QgsTextFormat &format );
+                            const QgsTextFormat &format,
+                            const QFontMetricsF *fontMetrics );
 
     static void drawBackground( QgsRenderContext &context,
                                 Component component,
@@ -1549,5 +1619,53 @@ class CORE_EXPORT QgsTextRenderer
 
 
 };
+
+/**
+ * \class QgsTextRendererUtils
+  * \ingroup core
+  * Utility functions for text rendering.
+  * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsTextRendererUtils
+{
+  public:
+
+    /**
+     * Decodes a string representation of a background shape type to a type.
+     */
+    static QgsTextBackgroundSettings::ShapeType decodeShapeType( const QString &string );
+
+    /**
+     * Decodes a string representation of a background size type to a type.
+     */
+    static QgsTextBackgroundSettings::SizeType decodeBackgroundSizeType( const QString &string );
+
+    /**
+     * Decodes a string representation of a background rotation type to a type.
+     */
+    static QgsTextBackgroundSettings::RotationType decodeBackgroundRotationType( const QString &string );
+
+    /**
+     * Decodes a string representation of a shadow placement type to a type.
+     */
+    static QgsTextShadowSettings::ShadowPlacement decodeShadowPlacementType( const QString &string );
+
+    /**
+     * Encodes a text \a orientation.
+     * \returns encoded string
+     * \see decodeTextOrientation()
+     */
+    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+
+    /**
+     * Attempts to decode a string representation of a text orientation.
+     * \param name encoded text orientation name
+     * \param ok if specified, will be set to TRUE if the name was successfully decoded
+     * \returns decoded text orientation
+     * \see encodeTextOrientation()
+     */
+    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = nullptr );
+};
+
 
 #endif // QGSTEXTRENDERER_H

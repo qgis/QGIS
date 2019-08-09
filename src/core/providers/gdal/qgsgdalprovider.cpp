@@ -272,7 +272,7 @@ QString QgsGdalProvider::dataSourceUri( bool expandAuthConfig ) const
   {
     QString uri( QgsDataProvider::dataSourceUri() );
     // Check for authcfg
-    QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+    QRegularExpression authcfgRe( R"raw(authcfg='?([^'\s]+)'?)raw" );
     QRegularExpressionMatch match;
     if ( uri.contains( authcfgRe, &match ) )
     {
@@ -829,7 +829,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   //     which could be easily noticed by user
 
   // Because of problems mentioned above we read to another temporary block and do i
-  // another resampling here which appeares to be quite fast
+  // another resampling here which appears to be quite fast
 
   // Get necessary src extent aligned to src resolution
   if ( mExtent.xMinimum() < rasterExtent.xMinimum() )

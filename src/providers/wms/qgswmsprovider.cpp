@@ -956,9 +956,9 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
     ++it2;
   }
 
-  QString layers = visibleLayers.join( QStringLiteral( "," ) );
+  QString layers = visibleLayers.join( ',' );
   layers = layers.isNull() ? QString() : layers;
-  QString styles = visibleStyles.join( QStringLiteral( "," ) );
+  QString styles = visibleStyles.join( ',' );
   styles = styles.isNull() ? QString() : styles;
 
   QgsDebugMsg( "Visible layer list of " + layers + " and style list of " + styles );
@@ -4073,6 +4073,11 @@ void QgsWmsProvider::setSRSQueryItem( QUrl &url )
     crsKey = QStringLiteral( "CRS" );
   }
   setQueryItem( url, crsKey, mImageCrs );
+}
+
+bool QgsWmsProvider::ignoreExtents() const
+{
+  return mSettings.mIgnoreReportedLayerExtents;
 }
 
 // ----------

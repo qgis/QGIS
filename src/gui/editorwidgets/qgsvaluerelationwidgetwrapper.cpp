@@ -26,6 +26,7 @@
 #include "qgsattributeform.h"
 #include "qgsattributes.h"
 #include "qgsjsonutils.h"
+#include "qgspostgresstringutils.h"
 
 #include <QHeaderView>
 #include <QComboBox>
@@ -35,7 +36,7 @@
 #include <QCompleter>
 
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
+using namespace nlohmann;
 
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
@@ -76,7 +77,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     }
 
     QVariantList vl;
-    //store as QVariantList because it's json
+    //store as QVariantList because the field type supports data structure
     for ( const QString &s : qgis::as_const( selection ) )
     {
       // Convert to proper type
@@ -94,7 +95,17 @@ QVariant QgsValueRelationWidgetWrapper::value() const
           break;
       }
     }
-    v = vl;
+
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
+         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
+    {
+      v = vl;
+    }
+    else
+    {
+      //make string
+      v = QgsPostgresStringUtils::buildArray( vl );
+    }
   }
 
   if ( mLineEdit )
@@ -176,9 +187,9 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
   {
     QStringList checkList;
 
-    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
+         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
     {
-      //because of json it's stored as QVariantList
       checkList = value.toStringList();
     }
     else
@@ -277,6 +288,11 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   setFormFeature( feature );
   whileBlocking( this )->populate();
   whileBlocking( this )->setValue( feature.attribute( fieldIdx() ) );
+
+  // As we block any signals, possible depending widgets will not being updated
+  // so we force emit signal once and for all
+  emitValueChanged();
+
   // A bit of logic to set the default value if AllowNull is false and this is a new feature
   // Note that this needs to be here after the cache has been created/updated by populate()
   // and signals unblocked (we want this to propagate to the feature itself)

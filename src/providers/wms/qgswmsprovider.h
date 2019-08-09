@@ -330,6 +330,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /* \brief add SRS or CRS parameter */
     void setSRSQueryItem( QUrl &url );
 
+    bool ignoreExtents() const override;
+
   private:
 
     QUrl createRequestUrlWMS( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight );

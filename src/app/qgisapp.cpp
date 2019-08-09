@@ -1195,6 +1195,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStyleXmlDataItemProvider() );
   registerCustomDropHandler( new QgsStyleXmlDropHandler() );
 
+  // set handler for missing layers (will be owned by QgsProject)
+  mAppBadLayersHandler = new QgsHandleBadLayersHandler();
+  QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
+
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   loadPythonSupport();
@@ -1273,10 +1277,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // now build vector and raster file filters
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
   mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
-
-  // set handler for missing layers (will be owned by QgsProject)
-  mAppBadLayersHandler = new QgsHandleBadLayersHandler();
-  QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
 
 #if 0
   // Set the background color for toolbox and overview as they default to
@@ -1662,6 +1662,17 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
     if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
       event->acceptProposedAction();
   }
+
+  // check if any custom handlers can operate on the data
+  const QVector<QPointer<QgsCustomDropHandler >> handlers = mCustomDropHandlers;
+  for ( QgsCustomDropHandler *handler : handlers )
+  {
+    if ( handler && handler->canHandleMimeData( event->mimeData() ) )
+    {
+      event->acceptProposedAction();
+      return;
+    }
+  }
 }
 
 void QgisApp::dropEvent( QDropEvent *event )
@@ -1678,7 +1689,18 @@ void QgisApp::dropEvent( QDropEvent *event )
   for ( QgsCustomDropHandler *handler : handlers )
   {
     if ( handler )
+    {
+      if ( handler->handleMimeDataV2( event->mimeData() ) )
+      {
+        // custom handler completely handled this data, no further processing required
+        event->acceptProposedAction();
+        return;
+      }
+
+      Q_NOWARN_DEPRECATED_PUSH
       handler->handleMimeData( event->mimeData() );
+      Q_NOWARN_DEPRECATED_POP
+    }
   }
 
   // get the file list
@@ -1891,6 +1913,10 @@ void QgisApp::dataSourceManager( const QString &pageName )
     connect( this, &QgisApp::newProject, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::updateProjectHome );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::openFile, this, &QgisApp::openFile );
 
+  }
+  else
+  {
+    mDataSourceManagerDialog->reset();
   }
   // Try to open the dialog on a particular page
   if ( ! pageName.isEmpty() )
@@ -2316,6 +2342,17 @@ void QgisApp::createActions()
   connect( mActionSponsors, &QAction::triggered, this, &QgisApp::sponsors );
 
   connect( mActionShowPinnedLabels, &QAction::toggled, this, &QgisApp::showPinnedLabels );
+  connect( mActionShowUnplacedLabels, &QAction::toggled, this, [ = ]( bool active )
+  {
+    QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
+    engineSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, active );
+    QgsProject::instance()->setLabelingEngineSettings( engineSettings );
+    refreshMapCanvas( true );
+  } );
+  connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged, this, [ = ]
+  {
+    whileBlocking( mActionShowUnplacedLabels )->setChecked( QgsProject::instance()->labelingEngineSettings().testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
+  } );
   connect( mActionPinLabels, &QAction::triggered, this, &QgisApp::pinLabels );
   connect( mActionShowHideLabels, &QAction::triggered, this, &QgisApp::showHideLabels );
   connect( mActionMoveLabel, &QAction::triggered, this, &QgisApp::moveLabel );
@@ -3402,6 +3439,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowPinnedLabels.svg" ) ) );
   mActionPinLabels->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPinLabels.svg" ) ) );
   mActionShowHideLabels->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowHideLabels.svg" ) ) );
+  mActionShowUnplacedLabels->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowUnplacedLabel.svg" ) ) );
   mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveLabel.svg" ) ) );
   mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRotateLabel.svg" ) ) );
   mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionChangeLabelProperties.svg" ) ) );
@@ -4062,6 +4100,7 @@ void QgisApp::initLayerTreeView()
   mLayerOrderDock->hide();
 
   connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, this, &QgisApp::updateFilterLegend );
+  connect( mMapCanvas, &QgsMapCanvas::renderErrorOccurred, badLayerIndicatorProvider, &QgsLayerTreeViewBadLayerIndicatorProvider::reportLayerError );
 }
 
 void QgisApp::setupLayerTreeViewFromSettings()
@@ -4725,7 +4764,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
         delete layer;
 
         for ( QgsMapLayer *l : addedLayers )
-          askUserForDatumTransform( l->crs(), QgsProject::instance()->crs() );
+          askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
       }
       else if ( !sublayers.isEmpty() ) // there is 1 layer of data available
       {
@@ -4778,7 +4817,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
     bool ok;
     l->loadDefaultStyle( ok );
     l->loadDefaultMetadata( ok );
-    askUserForDatumTransform( l->crs(), QgsProject::instance()->crs() );
+    askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
   }
   activateDeactivateLayerRelatedActions( activeLayer() );
 
@@ -4823,7 +4862,7 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
 
   QgsProject::instance()->addMapLayer( layer.get() );
 
-  askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs() );
+  askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer.get() );
 
   bool ok;
   layer->loadDefaultStyle( ok );
@@ -5148,7 +5187,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   if ( !layer )
   {
     layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-    if ( !layer || layer->dataProvider()->name() != QLatin1String( "ogr" ) )
+    if ( !layer || layer->providerType() != QLatin1String( "ogr" ) )
       return result;
   }
 
@@ -5497,8 +5536,10 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set project CRS
   const QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString() );
   // write the projections _proj string_ to project settings
-  prj->setCrs( srs );
-  prj->setEllipsoid( srs.ellipsoidAcronym() );
+  const bool planimetric = settings.value( QStringLiteral( "measure/planimetric" ), true, QgsSettings::Core ).toBool();
+  prj->setCrs( srs, !planimetric ); // If the default ellipsoid is not planimetric, set it from the default crs
+  if ( planimetric )
+    prj->setEllipsoid( GEO_NONE );
 
   /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
@@ -9907,7 +9948,7 @@ void QgisApp::projectCrsChanged()
     {
       alreadyAsked.append( it.value()->crs() );
       askUserForDatumTransform( it.value()->crs(),
-                                QgsProject::instance()->crs() );
+                                QgsProject::instance()->crs(), it.value() );
     }
   }
 }
@@ -10242,7 +10283,7 @@ void QgisApp::setLayerCrs()
       {
         if ( child->layer() )
         {
-          askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+          askUserForDatumTransform( crs, QgsProject::instance()->crs(), child->layer() );
           child->layer()->setCrs( crs );
           child->layer()->triggerRepaint();
         }
@@ -10253,7 +10294,7 @@ void QgisApp::setLayerCrs()
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->layer() )
       {
-        askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+        askUserForDatumTransform( crs, QgsProject::instance()->crs(), nodeLayer->layer() );
         nodeLayer->layer()->setCrs( crs );
         nodeLayer->layer()->triggerRepaint();
       }
@@ -11119,7 +11160,7 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
       delete layer;
       layer = addedLayers.isEmpty() ? nullptr : qobject_cast< QgsVectorLayer * >( addedLayers.at( 0 ) );
       for ( QgsMapLayer *l : addedLayers )
-        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs() );
+        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
     }
     else
     {
@@ -11137,7 +11178,7 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
       myList << layer;
       QgsProject::instance()->addMapLayers( myList );
 
-      askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs() );
+      askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer );
 
       bool ok;
       layer->loadDefaultStyle( ok );
@@ -11175,7 +11216,7 @@ void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
     myList << mapLayer;
     QgsProject::instance()->addMapLayers( myList );
 
-    askUserForDatumTransform( mapLayer->crs(), QgsProject::instance()->crs() );
+    askUserForDatumTransform( mapLayer->crs(), QgsProject::instance()->crs(), mapLayer );
   }
   else
   {
@@ -11418,7 +11459,7 @@ bool QgisApp::saveDirty()
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
       // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
       // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers().
-      if ( !vl || vl->dataProvider()->name() == QLatin1String( "memory" ) )
+      if ( !vl || vl->providerType() == QLatin1String( "memory" ) )
       {
         continue;
       }
@@ -11481,7 +11522,7 @@ bool QgisApp::saveDirty()
   {
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
     {
-      if ( vl->dataProvider()->name() == QLatin1String( "memory" ) && vl->isEditable() && vl->isModified() )
+      if ( vl->providerType() == QLatin1String( "memory" ) && vl->isEditable() && vl->isModified() )
       {
         vl->rollBack();
       }
@@ -11504,7 +11545,7 @@ bool QgisApp::checkUnsavedLayerEdits()
       {
         // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
         // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers()
-        if ( ! vl->dataProvider() || vl->dataProvider()->name() == QLatin1String( "memory" ) )
+        if ( ! vl->dataProvider() || vl->providerType() == QLatin1String( "memory" ) )
           continue;
 
         const bool hasUnsavedEdits = ( vl->isEditable() && vl->isModified() );
@@ -11530,7 +11571,7 @@ bool QgisApp::checkMemoryLayers()
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.begin(); it != layers.end(); ++it )
   {
-    if ( it.value() && it.value()->dataProvider()->name() == QLatin1String( "memory" ) )
+    if ( it.value() && it.value()->providerType() == QLatin1String( "memory" ) )
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() );
       if ( vl && vl->featureCount() != 0 && !vl->customProperty( QStringLiteral( "skipMemoryLayersCheck" ) ).toInt() )
@@ -13182,7 +13223,7 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *rasterLayer )
   myList << rasterLayer;
   QgsProject::instance()->addMapLayers( myList );
 
-  askUserForDatumTransform( rasterLayer->crs(), QgsProject::instance()->crs() );
+  askUserForDatumTransform( rasterLayer->crs(), QgsProject::instance()->crs(), rasterLayer );
 
   return true;
 }
@@ -13244,7 +13285,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
       // the list if he wants to load it.
       delete layer;
       for ( QgsMapLayer *l : qgis::as_const( subLayers ) )
-        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs() );
+        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
       layer = !subLayers.isEmpty() ? qobject_cast< QgsRasterLayer * >( subLayers.at( 0 ) ) : nullptr;
     }
   }
@@ -13455,6 +13496,13 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 {
   // QgsDebugMsg( QStringLiteral( "%1 (keypress received)" ).arg( e->text() ) );
   emit keyPressed( e );
+
+#if 0 && defined(_MSC_VER) && defined(QGISDEBUG)
+  if ( e->key() == Qt::Key_Backslash && e->modifiers() == Qt::ControlModifier )
+  {
+    QgsCrashHandler::handle( 0 );
+  }
+#endif
 
   //cancel rendering progress with esc key
   if ( e->key() == Qt::Key_Escape )
@@ -13738,11 +13786,38 @@ void QgisApp::writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &ele
   elem.setAttribute( QStringLiteral( "area" ), dockWidgetArea( dockWidget ) );
 }
 
-bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
+bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsMapLayer *layer )
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
-  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this, mMapCanvas );
+  QString title;
+  if ( layer )
+  {
+    // try to make a user-friendly (short!) identifier for the layer
+    QString layerIdentifier;
+    if ( !layer->name().isEmpty() )
+    {
+      layerIdentifier = layer->name();
+    }
+    else
+    {
+      const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+      if ( parts.contains( QStringLiteral( "path" ) ) )
+      {
+        const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+        layerIdentifier = fi.fileName();
+      }
+      else if ( layer->dataProvider() )
+      {
+        const QgsDataSourceUri uri( layer->source() );
+        layerIdentifier = uri.table();
+      }
+    }
+    if ( !layerIdentifier.isEmpty() )
+      title = tr( "Select Transformation for %1" ).arg( layerIdentifier );
+  }
+
+  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this, mMapCanvas, title );
 }
 
 void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
@@ -14261,8 +14336,15 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
 
   if ( !result.successful )
   {
-    // fallback - use message bar
-    messageBar()->pushInfo( title, message );
+    // fallback - use message bar if available, otherwise use a message log
+    if ( messageBar() )
+    {
+      messageBar()->pushInfo( title, message );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( title, message ) );
+    }
   }
   else
   {

@@ -251,7 +251,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       }
       cboProviderEncoding->setCurrentIndex( encindex );
     }
-    else if ( mLayer->dataProvider()->name() == QLatin1String( "ogr" ) )
+    else if ( mLayer->providerType() == QLatin1String( "ogr" ) )
     {
       // if OGR_L_TestCapability(OLCStringsAsUTF8) returns true, OGR provider encoding can be set to only UTF-8
       // so make encoding box grayed out
@@ -861,8 +861,7 @@ void QgsVectorLayerProperties::onCancel()
     for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
       mLayer->removeJoin( info.joinLayerId() );
 
-    const auto constMOldJoins = mOldJoins;
-    for ( const QgsVectorLayerJoinInfo &info : constMOldJoins )
+    for ( const QgsVectorLayerJoinInfo &info : qgis::as_const( mOldJoins ) )
       mLayer->addJoin( info );
   }
 
@@ -950,7 +949,7 @@ void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString 
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs(), mLayer );
   mLayer->setCrs( crs );
   mMetadataFilled = false;
   mMetadataWidget->crsChanged();

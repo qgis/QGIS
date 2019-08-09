@@ -673,7 +673,7 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
       return;
     }
   }
-  else // the table alread exists
+  else // the table already exists
   {
     QString type = field.typeName();
     if ( type == QLatin1String( "varchar" ) )

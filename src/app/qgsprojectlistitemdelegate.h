@@ -63,4 +63,29 @@ class QgsProjectListItemDelegate : public QStyledItemDelegate
     QColor mColor = Qt::white;
 };
 
+class QgsNewsItemListItemDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    explicit QgsNewsItemListItemDelegate( QObject *parent = nullptr );
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+    /**
+     * Returns the area corresponding to the dismiss rectangle.
+     */
+    QRect dismissRect() const { return mDismissRect; }
+
+    QSize dismissRectSize() const { return mDismissRectSize; }
+
+  private:
+
+    int mRoundedRectSizePixels = 5;
+    QColor mColor = Qt::white;
+    mutable QRect mDismissRect;
+    QSize mDismissRectSize;
+};
+
 #endif // QGSPROJECTLISTITEMDELEGATE_H

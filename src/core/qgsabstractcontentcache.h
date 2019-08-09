@@ -88,11 +88,7 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
 
     bool operator==( const QgsAbstractContentCacheEntry &other ) const
     {
-      bool equal = other.path == path;
-      if ( equal && ( mFileModifiedCheckTimeout <= 0 || fileModifiedLastCheckTimer.hasExpired( mFileModifiedCheckTimeout ) ) )
-        equal = other.fileModified == fileModified;
-
-      return equal;
+      return other.path == path;
     }
 
     /**
@@ -424,6 +420,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
             if ( cacheEntry->fileModified != modified )
               continue;
+            else
+              cacheEntry->fileModifiedLastCheckTimer.restart();
           }
           currentEntry = cacheEntry;
           break;
@@ -477,6 +475,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     T *insertCacheEntry( T *entry )
     {
       entry->mFileModifiedCheckTimeout = mFileModifiedCheckTimeout;
+
+      if ( !entry->path.startsWith( QStringLiteral( "base64:" ) ) )
+      {
+        entry->fileModified = QFileInfo( entry->path ).lastModified();
+        entry->fileModifiedLastCheckTimer.start();
+      }
 
       mEntryLookup.insert( entry->path, entry );
 

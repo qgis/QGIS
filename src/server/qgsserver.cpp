@@ -34,6 +34,8 @@
 #include "qgsserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
+#include "qgsserverapi.h"
+#include "qgsserverapicontext.h"
 #include "qgsserverparameters.h"
 #include "qgsapplication.h"
 
@@ -145,7 +147,16 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
   {
     if ( configPath.isEmpty() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
+      // Read it from the environment, because a rewrite rule may have rewritten it
+      if ( getenv( "QGIS_PROJECT_FILE" ) )
+      {
+        cfPath = getenv( "QGIS_PROJECT_FILE" );
+        QgsMessageLog::logMessage( QStringLiteral( "Using configuration file path from environment: %1" ).arg( cfPath ), QStringLiteral( "Server" ), Qgis::Info );
+      }
+      else  if ( ! defaultConfigPath.isEmpty() )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
+      }
     }
     else
     {
@@ -344,33 +355,54 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       const QgsServerParameters params = request.serverParameters();
       printRequestParameters( params.toMap(), logLevel );
 
-      //Config file path
+      // Setup project (config file path)
       if ( ! project )
       {
+        QString configFilePath = configPath( *sConfigFilePath, params.map() );
+
         // load the project if needed and not empty
-        project = mConfigCache->project( sServerInterface->configFilePath() );
+        project = mConfigCache->project( configFilePath );
+      }
+
+      if ( project )
+      {
+        sServerInterface->setConfigFilePath( project->fileName() );
+      }
+
+      // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
+      // TODO: QGIS 4 fix the OWS services and treat them as APIs
+      QgsServerApi *api = nullptr;
+      if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
+      {
+        QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
+        api->executeRequest( context );
+      }
+      else
+      {
+
+        // Project is mandatory for OWS at this point
         if ( ! project )
         {
           throw QgsServerException( QStringLiteral( "Project file error" ) );
         }
-      }
 
-      if ( ! params.fileName().isEmpty() )
-      {
-        const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
-        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
-      }
+        if ( ! params.fileName().isEmpty() )
+        {
+          const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
+          requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
+        }
 
-      // Lookup for service
-      QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
-      if ( service )
-      {
-        service->executeRequest( request, responseDecorator, project );
-      }
-      else
-      {
-        throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
-                                      QStringLiteral( "Service unknown or unsupported" ) );
+        // Lookup for service
+        QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
+        if ( service )
+        {
+          service->executeRequest( request, responseDecorator, project );
+        }
+        else
+        {
+          throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
+                                        QStringLiteral( "Service unknown or unsupported" ) );
+        }
       }
     }
     catch ( QgsServerException &ex )

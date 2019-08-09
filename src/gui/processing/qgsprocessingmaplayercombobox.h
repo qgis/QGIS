@@ -47,7 +47,9 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     /**
      * Constructor for QgsProcessingMapLayerComboBox, with the specified \a parameter definition.
      */
-    QgsProcessingMapLayerComboBox( QgsProcessingParameterDefinition *parameter, QWidget *parent = nullptr );
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QWidget *parent = nullptr );
+
+    ~QgsProcessingMapLayerComboBox() override;
 
     /**
      * Sets the combo box to the specified \a layer, if \a layer is compatible with the
@@ -115,7 +117,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
   private:
-    QgsProcessingParameterDefinition *mParameter = nullptr;
+    std::unique_ptr< QgsProcessingParameterDefinition > mParameter;
     QgsMapLayerComboBox *mCombo = nullptr;
     QToolButton *mSelectButton = nullptr;
     QCheckBox *mUseSelectionCheckBox = nullptr;

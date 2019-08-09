@@ -92,7 +92,8 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     void actionCollapseAll_triggered( bool checked );
     void actionSelectAll_triggered( bool checked );
 
-    void mCustomizationEnabledCheckBox_toggled( bool checked );
+    void enableCustomization( bool checked );
+    bool filterItems( const QString &text );
 
   private:
     void init();
@@ -101,6 +102,10 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
 
     QString mLastDirSettingsName;
     QSettings *mSettings = nullptr;
+
+  protected:
+    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand;
+    QMap<QTreeWidgetItem *, bool> mTreeInitialVisible;
 };
 
 class APP_EXPORT QgsCustomization : public QObject

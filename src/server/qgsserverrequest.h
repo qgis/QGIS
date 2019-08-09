@@ -113,7 +113,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Gets a parameter value
      */
-    QString parameter( const QString &key ) const;
+    QString parameter( const QString &key, const QString &defaultValue = QString() ) const;
 
     /**
      * Remove a parameter
@@ -171,6 +171,12 @@ class SERVER_EXPORT QgsServerRequest
      * Set the request method
      */
     void setMethod( QgsServerRequest::Method method );
+
+    /**
+     * Returns the query string parameter with the given \a name from the request URL, a \a defaultValue can be specified.
+     * \since QGIS 3.10
+     */
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
 
   protected:
 

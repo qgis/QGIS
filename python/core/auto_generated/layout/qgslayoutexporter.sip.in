@@ -190,6 +190,8 @@ Constructor for PdfExportSettings
 
       QgsRenderContext::TextRenderFormat textRenderFormat;
 
+      bool simplifyGeometries;
+
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
@@ -289,6 +291,8 @@ Constructor for SvgExportSettings
       QgsLayoutRenderContext::Flags flags;
 
       QgsRenderContext::TextRenderFormat textRenderFormat;
+
+      bool simplifyGeometries;
 
     };
 

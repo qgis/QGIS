@@ -215,6 +215,9 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
 
   mWkbType = parts.first;
 
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+    return true;
+
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
@@ -315,32 +318,39 @@ QByteArray QgsCurvePolygon::asWkb() const
 
 QString QgsCurvePolygon::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + QLatin1String( " (" );
-  if ( mExteriorRing )
+  QString wkt = wktTypeStr();
+
+  if ( isEmpty() )
+    wkt += QStringLiteral( " EMPTY" );
+  else
   {
-    QString childWkt = mExteriorRing->asWkt( precision );
-    if ( qgsgeometry_cast<QgsLineString *>( mExteriorRing.get() ) )
+    wkt += QLatin1String( " (" );
+    if ( mExteriorRing )
     {
-      // Type names of linear geometries are omitted
-      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      QString childWkt = mExteriorRing->asWkt( precision );
+      if ( qgsgeometry_cast<QgsLineString *>( mExteriorRing.get() ) )
+      {
+        // Type names of linear geometries are omitted
+        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      }
+      wkt += childWkt + ',';
     }
-    wkt += childWkt + ',';
-  }
-  for ( const QgsCurve *curve : mInteriorRings )
-  {
-    QString childWkt = curve->asWkt( precision );
-    if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+    for ( const QgsCurve *curve : mInteriorRings )
     {
-      // Type names of linear geometries are omitted
-      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      QString childWkt = curve->asWkt( precision );
+      if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+      {
+        // Type names of linear geometries are omitted
+        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      }
+      wkt += childWkt + ',';
     }
-    wkt += childWkt + ',';
+    if ( wkt.endsWith( ',' ) )
+    {
+      wkt.chop( 1 ); // Remove last ','
+    }
+    wkt += ')';
   }
-  if ( wkt.endsWith( ',' ) )
-  {
-    wkt.chop( 1 ); // Remove last ','
-  }
-  wkt += ')';
   return wkt;
 }
 
@@ -499,8 +509,9 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
   else
   {
     QgsMultiCurve *multiCurve = new QgsMultiCurve();
-    multiCurve->addGeometry( mExteriorRing->clone() );
     int nInteriorRings = mInteriorRings.size();
+    multiCurve->reserve( nInteriorRings + 1 );
+    multiCurve->addGeometry( mExteriorRing->clone() );
     for ( int i = 0; i < nInteriorRings; ++i )
     {
       multiCurve->addGeometry( mInteriorRings.at( i )->clone() );

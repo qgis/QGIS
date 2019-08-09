@@ -6,6 +6,7 @@
         <file>editor/qgsquickdatetime.qml</file>
         <file>editor/qgsquickexternalresource.qml</file>
         <file>editor/qgsquicktextedit.qml</file>
+        <file>editor/qgsquickrange.qml</file>
         <file>editor/qgsquickvaluemap.qml</file>
         <file>editor/qgsquickvaluerelation.qml</file>
         <file>qgsquickfeatureform.qml</file>

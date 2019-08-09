@@ -92,11 +92,11 @@ QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 }
 
 
-int QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &geom )
+QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPoint> &vertices )
 {
   if ( !mCanvas )
   {
-    return 1;
+    return QgsMapToolEdit::InvalidCanvas;
   }
 
   //find out current vector layer
@@ -104,15 +104,38 @@ int QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &geom )
 
   if ( !vlayer )
   {
-    return 2;
+    return QgsMapToolEdit::InvalidLayer;
   }
 
-  QVector<QgsPointXY>::const_iterator list_it = geom.constBegin();
-  for ( ; list_it != geom.constEnd(); ++list_it )
+  QVector<QgsPoint>::const_iterator list_it = vertices.constBegin();
+  for ( ; list_it != vertices.constEnd(); ++list_it )
   {
     vlayer->addTopologicalPoints( *list_it );
   }
-  return 0;
+  return QgsMapToolEdit::Success;
+}
+
+QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &vertices )
+{
+  if ( !mCanvas )
+  {
+    return QgsMapToolEdit::InvalidCanvas;
+  }
+
+  //find out current vector layer
+  QgsVectorLayer *vlayer = currentVectorLayer();
+
+  if ( !vlayer )
+  {
+    return QgsMapToolEdit::InvalidLayer;
+  }
+
+  QVector<QgsPointXY>::const_iterator list_it = vertices.constBegin();
+  for ( ; list_it != vertices.constEnd(); ++list_it )
+  {
+    vlayer->addTopologicalPoints( *list_it );
+  }
+  return QgsMapToolEdit::Success;
 }
 
 QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const

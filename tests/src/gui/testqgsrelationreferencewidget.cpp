@@ -29,6 +29,7 @@
 #include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayertools.h"
 
 class TestQgsRelationReferenceWidget : public QObject
 {
@@ -48,6 +49,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testInvalidRelation();
     void testSetGetForeignKey();
     void testIdentifyOnMap();
+    void testAddEntry();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -373,6 +375,49 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
 
   mLayer1->rollBack();
 }
+
+
+void TestQgsRelationReferenceWidget::testAddEntry()
+{
+  // check that a new added entry in referenced layer populate correctly the
+  // referencing combobox
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+  QVERIFY( mLayer1->startEditing() );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  // Monkey patch gui vector layer tool in order to simple add a new feature in
+  // referenced layer
+  class DummyVectorLayerTools : public QgsVectorLayerTools
+  {
+      bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
+      {
+        feat->setAttribute( QStringLiteral( "pk" ), 13 );
+        feat->setAttribute( QStringLiteral( "material" ), "steel" );
+        feat->setAttribute( QStringLiteral( "diameter" ), 140 );
+        feat->setAttribute( QStringLiteral( "raccord" ), "collar" );
+        layer->addFeature( *feat );
+        return true;
+      }
+
+      bool startEditing( QgsVectorLayer * ) const override {return true;}
+
+      bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;};
+
+      bool saveEdits( QgsVectorLayer * ) const override {return true;};
+  };
+
+  QgsAttributeEditorContext context;
+  DummyVectorLayerTools tools;
+  context.setVectorLayerTools( &tools );
+  w.setEditorContext( context, nullptr, nullptr );
+  w.addEntry();
+
+  QCOMPARE( w.mComboBox->identifierValue().toInt(), 13 );
+}
+
+
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
 #include "testqgsrelationreferencewidget.moc"

@@ -81,7 +81,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
 
   mTerrainPicker = new Qt3DRender::QObjectPicker;
   // add camera control's terrain picker as a component to be able to capture height where mouse was
-  // pressed in order to correcly pan camera when draggin mouse
+  // pressed in order to correctly pan camera when dragging mouse
   addComponent( mTerrainPicker );
 }
 

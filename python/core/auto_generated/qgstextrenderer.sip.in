@@ -10,7 +10,6 @@
 
 
 
-
 class QgsTextBufferSettings
 {
 %Docstring
@@ -240,6 +239,13 @@ Sets the current paint ``effect`` for the buffer.
 :param effect: paint effect. Ownership is transferred to the buffer settings.
 
 .. seealso:: :py:func:`paintEffect`
+%End
+
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+
+.. versionadded:: 3.10
 %End
 
 };
@@ -829,6 +835,13 @@ Write settings into a DOM element.
 .. seealso:: :py:func:`readXml`
 %End
 
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 
@@ -1169,6 +1182,13 @@ Write settings into a DOM element.
 .. seealso:: :py:func:`readXml`
 %End
 
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 
@@ -1189,6 +1209,13 @@ Container for all settings relating to text rendering.
 #include "qgstextrenderer.h"
 %End
   public:
+
+    enum TextOrientation
+    {
+      HorizontalOrientation,
+      VerticalOrientation,
+      RotationBasedOrientation,
+    };
 
     QgsTextFormat();
 
@@ -1451,6 +1478,24 @@ Sets the line height for text.
 .. seealso:: :py:func:`lineHeight`
 %End
 
+    TextOrientation orientation() const;
+%Docstring
+Returns the orientation of the text.
+
+.. seealso:: :py:func:`setOrientation`
+
+.. versionadded:: 3.10
+%End
+
+    void setOrientation( TextOrientation orientation );
+%Docstring
+Sets the ``orientation`` for the text.
+
+.. seealso:: :py:func:`orientation`
+
+.. versionadded:: 3.10
+%End
+
     QColor previewBackgroundColor() const;
 %Docstring
 Returns the background color for text previews.
@@ -1549,6 +1594,34 @@ was not found on the system this will return the name of the replacement
 font.
 
 .. seealso:: :py:func:`fontFound`
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the format's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.10
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the format's property collection, used for data defined overrides.
+
+:param collection: property collection. Existing properties will be replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 3.10
+%End
+
+    void updateDataDefinedProperties( QgsRenderContext &context );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+
+.. versionadded:: 3.10
 %End
 
     static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
@@ -1726,6 +1799,62 @@ Returns the height of a text based on a given format.
 %End
 
 };
+
+class QgsTextRendererUtils
+{
+%Docstring
+Utility functions for text rendering.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgstextrenderer.h"
+%End
+  public:
+
+    static QgsTextBackgroundSettings::ShapeType decodeShapeType( const QString &string );
+%Docstring
+Decodes a string representation of a background shape type to a type.
+%End
+
+    static QgsTextBackgroundSettings::SizeType decodeBackgroundSizeType( const QString &string );
+%Docstring
+Decodes a string representation of a background size type to a type.
+%End
+
+    static QgsTextBackgroundSettings::RotationType decodeBackgroundRotationType( const QString &string );
+%Docstring
+Decodes a string representation of a background rotation type to a type.
+%End
+
+    static QgsTextShadowSettings::ShadowPlacement decodeShadowPlacementType( const QString &string );
+%Docstring
+Decodes a string representation of a shadow placement type to a type.
+%End
+
+    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+%Docstring
+Encodes a text ``orientation``.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeTextOrientation`
+%End
+
+    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = 0 );
+%Docstring
+Attempts to decode a string representation of a text orientation.
+
+:param name: encoded text orientation name
+:param ok: if specified, will be set to ``True`` if the name was successfully decoded
+
+:return: decoded text orientation
+
+.. seealso:: :py:func:`encodeTextOrientation`
+%End
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

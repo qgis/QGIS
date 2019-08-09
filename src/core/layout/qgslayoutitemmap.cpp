@@ -389,7 +389,7 @@ bool QgsLayoutItemMap::containsWmsLayer() const
   const QList< QgsMapLayer * > layers = layersToRender();
   for ( QgsMapLayer *layer : layers )
   {
-    if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "wms" ) )
+    if ( layer->dataProvider() && layer->providerType() == QLatin1String( "wms" ) )
     {
       return true;
     }
@@ -1172,8 +1172,14 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
 
   if ( !mLayout->renderContext().isPreviewRender() )
   {
-    //if outputting layout, disable optimisations like layer simplification
-    jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
+    //if outputting layout, we disable optimisations like layer simplification by default, UNLESS the context specifically tells us to use them
+    jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, mLayout->renderContext().simplifyMethod().simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
+    jobMapSettings.setSimplifyMethod( mLayout->renderContext().simplifyMethod() );
+  }
+  else
+  {
+    // preview render - always use optimization
+    jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, true );
   }
 
   jobMapSettings.setExpressionContext( expressionContext );
@@ -1193,6 +1199,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
 
   // override project "show partial labels" setting with this map's setting
   labelSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, mMapFlags & ShowPartialLabels );
+  labelSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, mMapFlags & ShowUnplacedLabels );
   jobMapSettings.setLabelingEngineSettings( labelSettings );
 
   // override the default text render format inherited from the labeling engine settings using the layout's render context setting
@@ -1682,6 +1689,12 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
       renderLayers.removeAt( removeAt );
     }
   }
+
+  // remove any invalid layers
+  renderLayers.erase( std::remove_if( renderLayers.begin(), renderLayers.end(), []( QgsMapLayer * layer )
+  {
+    return !layer || !layer->isValid();
+  } ), renderLayers.end() );
 
   return renderLayers;
 }
@@ -2237,3 +2250,4 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
     return g.boundingBox();
   }
 }
+

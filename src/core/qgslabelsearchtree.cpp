@@ -75,7 +75,7 @@ void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosi
   }
 }
 
-bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram, bool pinned, const QString &providerId )
+bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram, bool pinned, const QString &providerId, bool isUnplaced )
 {
   if ( !labelPos )
   {
@@ -107,9 +107,14 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
 
   QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
   std::unique_ptr< QgsLabelPosition > newEntry = qgis::make_unique< QgsLabelPosition >( featureId, labelPos->getAlpha() + mMapSettings.rotation(), cornerPoints, QgsRectangle( c_min[0], c_min[1], c_max[0], c_max[1] ),
-      labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry );
+      labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced );
   mSpatialIndex.Insert( c_min, c_max, newEntry.get() );
   mOwnedPositions.emplace_back( std::move( newEntry ) );
+
+  if ( pal::LabelPosition *next = labelPos->getNextPart() )
+  {
+    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId, isUnplaced );
+  }
   return true;
 }
 

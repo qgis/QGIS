@@ -274,7 +274,7 @@ Attempts to load a symbol from a DOM element
 %Docstring
 Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
 %End
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
+    static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
 Writes a symbol definition to XML
 %End
@@ -418,7 +418,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
-    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) /Factory/;
+    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) /Factory/;
 %Docstring
 Creates new mime data from a ``symbol``.
 This also sets the mime color data to match the symbol's color, so that copied symbols

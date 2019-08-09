@@ -104,22 +104,33 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
     lst << title;
   }
 
-  if ( mType == LegendCollapsed )
+  switch ( mType )
   {
-    QgsLegendSymbolItem i;
-    i.setDataDefinedSizeLegendSettings( new QgsDataDefinedSizeLegend( *this ) );
-    lst << i;
-    return lst;
-  }
-  else if ( mType == LegendSeparated )
-  {
-    const auto constMSizeClasses = mSizeClasses;
-    for ( const SizeClass &cl : constMSizeClasses )
+    case LegendCollapsed:
     {
-      QgsLegendSymbolItem si( mSymbol.get(), cl.label, QString() );
-      QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
-      s->setSize( cl.size );
-      lst << si;
+      QgsLegendSymbolItem i;
+      i.setDataDefinedSizeLegendSettings( new QgsDataDefinedSizeLegend( *this ) );
+      lst << i;
+      break;
+    }
+
+    case LegendSeparated:
+    {
+      lst.reserve( mSizeClasses.size() );
+      for ( const SizeClass &cl : mSizeClasses )
+      {
+        QgsLegendSymbolItem si( mSymbol.get(), cl.label, QString() );
+        QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
+        double size = cl.size;
+        if ( mSizeScaleTransformer )
+        {
+          size = mSizeScaleTransformer->size( size );
+        }
+
+        s->setSize( size );
+        lst << si;
+      }
+      break;
     }
   }
   return lst;

@@ -48,6 +48,7 @@ class TestQgsLayoutContext: public QObject
     void exportLayer();
     void geometry();
     void scales();
+    void simplifyMethod();
 
   private:
     QString mReport;
@@ -271,6 +272,18 @@ void TestQgsLayoutContext::scales()
 
   // should be sorted
   QCOMPARE( context.predefinedScales(), QVector< qreal >() << 1 << 5 << 10 << 15 );
+}
+
+void TestQgsLayoutContext::simplifyMethod()
+{
+  QgsLayout l( QgsProject::instance() );
+  QgsLayoutRenderContext context( &l );
+  // must default to no simplification
+  QCOMPARE( context.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QgsVectorSimplifyMethod simplify;
+  simplify.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  context.setSimplifyMethod( simplify );
+  QCOMPARE( context.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

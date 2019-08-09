@@ -67,6 +67,8 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     ~QgsWFSSourceSelect() override;
 
+    void reset() override;
+
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsProjectionSelectionDialog *mProjectionSelector = nullptr;

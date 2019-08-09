@@ -167,14 +167,23 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     int addTopologicalPoints( const QgsGeometry &geom );
 
     /**
-     * Adds a vertex to segments which intersect point p but don't
+     * Adds a vertex to segments which intersect point \a p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
      * no additional vertex is inserted. This method is useful for topological
      * editing.
-     * \param p position of the vertex
      * \return 0 in case of success
      */
     int addTopologicalPoints( const QgsPointXY &p );
+
+    /**
+     * Adds a vertex to segments which intersect point \a p but don't
+     * already have a vertex there. If a feature already has a vertex at position p,
+     * no additional vertex is inserted. This method is useful for topological
+     * editing.
+     * \return 0 in case of success
+     * \since QGIS 3.10
+     */
+    int addTopologicalPoints( const QgsPoint &p );
 
   private:
 

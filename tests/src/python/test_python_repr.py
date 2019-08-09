@@ -16,7 +16,7 @@ from PyQt5.QtCore import QVariant
 from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
-    QgsMimeDataUtils, QgsVector, QgsVector3D
+    QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer
 
 start_app()
 
@@ -146,6 +146,12 @@ class TestPython__repr__(unittest.TestCase):
         d.uri = 'my_uri'
         d.providerKey = 'my_provider'
         self.assertEqual(d.__repr__(), "<QgsMimeDataUtils::Uri (my_provider): my_uri>")
+
+    def testQgsMapLayerRepr(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'QGIS搖滾', 'memory')
+        assert (vl.__repr__(), "<QgsMapLayer: 'QGIS搖滾' (memory)>")
 
 
 if __name__ == "__main__":

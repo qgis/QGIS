@@ -916,7 +916,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   QFileInfo info( mapsetPath );
   QString user = info.owner();
 
-  sTmp = QDir::tempPath() + "/grass6-" + user + "-" + QString::number( pid );
+  sTmp = QDir::tempPath() + "/grass-" + user + "-" + QString::number( pid );
   QDir dir( sTmp );
   if ( dir.exists() )
   {

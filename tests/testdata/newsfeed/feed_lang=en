@@ -1,0 +1,52 @@
+[
+  {
+    "pk": 4,
+    "publish_from": 1557073748.13,
+    "publish_to": 1798761600.0,
+    "title": "Next Microsoft Windows code name revealed",
+    "image": "",
+    "content": "<p>Rumors from a whistleblower revealed the next Windows release code name: <strong>Winux</strong></p>\r\n<p>The next version of the popular operating system will ship a modified version of Wine that will run inside a docker container virtualized on Vagrant on VirtualBox running on Alpine Linux on the bare metal.</p>",
+    "url": "https://www.winux.microsoft.com",
+    "sticky": true
+  },
+  {
+    "pk": 6,
+    "publish_from": 915196568.0,
+    "publish_to": null,
+    "title": "QGIS core will be rewritten in Rust",
+    "image": "http://0.0.0.0:8000/media/feedimages/rust.png",
+    "content": "<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>, since Qt is not available for Rust, the new GUI will be based on Tcl/Tk.</p>",
+    "url": null,
+    "sticky": true
+  },
+  {
+    "pk": 11,
+    "publish_from": 1557360008.132,
+    "publish_to": null,
+    "title": "QGIS Italian Meeting",
+    "image": "",
+    "content": "<p>Ciao from Italy!</p>",
+    "url": null,
+    "sticky": false
+  },
+  {
+    "pk": 3,
+    "publish_from": 1557073748.136,
+    "publish_to": null,
+    "title": "QGIS acquired by ESRI",
+    "image": "",
+    "content": "<p>QGIS is finally part of the ESRI ecosystem, it has been rebranded as CrashGIS to better integrate with ESRI products line.</p>",
+    "url": "https://www.qgis.com",
+    "sticky": false
+  },
+  {
+    "pk": 5,
+    "publish_from": 1557073748.134,
+    "publish_to": null,
+    "title": "Null Island QGIS Meeting",
+    "image": "",
+    "content": "<p>Let's dive in the ocean together!</p>",
+    "url": null,
+    "sticky": false
+  }
+]

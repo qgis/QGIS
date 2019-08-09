@@ -807,6 +807,8 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "legend_filter_by_map" ), QCoreApplication::translate( "variable_help", "Boolean indicating if the content of the legend is filtered by the map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "legend_filter_out_atlas" ), QCoreApplication::translate( "variable_help", "Boolean indicating if the Atlas is filtered out of the legend." ) );
 
+  // scalebar rendering
+  sVariableHelpTexts.insert( QStringLiteral( "scale_value" ), QCoreApplication::translate( "variable_help", "Current scale bar distance value." ) );
 
   // map tool capture variables
   sVariableHelpTexts.insert( QStringLiteral( "snapping_results" ), QCoreApplication::translate( "variable_help",
@@ -829,6 +831,10 @@ void QgsExpression::initVariableHelp()
 
   sVariableHelpTexts.insert( QStringLiteral( "symbol_color" ), QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
   sVariableHelpTexts.insert( QStringLiteral( "symbol_angle" ), QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
+
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_label" ), QCoreApplication::translate( "symbol_label", "Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_id" ), QCoreApplication::translate( "symbol_id", "Id of the symbol." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_count" ), QCoreApplication::translate( "symbol_count", "Total number of features defined by this symbol." ) );
 
   //cluster variables
   sVariableHelpTexts.insert( QStringLiteral( "cluster_color" ), QCoreApplication::translate( "cluster_color", "Color of symbols within a cluster, or NULL if symbols have mixed colors." ) );

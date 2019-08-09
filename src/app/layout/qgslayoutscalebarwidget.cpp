@@ -19,6 +19,7 @@
 #include "qgslayoutitemscalebar.h"
 #include "qgslayout.h"
 #include "qgsguiutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -42,7 +43,9 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mStyleComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged );
   connect( mLabelBarSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged );
   connect( mBoxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mBoxSizeSpinBox_valueChanged );
-  connect( mAlignmentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mAlignmentComboBox_currentIndexChanged );
+  connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, &QgsLayoutScaleBarWidget::alignmentChanged );
+  connect( mLabelVerticalPlacementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLabelVerticalPlacementComboBox_currentIndexChanged );
+  connect( mLabelHorizontalPlacementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLabelHorizontalPlacementComboBox_currentIndexChanged );
   connect( mUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged );
   connect( mLineJoinStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged );
   connect( mLineCapStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineCapStyleCombo_currentIndexChanged );
@@ -50,7 +53,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   setPanelTitle( tr( "Scalebar Properties" ) );
 
-  mFontButton->setMode( QgsFontButton::ModeQFont );
+  mFontButton->registerExpressionContextGenerator( this );
 
   connectUpdateSignal();
 
@@ -72,10 +75,14 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mStyleComboBox->insertItem( 4, tr( "Line Ticks Up" ) );
   mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
 
+  //label vertical/horizontal placement combo box
+  mLabelVerticalPlacementComboBox->addItem( tr( "Above Segments" ), static_cast< int >( QgsScaleBarSettings::LabelAboveSegment ) );
+  mLabelVerticalPlacementComboBox->addItem( tr( "Below Segments" ), static_cast< int >( QgsScaleBarSettings::LabelBelowSegment ) );
+  mLabelHorizontalPlacementComboBox->addItem( tr( "Centered at Segment Edge" ), static_cast< int >( QgsScaleBarSettings::LabelCenteredEdge ) );
+  mLabelHorizontalPlacementComboBox->addItem( tr( "Centered at Center of Segment" ), static_cast< int >( QgsScaleBarSettings::LabelCenteredSegment ) );
+
   //alignment combo box
-  mAlignmentComboBox->insertItem( 0, tr( "Left" ) );
-  mAlignmentComboBox->insertItem( 1, tr( "Middle" ) );
-  mAlignmentComboBox->insertItem( 2, tr( "Right" ) );
+  mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
   //units combo box
   mUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
@@ -138,6 +145,21 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   setGuiElements(); //set the GUI elements to the state of scaleBar
 
   connect( mFontButton, &QgsFontButton::changed, this, &QgsLayoutScaleBarWidget::textFormatChanged );
+  mFontButton->setLayer( coverageLayer() );
+  if ( mScalebar->layout() )
+  {
+    connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFontButton, &QgsFontButton::setLayer );
+  }
+}
+
+QgsExpressionContext QgsLayoutScaleBarWidget::createExpressionContext() const
+{
+  QgsExpressionContext context = mScalebar->createExpressionContext();
+  QgsExpressionContextScope *scaleScope = new QgsExpressionContextScope( QStringLiteral( "scalebar_text" ) );
+  scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), 0, true, false ) );
+  context.appendScope( scaleScope );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "scale_value" ) );
+  return context;
 }
 
 bool QgsLayoutScaleBarWidget::setNewItem( QgsLayoutItem *item )
@@ -196,8 +218,26 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mStyleComboBox->setCurrentIndex( mStyleComboBox->findText( tr( style.toLocal8Bit().data() ) ) );
   toggleStyleSpecificControls( style );
 
+  //label vertical/horizontal placement
+  mLabelVerticalPlacementComboBox->setCurrentIndex( mLabelVerticalPlacementComboBox->findData( static_cast< int >( mScalebar->labelVerticalPlacement() ) ) );
+  mLabelHorizontalPlacementComboBox->setCurrentIndex( mLabelHorizontalPlacementComboBox->findData( static_cast< int >( mScalebar->labelHorizontalPlacement() ) ) );
+
   //alignment
-  mAlignmentComboBox->setCurrentIndex( static_cast< int >( mScalebar->alignment() ) );
+
+  Qt::Alignment a = Qt::AlignLeft;
+  switch ( mScalebar->alignment() )
+  {
+    case QgsScaleBarSettings::AlignLeft:
+      a = Qt::AlignLeft;
+      break;
+    case QgsScaleBarSettings::AlignRight:
+      a = Qt::AlignRight;
+      break;
+    case QgsScaleBarSettings::AlignMiddle:
+      a = Qt::AlignHCenter;
+      break;
+  }
+  mAlignmentComboBox->setCurrentAlignment( a );
 
   //units
   mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( static_cast< int >( mScalebar->units() ) ) );
@@ -455,6 +495,8 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
     mStrokeColorButton->setEnabled( false );
     mLineJoinStyleCombo->setEnabled( false );
     mLineCapStyleCombo->setEnabled( false );
+    mLabelVerticalPlacementComboBox->setEnabled( false );
+    mLabelHorizontalPlacementComboBox->setEnabled( false );
     mAlignmentComboBox->setEnabled( true );
   }
   else
@@ -467,6 +509,8 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
     mFillColorButton->setEnabled( true );
     mFillColor2Button->setEnabled( true );
     mStrokeColorButton->setEnabled( true );
+    mLabelVerticalPlacementComboBox->setEnabled( true );
+    mLabelHorizontalPlacementComboBox->setEnabled( true );
     mAlignmentComboBox->setEnabled( false );
     if ( style == QLatin1String( "Single Box" ) || style == QLatin1String( "Double Box" ) )
     {
@@ -512,7 +556,37 @@ void QgsLayoutScaleBarWidget::mBoxSizeSpinBox_valueChanged( double d )
   mScalebar->endCommand();
 }
 
-void QgsLayoutScaleBarWidget::mAlignmentComboBox_currentIndexChanged( int index )
+void QgsLayoutScaleBarWidget::mLabelVerticalPlacementComboBox_currentIndexChanged( int index )
+{
+  if ( !mScalebar )
+  {
+    return;
+  }
+
+  mScalebar->beginCommand( tr( "Set Scalebar Label Vertical Placement" ) );
+  disconnectUpdateSignal();
+  mScalebar->setLabelVerticalPlacement( static_cast<QgsScaleBarSettings::LabelVerticalPlacement>( mLabelVerticalPlacementComboBox->itemData( index ).toInt() ) );
+  mScalebar->update();
+  connectUpdateSignal();
+  mScalebar->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::mLabelHorizontalPlacementComboBox_currentIndexChanged( int index )
+{
+  if ( !mScalebar )
+  {
+    return;
+  }
+
+  mScalebar->beginCommand( tr( "Set Scalebar Label Horizontal Placement" ) );
+  disconnectUpdateSignal();
+  mScalebar->setLabelHorizontalPlacement( static_cast<QgsScaleBarSettings::LabelHorizontalPlacement>( mLabelHorizontalPlacementComboBox->itemData( index ).toInt() ) );
+  mScalebar->update();
+  connectUpdateSignal();
+  mScalebar->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::alignmentChanged()
 {
   if ( !mScalebar )
   {
@@ -521,7 +595,10 @@ void QgsLayoutScaleBarWidget::mAlignmentComboBox_currentIndexChanged( int index 
 
   mScalebar->beginCommand( tr( "Set Scalebar Alignment" ) );
   disconnectUpdateSignal();
-  mScalebar->setAlignment( static_cast< QgsScaleBarSettings::Alignment >( index ) );
+
+  const QgsScaleBarSettings::Alignment a = mAlignmentComboBox->currentAlignment() & Qt::AlignLeft ? QgsScaleBarSettings::AlignLeft
+      : mAlignmentComboBox->currentAlignment() & Qt::AlignRight ? QgsScaleBarSettings::AlignRight : QgsScaleBarSettings::AlignMiddle;
+  mScalebar->setAlignment( a );
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
@@ -565,6 +642,8 @@ void QgsLayoutScaleBarWidget::blockMemberSignals( bool block )
   mLineWidthSpinBox->blockSignals( block );
   mLabelBarSpaceSpinBox->blockSignals( block );
   mBoxSizeSpinBox->blockSignals( block );
+  mLabelVerticalPlacementComboBox->blockSignals( block );
+  mLabelHorizontalPlacementComboBox->blockSignals( block );
   mAlignmentComboBox->blockSignals( block );
   mUnitsComboBox->blockSignals( block );
   mLineJoinStyleCombo->blockSignals( block );

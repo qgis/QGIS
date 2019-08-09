@@ -223,6 +223,39 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       mTextRenderFormat = format;
     }
 
+    /**
+     * Sets the simplification setting to use when rendering vector layers.
+     *
+     * If the simplify \a method is enabled, it apply to all vector layers rendered inside map items.
+     *
+     * This can be used to specify global simplification methods to apply during map exports,
+     * e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+     * during PDF exports (avoiding excessive PDF size due to huge numbers of vertices).
+     *
+     * The default is to use no simplification.
+     *
+     * \note This simplification method is only used during non-preview renders.
+     *
+     * \see simplifyMethod()
+     *
+     * \since QGIS 3.10
+     */
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method ) { mSimplifyMethod = method; }
+
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * If enabled, it will apply to all vector layers rendered for the map.
+     *
+     * The default is to use no simplification.
+     *
+     * \note This simplification method is only used during non-preview renders.
+     *
+     * \see setSimplifyMethod()
+     * \since QGIS 3.10
+     */
+    const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
+
   signals:
 
     /**
@@ -255,9 +288,12 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
 
     QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
+    QgsVectorSimplifyMethod mSimplifyMethod;
+
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;
     friend class LayoutContextPreviewSettingRestorer;
+    friend class TestQgsLayoutMap;
 
 };
 

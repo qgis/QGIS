@@ -79,6 +79,8 @@ Helper functions for various unit types.
       AngleMinutesOfArc,
       AngleSecondsOfArc,
       AngleTurn,
+      AngleMilliradiansSI,
+      AngleMilNATO,
       AngleUnknownUnit,
     };
 
@@ -279,6 +281,17 @@ Converts a distance unit to its corresponding area unit, e.g., meters to square 
 :param distanceUnit: distance unit to convert
 
 :return: matching areal unit
+%End
+
+    static QgsUnitTypes::DistanceUnit areaToDistanceUnit( QgsUnitTypes::AreaUnit areaUnit );
+%Docstring
+Converts an area unit to its corresponding distance unit, e.g., square meters to meters
+
+:param areaUnit: area unit to convert
+
+:return: matching distance unit
+
+.. versionadded:: 3.10
 %End
 
 

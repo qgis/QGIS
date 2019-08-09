@@ -402,6 +402,23 @@
              </widget>
             </item>
             <item>
+             <widget class="QToolButton" name="mLayerExpressionButton">
+              <property name="toolTip">
+               <string> Add an expression to the vector layer and each child symbol's label</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionAddExpression.svg</normaloff>:/images/themes/default/mActionAddExpression.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>

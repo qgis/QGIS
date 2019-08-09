@@ -95,6 +95,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/callouts
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/diagram
@@ -130,6 +131,7 @@ INCLUDE_DIRECTORIES(
 IF (WITH_GUI)
   INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/gui
+    ${CMAKE_SOURCE_DIR}/src/gui/callouts
     ${CMAKE_SOURCE_DIR}/src/gui/symbology
     ${CMAKE_SOURCE_DIR}/src/gui/raster
     ${CMAKE_SOURCE_DIR}/src/gui/attributetable
@@ -253,6 +255,7 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
   INCLUDE_DIRECTORIES(
     ../src/server
    ${CMAKE_BINARY_DIR}/src/server
+   ${CMAKE_SOURCE_DIR}/external
   )
 
   SET(PY_MODULES ${PY_MODULES} server)

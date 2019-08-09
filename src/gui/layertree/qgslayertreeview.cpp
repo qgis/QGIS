@@ -127,6 +127,15 @@ void QgsLayerTreeView::setCurrentLayer( QgsMapLayer *layer )
   setCurrentIndex( layerTreeModel()->node2index( nodeLayer ) );
 }
 
+void QgsLayerTreeView::setLayerVisible( QgsMapLayer *layer, bool visible )
+{
+  if ( !layer )
+    return;
+  QgsLayerTreeLayer *nodeLayer = layerTreeModel()->rootGroup()->findLayer( layer->id() );
+  if ( !nodeLayer )
+    return;
+  nodeLayer->setItemVisibilityChecked( visible );
+}
 
 void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
 {
@@ -398,12 +407,20 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayersRecursive() const
 void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
 {
   if ( !mIndicators[node].contains( indicator ) )
+  {
     mIndicators[node].append( indicator );
+    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [ = ]
+    {
+      update();
+    } );
+    update();
+  }
 }
 
 void QgsLayerTreeView::removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
 {
   mIndicators[node].removeOne( indicator );
+  update();
 }
 
 QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNode *node ) const

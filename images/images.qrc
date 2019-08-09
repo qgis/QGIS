@@ -177,6 +177,7 @@
         <file>themes/default/mActionDistributeTop.svg</file>
         <file>themes/default/mActionDistributeVCenter.svg</file>
         <file>themes/default/mActionDistributeVSpace.svg</file>
+        <file>themes/default/mActionAddExpression.svg</file>
         <file>themes/default/mActionAddLayer.svg</file>
         <file>themes/default/mActionAddMeshLayer.svg</file>
         <file>themes/default/mActionAddAllToOverview.svg</file>
@@ -541,6 +542,7 @@
         <file>themes/default/propertyicons/join.svg</file>
         <file>themes/default/propertyicons/labelbackground.svg</file>
         <file>themes/default/propertyicons/labelbuffer.svg</file>
+        <file>themes/default/propertyicons/labelcallout.svg</file>
         <file>themes/default/propertyicons/labelformatting.svg</file>
         <file>themes/default/propertyicons/labelplacement.svg</file>
         <file>themes/default/propertyicons/labels.svg</file>
@@ -587,6 +589,8 @@
         <file>themes/default/labelingSingle.svg</file>
         <file>themes/default/labelingRuleBased.svg</file>
         <file>themes/default/labelingObstacle.svg</file>
+        <file>themes/default/labelingCalloutSimple.svg</file>
+        <file>themes/default/labelingCalloutManhattan.svg</file>
         <file>themes/default/repositoryConnected.svg</file>
         <file>themes/default/repositoryDisabled.svg</file>
         <file>themes/default/repositoryUnavailable.svg</file>
@@ -767,6 +771,9 @@
         <file>themes/default/mIconAlignRight.svg</file>
         <file>themes/default/mIconArrangeSymbolsLeft.svg</file>
         <file>themes/default/mIconArrangeSymbolsRight.svg</file>
+        <file>themes/default/mIconClearItem.svg</file>
+        <file>themes/default/mIndicatorLayerError.svg</file>
+        <file>themes/default/mActionShowUnplacedLabel.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -55,7 +55,10 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
   connect( actionExpandAll, &QAction::triggered, this, &QgsCustomizationDialog::actionExpandAll_triggered );
   connect( actionCollapseAll, &QAction::triggered, this, &QgsCustomizationDialog::actionCollapseAll_triggered );
   connect( actionSelectAll, &QAction::triggered, this, &QgsCustomizationDialog::actionSelectAll_triggered );
-  connect( mCustomizationEnabledCheckBox, &QCheckBox::toggled, this, &QgsCustomizationDialog::mCustomizationEnabledCheckBox_toggled );
+  connect( mCustomizationEnabledCheckBox, &QCheckBox::toggled, this, &QgsCustomizationDialog::enableCustomization );
+  connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsCustomizationDialog::filterItems );
+
+  mLeFilter->setShowSearchIcon( true );
 
   init();
   QStringList myHeaders;
@@ -113,6 +116,46 @@ QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetI
   }
   QgsDebugMsg( QStringLiteral( "not found" ) );
   return nullptr;
+}
+
+bool QgsCustomizationDialog::filterItems( const QString &text )
+{
+  bool success = false;
+
+  mTreeInitialVisible.clear();
+  // initially hide everything
+  std::function< void( QTreeWidgetItem *, bool ) > setChildrenVisible;
+  setChildrenVisible = [this, &setChildrenVisible]( QTreeWidgetItem * item, bool visible )
+  {
+    for ( int i = 0; i < item->childCount(); ++i )
+      setChildrenVisible( item->child( i ), visible );
+    mTreeInitialVisible.insert( item, !item->isHidden() );
+    item->setHidden( !visible );
+  };
+  setChildrenVisible( treeWidget->invisibleRootItem(), false );
+
+  QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
+  items.append( treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 1 ) );
+  success = !items.empty();
+  mTreeInitialExpand.clear();
+
+  for ( QTreeWidgetItem *item : qgis::as_const( items ) )
+  {
+    setChildrenVisible( item, true );
+
+    QTreeWidgetItem *parent = item;
+    while ( parent )
+    {
+      if ( mTreeInitialExpand.contains( parent ) )
+        break;
+      mTreeInitialExpand.insert( parent, parent->isExpanded() );
+      parent->setExpanded( true );
+      parent->setHidden( false );
+      parent = parent->parent();
+    }
+  }
+
+  return success;
 }
 
 bool QgsCustomizationDialog::itemChecked( const QString &path )
@@ -195,6 +238,8 @@ void QgsCustomizationDialog::reset()
   mCustomizationEnabledCheckBox->setChecked( enabled );
   treeWidget->setEnabled( enabled );
   toolBar->setEnabled( enabled );
+  mLeFilter->setEnabled( enabled );
+  mTreeInitialExpand.clear();
 }
 
 void QgsCustomizationDialog::ok()
@@ -286,10 +331,11 @@ void QgsCustomizationDialog::actionSelectAll_triggered( bool checked )
     item->setCheckState( 0, Qt::Checked );
 }
 
-void QgsCustomizationDialog::mCustomizationEnabledCheckBox_toggled( bool checked )
+void QgsCustomizationDialog::enableCustomization( bool checked )
 {
   treeWidget->setEnabled( checked );
   toolBar->setEnabled( checked );
+  mLeFilter->setEnabled( checked );
 }
 
 void QgsCustomizationDialog::init()

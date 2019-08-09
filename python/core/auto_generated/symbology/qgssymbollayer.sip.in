@@ -146,6 +146,8 @@ Returns the symbol layer property definitions.
 
     virtual ~QgsSymbolLayer();
 
+
+
     bool enabled() const;
 %Docstring
 Returns ``True`` if symbol layer is enabled and will be drawn.
@@ -461,6 +463,8 @@ Copies paint effect of this layer to another symbol layer
 .. versionadded:: 2.9
 %End
 
+  private:
+    QgsSymbolLayer( const QgsSymbolLayer &other );
 };
 
 
@@ -489,8 +493,13 @@ Abstract base class for marker symbol layers.
       Bottom,
     };
 
+
+
     virtual void startRender( QgsSymbolRenderContext &context );
 
+%Docstring
+QgsMarkerSymbolLayer cannot be copied
+%End
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
@@ -834,6 +843,8 @@ Adjusts a marker offset to account for rotation.
 %End
 
 
+  private:
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other );
 };
 
 class QgsLineSymbolLayer : QgsSymbolLayer
@@ -851,8 +862,13 @@ class QgsLineSymbolLayer : QgsSymbolLayer
       InteriorRingsOnly,
     };
 
+
+
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
+%Docstring
+QgsLineSymbolLayer cannot be copied
+%End
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -1044,6 +1060,9 @@ for a polygon.
     QgsLineSymbolLayer( bool locked = false );
 
 
+
+  private:
+    QgsLineSymbolLayer( const QgsLineSymbolLayer &other );
 };
 
 class QgsFillSymbolLayer : QgsSymbolLayer
@@ -1053,7 +1072,13 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 #include "qgssymbollayer.h"
 %End
   public:
+
+
+
     virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
+%Docstring
+QgsFillSymbolLayer cannot be copied
+%End
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
@@ -1068,6 +1093,9 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 Default method to render polygon
 %End
 
+
+  private:
+    QgsFillSymbolLayer( const QgsFillSymbolLayer &other );
 };
 
 

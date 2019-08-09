@@ -513,12 +513,20 @@ Returns ``True`` if the layer is considered a spatial layer, ie it has some form
 .. versionadded:: 2.16
 %End
 
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
+    enum ReadFlag
+    {
+      FlagDontResolveLayers,
+    };
+    typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
+
+
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = 0 );
 %Docstring
 Sets state from DOM document
 
 :param layerElement: The DOM element corresponding to ``maplayer'' tag
 :param context: writing context (e.g. for conversion between relative and absolute paths)
+:param flags: optional argument which can be used to control layer reading behavior.
 \note
 
 The DOM node corresponds to a DOM document project file XML element read
@@ -1382,6 +1390,12 @@ Sets the coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider()->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
   signals:
 
     void statusChanged( const QString &status );
@@ -1653,11 +1667,14 @@ Checks whether a new set of dependencies will introduce a cycle
 
 
 
+
 };
 
 QFlags<QgsMapLayer::LayerFlag> operator|(QgsMapLayer::LayerFlag f1, QFlags<QgsMapLayer::LayerFlag> f2);
 
 QFlags<QgsMapLayer::StyleCategory> operator|(QgsMapLayer::StyleCategory f1, QFlags<QgsMapLayer::StyleCategory> f2);
+
+QFlags<QgsMapLayer::ReadFlag> operator|(QgsMapLayer::ReadFlag f1, QFlags<QgsMapLayer::ReadFlag> f2);
 
 
 

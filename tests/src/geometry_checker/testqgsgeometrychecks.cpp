@@ -47,7 +47,6 @@
 
 #include "qgsgeometrytypecheck.h"
 
-
 class TestQgsGeometryChecks: public QObject
 {
     Q_OBJECT
@@ -536,6 +535,12 @@ void TestQgsGeometryChecks::testGapCheck()
   QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.0094, -0.4448 ), QgsVertexId(), 0.0033 ).size() == 1 );
   QVERIFY( ( errs1 = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2939, -0.4694 ), QgsVertexId(), 0.0053 ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.6284, -0.3641 ), QgsVertexId(), 0.0018 ).size() == 1 );
+
+  //  TestQgsGeometryChecks::testGapCheck()
+  QgsGeometryCheckError *error = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).first();
+
+  QCOMPARE( error->contextBoundingBox().snappedToGrid( 0.0001 ), QgsRectangle( -0.0259, -1.0198, 0.6178, -0.4481 ) );
+  QCOMPARE( error->affectedAreaBBox().snappedToGrid( 0.0001 ), QgsRectangle( 0.246, -0.9998, 0.3939, -0.77 ) );
 
   // Test fixes
   QgsFeature f;
@@ -1163,7 +1168,7 @@ QList<QgsGeometryCheckError *> TestQgsGeometryChecks::searchCheckErrors( const Q
     {
       continue;
     }
-    if ( pos != QgsPointXY() && ( !qgsDoubleNear( error->location().x(), pos.x(), tol ) || !qgsDoubleNear( error->location().y(), pos.y(), tol ) ) )
+    if ( !pos.isEmpty() && ( !qgsDoubleNear( error->location().x(), pos.x(), tol ) || !qgsDoubleNear( error->location().y(), pos.y(), tol ) ) )
     {
       continue;
     }

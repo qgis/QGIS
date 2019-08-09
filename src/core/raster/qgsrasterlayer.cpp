@@ -809,30 +809,34 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
 void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-
-  bool wasValid( isValid() );
+  bool hadRenderer( renderer() );
 
   QDomImplementation domImplementation;
   QDomDocumentType documentType;
-  QDomDocument doc;
   QString errorMsg;
-  QDomElement rootNode;
 
   // Store the original style
-  if ( wasValid && ! loadDefaultStyleFlag )
+  if ( hadRenderer && ! loadDefaultStyleFlag )
   {
     documentType = domImplementation.createDocumentType(
                      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
-    doc = QDomDocument( documentType );
-    rootNode = doc.createElement( QStringLiteral( "qgis" ) );
-    rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
-    doc.appendChild( rootNode );
+
+    QDomDocument doc = QDomDocument( documentType );
+    QDomElement styleElem = doc.createElement( QStringLiteral( "qgis" ) );
+    styleElem.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
     QgsReadWriteContext writeContext;
-    if ( ! writeSymbology( rootNode, doc, errorMsg, writeContext ) )
+    if ( ! writeSymbology( styleElem, doc, errorMsg, writeContext ) )
     {
       QgsDebugMsg( QStringLiteral( "Could not store symbology for layer %1: %2" )
-                   .arg( name() )
-                   .arg( errorMsg ) );
+                   .arg( name(),
+                         errorMsg ) );
+    }
+    else
+    {
+      doc.appendChild( styleElem );
+
+      mOriginalStyleDocument = doc;
+      mOriginalStyleElement = styleElem;
     }
   }
 
@@ -855,23 +859,31 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
   {
     // load default style
     bool defaultLoadedFlag = false;
+    bool restoredStyle = false;
     if ( loadDefaultStyleFlag )
     {
       loadDefaultStyle( defaultLoadedFlag );
     }
-    else if ( wasValid && errorMsg.isEmpty() )  // Restore the style
+    else if ( !mOriginalStyleElement.isNull() )  // Restore the style
     {
       QgsReadWriteContext readContext;
-      if ( ! readSymbology( rootNode, errorMsg, readContext ) )
+      if ( ! readSymbology( mOriginalStyleElement, errorMsg, readContext ) )
       {
         QgsDebugMsg( QStringLiteral( "Could not restore symbology for layer %1: %2" )
                      .arg( name() )
                      .arg( errorMsg ) );
 
       }
+      else
+      {
+        restoredStyle = true;
+        emit repaintRequested();
+        emit styleChanged();
+        emit rendererChanged();
+      }
     }
 
-    if ( !defaultLoadedFlag )
+    if ( !defaultLoadedFlag && !restoredStyle )
     {
       setDefaultContrastEnhancement();
     }
@@ -922,6 +934,10 @@ void QgsRasterLayer::computeMinMax( int band,
 
 }
 
+bool QgsRasterLayer::ignoreExtents() const
+{
+  return mDataProvider ? mDataProvider->ignoreExtents() : false;
+}
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
 {
@@ -1777,12 +1793,23 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
 
-  QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-  setDataProvider( mProviderKey, providerOptions );
+  if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
+  {
+    QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
+    setDataProvider( mProviderKey, providerOptions );
+  }
+
+  mOriginalStyleElement = layer_node.namedItem( QStringLiteral( "originalStyle" ) ).firstChildElement();
+  if ( mOriginalStyleElement.isNull() )
+    mOriginalStyleElement = layer_node.toElement();
+  mOriginalStyleDocument = layer_node.ownerDocument();
 
   if ( ! mDataProvider )
   {
-    QgsDebugMsg( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+    if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+    }
     return false;
   }
 
@@ -1851,14 +1878,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   readStyleManager( layer_node );
 
   return res;
-} // QgsRasterLayer::readXml( QDomNode & layer_node )
+}
 
-/*
- * \param QDomNode the node that will have the style element added to it.
- * \param QDomDocument the document that will have the QDomNode added.
- * \param errorMessage reference to string that will be updated with any error messages
- * \return true in case of success.
- */
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage,
                                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
@@ -1881,12 +1902,18 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 
   layer_node.appendChild( pipeElement );
 
+  if ( !isValid() && !mOriginalStyleElement.isNull() )
+  {
+    QDomElement originalStyleElement = document.createElement( QStringLiteral( "originalStyle" ) );
+    originalStyleElement.appendChild( mOriginalStyleElement );
+    layer_node.appendChild( originalStyleElement );
+  }
+
   // add blend mode node
   QDomElement blendModeElement  = document.createElement( QStringLiteral( "blendMode" ) );
   QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
-
   return true;
 }
 

@@ -103,6 +103,8 @@ class CORE_EXPORT QgsUnitTypes
       AngleMinutesOfArc, //!< Minutes of arc
       AngleSecondsOfArc, //!< Seconds of arc
       AngleTurn, //!< Turn/revolutions
+      AngleMilliradiansSI, //!< Angular milliradians (SI definition, 1/1000 of radian)
+      AngleMilNATO, //!< Angular mil (NATO definition, 6400 mil = 2PI radians)
       AngleUnknownUnit, //!< Unknown angle unit
     };
     Q_ENUM( AngleUnit )
@@ -303,6 +305,14 @@ class CORE_EXPORT QgsUnitTypes
      * \returns matching areal unit
      */
     Q_INVOKABLE static QgsUnitTypes::AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+
+    /**
+     * Converts an area unit to its corresponding distance unit, e.g., square meters to meters
+     * \param areaUnit area unit to convert
+     * \returns matching distance unit
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnit areaToDistanceUnit( QgsUnitTypes::AreaUnit areaUnit );
 
     // ANGULAR UNITS
 

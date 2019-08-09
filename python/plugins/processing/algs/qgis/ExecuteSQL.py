@@ -28,12 +28,15 @@ from qgis.core import (QgsVirtualLayerDefinition,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDefinition,
                        QgsExpression,
+                       QgsProcessingUtils,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterFeatureSink,
                        QgsFeatureSink,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsVectorFileWriter,
+                       QgsProject)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -125,7 +128,20 @@ class ExecuteSQL(QgisAlgorithm):
 
         df = QgsVirtualLayerDefinition()
         for layerIdx, layer in enumerate(layers):
-            df.addSource('input{}'.format(layerIdx + 1), layer.id())
+
+            # Issue https://github.com/qgis/QGIS/issues/24041
+            # When using this algorithm from the graphic modeler, it may try to
+            # access (thanks the QgsVirtualLayerProvider) to memory layer that
+            # belongs to temporary QgsMapLayerStore, not project.
+            # So, we write them to disk is this is the case.
+            if not context.project().mapLayer(layer.id()):
+                basename = "memorylayer." + QgsVectorFileWriter.supportedFormatExtensions()[0]
+                tmp_path = QgsProcessingUtils.generateTempFilename(basename)
+                QgsVectorFileWriter.writeAsVectorFormat(
+                    layer, tmp_path, layer.dataProvider().encoding())
+                df.addSource('input{}'.format(layerIdx + 1), tmp_path, "ogr")
+            else:
+                df.addSource('input{}'.format(layerIdx + 1), layer.id())
 
         if query == '':
             raise QgsProcessingException(

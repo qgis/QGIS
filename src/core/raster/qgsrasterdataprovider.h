@@ -538,6 +538,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QList< double > nativeResolutions() const;
 
+    /**
+     * Returns true if the extents reported by the data provider are not reliable
+     * and it's possible that there is renderable content outside of these extents.
+     *
+     * \since QGIS 3.10.0
+     */
+    virtual bool ignoreExtents() const;
+
   signals:
 
     /**

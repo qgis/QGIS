@@ -164,9 +164,11 @@ Returns the project's native coordinate reference system.
 .. versionadded:: 3.0
 %End
 
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 %Docstring
 Sets the project's native coordinate reference system.
+If ``adjustEllipsoid`` is set to ``True``, the ellpsoid of this project will be set to
+the ellipsoid imposed by the CRS.
 
 .. seealso:: :py:func:`crs`
 
@@ -233,18 +235,29 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename );
+    enum ReadFlag
+    {
+      FlagDontResolveLayers,
+    };
+    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
+
+
+    bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
 %Docstring
 Reads given project file from the given file.
 
 :param filename: name of project file to read
+:param flags: optional flags which control the read behavior of projects
 
 :return: ``True`` if project file has been read successfully
 %End
 
-    bool read();
+    bool read( QgsProject::ReadFlags flags = 0 );
 %Docstring
 Reads the project from its currently associated file (see fileName() ).
+
+The ``flags`` argument can be used to specify optional flags which control
+the read behavior of projects.
 
 :return: ``True`` if project file has been read successfully
 %End
@@ -438,9 +451,11 @@ Returns project file path if layer is embedded from other project file. Returns 
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = 0 );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
+
+The optional ``flags`` argument can be used to control layer reading behavior.
 
 .. versionadded:: 2.4
 %End
@@ -733,6 +748,21 @@ Retrieve a list of matching registered layers by layer name.
 
 .. seealso:: :py:func:`mapLayers`
 %End
+
+    QList<QgsMapLayer *> mapLayersByShortName( const QString &shortName ) const;
+%Docstring
+Retrieves a list of matching registered layers by layer ``shortName``.
+If layer's short name is empty a match with layer's name is attempted.
+
+:return: list of matching layers
+
+.. seealso:: :py:func:`mapLayer`
+
+.. seealso:: :py:func:`mapLayers`
+
+.. versionadded:: 3.10
+%End
+
 
     QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 %Docstring
@@ -1463,6 +1493,9 @@ So there can be created a ts file with these values.
 %End
 
 };
+
+QFlags<QgsProject::ReadFlag> operator|(QgsProject::ReadFlag f1, QFlags<QgsProject::ReadFlag> f2);
+
 
 class QgsProjectDirtyBlocker
 {

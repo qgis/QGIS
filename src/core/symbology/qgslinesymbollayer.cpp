@@ -25,6 +25,7 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QPainter>
 #include <QDomDocument>
@@ -1080,7 +1081,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   double interval = mInterval;
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  context.renderContext().expressionContext().appendScope( scope );
+  QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyInterval ) )
   {
@@ -1211,8 +1212,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     }
 
   }
-
-  delete context.renderContext().expressionContext().popScope();
 }
 
 static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
@@ -1233,11 +1232,11 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
   QgsRenderContext &rc = context.renderContext();
 
   double origAngle = symbolAngle();
-  int i, maxCount;
+  int i = -1, maxCount = 0;
   bool isRing = false;
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  context.renderContext().expressionContext().appendScope( scope );
+  QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size(), true ) );
 
   double offsetAlongLine = mOffsetAlongLine;
@@ -1293,7 +1292,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       }
     }
 
-    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
@@ -1326,7 +1324,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     case CentralPoint:
     case CurvePoint:
     {
-      delete context.renderContext().expressionContext().popScope();
       return;
     }
   }
@@ -1339,7 +1336,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     // restore original rotation
     setSymbolAngle( origAngle );
 
-    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
@@ -1364,8 +1360,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
   // restore original rotation
   setSymbolAngle( origAngle );
-
-  delete context.renderContext().expressionContext().popScope();
 }
 
 double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bool isRing, int vertex )

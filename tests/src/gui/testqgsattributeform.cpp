@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 #include <QPushButton>
+#include <QLineEdit>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include "qgsattributeform.h"
@@ -27,6 +28,7 @@
 #include <qgsvectorlayerjoininfo.h>
 #include "qgsgui.h"
 #include "qgsattributeformeditorwidget.h"
+#include "qgsattributeforminterface.h"
 
 class TestQgsAttributeForm : public QObject
 {
@@ -47,6 +49,7 @@ class TestQgsAttributeForm : public QObject
     void testConstraintsOnJoinedFields();
     void testEditableJoin();
     void testUpsertOnEdit();
+    void testAttributeFormInterface();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -850,6 +853,58 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   delete layerB;
   delete layerC;
 }
+
+void TestQgsAttributeForm::testAttributeFormInterface()
+{
+  // Issue https://github.com/qgis/QGIS/issues/29667
+  // we simulate a python code execution that would be triggered
+  // at form opening and that would modify the value of a widget.
+  // We want to check that emitted signal widgetValueChanged is
+  // correctly emitted with correct parameters
+
+  // make a temporary vector layer
+  QString def = QStringLiteral( "Point?field=col0:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+
+  // add a feature to the vector layer
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 10 );
+
+  class MyInterface : public QgsAttributeFormInterface
+  {
+    public:
+      MyInterface( QgsAttributeForm *form )
+        : QgsAttributeFormInterface( form ) {}
+
+      virtual void featureChanged()
+      {
+        QgsAttributeForm *f = form();
+        QLineEdit *le = f->findChild<QLineEdit *>( "col0" );
+        le->setText( "100" );
+      }
+  };
+
+  // build a form for this feature
+  QgsAttributeForm form( layer );
+  form.addInterface( new MyInterface( &form ) );
+
+  bool set = false;
+  connect( &form, &QgsAttributeForm::widgetValueChanged, this,
+           [&set]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
+  {
+
+    // Check that our value set by the QgsAttributeFormInterface has correct parameters.
+    // attributeChanged has to be true because it won't be taken into account by others
+    // (QgsValueRelationWidgetWrapper for instance)
+    if ( attribute == "col0" && newValue.toInt() == 100 && attributeChanged )
+      set = true;
+  } );
+
+  form.setFeature( ft );
+  QVERIFY( set );
+}
+
 
 
 QGSTEST_MAIN( TestQgsAttributeForm )

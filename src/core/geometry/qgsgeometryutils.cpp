@@ -1233,12 +1233,27 @@ double QgsGeometryUtils::normalizedAngle( double angle )
 
 QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt )
 {
-  QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wkt );
-
-  QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
-  cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
-  QRegularExpressionMatch match = cooRegEx.match( wkt );
-  QString contents = match.hasMatch() ? match.captured( 1 ) : QString();
+  QString wktParsed = wkt;
+  QString contents;
+  if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
+  {
+    QRegularExpression wktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ) );
+    wktRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+    QRegularExpressionMatch match = wktRegEx.match( wkt );
+    if ( match.hasMatch() )
+    {
+      wktParsed = match.captured( 1 );
+      contents = match.captured( 2 ).toUpper();
+    }
+  }
+  else
+  {
+    QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
+    cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+    QRegularExpressionMatch match = cooRegEx.match( wktParsed );
+    contents = match.hasMatch() ? match.captured( 1 ) : QString();
+  }
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wktParsed );
   return qMakePair( wkbType, contents );
 }
 

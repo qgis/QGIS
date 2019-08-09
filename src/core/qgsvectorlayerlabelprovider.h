@@ -51,7 +51,11 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
+    void drawLabelBackground( QgsRenderContext &context, pal::LabelPosition *label ) const override;
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void drawUnplacedLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void startRender( QgsRenderContext &context ) override;
+    void stopRender( QgsRenderContext &context ) override;
 
     // new virtual methods
 
@@ -61,7 +65,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * \param attributeNames list of attribute names to which additional required attributes shall be added
      * \returns Whether the preparation was successful - if not, the provider shall not be used
      */
-    virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames );
+    virtual bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames );
 
     /**
      * Register a feature for labeling as one or more QgsLabelFeature objects stored into mLabels
@@ -73,8 +77,9 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels.
+     * \param symbol feature symbol to label (ownership is not transferred - the symbol must exist until after labeling is complete)
      */
-    virtual void registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
+    virtual void registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
 
     /**
      * Returns the geometry for a point feature which should be used as an obstacle for labels. This
@@ -113,7 +118,10 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! List of generated
     QList<QgsLabelFeature *> mLabels;
 
+  private:
+
     friend class TestQgsLabelingEngine;
+    void drawCallout( QgsRenderContext &context, pal::LabelPosition *label ) const;
 };
 
 #endif // QGSVECTORLAYERLABELPROVIDER_H

@@ -29,6 +29,7 @@
 #include "qgsguiutils.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 #include <QMessageBox>
 
@@ -213,11 +214,10 @@ void QgsFieldCalculator::accept()
       }
       else
       {
-        QMap<QString, int>::const_iterator fieldIt = mFieldMap.constFind( mExistingFieldComboBox->currentText() );
-        if ( fieldIt != mFieldMap.constEnd() )
-        {
-          mAttributeId = fieldIt.value();
-        }
+        bool ok = false;
+        int id = mExistingFieldComboBox->currentData().toInt( &ok );
+        if ( ok )
+          mAttributeId = id;
       }
     }
     else
@@ -470,14 +470,40 @@ void QgsFieldCalculator::populateFields()
   const QgsFields &fields = mVectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( fields.fieldOrigin( idx ) != QgsFields::OriginExpression && fields.fieldOrigin( idx ) != QgsFields::OriginJoin )
+    switch ( fields.fieldOrigin( idx ) )
     {
-      QString fieldName = fields.at( idx ).name();
+      case QgsFields::OriginExpression:
+      case QgsFields::OriginUnknown:
 
-      //insert into field list and field combo box
-      mFieldMap.insert( fieldName, idx );
-      mExistingFieldComboBox->addItem( fieldName );
+        continue; // can't be edited
+
+      case QgsFields::OriginProvider:
+      case QgsFields::OriginEdit:
+        break; // can always be edited
+
+      case QgsFields::OriginJoin:
+      {
+        // show joined fields (e.g. auxiliary fields) only if they have a non-hidden editor widget.
+        // This enables them to be bulk field-calculated when a user needs to, but hides them by default
+        // (since there's often MANY of these, e.g. after using the label properties tool on a layer)
+        if ( fields.at( idx ).editorWidgetSetup().type() == QLatin1String( "Hidden" ) )
+          continue;
+
+        // only show editable joins
+        int srcFieldIndex;
+        const QgsVectorLayerJoinInfo *info = mVectorLayer->joinBuffer()->joinForFieldIndex( idx, fields, srcFieldIndex );
+
+        if ( !info || !info->isEditable() )
+          continue; // join is not editable
+
+        break;
+      }
     }
+
+    QString fieldName = fields.at( idx ).name();
+
+    //insert into field combo box
+    mExistingFieldComboBox->addItem( fields.iconForField( idx ), fieldName, idx );
   }
 
   if ( mVectorLayer->geometryType() != QgsWkbTypes::NullGeometry )

@@ -201,6 +201,7 @@ std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::parseEsriGeometryMultiPoint
   const QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
 
   std::unique_ptr< QgsMultiPoint > multiPoint = qgis::make_unique< QgsMultiPoint >();
+  multiPoint->reserve( coordsList.size() );
   for ( const QVariant &coordData : coordsList )
   {
     const QVariantList coordList = coordData.toList();
@@ -237,6 +238,7 @@ std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::parseEsriGeometryPolyline( 
   if ( pathsList.isEmpty() )
     return nullptr;
   std::unique_ptr< QgsMultiCurve > multiCurve = qgis::make_unique< QgsMultiCurve >();
+  multiCurve->reserve( pathsList.size() );
   for ( const QVariant &pathData : qgis::as_const( pathsList ) )
   {
     std::unique_ptr< QgsCompoundCurve > curve = parseCompoundCurve( pathData.toList(), pointType );
@@ -275,6 +277,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::parseEsriGeometryPolygon(
 
   std::sort( curves.begin(), curves.end(), []( const QgsCompoundCurve * a, const QgsCompoundCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
   std::unique_ptr< QgsMultiSurface > result = qgis::make_unique< QgsMultiSurface >();
+  result->reserve( curves.size() );
   while ( !curves.isEmpty() )
   {
     QgsCompoundCurve *exterior = curves.takeFirst();

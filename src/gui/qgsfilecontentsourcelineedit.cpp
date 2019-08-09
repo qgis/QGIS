@@ -35,7 +35,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   mFileLineEdit = new QgsFilterLineEdit( this );
   mFileLineEdit->setShowClearButton( true );
   mFileToolButton = new QToolButton( this );
-  mFileToolButton->setText( tr( "…" ) );
+  mFileToolButton->setText( QStringLiteral( "…" ) );
   layout->addWidget( mFileLineEdit, 1 );
   layout->addWidget( mFileToolButton );
   setLayout( layout );

@@ -125,7 +125,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 
   // I don't see any method to get only a name without opening file
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is no avialable until open
+  tmpFile.open(); // fileName is not available until open
   QString tmpName =  tmpFile.fileName();
   tmpFile.close();
   // do not remove when class is destroyd so that we can read the file and see difference

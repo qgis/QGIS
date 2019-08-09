@@ -107,7 +107,7 @@ Returns the project translator
 
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 %Docstring
-Sets the project translator. Means it shouldn't conform mDefaultTranslator anymore.
+Sets the project translator.
 It's usually the QgsProject where the function with the context is made and won't be changed anymore.
 
 .. versionadded:: 3.4
@@ -131,7 +131,6 @@ Sets data coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
-      public:
 };
 
 

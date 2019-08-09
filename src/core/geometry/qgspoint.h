@@ -71,12 +71,32 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \endcode
      */
 #ifndef SIP_RUN
-    QgsPoint( double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
+    QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
 #else
-    QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
     % MethodCode
+    double x;
+    double y;
     double z;
     double m;
+
+    if ( a0 == Py_None )
+    {
+      x = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      x = PyFloat_AsDouble( a0 );
+    }
+
+    if ( a1 == Py_None )
+    {
+      y = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      y = PyFloat_AsDouble( a1 );
+    }
 
     if ( a2 == Py_None )
     {
@@ -96,7 +116,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       m = PyFloat_AsDouble( a3 );
     }
 
-    sipCpp = new sipQgsPoint( a0, a1, z, m, a4 );
+    sipCpp = new sipQgsPoint( x, y, z, m, a4 );
     % End
 #endif
 
@@ -115,7 +135,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *
      * \note Not available in Python bindings
      */
-    explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+    explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
     bool operator==( const QgsAbstractGeometry &other ) const override
     {
@@ -126,8 +146,17 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       const QgsWkbTypes::Type type = wkbType();
 
       bool equal = pt->wkbType() == type;
-      equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
-      equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
+
+      if ( std::isnan( pt->x() ) || std::isnan( mX ) )
+        equal &= std::isnan( pt->x() ) && std::isnan( mX ) ;
+      else
+        equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
+
+      if ( std::isnan( pt->y() ) || std::isnan( mY ) )
+        equal &= std::isnan( pt->y() ) && std::isnan( mY ) ;
+      else
+        equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
+
       if ( QgsWkbTypes::hasZ( type ) )
         equal &= qgsDoubleNear( pt->z(), mZ, 1E-8 ) || ( std::isnan( pt->z() ) && std::isnan( mZ ) );
       if ( QgsWkbTypes::hasM( type ) )

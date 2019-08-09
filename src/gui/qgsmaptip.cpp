@@ -146,8 +146,18 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   QgsDebugMsg( tipHtml );
 
-  mWidget->move( pixelPosition.x(),
-                 pixelPosition.y() );
+  int cursorOffset = 0;
+  // attempt to shift the tip away from the cursor.
+  if ( QgsApplication::instance() )
+  {
+    // The following calculations are taken
+    // from QgsApplication::getThemeCursor, and are used to calculate the correct cursor size
+    // for both hi-dpi and non-hi-dpi screens.
+    double scale = Qgis::UI_SCALE_FACTOR * QgsApplication::instance()->fontMetrics().height() / 32.0;
+    cursorOffset = static_cast< int >( std::ceil( scale * 32 ) );
+  }
+
+  mWidget->move( pixelPosition.x() + cursorOffset, pixelPosition.y() );
 
   mWebView->setHtml( tipHtml );
   lastTipText = tipText;

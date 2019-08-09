@@ -479,6 +479,14 @@ Resolutions are calculated in the provider's crs().
 .. versionadded:: 3.8.0
 %End
 
+    virtual bool ignoreExtents() const;
+%Docstring
+Returns true if the extents reported by the data provider are not reliable
+and it's possible that there is renderable content outside of these extents.
+
+.. versionadded:: 3.10.0
+%End
+
   signals:
 
     void statusChanged( const QString & ) const;

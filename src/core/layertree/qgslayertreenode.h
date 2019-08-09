@@ -170,6 +170,9 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     /**
      * Check or uncheck a node (independently of its ancestors or children)
+     *
+     * \see QgsLayerTreeView::setLayerVisible()
+     *
      * \since QGIS 3.0
      */
     void setItemVisibilityChecked( bool checked );

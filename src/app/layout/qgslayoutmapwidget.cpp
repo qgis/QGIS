@@ -182,6 +182,7 @@ void QgsLayoutMapWidget::setReportTypeString( const QString &string )
 void QgsLayoutMapWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
 {
   mInterface = iface;
+  QgsLayoutItemBaseWidget::setDesignerInterface( iface );
 }
 
 bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
@@ -1125,6 +1126,7 @@ void QgsLayoutMapWidget::mGridPropertiesButton_clicked()
   }
 
   QgsLayoutMapGridWidget *w = new QgsLayoutMapGridWidget( grid, mMapItem );
+  w->setDesignerInterface( mInterface );
   openPanel( w );
 }
 
@@ -1599,6 +1601,7 @@ QgsLayoutMapLabelingWidget::QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map )
   connect( mLabelBoundaryUnitsCombo, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutMapLabelingWidget::labelMarginUnitsChanged );
   connect( mLabelBoundarySpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapLabelingWidget::labelMarginChanged );
   connect( mShowPartialLabelsCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showPartialsToggled );
+  connect( mShowUnplacedCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showUnplacedToggled );
 
   registerDataDefinedButton( mLabelMarginDDBtn, QgsLayoutObject::MapLabelMargin );
 
@@ -1632,6 +1635,7 @@ void QgsLayoutMapLabelingWidget::updateGuiElements()
   whileBlocking( mLabelBoundarySpinBox )->setValue( mMapItem->labelMargin().length() );
   whileBlocking( mLabelBoundaryUnitsCombo )->setUnit( mMapItem->labelMargin().units() );
   whileBlocking( mShowPartialLabelsCheckBox )->setChecked( mMapItem->mapFlags() & QgsLayoutItemMap::ShowPartialLabels );
+  whileBlocking( mShowUnplacedCheckBox )->setChecked( mMapItem->mapFlags() & QgsLayoutItemMap::ShowUnplacedLabels );
 
   if ( mBlockingItemsListView->model() )
   {
@@ -1679,6 +1683,22 @@ void QgsLayoutMapLabelingWidget::showPartialsToggled( bool checked )
     flags |= QgsLayoutItemMap::ShowPartialLabels;
   else
     flags &= ~QgsLayoutItemMap::ShowPartialLabels;
+  mMapItem->setMapFlags( flags );
+  mMapItem->layout()->undoStack()->endCommand();
+  mMapItem->invalidateCache();
+}
+
+void QgsLayoutMapLabelingWidget::showUnplacedToggled( bool checked )
+{
+  if ( !mMapItem )
+    return;
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Label Visibility" ) );
+  QgsLayoutItemMap::MapItemFlags flags = mMapItem->mapFlags();
+  if ( checked )
+    flags |= QgsLayoutItemMap::ShowUnplacedLabels;
+  else
+    flags &= ~QgsLayoutItemMap::ShowUnplacedLabels;
   mMapItem->setMapFlags( flags );
   mMapItem->layout()->undoStack()->endCommand();
   mMapItem->invalidateCache();

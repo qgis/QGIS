@@ -23,7 +23,7 @@
    <iconset>
     <normaloff>.</normaloff>.</iconset>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QGridLayout" name="mGrid">
    <property name="leftMargin">
     <number>9</number>
    </property>
@@ -106,6 +106,19 @@
     </widget>
    </item>
    <item row="7" column="0" colspan="4">
+    <spacer name="mSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="8" column="0" colspan="4">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>

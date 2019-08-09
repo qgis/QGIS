@@ -15,6 +15,7 @@ import qgis  # NOQA
 
 import os
 import filecmp
+from shutil import copyfile
 
 from qgis.PyQt.QtCore import QSize, QFileInfo, Qt, QTemporaryDir
 
@@ -49,6 +50,9 @@ from qgis.core import (QgsRaster,
                        QgsCoordinateTransformContext,
                        QgsCoordinateReferenceSystem,
                        QgsRasterHistogram,
+                       QgsCubicRasterResampler,
+                       QgsBilinearRasterResampler,
+                       QgsLayerDefinition
                        )
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
@@ -1045,6 +1049,160 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertTrue(len(h.histogramVector), 100)
         # Check it twice because it crashed in some circumstances with the old implementation
         self.assertTrue(len(h.histogramVector), 100)
+
+    def testInvalidLayerStyleRestoration(self):
+        """
+        Test that styles are correctly restored from invalid layers
+        """
+        source_path = os.path.join(unitTestDataPath('raster'),
+                                   'band1_float32_noct_epsg4326.tif')
+        # copy to temp path
+        tmp_dir = QTemporaryDir()
+        tmp_path = os.path.join(tmp_dir.path(), 'test_raster.tif')
+        copyfile(source_path, tmp_path)
+
+        rl = QgsRasterLayer(tmp_path, 'test_raster', 'gdal')
+        self.assertTrue(rl.isValid())
+        renderer = QgsSingleBandPseudoColorRenderer(rl.dataProvider(), 1)
+        color_ramp = QgsGradientColorRamp(QColor(255, 255, 0), QColor(0, 0, 255))
+        renderer.setClassificationMin(101)
+        renderer.setClassificationMax(131)
+        renderer.createShader(color_ramp)
+        renderer.setOpacity(0.6)
+        rl.setRenderer(renderer)
+        rl.resampleFilter().setZoomedInResampler(QgsCubicRasterResampler())
+        rl.resampleFilter().setZoomedOutResampler(QgsBilinearRasterResampler())
+
+        p = QgsProject()
+        p.addMapLayer(rl)
+        project_path = os.path.join(tmp_dir.path(), 'test_project.qgs')
+        self.assertTrue(p.write(project_path))
+
+        # simple case, layer still exists in same path
+        p2 = QgsProject()
+        self.assertTrue(p2.read(project_path))
+
+        self.assertEqual(len(p2.mapLayers()), 1)
+        rl2 = list(p2.mapLayers().values())[0]
+        self.assertTrue(rl2.isValid())
+        self.assertEqual(rl2.name(), 'test_raster')
+
+        self.assertIsInstance(rl2.renderer(), QgsSingleBandPseudoColorRenderer)
+        self.assertEqual(rl2.renderer().classificationMin(), 101)
+        self.assertEqual(rl2.renderer().classificationMax(), 131)
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color1().name(), '#ffff00')
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
+        self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
+        self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
+        self.assertEqual(rl2.renderer().opacity(), 0.6)
+
+        # now, remove raster
+        os.remove(tmp_path)
+        # reload project
+        p2 = QgsProject()
+        self.assertTrue(p2.read(project_path))
+
+        self.assertEqual(len(p2.mapLayers()), 1)
+        rl2 = list(p2.mapLayers().values())[0]
+        self.assertFalse(rl2.isValid())
+        self.assertEqual(rl2.name(), 'test_raster')
+
+        # invalid layers should still have renderer available
+        self.assertIsInstance(rl2.renderer(), QgsSingleBandPseudoColorRenderer)
+        self.assertEqual(rl2.renderer().classificationMin(), 101)
+        self.assertEqual(rl2.renderer().classificationMax(), 131)
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color1().name(), '#ffff00')
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
+        self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
+        self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
+        self.assertEqual(rl2.renderer().opacity(), 0.6)
+        # make a little change
+        rl2.renderer().setOpacity(0.8)
+
+        # now, fix path
+        rl2.setDataSource(source_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+        self.assertTrue(rl2.isValid())
+        self.assertEqual(rl2.name(), 'test_raster')
+
+        # at this stage, the original style should be retained...
+        self.assertIsInstance(rl2.renderer(), QgsSingleBandPseudoColorRenderer)
+        self.assertEqual(rl2.renderer().classificationMin(), 101)
+        self.assertEqual(rl2.renderer().classificationMax(), 131)
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color1().name(), '#ffff00')
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
+        self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
+        self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
+        # the opacity change (and other renderer changes made while the layer was invalid) should be retained
+        self.assertEqual(rl2.renderer().opacity(), 0.8)
+
+        # break path
+        rl2.setDataSource(tmp_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+        # and restore
+        rl2.setDataSource(source_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+        self.assertTrue(rl2.isValid())
+        self.assertEqual(rl2.name(), 'test_raster')
+
+        # at this stage, the original style should be recreated...
+        self.assertIsInstance(rl2.renderer(), QgsSingleBandPseudoColorRenderer)
+        self.assertEqual(rl2.renderer().classificationMin(), 101)
+        self.assertEqual(rl2.renderer().classificationMax(), 131)
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color1().name(), '#ffff00')
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
+        self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
+        self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
+        self.assertEqual(rl2.renderer().opacity(), 0.8)
+
+        # break again
+        rl2.setDataSource(tmp_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+
+        # export via qlr, with broken path (but hopefully correct style)
+        doc = QgsLayerDefinition.exportLayerDefinitionLayers([rl2], QgsReadWriteContext())
+        layers = QgsLayerDefinition.loadLayerDefinitionLayers(doc, QgsReadWriteContext())
+        self.assertEqual(len(layers), 1)
+        rl2 = layers[0]
+        self.assertFalse(rl2.isValid())
+
+        # fix path
+        rl2.setDataSource(source_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+        self.assertTrue(rl2.isValid())
+        self.assertEqual(rl2.name(), 'test_raster')
+
+        # at this stage, the original style should be recreated...
+        self.assertIsInstance(rl2.renderer(), QgsSingleBandPseudoColorRenderer)
+        self.assertEqual(rl2.renderer().classificationMin(), 101)
+        self.assertEqual(rl2.renderer().classificationMax(), 131)
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color1().name(), '#ffff00')
+        self.assertEqual(rl2.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
+        self.assertIsInstance(rl2.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
+        self.assertIsInstance(rl2.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
+        self.assertEqual(rl2.renderer().opacity(), 0.8)
+
+        # another test
+        rl = QgsRasterLayer(source_path, 'test_raster', 'gdal')
+        self.assertTrue(rl.isValid())
+        renderer = QgsSingleBandPseudoColorRenderer(rl.dataProvider(), 1)
+        color_ramp = QgsGradientColorRamp(QColor(255, 255, 0), QColor(0, 0, 255))
+        renderer.setClassificationMin(101)
+        renderer.setClassificationMax(131)
+        renderer.createShader(color_ramp)
+        renderer.setOpacity(0.6)
+        rl.setRenderer(renderer)
+        rl.resampleFilter().setZoomedInResampler(QgsCubicRasterResampler())
+        rl.resampleFilter().setZoomedOutResampler(QgsBilinearRasterResampler())
+
+        # break path
+        rl.setDataSource(tmp_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+
+        # fix path
+        rl.setDataSource(source_path, 'test_raster', 'gdal', QgsDataProvider.ProviderOptions())
+        self.assertIsInstance(rl.renderer(), QgsSingleBandPseudoColorRenderer)
+        self.assertEqual(rl.renderer().classificationMin(), 101)
+        self.assertEqual(rl.renderer().classificationMax(), 131)
+        self.assertEqual(rl.renderer().shader().rasterShaderFunction().sourceColorRamp().color1().name(), '#ffff00')
+        self.assertEqual(rl.renderer().shader().rasterShaderFunction().sourceColorRamp().color2().name(), '#0000ff')
+        self.assertIsInstance(rl.resampleFilter().zoomedInResampler(), QgsCubicRasterResampler)
+        self.assertIsInstance(rl.resampleFilter().zoomedOutResampler(), QgsBilinearRasterResampler)
+        self.assertEqual(rl.renderer().opacity(), 0.6)
 
 
 class TestQgsRasterLayerTransformContext(unittest.TestCase):

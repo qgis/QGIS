@@ -182,6 +182,19 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 
   if ( reshapeDone )
   {
+    // Add topological points
+    if ( QgsProject::instance()->topologicalEditing() )
+    {
+      QList<QgsPointLocator::Match> sm = snappingMatches();
+      Q_ASSERT( pts.size() == sm.size() );
+      for ( int i = 0; i < sm.size() ; ++i )
+      {
+        if ( sm.at( i ).layer() )
+        {
+          sm.at( i ).layer()->addTopologicalPoints( pts.at( i ) );
+        }
+      }
+    }
     vlayer->endEditCommand();
   }
   else

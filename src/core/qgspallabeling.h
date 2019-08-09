@@ -39,6 +39,7 @@
 #include "qgspointxy.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
+#include "qgssymbol.h"
 #include "qgstextrenderer.h"
 #include "qgspropertycollection.h"
 
@@ -70,7 +71,7 @@ class QgsVectorLayerLabelProvider;
 class QgsDxfExport;
 class QgsVectorLayerDiagramProvider;
 class QgsExpressionContext;
-
+class QgsCallout;
 
 /**
  * \ingroup core
@@ -96,9 +97,10 @@ class CORE_EXPORT QgsLabelPosition
      * \param pinned TRUE if label has pinned placement
      * \param providerId ID of associated label provider
      * \param labelGeometry polygon geometry of label boundary
+     * \param isUnplaced set to TRUE if label was unplaced (e.g. due to collisions with other labels)
      */
     QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
-                      const QgsGeometry &labelGeometry = QgsGeometry() )
+                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false )
       : featureId( id )
       , rotation( r )
       , cornerPoints( corners )
@@ -113,6 +115,7 @@ class CORE_EXPORT QgsLabelPosition
       , isDiagram( diagram )
       , isPinned( pinned )
       , providerID( providerId )
+      , isUnplaced( isUnplaced )
     {}
 
     //! Constructor for QgsLabelPosition
@@ -182,6 +185,12 @@ class CORE_EXPORT QgsLabelPosition
      * \since QGIS 2.14
      */
     QString providerID;
+
+    /**
+     * TRUE if label position corresponds to an unplaced label.
+     * \since QGIS 3.10
+     */
+    bool isUnplaced = false;
 };
 
 
@@ -345,6 +354,7 @@ class CORE_EXPORT QgsPalLayerSettings
       AutoWrapLength = 101,
       MultiLineHeight = 32,
       MultiLineAlignment = 33,
+      TextOrientation = 104,
       DirSymbDraw = 34,
       DirSymbLeft = 35,
       DirSymbRight = 36,
@@ -422,6 +432,8 @@ class CORE_EXPORT QgsPalLayerSettings
       Priority = 87,
       PredefinedPositionOrder = 91,
       LinePlacementOptions = 99, //!< Line placement flags
+      OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
+      LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
 
       // rendering
       ScaleVisibility = 23,
@@ -435,6 +447,7 @@ class CORE_EXPORT QgsPalLayerSettings
       IsObstacle = 88,
       ObstacleFactor = 89,
       ZIndex = 90,
+      CalloutDraw = 100, //!< Show callout
 
       // (data defined only)
       Show = 15,
@@ -453,7 +466,26 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * \since QGIS 3.8
      */
-    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames SIP_INOUT, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
+    bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames SIP_INOUT, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Prepares the label settings for rendering.
+     *
+     * This should be called before rendering any labels, and must be
+     * followed by a call to stopRender() in order to gracefully clean up symbols.
+     *
+     * \since QGIS 3.10
+     */
+    void startRender( QgsRenderContext &context );
+
+    /**
+     * Finalises the label settings after use.
+     *
+     * This must be called after a call to startRender(), in order to gracefully clean up symbols.
+     *
+     * \since QGIS 3.10
+     */
+    void stopRender( QgsRenderContext &context );
 
     /**
      * Returns the labeling property definitions.
@@ -667,6 +699,30 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
     /**
+     * Distance which labels are allowed to overrun past the start or end of line features.
+     * \see overrunDistanceUnit
+     * \see repeatDistanceMapUnitScale
+     * \since QGIS 3.10
+     */
+    double overrunDistance = 0;
+
+    /**
+     * Units for label overrun distance.
+     * \see overrunDistance
+     * \see overrunDistanceMapUnitScale
+     * \since QGIS 3.10
+     */
+    QgsUnitTypes::RenderUnit overrunDistanceUnit = QgsUnitTypes::RenderMillimeters;
+
+    /**
+     * Map unit scale for label overrun distance.
+     * \see overrunDistance
+     * \see overrunDistanceUnit
+     * \since QGIS 3.10
+     */
+    QgsMapUnitScale overrunDistanceMapUnitScale;
+
+    /**
      * Sets the quadrant in which to offset labels from feature.
      */
     QuadrantPosition quadOffset;
@@ -860,8 +916,10 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
+     * If the text orientation is set to rotation-based, the spaced taken to render
+     * vertically oriented text will be written to \a rotatedLabelX and \a rotatedLabelY .
      */
-    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
+    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr );
 
     /**
      * Register a feature for labeling.
@@ -875,10 +933,11 @@ class CORE_EXPORT QgsPalLayerSettings
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels. Not available
      * in Python bindings.
+     * \param symbol feature symbol to label (ownership is not transferred, and \a symbol must exist until the labeling is complete)
      */
     void registerFeature( const QgsFeature &f, QgsRenderContext &context,
                           QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
-                          QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry() );
+                          QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry(), const QgsSymbol *symbol SIP_PYARGREMOVE = nullptr );
 
     /**
      * Read settings from a DOM element
@@ -931,6 +990,26 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
+
+    /**
+     * Returns the label callout renderer, responsible for drawing label callouts.
+     *
+     * Ownership is not transferred.
+     *
+     * \see setCallout()
+     * \since QGIS 3.10
+     */
+    QgsCallout *callout() const { return mCallout.get(); }
+
+    /**
+     * Sets the label \a callout renderer, responsible for drawing label callouts.
+     *
+     * Ownership of \a callout is transferred to the settings.
+
+     * \see callout()
+     * \since QGIS 3.10
+     */
+    void setCallout( QgsCallout *callout SIP_TRANSFER );
 
     /**
     * Returns a pixmap preview for label \a settings.
@@ -1031,7 +1110,11 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsTextFormat mFormat;
 
+    std::unique_ptr< QgsCallout > mCallout;
+
     QgsExpression mGeometryGeneratorExpression;
+
+    bool mRenderStarted = false;
 
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 

@@ -28,7 +28,7 @@
 
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
-QgsMimeDataUtils::Uri::Uri( QString &encData )
+QgsMimeDataUtils::Uri::Uri( const QString &encData )
 {
   QgsDebugMsg( "encData: " + encData );
   const QStringList decoded = decode( encData );
@@ -65,7 +65,7 @@ QgsMimeDataUtils::Uri::Uri( QString &encData )
 }
 
 QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
-  : providerKey( layer->dataProvider()->name() )
+  : providerKey( layer->providerType() )
   , name( layer->name() )
   , uri( layer->dataProvider()->dataSourceUri() )
   , layerId( layer->id() )

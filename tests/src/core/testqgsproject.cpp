@@ -43,6 +43,8 @@ class TestQgsProject : public QObject
     void testLayerFlags();
     void testLocalFiles();
     void testLocalUrlFiles();
+    void testReadFlags();
+    void testSetGetCrs();
 };
 
 void TestQgsProject::init()
@@ -425,6 +427,103 @@ void TestQgsProject::testLocalUrlFiles()
   QgsPathResolver resolver( f.fileName( ) );
   QCOMPARE( resolver.writePath( layerPath ), QString( "./" + info.baseName() + ".shp" + extraStuff ) ) ;
 
+}
+
+void TestQgsProject::testReadFlags()
+{
+  QString project1Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" );
+  QgsProject p;
+  QVERIFY( p.read( project1Path, QgsProject::FlagDontResolveLayers ) );
+  auto layers = p.mapLayers();
+  QCOMPARE( layers.count(), 3 );
+  // layers should be invalid - we skipped loading them!
+  QVERIFY( !layers.value( QStringLiteral( "points20170310142652246" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "lines20170310142652255" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "polys20170310142652234" ) )->isValid() );
+
+  // but they should have renderers (and other stuff!)
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "points20170310142652246" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+
+  // project with embedded groups
+  QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
+  QgsProject p2;
+  QVERIFY( p2.read( project2Path, QgsProject::FlagDontResolveLayers ) );
+  // layers should be invalid - we skipped loading them!
+  layers = p2.mapLayers();
+  QCOMPARE( layers.count(), 2 );
+  QVERIFY( !layers.value( QStringLiteral( "lines20170310142652255" ) )->isValid() );
+  QVERIFY( !layers.value( QStringLiteral( "polys20170310142652234" ) )->isValid() );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+}
+
+void TestQgsProject::testSetGetCrs()
+{
+  QgsProject p;
+
+  // Set 4326
+  //  - CRS changes
+  //  - ellipsoid stays as NONE
+  QSignalSpy crsChangedSpy( &p, &QgsProject::crsChanged );
+  QSignalSpy ellipsoidChangedSpy( &p, &QgsProject::ellipsoidChanged );
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "NONE" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 21781
+  //  - CRS changes
+  //  - ellipsoid stays as NONE
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "NONE" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 21781 again, including adjustEllipsoid flag
+  //  - CRS changes
+  //  - ellipsoid changes to Bessel
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 21781 ), true );
+
+  QCOMPARE( crsChangedSpy.count(), 0 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 1 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
+
+  // Set 2056, including adjustEllipsoid flag
+  //  - CRS changes
+  //  - ellipsoid stays
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ), true );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( ellipsoidChangedSpy.count(), 0 );
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+
+  crsChangedSpy.clear();
+  ellipsoidChangedSpy.clear();
 }
 
 

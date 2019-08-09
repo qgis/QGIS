@@ -38,7 +38,7 @@ email                : morb at ozemail dot com dot au
 
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>
-using json = nlohmann::json;
+using namespace nlohmann;
 #endif
 
 class QgsGeometryEngine;

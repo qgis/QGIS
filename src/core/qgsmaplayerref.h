@@ -120,7 +120,7 @@ struct _LayerRef
          layer->name() != name )
       return false;
 
-    if ( layer->dataProvider()->name() != provider )
+    if ( layer->providerType() != provider )
       return false;
 
     return true;

@@ -336,7 +336,7 @@ if errorlevel 1 (echo tar common failed & goto error)
 	"apps/%PACKAGENAME%/bin/qgis_server.dll" ^
 	"apps/%PACKAGENAME%/bin/admin.sld" ^
 	"apps/%PACKAGENAME%/bin/wms_metadata.xml" ^
-	"apps/%PACKAGENAME%/resources/server/schemaExtension.xsd" ^
+	"apps/%PACKAGENAME%/resources/server/" ^
 	"apps/%PACKAGENAME%/server/" ^
 	"apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
 	"apps/%PACKAGENAME%/python/qgis/server/" ^
