@@ -1450,6 +1450,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
     bool canPlaceInExistingLayer = false;
     if ( layoutItem )
     {
+      QString newName;
       switch ( layoutItem->exportLayerBehavior() )
       {
         case QgsLayoutItem::CanGroupWithAnyOtherItem:
@@ -1486,13 +1487,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
               canPlaceInExistingLayer = false;
               break;
           }
+          // when all items in a layer are of the same type, use the type's name as the layer name (eg "Scalebar")
+          newName = QgsApplication::layoutItemRegistry()->itemMetadata( layoutItem->type() )->visibleName();
           break;
         }
 
         case QgsLayoutItem::MustPlaceInOwnLayer:
         {
-          layerDetails.name = pendingLayerName;
-          pendingLayerName = layoutItem->displayName(); // this one's easy - use the item's name
+          newName = layoutItem->displayName(); // this one's easy - use the item's name
           canPlaceInExistingLayer = false;
           break;
         }
@@ -1504,6 +1506,15 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
       }
       prevItemBehavior = layoutItem->exportLayerBehavior();
       prevType = layoutItem->type();
+
+      if ( !newName.isEmpty() )
+      {
+        if ( layerId == 1 )
+          layerDetails.name = newName;
+        else if ( !pendingLayerName.isEmpty() )
+          layerDetails.name = pendingLayerName;
+        pendingLayerName = layerId > 1 ? newName : QString();
+      }
     }
     else
     {
