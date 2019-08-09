@@ -608,8 +608,10 @@ IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 
-ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll qgssqlstatementlexer.ll)
-ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy qgssqlstatementparser.yy)
+ADD_FLEX_FILES_PREFIX(QGIS_CORE_SRCS exp_ qgsexpressionlexer.ll)
+ADD_FLEX_FILES_PREFIX(QGIS_CORE_SRCS sqlstatement_ qgssqlstatementlexer.ll)
+ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS exp_ qgsexpressionparser.yy)
+ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS sqlstatement_ qgssqlstatementparser.yy)
 
 IF(NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(qgsexpressionparser.cpp qgssqlstatementparser.cpp PROPERTIES COMPILE_FLAGS -w)
@@ -1020,7 +1022,7 @@ SET(QGIS_CORE_HDRS
   qgstilecache.h
   qgstracer.h
   qgstranslationcontext.h
-  qobjectuniqueptr.h 
+  qobjectuniqueptr.h
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h

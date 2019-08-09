@@ -90,8 +90,6 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %lex-param {void * scanner}
 %parse-param {expression_parser_context* parser_ctx}
 
-%define api.prefix {exp_}
-
 %union
 {
   QgsExpressionNode* node;
