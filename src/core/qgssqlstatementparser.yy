@@ -87,7 +87,7 @@ struct sqlstatement_parser_context
 %lex-param {void * scanner}
 %parse-param {sqlstatement_parser_context* parser_ctx}
 
-%name-prefix "sqlstatement_"
+%define api.prefix {sqlstatement_}
 
 %union
 {
@@ -164,7 +164,7 @@ struct sqlstatement_parser_context
 %type <boolVal> select_type;
 
 // debugging
-%error-verbose
+%define parse.error verbose
 
 //
 // operator precedence
