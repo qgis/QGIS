@@ -114,6 +114,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QString outputFile = "/home/nyall/Temporary/geopdf/test_src.pdf";
   QgsLayoutExporter::PdfExportSettings settings;
   settings.writeGeoPdf = false;
+  settings.exportMetadata = false;
   exporter.exportToPdf( outputFile, settings );
 
   // check that features were collected
