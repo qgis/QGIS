@@ -670,6 +670,45 @@ void QgsWmsCapabilities::parseCapability( QDomElement const &e, QgsWmsCapability
     }
   }
 
+  // Layers in a WMS-C Capabilities TileSet do not have layer title or abstract
+  // still those could be present in a Layer list.
+  if ( !mTileLayersSupported.isEmpty() )
+  {
+    QHash<QString, QString> titles;
+    QHash<QString, QString> abstracts;
+
+    // Build layer identifier - title|abstract mapping
+    for ( const QgsWmsLayerProperty &layer : qgis::as_const( mLayersSupported ) )
+    {
+      if ( !layer.name.isEmpty() )
+      {
+        if ( !layer.title.isEmpty() )
+        {
+          titles.insert( layer.name, layer.title );
+        }
+
+        if ( !layer.abstract.isEmpty() )
+        {
+          abstracts.insert( layer.name, layer.abstract );
+        }
+      }
+    }
+
+    // If tile layer title|abstract is empty, try to use one from a matching layer
+    for ( QgsWmtsTileLayer &tileLayer : mTileLayersSupported )
+    {
+      if ( tileLayer.title.isEmpty() && titles.contains( tileLayer.identifier ) )
+      {
+        tileLayer.title = titles.value( tileLayer.identifier );
+      }
+
+      if ( tileLayer.abstract.isEmpty() && abstracts.contains( tileLayer.identifier ) )
+      {
+        tileLayer.abstract = abstracts.value( tileLayer.identifier );
+      }
+    }
+  }
+
   QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
