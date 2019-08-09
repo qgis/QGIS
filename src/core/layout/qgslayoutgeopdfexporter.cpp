@@ -47,6 +47,8 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 
       //create transform from layout coordinates to map coordinates
       QTransform::quadToQuad( mapRectPoly, mapRectInLayout, mMapToLayoutTransform );
+
+      mLayoutToPdfTransform = QTransform::fromTranslate( 0, 595 ).scale( 842.0 / 297, -595.0 / 210 );
     }
 
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
@@ -62,6 +64,8 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       transformed.transform( pixelToMapItemTransform );
       // transform from map item coordinates to page coordinates
       transformed.transform( mMapToLayoutTransform );
+      // ...and then to PDF coordinate space
+      transformed.transform( mLayoutToPdfTransform );
 
       // always convert to multitype, to make things consistent
       transformed.convertToMultiType();
@@ -81,6 +85,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 
   private:
     QTransform mMapToLayoutTransform;
+    QTransform mLayoutToPdfTransform;
     QMutex mMutex;
 };
 
@@ -276,7 +281,67 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml( const QList<ComponentLaye
   QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
   height.appendChild( doc.createTextNode( QStringLiteral( "595" ) ) );
   page.appendChild( height );
+
+
   // georeferencing - TODO
+  QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
+  georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced" ) );
+  georeferencing.setAttribute( QStringLiteral( "OGCBestPracticeFormat" ), QStringLiteral( "true" ) );
+  georeferencing.setAttribute( QStringLiteral( "ISO32000ExtensionFormat" ), QStringLiteral( "false" ) );
+  QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
+  srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
+  srs.appendChild( doc.createTextNode( QStringLiteral( "EPSG:4326" ) ) );
+  georeferencing.appendChild( srs );
+#if 0
+  /* Define the viewport where georeferenced coordinates are available.
+    If not specified, the extent of BoundingPolygon will be used instead.
+    If none of BoundingBox and BoundingPolygon are specified,
+    the whole PDF page will be assumed to be georeferenced.
+    */
+  QDomElement boundingBox = doc.createElement( QStringLiteral( "BoundingBox" ) );
+  boundingBox.setAttribute( QStringLiteral( "x1" ), QStringLiteral( "1" ) );
+  boundingBox.setAttribute( QStringLiteral( "y1" ), QStringLiteral( "1" ) );
+  boundingBox.setAttribute( QStringLiteral( "x2" ), QStringLiteral( "9" ) );
+  boundingBox.setAttribute( QStringLiteral( "y2" ), QStringLiteral( "14" ) );
+  georeferencing.appendChild( boundingBox );
+  /*
+    Define a polygon / neatline in PDF units into which the
+    Measure tool will display coordinates.
+    If not specified, BoundingBox will be used instead.
+    If none of BoundingBox and BoundingPolygon are specified,
+    the whole PDF page will be assumed to be georeferenced.
+   */
+  QDomElement boundingPolygon = doc.createElement( QStringLiteral( "BoundingPolygon" ) );
+  boundingPolygon.appendChild( doc.createTextNode( QStringLiteral( "POLYGON((1 1,9 1,9 14,1 14,1 1))" ) ) );
+  georeferencing.appendChild( boundingPolygon );
+#endif
+  QDomElement cp1 = doc.createElement( QStringLiteral( "ControlPoint" ) );
+  cp1.setAttribute( QStringLiteral( "x" ), QStringLiteral( "1" ) );
+  cp1.setAttribute( QStringLiteral( "y" ), QStringLiteral( "1" ) );
+  cp1.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "2" ) );
+  cp1.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "48" ) );
+  georeferencing.appendChild( cp1 );
+  QDomElement cp2 = doc.createElement( QStringLiteral( "ControlPoint" ) );
+  cp2.setAttribute( QStringLiteral( "x" ), QStringLiteral( "1" ) );
+  cp2.setAttribute( QStringLiteral( "y" ), QStringLiteral( "14" ) );
+  cp2.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "2" ) );
+  cp2.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "49" ) );
+  georeferencing.appendChild( cp2 );
+  QDomElement cp3 = doc.createElement( QStringLiteral( "ControlPoint" ) );
+  cp3.setAttribute( QStringLiteral( "x" ), QStringLiteral( "9" ) );
+  cp3.setAttribute( QStringLiteral( "y" ), QStringLiteral( "1" ) );
+  cp3.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "3" ) );
+  cp3.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "48" ) );
+  georeferencing.appendChild( cp3 );
+  QDomElement cp4 = doc.createElement( QStringLiteral( "ControlPoint" ) );
+  cp4.setAttribute( QStringLiteral( "x" ), QStringLiteral( "9" ) );
+  cp4.setAttribute( QStringLiteral( "y" ), QStringLiteral( "14" ) );
+  cp4.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "3" ) );
+  cp4.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "49" ) );
+  georeferencing.appendChild( cp4 );
+
+  page.appendChild( georeferencing );
+
 
   // content
   QDomElement content = doc.createElement( QStringLiteral( "Content" ) );
@@ -307,7 +372,7 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml( const QList<ComponentLaye
     QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
     vectorDataset.setAttribute( QStringLiteral( "dataset" ), component.sourceVectorPath );
     vectorDataset.setAttribute( QStringLiteral( "layer" ), component.sourceVectorLayer );
-    vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "true" ) ); // actually false!
+    vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "false" ) );
     QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
     logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), component.name );
     //logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), it.key() ); // TODO
