@@ -272,6 +272,11 @@ void QgsLayoutItemGroup::finalizeRestoreFromXml()
   resetBoundingRect();
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemGroup::exportLayerBehavior() const
+{
+  return MustPlaceInOwnLayer;
+}
+
 void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * )
 {
 }

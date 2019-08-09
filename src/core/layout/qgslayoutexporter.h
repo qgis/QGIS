@@ -585,7 +585,7 @@ class CORE_EXPORT QgsLayoutExporter
     static void updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page );
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds,
-                                     const QString &filename, int svgLayerId, const QString &layerName,
+                                     const QString &filename, unsigned int svgLayerId, const QString &layerName,
                                      QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const;
 
     void appendMetadataToSvg( QDomDocument &svg ) const;
@@ -593,10 +593,11 @@ class CORE_EXPORT QgsLayoutExporter
     bool georeferenceOutputPrivate( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
                                     const QRectF &exportRegion = QRectF(), double dpi = -1, bool includeGeoreference = true, bool includeMetadata = false ) const;
 
-    ExportResult handleLayeredExport( const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QString &layerName )> &exportFunc );
+    ExportResult handleLayeredExport( const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc );
 
     static QgsVectorSimplifyMethod createExportSimplifyMethod();
     friend class TestQgsLayout;
+    friend class TestQgsLayoutExporter;
 
 };
 

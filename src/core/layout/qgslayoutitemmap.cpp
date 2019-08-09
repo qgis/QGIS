@@ -993,6 +993,11 @@ int QgsLayoutItemMap::numberExportLayers() const
          + ( frameEnabled() ? 1 : 0 );
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemMap::exportLayerBehavior() const
+{
+  return ItemContainsSubLayers;
+}
+
 QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails( int layer ) const
 {
   ExportLayerDetail detail;

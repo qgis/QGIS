@@ -110,6 +110,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     bool isEmpty() const;
 
     QgsExpressionContext createExpressionContext() const override;
+    ExportLayerBehavior exportLayerBehavior() const override;
 
   protected:
 

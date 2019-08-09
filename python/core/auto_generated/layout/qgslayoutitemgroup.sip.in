@@ -71,6 +71,7 @@ Returns a list of items contained by the group.
 
     virtual void finalizeRestoreFromXml();
 
+    virtual ExportLayerBehavior exportLayerBehavior() const;
 
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );

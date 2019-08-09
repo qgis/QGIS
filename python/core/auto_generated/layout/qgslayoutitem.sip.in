@@ -386,6 +386,25 @@ Sets the item's parent ``group``.
 .. seealso:: :py:func:`parentGroup`
 %End
 
+    enum ExportLayerBehavior
+    {
+      CanGroupWithAnyOtherItem,
+      CanGroupWithItemsOfSameType,
+      MustPlaceInOwnLayer,
+      ItemContainsSubLayers,
+    };
+
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+%Docstring
+Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+
+.. seealso:: :py:func:`numberExportLayers`
+
+.. seealso:: :py:func:`exportLayerDetails`
+
+.. versionadded:: 3.10
+%End
+
     virtual int numberExportLayers() const;
 %Docstring
 Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
@@ -394,6 +413,10 @@ Returns 0 if this item is to be placed on the same layer as the previous item,
 
 Items which require multiply layers should check QgsLayoutContext.currentExportLayer() during
 their rendering to determine which layer should be drawn.
+
+.. seealso:: :py:func:`exportLayerBehavior`
+
+.. seealso:: :py:func:`exportLayerDetails`
 %End
 
     struct ExportLayerDetail

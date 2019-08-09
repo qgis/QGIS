@@ -547,6 +547,8 @@ Adjusts the scale bar box size and updates the item.
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
 
   protected:
 

@@ -175,6 +175,11 @@ QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &t
   return new QgsLayoutItemPageUndoCommand( this, text, id, parent );
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}
+
 void QgsLayoutItemPage::redraw()
 {
   QgsLayoutItem::redraw();

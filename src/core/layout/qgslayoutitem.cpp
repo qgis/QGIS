@@ -244,6 +244,11 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
   setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const
+{
+  return CanGroupWithAnyOtherItem;
+}
+
 QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails( int ) const
 {
   return QgsLayoutItem::ExportLayerDetail();

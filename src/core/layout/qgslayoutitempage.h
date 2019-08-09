@@ -124,6 +124,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     QRectF boundingRect() const override;
     void attemptResize( const QgsLayoutSize &size, bool includesFrame = false ) override;
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
+    ExportLayerBehavior exportLayerBehavior() const override;
 
   public slots:
 
