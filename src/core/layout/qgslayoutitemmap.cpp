@@ -988,9 +988,43 @@ int QgsLayoutItemMap::numberExportLayers() const
 {
   return ( hasBackground() ? 1 : 0 )
          + layersToRender().length()
-         + 1 // for grids, if they exist
-         + 1 // for overviews, if they exist
+         + ( mGridStack->hasEnabledItems() ? 1 : 0 )
+         + ( mOverviewStack->hasEnabledItems() ? 1 : 0 )
          + ( frameEnabled() ? 1 : 0 );
+}
+
+QString QgsLayoutItemMap::exportLayerName( int layer ) const
+{
+  if ( hasBackground() && layer == 0 )
+    return tr( "Map Background" );
+  else if ( hasBackground() )
+    layer--;
+
+  const QList< QgsMapLayer * > layers = layersToRender();
+  const int layerCount = layers.length();
+  if ( layer < layerCount )
+  {
+    // layers are in reverse order
+    return layers.at( layerCount - layer - 1 )->name();
+  }
+
+  layer -= layerCount;
+  const bool hasGrids = mGridStack->hasEnabledItems();
+  if ( hasGrids && layer == 0 )
+    return tr( "Map Grids" );
+  else if ( hasGrids )
+    layer--;
+
+  const bool hasOverviews = mOverviewStack->hasEnabledItems();
+  if ( hasOverviews && layer == 0 )
+    return tr( "Map Overviews" );
+  else if ( hasOverviews )
+    layer--;
+
+  if ( frameEnabled() && layer == 0 )
+    return tr( "Map Frame" );
+
+  return QString();
 }
 
 void QgsLayoutItemMap::setFrameStrokeWidth( const QgsLayoutMeasurement width )
@@ -1939,43 +1973,63 @@ bool QgsLayoutItemMap::shouldDrawPart( QgsLayoutItemMap::PartType part ) const
     return true;
   }
 
-  int idx = numberExportLayers();
-  if ( isSelected() )
+  if ( hasBackground() )
   {
-    --idx;
-    if ( SelectionBoxes == part )
-    {
-      return currentExportLayer == idx;
-    }
+    if ( part == Background )
+      return currentExportLayer == 0;
+
+    currentExportLayer--;
   }
+  else if ( part == Background )
+    return false;
+
+  // layers
+  const int layerCount = layersToRender().length();
+  if ( currentExportLayer >= 0 && currentExportLayer < layerCount )
+  {
+    return part == Layer;
+  }
+  else if ( part == Layer )
+    return false;
+
+  currentExportLayer -= layerCount;
+
+  if ( mGridStack->hasEnabledItems() )
+  {
+    if ( part == Grid )
+      return currentExportLayer == 0;
+
+    currentExportLayer--;
+  }
+  else if ( part == Grid )
+    return false;
+
+  if ( mOverviewStack->hasEnabledItems() )
+  {
+    if ( part == OverviewMapExtent )
+      return currentExportLayer == 0;
+
+    currentExportLayer--;
+  }
+  else if ( part == OverviewMapExtent )
+    return false;
 
   if ( frameEnabled() )
   {
-    --idx;
-    if ( Frame == part )
-    {
-      return currentExportLayer == idx;
-    }
-  }
-  --idx;
-  if ( OverviewMapExtent == part )
-  {
-    return currentExportLayer == idx;
-  }
-  --idx;
-  if ( Grid == part )
-  {
-    return currentExportLayer == idx;
-  }
-  if ( hasBackground() )
-  {
-    if ( Background == part )
-    {
+    if ( part == Frame )
       return currentExportLayer == 0;
-    }
+
+    currentExportLayer--;
+  }
+  else if ( part == Frame )
+    return false;
+
+  if ( SelectionBoxes == part )
+  {
+    return isSelected();
   }
 
-  return true; // for Layer
+  return false;
 }
 
 void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
