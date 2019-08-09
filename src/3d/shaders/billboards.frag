@@ -1,15 +1,16 @@
-#version 150
+#version 150 core
 
 uniform sampler2D tex0;
 
 in vec2 UV;
+out vec4 fragColor;
 
 void main(void)
 {
 
-//  gl_FragColor = vec4(0.5,0.1,0.1,1);
-  gl_FragColor = texture(tex0, UV);
+//  fragColor = vec4(0.5,0.1,0.1,1);
+  fragColor = texture(tex0, UV);
 
-  if (gl_FragColor.a == 0)
+  if (fragColor.a == 0)
       discard;
 }
