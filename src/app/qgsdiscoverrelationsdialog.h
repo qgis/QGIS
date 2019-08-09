@@ -28,7 +28,7 @@ class QgsVectorLayer;
  *
  * The user can select some of them to add them to his project.
  */
-class APP_EXPORT QgsDiscoverRelationsDialog : public QDialog, private Ui::QgsDiscoverRelationsDlgBase
+class APP_EXPORT QgsDiscoverRelationsDialog : public QDialog, private Ui::QgsDiscoverRelationsDialogBase
 {
     Q_OBJECT
 

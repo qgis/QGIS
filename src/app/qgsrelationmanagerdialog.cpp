@@ -53,6 +53,13 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   if ( ! rel.isValid() )
     return;
 
+  QString referencingFields, referencedFields;
+  for ( int i = 0; i < rel.fieldPairs().count(); i++ )
+  {
+    referencingFields.append( QStringLiteral( "%1%2" ).arg( referencingFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( QStringLiteral( "%1%2" ).arg( referencedFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+  }
+
   mRelationsTable->setSortingEnabled( false );
   int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
@@ -66,7 +73,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 1, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() );
+  item = new QTableWidgetItem( referencedFields );
   item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 2, item );
 
@@ -74,7 +81,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 3, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() );
+  item = new QTableWidgetItem( referencingFields );
   item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 4, item );
 
