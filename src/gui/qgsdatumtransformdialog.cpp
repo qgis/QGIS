@@ -175,7 +175,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   // proj 6 doesn't provide deprecated operations
   mHideDeprecatedCheckBox->setVisible( false );
 
-#if PROJ_VERSION_MAJOR>6 or PROJ_VERSION_MINOR>=2
+#if PROJ_VERSION_MAJOR>6 || PROJ_VERSION_MINOR>=2
   mShowSupersededCheckBox->setVisible( true );
 #else
   mShowSupersededCheckBox->setVisible( false );
@@ -295,7 +295,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     QStringList areasOfUse;
     QStringList authorityCodes;
 
-#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+#if PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2
     QStringList opText;
     for ( const QgsDatumTransform::SingleOperationDetails &singleOpDetails : transform.operationDetails )
     {
@@ -359,7 +359,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
     if ( !id.isEmpty() && !authorityCodes.contains( id ) )
       authorityCodes << id;
 
-#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+#if PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2
     const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
     const QColor active = palette().color( QPalette::Active, QPalette::Text );
 
