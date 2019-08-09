@@ -85,6 +85,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
         overviewMap.setFrameEnabled(True)
         overviewMap.setLayers([self.raster_layer])
+        self.assertFalse(overviewMap.overviews().hasEnabledItems())
         self.layout.addLayoutItem(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(96, -152, 160, -120)
@@ -92,6 +93,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setExtent(myRectangle2)
         overviewMap.overview().setLinkedMap(self.map)
+        self.assertTrue(overviewMap.overviews().hasEnabledItems())
         checker = QgsLayoutChecker('composermap_overview', self.layout)
         checker.setColorTolerance(6)
         checker.setControlPathPrefix("composer_mapoverview")
