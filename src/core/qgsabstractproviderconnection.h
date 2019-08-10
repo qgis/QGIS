@@ -33,6 +33,7 @@
  *
  * Concrete classes must implement methods to retrieve, save and remove connections from
  * the settings.
+ * \ingroup core
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsAbstractProviderConnection
@@ -58,13 +59,13 @@ class CORE_EXPORT QgsAbstractProviderConnection
   public:
 
     /**
-     * Creates a new QgsAbstractProviderConnection with \a name by reading its configuration from the settings.
+     * Creates a new connection with \a name by reading its configuration from the settings.
      * If a connection with this name cannot be found, an empty connection will be returned.
      */
     QgsAbstractProviderConnection( const QString &name );
 
     /**
-     * Creates a new QgsAbstractProviderConnection with \a name and initialises the connection from the \a uri.
+     * Creates a new connection with \a name and initializes the connection from the \a uri.
      * The connection is not automatically stored in the settings.
      * \see store()
      */

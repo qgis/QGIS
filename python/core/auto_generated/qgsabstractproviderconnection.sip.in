@@ -44,13 +44,13 @@ the settings.
 
     QgsAbstractProviderConnection( const QString &name );
 %Docstring
-Creates a new QgsAbstractProviderConnection with ``name`` by reading its configuration from the settings.
+Creates a new connection with ``name`` by reading its configuration from the settings.
 If a connection with this name cannot be found, an empty connection will be returned.
 %End
 
     QgsAbstractProviderConnection( const QString &name, const QString &uri );
 %Docstring
-Creates a new QgsAbstractProviderConnection with ``name`` and initialises the connection from the ``uri``.
+Creates a new connection with ``name`` and initializes the connection from the ``uri``.
 The connection is not automatically stored in the settings.
 
 .. seealso:: :py:func:`store`

@@ -16,7 +16,7 @@ for DB based connections.
 
 This class performs low level DB operations without asking
 the user for confirmation or handling currently opened layers and the registry
-entries, it is responsability of the client code to keep layers in sync.
+entries, it is responsibility of the client code to keep layers in sync.
 The class methods will throw exceptions in case the requested operation
 is not supported or cannot be performed without errors.
 
@@ -127,7 +127,7 @@ Sets the primary key column names to ``pkColumns``
 
         QList<int> srids() const;
 %Docstring
-Returs the list of SRIDs supported by the geometry column
+Returns the list of SRIDs supported by the geometry column
 %End
 
         TableFlags flags() const;
@@ -221,7 +221,19 @@ Sets a ``flag``
 
 
     QgsAbstractDatabaseProviderConnection( const QString &name );
+%Docstring
+Creates a new connection with ``name`` by reading its configuration from the settings.
+If a connection with this name cannot be found, an empty connection will be returned.
+%End
+
+
     QgsAbstractDatabaseProviderConnection( const QString &name, const QString &uri );
+%Docstring
+Creates a new connection with ``name`` and initializes the connection from the ``uri``.
+The connection is not automatically stored in the settings.
+
+.. seealso:: :py:func:`store`
+%End
 
 
     Capabilities capabilities() const;
@@ -247,7 +259,7 @@ Drops a vector (or aspatial) table with given ``schema`` (schema is ignored if n
 
 .. note::
 
-   it is responsability of the caller to handle opened layers and registry entries.
+   it is responsibility of the caller to handle opened layers and registry entries.
    \throws :py:class:`QgsProviderConnectionException`
 %End
 
@@ -257,7 +269,7 @@ Drops a raster table with given ``schema`` (schema is ignored  if not supported 
 
 .. note::
 
-   it is responsability of the caller to handle opened layers and registry entries.
+   it is responsibility of the caller to handle opened layers and registry entries.
    \throws :py:class:`QgsProviderConnectionException`
 %End
 
@@ -267,7 +279,7 @@ Renames a table with given ``schema`` (schema is ignored  if not supported by th
 
 .. note::
 
-   it is responsability of the caller to handle opened layers and registry entries.
+   it is responsibility of the caller to handle opened layers and registry entries.
    \throws :py:class:`QgsProviderConnectionException`
 %End
 
@@ -285,7 +297,7 @@ Drops an entire ``schema``
 
 .. note::
 
-   it is responsability of the caller to handle opened layers and registry entries.
+   it is responsibility of the caller to handle opened layers and registry entries.
    \throws :py:class:`QgsProviderConnectionException`
 %End
 
@@ -295,7 +307,7 @@ Renames a ``schema``
 
 .. note::
 
-   it is responsability of the caller to handle opened layers and registry entries.
+   it is responsibility of the caller to handle opened layers and registry entries.
    \throws :py:class:`QgsProviderConnectionException`
 %End
 

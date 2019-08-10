@@ -106,7 +106,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
       );
   if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
   {
-    throw QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
 }
 

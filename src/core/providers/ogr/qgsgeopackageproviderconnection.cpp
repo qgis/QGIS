@@ -91,7 +91,7 @@ void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
       );
   if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
   {
-    throw QgsProviderConnectionException( QObject::tr( "An error occourred while creating the vector layer: %1" ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
 }
 
@@ -166,43 +166,6 @@ void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QStri
   executeGdalSqlPrivate( QStringLiteral( "VACUUM" ) );
 }
 
-static int collect_table_info( void *tableProperties, int, char **argv, char ** )
-{
-  QgsGeoPackageProviderConnection::TableProperty property;
-  property.setTableName( QString::fromUtf8( argv[ 0 ] ) );
-  property.setPkColumns( { QLatin1String( "fid" ) } );
-  property.setGeometryColumnCount( 0 );
-  static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
-  const auto data_type = QString::fromUtf8( argv[ 1 ] );
-  // Table type
-  if ( data_type == QStringLiteral( "tiles" ) )
-  {
-    property.setFlag( QgsGeoPackageProviderConnection::Raster );
-  }
-  else if ( data_type == QStringLiteral( "features" ) )
-  {
-    property.setFlag( QgsGeoPackageProviderConnection::Vector );
-    property.setGeometryColumn( QStringLiteral( "geom" ) );
-    property.setGeometryColumnCount( 1 );
-  }
-  if ( aspatialTypes.contains( data_type ) )
-  {
-    property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
-    property.addGeometryType( QgsWkbTypes::Type::NoGeometry, 0 );
-  }
-  else
-  {
-    bool ok;
-    property.addGeometryType( QgsWkbTypes::parseType( QString::fromUtf8( argv[ 4 ] ) ), QString::fromUtf8( argv[ 3 ] ).toInt( &ok ) );
-    if ( !ok )
-    {
-      throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( QString::fromUtf8( argv[ 3 ] ) ) );
-    }
-  }
-  property.setComment( QString::fromUtf8( argv[ 2 ] ) );
-  static_cast<QList<QgsGeoPackageProviderConnection::TableProperty>*>( tableProperties )->push_back( property );
-  return 0;
-}
 
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
@@ -223,7 +186,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
     {
       if ( row.size() != 5 )
       {
-        throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: wrong number of colums returned by query" ).arg( name() ) );
+        throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: wrong number of columns returned by query" ).arg( name() ) );
       }
       QgsGeoPackageProviderConnection::TableProperty property;
       property.setTableName( row.at( 0 ).toString() );

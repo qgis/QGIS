@@ -31,6 +31,7 @@ from qgis.core import (
     QgsProviderConnectionException,
 )
 
+
 class TestPyQgsProviderConnectionBase():
 
     # Provider test cases must define the string URI for the test
@@ -45,7 +46,6 @@ class TestPyQgsProviderConnectionBase():
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)
         start_app()
-
 
     @classmethod
     def tearDownClass(cls):
@@ -81,7 +81,7 @@ class TestPyQgsProviderConnectionBase():
         if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema and
                 capabilities & QgsAbstractDatabaseProviderConnection.Schemas and
                 capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema and
-                capabilities & QgsAbstractDatabaseProviderConnection.DropSchema ):
+                capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
             # Create
@@ -102,7 +102,7 @@ class TestPyQgsProviderConnectionBase():
         if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable and
                 capabilities & QgsAbstractDatabaseProviderConnection.Tables and
                 capabilities & QgsAbstractDatabaseProviderConnection.RenameTable and
-                capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable ):
+                capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
@@ -220,7 +220,6 @@ class TestPyQgsProviderConnectionBase():
         md.deleteConnection(conn.name())
         self.assertEqual(list(md.connections().values()), [])
 
-
     def test_errors(self):
         """Test SQL errors"""
 
@@ -244,5 +243,5 @@ class TestPyQgsProviderConnectionBase():
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
 
         # Run common tests
-        conn = self._test_save_load(md,  self.uri)
+        conn = self._test_save_load(md, self.uri)
         self._test_operations(md, conn)

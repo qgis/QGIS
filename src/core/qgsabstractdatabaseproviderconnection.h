@@ -30,10 +30,11 @@
  *
  * This class performs low level DB operations without asking
  * the user for confirmation or handling currently opened layers and the registry
- * entries, it is responsability of the client code to keep layers in sync.
+ * entries, it is responsibility of the client code to keep layers in sync.
  * The class methods will throw exceptions in case the requested operation
  * is not supported or cannot be performed without errors.
  *
+ * \ingroup core
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProviderConnection
@@ -155,7 +156,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         void setPkColumns( const QStringList &pkColumns );
 
         /**
-         * Returs the list of SRIDs supported by the geometry column
+         * Returns the list of SRIDs supported by the geometry column
          */
         QList<int> srids() const;
 
@@ -273,7 +274,18 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     Q_DECLARE_FLAGS( Capabilities, Capability )
     Q_FLAG( Capabilities )
 
+    /**
+     * Creates a new connection with \a name by reading its configuration from the settings.
+     * If a connection with this name cannot be found, an empty connection will be returned.
+     */
     QgsAbstractDatabaseProviderConnection( const QString &name );
+
+    /**
+     * Creates a new connection with \a name and initializes the connection from the \a uri.
+     * The connection is not automatically stored in the settings.
+     * \see store()
+     */
+
     QgsAbstractDatabaseProviderConnection( const QString &name, const QString &uri );
 
     // Public interface
@@ -298,21 +310,21 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     /**
      * Drops a vector (or aspatial) table with given \a schema (schema is ignored if not supported by the backend) and \a name
-     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropVectorTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Drops a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name
-     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropRasterTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Renames a table with given \a schema (schema is ignored  if not supported by the backend) and \a name
-     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
@@ -326,14 +338,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Drops an entire \a schema
      * \param force if TRUE, a DROP CASCADE will drop all related objects
-     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropSchema( const QString &name, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Renames a \a schema
-     * \note it is responsability of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void renameSchema( const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
