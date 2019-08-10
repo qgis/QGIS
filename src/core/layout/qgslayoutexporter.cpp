@@ -1436,6 +1436,40 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   return true;
 }
 
+QString nameForLayerWithItems( const QList< QGraphicsItem * > items, unsigned int layerId )
+{
+  if ( items.count() == 1 )
+  {
+    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( items.at( 0 ) ) )
+      return layoutItem->displayName();
+  }
+  else if ( items.count() > 1 )
+  {
+    QStringList currentLayerItemTypes;
+    for ( QGraphicsItem *item : items )
+    {
+      if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+      {
+        const QString itemType = QgsApplication::layoutItemRegistry()->itemMetadata( layoutItem->type() )->visibleName();
+        const QString itemTypePlural = QgsApplication::layoutItemRegistry()->itemMetadata( layoutItem->type() )->visiblePluralName();
+        if ( !currentLayerItemTypes.contains( itemType ) && !currentLayerItemTypes.contains( itemTypePlural ) )
+          currentLayerItemTypes << itemType;
+        else if ( currentLayerItemTypes.contains( itemType ) )
+        {
+          currentLayerItemTypes.replace( currentLayerItemTypes.indexOf( itemType ), itemTypePlural );
+        }
+      }
+      else
+      {
+        if ( !currentLayerItemTypes.contains( QObject::tr( "Other" ) ) )
+          currentLayerItemTypes.append( QObject::tr( "Other" ) );
+      }
+    }
+    return currentLayerItemTypes.join( QStringLiteral( ", " ) );
+  }
+  return QObject::tr( "Layer %1" ).arg( layerId );
+}
+
 QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QList<QGraphicsItem *> &items,
     const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc )
 {
@@ -1449,8 +1483,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
   layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
   itemHider.hideAll();
   const QList< QGraphicsItem * > itemsToIterate = itemHider.itemsToIterate();
-  bool haveUnexportedItems = false;
-  QString pendingLayerName;
+  QList< QGraphicsItem * > currentLayerItems;
   for ( QGraphicsItem *item : itemsToIterate )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
@@ -1495,34 +1528,21 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
               canPlaceInExistingLayer = false;
               break;
           }
-          // when all items in a layer are of the same type, use the type's name as the layer name (eg "Scalebar")
-          newName = QgsApplication::layoutItemRegistry()->itemMetadata( layoutItem->type() )->visibleName();
           break;
         }
 
         case QgsLayoutItem::MustPlaceInOwnLayer:
         {
-          newName = layoutItem->displayName(); // this one's easy - use the item's name
           canPlaceInExistingLayer = false;
           break;
         }
 
         case QgsLayoutItem::ItemContainsSubLayers:
-          // no need to set the name here -- items with sublayers will individually give us names for layers in their exportLayerDetails implementations
           canPlaceInExistingLayer = false;
           break;
       }
       prevItemBehavior = layoutItem->exportLayerBehavior();
       prevType = layoutItem->type();
-
-      if ( !newName.isEmpty() )
-      {
-        if ( layerId == 1 )
-          layerDetails.name = newName;
-        else if ( !pendingLayerName.isEmpty() )
-          layerDetails.name = pendingLayerName;
-        pendingLayerName = layerId > 1 ? newName : QString();
-      }
     }
     else
     {
@@ -1531,20 +1551,20 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
 
     if ( canPlaceInExistingLayer )
     {
+      currentLayerItems << item;
       item->show();
-      haveUnexportedItems = true;
     }
     else
     {
-      if ( haveUnexportedItems )
+      if ( !currentLayerItems.isEmpty() )
       {
+        layerDetails.name = nameForLayerWithItems( currentLayerItems, layerId );
+
         ExportResult result = exportFunc( layerId, layerDetails );
         if ( result != Success )
           return result;
         layerId++;
-        layerDetails.name = pendingLayerName.isEmpty() ? QObject::tr( "Layer %1" ).arg( layerId ) : pendingLayerName;
-        pendingLayerName.clear();
-        haveUnexportedItems = false;
+        currentLayerItems.clear();
       }
 
       itemHider.hideAll();
@@ -1560,20 +1580,19 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
           if ( result != Success )
             return result;
           layerId++;
-          layerDetails.name = pendingLayerName.isEmpty() ? QObject::tr( "Layer %1" ).arg( layerId ) : pendingLayerName;
-          pendingLayerName.clear();
         }
         mLayout->renderContext().setCurrentExportLayer( -1 );
-        haveUnexportedItems = false;
+        currentLayerItems.clear();
       }
       else
       {
-        haveUnexportedItems = true;
+        currentLayerItems << item;
       }
     }
   }
-  if ( haveUnexportedItems )
+  if ( !currentLayerItems.isEmpty() )
   {
+    layerDetails.name = nameForLayerWithItems( currentLayerItems, layerId );
     ExportResult result = exportFunc( layerId, layerDetails );
     if ( result != Success )
       return result;
