@@ -11,10 +11,4 @@
 - [ ] I have read the [QGIS Coding Standards](https://docs.qgis.org/testing/en/docs/developers_guide/codingstandards.html) and this PR complies with them
 - [ ] New unit tests have been added for core changes
 - [ ] I have run [the `scripts/prepare-commit.sh` script](https://github.com/qgis/QGIS/blob/master/.github/CONTRIBUTING.md#contributing-to-qgis) before each commit
-
-## Backport
-
-<!-- Bug fixes can concern more than a version and may require backporting. Indicate below the version(s) you would like to backport to. We will try to automatically backport.-->
-
-- [ ] I request the backport of the changes to the Latest Release
-- [ ] I request the backport of the changes to the Long Term Release
+- [ ] I have evaluated whether it is appropriate for this PR to be backported, backport requests are left as label or comment
