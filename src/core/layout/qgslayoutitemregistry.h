@@ -49,10 +49,13 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
     /**
      * Constructor for QgsLayoutItemAbstractMetadata with the specified class \a type
      * and \a visibleName.
+     *
+     * The optional \a visiblePluralName argument can be used to specify a plural variant of the item type.
      */
-    QgsLayoutItemAbstractMetadata( int type, const QString &visibleName )
+    QgsLayoutItemAbstractMetadata( int type, const QString &visibleName, const QString &visiblePluralName = QString() )
       : mType( type )
       , mVisibleName( visibleName )
+      , mVisibleNamePlural( visiblePluralName.isEmpty() ? visibleName : visiblePluralName )
     {}
 
     virtual ~QgsLayoutItemAbstractMetadata() = default;
@@ -64,8 +67,15 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
 
     /**
      * Returns a translated, user visible name for the layout item class.
+     * \see visiblePluralName()
      */
     QString visibleName() const { return mVisibleName; }
+
+    /**
+     * Returns a translated, user visible name for plurals of the layout item class (e.g. "Labels" for a "Label" item).
+     * \since QGIS 3.10
+     */
+    QString visiblePluralName() const { return mVisibleNamePlural; }
 
     /**
      * Creates a layout item of this class for a specified \a layout.
@@ -90,6 +100,7 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
 
     int mType = -1;
     QString mVisibleName;
+    QString mVisibleNamePlural;
 };
 
 //! Layout item creation function
@@ -113,11 +124,13 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
     /**
      * Constructor for QgsLayoutItemMetadata with the specified class \a type
      * and \a visibleName, and function pointers for the various item creation functions.
+     *
+     * The \a visiblePluralName argument is used to specify a plural variant of the item type.
      */
-    QgsLayoutItemMetadata( int type, const QString &visibleName,
+    QgsLayoutItemMetadata( int type, const QString &visibleName, const QString &visiblePluralName,
                            const QgsLayoutItemCreateFunc &pfCreate,
                            const QgsLayoutItemPathResolverFunc &pfPathResolver = nullptr )
-      : QgsLayoutItemAbstractMetadata( type, visibleName )
+      : QgsLayoutItemAbstractMetadata( type, visibleName, visiblePluralName )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
     {}

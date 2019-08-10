@@ -263,7 +263,7 @@ void TestQgsLayoutItem::registry()
 
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::typeAdded );
 
-  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), create, resolve );
+  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), QStringLiteral( "my types" ), create, resolve );
   QVERIFY( registry.addLayoutItemType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), 2 );
@@ -275,6 +275,7 @@ void TestQgsLayoutItem::registry()
   //retrieve metadata
   QVERIFY( !registry.itemMetadata( -1 ) );
   QCOMPARE( registry.itemMetadata( 2 )->visibleName(), QStringLiteral( "my type" ) );
+  QCOMPARE( registry.itemMetadata( 2 )->visiblePluralName(), QStringLiteral( "my types" ) );
   QCOMPARE( registry.itemTypes().count(), 1 );
   QCOMPARE( registry.itemTypes().value( 2 ), QStringLiteral( "my type" ) );
   QgsLayoutItem *item = registry.createItem( 2, nullptr );
