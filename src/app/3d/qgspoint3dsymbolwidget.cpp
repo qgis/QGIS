@@ -68,7 +68,8 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( cbOverwriteMaterial, static_cast<void ( QCheckBox::* )( int )>( &QCheckBox::stateChanged ), this, &QgsPoint3DSymbolWidget::onOverwriteMaterialChecked );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
   connect( btnChangeSymbol, &QgsSymbolButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( btnChangeSymbol, &QgsSymbolButton::changed, this, &QgsPoint3DSymbolWidget::onBillboardSymbolChanged );
+//  connect( btnChangeSymbol, &QgsSymbolButton::changed, this, &QgsPoint3DSymbolWidget::onBillboardSymbolChanged );
+//  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )( )>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
 }
 
 void QgsPoint3DSymbolWidget::onChooseModelClicked( bool )
@@ -110,6 +111,7 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
 void QgsPoint3DSymbolWidget::onBillboardSymbolChanged()
 {
   QgsDebugMsg( QStringLiteral( "Symbol changed: %1" ).arg( btnChangeSymbol->symbol()->color().name() ) );
+  emit changed();
 }
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
@@ -119,7 +121,6 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
   QVariantMap vm = symbol.shapeProperties();
   int index = cboShape->findData( symbol.shape() );
   cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
-
   widgetMaterial->setEnabled( true );
   switch ( cboShape->currentIndex() )
   {
@@ -153,11 +154,9 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
       cbOverwriteMaterial->setChecked( overwriteMaterial );
       break;
     }
-    // TODO: Fix this for billboard
     case 7:  // billboard
       if ( vm.contains( QStringLiteral( "billboard" ) ) )
       {
-        QgsDebugMsg( "Set button billboard" );
         QVariant symbolVariant = vm[QStringLiteral( "billboard" )];
         QString symbolString = symbolVariant.toString();
 

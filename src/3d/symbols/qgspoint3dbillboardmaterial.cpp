@@ -156,19 +156,20 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image )
   texture->setGenerateMipMaps( false );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-//  texture->setSize(image.size().width(), image.size().height());
+  texture->setSize( image.size().width(), image.size().height() );
   texture->addTextureImage( billboardTextureImage );
 
   // Set texture 2D
   setTexture2D( texture );
+  setSize( QSizeF( image.size() ) );
 }
 
 void QgsPoint3DBillboardMaterial::useDefaultSymbol()
 {
   // Default texture
   QgsMarkerSymbol *defaultSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
-  defaultSymbol->setSizeUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-  defaultSymbol->setSize( 20 );
+//  defaultSymbol->setSizeUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+//  defaultSymbol->setSize( 20 );
 
   setTexture2DFromSymbol( defaultSymbol );
   mName = QStringLiteral( "default symbol" );
@@ -176,11 +177,12 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol()
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol )
 {
-  markerSymbol->setSizeUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-  markerSymbol->setSize( 20 );
-  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( markerSymbol->size() ) + 5, int( markerSymbol->size() ) + 5 ), 0 );
+  QgsRenderContext context = QgsRenderContext();
+  double pixelSize = context.convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
+
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ) + 5, int( pixelSize ) + 5 ), 0 );
   QImage symbolImage = symbolPixmap.toImage();
-//  symbolImage.save( "/home/ismailsunni/dev/cpp/test.png" );
+  symbolImage.save( "/home/ismailsunni/dev/cpp/test.png" );
   setTexture2DFromImage( symbolImage );
   mName = markerSymbol->color().name();
 }
