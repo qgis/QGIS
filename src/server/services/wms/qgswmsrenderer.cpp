@@ -1753,10 +1753,17 @@ namespace QgsWms
         QgsRaster::IdentifyFormat::IdentifyFormatValue };
 
     QgsRasterIdentifyResult identifyResult;
-    if ( layer->dataProvider()->crs() != mapSettings.destinationCrs() )
+    if ( layer->crs() != mapSettings.destinationCrs() )
     {
       const QgsRectangle extent { mapSettings.extent() };
-      const QgsCoordinateTransform transform { layer->dataProvider()->crs(), mapSettings.destinationCrs(), mapSettings.transformContext() };
+      const QgsCoordinateTransform transform { mapSettings.destinationCrs(), layer->crs(), mapSettings.transformContext() };
+      if ( ! transform.isValid() )
+      {
+        throw QgsBadRequestException( QStringLiteral( "InvalidCRS" ), QStringLiteral( "CRS transform error from %1 to %2 in layer %3" )
+                                      .arg( mapSettings.destinationCrs().authid() )
+                                      .arg( layer->crs().authid() )
+                                      .arg( layer->name() ) );
+      }
       identifyResult = layer->dataProvider()->identify( *infoPoint, identifyFormat, transform.transform( extent ), mapSettings.outputSize().width(), mapSettings.outputSize().height() );
     }
     else
