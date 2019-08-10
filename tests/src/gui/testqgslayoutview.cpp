@@ -320,7 +320,7 @@ void TestQgsLayoutView::guiRegistry()
   //creating item
   QgsLayoutItem *item = registry.createItem( uuid, nullptr );
   QVERIFY( !item );
-  QgsApplication::layoutItemRegistry()->addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "my type" ), []( QgsLayout * layout )->QgsLayoutItem*
+  QgsApplication::layoutItemRegistry()->addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "my type" ), QStringLiteral( "my types" ), []( QgsLayout * layout )->QgsLayoutItem*
   {
     return new TestItem( layout );
   } ) );

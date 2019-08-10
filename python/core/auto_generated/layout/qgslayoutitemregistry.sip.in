@@ -29,10 +29,12 @@ GUI behavior of QgsLayoutItems.
 %End
   public:
 
-    QgsLayoutItemAbstractMetadata( int type, const QString &visibleName );
+    QgsLayoutItemAbstractMetadata( int type, const QString &visibleName, const QString &visiblePluralName = QString() );
 %Docstring
 Constructor for QgsLayoutItemAbstractMetadata with the specified class ``type``
 and ``visibleName``.
+
+The optional ``visiblePluralName`` argument can be used to specify a plural variant of the item type.
 %End
 
     virtual ~QgsLayoutItemAbstractMetadata();
@@ -45,6 +47,15 @@ Returns the unique item type code for the layout item class.
     QString visibleName() const;
 %Docstring
 Returns a translated, user visible name for the layout item class.
+
+.. seealso:: :py:func:`visiblePluralName`
+%End
+
+    QString visiblePluralName() const;
+%Docstring
+Returns a translated, user visible name for plurals of the layout item class (e.g. "Labels" for a "Label" item).
+
+.. versionadded:: 3.10
 %End
 
     virtual QgsLayoutItem *createItem( QgsLayout *layout ) = 0 /Factory/;

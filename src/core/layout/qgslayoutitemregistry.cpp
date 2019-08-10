@@ -61,22 +61,22 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "temp type" ), createTemporaryItem ) );
 #endif
 
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QObject::tr( "Group" ), QgsLayoutItemGroup::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutFrame, QObject::tr( "Frame" ), QgsLayoutFrame::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QObject::tr( "Page" ), QgsLayoutItemPage::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutMap, QObject::tr( "Map" ), QgsLayoutItemMap::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPicture, QObject::tr( "Picture" ), QgsLayoutItemPicture::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutLabel, QObject::tr( "Label" ), QgsLayoutItemLabel::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutLegend, QObject::tr( "Legend" ), QgsLayoutItemLegend::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutScaleBar, QObject::tr( "Scalebar" ), QgsLayoutItemScaleBar::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QObject::tr( "Shape" ), []( QgsLayout * layout )
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QObject::tr( "Group" ), QObject::tr( "Groups" ), QgsLayoutItemGroup::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutFrame, QObject::tr( "Frame" ), QObject::tr( "Frames" ), QgsLayoutFrame::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QObject::tr( "Page" ), QObject::tr( "Pages" ), QgsLayoutItemPage::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutMap, QObject::tr( "Map" ), QObject::tr( "Maps" ), QgsLayoutItemMap::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPicture, QObject::tr( "Picture" ), QObject::tr( "Pictures" ), QgsLayoutItemPicture::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutLabel, QObject::tr( "Label" ), QObject::tr( "Labels" ), QgsLayoutItemLabel::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutLegend, QObject::tr( "Legend" ), QObject::tr( "Legends" ), QgsLayoutItemLegend::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutScaleBar, QObject::tr( "Scalebar" ), QObject::tr( "Scalebars" ), QgsLayoutItemScaleBar::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QObject::tr( "Shape" ), QObject::tr( "Shapes" ), []( QgsLayout * layout )
   {
     QgsLayoutItemShape *shape = new QgsLayoutItemShape( layout );
     shape->setShapeType( QgsLayoutItemShape::Rectangle );
     return shape;
   } ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolygon, QObject::tr( "Polygon" ), QgsLayoutItemPolygon::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolyline, QObject::tr( "Polyline" ), QgsLayoutItemPolyline::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolygon, QObject::tr( "Polygon" ), QObject::tr( "Polygons" ), QgsLayoutItemPolygon::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolyline, QObject::tr( "Polyline" ), QObject::tr( "Polylines" ), QgsLayoutItemPolyline::create ) );
 
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutHtml, QObject::tr( "HTML" ), QgsLayoutItemHtml::create ) );
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsLayoutItemAttributeTable::create ) );

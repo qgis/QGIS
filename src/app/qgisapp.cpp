@@ -11323,7 +11323,7 @@ void QgisApp::initLayouts()
 {
 #ifdef HAVE_3D
   QgsApplication::layoutItemRegistry()->addLayoutItemType(
-    new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsLayoutItem3DMap::create )
+    new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QObject::tr( "3D Maps" ), QgsLayoutItem3DMap::create )
   );
 #endif
 
