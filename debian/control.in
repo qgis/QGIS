@@ -461,6 +461,7 @@ Package: qgis-server
 Architecture: any
 Depends:
  qgis-providers (= ${binary:Version}),
+ python3-qgis (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
 Conflicts: qgis-mapserver
