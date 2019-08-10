@@ -20,7 +20,6 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 
-#include <sqlite3.h>
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name ):
   QgsAbstractDatabaseProviderConnection( name )
@@ -214,43 +213,59 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
   }
   QList<QgsGeoPackageProviderConnection::TableProperty> tableInfo;
   QString errCause;
-  QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( QLatin1String( "ogr" ), uri() ) );
-  QString baseUri = pieces[QStringLiteral( "path" )].toString();
-  if ( !baseUri.isEmpty() )
+  QList<QVariantList> results;
+  try
   {
-    char *errmsg = nullptr;
-    sqlite3_database_unique_ptr database;
-    int status = database.open_v2( baseUri, SQLITE_OPEN_READONLY, nullptr );
-    if ( status == SQLITE_OK )
+    const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name "
+                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name);" )};
+    results = executeSql( sql );
+    for ( const auto &row : qgis::as_const( results ) )
     {
-      char *sql = sqlite3_mprintf( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name "
-                                   "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name);" );
-      try
+      if ( row.size() != 5 )
       {
-        status = sqlite3_exec(
-                   database.get(),              /* An open database */
-                   sql,                         /* SQL to be evaluated */
-                   collect_table_info,          /* Callback function */
-                   &tableInfo,                  /* 1st argument to callback */
-                   &errmsg                      /* Error msg written here */
-                 );
+        throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: wrong number of colums returned by query" ).arg( name() ) );
       }
-      catch ( QgsProviderConnectionException &ex )
+      QgsGeoPackageProviderConnection::TableProperty property;
+      property.setTableName( row.at( 0 ).toString() );
+      property.setPkColumns( { QLatin1String( "fid" ) } );
+      property.setGeometryColumnCount( 0 );
+      static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
+      const auto dataType = row.at( 1 ).toString();
+      // Table type
+      if ( dataType == QStringLiteral( "tiles" ) )
       {
-        errCause = ex.what();
+        property.setFlag( QgsGeoPackageProviderConnection::Raster );
       }
-      sqlite3_free( sql );
-      if ( status != SQLITE_OK )
+      else if ( dataType == QStringLiteral( "features" ) )
       {
-        errCause = QStringLiteral( "There was an error reading tables from GPKG layer %1: %2" ).arg( uri(), QString::fromUtf8( errmsg ) );
+        property.setFlag( QgsGeoPackageProviderConnection::Vector );
+        property.setGeometryColumn( QStringLiteral( "geom" ) );
+        property.setGeometryColumnCount( 1 );
       }
-      sqlite3_free( errmsg );
+      if ( aspatialTypes.contains( dataType ) )
+      {
+        property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
+        property.addGeometryType( QgsWkbTypes::Type::NoGeometry, 0 );
+      }
+      else
+      {
+        bool ok;
+        property.addGeometryType( QgsWkbTypes::parseType( row.at( 4 ).toString() ), row.at( 3 ).toInt( &ok ) );
+        if ( !ok )
+        {
+          throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( row.at( 3 ).toString() ) );
+        }
+      }
+      property.setComment( row.at( 4 ).toString() );
+      tableInfo.push_back( property );
     }
-    else
-    {
-      errCause = QStringLiteral( "There was an error opening GPKG %1" ).arg( uri() );
-    }
+
   }
+  catch ( QgsProviderConnectionException &ex )
+  {
+    errCause = ex.what();
+  }
+
   if ( ! errCause.isEmpty() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( name() ).arg( errCause ) );
