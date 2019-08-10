@@ -1634,9 +1634,6 @@ namespace QgsWms
         QgsRaster::IdentifyFormat::IdentifyFormatValue };
 
     QgsRasterIdentifyResult identifyResult;
-    // use context extent, width height (comes with request) to use WCS cache
-    // We can only use context if raster is not reprojected, otherwise it is difficult
-    // to guess correct source resolution
     if ( layer->dataProvider()->crs() != mapSettings.destinationCrs() )
     {
       const QgsRectangle extent { mapSettings.extent() };
