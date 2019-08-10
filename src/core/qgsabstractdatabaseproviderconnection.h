@@ -196,7 +196,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * Provider classes may use this property
          * to store custom bits of information.
          */
-        QList<QVariantMap> info() const;
+        QMap<QVariant, QVariant> info() const;
 
         /**
          * Sets additional information about the table to \a info
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * Provider classes may use this property
          * to store custom bits of information.
          */
-        void setInfo( const QList<QVariantMap> &info );
+        void setInfo( const QMap<QVariant, QVariant> &info );
 
         /**
          * Returns the number of geometry columns in the original table this entry refers to
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         //! SQL where condition
         QString                       mSql;
         //! Additional unstructured information about the table
-        QList<QVariantMap>            mInfo;
+        QMap<QVariant, QVariant>      mInfo;
     };
 
 

@@ -198,12 +198,12 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setGeometryColumnCoun
   mGeometryColumnCount = geometryColumnCount;
 }
 
-QList<QVariantMap> QgsAbstractDatabaseProviderConnection::TableProperty::info() const
+QMap<QVariant, QVariant> QgsAbstractDatabaseProviderConnection::TableProperty::info() const
 {
   return mInfo;
 }
 
-void QgsAbstractDatabaseProviderConnection::TableProperty::setInfo( const QList<QVariantMap> &info )
+void QgsAbstractDatabaseProviderConnection::TableProperty::setInfo( const QMap<QVariant, QVariant> &info )
 {
   mInfo = info;
 }
