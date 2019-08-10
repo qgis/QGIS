@@ -57,7 +57,7 @@ Adds ``decorations`` to be rendered on the map.
 
     void setSaveWorldFile( bool save );
 %Docstring
-Sets whether a world file will be created alongside an image file.
+Sets whether the image file will be georeferenced (embedded or via a world file).
 %End
 
     virtual void cancel();

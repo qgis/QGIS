@@ -95,8 +95,6 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
   if ( mDialogType == QgsMapSaveDialog::Pdf )
   {
-    mSaveWorldFile->setVisible( false );
-
     QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings() );
     if ( !layers.isEmpty() )
     {

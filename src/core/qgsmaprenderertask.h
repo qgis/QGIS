@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     void addDecorations( const QList<QgsMapDecoration *> &decorations );
 
     /**
-     * Sets whether a world file will be created alongside an image file.
+     * Sets whether the image file will be georeferenced (embedded or via a world file).
      */
     void setSaveWorldFile( bool save ) { mSaveWorldFile = save; }
 

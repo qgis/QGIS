@@ -19,10 +19,14 @@
 #include "qgsannotationmanager.h"
 #include "qgsmaprenderertask.h"
 #include "qgsmapsettingsutils.h"
-
+#include "qgsogrutils.h"
+#include "qgslogger.h"
 #include <QFile>
 #include <QTextStream>
 #include <QPrinter>
+
+#include "gdal.h"
+#include "cpl_conv.h"
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster )
   : QgsTask( tr( "Saving as image" ) )
@@ -86,7 +90,8 @@ bool QgsMapRendererTask::run()
     printer->setOutputFormat( QPrinter::PdfFormat );
     printer->setOrientation( QPrinter::Portrait );
     // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
-    printer->setPaperSize( mMapSettings.outputSize()  * 25.4 / mMapSettings.outputDpi(), QPrinter::Millimeter );
+    QSizeF outputSize = mMapSettings.outputSize();
+    printer->setPaperSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPrinter::Millimeter );
     printer->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
     printer->setResolution( mMapSettings.outputDpi() );
 
@@ -190,6 +195,25 @@ bool QgsMapRendererTask::run()
       QRectF rect( 0, 0, img.width(), img.height() );
       pp.drawImage( rect, img, rect );
       pp.end();
+
+      if ( mSaveWorldFile )
+      {
+        CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", QString::number( mMapSettings.outputDpi() ).toLocal8Bit().constData() );
+        gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
+        if ( outputDS )
+        {
+          double a, b, c, d, e, f;
+          QgsMapSettingsUtils::worldFileParameters( mMapSettings, a, b, c, d, e, f );
+          c -= 0.5 * a;
+          c -= 0.5 * b;
+          f -= 0.5 * d;
+          f -= 0.5 * e;
+          double geoTransform[6] = { c, a, b, f, d, e };
+          GDALSetGeoTransform( outputDS.get(), geoTransform );
+          GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+        }
+        CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", nullptr );
+      }
 #else
       mError = ImageUnsupportedFormat;
       return false;
@@ -210,14 +234,36 @@ bool QgsMapRendererTask::run()
 
         // build the world file name
         QString outputSuffix = info.suffix();
-        QString worldFileName = info.absolutePath() + '/' + info.baseName() + '.'
-                                + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
-        QFile worldFile( worldFileName );
-
-        if ( worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
+        bool skipWorldFile = false;
+        if ( outputSuffix == QStringLiteral( "tif" ) || outputSuffix == QStringLiteral( "tiff" ) )
         {
-          QTextStream stream( &worldFile );
-          stream << QgsMapSettingsUtils::worldFileContent( mMapSettings );
+          gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
+          if ( outputDS )
+          {
+            skipWorldFile = true;
+            double a, b, c, d, e, f;
+            QgsMapSettingsUtils::worldFileParameters( mMapSettings, a, b, c, d, e, f );
+            c -= 0.5 * a;
+            c -= 0.5 * b;
+            f -= 0.5 * d;
+            f -= 0.5 * e;
+            double geoTransform[] = { c, a, b, f, d, e };
+            GDALSetGeoTransform( outputDS.get(), geoTransform );
+            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+          }
+        }
+
+        if ( !skipWorldFile )
+        {
+          QString worldFileName = info.absolutePath() + '/' + info.baseName() + '.'
+                                  + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
+          QFile worldFile( worldFileName );
+
+          if ( worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
+          {
+            QTextStream stream( &worldFile );
+            stream << QgsMapSettingsUtils::worldFileContent( mMapSettings );
+          }
         }
       }
     }
