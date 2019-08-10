@@ -230,43 +230,113 @@ Returns connection capabilities
 %End
 
 
-    virtual void createVectorTable( const QString &schema,
-                                    const QString &name,
-                                    const QgsFields &fields,
-                                    QgsWkbTypes::Type wkbType,
-                                    const QgsCoordinateReferenceSystem &srs,
-                                    bool overwrite,
-                                    const QMap<QString, QVariant> *options
-                                  ) const throw( QgsProviderConnectionException );
-
+    virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
+%Docstring
+Creates an empty table with ``name`` in the given ``schema`` (schema is ignored  if not supported by the backend)
+%End
 
     virtual bool tableExists( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
+%Docstring
+Checks whether a table ``name`` exists in the given ``schema``
+\throws :py:class:`QgsProviderConnectionException`
+%End
 
     virtual void dropVectorTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
+%Docstring
+Drops a vector (or aspatial) table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``
+
+.. note::
+
+   it is responsability of the caller to handle opened layers and registry entries.
+   \throws :py:class:`QgsProviderConnectionException`
+%End
 
     virtual void dropRasterTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
+%Docstring
+Drops a raster table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``
+
+.. note::
+
+   it is responsability of the caller to handle opened layers and registry entries.
+   \throws :py:class:`QgsProviderConnectionException`
+%End
 
     virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
+%Docstring
+Renames a table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``
+
+.. note::
+
+   it is responsability of the caller to handle opened layers and registry entries.
+   \throws :py:class:`QgsProviderConnectionException`
+%End
 
     virtual void createSchema( const QString &name ) const throw( QgsProviderConnectionException );
+%Docstring
+Creates a new schema ``schema``
+\throws :py:class:`QgsProviderConnectionException`
+%End
 
     virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
+%Docstring
+Drops an entire ``schema``
+
+:param force: if ``True``, a DROP CASCADE will drop all related objects
+
+.. note::
+
+   it is responsability of the caller to handle opened layers and registry entries.
+   \throws :py:class:`QgsProviderConnectionException`
+%End
 
     virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
+%Docstring
+Renames a ``schema``
+
+.. note::
+
+   it is responsability of the caller to handle opened layers and registry entries.
+   \throws :py:class:`QgsProviderConnectionException`
+%End
 
     virtual QList<QList<QVariant>> executeSql( const QString &sql ) const throw( QgsProviderConnectionException );
+%Docstring
+Executes raw ``sql`` and returns the (possibly empty) list of results in a multi-dimensional array
+\throws :py:class:`QgsProviderConnectionException`
+%End
 
     virtual void vacuum( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
+%Docstring
+Vacuum the database table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``
+\throws :py:class:`QgsProviderConnectionException`
+%End
 
-    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const QgsAbstractDatabaseProviderConnection::TableFlags &flags = 0 ) const throw( QgsProviderConnectionException );
+
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=tables/;
+%Docstring
+Returns information on the tables in the given ``schema`` (schema is ignored if not supported by the backend)
+
+:param flags: filter tables by flags, this option completely overrides search options stored in the connection
+              \throws :py:class:`QgsProviderConnectionException`
+%End
+
 
 
     virtual QStringList schemas( ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns information about the existing schemas
+\throws :py:class:`QgsProviderConnectionException`
+%End
 
   protected:
 
-    void checkCapability( Capability cap ) const;
+
+    void checkCapability( Capability capability ) const;
+%Docstring
+Checks if ``capability`` is supported and throws and exception if it's not
+\throws :py:class:`QgsProviderConnectionException`
+%End
+
 
 };
 

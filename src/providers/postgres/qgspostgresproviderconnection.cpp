@@ -222,6 +222,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
   checkCapability( Capability::Tables );
   QList<QgsPostgresProviderConnection::TableProperty> tables;
   QString errCause;
+  // TODO: set flags from the connection if flags argument is 0
   const QgsDataSourceUri dsUri { uri() };
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
   if ( !conn )
@@ -240,62 +241,58 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
       QVector<QgsPostgresLayerProperty> properties;
       const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
       conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
+      bool dontResolveType = QgsPostgresConn::dontResolveType( name() );
 
-      // Utility to create a TableProperty and insert in the result list
-      auto fetch_property = [ & ]( const QgsPostgresLayerProperty & p )
+      // Cannot be const:
+      for ( auto &pr : properties )
       {
-        QgsPostgresProviderConnection::TableProperty property;
-        if ( p.isView )
+        // Classify
+        TableFlags prFlags;
+        if ( pr.isView )
         {
-          property.setFlag( QgsPostgresProviderConnection::TableFlag::View );
+          prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::View );
         }
-        if ( p.isMaterializedView )
+        if ( pr.isMaterializedView )
         {
-          property.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
+          prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
         }
         // Table type
-        if ( p.isRaster )
+        if ( pr.isRaster )
         {
-          property.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );
+          prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );
         }
-        else if ( p.nSpCols != 0 )
+        else if ( pr.nSpCols != 0 )
         {
-          property.setFlag( QgsPostgresProviderConnection::TableFlag::Vector );
+          prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Vector );
         }
         else
         {
-          property.setFlag( QgsPostgresProviderConnection::TableFlag::Aspatial );
+          prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Aspatial );
         }
-        // Filters
-        if ( ! flags || ( property.flags() & flags ) )
+        // Filter
+        if ( ! flags || ( prFlags & flags ) )
         {
-          for ( int i = 0; i < std::min( p.types.size(), p.srids.size() ) ; i++ )
+          // retrieve layer types if needed
+          if ( ! dontResolveType && ( !pr.geometryColName.isNull() &&
+                                      ( pr.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
+                                        pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
-            property.addGeometryType( p.types.at( i ), p.srids.at( i ) );
+            conn->retrieveLayerTypes( pr, true /* useEstimatedMetadata */ );
           }
-          property.setTableName( p.tableName );
-          property.setSchema( p.schemaName );
-          property.setGeometryColumn( p.geometryColName );
-          property.setPkColumns( p.pkCols );
-          property.setGeometryColumnCount( static_cast<int>( p.nSpCols ) );
-          property.setSql( p.sql );
-          property.setComment( p.tableComment );
+          QgsPostgresProviderConnection::TableProperty property;
+          property.setFlags( prFlags );
+          for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ) ; i++ )
+          {
+            property.addGeometryType( pr.types.at( i ), pr.srids.at( i ) );
+          }
+          property.setTableName( pr.tableName );
+          property.setSchema( pr.schemaName );
+          property.setGeometryColumn( pr.geometryColName );
+          property.setPkColumns( pr.pkCols );
+          property.setGeometryColumnCount( static_cast<int>( pr.nSpCols ) );
+          property.setSql( pr.sql );
+          property.setComment( pr.tableComment );
           tables.push_back( property );
-        }
-      };
-
-      for ( const auto &pr : qgis::as_const( properties ) )
-      {
-        // Aspatial
-        if ( pr.nSpCols == 0 )
-        {
-          fetch_property( pr );
-        }
-        // Handle multiple geometry columns
-        for ( unsigned int i = 0; i < pr.nSpCols; i++ )
-        {
-          const auto prAt { pr.at( i ) };
-          fetch_property( prAt );
         }
       }
     }

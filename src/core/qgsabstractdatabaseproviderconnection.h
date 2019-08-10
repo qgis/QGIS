@@ -286,17 +286,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     // Operations interface
 
     /**
-     * Creates an empty table with \a name in the given \a schema (may be empty if not supported by the backend)
+     * Creates an empty table with \a name in the given \a schema (schema is ignored  if not supported by the backend)
      */
-    virtual void createVectorTable( const QString &schema,
-                                    const QString &name,
-                                    const QgsFields &fields,
-                                    QgsWkbTypes::Type wkbType,
-                                    const QgsCoordinateReferenceSystem &srs,
-                                    bool overwrite,
-                                    const QMap<QString, QVariant> *options
-                                  ) const SIP_THROW( QgsProviderConnectionException );
-
+    virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Checks whether a table \a name exists in the given \a schema
@@ -305,21 +297,21 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual bool tableExists( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops a vector (or aspatial) table with given \a schema (may be empty if not supported by the backend) and \a name
+     * Drops a vector (or aspatial) table with given \a schema (schema is ignored if not supported by the backend) and \a name
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropVectorTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops a raster table with given \a schema (may be empty if not supported by the backend) and \a name
+     * Drops a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropRasterTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Renames a table with given \a schema (may be empty if not supported by the backend) and \a name
+     * Renames a table with given \a schema (schema is ignored  if not supported by the backend) and \a name
      * \note it is responsability of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
@@ -353,18 +345,26 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QList<QList<QVariant>> executeSql( const QString &sql ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Vacuum the database table with given \a schema (may be empty if not supported by the backend) and \a name
+     * Vacuum the database table with given \a schema (schema is ignored  if not supported by the backend) and \a name
      * \throws QgsProviderConnectionException
      */
     virtual void vacuum( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Returns information on the tables in the given \a schema (this parameter is ignored if not supported by the backend)
-     * \param flags filter tables by flags
+     * Returns information on the tables in the given \a schema (schema is ignored if not supported by the backend)
+     * \param flags filter tables by flags, this option completely overrides search options stored in the connection
+     * \throws QgsProviderConnectionException
+     * \note Not available in Python bindings
+     */
+    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_SKIP;
+
+    /**
+     * Returns information on the tables in the given \a schema (schema is ignored if not supported by the backend)
+     * \param flags filter tables by flags, this option completely overrides search options stored in the connection
      * \throws QgsProviderConnectionException
      */
-    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_THROW( QgsProviderConnectionException );
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const SIP_THROW( QgsProviderConnectionException ) SIP_PYNAME( tables );
+
 
     // TODO: return more schema information and not just the name
 
@@ -376,8 +376,16 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
   protected:
 
-    void checkCapability( Capability cap ) const;
-    Capabilities mCapabilities = nullptr;
+///@cond PRIVATE
+
+    /**
+     * Checks if \a capability is supported and throws and exception if it's not
+     * \throws QgsProviderConnectionException
+     */
+    void checkCapability( Capability capability ) const;
+///@endcond
+
+    Capabilities mCapabilities = nullptr SIP_SKIP;
 
 };
 

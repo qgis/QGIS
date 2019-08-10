@@ -635,6 +635,6 @@ INSERT INTO qgis_test.geometries_table VALUES
   ('PolygonWithHole', 'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1))'),
   ('Collection', 'GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0, 1 0, 1 1, 0 1, 0 0)))');
 
-CREATE VIEW qgis_test.geometries_view AS (SELECT * FROM qgis_test.geometries);
+CREATE VIEW qgis_test.geometries_view AS (SELECT * FROM qgis_test.geometries_table);
 
 CREATE TABLE qgis_test.geometryless_table (name VARCHAR, value INTEGER);

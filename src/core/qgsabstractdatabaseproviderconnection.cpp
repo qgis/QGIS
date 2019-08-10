@@ -34,12 +34,12 @@ QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderC
   return mCapabilities;
 }
 
-void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability cap ) const
+void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability capability ) const
 {
-  if ( ! mCapabilities & cap )
+  if ( ! mCapabilities & capability )
   {
     static QMetaEnum metaEnum = QMetaEnum::fromType<QgsAbstractDatabaseProviderConnection::Capability>();
-    const QString capName { metaEnum.valueToKey( cap ) };
+    const QString capName { metaEnum.valueToKey( capability ) };
     throw QgsProviderConnectionException( QObject::tr( "Operation '%1' is not supported for this connection" ).arg( capName ) );
   }
 }
@@ -124,6 +124,12 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseP
   return QList<QgsAbstractDatabaseProviderConnection::TableProperty>();
 }
 
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tablesInt( const QString &schema, const int flags ) const
+{
+  return tables( schema, static_cast<QgsAbstractDatabaseProviderConnection::TableFlags>( flags ) );
+}
+
+
 QStringList QgsAbstractDatabaseProviderConnection::schemas( ) const
 {
   checkCapability( Capability::Schemas );
@@ -153,7 +159,7 @@ QList<QPair<int, int> > QgsAbstractDatabaseProviderConnection::TableProperty::ge
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
   QString n = mTableName;
-  if ( mGeometryTypes.size() > 1 ) n += '.' + mGeometryColumn;
+  if ( mGeometryColumnCount > 1 ) n += '.' + mGeometryColumn;
   return n;
 }
 

@@ -70,13 +70,13 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         return md.connections()['qgis_test1']
 
     def _table_names(self, table_properties):
-        """Return table names from table property list"""
-        return [p.tableName() for p in table_properties]
+        """Return table default names from table property list"""
+        return [p.defaultName() for p in table_properties]
 
     def _table_by_name(self, table_properties, name):
         """Filter table properties by table name"""
         try:
-            return [p for p in table_properties if p.tableName() == name][0]
+            return [p for p in table_properties if p.defaultName() == name][0]
         except IndexError:
             return None
 
@@ -265,7 +265,10 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         self.assertFalse('Raster1' in table_names)
         self.assertTrue('geometryless_table' in table_names)
         self.assertFalse('geometries_table' in table_names)
-        self.assertTrue('geometries_view' in table_names)
+        self.assertFalse('geometries_view' in table_names)
+
+        geometries_table = self._table_by_name(conn.tables('qgis_test'), 'geometries_table')
+        self.assertEqual(geometries_table.geometryTypes(), [(7, 0), (2, 0), (1, 0), (1, 3857), (1, 4326), (3, 0)])
 
     def test_geopackage_connections(self):
         """Test geopackage connections"""
