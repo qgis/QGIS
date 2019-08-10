@@ -1174,7 +1174,7 @@ namespace QgsWms
     {
       bool validLayer = false;
       bool queryableLayer = true;
-      for ( QgsMapLayer *layer : layers )
+      for ( QgsMapLayer *layer : qgis::as_const( layers ) )
       {
         if ( queryLayer == mContext.layerNickname( *layer ) )
         {
