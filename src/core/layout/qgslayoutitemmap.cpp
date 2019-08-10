@@ -1003,7 +1003,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails( int layer
   ExportLayerDetail detail;
   if ( hasBackground() && layer == 0 )
   {
-    detail.name = tr( "Map Background" );
+    detail.name = tr( "%1: Background" ).arg( displayName() );
     return detail;
   }
   else if ( hasBackground() )
@@ -1015,7 +1015,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails( int layer
   {
     // layers are in reverse order
     const QgsMapLayer *mapLayer = layers.at( layerCount - layer - 1 );
-    detail.name = mapLayer->name();
+    detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), mapLayer->name() );
     detail.mapLayerId = mapLayer->id();
     return detail;
   }
@@ -1024,7 +1024,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails( int layer
   const bool hasGrids = mGridStack->hasEnabledItems();
   if ( hasGrids && layer == 0 )
   {
-    detail.name = tr( "Map Grids" );
+    detail.name = tr( "%1: Grids" ).arg( displayName() );
     return detail;
   }
   else if ( hasGrids )
@@ -1033,7 +1033,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails( int layer
   const bool hasOverviews = mOverviewStack->hasEnabledItems();
   if ( hasOverviews && layer == 0 )
   {
-    detail.name =  tr( "Map Overviews" );
+    detail.name =  tr( "%1: Overviews" ).arg( displayName() );
     return detail;
   }
   else if ( hasOverviews )
@@ -1041,7 +1041,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails( int layer
 
   if ( frameEnabled() && layer == 0 )
   {
-    detail.name = tr( "Map Frame" );
+    detail.name = tr( "%1: Frame" ).arg( displayName() );
     return detail;
   }
 

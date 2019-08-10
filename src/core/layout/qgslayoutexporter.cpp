@@ -1480,7 +1480,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
   QgsLayoutItem::ExportLayerBehavior prevItemBehavior = QgsLayoutItem::CanGroupWithAnyOtherItem;
   unsigned int layerId = 1;
   QgsLayoutItem::ExportLayerDetail layerDetails;
-  layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
   itemHider.hideAll();
   const QList< QGraphicsItem * > itemsToIterate = itemHider.itemsToIterate();
   QList< QGraphicsItem * > currentLayerItems;
