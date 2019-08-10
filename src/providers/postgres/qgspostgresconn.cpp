@@ -559,7 +559,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
       bool isMaterializedView = relkind == QLatin1String( "m" );
       bool isForeignTable = relkind == QLatin1String( "f" );
-      bool isRaster = type == QStringLiteral( "RASTER" );
+      bool isRaster = type == QLatin1String( "RASTER" );
       QString comment = result.PQgetvalue( idx, 7 );
 
       int srid = ssrid.isEmpty() ? std::numeric_limits<int>::min() : ssrid.toInt();
@@ -796,6 +796,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColType = SctNone;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.isRaster = false;
       layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
 
@@ -1566,7 +1567,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
         layerProperty.srids.append( srid );
       }
     }
-    else
+    else  // vectors
     {
       // our estimatation ignores that a where clause might restrict the feature type or srid
       if ( useEstimatedMetadata )
@@ -1623,6 +1624,12 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 
       if ( gresult.PQresultStatus() == PGRES_TUPLES_OK )
       {
+        // Remove unknown entry
+        if ( gresult.PQntuples() > 0 )
+        {
+          layerProperty.srids.clear();
+          layerProperty.types.clear();
+        }
         for ( int i = 0; i < gresult.PQntuples(); i++ )
         {
           QString type = gresult.PQgetvalue( i, 0 );
