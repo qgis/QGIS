@@ -82,6 +82,7 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
       {
         whileBlocking( widgetPoint )->setSymbol( QgsPoint3DSymbol() );
       }
+      whileBlocking( widgetPoint )->setLayer( vlayer );
       break;
 
     case QgsWkbTypes::LineGeometry:

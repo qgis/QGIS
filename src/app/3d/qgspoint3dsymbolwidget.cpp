@@ -51,6 +51,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
 
   btnChangeSymbol->setSymbolType( QgsSymbol::Marker );
   btnChangeSymbol->setDialogTitle( tr( "Billboard symbol" ) );
+//  btnChangeSymbol->setLayer(layer());
 
   setSymbol( QgsPoint3DSymbol() );
   onShapeChanged();
@@ -266,6 +267,12 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   sym.setMaterial( widgetMaterial->material() );
   sym.setTransform( tr );
   return sym;
+}
+
+void QgsPoint3DSymbolWidget::setLayer( QgsVectorLayer *vlayer )
+{
+  mLayer = vlayer;
+  btnChangeSymbol->setLayer( vlayer );
 }
 
 void QgsPoint3DSymbolWidget::onShapeChanged()
