@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsAbastractProviderConnection API.
+"""QGIS Base Unit tests for QgsAbastractProviderConnection API.
+
+Providers must implement a test based on TestPyQgsProviderConnectionBase
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,12 +31,12 @@ from qgis.core import (
     QgsProviderConnectionException,
 )
 
-from utilities import unitTestDataPath
+class TestPyQgsProviderConnectionBase():
 
-TEST_DATA_DIR = unitTestDataPath()
-
-
-class TestPyQgsProviderConnection(unittest.TestCase):
+    # Provider test cases must define the string URI for the test
+    uri = ''
+    # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
+    providerKey = ''
 
     @classmethod
     def setUpClass(cls):
@@ -43,29 +45,19 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)
         start_app()
-        cls.postgres_conn = 'dbname=\'qgis_test\''
-        if 'QGIS_PGTEST_DB' in os.environ:
-            cls.postgres_conn = os.environ['QGIS_PGTEST_DB']
-        # Create test layers
-        vl = QgsVectorLayer(cls.postgres_conn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
-        assert vl.isValid()
-        gpkg_original_path = '{}/qgis_server/test_project_wms_grouped_layers.gpkg'.format(TEST_DATA_DIR)
-        cls.gpkg_path = '{}/qgis_server/test_project_wms_grouped_layers_test.gpkg'.format(TEST_DATA_DIR)
-        shutil.copy(gpkg_original_path, cls.gpkg_path)
-        vl = QgsVectorLayer('{}|cdb_lines'.format(cls.gpkg_path), 'test', 'ogr')
-        assert vl.isValid()
+
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        os.unlink(cls.gpkg_path)
+        pass
 
     def setUp(self):
         QgsSettings().clear()
 
     def _test_save_load(self, md, uri):
         """Common tests on connection save and load"""
-        conn = md.connection('qgis_test1', uri)
+        conn = md.connection('qgis_test1', self.uri)
         md.saveConnection(conn)
         return md.connections()['qgis_test1']
 
@@ -228,79 +220,29 @@ class TestPyQgsProviderConnection(unittest.TestCase):
         md.deleteConnection(conn.name())
         self.assertEqual(list(md.connections().values()), [])
 
-    def test_postgis_connections(self):
-        """Create some connections and retrieve them"""
-
-        md = QgsProviderRegistry.instance().providerMetadata('postgres')
-        uri = self.postgres_conn + ' port=5432 sslmode=disable key=\'gid\''
-
-        # Run common tests
-        conn = self._test_save_load(md, uri)
-
-        # Retrieve capabilities
-        capabilities = conn.capabilities()
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Tables))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameTable))
-
-        # Run common tests
-        self._test_operations(md, conn)
-
-        # Check filters and special cases
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
-        self.assertTrue('Raster1' in table_names)
-        self.assertFalse('geometryless_table' in table_names)
-        self.assertFalse('geometries_table' in table_names)
-        self.assertFalse('geometries_view' in table_names)
-
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.View))
-        self.assertFalse('Raster1' in table_names)
-        self.assertFalse('geometryless_table' in table_names)
-        self.assertFalse('geometries_table' in table_names)
-        self.assertTrue('geometries_view' in table_names)
-
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial))
-        self.assertFalse('Raster1' in table_names)
-        self.assertTrue('geometryless_table' in table_names)
-        self.assertFalse('geometries_table' in table_names)
-        self.assertFalse('geometries_view' in table_names)
-
-        geometries_table = self._table_by_name(conn.tables('qgis_test'), 'geometries_table')
-        self.assertEqual(geometries_table.geometryTypes(), [(7, 0), (2, 0), (1, 0), (1, 3857), (1, 4326), (3, 0)])
-
-    def test_geopackage_connections(self):
-        """Test geopackage connections"""
-
-        md = QgsProviderRegistry.instance().providerMetadata('ogr')
-        uri = self.gpkg_path
-
-        # Run common tests
-        conn = self._test_save_load(md, uri)
-        # Check that the raster is in the tables
-        self.assertTrue('osm' in self._table_names(conn.tables()))
-        # Run common tests
-        self._test_operations(md, conn)
 
     def test_errors(self):
         """Test SQL errors"""
 
-        md = QgsProviderRegistry.instance().providerMetadata('postgres')
-        uri = self.postgres_conn + ' port=5432 sslmode=disable key=\'gid\''
-        conn = md.connection('qgis_test1', uri)
-        md.saveConnection(conn)
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = self._test_save_load(md, self.uri)
 
-        with self.assertRaises(QgsProviderConnectionException) as ex:
-            conn.createVectorTable('notExists', 'notReally', QgsFields(), QgsWkbTypes.Point, QgsCoordinateReferenceSystem(), False, {})
+        if conn.capabilities() & QgsAbstractDatabaseProviderConnection.Schemas:
+            with self.assertRaises(QgsProviderConnectionException) as ex:
+                conn.createVectorTable('notExists', 'notReally', QgsFields(), QgsWkbTypes.Point, QgsCoordinateReferenceSystem(), False, {})
 
-        with self.assertRaises(QgsProviderConnectionException) as ex:
-            conn.executeSql('DROP TABLE "notExists"')
+        if conn.capabilities() & QgsAbstractDatabaseProviderConnection.DropVectorTable:
+            with self.assertRaises(QgsProviderConnectionException) as ex:
+                conn.executeSql('DROP TABLE "notExists"')
 
         # Remove connection
         md.deleteConnection(conn.name())
         self.assertEqual(list(md.connections().values()), [])
 
+    def test_connections(self):
+        """Main test"""
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
 
-if __name__ == '__main__':
-    unittest.main()
+        # Run common tests
+        conn = self._test_save_load(md,  self.uri)
+        self._test_operations(md, conn)
