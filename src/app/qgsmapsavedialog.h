@@ -71,7 +71,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     //! returns whether the draw decorations element is checked
     bool drawDecorations() const;
 
-    //! returns whether a world file will be created
+    //! returns whether the resulting image will be georeferenced (embedded or via world file)
     bool saveWorldFile() const;
 
     //! returns whether the map will be rasterized
