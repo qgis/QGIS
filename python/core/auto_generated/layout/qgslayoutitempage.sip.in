@@ -48,6 +48,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual int type() const;
 
+    virtual QString displayName() const;
+
 
     void setPageSize( const QgsLayoutSize &size );
 %Docstring

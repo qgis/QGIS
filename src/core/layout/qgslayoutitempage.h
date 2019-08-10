@@ -84,6 +84,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     static QgsLayoutItemPage *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
+    QString displayName() const override;
 
     /**
      * Sets the \a size of the page.
