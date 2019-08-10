@@ -63,6 +63,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsserverexception.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeaturestore.h"
 
 #include <QImage>
 #include <QPainter>
@@ -1621,19 +1622,27 @@ namespace QgsWms
 
     QgsMessageLog::logMessage( QStringLiteral( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ) );
 
-    if ( !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyValue ) )
+    if ( !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyValue ) &&
+         !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature ) )
     {
       return false;
     }
 
+    const QgsRaster::IdentifyFormat identifyFormat { static_cast<bool>( layer->dataProvider()->capabilities() &
+        QgsRasterDataProvider::IdentifyFeature ) ?
+        QgsRaster::IdentifyFormat::IdentifyFormatFeature :
+        QgsRaster::IdentifyFormat::IdentifyFormatValue };
+
     QgsRasterIdentifyResult identifyResult;
     if ( layer->dataProvider()->crs() != mapSettings.destinationCrs() )
     {
-      identifyResult = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue );
+      const QgsRectangle extent { mapSettings.extent() };
+      const QgsCoordinateTransform transform { layer->dataProvider()->crs(), mapSettings.destinationCrs(), mapSettings.transformContext() };
+      identifyResult = layer->dataProvider()->identify( *infoPoint, identifyFormat, transform.transform( extent ), mapSettings.outputSize().width(), mapSettings.outputSize().height() );
     }
     else
     {
-      identifyResult = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue, mapSettings.extent(), mapSettings.outputSize().width(), mapSettings.outputSize().height() );
+      identifyResult = layer->dataProvider()->identify( *infoPoint, identifyFormat, mapSettings.extent(), mapSettings.outputSize().width(), mapSettings.outputSize().height() );
     }
 
     if ( !identifyResult.isValid() )
@@ -1645,30 +1654,107 @@ namespace QgsWms
     {
       QgsFeature feature;
       QgsFields fields;
-      feature.initAttributes( attributes.count() );
-      int index = 0;
-      for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
-      {
-        fields.append( QgsField( layer->bandName( it.key() ), QVariant::Double ) );
-        feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
-      }
-      feature.setFields( fields );
-
       QgsCoordinateReferenceSystem layerCrs = layer->crs();
       int gmlVersion = mWmsParameters.infoFormatVersion();
       QString typeName = mContext.layerNickname( *layer );
-      QDomElement elem = createFeatureGML(
-                           &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr );
-      layerElement.appendChild( elem );
+
+      if ( identifyFormat == QgsRaster::IdentifyFormatValue )
+      {
+        feature.initAttributes( attributes.count() );
+        int index = 0;
+        for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+        {
+          fields.append( QgsField( layer->bandName( it.key() ), QVariant::Double ) );
+          feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
+        }
+        feature.setFields( fields );
+        QDomElement elem = createFeatureGML(
+                             &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr );
+        layerElement.appendChild( elem );
+      }
+      else
+      {
+        const auto values = identifyResult.results();
+        for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+        {
+          QVariant value = it.value();
+          if ( value.type() == QVariant::Bool && !value.toBool() )
+          {
+            // sublayer not visible or not queryable
+            continue;
+          }
+
+          if ( value.type() == QVariant::String )
+          {
+            continue;
+          }
+
+          // list of feature stores for a single sublayer
+          const QgsFeatureStoreList featureStoreList = it.value().value<QgsFeatureStoreList>();
+
+          for ( const QgsFeatureStore &featureStore : featureStoreList )
+          {
+            const QgsFeatureList storeFeatures = featureStore.features();
+            for ( const QgsFeature &feature : storeFeatures )
+            {
+              QDomElement elem = createFeatureGML(
+                                   &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr );
+              layerElement.appendChild( elem );
+            }
+          }
+        }
+      }
     }
     else
     {
-      for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+      if ( identifyFormat == QgsRaster::IdentifyFormatValue )
       {
-        QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
-        attributeElement.setAttribute( QStringLiteral( "name" ), layer->bandName( it.key() ) );
-        attributeElement.setAttribute( QStringLiteral( "value" ), QString::number( it.value().toDouble() ) );
-        layerElement.appendChild( attributeElement );
+        for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+        {
+          QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
+          attributeElement.setAttribute( QStringLiteral( "name" ), layer->bandName( it.key() ) );
+          attributeElement.setAttribute( QStringLiteral( "value" ), QString::number( it.value().toDouble() ) );
+          layerElement.appendChild( attributeElement );
+        }
+      }
+      else  // feature
+      {
+        const auto values = identifyResult.results();
+        for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+        {
+          QVariant value = it.value();
+          if ( value.type() == QVariant::Bool && !value.toBool() )
+          {
+            // sublayer not visible or not queryable
+            continue;
+          }
+
+          if ( value.type() == QVariant::String )
+          {
+            continue;
+          }
+
+          // list of feature stores for a single sublayer
+          const QgsFeatureStoreList featureStoreList = it.value().value<QgsFeatureStoreList>();
+          for ( const QgsFeatureStore &featureStore : featureStoreList )
+          {
+            const QgsFeatureList storeFeatures = featureStore.features();
+            for ( const QgsFeature &feature : storeFeatures )
+            {
+              for ( const auto &fld : feature.fields() )
+              {
+                const auto val { feature.attribute( fld.name() )};
+                if ( val.isValid() )
+                {
+                  QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
+                  attributeElement.setAttribute( QStringLiteral( "name" ), fld.name() );
+                  attributeElement.setAttribute( QStringLiteral( "value" ), val.toString() );
+                  layerElement.appendChild( attributeElement );
+                }
+              }
+            }
+          }
+        }
       }
     }
     return true;
@@ -2159,7 +2245,7 @@ namespace QgsWms
   }
 
   QDomElement QgsRenderer::createFeatureGML(
-    QgsFeature *feat,
+    const QgsFeature *feat,
     QgsVectorLayer *layer,
     QDomDocument &doc,
     QgsCoordinateReferenceSystem &crs,
