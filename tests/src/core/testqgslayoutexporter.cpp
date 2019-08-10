@@ -89,7 +89,7 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   res = exporter.handleLayeredExport( items, exportFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
   QCOMPARE( layerIds, QList< unsigned int >() << 1 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "<Page>" ) );
+  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Page" ) );
   QCOMPARE( mapLayerIds, QStringList() << QString() );
   layerIds.clear();
   layerNames.clear();

@@ -56,6 +56,11 @@ int QgsLayoutItemPage::type() const
   return QgsLayoutItemRegistry::LayoutPage;
 }
 
+QString QgsLayoutItemPage::displayName() const
+{
+  return QObject::tr( "Page" );
+}
+
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
 {
   attemptResize( size );
