@@ -93,9 +93,13 @@ class LayoutItemHider
   public:
     explicit LayoutItemHider( const QList<QGraphicsItem *> &items )
     {
+      mItemsToIterate.reserve( items.count() );
       for ( QGraphicsItem *item : items )
       {
-        mPrevVisibility[item] = item->isVisible();
+        const bool isVisible = item->isVisible();
+        mPrevVisibility[item] = isVisible;
+        if ( isVisible )
+          mItemsToIterate.append( item );
         item->hide();
       }
     }
@@ -116,11 +120,14 @@ class LayoutItemHider
       }
     }
 
+    QList< QGraphicsItem * > itemsToIterate() const { return mItemsToIterate; }
+
     LayoutItemHider( const LayoutItemHider &other ) = delete;
     LayoutItemHider &operator=( const LayoutItemHider &other ) = delete;
 
   private:
 
+    QList<QGraphicsItem * > mItemsToIterate;
     QHash<QGraphicsItem *, bool> mPrevVisibility;
 };
 
@@ -1441,11 +1448,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
   QgsLayoutItem::ExportLayerDetail layerDetails;
   layerDetails.name = QObject::tr( "Layer %1" ).arg( layerId );
   itemHider.hideAll();
+  const QList< QGraphicsItem * > itemsToIterate = itemHider.itemsToIterate();
   bool haveUnexportedItems = false;
   QString pendingLayerName;
-  for ( auto it = items.constBegin(); it != items.constEnd(); ++it )
+  for ( QGraphicsItem *item : itemsToIterate )
   {
-    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
 
     bool canPlaceInExistingLayer = false;
     if ( layoutItem )
@@ -1523,7 +1531,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
 
     if ( canPlaceInExistingLayer )
     {
-      ( *it )->show();
+      item->show();
       haveUnexportedItems = true;
     }
     else
@@ -1540,7 +1548,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
       }
 
       itemHider.hideAll();
-      ( *it )->show();
+      item->show();
 
       if ( layoutItem && layoutItem->exportLayerBehavior() == QgsLayoutItem::ItemContainsSubLayers )
       {
