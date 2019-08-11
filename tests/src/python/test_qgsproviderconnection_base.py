@@ -88,6 +88,9 @@ class TestPyQgsProviderConnectionBase():
             conn.createSchema('myNewSchema')
             schemas = conn.schemas()
             self.assertTrue('myNewSchema' in schemas)
+            # Create again
+            with self.assertRaises(QgsProviderConnectionException) as ex:
+                conn.createSchema('myNewSchema')
             # Rename
             conn.renameSchema('myNewSchema', 'myVeryNewSchema')
             schemas = conn.schemas()

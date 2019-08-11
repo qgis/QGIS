@@ -31,7 +31,7 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
 
     // QgsAbstractProviderConnection interface
   public:
-    void store( QVariantMap guiConfig ) const override;
+    void store( const QVariantMap &configuration ) const override;
     void remove() const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;

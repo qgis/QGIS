@@ -568,7 +568,7 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     QgsAbstractProviderConnection *connection( const QString &name ) override;
     QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) override;
     void deleteConnection( const QString &name ) override;
-    void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() ) override;
+    void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() ) override;
     void initProvider() override;
     void cleanupProvider() override;
 

@@ -288,7 +288,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
           property.setTableName( pr.tableName );
           property.setSchema( pr.schemaName );
           property.setGeometryColumn( pr.geometryColName );
-          property.setPkColumns( pr.pkCols );
+          property.setPrimaryKeyColumns( pr.pkCols );
           property.setGeometryColumnCount( static_cast<int>( pr.nSpCols ) );
           property.setSql( pr.sql );
           property.setComment( pr.tableComment );
@@ -341,7 +341,7 @@ QStringList QgsPostgresProviderConnection::schemas( ) const
 }
 
 
-void QgsPostgresProviderConnection::store( QVariantMap guiConfig ) const
+void QgsPostgresProviderConnection::store( const QVariantMap &configuration ) const
 {
   // TODO: move this to class configuration?
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
@@ -377,9 +377,9 @@ void QgsPostgresProviderConnection::store( QVariantMap guiConfig ) const
   };
   for ( const auto &p : guiParameters )
   {
-    if ( guiConfig.contains( p ) )
+    if ( configuration.contains( p ) )
     {
-      settings.setValue( p, guiConfig.value( p ) );
+      settings.setValue( p, configuration.value( p ) );
     }
   }
   settings.endGroup();

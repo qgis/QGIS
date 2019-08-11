@@ -47,7 +47,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = nullptr ) const override;
     QStringList schemas( ) const override;
-    void store( QVariantMap guiConfig = QVariantMap() ) const override;
+    void store( const QVariantMap &configuration = QVariantMap() ) const override;
     void remove() const override;
 
 

@@ -120,8 +120,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QString  defaultName() const;
 
         /**
-         * Returns the table property corresponding to the geometry type a
-         * the given indext \a index
+         * Returns the table property corresponding to the geometry type at
+         * the given \a index
          */
         TableProperty at( int index ) const;
 
@@ -148,12 +148,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         /**
          * Returns the list of primary key column names
          */
-        QStringList pkColumns() const;
+        QStringList primaryKeyColumns() const;
 
         /**
          * Sets the primary key column names to \a pkColumns
          */
-        void setPkColumns( const QStringList &pkColumns );
+        void setPrimaryKeyColumns( const QStringList &primaryKeyColumns );
 
         /**
          * Returns the list of SRIDs supported by the geometry column
@@ -298,45 +298,52 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     // Operations interface
 
     /**
-     * Creates an empty table with \a name in the given \a schema (schema is ignored  if not supported by the backend)
+     * Creates an empty table with \a name in the given \a schema (schema is ignored  if not supported by the backend).
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
      */
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Checks whether a table \a name exists in the given \a schema
+     * Checks whether a table \a name exists in the given \a schema.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
     virtual bool tableExists( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops a vector (or aspatial) table with given \a schema (schema is ignored if not supported by the backend) and \a name
+     * Drops a vector (or aspatial) table with given \a schema (schema is ignored if not supported by the backend) and \a name.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropVectorTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name
+     * Drops a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropRasterTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Renames a table with given \a schema (schema is ignored  if not supported by the backend) and \a name
+     * Renames a table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Creates a new schema \a schema
+     * Creates a new schema with the specified \a name
      * \throws QgsProviderConnectionException
      */
     virtual void createSchema( const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops an entire \a schema
+     * Drops an entire \a schema.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param force if TRUE, a DROP CASCADE will drop all related objects
      * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
@@ -344,26 +351,30 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void dropSchema( const QString &name, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Renames a \a schema
+     * Renames a \a schema.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void renameSchema( const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array
+     * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
     virtual QList<QList<QVariant>> executeSql( const QString &sql ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Vacuum the database table with given \a schema (schema is ignored  if not supported by the backend) and \a name
+     * Vacuum the database table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
     virtual void vacuum( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Returns information on the tables in the given \a schema (schema is ignored if not supported by the backend)
+     * Returns information on the tables in the given \a schema (schema is ignored if not supported by the backend).
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param flags filter tables by flags, this option completely overrides search options stored in the connection
      * \throws QgsProviderConnectionException
      * \note Not available in Python bindings
@@ -371,7 +382,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_SKIP;
 
     /**
-     * Returns information on the tables in the given \a schema (schema is ignored if not supported by the backend)
+     * Returns information on the tables in the given \a schema (schema is ignored if not supported by the backend).
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param flags filter tables by flags, this option completely overrides search options stored in the connection
      * \throws QgsProviderConnectionException
      */
@@ -381,7 +393,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     // TODO: return more schema information and not just the name
 
     /**
-     * Returns information about the existing schemas
+     * Returns information about the existing schemas.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
     virtual QStringList schemas( ) const SIP_THROW( QgsProviderConnectionException );

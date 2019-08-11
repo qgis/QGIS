@@ -91,8 +91,8 @@ columns, the geometry column name is appendend to the table name.
 
         TableProperty at( int index ) const;
 %Docstring
-Returns the table property corresponding to the geometry type a
-the given indext ``index``
+Returns the table property corresponding to the geometry type at
+the given ``index``
 %End
 
         QString schema() const;
@@ -115,12 +115,12 @@ Returns the geometry column name
 Sets the geometry column name to ``geometryColumn``
 %End
 
-        QStringList pkColumns() const;
+        QStringList primaryKeyColumns() const;
 %Docstring
 Returns the list of primary key column names
 %End
 
-        void setPkColumns( const QStringList &pkColumns );
+        void setPrimaryKeyColumns( const QStringList &primaryKeyColumns );
 %Docstring
 Sets the primary key column names to ``pkColumns``
 %End
@@ -244,18 +244,22 @@ Returns connection capabilities
 
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
 %Docstring
-Creates an empty table with ``name`` in the given ``schema`` (schema is ignored  if not supported by the backend)
+Creates an empty table with ``name`` in the given ``schema`` (schema is ignored  if not supported by the backend).
+Raises a QgsProviderConnectionException if any errors are encountered.
+\throws :py:class:`QgsProviderConnectionException`
 %End
 
     virtual bool tableExists( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Checks whether a table ``name`` exists in the given ``schema``
+Checks whether a table ``name`` exists in the given ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered.
 \throws :py:class:`QgsProviderConnectionException`
 %End
 
     virtual void dropVectorTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Drops a vector (or aspatial) table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``
+Drops a vector (or aspatial) table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
+Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::
 
@@ -265,7 +269,8 @@ Drops a vector (or aspatial) table with given ``schema`` (schema is ignored if n
 
     virtual void dropRasterTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Drops a raster table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``
+Drops a raster table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::
 
@@ -275,7 +280,8 @@ Drops a raster table with given ``schema`` (schema is ignored  if not supported 
 
     virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
-Renames a table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``
+Renames a table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::
 
@@ -285,13 +291,14 @@ Renames a table with given ``schema`` (schema is ignored  if not supported by th
 
     virtual void createSchema( const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Creates a new schema ``schema``
+Creates a new schema with the specified ``name``
 \throws :py:class:`QgsProviderConnectionException`
 %End
 
     virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
 %Docstring
-Drops an entire ``schema``
+Drops an entire ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered.
 
 :param force: if ``True``, a DROP CASCADE will drop all related objects
 
@@ -303,7 +310,8 @@ Drops an entire ``schema``
 
     virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
-Renames a ``schema``
+Renames a ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::
 
@@ -313,20 +321,23 @@ Renames a ``schema``
 
     virtual QList<QList<QVariant>> executeSql( const QString &sql ) const throw( QgsProviderConnectionException );
 %Docstring
-Executes raw ``sql`` and returns the (possibly empty) list of results in a multi-dimensional array
+Executes raw ``sql`` and returns the (possibly empty) list of results in a multi-dimensional array.
+Raises a QgsProviderConnectionException if any errors are encountered.
 \throws :py:class:`QgsProviderConnectionException`
 %End
 
     virtual void vacuum( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Vacuum the database table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``
+Vacuum the database table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Raises a QgsProviderConnectionException if any errors are encountered.
 \throws :py:class:`QgsProviderConnectionException`
 %End
 
 
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=tables/;
 %Docstring
-Returns information on the tables in the given ``schema`` (schema is ignored if not supported by the backend)
+Returns information on the tables in the given ``schema`` (schema is ignored if not supported by the backend).
+Raises a QgsProviderConnectionException if any errors are encountered.
 
 :param flags: filter tables by flags, this option completely overrides search options stored in the connection
               \throws :py:class:`QgsProviderConnectionException`
@@ -336,7 +347,8 @@ Returns information on the tables in the given ``schema`` (schema is ignored if 
 
     virtual QStringList schemas( ) const throw( QgsProviderConnectionException );
 %Docstring
-Returns information about the existing schemas
+Returns information about the existing schemas.
+Raises a QgsProviderConnectionException if any errors are encountered.
 \throws :py:class:`QgsProviderConnectionException`
 %End
 

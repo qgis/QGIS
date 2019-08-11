@@ -75,10 +75,10 @@ class CORE_EXPORT QgsAbstractProviderConnection
 
     /**
      * Stores the connection in the settings.
-     * \param guiConfig stores additional connection settings that are used by the
+     * \param configuration stores additional connection settings that are used by the
      * source select dialog and are not part of the data source URI
      */
-    virtual void store( QVariantMap guiConfig = QVariantMap() ) const = 0;
+    virtual void store( const QVariantMap &configuration = QVariantMap() ) const = 0;
 
     /**
      * Deletes the connection from the settings.

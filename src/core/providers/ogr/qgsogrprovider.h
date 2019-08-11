@@ -781,7 +781,7 @@ class QgsOgrProviderMetadata: public QgsProviderMetadata
     QgsAbstractProviderConnection *connection( const QString &name ) override;
     QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) override;
     void deleteConnection( const QString &name ) override;
-    void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig ) override;
+    void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration ) override;
 
 };
 

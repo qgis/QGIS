@@ -16,16 +16,16 @@
 #include "qgsabstractproviderconnection.h"
 
 
-QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name ):
-  mConnectionName( name )
+QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name )
+  : mConnectionName( name )
 {
-  // Note: concrete classed must implement the logic to read the configuration from the settings
+  // Note: concrete classes must implement the logic to read the configuration from the settings
   //       and create mUri
 }
 
-QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name, const QString &uri ):
-  mConnectionName( name ),
-  mUri( uri )
+QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name, const QString &uri )
+  : mConnectionName( name )
+  , mUri( uri )
 {
 
 }

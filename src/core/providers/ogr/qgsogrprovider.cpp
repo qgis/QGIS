@@ -6688,9 +6688,9 @@ void QgsOgrProviderMetadata::deleteConnection( const QString &name )
   deleteConnectionProtected<QgsGeoPackageProviderConnection>( name );
 }
 
-void QgsOgrProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, QVariantMap guiConfig )
+void QgsOgrProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, const QVariantMap &configuration )
 {
-  saveConnectionProtected( conn, guiConfig );
+  saveConnectionProtected( conn, configuration );
 }
 
 ///@endcond

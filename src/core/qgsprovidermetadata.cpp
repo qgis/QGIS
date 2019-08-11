@@ -193,16 +193,16 @@ void QgsProviderMetadata::deleteConnection( const QString &name )
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteConnection" ) ) );
 }
 
-void QgsProviderMetadata::saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig )
+void QgsProviderMetadata::saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration )
 {
   Q_UNUSED( connection );
-  Q_UNUSED( guiConfig );
+  Q_UNUSED( configuration );
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
 }
 
-void QgsProviderMetadata::saveConnectionProtected( QgsAbstractProviderConnection *conn, QVariantMap guiConfig )
+void QgsProviderMetadata::saveConnectionProtected( QgsAbstractProviderConnection *conn, const QVariantMap &configuration )
 {
-  conn->store( guiConfig );
+  conn->store( configuration );
   mProviderConnections.clear();
 }
 

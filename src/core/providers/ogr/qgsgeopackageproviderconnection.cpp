@@ -40,9 +40,9 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
   setUri( uri );
 }
 
-void QgsGeoPackageProviderConnection::store( QVariantMap guiConfig ) const
+void QgsGeoPackageProviderConnection::store( const QVariantMap &configuration ) const
 {
-  Q_UNUSED( guiConfig );
+  Q_UNUSED( configuration );
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
   settings.beginGroup( QStringLiteral( "GPKG" ) );
@@ -74,7 +74,7 @@ void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  auto opts { *options };
+  QMap<QString, QVariant> opts { *options };
   opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
   opts[ QStringLiteral( "update" ) ] = true;
   QMap<int, int> map;
@@ -103,8 +103,7 @@ void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, co
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
   QString errCause;
-  QString layerUri { uri() };
-  layerUri.append( QStringLiteral( "|layername=%1" ).arg( name ) );
+  const QString layerUri { QStringLiteral( "%1|layername=%2" ).arg( uri(), name ) };
   if ( ! QgsOgrProviderUtils::deleteLayer( layerUri, errCause ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name ).arg( errCause ) );
@@ -190,10 +189,10 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       }
       QgsGeoPackageProviderConnection::TableProperty property;
       property.setTableName( row.at( 0 ).toString() );
-      property.setPkColumns( { QLatin1String( "fid" ) } );
+      property.setPrimaryKeyColumns( { QStringLiteral( "fid" ) } );
       property.setGeometryColumnCount( 0 );
       static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
-      const auto dataType = row.at( 1 ).toString();
+      const QString dataType = row.at( 1 ).toString();
       // Table type
       if ( dataType == QStringLiteral( "tiles" ) )
       {
@@ -236,15 +235,10 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
   // Filters
   if ( flags )
   {
-    QList<QgsGeoPackageProviderConnection::TableProperty> filteredTableInfo;
-    for ( const auto &ti : qgis::as_const( tableInfo ) )
+    tableInfo.erase( std::remove_if( tableInfo.begin(), tableInfo.end(), [ & ]( const QgsAbstractDatabaseProviderConnection::TableProperty & ti )
     {
-      if ( ti.flags() & flags )
-      {
-        filteredTableInfo.push_back( ti );
-      }
-    }
-    tableInfo = filteredTableInfo;
+      return !( ti.flags() & flags );
+    } ), tableInfo.end() );
   }
   return tableInfo ;
 }

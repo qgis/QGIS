@@ -248,12 +248,12 @@ QList<int> QgsAbstractDatabaseProviderConnection::TableProperty::srids() const
   return srIds;
 }
 
-QStringList QgsAbstractDatabaseProviderConnection::TableProperty::pkColumns() const
+QStringList QgsAbstractDatabaseProviderConnection::TableProperty::primaryKeyColumns() const
 {
   return mPkColumns;
 }
 
-void QgsAbstractDatabaseProviderConnection::TableProperty::setPkColumns( const QStringList &pkColumns )
+void QgsAbstractDatabaseProviderConnection::TableProperty::setPrimaryKeyColumns( const QStringList &pkColumns )
 {
   mPkColumns = pkColumns;
 }

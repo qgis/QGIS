@@ -264,6 +264,7 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of provider connections,
      * the dictionary key is the connection identifier.
+     * Ownersihp is not tranferred.
      * \param cached if FALSE connections will be re-read from the settings
      * \since QGIS 3.10
      */
@@ -272,6 +273,7 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of database provider connections,
      * the dictionary key is the connection identifier.
+     * Ownersihp is not tranferred.
      * \param cached if FALSE connections will be re-read from the settings
      * \since QGIS 3.10
      */
@@ -312,12 +314,11 @@ class CORE_EXPORT QgsProviderMetadata
 
     /**
      * Stores the connection \a connection in the settings
-     * \param guiConfig stores additional connection settings that are used by the
-     * source select dialog and are not part of the data source URI
+     * \param configuration stores additional connection settings that not part of the data source URI
      *
      * \since QGIS 3.10
      */
-    virtual void saveConnection( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() );
+    virtual void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() );
 
   protected:
 
@@ -350,7 +351,7 @@ class CORE_EXPORT QgsProviderMetadata
       conn.remove();
       mProviderConnections.clear();
     }
-    virtual void saveConnectionProtected( QgsAbstractProviderConnection *connection, QVariantMap guiConfig = QVariantMap() );
+    virtual void saveConnectionProtected( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() );
     //! Provider connections cache
     QMap<QString, QgsAbstractProviderConnection *> mProviderConnections;
 
