@@ -148,7 +148,7 @@ void QgsGeoPackageProviderConnection::renameTable( const QString &schema, const 
   }
 }
 
-QList<QVariantList> QgsGeoPackageProviderConnection::executeSql( const QString &sql ) const
+QList<QList<QVariant>> QgsGeoPackageProviderConnection::executeSql( const QString &sql ) const
 {
   checkCapability( Capability::ExecuteSql );
   return executeGdalSqlPrivate( sql );

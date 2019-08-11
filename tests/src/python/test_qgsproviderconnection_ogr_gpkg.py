@@ -22,6 +22,8 @@ from qgis.core import (
     QgsProviderConnectionException,
     QgsVectorLayer,
     QgsProviderRegistry,
+    QgsFields,
+    QgsCoordinateReferenceSystem,
 )
 from qgis.testing import unittest
 from utilities import unitTestDataPath
@@ -51,6 +53,42 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
     def tearDownClass(cls):
         """Run after all tests"""
         os.unlink(cls.gpkg_path)
+
+    def test_gpkg_connections(self):
+        """Create some connections and retrieve them"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        conn = md.connection('qgis_test1', self.uri)
+        md.saveConnection(conn)
+
+        # Retrieve capabilities
+        capabilities = conn.capabilities()
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Tables))
+        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameTable))
+
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(3857)
+        typ = QgsWkbTypes.LineString
+        conn.createVectorTable('', 'myNewAspatialTable', QgsFields(), QgsWkbTypes.NoGeometry, crs, True, {})
+
+        # Check filters and special cases
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
+        self.assertTrue('osm' in table_names)
+        self.assertFalse('myNewTable' in table_names)
+        self.assertFalse('myNewAspatialTable' in table_names)
+
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.View))
+        self.assertFalse('osm' in table_names)
+        self.assertFalse('myNewTable' in table_names)
+        self.assertFalse('myNewAspatialTable' in table_names)
+
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial))
+        self.assertFalse('osm' in table_names)
+        self.assertFalse('myNewTable' in table_names)
+        self.assertTrue('myNewAspatialTable' in table_names)
 
 
 if __name__ == '__main__':

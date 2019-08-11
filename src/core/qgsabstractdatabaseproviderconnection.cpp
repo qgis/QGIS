@@ -107,10 +107,10 @@ void QgsAbstractDatabaseProviderConnection::renameSchema( const QString &, const
   checkCapability( Capability::RenameSchema );
 }
 
-QList<QVariantList> QgsAbstractDatabaseProviderConnection::executeSql( const QString & ) const
+QList<QList<QVariant>> QgsAbstractDatabaseProviderConnection::executeSql( const QString & ) const
 {
   checkCapability( Capability::ExecuteSql );
-  return QList<QVariantList>();
+  return QList<QList<QVariant>>();
 }
 
 void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QString & ) const
@@ -198,12 +198,12 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setGeometryColumnCoun
   mGeometryColumnCount = geometryColumnCount;
 }
 
-QMap<QVariant, QVariant> QgsAbstractDatabaseProviderConnection::TableProperty::info() const
+QVariantMap QgsAbstractDatabaseProviderConnection::TableProperty::info() const
 {
   return mInfo;
 }
 
-void QgsAbstractDatabaseProviderConnection::TableProperty::setInfo( const QMap<QVariant, QVariant> &info )
+void QgsAbstractDatabaseProviderConnection::TableProperty::setInfo( const QVariantMap &info )
 {
   mInfo = info;
 }
