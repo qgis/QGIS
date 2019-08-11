@@ -450,10 +450,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QMap<QWidget *, QSvgWidget *> mIconMap;
 
-    //! dependency map for default values
+    /**
+     * Dependency map for default values. Attribute index -> widget wrapper.
+     * Attribute indexes will be added multiple times if more than one widget depends on them.
+     */
     QMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
 
-    //! list of updated fields to avoid recursion on the setting of defaultValues
+    //! List of updated fields to avoid recursion on the setting of defaultValues
     QList<int> mAlreadyUpdatedFields;
 
     friend class TestQgsDualView;

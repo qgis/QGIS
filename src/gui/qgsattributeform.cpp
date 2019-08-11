@@ -1490,7 +1490,8 @@ void QgsAttributeForm::init()
     if ( eww )
     {
       QgsExpression exp( eww->field().defaultValueDefinition().expression() );
-      for ( const QString &referencedColumn : exp.referencedColumns().toList() )
+      const QSet<QString> referencedColumns = exp.referencedColumns();
+      for ( const QString &referencedColumn : referencedColumns )
       {
         if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
         {
