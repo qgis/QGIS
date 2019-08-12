@@ -83,8 +83,15 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
 
     /**
      * Returns a pointer to the current layer about to be rendered in the next render operation.
+     * \see currentLayerId()
      */
     const QgsMapLayer *currentLayer();
+
+    /**
+     * Returns the ID of the current layer about to be rendered in the next render operation.
+     * \see currentLayer()
+     */
+    QString currentLayerId();
 
     /**
      * Returns the current stage which will be rendered in the next render operation.

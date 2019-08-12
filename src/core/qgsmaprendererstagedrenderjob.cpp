@@ -175,6 +175,16 @@ const QgsMapLayer *QgsMapRendererStagedRenderJob::currentLayer()
   return nullptr;
 }
 
+QString QgsMapRendererStagedRenderJob::currentLayerId()
+{
+  if ( mJobIt != mLayerJobs.end() )
+  {
+    LayerRenderJob &job = *mJobIt;
+    return job.layerId;
+  }
+  return QString();
+}
+
 QgsMapRendererStagedRenderJob::RenderStage QgsMapRendererStagedRenderJob::currentStage() const
 {
   if ( mJobIt != mLayerJobs.end() )
