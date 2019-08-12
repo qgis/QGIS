@@ -60,13 +60,14 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     bool renderNextPart( QPainter *painter );
 
   private:
-    void doRender();
 
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 
     LayerRenderJobs mLayerJobs;
     LabelRenderJob mLabelJob;
     LayerRenderJobs::iterator mJobIt;
+
+    bool mExportedLabels = false;
 
 };
 
