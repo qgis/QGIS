@@ -858,19 +858,10 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
     painter->setClipRect( thisPaintRect, Qt::NoClip );
 
-    if ( shouldDrawPart( OverviewMapExtent ) )
-    {
-      mOverviewStack->drawItems( painter, false );
-    }
-    if ( shouldDrawPart( Grid ) )
-    {
-      mGridStack->drawItems( painter );
-    }
+    mOverviewStack->drawItems( painter, false );
+    mGridStack->drawItems( painter );
     drawAnnotations( painter );
-    if ( shouldDrawPart( Frame ) )
-    {
-      drawMapFrame( painter );
-    }
+    drawMapFrame( painter );
     painter->restore();
   }
   else
@@ -952,15 +943,32 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
       painter->save();
       painter->setClipRect( thisPaintRect );
-      painter->save();
-      painter->translate( mXOffset, mYOffset );
 
-      double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-      size *= dotsPerMM; // output size will be in dots (pixels)
-      painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-      drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
+      if ( shouldDrawPart( Layer ) && !qgsDoubleNear( size.width(), 0.0 ) && !qgsDoubleNear( size.height(), 0.0 ) )
+      {
+        painter->save();
+        painter->translate( mXOffset, mYOffset );
 
-      painter->restore();
+        double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
+        size *= dotsPerMM; // output size will be in dots (pixels)
+        painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+
+        if ( mCurrentExportPart != NotLayered )
+        {
+          if ( !mStagedRendererJob )
+          {
+            createStagedRenderJob( cExtent, size, paintDevice->logicalDpiX() );
+          }
+
+          mStagedRendererJob->renderCurrentPart( painter );
+        }
+        else
+        {
+          drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
+        }
+
+        painter->restore();
+      }
 
       painter->setClipRect( thisPaintRect, Qt::NoClip );
 
@@ -980,17 +988,101 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     {
       drawMapFrame( painter );
     }
+
     mDrawing = false;
   }
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 int QgsLayoutItemMap::numberExportLayers() const
 {
+  const int layerCount = layersToRender().length();
   return ( hasBackground() ? 1 : 0 )
-         + layersToRender().length()
+         + ( layerCount + ( layerCount ? 1 : 0 ) ) // +1 for label layer, if labels present
          + ( mGridStack->hasEnabledItems() ? 1 : 0 )
          + ( mOverviewStack->hasEnabledItems() ? 1 : 0 )
          + ( frameEnabled() ? 1 : 0 );
+}
+Q_NOWARN_DEPRECATED_POP
+
+void QgsLayoutItemMap::startLayeredExport()
+{
+  mCurrentExportPart = Start;
+}
+
+void QgsLayoutItemMap::stopLayeredExport()
+{
+  mCurrentExportPart = NotLayered;
+}
+
+bool QgsLayoutItemMap::nextExportPart()
+{
+  switch ( mCurrentExportPart )
+  {
+    case Start:
+      if ( hasBackground() )
+      {
+        mCurrentExportPart = Background;
+        return true;
+      }
+      FALLTHROUGH
+
+    case Background:
+      mCurrentExportPart = Layer;
+      return true;
+
+    case Layer:
+      if ( mStagedRendererJob )
+      {
+        if ( mStagedRendererJob->nextPart() )
+          return true;
+        else
+          mStagedRendererJob.reset(); // no more map layer parts
+      }
+
+      if ( mGridStack->hasEnabledItems() )
+      {
+        mCurrentExportPart = Grid;
+        return true;
+      }
+      FALLTHROUGH
+
+    case Grid:
+      if ( mOverviewStack->hasEnabledItems() )
+      {
+        mCurrentExportPart = OverviewMapExtent;
+        return true;
+      }
+      FALLTHROUGH
+
+    case OverviewMapExtent:
+      if ( frameEnabled() )
+      {
+        mCurrentExportPart = Frame;
+        return true;
+      }
+
+      FALLTHROUGH
+
+    case Frame:
+      if ( isSelected() && !mLayout->renderContext().isPreviewRender() )
+      {
+        mCurrentExportPart = SelectionBoxes;
+        return true;
+      }
+      FALLTHROUGH
+
+    case SelectionBoxes:
+      mCurrentExportPart = End;
+      return false;
+
+    case End:
+      return false;
+
+    case NotLayered:
+      return false;
+  }
+  return false;
 }
 
 QgsLayoutItem::ExportLayerBehavior QgsLayoutItemMap::exportLayerBehavior() const
@@ -1205,22 +1297,6 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   {
     //set layers to render
     QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
-    if ( mLayout && -1 != mLayout->renderContext().currentExportLayer() )
-    {
-      const int layerIdx = mLayout->renderContext().currentExportLayer() - ( hasBackground() ? 1 : 0 );
-      if ( layerIdx >= 0 && layerIdx < layers.length() )
-      {
-        // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
-        QgsMapLayer *ml = layers[ layers.length() - layerIdx - 1 ];
-        layers.clear();
-        layers << ml;
-      }
-      else
-      {
-        // exporting decorations such as map frame/grid/overview, so no map layers required
-        layers.clear();
-      }
-    }
     jobMapSettings.setLayers( layers );
     jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
   }
@@ -1996,68 +2072,40 @@ void QgsLayoutItemMap::drawMapBackground( QPainter *p )
 
 bool QgsLayoutItemMap::shouldDrawPart( QgsLayoutItemMap::PartType part ) const
 {
-  int currentExportLayer = mLayout->renderContext().currentExportLayer();
-
-  if ( -1 == currentExportLayer )
+  if ( mCurrentExportPart == NotLayered )
   {
     //all parts of the map are visible
     return true;
   }
 
-  if ( hasBackground() )
+  switch ( part )
   {
-    if ( part == Background )
-      return currentExportLayer == 0;
+    case NotLayered:
+      return true;
 
-    currentExportLayer--;
-  }
-  else if ( part == Background )
-    return false;
+    case Start:
+      return false;
 
-  // layers
-  const int layerCount = layersToRender().length();
-  if ( currentExportLayer >= 0 && currentExportLayer < layerCount )
-  {
-    return part == Layer;
-  }
-  else if ( part == Layer )
-    return false;
+    case Background:
+      return mCurrentExportPart == Background && hasBackground();
 
-  currentExportLayer -= layerCount;
+    case Layer:
+      return mCurrentExportPart == Layer;
 
-  if ( mGridStack->hasEnabledItems() )
-  {
-    if ( part == Grid )
-      return currentExportLayer == 0;
+    case Grid:
+      return mCurrentExportPart == Grid && mGridStack->hasEnabledItems();
 
-    currentExportLayer--;
-  }
-  else if ( part == Grid )
-    return false;
+    case OverviewMapExtent:
+      return mCurrentExportPart == OverviewMapExtent && mOverviewStack->hasEnabledItems();
 
-  if ( mOverviewStack->hasEnabledItems() )
-  {
-    if ( part == OverviewMapExtent )
-      return currentExportLayer == 0;
+    case Frame:
+      return mCurrentExportPart == Frame && frameEnabled();
 
-    currentExportLayer--;
-  }
-  else if ( part == OverviewMapExtent )
-    return false;
+    case SelectionBoxes:
+      return mCurrentExportPart == SelectionBoxes && isSelected();
 
-  if ( frameEnabled() )
-  {
-    if ( part == Frame )
-      return currentExportLayer == 0;
-
-    currentExportLayer--;
-  }
-  else if ( part == Frame )
-    return false;
-
-  if ( SelectionBoxes == part )
-  {
-    return isSelected();
+    case End:
+      return false;
   }
 
   return false;
@@ -2349,5 +2397,12 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
   {
     return g.boundingBox();
   }
+}
+
+void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi )
+{
+  // TODO - overview?
+  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings( extent, size, dpi, true ) );
+  mStagedRendererJob->start();
 }
 

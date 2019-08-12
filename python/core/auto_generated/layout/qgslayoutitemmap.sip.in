@@ -89,6 +89,12 @@ The caller takes responsibility for deleting the returned object.
 
     virtual int numberExportLayers() const;
 
+    virtual void startLayeredExport();
+
+    virtual void stopLayeredExport();
+
+    virtual bool nextExportPart();
+
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
     virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails( int layer ) const;

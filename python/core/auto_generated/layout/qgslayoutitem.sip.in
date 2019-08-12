@@ -405,7 +405,7 @@ Returns the behavior of this item during exporting to layered exports (e.g. SVG)
 .. versionadded:: 3.10
 %End
 
-    virtual int numberExportLayers() const;
+ virtual int numberExportLayers() const /Deprecated/;
 %Docstring
 Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
 Returns 0 if this item is to be placed on the same layer as the previous item,
@@ -417,6 +417,41 @@ their rendering to determine which layer should be drawn.
 .. seealso:: :py:func:`exportLayerBehavior`
 
 .. seealso:: :py:func:`exportLayerDetails`
+
+.. deprecated:: Use nextExportPart() and exportLayerBehavior() instead.
+%End
+
+    virtual void startLayeredExport();
+%Docstring
+Starts a multi-layer export operation.
+
+.. seealso:: :py:func:`stopLayeredExport`
+
+.. seealso:: :py:func:`nextExportPart`
+
+.. versionadded:: 3.10
+%End
+
+    virtual void stopLayeredExport();
+%Docstring
+Stops a multi-layer export operation.
+
+.. seealso:: :py:func:`startLayeredExport`
+
+.. seealso:: :py:func:`nextExportPart`
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool nextExportPart();
+%Docstring
+Moves to the next export part for a multi-layered export item, during a multi-layered export.
+
+.. seealso:: :py:func:`startLayeredExport`
+
+.. seealso:: :py:func:`stopLayeredExport`
+
+.. versionadded:: 3.10
 %End
 
     struct ExportLayerDetail

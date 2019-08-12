@@ -129,7 +129,6 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
     drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), painter );
     mLabelJob.complete = true;
     mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
-    mExportedLabels = true;
   }
   return true;
 }
@@ -142,12 +141,23 @@ bool QgsMapRendererStagedRenderJob::nextPart()
   if ( mJobIt != mLayerJobs.end() )
   {
     mJobIt++;
-    return mJobIt != mLayerJobs.end() || mLabelingEngineV2;
+    if ( mJobIt != mLayerJobs.end() )
+      return true;
   }
-  else
+
+  if ( mLabelingEngineV2 )
   {
-    return mLabelingEngineV2 && !mExportedLabels;
+    if ( mNextIsLabel )
+    {
+      mExportedLabels = true;
+    }
+    else if ( !mExportedLabels )
+    {
+      mNextIsLabel = true;
+      return true;
+    }
   }
+  return false;
 }
 
 bool QgsMapRendererStagedRenderJob::isFinished()

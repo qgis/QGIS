@@ -79,6 +79,7 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     LabelRenderJob mLabelJob;
     LayerRenderJobs::iterator mJobIt;
 
+    bool mNextIsLabel = false;
     bool mExportedLabels = false;
 
 };

@@ -24,6 +24,7 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgslayoutitemmapgrid.h"
 #include "qgslayoutitemmapoverview.h"
+#include "qgsmaprendererstagedrenderjob.h"
 
 class QgsAnnotation;
 class QgsRenderedFeatureHandlerInterface;
@@ -117,6 +118,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     // for now, map items behave a bit differently and don't implement draw. TODO - see if we can avoid this
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
     int numberExportLayers() const override;
+    void startLayeredExport() override;
+    void stopLayeredExport() override;
+    bool nextExportPart() override;
     ExportLayerBehavior exportLayerBehavior() const override;
     QgsLayoutItem::ExportLayerDetail exportLayerDetails( int layer ) const override;
     void setFrameStrokeWidth( QgsLayoutMeasurement width ) override;
@@ -765,6 +769,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
 
+    std::unique_ptr< QgsMapRendererStagedRenderJob > mStagedRendererJob;
+
     void init();
 
     //! Resets the item tooltip to reflect current map id
@@ -795,16 +801,21 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     enum PartType
     {
+      Start,
       Background,
       Layer,
       Grid,
       OverviewMapExtent,
       Frame,
-      SelectionBoxes
+      SelectionBoxes,
+      End,
+      NotLayered,
     };
 
     //! Test if a part of the item needs to be drawn, considering the context's current export layer
     bool shouldDrawPart( PartType part ) const;
+
+    PartType mCurrentExportPart = NotLayered;
 
     /**
      * Refresh the map's extents, considering data defined extent, scale and rotation
@@ -817,6 +828,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void updateAtlasFeature();
 
     QgsRectangle computeAtlasRectangle();
+
+    void createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi );
 
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;
