@@ -1676,6 +1676,13 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
     char res = GEOSisValidDetail_r( geosinit.ctxt, mGeos.get(), allowSelfTouchingHoles ? GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE : 0, &r, &g1 );
     const bool invalid = res != 1;
 
+    QString error;
+    if ( r )
+    {
+      error = QString( r );
+      GEOSFree_r( geosinit.ctxt, r );
+    }
+
     if ( invalid && errorMsg )
     {
       static QgsStringMap translatedErrors;
@@ -1697,7 +1704,6 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
         translatedErrors.insert( QStringLiteral( "ring is not closed" ), QObject::tr( "Ring is not closed", "GEOS Error" ) );
       }
 
-      const QString error( r );
       *errorMsg = translatedErrors.value( error.toLower(), error );
 
       if ( g1 && errorLoc )
