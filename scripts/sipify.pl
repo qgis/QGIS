@@ -190,7 +190,7 @@ sub processDoxygenLine {
 
     # if inside multi-line parameter, ensure additional lines are indented
     if ($line ne '') {
-        if ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning)/ ) {
+        if ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning|throws)/ ) {
             $line = "$INDENT$line";
         }
     }
@@ -298,6 +298,11 @@ sub processDoxygenLine {
         $INDENT = '';
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
         return "\n.. warning::\n\n   $1\n";
+    }
+    if ( $line =~ m/[\\@]throws (.+?)\b\s*(.*)/ ) {
+        $INDENT = '';
+        $COMMENT_LAST_LINE_NOTE_WARNING = 1;
+        return "\n:raises $1: $2\n";
     }
 
     if ( $line !~ m/^\s*$/ ){
