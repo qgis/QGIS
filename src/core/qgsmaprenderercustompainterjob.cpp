@@ -335,31 +335,4 @@ void QgsMapRendererCustomPainterJob::doRender()
   QgsDebugMsgLevel( QStringLiteral( "Rendering completed in (seconds): %1" ).arg( renderTime.elapsed() / 1000.0 ), 2 );
 }
 
-void QgsMapRendererJob::drawLabeling( QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )
-{
-  QgsDebugMsgLevel( QStringLiteral( "Draw labeling start" ), 5 );
-
-  QTime t;
-  t.start();
-
-  // Reset the composition mode before rendering the labels
-  painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
-
-  renderContext.setPainter( painter );
-
-  if ( labelingEngine2 )
-  {
-    labelingEngine2->run( renderContext );
-  }
-
-  QgsDebugMsg( QStringLiteral( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
-}
-
-void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )
-{
-  Q_UNUSED( settings )
-
-  drawLabeling( renderContext, labelingEngine2, painter );
-}
-
 
