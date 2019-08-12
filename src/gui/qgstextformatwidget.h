@@ -158,7 +158,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 
     // background reference font
     QFont mRefFont;
-    bool mDockMode;
+    bool mDockMode = false;
 
     bool mLoadSvgParams = false;
 
