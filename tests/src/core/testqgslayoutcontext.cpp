@@ -45,7 +45,6 @@ class TestQgsLayoutContext: public QObject
     void renderContextFlags();
     void textFormat();
     void boundingBoxes();
-    void exportLayer();
     void geometry();
     void scales();
     void simplifyMethod();
@@ -211,15 +210,6 @@ void TestQgsLayoutContext::boundingBoxes()
   QVERIFY( !context.boundingBoxesVisible() );
   context.setBoundingBoxesVisible( true );
   QVERIFY( context.boundingBoxesVisible() );
-}
-
-void TestQgsLayoutContext::exportLayer()
-{
-  QgsLayoutRenderContext context( nullptr );
-  // must default to -1
-  QCOMPARE( context.currentExportLayer(), -1 );
-  context.setCurrentExportLayer( 1 );
-  QCOMPARE( context.currentExportLayer(), 1 );
 }
 
 void TestQgsLayoutContext::geometry()
