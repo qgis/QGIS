@@ -213,7 +213,7 @@ class CORE_EXPORT QgsLabelingEngine
     //! Construct the labeling engine with default settings
     QgsLabelingEngine();
     //! Clean up everything (especially the registered providers)
-    ~QgsLabelingEngine();
+    virtual ~QgsLabelingEngine();
 
     //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine( const QgsLabelingEngine &rh ) = delete;
@@ -240,8 +240,14 @@ class CORE_EXPORT QgsLabelingEngine
     //! Remove provider if the provider's initialization failed. Provider instance is deleted.
     void removeProvider( QgsAbstractLabelProvider *provider );
 
-    //! compute the labeling with given map settings and providers
-    void run( QgsRenderContext &context );
+    /**
+     * Runs the labeling job.
+     *
+     * Depending on the concrete labeling engine class, this will either run the whole
+     * labeling job, including rendering the labels themselves, OR possibly just run the labeling
+     * job but leave the rendering to a future, deferred stage.
+     */
+    virtual void run( QgsRenderContext &context ) = 0;
 
     //! Returns pointer to recently computed results and pass the ownership of results to the caller
     QgsLabelingResults *takeResults();
@@ -263,7 +269,40 @@ class CORE_EXPORT QgsLabelingEngine
     //! Resulting labeling layout
     std::unique_ptr< QgsLabelingResults > mResults;
 
+    std::unique_ptr< pal::Pal > mPal;
+    std::unique_ptr< pal::Problem > mProblem;
+    QList<pal::LabelPosition *> mUnlabeled;
+    QList<pal::LabelPosition *> mLabels;
+
+    void registerLabels( QgsRenderContext &context );
+    void solve( QgsRenderContext &context );
+    void drawLabels( QgsRenderContext &context );
+    void cleanup();
 };
+
+/**
+ * \ingroup core
+ * \class QgsDefaultLabelingEngine
+ * \brief Default QgsLabelingEngine implementation, which completes the whole
+ * labeling operation (including label rendering) in the run() method.
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note not available in Python bindings
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsDefaultLabelingEngine : public QgsLabelingEngine
+{
+  public:
+    //! Construct the labeling engine with default settings
+    QgsDefaultLabelingEngine();
+
+    //! QgsDefaultLabelingEngine cannot be copied.
+    QgsDefaultLabelingEngine( const QgsDefaultLabelingEngine &rh ) = delete;
+    //! QgsDefaultLabelingEngine cannot be copied.
+    QgsDefaultLabelingEngine &operator=( const QgsDefaultLabelingEngine &rh ) = delete;
+
+    void run( QgsRenderContext &context ) override;
+};
+
 
 
 /**
@@ -274,7 +313,6 @@ class CORE_EXPORT QgsLabelingEngine
  * \note not available in Python bindings
  * \since QGIS 2.14
  */
-
 class CORE_EXPORT QgsLabelingUtils
 {
   public:
