@@ -1441,7 +1441,13 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > items, unsigned in
   if ( items.count() == 1 )
   {
     if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( items.at( 0 ) ) )
-      return layoutItem->displayName();
+    {
+      QString name = layoutItem->displayName();
+      // cleanup default item ID format
+      if ( name.startsWith( '<' ) && name.endsWith( '>' ) )
+        name = name.mid( 1, name.length() - 2 );
+      return name;
+    }
   }
   else if ( items.count() > 1 )
   {
