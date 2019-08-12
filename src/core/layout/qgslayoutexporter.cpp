@@ -1597,7 +1597,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
           mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
           Q_NOWARN_DEPRECATED_POP
 
-          layerDetails = layoutItem->exportLayerDetails( layoutItemLayerIdx );
+          layerDetails = layoutItem->exportLayerDetails();
           ExportResult result = exportFunc( layerId, layerDetails );
           if ( result != Success )
             return result;

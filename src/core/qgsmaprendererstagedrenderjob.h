@@ -37,6 +37,16 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
   public:
 
     /**
+     * Represents the stages of a rendering job.
+     */
+    enum RenderStage
+    {
+      Symbology, //!< Rendering layer symbology
+      Labels, //!< Rendering labels
+      Finished, //!< Rendering is finished
+    };
+
+    /**
      * Constructor for QgsMapRendererStagedRenderJob, using the given
      * map \a settings.
      */
@@ -70,6 +80,16 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
      * Returns TRUE if the job is finished, and nothing remains to render.
      */
     bool isFinished();
+
+    /**
+     * Returns a pointer to the current layer about to be rendered in the next render operation.
+     */
+    const QgsMapLayer *currentLayer();
+
+    /**
+     * Returns the current stage which will be rendered in the next render operation.
+     */
+    RenderStage currentStage() const;
 
   private:
 

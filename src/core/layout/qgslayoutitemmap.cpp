@@ -1091,51 +1091,69 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItemMap::exportLayerBehavior() const
   return ItemContainsSubLayers;
 }
 
-QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails( int layer ) const
+QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
 {
   ExportLayerDetail detail;
-  if ( hasBackground() && layer == 0 )
-  {
-    detail.name = tr( "%1: Background" ).arg( displayName() );
-    return detail;
-  }
-  else if ( hasBackground() )
-    layer--;
 
-  const QList< QgsMapLayer * > layers = layersToRender();
-  const int layerCount = layers.length();
-  if ( layer < layerCount )
+  switch ( mCurrentExportPart )
   {
-    // layers are in reverse order
-    const QgsMapLayer *mapLayer = layers.at( layerCount - layer - 1 );
-    detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), mapLayer->name() );
-    detail.mapLayerId = mapLayer->id();
-    return detail;
-  }
+    case Start:
+      break;
 
-  layer -= layerCount;
-  const bool hasGrids = mGridStack->hasEnabledItems();
-  if ( hasGrids && layer == 0 )
-  {
-    detail.name = tr( "%1: Grids" ).arg( displayName() );
-    return detail;
-  }
-  else if ( hasGrids )
-    layer--;
+    case Background:
+      detail.name = tr( "%1: Background" ).arg( displayName() );
+      return detail;
 
-  const bool hasOverviews = mOverviewStack->hasEnabledItems();
-  if ( hasOverviews && layer == 0 )
-  {
-    detail.name =  tr( "%1: Overviews" ).arg( displayName() );
-    return detail;
-  }
-  else if ( hasOverviews )
-    layer--;
+    case Layer:
+      if ( mStagedRendererJob )
+      {
+        switch ( mStagedRendererJob->currentStage() )
+        {
+          case QgsMapRendererStagedRenderJob::Symbology:
+            if ( const QgsMapLayer *layer = mStagedRendererJob->currentLayer() )
+            {
+              detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
+              detail.mapLayerId = layer->id();
+            }
+            return detail;
 
-  if ( frameEnabled() && layer == 0 )
-  {
-    detail.name = tr( "%1: Frame" ).arg( displayName() );
-    return detail;
+          case QgsMapRendererStagedRenderJob::Labels:
+            detail.name = tr( "%1: Labels" ).arg( displayName() );
+            return detail;
+
+          case QgsMapRendererStagedRenderJob::Finished:
+            break;
+        }
+      }
+      else
+      {
+        // we must be on the first layer, not having had a chance to create the render job yet
+        const QList< QgsMapLayer * > layers = layersToRender();
+        if ( !layers.isEmpty() )
+        {
+          const QgsMapLayer *layer = layers.constLast();
+          detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
+          detail.mapLayerId = layer->id();
+        }
+      }
+      break;
+
+    case Grid:
+      detail.name = tr( "%1: Grids" ).arg( displayName() );
+      return detail;
+
+    case OverviewMapExtent:
+      detail.name =  tr( "%1: Overviews" ).arg( displayName() );
+      return detail;
+
+    case Frame:
+      detail.name = tr( "%1: Frame" ).arg( displayName() );
+      return detail;
+
+    case SelectionBoxes:
+    case End:
+    case NotLayered:
+      break;
   }
 
   return detail;

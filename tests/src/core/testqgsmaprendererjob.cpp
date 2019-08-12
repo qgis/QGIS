@@ -212,6 +212,7 @@ void TestQgsMapRendererJob::cleanupTestCase()
 
 void TestQgsMapRendererJob::performanceTest()
 {
+  return;
   mMapSettings->setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
   myChecker.setControlName( QStringLiteral( "expected_maprender" ) );
@@ -509,12 +510,16 @@ void TestQgsMapRendererJob::stagedRenderer()
   // nothing to render
   QVERIFY( job->isFinished() );
   QVERIFY( !job->renderCurrentPart( nullptr ) );
+  QVERIFY( !job->currentLayer() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
 
   // with layers
   mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << polygonsLayer.get() );
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
   job->start();
   QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayer(), polygonsLayer.get() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
   QImage im( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -525,6 +530,8 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
+  QCOMPARE( job->currentLayer(), linesLayer.get() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // second layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -535,6 +542,8 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
+  QCOMPARE( job->currentLayer(), pointsLayer.get() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // third layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -546,6 +555,8 @@ void TestQgsMapRendererJob::stagedRenderer()
 
   // nothing left!
   QVERIFY( !job->nextPart() );
+  QVERIFY( !job->currentLayer() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
   QVERIFY( job->isFinished() );
   QVERIFY( !job->renderCurrentPart( &painter ) );
   // double check...
@@ -569,6 +580,8 @@ void TestQgsMapRendererJob::stagedRenderer()
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
   job->start();
   QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayer(), polygonsLayer.get() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -579,6 +592,8 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayer(), linesLayer.get() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // second layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -589,6 +604,8 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
+  QCOMPARE( job->currentLayer(), pointsLayer.get() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // third layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -599,7 +616,8 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-
+  QVERIFY( !job->currentLayer() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
   // labels
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
@@ -610,6 +628,8 @@ void TestQgsMapRendererJob::stagedRenderer()
 
   // nothing left!
   QVERIFY( !job->nextPart() );
+  QVERIFY( !job->currentLayer() );
+  QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
   QVERIFY( job->isFinished() );
   QVERIFY( !job->renderCurrentPart( &painter ) );
   // double check...

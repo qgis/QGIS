@@ -277,7 +277,7 @@ bool QgsLayoutItem::nextExportPart()
   Q_NOWARN_DEPRECATED_POP
 }
 
-QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails( int ) const
+QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails() const
 {
   return QgsLayoutItem::ExportLayerDetail();
 }
