@@ -88,7 +88,7 @@ QgsLabelingResults *QgsMapRendererStagedRenderJob::takeLabelingResults()
     return nullptr;
 }
 
-bool QgsMapRendererStagedRenderJob::renderNextPart( QPainter *painter )
+bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
 {
   if ( isFinished() )
     return false;
@@ -122,8 +122,6 @@ bool QgsMapRendererStagedRenderJob::renderNextPart( QPainter *painter )
       painter->drawImage( 0, 0, *job.img );
       painter->setOpacity( 1.0 );
     }
-
-    mJobIt++;
   }
   else
   {
@@ -134,6 +132,22 @@ bool QgsMapRendererStagedRenderJob::renderNextPart( QPainter *painter )
     mExportedLabels = true;
   }
   return true;
+}
+
+bool QgsMapRendererStagedRenderJob::nextPart()
+{
+  if ( isFinished() )
+    return false;
+
+  if ( mJobIt != mLayerJobs.end() )
+  {
+    mJobIt++;
+    return mJobIt != mLayerJobs.end() || mLabelingEngineV2;
+  }
+  else
+  {
+    return mLabelingEngineV2 && !mExportedLabels;
+  }
 }
 
 bool QgsMapRendererStagedRenderJob::isFinished()

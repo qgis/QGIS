@@ -52,12 +52,19 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
     /**
-     * Renders the next part of the map to the specified \a painter.
+     * Renders the current part of the map to the specified \a painter.
      *
-     * Returns TRUE if a part was rendered or FALSE if nothing was rendered and nothing
-     * remains to render.
+     * Returns TRUE if a part was rendered or FALSE if nothing was rendered.
      */
-    bool renderNextPart( QPainter *painter );
+    bool renderCurrentPart( QPainter *painter );
+
+    /**
+     * Iterates to the next part to render.
+     *
+     * Returns TRUE if another part exists to render, or FALSE if all parts
+     * have been rendered and nothing remains.
+     */
+    bool nextPart();
 
     /**
      * Returns TRUE if the job is finished, and nothing remains to render.

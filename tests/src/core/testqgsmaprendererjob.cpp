@@ -508,7 +508,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   job->start();
   // nothing to render
   QVERIFY( job->isFinished() );
-  QVERIFY( !job->renderNextPart( nullptr ) );
+  QVERIFY( !job->renderCurrentPart( nullptr ) );
 
   // with layers
   mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << polygonsLayer.get() );
@@ -520,33 +520,36 @@ void TestQgsMapRendererJob::stagedRenderer()
   QImage im( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   QPainter painter( &im );
-  QVERIFY( job->renderNextPart( &painter ) );
+  QVERIFY( job->renderCurrentPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( !job->isFinished() );
+  QVERIFY( job->nextPart() );
 
   // second layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
-  QVERIFY( job->renderNextPart( &painter ) );
+  QVERIFY( job->renderCurrentPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
   QVERIFY( !job->isFinished() );
+  QVERIFY( job->nextPart() );
 
   // third layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
-  QVERIFY( job->renderNextPart( &painter ) );
+  QVERIFY( job->renderCurrentPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
 
   // nothing left!
+  QVERIFY( !job->nextPart() );
   QVERIFY( job->isFinished() );
-  QVERIFY( !job->renderNextPart( &painter ) );
+  QVERIFY( !job->renderCurrentPart( &painter ) );
   // double check...
-  QVERIFY( !job->renderNextPart( &painter ) );
+  QVERIFY( !job->renderCurrentPart( &painter ) );
 
   // job with labels
   mapSettings.setFlag( QgsMapSettings::DrawLabeling, true );
@@ -571,42 +574,46 @@ void TestQgsMapRendererJob::stagedRenderer()
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
-  QVERIFY( job->renderNextPart( &painter ) );
+  QVERIFY( job->renderCurrentPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+  QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
 
   // second layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
-  QVERIFY( job->renderNextPart( &painter ) );
+  QVERIFY( job->renderCurrentPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+  QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
 
   // third layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
-  QVERIFY( job->renderNextPart( &painter ) );
+  QVERIFY( job->renderCurrentPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+  QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
 
   // labels
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   im.fill( Qt::transparent );
   painter.begin( &im );
-  QVERIFY( job->renderNextPart( &painter ) );
+  QVERIFY( job->renderCurrentPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render_points_labels" ), im ) );
 
   // nothing left!
+  QVERIFY( !job->nextPart() );
   QVERIFY( job->isFinished() );
-  QVERIFY( !job->renderNextPart( &painter ) );
+  QVERIFY( !job->renderCurrentPart( &painter ) );
   // double check...
-  QVERIFY( !job->renderNextPart( &painter ) );
+  QVERIFY( !job->renderCurrentPart( &painter ) );
 }
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )
