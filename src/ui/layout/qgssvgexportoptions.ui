@@ -23,7 +23,7 @@
       <item row="0" column="0" colspan="2">
        <widget class="QCheckBox" name="chkMapLayersAsGroup">
         <property name="text">
-         <string>Export map layers as SVG groups (may affect label placement)</string>
+         <string>Export map layers as SVG groups</string>
         </property>
         <property name="checked">
          <bool>false</bool>
