@@ -34,7 +34,7 @@ map ``settings``.
 %Docstring
 Prepares the given ``painter`` ready for a map render.
 
-The ``backgroundColor`` argument specifies the color to use for the painter's background.
+The ``backgroundColor`` argument specifies the color to use for the map's background.
 %End
 
 };

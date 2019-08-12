@@ -219,7 +219,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
   return split;
 }
 
-LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 )
+LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool deferedPainterSet )
 {
   LayerRenderJobs layerJobs;
 
@@ -333,7 +333,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     // If we are drawing with an alternative blending mode then we need to render to a separate image
     // before compositing this on the map. This effectively flattens the layer and prevents
     // blending occurring between objects on the layer
-    if ( mCache || !painter || needTemporaryImage( ml ) )
+    if ( mCache || ( !painter && !deferedPainterSet ) || needTemporaryImage( ml ) )
     {
       // Flattened image for drawing when a blending mode is set
       QImage *mypFlattenedImage = new QImage( mSettings.deviceOutputSize(),

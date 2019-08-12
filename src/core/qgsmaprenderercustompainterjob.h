@@ -44,7 +44,7 @@ class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRenderer
     /**
      * Prepares the given \a painter ready for a map render.
      *
-     * The \a backgroundColor argument specifies the color to use for the painter's background.
+     * The \a backgroundColor argument specifies the color to use for the map's background.
      */
     void preparePainter( QPainter *painter, const QColor &backgroundColor = Qt::transparent );
 
