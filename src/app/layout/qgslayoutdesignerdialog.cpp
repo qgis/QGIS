@@ -4168,6 +4168,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
 {
   QgsRenderContext::TextRenderFormat prevTextRenderFormat = mMasterLayout->layoutProject()->labelingEngineSettings().defaultTextRenderFormat();
   bool forceVector = false;
+  bool appendGeoreference = true;
   bool includeMetadata = true;
   bool disableRasterTiles = false;
   bool simplify = true;
@@ -4175,6 +4176,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   {
     settings.flags = mLayout->renderContext().flags();
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), 0 ).toBool();
+    appendGeoreference = mLayout->customProperty( QStringLiteral( "pdfAppendGeoreference" ), 1 ).toBool();
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
     simplify = mLayout->customProperty( QStringLiteral( "pdfSimplify" ), 1 ).toBool();
@@ -4202,6 +4204,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
 
   options.mTextRenderFormatComboBox->setCurrentIndex( options.mTextRenderFormatComboBox->findData( prevTextRenderFormat ) );
   options.mForceVectorCheckBox->setChecked( forceVector );
+  options.mAppendGeoreferenceCheckbox->setChecked( appendGeoreference );
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
   options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
   options.mSimplifyGeometriesCheckbox->setChecked( simplify );
@@ -4209,6 +4212,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   if ( dialog.exec() != QDialog::Accepted )
     return false;
 
+  appendGeoreference = options.mAppendGeoreferenceCheckbox->isChecked();
   includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
   forceVector = options.mForceVectorCheckBox->isChecked();
   disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
@@ -4219,6 +4223,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   {
     //save dialog settings
     mLayout->setCustomProperty( QStringLiteral( "forceVector" ), forceVector ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "pdfAppendGeoreference" ), appendGeoreference ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfIncludeMetadata" ), includeMetadata ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfDisableRasterTiles" ), disableRasterTiles ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast< int >( textRenderFormat ) );
@@ -4226,6 +4231,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   }
 
   settings.forceVectorOutput = forceVector;
+  settings.appendGeoreference = appendGeoreference;
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
   settings.simplifyGeometries = simplify;
