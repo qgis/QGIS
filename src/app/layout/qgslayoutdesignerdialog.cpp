@@ -4204,6 +4204,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
 
   options.mTextRenderFormatComboBox->setCurrentIndex( options.mTextRenderFormatComboBox->findData( prevTextRenderFormat ) );
   options.mForceVectorCheckBox->setChecked( forceVector );
+  options.mAppendGeoreferenceCheckbox->setEnabled( mLayout && mLayout->referenceMap() && mLayout->referenceMap()->page() == 0 );
   options.mAppendGeoreferenceCheckbox->setChecked( appendGeoreference );
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
   options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
