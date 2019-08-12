@@ -728,9 +728,27 @@ Repaints the canvas map
 
     void refreshAllLayers();
 %Docstring
-Reload all layers, clear the cache and refresh the canvas
+Reload all layers (including refreshing layer properties from their data sources),
+clears the cache and refreshes the canvas.
+
+.. note::
+
+   Consider using the less expensive redrawAllLayers() method if a layer reload
+   from the data provider is not required.
 
 .. versionadded:: 2.9
+%End
+
+    void redrawAllLayers();
+%Docstring
+Clears all cached images and redraws all layers.
+
+.. note::
+
+   Unlike refreshAllLayers(), this does NOT reload layers themselves, and accordingly
+   is more "lightweight". Use this method when only an update of the layer's renderers is required.
+
+.. versionadded:: 3.10
 %End
 
     void selectionChangedSlot();
