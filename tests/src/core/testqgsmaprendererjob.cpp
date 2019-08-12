@@ -511,6 +511,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->isFinished() );
   QVERIFY( !job->renderCurrentPart( nullptr ) );
   QVERIFY( !job->currentLayer() );
+  QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
 
   // with layers
@@ -519,6 +520,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   job->start();
   QVERIFY( !job->isFinished() );
   QCOMPARE( job->currentLayer(), polygonsLayer.get() );
+  QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
@@ -531,6 +533,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
   QCOMPARE( job->currentLayer(), linesLayer.get() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // second layer
@@ -543,6 +546,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
   QCOMPARE( job->currentLayer(), pointsLayer.get() );
+  QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // third layer
@@ -556,6 +560,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   // nothing left!
   QVERIFY( !job->nextPart() );
   QVERIFY( !job->currentLayer() );
+  QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
   QVERIFY( job->isFinished() );
   QVERIFY( !job->renderCurrentPart( &painter ) );
@@ -581,6 +586,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   job->start();
   QVERIFY( !job->isFinished() );
   QCOMPARE( job->currentLayer(), polygonsLayer.get() );
+  QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
@@ -593,6 +599,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
   QCOMPARE( job->currentLayer(), linesLayer.get() );
+  QCOMPARE( job->currentLayerId(), linesLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // second layer
@@ -605,6 +612,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
   QCOMPARE( job->currentLayer(), pointsLayer.get() );
+  QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
   // third layer
@@ -617,6 +625,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
   QVERIFY( !job->currentLayer() );
+  QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
   // labels
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -629,6 +638,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   // nothing left!
   QVERIFY( !job->nextPart() );
   QVERIFY( !job->currentLayer() );
+  QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
   QVERIFY( job->isFinished() );
   QVERIFY( !job->renderCurrentPart( &painter ) );

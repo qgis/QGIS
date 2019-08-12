@@ -62,6 +62,16 @@ struct LayerRenderJob
   QgsWeakMapLayerPointer layer;
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
   QStringList errors; //!< Rendering errors
+
+  /**
+   * Identifies the associated layer by ID.
+   *
+   * \warning This should NEVER be used to retrieve map layers during a render job, and instead
+   * is intended for use as a string identifier only.
+   *
+   * \since QGIS 3.10
+   */
+  QString layerId;
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;

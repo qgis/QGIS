@@ -295,6 +295,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     job.cached = false;
     job.img = nullptr;
     job.layer = ml;
+    job.layerId = ml->id();
     job.renderingTime = -1;
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
@@ -418,8 +419,8 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
 
       if ( mCache && !job.cached && !job.context.renderingStopped() && job.layer )
       {
-        QgsDebugMsgLevel( "caching image for " + ( job.layer ? job.layer->id() : QString() ), 2 );
-        mCache->setCacheImage( job.layer->id(), *job.img, QList< QgsMapLayer * >() << job.layer );
+        QgsDebugMsgLevel( QStringLiteral( "caching image for %1" ).arg( job.layerId ), 2 );
+        mCache->setCacheImage( job.layerId, *job.img, QList< QgsMapLayer * >() << job.layer );
       }
 
       delete job.img;
@@ -528,7 +529,7 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const Lab
   QMultiMap<int, QString> elapsed;
   const auto constJobs = jobs;
   for ( const LayerRenderJob &job : constJobs )
-    elapsed.insert( job.renderingTime, job.layer ? job.layer->id() : QString() );
+    elapsed.insert( job.renderingTime, job.layerId );
 
   elapsed.insert( labelJob.renderingTime, tr( "Labeling" ) );
 
