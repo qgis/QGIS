@@ -283,14 +283,13 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
           property.setFlags( prFlags );
           for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ) ; i++ )
           {
-            property.addGeometryType( pr.types.at( i ), pr.srids.at( i ) );
+            property.addGeometryType( pr.types.at( i ), QgsCoordinateReferenceSystem::fromEpsgId( pr.srids.at( i ) ) );
           }
           property.setTableName( pr.tableName );
           property.setSchema( pr.schemaName );
           property.setGeometryColumn( pr.geometryColName );
           property.setPrimaryKeyColumns( pr.pkCols );
           property.setGeometryColumnCount( static_cast<int>( pr.nSpCols ) );
-          property.setSql( pr.sql );
           property.setComment( pr.tableComment );
           tables.push_back( property );
         }

@@ -146,15 +146,16 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setTableName( const Q
   mTableName = name;
 }
 
-void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryType( const QgsWkbTypes::Type &type, const int srid )
+void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryType( const QgsWkbTypes::Type &type, const QgsCoordinateReferenceSystem &crs )
 {
-  mGeometryTypes.push_back( qMakePair<int, int>( static_cast<int>( type ), srid ) );
+  mGeometryTypes.push_back( qMakePair<int, QgsCoordinateReferenceSystem>( static_cast<int>( type ), crs ) );
 }
 
-QList<QPair<int, int> > QgsAbstractDatabaseProviderConnection::TableProperty::geometryTypes() const
+QList<QPair<int, QgsCoordinateReferenceSystem> > QgsAbstractDatabaseProviderConnection::TableProperty::geometryTypes() const
 {
   return mGeometryTypes;
 }
+
 
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
@@ -176,7 +177,6 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProvider
   property.mPkColumns = mPkColumns;
   property.mGeometryColumnCount = mGeometryColumnCount;
   property.mFlags = mFlags;
-  property.mSql = mSql;
   property.mComment = mComment;
   property.mInfo = mInfo;
   return property;
@@ -185,6 +185,11 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProvider
 void QgsAbstractDatabaseProviderConnection::TableProperty::setFlag( const QgsAbstractDatabaseProviderConnection::TableFlag &flag )
 {
   mFlags.setFlag( flag );
+}
+
+void QgsAbstractDatabaseProviderConnection::TableProperty::setGeometryTypes( const QList<QPair<int, QgsCoordinateReferenceSystem> > &geometryTypes )
+{
+  mGeometryTypes = geometryTypes;
 }
 
 
@@ -208,16 +213,6 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setInfo( const QVaria
   mInfo = info;
 }
 
-QString QgsAbstractDatabaseProviderConnection::TableProperty::sql() const
-{
-  return mSql;
-}
-
-void QgsAbstractDatabaseProviderConnection::TableProperty::setSql( const QString &sql )
-{
-  mSql = sql;
-}
-
 QString QgsAbstractDatabaseProviderConnection::TableProperty::comment() const
 {
   return mComment;
@@ -238,14 +233,14 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setFlags( const QgsAb
   mFlags = flags;
 }
 
-QList<int> QgsAbstractDatabaseProviderConnection::TableProperty::srids() const
+QList<QgsCoordinateReferenceSystem> QgsAbstractDatabaseProviderConnection::TableProperty::crsList() const
 {
-  QList<int> srIds;
+  QList<QgsCoordinateReferenceSystem> crss;
   for ( const auto &t : qgis::as_const( mGeometryTypes ) )
   {
-    srIds.push_back( t.second );
+    crss.push_back( t.second );
   }
-  return srIds;
+  return crss;
 }
 
 QStringList QgsAbstractDatabaseProviderConnection::TableProperty::primaryKeyColumns() const

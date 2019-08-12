@@ -89,6 +89,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertFalse('osm' in table_names)
         self.assertFalse('myNewTable' in table_names)
         self.assertTrue('myNewAspatialTable' in table_names)
+        geometries_table.setGeometryTypes([(0, QgsCoordinateReferenceSystem.fromEpsgId(3857))])
 
 
 if __name__ == '__main__':

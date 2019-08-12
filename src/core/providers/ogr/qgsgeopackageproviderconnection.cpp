@@ -207,16 +207,18 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       if ( aspatialTypes.contains( dataType ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
-        property.addGeometryType( QgsWkbTypes::Type::NoGeometry, 0 );
+        property.addGeometryType( QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem() );
       }
       else
       {
         bool ok;
-        property.addGeometryType( QgsWkbTypes::parseType( row.at( 4 ).toString() ), row.at( 3 ).toInt( &ok ) );
+        int srid = row.at( 3 ).toInt( &ok );
         if ( !ok )
         {
           throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( row.at( 3 ).toString() ) );
         }
+        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( srid );
+        property.addGeometryType( QgsWkbTypes::parseType( row.at( 4 ).toString() ),  crs );
       }
       property.setComment( row.at( 4 ).toString() );
       tableInfo.push_back( property );

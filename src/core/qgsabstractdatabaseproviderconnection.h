@@ -24,6 +24,105 @@
 
 #include <QObject>
 
+#ifdef SIP_RUN
+% MappedType QList<QPair<int, QgsCoordinateReferenceSystem>>
+{
+  % TypeHeaderCode
+#include <QList>
+#include "qgis.h"
+  % End
+
+  % ConvertFromTypeCode
+  // Create the list.
+  PyObject *list;
+
+  if ( ( list = PyList_New( sipCpp->size() ) ) == NULL )
+    return NULL;
+
+  // Set the list elements.
+  int i = 0;
+  for ( const QPair<int, QgsCoordinateReferenceSystem> &pair : qgis::as_const( *sipCpp ) )
+  {
+    PyObject *item = PyTuple_New( 2 );
+    PyObject *Int = PyLong_FromLong( pair.first );
+    PyTuple_SET_ITEM( item, 0, Int );
+    PyObject *crsObj;
+    crsObj = sipConvertFromType( new QgsCoordinateReferenceSystem( pair.second ), sipType_QgsCoordinateReferenceSystem, Py_None );
+    if ( ( crsObj ) == NULL )
+    {
+      Py_DECREF( list );
+      return NULL;
+    }
+    PyTuple_SET_ITEM( item, 1, crsObj );
+    PyList_SET_ITEM( list, i, item );
+    i++;
+  }
+
+  return list;
+  % End
+
+  % ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if ( sipIsErr == NULL )
+  {
+    if ( !PyList_Check( sipPy ) )
+      return 0;
+    for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+    {
+      PyObject *item = PyList_GET_ITEM( sipPy, i );
+      if ( PyTuple_Size( item ) != 2 )
+      {
+        return 0;
+      }
+      PyObject *crsItem = PyTuple_GET_ITEM( item, 1 );
+      if ( !sipCanConvertToType( crsItem, sipType_QgsCoordinateReferenceSystem, SIP_NOT_NONE ) )
+        return 0;
+    }
+  }
+
+  QList<QPair<int, QgsCoordinateReferenceSystem>> *list = new QList<QPair<int, QgsCoordinateReferenceSystem>>;
+
+  for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+  {
+    PyObject *item = PyList_GET_ITEM( sipPy, i );
+    if ( ! PyTuple_Check( item ) ||  PyTuple_Size( item ) != 2 )
+    {
+      delete list;
+      return 0;
+    }
+    PyObject *intItem = PyTuple_GET_ITEM( item, 0 );
+    PyObject *crsItem = PyTuple_GET_ITEM( item, 1 );
+    if ( !sipCanConvertToType( crsItem, sipType_QgsCoordinateReferenceSystem, SIP_NOT_NONE ) )
+    {
+      delete list;
+      return 0;
+    }
+    int state;
+    QgsCoordinateReferenceSystem *crs =
+      reinterpret_cast<QgsCoordinateReferenceSystem *>(
+        sipConvertToType( crsItem,
+                          sipType_QgsCoordinateReferenceSystem,
+                          NULL,
+                          SIP_NOT_NONE,
+                          &state,
+                          sipIsErr ) );
+    if ( *sipIsErr )
+    {
+      sipReleaseType( crs, sipType_QgsCoordinateReferenceSystem, state );
+      delete list;
+      return 0;
+    }
+    list->push_back( qMakePair<int, QgsCoordinateReferenceSystem>(
+                       static_cast<int>( SIPLong_AsLong( intItem ) ),
+                       *crs ) );
+  }
+  *sipCppPtr = list;
+  return sipGetState( sipTransferObj );
+  % End
+};
+
+#endif
+
 /**
  * The QgsAbstractDatabaseProviderConnection class provides common functionality
  * for DB based connections.
@@ -71,8 +170,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * be created.
      *
      * In case the table is a vector spatial table and the geometry column
-     * can contain multiple geometry types and/or SRIDs, a clone of the property
-     * for the individual geometry type/SRID can be retrieved with at(i)
+     * can contain multiple geometry types and/or CRSs, a clone of the property
+     * for the individual geometry type/CRS can be retrieved with at(i)
      */
     struct TableProperty
     {
@@ -102,13 +201,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         /**
          * Appends the geometry column \a type with the given \a srid to the geometry column types list
          */
-        void addGeometryType( const QgsWkbTypes::Type &type, const int srid );
+        void addGeometryType( const QgsWkbTypes::Type &type, const QgsCoordinateReferenceSystem &crs );
 
         /**
-         * Returns the list of geometry column types and SRIDs.
-         * The method returns a list of tuples (QgsWkbTypes::Type, SRID)
+         * Returns the list of geometry column types and CRSs.
+         * The method returns a list of tuples (QgsWkbTypes::Type, QgsCoordinateReferenceSystem)
          */
-        QList<QPair<int, int>> geometryTypes() const;
+        QList<QPair<int, QgsCoordinateReferenceSystem>> geometryTypes() const;
 
         /**
          * Returns the default name for the table entry
@@ -151,14 +250,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QStringList primaryKeyColumns() const;
 
         /**
-         * Sets the primary key column names to \a pkColumns
+         * Sets the primary key column names to \a primaryKeyColumns
          */
         void setPrimaryKeyColumns( const QStringList &primaryKeyColumns );
 
         /**
-         * Returns the list of SRIDs supported by the geometry column
+         * Returns the list of CRSs supported by the geometry column
          */
-        QList<int> srids() const;
+        QList<QgsCoordinateReferenceSystem> crsList() const;
 
         /**
          * Returns the table flags
@@ -179,16 +278,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * Sets the table \a comment
          */
         void setComment( const QString &comment );
-
-        /**
-         * Returns the SQL where condition for the table
-         */
-        QString sql() const;
-
-        /**
-         * Set the table SQL where condition to \a sql
-         */
-        void setSql( const QString &sql );
 
         /**
          * Returns additional information about the table
@@ -223,10 +312,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         void setFlag( const TableFlag &flag );
 
+        void setGeometryTypes( const QList<QPair<int, QgsCoordinateReferenceSystem> > &geometryTypes );
+
       private:
 
         //! Holds the list of geometry wkb types and srids supported by the table
-        QList<QPair<int, int>>        mGeometryTypes;
+        QList<QPair<int, QgsCoordinateReferenceSystem>> mGeometryTypes;
         //! Table schema
         QString                       mSchema;
         //! Table name
@@ -239,8 +330,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QStringList                   mPkColumns;
         TableFlags                    mFlags;
         QString                       mComment;
-        //! SQL where condition
-        QString                       mSql;
         //! Additional unstructured information about the table
         QVariantMap                   mInfo;
     };

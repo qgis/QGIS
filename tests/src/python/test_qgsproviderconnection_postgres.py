@@ -21,6 +21,7 @@ from qgis.core import (
     QgsProviderConnectionException,
     QgsVectorLayer,
     QgsProviderRegistry,
+    QgsCoordinateReferenceSystem,
 )
 from qgis.testing import unittest
 
@@ -80,7 +81,13 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertFalse('geometries_view' in table_names)
 
         geometries_table = self._table_by_name(conn.tables('qgis_test'), 'geometries_table')
-        self.assertEqual(geometries_table.geometryTypes(), [(7, 0), (2, 0), (1, 0), (1, 3857), (1, 4326), (3, 0)])
+        srids = [t[1].postgisSrid() for t in geometries_table.geometryTypes()]
+        self.assertEqual(srids, [0, 0, 0, 3857, 4326, 0])
+        types = [t[0] for t in geometries_table.geometryTypes()]
+        self.assertEqual(types, [7, 2, 1, 1, 1, 3])
+        geometries_table.setGeometryTypes([(0, QgsCoordinateReferenceSystem.fromEpsgId(3857)), (2, QgsCoordinateReferenceSystem.fromEpsgId(4326))])
+        # Wrong type:
+        #geometries_table.setGeometryTypes([0, QgsCoordinateReferenceSystem.fromEpsgId(3857)])
 
 
 if __name__ == '__main__':
