@@ -284,6 +284,7 @@ class JavascriptExecutorLoop : public QEventLoop
 
     void done();
     void execIfNotDone();
+    void reportError( const QString &error );
 
   private:
 
