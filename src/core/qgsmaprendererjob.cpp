@@ -37,6 +37,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsrenderer.h"
 
 ///@cond PRIVATE
 
@@ -539,6 +540,44 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const Lab
     QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( QStringLiteral( ", " ) ) ), tr( "Rendering" ) );
   }
   QgsMessageLog::logMessage( QStringLiteral( "---" ), tr( "Rendering" ) );
+}
+
+bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
+{
+  switch ( ml->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      if ( vl->renderer() && vl->renderer()->forceRasterRender() )
+      {
+        //raster rendering is forced for this layer
+        return true;
+      }
+      if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
+           ( ( vl->blendMode() != QPainter::CompositionMode_SourceOver )
+             || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+             || ( !qgsDoubleNear( vl->opacity(), 1.0 ) ) ) )
+      {
+        //layer properties require rasterization
+        return true;
+      }
+      break;
+    }
+    case QgsMapLayerType::RasterLayer:
+    {
+      // preview of intermediate raster rendering results requires a temporary output image
+      if ( mSettings.testFlag( QgsMapSettings::RenderPartialOutput ) )
+        return true;
+      break;
+    }
+
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PluginLayer:
+      break;
+  }
+
+  return false;
 }
 
 ///@endcond PRIVATE

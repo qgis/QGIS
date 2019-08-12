@@ -18,10 +18,7 @@
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsrenderer.h"
 #include "qgsmaplayerlistutils.h"
 
 #include <QtConcurrentRun>
@@ -345,41 +342,4 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderC
   drawLabeling( renderContext, labelingEngine2, painter );
 }
 
-bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
-{
-  switch ( ml->type() )
-  {
-    case QgsMapLayerType::VectorLayer:
-    {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-      if ( vl->renderer() && vl->renderer()->forceRasterRender() )
-      {
-        //raster rendering is forced for this layer
-        return true;
-      }
-      if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
-           ( ( vl->blendMode() != QPainter::CompositionMode_SourceOver )
-             || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-             || ( !qgsDoubleNear( vl->opacity(), 1.0 ) ) ) )
-      {
-        //layer properties require rasterization
-        return true;
-      }
-      break;
-    }
-    case QgsMapLayerType::RasterLayer:
-    {
-      // preview of intermediate raster rendering results requires a temporary output image
-      if ( mSettings.testFlag( QgsMapSettings::RenderPartialOutput ) )
-        return true;
-      break;
-    }
-
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::PluginLayer:
-      break;
-  }
-
-  return false;
-}
 
