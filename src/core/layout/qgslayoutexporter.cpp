@@ -532,9 +532,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
+  bool shouldAppendGeoreference = settings.appendGeoreference && mLayout && mLayout->referenceMap() && mLayout->referenceMap()->page() == 0;
   if ( settings.appendGeoreference || settings.exportMetadata )
   {
-    georeferenceOutputPrivate( filePath, nullptr, QRectF(), settings.dpi, settings.appendGeoreference, settings.exportMetadata );
+    georeferenceOutputPrivate( filePath, nullptr, QRectF(), settings.dpi, shouldAppendGeoreference, settings.exportMetadata );
   }
   return result;
 }
