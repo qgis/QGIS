@@ -1677,7 +1677,17 @@ QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( cons
   blockers.reserve( mBlockingLabelItems.count() );
   for ( const auto &item : qgis::as_const( mBlockingLabelItems ) )
   {
-    if ( !item || !item->isVisible() ) // invisible items don't block labels!
+    // invisible items don't block labels!
+    if ( !item )
+      continue;
+
+    // layout items may be temporarily hidden during layered exports
+    if ( item->property( "wasVisible" ).isValid() )
+    {
+      if ( !item->property( "wasVisible" ).toBool() )
+        continue;
+    }
+    else if ( !item->isVisible() )
       continue;
 
     QPolygonF itemRectInMapCoordinates = mapTransform.map( item->mapToScene( item->rect() ) );

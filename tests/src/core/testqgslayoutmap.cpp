@@ -769,6 +769,12 @@ void TestQgsLayoutMap::labelBlockingRegions()
   QCOMPARE( regions.count(), 1 );
   QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875, 2450 2875))" ) );
 
+  // but they do if they were previously visible, and just temporarily hidden due to layered export
+  map2->setProperty( "wasVisible", true );
+  regions = map->createLabelBlockingRegions( map->mapSettings( map->extent(), map->rect().size(), 300, false ) );
+  QCOMPARE( regions.count(), 2 );
+  QCOMPARE( regions.at( 0 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((1950 2975, 2127 2798, 1773 2445, 1596 2621, 1950 2975, 1950 2975))" ) );
+  QCOMPARE( regions.at( 1 ).geometry.asWkt( 0 ), QStringLiteral( "Polygon ((2450 2875, 2700 2875, 2700 2375, 2450 2375, 2450 2875, 2450 2875))" ) );
 }
 
 void TestQgsLayoutMap::testSimplificationMethod()

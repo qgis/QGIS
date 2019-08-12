@@ -100,6 +100,9 @@ class LayoutItemHider
         mPrevVisibility[item] = isVisible;
         if ( isVisible )
           mItemsToIterate.append( item );
+        if ( QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( item ) )
+          layoutItem->setProperty( "wasVisible", isVisible );
+
         item->hide();
       }
     }
@@ -117,6 +120,8 @@ class LayoutItemHider
       for ( auto it = mPrevVisibility.constBegin(); it != mPrevVisibility.constEnd(); ++it )
       {
         it.key()->setVisible( it.value() );
+        if ( QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( it.key() ) )
+          layoutItem->setProperty( "wasVisible", QVariant() );
       }
     }
 
