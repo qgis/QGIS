@@ -165,3 +165,22 @@ bool QgsMapRendererStagedRenderJob::isFinished()
   return mJobIt == mLayerJobs.end() && ( mExportedLabels || !mLabelingEngineV2 );
 }
 
+const QgsMapLayer *QgsMapRendererStagedRenderJob::currentLayer()
+{
+  if ( mJobIt != mLayerJobs.end() )
+  {
+    LayerRenderJob &job = *mJobIt;
+    return job.layer;
+  }
+  return nullptr;
+}
+
+QgsMapRendererStagedRenderJob::RenderStage QgsMapRendererStagedRenderJob::currentStage() const
+{
+  if ( mJobIt != mLayerJobs.end() )
+    return Symbology;
+  else if ( mNextIsLabel && !mExportedLabels )
+    return Labels;
+  else
+    return Finished;
+}

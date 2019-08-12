@@ -491,11 +491,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     };
 
     /**
-     * Returns the details for the specified export \a layer.
+     * Returns the details for the specified current export layer.
+     *
+     * Only valid between calls to startLayeredExport() and stopLayeredExport()
      *
      * \since QGIS 3.10
      */
-    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails( int layer ) const;
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's

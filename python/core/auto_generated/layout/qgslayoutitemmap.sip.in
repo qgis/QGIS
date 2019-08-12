@@ -97,7 +97,7 @@ The caller takes responsibility for deleting the returned object.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
-    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails( int layer ) const;
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
 
     virtual void setFrameStrokeWidth( QgsLayoutMeasurement width );
 

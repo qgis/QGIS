@@ -461,9 +461,11 @@ Moves to the next export part for a multi-layered export item, during a multi-la
       QString mapLayerId;
     };
 
-    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails( int layer ) const;
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
 %Docstring
-Returns the details for the specified export ``layer``.
+Returns the details for the specified current export layer.
+
+Only valid between calls to startLayeredExport() and stopLayeredExport()
 
 .. versionadded:: 3.10
 %End
