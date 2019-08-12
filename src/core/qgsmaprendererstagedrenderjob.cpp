@@ -90,75 +90,49 @@ QgsLabelingResults *QgsMapRendererStagedRenderJob::takeLabelingResults()
 
 bool QgsMapRendererStagedRenderJob::renderNextPart( QPainter *painter )
 {
-  if ( mJobIt == mLayerJobs.end() )
+  if ( mJobIt == mLayerJobs.end() && ( mExportedLabels || !mLabelingEngineV2 ) )
     return false;
 
   preparePainter( painter );
 
-  LayerRenderJob &job = *mJobIt;
-  job.context.setPainter( painter );
-
-  if ( job.context.useAdvancedEffects() )
+  if ( mJobIt != mLayerJobs.end() )
   {
-    // Set the QPainter composition mode so that this layer is rendered using
-    // the desired blending mode
-    painter->setCompositionMode( job.blendMode );
-  }
+    LayerRenderJob &job = *mJobIt;
+    job.context.setPainter( painter );
 
-  if ( job.img )
-  {
-    job.img->fill( 0 );
-    job.imageInitialized = true;
-  }
-
-  job.renderer->render();
-
-  if ( job.img )
-  {
-    // If we flattened this layer for alternate blend modes, composite it now
-    painter->setOpacity( job.opacity );
-    painter->drawImage( 0, 0, *job.img );
-    painter->setOpacity( 1.0 );
-  }
-
-  mJobIt++;
-
-#if 0 // labeling
-  QgsDebugMsgLevel( QStringLiteral( "Done rendering map layers" ), 5 );
-
-  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
-  {
-    if ( !mLabelJob.cached )
+    if ( job.context.useAdvancedEffects() )
     {
-      QTime labelTime;
-      labelTime.start();
-
-      if ( mLabelJob.img )
-      {
-        QPainter painter;
-        mLabelJob.img->fill( 0 );
-        painter.begin( mLabelJob.img );
-        mLabelJob.context.setPainter( &painter );
-        drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), &painter );
-        painter.end();
-      }
-      else
-      {
-        drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), mPainter );
-      }
-
-      mLabelJob.complete = true;
-      mLabelJob.renderingTime = labelTime.elapsed();
-      mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
+      // Set the QPainter composition mode so that this layer is rendered using
+      // the desired blending mode
+      painter->setCompositionMode( job.blendMode );
     }
+
+    if ( job.img )
+    {
+      job.img->fill( 0 );
+      job.imageInitialized = true;
+    }
+
+    job.renderer->render();
+
+    if ( job.img )
+    {
+      // If we flattened this layer for alternate blend modes, composite it now
+      painter->setOpacity( job.opacity );
+      painter->drawImage( 0, 0, *job.img );
+      painter->setOpacity( 1.0 );
+    }
+
+    mJobIt++;
   }
-  if ( mLabelJob.img && mLabelJob.complete )
+  else
   {
-    mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
-    mPainter->setOpacity( 1.0 );
-    mPainter->drawImage( 0, 0, *mLabelJob.img );
+    mLabelJob.context.setPainter( painter );
+    drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), painter );
+    mLabelJob.complete = true;
+    mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
+    mExportedLabels = true;
   }
-#endif
   return true;
 }
 

@@ -33,13 +33,14 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaplayer.h"
 #include "qgsreadwritecontext.h"
-#include "qgsvectorlayer.h"
-#include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsmaprendererstagedrenderjob.h"
 #include "qgsmultirenderchecker.h"
+#include "qgspallabeling.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsfontutils.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -536,6 +537,61 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->renderNextPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+
+  // nothing left!
+  QVERIFY( !job->renderNextPart( &painter ) );
+  // double check...
+  QVERIFY( !job->renderNextPart( &painter ) );
+
+  // job with labels
+  mapSettings.setFlag( QgsMapSettings::DrawLabeling, true );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  pointsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  pointsLayer->setLabelsEnabled( true );
+
+  job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
+  job->start();
+
+  mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderNextPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+
+  // second layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderNextPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+
+  // third layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderNextPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+
+  // labels
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderNextPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render_points_labels" ), im ) );
 
   // nothing left!
   QVERIFY( !job->renderNextPart( &painter ) );
