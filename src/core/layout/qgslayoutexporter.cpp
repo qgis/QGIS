@@ -307,6 +307,7 @@ class LayoutContextSettingsRestorer
 {
   public:
 
+    Q_NOWARN_DEPRECATED_PUSH
     LayoutContextSettingsRestorer( QgsLayout *layout )
       : mLayout( layout )
       , mPreviousDpi( layout->renderContext().dpi() )
@@ -316,13 +317,16 @@ class LayoutContextSettingsRestorer
       , mPreviousSimplifyMethod( layout->renderContext().simplifyMethod() )
     {
     }
+    Q_NOWARN_DEPRECATED_POP
 
     ~LayoutContextSettingsRestorer()
     {
       mLayout->renderContext().setDpi( mPreviousDpi );
       mLayout->renderContext().setFlags( mPreviousFlags );
       mLayout->renderContext().setTextRenderFormat( mPreviousTextFormat );
+      Q_NOWARN_DEPRECATED_PUSH
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
+      Q_NOWARN_DEPRECATED_POP
       mLayout->renderContext().setSimplifyMethod( mPreviousSimplifyMethod );
     }
 
@@ -1582,16 +1586,29 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
 
       if ( layoutItem && layoutItem->exportLayerBehavior() == QgsLayoutItem::ItemContainsSubLayers )
       {
-        for ( int layoutItemLayerIdx = 0; layoutItemLayerIdx < layoutItem->numberExportLayers(); layoutItemLayerIdx++ )
+        int layoutItemLayerIdx = 0;
+        Q_NOWARN_DEPRECATED_PUSH
+        mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
+        Q_NOWARN_DEPRECATED_POP
+        layoutItem->startLayeredExport();
+        while ( layoutItem->nextExportPart() )
         {
+          Q_NOWARN_DEPRECATED_PUSH
           mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
+          Q_NOWARN_DEPRECATED_POP
+
           layerDetails = layoutItem->exportLayerDetails( layoutItemLayerIdx );
           ExportResult result = exportFunc( layerId, layerDetails );
           if ( result != Success )
             return result;
           layerId++;
+
+          layoutItemLayerIdx++;
         }
+        Q_NOWARN_DEPRECATED_PUSH
         mLayout->renderContext().setCurrentExportLayer( -1 );
+        Q_NOWARN_DEPRECATED_POP
+        layoutItem->stopLayeredExport();
         currentLayerItems.clear();
       }
       else

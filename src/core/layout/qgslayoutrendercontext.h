@@ -187,8 +187,10 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * If \a layer is -1, all item layers will be rendered.
      *
      * \see currentExportLayer()
+     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and
+     * returning QgsLayoutItem::nextExportPart().
      */
-    void setCurrentExportLayer( int layer = -1 ) { mCurrentExportLayer = layer; }
+    Q_DECL_DEPRECATED void setCurrentExportLayer( int layer = -1 ) SIP_DEPRECATED { mCurrentExportLayer = layer; }
 
     /**
      * Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
@@ -198,8 +200,10 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * If \a layer is -1, all item layers should be rendered.
      *
      * \see setCurrentExportLayer()
+     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and
+     * returning QgsLayoutItem::nextExportPart().
      */
-    int currentExportLayer() const { return mCurrentExportLayer; }
+    Q_DECL_DEPRECATED int currentExportLayer() const SIP_DEPRECATED  { return mCurrentExportLayer; }
 
     /**
      * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).

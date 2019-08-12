@@ -249,6 +249,34 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const
   return CanGroupWithAnyOtherItem;
 }
 
+int QgsLayoutItem::numberExportLayers() const
+{
+  return 0;
+}
+
+void QgsLayoutItem::startLayeredExport()
+{
+
+}
+
+void QgsLayoutItem::stopLayeredExport()
+{
+
+}
+
+bool QgsLayoutItem::nextExportPart()
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  if ( !mLayout || mLayout->renderContext().currentExportLayer() == -1 )
+    return false;
+
+  // QGIS 4- return false from base class implementation
+
+  const int layers = numberExportLayers();
+  return mLayout->renderContext().currentExportLayer() < layers;
+  Q_NOWARN_DEPRECATED_POP
+}
+
 QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails( int ) const
 {
   return QgsLayoutItem::ExportLayerDetail();

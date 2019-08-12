@@ -68,11 +68,17 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   QList< unsigned int > layerIds;
   QStringList layerNames;
   QStringList mapLayerIds;
-  auto exportFunc = [&layerIds, &layerNames, &mapLayerIds]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
+  QgsLayout *layout = &l;
+  auto exportFunc = [&layerIds, &layerNames, &mapLayerIds, layout]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
   {
     layerIds << layerId;
     layerNames << layerDetail.name;
     mapLayerIds << layerDetail.mapLayerId;
+    QImage im( 512, 512, QImage::Format_ARGB32_Premultiplied );
+    QPainter p( &im );
+    layout->render( &p );
+    p.end();
+
     return QgsLayoutExporter::Success;
   };
 

@@ -444,8 +444,37 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      *
      * \see exportLayerBehavior()
      * \see exportLayerDetails()
+     *
+     * \deprecated Use nextExportPart() and exportLayerBehavior() instead.
      */
-    virtual int numberExportLayers() const { return 0; }
+    Q_DECL_DEPRECATED virtual int numberExportLayers() const SIP_DEPRECATED;
+
+    /**
+     * Starts a multi-layer export operation.
+     *
+     * \see stopLayeredExport()
+     * \see nextExportPart()
+     * \since QGIS 3.10
+     */
+    virtual void startLayeredExport();
+
+    /**
+     * Stops a multi-layer export operation.
+     *
+     * \see startLayeredExport()
+     * \see nextExportPart()
+     * \since QGIS 3.10
+     */
+    virtual void stopLayeredExport();
+
+    /**
+     * Moves to the next export part for a multi-layered export item, during a multi-layered export.
+     *
+     * \see startLayeredExport()
+     * \see stopLayeredExport()
+     * \since QGIS 3.10
+     */
+    virtual bool nextExportPart();
 
     /**
      * Contains details of a particular export layer relating to a layout item.
