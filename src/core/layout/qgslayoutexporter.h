@@ -267,6 +267,13 @@ class CORE_EXPORT QgsLayoutExporter
       bool forceVectorOutput = false;
 
       /**
+       * Indicates whether PDF export should append georeference data
+       *
+       * \since QGIS 3.10
+       */
+      bool appendGeoreference = true;
+
+      /**
        * Indicates whether PDF export should include metadata generated
        * from the layout's project's metadata.
        *

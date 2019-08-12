@@ -184,6 +184,8 @@ Constructor for PdfExportSettings
 
       bool forceVectorOutput;
 
+      bool appendGeoreference;
+
       bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
