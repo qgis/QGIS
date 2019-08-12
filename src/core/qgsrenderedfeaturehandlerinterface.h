@@ -55,14 +55,14 @@ class CORE_EXPORT QgsRenderedFeatureHandlerInterface
        * Constructor for RenderedFeatureContext.
        * \param renderContext The render context which was used while rendering feature.
        */
-      RenderedFeatureContext( const QgsRenderContext *renderContext = nullptr )
+      RenderedFeatureContext( const QgsRenderContext &renderContext )
         : renderContext( renderContext )
       {}
 
       /**
        * The render context which was used while rendering feature.
        */
-      const QgsRenderContext *renderContext = nullptr;
+      const QgsRenderContext &renderContext;
     };
 
     /**
