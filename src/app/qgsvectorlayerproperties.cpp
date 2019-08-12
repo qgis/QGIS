@@ -467,7 +467,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       {
         const QVariantMap gapCheckConfig = mLayer->geometryOptions()->checkConfiguration( QStringLiteral( "QgsGeometryGapCheck" ) );
 
-        mGapCheckAllowExceptionsActivatedCheckBox = new QgsCollapsibleGroupBox( tr( "Allowed gaps" ) );
+        mGapCheckAllowExceptionsActivatedCheckBox = new QgsCollapsibleGroupBox( tr( "Allowed Gaps" ) );
         mGapCheckAllowExceptionsActivatedCheckBox->setCheckable( true );
         mGapCheckAllowExceptionsActivatedCheckBox->setChecked( gapCheckConfig.value( QStringLiteral( "allowedGapsEnabled" ), false ).toBool() );
         QFormLayout *layout = new QFormLayout();

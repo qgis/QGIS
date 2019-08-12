@@ -140,7 +140,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   QgsGeometryPartIterator parts = diffGeom->parts();
   while ( parts.hasNext() )
   {
-    QgsAbstractGeometry *gapGeom = parts.next();
+    const QgsAbstractGeometry *gapGeom = parts.next();
     // Skip the gap between features and boundingbox
     const double spacing = context()->tolerance;
     if ( gapGeom->boundingBox().snappedToGrid( spacing ) == envelope->boundingBox().snappedToGrid( spacing ) )
