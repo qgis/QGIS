@@ -266,8 +266,18 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     bool prepareLabelCache() const SIP_SKIP;
 
-    //! \note not available in Python bindings
-    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 ) SIP_SKIP;
+    /**
+     * Creates a list of layer rendering jobs and prepares them for later render.
+     *
+     * The \a painter argument specifies the destination painter. If not set, the jobs will
+     * be rendered to temporary images. Alternatively, if the \a deferedPainterSet flag is TRUE,
+     * then a \a painter value of NULLPTR skips this default temporary image creation. In this case,
+     * it is the caller's responsibility to correctly set a painter for all rendered jobs prior
+     * to rendering them.
+     *
+     * \note not available in Python bindings
+     */
+    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool deferedPainterSet = false ) SIP_SKIP;
 
     /**
      * Prepares a labeling job.

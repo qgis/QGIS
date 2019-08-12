@@ -21,24 +21,25 @@
 #include <QApplication>
 #include <QDesktopServices>
 
-//qgis includes...
-#include <qgsvectorlayer.h> //defines QgsFieldMap
-#include <qgsvectorfilewriter.h> //logic for writing shpfiles
-#include <qgsfeature.h> //we will need to pass a bunch of these for each rec
-#include <qgsgeometry.h> //each feature needs a geometry
-#include <qgspoint.h> //we will use point geometry
-#include <qgscoordinatereferencesystem.h> //needed for creating a srs
-#include <qgsapplication.h> //search path for srs.db
-#include <qgsfield.h>
-#include <qgis.h> //defines GEOWkt
+#include "qgsvectorlayer.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgspoint.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsapplication.h"
+#include "qgsfield.h"
+#include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"
-#include <qgsmaplayer.h>
-#include <qgsreadwritecontext.h>
-#include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsproject.h>
+#include "qgsmaplayer.h"
+#include "qgsreadwritecontext.h"
+#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgsproviderregistry.h"
+#include "qgsproject.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsmaprendererstagedrenderjob.h"
+#include "qgsmultirenderchecker.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -78,8 +79,11 @@ class TestQgsMapRendererJob : public QObject
     void testFourAdjacentTiles();
 
     void testRenderedFeatureHandlers();
+    void stagedRenderer();
 
   private:
+    bool imageCheck( const QString &type, const QImage &image, int mismatchCount = 0 );
+
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError =  QgsVectorFileWriter::NoError ;
     QgsCoordinateReferenceSystem mCRS;
@@ -476,6 +480,83 @@ void TestQgsMapRendererJob::testRenderedFeatureHandlers()
   QCOMPARE( attributes.at( 3 ), QStringLiteral( "Highway,1" ) );
   QCOMPARE( attributes.at( 4 ), QStringLiteral( "Jet,95,3,1,1,2" ) );
 
+}
+
+void TestQgsMapRendererJob::stagedRenderer()
+{
+  // test the staged map renderer job subclass
+
+  std::unique_ptr< QgsVectorLayer > pointsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() );
+  std::unique_ptr< QgsVectorLayer > linesLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QVERIFY( linesLayer->isValid() );
+  std::unique_ptr< QgsVectorLayer > polygonsLayer = qgis::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
+      QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  QVERIFY( polygonsLayer->isValid() );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setExtent( linesLayer->extent() );
+  mapSettings.setDestinationCrs( linesLayer->crs() );
+  mapSettings.setOutputSize( QSize( 512, 512 ) );
+  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setOutputDpi( 96 );
+
+  std::unique_ptr< QgsMapRendererStagedRenderJob > job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
+  job->start();
+  // nothing to render
+  QVERIFY( !job->renderNextPart( nullptr ) );
+
+  // with layers
+  mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << polygonsLayer.get() );
+  job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
+  job->start();
+
+  mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
+  QImage im( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  QPainter painter( &im );
+  QVERIFY( job->renderNextPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+
+  // second layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderNextPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+
+  // third layer
+  im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
+  im.fill( Qt::transparent );
+  painter.begin( &im );
+  QVERIFY( job->renderNextPart( &painter ) );
+  painter.end();
+  QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+
+  // nothing left!
+  QVERIFY( !job->renderNextPart( &painter ) );
+  // double check...
+  QVERIFY( !job->renderNextPart( &painter ) );
+}
+
+bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )
+{
+  mReport += "<h2>" + testName + "</h2>\n";
+  QString myTmpDir = QDir::tempPath() + '/';
+  QString myFileName = myTmpDir + testName + ".png";
+  image.save( myFileName, "PNG" );
+  QgsMultiRenderChecker myChecker;
+  myChecker.setControlPathPrefix( QStringLiteral( "map_renderer" ) );
+  myChecker.setControlName( "expected_" + testName );
+  myChecker.setRenderedImage( myFileName );
+  myChecker.setColorTolerance( 2 );
+  bool myResultFlag = myChecker.runTest( testName, mismatchCount );
+  mReport += myChecker.report();
+  return myResultFlag;
 }
 
 

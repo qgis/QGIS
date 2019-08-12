@@ -265,6 +265,7 @@ SET(QGIS_CORE_SRCS
   qgsmaprendererjob.cpp
   qgsmaprendererparalleljob.cpp
   qgsmaprenderersequentialjob.cpp
+  qgsmaprendererstagedrenderjob.cpp
   qgsmaprenderertask.cpp
   qgsmapsettings.cpp
   qgsmapsettingsutils.cpp
@@ -668,6 +669,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaprendererjob.h
   qgsmaprendererparalleljob.h
   qgsmaprenderersequentialjob.h
+  qgsmaprendererstagedrenderjob.h
   qgsmaprenderertask.h
   qgsmessagelog.h
   qgsmessageoutput.h
