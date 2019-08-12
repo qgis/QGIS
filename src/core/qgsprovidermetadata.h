@@ -264,7 +264,7 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of provider connections,
      * the dictionary key is the connection identifier.
-     * Ownersihp is not tranferred.
+     * Ownership is not tranfered.
      * \param cached if FALSE connections will be re-read from the settings
      * \since QGIS 3.10
      */
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of database provider connections,
      * the dictionary key is the connection identifier.
-     * Ownersihp is not tranferred.
+     * Ownership is not transfered.
      * \param cached if FALSE connections will be re-read from the settings
      * \since QGIS 3.10
      */

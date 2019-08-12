@@ -222,7 +222,7 @@ Returns new instance of transaction. Ownership is transferred to the caller
 %Docstring
 Returns a dictionary of provider connections,
 the dictionary key is the connection identifier.
-Ownersihp is not tranferred.
+Ownership is not tranfered.
 
 :param cached: if ``False`` connections will be re-read from the settings
 
@@ -233,7 +233,7 @@ Ownersihp is not tranferred.
 %Docstring
 Returns a dictionary of database provider connections,
 the dictionary key is the connection identifier.
-Ownersihp is not tranferred.
+Ownership is not transfered.
 
 :param cached: if ``False`` connections will be re-read from the settings
 
