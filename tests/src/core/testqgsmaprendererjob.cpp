@@ -507,12 +507,14 @@ void TestQgsMapRendererJob::stagedRenderer()
   std::unique_ptr< QgsMapRendererStagedRenderJob > job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
   job->start();
   // nothing to render
+  QVERIFY( job->isFinished() );
   QVERIFY( !job->renderNextPart( nullptr ) );
 
   // with layers
   mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << polygonsLayer.get() );
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
   job->start();
+  QVERIFY( !job->isFinished() );
 
   mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
   QImage im( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -521,6 +523,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->renderNextPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+  QVERIFY( !job->isFinished() );
 
   // second layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -529,6 +532,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->renderNextPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+  QVERIFY( !job->isFinished() );
 
   // third layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -539,6 +543,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
 
   // nothing left!
+  QVERIFY( job->isFinished() );
   QVERIFY( !job->renderNextPart( &painter ) );
   // double check...
   QVERIFY( !job->renderNextPart( &painter ) );
@@ -560,6 +565,7 @@ void TestQgsMapRendererJob::stagedRenderer()
 
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
   job->start();
+  QVERIFY( !job->isFinished() );
 
   mapSettings.setBackgroundColor( QColor( 255, 255, 0 ) ); // should be ignored in this job
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -568,6 +574,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->renderNextPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
+  QVERIFY( !job->isFinished() );
 
   // second layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -576,6 +583,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->renderNextPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
+  QVERIFY( !job->isFinished() );
 
   // third layer
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -584,6 +592,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( job->renderNextPart( &painter ) );
   painter.end();
   QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
+  QVERIFY( !job->isFinished() );
 
   // labels
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -594,6 +603,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render_points_labels" ), im ) );
 
   // nothing left!
+  QVERIFY( job->isFinished() );
   QVERIFY( !job->renderNextPart( &painter ) );
   // double check...
   QVERIFY( !job->renderNextPart( &painter ) );

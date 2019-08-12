@@ -59,6 +59,11 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
      */
     bool renderNextPart( QPainter *painter );
 
+    /**
+     * Returns TRUE if the job is finished, and nothing remains to render.
+     */
+    bool isFinished();
+
   private:
 
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
