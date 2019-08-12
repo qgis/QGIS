@@ -53,7 +53,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="mIncludeMetadataCheckbox">
         <property name="text">
-         <string>Export RDF metadata</string>
+         <string>Export RDF metadata (title, author, etc.)</string>
         </property>
         <property name="checked">
          <bool>true</bool>
