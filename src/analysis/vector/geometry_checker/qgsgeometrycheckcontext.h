@@ -27,12 +27,13 @@
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
-struct ANALYSIS_EXPORT QgsGeometryCheckContext
+class ANALYSIS_EXPORT QgsGeometryCheckContext
 {
+  public:
     QgsGeometryCheckContext( int precision,
                              const QgsCoordinateReferenceSystem &mapCrs,
                              const QgsCoordinateTransformContext &transformContext,
-                             const QgsProject *project );
+                             const QgsProject *mProject );
 
     /**
      * The tolerance to allow for in geometry checks.
@@ -66,7 +67,10 @@ struct ANALYSIS_EXPORT QgsGeometryCheckContext
      *
      * \since QGIS 3.10
      */
-    const QgsProject *project;
+    const QgsProject *project() const;
+
+  private:
+    const QgsProject *mProject;
 
   private:
 #ifdef SIP_RUN

@@ -25,7 +25,7 @@
 #include "qgsgeometrycheck.h"
 
 class QgsGeometryCheckFactory;
-struct QgsGeometryCheckContext;
+class QgsGeometryCheckContext;
 
 
 /**

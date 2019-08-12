@@ -29,7 +29,7 @@
 #include "qgsfeatureid.h"
 
 typedef qint64 QgsFeatureId;
-struct QgsGeometryCheckContext;
+class QgsGeometryCheckContext;
 class QgsGeometryCheck;
 class QgsGeometryCheckError;
 class QgsMapLayer;
