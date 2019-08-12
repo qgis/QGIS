@@ -180,12 +180,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
       QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( linesLayer->isValid() );
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
-      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
-  QVERIFY( pointsLayer->isValid() );
 
   p.addMapLayer( linesLayer );
-  p.addMapLayer( pointsLayer );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
