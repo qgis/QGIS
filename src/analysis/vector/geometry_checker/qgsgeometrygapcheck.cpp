@@ -72,7 +72,6 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     }
 
     std::unique_ptr< QgsGeometryEngine > allowedGapsEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
-    allowedGapsEngine->prepareGeometry();
 
     // Create union of allowed gaps
     QString errMsg;
@@ -101,7 +100,6 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   }
 
   std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
-  geomEngine->prepareGeometry();
 
   // Create union of geometry
   QString errMsg;
