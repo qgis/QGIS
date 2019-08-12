@@ -76,7 +76,7 @@ void QgsAbstractDatabaseProviderConnection::dropVectorTable( const QString &, co
 bool QgsAbstractDatabaseProviderConnection::tableExists( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::TableExists );
-  const auto constTables { tables( schema ) };
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema ) };
   for ( const auto &t : constTables )
   {
     if ( t.tableName() == name )
