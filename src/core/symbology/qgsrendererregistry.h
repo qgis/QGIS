@@ -85,7 +85,6 @@ class CORE_EXPORT QgsRendererAbstractMetadata
      * The \a oldRenderer argument may refer to previously used renderer (or it is NULLPTR).
      * If not NULLPTR, it may be used to initialize GUI of the widget from the previous settings.
      * The old renderer does not have to be of the same type as returned by createRenderer().
-     * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) SIP_FACTORY
     { Q_UNUSED( layer ) Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
