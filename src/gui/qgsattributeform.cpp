@@ -249,6 +249,15 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
       eww->setValue( value );
       eww->setHint( hintText );
     }
+    int index = mLayer->fields().indexFromName( field );
+    if ( eww->additionalFields().contains( index ) )
+    {
+      QVariant mainValue = eww->value();
+      QgsAttributeMap additionalFieldValues = eww->additionalFieldValues();
+      additionalFieldValues[index] = value;
+      eww->setValues( mainValue, additionalFieldValues );
+      eww->setHint( hintText );
+    }
   }
 }
 
@@ -766,7 +775,7 @@ QString QgsAttributeForm::createFilterExpression() const
 }
 
 
-void QgsAttributeForm::onAttributeChanged( const QVariant &value )
+void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
 {
   QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
   Q_ASSERT( eww );
@@ -786,6 +795,14 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
       emit attributeChanged( eww->field().name(), value );
       Q_NOWARN_DEPRECATED_POP
       emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
+
+      // also emit the signal for additional values
+      QgsAttributeMap::const_iterator it = additionalFieldValues.constBegin();
+      for ( ; it != additionalFieldValues.constEnd(); ++it )
+      {
+        const QString fieldName = mLayer->fields().at( it.key() ).name();
+        emit widgetValueChanged( fieldName, it.value(), !mIsSettingFeature );
+      }
 
       signalEmitted = true;
 
@@ -1963,16 +1980,17 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
 void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper *eww )
 {
-  const auto constMWidgets = mWidgets;
-  for ( QgsWidgetWrapper *ww : constMWidgets )
+  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *meww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( meww )
     {
+      // if another widget wrapper exists for the same field
+      // synchronise them
       if ( meww->field() == eww->field() )
       {
-        connect( meww, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant & )>( &QgsEditorWidgetWrapper::valueChanged ), eww, &QgsEditorWidgetWrapper::setValue );
-        connect( eww, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant & )>( &QgsEditorWidgetWrapper::valueChanged ), meww, &QgsEditorWidgetWrapper::setValue );
+        connect( meww, &QgsEditorWidgetWrapper::valuesChanged, eww, &QgsEditorWidgetWrapper::setValues );
+        connect( eww, &QgsEditorWidgetWrapper::valuesChanged, meww, &QgsEditorWidgetWrapper::setValues );
         break;
       }
     }
@@ -2038,7 +2056,7 @@ void QgsAttributeForm::afterWidgetInit()
         isFirstEww = false;
       }
 
-      connect( eww, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant & )>( &QgsEditorWidgetWrapper::valueChanged ), this, &QgsAttributeForm::onAttributeChanged );
+      connect( eww, &QgsEditorWidgetWrapper::valuesChanged, this, &QgsAttributeForm::onAttributeChanged );
       connect( eww, &QgsEditorWidgetWrapper::constraintStatusChanged, this, &QgsAttributeForm::onConstraintStatusChanged );
     }
   }
@@ -2063,7 +2081,9 @@ bool QgsAttributeForm::eventFilter( QObject *object, QEvent *e )
   return false;
 }
 
-void QgsAttributeForm::scanForEqualAttributes( QgsFeatureIterator &fit, QSet< int > &mixedValueFields, QHash< int, QVariant > &fieldSharedValues ) const
+void QgsAttributeForm::scanForEqualAttributes( QgsFeatureIterator &fit,
+    QSet< int > &mixedValueFields,
+    QHash< int, QVariant > &fieldSharedValues ) const
 {
   mixedValueFields.clear();
   fieldSharedValues.clear();
@@ -2148,11 +2168,15 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
   fit.nextFeature( firstFeature );
 
   const auto constMixedValueFields = mixedValueFields;
-  for ( int field : constMixedValueFields )
+  for ( int fieldIndex : constMixedValueFields )
   {
-    if ( QgsAttributeFormEditorWidget *w = mFormEditorWidgets.value( field, nullptr ) )
+    if ( QgsAttributeFormEditorWidget *w = mFormEditorWidgets.value( fieldIndex, nullptr ) )
     {
-      w->initialize( firstFeature.attribute( field ), true );
+      const QgsAttributeList additionalFields = w->editorWidget()->additionalFields();
+      QgsAttributeMap additionalFieldValues;
+      for ( int additionalFieldIndex : additionalFields )
+        additionalFieldValues.insert( additionalFieldIndex, firstFeature.attribute( additionalFieldIndex ) );
+      w->initialize( firstFeature.attribute( fieldIndex ), true, additionalFieldValues );
     }
   }
   QHash< int, QVariant >::const_iterator sharedValueIt = fieldSharedValues.constBegin();
@@ -2160,7 +2184,33 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
   {
     if ( QgsAttributeFormEditorWidget *w = mFormEditorWidgets.value( sharedValueIt.key(), nullptr ) )
     {
-      w->initialize( sharedValueIt.value(), false );
+      bool mixed = false;
+      const QgsAttributeList additionalFields = w->editorWidget()->additionalFields();
+      for ( int additionalFieldIndex : additionalFields )
+      {
+        if ( constMixedValueFields.contains( additionalFieldIndex ) )
+        {
+          // if additional field are mixed, it is considered as mixed
+          mixed = true;
+          break;
+        }
+      }
+      QgsAttributeMap additionalFieldValues;
+      if ( mixed )
+      {
+        for ( int additionalFieldIndex : additionalFields )
+          additionalFieldValues.insert( additionalFieldIndex, firstFeature.attribute( additionalFieldIndex ) );
+        w->initialize( firstFeature.attribute( sharedValueIt.key() ), true, additionalFieldValues );
+      }
+      else
+      {
+        for ( int additionalFieldIndex : additionalFields )
+        {
+          Q_ASSERT( fieldSharedValues.contains( additionalFieldIndex ) );
+          additionalFieldValues.insert( additionalFieldIndex, fieldSharedValues.value( additionalFieldIndex ) );
+        }
+        w->initialize( sharedValueIt.value(), false, additionalFieldValues );
+      }
     }
   }
   mIsSettingMultiEditFeatures = false;

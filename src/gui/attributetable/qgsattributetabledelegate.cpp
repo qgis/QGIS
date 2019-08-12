@@ -137,7 +137,28 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
   if ( !eww )
     return;
 
-  eww->setValue( index.model()->data( index, Qt::EditRole ) );
+  QVariant value = index.model()->data( index, Qt::EditRole );
+  const QgsAttributeList additionalFields = eww->additionalFields();
+
+  if ( additionalFields.count() > 0 )
+  {
+    const QgsAttributeTableModel *model = masterModel( index.model() );
+    if ( model )
+    {
+      QgsFeature feat = model->feature( index );
+      QgsAttributeMap additionalFieldValues;
+      for ( int fieldIndex : additionalFields )
+      {
+        const QVariant fieldValue = feat.attribute( fieldIndex );
+        additionalFieldValues.insert( fieldIndex, fieldValue );
+      }
+      eww->setValues( value, additionalFieldValues );
+    }
+  }
+  else
+  {
+    eww->setValue( value );
+  }
 }
 
 void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )

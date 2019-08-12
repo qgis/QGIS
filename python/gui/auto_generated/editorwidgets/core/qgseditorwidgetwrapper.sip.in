@@ -56,6 +56,22 @@ Be sure to return a NULL QVariant if it should be set to NULL.
 :return: The current value the widget represents
 %End
 
+    virtual QgsAttributeList additionalFields() const;
+%Docstring
+Return the list of additional fields which the editor handles
+
+.. versionadded:: 3.10
+%End
+
+    virtual QgsAttributeMap additionalFieldValues();
+%Docstring
+Will be used to access the widget's values for potential additional fields handled by the widget
+
+:return: A map of additional field names with their corresponding values
+
+.. versionadded:: 3.10
+%End
+
     int fieldIdx() const;
 %Docstring
 Access the field index.
@@ -224,6 +240,17 @@ Emit this signal, whenever the value changed.
 :param value: The new value
 %End
 
+    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalfieldValues );
+%Docstring
+Emit this signal, whenever the value changed.
+It will also return the values for the additional fields handled by the widget
+
+:param value: The new value
+:param addtionalFieldValues: A map of additional field names with their corresponding values
+
+.. versionadded:: 3.10
+%End
+
     void constraintStatusChanged( const QString &constraint, const QString &desc, const QString &err, QgsEditorWidgetWrapper::ConstraintResult status );
 %Docstring
 Emit this signal when the constraint status changed.
@@ -258,6 +285,17 @@ Is called, when the value of the widget needs to be changed. Update the widget r
 to reflect the new value.
 
 :param value: The new value of the attribute
+%End
+
+    virtual void setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues );
+%Docstring
+Is called, when the value of the widget needs to be changed. Update the widget representation
+It will set the value for the field but also values for potential additional fields which are handled by the widget
+
+:param value: The new value of the attribute
+:param addtionalFieldValues: A map of field names with their corresponding values
+
+.. versionadded:: 3.10
 %End
 
     void emitValueChanged();

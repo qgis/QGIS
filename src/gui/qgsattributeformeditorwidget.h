@@ -63,8 +63,9 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      * Resets the widget to an initial value.
      * \param initialValue initial value to show in widget
      * \param mixedValues set to TRUE to initially show the mixed values state
+     * \param additionalValues a variant map of additional field names with their corresponding values
      */
-    void initialize( const QVariant &initialValue, bool mixedValues = false );
+    void initialize( const QVariant &initialValue, bool mixedValues = false, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
 
     /**
      * Returns TRUE if the widget's value has been changed since it was initialized.
@@ -86,6 +87,12 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      * Set the constraint result label visible or invisible according to the layer editable status
      */
     void setConstraintResultVisible( bool editable );
+
+    /**
+     * Return the editor widget wrapper
+     * \since QGIS 3.10
+     */
+    QgsEditorWidgetWrapper *editorWidget() const;
 
   public slots:
 
@@ -111,7 +118,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
   private slots:
 
     //! Triggered when editor widget's value changes
-    void editorWidgetChanged( const QVariant &value );
+    void editorWidgetValueChanged( const QVariant &value );
 
     //! Triggered when multi edit tool button requests value reset
     void resetValue();
@@ -123,13 +130,14 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
 
   private:
     QString mWidgetType;
-    QgsEditorWidgetWrapper *mWidget = nullptr;
+    QgsEditorWidgetWrapper *mEditorWidget = nullptr;
     QgsAttributeForm *mForm = nullptr;
     QLabel *mConstraintResultLabel = nullptr;
 
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
     QgsAggregateToolButton *mAggregateButton = nullptr;
     QVariant mPreviousValue;
+    QgsAttributeMap mPreviousAdditionalValues;
     bool mBlockValueUpdate;
     bool mIsMixed;
     bool mIsChanged;

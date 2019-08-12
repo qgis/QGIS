@@ -81,6 +81,19 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual QVariant value() const = 0;
 
     /**
+     * Return the list of additional fields which the editor handles
+     * \since QGIS 3.10
+     */
+    virtual QgsAttributeList additionalFields() const {return QgsAttributeList();}
+
+    /**
+     * Will be used to access the widget's values for potential additional fields handled by the widget
+     * \returns A map of additional field names with their corresponding values
+     * \since QGIS 3.10
+     */
+    virtual QgsAttributeMap additionalFieldValues() {return QgsAttributeMap();}
+
+    /**
      * Access the field index.
      *
      * \returns The index of the field you are working on
@@ -228,6 +241,16 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void valueChanged( const QVariant &value );
 
     /**
+     * Emit this signal, whenever the value changed.
+     * It will also return the values for the additional fields handled by the widget
+     *
+     * \param value The new value
+     * \param addtionalFieldValues A map of additional field names with their corresponding values
+     * \since QGIS 3.10
+     */
+    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalfieldValues );
+
+    /**
      * Emit this signal when the constraint status changed.
      * \brief constraintStatusChanged
      * \param constraint represented as a string
@@ -260,6 +283,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param value The new value of the attribute
      */
     virtual void setValue( const QVariant &value ) = 0;
+
+    /**
+     * Is called, when the value of the widget needs to be changed. Update the widget representation
+     * It will set the value for the field but also values for potential additional fields which are handled by the widget
+     * \param value The new value of the attribute
+     * \param addtionalFieldValues A map of field names with their corresponding values
+     * \since QGIS 3.10
+     */
+    virtual void setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues ) {Q_UNUSED( addtionalFieldValues ); setValue( value );}
 
     /**
      * Will call the value() method to determine the emitted value
@@ -314,6 +346,8 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * mFieldIdx the widget feature field id
      */
     int mFieldIdx = -1;
+
+    QList<int> mAdditionalFieldIndexes;
 
     /**
      * The feature currently being edited, in its current state
