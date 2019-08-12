@@ -1767,9 +1767,9 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
           break;
       }
 
-      const QString multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) );
-      const QString indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) );
-      const char *const options[] = {multiLineOption.toLocal8Bit().constData(), indentatationWidthOption.toLocal8Bit().constData(), nullptr};
+      const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
+      const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
+      const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
       d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
     }
 #else
