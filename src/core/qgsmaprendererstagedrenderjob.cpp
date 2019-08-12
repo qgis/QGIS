@@ -90,7 +90,7 @@ QgsLabelingResults *QgsMapRendererStagedRenderJob::takeLabelingResults()
 
 bool QgsMapRendererStagedRenderJob::renderNextPart( QPainter *painter )
 {
-  if ( mJobIt == mLayerJobs.end() && ( mExportedLabels || !mLabelingEngineV2 ) )
+  if ( isFinished() )
     return false;
 
   preparePainter( painter );
@@ -134,5 +134,10 @@ bool QgsMapRendererStagedRenderJob::renderNextPart( QPainter *painter )
     mExportedLabels = true;
   }
   return true;
+}
+
+bool QgsMapRendererStagedRenderJob::isFinished()
+{
+  return mJobIt == mLayerJobs.end() && ( mExportedLabels || !mLabelingEngineV2 );
 }
 
