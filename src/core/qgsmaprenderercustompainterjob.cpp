@@ -23,8 +23,40 @@
 
 #include <QtConcurrentRun>
 
-QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter )
+//
+// QgsMapRendererAbstractCustomPainterJob
+//
+
+QgsMapRendererAbstractCustomPainterJob::QgsMapRendererAbstractCustomPainterJob( const QgsMapSettings &settings )
   : QgsMapRendererJob( settings )
+{
+
+}
+
+void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, const QColor &backgroundColor )
+{
+  // clear the background
+  painter->fillRect( 0, 0, mSettings.deviceOutputSize().width(), mSettings.deviceOutputSize().height(), backgroundColor );
+
+  painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
+
+#ifndef QT_NO_DEBUG
+  QPaintDevice *paintDevice = painter->device();
+  QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
+                   .arg( paintDevice->logicalDpiX() )
+                   .arg( mSettings.outputDpi() * mSettings.devicePixelRatio() );
+  Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi() * mSettings.devicePixelRatio() ),
+              "Job::startRender()", errMsg.toLatin1().data() );
+#endif
+}
+
+
+//
+// QgsMapRendererCustomPainterJob
+//
+
+QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter )
+  : QgsMapRendererAbstractCustomPainterJob( settings )
   , mPainter( painter )
   , mActive( false )
   , mRenderSynchronously( false )
@@ -56,19 +88,7 @@ void QgsMapRendererCustomPainterJob::start()
   QTime prepareTime;
   prepareTime.start();
 
-  // clear the background
-  mPainter->fillRect( 0, 0, mSettings.deviceOutputSize().width(), mSettings.deviceOutputSize().height(), mSettings.backgroundColor() );
-
-  mPainter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
-
-#ifndef QT_NO_DEBUG
-  QPaintDevice *paintDevice = mPainter->device();
-  QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
-                   .arg( paintDevice->logicalDpiX() )
-                   .arg( mSettings.outputDpi() * mSettings.devicePixelRatio() );
-  Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi() * mSettings.devicePixelRatio() ),
-              "Job::startRender()", errMsg.toLatin1().data() );
-#endif
+  preparePainter( mPainter, mSettings.backgroundColor() );
 
   mLabelingEngineV2.reset();
 
