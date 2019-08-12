@@ -199,8 +199,8 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   {
     JavascriptExecutorLoop jsLoop;
 
-    mWebPage->mainFrame()->addToJavaScriptWindowObject( "loop", &jsLoop );
-    mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }; loop.done();" ).arg( mAtlasFeatureJSON ) );
+    mWebPage->mainFrame()->addToJavaScriptWindowObject( QStringLiteral( "loop" ), &jsLoop );
+    mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { try{ setFeature(%1); } catch (err) { loop.reportError(err.message); } }; loop.done();" ).arg( mAtlasFeatureJSON ) );
 
     jsLoop.execIfNotDone();
   }
@@ -554,6 +554,13 @@ void JavascriptExecutorLoop::execIfNotDone()
   // to force the web page to update following the js execution
   for ( int i = 0; i < 100; i++ )
     qApp->processEvents();
+}
+
+void JavascriptExecutorLoop::reportError( const QString &error )
+{
+  mDone = true;
+  QgsMessageLog::logMessage( tr( "HTML setFeature function error: %1" ).arg( error ), tr( "Layout" ) );
+  quit();
 }
 
 ///@endcond
