@@ -24,10 +24,14 @@ Base configuration for geometry checks.
 #include "qgsgeometrycheckcontext.h"
 %End
   public:
+
     QgsGeometryCheckContext( int precision,
                              const QgsCoordinateReferenceSystem &mapCrs,
                              const QgsCoordinateTransformContext &transformContext,
                              const QgsProject *mProject );
+%Docstring
+Creates a new QgsGeometryCheckContext.
+%End
 
     const double tolerance;
 

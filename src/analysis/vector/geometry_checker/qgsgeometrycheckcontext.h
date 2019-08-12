@@ -30,6 +30,10 @@
 class ANALYSIS_EXPORT QgsGeometryCheckContext
 {
   public:
+
+    /**
+     * Creates a new QgsGeometryCheckContext.
+     */
     QgsGeometryCheckContext( int precision,
                              const QgsCoordinateReferenceSystem &mapCrs,
                              const QgsCoordinateTransformContext &transformContext,
