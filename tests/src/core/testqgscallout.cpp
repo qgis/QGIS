@@ -296,7 +296,7 @@ void TestQgsCallout::calloutsInLabeling()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -358,7 +358,7 @@ void TestQgsCallout::calloutsWithRotation()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -457,7 +457,7 @@ void TestQgsCallout::calloutsDisabled()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -509,7 +509,7 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -561,7 +561,7 @@ void TestQgsCallout::calloutDataDefinedSymbol()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -613,7 +613,7 @@ void TestQgsCallout::calloutDataDefinedSymbolColor()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -665,7 +665,7 @@ void TestQgsCallout::calloutMinimumDistance()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -718,7 +718,7 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -770,7 +770,7 @@ void TestQgsCallout::calloutOffsetFromAnchor()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -822,7 +822,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -875,7 +875,7 @@ void TestQgsCallout::calloutOffsetFromLabel()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -928,7 +928,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -984,7 +984,7 @@ void TestQgsCallout::calloutBehindLabel()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1040,7 +1040,7 @@ void TestQgsCallout::calloutBehindIndividualLabels()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1108,7 +1108,7 @@ void TestQgsCallout::calloutNoDrawToAllParts()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1177,7 +1177,7 @@ void TestQgsCallout::calloutDrawToAllParts()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1246,7 +1246,7 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1309,7 +1309,7 @@ void TestQgsCallout::calloutPointOnExterior()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1372,7 +1372,7 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1424,7 +1424,7 @@ void TestQgsCallout::manhattan()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1477,7 +1477,7 @@ void TestQgsCallout::manhattanRotated()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   vl->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1545,7 +1545,7 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1614,7 +1614,7 @@ void TestQgsCallout::manhattanDrawToAllParts()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
@@ -1683,7 +1683,7 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2.get(), QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );

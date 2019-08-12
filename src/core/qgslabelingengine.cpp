@@ -71,6 +71,9 @@ class QgsLabelSorter
     const QgsMapSettings &mMapSettings;
 };
 
+//
+// QgsLabelingEngine
+//
 
 QgsLabelingEngine::QgsLabelingEngine()
   : mResults( new QgsLabelingResults )
@@ -184,39 +187,40 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
   }
 }
 
-
-void QgsLabelingEngine::run( QgsRenderContext &context )
+void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 {
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
-  pal::Pal p;
+  mPal = qgis::make_unique< pal::Pal >();
 
   // set number of candidates generated per feature
   int candPoint, candLine, candPolygon;
   settings.numCandidatePositions( candPoint, candLine, candPolygon );
-  p.setPointP( candPoint );
-  p.setLineP( candLine );
-  p.setPolyP( candPolygon );
+  mPal->setPointP( candPoint );
+  mPal->setLineP( candLine );
+  mPal->setPolyP( candPolygon );
 
-  p.setShowPartial( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
+  mPal->setShowPartial( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
 
 
   // for each provider: get labels and register them in PAL
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
   {
-    bool appendedLayerScope = false;
+    std::unique_ptr< QgsExpressionContextScopePopper > layerScopePopper;
     if ( QgsMapLayer *ml = provider->layer() )
     {
-      appendedLayerScope = true;
-      context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
+      layerScopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), QgsExpressionContextUtils::layerScope( ml ) );
     }
-    processProvider( provider, context, p );
-    if ( appendedLayerScope )
-      delete context.expressionContext().popScope();
+    processProvider( provider, context, *mPal );
   }
+}
 
+void QgsLabelingEngine::solve( QgsRenderContext &context )
+{
+  Q_ASSERT( mPal.get() );
 
   // NOW DO THE LAYOUT (from QgsPalLabeling::drawLabeling)
+  const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
   QPainter *painter = context.painter();
 
@@ -261,16 +265,15 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
 
   QgsRectangle extent = extentGeom.boundingBox();
 
-  p.registerCancellationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
+  mPal->registerCancellationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
 
   QTime t;
   t.start();
 
   // do the labeling itself
-  std::unique_ptr< pal::Problem > problem;
   try
   {
-    problem = p.extractProblem( extent, mapBoundaryGeom );
+    mProblem = mPal->extractProblem( extent, mapBoundaryGeom );
   }
   catch ( std::exception &e )
   {
@@ -299,14 +302,14 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   // this is done before actual solution of the problem
   // before number of candidates gets reduced
   // TODO mCandidates.clear();
-  if ( settings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) && problem )
+  if ( settings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) && mProblem )
   {
     painter->setBrush( Qt::NoBrush );
-    for ( int i = 0; i < problem->getNumFeatures(); i++ )
+    for ( int i = 0; i < mProblem->getNumFeatures(); i++ )
     {
-      for ( int j = 0; j < problem->getFeatureCandidateCount( i ); j++ )
+      for ( int j = 0; j < mProblem->getFeatureCandidateCount( i ); j++ )
       {
-        pal::LabelPosition *lp = problem->getFeatureCandidate( i, j );
+        pal::LabelPosition *lp = mProblem->getFeatureCandidate( i, j );
 
         QgsPalLabeling::drawLabelCandidateRect( lp, painter, &xform );
       }
@@ -314,20 +317,22 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
 
   // find the solution
-  QList<pal::LabelPosition *> unlabeled;
-  QList<pal::LabelPosition *> labels = p.solveProblem( problem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ), settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) ? &unlabeled : nullptr );
+  mLabels = mPal->solveProblem( mProblem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ), settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) ? &mUnlabeled : nullptr );
 
-  QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels.size() ), 4 );
-  t.restart();
+  QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( mLabels.size() ), 4 );
+}
 
-  if ( context.renderingStopped() )
-  {
-    return;
-  }
+void QgsLabelingEngine::drawLabels( QgsRenderContext &context )
+{
+  QTime t;
+  t.start();
+
+  const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
+  QPainter *painter = context.painter();
   painter->setRenderHint( QPainter::Antialiasing );
 
   // sort labels
-  std::sort( labels.begin(), labels.end(), QgsLabelSorter( mMapSettings ) );
+  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mMapSettings ) );
 
   // prepare for rendering
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
@@ -342,7 +347,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   std::unique_ptr< QgsExpressionContextScopePopper > symbolScopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
   // draw label backgrounds
-  for ( pal::LabelPosition *label : qgis::as_const( labels ) )
+  for ( pal::LabelPosition *label : qgis::as_const( mLabels ) )
   {
     if ( context.renderingStopped() )
       break;
@@ -363,7 +368,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
 
   // draw the labels
-  for ( pal::LabelPosition *label : qgis::as_const( labels ) )
+  for ( pal::LabelPosition *label : qgis::as_const( mLabels ) )
   {
     if ( context.renderingStopped() )
       break;
@@ -388,7 +393,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   // draw unplaced labels. These are always rendered on top
   if ( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) )
   {
-    for ( pal::LabelPosition *label : qgis::as_const( unlabeled ) )
+    for ( pal::LabelPosition *label : qgis::as_const( mUnlabeled ) )
     {
       if ( context.renderingStopped() )
         break;
@@ -424,11 +429,49 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   QgsDebugMsgLevel( QStringLiteral( "LABELING draw:  %1 ms" ).arg( t.elapsed() ), 4 );
 }
 
+void QgsLabelingEngine::cleanup()
+{
+  mUnlabeled.clear();
+  mLabels.clear();
+  mProblem.reset();
+  mPal.reset();
+}
+
 QgsLabelingResults *QgsLabelingEngine::takeResults()
 {
   return mResults.release();
 }
 
+
+//
+//  QgsDefaultLabelingEngine
+//
+
+QgsDefaultLabelingEngine::QgsDefaultLabelingEngine()
+  : QgsLabelingEngine()
+{
+
+}
+
+void QgsDefaultLabelingEngine::run( QgsRenderContext &context )
+{
+  registerLabels( context );
+  if ( context.renderingStopped() )
+  {
+    cleanup();
+    return; // it has been canceled
+  }
+
+  solve( context );
+  if ( context.renderingStopped() )
+  {
+    cleanup();
+    return;
+  }
+
+  drawLabels( context );
+  cleanup();
+}
 
 ////
 

@@ -977,7 +977,7 @@ void QgsDxfExport::writeEntities()
   ctx.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
 
   // label engine
-  QgsLabelingEngine engine;
+  QgsDefaultLabelingEngine engine;
   engine.setMapSettings( mMapSettings );
 
   // iterate through the maplayers
