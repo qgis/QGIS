@@ -339,7 +339,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
 
   QgsExpressionContextScope *symbolScope = new QgsExpressionContextScope();
-  context.expressionContext().appendScope( symbolScope );
+  std::unique_ptr< QgsExpressionContextScopePopper > symbolScopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
   // draw label backgrounds
   for ( pal::LabelPosition *label : qgis::as_const( labels ) )
@@ -410,7 +410,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
     }
   }
 
-  context.expressionContext().popScope();
+  symbolScopePopper.reset();
 
   // cleanup
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
