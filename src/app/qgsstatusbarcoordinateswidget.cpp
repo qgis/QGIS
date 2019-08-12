@@ -280,7 +280,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 
   //stop any current rendering
   mMapCanvas->stopRendering();
-  mMapCanvas->refreshAllLayers();
+  mMapCanvas->redrawAllLayers();
 }
 
 void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )

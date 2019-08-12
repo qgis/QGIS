@@ -4308,7 +4308,7 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), feature.id(), true ) );
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( feature.geometry() ), true ) );
   mapCanvas->stopRendering();
-  mapCanvas->refreshAllLayers();
+  mapCanvas->redrawAllLayers();
 
   mView->setSectionLabel( atlas->nameForPage( atlas->currentFeatureNumber() ) );
 }

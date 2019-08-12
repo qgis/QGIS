@@ -154,10 +154,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   } );
 
   // refresh canvas when a remote svg/image has finished downloading
-  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::refreshAllLayers );
-  connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsMapCanvas::refreshAllLayers );
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::redrawAllLayers );
+  connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsMapCanvas::redrawAllLayers );
   // refresh canvas when project color scheme is changed -- if layers use project colors, they need to be redrawn
-  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsMapCanvas::refreshAllLayers );
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsMapCanvas::redrawAllLayers );
 
   //segmentation parameters
   QgsSettings settings;
@@ -2211,6 +2211,11 @@ void QgsMapCanvas::refreshAllLayers()
     layer->reload();
   }
 
+  redrawAllLayers();
+}
+
+void QgsMapCanvas::redrawAllLayers()
+{
   // clear the cache
   clearCache();
 
