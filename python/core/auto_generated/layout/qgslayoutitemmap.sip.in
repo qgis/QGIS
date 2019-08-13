@@ -87,7 +87,7 @@ The caller takes responsibility for deleting the returned object.
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
-    virtual int numberExportLayers() const;
+ virtual int numberExportLayers() const /Deprecated/;
 
     virtual void startLayeredExport();
 
@@ -97,7 +97,7 @@ The caller takes responsibility for deleting the returned object.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
- virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const /Deprecated/;
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
 
     virtual void setFrameStrokeWidth( QgsLayoutMeasurement width );
 
