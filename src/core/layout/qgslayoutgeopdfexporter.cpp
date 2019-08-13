@@ -304,8 +304,8 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml( const QList<ComponentLaye
   // georeferencing - TODO
   QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
   georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced" ) );
-  georeferencing.setAttribute( QStringLiteral( "OGCBestPracticeFormat" ), QStringLiteral( "true" ) );
-  georeferencing.setAttribute( QStringLiteral( "ISO32000ExtensionFormat" ), QStringLiteral( "false" ) );
+  georeferencing.setAttribute( QStringLiteral( "OGCBestPracticeFormat" ), QStringLiteral( "false" ) );
+  georeferencing.setAttribute( QStringLiteral( "ISO32000ExtensionFormat" ), QStringLiteral( "true" ) );
   QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
   srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
   srs.appendChild( doc.createTextNode( QStringLiteral( "EPSG:4326" ) ) );
