@@ -188,8 +188,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * If \a layer is -1, all item layers will be rendered.
      *
      * \see currentExportLayer()
-     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and
-     * returning QgsLayoutItem::nextExportPart().
+     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
      */
     Q_DECL_DEPRECATED void setCurrentExportLayer( int layer = -1 ) SIP_DEPRECATED { mCurrentExportLayer = layer; }
 
@@ -201,8 +200,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * If \a layer is -1, all item layers should be rendered.
      *
      * \see setCurrentExportLayer()
-     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and
-     * returning QgsLayoutItem::nextExportPart().
+     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
      */
     Q_DECL_DEPRECATED int currentExportLayer() const SIP_DEPRECATED  { return mCurrentExportLayer; }
 

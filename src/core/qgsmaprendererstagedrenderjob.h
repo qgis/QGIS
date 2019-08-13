@@ -41,7 +41,7 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
      */
     enum Flag
     {
-      RenderLabelsByMapLayer = 0x01, //!< Labels should be rendered in individual stages by map layer. This allows seperation of labels belonging to different layers, but may affect label stacking order as the order will become layer-dependant, instead of per-label-dependant.
+      RenderLabelsByMapLayer = 0x01, //!< Labels should be rendered in individual stages by map layer. This allows separation of labels belonging to different layers, but may affect label stacking order as the order will become layer-dependent, instead of per-label-dependent.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

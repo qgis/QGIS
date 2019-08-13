@@ -288,7 +288,7 @@ Constructor for SvgExportSettings
 
       bool exportAsLayers;
 
-      bool exportLabelsToSeperateLayers;
+      bool exportLabelsToSeparateLayers;
 
       bool exportMetadata;
 

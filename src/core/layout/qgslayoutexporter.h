@@ -436,7 +436,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.10
        */
-      bool exportLabelsToSeperateLayers = true;
+      bool exportLabelsToSeparateLayers = true;
 
       /**
        * Indicates whether SVG export should include RDF metadata generated
