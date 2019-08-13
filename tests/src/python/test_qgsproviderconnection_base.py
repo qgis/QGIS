@@ -59,6 +59,9 @@ class TestPyQgsProviderConnectionBase():
         """Common tests on connection save and load"""
         conn = md.createConnection('qgis_test1', self.uri)
         md.saveConnection(conn)
+        # Check that we retrieve the new connection
+        self.assertTrue('qgis_test1' in md.connections().keys())
+        self.assertTrue('qgis_test1' in md.dbConnections().keys())
         return md.connections()['qgis_test1']
 
     def _table_names(self, table_properties):

@@ -266,7 +266,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     enum Capability
     {
       CreateVectorTable = 1 << 1,   //!< Can CREATE a vector (or aspatial) table/layer
-      // CreateRasterTable does not make much sense, skip it for now:
       DropRasterTable = 1 << 2,     //!< Can DROP a raster table/layer
       DropVectorTable = 1 << 3,     //!< Can DROP a vector (or aspatial) table/layer
       RenameVectorTable = 1 << 4,   //!< Can RENAME a vector (or aspatial) table/layer

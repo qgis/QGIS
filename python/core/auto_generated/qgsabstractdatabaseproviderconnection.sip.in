@@ -206,7 +206,6 @@ Sets a ``flag``
     enum Capability
     {
       CreateVectorTable,
-      // CreateRasterTable does not make much sense, skip it for now:
       DropRasterTable,
       DropVectorTable,
       RenameVectorTable,

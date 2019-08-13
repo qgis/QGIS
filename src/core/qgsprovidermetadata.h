@@ -35,6 +35,7 @@
 #include "qgsabstractproviderconnection.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsfields.h"
+#include "qgsexception.h"
 
 class QgsDataItem;
 class QgsDataItemProvider;
@@ -265,28 +266,34 @@ class CORE_EXPORT QgsProviderMetadata
      * Returns a dictionary of stored provider connections,
      * the dictionary key is the connection identifier.
      * Ownership is not transfered.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param cached if FALSE connections will be re-read from the settings
+     * \throws QgsProviderConnectionException
      * \since QGIS 3.10
      */
-    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true );
+    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns a dictionary of database provider connections,
      * the dictionary key is the connection identifier.
      * Ownership is not transfered.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param cached if FALSE connections will be re-read from the settings
+     * \throws QgsProviderConnectionException
      * \since QGIS 3.10
      */
-    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true );
+    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Searchs and returns a (possibly NULL) connection from the stored provider connections.
      * Ownership is not transfered.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
      * \name name the connection name
      * \param cached if FALSE connections will be re-read from the settings
+     * \throws QgsProviderConnectionException
      * \since QGIS 3.10
      */
-    QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true );
+    QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true ) SIP_THROW( QgsProviderConnectionException );
 
 #ifndef SIP_RUN
 
