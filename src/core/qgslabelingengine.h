@@ -259,6 +259,44 @@ class CORE_EXPORT QgsLabelingEngine
     void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );
 
   protected:
+
+    /**
+     * Runs the label registration step.
+     *
+     * Must be called by subclasses prior to solve() and drawLabels()
+     *
+     * \since QGIS 3.10
+     */
+    void registerLabels( QgsRenderContext &context );
+
+    /**
+     * Solves the label problem.
+     *
+     * Must be called by subclasses prior to drawLabels(), and must be
+     * preceded by a call to registerLabels()
+     *
+     * \since QGIS 3.10
+     */
+    void solve( QgsRenderContext &context );
+
+    /**
+     * Draws labels to the specified render \context.
+     *
+     * If \a layerId is specified, only labels from the matching layer will
+     * be rendered.
+     *
+     * Must be preceded by a call to registerLabels() and solve()
+     *
+     * \since QGIS 3.10
+     */
+    void drawLabels( QgsRenderContext &context, const QString &layerId = QString() );
+
+    /**
+     * Cleans up the engine following a call to registerLabels() or solve().
+     * \since QGIS 3.10
+     */
+    void cleanup();
+
     //! Associated map settings instance
     QgsMapSettings mMapSettings;
 
@@ -274,10 +312,6 @@ class CORE_EXPORT QgsLabelingEngine
     QList<pal::LabelPosition *> mUnlabeled;
     QList<pal::LabelPosition *> mLabels;
 
-    void registerLabels( QgsRenderContext &context );
-    void solve( QgsRenderContext &context );
-    void drawLabels( QgsRenderContext &context, const QString &layerId = QString() );
-    void cleanup();
 };
 
 /**
@@ -328,8 +362,16 @@ class CORE_EXPORT QgsStagedRenderLabelingEngine : public QgsLabelingEngine
 
     void run( QgsRenderContext &context ) override;
 
+    /**
+     * Renders all the labels which belong only to the layer with matching \a layerId
+     * to the specified render \a context.
+     */
     void renderLabelsForLayer( QgsRenderContext &context, const QString &layerId );
 
+    /**
+     * Finalizes and cleans up the engine following the rendering of labels for the last layer
+     * to be labeled (via renderLabelsForLayer() ).
+     */
     void finalize();
 };
 

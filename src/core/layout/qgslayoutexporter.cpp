@@ -886,6 +886,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
 
     if ( settings.exportAsLayers )
     {
+      mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, settings.exportLabelsToSeperateLayers );
       const QRectF paperRect = QRectF( pageItem->pos().x(),
                                        pageItem->pos().y(),
                                        pageItem->rect().width(),
@@ -1505,7 +1506,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
     bool canPlaceInExistingLayer = false;
     if ( layoutItem )
     {
-      QString newName;
       switch ( layoutItem->exportLayerBehavior() )
       {
         case QgsLayoutItem::CanGroupWithAnyOtherItem:

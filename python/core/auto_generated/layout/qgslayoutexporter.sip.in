@@ -288,6 +288,8 @@ Constructor for SvgExportSettings
 
       bool exportAsLayers;
 
+      bool exportLabelsToSeperateLayers;
+
       bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
