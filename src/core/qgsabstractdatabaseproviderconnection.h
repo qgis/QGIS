@@ -240,6 +240,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         void setFlag( const TableFlag &flag );
 
+        /**
+         * Returns the maximum coordinate dimensions of the geometries of a vector table.
+         * This information is calculated from the geometry columns types.
+         * \see geometryColumnTypes()
+         */
+        int maxCoordinateDimensions() const;
+
+
       private:
 
         //! Holds the list of geometry wkb types and srids supported by the table

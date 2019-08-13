@@ -201,6 +201,15 @@ Sets the ``geometryColumnCount``
 Sets a ``flag``
 %End
 
+        int maxCoordinateDimensions() const;
+%Docstring
+Returns the maximum coordinate dimensions of the geometries of a vector table.
+This information is calculated from the geometry columns types.
+
+.. seealso:: :py:func:`geometryColumnTypes`
+%End
+
+
     };
 
     enum Capability

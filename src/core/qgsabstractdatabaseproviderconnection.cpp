@@ -201,6 +201,17 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setFlag( const QgsAbs
   mFlags.setFlag( flag );
 }
 
+int QgsAbstractDatabaseProviderConnection::TableProperty::maxCoordinateDimensions() const
+{
+  int res = 0;
+  for ( const TableProperty::GeometryColumnType &ct : qgis::as_const( mGeometryColumnTypes ) )
+  {
+    res = std::max( res, QgsWkbTypes::coordDimensions( ct.wkbType ) );
+  }
+  return res;
+}
+
+
 void QgsAbstractDatabaseProviderConnection::TableProperty::setGeometryColumnTypes( const QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> &columnTypes )
 {
   mGeometryColumnTypes = columnTypes;

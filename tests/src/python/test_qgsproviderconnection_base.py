@@ -139,6 +139,7 @@ class TestPyQgsProviderConnectionBase():
             # Check table information
             table_properties = conn.tables(schema)
             table_property = self._table_by_name(table_properties, 'myNewTable')
+            self.assertEqual(table_property.maxCoordinateDimensions(), 2)
             self.assertIsNotNone(table_property)
             self.assertEqual(table_property.tableName(), 'myNewTable')
             self.assertEqual(table_property.geometryColumnCount(), 1)
@@ -151,6 +152,7 @@ class TestPyQgsProviderConnectionBase():
             table_properties = conn.tables(schema, QgsAbstractDatabaseProviderConnection.Aspatial)
             table_property = self._table_by_name(table_properties, 'myNewAspatialTable')
             self.assertIsNotNone(table_property)
+            self.assertEqual(table_property.maxCoordinateDimensions(), 0)
             self.assertEqual(table_property.tableName(), 'myNewAspatialTable')
             self.assertEqual(table_property.geometryColumnCount(), 0)
             self.assertEqual(table_property.geometryColumn(), '')
