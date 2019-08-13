@@ -117,12 +117,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     // for now, map items behave a bit differently and don't implement draw. TODO - see if we can avoid this
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
-    int numberExportLayers() const override;
+    Q_DECL_DEPRECATED int numberExportLayers() const override SIP_DEPRECATED;
     void startLayeredExport() override;
     void stopLayeredExport() override;
     bool nextExportPart() override;
     ExportLayerBehavior exportLayerBehavior() const override;
-    Q_DECL_DEPRECATED QgsLayoutItem::ExportLayerDetail exportLayerDetails() const override SIP_DEPRECATED;
+    QgsLayoutItem::ExportLayerDetail exportLayerDetails() const override;
     void setFrameStrokeWidth( QgsLayoutMeasurement width ) override;
 
     /**
