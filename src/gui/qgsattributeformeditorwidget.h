@@ -152,6 +152,8 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     bool mIsChanged;
 
     void updateWidgets() override;
+
+    friend class TestQgsAttributeForm;
 };
 
 #endif // QGSATTRIBUTEFORMEDITORWIDGET_H

@@ -23,6 +23,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsaggregatetoolbutton.h"
 #include "qgsgui.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 #include <QLayout>
 #include <QLabel>
@@ -226,7 +227,19 @@ void QgsAttributeFormEditorWidget::updateWidgets()
 {
   //first update the tool buttons
   bool hasMultiEditButton = ( editPage()->layout()->indexOf( mMultiEditButton ) >= 0 );
-  bool fieldReadOnly = layer()->editFormConfig().readOnly( mEditorWidget->fieldIdx() );
+
+  bool fieldReadOnly = false;
+  const int fieldIndex = mEditorWidget->fieldIdx();
+  if ( layer()->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = layer()->joinBuffer()->joinForFieldIndex( fieldIndex, layer()->fields(), srcFieldIndex );
+
+    if ( info && info->isEditable() && info->joinLayer()->isEditable() )
+      fieldReadOnly = info->joinLayer()->editFormConfig().readOnly( fieldIndex );
+  }
+  else
+    fieldReadOnly = layer()->editFormConfig().readOnly( fieldIndex );
 
   if ( hasMultiEditButton )
   {

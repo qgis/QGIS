@@ -29,6 +29,7 @@
 #include "qgsgui.h"
 #include "qgsattributeformeditorwidget.h"
 #include "qgsattributeforminterface.h"
+#include "qgsmultiedittoolbutton.h"
 
 class TestQgsAttributeForm : public QObject
 {
@@ -619,6 +620,17 @@ void TestQgsAttributeForm::testEditableJoin()
 
   ft0C = layerC->getFeature( 1 );
   QCOMPARE( ft0C.attribute( "col0" ), QVariant( 13 ) );
+
+  // all editor widget must have a multi edit button
+  form.setMode( QgsAttributeEditorContext::MultiEditMode );
+  QgsAttributeFormEditorWidget *formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[1] );
+  QVERIFY( formWidget->mMultiEditButton->parent() );
+
+  formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[1] );
+  QVERIFY( formWidget->mMultiEditButton->parent() );
+
+  formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[2] );
+  QVERIFY( formWidget->mMultiEditButton->parent() );
 
   // clean
   delete layerA;
