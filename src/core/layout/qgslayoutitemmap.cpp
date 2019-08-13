@@ -993,7 +993,6 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
   }
 }
 
-Q_NOWARN_DEPRECATED_PUSH
 int QgsLayoutItemMap::numberExportLayers() const
 {
   const int layerCount = layersToRender().length();
@@ -1003,7 +1002,6 @@ int QgsLayoutItemMap::numberExportLayers() const
          + ( mOverviewStack->hasEnabledItems() ? 1 : 0 )
          + ( frameEnabled() ? 1 : 0 );
 }
-Q_NOWARN_DEPRECATED_POP
 
 void QgsLayoutItemMap::startLayeredExport()
 {
