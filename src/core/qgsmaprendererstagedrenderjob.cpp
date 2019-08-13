@@ -22,8 +22,9 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils.h"
 
-QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings )
+QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )
   : QgsMapRendererAbstractCustomPainterJob( settings )
+  , mFlags( flags )
 {
 }
 
@@ -48,7 +49,10 @@ void QgsMapRendererStagedRenderJob::start()
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-    mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
+    if ( mFlags & RenderLabelsByMapLayer )
+      mLabelingEngineV2.reset( new QgsStagedRenderLabelingEngine() );
+    else
+      mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -125,10 +129,29 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
   }
   else
   {
-    mLabelJob.context.setPainter( painter );
-    drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), painter );
-    mLabelJob.complete = true;
-    mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
+    if ( !mLabelingEngineV2 )
+      return false;
+
+    if ( mFlags & RenderLabelsByMapLayer )
+    {
+      if ( !mPreparedStagedLabelJob || mLabelLayerIt == mLabelingLayers.end() )
+        return false;
+
+      mLabelJob.context.setPainter( painter );
+
+      // Reset the composition mode before rendering the labels
+      painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
+
+      // render just the current layer's labels
+      static_cast< QgsStagedRenderLabelingEngine * >( mLabelingEngineV2.get() )->renderLabelsForLayer( mLabelJob.context, ( *mLabelLayerIt )->id() );
+    }
+    else
+    {
+      mLabelJob.context.setPainter( painter );
+      drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), painter );
+      mLabelJob.complete = true;
+      mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
+    }
   }
   return true;
 }
@@ -147,14 +170,44 @@ bool QgsMapRendererStagedRenderJob::nextPart()
 
   if ( mLabelingEngineV2 )
   {
-    if ( mNextIsLabel )
+    if ( mFlags & RenderLabelsByMapLayer )
     {
-      mExportedLabels = true;
+      if ( !mPreparedStagedLabelJob )
+      {
+        mLabelingEngineV2->run( mLabelJob.context );
+        mPreparedStagedLabelJob = true;
+        mLabelingLayers = mLabelingEngineV2->participatingLayers();
+        mLabelLayerIt = mLabelingLayers.begin();
+        if ( mLabelLayerIt == mLabelingLayers.end() )
+        {
+          // no label layers to render!
+          static_cast< QgsStagedRenderLabelingEngine * >( mLabelingEngineV2.get() )->finalize();
+          return false;
+        }
+        return true;
+      }
+      else
+      {
+        if ( mLabelLayerIt != mLabelingLayers.end() )
+        {
+          mLabelLayerIt++;
+          if ( mLabelLayerIt != mLabelingLayers.end() )
+            return true;
+        }
+      }
+      return false;
     }
-    else if ( !mExportedLabels )
+    else
     {
-      mNextIsLabel = true;
-      return true;
+      if ( mNextIsLabel )
+      {
+        mExportedLabels = true;
+      }
+      else if ( !mExportedLabels )
+      {
+        mNextIsLabel = true;
+        return true;
+      }
     }
   }
   return false;
@@ -162,7 +215,7 @@ bool QgsMapRendererStagedRenderJob::nextPart()
 
 bool QgsMapRendererStagedRenderJob::isFinished()
 {
-  return mJobIt == mLayerJobs.end() && ( mExportedLabels || !mLabelingEngineV2 );
+  return currentStage() == Finished;
 }
 
 const QgsMapLayer *QgsMapRendererStagedRenderJob::currentLayer()
@@ -171,6 +224,11 @@ const QgsMapLayer *QgsMapRendererStagedRenderJob::currentLayer()
   {
     LayerRenderJob &job = *mJobIt;
     return job.layer;
+  }
+  else if ( mFlags & RenderLabelsByMapLayer && mPreparedStagedLabelJob )
+  {
+    if ( mLabelLayerIt != mLabelingLayers.end() )
+      return *mLabelLayerIt;
   }
   return nullptr;
 }
@@ -182,6 +240,11 @@ QString QgsMapRendererStagedRenderJob::currentLayerId()
     LayerRenderJob &job = *mJobIt;
     return job.layerId;
   }
+  else if ( mFlags & RenderLabelsByMapLayer && mPreparedStagedLabelJob )
+  {
+    if ( mLabelLayerIt != mLabelingLayers.end() )
+      return ( *mLabelLayerIt )->id();
+  }
   return QString();
 }
 
@@ -189,8 +252,15 @@ QgsMapRendererStagedRenderJob::RenderStage QgsMapRendererStagedRenderJob::curren
 {
   if ( mJobIt != mLayerJobs.end() )
     return Symbology;
+  else if ( mLabelingEngineV2 && mFlags & RenderLabelsByMapLayer )
+  {
+    if ( !mPreparedStagedLabelJob )
+      return Labels;
+    if ( mLabelLayerIt != mLabelingLayers.end() )
+      return Labels;
+  }
   else if ( mNextIsLabel && !mExportedLabels )
     return Labels;
-  else
-    return Finished;
+
+  return Finished;
 }
