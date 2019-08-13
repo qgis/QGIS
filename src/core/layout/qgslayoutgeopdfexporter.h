@@ -109,10 +109,12 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter
     /**
      * To be called after the rendering operation is complete.
      *
+     * Will export the list of PDF layer \a components to a new PDF file at \a destinationFile.
+     *
      * Returns TRUE if the operation was successful, or FALSE if an error occurred. If an error occurred, it
      * can be retrieved by calling errorMessage().
      */
-    bool finalize( const QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > &components );
+    bool finalize( const QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > &components, const QString &destinationFile );
 
     /**
      * Returns the last error message encountered during the export.

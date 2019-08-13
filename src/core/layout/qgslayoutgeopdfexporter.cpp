@@ -57,10 +57,10 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       // is it a hack retrieving the layer ID from an expression context like this? possibly... BUT
       // the alternative is adding a layer ID member to QgsRenderContext, and that's just asking for people to abuse it
       // and use it to retrieve QgsMapLayers mid-way through a render operation. Lesser of two evils it is!
-      const QString layerId = context.renderContext->expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
+      const QString layerId = context.renderContext.expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
 
       // transform from pixels to map item coordinates
-      QTransform pixelToMapItemTransform = QTransform::fromScale( 1.0 / context.renderContext->scaleFactor(), 1.0 / context.renderContext->scaleFactor() );
+      QTransform pixelToMapItemTransform = QTransform::fromScale( 1.0 / context.renderContext.scaleFactor(), 1.0 / context.renderContext.scaleFactor() );
       QgsGeometry transformed = renderedBounds;
       transformed.transform( pixelToMapItemTransform );
       // transform from map item coordinates to page coordinates
@@ -120,7 +120,7 @@ QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPd
   return mMapHandlers.value( map )->renderedFeatures;
 }
 
-bool QgsLayoutGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components )
+bool QgsLayoutGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile )
 {
   // collate all the features from different maps which belong to the same layer, replace their geometries with the rendered feature bounds
   for ( auto mapIt = mMapHandlers.constBegin(); mapIt != mMapHandlers.constEnd(); ++mapIt )
@@ -170,10 +170,8 @@ bool QgsLayoutGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &compo
 
   char **papszOptions = CSLSetNameValue( nullptr, "COMPOSITION_FILE", xmlFilePath.toUtf8().constData() );
 
-  QString outputFile = "/home/nyall/Temporary/geopdf/test.pdf";
-
   // return a non-null (fake) dataset in case of success, nullptr otherwise.
-  gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, outputFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
+  gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, destinationFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
   bool res = outputDataset.get();
   outputDataset.reset();
 
@@ -369,7 +367,7 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml( const QList<ComponentLaye
     }
   }
 
-  // vector datasets (we draw these on top, just for debugging
+  // vector datasets (we "draw" these on top, just for debugging... but they are invisible, so are never really drawn!)
   for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
   {
     QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
