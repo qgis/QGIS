@@ -53,11 +53,12 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   if ( ! rel.isValid() )
     return;
 
-  QString referencingFields, referencedFields;
-  for ( int i = 0; i < rel.fieldPairs().count(); i++ )
+  QString referencingFields = rel.fieldPairs().at( 0 ).referencingField();
+  QString referencedFields = rel.fieldPairs().at( 0 ).referencedField();
+  for ( int i = 1; i < rel.fieldPairs().count(); i++ )
   {
-    referencingFields.append( QStringLiteral( "%1%2" ).arg( referencingFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencingField() ) );
-    referencedFields.append( QStringLiteral( "%1%2" ).arg( referencedFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+    referencingFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencedField() ) );
   }
 
   mRelationsTable->setSortingEnabled( false );
