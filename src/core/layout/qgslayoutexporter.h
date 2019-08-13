@@ -429,6 +429,16 @@ class CORE_EXPORT QgsLayoutExporter
       bool exportAsLayers = false;
 
       /**
+       * Set to TRUE to export labels to separate layers (grouped by map layer)
+       * in layered SVG exports.
+       *
+       * This option is only used if exportAsLayers is TRUE.
+       *
+       * \since QGIS 3.10
+       */
+      bool exportLabelsToSeperateLayers = true;
+
+      /**
        * Indicates whether SVG export should include RDF metadata generated
        * from the layout's project's metadata.
        *
