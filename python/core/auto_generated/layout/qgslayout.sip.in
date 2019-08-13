@@ -657,6 +657,13 @@ Emitted when the layout has been refreshed and items should also be refreshed
 and updated.
 %End
 
+    void backgroundTaskCountChanged( int total );
+%Docstring
+Emitted whenever the ``total`` number of background tasks running in items from the layout changes.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 /************************************************************************

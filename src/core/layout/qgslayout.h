@@ -700,6 +700,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void refreshed();
 
+    /**
+     * Emitted whenever the \a total number of background tasks running in items from the layout changes.
+     *
+     * \since QGIS 3.10
+     */
+    void backgroundTaskCountChanged( int total );
+
+  private slots:
+    void itemBackgroundTaskCountChanged( int count );
+
   private:
 
     QgsProject *mProject = nullptr;
@@ -721,6 +731,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     //! Item ID for layout map to use for the world file generation
     QString mWorldFileMapId;
+
+    QHash< QgsLayoutItem *, int > mBackgroundTaskCount;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

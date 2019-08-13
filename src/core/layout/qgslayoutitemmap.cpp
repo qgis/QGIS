@@ -65,6 +65,7 @@ QgsLayoutItemMap::~QgsLayoutItemMap()
   if ( mPainterJob )
   {
     disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
+    emit backgroundTaskCountChanged( 0 );
     mPainterJob->cancel(); // blocks
     mPainter->end();
   }
@@ -1101,6 +1102,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   else
   {
     mCacheRenderingImage.reset( nullptr );
+    emit backgroundTaskCountChanged( 1 );
   }
 
   Q_ASSERT( !mPainterJob );
@@ -1580,6 +1582,7 @@ void QgsLayoutItemMap::painterJobFinished()
   mCacheFinalImage = std::move( mCacheRenderingImage );
   mLastRenderedImageOffsetX = 0;
   mLastRenderedImageOffsetY = 0;
+  emit backgroundTaskCountChanged( 0 );
   update();
 }
 

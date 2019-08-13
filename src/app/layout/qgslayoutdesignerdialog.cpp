@@ -88,6 +88,7 @@
 #include <QPrintDialog>
 #include <QPageSetupDialog>
 #include <QWidgetAction>
+#include <QProgressBar>
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -683,6 +684,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   menuEdit->insertAction( mActionPasteInPlace, mActionCopy );
   menuEdit->insertAction( mActionPasteInPlace, mActionPaste );
 
+  // Add a progress bar to the status bar for indicating rendering in progress
+  mStatusProgressBar = new QProgressBar( mStatusBar );
+  mStatusProgressBar->setObjectName( QStringLiteral( "mProgressBar" ) );
+  mStatusProgressBar->setMaximumWidth( 100 );
+  mStatusProgressBar->setMaximumHeight( 18 );
+  mStatusProgressBar->hide();
+  mStatusBar->addPermanentWidget( mStatusProgressBar, 1 );
+
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
   mStatusCursorXLabel->setMinimumWidth( 100 );
@@ -1035,6 +1044,11 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   }
   else
   {
+    if ( mLayout )
+    {
+      disconnect( mLayout, &QgsLayout::backgroundTaskCountChanged, this, &QgsLayoutDesignerDialog::backgroundTaskCountChanged );
+    }
+
     layout->deselectAll();
     mLayout = layout;
 
@@ -1075,6 +1089,8 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 #ifdef ENABLE_MODELTEST
     new ModelTest( mLayout->itemsModel(), this );
 #endif
+
+    connect( mLayout, &QgsLayout::backgroundTaskCountChanged, this, &QgsLayoutDesignerDialog::backgroundTaskCountChanged );
 
     createLayoutPropertiesWidget();
     toggleActions( true );
@@ -4562,6 +4578,32 @@ void QgsLayoutDesignerDialog::updateWindowTitle()
     title.prepend( '*' );
 
   setWindowTitle( title );
+}
+
+void QgsLayoutDesignerDialog::backgroundTaskCountChanged( int total )
+{
+  if ( total > 1 )
+    mStatusBar->showMessage( tr( "Redrawing %1 maps" ).arg( total ) );
+  else if ( total == 1 )
+    mStatusBar->showMessage( tr( "Redrawing map" ) );
+  else
+    mStatusBar->clearMessage();
+
+  if ( total == 0 )
+  {
+    mStatusProgressBar->reset();
+    mStatusProgressBar->hide();
+  }
+  else
+  {
+    //only call show if not already hidden to reduce flicker
+    mStatusProgressBar->setMinimum( 0 );
+    mStatusProgressBar->setMaximum( 0 );
+    if ( !mStatusProgressBar->isVisible() )
+    {
+      mStatusProgressBar->show();
+    }
+  }
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> &items )
