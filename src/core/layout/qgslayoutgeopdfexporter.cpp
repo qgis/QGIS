@@ -263,6 +263,7 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml( const QList<ComponentLaye
   // layertree
   QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
   //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
+  QSet< QString > createdLayerIds;
   for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
   {
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
@@ -270,6 +271,20 @@ QString QgsLayoutGeoPdfExporter::createCompositionXml( const QList<ComponentLaye
     layer.setAttribute( QStringLiteral( "name" ), component.name );
     layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
     layerTree.appendChild( layer );
+    createdLayerIds.insert( component.mapLayerId );
+  }
+  // some PDF components may not be linked to vector components - e.g. layers with labels but no features
+  for ( const ComponentLayerDetail &component : components )
+  {
+    if ( component.mapLayerId.isEmpty() || createdLayerIds.contains( component.mapLayerId ) )
+      continue;
+
+    QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
+    layer.setAttribute( QStringLiteral( "id" ), component.mapLayerId );
+    layer.setAttribute( QStringLiteral( "name" ), component.name );
+    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
+    layerTree.appendChild( layer );
+    createdLayerIds.insert( component.mapLayerId );
   }
   compositionElem.appendChild( layerTree );
 
