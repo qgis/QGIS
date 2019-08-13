@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsDiscoverRelationsDlgBase</class>
- <widget class="QDialog" name="QgsDiscoverRelationsDlgBase">
+ <class>QgsDiscoverRelationsDialogBase</class>
+ <widget class="QDialog" name="QgsDiscoverRelationsDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -89,7 +89,7 @@
   <connection>
    <sender>mButtonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsDiscoverRelationsDlgBase</receiver>
+   <receiver>QgsDiscoverRelationsDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -105,7 +105,7 @@
   <connection>
    <sender>mButtonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsDiscoverRelationsDlgBase</receiver>
+   <receiver>QgsDiscoverRelationsDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

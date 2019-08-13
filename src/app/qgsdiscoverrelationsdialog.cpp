@@ -12,20 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdiscoverrelationsdlg.h"
+#include "qgsdiscoverrelationsdialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsrelationmanager.h"
 
 #include <QPushButton>
 
-QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent )
+QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent )
   : QDialog( parent )
   , mLayers( layers )
 {
   setupUi( this );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDlg::onSelectionChanged );
+  connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDialog::onSelectionChanged );
 
   mFoundRelations = QgsRelationManager::discoverRelations( existingRelations, layers );
   for ( const QgsRelation &relation : qgis::as_const( mFoundRelations ) )
@@ -34,15 +34,22 @@ QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation> &exis
   mRelationsTable->resizeColumnsToContents();
 }
 
-void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
+void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
 {
+  QString referencingFields, referencedFields;
+  for ( int i = 0; i < rel.fieldPairs().count(); i++ )
+  {
+    referencingFields.append( QStringLiteral( "%1%2" ).arg( referencingFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( QStringLiteral( "%1%2" ).arg( referencedFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+  }
+
   const int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
   mRelationsTable->setItem( row, 0, new QTableWidgetItem( rel.name() ) );
   mRelationsTable->setItem( row, 1, new QTableWidgetItem( rel.referencingLayer()->name() ) );
-  mRelationsTable->setItem( row, 2, new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() ) );
+  mRelationsTable->setItem( row, 2, new QTableWidgetItem( referencingFields ) );
   mRelationsTable->setItem( row, 3, new QTableWidgetItem( rel.referencedLayer()->name() ) );
-  mRelationsTable->setItem( row, 4, new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() ) );
+  mRelationsTable->setItem( row, 4, new QTableWidgetItem( referencedFields ) );
   if ( rel.strength() == QgsRelation::RelationStrength::Composition )
   {
     mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Composition" ) ) );
@@ -55,7 +62,7 @@ void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
   mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );
 }
 
-QList<QgsRelation> QgsDiscoverRelationsDlg::relations() const
+QList<QgsRelation> QgsDiscoverRelationsDialog::relations() const
 {
   QList<QgsRelation> result;
   const auto constSelectedRows = mRelationsTable->selectionModel()->selectedRows();
@@ -66,7 +73,7 @@ QList<QgsRelation> QgsDiscoverRelationsDlg::relations() const
   return result;
 }
 
-void QgsDiscoverRelationsDlg::onSelectionChanged()
+void QgsDiscoverRelationsDialog::onSelectionChanged()
 {
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mRelationsTable->selectionModel()->hasSelection() );
 }

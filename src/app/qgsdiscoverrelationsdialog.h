@@ -16,7 +16,7 @@
 #define QGSDISCOVERRELATIONSDLG_H
 
 #include <QDialog>
-#include "ui_qgsdiscoverrelationsdlgbase.h"
+#include "ui_qgsdiscoverrelationsdialogbase.h"
 #include "qgsrelation.h"
 #include "qgis_app.h"
 
@@ -28,12 +28,12 @@ class QgsVectorLayer;
  *
  * The user can select some of them to add them to his project.
  */
-class APP_EXPORT QgsDiscoverRelationsDlg : public QDialog, private Ui::QgsDiscoverRelationsDlgBase
+class APP_EXPORT QgsDiscoverRelationsDialog : public QDialog, private Ui::QgsDiscoverRelationsDialogBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsDiscoverRelationsDlg( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent = nullptr );
+    explicit QgsDiscoverRelationsDialog( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent = nullptr );
 
     /**
      * Gets the selected relations.

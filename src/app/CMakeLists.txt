@@ -34,7 +34,7 @@ SET(QGIS_APP_SRCS
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdatumtransformtablewidget.cpp
-  qgsdiscoverrelationsdlg.cpp
+  qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
@@ -277,7 +277,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdatumtransformtablewidget.h
   qgsdelattrdialog.h
   qgsdiagramproperties.h
-  qgsdiscoverrelationsdlg.h
+  qgsdiscoverrelationsdialog.h
   qgsdisplayangle.h
   qgsdxfexportdialog.h
   qgsfeatureaction.h

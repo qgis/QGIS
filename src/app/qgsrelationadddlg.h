@@ -16,13 +16,63 @@
 #define QGSRELATIONADDDLG_H
 
 #include <QDialog>
-#include "ui_qgsrelationadddlgbase.h"
 #include "qgis_app.h"
 #include "qgsrelation.h"
 
-class QgsVectorLayer;
+class QDialogButtonBox;
+class QComboBox;
+class QLineEdit;
+class QSpacerItem;
+class QToolButton;
+class QVBoxLayout;
+class QHBoxLayout;
 
-class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddDlgBase
+class QgsVectorLayer;
+class QgsMapLayerComboBox;
+class QgsFieldComboBox;
+
+/**
+ * QgsFieldPairWidget is horizontal widget with a field pair and buttons to enable/disable it
+ */
+class APP_EXPORT QgsFieldPairWidget : public QWidget
+{
+    Q_OBJECT
+  public:
+    explicit QgsFieldPairWidget( int index, QWidget *parent = nullptr );
+    QString referencingField() const;
+    QString referencedField() const;
+    bool isPairEnabled() const;
+
+  signals:
+    void configChanged();
+    void pairDisabled( int index );
+    void pairEnabled();
+
+  public slots:
+    void setReferencingLayer( QgsMapLayer *layer );
+    void setReferencedLayer( QgsMapLayer *layer );
+
+  private:
+    void updateWidgetVisibility();
+    void changeEnable();
+
+    int mIndex;
+    bool mEnabled;
+    QToolButton *mAddButton;
+    QToolButton *mRemoveButton;
+    QgsFieldComboBox *mReferencingFieldCombobox;
+    QgsFieldComboBox *mReferencedFieldCombobox;
+    QSpacerItem *mSpacerItem;
+    QHBoxLayout *mLayout;
+
+};
+
+
+/**
+ * QgsRelationAddDlg allows configuring a new relation.
+ * Multiple field pairs can be set.
+ */
+class APP_EXPORT QgsRelationAddDlg : public QDialog
 {
     Q_OBJECT
 
@@ -37,8 +87,20 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddD
     QgsRelation::RelationStrength relationStrength();
 
   private slots:
-
     void checkDefinitionValid();
+    void fieldPairRemoved( QgsFieldPairWidget *fieldPairWidget );
+    void addFieldPairWidget();
+
+  private:
+    QList<QgsFieldPairWidget *> mFieldPairWidgets;
+
+    QDialogButtonBox *mButtonBox = nullptr;
+    QVBoxLayout *mFieldPairsLayout = nullptr;
+    QLineEdit *mNameLineEdit = nullptr;
+    QLineEdit *mIdLineEdit = nullptr;
+    QComboBox *mStrengthCombobox = nullptr;
+    QgsMapLayerComboBox *mReferencedLayerCombobox = nullptr;
+    QgsMapLayerComboBox *mReferencingLayerCombobox = nullptr;
 
 };
 
