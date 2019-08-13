@@ -698,6 +698,8 @@ Returns whether the layer contains labels which are enabled and should be drawn.
 
 .. seealso:: :py:func:`setLabelsEnabled`
 
+.. seealso:: :py:func:`labelsToggled`
+
 .. versionadded:: 2.9
 %End
 
@@ -713,6 +715,8 @@ Sets whether labels should be ``enabled`` for the layer.
 .. seealso:: :py:func:`labelsEnabled`
 
 .. seealso:: :py:func:`labeling`
+
+.. seealso:: :py:func:`labelsToggled`
 %End
 
     bool diagramsEnabled() const;
@@ -2561,6 +2565,17 @@ and 1 (opaque).
 .. seealso:: :py:func:`opacity`
 
 .. versionadded:: 3.0
+%End
+
+    void labelsToggled( bool enabled );
+%Docstring
+Emitted when labels are toggled in the layer.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`setLabelsEnabled`
+
+.. versionadded:: 3.10
 %End
 
     void editCommandStarted( const QString &text );

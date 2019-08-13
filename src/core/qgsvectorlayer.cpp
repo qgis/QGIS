@@ -676,7 +676,11 @@ bool QgsVectorLayer::labelsEnabled() const
 
 void QgsVectorLayer::setLabelsEnabled( bool enabled )
 {
+  if ( enabled == mLabelsEnabled )
+    return;
+
   mLabelsEnabled = enabled;
+  emit labelsToggled( enabled );
 }
 
 bool QgsVectorLayer::diagramsEnabled() const
@@ -1317,8 +1321,11 @@ void QgsVectorLayer::setLabeling( QgsAbstractVectorLayerLabeling *labeling )
   if ( mLabeling == labeling )
     return;
 
+  const bool prevEnabled = labelsEnabled();
   delete mLabeling;
   mLabeling = labeling;
+  if ( prevEnabled != labelsEnabled() )
+    emit labelsToggled( labelsEnabled() );
 }
 
 bool QgsVectorLayer::startEditing()

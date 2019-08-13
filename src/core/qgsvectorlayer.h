@@ -763,6 +763,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns TRUE if layer contains enabled labels
      *
      * \see setLabelsEnabled()
+     * \see labelsToggled()
      * \since QGIS 2.9
      */
     bool labelsEnabled() const;
@@ -775,6 +776,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see labelsEnabled()
      * \see labeling()
+     * \see labelsToggled()
      */
     void setLabelsEnabled( bool enabled );
 
@@ -2366,6 +2368,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.0
      */
     void opacityChanged( double opacity );
+
+    /**
+     * Emitted when labels are toggled in the layer.
+     *
+     * \see labelsEnabled()
+     * \see setLabelsEnabled()
+     * \since QGIS 3.10
+     */
+    void labelsToggled( bool enabled );
 
     /**
      * Signal emitted when a new edit command has been started

@@ -42,6 +42,7 @@ class TestQgsLabelingEngine : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void testEngineSettings();
+    void testLayerSetting();
     void testBasic();
     void testDiagrams();
     void testRuleBased();
@@ -172,6 +173,39 @@ void TestQgsLabelingEngine::testEngineSettings()
   p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
   settings3.readSettingsFromProject( &p2 );
   QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+}
+
+void TestQgsLabelingEngine::testLayerSetting()
+{
+  QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+  QgsVectorLayer *vl2 = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( vl2->isValid() );
+  QSignalSpy spy( vl2, &QgsVectorLayer::labelsToggled );
+
+  QVERIFY( !vl2->labelsEnabled() );
+
+  QgsPalLayerSettings settings;
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QVERIFY( vl2->labelsEnabled() );
+  QCOMPARE( spy.count(), 1 );
+
+  vl2->setLabelsEnabled( true );
+  QCOMPARE( spy.count(), 1 );
+  QVERIFY( spy.at( 0 ).at( 0 ).toBool() );
+  vl2->setLabelsEnabled( true );
+  QCOMPARE( spy.count(), 1 );
+  vl2->setLabelsEnabled( false );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( !spy.at( 1 ).at( 0 ).toBool() );
+  QVERIFY( !vl2->labelsEnabled() );
+
+  vl2->setLabelsEnabled( false );
+  QCOMPARE( spy.count(), 2 );
+
+  vl2->setLabelsEnabled( true );
+  QCOMPARE( spy.count(), 3 );
+
+  delete vl2;
 }
 
 void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings )
