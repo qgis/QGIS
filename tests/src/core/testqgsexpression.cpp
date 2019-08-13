@@ -1269,6 +1269,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "time - time" ) << "to_time('08:30:00') - to_time('05:15:00')" << false << QVariant( QgsInterval( 3 * 60 * 60 + 15 * 60 ) );
       QTest::newRow( "epoch" ) << "epoch(to_datetime('2017-01-01T00:00:01+00:00'))" << false << QVariant( 1483228801000LL );
       QTest::newRow( "epoch invalid date" ) << "epoch('invalid')" << true << QVariant();
+      QTest::newRow( "date from format" ) << "to_date('June 29, 2019','MMMM d, yyyy')" << false << QVariant( QDate( 2019, 6, 29 ) );
+      QTest::newRow( "date from format, wrong string" ) << "to_date('wrong.string.here','yyyy.MM.dd')" << true << QVariant();
+      QTest::newRow( "date from format, wrong format" ) << "to_date('2019-01-01','wrong')" << true << QVariant();
+      QTest::newRow( "datetime from format" ) << "to_datetime('June 29, 2019 @ 11:00','MMMM d, yyyy @ HH:mm')" << false << QVariant( QDateTime( QDate( 2019, 6, 29 ), QTime( 11, 0 ) ) );
+      QTest::newRow( "time from format" ) << "to_time('12:34:56','HH:mm:ss')" << false << QVariant( QTime( 12, 34, 56 ) );
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "254,190,116,255" );
