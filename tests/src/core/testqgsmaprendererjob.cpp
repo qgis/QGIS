@@ -213,7 +213,6 @@ void TestQgsMapRendererJob::cleanupTestCase()
 
 void TestQgsMapRendererJob::performanceTest()
 {
-  return;
   mMapSettings->setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
   myChecker.setControlName( QStringLiteral( "expected_maprender" ) );
