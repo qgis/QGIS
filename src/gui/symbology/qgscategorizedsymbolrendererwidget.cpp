@@ -1346,7 +1346,7 @@ void QgsCategorizedSymbolRendererWidget::selectionChanged( const QItemSelection 
   {
     whileBlocking( btnChangeCategorizedSymbol )->setSymbol( mRenderer->categories().at( selectedCats.at( 0 ) ).symbol()->clone() );
   }
-  else
+  else if ( mRenderer->sourceSymbol() )
   {
     whileBlocking( btnChangeCategorizedSymbol )->setSymbol( mRenderer->sourceSymbol()->clone() );
   }
