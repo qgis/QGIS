@@ -644,7 +644,7 @@ QStringList QgsProviderRegistry::providerList() const
   return lst;
 }
 
-const QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &providerKey ) const
+QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &providerKey ) const
 {
   return findMetadata_( mProviders, providerKey );
 }

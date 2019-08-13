@@ -59,7 +59,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
 
-        conn = md.connection('qgis_test1', self.uri)
+        conn = md.createConnection('qgis_test1', self.uri)
         md.saveConnection(conn)
 
         # Retrieve capabilities
@@ -68,7 +68,8 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable))
+        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameRasterTable))
 
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3857)
         typ = QgsWkbTypes.LineString

@@ -5038,7 +5038,7 @@ QMap<QString, QgsAbstractProviderConnection *> QgsPostgresProviderMetadata::conn
   return connectionsProtected<QgsPostgresProviderConnection, QgsPostgresConn>( cached );
 }
 
-QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name, const QString &uri )
+QgsAbstractProviderConnection *QgsPostgresProviderMetadata::createConnection( const QString &name, const QString &uri )
 {
   return new QgsPostgresProviderConnection( name, uri );
 }
@@ -5053,7 +5053,7 @@ void QgsPostgresProviderMetadata::saveConnection( QgsAbstractProviderConnection 
   saveConnectionProtected( conn, configuration );
 }
 
-QgsAbstractProviderConnection *QgsPostgresProviderMetadata::connection( const QString &name )
+QgsAbstractProviderConnection *QgsPostgresProviderMetadata::createConnection( const QString &name )
 {
   return new QgsPostgresProviderConnection( name );
 }

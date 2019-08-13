@@ -260,7 +260,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QVariantMap                   mInfo;
     };
 
-
     /**
      * The Capability enum represent the operations supported by the connection
      */
@@ -270,19 +269,18 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       // CreateRasterTable does not make much sense, skip it for now:
       DropRasterTable = 1 << 2,     //!< Can DROP a raster table/layer
       DropVectorTable = 1 << 3,     //!< Can DROP a vector (or aspatial) table/layer
-      RenameTable = 1 << 4,         //!< Can RENAME a table/layer
-      CreateSchema = 1 << 5,        //!< Can CREATE a schema
-      DropSchema = 1 << 6,          //!< Can DROP a schema
-      RenameSchema = 1 << 7,        //!< Can RENAME a schema
-      ExecuteSql = 1 << 8,          //!< Can execute raw SQL queries (without returning results)
-      // TODO: Transaction = 1 << 9,   //!< Supports transactions when executing operations
+      RenameVectorTable = 1 << 4,   //!< Can RENAME a vector (or aspatial) table/layer
+      RenameRasterTable = 1 << 5,   //!< Can RENAME a raster table/layer
+      CreateSchema = 1 << 6,        //!< Can CREATE a schema
+      DropSchema = 1 << 7,          //!< Can DROP a schema
+      RenameSchema = 1 << 8,        //!< Can RENAME a schema
+      ExecuteSql = 1 << 9,          //!< Can execute raw SQL queries (without returning results)
       Vacuum = 1 << 10,             //!< Can run vacuum
       Tables = 1 << 11,             //!< Can list tables
       Schemas = 1 << 12,            //!< Can list schemas (if not set, the connection does not support schemas)
       SqlLayers = 1 << 13,          //!< Can create vector layers from SQL SELECT queries
-      // TODO: TruncateTable = 1 << 14,      //!< Can TRUNCATE a table
-      TableExists = 1 << 15,        //!< Can check if table exists
-      Spatial = 1 << 16,            //!< The connection supports spatial tables
+      TableExists = 1 << 14,        //!< Can check if table exists
+      Spatial = 1 << 15,            //!< The connection supports spatial tables
     };
 
     Q_ENUM( Capability )
@@ -343,12 +341,20 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void dropRasterTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Renames a table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Renames a vector or aspatial table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle opened layers and registry entries.
      * \throws QgsProviderConnectionException
      */
-    virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
+    virtual void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Renames a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \note it is responsibility of the caller to handle opened layers and registry entries.
+     * \throws QgsProviderConnectionException
+     */
+    virtual void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Creates a new schema with the specified \a name

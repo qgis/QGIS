@@ -565,10 +565,10 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
     QgsTransaction *createTransaction( const QString &connString ) override;
     QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
-    QgsAbstractProviderConnection *connection( const QString &name ) override;
-    QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) override;
     void deleteConnection( const QString &name ) override;
-    void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() ) override;
+    void saveConnection( QgsAbstractProviderConnection *createConnection, const QVariantMap &configuration = QVariantMap() ) override;
     void initProvider() override;
     void cleanupProvider() override;
 

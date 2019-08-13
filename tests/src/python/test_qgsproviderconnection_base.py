@@ -57,7 +57,7 @@ class TestPyQgsProviderConnectionBase():
 
     def _test_save_load(self, md, uri):
         """Common tests on connection save and load"""
-        conn = md.connection('qgis_test1', self.uri)
+        conn = md.createConnection('qgis_test1', self.uri)
         md.saveConnection(conn)
         return md.connections()['qgis_test1']
 
@@ -104,7 +104,7 @@ class TestPyQgsProviderConnectionBase():
         # Table operations
         if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable
                 and capabilities & QgsAbstractDatabaseProviderConnection.Tables
-                and capabilities & QgsAbstractDatabaseProviderConnection.RenameTable
+                and capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
@@ -193,7 +193,7 @@ class TestPyQgsProviderConnectionBase():
             self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)
 
             # Rename
-            conn.renameTable(schema, 'myNewTable', 'myVeryNewTable')
+            conn.renameVectorTable(schema, 'myNewTable', 'myVeryNewTable')
             tables = self._table_names(conn.tables(schema))
             self.assertFalse('myNewTable' in tables)
             self.assertTrue('myVeryNewTable' in tables)

@@ -22,6 +22,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
     QgsCoordinateReferenceSystem,
+    QgsRasterLayer,
 )
 from qgis.testing import unittest
 
@@ -43,14 +44,14 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         # Create test layers
         vl = QgsVectorLayer(cls.postgres_conn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert vl.isValid()
-        cls.uri = cls.postgres_conn + ' port=5432 sslmode=disable key=\'gid\''
+        cls.uri = cls.postgres_conn + ' port=5432 sslmode=disable '
 
     def test_postgis_connections(self):
         """Create some connections and retrieve them"""
 
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
 
-        conn = md.connection('qgis_test1', self.uri)
+        conn = md.createConnection('qgis_test1', self.uri)
         md.saveConnection(conn)
 
         # Retrieve capabilities
@@ -59,7 +60,8 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameRasterTable))
 
         # Check filters and special cases
         table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
@@ -85,6 +87,27 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertEqual(srids, [0, 0, 0, 3857, 4326, 0])
         types = [t.wkbType for t in geometries_table.geometryColumnTypes()]
         self.assertEqual(types, [7, 2, 1, 1, 1, 3])
+
+    def test_postgis_raster_rename(self):
+        """Test raster rename"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+
+        conn = md.createConnection('qgis_test1', self.uri)
+        md.saveConnection(conn)
+
+        table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster), 'Raster1')
+        self.assertTrue(QgsRasterLayer("PG: %s schema='qgis_test' column='%s' table='%s'" % (conn.uri(), table.geometryColumn(), table.tableName()), 'r1', 'gdal').isValid())
+        conn.renameRasterTable('qgis_test', table.tableName(), 'Raster2')
+        table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster), 'Raster2')
+        self.assertTrue(QgsRasterLayer("PG: %s schema='qgis_test' column='%s' table='%s'" % (conn.uri(), table.geometryColumn(), table.tableName()), 'r1', 'gdal').isValid())
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
+        self.assertFalse('Raster1' in table_names)
+        self.assertTrue('Raster2' in table_names)
+        conn.renameRasterTable('qgis_test', table.tableName(), 'Raster1')
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
+        self.assertFalse('Raster2' in table_names)
+        self.assertTrue('Raster1' in table_names)
 
 
 if __name__ == '__main__':

@@ -262,9 +262,9 @@ class CORE_EXPORT QgsProviderMetadata
     virtual QgsTransaction *createTransaction( const QString &connString ) SIP_FACTORY;
 
     /**
-     * Returns a dictionary of provider connections,
+     * Returns a dictionary of stored provider connections,
      * the dictionary key is the connection identifier.
-     * Ownership is not tranfered.
+     * Ownership is not transfered.
      * \param cached if FALSE connections will be re-read from the settings
      * \since QGIS 3.10
      */
@@ -279,6 +279,14 @@ class CORE_EXPORT QgsProviderMetadata
      */
     QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true );
 
+    /**
+     * Searchs and returns a (possibly NULL) connection from the stored provider connections.
+     * Ownership is not transfered.
+     * \name name the connection name
+     * \param cached if FALSE connections will be re-read from the settings
+     * \since QGIS 3.10
+     */
+    QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true );
 
 #ifndef SIP_RUN
 
@@ -295,16 +303,18 @@ class CORE_EXPORT QgsProviderMetadata
 #endif
 
     /**
-     * Creates a new connection by loading the connection with the given \a name from the settings
+     * Creates a new connection by loading the connection with the given \a name from the settings.
+     * Ownership is transfered to the caller.
      * \since QGIS 3.10
      */
-    virtual QgsAbstractProviderConnection *connection( const QString &name ) SIP_FACTORY ;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_FACTORY ;
 
     /**
      * Creates a new connection with the given \a name and data source \a uri
+     * Ownership is transfered to the caller.
      * \since QGIS 3.10
      */
-    virtual QgsAbstractProviderConnection *connection( const QString &name, const QString &uri ) SIP_FACTORY;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) SIP_FACTORY;
 
     /**
      * Removes the connection with the given \a name from the settings
@@ -314,8 +324,7 @@ class CORE_EXPORT QgsProviderMetadata
 
     /**
      * Stores the connection \a connection in the settings
-     * \param configuration stores additional connection settings that not part of the data source URI
-     *
+     * \param configuration stores additional connection settings that not part of the data source URI     *
      * \since QGIS 3.10
      */
     virtual void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() );

@@ -38,7 +38,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
 
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void dropRasterTable( const QString &schema, const QString &name ) const override;
-    void renameTable( const QString &schema, const QString &name, const QString &newName ) const override;
+    void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
+    void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const override;
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
     void renameSchema( const QString &name, const QString &newName ) const override;
@@ -56,6 +57,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QList<QVariantList> executeSqlPrivate( const QString &sql ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
+    void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
 };
 
 #endif // QGSPOSTGRESPROVIDERCONNECTION_H

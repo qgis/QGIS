@@ -63,9 +63,14 @@ void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &sc
   throw QgsProviderConnectionException( QObject::tr( "Operation 'createVectorTable' is not supported" ) );
 }
 
-void QgsAbstractDatabaseProviderConnection::renameTable( const QString &, const QString &, const QString & ) const
+void QgsAbstractDatabaseProviderConnection::renameVectorTable( const QString &, const QString &, const QString & ) const
 {
-  checkCapability( Capability::RenameTable );
+  checkCapability( Capability::RenameVectorTable );
+}
+
+void QgsAbstractDatabaseProviderConnection::renameRasterTable( const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Capability::RenameRasterTable );
 }
 
 void QgsAbstractDatabaseProviderConnection::dropVectorTable( const QString &, const QString & ) const

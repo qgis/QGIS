@@ -122,14 +122,13 @@ void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, co
 }
 
 
-void QgsGeoPackageProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
+void QgsGeoPackageProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
 {
-  checkCapability( Capability::RenameTable );
+  checkCapability( Capability::RenameVectorTable );
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  // TODO: won't work for RASTER layers
   // TODO: maybe an index?
   QString sql( QStringLiteral( "ALTER TABLE %1 RENAME TO %2" )
                .arg( QgsSqliteUtils::quotedIdentifier( name ),
@@ -252,7 +251,7 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::Tables,
     Capability::CreateVectorTable,
     Capability::DropVectorTable,
-    Capability::RenameTable,
+    Capability::RenameVectorTable,
     Capability::Vacuum,
     Capability::Spatial,
     Capability::TableExists,

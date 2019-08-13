@@ -173,14 +173,27 @@ QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbCo
   return connections<QgsAbstractDatabaseProviderConnection>( cached ) ;
 }
 
-QgsAbstractProviderConnection *QgsProviderMetadata::connection( const QString &name )
+QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QString &name, bool cached )
+{
+  const QMap<QString, QgsAbstractProviderConnection *> constConns { connections( cached ) };
+  for ( QgsAbstractProviderConnection *conn : constConns )
+  {
+    if ( conn->name() == name )
+    {
+      return conn;
+    }
+  }
+  return nullptr;
+}
+
+QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name )
 {
   Q_UNUSED( name );
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
 }
 
 
-QgsAbstractProviderConnection *QgsProviderMetadata::connection( const QString &name, const QString &uri )
+QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name, const QString &uri )
 {
   Q_UNUSED( name );
   Q_UNUSED( uri );

@@ -6673,12 +6673,12 @@ QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connectio
   return connectionsProtected<QgsGeoPackageProviderConnection, QgsOgrDbConnection>( cached );
 }
 
-QgsAbstractProviderConnection *QgsOgrProviderMetadata::connection( const QString &connName )
+QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &connName )
 {
   return new QgsGeoPackageProviderConnection( connName );
 }
 
-QgsAbstractProviderConnection *QgsOgrProviderMetadata::connection( const QString &connName, const QString &uri )
+QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &connName, const QString &uri )
 {
   return new QgsGeoPackageProviderConnection( connName, uri );
 }

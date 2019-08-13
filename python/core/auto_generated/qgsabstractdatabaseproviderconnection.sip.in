@@ -203,24 +203,22 @@ Sets a ``flag``
 
     };
 
-
     enum Capability
     {
       CreateVectorTable,
       // CreateRasterTable does not make much sense, skip it for now:
       DropRasterTable,
       DropVectorTable,
-      RenameTable,
+      RenameVectorTable,
+      RenameRasterTable,
       CreateSchema,
       DropSchema,
       RenameSchema,
       ExecuteSql,
-      // TODO: Transaction = 1 << 9,   //!< Supports transactions when executing operations
       Vacuum,
       Tables,
       Schemas,
       SqlLayers,
-      // TODO: TruncateTable = 1 << 14,      //!< Can TRUNCATE a table
       TableExists,
       Spatial,
     };
@@ -286,9 +284,20 @@ Raises a QgsProviderConnectionException if any errors are encountered.
    \throws :py:class:`QgsProviderConnectionException`
 %End
 
-    virtual void renameTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
+    virtual void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
-Renames a table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Renames a vector or aspatial table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+.. note::
+
+   it is responsibility of the caller to handle opened layers and registry entries.
+   \throws :py:class:`QgsProviderConnectionException`
+%End
+
+    virtual void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
+%Docstring
+Renames a raster table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::

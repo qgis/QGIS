@@ -53,7 +53,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::RenameSchema,
     Capability::DropSchema,
     Capability::CreateSchema,
-    Capability::RenameTable,
+    Capability::RenameVectorTable,
+    Capability::RenameRasterTable,
     Capability::Vacuum,
     Capability::ExecuteSql,
     Capability::SqlLayers,
@@ -122,13 +123,25 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
   dropTablePrivate( schema, name );
 }
 
-void QgsPostgresProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
+
+void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
-  checkCapability( Capability::RenameTable );
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
                      .arg( QgsPostgresConn::quotedIdentifier( schema ) )
                      .arg( QgsPostgresConn::quotedIdentifier( name ) )
                      .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
+}
+
+void QgsPostgresProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameVectorTable );
+  renameTablePrivate( schema, name, newName );
+}
+
+void QgsPostgresProviderConnection::renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameRasterTable );
+  renameTablePrivate( schema, name, newName );
 }
 
 void QgsPostgresProviderConnection::createSchema( const QString &name ) const
