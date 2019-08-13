@@ -47,6 +47,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
       FlagDrawSelection = 1 << 7, //!< Draw selection
       FlagDisableTiledRasterLayerRenders = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
+      FlagRenderLabelsByMapLayer = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

@@ -31,6 +31,7 @@ Stores information relating to the current rendering settings for a layout.
       FlagHideCoverageLayer,
       FlagDrawSelection,
       FlagDisableTiledRasterLayerRenders,
+      FlagRenderLabelsByMapLayer,
     };
     typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
 
