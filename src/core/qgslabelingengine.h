@@ -280,7 +280,7 @@ class CORE_EXPORT QgsLabelingEngine
     void solve( QgsRenderContext &context );
 
     /**
-     * Draws labels to the specified render \context.
+     * Draws labels to the specified render \a context.
      *
      * If \a layerId is specified, only labels from the matching layer will
      * be rendered.
