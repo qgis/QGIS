@@ -37,6 +37,15 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
   public:
 
     /**
+     * Flags which control the staged render job behavior.
+     */
+    enum Flag
+    {
+      RenderLabelsByMapLayer = 0x01, //!< Labels should be rendered in individual stages by map layer. This allows seperation of labels belonging to different layers, but may affect label stacking order as the order will become layer-dependant, instead of per-label-dependant.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Represents the stages of a rendering job.
      */
     enum RenderStage
@@ -49,8 +58,10 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     /**
      * Constructor for QgsMapRendererStagedRenderJob, using the given
      * map \a settings.
+     *
+     * The optional \a flags argument can be used to control the staged render job behavior.
      */
-    QgsMapRendererStagedRenderJob( const QgsMapSettings &settings );
+    QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags = nullptr );
     ~QgsMapRendererStagedRenderJob() override;
 
     void start() override;
@@ -108,7 +119,10 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
 
     bool mNextIsLabel = false;
     bool mExportedLabels = false;
-
+    Flags mFlags = nullptr;
+    bool mPreparedStagedLabelJob = false;
+    QList< QgsMapLayer * > mLabelingLayers;
+    QList< QgsMapLayer * >::iterator mLabelLayerIt;
 };
 
 #endif // QGSMAPRENDERERSTAGEDRENDERJOB_H

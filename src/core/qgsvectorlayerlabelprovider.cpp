@@ -606,3 +606,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   if ( label->getNextPart() )
     drawLabelPrivate( label->getNextPart(), context, tmpLyr, drawType, dpiRatio );
 }
+
+const QgsPalLayerSettings &QgsVectorLayerLabelProvider::settings() const
+{
+  return mSettings;
+}

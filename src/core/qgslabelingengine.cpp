@@ -27,6 +27,7 @@
 #include "qgsmaplayer.h"
 #include "qgssymbol.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerlabelprovider.h"
 
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )
@@ -94,18 +95,48 @@ void QgsLabelingEngine::setMapSettings( const QgsMapSettings &mapSettings )
 
 QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
 {
-  QSet< QgsMapLayer * > layers;
-  for ( QgsAbstractLabelProvider *provider : mProviders )
+  QList< QgsMapLayer * > layers;
+
+  // try to return layers sorted in the desired z order for rendering
+  QList< QgsAbstractLabelProvider * > providersByZ = mProviders;
+  std::sort( providersByZ.begin(), providersByZ.end(),
+             []( const QgsAbstractLabelProvider * a, const QgsAbstractLabelProvider * b ) -> bool
   {
-    if ( provider->layer() )
+    const QgsVectorLayerLabelProvider *providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
+    const QgsVectorLayerLabelProvider *providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
+
+    if ( providerA && providerB )
+    {
+      return providerA->settings().zIndex < providerB->settings().zIndex ;
+    }
+    return false;
+  } );
+
+  QList< QgsAbstractLabelProvider * > subProvidersByZ = mSubProviders;
+  std::sort( subProvidersByZ.begin(), subProvidersByZ.end(),
+             []( const QgsAbstractLabelProvider * a, const QgsAbstractLabelProvider * b ) -> bool
+  {
+    const QgsVectorLayerLabelProvider *providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
+    const QgsVectorLayerLabelProvider *providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
+
+    if ( providerA && providerB )
+    {
+      return providerA->settings().zIndex < providerB->settings().zIndex ;
+    }
+    return false;
+  } );
+
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( providersByZ ) )
+  {
+    if ( provider->layer() && !layers.contains( provider->layer() ) )
       layers << provider->layer();
   }
-  for ( QgsAbstractLabelProvider *provider : mSubProviders )
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( subProvidersByZ ) )
   {
-    if ( provider->layer() )
+    if ( provider->layer() && !layers.contains( provider->layer() ) )
       layers << provider->layer();
   }
-  return layers.toList();
+  return layers;
 }
 
 void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider *provider )
@@ -319,10 +350,13 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   // find the solution
   mLabels = mPal->solveProblem( mProblem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ), settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) ? &mUnlabeled : nullptr );
 
+  // sort labels
+  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mMapSettings ) );
+
   QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( mLabels.size() ), 4 );
 }
 
-void QgsLabelingEngine::drawLabels( QgsRenderContext &context )
+void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &layerId )
 {
   QTime t;
   t.start();
@@ -331,12 +365,12 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context )
   QPainter *painter = context.painter();
   painter->setRenderHint( QPainter::Antialiasing );
 
-  // sort labels
-  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mMapSettings ) );
-
   // prepare for rendering
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
   {
+    if ( !layerId.isEmpty() && provider->layerId() != layerId )
+      continue;
+
     // provider will require the correct layer scope for expression preparation - at this stage, the existing expression context
     // only contains generic scopes
     QgsExpressionContextScopePopper popper( context.expressionContext(), QgsExpressionContextUtils::layerScope( provider->layer() ) );
@@ -358,6 +392,9 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context )
       continue;
     }
 
+    if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
+      continue;
+
     context.expressionContext().setFeature( lf->feature() );
     context.expressionContext().setFields( lf->feature().fields() );
     if ( lf->symbol() )
@@ -378,6 +415,9 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context )
     {
       continue;
     }
+
+    if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
+      continue;
 
     context.expressionContext().setFeature( lf->feature() );
     context.expressionContext().setFields( lf->feature().fields() );
@@ -403,6 +443,9 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context )
         continue;
       }
 
+      if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
+        continue;
+
       context.expressionContext().setFeature( lf->feature() );
       context.expressionContext().setFields( lf->feature().fields() );
       if ( lf->symbol() )
@@ -420,6 +463,9 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context )
   // cleanup
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
   {
+    if ( !layerId.isEmpty() && provider->layerId() != layerId )
+      continue;
+
     provider->stopRender( context );
   }
 
@@ -472,6 +518,46 @@ void QgsDefaultLabelingEngine::run( QgsRenderContext &context )
   drawLabels( context );
   cleanup();
 }
+
+
+//
+//  QgsStagedRenderLabelingEngine
+//
+
+QgsStagedRenderLabelingEngine::QgsStagedRenderLabelingEngine()
+  : QgsLabelingEngine()
+{
+
+}
+
+void QgsStagedRenderLabelingEngine::run( QgsRenderContext &context )
+{
+  registerLabels( context );
+  if ( context.renderingStopped() )
+  {
+    cleanup();
+    return; // it has been canceled
+  }
+
+  solve( context );
+  if ( context.renderingStopped() )
+  {
+    cleanup();
+    return;
+  }
+}
+
+
+void QgsStagedRenderLabelingEngine::renderLabelsForLayer( QgsRenderContext &context, const QString &layerId )
+{
+  drawLabels( context, layerId );
+}
+
+void QgsStagedRenderLabelingEngine::finalize()
+{
+  cleanup();
+}
+
 
 ////
 
@@ -645,3 +731,4 @@ pal::LineArrangementFlags QgsLabelingUtils::decodeLinePlacementFlags( const QStr
     flags |= pal::FLAG_MAP_ORIENTATION;
   return flags;
 }
+

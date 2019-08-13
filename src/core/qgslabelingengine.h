@@ -276,7 +276,7 @@ class CORE_EXPORT QgsLabelingEngine
 
     void registerLabels( QgsRenderContext &context );
     void solve( QgsRenderContext &context );
-    void drawLabels( QgsRenderContext &context );
+    void drawLabels( QgsRenderContext &context, const QString &layerId = QString() );
     void cleanup();
 };
 
@@ -301,8 +301,37 @@ class CORE_EXPORT QgsDefaultLabelingEngine : public QgsLabelingEngine
     QgsDefaultLabelingEngine &operator=( const QgsDefaultLabelingEngine &rh ) = delete;
 
     void run( QgsRenderContext &context ) override;
+
 };
 
+/**
+ * \ingroup core
+ * \class QgsStagedRenderLabelingEngine
+ * \brief A QgsLabelingEngine implementation, which only calculates
+ * the labeling solution during its run() method. The actual rendering
+ * of labels themselves is defered to follow up calls to ....
+ *
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \note not available in Python bindings
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStagedRenderLabelingEngine : public QgsLabelingEngine
+{
+  public:
+    //! Construct the labeling engine with default settings
+    QgsStagedRenderLabelingEngine();
+
+    //! QgsStagedRenderLabelingEngine cannot be copied.
+    QgsStagedRenderLabelingEngine( const QgsStagedRenderLabelingEngine &rh ) = delete;
+    //! QgsStagedRenderLabelingEngine cannot be copied.
+    QgsStagedRenderLabelingEngine &operator=( const QgsStagedRenderLabelingEngine &rh ) = delete;
+
+    void run( QgsRenderContext &context ) override;
+
+    void renderLabelsForLayer( QgsRenderContext &context, const QString &layerId );
+
+    void finalize();
+};
 
 
 /**
