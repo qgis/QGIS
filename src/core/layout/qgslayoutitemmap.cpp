@@ -1117,7 +1117,15 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
             return detail;
 
           case QgsMapRendererStagedRenderJob::Labels:
-            detail.name = tr( "%1: Labels" ).arg( displayName() );
+            if ( const QgsMapLayer *layer = mStagedRendererJob->currentLayer() )
+            {
+              detail.name = tr( "%1: %2 (Labels)" ).arg( displayName(), layer->name() );
+              detail.mapLayerId = layer->id();
+            }
+            else
+            {
+              detail.name = tr( "%1: Labels" ).arg( displayName() );
+            }
             return detail;
 
           case QgsMapRendererStagedRenderJob::Finished:
@@ -2420,7 +2428,10 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
 void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi )
 {
   // TODO - overview?
-  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings( extent, size, dpi, true ) );
+  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings( extent, size, dpi, true ),
+                       mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagRenderLabelsByMapLayer
+                       ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
+                       : QgsMapRendererStagedRenderJob::Flags( nullptr ) );
   mStagedRendererJob->start();
 }
 
