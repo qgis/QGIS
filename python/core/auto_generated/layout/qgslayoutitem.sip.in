@@ -1053,6 +1053,13 @@ Emitted on item rotation change.
 Emitted when the item's size or position changes.
 %End
 
+    void backgroundTaskCountChanged( int count );
+%Docstring
+Emitted whenever the number of background tasks an item is executing changes.
+
+.. versionadded:: 3.10
+%End
+
   protected:
 
     virtual void drawDebugRect( QPainter *painter );

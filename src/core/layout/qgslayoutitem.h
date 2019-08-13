@@ -986,6 +986,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     void sizePositionChanged();
 
+    /**
+     * Emitted whenever the number of background tasks an item is executing changes.
+     *
+     * \since QGIS 3.10
+     */
+    void backgroundTaskCountChanged( int count );
+
   protected:
 
     /**

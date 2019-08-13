@@ -36,6 +36,7 @@ class QgsLayoutRuler;
 class QComboBox;
 class QSlider;
 class QLabel;
+class QProgressBar;
 class QgsLayoutAppMenuProvider;
 class QgsLayoutItem;
 class QgsPanelWidgetStack;
@@ -382,6 +383,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     void updateWindowTitle();
 
+    void backgroundTaskCountChanged( int total );
+
   private:
 
     static bool sInitializedRegistry;
@@ -449,6 +452,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QAction *mActionCut = nullptr;
     QAction *mActionCopy = nullptr;
     QAction *mActionPaste = nullptr;
+    QProgressBar *mStatusProgressBar = nullptr;
 
     struct PanelStatus
     {
