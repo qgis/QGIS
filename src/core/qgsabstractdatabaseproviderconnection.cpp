@@ -146,14 +146,23 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setTableName( const Q
   mTableName = name;
 }
 
-void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryType( const QgsWkbTypes::Type &type, const QgsCoordinateReferenceSystem &crs )
+void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryColumnType( const QgsWkbTypes::Type &type, const QgsCoordinateReferenceSystem &crs )
 {
-  mGeometryTypes.push_back( qMakePair<int, QgsCoordinateReferenceSystem>( static_cast<int>( type ), crs ) );
+  // Do not add the type if it's already present
+  const QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType toAdd { type, crs };
+  for ( const auto &t : qgis::as_const( mGeometryColumnTypes ) )
+  {
+    if ( t == toAdd )
+    {
+      return;
+    }
+  }
+  mGeometryColumnTypes.push_back( toAdd );
 }
 
-QList<QPair<int, QgsCoordinateReferenceSystem> > QgsAbstractDatabaseProviderConnection::TableProperty::geometryTypes() const
+QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> QgsAbstractDatabaseProviderConnection::TableProperty::geometryColumnTypes() const
 {
-  return mGeometryTypes;
+  return mGeometryColumnTypes;
 }
 
 
@@ -168,9 +177,9 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProvider
 {
   TableProperty property;
 
-  Q_ASSERT( index >= 0 && index < geometryTypes().size() );
+  Q_ASSERT( index >= 0 && index < mGeometryColumnTypes.size() );
 
-  property.mGeometryTypes << mGeometryTypes[ index ];
+  property.mGeometryColumnTypes << mGeometryColumnTypes[ index ];
   property.mSchema = mSchema;
   property.mTableName = mTableName;
   property.mGeometryColumn = mGeometryColumn;
@@ -187,9 +196,9 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setFlag( const QgsAbs
   mFlags.setFlag( flag );
 }
 
-void QgsAbstractDatabaseProviderConnection::TableProperty::setGeometryTypes( const QList<QPair<int, QgsCoordinateReferenceSystem> > &geometryTypes )
+void QgsAbstractDatabaseProviderConnection::TableProperty::setGeometryColumnTypes( const QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> &columnTypes )
 {
-  mGeometryTypes = geometryTypes;
+  mGeometryColumnTypes = columnTypes;
 }
 
 
@@ -236,9 +245,9 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setFlags( const QgsAb
 QList<QgsCoordinateReferenceSystem> QgsAbstractDatabaseProviderConnection::TableProperty::crsList() const
 {
   QList<QgsCoordinateReferenceSystem> crss;
-  for ( const auto &t : qgis::as_const( mGeometryTypes ) )
+  for ( const auto &t : qgis::as_const( mGeometryColumnTypes ) )
   {
-    crss.push_back( t.second );
+    crss.push_back( t.crs );
   }
   return crss;
 }

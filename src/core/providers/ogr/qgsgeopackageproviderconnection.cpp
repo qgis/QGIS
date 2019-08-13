@@ -207,7 +207,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       if ( aspatialTypes.contains( dataType ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
-        property.addGeometryType( QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem() );
+        property.addGeometryColumnType( QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem() );
       }
       else
       {
@@ -218,7 +218,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
           throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( row.at( 3 ).toString() ) );
         }
         QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( srid );
-        property.addGeometryType( QgsWkbTypes::parseType( row.at( 4 ).toString() ),  crs );
+        property.addGeometryColumnType( QgsWkbTypes::parseType( row.at( 4 ).toString() ),  crs );
       }
       property.setComment( row.at( 4 ).toString() );
       tableInfo.push_back( property );

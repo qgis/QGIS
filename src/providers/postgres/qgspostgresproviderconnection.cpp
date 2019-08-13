@@ -283,7 +283,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
           property.setFlags( prFlags );
           for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ) ; i++ )
           {
-            property.addGeometryType( pr.types.at( i ), QgsCoordinateReferenceSystem::fromEpsgId( pr.srids.at( i ) ) );
+            property.addGeometryColumnType( pr.types.at( i ), QgsCoordinateReferenceSystem::fromEpsgId( pr.srids.at( i ) ) );
           }
           property.setTableName( pr.tableName );
           property.setSchema( pr.schemaName );

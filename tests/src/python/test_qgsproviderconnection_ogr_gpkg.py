@@ -73,6 +73,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3857)
         typ = QgsWkbTypes.LineString
         conn.createVectorTable('', 'myNewAspatialTable', QgsFields(), QgsWkbTypes.NoGeometry, crs, True, {})
+        conn.createVectorTable('', 'myNewTable', QgsFields(), typ, crs, True, {})
 
         # Check filters and special cases
         table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
@@ -89,7 +90,6 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertFalse('osm' in table_names)
         self.assertFalse('myNewTable' in table_names)
         self.assertTrue('myNewAspatialTable' in table_names)
-        geometries_table.setGeometryTypes([(0, QgsCoordinateReferenceSystem.fromEpsgId(3857))])
 
 
 if __name__ == '__main__':

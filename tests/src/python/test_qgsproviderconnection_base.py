@@ -78,10 +78,10 @@ class TestPyQgsProviderConnectionBase():
         capabilities = conn.capabilities()
 
         # Schema operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema and
-                capabilities & QgsAbstractDatabaseProviderConnection.Schemas and
-                capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema and
-                capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema
+                and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
+                and capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema
+                and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
             # Create
@@ -102,10 +102,10 @@ class TestPyQgsProviderConnectionBase():
             self.assertFalse('myVeryNewSchema' in schemas)
 
         # Table operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable and
-                capabilities & QgsAbstractDatabaseProviderConnection.Tables and
-                capabilities & QgsAbstractDatabaseProviderConnection.RenameTable and
-                capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable
+                and capabilities & QgsAbstractDatabaseProviderConnection.Tables
+                and capabilities & QgsAbstractDatabaseProviderConnection.RenameTable
+                and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
@@ -139,8 +139,8 @@ class TestPyQgsProviderConnectionBase():
             self.assertIsNotNone(table_property)
             self.assertEqual(table_property.tableName(), 'myNewTable')
             self.assertEqual(table_property.geometryColumnCount(), 1)
-            self.assertEqual(table_property.geometryTypes()[0][0], QgsWkbTypes.LineString)
-            self.assertEqual(table_property.geometryTypes()[0][1], QgsCoordinateReferenceSystem.fromEpsgId(3857))
+            self.assertEqual(table_property.geometryColumnTypes()[0].wkbType, QgsWkbTypes.LineString)
+            self.assertEqual(table_property.geometryColumnTypes()[0].crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
             self.assertEqual(table_property.defaultName(), 'myNewTable')
 
             # Check aspatial tables
@@ -152,8 +152,8 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(table_property.geometryColumnCount(), 0)
             self.assertEqual(table_property.geometryColumn(), '')
             self.assertEqual(table_property.defaultName(), 'myNewAspatialTable')
-            self.assertEqual(table_property.geometryTypes()[0][0], QgsWkbTypes.NoGeometry)
-            self.assertFalse(table_property.geometryTypes()[0][1].isValid())
+            self.assertEqual(table_property.geometryColumnTypes()[0].wkbType, QgsWkbTypes.NoGeometry)
+            self.assertFalse(table_property.geometryColumnTypes()[0].crs.isValid())
             self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Raster)
             self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Vector)
             self.assertTrue(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)
@@ -205,6 +205,28 @@ class TestPyQgsProviderConnectionBase():
                 # Drop schema (should fail)
                 with self.assertRaises(QgsProviderConnectionException) as ex:
                     conn.dropSchema('myNewSchema')
+
+            # Check some column types operations
+            table = self._table_by_name(conn.tables(schema), 'myVeryNewTable')
+            self.assertEqual(len(table.geometryColumnTypes()), 1)
+            ct = table.geometryColumnTypes()[0]
+            self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
+            self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
+            # Add a new (existing type)
+            table.addGeometryColumnType(QgsWkbTypes.LineString, QgsCoordinateReferenceSystem.fromEpsgId(3857))
+            self.assertEqual(len(table.geometryColumnTypes()), 1)
+            ct = table.geometryColumnTypes()[0]
+            self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
+            self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
+            # Add a new one
+            table.addGeometryColumnType(QgsWkbTypes.LineString, QgsCoordinateReferenceSystem.fromEpsgId(4326))
+            self.assertEqual(len(table.geometryColumnTypes()), 2)
+            ct = table.geometryColumnTypes()[0]
+            self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
+            self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
+            ct = table.geometryColumnTypes()[1]
+            self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(4326))
+            self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
 
             # Drop table
             conn.dropVectorTable(schema, 'myVeryNewTable')
