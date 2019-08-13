@@ -570,7 +570,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     if ( result != Success )
       return result;
 
-    geoPdfExporter->finalize( pdfComponents );
+    geoPdfExporter->finalize( pdfComponents, filePath );
   }
   else
   {
