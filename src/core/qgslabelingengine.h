@@ -343,7 +343,7 @@ class CORE_EXPORT QgsDefaultLabelingEngine : public QgsLabelingEngine
  * \class QgsStagedRenderLabelingEngine
  * \brief A QgsLabelingEngine implementation, which only calculates
  * the labeling solution during its run() method. The actual rendering
- * of labels themselves is defered to follow up calls to ....
+ * of labels themselves is deferred to follow up calls to ....
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings
