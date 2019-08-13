@@ -23,6 +23,7 @@
 class QSlider;
 class QTimer;
 class QgsMapLayer;
+class QCheckBox;
 
 SIP_NO_FILE
 
@@ -59,6 +60,34 @@ class QgsLayerTreeOpacityWidget : public QWidget
     QgsMapLayer *mLayer = nullptr;
     QSlider *mSlider = nullptr;
     QTimer *mTimer = nullptr;
+};
+
+/**
+ * \brief Implementation of checkbox to enable labels in the layer tree
+ *
+ * \note private class - not in QGIS API
+ */
+class QgsLayerTreeToggleLabelsWidget : public QWidget
+{
+    Q_OBJECT
+  public:
+    QgsLayerTreeToggleLabelsWidget( QgsMapLayer *layer );
+    class Provider : public QgsLayerTreeEmbeddedWidgetProvider
+    {
+      public:
+        QString id() const override;
+        QString name() const override;
+        QgsLayerTreeToggleLabelsWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) override;
+        bool supportsLayer( QgsMapLayer *layer ) override;
+    };
+
+  public slots:
+    void toggled( bool active );
+    void layerSettingChanged();
+
+  private:
+    QgsMapLayer *mLayer = nullptr;
+    QCheckBox *mCheckBox = nullptr;
 };
 ///@endcond
 #endif // QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H

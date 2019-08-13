@@ -20,6 +20,7 @@
 #include <QLabel>
 #include <QSlider>
 #include <QTimer>
+#include <QCheckBox>
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
@@ -153,6 +154,97 @@ bool QgsLayerTreeOpacityWidget::Provider::supportsLayer( QgsMapLayer *layer )
 
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::PluginLayer:
+      return false;
+  }
+  return false;
+}
+
+//
+// QgsLayerTreeToggleLabelsWidget
+//
+
+QgsLayerTreeToggleLabelsWidget::QgsLayerTreeToggleLabelsWidget( QgsMapLayer *layer )
+  : mLayer( layer )
+{
+  setAutoFillBackground( true ); // override the content from model
+  mCheckBox = new QCheckBox( tr( "Show Labels" ), this );
+  QHBoxLayout *lay = new QHBoxLayout();
+  QSpacerItem *spacerItem = new QSpacerItem( 1, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
+  lay->addWidget( mCheckBox );
+  lay->addItem( spacerItem );
+  setLayout( lay );
+
+  connect( mCheckBox, &QCheckBox::toggled, this, &QgsLayerTreeToggleLabelsWidget::toggled );
+
+  // init from layer
+  switch ( mLayer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
+      mCheckBox->setChecked( vl->labelsEnabled() );
+      connect( vl, &QgsVectorLayer::labelsToggled, this, &QgsLayerTreeToggleLabelsWidget::layerSettingChanged );
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+      break;
+
+  }
+}
+
+void QgsLayerTreeToggleLabelsWidget::toggled( bool active )
+{
+  switch ( mLayer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      qobject_cast<QgsVectorLayer *>( mLayer )->setLabelsEnabled( active );
+      mLayer->emitStyleChanged();
+      mLayer->triggerRepaint();
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+      break;
+  }
+}
+
+void QgsLayerTreeToggleLabelsWidget::layerSettingChanged()
+{
+  whileBlocking( mCheckBox )->setChecked( qobject_cast<QgsVectorLayer *>( mLayer )->labelsEnabled() );
+}
+
+QString QgsLayerTreeToggleLabelsWidget::Provider::id() const
+{
+  return QStringLiteral( "labels_toggle" );
+}
+
+QString QgsLayerTreeToggleLabelsWidget::Provider::name() const
+{
+  return tr( "Toggle labels" );
+}
+
+QgsLayerTreeToggleLabelsWidget *QgsLayerTreeToggleLabelsWidget::Provider::createWidget( QgsMapLayer *layer, int widgetIndex )
+{
+  Q_UNUSED( widgetIndex )
+  return new QgsLayerTreeToggleLabelsWidget( layer );
+}
+
+bool QgsLayerTreeToggleLabelsWidget::Provider::supportsLayer( QgsMapLayer *layer )
+{
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      return true;
+
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::RasterLayer:
       return false;
   }
   return false;
