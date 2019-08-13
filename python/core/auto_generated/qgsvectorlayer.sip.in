@@ -1419,8 +1419,8 @@ Adds topological points for every vertex of the geometry.
 
     int addTopologicalPoints( const QgsPointXY &p );
 %Docstring
-Adds a vertex to segments which intersect point p but don't
-already have a vertex there. If a feature already has a vertex at position p,
+Adds a vertex to segments which intersect point ``p`` but don't
+already have a vertex there. If a feature already has a vertex at position ``p``,
 no additional vertex is inserted. This method is useful for topological
 editing.
 
@@ -1434,6 +1434,27 @@ editing.
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+%End
+
+    int addTopologicalPoints( const QgsPoint &p );
+%Docstring
+Adds a vertex to segments which intersect point ``p`` but don't
+already have a vertex there. If a feature already has a vertex at position ``p``,
+no additional vertex is inserted. This method is useful for topological
+editing.
+
+:param p: position of the vertex
+
+:return: 0 in case of success
+
+.. note::
+
+   Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
+
+.. versionadded:: 3.10
 %End
 
 
