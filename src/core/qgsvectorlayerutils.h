@@ -283,6 +283,16 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
 
+
+    /**
+     * \return true if the field at index \param fieldIndex from \param layer is editable,
+     * false if the field is readonly
+     * \param fid feature id value, -1 if it's a new feature
+     *
+     * \since QGIS 3.10
+     */
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, QgsFeatureId fid = -1 );
+
 };
 
 

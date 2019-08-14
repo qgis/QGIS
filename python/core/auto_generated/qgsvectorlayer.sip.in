@@ -465,6 +465,7 @@ Returns the join buffer object.
 
 .. versionadded:: 2.14.7
 %End
+
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
 
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) ${SIP_FINAL};

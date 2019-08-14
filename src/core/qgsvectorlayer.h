@@ -569,6 +569,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 2.14.7
      */
     QgsVectorLayerJoinBuffer *joinBuffer() { return mJoinBuffer; }
+
+    /**
+     * Returns a const pointer on join buffer object.
+     * \since QGIS 3.10
+     */
+    const QgsVectorLayerJoinBuffer *joinBuffer() const { return mJoinBuffer; } SIP_SKIP;
+
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
 
     /**
