@@ -119,6 +119,9 @@ QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
 
 bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDiff, bool createReferenceImage )
 {
+#ifdef QT_NO_PRINTER
+  return false;
+#else
   if ( !mLayout )
   {
     return false;
@@ -169,7 +172,9 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
   checkedReport += report();
 
   return testResult;
+#endif // QT_NO_PRINTER
 }
+
 
 
 ///@endcond
