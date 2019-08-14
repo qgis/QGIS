@@ -719,6 +719,22 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'test_project_wms_grouped_nested_layers.qgs',
                                  normalizeJson=True)
 
+        @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', "This test cannot run in TRAVIS because it relies on cascading external services")
+        def testGetFeatureInfoCascadingLayers(self):
+            """Test that we can get feature info on cascading WMS layers"""
+
+            project_name = 'bug_gh31177_gfi_cascading_wms.qgs'
+            self.wms_request_compare('GetFeatureInfo',
+                                     '&BBOX=852729.31,5631138.51,853012.18,5631346.17' +
+                                     '&CRS=EPSG:3857' +
+                                     '&WIDTH=850&HEIGHT=624' +
+                                     '&QUERY_LAYERS=Alberate' +
+                                     '&INFO_FORMAT=application/vnd.ogc.gml' +
+                                     '&I=509&J=289' +
+                                     '&FEATURE_COUNT=10',
+                                     'wms_getfeatureinfo_cascading_issue31177',
+                                     project_name)
+
 
 if __name__ == '__main__':
     unittest.main()
