@@ -22,6 +22,7 @@
 #include "qgsfeaturepool.h"
 
 /**
+ * \ingroup analysis
  * Base configuration for geometry checks.
  *
  * \note This class is a technology preview and unstable API.
