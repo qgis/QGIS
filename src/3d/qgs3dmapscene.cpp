@@ -526,6 +526,7 @@ void Qgs3DMapScene::onLayerRenderer3DChanged()
 
 void Qgs3DMapScene::onLayersChanged()
 {
+  QgsDebugMsg( "Number of entities: " + QString::number( mLayerEntities.count() ) );
   QSet<QgsMapLayer *> layersBefore = QSet<QgsMapLayer *>::fromList( mLayerEntities.keys() );
   QList<QgsMapLayer *> layersAdded;
   Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
@@ -638,11 +639,13 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     connect( mCameraController, &QgsCameraController::viewportChanged, bm, [bm, this]
     {
       bm->setViewportSize( mCameraController->viewport().size() );
+      bm->debug( QStringLiteral( "Viewport changed" ) );
     } );
 
     bm->setViewportSize( mCameraController->viewport().size() );
   }
-  QgsDebugMsg( QStringLiteral( "Number of Billboard material %1" ).arg( i ) );
+
+  QgsDebugMsg( "Number of entity: " + QString::number( mLayerEntities.count() ) );
 }
 
 void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )

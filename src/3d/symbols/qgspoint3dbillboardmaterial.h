@@ -49,7 +49,7 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     QString name() {return mName;}
 
-    void debug();
+    void debug( QString title = QStringLiteral( "Normal debug" ) );
 
   private:
     Qt3DRender::QParameter *mSize = nullptr;

@@ -51,7 +51,6 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
 
   btnChangeSymbol->setSymbolType( QgsSymbol::Marker );
   btnChangeSymbol->setDialogTitle( tr( "Billboard symbol" ) );
-//  btnChangeSymbol->setLayer(layer());
 
   setSymbol( QgsPoint3DSymbol() );
   onShapeChanged();
@@ -68,9 +67,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( btnModel, static_cast<void ( QToolButton::* )( bool )>( &QToolButton::clicked ), this, &QgsPoint3DSymbolWidget::onChooseModelClicked );
   connect( cbOverwriteMaterial, static_cast<void ( QCheckBox::* )( int )>( &QCheckBox::stateChanged ), this, &QgsPoint3DSymbolWidget::onOverwriteMaterialChecked );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( btnChangeSymbol, &QgsSymbolButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-//  connect( btnChangeSymbol, &QgsSymbolButton::changed, this, &QgsPoint3DSymbolWidget::onBillboardSymbolChanged );
-//  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )( )>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
+  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )( )>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
 }
 
 void QgsPoint3DSymbolWidget::onChooseModelClicked( bool )

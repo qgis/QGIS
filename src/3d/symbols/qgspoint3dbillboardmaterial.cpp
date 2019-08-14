@@ -156,7 +156,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double si
   texture->setGenerateMipMaps( false );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setSize( image.size().width(), image.size().height() );
+  texture->setSize( int( size ), int( size ) );
   texture->addTextureImage( billboardTextureImage );
 
   // Set texture 2D
@@ -172,7 +172,7 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol()
   QgsMarkerSymbol *defaultSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   setTexture2DFromSymbol( defaultSymbol );
-  mName = QStringLiteral( "default symbol" );
+  mName = QStringLiteral( "default symbol: " ) + defaultSymbol->color().name();
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol )
@@ -188,8 +188,10 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   mName = markerSymbol->color().name();
 }
 
-void QgsPoint3DBillboardMaterial::debug()
+void QgsPoint3DBillboardMaterial::debug( QString title )
 {
   QVector<Qt3DRender::QAbstractTextureImage *> textureImages = texture2D()->textureImages();
+  QgsDebugMsg( "Billboard debug: " + title );
   QgsDebugMsg( "Name or color: " + name() );
+  QgsDebugMsg( "Billboard size: " + QString::number( size().height() ) );
 }
