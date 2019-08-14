@@ -47,6 +47,8 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol );
 
+    void setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage );
+
     QString name() {return mName;}
 
     void debug( QString title = QStringLiteral( "Normal debug" ) );

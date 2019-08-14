@@ -579,14 +579,19 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
   {
     QgsMarkerSymbol *ms = static_cast<QgsMarkerSymbol *>( s );
     QgsDebugMsg( QStringLiteral( "Use symbol from symbol.shapeProperties. The color is %1" ).arg( ms->color().name() ) );
-    billboardMaterial->setTexture2DFromSymbol( ms );
-//    billboardMaterial->setTexture2DFromImagePath(QStringLiteral( "qrc:/shaders/success-kid.png" ));
+    if ( ms->color().name() == QStringLiteral( "#ffffff" ) )
+    {
+      billboardMaterial->setTexture2DFromImagePath( QStringLiteral( "qrc:/shaders/success-kid.png" ) );
+    }
+    else
+    {
+      billboardMaterial->setTexture2DFromSymbol( ms );
+    }
   }
   else
   {
     QgsDebugMsg( "Use symbol from default" );
     billboardMaterial->useDefaultSymbol();
-//    billboardMaterial->setTexture2DFromImagePath(QStringLiteral( "qrc:/shaders/success-kid.png" ));
   }
 
   // Billboard Transform
@@ -617,6 +622,36 @@ void QgsPoint3DBillboardSymbolHandler::addMeshEntities( const Qgs3DMapSettings &
 
   // Billboard Material
   QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
+  QVariant symbolVariant = symbol.shapeProperties()[QStringLiteral( "billboard" )];
+  QString symbolString = symbolVariant.toString();
+
+  QDomDocument doc;
+  QDomElement elem;
+
+  if ( doc.setContent( symbolString ) )
+  {
+    elem = doc.documentElement();
+  }
+
+  QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( elem, QgsReadWriteContext() );
+  if ( s )
+  {
+    QgsMarkerSymbol *ms = static_cast<QgsMarkerSymbol *>( s );
+    QgsDebugMsg( QStringLiteral( "Use symbol from symbol.shapeProperties. The color is %1" ).arg( ms->color().name() ) );
+    if ( ms->color().name() == QStringLiteral( "#ffffff" ) )
+    {
+      billboardMaterial->setTexture2DFromImagePath( QStringLiteral( "qrc:/shaders/success-kid.png" ) );
+    }
+    else
+    {
+      billboardMaterial->setTexture2DFromSymbol( ms );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "Use symbol from default" );
+    billboardMaterial->useDefaultSymbol();
+  }
   if ( are_selected )
   {
     billboardMaterial->setSize( billboardMaterial->size() + billboardMaterial->size() );

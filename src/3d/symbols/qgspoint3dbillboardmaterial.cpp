@@ -131,36 +131,20 @@ Qt3DRender::QTexture2D *QgsPoint3DBillboardMaterial::texture2D()
 void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
 {
   // Texture Image
-  Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage;
-  image->setSource( QUrl( imagePath ) );
+  Qt3DRender::QTextureImage *textureImage = new Qt3DRender::QTextureImage;
+  textureImage->setSource( QUrl( imagePath ) );
 
-  // Texture2D
-  Qt3DRender::QTexture2D *texture2D = new Qt3DRender::QTexture2D;
-  texture2D->setGenerateMipMaps( false );
-  texture2D->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture2D->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-
-  texture2D->addTextureImage( image );
-
-  setTexture2D( texture2D );
+  setTexture2DFromTextureImage( textureImage );
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double size )
 {
   // Create texture image
-  QgsRectangle dummyExtent = QgsRectangle( 0 );
+  QgsRectangle dummyExtent = QgsRectangle( 0, 0, 100, 100 );
   QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, mName );
 
-  // Create texture 2D from the texture image
-  Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
-  texture->setGenerateMipMaps( false );
-  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setSize( int( size ), int( size ) );
-  texture->addTextureImage( billboardTextureImage );
+  setTexture2DFromTextureImage( billboardTextureImage );
 
-  // Set texture 2D
-  setTexture2D( texture );
   QgsDebugMsg( "Image Size: " + QString::number( image.size().width() ) );
   QgsRenderContext context = QgsRenderContext();
   setSize( QSizeF( size, size ) );
@@ -183,15 +167,31 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
 
   QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ) * 20, int( pixelSize ) * 20 ), 0 );
   QImage symbolImage = symbolPixmap.toImage();
+  QString path = "/home/ismailsunni/dev/cpp/test.png";
   symbolImage.save( "/home/ismailsunni/dev/cpp/test.png" );
+  QUrl url =  QUrl::fromLocalFile( path );
+//  setTexture2DFromImagePath(url.toString());
   setTexture2DFromImage( symbolImage, pixelSize * 20 );
   mName = markerSymbol->color().name();
+}
+
+void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage )
+{
+  // Texture2D
+  Qt3DRender::QTexture2D *texture2D = new Qt3DRender::QTexture2D;
+  texture2D->setGenerateMipMaps( false );
+  texture2D->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+  texture2D->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+
+  texture2D->addTextureImage( textureImage );
+
+  setTexture2D( texture2D );
 }
 
 void QgsPoint3DBillboardMaterial::debug( QString title )
 {
   QVector<Qt3DRender::QAbstractTextureImage *> textureImages = texture2D()->textureImages();
-  QgsDebugMsg( "Billboard debug: " + title );
-  QgsDebugMsg( "Name or color: " + name() );
-  QgsDebugMsg( "Billboard size: " + QString::number( size().height() ) );
+//  QgsDebugMsg( "Billboard debug: " + title );
+//  QgsDebugMsg( "Name or color: " + name() );
+//  QgsDebugMsg( "Billboard size: " + QString::number( size().height() ) );
 }
