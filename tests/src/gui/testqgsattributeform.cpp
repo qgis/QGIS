@@ -622,15 +622,22 @@ void TestQgsAttributeForm::testEditableJoin()
   QCOMPARE( ft0C.attribute( "col0" ), QVariant( 13 ) );
 
   // all editor widget must have a multi edit button
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
   form.setMode( QgsAttributeEditorContext::MultiEditMode );
+
+  // multi edit button must be displayed for A
   QgsAttributeFormEditorWidget *formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[1] );
   QVERIFY( formWidget->mMultiEditButton->parent() );
 
+  // multi edit button must be displayed for B (join is editable)
   formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[1] );
   QVERIFY( formWidget->mMultiEditButton->parent() );
 
+  // multi edit button must not be displayed for C (join is not editable)
   formWidget = qobject_cast<QgsAttributeFormEditorWidget *>( form.mFormWidgets[2] );
-  QVERIFY( formWidget->mMultiEditButton->parent() );
+  QVERIFY( !formWidget->mMultiEditButton->parent() );
 
   // clean
   delete layerA;

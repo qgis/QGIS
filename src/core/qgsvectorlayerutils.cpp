@@ -33,6 +33,7 @@
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -900,4 +901,29 @@ QgsGeometry QgsVectorLayerUtils::QgsFeatureData::geometry() const
 QgsAttributeMap QgsVectorLayerUtils::QgsFeatureData::attributes() const
 {
   return mAttributes;
+}
+
+bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex,  QgsFeatureId fid )
+{
+  return layer->isEditable() &&
+         !layer->editFormConfig().readOnly( fieldIndex ) &&
+         ( ( layer->dataProvider() && layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( fid ) );
+}
+
+bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, QgsFeatureId fid )
+{
+  bool editable = false;
+
+  if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( fieldIndex, layer->fields(), srcFieldIndex );
+
+    if ( info && info->isEditable() )
+      editable = _fieldIsEditable( info->joinLayer(), srcFieldIndex, fid );
+  }
+  else
+    editable = _fieldIsEditable( layer, fieldIndex, fid );
+
+  return editable;
 }
