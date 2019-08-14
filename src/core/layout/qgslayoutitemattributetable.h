@@ -299,6 +299,10 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
+  private slots:
+
+    void disconnectCurrentMap();
+
   private:
 
     //! Attribute source
