@@ -828,7 +828,8 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   //save multiframes
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )
   {
-    mf->writeXml( element, document, context );
+    if ( mf->frameCount() > 0 )
+      mf->writeXml( element, document, context );
   }
 
   writeXmlLayoutSettings( element, document, context );
