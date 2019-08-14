@@ -207,6 +207,8 @@ QScreen *QgsGui::findScreenAt( QPoint point )
 
 QgsGui::QgsGui()
 {
+  Q_INIT_RESOURCE( images );
+
 #ifdef Q_OS_MAC
   QgsMacNative *macNative = new QgsMacNative();
   macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
