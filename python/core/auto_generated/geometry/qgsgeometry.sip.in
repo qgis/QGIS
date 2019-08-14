@@ -849,6 +849,8 @@ Splits this geometry according to a given line.
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
 
 :return: OperationResult a result code: success or reason of failure
+
+.. deprecated:: in QGIS 3.10 - will be removed in QGIS 4.0
 %End
 
     OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/ );

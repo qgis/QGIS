@@ -1248,6 +1248,8 @@ Adds a ring to polygon/multipolygon features
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+
+.. deprecated:: in QGIS 3.10 - will be removed in QGIS 4.0
 %End
 
 
@@ -1349,6 +1351,8 @@ Adds a new part polygon to a multipart feature
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+
+.. deprecated:: in QGIS 3.10 - will be removed in QGIS 4.0
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
@@ -1432,6 +1436,8 @@ Splits parts cut by the given line
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+
+.. deprecated:: in QGIS 3.10 - will be removed in QGIS 4.0
 %End
 
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1480,6 +1486,8 @@ Splits features cut by the given line
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+
+.. deprecated:: in QGIS 3.10 - will be removed in QGIS 4.0
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
