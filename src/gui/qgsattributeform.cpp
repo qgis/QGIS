@@ -319,12 +319,7 @@ bool QgsAttributeForm::saveEdits()
         QVariant dstVar = dst.at( eww->fieldIdx() );
         QVariant srcVar = eww->value();
 
-        // need to check dstVar.isNull() != srcVar.isNull()
-        // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        // be careful- sometimes two null qvariants will be reported as not equal!! (e.g., different types)
-        bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
-                       || ( dstVar.isNull() != srcVar.isNull() );
-        if ( changed && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
+        if ( !qgsVariantEqual( dstVar, srcVar ) && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -437,12 +432,7 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
         QVariant dstVar = dst.at( eww->fieldIdx() );
         QVariant srcVar = eww->value();
 
-        // need to check dstVar.isNull() != srcVar.isNull()
-        // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        // be careful- sometimes two null qvariants will be reported as not equal!! (e.g., different types)
-        bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
-                       || ( dstVar.isNull() != srcVar.isNull() );
-        if ( changed && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
+        if ( !qgsVariantEqual( dstVar, srcVar ) && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
         }
@@ -465,12 +455,8 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
 
         //do not update when this widget is already updating (avoid recursions)
         if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
-        {
-          qDebug() << "we don't update field [" << eww->fieldIdx() << "] " << eww->field().name() << " because it's already 'updating'";
           continue;
-        }
 
-        qDebug() << "update field [" << eww->fieldIdx() << "] " << eww->field().name() << " with field of id " << originIdx << " because " << eww->layer()->fields().at( originIdx ).name() << " is in " << eww->field().defaultValueDefinition().expression();
         QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature ).toString();
         eww->setValue( value );
       }
