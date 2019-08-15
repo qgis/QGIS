@@ -63,6 +63,7 @@ class QgsRectangle;
 class QgsRelation;
 class QgsRelationManager;
 class QgsSingleSymbolRenderer;
+class QgsStoredExpressionManager;
 class QgsSymbol;
 class QgsVectorLayerJoinInfo;
 class QgsVectorLayerEditBuffer;
@@ -2135,6 +2136,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
 
+    /**
+     * Returns all the stored expressions for this layer as the manager
+     *
+     * \since QGIS 3.10
+     */
+    QgsStoredExpressionManager *storedExpressions() { return mStoredExpressions; }
 
   public slots:
 
@@ -2640,6 +2647,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     std::unique_ptr<QgsGeometryOptions> mGeometryOptions;
 
     bool mAllowCommit = true;
+
+    //! Stored expression used for e.g. filter
+    QgsStoredExpressionManager *mStoredExpressions = nullptr;
 
     friend class QgsVectorLayerFeatureSource;
 

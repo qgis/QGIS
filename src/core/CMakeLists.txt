@@ -342,6 +342,7 @@ SET(QGIS_CORE_SRCS
   qgssqliteutils.cpp
   qgsspatialiteutils.cpp
   qgsstatisticalsummary.cpp
+  qgsstoredexpressionmanager.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstaskmanager.cpp
@@ -700,6 +701,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrunprocess.h
   qgssnappingconfig.h
   qgssnappingutils.h
+  qgsstoredexpressionmanager.h
   qgstaskmanager.h
   qgstolerance.h
   qgstracer.h
@@ -1025,6 +1027,7 @@ SET(QGIS_CORE_HDRS
   qgssqlexpressioncompiler.h
   qgssqlstatement.h
   qgsstatisticalsummary.h
+  qgsstoredexpressionmanager.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
   qgstextlabelfeature.h

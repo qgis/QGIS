@@ -86,6 +86,7 @@
 #include "qgsstyle.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
+#include "qgsstoredexpressionmanager.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
@@ -157,6 +158,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mGeometryOptions = qgis::make_unique<QgsGeometryOptions>();
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
+  mStoredExpressions = new QgsStoredExpressionManager();
 
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
   mJoinBuffer->setParent( this );
@@ -204,6 +206,7 @@ QgsVectorLayer::~QgsVectorLayer()
 
   delete mRenderer;
   delete mConditionalStyles;
+  delete mStoredExpressions;
 
   if ( mFeatureCounter )
     mFeatureCounter->cancel();

@@ -1,0 +1,84 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsstoredexpressionmanager.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsStoredExpressionManager : QObject
+{
+%Docstring
+*************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgsstoredexpressionmanager.h"
+%End
+  public:
+    explicit QgsStoredExpressionManager( QObject *parent = 0 );
+
+    void addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
+%Docstring
+Adds an expression to the list
+
+:param name: optional name of the expression
+:param expression: the expression content
+:param tag: some content, maybe scope where to be shown
+%End
+
+    void addStoredExpressions( QList< QPair< QString, QString > > namedexpressions, const QString &tag = QString() );
+%Docstring
+Appends a list of expressions to the existing list
+
+:param namedexpressions: list of expressions and the optional name
+:param tag: some content, maybe scope where to be shown
+%End
+
+    QList< QPair< QString, QString > > getStoredExpressions( const QString &tag = QString() );
+%Docstring
+Returns the list of named expressions
+
+:param tag: some content, maybe scope where to be shown
+%End
+
+    void clearStoredExpressions();
+%Docstring
+clears list of stored expressions
+%End
+
+    bool writeXml( QDomNode &layer_node ) const;
+%Docstring
+Writes the stored expressions out in XML format
+%End
+
+    bool readXml( const QDomNode &layer_node );
+%Docstring
+Reads the  stored expressions in in XML format
+%End
+
+
+  signals:
+
+  public slots:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsstoredexpressionmanager.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

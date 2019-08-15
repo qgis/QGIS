@@ -127,6 +127,7 @@
 %Include auto_generated/qgssqlstatement.sip
 %Include auto_generated/qgssqliteutils.sip
 %Include auto_generated/qgsstatisticalsummary.sip
+%Include auto_generated/qgsstoredexpressionmanager.sip
 %Include auto_generated/qgsstringstatisticalsummary.sip
 %Include auto_generated/qgsstringutils.sip
 %Include auto_generated/qgstextrenderer.sip
