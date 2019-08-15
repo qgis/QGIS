@@ -104,7 +104,7 @@
            <string>Information</string>
           </property>
           <property name="toolTip">
-           <string>Information</string>
+           <string>General information</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -128,7 +128,7 @@
            <string>Symbology</string>
           </property>
           <property name="toolTip">
-           <string>Symbology</string>
+           <string>Control feature symbology</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -140,7 +140,7 @@
            <string>Labels</string>
           </property>
           <property name="toolTip">
-           <string>Labels</string>
+           <string>Control feature labeling</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -173,10 +173,10 @@
          </item>
          <item>
           <property name="text">
-           <string>Source Fields</string>
+           <string>Fields</string>
           </property>
           <property name="toolTip">
-           <string>Source Fields</string>
+           <string>Manage fields</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -188,7 +188,7 @@
            <string>Attributes Form</string>
           </property>
           <property name="toolTip">
-           <string>Form</string>
+           <string>Manage custom forms and field editor configuration</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -200,7 +200,7 @@
            <string>Joins</string>
           </property>
           <property name="toolTip">
-           <string>Joins</string>
+           <string>Manage joins to other layers</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -210,6 +210,9 @@
          <item>
           <property name="text">
            <string>Auxiliary Storage</string>
+          </property>
+          <property name="toolTip">
+           <string>Manage additional per-project fields associated with the layer</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -221,7 +224,7 @@
            <string>Actions</string>
           </property>
           <property name="toolTip">
-           <string>Actions</string>
+           <string>Manage automated actions</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -268,6 +271,9 @@
           <property name="text">
            <string>Metadata</string>
           </property>
+          <property name="toolTip">
+           <string>Layer metadata</string>
+          </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
@@ -278,7 +284,7 @@
            <string>Dependencies</string>
           </property>
           <property name="toolTip">
-           <string>Dependencies</string>
+           <string>Set dependent layers for automatic update</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -290,7 +296,7 @@
            <string>Legend</string>
           </property>
           <property name="toolTip">
-           <string>Legend</string>
+           <string>Manage the layer's legend</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
