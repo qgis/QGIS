@@ -545,6 +545,13 @@ void QgsPalLayerSettings::startRender( QgsRenderContext &context )
     return;
   }
 
+  if ( placement == QgsPalLayerSettings::Curved )
+  {
+    // force horizontal orientation, other orientation modes aren't unsupported for curved placement
+    mFormat.setOrientation( QgsTextFormat::HorizontalOrientation );
+    mDataDefinedProperties.property( QgsPalLayerSettings::TextOrientation ).setActive( false );
+  }
+
   if ( mCallout )
   {
     mCallout->startRender( context );
