@@ -31,7 +31,12 @@ from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
 from qgis.utils import spatialite_connect
-from qgis.core import QgsApplication
+from qgis.core import (
+    QgsApplication,
+    QgsProviderRegistry,
+    QgsAbstractDatabaseProviderConnection,
+    QgsWkbTypes,
+)
 
 import sqlite3
 
@@ -44,12 +49,25 @@ def classFactory():
 
 class GPKGDBConnector(DBConnector):
 
-    def __init__(self, uri):
-        DBConnector.__init__(self, uri)
+    def __init__(self, uri, connection):
+        """Create a new GPKG connector
 
+        :param uri: data source URI
+        :type uri: QgsDataSourceUri
+        :param connection: the GPKGDBPlugin parent instance
+        :type connection: GPKGDBPlugin
+        """
+
+        DBConnector.__init__(self, uri)
         self.dbname = uri.database()
+        self.connection = connection
+        md = QgsProviderRegistry.instance().providerMetadata(connection.providerName())
+        # QgsAbstractDatabaseProviderConnection instance
+        self.core_connection = md.findConnection(connection.connectionName())
+        assert self.core_connection is not None
         self.has_raster = False
         self.mapSridToName = {}
+        # To be removed when migration to new API is completed
         self._opendb()
 
     def _opendb(self):
@@ -102,40 +120,12 @@ class GPKGDBConnector(DBConnector):
         return unquoted
 
     def _fetchOne(self, sql):
-        sql_lyr = self.gdal_ds.ExecuteSQL(sql)
-        if sql_lyr is None:
-            return None
-        f = sql_lyr.GetNextFeature()
-        if f is None:
-            ret = None
-        else:
-            ret = [f.GetField(i) for i in range(f.GetFieldCount())]
-        self.gdal_ds.ReleaseResultSet(sql_lyr)
-        return ret
+
+        return self.core_connection.executeSql(sql)
 
     def _fetchAll(self, sql, include_fid_and_geometry=False):
-        sql_lyr = self.gdal_ds.ExecuteSQL(sql)
-        if sql_lyr is None:
-            return None
-        ret = []
-        while True:
-            f = sql_lyr.GetNextFeature()
-            if f is None:
-                break
-            else:
-                if include_fid_and_geometry:
-                    field_vals = [f.GetFID()]
-                    if sql_lyr.GetLayerDefn().GetGeomType() != ogr.wkbNone:
-                        geom = f.GetGeometryRef()
-                        if geom is not None:
-                            geom = geom.ExportToWkt()
-                        field_vals += [geom]
-                    field_vals += [f.GetField(i) for i in range(f.GetFieldCount())]
-                    ret.append(field_vals)
-                else:
-                    ret.append([f.GetField(i) for i in range(f.GetFieldCount())])
-        self.gdal_ds.ReleaseResultSet(sql_lyr)
-        return ret
+
+        return self.core_connection.executeSql(sql)
 
     def _fetchAllFromLayer(self, table):
 
@@ -286,78 +276,66 @@ class GPKGDBConnector(DBConnector):
         return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
     def getVectorTables(self, schema=None):
+        """Returns a list of vector table information
+        """
 
         items = []
-        for i in range(self.gdal_ds.GetLayerCount()):
-            lyr = self.gdal_ds.GetLayer(i)
-            geomtype = lyr.GetGeomType()
-            if hasattr(ogr, 'GT_Flatten'):
-                geomtype_flatten = ogr.GT_Flatten(geomtype)
+        for table in self.core_connection.tables(schema, QgsAbstractDatabaseProviderConnection.Vector | QgsAbstractDatabaseProviderConnection.Aspatial):
+            if not (table.flags() & QgsAbstractDatabaseProviderConnection.Aspatial):
+                geom_type = table.geometryColumnTypes()[0]
+                # Use integer PG code for SRID
+                srid = geom_type.crs.postgisSrid()
+                geomtype_flatten = QgsWkbTypes.flatType(geom_type.wkbType)
+                geomname = 'GEOMETRY'
+                if geomtype_flatten == QgsWkbTypes.Point:
+                    geomname = 'POINT'
+                elif geomtype_flatten == QgsWkbTypes.LineString:
+                    geomname = 'LINESTRING'
+                elif geomtype_flatten == QgsWkbTypes.Polygon:
+                    geomname = 'POLYGON'
+                elif geomtype_flatten == QgsWkbTypes.MultiPoint:
+                    geomname = 'MULTIPOINT'
+                elif geomtype_flatten == QgsWkbTypes.MultiLineString:
+                    geomname = 'MULTILINESTRING'
+                elif geomtype_flatten == QgsWkbTypes.MultiPolygon:
+                    geomname = 'MULTIPOLYGON'
+                elif geomtype_flatten == QgsWkbTypes.GeometryCollection:
+                    geomname = 'GEOMETRYCOLLECTION'
+                elif geomtype_flatten == QgsWkbTypes.CircularString:
+                    geomname = 'CIRCULARSTRING'
+                elif geomtype_flatten == QgsWkbTypes.CompoundCurve:
+                    geomname = 'COMPOUNDCURVE'
+                elif geomtype_flatten == QgsWkbTypes.CurvePolygon:
+                    geomname = 'CURVEPOLYGON'
+                elif geomtype_flatten == QgsWkbTypes.MultiCurve:
+                    geomname = 'MULTICURVE'
+                elif geomtype_flatten == QgsWkbTypes.MultiSurface:
+                    geomname = 'MULTISURFACE'
+                geomdim = 'XY'
+                if QgsWkbTypes.hasZ(geom_type.wkbType):
+                    geomdim += 'Z'
+                if QgsWkbTypes.hasM(geom_type.wkbType):
+                    geomdim += 'M'
+                item = [
+                    Table.VectorType,
+                    table.tableName(),
+                    bool(table.flags() & QgsAbstractDatabaseProviderConnection.View),  # is_view
+                    table.tableName(),
+                    table.geometryColumn(),
+                    geomname,
+                    geomdim,
+                    srid
+                ]
+                self.mapSridToName[srid] = geom_type.crs.description()
             else:
-                geomtype_flatten = geomtype
-            geomname = 'GEOMETRY'
-            if geomtype_flatten == ogr.wkbPoint:
-                geomname = 'POINT'
-            elif geomtype_flatten == ogr.wkbLineString:
-                geomname = 'LINESTRING'
-            elif geomtype_flatten == ogr.wkbPolygon:
-                geomname = 'POLYGON'
-            elif geomtype_flatten == ogr.wkbMultiPoint:
-                geomname = 'MULTIPOINT'
-            elif geomtype_flatten == ogr.wkbMultiLineString:
-                geomname = 'MULTILINESTRING'
-            elif geomtype_flatten == ogr.wkbMultiPolygon:
-                geomname = 'MULTIPOLYGON'
-            elif geomtype_flatten == ogr.wkbGeometryCollection:
-                geomname = 'GEOMETRYCOLLECTION'
-            elif geomtype_flatten == ogr.wkbCircularString:
-                geomname = 'CIRCULARSTRING'
-            elif geomtype_flatten == ogr.wkbCompoundCurve:
-                geomname = 'COMPOUNDCURVE'
-            elif geomtype_flatten == ogr.wkbCurvePolygon:
-                geomname = 'CURVEPOLYGON'
-            elif geomtype_flatten == ogr.wkbMultiCurve:
-                geomname = 'MULTICURVE'
-            elif geomtype_flatten == ogr.wkbMultiSurface:
-                geomname = 'MULTISURFACE'
-            geomdim = 'XY'
-            if hasattr(ogr, 'GT_HasZ') and ogr.GT_HasZ(lyr.GetGeomType()):
-                geomdim += 'Z'
-            if hasattr(ogr, 'GT_HasM') and ogr.GT_HasM(lyr.GetGeomType()):
-                geomdim += 'M'
-            srs = lyr.GetSpatialRef()
-            srid = None
-            if srs is not None:
-                if srs.IsProjected():
-                    name = srs.GetAttrValue('PROJCS', 0)
-                elif srs.IsGeographic():
-                    name = srs.GetAttrValue('GEOGCS', 0)
-                else:
-                    name = None
-                srid = srs.GetAuthorityCode(None)
-                if srid is not None:
-                    srid = int(srid)
-                else:
-                    srid = self._fetchOne('SELECT srid FROM gpkg_spatial_ref_sys WHERE table_name = %s' % self.quoteString(lyr.GetName()))
-                    if srid is not None:
-                        srid = int(srid)
-                self.mapSridToName[srid] = name
+                item = [
+                    Table.TableType,
+                    table.tableName(),
+                    bool(table.flags() & QgsAbstractDatabaseProviderConnection.View),
+                ]
 
-            if geomtype == ogr.wkbNone:
-                item = list([Table.TableType,
-                             lyr.GetName(),
-                             False,  # is_view
-                             ])
-            else:
-                item = list([Table.VectorType,
-                             lyr.GetName(),
-                             False,  # is_view
-                             lyr.GetName(),
-                             lyr.GetGeometryColumn(),
-                             geomname,
-                             geomdim,
-                             srid])
             items.append(item)
+
         return items
 
     def getRasterTables(self, schema=None):
@@ -371,15 +349,22 @@ class GPKGDBConnector(DBConnector):
                                 srid
         """
 
-        sql = u"""SELECT table_name, 0 AS is_view, table_name AS r_table_name, '' AS r_geometry_column, srs_id FROM gpkg_contents WHERE data_type = 'tiles'"""
-        ret = self._fetchAll(sql)
-        if ret is None:
-            return []
         items = []
-        for i, tbl in enumerate(ret):
-            item = list(tbl)
-            item.insert(0, Table.RasterType)
+        for table in self.core_connection.tables(schema, QgsAbstractDatabaseProviderConnection.Raster):
+            geom_type = table.geometryColumnTypes()[0]
+            # Use integer PG code for SRID
+            srid = geom_type.crs.postgisSrid()
+            item = [
+                Table.RasterType,
+                table.tableName(),
+                bool(table.flags() & QgsAbstractDatabaseProviderConnection.View),
+                table.tableName(),
+                table.geometryColumn(),
+                srid,
+            ]
+            self.mapSridToName[srid] = geom_type.crs.description()
             items.append(item)
+
         return items
 
     def getTableRowCount(self, table):
@@ -486,7 +471,7 @@ class GPKGDBConnector(DBConnector):
 
         sql = u"SELECT srs_name FROM gpkg_spatial_ref_sys WHERE srs_id = %s" % self.quoteString(srid)
         res = self._fetchOne(sql)
-        if res is not None:
+        if res is not None and len(res) > 0:
             res = res[0]
         self.mapSridToName[srid] = res
         return res
@@ -825,14 +810,14 @@ class GPKGDBConnector(DBConnector):
         ret = self._fetchOne(sql)
         gdal.PopErrorHandler()
 
-        if ret is None:
+        if len(ret) == 0:
             # might be the case for GDAL < 2.1.2
             sql = u"SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name LIKE %s" % self.quoteString("%%rtree_" + tablename + "_%%")
             ret = self._fetchOne(sql)
-        if ret is None:
+        if len(ret) == 0:
             return False
         else:
-            return ret[0] >= 1
+            return int(ret[0][0]) >= 1
 
     def execution_error_types(self):
         return sqlite3.Error, sqlite3.ProgrammingError, sqlite3.Warning

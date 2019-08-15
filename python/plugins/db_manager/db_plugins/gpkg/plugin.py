@@ -108,7 +108,7 @@ class GPKGDatabase(Database):
         Database.__init__(self, connection, uri)
 
     def connectorsFactory(self, uri):
-        return GPKGDBConnector(uri)
+        return GPKGDBConnector(uri, self.connection())
 
     def dataTablesFactory(self, row, db, schema=None):
         return GPKGTable(row, db, schema)
@@ -184,6 +184,16 @@ class GPKGDatabase(Database):
 class GPKGTable(Table):
 
     def __init__(self, row, db, schema=None):
+        """Constructs a GPKGTable
+
+        :param row: a three elments array with: [table_name, is_view, is_sys_table]
+        :type row: array [str, bool, bool]
+        :param db: database instance
+        :type db:
+        :param schema: schema name, defaults to None, ignored by GPKG
+        :type schema: str, optional
+        """
+
         Table.__init__(self, db, None)
         self.name, self.isView, self.isSysTable = row
 
