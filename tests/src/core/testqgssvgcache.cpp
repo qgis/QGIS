@@ -52,6 +52,7 @@ class TestQgsSvgCache : public QObject
     void threadSafeImage();
     void changeImage(); //check that cache is updated if svg source file changes
     void base64();
+    void replaceParams();
 
 };
 
@@ -255,6 +256,66 @@ void TestQgsSvgCache::base64()
                           200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
                           1.0, inCache );
   QVERIFY( imageCheck( QStringLiteral( "svgcache_base64" ), img, 30 ) );
+
+}
+
+void TestQgsSvgCache::replaceParams()
+{
+  QDomDocument doc;
+  QDomElement elem = doc.createElement( QStringLiteral( "svg" ) );
+  elem.setAttribute( QStringLiteral( "not_style" ), QStringLiteral( "val" ) );
+  elem.setAttribute( QStringLiteral( "style" ), QStringLiteral( "font-weight:bold; font-size:12px" ) );
+
+  QgsSvgCache cache;
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 150 ), QColor( 0, 255, 0, 100 ), 0.6 );
+
+  // params in styles
+  QCOMPARE( elem.attribute( QStringLiteral( "not_style" ) ), QStringLiteral( "val" ) );
+  QCOMPARE( elem.attribute( QStringLiteral( "style" ) ), QStringLiteral( "font-weight:bold; font-size:12px" ) );
+
+  // with fill color
+  elem.setAttribute( QStringLiteral( "style" ), QStringLiteral( "font-weight:bold; fill: param(Fill); font-size:12px" ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 150 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "style" ) ), QStringLiteral( "font-weight:bold; fill:#ff0000; font-size:12px" ) );
+  // with fill opacity
+  elem.setAttribute( QStringLiteral( "style" ), QStringLiteral( "font-weight:bold; fill: param(Fill);fill-opacity:param(fill-opacity);font-size:12px" ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "style" ) ), QStringLiteral( "font-weight:bold; fill:#ff0000;fill-opacity:0.0980392;font-size:12px" ) );
+  // with stroke color
+  elem.setAttribute( QStringLiteral( "style" ), QStringLiteral( "font-weight:bold; outline: param(Outline);font-size:12px" ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "style" ) ), QStringLiteral( "font-weight:bold; outline:#00ff00;font-size:12px" ) );
+  // with stroke opacity
+  elem.setAttribute( QStringLiteral( "style" ), QStringLiteral( "font-weight:bold; outline: param(Outline);outline-opacity:param(outline-opacity);font-size:12px" ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "style" ) ), QStringLiteral( "font-weight:bold; outline:#00ff00;outline-opacity:0.392157;font-size:12px" ) );
+  // with stroke size
+  elem.setAttribute( QStringLiteral( "style" ), QStringLiteral( "font-weight:bold; outline: param(Outline);outline-opacity:param(outline-opacity);stroke-width: param(outline-width) ;font-size:12px" ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "style" ) ), QStringLiteral( "font-weight:bold; outline:#00ff00;outline-opacity:0.392157;stroke-width:0.6;font-size:12px" ) );
+
+  // params in attributes
+
+  // with fill color
+  elem.setAttribute( QStringLiteral( "fill" ), QStringLiteral( " param(Fill) " ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 150 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "fill" ) ), QStringLiteral( "#ff0000" ) );
+  // with fill opacity
+  elem.setAttribute( QStringLiteral( "fill-opacity" ), QStringLiteral( "param(fill-opacity)" ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "fill-opacity" ) ).left( 6 ), QStringLiteral( "0.0980" ) );
+  // with stroke color
+  elem.setAttribute( QStringLiteral( "stroke" ), QStringLiteral( " param(Outline) " ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "stroke" ) ), QStringLiteral( "#00ff00" ) );
+  // with stroke opacity
+  elem.setAttribute( QStringLiteral( "stroke-opacity" ), QStringLiteral( "param(outline-opacity)" ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "stroke-opacity" ) ).left( 6 ), QStringLiteral( "0.3921" ) );
+  // with stroke size
+  elem.setAttribute( QStringLiteral( "stroke-size" ), QStringLiteral( "param(outline-width) " ) );
+  cache.replaceElemParams( elem, QColor( 255, 0, 0, 25 ), QColor( 0, 255, 0, 100 ), 0.6 );
+  QCOMPARE( elem.attribute( QStringLiteral( "stroke-size" ) ), QStringLiteral( "0.6" ) );
 
 }
 

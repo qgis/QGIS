@@ -503,40 +503,43 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
         {
           continue;
         }
-        QString key = keyValueSplit.at( 0 );
+        const QString key = keyValueSplit.at( 0 );
         QString value = keyValueSplit.at( 1 );
+        QString newValue = value;
+        value = value.trimmed().toLower();
+
         if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
         {
-          value = fill.name();
+          newValue = fill.name();
         }
         else if ( value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
         {
-          value = fill.alphaF();
+          newValue = QString::number( fill.alphaF() );
         }
         else if ( value.startsWith( QLatin1String( "param(outline)" ) ) )
         {
-          value = stroke.name();
+          newValue = stroke.name();
         }
         else if ( value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
         {
-          value = stroke.alphaF();
+          newValue = QString::number( stroke.alphaF() );
         }
         else if ( value.startsWith( QLatin1String( "param(outline-width)" ) ) )
         {
-          value = QString::number( strokeWidth );
+          newValue = QString::number( strokeWidth );
         }
 
         if ( entryIt != entryList.constBegin() )
         {
           newAttributeString.append( ';' );
         }
-        newAttributeString.append( key + ':' + value );
+        newAttributeString.append( key + ':' + newValue );
       }
       elem.setAttribute( attribute.name(), newAttributeString );
     }
     else
     {
-      QString value = attribute.value();
+      const QString value = attribute.value().trimmed().toLower();
       if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
       {
         elem.setAttribute( attribute.name(), fill.name() );
