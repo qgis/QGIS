@@ -212,13 +212,6 @@ void QgsGeoPackageCollectionItem::deleteConnection()
   mParent->refreshConnections();
 }
 
-// Deprecated
-bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause )
-{
-  Q_UNUSED( path );
-  return vacuumGeoPackageDb( name, errCause );
-}
-
 bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, QString &errCause )
 {
   QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );

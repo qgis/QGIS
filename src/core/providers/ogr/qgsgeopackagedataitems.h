@@ -51,16 +51,6 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
 
     /**
      * Compacts (VACUUM) a geopackage database
-     * \param path DB path
-     * \param name DB name
-     * \param errCause contains the error message
-     * \return true on success
-     * \deprecated since QGIS 3.10 use  vacuumGeoPackageDb( const QString &name, QString &errCause ) instead
-     */
-    Q_DECL_DEPRECATED static bool vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause );
-
-    /**
-     * Compacts (VACUUM) a geopackage database
      * \param name DB connection name
      * \param errCause contains the error message
      * \return true on success
@@ -111,7 +101,7 @@ class CORE_EXPORT QgsGeoPackageAbstractLayerItem : public QgsLayerItem
   private:
 
     //! Store a casted pointer to the parent collection
-    QgsGeoPackageCollectionItem *mCollection;
+    QgsGeoPackageCollectionItem *mCollection = nullptr;
 };
 
 class CORE_EXPORT QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLayerItem
