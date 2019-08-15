@@ -265,7 +265,7 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of stored provider connections,
      * the dictionary key is the connection identifier.
-     * Ownership is not transfered.
+     * Ownership is not transferred.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param cached if FALSE connections will be re-read from the settings
      * \throws QgsProviderConnectionException
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a dictionary of database provider connections,
      * the dictionary key is the connection identifier.
-     * Ownership is not transfered.
+     * Ownership is not transferred.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param cached if FALSE connections will be re-read from the settings
      * \throws QgsProviderConnectionException
@@ -285,8 +285,8 @@ class CORE_EXPORT QgsProviderMetadata
     QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Searchs and returns a (possibly NULL) connection from the stored provider connections.
-     * Ownership is not transfered.
+     * Searches and returns a (possibly NULL) connection from the stored provider connections.
+     * Ownership is not transferred.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \name name the connection name
      * \param cached if FALSE connections will be re-read from the settings
@@ -311,14 +311,14 @@ class CORE_EXPORT QgsProviderMetadata
 
     /**
      * Creates a new connection by loading the connection with the given \a name from the settings.
-     * Ownership is transfered to the caller.
+     * Ownership is transferred to the caller.
      * \since QGIS 3.10
      */
     virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_FACTORY ;
 
     /**
      * Creates a new connection with the given \a name and data source \a uri
-     * Ownership is transfered to the caller.
+     * Ownership is transferred to the caller.
      * \since QGIS 3.10
      */
     virtual QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) SIP_FACTORY;
