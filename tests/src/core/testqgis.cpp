@@ -395,6 +395,9 @@ void TestQgis::testQgsVariantEqual()
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Double ), QVariant( QVariant::Double ) ) );
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Double ) ) );
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::String ) ) );
+
+  // NULL should not be equal to invalid
+  QVERIFY( !qgsVariantEqual( QVariant(), QVariant( QVariant::Int ) ) );
 }
 
 void TestQgis::testQgsEnumValueToKey()

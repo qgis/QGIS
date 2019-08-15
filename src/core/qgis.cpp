@@ -28,6 +28,7 @@
 #include "qgsconfig.h"
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
+#include <QDebug>
 
 #include <gdal.h>
 #include <ogr_api.h>
@@ -297,5 +298,5 @@ uint qHash( const QVariant &variant )
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 {
-  return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() );
+  return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() && lhs.isValid() && rhs.isValid() );
 }
