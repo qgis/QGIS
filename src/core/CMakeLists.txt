@@ -163,6 +163,7 @@ SET(QGIS_CORE_SRCS
 
   qgis.cpp
   qgsabstractcontentcache.cpp
+  qgsabstractgeopdfexporter.cpp
   qgsabstractproviderconnection.cpp
   qgsabstractdatabaseproviderconnection.cpp
   qgsapplication.cpp
@@ -887,6 +888,7 @@ SET(QGIS_CORE_HDRS
 
   qgis.h
   qgis_sip.h
+  qgsabstractgeopdfexporter.h
   qgsabstractproviderconnection.h
   qgsabstractdatabaseproviderconnection.h
   qgsaction.h
