@@ -317,8 +317,11 @@ class CORE_EXPORT QgsProviderMetadata
     virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_FACTORY ;
 
     /**
-     * Creates a new connection with the given \a name and data source \a uri
+     * Creates a new connection with the given \a name and data source \a uri,
+     * the newly created connection is not automatically stored in the settings, call
+     * saveConnection() to save it.
      * Ownership is transferred to the caller.
+     * \see saveConnection()
      * \since QGIS 3.10
      */
     virtual QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) SIP_FACTORY;
@@ -331,7 +334,7 @@ class CORE_EXPORT QgsProviderMetadata
 
     /**
      * Stores the connection \a connection in the settings
-     * \param configuration stores additional connection settings that not part of the data source URI     *
+     * \param configuration stores additional connection settings that not part of the data source URI
      * \since QGIS 3.10
      */
     virtual void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() );
