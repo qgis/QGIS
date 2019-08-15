@@ -288,7 +288,7 @@ class CORE_EXPORT QgsProviderMetadata
      * Searches and returns a (possibly NULL) connection from the stored provider connections.
      * Ownership is not transferred.
      * Raises a QgsProviderConnectionException if any errors are encountered.
-     * \name name the connection name
+     * \param name the connection name
      * \param cached if FALSE connections will be re-read from the settings
      * \throws QgsProviderConnectionException
      * \since QGIS 3.10

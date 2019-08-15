@@ -186,7 +186,7 @@ class GPKGTable(Table):
     def __init__(self, row, db, schema=None):
         """Constructs a GPKGTable
 
-        :param row: a three elments array with: [table_name, is_view, is_sys_table]
+        :param row: a three elements array with: [table_name, is_view, is_sys_table]
         :type row: array [str, bool, bool]
         :param db: database instance
         :type db:

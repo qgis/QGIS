@@ -249,8 +249,8 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 Searches and returns a (possibly NULL) connection from the stored provider connections.
 Ownership is not transferred.
 Raises a QgsProviderConnectionException if any errors are encountered.
-\name name the connection name
 
+:param name: the connection name
 :param cached: if ``False`` connections will be re-read from the settings
                \throws :py:class:`QgsProviderConnectionException`
 
