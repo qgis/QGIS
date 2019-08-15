@@ -22,6 +22,7 @@
 #include "qgsgui.h"
 
 #include <QAction>
+#include <QWidgetAction>
 #include <QDir>
 #include <QDockWidget>
 #include <QDomDocument>
@@ -609,7 +610,27 @@ void QgsCustomization::createTreeItemToolbars()
     tbItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
     tbItem->setCheckState( 0, Qt::Checked );
 
-    addTreeItemActions( tbItem, tb->actions() );
+    QList<QWidgetAction *> tbWidgetActions = tb->findChildren<QWidgetAction *>( QString(), Qt::FindDirectChildrenOnly );
+    QList<QAction *> tbActions = tb->actions();
+
+    for ( QAction *act : tbWidgetActions )
+    {
+      QStringList actstrs;
+      actstrs << act->objectName() << act->text();
+      QTreeWidgetItem *item = new QTreeWidgetItem( tbItem, actstrs );
+      item->setIcon( 0, act->icon() );
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+      item->setCheckState( 0, Qt::Checked );
+
+      QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>( act );
+      QWidget *widget = widgetAction->defaultWidget();
+      QList<QAction *> childActions = widget->actions();
+      addTreeItemActions( item, childActions );
+
+      tbActions.removeAll( act );
+    }
+
+    addTreeItemActions( tbItem, tbActions );
   }
 
   mMainWindowItems << topItem;
