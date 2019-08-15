@@ -30,6 +30,7 @@ from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
 )
+from qgis.PyQt import QtCore
 
 
 class TestPyQgsProviderConnectionBase():
@@ -170,12 +171,16 @@ class TestPyQgsProviderConnectionBase():
                     table = "\"%s\".\"myNewAspatialTable\"" % schema
                 else:
                     table = 'myNewAspatialTable'
-                sql = "INSERT INTO %s (string, long, double, integer, date, datetime, time) VALUES ('QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08 12:00:12', '12:00:13')" % table
+                sql = "INSERT INTO %s (string, long, double, integer, date, datetime, time) VALUES ('QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08T12:00:12', '12:00:13.00')" % table
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
-                sql = "SELECT string, long, double, integer, date, datetime, time FROM %s" % table
+                sql = "SELECT string, long, double, integer, date, datetime FROM %s" % table
                 res = conn.executeSql(sql)
-                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08 12:00:12', '12:00:13']])
+                # GPKG has no type for time
+                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8), QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                sql = "SELECT time FROM %s" % table
+                res = conn.executeSql(sql)
+                self.assertIn(res, ([[QtCore.QTime(12, 0, 13)]], [['12:00:13.00']]))
                 sql = "DELETE FROM %s WHERE string = 'QGIS Rocks - \U0001f604'" % table
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])

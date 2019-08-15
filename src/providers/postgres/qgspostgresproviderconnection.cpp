@@ -212,7 +212,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
       QMap<int, QVariant::Type> typeMap;
       if ( resolveTypes )
       {
-        for ( int rowIdx = 0; rowIdx < res.PQntuples(); rowIdx++ )
+        for ( int rowIdx = 0; rowIdx < res.PQnfields(); rowIdx++ )
         {
           const Oid oid { res.PQftype( rowIdx ) };
           QList<QVariantList> typeRes { executeSqlPrivate( QStringLiteral( "SELECT typname FROM pg_type WHERE oid = %1" ).arg( oid ), false ) };
@@ -231,6 +231,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
                                                     QStringLiteral( "numeric" )
                                                   };
             const QString typName { typeRes.first().first().toString() };
+
             if ( floatTypes.contains( typName ) )
             {
               vType = QVariant::Double;
@@ -243,7 +244,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             {
               vType = QVariant::Date;
             }
-            else if ( typName == QStringLiteral( "date_times" ) )
+            else if ( typName.startsWith( QStringLiteral( "timestamp" ) ) )
             {
               vType = QVariant::DateTime;
             }
