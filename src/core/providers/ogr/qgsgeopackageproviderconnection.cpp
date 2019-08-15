@@ -276,13 +276,32 @@ QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( cons
     if ( ogrLayer )
     {
       gdal::ogr_feature_unique_ptr fet;
+      QgsFields fields;
       while ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
         QVariantList row;
-        for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
+        // Try to get the right type for the returned values
+        if ( fields.isEmpty() )
         {
-          row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
+          fields = QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) );
         }
+        if ( ! fields.isEmpty() )
+        {
+          QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), fields, QTextCodec::codecForName( "UTF-8" ) ) };
+          const QgsAttributes &constAttrs { f.attributes() };
+          for ( int i = 0; i < constAttrs.length(); i++ )
+          {
+            row.push_back( constAttrs.at( i ) );
+          }
+        }
+        else // Fallback to strings
+        {
+          for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
+          {
+            row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
+          }
+        }
+
         results.push_back( row );
       }
       GDALDatasetReleaseResultSet( hDS.get(), ogrLayer );

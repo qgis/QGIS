@@ -54,7 +54,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
 
   private:
 
-    QList<QVariantList> executeSqlPrivate( const QString &sql ) const;
+    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;

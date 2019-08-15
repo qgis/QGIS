@@ -29,7 +29,9 @@ extern "C"
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name ):
   QgsAbstractDatabaseProviderConnection( name )
 {
-  setUri( QgsPostgresConn::connUri( name ).uri() );
+  // Remove the sql and table empty parts
+  static const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
+  setUri( QgsPostgresConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
   setDefaultCapabilities();
 }
 
@@ -174,7 +176,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSql( const QString &sq
   return executeSqlPrivate( sql );
 }
 
-QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql ) const
+QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes ) const
 {
   const QgsDataSourceUri dsUri { uri() };
   QList<QVariantList> results;
@@ -204,14 +206,81 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
                    .arg( err );
       }
     }
-    for ( int rowIdx = 0; rowIdx < res.PQntuples(); rowIdx++ )
+    if ( res.PQntuples() > 0 )
     {
-      QVariantList row;
-      for ( int colIdx = 0; colIdx < res.PQnfields(); colIdx++ )
+      // Try to convert value types at least for basic simple types that can be directly mapped to Python
+      QMap<int, QVariant::Type> typeMap;
+      if ( resolveTypes )
       {
-        row.push_back( res.PQgetvalue( rowIdx, colIdx ) );
+        for ( int rowIdx = 0; rowIdx < res.PQntuples(); rowIdx++ )
+        {
+          const Oid oid { res.PQftype( rowIdx ) };
+          QList<QVariantList> typeRes { executeSqlPrivate( QStringLiteral( "SELECT typname FROM pg_type WHERE oid = %1" ).arg( oid ), false ) };
+          // Set the default to string
+          QVariant::Type vType { QVariant::Type::String };
+          if ( typeRes.size() > 0 && typeRes.first().size() > 0 )
+          {
+            static const QStringList intTypes = { QStringLiteral( "oid" ),
+                                                  QStringLiteral( "char" ),
+                                                  QStringLiteral( "int2" ),
+                                                  QStringLiteral( "int4" ),
+                                                  QStringLiteral( "int8" )
+                                                };
+            static const QStringList floatTypes = { QStringLiteral( "float4" ),
+                                                    QStringLiteral( "float8" ),
+                                                    QStringLiteral( "numeric" )
+                                                  };
+            const QString typName { typeRes.first().first().toString() };
+            if ( floatTypes.contains( typName ) )
+            {
+              vType = QVariant::Double;
+            }
+            else if ( intTypes.contains( typName ) )
+            {
+              vType = QVariant::LongLong;
+            }
+            else if ( typName == QStringLiteral( "date" ) )
+            {
+              vType = QVariant::Date;
+            }
+            else if ( typName == QStringLiteral( "date_times" ) )
+            {
+              vType = QVariant::DateTime;
+            }
+            else if ( typName == QStringLiteral( "time" ) )
+            {
+              vType = QVariant::Time;
+            }
+            else if ( typName == QStringLiteral( "bool" ) )
+            {
+              vType = QVariant::Bool;
+            }
+          }
+          typeMap[ rowIdx ] = vType;
+        }
       }
-      results.push_back( row );
+      for ( int rowIdx = 0; rowIdx < res.PQntuples(); rowIdx++ )
+      {
+        QVariantList row;
+        for ( int colIdx = 0; colIdx < res.PQnfields(); colIdx++ )
+        {
+          if ( resolveTypes )
+          {
+            const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
+            QVariant val { res.PQgetvalue( rowIdx, colIdx ) };
+            if ( val.canConvert( static_cast<int>( vType ) ) )
+            {
+              val.convert( static_cast<int>( vType ) );
+            }
+            row.push_back( val );
+          }
+          else
+          {
+            row.push_back( res.PQgetvalue( rowIdx, colIdx ) );
+          }
+        }
+        results.push_back( row );
+      }
     }
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     if ( ! errCause.isEmpty() )

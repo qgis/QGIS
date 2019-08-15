@@ -81,10 +81,10 @@ class TestPyQgsProviderConnectionBase():
         capabilities = conn.capabilities()
 
         # Schema operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema
-                and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
-                and capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema
-                and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema and
+                capabilities & QgsAbstractDatabaseProviderConnection.Schemas and
+                capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema and
+                capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
             # Create
@@ -105,10 +105,10 @@ class TestPyQgsProviderConnectionBase():
             self.assertFalse('myVeryNewSchema' in schemas)
 
         # Table operations
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable
-                and capabilities & QgsAbstractDatabaseProviderConnection.Tables
-                and capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable
-                and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable and
+                capabilities & QgsAbstractDatabaseProviderConnection.Tables and
+                capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable and
+                capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema and 'myNewSchema' in conn.schemas():
                 conn.dropSchema('myNewSchema', True)
@@ -170,12 +170,12 @@ class TestPyQgsProviderConnectionBase():
                     table = "\"%s\".\"myNewAspatialTable\"" % schema
                 else:
                     table = 'myNewAspatialTable'
-                sql = "INSERT INTO %s (string, integer) VALUES ('QGIS Rocks - \U0001f604', 666)" % table
+                sql = "INSERT INTO %s (string, long, double, integer, date, datetime, time) VALUES ('QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08 12:00:12', '12:00:13')" % table
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
-                sql = "SELECT string, integer FROM %s" % table
+                sql = "SELECT string, long, double, integer, date, datetime, time FROM %s" % table
                 res = conn.executeSql(sql)
-                self.assertEqual(res, [['QGIS Rocks - \U0001f604', '666']])
+                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, '2019-07-08', '2019-07-08 12:00:12', '12:00:13']])
                 sql = "DELETE FROM %s WHERE string = 'QGIS Rocks - \U0001f604'" % table
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
