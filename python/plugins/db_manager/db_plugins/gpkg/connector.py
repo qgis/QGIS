@@ -35,6 +35,7 @@ from qgis.core import (
     QgsApplication,
     QgsProviderRegistry,
     QgsAbstractDatabaseProviderConnection,
+    QgsProviderConnectionException,
     QgsWkbTypes,
 )
 
@@ -64,7 +65,8 @@ class GPKGDBConnector(DBConnector):
         md = QgsProviderRegistry.instance().providerMetadata(connection.providerName())
         # QgsAbstractDatabaseProviderConnection instance
         self.core_connection = md.findConnection(connection.connectionName())
-        assert self.core_connection is not None
+        if self.core_connection is None:
+            self.core_connection = md.createConnection(connection.connectionName(), uri.database())
         self.has_raster = False
         self.mapSridToName = {}
         # To be removed when migration to new API is completed
@@ -609,17 +611,16 @@ class GPKGDBConnector(DBConnector):
         :return: true on success
         :rtype: bool
         """
-
-        table_name = table[1]
-        provider = [p for p in QgsApplication.dataItemProviderRegistry().providers() if p.name() == 'OGR'][0]
-        collection_item = provider.createDataItem(self.dbname, None)
-        data_item = [c for c in collection_item.createChildren() if c.name() == table_name][0]
-        result = data_item.rename(new_table)
-        # we need to reopen after renaming since OGR doesn't update its
-        # internal state
-        if result:
-            self._opendb()
-        return result
+        try:
+            name = table[1]  # 0 is schema
+            vector_table_names = [t.tableName() for t in self.core_connection.tables('', QgsAbstractDatabaseProviderConnection.Vector)]
+            if name in vector_table_names:
+                self.core_connection.renameVectorTable('', name, new_table)
+            else:
+                self.core_connection.renameRasterTable('', name, new_table)
+            return True
+        except QgsProviderConnectionException:
+            return False
 
     def moveTable(self, table, new_table, new_schema=None):
         return self.renameTable(table, new_table)
@@ -787,8 +788,11 @@ class GPKGDBConnector(DBConnector):
         _, tablename = self.getSchemaTableName(table)
         sql = u"SELECT CreateSpatialIndex(%s, %s)" % (
             self.quoteId(tablename), self.quoteId(geom_column))
-        res = self._fetchOne(sql)
-        return res is not None and res[0] == 1
+        try:
+            res = self._fetchOne(sql)
+        except QgsProviderConnectionException:
+            return False
+        return res is not None and res[0][0] == '1'
 
     def deleteSpatialIndex(self, table, geom_column):
         if self.isRasterTable(table):

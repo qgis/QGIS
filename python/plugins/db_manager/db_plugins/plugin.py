@@ -128,9 +128,16 @@ class DBPlugin(QObject):
         return self.connect(self.parent())
 
     def remove(self):
-        settings = QgsSettings()
-        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
-        settings.remove("")
+
+        # Try the new API first, fallback to legacy
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
+            md.deleteConnection(self.connectionName())
+        except (AttributeError, QgsProviderConnectionException) as ex:
+            settings = QgsSettings()
+            settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
+            settings.remove("")
+
         self.deleted.emit()
         return True
 
@@ -174,7 +181,6 @@ class DBPlugin(QObject):
             for name in md.dbConnections().keys():
                 conn_list.append(createDbPlugin(self.typeName(), name))
         except (AttributeError, QgsProviderConnectionException) as ex:
-            raise ex
             settings = QgsSettings()
             settings.beginGroup(self.connectionSettingsKey())
             for name in settings.childGroups():
