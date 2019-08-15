@@ -535,14 +535,7 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   }
   else
   {
-    if ( mSymbol.shapeProperties()[QStringLiteral( "overwriteMaterial" )].toBool() )
-    {
-      addMeshEntities( context.map(), out.positions, mSymbol, parent, false );
-    }
-    else
-    {
-      addSceneEntities( context.map(), out.positions, mSymbol, parent );
-    }
+    addSceneEntities( context.map(), out.positions, mSymbol, parent );
   }
 }
 
