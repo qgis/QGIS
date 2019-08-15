@@ -297,5 +297,5 @@ uint qHash( const QVariant &variant )
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 {
-  return lhs.isNull() == rhs.isNull() && lhs == rhs;
+  return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() );
 }
