@@ -723,7 +723,7 @@ class PostGisDBConnector(DBConnector):
         sql = u"TRUNCATE %s" % self.quoteId(table)
         self._execute_and_commit(sql)
 
-    defRenamesTable(self, table, new_table):
+    def renamesTable(self, table, new_table):
         """Renames a table in database """
         schema, tablename = self.getSchemaTableName(table)
         if new_table == tablename:
@@ -731,7 +731,7 @@ class PostGisDBConnector(DBConnector):
 
         c = self._get_cursor()
 
-        sql = u"ALTER TABLE %sRenames TO %s" % (self.quoteId(table), self.quoteId(new_table))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(new_table))
         self._execute(c, sql)
 
         # update geometry_columns if PostGIS is enabled
@@ -798,13 +798,13 @@ class PostGisDBConnector(DBConnector):
         c = self._get_cursor()
         t = u"__new_table__"
 
-        sql = u"ALTER TABLE %sRenames TO %s" % (self.quoteId(table), self.quoteId(t))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(t))
         self._execute(c, sql)
 
         sql = u"ALTER TABLE %s SET SCHEMA %s" % (self.quoteId((schema, t)), self.quoteId(new_schema))
         self._execute(c, sql)
 
-        sql = u"ALTER TABLE %sRenames TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
         self._execute(c, sql)
 
         # update geometry_columns if PostGIS is enabled
@@ -829,7 +829,7 @@ class PostGisDBConnector(DBConnector):
         sql = u"DROP %s VIEW %s" % ('MATERIALIZED' if isMaterialized else '', self.quoteId(view))
         self._execute_and_commit(sql)
 
-    defRenamesView(self, view, new_name):
+    def renameView(self, view, new_name):
         """Renames view in database """
         self.renameTable(view, new_name)
 
@@ -843,22 +843,22 @@ class PostGisDBConnector(DBConnector):
         sql = u"DROP SCHEMA %s" % self.quoteId(schema)
         self._execute_and_commit(sql)
 
-    defRenamesSchema(self, schema, new_schema):
+    def renamesSchema(self, schema, new_schema):
         """Renames a schema in database """
-        sql = u"ALTER SCHEMA %sRenames TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
+        sql = u"ALTER SCHEMA %s RENAME  TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
         self._execute_and_commit(sql)
 
-    defRunsVacuum(self):
+    def runVacuum(self):
         """Runs vacuum on the db """
         self._execute_and_commit("VACUUM")
 
-    defRunsVacuumAnalyze(self, table):
+    def runVacuumAnalyze(self, table):
         """Runs vacuum analyze on a table """
         sql = u"VACUUM ANALYZE %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 
-    defRunsRefreshMaterializedView(self, table):
+    def runRefreshMaterializedView(self, table):
         """Runs refresh materialized view on a table """
         sql = u"REFRESH MATERIALIZED VIEW %s" % self.quoteId(table)
         self._execute(None, sql)
@@ -907,7 +907,7 @@ class PostGisDBConnector(DBConnector):
 
         #Renames the column
         if new_name is not None and new_name != column:
-            sql = u"ALTER TABLE %sRenames %s TO %s" % (
+            sql = u"ALTER TABLE %s RENAME  %s TO %s" % (
                 self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
             self._execute(c, sql)
 
@@ -928,7 +928,7 @@ class PostGisDBConnector(DBConnector):
 
         self._commit()
 
-    defRenamesTableColumn(self, table, column, new_name):
+    def renamesTableColumn(self, table, column, new_name):
         """Renames column in a table """
         return self.updateTableColumn(table, column, new_name)
 
