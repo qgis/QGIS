@@ -30,7 +30,7 @@ from .plugin import DbError, ConnectionError
 class DBConnector(object):
 
     def __init__(self, uri):
-        """Create a new DB connector
+        """Creates a new DB connector
         """
 
         self.connection = None

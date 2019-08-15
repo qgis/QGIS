@@ -174,7 +174,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         self.cboPrimaryKey.setCurrentIndex(selRow)
 
     def addField(self):
-        """ add new field to the end of field table """
+        """Adds new field to the end of field table """
         m = self.fields.model()
         newRow = m.rowCount()
         m.insertRows(newRow, 1)
@@ -209,7 +209,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         return sel[0].row()
 
     def deleteField(self):
-        """ delete selected field """
+        """Deletes selected field """
         row = self.selectedField()
         if row is None:
             QMessageBox.information(self, self.tr("DB Manager"), self.tr("No field selected."))
@@ -259,7 +259,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         self.updatePkeyCombo()
 
     def createTable(self):
-        """ create table with chosen fields, optionally add a geometry column """
+        """Creates table with chosen fields, optionally add a geometry column """
         if not self.hasSchemas:
             schema = None
         else:
