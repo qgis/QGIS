@@ -20,6 +20,8 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 
+// List of GPKG quoted system and dummy tables names to be excluded from the tables listing
+static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name ):
   QgsAbstractDatabaseProviderConnection( name )
@@ -177,12 +179,13 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
   QList<QVariantList> results;
   try
   {
-    const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name "
-                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name);" )};
+    const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
+                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
     results = executeSql( sql );
     for ( const auto &row : qgis::as_const( results ) )
     {
-      if ( row.size() != 5 )
+      if ( row.size() != 6 )
       {
         throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: wrong number of columns returned by query" ).arg( name() ) );
       }
@@ -193,14 +196,14 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
       const QString dataType = row.at( 1 ).toString();
       // Table type
-      if ( dataType == QStringLiteral( "tiles" ) )
+      if ( dataType == QStringLiteral( "tiles" ) || dataType == QStringLiteral( "2d-gridded-coverage" ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Raster );
       }
       else if ( dataType == QStringLiteral( "features" ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Vector );
-        property.setGeometryColumn( QStringLiteral( "geom" ) );
+        property.setGeometryColumn( row.at( 5 ).toString() );
         property.setGeometryColumnCount( 1 );
       }
       if ( aspatialTypes.contains( dataType ) )
