@@ -155,24 +155,18 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
     case 7:  // billboard
       if ( vm.contains( QStringLiteral( "billboard" ) ) )
       {
-        QVariant symbolVariant = vm[QStringLiteral( "billboard" )];
-        QString symbolString = symbolVariant.toString();
+        const QString symbolDefinition = vm.value( QStringLiteral( "billboard" ) ).toString();
+        QDomDocument doc( QStringLiteral( "symbol" ) );
 
-        QDomDocument doc;
-        QDomElement elem;
-        if ( doc.setContent( symbolString ) )
-        {
-          elem = doc.documentElement();
-        }
+        doc.setContent( symbolDefinition );
+        QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
+        std::unique_ptr< QgsMarkerSymbol >  markerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, QgsReadWriteContext() ) );
 
-        QgsSymbol *s = QgsSymbolLayerUtils::loadSymbol( elem, QgsReadWriteContext() );
-
-        btnChangeSymbol->setSymbol( s );
+        btnChangeSymbol->setSymbol( markerSymbol->clone() );
       }
       else
       {
         QgsMarkerSymbol *defaultSymbol = new QgsMarkerSymbol();
-        defaultSymbol->setColor( QColor( 0, 0, 255 ) );
         btnChangeSymbol->setSymbol( defaultSymbol );
       }
       break;
@@ -241,10 +235,7 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       break;
     case 7:  // billboard
       QgsDebugMsg( QStringLiteral( "Set billboard from symbol." ) );
-      QDomDocument doc;
-      QDomElement symbolDomElement = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Billboard Symbol" ), btnChangeSymbol->symbol(), doc, QgsReadWriteContext() );
-      doc.appendChild( symbolDomElement );
-      vm[QStringLiteral( "billboard" )] = QVariant( doc.toString() );
+      vm[QStringLiteral( "billboard" )] = QgsSymbolLayerUtils::symbolProperties( btnChangeSymbol->symbol() );
       break;
   }
 
