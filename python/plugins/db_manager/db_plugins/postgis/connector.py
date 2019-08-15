@@ -122,7 +122,7 @@ class PostGisDBConnector(DBConnector):
             # On linux and Mac if file is set with QFile::>ReadUser
             # does not create problem removing certs
             if not file.setPermissions(QFile.WriteOwner):
-                raise Exception('CannotChanges permissions on {}: error code: {}'.format(file.fileName(), file.error()))
+                raise Exception('Cannot change permissions on {}: error code: {}'.format(file.fileName(), file.error()))
             if not file.remove():
                 raise Exception('Cannot remove {}: error code: {}'.format(file.fileName(), file.error()))
 
