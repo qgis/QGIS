@@ -317,8 +317,6 @@ class GPKGTableField(TableField):
     def __init__(self, row, table):
         TableField.__init__(self, table)
         self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
-        self.notNull = int(self.notNull)
-        self.primaryKey = int(self.primaryKey)
         self.hasDefault = self.default
 
 

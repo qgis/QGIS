@@ -490,7 +490,7 @@ class GPKGDBConnector(DBConnector):
             if md is None or len(md) == 0:
                 sql = u"SELECT COUNT(*) FROM gpkg_contents WHERE data_type = 'tiles' AND table_name = %s" % self.quoteString(tablename)
                 ret = self._fetchOne(sql)
-                return ret is not None and ret[0] == 1
+                return ret != [] and ret[0][0] == 1
             else:
                 subdataset_name = 'GPKG:%s:%s' % (self.gdal_ds.GetDescription(), tablename)
                 for key in md:
@@ -792,7 +792,7 @@ class GPKGDBConnector(DBConnector):
             res = self._fetchOne(sql)
         except QgsProviderConnectionException:
             return False
-        return res is not None and res[0][0] == '1'
+        return res is not None and res[0][0] == 1
 
     def deleteSpatialIndex(self, table, geom_column):
         if self.isRasterTable(table):
@@ -821,7 +821,7 @@ class GPKGDBConnector(DBConnector):
         if len(ret) == 0:
             return False
         else:
-            return int(ret[0][0]) >= 1
+            return ret[0][0] >= 1
 
     def execution_error_types(self):
         return sqlite3.Error, sqlite3.ProgrammingError, sqlite3.Warning
