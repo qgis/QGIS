@@ -93,12 +93,6 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     bool isFinished();
 
     /**
-     * Returns a pointer to the current layer about to be rendered in the next render operation.
-     * \see currentLayerId()
-     */
-    const QgsMapLayer *currentLayer();
-
-    /**
      * Returns the ID of the current layer about to be rendered in the next render operation.
      * \see currentLayer()
      */
@@ -121,8 +115,8 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     bool mExportedLabels = false;
     Flags mFlags = nullptr;
     bool mPreparedStagedLabelJob = false;
-    QList< QgsMapLayer * > mLabelingLayers;
-    QList< QgsMapLayer * >::iterator mLabelLayerIt;
+    QStringList mLabelingLayers;
+    QStringList::iterator mLabelLayerIt;
 };
 
 #endif // QGSMAPRENDERERSTAGEDRENDERJOB_H

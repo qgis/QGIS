@@ -234,6 +234,12 @@ class CORE_EXPORT QgsLabelingEngine
      */
     QList< QgsMapLayer * > participatingLayers() const;
 
+    /**
+     * Returns a list of layer IDs for layers with providers in the engine.
+     * \since QGIS 3.10
+     */
+    QStringList participatingLayerIds() const;
+
     //! Add provider of label features. Takes ownership of the provider
     void addProvider( QgsAbstractLabelProvider *provider );
 

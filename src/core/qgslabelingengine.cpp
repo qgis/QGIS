@@ -139,6 +139,52 @@ QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
   return layers;
 }
 
+QStringList QgsLabelingEngine::participatingLayerIds() const
+{
+  QStringList layers;
+
+  // try to return layers sorted in the desired z order for rendering
+  QList< QgsAbstractLabelProvider * > providersByZ = mProviders;
+  std::sort( providersByZ.begin(), providersByZ.end(),
+             []( const QgsAbstractLabelProvider * a, const QgsAbstractLabelProvider * b ) -> bool
+  {
+    const QgsVectorLayerLabelProvider *providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
+    const QgsVectorLayerLabelProvider *providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
+
+    if ( providerA && providerB )
+    {
+      return providerA->settings().zIndex < providerB->settings().zIndex ;
+    }
+    return false;
+  } );
+
+  QList< QgsAbstractLabelProvider * > subProvidersByZ = mSubProviders;
+  std::sort( subProvidersByZ.begin(), subProvidersByZ.end(),
+             []( const QgsAbstractLabelProvider * a, const QgsAbstractLabelProvider * b ) -> bool
+  {
+    const QgsVectorLayerLabelProvider *providerA = dynamic_cast<const QgsVectorLayerLabelProvider *>( a );
+    const QgsVectorLayerLabelProvider *providerB = dynamic_cast<const QgsVectorLayerLabelProvider *>( b );
+
+    if ( providerA && providerB )
+    {
+      return providerA->settings().zIndex < providerB->settings().zIndex ;
+    }
+    return false;
+  } );
+
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( providersByZ ) )
+  {
+    if ( !layers.contains( provider->layerId() ) )
+      layers << provider->layerId();
+  }
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( subProvidersByZ ) )
+  {
+    if ( !layers.contains( provider->layerId() ) )
+      layers << provider->layerId();
+  }
+  return layers;
+}
+
 void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider *provider )
 {
   provider->setEngine( this );

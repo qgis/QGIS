@@ -510,7 +510,6 @@ void TestQgsMapRendererJob::stagedRenderer()
   // nothing to render
   QVERIFY( job->isFinished() );
   QVERIFY( !job->renderCurrentPart( nullptr ) );
-  QVERIFY( !job->currentLayer() );
   QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
 
@@ -519,7 +518,6 @@ void TestQgsMapRendererJob::stagedRenderer()
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
   job->start();
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), polygonsLayer.get() );
   QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -532,7 +530,6 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
-  QCOMPARE( job->currentLayer(), linesLayer.get() );
   QCOMPARE( job->currentLayerId(), linesLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -545,7 +542,6 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
-  QCOMPARE( job->currentLayer(), pointsLayer.get() );
   QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -559,7 +555,6 @@ void TestQgsMapRendererJob::stagedRenderer()
 
   // nothing left!
   QVERIFY( !job->nextPart() );
-  QVERIFY( !job->currentLayer() );
   QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
   QVERIFY( job->isFinished() );
@@ -585,7 +580,6 @@ void TestQgsMapRendererJob::stagedRenderer()
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
   job->start();
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), polygonsLayer.get() );
   QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -598,7 +592,6 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), linesLayer.get() );
   QCOMPARE( job->currentLayerId(), linesLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -611,7 +604,6 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), pointsLayer.get() );
   QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -624,7 +616,6 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( imageCheck( QStringLiteral( "staged_render3" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QVERIFY( !job->currentLayer() );
   QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
   // labels
@@ -637,7 +628,6 @@ void TestQgsMapRendererJob::stagedRenderer()
 
   // nothing left!
   QVERIFY( !job->nextPart() );
-  QVERIFY( !job->currentLayer() );
   QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
   QVERIFY( job->isFinished() );
@@ -672,7 +662,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   // nothing to render
   QVERIFY( job->isFinished() );
   QVERIFY( !job->renderCurrentPart( nullptr ) );
-  QVERIFY( !job->currentLayer() );
   QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
 
@@ -681,7 +670,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
   job->start();
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), polygonsLayer.get() );
   QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -694,7 +682,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
-  QCOMPARE( job->currentLayer(), linesLayer.get() );
   QCOMPARE( job->currentLayerId(), linesLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -707,7 +694,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
   QVERIFY( !job->isFinished() );
   QVERIFY( job->nextPart() );
-  QCOMPARE( job->currentLayer(), pointsLayer.get() );
   QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -721,7 +707,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
 
   // nothing left!
   QVERIFY( !job->nextPart() );
-  QVERIFY( !job->currentLayer() );
   QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
   QVERIFY( job->isFinished() );
@@ -760,7 +745,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   job = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
   job->start();
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), polygonsLayer.get() );
   QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -773,7 +757,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   QVERIFY( imageCheck( QStringLiteral( "staged_render1" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), linesLayer.get() );
   QCOMPARE( job->currentLayerId(), linesLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -786,7 +769,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   QVERIFY( imageCheck( QStringLiteral( "staged_render2" ), im ) );
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), pointsLayer.get() );
   QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Symbology );
 
@@ -801,7 +783,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   // points labels (these must be in z-order!)
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), pointsLayer.get() );
   QCOMPARE( job->currentLayerId(), pointsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
   im = QImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
@@ -814,7 +795,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   // polygon labels
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), polygonsLayer.get() );
   QCOMPARE( job->currentLayerId(), polygonsLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
   // labels
@@ -828,7 +808,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   // line labels
   QVERIFY( job->nextPart() );
   QVERIFY( !job->isFinished() );
-  QCOMPARE( job->currentLayer(), linesLayer.get() );
   QCOMPARE( job->currentLayerId(), linesLayer->id() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Labels );
   // labels
@@ -841,7 +820,6 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
 
   // nothing left!
   QVERIFY( !job->nextPart() );
-  QVERIFY( !job->currentLayer() );
   QVERIFY( job->currentLayerId().isEmpty() );
   QCOMPARE( job->currentStage(), QgsMapRendererStagedRenderJob::Finished );
   QVERIFY( job->isFinished() );
