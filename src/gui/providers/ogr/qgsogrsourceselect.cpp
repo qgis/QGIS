@@ -48,9 +48,9 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( btnNew, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnNew_clicked );
   connect( btnEdit, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnEdit_clicked );
   connect( btnDelete, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnDelete_clicked );
-  connect( cmbDatabaseTypes, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged );
-  connect( cmbConnections, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbConnections_currentIndexChanged );
-  connect( cmbProtocolTypes, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbProtocolTypes_currentIndexChanged );
+  connect( cmbDatabaseTypes, &QComboBox::currentTextChanged, this, &QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged );
+  connect( cmbConnections, &QComboBox::currentTextChanged, this, &QgsOgrSourceSelect::cmbConnections_currentIndexChanged );
+  connect( cmbProtocolTypes, &QComboBox::currentTextChanged, this, &QgsOgrSourceSelect::cmbProtocolTypes_currentIndexChanged );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrSourceSelect::showHelp );
 

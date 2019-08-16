@@ -90,7 +90,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
         << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
-  connect( mProfileComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
+  connect( mProfileComboBox, &QComboBox::currentTextChanged,
            this, &QgsRasterFormatSaveOptionsWidget::updateOptions );
   connect( mOptionsTable, &QTableWidget::cellChanged, this, &QgsRasterFormatSaveOptionsWidget::optionsTableChanged );
   connect( mOptionsHelpButton, &QAbstractButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::helpOptions );

@@ -78,7 +78,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
     settings.setValue( QStringLiteral( "Plugin-GeoReferencer/lastPDFReportDir" ), tmplFileInfo.absolutePath() );
   } );
 
-  connect( cmbTransformType, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
+  connect( cmbTransformType, &QComboBox::currentTextChanged, this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
   connect( mWorldFileCheckBox, &QCheckBox::stateChanged, this, &QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged );
 
   cmbTransformType->addItem( tr( "Linear" ), static_cast<int>( QgsGeorefTransform::Linear ) );

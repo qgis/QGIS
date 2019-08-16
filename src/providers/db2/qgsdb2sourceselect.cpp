@@ -132,8 +132,8 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( btnLoad, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnLoad_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsDb2SourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsDb2SourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsDb2SourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsDb2SourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsDb2SourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsDb2SourceSelect::mSearchModeComboBox_currentIndexChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsDb2SourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsDb2SourceSelect::mTablesTreeView_clicked );
   connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsDb2SourceSelect::mTablesTreeView_doubleClicked );
