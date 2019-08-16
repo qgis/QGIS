@@ -48,6 +48,9 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter : public QgsAbstractGeoPdfExporter
 {
   public:
 
+    /**
+     * Constructor for QgsLayoutGeoPdfExporter, associated with the specified \a layout.
+     */
     QgsLayoutGeoPdfExporter( QgsLayout *layout );
 
     ~QgsLayoutGeoPdfExporter() override;
