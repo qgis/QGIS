@@ -37,7 +37,8 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 {
   public:
 
-    QgsGeoPdfRenderedFeatureHandler( QgsLayoutItemMap *map )
+    QgsGeoPdfRenderedFeatureHandler( QgsLayoutItemMap *map, QgsLayoutGeoPdfExporter *exporter )
+      : mExporter( exporter )
     {
       QTransform mapTransform;
       QPolygonF mapRectPoly = QPolygonF( QRectF( 0, 0, map->rect().width(), map->rect().height() ) );
@@ -71,10 +72,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       // always convert to multitype, to make things consistent
       transformed.convertToMultiType();
 
-      // we (currently) don't REALLY need a mutex here, because layout maps are always rendered using a single threaded operation.
-      // but we'll play it safe, just in case this changes in future.
-      QMutexLocker locker( &mMutex );
-      renderedFeatures[ layerId ].append( QgsLayoutGeoPdfExporter::RenderedFeature( feature, transformed ) );
+      mExporter->pushRenderedFeature( layerId, QgsLayoutGeoPdfExporter::RenderedFeature( feature, transformed ) );
     }
 
     QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
@@ -87,7 +85,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
   private:
     QTransform mMapToLayoutTransform;
     QTransform mLayoutToPdfTransform;
-    QMutex mMutex;
+    QgsLayoutGeoPdfExporter *mExporter = nullptr;
 };
 
 
@@ -99,7 +97,7 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
   mLayout->layoutItems( maps );
   for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
   {
-    QgsGeoPdfRenderedFeatureHandler *handler = new QgsGeoPdfRenderedFeatureHandler( map );
+    QgsGeoPdfRenderedFeatureHandler *handler = new QgsGeoPdfRenderedFeatureHandler( map, this );
     mMapHandlers.insert( map, handler );
     map->addRenderedFeatureHandler( handler );
   }
@@ -120,295 +118,17 @@ QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPd
   return mMapHandlers.value( map )->renderedFeatures;
 }
 
-bool QgsLayoutGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile )
-{
-  // collate all the features from different maps which belong to the same layer, replace their geometries with the rendered feature bounds
-  for ( auto mapIt = mMapHandlers.constBegin(); mapIt != mMapHandlers.constEnd(); ++mapIt )
-  {
-    QgsGeoPdfRenderedFeatureHandler *handler = mapIt.value();
-    for ( auto layerIt = handler->renderedFeatures.constBegin(); layerIt != handler->renderedFeatures.constEnd(); ++layerIt )
-    {
-      const QString layerId = layerIt.key();
-      const QVector< QgsLayoutGeoPdfExporter::RenderedFeature > features = layerIt.value();
-      for ( auto featureIt = features.constBegin(); featureIt != features.constEnd(); ++featureIt )
-      {
-        // replace feature geometry with transformed rendered bounds
-        QgsFeature f = featureIt->feature;
-        f.setGeometry( featureIt->renderedBounds );
-        mCollatedFeatures[ layerId ].append( f );
-      }
-    }
-  }
-
-  if ( !saveTemporaryLayers() )
-    return false;
-
-  const QString composition = createCompositionXml( components );
-  if ( composition.isEmpty() )
-    return false;
-
-  // do the creation!
-  GDALDriverH driver = GDALGetDriverByName( "PDF" );
-  if ( !driver )
-  {
-    mErrorMessage = QObject::tr( "Cannot load GDAL PDF driver" );
-    return false;
-  }
-
-  const QString xmlFilePath = generateTemporaryFilepath( QStringLiteral( "composition.xml" ) );
-  QFile file( xmlFilePath );
-  if ( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
-  {
-    QTextStream out( &file );
-    out << composition;
-  }
-  else
-  {
-    mErrorMessage = QObject::tr( "Could not create GeoPDF composition file" );
-    return false;
-  }
-
-  char **papszOptions = CSLSetNameValue( nullptr, "COMPOSITION_FILE", xmlFilePath.toUtf8().constData() );
-
-  // return a non-null (fake) dataset in case of success, nullptr otherwise.
-  gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, destinationFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
-  bool res = outputDataset.get();
-  outputDataset.reset();
-
-  CSLDestroy( papszOptions );
-
-  return res;
-}
-
-QString QgsLayoutGeoPdfExporter::generateTemporaryFilepath( const QString &filename ) const
-{
-  return mTemporaryDir.filePath( filename );
-}
-
-bool QgsLayoutGeoPdfExporter::saveTemporaryLayers()
+QgsAbstractGeoPdfExporter::VectorComponentDetail QgsLayoutGeoPdfExporter::componentDetailForLayerId( const QString &layerId )
 {
   QgsProject *project = mLayout->project();
-  for ( auto it = mCollatedFeatures.constBegin(); it != mCollatedFeatures.constEnd(); ++it )
+  VectorComponentDetail detail;
+  const QgsMapLayer *layer = project->mapLayer( layerId );
+  detail.name = layer ? layer->name() : layerId;
+  detail.mapLayerId = layerId;
+  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
   {
-    const QString filePath = generateTemporaryFilepath( it.key() + QStringLiteral( ".gpkg" ) );
-
-    VectorComponentDetail detail;
-
-    const QgsMapLayer *layer = project->mapLayer( it.key() );
-    detail.name = layer ? layer->name() : it.key();
-    detail.mapLayerId = it.key();
-    detail.sourceVectorPath = filePath;
-    if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
-    {
-      detail.displayAttribute = vl->displayField();
-    }
-
-    // write out features to disk
-    const QgsFeatureList features = it.value();
-    QString layerName;
-    QgsVectorFileWriter writer( filePath, QString(), features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QStringLiteral( "GPKG" ), QStringList(), QStringList(), nullptr, QgsVectorFileWriter::NoSymbology, nullptr, &layerName );
-    if ( writer.hasError() )
-    {
-      mErrorMessage = writer.errorMessage();
-      QgsDebugMsg( mErrorMessage );
-      return false;
-    }
-    for ( const QgsFeature &feature : features )
-    {
-      QgsFeature f = feature;
-      if ( !writer.addFeature( f, QgsFeatureSink::FastInsert ) )
-      {
-        mErrorMessage = writer.errorMessage();
-        QgsDebugMsg( mErrorMessage );
-        return false;
-      }
-    }
-    detail.sourceVectorLayer = layerName;
-    mVectorComponents << detail;
+    detail.displayAttribute = vl->displayField();
   }
-  return true;
-}
-
-QString QgsLayoutGeoPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components )
-{
-  QDomDocument doc;
-
-  QDomElement compositionElem = doc.createElement( QStringLiteral( "PDFComposition" ) );
-
-  // metadata tags
-  QDomElement metadata = doc.createElement( QStringLiteral( "Metadata" ) );
-  QDomElement author = doc.createElement( QStringLiteral( "Author" ) );
-  author.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( author );
-  QDomElement producer = doc.createElement( QStringLiteral( "Producer" ) );
-  producer.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( producer );
-  QDomElement creator = doc.createElement( QStringLiteral( "Creator" ) );
-  creator.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( creator );
-  QDomElement creationDate = doc.createElement( QStringLiteral( "CreationDate" ) );
-  //creationDate.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( creationDate );
-  QDomElement subject = doc.createElement( QStringLiteral( "Subject" ) );
-  //subject.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( subject );
-  QDomElement title = doc.createElement( QStringLiteral( "Title" ) );
-  //title.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( title );
-  QDomElement keywords = doc.createElement( QStringLiteral( "Keywords" ) );
-  //keywords.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( keywords );
-  compositionElem.appendChild( metadata );
-
-  // layertree
-  QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
-  //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
-  QSet< QString > createdLayerIds;
-  for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
-  {
-    QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
-    layer.setAttribute( QStringLiteral( "id" ), component.mapLayerId );
-    layer.setAttribute( QStringLiteral( "name" ), component.name );
-    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
-    layerTree.appendChild( layer );
-    createdLayerIds.insert( component.mapLayerId );
-  }
-  // some PDF components may not be linked to vector components - e.g. layers with labels but no features
-  for ( const ComponentLayerDetail &component : components )
-  {
-    if ( component.mapLayerId.isEmpty() || createdLayerIds.contains( component.mapLayerId ) )
-      continue;
-
-    QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
-    layer.setAttribute( QStringLiteral( "id" ), component.mapLayerId );
-    layer.setAttribute( QStringLiteral( "name" ), component.name );
-    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
-    layerTree.appendChild( layer );
-    createdLayerIds.insert( component.mapLayerId );
-  }
-  compositionElem.appendChild( layerTree );
-
-  // pages
-  QDomElement page = doc.createElement( QStringLiteral( "Page" ) );
-  QDomElement dpi = doc.createElement( QStringLiteral( "DPI" ) );
-  dpi.appendChild( doc.createTextNode( QStringLiteral( "300" ) ) );
-  page.appendChild( dpi );
-  QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
-  width.appendChild( doc.createTextNode( QStringLiteral( "842" ) ) );
-  page.appendChild( width );
-  QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
-  height.appendChild( doc.createTextNode( QStringLiteral( "595" ) ) );
-  page.appendChild( height );
-
-
-  // georeferencing - TODO
-  QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
-  georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced" ) );
-  georeferencing.setAttribute( QStringLiteral( "OGCBestPracticeFormat" ), QStringLiteral( "false" ) );
-  georeferencing.setAttribute( QStringLiteral( "ISO32000ExtensionFormat" ), QStringLiteral( "true" ) );
-  QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
-  srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
-  srs.appendChild( doc.createTextNode( QStringLiteral( "EPSG:4326" ) ) );
-  georeferencing.appendChild( srs );
-#if 0
-  /* Define the viewport where georeferenced coordinates are available.
-    If not specified, the extent of BoundingPolygon will be used instead.
-    If none of BoundingBox and BoundingPolygon are specified,
-    the whole PDF page will be assumed to be georeferenced.
-    */
-  QDomElement boundingBox = doc.createElement( QStringLiteral( "BoundingBox" ) );
-  boundingBox.setAttribute( QStringLiteral( "x1" ), QStringLiteral( "1" ) );
-  boundingBox.setAttribute( QStringLiteral( "y1" ), QStringLiteral( "1" ) );
-  boundingBox.setAttribute( QStringLiteral( "x2" ), QStringLiteral( "9" ) );
-  boundingBox.setAttribute( QStringLiteral( "y2" ), QStringLiteral( "14" ) );
-  georeferencing.appendChild( boundingBox );
-  /*
-    Define a polygon / neatline in PDF units into which the
-    Measure tool will display coordinates.
-    If not specified, BoundingBox will be used instead.
-    If none of BoundingBox and BoundingPolygon are specified,
-    the whole PDF page will be assumed to be georeferenced.
-   */
-  QDomElement boundingPolygon = doc.createElement( QStringLiteral( "BoundingPolygon" ) );
-  boundingPolygon.appendChild( doc.createTextNode( QStringLiteral( "POLYGON((1 1,9 1,9 14,1 14,1 1))" ) ) );
-  georeferencing.appendChild( boundingPolygon );
-#endif
-  QDomElement cp1 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-  cp1.setAttribute( QStringLiteral( "x" ), QStringLiteral( "1" ) );
-  cp1.setAttribute( QStringLiteral( "y" ), QStringLiteral( "1" ) );
-  cp1.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "2" ) );
-  cp1.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "48" ) );
-  georeferencing.appendChild( cp1 );
-  QDomElement cp2 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-  cp2.setAttribute( QStringLiteral( "x" ), QStringLiteral( "1" ) );
-  cp2.setAttribute( QStringLiteral( "y" ), QStringLiteral( "14" ) );
-  cp2.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "2" ) );
-  cp2.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "49" ) );
-  georeferencing.appendChild( cp2 );
-  QDomElement cp3 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-  cp3.setAttribute( QStringLiteral( "x" ), QStringLiteral( "9" ) );
-  cp3.setAttribute( QStringLiteral( "y" ), QStringLiteral( "1" ) );
-  cp3.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "3" ) );
-  cp3.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "48" ) );
-  georeferencing.appendChild( cp3 );
-  QDomElement cp4 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-  cp4.setAttribute( QStringLiteral( "x" ), QStringLiteral( "9" ) );
-  cp4.setAttribute( QStringLiteral( "y" ), QStringLiteral( "14" ) );
-  cp4.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "3" ) );
-  cp4.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "49" ) );
-  georeferencing.appendChild( cp4 );
-
-  page.appendChild( georeferencing );
-
-
-  // content
-  QDomElement content = doc.createElement( QStringLiteral( "Content" ) );
-  for ( const ComponentLayerDetail &component : components )
-  {
-    if ( component.mapLayerId.isEmpty() )
-    {
-      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
-      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
-      content.appendChild( pdfDataset );
-    }
-    else
-    {
-      QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
-      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
-      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
-      ifLayerOn.appendChild( pdfDataset );
-      content.appendChild( ifLayerOn );
-    }
-  }
-
-  // vector datasets (we "draw" these on top, just for debugging... but they are invisible, so are never really drawn!)
-  for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
-  {
-    QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-    ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
-    QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
-    vectorDataset.setAttribute( QStringLiteral( "dataset" ), component.sourceVectorPath );
-    vectorDataset.setAttribute( QStringLiteral( "layer" ), component.sourceVectorLayer );
-    vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "false" ) );
-    QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
-    logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), component.name );
-    if ( !component.displayAttribute.isEmpty() )
-      logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), component.displayAttribute );
-    vectorDataset.appendChild( logicalStructure );
-    ifLayerOn.appendChild( vectorDataset );
-    content.appendChild( ifLayerOn );
-  }
-
-  page.appendChild( content );
-  compositionElem.appendChild( page );
-
-  doc.appendChild( compositionElem );
-
-  QString composition;
-  QTextStream stream( &composition );
-  doc.save( stream, -1 );
-
-  return composition;
+  return detail;
 }
 

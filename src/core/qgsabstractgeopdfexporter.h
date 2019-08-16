@@ -135,11 +135,11 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
      */
     QString generateTemporaryFilepath( const QString &filename ) const;
 
-  private:
+  protected:
 
-    QMutex mMutex;
-    QMap< QString, QgsFeatureList > mCollatedFeatures;
-
+    /**
+     * Contains information relating to a single PDF layer in the GeoPDF export.
+     */
     struct VectorComponentDetail
     {
       //! User-friendly name for the generated PDF layer
@@ -158,6 +158,12 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       QString sourceVectorLayer;
 
     };
+
+  private:
+
+    QMutex mMutex;
+    QMap< QString, QgsFeatureList > mCollatedFeatures;
+
 
 
     virtual VectorComponentDetail componentDetailForLayerId( const QString &layerId ) = 0;
