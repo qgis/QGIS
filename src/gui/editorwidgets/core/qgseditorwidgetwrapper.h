@@ -240,8 +240,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Emit this signal, whenever the value changed.
      *
      * \param value The new value
+     * \deprecated since QGIS 3.10 use valuesChanged signal instead
      */
-    void valueChanged( const QVariant &value );
+    Q_DECL_DEPRECATED void valueChanged( const QVariant &value );
 
     /**
      * Emit this signal, whenever the value changed.
@@ -251,7 +252,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param addtionalFieldValues A map of additional field names with their corresponding values
      * \since QGIS 3.10
      */
-    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues );
+    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
 
     /**
      * Emit this signal when the constraint status changed.

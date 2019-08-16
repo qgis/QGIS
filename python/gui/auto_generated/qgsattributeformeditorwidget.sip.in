@@ -95,11 +95,22 @@ Called when field values have been committed;
 
   signals:
 
-    void valueChanged( const QVariant &value );
+ void valueChanged( const QVariant &value );
 %Docstring
 Emitted when the widget's value changes
 
 :param value: new widget value
+
+.. deprecated:: since QGIS 3.10 use valuesChanged instead
+%End
+
+    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues );
+%Docstring
+Emitted when the widget's value changes
+
+:param value: new widget value
+
+.. versionadded:: 3.10
 %End
 
 };

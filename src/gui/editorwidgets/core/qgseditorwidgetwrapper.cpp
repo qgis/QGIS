@@ -80,7 +80,7 @@ void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QgsAttribut
 
 void QgsEditorWidgetWrapper::emitValueChanged()
 {
-  emit valueChanged( value() );
+  emit valuesChanged( value(), additionalFieldValues() );
 }
 
 void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()

@@ -52,7 +52,7 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
     mEditorWidget->widget()->setObjectName( mEditorWidget->field().name() );
   }
 
-  connect( mEditorWidget, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant &value )>( &QgsEditorWidgetWrapper::valueChanged ), this, &QgsAttributeFormEditorWidget::editorWidgetValueChanged );
+  connect( mEditorWidget, &QgsEditorWidgetWrapper::valuesChanged, this, &QgsAttributeFormEditorWidget::editorWidgetValuesChanged );
 
   connect( mMultiEditButton, &QgsMultiEditToolButton::resetFieldValueTriggered, this, &QgsAttributeFormEditorWidget::resetValue );
   connect( mMultiEditButton, &QgsMultiEditToolButton::setFieldValueTriggered, this, &QgsAttributeFormEditorWidget::setFieldTriggered );
@@ -164,7 +164,7 @@ QVariant QgsAttributeFormEditorWidget::currentValue() const
 
 
 
-void QgsAttributeFormEditorWidget::editorWidgetValueChanged( const QVariant &value )
+void QgsAttributeFormEditorWidget::editorWidgetValuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
 {
   if ( mBlockValueUpdate )
     return;
@@ -181,7 +181,7 @@ void QgsAttributeFormEditorWidget::editorWidgetValueChanged( const QVariant &val
       mMultiEditButton->setIsChanged( true );
   }
 
-  emit valueChanged( value );
+  emit valuesChanged( value, additionalFieldValues );
 }
 
 void QgsAttributeFormEditorWidget::resetValue()

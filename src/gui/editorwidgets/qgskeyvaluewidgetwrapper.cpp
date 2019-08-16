@@ -79,5 +79,5 @@ void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus()
 
 void QgsKeyValueWidgetWrapper::onValueChanged()
 {
-  emit valueChanged( value() );
+  emit valuesChanged( value() );
 }

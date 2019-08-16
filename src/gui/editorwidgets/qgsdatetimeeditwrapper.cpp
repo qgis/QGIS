@@ -118,18 +118,18 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
   switch ( field().type() )
   {
     case QVariant::DateTime:
-      emit valueChanged( dateTime );
+      emit valuesChanged( dateTime );
       break;
     case QVariant::Date:
-      emit valueChanged( dateTime.date() );
+      emit valuesChanged( dateTime.date() );
       break;
     case QVariant::Time:
-      emit valueChanged( dateTime.time() );
+      emit valuesChanged( dateTime.time() );
       break;
     default:
       if ( !dateTime.isValid() || dateTime.isNull() )
       {
-        emit valueChanged( QVariant( field().type() ) );
+        emit valuesChanged( QVariant( field().type() ) );
       }
       else
       {
@@ -137,11 +137,11 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
         const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
         if ( fieldIsoFormat )
         {
-          emit valueChanged( dateTime.toString( Qt::ISODate ) );
+          emit valuesChanged( dateTime.toString( Qt::ISODate ) );
         }
         else
         {
-          emit valueChanged( dateTime.toString( fieldFormat ) );
+          emit valuesChanged( dateTime.toString( fieldFormat ) );
         }
       }
       break;

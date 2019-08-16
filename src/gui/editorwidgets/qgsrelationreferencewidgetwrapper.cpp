@@ -147,7 +147,7 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
   {
     value = QVariant( field().type() );
   }
-  emit valueChanged( value );
+  emit valuesChanged( value );
 }
 
 void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()

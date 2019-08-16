@@ -236,14 +236,16 @@ This will be disabled when the form is not editable.
 
   signals:
 
-    void valueChanged( const QVariant &value );
+ void valueChanged( const QVariant &value );
 %Docstring
 Emit this signal, whenever the value changed.
 
 :param value: The new value
+
+.. deprecated:: since QGIS 3.10 use valuesChanged signal instead
 %End
 
-    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues );
+    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
 %Docstring
 Emit this signal, whenever the value changed.
 It will also return the values for the additional fields handled by the widget
