@@ -27,8 +27,6 @@
  * Render job implementation that renders maps in stages, allowing different stages (e.g. individual map
  * layers) to be rendered to different paint devices.
  *
- * Unlike other renderer jobs, this only supports synchronous rendering in main thread.
- *
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractCustomPainterJob
