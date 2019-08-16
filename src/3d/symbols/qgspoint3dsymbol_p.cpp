@@ -482,8 +482,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
 
   private:
 
-    static void addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent );
-    static void addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool are_selected );
+    static void addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool selected );
     static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol &symbol );
 
     //! temporary data we will pass to the tessellator
@@ -529,17 +528,11 @@ void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
 void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
-  if ( selected )
-  {
-    addMeshEntities( context.map(), out.positions, mSymbol, parent, true );
-  }
-  else
-  {
-    addSceneEntities( context.map(), out.positions, mSymbol, parent );
-  }
+  // TODO: put it as one function
+  addSceneEntities( context.map(), out.positions, mSymbol, parent, selected );
 }
 
-void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent )
+void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool selected )
 {
   Q_UNUSED( map )
 
@@ -565,21 +558,18 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
   std::unique_ptr< QgsMarkerSymbol >  markerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, QgsReadWriteContext() ) );
   if ( markerSymbol.get() )
   {
-    QgsDebugMsg( QStringLiteral( "Use symbol from symbol.shapeProperties. The color is %1" ).arg( markerSymbol.get()->color().name() ) );
-    if ( markerSymbol.get()->color().name() == QStringLiteral( "#ffffff" ) )
-    {
-      billboardMaterial->setTexture2DFromImagePath( QStringLiteral( "qrc:/shaders/success-kid.png" ) );
-    }
-    else
-    {
-//      billboardMaterial->setTexture2DFromImagePath( QStringLiteral( "qrc:/shaders/success-kid.png" ) );
-      billboardMaterial->setTexture2DFromSymbol( markerSymbol.get() );
-    }
+    billboardMaterial->setTexture2DFromSymbol( markerSymbol.get() );
   }
   else
   {
     QgsDebugMsg( "Use symbol from default" );
     billboardMaterial->useDefaultSymbol();
+  }
+
+  // For now, make it difference in size.
+  if ( selected )
+  {
+    billboardMaterial->setSize( billboardMaterial->size() * 2 );
   }
 
   // Billboard Transform
@@ -594,75 +584,6 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
   entity->addComponent( billboardGeometryRenderer );
   entity->setParent( parent );
 }
-
-void QgsPoint3DBillboardSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool are_selected )
-{
-  Q_UNUSED( symbol )
-  // Billboard Geometry
-  QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
-  billboardGeometry->setPoints( positions );
-
-  // Billboard Geometry Renderer
-  Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-  billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
-  billboardGeometryRenderer->setGeometry( billboardGeometry );
-  billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
-
-  // Billboard Material
-  QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
-
-  const QString symbolDefinition = symbol.shapeProperties().value( QStringLiteral( "billboard" ) ).toString();
-  QDomDocument doc( QStringLiteral( "symbol" ) );
-
-  doc.setContent( symbolDefinition );
-  QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
-
-  std::unique_ptr< QgsMarkerSymbol >  markerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, QgsReadWriteContext() ) );
-  if ( markerSymbol.get() )
-  {
-    QgsDebugMsg( QStringLiteral( "Use symbol from symbol.shapeProperties. The color is %1" ).arg( markerSymbol.get()->color().name() ) );
-    if ( markerSymbol.get()->color().name() == QStringLiteral( "#ffffff" ) )
-    {
-      billboardMaterial->setTexture2DFromImagePath( QStringLiteral( "qrc:/shaders/success-kid.png" ) );
-    }
-    else
-    {
-//      billboardMaterial->setTexture2DFromImagePath( QStringLiteral( "qrc:/shaders/success-kid.png" ) );
-      billboardMaterial->setTexture2DFromSymbol( markerSymbol.get() );
-    }
-  }
-  else
-  {
-    QgsDebugMsg( "Use symbol from default" );
-    billboardMaterial->useDefaultSymbol();
-  }
-
-  if ( are_selected )
-  {
-    billboardMaterial->setSize( billboardMaterial->size() + billboardMaterial->size() );
-  }
-
-  // Billboard Transform
-  Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
-  billboardTransform->setTranslation( QVector3D( 0.0f, 1.5f, 0.0f ) );
-
-  // Build the entity
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
-
-  entity->addComponent( billboardMaterial );
-  entity->addComponent( billboardTransform );
-  entity->addComponent( billboardGeometryRenderer );
-  entity->setParent( parent );
-}
-
-Qt3DCore::QTransform *QgsPoint3DBillboardSymbolHandler::transform( QVector3D position, const QgsPoint3DSymbol &symbol )
-{
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  tr->setMatrix( symbol.transform() );
-  tr->setTranslation( position + tr->translation() );
-  return tr;
-}
-
 
 
 namespace Qgs3DSymbolImpl

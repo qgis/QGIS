@@ -162,10 +162,6 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
 
   QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ) * 20, int( pixelSize ) * 20 ), 0 );
   QImage symbolImage = symbolPixmap.toImage();
-  QString path = "/home/ismailsunni/dev/cpp/test.png";
-  symbolImage.save( "/home/ismailsunni/dev/cpp/test.png" );
-  QUrl url =  QUrl::fromLocalFile( path );
-//  setTexture2DFromImagePath(url.toString());
   setTexture2DFromImage( symbolImage, pixelSize * 20 );
   mName = markerSymbol->color().name();
 }
@@ -185,8 +181,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbs
 
 void QgsPoint3DBillboardMaterial::debug( QString title )
 {
-  QVector<Qt3DRender::QAbstractTextureImage *> textureImages = texture2D()->textureImages();
-//  QgsDebugMsg( "Billboard debug: " + title );
+  QgsDebugMsg( "Billboard debug: " + title );
 //  QgsDebugMsg( "Name or color: " + name() );
 //  QgsDebugMsg( "Billboard size: " + QString::number( size().height() ) );
 }
