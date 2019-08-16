@@ -335,7 +335,8 @@ class CORE_EXPORT QgsProviderMetadata
     virtual void deleteConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Stores the connection \a connection in the settings
+     * Stores the connection in the settings
+     * \param connection the connection to be stored in the settings
      * \param configuration stores additional connection settings that not part of the data source URI
      * \since QGIS 3.10
      */

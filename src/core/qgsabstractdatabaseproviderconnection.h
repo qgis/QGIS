@@ -370,7 +370,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void createSchema( const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops an entire \a schema.
+     * Drops an entire schema with the specified \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param force if TRUE, a DROP CASCADE will drop all related objects
      * \note it is responsibility of the caller to handle open layers and registry entries.
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void dropSchema( const QString &name, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Renames a \a schema.
+     * Renames a schema with the specified \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
@@ -394,15 +394,16 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QList<QList<QVariant>> executeSql( const QString &sql ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Vacuum the database table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Vacuum the database table with given \a schema and \a name (schema is ignored  if not supported by the backend).
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
     virtual void vacuum( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Returns information on the tables in the given \a schema (schema is ignored if not supported by the backend).
+     * Returns information on the tables in the given schema .
      * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param schema name of the schema (ignored if not supported by the backend)
      * \param flags filter tables by flags, this option completely overrides search options stored in the connection
      * \throws QgsProviderConnectionException
      * \note Not available in Python bindings
@@ -410,8 +411,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_SKIP;
 
     /**
-     * Returns information on the tables in the given \a schema (schema is ignored if not supported by the backend).
+     * Returns information on the tables in the given schema.
      * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param schema name of the schema (ignored if not supported by the backend)
      * \param flags filter tables by flags, this option completely overrides search options stored in the connection
      * \throws QgsProviderConnectionException
      */

@@ -213,11 +213,13 @@ void QgsProviderMetadata::saveConnection( QgsAbstractProviderConnection *connect
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
 }
 
+///@cond PRIVATE
 void QgsProviderMetadata::saveConnectionProtected( QgsAbstractProviderConnection *conn, const QVariantMap &configuration )
 {
   conn->store( configuration );
   mProviderConnections.clear();
 }
+///@endcond
 
 template<typename T>
 QMap<QString, T *> QgsProviderMetadata::connections( bool cached )

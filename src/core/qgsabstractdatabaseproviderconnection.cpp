@@ -34,6 +34,7 @@ QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderC
   return mCapabilities;
 }
 
+///@cond PRIVATE
 void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability capability ) const
 {
   if ( ! mCapabilities & capability )
@@ -43,6 +44,7 @@ void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabase
     throw QgsProviderConnectionException( QObject::tr( "Operation '%1' is not supported for this connection" ).arg( capName ) );
   }
 }
+///@endcond
 
 void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &schema,
     const QString &name,

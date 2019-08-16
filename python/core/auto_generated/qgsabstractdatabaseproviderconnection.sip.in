@@ -329,7 +329,7 @@ Creates a new schema with the specified ``name``
 
     virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
 %Docstring
-Drops an entire ``schema``.
+Drops an entire schema with the specified ``name``.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :param force: if ``True``, a DROP CASCADE will drop all related objects
@@ -343,7 +343,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
-Renames a ``schema``.
+Renames a schema with the specified ``name``.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::
@@ -363,7 +363,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     virtual void vacuum( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Vacuum the database table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Vacuum the database table with given ``schema`` and ``name`` (schema is ignored  if not supported by the backend).
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
@@ -372,9 +372,10 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=tables/;
 %Docstring
-Returns information on the tables in the given ``schema`` (schema is ignored if not supported by the backend).
+Returns information on the tables in the given schema.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
+:param schema: name of the schema (ignored if not supported by the backend)
 :param flags: filter tables by flags, this option completely overrides search options stored in the connection
 
 :raises :: py:class:`QgsProviderConnectionException`

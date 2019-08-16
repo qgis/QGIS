@@ -293,8 +293,9 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     virtual void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() );
 %Docstring
-Stores the connection ``connection`` in the settings
+Stores the connection in the settings
 
+:param connection: the connection to be stored in the settings
 :param configuration: stores additional connection settings that not part of the data source URI
 
 .. versionadded:: 3.10
