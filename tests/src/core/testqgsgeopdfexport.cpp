@@ -138,7 +138,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   // check that temporary layers were correctly written
   std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
-  QCOMPARE( layer->featureCount(), 2 );
+  QCOMPARE( layer->featureCount(), 2L );
   QCOMPARE( layer->wkbType(), QgsWkbTypes::Polygon );
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "a1" ) );
   QCOMPARE( layer->fields().at( 2 ).name(), QStringLiteral( "a2" ) );
@@ -164,7 +164,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   QCOMPARE( component.name, QStringLiteral( "name layer2" ) );
   layer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
-  QCOMPARE( layer->featureCount(), 1 );
+  QCOMPARE( layer->featureCount(), 1L );
   QCOMPARE( layer->wkbType(), QgsWkbTypes::LineString );
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "a1" ) );
   QCOMPARE( layer->fields().at( 2 ).name(), QStringLiteral( "a2" ) );
