@@ -202,15 +202,15 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   std::unique_ptr< QgsVectorLayer > layer1 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=lines" ).arg( outputFile ),
       QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
-  QCOMPARE( layer1->featureCount(), 6 );
+  QCOMPARE( layer1->featureCount(), 6L );
   std::unique_ptr< QgsVectorLayer > layer2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=points" ).arg( outputFile ),
       QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer2->isValid() );
-  QCOMPARE( layer2->featureCount(), 32 );
+  QCOMPARE( layer2->featureCount(), 32L );
   std::unique_ptr< QgsVectorLayer > layer3 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=polys" ).arg( outputFile ),
       QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer3->isValid() );
-  QCOMPARE( layer3->featureCount(), 10 );
+  QCOMPARE( layer3->featureCount(), 10L );
 }
 
 QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )
