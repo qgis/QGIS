@@ -80,8 +80,6 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
     }
 
-    QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures;
-
   private:
     QTransform mMapToLayoutTransform;
     QTransform mLayoutToPdfTransform;
@@ -111,11 +109,6 @@ QgsLayoutGeoPdfExporter::~QgsLayoutGeoPdfExporter()
     it.key()->removeRenderedFeatureHandler( it.value() );
     delete it.value();
   }
-}
-
-QMap<QString, QVector<QgsLayoutGeoPdfExporter::RenderedFeature> > QgsLayoutGeoPdfExporter::renderedFeatures( QgsLayoutItemMap *map ) const
-{
-  return mMapHandlers.value( map )->renderedFeatures;
 }
 
 QgsAbstractGeoPdfExporter::VectorComponentDetail QgsLayoutGeoPdfExporter::componentDetailForLayerId( const QString &layerId )

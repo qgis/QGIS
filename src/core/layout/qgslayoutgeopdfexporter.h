@@ -52,11 +52,6 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter : public QgsAbstractGeoPdfExporter
 
     ~QgsLayoutGeoPdfExporter() override;
 
-    /**
-     * Returns a dict of rendered features, with layer IDs as dict keys for the specified \a map item.
-     */
-    QMap< QString, QVector< QgsLayoutGeoPdfExporter::RenderedFeature > > renderedFeatures( QgsLayoutItemMap *map ) const;
-
   private:
 
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override;
