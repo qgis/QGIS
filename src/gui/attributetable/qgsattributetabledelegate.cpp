@@ -140,7 +140,7 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
   QVariant value = index.model()->data( index, Qt::EditRole );
   const QgsAttributeList additionalFields = eww->additionalFields();
 
-  if ( additionalFields.count() > 0 )
+  if ( !additionalFields.empty() )
   {
     const QgsAttributeTableModel *model = masterModel( index.model() );
     if ( model )
