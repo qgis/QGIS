@@ -25,7 +25,9 @@
 #include "qgsvectorlayer.h"
 #include <QTextStream>
 #include <QDomDocument>
+#ifndef QT_NO_PRINTER
 #include <QPrinter> //to find out screen resolution
+#endif
 #include <cstdlib>
 #include "qgspathresolver.h"
 #include "qgsproject.h"

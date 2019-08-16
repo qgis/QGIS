@@ -28,7 +28,9 @@
 #include "qgsvectorlayer.h"
 #include <QFile>
 #include <QTextStream>
+#ifndef QT_NO_PRINTER
 #include <QPrinter>
+#endif
 
 #include "gdal.h"
 #include "cpl_conv.h"
