@@ -28,7 +28,6 @@
 #include "qgsconfig.h"
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
-#include <QDebug>
 
 #include <gdal.h>
 #include <ogr_api.h>
