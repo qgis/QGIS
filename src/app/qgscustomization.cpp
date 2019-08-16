@@ -881,7 +881,7 @@ void QgsCustomization::customizeWidget( const QString &path, QWidget *widget, QS
 
   // Qt may insert some internal classes in the tree, e.g. QTabWidgetPrivate inserts
   // qt_tabwidget_stackedwidget, such widgets do not appear in the tree generated
-  // from ui files and do not have sense from user poin of view -> skip
+  // from ui files and do not have sense from user point of view -> skip
 
   if ( !QgsCustomization::sInternalWidgets.contains( name ) )
   {
