@@ -33,6 +33,7 @@
 #include "gdal.h"
 #include "cpl_conv.h"
 
+///@cond PRIVATE
 
 class QgsMapRendererTaskGeoPdfExporter : public QgsAbstractGeoPdfExporter
 {
@@ -104,7 +105,7 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
 };
 
-
+///@endcond
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, const bool geoPDF )
   : QgsTask( tr( "Saving as image" ) )
