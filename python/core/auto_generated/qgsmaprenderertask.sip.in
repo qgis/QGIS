@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapRendererTask : QgsTask
 {
 %Docstring
@@ -45,7 +46,7 @@ Constructor for QgsMapRendererTask to render a map to an image file.
 Constructor for QgsMapRendererTask to render a map to a QPainter object.
 %End
 
-    void addAnnotations( QList< QgsAnnotation * > annotations );
+    void addAnnotations( const QList<QgsAnnotation *> &annotations );
 %Docstring
 Adds ``annotations`` to be rendered on the map.
 %End

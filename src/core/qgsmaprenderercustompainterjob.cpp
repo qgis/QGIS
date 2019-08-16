@@ -76,7 +76,8 @@ void QgsMapRendererCustomPainterJob::start()
   if ( isActive() )
     return;
 
-  mRenderingStart.start();
+  if ( !mPrepareOnly )
+    mRenderingStart.start();
 
   mActive = true;
 
@@ -106,8 +107,11 @@ void QgsMapRendererCustomPainterJob::start()
 
   if ( mRenderSynchronously )
   {
-    // do the rendering right now!
-    doRender();
+    if ( !mPrepareOnly )
+    {
+      // do the rendering right now!
+      doRender();
+    }
     return;
   }
 
@@ -212,14 +216,35 @@ void QgsMapRendererCustomPainterJob::renderSynchronously()
   mRenderSynchronously = false;
 }
 
+void QgsMapRendererCustomPainterJob::prepare()
+{
+  mRenderSynchronously = true;
+  mPrepareOnly = true;
+  start();
+  mPrepared = true;
+}
+
+void QgsMapRendererCustomPainterJob::renderPrepared()
+{
+  if ( !mPrepared )
+    return;
+
+  doRender();
+  futureFinished();
+  mRenderSynchronously = false;
+  mPrepareOnly = false;
+  mPrepared = false;
+}
 
 void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
-  mRenderingTime = mRenderingStart.elapsed();
+  if ( !mPrepared ) // can't access from other thread
+    mRenderingTime = mRenderingStart.elapsed();
   QgsDebugMsgLevel( QStringLiteral( "QPAINTER futureFinished" ), 5 );
 
-  logRenderingTime( mLayerJobs, mLabelJob );
+  if ( !mPrepared )
+    logRenderingTime( mLayerJobs, mLabelJob );
 
   // final cleanup
   cleanupJobs( mLayerJobs );

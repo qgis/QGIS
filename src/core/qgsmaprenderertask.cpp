@@ -35,6 +35,7 @@ QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString 
   , mFileFormat( fileFormat )
   , mForceRaster( forceRaster )
 {
+  prepare();
 }
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, QPainter *p )
@@ -42,9 +43,10 @@ QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, QPainter *p )
   , mMapSettings( ms )
   , mPainter( p )
 {
+  prepare();
 }
 
-void QgsMapRendererTask::addAnnotations( QList< QgsAnnotation * > annotations )
+void QgsMapRendererTask::addAnnotations( const QList< QgsAnnotation * > &annotations )
 {
   qDeleteAll( mAnnotations );
   mAnnotations.clear();
@@ -74,62 +76,10 @@ void QgsMapRendererTask::cancel()
 
 bool QgsMapRendererTask::run()
 {
-  QImage img;
-  std::unique_ptr< QPainter > tempPainter;
-  QPainter *destPainter = mPainter;
-
-#ifndef QT_NO_PRINTER
-  std::unique_ptr< QPrinter > printer;
-#endif // ! QT_NO_PRINTER
-
-  if ( mFileFormat == QStringLiteral( "PDF" ) )
-  {
-#ifndef QT_NO_PRINTER
-    printer.reset( new QPrinter() );
-    printer->setOutputFileName( mFileName );
-    printer->setOutputFormat( QPrinter::PdfFormat );
-    printer->setOrientation( QPrinter::Portrait );
-    // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
-    QSizeF outputSize = mMapSettings.outputSize();
-    printer->setPaperSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPrinter::Millimeter );
-    printer->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
-    printer->setResolution( mMapSettings.outputDpi() );
-
-    if ( !mForceRaster )
-    {
-      tempPainter.reset( new QPainter( printer.get() ) );
-      destPainter = tempPainter.get();
-    }
-#else
-    mError = ImageUnsupportedFormat;
-    return false;
-#endif // ! QT_NO_PRINTER
-  }
-
-  if ( !destPainter )
-  {
-    // save rendered map to an image file
-    img = QImage( mMapSettings.outputSize(), QImage::Format_ARGB32 );
-    if ( img.isNull() )
-    {
-      mError = ImageAllocationFail;
-      return false;
-    }
-
-    img.setDotsPerMeterX( 1000 * mMapSettings.outputDpi() / 25.4 );
-    img.setDotsPerMeterY( 1000 * mMapSettings.outputDpi() / 25.4 );
-
-    tempPainter.reset( new QPainter( &img ) );
-    destPainter = tempPainter.get();
-  }
-
-  if ( !destPainter )
+  if ( mErrored )
     return false;
 
-  mJobMutex.lock();
-  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, destPainter ) );
-  mJobMutex.unlock();
-  mJob->renderSynchronously();
+  mJob->renderPrepared();
 
   mJobMutex.lock();
   mJob.reset( nullptr );
@@ -139,7 +89,7 @@ bool QgsMapRendererTask::run()
     return false;
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mMapSettings );
-  context.setPainter( destPainter );
+  context.setPainter( mDestPainter );
 
   const auto constMDecorations = mDecorations;
   for ( QgsMapDecoration *decoration : constMDecorations )
@@ -185,15 +135,15 @@ bool QgsMapRendererTask::run()
 
   if ( !mFileName.isEmpty() )
   {
-    destPainter->end();
+    mDestPainter->end();
 
     if ( mForceRaster && mFileFormat == QStringLiteral( "PDF" ) )
     {
 #ifndef QT_NO_PRINTER
       QPainter pp;
-      pp.begin( printer.get() );
-      QRectF rect( 0, 0, img.width(), img.height() );
-      pp.drawImage( rect, img, rect );
+      pp.begin( mPrinter.get() );
+      QRectF rect( 0, 0, mImage.width(), mImage.height() );
+      pp.drawImage( rect, mImage, rect );
       pp.end();
 
       if ( mSaveWorldFile )
@@ -221,7 +171,7 @@ bool QgsMapRendererTask::run()
     }
     else if ( mFileFormat != QStringLiteral( "PDF" ) )
     {
-      bool success = img.save( mFileName, mFileFormat.toLocal8Bit().data() );
+      bool success = mImage.save( mFileName, mFileFormat.toLocal8Bit().data() );
       if ( !success )
       {
         mError = ImageSaveFail;
@@ -269,6 +219,9 @@ bool QgsMapRendererTask::run()
     }
   }
 
+  mTempPainter.reset();
+  mPrinter.reset();
+
   return true;
 }
 
@@ -281,4 +234,60 @@ void QgsMapRendererTask::finished( bool result )
     emit renderingComplete();
   else
     emit errorOccurred( mError );
+}
+
+void QgsMapRendererTask::prepare()
+{
+  mDestPainter = mPainter;
+
+  if ( mFileFormat == QStringLiteral( "PDF" ) )
+  {
+#ifndef QT_NO_PRINTER
+    mPrinter.reset( new QPrinter() );
+    mPrinter->setOutputFileName( mFileName );
+    mPrinter->setOutputFormat( QPrinter::PdfFormat );
+    mPrinter->setOrientation( QPrinter::Portrait );
+    // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
+    QSizeF outputSize = mMapSettings.outputSize();
+    mPrinter->setPaperSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPrinter::Millimeter );
+    mPrinter->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
+    mPrinter->setResolution( mMapSettings.outputDpi() );
+
+    if ( !mForceRaster )
+    {
+      mTempPainter.reset( new QPainter( mPrinter.get() ) );
+      mDestPainter = mTempPainter.get();
+    }
+#else
+    mError = ImageUnsupportedFormat;
+    return false;
+#endif // ! QT_NO_PRINTER
+  }
+
+  if ( !mDestPainter )
+  {
+    // save rendered map to an image file
+    mImage = QImage( mMapSettings.outputSize(), QImage::Format_ARGB32 );
+    if ( mImage.isNull() )
+    {
+      mErrored = true;
+      mError = ImageAllocationFail;
+      return;
+    }
+
+    mImage.setDotsPerMeterX( 1000 * mMapSettings.outputDpi() / 25.4 );
+    mImage.setDotsPerMeterY( 1000 * mMapSettings.outputDpi() / 25.4 );
+
+    mTempPainter.reset( new QPainter( &mImage ) );
+    mDestPainter = mTempPainter.get();
+  }
+
+  if ( !mDestPainter )
+  {
+    mErrored = true;
+    return;
+  }
+
+  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
+  mJob->prepare();
 }

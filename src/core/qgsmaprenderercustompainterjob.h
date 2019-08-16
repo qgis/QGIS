@@ -103,6 +103,31 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
      */
     void renderSynchronously();
 
+    /**
+     * Prepares the job for rendering synchronously in a background thread.
+     *
+     * Must be called from the main thread.
+     *
+     * This is an alternative to ordinary API (using start() + waiting for finished() signal),
+     * and an alternative to renderSynchronously() (which should only ever be called from the main thread).
+     *
+     * \see renderPrepared()
+     * \since QGIS 3.10
+     */
+    void prepare();
+
+    /**
+     * Render a pre-prepared job. Can be safely called in a background thread.
+     *
+     * Must be preceeded by a call to prepare()
+     *
+     * This is an alternative to ordinary API (using start() + waiting for finished() signal),
+     * and an alternative to renderSynchronously() (which should only ever be called from the main thread).
+     *
+     * \since QGIS 3.10
+     */
+    void renderPrepared();
+
   private slots:
     void futureFinished();
 
@@ -120,7 +145,9 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     bool mActive;
     LayerRenderJobs mLayerJobs;
     LabelRenderJob mLabelJob;
-    bool mRenderSynchronously;
+    bool mRenderSynchronously = false;
+    bool mPrepared = false;
+    bool mPrepareOnly = false;
 
 };
 
