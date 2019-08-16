@@ -81,7 +81,7 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
 #endif
 }
 
-bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile )
+bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
 {
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
   Q_UNUSED( components )
@@ -91,7 +91,8 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   if ( !saveTemporaryLayers() )
     return false;
 
-  const QString composition = createCompositionXml( components );
+  const QString composition = createCompositionXml( components, details );
+  QgsDebugMsg( composition );
   if ( composition.isEmpty() )
     return false;
 
@@ -181,7 +182,7 @@ bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
   return true;
 }
 
-QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components )
+QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
 {
   QDomDocument doc;
 
@@ -243,26 +244,28 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   // pages
   QDomElement page = doc.createElement( QStringLiteral( "Page" ) );
   QDomElement dpi = doc.createElement( QStringLiteral( "DPI" ) );
-  dpi.appendChild( doc.createTextNode( QStringLiteral( "300" ) ) );
+  dpi.appendChild( doc.createTextNode( QString::number( details.dpi ) ) );
   page.appendChild( dpi );
+  // assumes DPI of 72
   QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
-  width.appendChild( doc.createTextNode( QStringLiteral( "842" ) ) );
+  width.appendChild( doc.createTextNode( QString::number( std::ceil( details.pageSizeMm.width() / 25.4 * 72 ) ) ) );
   page.appendChild( width );
   QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
-  height.appendChild( doc.createTextNode( QStringLiteral( "595" ) ) );
+  height.appendChild( doc.createTextNode( QString::number( std::ceil( details.pageSizeMm.height() / 25.4 * 72 ) ) ) );
   page.appendChild( height );
 
 
   // georeferencing - TODO
+#if 0
   QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
   georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced" ) );
   georeferencing.setAttribute( QStringLiteral( "OGCBestPracticeFormat" ), QStringLiteral( "false" ) );
   georeferencing.setAttribute( QStringLiteral( "ISO32000ExtensionFormat" ), QStringLiteral( "true" ) );
   QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
-  srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
+  // srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
   srs.appendChild( doc.createTextNode( QStringLiteral( "EPSG:4326" ) ) );
   georeferencing.appendChild( srs );
-#if 0
+
   /* Define the viewport where georeferenced coordinates are available.
     If not specified, the extent of BoundingPolygon will be used instead.
     If none of BoundingBox and BoundingPolygon are specified,
@@ -284,7 +287,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   QDomElement boundingPolygon = doc.createElement( QStringLiteral( "BoundingPolygon" ) );
   boundingPolygon.appendChild( doc.createTextNode( QStringLiteral( "POLYGON((1 1,9 1,9 14,1 14,1 1))" ) ) );
   georeferencing.appendChild( boundingPolygon );
-#endif
+
   QDomElement cp1 = doc.createElement( QStringLiteral( "ControlPoint" ) );
   cp1.setAttribute( QStringLiteral( "x" ), QStringLiteral( "1" ) );
   cp1.setAttribute( QStringLiteral( "y" ), QStringLiteral( "1" ) );
@@ -311,7 +314,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   georeferencing.appendChild( cp4 );
 
   page.appendChild( georeferencing );
-
+#endif
 
   // content
   QDomElement content = doc.createElement( QStringLiteral( "Content" ) );

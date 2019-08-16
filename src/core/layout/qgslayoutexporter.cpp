@@ -572,7 +572,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     if ( result != Success )
       return result;
 
-    geoPdfExporter->finalize( pdfComponents, filePath );
+    QgsAbstractGeoPdfExporter::ExportDetails details;
+    details.dpi = settings.dpi;
+    // TODO - multipages
+    QgsLayoutSize pageSize = mLayout->pageCollection()->page( 0 )->sizeWithUnits();
+    QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+    details.pageSizeMm = pageSizeMM.toQSizeF();
+
+    geoPdfExporter->finalize( pdfComponents, filePath, details );
   }
   else
   {

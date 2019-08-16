@@ -224,7 +224,8 @@ void TestQgsGeoPdfExport::testComposition()
 
   // test creation of the composition xml
   QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers );
+  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsg( composition );
   QDomDocument doc;
   doc.setContent( composition );

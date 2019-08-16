@@ -128,6 +128,16 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
      */
     void pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature );
 
+    struct ExportDetails
+    {
+      //! Page size, in millimeters
+      QSizeF pageSizeMm;
+
+      //! Output DPI
+      double dpi = 300;
+
+    };
+
     /**
      * To be called after the rendering operation is complete.
      *
@@ -141,7 +151,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
      * Returns TRUE if the operation was successful, or FALSE if an error occurred. If an error occurred, it
      * can be retrieved by calling errorMessage().
      */
-    bool finalize( const QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > &components, const QString &destinationFile );
+    bool finalize( const QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > &components, const QString &destinationFile, const ExportDetails &details );
 
     /**
      * Returns the last error message encountered during the export.
@@ -194,7 +204,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
 
     bool saveTemporaryLayers();
 
-    QString createCompositionXml( const QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > &components );
+    QString createCompositionXml( const QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > &components, const ExportDetails &details );
 
     friend class TestQgsLayoutGeoPdfExport;
     friend class TestQgsGeoPdfExport;
