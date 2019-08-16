@@ -327,10 +327,12 @@ class CORE_EXPORT QgsProviderMetadata
     virtual QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) SIP_FACTORY;
 
     /**
-     * Removes the connection with the given \a name from the settings
+     * Removes the connection with the given \a name from the settings.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
      * \since QGIS 3.10
      */
-    virtual void deleteConnection( const QString &name );
+    virtual void deleteConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Stores the connection \a connection in the settings

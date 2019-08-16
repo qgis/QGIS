@@ -25,6 +25,7 @@ from qgis.core import (
     QgsRasterLayer,
 )
 from qgis.testing import unittest
+from osgeo import gdal
 
 
 class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderConnectionBase):
@@ -88,6 +89,8 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         types = [t.wkbType for t in geometries_table.geometryColumnTypes()]
         self.assertEqual(types, [7, 2, 1, 1, 1, 3])
 
+    # error: ERROR: relation "qgis_test.raster1" does not exist
+    @unittest.skipIf(gdal.VersionInfo() < '2040000', 'This test requires GDAL >= 2.4.0')
     def test_postgis_raster_rename(self):
         """Test raster rename"""
 

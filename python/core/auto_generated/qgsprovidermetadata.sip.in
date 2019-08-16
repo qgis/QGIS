@@ -281,9 +281,12 @@ Ownership is transferred to the caller.
 .. versionadded:: 3.10
 %End
 
-    virtual void deleteConnection( const QString &name );
+    virtual void deleteConnection( const QString &name ) throw( QgsProviderConnectionException );
 %Docstring
-Removes the connection with the given ``name`` from the settings
+Removes the connection with the given ``name`` from the settings.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
 
 .. versionadded:: 3.10
 %End
