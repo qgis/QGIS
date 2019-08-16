@@ -352,6 +352,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Save single feature or add feature edits
     bool saveEdits();
 
+    //! fill up dependency map for default values
+    void createDefaultValueDependencies();
+
+    //! update the default values in the fields after a referenced field changed
+    bool updateDefaultValues( const int originIdx );
+
     int messageTimeout();
     void clearMultiEditMessages();
     void pushSelectedFeaturesMessage();
@@ -443,6 +449,15 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QgsAttributeEditorContext::Mode mMode;
 
     QMap<QWidget *, QSvgWidget *> mIconMap;
+
+    /**
+     * Dependency map for default values. Attribute index -> widget wrapper.
+     * Attribute indexes will be added multiple times if more than one widget depends on them.
+     */
+    QMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
+
+    //! List of updated fields to avoid recursion on the setting of defaultValues
+    QList<int> mAlreadyUpdatedFields;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeForm;

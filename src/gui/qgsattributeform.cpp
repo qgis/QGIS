@@ -41,6 +41,7 @@
 #include "qgshtmlwidgetwrapper.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeaturerequest.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -318,12 +319,7 @@ bool QgsAttributeForm::saveEdits()
         QVariant dstVar = dst.at( eww->fieldIdx() );
         QVariant srcVar = eww->value();
 
-        // need to check dstVar.isNull() != srcVar.isNull()
-        // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        // be careful- sometimes two null qvariants will be reported as not equal!! (e.g., different types)
-        bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
-                       || ( dstVar.isNull() != srcVar.isNull() );
-        if ( changed && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
+        if ( !qgsVariantEqual( dstVar, srcVar ) && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -416,6 +412,57 @@ bool QgsAttributeForm::saveEdits()
     mLayer->triggerRepaint();
 
   return success;
+}
+
+bool QgsAttributeForm::updateDefaultValues( const int originIdx )
+{
+  if ( !mDefaultValueDependencies.contains( originIdx ) )
+    return false;
+
+  // create updated Feature
+  QgsFeature updatedFeature = QgsFeature( mFeature );
+  if ( mFeature.isValid() || mMode == QgsAttributeEditorContext::AddFeatureMode )
+  {
+    QgsAttributes dst = mFeature.attributes();
+    for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+    {
+      QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+      if ( eww )
+      {
+        QVariant dstVar = dst.at( eww->fieldIdx() );
+        QVariant srcVar = eww->value();
+
+        if ( !qgsVariantEqual( dstVar, srcVar ) && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
+        {
+          dst[eww->fieldIdx()] = srcVar;
+        }
+      }
+    }
+    updatedFeature.setAttributes( dst );
+
+    // go through depending fields and update the fields with defaultexpression
+    QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx );
+    for ( QgsWidgetWrapper *ww : qgis::as_const( relevantWidgets ) )
+    {
+      QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+      if ( eww )
+      {
+        //do not update when when mMode is not AddFeatureMode and it's not applyOnUpdate
+        if ( mMode != QgsAttributeEditorContext::AddFeatureMode && !eww->field().defaultValueDefinition().applyOnUpdate() )
+        {
+          continue;
+        }
+
+        //do not update when this widget is already updating (avoid recursions)
+        if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
+          continue;
+
+        QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature ).toString();
+        eww->setValue( value );
+      }
+    }
+  }
+  return true;
 }
 
 void QgsAttributeForm::resetMultiEdit( bool promptToSave )
@@ -771,6 +818,11 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
   }
 
   updateConstraints( eww );
+
+  //append field index here, so it's not updated recursive
+  mAlreadyUpdatedFields.append( eww->fieldIdx() );
+  updateDefaultValues( eww->fieldIdx() );
+  mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
 
   if ( !signalEmitted )
   {
@@ -1414,6 +1466,33 @@ void QgsAttributeForm::init()
       gridLayout->addItem( spacerItem, row, 0 );
       gridLayout->setRowStretch( row, 1 );
       row++;
+    }
+  }
+
+  //create defaultValueDependencies
+  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( eww )
+    {
+      QgsExpression exp( eww->field().defaultValueDefinition().expression() );
+      const QSet<QString> referencedColumns = exp.referencedColumns();
+      for ( const QString &referencedColumn : referencedColumns )
+      {
+        if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
+        {
+          const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+
+          for ( const int id : allAttributeIds )
+          {
+            mDefaultValueDependencies.insertMulti( id, eww );
+          }
+        }
+        else
+        {
+          mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
+        }
+      }
     }
   }
 
