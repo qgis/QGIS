@@ -51,10 +51,25 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
   public:
 
     /**
+     * Returns TRUE if the current QGIS build is capable of GeoPDF support.
+     *
+     * If FALSE is returned, a user-friendly explanation why can be retrieved via
+     * geoPDFAvailabilityExplanation().
+     */
+    static bool geoPDFCreationAvailable();
+
+    /**
+     * Returns a user-friendly, translated string explaining why GeoPDF export
+     * support is not available on the current QGIS build (or an empty string if
+     * GeoPDF support IS available).
+     * \see geoPDFCreationAvailable()
+     */
+    static QString geoPDFAvailabilityExplanation();
+
+    /**
      * Constructor for QgsAbstractGeoPdfExporter.
      */
     QgsAbstractGeoPdfExporter() = default;
-
 
     virtual ~QgsAbstractGeoPdfExporter() = default;
 
@@ -164,8 +179,9 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     QMutex mMutex;
     QMap< QString, QgsFeatureList > mCollatedFeatures;
 
-
-
+    /**
+     * Returns the PDF output component details for the layer with given \a layerId.
+     */
     virtual VectorComponentDetail componentDetailForLayerId( const QString &layerId ) = 0;
 
     QList< VectorComponentDetail > mVectorComponents;
