@@ -370,8 +370,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void createSchema( const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops an entire schema with the specified \a name.
+     * Drops an entire schema with the specified name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param name name of the schema to be dropped
      * \param force if TRUE, a DROP CASCADE will drop all related objects
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException

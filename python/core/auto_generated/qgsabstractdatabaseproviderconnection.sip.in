@@ -329,9 +329,10 @@ Creates a new schema with the specified ``name``
 
     virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
 %Docstring
-Drops an entire schema with the specified ``name``.
+Drops an entire schema with the specified name.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
+:param name: name of the schema to be dropped
 :param force: if ``True``, a DROP CASCADE will drop all related objects
 
 .. note::
