@@ -276,6 +276,17 @@ A custom delimiter can be specified to use instead of space characters.
 
 .. versionadded:: 3.4
 %End
+
+    static QString substituteVerticalCharacters( QString string );
+%Docstring
+Returns a string with characters having vertical representation form substituted.
+
+:param string: input string
+
+:return: string with substition applied
+
+.. versionadded:: 3.10
+%End
 };
 
 /************************************************************************
