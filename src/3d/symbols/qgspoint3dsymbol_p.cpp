@@ -481,8 +481,6 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
-
-    static void addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool selected );
     static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol &symbol );
 
     //! temporary data we will pass to the tessellator
@@ -528,17 +526,11 @@ void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
 void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
-  // TODO: put it as one function
-  addSceneEntities( context.map(), out.positions, mSymbol, parent, selected );
-}
-
-void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool selected )
-{
-  Q_UNUSED( map )
+  Q_UNUSED( context );
 
   // Billboard Geometry
   QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
-  billboardGeometry->setPoints( positions );
+  billboardGeometry->setPoints( out.positions );
 
   // Billboard Geometry Renderer
   Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
@@ -549,7 +541,7 @@ void QgsPoint3DBillboardSymbolHandler::addSceneEntities( const Qgs3DMapSettings 
   // Billboard Material
   QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
 
-  const QString symbolDefinition = symbol.shapeProperties().value( QStringLiteral( "billboard" ) ).toString();
+  const QString symbolDefinition = mSymbol.shapeProperties().value( QStringLiteral( "billboard" ) ).toString();
   QDomDocument doc( QStringLiteral( "symbol" ) );
 
   doc.setContent( symbolDefinition );
