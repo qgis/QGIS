@@ -94,7 +94,6 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
 
     /**
      * Returns the ID of the current layer about to be rendered in the next render operation.
-     * \see currentLayer()
      */
     QString currentLayerId();
 
