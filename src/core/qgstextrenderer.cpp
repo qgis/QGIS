@@ -3550,8 +3550,28 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
 
       bool adjustForAlignment = alignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
 
-      const auto constTextLines = textLines;
-      for ( const QString &line : constTextLines )
+      // apply some character replacement to draw symbols in vertical presentation
+      QString lines = textLines.join( '\n' );
+      lines = lines.replace( ',', QChar( 65040 ) ).replace( QChar( 8229 ), QChar( 65072 ) ); // comma & two-dot leader
+      lines = lines.replace( QChar( 12289 ), QChar( 65041 ) ).replace( QChar( 12290 ), QChar( 65042 ) ); // ideographic comma & full stop
+      lines = lines.replace( ':', QChar( 65043 ) ).replace( ';', QChar( 65044 ) );
+      lines = lines.replace( '!', QChar( 65045 ) ).replace( '?', QChar( 65046 ) );
+      lines = lines.replace( QChar( 12310 ), QChar( 65047 ) ).replace( QChar( 12311 ), QChar( 65048 ) ); // white lenticular brackets
+      lines = lines.replace( QChar( 8230 ), QChar( 65049 ) ); // three-dot ellipse
+      lines = lines.replace( QChar( 8212 ), QChar( 65073 ) ).replace( QChar( 8211 ), QChar( 65074 ) ); // em & en dash
+      lines = lines.replace( '_', QChar( 65075 ) ).replace( QChar( 65103 ), QChar( 65076 ) ); // low line & wavy low line
+      lines = lines.replace( '(', QChar( 65077 ) ).replace( ')', QChar( 65078 ) );
+      lines = lines.replace( '{', QChar( 65079 ) ).replace( '}', QChar( 65080 ) );
+      lines = lines.replace( '<', QChar( 65087 ) ).replace( '>', QChar( 65088 ) );
+      lines = lines.replace( '[', QChar( 65095 ) ).replace( ']', QChar( 65096 ) );
+      lines = lines.replace( QChar( 12308 ), QChar( 65081 ) ).replace( QChar( 12309 ), QChar( 65082 ) );   // tortoise shell brackets
+      lines = lines.replace( QChar( 12304 ), QChar( 65083 ) ).replace( QChar( 12305 ), QChar( 65084 ) );   // black lenticular brackets
+      lines = lines.replace( QChar( 12298 ), QChar( 65085 ) ).replace( QChar( 12299 ), QChar( 65086 ) ); // double angle brackets
+      lines = lines.replace( QChar( 12300 ), QChar( 65089 ) ).replace( QChar( 12301 ), QChar( 65090 ) );   // corner brackets
+      lines = lines.replace( QChar( 12302 ), QChar( 65091 ) ).replace( QChar( 12303 ), QChar( 65092 ) );   // white corner brackets
+
+      const auto constTextLines = lines.split( '\n' );
+      for ( QString line : constTextLines )
       {
         context.painter()->save();
         if ( context.flags() & QgsRenderContext::Antialiasing )
