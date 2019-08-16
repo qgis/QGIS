@@ -241,7 +241,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * It will also return the values for the additional fields handled by the widget
      *
      * \param value The new value
-     * \param addtionalFieldValues A map of additional field names with their corresponding values
+     * \param additionalFieldValues A map of additional field names with their corresponding values
      * \since QGIS 3.10
      */
     void valueChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
@@ -279,9 +279,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * fields which might be handled by the widget
      *
      * \param value The new value of the attribute
-     * \param addtionalFieldValues A map of field names with their corresponding values
+     * \param additionalFieldValues A map of field names with their corresponding values
      */
-    virtual void setValue( const QVariant &value, const QgsAttributeMap &addtionalFieldValues = QgsAttributeMap() ) = 0;
+    virtual void setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() ) = 0;
 
     /**
      * Will call the value() method to determine the emitted value
