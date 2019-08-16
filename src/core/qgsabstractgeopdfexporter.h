@@ -133,7 +133,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
      *
      * Will export the list of PDF layer \a components to a new PDF file at \a destinationFile. The \a components
      * argument gives a list of additional layers to include in the generated PDF file. These must have already
-     * been created, e.g. as a result of rendering layers to seperate PDF source files.
+     * been created, e.g. as a result of rendering layers to separate PDF source files.
      *
      * Any features previously collected by calls to pushRenderedFeature() will be included automatically in the GeoPDF
      * export.

@@ -32,7 +32,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-
+///@cond PRIVATE
 class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 {
   public:
@@ -85,7 +85,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
     QTransform mLayoutToPdfTransform;
     QgsLayoutGeoPdfExporter *mExporter = nullptr;
 };
-
+///@endcond
 
 QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
   : mLayout( layout )
