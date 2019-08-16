@@ -2168,7 +2168,7 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
   fit.nextFeature( firstFeature );
 
   const auto constMixedValueFields = mixedValueFields;
-  for ( int fieldIndex : constMixedValueFields )
+  for ( int fieldIndex : qgis::as_const( mixedValueFields ) )
   {
     if ( QgsAttributeFormEditorWidget *w = mFormEditorWidgets.value( fieldIndex, nullptr ) )
     {
