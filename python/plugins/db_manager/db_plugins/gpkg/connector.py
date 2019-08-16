@@ -801,7 +801,7 @@ class GPKGDBConnector(DBConnector):
         sql = u"SELECT DisableSpatialIndex(%s, %s)" % (
             self.quoteId(tablename), self.quoteId(geom_column))
         res = self._fetchOne(sql)
-        return res is not None and res[0] == 1
+        return len(res) > 0 and len(res[0]) > 0 and res[0][0] == 1
 
     def hasSpatialIndex(self, table, geom_column):
         if self.isRasterTable(table) or geom_column is None:

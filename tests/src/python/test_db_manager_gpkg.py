@@ -196,6 +196,10 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         self.assertTrue(new_table.createSpatialIndex())
         self.assertTrue(new_table.hasSpatialIndex())
 
+        # Test delete spatial index
+        self.assertTrue(new_table.deleteSpatialIndex())
+        self.assertFalse(new_table.hasSpatialIndex())
+
         self.assertTrue(new_table.delete())
 
         tables = db.tables()
