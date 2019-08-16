@@ -21,6 +21,11 @@
 #include "qgsmapsettingsutils.h"
 #include "qgsogrutils.h"
 #include "qgslogger.h"
+#include "qgsabstractgeopdfexporter.h"
+#include "qgsmaprendererstagedrenderjob.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsfeaturerequest.h"
+#include "qgsvectorlayer.h"
 #include <QFile>
 #include <QTextStream>
 #include <QPrinter>
@@ -28,12 +33,86 @@
 #include "gdal.h"
 #include "cpl_conv.h"
 
-QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster )
+
+class QgsMapRendererTaskGeoPdfExporter : public QgsAbstractGeoPdfExporter
+{
+
+  public:
+
+    QgsMapRendererTaskGeoPdfExporter( const QgsMapSettings &ms )
+    {
+      // collect details upfront, while we are still in the main thread
+      const QList< QgsMapLayer * > layers = ms.layers();
+      for ( const QgsMapLayer *layer : layers )
+      {
+        VectorComponentDetail detail;
+        detail.name = layer->name();
+        detail.mapLayerId = layer->id();
+        if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+        {
+          detail.displayAttribute = vl->displayField();
+        }
+        mLayerDetails[ layer->id() ] = detail;
+      }
+    }
+
+  private:
+
+    QgsAbstractGeoPdfExporter::VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override
+    {
+      return mLayerDetails.value( layerId );
+    }
+
+    QMap< QString, VectorComponentDetail > mLayerDetails;
+};
+
+
+class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandlerInterface
+{
+  public:
+
+    QgsMapRendererTaskRenderedFeatureHandler( QgsMapRendererTaskGeoPdfExporter *exporter )
+      : mExporter( exporter )
+    {}
+
+    void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
+    {
+      // is it a hack retrieving the layer ID from an expression context like this? possibly... BUT
+      // the alternative is adding a layer ID member to QgsRenderContext, and that's just asking for people to abuse it
+      // and use it to retrieve QgsMapLayers mid-way through a render operation. Lesser of two evils it is!
+      const QString layerId = context.renderContext.expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
+
+      // transform from pixels to PDF coordinates (TODO - check)
+      QTransform pixelToPdfTransform = QTransform::fromScale( 25.4 / context.renderContext.scaleFactor() / 72.0, 25.4 / context.renderContext.scaleFactor() / 72.0 );
+      QgsGeometry transformed = renderedBounds;
+      transformed.transform( pixelToPdfTransform );
+
+      // always convert to multitype, to make things consistent
+      transformed.convertToMultiType();
+
+      mExporter->pushRenderedFeature( layerId, QgsAbstractGeoPdfExporter::RenderedFeature( feature, transformed ) );
+    }
+
+    QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
+    {
+      return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
+    }
+
+  private:
+
+    QgsMapRendererTaskGeoPdfExporter *mExporter = nullptr;
+
+};
+
+
+
+QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, const bool geoPDF )
   : QgsTask( tr( "Saving as image" ) )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
   , mForceRaster( forceRaster )
+  , mGeoPDF( geoPDF && mFileFormat == QStringLiteral( "PDF" ) && QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() )
 {
   prepare();
 }
@@ -45,6 +124,8 @@ QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, QPainter *p )
 {
   prepare();
 }
+
+QgsMapRendererTask::~QgsMapRendererTask() = default;
 
 void QgsMapRendererTask::addAnnotations( const QList< QgsAnnotation * > &annotations )
 {
@@ -79,7 +160,50 @@ bool QgsMapRendererTask::run()
   if ( mErrored )
     return false;
 
-  mJob->renderPrepared();
+  if ( mGeoPDF )
+  {
+
+    QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > pdfComponents;
+
+    QgsMapRendererStagedRenderJob *job = static_cast< QgsMapRendererStagedRenderJob * >( mJob.get() );
+    int outputLayer = 1;
+    while ( !job->isFinished() )
+    {
+      QgsAbstractGeoPdfExporter::ComponentLayerDetail component;
+      component.name = QStringLiteral( "layer_%1" ).arg( outputLayer );
+      component.mapLayerId = job->currentLayerId();
+      component.sourcePdfPath = mGeoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( outputLayer ) );
+      pdfComponents << component;
+
+      QPrinter printer;
+      printer.setOutputFileName( component.sourcePdfPath );
+      printer.setOutputFormat( QPrinter::PdfFormat );
+      printer.setOrientation( QPrinter::Portrait );
+      // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
+      QSizeF outputSize = mMapSettings.outputSize();
+      printer.setPaperSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPrinter::Millimeter );
+      printer.setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
+      printer.setResolution( mMapSettings.outputDpi() );
+
+      QPainter p( &printer );
+      job->renderCurrentPart( &p );
+      p.end();
+
+      outputLayer++;
+      job->nextPart();
+    }
+    QgsAbstractGeoPdfExporter::ExportDetails exportDetails;
+    exportDetails.pageSizeMm = mMapSettings.outputSize() * 25.4 / mMapSettings.outputDpi();
+    exportDetails.dpi = mMapSettings.outputDpi();
+
+    mGeoPdfExporter->finalize( pdfComponents, mFileName, exportDetails );
+    mGeoPdfExporter.reset();
+    mTempPainter.reset();
+    mPrinter.reset();
+    return true;
+  }
+  else
+    static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->renderPrepared();
 
   mJobMutex.lock();
   mJob.reset( nullptr );
@@ -288,6 +412,17 @@ void QgsMapRendererTask::prepare()
     return;
   }
 
-  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
-  mJob->prepare();
+  if ( mGeoPDF )
+  {
+    mGeoPdfExporter = qgis::make_unique< QgsMapRendererTaskGeoPdfExporter >( mMapSettings );
+    mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ) );
+    mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
+    mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
+    mJob->start();
+  }
+  else
+  {
+    mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
+    static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->prepare();
+  }
 }

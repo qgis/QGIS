@@ -314,7 +314,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.10
        */
-      bool writeGeoPdf = true;
+      bool writeGeoPdf = false;
 
     };
 

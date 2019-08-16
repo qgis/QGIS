@@ -195,7 +195,8 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( polyGeometry3b.asWkt( 1 ), QStringLiteral( "MultiPolygon (((468.8 306.3, 468.8 305.2, 468.4 305, 467.8 305, 467.1 305, 466.4 304.2, 466.4 303.8, 466.2 303.3, 466.7 302.6, 467.2 302, 467.7 301.6, 468.6 301.5, 469.6 302.1, 470.4 302.5, 470.9 302.7, 472.1 302.7, 472.8 302.9, 473.6 302.7, 474.2 303, 474.9 303.3, 475.7 303.3, 476.5 303, 478 300.3, 478.1 299.3, 478.1 298.7, 477.8 297.5, 477.7 296.3, 477.5 296.1, 476.3 294.8, 475.6 294.4, 475.4 294.3, 473.9 294, 473.7 294.1, 473 294.4, 472.2 295, 471.6 295.6, 470.8 296.4, 469.6 297, 469.5 297.1, 467.8 296.7, 466 296.3, 463.9 296.1, 463.2 296.1, 462.3 296.7, 461.8 297.7, 461.6 298.1, 460.9 298.5, 459.8 299.3, 459.2 299.5, 458.5 300.1, 458.2 300.5, 458.3 301.2, 458.5 301.6, 458.7 302.4, 458.7 302.8, 458.3 303.6, 457.8 304.1, 457.7 305.1, 458 306, 458.2 306.6, 458.5 307.6, 458.5 307.6, 459.4 308.9, 459.7 309.2, 460.5 310, 461.1 310.4, 461.9 311, 462.4 311.4, 463.2 311.6, 464 311.7, 464.6 311.7, 465.3 311.1, 466.6 309.9, 467.3 309.1, 468.3 307.8, 468.9 306.7, 468.8 306.3)))" ) );
 
   // finalize and test collation
-  QVERIFY( geoPdfExporter.finalize( QList<QgsAbstractGeoPdfExporter::ComponentLayerDetail>(), outputFile ) );
+  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QVERIFY( geoPdfExporter.finalize( QList<QgsAbstractGeoPdfExporter::ComponentLayerDetail>(), outputFile, details ) );
   QVERIFY( geoPdfExporter.errorMessage().isEmpty() );
 
   // read in as vector

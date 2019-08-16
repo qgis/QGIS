@@ -1108,18 +1108,20 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
         switch ( mStagedRendererJob->currentStage() )
         {
           case QgsMapRendererStagedRenderJob::Symbology:
-            if ( const QgsMapLayer *layer = mStagedRendererJob->currentLayer() )
+          {
+            detail.mapLayerId  = mStagedRendererJob->currentLayerId();
+            if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
             {
               detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
-              detail.mapLayerId = layer->id();
             }
             return detail;
+          }
 
           case QgsMapRendererStagedRenderJob::Labels:
-            if ( const QgsMapLayer *layer = mStagedRendererJob->currentLayer() )
+            detail.mapLayerId  = mStagedRendererJob->currentLayerId();
+            if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
             {
               detail.name = tr( "%1: %2 (Labels)" ).arg( displayName(), layer->name() );
-              detail.mapLayerId = layer->id();
             }
             else
             {
