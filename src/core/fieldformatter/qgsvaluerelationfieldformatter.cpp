@@ -180,7 +180,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     if ( value.type() == QVariant::String )
     {
       // This must be an array representation
-      auto newVal { value };
+      QVariant newVal { value };
       if ( newVal.toString().trimmed().startsWith( '{' ) )
       {
         //normal case
