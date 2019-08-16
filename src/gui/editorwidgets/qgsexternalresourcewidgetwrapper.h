@@ -66,7 +66,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
 
   public slots:
     void setFeature( const QgsFeature &feature ) override;
-    void setValue( const QVariant &value ) override;
+    void setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() ) override;
     void setEnabled( bool enabled ) override;
 
   private:

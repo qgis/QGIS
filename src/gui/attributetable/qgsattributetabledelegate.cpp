@@ -152,7 +152,7 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
         const QVariant fieldValue = feat.attribute( fieldIndex );
         additionalFieldValues.insert( fieldIndex, fieldValue );
       }
-      eww->setValues( value, additionalFieldValues );
+      eww->setValue( value, additionalFieldValues );
     }
   }
   else

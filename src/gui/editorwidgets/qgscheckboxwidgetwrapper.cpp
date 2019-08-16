@@ -64,9 +64,9 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
-    connect( mCheckBox, &QAbstractButton::toggled, this, [ = ]( bool state ) { emit valuesChanged( state ); } );
+    connect( mCheckBox, &QAbstractButton::toggled, this, [ = ]( bool state ) { emit valueChanged( state ); } );
   if ( mGroupBox )
-    connect( mGroupBox, &QGroupBox::toggled, this, [ = ]( bool state ) { emit valuesChanged( state ); } );
+    connect( mGroupBox, &QGroupBox::toggled, this, [ = ]( bool state ) { emit valueChanged( state ); } );
 }
 
 bool QgsCheckboxWidgetWrapper::valid() const
@@ -74,8 +74,9 @@ bool QgsCheckboxWidgetWrapper::valid() const
   return mCheckBox || mGroupBox;
 }
 
-void QgsCheckboxWidgetWrapper::setValue( const QVariant &value )
+void QgsCheckboxWidgetWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
 {
+  Q_UNUSED( additionalFieldValues );
   bool state = false;
 
   if ( field().type() == QVariant::Bool )

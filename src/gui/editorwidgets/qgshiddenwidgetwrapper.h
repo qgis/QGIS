@@ -54,7 +54,7 @@ class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
+    void setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() ) override;
 
   private:
     QVariant mValue;

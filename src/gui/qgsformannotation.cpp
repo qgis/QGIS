@@ -105,7 +105,7 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
             {
               additionalFieldValues.insert( index, attrs.at( index ) );
             }
-            eww->setValues( attrs.at( i ), additionalFieldValues );
+            eww->setValue( attrs.at( i ), additionalFieldValues );
           }
         }
       }

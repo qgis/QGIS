@@ -53,7 +53,7 @@ Constructor for QgsRelationReferenceWidgetWrapper
 
 
   public slots:
-    virtual void setValue( const QVariant &value );
+    virtual void setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
 
     virtual void setEnabled( bool enabled );
 

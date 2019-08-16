@@ -187,9 +187,9 @@ bool QgsRangeWidgetWrapper::valid() const
 void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant &v )
 {
   if ( v.type() == QVariant::Int )
-    emit valuesChanged( v.toInt() );
+    emit valueChanged( v.toInt() );
   if ( v.type() == QVariant::Double )
-    emit valuesChanged( v.toDouble() );
+    emit valueChanged( v.toDouble() );
 }
 
 QVariant QgsRangeWidgetWrapper::value() const
@@ -232,8 +232,9 @@ QVariant QgsRangeWidgetWrapper::value() const
   return value;
 }
 
-void QgsRangeWidgetWrapper::setValue( const QVariant &value )
+void QgsRangeWidgetWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
 {
+  Q_UNUSED( additionalFieldValues );
   if ( mDoubleSpinBox )
   {
     if ( value.isNull() && config( QStringLiteral( "AllowNull" ), true ).toBool() )

@@ -60,7 +60,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     void showIndeterminateState() override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
+    void setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() ) override;
     void setEnabled( bool enabled ) override;
 
   private slots:

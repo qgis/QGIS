@@ -238,21 +238,13 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Emit this signal, whenever the value changed.
-     *
-     * \param value The new value
-     * \deprecated since QGIS 3.10 use valuesChanged signal instead
-     */
-    Q_DECL_DEPRECATED void valueChanged( const QVariant &value );
-
-    /**
-     * Emit this signal, whenever the value changed.
      * It will also return the values for the additional fields handled by the widget
      *
      * \param value The new value
      * \param addtionalFieldValues A map of additional field names with their corresponding values
      * \since QGIS 3.10
      */
-    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
+    void valueChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
 
     /**
      * Emit this signal when the constraint status changed.
@@ -281,21 +273,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void setFeature( const QgsFeature &feature ) override;
 
     /**
-     * Is called, when the value of the widget needs to be changed. Update the widget representation
-     * to reflect the new value.
+     * Is called, when the value of the widget needs to be changed.
+     * Update the widget representation to reflect the new value
+     * of the field, but also values for potential additional
+     * fields which might be handled by the widget
      *
      * \param value The new value of the attribute
-     */
-    virtual void setValue( const QVariant &value ) = 0;
-
-    /**
-     * Is called, when the value of the widget needs to be changed. Update the widget representation
-     * It will set the value for the field but also values for potential additional fields which are handled by the widget
-     * \param value The new value of the attribute
      * \param addtionalFieldValues A map of field names with their corresponding values
-     * \since QGIS 3.10
      */
-    virtual void setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues );
+    virtual void setValue( const QVariant &value, const QgsAttributeMap &addtionalFieldValues = QgsAttributeMap() ) = 0;
 
     /**
      * Will call the value() method to determine the emitted value

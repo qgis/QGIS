@@ -180,7 +180,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   QCOMPARE( w_municipality.mComboBox->count(), 2 );
 
   // check that valueChanged signal is correctly triggered
-  QSignalSpy spy( &w_municipality, &QgsEditorWidgetWrapper::valuesChanged );
+  QSignalSpy spy( &w_municipality, &QgsEditorWidgetWrapper::valueChanged );
 
   w_municipality.setFeature( f3 );
   QCOMPARE( spy.count(), 1 );
