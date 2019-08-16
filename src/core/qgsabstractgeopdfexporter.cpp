@@ -32,8 +32,29 @@
 #include <QDomElement>
 
 
+bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
+{
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
+  return false;
+#else
+  return true;
+#endif
+}
+
+QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
+{
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
+  return QObject::tr( "GeoPDF creation requires GDAL version 3.0 or later." );
+#else
+  return QString();
+#endif
+}
+
 bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile )
 {
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
+  return false;
+#else
   if ( !saveTemporaryLayers() )
     return false;
 
@@ -72,12 +93,14 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   CSLDestroy( papszOptions );
 
   return res;
+#endif
 }
 
 QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &filename ) const
 {
   return mTemporaryDir.filePath( filename );
 }
+
 
 void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature )
 {
