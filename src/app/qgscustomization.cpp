@@ -763,12 +763,32 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
         for ( QAction *action : constActions )
         {
           if ( action->objectName().isEmpty() )
-          {
             continue;
-          }
+
           visible = mSettings->value( action->objectName(), true ).toBool();
           if ( !visible )
+          {
             tb->removeAction( action );
+            continue;
+          }
+
+          if ( visible && action->metaObject()->className() == QStringLiteral( "QWidgetAction" ) )
+          {
+            mSettings->beginGroup( action->objectName() );
+            QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>( action );
+            QWidget *widget = widgetAction->defaultWidget();
+            QList<QAction *> childActions = widget->actions();
+            for ( QAction *wAction : childActions )
+            {
+              if ( wAction->objectName().isEmpty() )
+                continue;
+
+              visible = mSettings->value( wAction->objectName(), true ).toBool();
+              if ( !visible )
+                widget->removeAction( wAction );
+            }
+            mSettings->endGroup();
+          }
         }
         mSettings->endGroup();
       }
