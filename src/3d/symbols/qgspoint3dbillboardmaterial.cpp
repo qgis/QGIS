@@ -114,11 +114,6 @@ QSizeF QgsPoint3DBillboardMaterial::windowSize() const
 
 void QgsPoint3DBillboardMaterial::setTexture2D( Qt3DRender::QTexture2D *texture2D )
 {
-//  removeParameter(mTexture2D);
-
-//  mTexture2D = new Qt3DRender::QParameter( "tex0", texture2D, this );
-
-//  addParameter( mTexture2D );
   mTexture2D->setValue( QVariant::fromValue( texture2D ) );
 }
 
@@ -140,7 +135,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
 void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double size )
 {
   // Create texture image
-  QgsRectangle dummyExtent = QgsRectangle( 0, 0, 100, 100 );
+  QgsRectangle dummyExtent = QgsRectangle( rand(), rand(), rand(), rand() );
   QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, mName );
 
   setTexture2DFromTextureImage( billboardTextureImage );
