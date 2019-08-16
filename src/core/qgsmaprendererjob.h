@@ -270,6 +270,11 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QHash< QgsWeakMapLayerPointer, int > mPerLayerRenderingTime;
 
     /**
+     * TRUE if layer rendering time should be recorded.
+     */
+    bool mRecordRenderingTime = true;
+
+    /**
      * Prepares the cache for storing the result of labeling. Returns FALSE if
      * the render cannot use cached labels and should not cache the result.
      * \note not available in Python bindings

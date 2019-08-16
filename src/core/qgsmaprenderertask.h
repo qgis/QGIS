@@ -28,6 +28,8 @@
 #include "qgsmaprenderercustompainterjob.h"
 
 #include <QPainter>
+#include <QPrinter>
+
 class QgsMapRendererCustomPainterJob;
 
 /**
@@ -68,7 +70,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     /**
      * Adds \a annotations to be rendered on the map.
      */
-    void addAnnotations( QList< QgsAnnotation * > annotations );
+    void addAnnotations( const QList<QgsAnnotation *> &annotations );
 
     /**
      * Adds \a decorations to be rendered on the map.
@@ -101,12 +103,23 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
   private:
 
+    //! Prepares the job, doing the work which HAS to be done on the main thread in advance
+    void prepare();
+    bool mErrored = false;
+
     QgsMapSettings mMapSettings;
 
     QMutex mJobMutex;
     std::unique_ptr< QgsMapRendererCustomPainterJob > mJob;
 
     QPainter *mPainter = nullptr;
+    QPainter *mDestPainter = nullptr;
+    QImage mImage;
+#ifndef QT_NO_PRINTER
+    std::unique_ptr< QPrinter > mPrinter;
+#endif // ! QT_NO_PRINTER
+
+    std::unique_ptr< QPainter > mTempPainter;
 
     QString mFileName;
     QString mFileFormat;
@@ -117,6 +130,8 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QList< QgsMapDecoration * > mDecorations;
 
     int mError = 0;
+
+
 };
 
 // clazy:excludeall=qstring-allocations

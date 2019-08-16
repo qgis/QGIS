@@ -45,7 +45,6 @@
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id() )
   , mContext( context )
-  , mInterruptionChecker( qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( context ) )
   , mLayer( layer )
   , mFields( layer->fields() )
   , mLabeling( false )
@@ -151,6 +150,8 @@ bool QgsVectorLayerRenderer::render()
       return true;
   }
 
+  // MUST be created in the thread doing the rendering
+  mInterruptionChecker = qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( mContext );
   bool usingEffect = false;
   if ( mRenderer->paintEffect() && mRenderer->paintEffect()->enabled() )
   {
@@ -289,6 +290,7 @@ bool QgsVectorLayerRenderer::render()
     mRenderer->paintEffect()->end( mContext );
   }
 
+  mInterruptionChecker.reset();
   return true;
 }
 
