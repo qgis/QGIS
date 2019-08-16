@@ -275,6 +275,14 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 3.4
      */
     static QString wordWrap( const QString &string, int length, bool useMaxLineLength = true, const QString &customDelimiter = QString() );
+
+    /**
+     * Returns a string with characters having vertical representation form substituted.
+     * \param string input string
+     * \returns string with substition applied
+     * \since QGIS 3.10
+     */
+    static QString substituteVerticalCharacters( QString string );
 };
 
 #endif //QGSSTRINGUTILS_H
