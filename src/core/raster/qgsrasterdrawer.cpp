@@ -25,7 +25,9 @@
 #include "qgsrendercontext.h"
 #include <QImage>
 #include <QPainter>
+#ifndef QT_NO_PRINTER
 #include <QPrinter>
+#endif
 
 QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator ): mIterator( iterator )
 {

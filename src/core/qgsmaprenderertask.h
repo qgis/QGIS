@@ -29,8 +29,9 @@
 #include "qgsabstractgeopdfexporter.h"
 
 #include <QPainter>
+#ifndef QT_NO_PRINTER
 #include <QPrinter>
-
+#endif
 class QgsMapRendererCustomPainterJob;
 class QgsAbstractGeoPdfExporter;
 
