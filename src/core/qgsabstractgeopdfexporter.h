@@ -131,8 +131,11 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     /**
      * To be called after the rendering operation is complete.
      *
-     * Will export the list of PDF layer \a components to a new PDF file at \a destinationFile. Any features
-     * previously collected by calls to pushRenderedFeature() will be included automatically in the GeoPDF
+     * Will export the list of PDF layer \a components to a new PDF file at \a destinationFile. The \a components
+     * argument gives a list of additional layers to include in the generated PDF file. These must have already
+     * been created, e.g. as a result of rendering layers to seperate PDF source files.
+     *
+     * Any features previously collected by calls to pushRenderedFeature() will be included automatically in the GeoPDF
      * export.
      *
      * Returns TRUE if the operation was successful, or FALSE if an error occurred. If an error occurred, it
