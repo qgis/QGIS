@@ -143,7 +143,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
       // render just the current layer's labels
-      static_cast< QgsStagedRenderLabelingEngine * >( mLabelingEngineV2.get() )->renderLabelsForLayer( mLabelJob.context, ( *mLabelLayerIt )->id() );
+      static_cast< QgsStagedRenderLabelingEngine * >( mLabelingEngineV2.get() )->renderLabelsForLayer( mLabelJob.context, *mLabelLayerIt );
     }
     else
     {
@@ -176,7 +176,7 @@ bool QgsMapRendererStagedRenderJob::nextPart()
       {
         mLabelingEngineV2->run( mLabelJob.context );
         mPreparedStagedLabelJob = true;
-        mLabelingLayers = mLabelingEngineV2->participatingLayers();
+        mLabelingLayers = mLabelingEngineV2->participatingLayerIds();
         mLabelLayerIt = mLabelingLayers.begin();
         if ( mLabelLayerIt == mLabelingLayers.end() )
         {
@@ -218,21 +218,6 @@ bool QgsMapRendererStagedRenderJob::isFinished()
   return currentStage() == Finished;
 }
 
-const QgsMapLayer *QgsMapRendererStagedRenderJob::currentLayer()
-{
-  if ( mJobIt != mLayerJobs.end() )
-  {
-    LayerRenderJob &job = *mJobIt;
-    return job.layer;
-  }
-  else if ( mFlags & RenderLabelsByMapLayer && mPreparedStagedLabelJob )
-  {
-    if ( mLabelLayerIt != mLabelingLayers.end() )
-      return *mLabelLayerIt;
-  }
-  return nullptr;
-}
-
 QString QgsMapRendererStagedRenderJob::currentLayerId()
 {
   if ( mJobIt != mLayerJobs.end() )
@@ -243,7 +228,7 @@ QString QgsMapRendererStagedRenderJob::currentLayerId()
   else if ( mFlags & RenderLabelsByMapLayer && mPreparedStagedLabelJob )
   {
     if ( mLabelLayerIt != mLabelingLayers.end() )
-      return ( *mLabelLayerIt )->id();
+      return *mLabelLayerIt;
   }
   return QString();
 }

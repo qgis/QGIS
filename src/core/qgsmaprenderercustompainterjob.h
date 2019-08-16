@@ -119,7 +119,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     /**
      * Render a pre-prepared job. Can be safely called in a background thread.
      *
-     * Must be preceeded by a call to prepare()
+     * Must be preceded by a call to prepare()
      *
      * This is an alternative to ordinary API (using start() + waiting for finished() signal),
      * and an alternative to renderSynchronously() (which should only ever be called from the main thread).
