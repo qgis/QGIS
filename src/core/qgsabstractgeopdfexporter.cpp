@@ -37,7 +37,23 @@ bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
   return false;
 #else
-  return true;
+
+  // test if GDAL has read support in PDF driver
+  GDALDriverH hDriverMem = GDALGetDriverByName( "PDF" );
+  if ( !hDriverMem )
+  {
+    return false;
+  }
+
+  const char *pHavePoppler = GDALGetMetadataItem( hDriverMem, "HAVE_POPPLER", nullptr );
+  if ( pHavePoppler && strstr( pHavePoppler, "YES" ) )
+    return true;
+
+  const char *pHavePdfium = GDALGetMetadataItem( hDriverMem, "HAVE_PDFIUM", nullptr );
+  if ( pHavePdfium && strstr( pHavePdfium, "YES" ) )
+    return true;
+
+  return false;
 #endif
 }
 
@@ -46,7 +62,22 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
   return QObject::tr( "GeoPDF creation requires GDAL version 3.0 or later." );
 #else
-  return QString();
+  // test if GDAL has read support in PDF driver
+  GDALDriverH hDriverMem = GDALGetDriverByName( "PDF" );
+  if ( !hDriverMem )
+  {
+    return QObject::tr( "No GDAL PDF driver available." );
+  }
+
+  const char *pHavePoppler = GDALGetMetadataItem( hDriverMem, "HAVE_POPPLER", nullptr );
+  if ( pHavePoppler && strstr( pHavePoppler, "YES" ) )
+    return QString();
+
+  const char *pHavePdfium = GDALGetMetadataItem( hDriverMem, "HAVE_PDFIUM", nullptr );
+  if ( pHavePdfium && strstr( pHavePdfium, "YES" ) )
+    return QString();
+
+  return QObject::tr( "GDAL PDF driver was not built with PDF read support. A build with PDF read support is required for GeoPDF creation." );
 #endif
 }
 
