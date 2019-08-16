@@ -86,6 +86,7 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
   Q_UNUSED( components )
   Q_UNUSED( destinationFile )
+  Q_UNUSED( details )
   return false;
 #else
   if ( !saveTemporaryLayers() )
