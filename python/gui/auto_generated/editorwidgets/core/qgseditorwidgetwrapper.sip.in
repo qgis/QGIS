@@ -21,6 +21,9 @@ widget or use a pre-existent widget. It is able to set the widget to the value i
 by a field of a vector layer, or return the value it currently holds. Every time it is changed
 it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
 changed status of the widget will be saved.
+
+It can also handle additional fields of a vector layer and would set the widget
+for their corresponding values and emit valuesChanged signal.
 %End
 
 %TypeHeaderCode
@@ -240,7 +243,7 @@ Emit this signal, whenever the value changed.
 :param value: The new value
 %End
 
-    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalfieldValues );
+    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues );
 %Docstring
 Emit this signal, whenever the value changed.
 It will also return the values for the additional fields handled by the widget

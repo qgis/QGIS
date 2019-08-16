@@ -72,6 +72,12 @@ void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
   setValue( feature.attribute( mFieldIdx ) );
 }
 
+void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues )
+{
+  Q_UNUSED( addtionalFieldValues );
+  setValue( value );
+}
+
 void QgsEditorWidgetWrapper::emitValueChanged()
 {
   emit valueChanged( value() );

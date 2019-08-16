@@ -38,6 +38,9 @@ class QgsField;
  * it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
  * changed status of the widget will be saved.
  *
+ * It can also handle additional fields of a vector layer and would set the widget
+ * for their corresponding values and emit valuesChanged signal.
+ *
  */
 class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 {
@@ -248,7 +251,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param addtionalFieldValues A map of additional field names with their corresponding values
      * \since QGIS 3.10
      */
-    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalfieldValues );
+    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues );
 
     /**
      * Emit this signal when the constraint status changed.
@@ -291,7 +294,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param addtionalFieldValues A map of field names with their corresponding values
      * \since QGIS 3.10
      */
-    virtual void setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues ) {Q_UNUSED( addtionalFieldValues ); setValue( value );}
+    virtual void setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues );
 
     /**
      * Will call the value() method to determine the emitted value
