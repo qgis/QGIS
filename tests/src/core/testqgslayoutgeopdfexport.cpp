@@ -211,7 +211,6 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
       QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer3->isValid() );
   QCOMPARE( layer3->featureCount(), 10 );
-
 }
 
 QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )

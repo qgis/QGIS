@@ -84,6 +84,8 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
 bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile )
 {
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
+  Q_UNUSED( components )
+  Q_UNUSED( destinationFile )
   return false;
 #else
   if ( !saveTemporaryLayers() )
