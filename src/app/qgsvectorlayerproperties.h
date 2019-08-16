@@ -45,6 +45,8 @@ class QgsMapLayerConfigWidget;
 class QgsMetadataWidget;
 class QgsPanelWidget;
 class QgsVectorLayer3DRendererWidget;
+class QgsMapLayerComboBox;
+class QgsDoubleSpinBox;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -246,6 +248,10 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QHash<QCheckBox *, QString> mGeometryCheckFactoriesGroupBoxes;
 
     bool mRemoveDuplicateNodesManuallyActivated = false;
+
+    QgsCollapsibleGroupBox *mGapCheckAllowExceptionsActivatedCheckBox = nullptr;
+    QgsMapLayerComboBox *mGapCheckAllowExceptionsLayerComboBox = nullptr;
+    QgsDoubleSpinBox *mGapCheckAllowExceptionsBufferSpinBox = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

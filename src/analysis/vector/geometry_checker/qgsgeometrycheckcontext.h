@@ -22,16 +22,23 @@
 #include "qgsfeaturepool.h"
 
 /**
+ * \ingroup analysis
  * Base configuration for geometry checks.
  *
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
-struct ANALYSIS_EXPORT QgsGeometryCheckContext
+class ANALYSIS_EXPORT QgsGeometryCheckContext
 {
+  public:
+
+    /**
+     * Creates a new QgsGeometryCheckContext.
+     */
     QgsGeometryCheckContext( int precision,
                              const QgsCoordinateReferenceSystem &mapCrs,
-                             const QgsCoordinateTransformContext &transformContext );
+                             const QgsCoordinateTransformContext &transformContext,
+                             const QgsProject *mProject );
 
     /**
      * The tolerance to allow for in geometry checks.
@@ -57,6 +64,18 @@ struct ANALYSIS_EXPORT QgsGeometryCheckContext
      * The coordinate transform context with which transformations will be done.
      */
     const QgsCoordinateTransformContext transformContext;
+
+    /**
+     * The project can be used to resolve additional layers.
+     *
+     * This must only be accessed from the main thread (i.e. do not access from the collectError method)
+     *
+     * \since QGIS 3.10
+     */
+    const QgsProject *project() const;
+
+  private:
+    const QgsProject *mProject;
 
   private:
 #ifdef SIP_RUN

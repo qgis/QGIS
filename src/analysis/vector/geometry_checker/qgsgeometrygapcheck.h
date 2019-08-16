@@ -94,7 +94,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     enum ResolutionMethod
     {
       MergeLongestEdge, //!< Merge the gap with the polygon with the longest shared edge.
-      NoChange //!< Do not handle the error.
+      NoChange, //!< Do not handle the error.
+      AddToAllowedGaps
     };
     Q_ENUM( ResolutionMethod )
 
@@ -105,6 +106,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
      * is disabled.
      */
     explicit QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+
+    void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) override;
 
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
@@ -130,6 +133,10 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
                             QgsGeometryGapCheckError *err, Changes &changes, QString &errMsg ) const;
 
     const double mGapThresholdMapUnits;
+    QgsWeakMapLayerPointer mAllowedGapsLayer;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mAllowedGapsSource;
+    double mAllowedGapsBuffer;
+
 };
 
 #endif // QGS_GEOMETRY_GAP_CHECK_H
