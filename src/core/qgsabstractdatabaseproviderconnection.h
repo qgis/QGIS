@@ -334,7 +334,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Drops a vector (or aspatial) table with given \a schema (schema is ignored if not supported by the backend) and \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
-     * \note it is responsibility of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropVectorTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Drops a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
-     * \note it is responsibility of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropRasterTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Renames a vector or aspatial table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
-     * \note it is responsibility of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Renames a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
-     * \note it is responsibility of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Drops an entire \a schema.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param force if TRUE, a DROP CASCADE will drop all related objects
-     * \note it is responsibility of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void dropSchema( const QString &name, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Renames a \a schema.
      * Raises a QgsProviderConnectionException if any errors are encountered.
-     * \note it is responsibility of the caller to handle opened layers and registry entries.
+     * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
      */
     virtual void renameSchema( const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );

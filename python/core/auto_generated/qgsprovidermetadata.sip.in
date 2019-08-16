@@ -226,7 +226,8 @@ Ownership is not transferred.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :param cached: if ``False`` connections will be re-read from the settings
-               \throws :py:class:`QgsProviderConnectionException`
+
+:raises :: py:class:`QgsProviderConnectionException`
 
 .. versionadded:: 3.10
 %End
@@ -239,7 +240,8 @@ Ownership is not transferred.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :param cached: if ``False`` connections will be re-read from the settings
-               \throws :py:class:`QgsProviderConnectionException`
+
+:raises :: py:class:`QgsProviderConnectionException`
 
 .. versionadded:: 3.10
 %End
@@ -252,7 +254,8 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
 :param name: the connection name
 :param cached: if ``False`` connections will be re-read from the settings
-               \throws :py:class:`QgsProviderConnectionException`
+
+:raises :: py:class:`QgsProviderConnectionException`
 
 .. versionadded:: 3.10
 %End
