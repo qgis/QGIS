@@ -268,7 +268,7 @@ namespace QgsWms
       QByteArray convertFeatureInfoToText( const QDomDocument &doc ) const;
 
       QDomElement createFeatureGML(
-        QgsFeature *feat,
+        const QgsFeature *feat,
         QgsVectorLayer *layer,
         QDomDocument &doc,
         QgsCoordinateReferenceSystem &crs,
