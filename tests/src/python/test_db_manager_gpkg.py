@@ -196,6 +196,10 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         self.assertTrue(new_table.createSpatialIndex())
         self.assertTrue(new_table.hasSpatialIndex())
 
+        # Test delete spatial index
+        self.assertTrue(new_table.deleteSpatialIndex())
+        self.assertFalse(new_table.hasSpatialIndex())
+
         self.assertTrue(new_table.delete())
 
         tables = db.tables()
@@ -314,7 +318,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
                 break
         self.assertIsNotNone(table)
         info = table.info()
-        expected_html = """<div class="section"><h2>General info</h2><div><table><tr><td>Relation type:&nbsp;</td><td>Table&nbsp;</td></tr><tr><td>Rows:&nbsp;</td><td>Unknown (<a href="action:rows/count">find out</a>)&nbsp;</td></tr></table></div></div><div class="section"><h2>GeoPackage</h2><div><table><tr><td>Column:&nbsp;</td><td>&nbsp;</td></tr><tr><td>Geometry:&nbsp;</td><td>RASTER&nbsp;</td></tr><tr><td>Spatial ref:&nbsp;</td><td>WGS 84 geodetic (4326)&nbsp;</td></tr><tr><td>Extent:&nbsp;</td><td>2.00000, 48.80000 - 2.20000, 49.00000&nbsp;</td></tr></table></div></div><div class="section"><h2>Fields</h2><div><table class="header"><tr><th>#&nbsp;</th><th>Name&nbsp;</th><th>Type&nbsp;</th><th>Null&nbsp;</th><th>Default&nbsp;</th></tr><tr><td>0&nbsp;</td><td class="underline">id&nbsp;</td><td>INTEGER&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>1&nbsp;</td><td>zoom_level&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>2&nbsp;</td><td>tile_column&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>3&nbsp;</td><td>tile_row&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>4&nbsp;</td><td>tile_data&nbsp;</td><td>BLOB&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class="section"><h2>Indexes</h2><div><table class="header"><tr><th>Name&nbsp;</th><th>Column(s)&nbsp;</th></tr><tr><td>sqlite_autoindex_raster_table_1&nbsp;</td><td>zoom_level<br>tile_column<br>tile_row&nbsp;</td></tr></table></div></div>"""
+        expected_html = """<div class="section"><h2>General info</h2><div><table><tr><td>Relation type:&nbsp;</td><td>Table&nbsp;</td></tr><tr><td>Rows:&nbsp;</td><td>Unknown (<a href="action:rows/count">find out</a>)&nbsp;</td></tr></table></div></div><div class="section"><h2>GeoPackage</h2><div><table><tr><td>Column:&nbsp;</td><td>&nbsp;</td></tr><tr><td>Geometry:&nbsp;</td><td>RASTER&nbsp;</td></tr><tr><td>Spatial ref:&nbsp;</td><td>WGS 84 (4326)&nbsp;</td></tr><tr><td>Extent:&nbsp;</td><td>2.00000, 48.80000 - 2.20000, 49.00000&nbsp;</td></tr></table></div></div><div class="section"><h2>Fields</h2><div><table class="header"><tr><th>#&nbsp;</th><th>Name&nbsp;</th><th>Type&nbsp;</th><th>Null&nbsp;</th><th>Default&nbsp;</th></tr><tr><td>0&nbsp;</td><td class="underline">id&nbsp;</td><td>INTEGER&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>1&nbsp;</td><td>zoom_level&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>2&nbsp;</td><td>tile_column&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>3&nbsp;</td><td>tile_row&nbsp;</td><td>INTEGER&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr><tr><td>4&nbsp;</td><td>tile_data&nbsp;</td><td>BLOB&nbsp;</td><td>N&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class="section"><h2>Indexes</h2><div><table class="header"><tr><th>Name&nbsp;</th><th>Column(s)&nbsp;</th></tr><tr><td>sqlite_autoindex_raster_table_1&nbsp;</td><td>zoom_level<br>tile_column<br>tile_row&nbsp;</td></tr></table></div></div>"""
 
         self.assertEqual(info.toHtml(), expected_html)
 

@@ -19,6 +19,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsdataprovider.h"
 #include "qgsmaplayer.h"
+#include "qgsexception.h"
 
 QgsProviderMetadata::QgsProviderMetadata( QString const &key,
     QString const &description,
@@ -36,7 +37,7 @@ QgsProviderMetadata::QgsProviderMetadata( const QString &key, const QString &des
 
 QgsProviderMetadata::~QgsProviderMetadata()
 {
-
+  qDeleteAll( mProviderConnections );
 }
 
 QString QgsProviderMetadata::key() const
@@ -152,7 +153,7 @@ QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
 
 bool QgsProviderMetadata::createDb( const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "errCause" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createDb" ) );
   return false;
 }
 
@@ -160,3 +161,83 @@ QgsTransaction *QgsProviderMetadata::createTransaction( const QString & )
 {
   return nullptr;
 }
+
+QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections( bool cached )
+{
+  Q_UNUSED( cached );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connections" ) ) );
+}
+
+QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( bool cached )
+{
+  return connections<QgsAbstractDatabaseProviderConnection>( cached ) ;
+}
+
+QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QString &name, bool cached )
+{
+  const QMap<QString, QgsAbstractProviderConnection *> constConns { connections( cached ) };
+  for ( QgsAbstractProviderConnection *conn : constConns )
+  {
+    if ( conn->name() == name )
+    {
+      return conn;
+    }
+  }
+  return nullptr;
+}
+
+QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name )
+{
+  Q_UNUSED( name );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
+}
+
+
+QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name, const QString &uri )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( uri );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
+}
+
+void QgsProviderMetadata::deleteConnection( const QString &name )
+{
+  Q_UNUSED( name );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteConnection" ) ) );
+}
+
+void QgsProviderMetadata::saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration )
+{
+  Q_UNUSED( connection );
+  Q_UNUSED( configuration );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
+}
+
+///@cond PRIVATE
+void QgsProviderMetadata::saveConnectionProtected( QgsAbstractProviderConnection *conn, const QVariantMap &configuration )
+{
+  conn->store( configuration );
+  mProviderConnections.clear();
+}
+///@endcond
+
+template<typename T>
+QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
+{
+  QMap<QString, T *> result;
+  const auto constConns { connections( cached ) };
+  const QStringList constConnKeys { constConns.keys() };
+  for ( const auto &c : constConnKeys )
+  {
+    T *casted { static_cast<T *>( constConns.value( c ) ) };
+    if ( casted )
+    {
+      result.insert( c, casted );
+    }
+  }
+  return result;
+}
+
+
+
+

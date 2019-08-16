@@ -13,6 +13,7 @@ SET(PG_SRCS
   qgscolumntypethread.cpp
   qgspostgresexpressioncompiler.cpp
   qgspostgreslistener.cpp
+  qgspostgresproviderconnection.cpp
 )
 
 SET(PG_MOC_HDRS
@@ -44,6 +45,7 @@ ENDIF ()
 
 SET(PG_HDRS
   qgspostgresexpressioncompiler.h
+  qgspostgresproviderconnection.h
 )
 
 ########################################################

@@ -6,6 +6,8 @@
 %Include auto_generated/expression/qgsexpressionfunction.sip
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgis.sip
+%Include auto_generated/qgsabstractproviderconnection.sip
+%Include auto_generated/qgsabstractdatabaseproviderconnection.sip
 %Include auto_generated/qgsaction.sip
 %Include auto_generated/qgsactionscope.sip
 %Include auto_generated/qgsactionmanager.sip

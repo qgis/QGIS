@@ -148,6 +148,7 @@ SET(QGIS_CORE_SRCS
   providers/ogr/qgsogrconnpool.cpp
   providers/ogr/qgsogrexpressioncompiler.cpp
   providers/ogr/qgsgeopackagedataitems.cpp
+  providers/ogr/qgsgeopackageproviderconnection.cpp
   providers/ogr/qgsgeopackagerasterwriter.cpp
   providers/ogr/qgsgeopackagerasterwritertask.cpp
   providers/ogr/qgsgeopackageprojectstorage.cpp
@@ -162,6 +163,8 @@ SET(QGIS_CORE_SRCS
 
   qgis.cpp
   qgsabstractcontentcache.cpp
+  qgsabstractproviderconnection.cpp
+  qgsabstractdatabaseproviderconnection.cpp
   qgsapplication.cpp
   qgsaction.cpp
   qgsactionscope.cpp
@@ -627,6 +630,7 @@ ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsabstractcontentcache.h
+  qgsabstractdatabaseproviderconnection.h
   qgsapplication.h
   qgsactionmanager.h
   qgsactionscoperegistry.h
@@ -882,6 +886,8 @@ SET(QGIS_CORE_HDRS
 
   qgis.h
   qgis_sip.h
+  qgsabstractproviderconnection.h
+  qgsabstractdatabaseproviderconnection.h
   qgsaction.h
   qgsactionscope.h
   qgsactionmanager.h
@@ -1126,6 +1132,8 @@ SET(QGIS_CORE_HDRS
   providers/memory/qgsmemoryproviderutils.h
 
   providers/ogr/qgsgeopackageprojectstorage.h
+  providers/ogr/qgsgeopackageproviderconnection.h
+  providers/ogr/qgsogrprovider.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h

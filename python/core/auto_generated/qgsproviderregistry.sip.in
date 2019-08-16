@@ -250,7 +250,7 @@ be returned.
 Returns list of available providers by their keys
 %End
 
-    const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
+    QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 %Docstring
 Returns metadata of the provider or ``None`` if not found
 %End

@@ -38,6 +38,7 @@
 #include "qgspostgrestransaction.h"
 #include "qgspostgreslistener.h"
 #include "qgspostgresprojectstorage.h"
+#include "qgspostgresproviderconnection.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgssettings.h"
@@ -45,6 +46,7 @@
 
 #include "qgspostgresprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgspostgresproviderconnection.h"
 
 
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
@@ -5029,6 +5031,31 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, QString s
 QgsTransaction *QgsPostgresProviderMetadata::createTransaction( const QString &connString )
 {
   return new QgsPostgresTransaction( connString );
+}
+
+QMap<QString, QgsAbstractProviderConnection *> QgsPostgresProviderMetadata::connections( bool cached )
+{
+  return connectionsProtected<QgsPostgresProviderConnection, QgsPostgresConn>( cached );
+}
+
+QgsAbstractProviderConnection *QgsPostgresProviderMetadata::createConnection( const QString &name, const QString &uri )
+{
+  return new QgsPostgresProviderConnection( name, uri );
+}
+
+void QgsPostgresProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsPostgresProviderConnection>( name );
+}
+
+void QgsPostgresProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, const QVariantMap &configuration )
+{
+  saveConnectionProtected( conn, configuration );
+}
+
+QgsAbstractProviderConnection *QgsPostgresProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsPostgresProviderConnection( name );
 }
 
 

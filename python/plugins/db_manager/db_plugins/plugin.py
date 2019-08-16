@@ -32,7 +32,9 @@ from qgis.core import (
     QgsApplication,
     QgsSettings,
     QgsMapLayerType,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
 )
 from ..db_plugins import createDbPlugin
 
@@ -126,9 +128,16 @@ class DBPlugin(QObject):
         return self.connect(self.parent())
 
     def remove(self):
-        settings = QgsSettings()
-        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
-        settings.remove("")
+
+        # Try the new API first, fallback to legacy
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
+            md.deleteConnection(self.connectionName())
+        except (AttributeError, QgsProviderConnectionException) as ex:
+            settings = QgsSettings()
+            settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
+            settings.remove("")
+
         self.deleted.emit()
         return True
 
@@ -163,12 +172,21 @@ class DBPlugin(QObject):
     @classmethod
     def connections(self):
         # get the list of connections
+
         conn_list = []
-        settings = QgsSettings()
-        settings.beginGroup(self.connectionSettingsKey())
-        for name in settings.childGroups():
-            conn_list.append(createDbPlugin(self.typeName(), name))
-        settings.endGroup()
+
+        # First try with the new core API, if that fails, proceed with legacy code
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
+            for name in md.dbConnections().keys():
+                conn_list.append(createDbPlugin(self.typeName(), name))
+        except (AttributeError, QgsProviderConnectionException) as ex:
+            settings = QgsSettings()
+            settings.beginGroup(self.connectionSettingsKey())
+            for name in settings.childGroups():
+                conn_list.append(createDbPlugin(self.typeName(), name))
+            settings.endGroup()
+
         return conn_list
 
     def databasesFactory(self, connection, uri):

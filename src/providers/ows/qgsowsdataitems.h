@@ -16,7 +16,6 @@
 #define QGSOWSDATAITEMS_H
 
 #include "qgsdataitem.h"
-#include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
 #include "qgsdataitemprovider.h"
 

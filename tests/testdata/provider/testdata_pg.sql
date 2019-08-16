@@ -617,3 +617,24 @@ CREATE OR REPLACE VIEW qgis_test.b21839_pk_unicity_view AS
     b21839_pk_unicity.geom
    FROM qgis_test.b21839_pk_unicity;
 
+
+
+---------------------------------------------
+--
+-- Table and views for tests on QgsAbstractProviderConnection
+--
+
+CREATE TABLE qgis_test.geometries_table (name VARCHAR, geom GEOMETRY);
+
+INSERT INTO qgis_test.geometries_table VALUES
+  ('Point', 'POINT(0 0)'),
+  ('Point4326', 'SRID=4326;POINT(7 45)'),
+  ('Point3857', 'SRID=3857;POINT(100 100)'),
+  ('Linestring', 'LINESTRING(0 0, 1 1, 2 1, 2 2)'),
+  ('Polygon', 'POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'),
+  ('PolygonWithHole', 'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1))'),
+  ('Collection', 'GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0, 1 0, 1 1, 0 1, 0 0)))');
+
+CREATE VIEW qgis_test.geometries_view AS (SELECT * FROM qgis_test.geometries_table);
+
+CREATE TABLE qgis_test.geometryless_table (name VARCHAR, value INTEGER);

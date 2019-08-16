@@ -70,10 +70,10 @@ QString QgsOgrDbConnection::connectionsPath( const QString &settingsKey )
   return QStringLiteral( "%1/connections" ).arg( fullKey( settingsKey ) );
 }
 
-const QStringList QgsOgrDbConnection::connectionList( const QString &settingsKey )
+const QStringList QgsOgrDbConnection::connectionList( const QString &driverName )
 {
   QgsSettings settings;
-  settings.beginGroup( connectionsPath( settingsKey ) );
+  settings.beginGroup( connectionsPath( driverName ) );
   return settings.childGroups();
 }
 

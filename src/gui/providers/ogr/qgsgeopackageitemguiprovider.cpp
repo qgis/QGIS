@@ -37,6 +37,7 @@
 #include "gdal.h"
 #include "qgsogrdataitems.h"
 #include "qgsogrdbconnection.h"
+#include "qgsgeopackageproviderconnection.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
     const QList<QgsDataItem *> &,
@@ -44,7 +45,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 {
   if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast< QgsGeoPackageVectorLayerItem * >( item ) )
   {
-    // Check capabilities: for now rename is only available for vectors
+    // Check capabilities
     if ( layerItem->capabilities2() & QgsDataItem::Capability::Rename )
     {
       QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( layerItem->name() ), this );
@@ -189,12 +190,12 @@ void QgsGeoPackageItemGuiProvider::addTable()
   }
 }
 
-bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext )
+bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &newName, QgsDataItemGuiContext )
 {
   if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast< QgsGeoPackageVectorLayerItem * >( item ) )
   {
     // Checks that name does not exist yet
-    if ( layerItem->tableNames().contains( name ) )
+    if ( layerItem->tableNames().contains( newName ) )
     {
       return false;
     }
@@ -236,33 +237,25 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &nam
         QgsProject::instance()->removeMapLayers( layersList );
       }
 
-      // TODO: maybe an index?
-      QString oldName = parts.value( QStringLiteral( "layerName" ) ).toString();
-
-      GDALDatasetH hDS = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
-      if ( hDS )
+      // Actually rename
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+      QgsGeoPackageProviderConnection *conn { static_cast<QgsGeoPackageProviderConnection *>( md->findConnection( layerItem->collection()->name() ) ) };
+      if ( ! conn )
       {
-        QString sql( QStringLiteral( "ALTER TABLE %1 RENAME TO %2" )
-                     .arg( QgsSqliteUtils::quotedIdentifier( oldName ),
-                           QgsSqliteUtils::quotedIdentifier( name ) ) );
-        OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS, sql.toUtf8().constData(), nullptr, nullptr ) );
-        if ( ogrLayer )
-          GDALDatasetReleaseResultSet( hDS, ogrLayer );
-        errCause = CPLGetLastErrorMsg( );
-        if ( errCause.isEmpty() )
-        {
-          sql = QStringLiteral( "UPDATE layer_styles SET f_table_name = %2 WHERE f_table_name = %1" )
-                .arg( QgsSqliteUtils::quotedString( oldName ),
-                      QgsSqliteUtils::quotedString( name ) );
-          ogrLayer = GDALDatasetExecuteSQL( hDS, sql.toUtf8().constData(), nullptr, nullptr );
-          if ( ogrLayer )
-            GDALDatasetReleaseResultSet( hDS, ogrLayer );
-        }
-        GDALClose( hDS );
+        errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( layerItem->collection()->name() );
       }
       else
       {
-        errCause = QObject::tr( "There was an error opening %1!" ).arg( filePath );
+        // TODO: maybe an index?
+        QString oldName = parts.value( QStringLiteral( "layerName" ) ).toString();
+        try
+        {
+          conn->renameVectorTable( QString(), oldName, newName );
+        }
+        catch ( QgsProviderConnectionException &ex )
+        {
+          errCause = ex.what();
+        }
       }
     }
 
@@ -369,8 +362,9 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
 
 void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path, const QString &name )
 {
+  Q_UNUSED( path );
   QString errCause;
-  bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( path, name, errCause );
+  bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( name, errCause );
   if ( !result || !errCause.isEmpty() )
   {
     QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
@@ -397,7 +391,7 @@ void QgsGeoPackageItemGuiProvider::createDatabase()
     dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
     if ( dialog.exec() == QDialog::Accepted )
     {
-      if ( QgsOgrDataCollectionItem::storeConnection( dialog.databasePath(), QStringLiteral( "GPKG" ) ) )
+      if ( QgsOgrDataCollectionItem::saveConnection( dialog.databasePath(), QStringLiteral( "GPKG" ) ) )
       {
         item->refreshConnections();
       }
@@ -562,7 +556,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
               // Always try to delete the imported raster, in case the gpkg has been left
               // in an inconsistent status. Ignore delete errors.
               QString deleteErr;
-              item->deleteGeoPackageRasterLayer( QStringLiteral( "GPKG:%1:%2" ).arg( item->path(), dropUri.name ), deleteErr );
+              item->deleteRasterLayer( dropUri.name, deleteErr );
             } );
 
           }

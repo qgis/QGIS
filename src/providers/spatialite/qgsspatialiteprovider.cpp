@@ -6058,3 +6058,4 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsSpatiaLiteProviderMetadata();
 }
+
