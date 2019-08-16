@@ -194,6 +194,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     QString createCompositionXml( const QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > &components );
 
     friend class TestQgsLayoutGeoPdfExport;
+    friend class TestQgsGeoPdfExport;
 };
 
 #endif //QGSABSTRACTGEOPDFEXPORTER_H
