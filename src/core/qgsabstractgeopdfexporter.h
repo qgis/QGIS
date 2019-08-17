@@ -98,7 +98,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       QgsFeature feature;
 
       /**
-       * Bounds, in PDF units, of rendered feature.
+       * Bounds, in PDF units, of rendered feature. (Multi)LineString or Polygon types only.
        */
       QgsGeometry renderedBounds;
     };
