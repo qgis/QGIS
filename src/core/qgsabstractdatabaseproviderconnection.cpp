@@ -37,7 +37,7 @@ QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderC
 ///@cond PRIVATE
 void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability capability ) const
 {
-  if ( ! mCapabilities & capability )
+  if ( ! mCapabilities.testFlag( capability ) )
   {
     static QMetaEnum metaEnum = QMetaEnum::fromType<QgsAbstractDatabaseProviderConnection::Capability>();
     const QString capName { metaEnum.valueToKey( capability ) };

@@ -384,7 +384,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
 
 
-    virtual QStringList schemas( ) const throw( QgsProviderConnectionException );
+    virtual QStringList schemas() const throw( QgsProviderConnectionException );
 %Docstring
 Returns information about the existing schemas.
 Raises a QgsProviderConnectionException if any errors are encountered.

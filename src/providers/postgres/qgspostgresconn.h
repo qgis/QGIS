@@ -88,14 +88,14 @@ struct QgsPostgresLayerProperty
   // TODO: rename this !
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  QString   defaultName() const
+  QString defaultName() const
   {
     QString n = tableName;
     if ( nSpCols > 1 ) n += '.' + geometryColName;
     return n;
   }
 
-  QgsPostgresLayerProperty at( unsigned int i ) const
+  QgsPostgresLayerProperty at( int i ) const
   {
     QgsPostgresLayerProperty property;
 
@@ -103,18 +103,18 @@ struct QgsPostgresLayerProperty
 
     property.types << types[ i ];
     property.srids << srids[ i ];
-    property.schemaName      = schemaName;
-    property.tableName       = tableName;
-    property.geometryColName = geometryColName;
-    property.geometryColType = geometryColType;
-    property.pkCols          = pkCols;
-    property.nSpCols         = nSpCols;
-    property.sql             = sql;
-    property.relKind         = relKind;
-    property.isView          = isView;
-    property.isRaster        = isRaster;
+    property.schemaName         = schemaName;
+    property.tableName          = tableName;
+    property.geometryColName    = geometryColName;
+    property.geometryColType    = geometryColType;
+    property.pkCols             = pkCols;
+    property.nSpCols            = nSpCols;
+    property.sql                = sql;
+    property.relKind            = relKind;
+    property.isView             = isView;
+    property.isRaster           = isRaster;
     property.isMaterializedView = isMaterializedView;
-    property.tableComment    = tableComment;
+    property.tableComment       = tableComment;
 
     return property;
   }

@@ -904,7 +904,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     return;
   }
 
-  QgsGraduatedSymbolRenderer::Mode mode;
+  QgsGraduatedSymbolRenderer::Mode mode = QgsGraduatedSymbolRenderer::Quantile;
   bool useSymmetricMode = false;
   bool astride = false;
 

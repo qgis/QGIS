@@ -223,7 +223,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
   l->setCentroidInside( flags.testFlag( QgsAbstractLabelProvider::CentroidMustBeInside ) );
 
   // set how to show upside-down labels
-  pal::Layer::UpsideDownLabels upsdnlabels;
+  pal::Layer::UpsideDownLabels upsdnlabels = pal::Layer::ShowAll;
   switch ( provider->upsidedownLabels() )
   {
     case QgsPalLayerSettings::Upright:

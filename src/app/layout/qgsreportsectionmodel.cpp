@@ -110,7 +110,9 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
       return QVariant();
   }
 
+#ifndef _MSC_VER
   return QVariant();
+#endif
 }
 
 QVariant QgsReportSectionModel::headerData( int section, Qt::Orientation orientation, int role ) const

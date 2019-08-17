@@ -74,7 +74,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * can contain multiple geometry types and/or CRSs, a clone of the property
      * for the individual geometry type/CRS can be retrieved with at(i)
      */
-    struct TableProperty
+    struct CORE_EXPORT TableProperty
     {
 
 #ifdef SIP_RUN
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * The GeometryColumnType struct represents the combination
          * of geometry type and CRS for the table geometry column.
          */
-        struct GeometryColumnType
+        struct CORE_EXPORT GeometryColumnType
         {
 #ifdef SIP_RUN
           SIP_PYOBJECT __repr__();
@@ -428,7 +428,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
-    virtual QStringList schemas( ) const SIP_THROW( QgsProviderConnectionException );
+    virtual QStringList schemas() const SIP_THROW( QgsProviderConnectionException );
 
   protected:
 

@@ -103,6 +103,7 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
     void addLayer( const QgsOracleLayerProperty &layerProperty );
 };
 
+Q_NOWARN_DEPRECATED_PUSH // deleteLayer deprecated
 class QgsOracleLayerItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -120,6 +121,7 @@ class QgsOracleLayerItem : public QgsLayerItem
   private:
     QgsOracleLayerProperty mLayerProperty;
 };
+Q_NOWARN_DEPRECATED_POP
 
 //! Provider for ORACLE root data item
 class QgsOracleDataItemProvider : public QgsDataItemProvider

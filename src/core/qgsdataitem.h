@@ -821,6 +821,7 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
  * A directory item showing the a single favorite directory.
  * \since QGIS 3.0
 */
+Q_NOWARN_DEPRECATED_PUSH  // rename is deprecated
 class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 {
     Q_OBJECT
@@ -835,6 +836,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 
     QgsFavoritesItem *mFavorites = nullptr;
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif
 ///@endcond
