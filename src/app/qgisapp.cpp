@@ -2997,7 +2997,17 @@ void QgisApp::createToolBars()
   tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddCircularString->addAction( mActionCircularStringCurvePoint );
   tbAddCircularString->addAction( mActionCircularStringRadius );
-  tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
+  QAction *defActionCircularString = mActionCircularStringCurvePoint;
+  switch ( settings.value( QStringLiteral( "UI/defaultCircularString" ), 0 ).toInt() )
+  {
+    case 0:
+      defActionCircularString = mActionCircularStringCurvePoint;
+      break;
+    case 1:
+      defActionCircularString = mActionCircularStringRadius;
+      break;
+  };
+  tbAddCircularString->setDefaultAction( defActionCircularString );
   QAction *addCircularAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircularString );
   addCircularAction->setObjectName( QStringLiteral( "ActionAddCircularString" ) );
   connect( tbAddCircularString, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
@@ -3010,7 +3020,26 @@ void QgisApp::createToolBars()
   tbAddCircle->addAction( mActionCircle3Tangents );
   tbAddCircle->addAction( mActionCircle2TangentsPoint );
   tbAddCircle->addAction( mActionCircleCenterPoint );
-  tbAddCircle->setDefaultAction( mActionCircle2Points );
+  QAction *defActionCircle = mActionCircle2Points;
+  switch ( settings.value( QStringLiteral( "UI/defaultCircle" ), 0 ).toInt() )
+  {
+    case 0:
+      defActionCircle = mActionCircle2Points;
+      break;
+    case 1:
+      defActionCircle = mActionCircle3Points;
+      break;
+    case 2:
+      defActionCircle = mActionCircle3Tangents;
+      break;
+    case 3:
+      defActionCircle = mActionCircle2TangentsPoint;
+      break;
+    case 4:
+      defActionCircle = mActionCircleCenterPoint;
+      break;
+  };
+  tbAddCircle->setDefaultAction( defActionCircle );
   QAction *addCircleAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircle );
   addCircleAction->setObjectName( QStringLiteral( "ActionAddCircle" ) );
   connect( tbAddCircle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
@@ -3022,7 +3051,23 @@ void QgisApp::createToolBars()
   tbAddEllipse->addAction( mActionEllipseCenterPoint );
   tbAddEllipse->addAction( mActionEllipseExtent );
   tbAddEllipse->addAction( mActionEllipseFoci );
-  tbAddEllipse->setDefaultAction( mActionEllipseCenter2Points );
+  QAction *defActionEllipse = mActionEllipseCenter2Points;
+  switch ( settings.value( QStringLiteral( "UI/defaultEllipse" ), 0 ).toInt() )
+  {
+    case 0:
+      defActionEllipse = mActionEllipseCenter2Points;
+      break;
+    case 1:
+      defActionEllipse = mActionEllipseCenterPoint;
+      break;
+    case 2:
+      defActionEllipse = mActionEllipseExtent;
+      break;
+    case 3:
+      defActionEllipse = mActionEllipseFoci;
+      break;
+  };
+  tbAddEllipse->setDefaultAction( defActionEllipse );
   QAction *addEllipseAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddEllipse );
   addEllipseAction->setObjectName( QStringLiteral( "ActionAddEllipse" ) );
   connect( tbAddEllipse, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
@@ -3034,7 +3079,23 @@ void QgisApp::createToolBars()
   tbAddRectangle->addAction( mActionRectangleExtent );
   tbAddRectangle->addAction( mActionRectangle3PointsDistance );
   tbAddRectangle->addAction( mActionRectangle3PointsProjected );
-  tbAddRectangle->setDefaultAction( mActionRectangleCenterPoint );
+  QAction *defActionRectangle = mActionRectangleCenterPoint;
+  switch ( settings.value( QStringLiteral( "UI/defaultRectangle" ), 0 ).toInt() )
+  {
+    case 0:
+      defActionRectangle = mActionRectangleCenterPoint;
+      break;
+    case 1:
+      defActionRectangle = mActionRectangleExtent;
+      break;
+    case 2:
+      defActionRectangle = mActionRectangle3PointsDistance;
+      break;
+    case 3:
+      defActionRectangle = mActionRectangle3PointsProjected;
+      break;
+  };
+  tbAddRectangle->setDefaultAction( defActionRectangle );
   QAction *addRectangleAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
   addRectangleAction->setObjectName( QStringLiteral( "ActionAddRectangle" ) );
   connect( tbAddRectangle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
@@ -3045,7 +3106,20 @@ void QgisApp::createToolBars()
   tbAddRegularPolygon->addAction( mActionRegularPolygon2Points );
   tbAddRegularPolygon->addAction( mActionRegularPolygonCenterPoint );
   tbAddRegularPolygon->addAction( mActionRegularPolygonCenterCorner );
-  tbAddRegularPolygon->setDefaultAction( mActionRegularPolygon2Points );
+  QAction *defActionRegularPolygon = mActionRegularPolygon2Points;
+  switch ( settings.value( QStringLiteral( "UI/defaultRegularPolygon" ), 0 ).toInt() )
+  {
+    case 0:
+      defActionRegularPolygon = mActionRegularPolygon2Points;
+      break;
+    case 1:
+      defActionRegularPolygon = mActionRegularPolygonCenterPoint;
+      break;
+    case 2:
+      defActionRegularPolygon = mActionRegularPolygonCenterCorner;
+      break;
+  };
+  tbAddRegularPolygon->setDefaultAction( defActionRegularPolygon );
   QAction *addRegularPolygonAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
   addRegularPolygonAction->setObjectName( QStringLiteral( "ActionAddRegularPolygon" ) );
   connect( tbAddRegularPolygon, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
@@ -14323,6 +14397,42 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setEnumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::AllLayers );
   else if ( action == mActionVertexToolActiveLayer )
     settings.setEnumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::ActiveLayer );
+  else if ( action == mActionCircularStringCurvePoint )
+    settings.setValue( QStringLiteral( "UI/defaultCircularString" ), 0 );
+  else if ( action == mActionCircularStringRadius )
+    settings.setValue( QStringLiteral( "UI/defaultCircularString" ), 1 );
+  else if ( action == mActionCircle2Points )
+    settings.setValue( QStringLiteral( "UI/defaultCircle" ), 0 );
+  else if ( action == mActionCircle3Points )
+    settings.setValue( QStringLiteral( "UI/defaultCircle" ), 1 );
+  else if ( action == mActionCircle3Tangents )
+    settings.setValue( QStringLiteral( "UI/defaultCircle" ), 2 );
+  else if ( action == mActionCircle2TangentsPoint )
+    settings.setValue( QStringLiteral( "UI/defaultCircle" ), 3 );
+  else if ( action == mActionCircleCenterPoint )
+    settings.setValue( QStringLiteral( "UI/defaultCircle" ), 4 );
+  else if ( action == mActionEllipseCenter2Points )
+    settings.setValue( QStringLiteral( "UI/defaultEllipse" ), 0 );
+  else if ( action == mActionEllipseCenterPoint )
+    settings.setValue( QStringLiteral( "UI/defaultEllipse" ), 1 );
+  else if ( action == mActionEllipseExtent )
+    settings.setValue( QStringLiteral( "UI/defaultEllipse" ), 2 );
+  else if ( action == mActionEllipseFoci )
+    settings.setValue( QStringLiteral( "UI/defaultEllipse" ), 3 );
+  else if ( action == mActionRectangleCenterPoint )
+    settings.setValue( QStringLiteral( "UI/defaultRectangle" ), 0 );
+  else if ( action == mActionRectangleExtent )
+    settings.setValue( QStringLiteral( "UI/defaultRectangle" ), 1 );
+  else if ( action == mActionRectangle3PointsDistance )
+    settings.setValue( QStringLiteral( "UI/defaultRectangle" ), 2 );
+  else if ( action == mActionRectangle3PointsProjected )
+    settings.setValue( QStringLiteral( "UI/defaultRectangle" ), 3 );
+  else if ( action == mActionRegularPolygon2Points )
+    settings.setValue( QStringLiteral( "UI/defaultRegularPolygon" ), 0 );
+  else if ( action == mActionRegularPolygonCenterPoint )
+    settings.setValue( QStringLiteral( "UI/defaultRegularPolygon" ), 1 );
+  else if ( action == mActionRegularPolygonCenterCorner )
+    settings.setValue( QStringLiteral( "UI/defaultRegularPolygon" ), 2 );
 
   bt->setDefaultAction( action );
 }
