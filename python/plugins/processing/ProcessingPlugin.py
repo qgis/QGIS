@@ -233,6 +233,7 @@ class ProcessingPlugin:
         self.resultsAction = QAction(
             QgsApplication.getThemeIcon("/processingResult.svg"),
             self.tr('&Results Viewer'), self.iface.mainWindow())
+        self.resultsAction.setObjectName('resultsViewer')
         self.resultsAction.setCheckable(True)
         self.iface.registerMainWindowAction(self.resultsAction,
                                             QKeySequence('Ctrl+Alt+R').toString(QKeySequence.NativeText))

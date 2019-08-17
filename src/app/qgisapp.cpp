@@ -2310,6 +2310,7 @@ void QgisApp::createActions()
   menuAllEdits->addAction( mActionSaveAllEdits );
   menuAllEdits->addAction( mActionRollbackAllEdits );
   menuAllEdits->addAction( mActionCancelAllEdits );
+  menuAllEdits->setObjectName( "AllEditsMenu" );
   mActionAllEdits->setMenu( menuAllEdits );
 
   // Raster toolbar items
@@ -2974,8 +2975,9 @@ void QgisApp::createToolBars()
   tbAddCircularString->addAction( mActionCircularStringCurvePoint );
   tbAddCircularString->addAction( mActionCircularStringRadius );
   tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
+  QAction *addCircularAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircularString );
+  addCircularAction->setObjectName( QStringLiteral( "ActionAddCircularString" ) );
   connect( tbAddCircularString, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircularString );
 
   //circle digitize tool button
   QToolButton *tbAddCircle = new QToolButton( mShapeDigitizeToolBar );
@@ -2986,8 +2988,9 @@ void QgisApp::createToolBars()
   tbAddCircle->addAction( mActionCircle2TangentsPoint );
   tbAddCircle->addAction( mActionCircleCenterPoint );
   tbAddCircle->setDefaultAction( mActionCircle2Points );
+  QAction *addCircleAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircle );
+  addCircleAction->setObjectName( QStringLiteral( "ActionAddCircle" ) );
   connect( tbAddCircle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircle );
 
   //ellipse digitize tool button
   QToolButton *tbAddEllipse = new QToolButton( mShapeDigitizeToolBar );
@@ -2997,8 +3000,9 @@ void QgisApp::createToolBars()
   tbAddEllipse->addAction( mActionEllipseExtent );
   tbAddEllipse->addAction( mActionEllipseFoci );
   tbAddEllipse->setDefaultAction( mActionEllipseCenter2Points );
+  QAction *addEllipseAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddEllipse );
+  addEllipseAction->setObjectName( QStringLiteral( "ActionAddEllipse" ) );
   connect( tbAddEllipse, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddEllipse );
 
   //Rectangle digitize tool button
   QToolButton *tbAddRectangle = new QToolButton( mShapeDigitizeToolBar );
@@ -3008,8 +3012,9 @@ void QgisApp::createToolBars()
   tbAddRectangle->addAction( mActionRectangle3PointsDistance );
   tbAddRectangle->addAction( mActionRectangle3PointsProjected );
   tbAddRectangle->setDefaultAction( mActionRectangleCenterPoint );
+  QAction *addRectangleAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
+  addRectangleAction->setObjectName( QStringLiteral( "ActionAddRectangle" ) );
   connect( tbAddRectangle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
 
   //Regular polygon digitize tool button
   QToolButton *tbAddRegularPolygon = new QToolButton( mShapeDigitizeToolBar );
@@ -3018,8 +3023,9 @@ void QgisApp::createToolBars()
   tbAddRegularPolygon->addAction( mActionRegularPolygonCenterPoint );
   tbAddRegularPolygon->addAction( mActionRegularPolygonCenterCorner );
   tbAddRegularPolygon->setDefaultAction( mActionRegularPolygon2Points );
+  QAction *addRegularPolygonAction = mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
+  addRegularPolygonAction->setObjectName( QStringLiteral( "ActionAddRegularPolygon" ) );
   connect( tbAddRegularPolygon, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
 
   // Cad toolbar
   mAdvancedDigitizeToolBar->insertAction( mActionRotateFeature, mAdvancedDigitizingDockWidget->enableAction() );
