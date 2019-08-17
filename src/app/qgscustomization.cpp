@@ -395,7 +395,8 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
   QString name = myElement.attribute( QStringLiteral( "objectName" ), QString() );
   QStringList data( name );
 
-  data << myElement.attribute( QStringLiteral( "label" ), name );
+  // remove '&' which are used to mark shortcut key
+  data << myElement.attribute( QStringLiteral( "label" ), name ).remove( "&" );
 
   QTreeWidgetItem *myItem = new QTreeWidgetItem( data );
 
@@ -554,7 +555,8 @@ void QgsCustomization::addTreeItemActions( QTreeWidgetItem *parentItem, const QL
     {
       // it is an ordinary action
       QStringList strs;
-      strs << action->objectName() << action->text();
+      // remove '&' which are used to mark shortcut key
+      strs << action->objectName() << action->text().remove( '&' );
       QTreeWidgetItem *item = new QTreeWidgetItem( parentItem, strs );
       item->setIcon( 0, action->icon() );
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
@@ -616,7 +618,8 @@ void QgsCustomization::createTreeItemToolbars()
     for ( QAction *act : tbWidgetActions )
     {
       QStringList actstrs;
-      actstrs << act->objectName() << act->text();
+      // remove '&' which are used to mark shortcut key
+      actstrs << act->objectName() << act->text().remove( "&" );
       QTreeWidgetItem *item = new QTreeWidgetItem( tbItem, actstrs );
       item->setIcon( 0, act->icon() );
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
