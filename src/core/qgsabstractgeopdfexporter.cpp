@@ -191,27 +191,63 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
   // metadata tags
   QDomElement metadata = doc.createElement( QStringLiteral( "Metadata" ) );
-  QDomElement author = doc.createElement( QStringLiteral( "Author" ) );
-  author.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( author );
-  QDomElement producer = doc.createElement( QStringLiteral( "Producer" ) );
-  producer.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( producer );
-  QDomElement creator = doc.createElement( QStringLiteral( "Creator" ) );
-  creator.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( creator );
-  QDomElement creationDate = doc.createElement( QStringLiteral( "CreationDate" ) );
-  //creationDate.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( creationDate );
-  QDomElement subject = doc.createElement( QStringLiteral( "Subject" ) );
-  //subject.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( subject );
-  QDomElement title = doc.createElement( QStringLiteral( "Title" ) );
-  //title.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( title );
-  QDomElement keywords = doc.createElement( QStringLiteral( "Keywords" ) );
-  //keywords.appendChild( doc.createTextNode( QStringLiteral( "QGIS" ) ) );
-  metadata.appendChild( keywords );
+  if ( !details.author.isEmpty() )
+  {
+    QDomElement author = doc.createElement( QStringLiteral( "Author" ) );
+    author.appendChild( doc.createTextNode( details.author ) );
+    metadata.appendChild( author );
+  }
+  if ( !details.producer.isEmpty() )
+  {
+    QDomElement producer = doc.createElement( QStringLiteral( "Producer" ) );
+    producer.appendChild( doc.createTextNode( details.producer ) );
+    metadata.appendChild( producer );
+  }
+  if ( !details.creator.isEmpty() )
+  {
+    QDomElement creator = doc.createElement( QStringLiteral( "Creator" ) );
+    creator.appendChild( doc.createTextNode( details.creator ) );
+    metadata.appendChild( creator );
+  }
+  if ( details.creationDateTime.isValid() )
+  {
+    QDomElement creationDate = doc.createElement( QStringLiteral( "CreationDate" ) );
+    QString creationDateString = QStringLiteral( "D:%1" ).arg( details.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
+    if ( details.creationDateTime.timeZone().isValid() )
+    {
+      int offsetFromUtc = details.creationDateTime.timeZone().offsetFromUtc( details.creationDateTime );
+      creationDateString += ( offsetFromUtc >= 0 ) ? '+' : '-';
+      offsetFromUtc = std::abs( offsetFromUtc );
+      int offsetHours = offsetFromUtc / 3600;
+      int offsetMins = ( offsetFromUtc % 3600 ) / 60;
+      creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
+    }
+    creationDate.appendChild( doc.createTextNode( creationDateString ) );
+    metadata.appendChild( creationDate );
+  }
+  if ( !details.subject.isEmpty() )
+  {
+    QDomElement subject = doc.createElement( QStringLiteral( "Subject" ) );
+    subject.appendChild( doc.createTextNode( details.subject ) );
+    metadata.appendChild( subject );
+  }
+  if ( !details.title.isEmpty() )
+  {
+    QDomElement title = doc.createElement( QStringLiteral( "Title" ) );
+    title.appendChild( doc.createTextNode( details.title ) );
+    metadata.appendChild( title );
+  }
+  if ( !details.keywords.empty() )
+  {
+    QStringList allKeywords;
+    for ( auto it = details.keywords.constBegin(); it != details.keywords.constEnd(); ++it )
+    {
+      allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
+    }
+    QDomElement keywords = doc.createElement( QStringLiteral( "Keywords" ) );
+    keywords.appendChild( doc.createTextNode( allKeywords.join( ';' ) ) );
+    metadata.appendChild( keywords );
+  }
   compositionElem.appendChild( metadata );
 
   // layertree

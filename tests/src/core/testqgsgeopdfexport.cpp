@@ -56,6 +56,7 @@ class TestQgsGeoPdfExport : public QObject
     void cleanup();// will be called after every testfunction.
     void testCollectingFeatures();
     void testComposition();
+    void testMetadata();
 
   private:
 
@@ -261,6 +262,52 @@ void TestQgsGeoPdfExport::testComposition()
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+
+}
+
+void TestQgsGeoPdfExport::testMetadata()
+{
+  if ( !QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() )
+  {
+    QSKIP( "This test requires GeoPDF creation abilities", SkipSingle );
+  }
+
+  TestGeoPdfExporter geoPdfExporter;
+  // test creation of the composition xml with metadata
+
+  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers;
+  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsg( composition );
+  QDomDocument doc;
+  doc.setContent( composition );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Author" ) ).count(), 0 );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Producer" ) ).count(), 0 );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Creator" ) ).count(), 0 );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "CreationDate" ) ).count(), 0 );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Subject" ) ).count(), 0 );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Title" ) ).count(), 0 );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Keywords" ) ).count(), 0 );
+
+  // with metadata
+  details.author = QStringLiteral( "my author" );
+  details.producer = QStringLiteral( "my producer" );
+  details.creator = QStringLiteral( "my creator" );
+  details.creationDateTime = QDateTime( QDate( 2010, 3, 5 ), QTime( 12, 34 ), Qt::UTC );
+  details.subject = QStringLiteral( "my subject" );
+  details.title = QStringLiteral( "my title" );
+  details.keywords.insert( QStringLiteral( "k1" ), QStringList() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
+
+  composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsg( composition );
+  doc.setContent( composition );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Author" ) ).at( 0 ).toElement().text(), QStringLiteral( "my author" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Producer" ) ).at( 0 ).toElement().text(), QStringLiteral( "my producer" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Creator" ) ).at( 0 ).toElement().text(), QStringLiteral( "my creator" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "CreationDate" ) ).at( 0 ).toElement().text(), QStringLiteral( "D:20100305123400+0'0'" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Subject" ) ).at( 0 ).toElement().text(), QStringLiteral( "my subject" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Title" ) ).at( 0 ).toElement().text(), QStringLiteral( "my title" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "Keywords" ) ).at( 0 ).toElement().text(), QStringLiteral( "k1: v1,v2" ) );
 
 }
 
