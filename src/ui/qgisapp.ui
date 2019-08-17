@@ -2482,6 +2482,9 @@ Acts on the currently active editable layer only.</string>
    <property name="toolTip">
     <string>Add Delimited Text Layer</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+T</string>
+   </property>
   </action>
   <action name="mActionAddVirtualLayer">
    <property name="icon">
