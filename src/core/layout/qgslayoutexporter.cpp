@@ -531,13 +531,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
-
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
   ExportResult result = Success;
   if ( settings.writeGeoPdf )
   {
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
+
     // here we need to export layers to individual PDFs
     PdfExportSettings subSettings = settings;
     subSettings.writeGeoPdf = false;
