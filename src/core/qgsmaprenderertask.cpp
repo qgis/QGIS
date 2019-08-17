@@ -84,6 +84,7 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
       const QString layerId = context.renderContext.expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
 
       // transform from pixels to PDF coordinates (TODO - check)
+      // PDF coordinate space uses a hardcoded DPI of 72
       QTransform pixelToPdfTransform = QTransform::fromScale( 25.4 / context.renderContext.scaleFactor() / 72.0, 25.4 / context.renderContext.scaleFactor() / 72.0 );
       QgsGeometry transformed = renderedBounds;
       transformed.transform( pixelToPdfTransform );
