@@ -1257,7 +1257,7 @@
     <string>Measure Line</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+M</string>
+    <string>Ctrl+Shift+K</string>
    </property>
   </action>
   <action name="mActionMeasureArea">
@@ -3060,7 +3060,7 @@ Acts on the currently active editable layer only.</string>
     <string>New 3D Map View</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+M</string>
+    <string>Ctrl+Alt+M</string>
    </property>
   </action>
   <action name="mActionShowLayoutManager">
