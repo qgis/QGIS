@@ -20,7 +20,9 @@
 #include <QList>
 #include <QTemporaryDir>
 #include <QMutex>
+#include <QDateTime>
 #include "qgsfeature.h"
+#include "qgsabstractmetadatabase.h"
 
 #define SIP_NO_FILE
 
@@ -135,6 +137,27 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
 
       //! Output DPI
       double dpi = 300;
+
+      //! Metadata author tag
+      QString author;
+
+      //! Metadata producer tag
+      QString producer;
+
+      //! Metadata creator tag
+      QString creator;
+
+      //! Metadata creation datetime
+      QDateTime creationDateTime;
+
+      //! Metadata subject tag
+      QString subject;
+
+      //! Metadata title tag
+      QString title;
+
+      //! Metadata keyword map
+      QgsAbstractMetadataBase::KeywordMap keywords;
 
     };
 
