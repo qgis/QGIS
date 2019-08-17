@@ -26,6 +26,7 @@
 #include <gdal.h>
 #include "qgsgdalutils.h"
 #include "cpl_string.h"
+#include "qgslayoutpagecollection.h"
 
 #include <QMutex>
 #include <QMutexLocker>
@@ -40,6 +41,15 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
     QgsGeoPdfRenderedFeatureHandler( QgsLayoutItemMap *map, QgsLayoutGeoPdfExporter *exporter )
       : mExporter( exporter )
     {
+      // get page size
+      const QgsLayoutSize pageSize = map->layout()->pageCollection()->page( map->page() )->pageSize();
+      QSizeF pageSizeLayoutUnits = map->layout()->convertToLayoutUnits( pageSize );
+      const QgsLayoutSize pageSizeInches = map->layout()->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutInches );
+
+      // PDF assumes 72 dpi -- this is hardcoded!!
+      const double pageHeightPdfUnits = pageSizeInches.height() * 72;
+      const double pageWidthPdfUnits = pageSizeInches.width() * 72;
+
       QTransform mapTransform;
       QPolygonF mapRectPoly = QPolygonF( QRectF( 0, 0, map->rect().width(), map->rect().height() ) );
       //workaround QT Bug #21329
@@ -50,7 +60,9 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       //create transform from layout coordinates to map coordinates
       QTransform::quadToQuad( mapRectPoly, mapRectInLayout, mMapToLayoutTransform );
 
-      mLayoutToPdfTransform = QTransform::fromTranslate( 0, 595 ).scale( 842.0 / 297, -595.0 / 210 );
+      // and a transform to PDF coordinate space
+      mLayoutToPdfTransform = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / pageSizeLayoutUnits.width(),
+                              -pageHeightPdfUnits / pageSizeLayoutUnits.height() );
     }
 
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
