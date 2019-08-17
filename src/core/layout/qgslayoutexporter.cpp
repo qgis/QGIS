@@ -579,6 +579,18 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
     details.pageSizeMm = pageSizeMM.toQSizeF();
 
+    if ( settings.exportMetadata )
+    {
+      // copy layout metadata to GeoPDF export settings
+      details.author = mLayout->project()->metadata().author();
+      details.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+      details.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+      details.creationDateTime = mLayout->project()->metadata().creationDateTime();
+      details.subject = mLayout->project()->metadata().abstract();
+      details.title = mLayout->project()->metadata().title();
+      details.keywords = mLayout->project()->metadata().keywords();
+    }
+
     geoPdfExporter->finalize( pdfComponents, filePath, details );
   }
   else
