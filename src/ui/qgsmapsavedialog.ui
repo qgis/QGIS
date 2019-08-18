@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>318</height>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,27 +16,10 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="9" column="0" colspan="2">
-      <widget class="QLabel" name="mInfo">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0" colspan="2">
-      <widget class="QCheckBox" name="mSaveAsRaster">
-       <property name="visible">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>Advanced effects such as blend modes or vector layer transparency cannot be exported as vectors.
-Rasterizing the map is recommended when such effects are used.</string>
-       </property>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Rasterize map</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
+        <string>Resolution</string>
        </property>
       </widget>
      </item>
@@ -47,6 +30,23 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
        <property name="checked">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsScaleWidget" name="mScaleWidget" native="true"/>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+       <property name="title">
+        <string>Extent</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Output height</string>
        </property>
       </widget>
      </item>
@@ -70,17 +70,27 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Output height</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Output width</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0" colspan="2">
+      <widget class="QCheckBox" name="mSaveAsRaster">
+       <property name="visible">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Advanced effects such as blend modes or vector layer transparency cannot be exported as vectors.
+Rasterizing the map is recommended when such effects are used.</string>
+       </property>
+       <property name="text">
+        <string>Rasterize map</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -170,13 +180,6 @@ Rasterizing the map is recommended when such effects are used.</string>
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Resolution</string>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="1">
       <widget class="QgsSpinBox" name="mResolutionSpinBox">
        <property name="suffix">
@@ -203,14 +206,57 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QgsScaleWidget" name="mScaleWidget" native="true"/>
-     </item>
-     <item row="0" column="0" colspan="2">
-      <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
-       <property name="title">
-        <string>Extent</string>
+     <item row="10" column="0" colspan="2">
+      <widget class="QLabel" name="mInfo">
+       <property name="enabled">
+        <bool>false</bool>
        </property>
+      </widget>
+     </item>
+     <item row="8" column="0" colspan="2">
+      <widget class="QGroupBox" name="mGeoPDFGroupBox">
+       <property name="title">
+        <string>Create Geospatial PDF (GeoPDF)</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QStackedWidget" name="mGeoPDFOptionsStackedWidget">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="page">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="mGeoPdfUnavailableReason">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_2"/>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>

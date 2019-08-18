@@ -26,6 +26,7 @@
 #include <QSpinBox>
 
 #include "qgsmapsavedialog.h"
+#include "qgsabstractgeopdfexporter.h"
 #include "qgsguiutils.h"
 #include "qgis.h"
 #include "qgisapp.h"
@@ -117,11 +118,25 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
       mSaveAsRaster->setVisible( true );
 
       this->setWindowTitle( tr( "Save Map as PDF" ) );
+
+      const bool geoPdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
+      mGeoPDFGroupBox->setEnabled( geoPdfAvailable );
+      if ( !geoPdfAvailable )
+      {
+        mGeoPDFGroupBox->setChecked( false );
+        mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
+        mGeoPdfUnavailableReason->setText( mGeoPdfUnavailableReason::geoPDFAvailabilityExplanation() );
+      }
+      else
+      {
+        mGeoPDFOptionsStackedWidget->setCurrentIndex( 1 );
+      }
       break;
     }
 
     case Image:
     {
+      mGeoPDFGroupBox->hide();
       QPushButton *button = new QPushButton( tr( "Copy to Clipboard" ) );
       buttonBox->addButton( button, QDialogButtonBox::ResetRole );
       connect( button, &QPushButton::clicked, this, &QgsMapSaveDialog::copyToClipboard );
@@ -457,7 +472,7 @@ void QgsMapSaveDialog::onAccepted()
         QgsMapSettings ms = QgsMapSettings();
         applyMapSettings( ms );
 
-        QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster() );
+        QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), mGeoPDFGroupBox->isChecked() );
 
         if ( drawAnnotations() )
         {
