@@ -236,7 +236,16 @@ This will be disabled when the form is not editable.
 
   signals:
 
-    void valueChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
+ void valueChanged( const QVariant &value );
+%Docstring
+Emit this signal, whenever the value changed.
+
+:param value: The new value
+
+.. deprecated:: since QGIS 3.10 use valuesChanged signal instead
+%End
+
+    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
 %Docstring
 Emit this signal, whenever the value changed.
 It will also return the values for the additional fields handled by the widget
@@ -275,15 +284,23 @@ Is forwarded to the slot setValue()
 :param feature: The new feature
 %End
 
-    virtual void setValue( const QVariant &value, const QgsAttributeMap &addtionalFieldValues = QgsAttributeMap() ) = 0;
+    virtual void setValue( const QVariant &value ) = 0;
 %Docstring
-Is called, when the value of the widget needs to be changed.
-Update the widget representation to reflect the new value
-of the field, but also values for potential additional
-fields which might be handled by the widget
+Is called, when the value of the widget needs to be changed. Update the widget representation
+to reflect the new value.
+
+:param value: The new value of the attribute
+%End
+
+    virtual void setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues );
+%Docstring
+Is called, when the value of the widget needs to be changed. Update the widget representation
+It will set the value for the field but also values for potential additional fields which are handled by the widget
 
 :param value: The new value of the attribute
 :param addtionalFieldValues: A map of field names with their corresponding values
+
+.. versionadded:: 3.10
 %End
 
     void emitValueChanged();

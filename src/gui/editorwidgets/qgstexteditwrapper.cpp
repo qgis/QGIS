@@ -133,7 +133,7 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       fle->setNullValue( defVal.toString() );
     }
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valuesChanged( value ); } );
     connect( mLineEdit, &QLineEdit::textChanged, this, &QgsTextEditWrapper::textChanged );
 
     mWritablePalette = mLineEdit->palette();
@@ -171,9 +171,8 @@ void QgsTextEditWrapper::showIndeterminateState()
     mLineEdit->blockSignals( false );
 }
 
-void QgsTextEditWrapper::setValue( const QVariant &val, const QgsAttributeMap &additionalFieldValues )
+void QgsTextEditWrapper::setValue( const QVariant &val )
 {
-  Q_UNUSED( additionalFieldValues );
   if ( mLineEdit )
   {
     //restore placeholder text, which may have been removed by showIndeterminateState()

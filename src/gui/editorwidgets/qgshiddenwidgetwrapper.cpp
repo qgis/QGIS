@@ -45,8 +45,7 @@ bool QgsHiddenWidgetWrapper::valid() const
   return true;
 }
 
-void QgsHiddenWidgetWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsHiddenWidgetWrapper::setValue( const QVariant &value )
 {
-  Q_UNUSED( additionalFieldValues );
   mValue = value;
 }

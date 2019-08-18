@@ -80,7 +80,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
   public slots:
 
-    void setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() ) override;
+    void setValue( const QVariant &value ) override;
 
     /**
      * Will be called when a value in the current edited form or table row

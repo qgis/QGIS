@@ -255,7 +255,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
       QVariant mainValue = eww->value();
       QgsAttributeMap additionalFieldValues = eww->additionalFieldValues();
       additionalFieldValues[index] = value;
-      eww->setValue( mainValue, additionalFieldValues );
+      eww->setValues( mainValue, additionalFieldValues );
       eww->setHint( hintText );
     }
   }
@@ -1989,8 +1989,8 @@ void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper *eww )
       // synchronise them
       if ( meww->field() == eww->field() )
       {
-        connect( meww, &QgsEditorWidgetWrapper::valueChanged, eww, &QgsEditorWidgetWrapper::setValue );
-        connect( eww, &QgsEditorWidgetWrapper::valueChanged, meww, &QgsEditorWidgetWrapper::setValue );
+        connect( meww, &QgsEditorWidgetWrapper::valuesChanged, eww, &QgsEditorWidgetWrapper::setValues );
+        connect( eww, &QgsEditorWidgetWrapper::valuesChanged, meww, &QgsEditorWidgetWrapper::setValues );
         break;
       }
     }
@@ -2056,7 +2056,7 @@ void QgsAttributeForm::afterWidgetInit()
         isFirstEww = false;
       }
 
-      connect( eww, &QgsEditorWidgetWrapper::valueChanged, this, &QgsAttributeForm::onAttributeChanged );
+      connect( eww, &QgsEditorWidgetWrapper::valuesChanged, this, &QgsAttributeForm::onAttributeChanged );
       connect( eww, &QgsEditorWidgetWrapper::constraintStatusChanged, this, &QgsAttributeForm::onConstraintStatusChanged );
     }
   }

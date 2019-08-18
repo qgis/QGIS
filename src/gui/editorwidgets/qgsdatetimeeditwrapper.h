@@ -73,7 +73,7 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     void showIndeterminateState() override;
 
   public slots:
-    void setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() ) override;
+    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 };
 

@@ -67,9 +67,8 @@ bool QgsKeyValueWidgetWrapper::valid() const
   return true;
 }
 
-void QgsKeyValueWidgetWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsKeyValueWidgetWrapper::setValue( const QVariant &value )
 {
-  Q_UNUSED( additionalFieldValues );
   mWidget->setMap( value.toMap() );
 }
 
@@ -80,5 +79,5 @@ void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus()
 
 void QgsKeyValueWidgetWrapper::onValueChanged()
 {
-  emit valueChanged( value() );
+  emit valuesChanged( value() );
 }

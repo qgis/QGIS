@@ -118,18 +118,18 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
   switch ( field().type() )
   {
     case QVariant::DateTime:
-      emit valueChanged( dateTime );
+      emit valuesChanged( dateTime );
       break;
     case QVariant::Date:
-      emit valueChanged( dateTime.date() );
+      emit valuesChanged( dateTime.date() );
       break;
     case QVariant::Time:
-      emit valueChanged( dateTime.time() );
+      emit valuesChanged( dateTime.time() );
       break;
     default:
       if ( !dateTime.isValid() || dateTime.isNull() )
       {
-        emit valueChanged( QVariant( field().type() ) );
+        emit valuesChanged( QVariant( field().type() ) );
       }
       else
       {
@@ -137,11 +137,11 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
         const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
         if ( fieldIsoFormat )
         {
-          emit valueChanged( dateTime.toString( Qt::ISODate ) );
+          emit valuesChanged( dateTime.toString( Qt::ISODate ) );
         }
         else
         {
-          emit valueChanged( dateTime.toString( fieldFormat ) );
+          emit valuesChanged( dateTime.toString( fieldFormat ) );
         }
       }
       break;
@@ -167,10 +167,13 @@ QVariant QgsDateTimeEditWrapper::value() const
   {
     case QVariant::DateTime:
       return dateTime;
+      break;
     case QVariant::Date:
       return dateTime.date();
+      break;
     case QVariant::Time:
       return dateTime.time();
+      break;
     default:
       const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
       const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
@@ -182,15 +185,15 @@ QVariant QgsDateTimeEditWrapper::value() const
       {
         return dateTime.toString( fieldFormat );
       }
+      break;
   }
 #ifndef _MSC_VER // avoid warnings
   return QVariant(); // avoid warnings
 #endif
 }
 
-void QgsDateTimeEditWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsDateTimeEditWrapper::setValue( const QVariant &value )
 {
-  Q_UNUSED( additionalFieldValues );
   if ( !mQDateTimeEdit )
     return;
 

@@ -172,7 +172,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mLineEdit )
   {
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); }, Qt::UniqueConnection );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valuesChanged( value ); }, Qt::UniqueConnection );
   }
 }
 
@@ -181,9 +181,8 @@ bool QgsValueRelationWidgetWrapper::valid() const
   return mTableWidget || mLineEdit || mComboBox;
 }
 
-void QgsValueRelationWidgetWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 {
-  Q_UNUSED( additionalFieldValues );
   if ( mTableWidget )
   {
     QStringList checkList;

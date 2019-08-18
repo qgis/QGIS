@@ -124,9 +124,8 @@ void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
   mIndeterminateState = true;
 }
 
-void QgsRelationReferenceWidgetWrapper::setValue( const QVariant &val, const QgsAttributeMap &additionalFieldValues )
+void QgsRelationReferenceWidgetWrapper::setValue( const QVariant &val )
 {
-  Q_UNUSED( additionalFieldValues );
   if ( !mWidget || ( !mIndeterminateState && val == value() && val.isNull() == value().isNull() ) )
     return;
 
@@ -148,7 +147,7 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
   {
     value = QVariant( field().type() );
   }
-  emit valueChanged( value );
+  emit valuesChanged( value );
 }
 
 void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()

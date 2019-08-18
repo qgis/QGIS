@@ -72,9 +72,8 @@ bool QgsEnumerationWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsEnumerationWidgetWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsEnumerationWidgetWrapper::setValue( const QVariant &value )
 {
-  Q_UNUSED( additionalFieldValues );
   if ( mComboBox )
   {
     mComboBox->setCurrentIndex( mComboBox->findData( value ) );

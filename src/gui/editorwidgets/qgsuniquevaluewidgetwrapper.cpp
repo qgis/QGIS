@@ -90,7 +90,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valuesChanged( value ); } );
   }
 
   if ( mComboBox )
@@ -117,9 +117,8 @@ void QgsUniqueValuesWidgetWrapper::showIndeterminateState()
   }
 }
 
-void QgsUniqueValuesWidgetWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsUniqueValuesWidgetWrapper::setValue( const QVariant &value )
 {
-  Q_UNUSED( additionalFieldValues );
   if ( mComboBox )
   {
     mComboBox->setCurrentIndex( mComboBox->findData( value ) );

@@ -189,13 +189,12 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
   }
 
   if ( mLineEdit )
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valuesChanged( value ); } );
 
 }
 
-void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
 {
-  Q_UNUSED( additionalFieldValues );
   if ( mLineEdit )
   {
     if ( value.isNull() )
@@ -211,7 +210,7 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value, const Qg
   if ( mLabel )
   {
     mLabel->setText( value.toString() );
-    emit valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
+    emit valuesChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
   }
 
   if ( mQgsWidget )
