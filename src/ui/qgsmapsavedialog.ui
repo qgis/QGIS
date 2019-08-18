@@ -84,7 +84,7 @@
            </layout>
           </widget>
           <widget class="QWidget" name="page_2">
-           <layout class="QGridLayout" name="gridLayout_2">
+           <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -97,28 +97,25 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item row="2" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>102</height>
-               </size>
-              </property>
-             </spacer>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
             </item>
-            <item row="0" column="0">
-             <widget class="QCheckBox" name="mExportMetadataCheckBox">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
               <property name="text">
-               <string>Export RDF metadata (title, author, etc.)</string>
+               <string>Format</string>
               </property>
              </widget>
             </item>
            </layout>
           </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="mExportMetadataCheckBox">
+          <property name="text">
+           <string>Export RDF metadata (title, author, etc.)</string>
+          </property>
          </widget>
         </item>
        </layout>
@@ -305,6 +302,19 @@ Rasterizing the map is recommended when such effects are used.</string>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

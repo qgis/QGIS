@@ -61,11 +61,18 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      * If the output \a fileFormat is set to PDF, the \a geoPdf argument controls whether a GeoPDF file is created.
      * See QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() for conditions on GeoPDF creation availability.
      */
+#ifndef SIP_RUN
     QgsMapRendererTask( const QgsMapSettings &ms,
                         const QString &fileName,
                         const QString &fileFormat = QString( "PNG" ),
                         bool forceRaster = false,
                         bool geoPdf = false, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails = QgsAbstractGeoPdfExporter::ExportDetails() );
+#else
+    QgsMapRendererTask( const QgsMapSettings &ms,
+                        const QString &fileName,
+                        const QString &fileFormat = QString( "PNG" ),
+                        bool forceRaster = false );
+#endif
 
     /**
      * Constructor for QgsMapRendererTask to render a map to a QPainter object.
