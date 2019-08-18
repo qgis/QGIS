@@ -226,6 +226,7 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       QgsDebugMsg( QStringLiteral( "Set billboard from symbol." ) );
       QgsMarkerSymbol *billboardSymbol = static_cast<QgsMarkerSymbol *>( btnChangeSymbol->symbol() ) ;
       sym.setBillboardSymbol( billboardSymbol );
+      sym.setBillboardTransform( spinBillboardHeight->value() );
 
       break;
   }

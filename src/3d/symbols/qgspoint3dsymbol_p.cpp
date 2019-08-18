@@ -481,7 +481,6 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
-    static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol &symbol );
 
     //! temporary data we will pass to the tessellator
     struct PointData
@@ -553,7 +552,8 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
   // Billboard Transform
   Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
-  billboardTransform->setTranslation( QVector3D( 0.0f, 1.5f, 0.0f ) );
+  billboardTransform->setMatrix( mSymbol.billboardTransform() );
+  billboardTransform->setTranslation( QVector3D( 0.0f, 0.0f, 0.0f ) + billboardTransform->translation() );
 
   // Build the entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;

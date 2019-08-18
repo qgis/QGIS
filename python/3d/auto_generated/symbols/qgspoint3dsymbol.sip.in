@@ -117,6 +117,15 @@ Returns transform for individual objects represented by the symbol
 Sets transform for individual objects represented by the symbol
 %End
 
+    QMatrix4x4 billboardTransform() const;
+%Docstring
+Returns transform for billboards
+%End
+    void setBillboardTransform( float height );
+%Docstring
+Sets transform for billboards
+%End
+
 };
 
 

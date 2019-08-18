@@ -115,3 +115,17 @@ QString QgsPoint3DSymbol::shapeToString( QgsPoint3DSymbol::Shape shape )
     default: Q_ASSERT( false ); return QString();
   }
 }
+
+void QgsPoint3DSymbol::setBillboardTransform( float height )
+{
+  QQuaternion rot( QQuaternion::fromEulerAngles( 0, 0, 0 ) );
+  QVector3D sca( 1, 1, 1 );
+  QVector3D tra( 0, height, 0 );
+
+  QMatrix4x4 tr;
+  tr.translate( tra );
+  tr.scale( sca );
+  tr.rotate( rot );
+
+  mBillboardTransform = tr;
+}
