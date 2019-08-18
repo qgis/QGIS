@@ -130,6 +130,8 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
       else
       {
         mGeoPDFOptionsStackedWidget->setCurrentIndex( 1 );
+        mGeoPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
+        mGeoPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
       }
       break;
     }
@@ -498,6 +500,17 @@ void QgsMapSaveDialog::onAccepted()
             geoPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
             geoPdfExportDetails.title = QgsProject::instance()->metadata().title();
             geoPdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
+          }
+
+          if ( mGeoPdfFormatComboBox->currentIndex() == 0 )
+          {
+            geoPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
+            geoPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = false;
+          }
+          else
+          {
+            geoPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = false;
+            geoPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = true;
           }
         }
         QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), mGeoPDFGroupBox->isChecked(), geoPdfExportDetails );

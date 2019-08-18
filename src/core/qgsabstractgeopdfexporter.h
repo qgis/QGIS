@@ -159,6 +159,23 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       //! Metadata keyword map
       QgsAbstractMetadataBase::KeywordMap keywords;
 
+      /**
+       * TRUE if ISO3200 extension format georeferencing should be used.
+       *
+       * This is a recommended setting which results in Geospatial PDF files compatible
+       * with the built-in Acrobat geospatial tools.
+       */
+      bool useIso32000ExtensionFormatGeoreferencing = true;
+
+      /**
+       * TRUE if OGC "best practice" format georeferencing should be used.
+       *
+       * \warning This results in GeoPDF files compatible with the TerraGo suite of tools, but
+       * can break compatibility with the built-in Acrobat geospatial tools (yes, GeoPDF
+       * format is a mess!).
+      */
+      bool useOgcBestPracticeFormatGeoreferencing = false;
+
     };
 
     /**
