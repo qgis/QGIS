@@ -69,7 +69,11 @@ void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   setFormFeature( feature );
-  setValue( feature.attribute( mFieldIdx ) );
+  QgsAttributeMap newAdditionalFieldValues;
+  const QgsAttributeList additionalFieldIndexes = additionalFields();
+  for ( int fieldIndex : additionalFieldIndexes )
+    newAdditionalFieldValues.insert( fieldIndex, feature.attribute( fieldIndex ) );
+  updateValues( feature.attribute( mFieldIdx ), newAdditionalFieldValues );
 }
 
 void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues )
