@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,1,0,0,0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
@@ -43,7 +43,7 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="0" colspan="2">
+     <item row="8" column="0" colspan="2">
       <widget class="QGroupBox" name="mGeoPDFGroupBox">
        <property name="title">
         <string>Create Geospatial PDF (GeoPDF)</string>
@@ -105,7 +105,7 @@
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>40</height>
+                <height>133</height>
                </size>
               </property>
              </spacer>
@@ -158,7 +158,7 @@
        </property>
       </widget>
      </item>
-     <item row="10" column="0" colspan="2">
+     <item row="9" column="0" colspan="2">
       <widget class="QCheckBox" name="mSaveAsRaster">
        <property name="visible">
         <bool>false</bool>
@@ -287,15 +287,12 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
       </widget>
      </item>
-     <item row="11" column="0" colspan="2">
+     <item row="10" column="0" colspan="2">
       <widget class="QLabel" name="mInfo">
        <property name="enabled">
         <bool>false</bool>
        </property>
       </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QTextBrowser" name="textBrowser"/>
      </item>
     </layout>
    </item>

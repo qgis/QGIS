@@ -43,7 +43,7 @@
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsfileutils.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
@@ -467,6 +467,8 @@ void QgsMapSaveDialog::onAccepted()
       QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
       if ( !fileName.isEmpty() )
       {
+        fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << QStringLiteral( "pdf" ) );
+
         settings.setValue( QStringLiteral( "UI/lastSaveAsImageDir" ), QFileInfo( fileName ).absolutePath() );
 
         QgsMapSettings ms = QgsMapSettings();
