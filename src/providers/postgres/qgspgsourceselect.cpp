@@ -58,12 +58,12 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   {
     QComboBox *cb = new QComboBox( parent );
     static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point
-      , QgsWkbTypes::LineString
-      , QgsWkbTypes::Polygon
-      , QgsWkbTypes::MultiPoint
-      , QgsWkbTypes::MultiLineString
-      , QgsWkbTypes::MultiPolygon
-      , QgsWkbTypes::NoGeometry };
+        , QgsWkbTypes::LineString
+        , QgsWkbTypes::Polygon
+        , QgsWkbTypes::MultiPoint
+        , QgsWkbTypes::MultiLineString
+        , QgsWkbTypes::MultiPolygon
+        , QgsWkbTypes::NoGeometry };
     for ( QgsWkbTypes::Type type : types )
     {
       cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
