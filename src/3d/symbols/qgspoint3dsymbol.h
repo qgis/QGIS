@@ -96,9 +96,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
 
     //! Returns transform for billboards
-    QMatrix4x4 billboardTransform() const { return mBillboardTransform; }
-    //! Sets transform for billboards from a given height
-    void setBillboardTransformFromHeight( double height );
+    QMatrix4x4 billboardTransform() const;
 
   private:
     //! how to handle altitude of vector features
@@ -108,7 +106,6 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     Shape mShape = Cylinder;  //!< What kind of shape to use
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
-    QMatrix4x4 mBillboardTransform;  //!< Transform of billboard
     QgsMarkerSymbol *mBillboardSymbol = nullptr;
 };
 

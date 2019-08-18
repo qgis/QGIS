@@ -73,9 +73,6 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
   mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( QStringLiteral( "matrix" ) ) );
 
-  float *md = mTransform.data();
-  setBillboardTransformFromHeight( md[13] );
-
   QDomDocument doc( QStringLiteral( "symbol" ) );
   doc.setContent( elem.attribute( QStringLiteral( "billboard-symbol" ) ) );
   QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
@@ -122,13 +119,16 @@ QString QgsPoint3DSymbol::shapeToString( QgsPoint3DSymbol::Shape shape )
   }
 }
 
-void QgsPoint3DSymbol::setBillboardTransformFromHeight( double height )
+QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
 {
-  QMatrix4x4 billboardTransform;
-  billboardTransform.translate( QVector3D( 0, height, 0 ) );
-  billboardTransform.scale( QVector3D( 1, 1, 1 ) );
-  billboardTransform.rotate( QQuaternion::fromEulerAngles( 0, 0, 0 ) );
 
-  mBillboardTransform = billboardTransform;
+  float *md = transform().data();
+
+  QMatrix4x4 billboardTransformMatrix;
+  billboardTransformMatrix.translate( QVector3D( 0, md[13], 0 ) );
+  billboardTransformMatrix.scale( QVector3D( 1, 1, 1 ) );
+  billboardTransformMatrix.rotate( QQuaternion::fromEulerAngles( 0, 0, 0 ) );
+
+  return billboardTransformMatrix;
 
 }

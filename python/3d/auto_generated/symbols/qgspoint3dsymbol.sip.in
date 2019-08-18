@@ -121,10 +121,6 @@ Sets transform for individual objects represented by the symbol
 %Docstring
 Returns transform for billboards
 %End
-    void setBillboardTransformFromHeight( double height );
-%Docstring
-Sets transform for billboards from a given height
-%End
 
 };
 

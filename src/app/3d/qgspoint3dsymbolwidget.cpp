@@ -248,7 +248,6 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   sym.setShapeProperties( vm );
   sym.setMaterial( widgetMaterial->material() );
   sym.setTransform( tr );
-  sym.setBillboardTransformFromHeight( spinBillboardHeight->value() );
   return sym;
 }
 
