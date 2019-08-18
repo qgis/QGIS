@@ -36,7 +36,7 @@ task. This can be used to draw maps without blocking the QGIS interface.
                         const QString &fileName,
                         const QString &fileFormat = QString( "PNG" ),
                         bool forceRaster = false,
-                        bool geoPdf = false );
+                        bool geoPdf = false, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails = QgsAbstractGeoPdfExporter::ExportDetails() );
 %Docstring
 Constructor for QgsMapRendererTask to render a map to an image file.
 
