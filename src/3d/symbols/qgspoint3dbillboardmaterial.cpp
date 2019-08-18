@@ -162,7 +162,8 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
 
   QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ) * 20, int( pixelSize ) * 20 ), 0, nullptr, selected );
   QImage symbolImage = symbolPixmap.toImage();
-  setTexture2DFromImage( symbolImage, pixelSize * 20 );
+  QImage flippedSymbolImage = symbolImage.mirrored();
+  setTexture2DFromImage( flippedSymbolImage, pixelSize * 20 );
   mName = markerSymbol->color().name();
 }
 
