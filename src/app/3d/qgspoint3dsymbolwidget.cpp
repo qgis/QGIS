@@ -243,18 +243,12 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.scale( sca );
   tr.rotate( rot );
 
-  // Billboard transform
-  QMatrix4x4 trBillboard;
-  trBillboard.translate( QVector3D( 0, spinBillboardHeight->value(), 0 ) );
-  trBillboard.scale( QVector3D( 1, 1, 1 ) );
-  trBillboard.rotate( QQuaternion::fromEulerAngles( 0, 0, 0 ) );
-
   sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym.setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
   sym.setShapeProperties( vm );
   sym.setMaterial( widgetMaterial->material() );
   sym.setTransform( tr );
-  sym.setBillboardTransform( trBillboard );
+  sym.setBillboardTransformFromHeight( spinBillboardHeight->value() );
   return sym;
 }
 
