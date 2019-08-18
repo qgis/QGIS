@@ -272,7 +272,7 @@ layer.
 .. seealso:: :py:func:`setColor`
 %End
 
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0 );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false );
 %Docstring
 Draws an icon of the symbol that occupies an area given by ``size`` using the specified ``painter``.
 

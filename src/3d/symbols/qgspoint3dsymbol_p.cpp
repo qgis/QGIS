@@ -550,18 +550,11 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   std::unique_ptr< QgsMarkerSymbol >  markerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, QgsReadWriteContext() ) );
   if ( markerSymbol.get() )
   {
-    billboardMaterial->setTexture2DFromSymbol( markerSymbol.get() );
+    billboardMaterial->setTexture2DFromSymbol( markerSymbol.get(), selected );
   }
   else
   {
-    QgsDebugMsg( "Use symbol from default" );
     billboardMaterial->useDefaultSymbol();
-  }
-
-  // For now, make it difference in size.
-  if ( selected )
-  {
-    billboardMaterial->setSize( billboardMaterial->size() * 2 );
   }
 
   // Billboard Transform

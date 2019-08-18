@@ -177,7 +177,7 @@ Returns an icon preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewPixmap`
 %End
 
-    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0 );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0, bool selected = false );
 %Docstring
 Returns a pixmap preview for a color ramp.
 

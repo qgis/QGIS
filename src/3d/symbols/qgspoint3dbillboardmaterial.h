@@ -45,7 +45,7 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     void useDefaultSymbol();
 
-    void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol );
+    void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, bool selected = false );
 
     void setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage );
 

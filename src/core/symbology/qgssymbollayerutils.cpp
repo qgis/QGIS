@@ -656,7 +656,7 @@ QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize siz
   return QIcon( symbolPreviewPixmap( symbol, size, padding ) );
 }
 
-QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext )
+QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected )
 {
   Q_ASSERT( symbol );
   QPixmap pixmap( size );
@@ -696,12 +696,12 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize
           prop.setActive( false );
       }
     }
-    symbol_noDD->drawPreviewIcon( &painter, size, customContext );
+    symbol_noDD->drawPreviewIcon( &painter, size, customContext, selected );
   }
   else
   {
     std::unique_ptr<QgsSymbol> symbolClone( symbol->clone( ) );
-    symbolClone->drawPreviewIcon( &painter, size, customContext );
+    symbolClone->drawPreviewIcon( &painter, size, customContext, selected );
   }
 
   painter.end();

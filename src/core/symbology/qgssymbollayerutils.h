@@ -197,7 +197,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \note Parameter customContext added in QGIS 2.6
      * \see symbolPreviewIcon()
      */
-    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false );
 
     /**
      * Draws a symbol layer preview to a QPicture

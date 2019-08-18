@@ -327,7 +327,7 @@ class CORE_EXPORT QgsSymbol
      * \see asImage()
      * \since QGIS 2.6
      */
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false );
 
     /**
      * Export the symbol as an image format, to the specified \a path and with the given \a size.
