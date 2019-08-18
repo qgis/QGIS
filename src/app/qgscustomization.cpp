@@ -610,7 +610,7 @@ void QgsCustomization::createTreeItemToolbars()
     tbItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
     tbItem->setCheckState( 0, Qt::Checked );
 
-    QList<QWidgetAction *> tbWidgetActions = tb->findChildren<QWidgetAction *>( QString(), Qt::FindDirectChildrenOnly );
+    const QList<QWidgetAction *> tbWidgetActions = tb->findChildren<QWidgetAction *>( QString(), Qt::FindDirectChildrenOnly );
     QList<QAction *> tbActions = tb->actions();
 
     for ( QAction *act : tbWidgetActions )
@@ -624,7 +624,7 @@ void QgsCustomization::createTreeItemToolbars()
 
       QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>( act );
       QWidget *widget = widgetAction->defaultWidget();
-      QList<QAction *> childActions = widget->actions();
+      const QList<QAction *> childActions = widget->actions();
       addTreeItemActions( item, childActions );
 
       tbActions.removeAll( act );
@@ -772,12 +772,12 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
             continue;
           }
 
-          if ( visible && action->metaObject()->className() == QStringLiteral( "QWidgetAction" ) )
+          if ( action->metaObject()->className() == QStringLiteral( "QWidgetAction" ) )
           {
             mSettings->beginGroup( action->objectName() );
             QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>( action );
             QWidget *widget = widgetAction->defaultWidget();
-            QList<QAction *> childActions = widget->actions();
+            const QList<QAction *> childActions = widget->actions();
             for ( QAction *wAction : childActions )
             {
               if ( wAction->objectName().isEmpty() )
