@@ -26,6 +26,7 @@
 #include "qgsmapdecoration.h"
 #include "qgstaskmanager.h"
 #include "qgsmaprenderercustompainterjob.h"
+#include "qgsabstractgeopdfexporter.h"
 
 #include <QPainter>
 #include <QPrinter>
@@ -64,7 +65,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
                         const QString &fileName,
                         const QString &fileFormat = QString( "PNG" ),
                         bool forceRaster = false,
-                        bool geoPdf = false );
+                        bool geoPdf = false, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails = QgsAbstractGeoPdfExporter::ExportDetails() );
 
     /**
      * Constructor for QgsMapRendererTask to render a map to a QPainter object.
@@ -136,6 +137,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     bool mForceRaster = false;
     bool mSaveWorldFile = false;
     bool mGeoPDF = true;
+    QgsAbstractGeoPdfExporter::ExportDetails mGeoPdfExportDetails;
 
     QList< QgsAnnotation * > mAnnotations;
     QList< QgsMapDecoration * > mDecorations;

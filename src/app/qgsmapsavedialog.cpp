@@ -121,11 +121,11 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
       const bool geoPdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
       mGeoPDFGroupBox->setEnabled( geoPdfAvailable );
+      mGeoPDFGroupBox->setChecked( false );
       if ( !geoPdfAvailable )
       {
-        mGeoPDFGroupBox->setChecked( false );
         mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
-        mGeoPdfUnavailableReason->setText( mGeoPdfUnavailableReason::geoPDFAvailabilityExplanation() );
+        mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
       }
       else
       {
@@ -472,7 +472,21 @@ void QgsMapSaveDialog::onAccepted()
         QgsMapSettings ms = QgsMapSettings();
         applyMapSettings( ms );
 
-        QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), mGeoPDFGroupBox->isChecked() );
+        QgsAbstractGeoPdfExporter::ExportDetails geoPdfExportDetails;
+        if ( mGeoPDFGroupBox->isChecked() )
+        {
+          if ( mExportMetadataCheckBox->isChecked() )
+          {
+            geoPdfExportDetails.author = QgsProject::instance()->metadata().author();
+            geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+            geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+            geoPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
+            geoPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
+            geoPdfExportDetails.title = QgsProject::instance()->metadata().title();
+            geoPdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
+          }
+        }
+        QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), mGeoPDFGroupBox->isChecked(), geoPdfExportDetails );
 
         if ( drawAnnotations() )
         {

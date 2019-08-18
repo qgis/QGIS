@@ -108,13 +108,15 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
 ///@endcond
 
-QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, const bool geoPDF )
+QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster,
+                                        const bool geoPDF, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails )
   : QgsTask( tr( "Saving as image" ) )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
   , mForceRaster( forceRaster )
   , mGeoPDF( geoPDF && mFileFormat == QStringLiteral( "PDF" ) && QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() )
+  , mGeoPdfExportDetails( geoPdfExportDetails )
 {
   prepare();
 }
@@ -194,7 +196,7 @@ bool QgsMapRendererTask::run()
       outputLayer++;
       job->nextPart();
     }
-    QgsAbstractGeoPdfExporter::ExportDetails exportDetails;
+    QgsAbstractGeoPdfExporter::ExportDetails exportDetails = mGeoPdfExportDetails;
     exportDetails.pageSizeMm = mMapSettings.outputSize() * 25.4 / mMapSettings.outputDpi();
     exportDetails.dpi = mMapSettings.outputDpi();
 
