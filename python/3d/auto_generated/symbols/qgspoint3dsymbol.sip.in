@@ -121,14 +121,9 @@ Sets transform for individual objects represented by the symbol
 %Docstring
 Returns transform for billboards
 %End
-    void setBillboardHeight( float height );
+    void setBillboardTransform( const QMatrix4x4 &transform );
 %Docstring
-Sets the height for billboard and transform for billboards
-%End
-
-    float billboardHeight() const;
-%Docstring
-Returns the height of the billboard
+Sets transform for billboards
 %End
 
 };

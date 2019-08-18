@@ -68,6 +68,10 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( cbOverwriteMaterial, static_cast<void ( QCheckBox::* )( int )>( &QCheckBox::stateChanged ), this, &QgsPoint3DSymbolWidget::onOverwriteMaterialChecked );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
   connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )( )>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
+
+  // Sync between billboard height and TY
+  connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTY,  &QDoubleSpinBox::setValue );
+  connect( spinTY, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight,  &QDoubleSpinBox::setValue );
 }
 
 void QgsPoint3DSymbolWidget::onChooseModelClicked( bool )
@@ -179,7 +183,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
   QMatrix3x3 rot3x3( rd ); // takes data in row-major order
   QVector3D rot = QQuaternion::fromRotationMatrix( rot3x3 ).toEulerAngles();
 
-  spinBillboardHeight->setValue( symbol.billboardHeight() );
+  spinBillboardHeight->setValue( md[13] );
   spinTX->setValue( md[12] );
   spinTY->setValue( md[13] );
   spinTZ->setValue( md[14] );
@@ -227,8 +231,6 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       QgsDebugMsg( QStringLiteral( "Set billboard from symbol." ) );
       QgsMarkerSymbol *billboardSymbol = static_cast<QgsMarkerSymbol *>( btnChangeSymbol->symbol() ) ;
       sym.setBillboardSymbol( billboardSymbol );
-      sym.setBillboardHeight( spinBillboardHeight->value() );
-
       break;
   }
 
@@ -241,11 +243,18 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.scale( sca );
   tr.rotate( rot );
 
+  // Billboard transform
+  QMatrix4x4 trBillboard;
+  trBillboard.translate( QVector3D( 0, spinBillboardHeight->value(), 0 ) );
+  trBillboard.scale( QVector3D( 1, 1, 1 ) );
+  trBillboard.rotate( QQuaternion::fromEulerAngles( 0, 0, 0 ) );
+
   sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym.setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
   sym.setShapeProperties( vm );
   sym.setMaterial( widgetMaterial->material() );
   sym.setTransform( tr );
+  sym.setBillboardTransform( trBillboard );
   return sym;
 }
 
