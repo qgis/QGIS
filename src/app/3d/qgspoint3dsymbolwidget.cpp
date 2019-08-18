@@ -153,21 +153,9 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
       break;
     }
     case 7:  // billboard
-      if ( vm.contains( QStringLiteral( "billboard" ) ) )
+      if ( symbol.billboardSymbol() )
       {
-        const QString symbolDefinition = vm.value( QStringLiteral( "billboard" ) ).toString();
-        QDomDocument doc( QStringLiteral( "symbol" ) );
-
-        doc.setContent( symbolDefinition );
-        QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
-        std::unique_ptr< QgsMarkerSymbol >  markerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, QgsReadWriteContext() ) );
-
-        btnChangeSymbol->setSymbol( markerSymbol->clone() );
-      }
-      else
-      {
-        QgsMarkerSymbol *defaultSymbol = new QgsMarkerSymbol();
-        btnChangeSymbol->setSymbol( defaultSymbol );
+        btnChangeSymbol->setSymbol( symbol.billboardSymbol() );
       }
       break;
   }
@@ -205,6 +193,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
 {
   QVariantMap vm;
+  QgsPoint3DSymbol sym;
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
@@ -235,7 +224,9 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       break;
     case 7:  // billboard
       QgsDebugMsg( QStringLiteral( "Set billboard from symbol." ) );
-      vm[QStringLiteral( "billboard" )] = QgsSymbolLayerUtils::symbolProperties( btnChangeSymbol->symbol() );
+      QgsMarkerSymbol *billboardSymbol = static_cast<QgsMarkerSymbol *>( btnChangeSymbol->symbol() ) ;
+      sym.setBillboardSymbol( billboardSymbol );
+
       break;
   }
 
@@ -248,7 +239,6 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.scale( sca );
   tr.rotate( rot );
 
-  QgsPoint3DSymbol sym;
   sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym.setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
   sym.setShapeProperties( vm );

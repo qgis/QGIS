@@ -540,17 +540,11 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
   // Billboard Material
   QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
+  QgsMarkerSymbol *symbol = mSymbol.billboardSymbol();
 
-  const QString symbolDefinition = mSymbol.shapeProperties().value( QStringLiteral( "billboard" ) ).toString();
-  QDomDocument doc( QStringLiteral( "symbol" ) );
-
-  doc.setContent( symbolDefinition );
-  QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
-
-  std::unique_ptr< QgsMarkerSymbol >  markerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, QgsReadWriteContext() ) );
-  if ( markerSymbol.get() )
+  if ( symbol )
   {
-    billboardMaterial->setTexture2DFromSymbol( markerSymbol.get(), selected );
+    billboardMaterial->setTexture2DFromSymbol( symbol, selected );
   }
   else
   {

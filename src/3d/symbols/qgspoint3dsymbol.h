@@ -21,6 +21,7 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgs3dtypes.h"
+#include "qgssymbol.h"
 
 #include <QMatrix4x4>
 
@@ -84,6 +85,11 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     //! Sets a key-value dictionary of point shape properties
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
 
+    //! Returns a symbol for billboard
+    QgsMarkerSymbol *billboardSymbol() const { return mBillboardSymbol; }
+    //! Set symbol for billboard
+    void setBillboardSymbol( QgsMarkerSymbol *symbol ) { mBillboardSymbol = symbol; }
+
     //! Returns transform for individual objects represented by the symbol
     QMatrix4x4 transform() const { return mTransform; }
     //! Sets transform for individual objects represented by the symbol
@@ -97,6 +103,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     Shape mShape = Cylinder;  //!< What kind of shape to use
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
+    QgsMarkerSymbol *mBillboardSymbol = nullptr;
 };
 
 

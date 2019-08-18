@@ -99,6 +99,15 @@ Returns a key-value dictionary of point shape properties
 Sets a key-value dictionary of point shape properties
 %End
 
+    QgsMarkerSymbol *billboardSymbol() const;
+%Docstring
+Returns a symbol for billboard
+%End
+    void setBillboardSymbol( QgsMarkerSymbol *symbol );
+%Docstring
+Set symbol for billboard
+%End
+
     QMatrix4x4 transform() const;
 %Docstring
 Returns transform for individual objects represented by the symbol
