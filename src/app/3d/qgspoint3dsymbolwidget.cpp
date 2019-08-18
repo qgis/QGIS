@@ -58,7 +58,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( cboShape, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::onShapeChanged );
   QList<QDoubleSpinBox *> spinWidgets;
-  spinWidgets << spinRadius << spinTopRadius << spinBottomRadius << spinMinorRadius << spinSize << spinLength;
+  spinWidgets << spinRadius << spinTopRadius << spinBottomRadius << spinMinorRadius << spinSize << spinLength << spinBillboardHeight;
   spinWidgets << spinTX << spinTY << spinTZ << spinSX << spinSY << spinSZ << spinRX << spinRY << spinRZ;
   const auto constSpinWidgets = spinWidgets;
   for ( QDoubleSpinBox *spinBox : constSpinWidgets )
@@ -263,7 +263,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
              << labelBottomRadius << spinBottomRadius
              << labelLength << spinLength
              << labelModel << lineEditModel << btnModel << cbOverwriteMaterial
-             << labelBillboardSymbol << btnChangeSymbol;
+             << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
 
   widgetMaterial->setEnabled( true );
   widgetMaterial->show();
@@ -294,7 +294,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       widgetMaterial->setEnabled( cbOverwriteMaterial->isChecked() );
       break;
     case 7:  // billboard
-      activeWidgets << labelBillboardSymbol << btnChangeSymbol;
+      activeWidgets << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
       // Always hide material and transformationwidget for billboard
       widgetMaterial->hide();
       transformationWidget->hide();
