@@ -18,6 +18,7 @@
 #include "qgs3dutils.h"
 #include "qgsreadwritecontext.h"
 #include "qgsxmlutils.h"
+#include "qgssymbollayerutils.h"
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
@@ -48,6 +49,8 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   QDomElement elemTransform = doc.createElement( QStringLiteral( "transform" ) );
   elemTransform.setAttribute( QStringLiteral( "matrix" ), Qgs3DUtils::matrix4x4toString( mTransform ) );
   elem.appendChild( elemTransform );
+
+  elem.setAttribute( QStringLiteral( "billboard-symbol" ), QgsSymbolLayerUtils::symbolProperties( billboardSymbol() ) );
 }
 
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -66,6 +69,12 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
   mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( QStringLiteral( "matrix" ) ) );
+
+  QDomDocument doc( QStringLiteral( "symbol" ) );
+  doc.setContent( elem.attribute( QStringLiteral( "billboard-symbol" ) ) );
+  QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
+
+  mBillboardSymbol = QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, QgsReadWriteContext() );
 }
 
 QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )
