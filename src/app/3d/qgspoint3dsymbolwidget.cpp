@@ -179,6 +179,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
   QMatrix3x3 rot3x3( rd ); // takes data in row-major order
   QVector3D rot = QQuaternion::fromRotationMatrix( rot3x3 ).toEulerAngles();
 
+  spinBillboardHeight->setValue( symbol.billboardHeight() );
   spinTX->setValue( md[12] );
   spinTY->setValue( md[13] );
   spinTZ->setValue( md[14] );
@@ -226,7 +227,7 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       QgsDebugMsg( QStringLiteral( "Set billboard from symbol." ) );
       QgsMarkerSymbol *billboardSymbol = static_cast<QgsMarkerSymbol *>( btnChangeSymbol->symbol() ) ;
       sym.setBillboardSymbol( billboardSymbol );
-      sym.setBillboardTransform( spinBillboardHeight->value() );
+      sym.setBillboardHeight( spinBillboardHeight->value() );
 
       break;
   }

@@ -97,8 +97,11 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 
     //! Returns transform for billboards
     QMatrix4x4 billboardTransform() const { return mBillboardTransform; }
-    //! Sets transform for billboards
-    void setBillboardTransform( float height );
+    //! Sets the height for billboard and transform for billboards
+    void setBillboardHeight( float height );
+
+    //! Returns the height of the billboard
+    float billboardHeight() const {return mBillboardHeight; }
 
   private:
     //! how to handle altitude of vector features

@@ -50,7 +50,12 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elemTransform.setAttribute( QStringLiteral( "matrix" ), Qgs3DUtils::matrix4x4toString( mTransform ) );
   elem.appendChild( elemTransform );
 
-  elem.setAttribute( QStringLiteral( "billboard-symbol" ), QgsSymbolLayerUtils::symbolProperties( billboardSymbol() ) );
+  if ( billboardSymbol() )
+  {
+    elem.setAttribute( QStringLiteral( "billboard-symbol" ), QgsSymbolLayerUtils::symbolProperties( billboardSymbol() ) );
+  }
+
+  elem.setAttribute( QStringLiteral( "billboard-height" ), mBillboardHeight );
 }
 
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -75,6 +80,8 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
 
   mBillboardSymbol = QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, QgsReadWriteContext() );
+
+  setBillboardHeight( elem.attribute( QStringLiteral( "billboard-height" ) ).toFloat() );
 }
 
 QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )
@@ -116,16 +123,14 @@ QString QgsPoint3DSymbol::shapeToString( QgsPoint3DSymbol::Shape shape )
   }
 }
 
-void QgsPoint3DSymbol::setBillboardTransform( float height )
+void QgsPoint3DSymbol::setBillboardHeight( float height )
 {
-  QQuaternion rot( QQuaternion::fromEulerAngles( 0, 0, 0 ) );
-  QVector3D sca( 1, 1, 1 );
-  QVector3D tra( 0, height, 0 );
+  mBillboardHeight = height;
 
   QMatrix4x4 tr;
-  tr.translate( tra );
-  tr.scale( sca );
-  tr.rotate( rot );
+  tr.translate( QVector3D( 0, height, 0 ) );
+  tr.scale( QVector3D( 1, 1, 1 ) );
+  tr.rotate( QQuaternion::fromEulerAngles( 0, 0, 0 ) );
 
   mBillboardTransform = tr;
 }
