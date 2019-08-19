@@ -500,8 +500,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
 
   const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
   const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
-  json linksList = json::array( );
-  linksList = links( context );
+  json linksList = links( context );
   linksList.push_back(
   {
     { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) )  },
