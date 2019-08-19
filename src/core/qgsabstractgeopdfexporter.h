@@ -119,6 +119,9 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       //! Associated map layer ID, or an empty string if this component layer is not associated with a map layer
       QString mapLayerId;
 
+      //! Optional group name, for arranging layers in top-level groups
+      QString group;
+
       //! File path to the (already created) PDF to use as the source for this component layer
       QString sourcePdfPath;
 
