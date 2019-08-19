@@ -55,6 +55,7 @@
 #include "qgsfeaturestore.h"
 #include "qgsguiutils.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsstoredexpressionmanager.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -184,6 +185,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mFilterColumnsMenu = new QMenu( this );
   mActionFilterColumnsMenu->setMenu( mFilterColumnsMenu );
   mApplyFilterButton->setDefaultAction( mActionApplyFilter );
+  mStoredExpressionMenu = new QMenu( this );
+  mActionStoredFilter->setMenu( mStoredExpressionMenu );
 
   // Set filter icon in a couple of places
   QIcon filterIcon = QgsApplication::getThemeIcon( "/mActionFilter2.svg" );
@@ -245,6 +248,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   installEventFilter( this );
 
   columnBoxInit();
+  storedExpressionBoxInit();
   updateTitle();
 
   mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectAll.svg" ) ) );
@@ -440,6 +444,7 @@ void QgsAttributeTableDialog::columnBoxInit()
   mFilterButton->addAction( mActionEditedFilter );
   mFilterButton->addAction( mActionFilterColumnsMenu );
   mFilterButton->addAction( mActionAdvancedFilter );
+  mFilterButton->addAction( mActionStoredFilter );
 
   const QList<QgsField> fields = mLayer->fields().toList();
 
@@ -462,6 +467,27 @@ void QgsAttributeTableDialog::columnBoxInit()
       connect( filterAction, SIGNAL( triggered() ), mFilterActionMapper, SLOT( map() ) );
       mFilterColumnsMenu->addAction( filterAction );
     }
+  }
+}
+
+void QgsAttributeTableDialog::storedExpressionBoxInit()
+{
+  const auto constActions = mStoredExpressionMenu->actions();
+  for ( QAction *a : constActions )
+  {
+    mStoredExpressionMenu->removeAction( a );
+    delete a;
+  }
+
+  const QList< QPair< QString, QString > > storedExpressions = mLayer->storedExpressions()->getStoredExpressions();
+  for ( const QPair< QString, QString > &storedExpression : storedExpressions )
+  {
+    QAction *storedExpressionAction = new QAction( storedExpression.first, mFilterButton );
+    connect( storedExpressionAction, &QAction::triggered, this, [ = ]()
+    {
+      QgsAttributeTableDialog::filterStoredExpressionChanged( storedExpression );
+    } );
+    mStoredExpressionMenu->addAction( storedExpressionAction );
   }
 }
 
@@ -1036,6 +1062,12 @@ void QgsAttributeTableDialog::filterQueryAccepted()
     return;
   }
   filterQueryChanged( mFilterQuery->text() );
+}
+
+void QgsAttributeTableDialog::filterStoredExpressionChanged( QPair<QString, QString> storedExpression )
+{
+  setFilterExpression( storedExpression.second, QgsAttributeForm::ReplaceFilter, true );
+  //save name of expression as context in the bookmark-icon
 }
 
 void QgsAttributeTableDialog::openConditionalStyles()
