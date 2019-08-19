@@ -115,7 +115,6 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
       {
         mSaveAsRaster->setChecked( false );
       }
-      mSaveAsRaster->setVisible( true );
 
       this->setWindowTitle( tr( "Save Map as PDF" ) );
 
@@ -142,8 +141,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     case Image:
     {
       mGeoPDFGroupBox->hide();
-      mSimplifyGeometriesCheckbox->hide();
-      mTextRenderFormatComboBox->hide();
+      mAdvancedPdfSettings->hide();
       mTextExportLabel->hide();
       QPushButton *button = new QPushButton( tr( "Copy to Clipboard" ) );
       buttonBox->addButton( button, QDialogButtonBox::ResetRole );
