@@ -176,7 +176,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void filterQueryChanged( const QString &query );
     void filterQueryAccepted();
     void storedFilterExpressionChanged( QPair< QString, QString > storedExpression );
-    void storeFilterExpression();
+
+    void saveAsStoredFilterExpression();
+    void handleStoreFilterExpression();
+
     void openConditionalStyles();
 
     /**
@@ -214,7 +217,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void columnBoxInit();
 
     //! Initialize storedexpression box e.g after adding/deleting stored expression
-    void storedExpressionBoxInit();
+    void storedFilterExpressionBoxInit();
+    //! Functionalities of store expression button changes regarding the status of it
+    void storeExpressionButtonInit();
 
     void runFieldCalculation( QgsVectorLayer *layer, const QString &fieldName, const QString &expression, const QgsFeatureIds &filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();

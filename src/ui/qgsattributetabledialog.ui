@@ -158,7 +158,13 @@
         <item row="0" column="1">
          <widget class="QToolButton" name="mStoreFilterExpressionButton">
           <property name="text">
-           <string>...</string>
+           <string/>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::MenuButtonPopup</enum>
           </property>
          </widget>
         </item>
@@ -662,15 +668,26 @@
      <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
    </property>
    <property name="text">
-    <string>Stored Filter Exprssions</string>
+    <string>Stored Filter Expressions</string>
    </property>
    <property name="toolTip">
     <string>Stored expressions to filter features</string>
    </property>
   </action>
-  <action name="mActionStoreFilterExpression">
+  <action name="mActionHandleStoreFilterExpression">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Store Filter Expression</string>
+    <string>...</string>
+   </property>
+   <property name="toolTip">
+    <string>Handle Filter Expression (save or delete)</string>
+   </property>
+  </action>
+  <action name="mActionSaveAsStoredFilterExpression">
+   <property name="text">
+    <string>Save Expression as...</string>
    </property>
   </action>
  </widget>
