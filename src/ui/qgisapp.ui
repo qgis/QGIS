@@ -105,6 +105,7 @@
      </property>
      <addaction name="mActionDecorationGrid"/>
      <addaction name="mActionDecorationScaleBar"/>
+     <addaction name="mActionDecorationImage"/>
      <addaction name="mActionDecorationNorthArrow"/>
      <addaction name="mActionDecorationTitle"/>
      <addaction name="mActionDecorationCopyright"/>
@@ -2028,6 +2029,21 @@ Acts on all editable layers.</string>
    </property>
    <property name="whatsThis">
     <string>Creates a copyright label that is displayed on the map canvas.</string>
+   </property>
+  </action>
+  <action name="mActionDecorationImage">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddImage.svg</normaloff>:/images/themes/default/mActionAddImage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Image…</string>
+   </property>
+   <property name="toolTip">
+    <string>Image</string>
+   </property>
+   <property name="whatsThis">
+    <string>&quot;Creates an image that is displayed on the map canvas&quot;</string>
    </property>
   </action>
   <action name="mActionDecorationNorthArrow">

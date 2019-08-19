@@ -122,6 +122,8 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationtitledialog.cpp
   decorations/qgsdecorationcopyright.cpp
   decorations/qgsdecorationcopyrightdialog.cpp
+  decorations/qgsdecorationimage.cpp
+  decorations/qgsdecorationimagedialog.cpp
   decorations/qgsdecorationlayoutextent.cpp
   decorations/qgsdecorationlayoutextentdialog.cpp
   decorations/qgsdecorationnortharrow.cpp
@@ -383,6 +385,8 @@ SET (QGIS_APP_MOC_HDRS
   decorations/qgsdecorationtitledialog.h
   decorations/qgsdecorationcopyright.h
   decorations/qgsdecorationcopyrightdialog.h
+  decorations/qgsdecorationimage.h
+  decorations/qgsdecorationimagedialog.h
   decorations/qgsdecorationlayoutextent.h
   decorations/qgsdecorationlayoutextentdialog.h
   decorations/qgsdecorationnortharrow.h

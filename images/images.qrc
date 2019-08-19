@@ -700,6 +700,7 @@
         <file>themes/default/mActionAddGeoPackageLayer.svg</file>
         <file>themes/default/mActionFindReplace.svg</file>
         <file>icons/qgis_icon.svg</file>
+        <file>icons/qgis-icon-minimal-black.svg</file>
         <file>themes/default/mActionCircle2TangentsPoint.svg</file>
         <file>themes/default/mActionRegularPolygonCenterPoint.svg</file>
         <file>themes/default/3d.svg</file>
