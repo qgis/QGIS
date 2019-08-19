@@ -488,6 +488,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
       //! Associated map layer ID, or an empty string if this export layer is not associated with a map layer
       QString mapLayerId;
+
+      //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
+      QString mapTheme;
     };
 
     /**
