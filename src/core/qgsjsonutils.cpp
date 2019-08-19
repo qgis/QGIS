@@ -235,10 +235,9 @@ json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features
     { "type", "FeatureCollection" },
     { "features", json::array() }
   };
-  const auto constFeatures = features;
-  for ( const QgsFeature &feature : constFeatures )
+  for ( const QgsFeature &feature : qgis::as_const( features ) )
   {
-    data[ "features" ].push_back( exportFeatureToJsonObject( feature ) );
+    data["features"].push_back( exportFeatureToJsonObject( feature ) );
   }
   return data;
 }
