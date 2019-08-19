@@ -98,7 +98,7 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   for ( const auto &h : mApi->handlers() )
   {
     // Skip null schema
-    const auto hSchema { h->schema( context ) };
+    const json hSchema = h->schema( context );
     if ( ! hSchema.is_null() )
       paths.merge_patch( hSchema );
   }
@@ -500,7 +500,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
 
   const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
   const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
-  json linksList { links( context ) };
+  json linksList = links( context );
   linksList.push_back(
   {
     { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) )  },
@@ -975,7 +975,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
     }
 
-    json data { exporter.exportFeaturesToJsonObject( featureList ) };
+    json data = exporter.exportFeaturesToJsonObject( featureList );
 
     // Add some metadata
     data["numberMatched"] = matchedFeaturesCount;
@@ -1009,7 +1009,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     // Add prev - next links
     if ( offset != 0 )
     {
-      auto prevLink { selfLink };
+      json prevLink = selfLink;
       prevLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrl ).arg( std::max<long>( 0, limit - offset ) ).arg( limit ).toStdString();
       prevLink["rel"] = "prev";
       prevLink["name"] = "Previous page";
@@ -1017,7 +1017,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     }
     if ( limit + offset < matchedFeaturesCount )
     {
-      auto nextLink { selfLink };
+      json nextLink = selfLink;
       nextLink["href"] = QStringLiteral( "%1&offset=%2&limit=%3" ).arg( cleanedUrl ).arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
       nextLink["rel"] = "next";
       nextLink["name"] = "Next page";
@@ -1078,7 +1078,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     {
       QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
     }
-    json data { exporter.exportFeatureToJsonObject( feature ) };
+    json data = exporter.exportFeatureToJsonObject( feature );
     data["links"] = links( context );
     json navigation = json::array();
     const QUrl url { context.request()->url() };

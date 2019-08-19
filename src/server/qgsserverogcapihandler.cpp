@@ -85,7 +85,7 @@ QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) co
 
 void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &context, const json &htmlMetadata ) const
 {
-  const auto contentType { contentTypeFromRequest( context.request() ) };
+  const QgsServerOgcApi::ContentType contentType { contentTypeFromRequest( context.request() ) };
   switch ( contentType )
   {
     case QgsServerOgcApi::ContentType::HTML:
@@ -105,8 +105,8 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
 }
 void QgsServerOgcApiHandler::write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata ) const
 {
-  json j { QgsJsonUtils::jsonFromVariant( data ) };
-  json jm { QgsJsonUtils::jsonFromVariant( htmlMetadata ) };
+  json j = QgsJsonUtils::jsonFromVariant( data );
+  json jm = QgsJsonUtils::jsonFromVariant( htmlMetadata );
   QgsServerOgcApiHandler::write( j, context, jm );
 }
 
@@ -307,7 +307,11 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     // links_filter( <links>, <key>, <value> )
     env.add_callback( "links_filter", 3, [ = ]( Arguments & args )
     {
-      json links { args.at( 0 )->get<json>( ) };
+      json links = args.at( 0 )->get<json>( );
+      if ( ! links.is_array() )
+      {
+        links = json::array();
+      }
       std::string key { args.at( 1 )->get<std::string>( ) };
       std::string value { args.at( 2 )->get<std::string>( ) };
       json result = json::array();
@@ -344,6 +348,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     throw QgsServerApiInternalServerError( QStringLiteral( "Error parsing template file: %1" ).arg( e.what() ) );
   }
 }
+
 QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( const QgsServerRequest *request ) const
 {
   // Fallback to default
