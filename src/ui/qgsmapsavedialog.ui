@@ -119,6 +119,19 @@
           <property name="text">
            <string>Export RDF metadata (title, author, etc.)</string>
           </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="mExportGeoPdfFeaturesCheckBox">
+          <property name="text">
+           <string>Include vector feature information</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>

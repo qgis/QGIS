@@ -176,6 +176,11 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       */
       bool useOgcBestPracticeFormatGeoreferencing = false;
 
+      /**
+       * TRUE if feature vector information (such as attributes) should be exported.
+       */
+      bool includeFeatures = true;
+
     };
 
     /**
