@@ -123,6 +123,13 @@ class QgsOracleConn : public QObject
      */
     void reconnect();
 
+    void ref() { ++mRef; }
+    void unref();
+
+    //! A connection needs to be locked when it uses transactions, see QgsOracleConn::{begin,commit,rollback}
+    void lock() { mLock.lock(); }
+    void unlock() { mLock.unlock(); }
+
     /**
      * Double quote a Oracle identifier for placement in a SQL string.
      */

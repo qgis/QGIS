@@ -184,6 +184,20 @@ QString QgsOracleConn::connInfo()
 
 void QgsOracleConn::disconnect()
 {
+  unref();
+}
+
+void QgsOracleConn::reconnect()
+{
+  if ( mDatabase.isOpen() )
+  {
+    mDatabase.close();
+    mDatabase.open();
+  }
+}
+
+void QgsOracleConn::unref()
+{
   if ( --mRef > 0 )
     return;
 
@@ -202,15 +216,6 @@ void QgsOracleConn::disconnect()
   }
 
   deleteLater();
-}
-
-void QgsOracleConn::reconnect()
-{
-  if ( mDatabase.isOpen() )
-  {
-    mDatabase.close();
-    mDatabase.open();
-  }
 }
 
 bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )
