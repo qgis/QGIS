@@ -1007,7 +1007,8 @@ int QgsLayoutItemMap::numberExportLayers() const
 void QgsLayoutItemMap::startLayeredExport()
 {
   mCurrentExportPart = Start;
-  mExportThemes = mLayout->renderContext().exportThemes();
+  // only follow export themes if the map isn't set to follow a fixed theme
+  mExportThemes = !mFollowVisibilityPreset ? mLayout->renderContext().exportThemes() : QStringList();
   mExportThemeIt = mExportThemes.begin();
 }
 
@@ -1850,14 +1851,14 @@ QString QgsLayoutItemMap::themeToRender( const QgsExpressionContext &context ) c
 {
   QString presetName;
 
-  if ( !mExportThemes.empty() && mExportThemeIt != mExportThemes.end() )
-    presetName = *mExportThemeIt;
-  else if ( mFollowVisibilityPreset )
+  if ( mFollowVisibilityPreset )
   {
     presetName = mFollowVisibilityPresetName;
     // preset name can be overridden by data-defined one
     presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
   }
+  else if ( !mExportThemes.empty() && mExportThemeIt != mExportThemes.end() )
+    presetName = *mExportThemeIt;
   return presetName;
 }
 
