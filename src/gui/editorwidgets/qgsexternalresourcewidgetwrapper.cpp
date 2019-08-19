@@ -193,7 +193,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
 
 }
 
-void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
+void QgsExternalResourceWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
 {
   if ( mLineEdit )
   {

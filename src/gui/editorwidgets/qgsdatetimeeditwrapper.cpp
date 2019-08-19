@@ -192,7 +192,7 @@ QVariant QgsDateTimeEditWrapper::value() const
 #endif
 }
 
-void QgsDateTimeEditWrapper::setValue( const QVariant &value )
+void QgsDateTimeEditWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
 {
   if ( !mQDateTimeEdit )
     return;

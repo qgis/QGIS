@@ -232,7 +232,7 @@ QVariant QgsRangeWidgetWrapper::value() const
   return value;
 }
 
-void QgsRangeWidgetWrapper::setValue( const QVariant &value )
+void QgsRangeWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
 {
   if ( mDoubleSpinBox )
   {

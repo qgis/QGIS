@@ -246,7 +246,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww && eww->field().name() == field )
     {
-      eww->setValue( value );
+      eww->setValues( value, QgsAttributeMap() );
       eww->setHint( hintText );
     }
     int index = mLayer->fields().indexFromName( field );

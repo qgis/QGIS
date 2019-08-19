@@ -322,7 +322,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
 #endif
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
-  w_municipality.setValue( QStringLiteral( "{1,2}" ) );
+  w_municipality.setValues( QStringLiteral( "{1,2}" ), QgsAttributeMap() );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
 #else
@@ -332,7 +332,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
 
   // Check with passing a variant list
-  w_municipality.setValue( QVariantList( {1, 2} ) );
+  w_municipality.setValues( QVariantList( {1, 2} ), QgsAttributeMap() );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
 #else
@@ -405,7 +405,7 @@ void TestQgsValueRelationWidgetWrapper::testZeroIndexInRelatedTable()
   w_municipality.widget();
   w_municipality.setEnabled( true );
 
-  w_municipality.setValue( 0 );
+  w_municipality.setValues( 0, QgsAttributeMap() );
   QCOMPARE( w_municipality.mComboBox->currentIndex(), 1 );
   QCOMPARE( w_municipality.mComboBox->currentText(), QStringLiteral( "Some Place By The River" ) );
 }
@@ -1585,7 +1585,7 @@ void TestQgsValueRelationWidgetWrapper::testMatchLayerName()
   w_municipality.widget();
   w_municipality.setEnabled( true );
 
-  w_municipality.setValue( 0 );
+  w_municipality.setValues( 0, QgsAttributeMap() );
   QCOMPARE( w_municipality.mComboBox->currentIndex(), 1 );
   QCOMPARE( w_municipality.mComboBox->currentText(), QStringLiteral( "Some Place By The River" ) );
 }

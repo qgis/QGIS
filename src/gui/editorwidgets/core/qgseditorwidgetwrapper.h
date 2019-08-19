@@ -26,6 +26,7 @@ class QgsField;
 
 #include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup gui
@@ -274,7 +275,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Will be called when the feature changes
      *
-     * Is forwarded to the slot setValue()
+     * Is forwarded to the slot setValues()
      *
      * \param feature The new feature
      */
@@ -285,17 +286,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * to reflect the new value.
      *
      * \param value The new value of the attribute
+     * \deprecated since QGIS 3.10
      */
-    virtual void setValue( const QVariant &value ) = 0;
+    // TODO Q_DECL_DEPRECATED
+    virtual void setValue( const QVariant &value ) SIP_DEPRECATED;
 
     /**
-     * Is called, when the value of the widget needs to be changed. Update the widget representation
-     * It will set the value for the field but also values for potential additional fields which are handled by the widget
-     * \param value The new value of the attribute
-     * \param addtionalFieldValues A map of field names with their corresponding values
+     * Is called, when the value of the widget or additional field values
+     * needs to be changed. Update the widget representation
+     * to reflect the new values.
      * \since QGIS 3.10
      */
-    virtual void setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues );
+    void setValues( const QVariant &value, const QgsAttributeMap &additionalValues );
 
     /**
      * Will call the value() method to determine the emitted value
@@ -345,6 +347,19 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
 
   private:
+
+    /**
+    * Is called, when the value of the widget needs to be changed. Update the widget representation
+    * to reflect the new value.
+    *
+    * \param value The new value of the attribute
+    * \note Will be pure virtual in QGIS 4.x
+    * \since QGIS 3.10
+    */
+    virtual void updateValues( const QVariant &value, const QgsAttributeMap &additionalValues = QgsAttributeMap() ); //TODO QGIS 4: make it pure virtual
+
+    // TODO QGIS 4: remove
+    bool isRunningDeprecatedSetValue = false;
 
     /**
      * mFieldIdx the widget feature field id

@@ -73,13 +73,19 @@ void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
   const QgsAttributeList additionalFieldIndexes = additionalFields();
   for ( int fieldIndex : additionalFieldIndexes )
     newAdditionalFieldValues.insert( fieldIndex, feature.attribute( fieldIndex ) );
-  updateValues( feature.attribute( mFieldIdx ), newAdditionalFieldValues );
+  setValues( feature.attribute( mFieldIdx ), newAdditionalFieldValues );
 }
 
-void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QgsAttributeMap &addtionalFieldValues )
+void QgsEditorWidgetWrapper::setValue( const QVariant &value )
 {
-  Q_UNUSED( addtionalFieldValues );
-  setValue( value );
+  isRunningDeprecatedSetValue = true;
+  updateValues( value, QgsAttributeMap() );
+  isRunningDeprecatedSetValue = false;
+}
+
+void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QgsAttributeMap &additionalValues )
+{
+  updateValues( value, additionalValues );
 }
 
 void QgsEditorWidgetWrapper::emitValueChanged()
@@ -115,6 +121,16 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
 bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue )
 {
   return mFormFeature.setAttribute( attributeName, attributeValue );
+}
+
+void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap &additionalValues )
+{
+  Q_UNUSED( additionalValues );
+  Q_NOWARN_DEPRECATED_PUSH
+  // avoid infinte recursive loop
+  if ( !isRunningDeprecatedSetValue )
+    setValue( value );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsEditorWidgetWrapper::ConstraintResult QgsEditorWidgetWrapper::constraintResult() const

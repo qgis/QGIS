@@ -157,7 +157,7 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
   }
   else
   {
-    eww->setValue( value );
+    eww->setValues( value, QgsAttributeMap() );
   }
 }
 

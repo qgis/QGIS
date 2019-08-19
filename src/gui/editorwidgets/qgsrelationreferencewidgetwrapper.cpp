@@ -124,7 +124,7 @@ void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
   mIndeterminateState = true;
 }
 
-void QgsRelationReferenceWidgetWrapper::setValue( const QVariant &val )
+void QgsRelationReferenceWidgetWrapper::updateValues( const QVariant &val, const QgsAttributeMap & )
 {
   if ( !mWidget || ( !mIndeterminateState && val == value() && val.isNull() == value().isNull() ) )
     return;

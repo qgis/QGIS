@@ -61,7 +61,7 @@ bool QgsListWidgetWrapper::valid() const
   return mWidget ? mWidget->valid() : true;
 }
 
-void QgsListWidgetWrapper::setValue( const QVariant &value )
+void QgsListWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
 {
   mWidget->setList( value.toList() );
 }
