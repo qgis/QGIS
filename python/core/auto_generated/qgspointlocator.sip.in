@@ -154,6 +154,14 @@ The id of the feature to which the snapped geometry belongs.
 Only for a valid edge match - obtain endpoints of the edge
 %End
 
+        QgsPoint interpolatedPoint() const;
+%Docstring
+Convenient method to return a point on an edge with linear
+interpolation of the Z value.
+
+.. versionadded:: 3.10
+%End
+
         bool operator==( const QgsPointLocator::Match &other ) const;
 
       protected:

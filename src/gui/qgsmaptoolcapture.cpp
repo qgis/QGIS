@@ -383,7 +383,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsVectorLayer *sourceLayer = match.layer();
-  if ( match.isValid() && match.hasVertex() && sourceLayer &&
+  if ( match.isValid() && ( match.hasVertex() || match.hasEdge() ) && sourceLayer &&
        ( sourceLayer->crs() == vlayer->crs() ) )
   {
     QgsFeature f;
@@ -396,7 +396,14 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
       if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex(), vId ) )
         return 2;
 
-      layerPoint = f.geometry().constGet()->vertexAt( vId );
+      if ( match.hasEdge() )
+      {
+        layerPoint = match.interpolatedPoint();
+      }
+      else
+      {
+        layerPoint = f.geometry().constGet()->vertexAt( vId );
+      }
 
       // ZM support depends on the target layer
       if ( !QgsWkbTypes::hasZ( vlayer->wkbType() ) )

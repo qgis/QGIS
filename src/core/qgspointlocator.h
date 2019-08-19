@@ -17,7 +17,6 @@
 #define QGSPOINTLOCATOR_H
 
 class QgsPointXY;
-class QgsVectorLayer;
 class QgsFeatureRenderer;
 class QgsRenderContext;
 class QgsRectangle;
@@ -28,6 +27,9 @@ class QgsRectangle;
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryutils.h"
+#include "qgsvectorlayer.h"
+#include "qgslinestring.h"
 #include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;
@@ -186,6 +188,24 @@ class CORE_EXPORT QgsPointLocator : public QObject
         {
           pt1 = mEdgePoints[0];
           pt2 = mEdgePoints[1];
+        }
+
+        /**
+         * Convenient method to return a point on an edge with linear
+         * interpolation of the Z value.
+         * \since 3.10
+         */
+        QgsPoint interpolatedPoint() const
+        {
+          QgsPoint point;
+          const QgsGeometry geom = mLayer->getGeometry( mFid );
+          if ( !( geom.isNull() || geom.isEmpty() ) )
+          {
+            QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
+
+            point = QgsGeometryUtils::closestPoint( line, QgsPoint( mPoint ) );
+          }
+          return point;
         }
 
         bool operator==( const QgsPointLocator::Match &other ) const
