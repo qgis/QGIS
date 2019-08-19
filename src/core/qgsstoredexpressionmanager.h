@@ -61,6 +61,14 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     void addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
 
     /**
+    * Removes an expression to the list
+    *
+    *  \param name              name of the expression as identification
+    *  \param tag               some content, maybe scope where to be shown
+    */
+    void removeStoredExpression( const QString &name, const QString &tag = QString() );
+
+    /**
     * Appends a list of expressions to the existing list
     *
     *  \param namedexpressions  list of expressions and the optional name

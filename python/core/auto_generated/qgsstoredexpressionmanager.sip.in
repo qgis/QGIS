@@ -44,6 +44,14 @@ Adds an expression to the list
 :param tag: some content, maybe scope where to be shown
 %End
 
+    void removeStoredExpression( const QString &name, const QString &tag = QString() );
+%Docstring
+Removes an expression to the list
+
+:param name: name of the expression as identification
+:param tag: some content, maybe scope where to be shown
+%End
+
     void addStoredExpressions( QList< QPair< QString, QString > > namedexpressions, const QString &tag = QString() );
 %Docstring
 Appends a list of expressions to the existing list

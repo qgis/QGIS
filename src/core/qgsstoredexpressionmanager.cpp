@@ -34,6 +34,22 @@ void QgsStoredExpressionManager::addStoredExpression( const QString &name, const
   mStoredExpressions.append( storedExpression );
 }
 
+void QgsStoredExpressionManager::removeStoredExpression( const QString &name, const QString &tag )
+{
+  Q_UNUSED( tag );
+
+  int i = 0;
+  for ( const QPair<QString, QString> &storedExpression : mStoredExpressions )
+  {
+    if ( storedExpression.first == name )
+    {
+      mStoredExpressions.removeAt( i );
+      break;
+    }
+    ++i;
+  }
+}
+
 void QgsStoredExpressionManager::addStoredExpressions( QList<QPair<QString, QString> > namedexpressions, const QString &tag )
 {
   Q_UNUSED( tag );
