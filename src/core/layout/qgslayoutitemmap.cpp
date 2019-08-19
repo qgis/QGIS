@@ -1007,11 +1007,15 @@ int QgsLayoutItemMap::numberExportLayers() const
 void QgsLayoutItemMap::startLayeredExport()
 {
   mCurrentExportPart = Start;
+  mExportThemes = mLayout->renderContext().exportThemes();
+  mExportThemeIt = mExportThemes.begin();
 }
 
 void QgsLayoutItemMap::stopLayeredExport()
 {
   mCurrentExportPart = NotLayered;
+  mExportThemes.clear();
+  mExportThemeIt = mExportThemes.begin();
 }
 
 bool QgsLayoutItemMap::nextExportPart()
@@ -1037,6 +1041,12 @@ bool QgsLayoutItemMap::nextExportPart()
           return true;
         else
           mStagedRendererJob.reset(); // no more map layer parts
+      }
+
+      if ( mExportThemeIt != mExportThemes.end() && ++mExportThemeIt != mExportThemes.end() )
+      {
+        // move to next theme and continue exporting map layers
+        return true;
       }
 
       if ( mGridStack->hasEnabledItems() )
@@ -1072,8 +1082,16 @@ bool QgsLayoutItemMap::nextExportPart()
       FALLTHROUGH
 
     case SelectionBoxes:
-      mCurrentExportPart = End;
-      return false;
+      if ( mExportThemeIt != mExportThemes.end() && mExportThemeIt++ != mExportThemes.end() )
+      {
+        mCurrentExportPart = Start;
+        return nextExportPart();
+      }
+      else
+      {
+        mCurrentExportPart = End;
+        return false;
+      }
 
     case End:
       return false;
@@ -1816,6 +1834,21 @@ void QgsLayoutItemMap::updateToolTip()
   setToolTip( displayName() );
 }
 
+QString QgsLayoutItemMap::themeToRender( const QgsExpressionContext &context ) const
+{
+  QString presetName;
+
+  if ( !mExportThemes.empty() && mExportThemeIt != mExportThemes.end() )
+    presetName = *mExportThemeIt;
+  else if ( mFollowVisibilityPreset )
+  {
+    presetName = mFollowVisibilityPresetName;
+    // preset name can be overridden by data-defined one
+    presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
+  }
+  return presetName;
+}
+
 QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContext *context ) const
 {
   QgsExpressionContext scopedContext;
@@ -1825,13 +1858,9 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
 
   QList<QgsMapLayer *> renderLayers;
 
-  if ( mFollowVisibilityPreset )
+  QString presetName = themeToRender( *evalContext );
+  if ( !presetName.isEmpty() )
   {
-    QString presetName = mFollowVisibilityPresetName;
-
-    // preset name can be overridden by data-defined one
-    presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, *evalContext, presetName );
-
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mLayout->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
@@ -1886,13 +1915,28 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
 
 QMap<QString, QString> QgsLayoutItemMap::layerStyleOverridesToRender( const QgsExpressionContext &context ) const
 {
-  if ( mFollowVisibilityPreset )
+  QString presetName = themeToRender( context );
+  if ( !presetName.isEmpty() )
+  {
+    if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
+    {
+      if ( presetName != mCachedLayerStyleOverridesPresetName )
+      {
+        // have to regenerate cache of style overrides
+        mCachedPresetLayerStyleOverrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
+        mCachedLayerStyleOverridesPresetName = presetName;
+      }
+
+      return mCachedPresetLayerStyleOverrides;
+    }
+    else
+      return QMap<QString, QString>();
+  }
+  else if ( mFollowVisibilityPreset )
   {
     QString presetName = mFollowVisibilityPresetName;
-
     // data defined preset name?
     presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
-
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
     {
       if ( presetName.isEmpty() || presetName != mCachedLayerStyleOverridesPresetName )

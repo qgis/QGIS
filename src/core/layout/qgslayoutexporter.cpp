@@ -316,6 +316,7 @@ class LayoutContextSettingsRestorer
       , mPreviousTextFormat( layout->renderContext().textRenderFormat() )
       , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
       , mPreviousSimplifyMethod( layout->renderContext().simplifyMethod() )
+      , mExportThemes( layout->renderContext().exportThemes() )
     {
     }
     Q_NOWARN_DEPRECATED_POP
@@ -329,6 +330,7 @@ class LayoutContextSettingsRestorer
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
       Q_NOWARN_DEPRECATED_POP
       mLayout->renderContext().setSimplifyMethod( mPreviousSimplifyMethod );
+      mLayout->renderContext().setExportThemes( mExportThemes );
     }
 
     LayoutContextSettingsRestorer( const LayoutContextSettingsRestorer &other ) = delete;
@@ -341,6 +343,7 @@ class LayoutContextSettingsRestorer
     QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
     int mPreviousExportLayer = 0;
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;
+    QStringList mExportThemes;
 
 };
 ///@endcond PRIVATE

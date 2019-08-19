@@ -1212,6 +1212,125 @@ void TestQgsLayoutMap::testLayeredExport()
   QVERIFY( !map->nextExportPart() );
   map->stopLayeredExport();
 
+  // exporting by theme
+  QgsMapThemeCollection::MapThemeRecord rec;
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
+                       << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer )
+                     );
+
+  p.mapThemeCollection()->insert( QStringLiteral( "test preset" ), rec );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
+                       << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer )
+                       << QgsMapThemeCollection::MapThemeLayerRecord( pointsLayer )
+                     );
+  p.mapThemeCollection()->insert( QStringLiteral( "test preset2" ), rec );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
+                       << QgsMapThemeCollection::MapThemeLayerRecord( pointsLayer )
+                     );
+  p.mapThemeCollection()->insert( QStringLiteral( "test preset3" ), rec );
+
+  l.renderContext().setExportThemes( QStringList() << QStringLiteral( "test preset2" ) << QStringLiteral( "test preset" ) << QStringLiteral( "test preset3" ) );
+
+
+  map->startLayeredExport();
+  QVERIFY( map->nextExportPart() );
+  map->createStagedRenderJob( map->extent(), QSize( 512, 512 ), 72 );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Background" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: lines" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, linesLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  // labels
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Labels" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  // "test preset"
+  map->createStagedRenderJob( map->extent(), QSize( 512, 512 ), 72 );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: lines" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, linesLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  // labels
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Labels" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  map->createStagedRenderJob( map->extent(), QSize( 512, 512 ), 72 );
+  // "test preset 3"
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  // labels
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Labels" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Grids" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Overviews" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Frame" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( !map->nextExportPart() );
+  map->stopLayeredExport();
 }
 
 void TestQgsLayoutMap::testLayeredExportLabelsByLayer()

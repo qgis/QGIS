@@ -110,3 +110,13 @@ void QgsLayoutRenderContext::setPagesVisible( bool visible )
 {
   mPagesVisible = visible;
 }
+
+QStringList QgsLayoutRenderContext::exportThemes() const
+{
+  return mExportThemes;
+}
+
+void QgsLayoutRenderContext::setExportThemes( const QStringList &exportThemes )
+{
+  mExportThemes = exportThemes;
+}
