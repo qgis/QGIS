@@ -100,6 +100,16 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
+            <item row="2" column="0" colspan="2">
+             <widget class="QCheckBox" name="mExportMetadataCheckBox">
+              <property name="text">
+               <string>Export RDF metadata (title, author, etc.)</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="1">
              <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
             </item>
@@ -110,28 +120,18 @@
               </property>
              </widget>
             </item>
+            <item row="3" column="0" colspan="2">
+             <widget class="QCheckBox" name="mExportGeoPdfFeaturesCheckBox">
+              <property name="text">
+               <string>Include vector feature information</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="mExportMetadataCheckBox">
-          <property name="text">
-           <string>Export RDF metadata (title, author, etc.)</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="mExportGeoPdfFeaturesCheckBox">
-          <property name="text">
-           <string>Include vector feature information</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
          </widget>
         </item>
        </layout>
@@ -405,6 +405,7 @@ Rasterizing the map is recommended when such effects are used.</string>
   <tabstop>mGeoPDFGroupBox</tabstop>
   <tabstop>mGeoPdfFormatComboBox</tabstop>
   <tabstop>mExportMetadataCheckBox</tabstop>
+  <tabstop>mExportGeoPdfFeaturesCheckBox</tabstop>
   <tabstop>mSaveAsRaster</tabstop>
   <tabstop>mSimplifyGeometriesCheckbox</tabstop>
   <tabstop>mTextRenderFormatComboBox</tabstop>

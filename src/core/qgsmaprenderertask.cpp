@@ -72,9 +72,14 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 {
   public:
 
-    QgsMapRendererTaskRenderedFeatureHandler( QgsMapRendererTaskGeoPdfExporter *exporter )
+    QgsMapRendererTaskRenderedFeatureHandler( QgsMapRendererTaskGeoPdfExporter *exporter, const QgsMapSettings &settings )
       : mExporter( exporter )
-    {}
+      , mMapSettings( settings )
+    {
+      // PDF coordinate space uses a hardcoded DPI of 72, also vertical dimension is flipped from QGIS dimension
+      const double pageHeightPdfUnits = settings.outputSize().height() * 72.0 / settings.outputDpi();
+      mTransform = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( 72.0 / mMapSettings.outputDpi(), -72.0 / mMapSettings.outputDpi() );
+    }
 
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
     {
@@ -83,11 +88,8 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
       // and use it to retrieve QgsMapLayers mid-way through a render operation. Lesser of two evils it is!
       const QString layerId = context.renderContext.expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
 
-      // transform from pixels to PDF coordinates (TODO - check)
-      // PDF coordinate space uses a hardcoded DPI of 72
-      QTransform pixelToPdfTransform = QTransform::fromScale( 25.4 / context.renderContext.scaleFactor() / 72.0, 25.4 / context.renderContext.scaleFactor() / 72.0 );
       QgsGeometry transformed = renderedBounds;
-      transformed.transform( pixelToPdfTransform );
+      transformed.transform( mTransform );
 
       // always convert to multitype, to make things consistent
       transformed.convertToMultiType();
@@ -103,6 +105,9 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
   private:
 
     QgsMapRendererTaskGeoPdfExporter *mExporter = nullptr;
+    QgsMapSettings mMapSettings;
+    //! Transform from output space (pixels) to PDF space (pixels at 72 dpi)
+    QTransform mTransform;
 
 };
 
@@ -110,7 +115,7 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster,
                                         const bool geoPDF, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails )
-  : QgsTask( tr( "Saving as image" ) )
+  : QgsTask( fileFormat == QStringLiteral( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ) )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
@@ -370,7 +375,7 @@ void QgsMapRendererTask::prepare()
     mGeoPdfExporter = qgis::make_unique< QgsMapRendererTaskGeoPdfExporter >( mMapSettings );
     if ( mGeoPdfExportDetails.includeFeatures )
     {
-      mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ) );
+      mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ), mMapSettings );
       mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
     }
     mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
