@@ -776,6 +776,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Resets the item tooltip to reflect current map id
     void updateToolTip();
 
+    QString themeToRender( const QgsExpressionContext &context ) const;
+
     //! Returns current layer style overrides for this map item
     QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext &context ) const;
 
@@ -816,6 +818,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     bool shouldDrawPart( PartType part ) const;
 
     PartType mCurrentExportPart = NotLayered;
+    QStringList mExportThemes;
+    QStringList::iterator mExportThemeIt;
 
     /**
      * Refresh the map's extents, considering data defined extent, scale and rotation

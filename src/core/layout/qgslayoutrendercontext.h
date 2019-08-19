@@ -259,6 +259,28 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      */
     const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
+    /**
+     * Returns a list of map themes to use during the export.
+     *
+     * Items which handle layered exports (e.g. maps) may utilise this list to export different
+     * representations of the item as export layers, as they iterate through these included themes.
+     *
+     * \see setExportThemes()
+     * \since QGIS 3.10
+     */
+    QStringList exportThemes() const;
+
+    /**
+     * Sets a list of map \a themes to use during the export.
+     *
+     * Items which handle layered exports (e.g. maps) may utilise this list to export different
+     * representations of the item as export layers, as they iterate through these included themes.
+     *
+     * \see exportThemes()
+     * \since QGIS 3.10
+     */
+    void setExportThemes( const QStringList &themes );
+
   signals:
 
     /**
@@ -290,6 +312,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     bool mPagesVisible = true;
 
     QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
+    QStringList mExportThemes;
 
     QgsVectorSimplifyMethod mSimplifyMethod;
 

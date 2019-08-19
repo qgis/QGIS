@@ -267,6 +267,30 @@ The default is to use no simplification.
 .. versionadded:: 3.10
 %End
 
+    QStringList exportThemes() const;
+%Docstring
+Returns a list of map themes to use during the export.
+
+Items which handle layered exports (e.g. maps) may utilise this list to export different
+representations of the item as export layers, as they iterate through these included themes.
+
+.. seealso:: :py:func:`setExportThemes`
+
+.. versionadded:: 3.10
+%End
+
+    void setExportThemes( const QStringList &themes );
+%Docstring
+Sets a list of map ``themes`` to use during the export.
+
+Items which handle layered exports (e.g. maps) may utilise this list to export different
+representations of the item as export layers, as they iterate through these included themes.
+
+.. seealso:: :py:func:`exportThemes`
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutRenderContext::Flags flags );
