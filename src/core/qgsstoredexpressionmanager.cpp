@@ -121,5 +121,9 @@ bool QgsStoredExpressionManager::readXml( const QDomNode &layer_node )
       addStoredExpression( aStoredExpression.attribute( QStringLiteral( "name" ) ), aStoredExpression.attribute( QStringLiteral( "expression" ) ) );
     }
   }
+  //dave to be removed
+  addStoredExpression( "name test 1", "expression test 1" );
+  addStoredExpression( "name test 2", "expression test 2" );
+  addStoredExpression( "name test 3", "expression test 3" );
   return true;
 }

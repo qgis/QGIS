@@ -184,9 +184,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mFilterActionMapper = new QSignalMapper( this );
   mFilterColumnsMenu = new QMenu( this );
   mActionFilterColumnsMenu->setMenu( mFilterColumnsMenu );
+  mStoredFilterExpressionMenu = new QMenu( this );
+  mActionStoredFilterExpressions->setMenu( mStoredFilterExpressionMenu );
+  mStoreFilterExpressionButton->setDefaultAction( mActionStoreFilterExpression );
   mApplyFilterButton->setDefaultAction( mActionApplyFilter );
-  mStoredExpressionMenu = new QMenu( this );
-  mActionStoredFilter->setMenu( mStoredExpressionMenu );
 
   // Set filter icon in a couple of places
   QIcon filterIcon = QgsApplication::getThemeIcon( "/mActionFilter2.svg" );
@@ -202,6 +203,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
   mActionFeatureActions->setText( tr( "Actions" ) );
   mActionFeatureActions->setToolTip( tr( "Actions" ) );
+
+
   mToolbar->addWidget( mActionFeatureActions );
 
   // Connect filter signals
@@ -213,6 +216,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mFilterActionMapper, SIGNAL( mapped( QObject * ) ), SLOT( filterColumnChanged( QObject * ) ) );
   connect( mFilterQuery, &QLineEdit::returnPressed, this, &QgsAttributeTableDialog::filterQueryAccepted );
   connect( mActionApplyFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterQueryAccepted );
+  connect( mActionStoreFilterExpression, &QAction::triggered, this, &QgsAttributeTableDialog::storeFilterExpression );
   connect( mActionSetStyles, &QAction::triggered, this, &QgsAttributeTableDialog::openConditionalStyles );
 
   // info from layer to table
@@ -444,7 +448,7 @@ void QgsAttributeTableDialog::columnBoxInit()
   mFilterButton->addAction( mActionEditedFilter );
   mFilterButton->addAction( mActionFilterColumnsMenu );
   mFilterButton->addAction( mActionAdvancedFilter );
-  mFilterButton->addAction( mActionStoredFilter );
+  mFilterButton->addAction( mActionStoredFilterExpressions );
 
   const QList<QgsField> fields = mLayer->fields().toList();
 
@@ -472,10 +476,10 @@ void QgsAttributeTableDialog::columnBoxInit()
 
 void QgsAttributeTableDialog::storedExpressionBoxInit()
 {
-  const auto constActions = mStoredExpressionMenu->actions();
+  const auto constActions = mStoredFilterExpressionMenu->actions();
   for ( QAction *a : constActions )
   {
-    mStoredExpressionMenu->removeAction( a );
+    mStoredFilterExpressionMenu->removeAction( a );
     delete a;
   }
 
@@ -485,9 +489,9 @@ void QgsAttributeTableDialog::storedExpressionBoxInit()
     QAction *storedExpressionAction = new QAction( storedExpression.first, mFilterButton );
     connect( storedExpressionAction, &QAction::triggered, this, [ = ]()
     {
-      QgsAttributeTableDialog::filterStoredExpressionChanged( storedExpression );
+      QgsAttributeTableDialog::storedFilterExpressionChanged( storedExpression );
     } );
-    mStoredExpressionMenu->addAction( storedExpressionAction );
+    mStoredFilterExpressionMenu->addAction( storedExpressionAction );
   }
 }
 
@@ -1064,7 +1068,7 @@ void QgsAttributeTableDialog::filterQueryAccepted()
   filterQueryChanged( mFilterQuery->text() );
 }
 
-void QgsAttributeTableDialog::filterStoredExpressionChanged( QPair<QString, QString> storedExpression )
+void QgsAttributeTableDialog::storedFilterExpressionChanged( QPair<QString, QString> storedExpression )
 {
   setFilterExpression( storedExpression.second, QgsAttributeForm::ReplaceFilter, true );
   //save name of expression as context in the bookmark-icon
@@ -1073,6 +1077,11 @@ void QgsAttributeTableDialog::filterStoredExpressionChanged( QPair<QString, QStr
 void QgsAttributeTableDialog::openConditionalStyles()
 {
   mMainView->openConditionalStyles();
+}
+
+void QgsAttributeTableDialog::storeFilterExpression()
+{
+  qDebug() << "add or delete bookmark";
 }
 
 void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, QgsAttributeForm::FilterType type,

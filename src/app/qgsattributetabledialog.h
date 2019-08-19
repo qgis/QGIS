@@ -175,7 +175,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void filterEdited();
     void filterQueryChanged( const QString &query );
     void filterQueryAccepted();
-    void filterStoredExpressionChanged( QPair< QString, QString > storedExpression );
+    void storedFilterExpressionChanged( QPair< QString, QString > storedExpression );
+    void storeFilterExpression();
     void openConditionalStyles();
 
     /**
@@ -232,7 +233,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QMenu *mFilterColumnsMenu = nullptr;
     QSignalMapper *mFilterActionMapper = nullptr;
-    QMenu *mStoredExpressionMenu = nullptr;
+    QMenu *mStoredFilterExpressionMenu = nullptr;
 
     QPointer< QgsVectorLayer > mLayer = nullptr;
     QgsSearchWidgetWrapper *mCurrentSearchWidgetWrapper = nullptr;

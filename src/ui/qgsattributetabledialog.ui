@@ -155,6 +155,13 @@
         <item row="0" column="0">
          <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
         </item>
+        <item row="0" column="1">
+         <widget class="QToolButton" name="mStoreFilterExpressionButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -647,6 +654,23 @@
    </property>
    <property name="toolTip">
     <string>Dock Attribute Table</string>
+   </property>
+  </action>
+  <action name="mActionStoredFilterExpressions">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stored Filter Exprssions</string>
+   </property>
+   <property name="toolTip">
+    <string>Stored expressions to filter features</string>
+   </property>
+  </action>
+  <action name="mActionStoreFilterExpression">
+   <property name="text">
+    <string>Store Filter Expression</string>
    </property>
   </action>
  </widget>
