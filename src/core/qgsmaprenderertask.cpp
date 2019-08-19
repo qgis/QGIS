@@ -201,8 +201,24 @@ bool QgsMapRendererTask::run()
       job->nextPart();
     }
     QgsAbstractGeoPdfExporter::ExportDetails exportDetails = mGeoPdfExportDetails;
-    exportDetails.pageSizeMm = mMapSettings.outputSize() * 25.4 / mMapSettings.outputDpi();
+    const double pageWidthMM = mMapSettings.outputSize().width() * 25.4 / mMapSettings.outputDpi();
+    const double pageHeightMM = mMapSettings.outputSize().height() * 25.4 / mMapSettings.outputDpi();
+    exportDetails.pageSizeMm = QSizeF( pageWidthMM, pageHeightMM );
     exportDetails.dpi = mMapSettings.outputDpi();
+
+    if ( mSaveWorldFile )
+    {
+      // setup georeferencing
+      QgsAbstractGeoPdfExporter::GeoReferencedSection georef;
+      georef.crs = mMapSettings.destinationCrs();
+      georef.pageBoundsMm = QgsRectangle( 0, 0, pageWidthMM, pageHeightMM );
+      georef.controlPoints.reserve( 4 );
+      georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 0, 0 ), mMapSettings.mapToPixel().toMapCoordinates( 0, 0 ) );
+      georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( pageWidthMM, 0 ), mMapSettings.mapToPixel().toMapCoordinates( mMapSettings.outputSize().width(), 0 ) );
+      georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( pageWidthMM, pageHeightMM ), mMapSettings.mapToPixel().toMapCoordinates( mMapSettings.outputSize().width(), mMapSettings.outputSize().height() ) );
+      georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 0, pageHeightMM ), mMapSettings.mapToPixel().toMapCoordinates( 0, mMapSettings.outputSize().height() ) );
+      exportDetails.georeferencedSections << georef;
+    }
 
     mGeoPdfExporter->finalize( pdfComponents, mFileName, exportDetails );
     mGeoPdfExporter.reset();
