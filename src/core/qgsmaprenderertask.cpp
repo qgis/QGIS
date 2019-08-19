@@ -366,6 +366,16 @@ void QgsMapRendererTask::finished( bool result )
 
 void QgsMapRendererTask::prepare()
 {
+  if ( mGeoPDF )
+  {
+    mGeoPdfExporter = qgis::make_unique< QgsMapRendererTaskGeoPdfExporter >( mMapSettings );
+    mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ) );
+    mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
+    mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
+    mJob->start();
+    return;
+  }
+
   mDestPainter = mPainter;
 
   if ( mFileFormat == QStringLiteral( "PDF" ) )
@@ -416,17 +426,6 @@ void QgsMapRendererTask::prepare()
     return;
   }
 
-  if ( mGeoPDF )
-  {
-    mGeoPdfExporter = qgis::make_unique< QgsMapRendererTaskGeoPdfExporter >( mMapSettings );
-    mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ) );
-    mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
-    mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
-    mJob->start();
-  }
-  else
-  {
-    mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
-    static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->prepare();
-  }
+  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
+  static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->prepare();
 }
