@@ -2116,7 +2116,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
   r = OCIStmtExecute( d->svc, d->sql, d->err,
                       arrayBind ? 1 : columns[0].recordCount,
                       0, nullptr, nullptr,
-                      d->transaction ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS );
+                      OCI_DEFAULT );
 
   if ( r != OCI_SUCCESS && r != OCI_SUCCESS_WITH_INFO )
   {
@@ -3610,7 +3610,7 @@ bool QOCISpatialResult::exec()
   }
 
   iters = stmtType == OCI_STMT_SELECT ? 0 : 1;
-  mode = d->transaction ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS;
+  mode = OCI_DEFAULT;
 
   qDebug() << "iters:" << iters;
 
