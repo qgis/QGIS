@@ -345,7 +345,17 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 
   // Call  requestReady() method (if enabled)
-  responseDecorator.start();
+  // This may also throw exceptions if there are errors in python plugins code
+  try
+  {
+    responseDecorator.start();
+  }
+  catch ( QgsException &ex )
+  {
+    // Internal server error
+    response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+  }
 
   // Plugins may have set exceptions
   if ( !requestHandler.exceptionRaised() )
@@ -418,8 +428,20 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
+
   // Terminate the response
-  responseDecorator.finish();
+  // This may also throw exceptions if there are errors in python plugins code
+  try
+  {
+    responseDecorator.finish();
+  }
+  catch ( QgsException &ex )
+  {
+    // Internal server error
+    response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+  }
+
 
   // We are done using requestHandler in plugins, make sure we don't access
   // to a deleted request handler from Python bindings
