@@ -135,7 +135,7 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   QLabel *referencedLabel = new QLabel( tr( "Referenced layer (parent)" ), this );
   layout->addWidget( referencedLabel, 1, 1 );
   // col 2
-  QLabel *referencingLabel = new QLabel( tr( "Referencing layer (parent)" ), this );
+  QLabel *referencingLabel = new QLabel( tr( "Referencing layer (child)" ), this );
   layout->addWidget( referencingLabel, 1, 2 );
 
   // row 2: layer comboboxes
