@@ -89,7 +89,7 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   Q_UNUSED( details )
   return false;
 #else
-  if ( !saveTemporaryLayers() )
+  if ( details.includeFeatures && !saveTemporaryLayers() )
     return false;
 
   const QString composition = createCompositionXml( components, details );
@@ -254,14 +254,17 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
   //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
   QSet< QString > createdLayerIds;
-  for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
+  if ( details.includeFeatures )
   {
-    QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
-    layer.setAttribute( QStringLiteral( "id" ), component.mapLayerId );
-    layer.setAttribute( QStringLiteral( "name" ), component.name );
-    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
-    layerTree.appendChild( layer );
-    createdLayerIds.insert( component.mapLayerId );
+    for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
+    {
+      QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
+      layer.setAttribute( QStringLiteral( "id" ), component.mapLayerId );
+      layer.setAttribute( QStringLiteral( "name" ), component.name );
+      layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
+      layerTree.appendChild( layer );
+      createdLayerIds.insert( component.mapLayerId );
+    }
   }
   // some PDF components may not be linked to vector components - e.g. layers with labels but no features
   for ( const ComponentLayerDetail &component : components )
@@ -375,21 +378,24 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   }
 
   // vector datasets (we "draw" these on top, just for debugging... but they are invisible, so are never really drawn!)
-  for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
+  if ( details.includeFeatures )
   {
-    QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-    ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
-    QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
-    vectorDataset.setAttribute( QStringLiteral( "dataset" ), component.sourceVectorPath );
-    vectorDataset.setAttribute( QStringLiteral( "layer" ), component.sourceVectorLayer );
-    vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "false" ) );
-    QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
-    logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), component.name );
-    if ( !component.displayAttribute.isEmpty() )
-      logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), component.displayAttribute );
-    vectorDataset.appendChild( logicalStructure );
-    ifLayerOn.appendChild( vectorDataset );
-    content.appendChild( ifLayerOn );
+    for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
+    {
+      QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
+      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
+      QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
+      vectorDataset.setAttribute( QStringLiteral( "dataset" ), component.sourceVectorPath );
+      vectorDataset.setAttribute( QStringLiteral( "layer" ), component.sourceVectorLayer );
+      vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "false" ) );
+      QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
+      logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), component.name );
+      if ( !component.displayAttribute.isEmpty() )
+        logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), component.displayAttribute );
+      vectorDataset.appendChild( logicalStructure );
+      ifLayerOn.appendChild( vectorDataset );
+      content.appendChild( ifLayerOn );
+    }
   }
 
   page.appendChild( content );

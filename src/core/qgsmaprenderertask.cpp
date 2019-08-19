@@ -166,7 +166,6 @@ bool QgsMapRendererTask::run()
 
   if ( mGeoPDF )
   {
-
     QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > pdfComponents;
 
     QgsMapRendererStagedRenderJob *job = static_cast< QgsMapRendererStagedRenderJob * >( mJob.get() );
@@ -369,8 +368,11 @@ void QgsMapRendererTask::prepare()
   if ( mGeoPDF )
   {
     mGeoPdfExporter = qgis::make_unique< QgsMapRendererTaskGeoPdfExporter >( mMapSettings );
-    mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ) );
-    mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
+    if ( mGeoPdfExportDetails.includeFeatures )
+    {
+      mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ) );
+      mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
+    }
     mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
     mJob->start();
     return;

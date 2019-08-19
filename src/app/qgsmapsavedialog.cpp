@@ -517,6 +517,8 @@ void QgsMapSaveDialog::onAccepted()
             geoPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = false;
             geoPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = true;
           }
+
+          geoPdfExportDetails.includeFeatures = mExportGeoPdfFeaturesCheckBox->isChecked();
         }
         QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), mGeoPDFGroupBox->isChecked(), geoPdfExportDetails );
 
