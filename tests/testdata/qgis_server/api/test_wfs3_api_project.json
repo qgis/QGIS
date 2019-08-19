@@ -587,7 +587,7 @@ Content-Type: application/openapi+json;version=3.0
     "/wfs3/collections/testlayer èé/items": {
       "get": {
         "description": "Every feature in a dataset belongs to a collection. A dataset may consist of multiple feature collections. A feature collection is often a collection of features of a similar type, based on a common schema. Use content negotiation or specify a file extension to request HTML (.html) or GeoJSON (.json).",
-        "operationId": "getFeatures_testlayer èé",
+        "operationId": "getFeatures_testlayer20150528120452665",
         "parameters": [
           [
             {
@@ -774,7 +774,7 @@ Content-Type: application/openapi+json;version=3.0
     "/wfs3collections/testlayer èé": {
       "get": {
         "description": "Metadata about a feature collection.",
-        "operationId": "describeCollection_testlayer èé",
+        "operationId": "describeCollection_testlayer20150528120452665",
         "responses": [
           [
             "200",
@@ -819,7 +819,7 @@ Content-Type: application/openapi+json;version=3.0
     "/wfs3collections/testlayer èé/items/{featureId}": {
       "get": {
         "description": "Retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)",
-        "operationId": "getFeature_testlayer èé",
+        "operationId": "getFeature_testlayer20150528120452665",
         "responses": [
           [
             "200",
@@ -877,5 +877,5 @@ Content-Type: application/openapi+json;version=3.0
       "name": "Features"
     }
   ],
-  "timeStamp": "2019-07-30T09:17:49Z"
+  "timeStamp": "2019-08-19T14:43:48Z"
 }
