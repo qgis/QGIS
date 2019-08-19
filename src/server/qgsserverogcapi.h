@@ -101,7 +101,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     /**
      * Executes a request by passing the given \a context to the API handlers.
      */
-    virtual void executeRequest( const QgsServerApiContext &context ) const override SIP_THROW( QgsServerApiBadRequestException ) SIP_VIRTUALERRORHANDLER( serverapi_badrequest_exception_handler );
+    virtual void executeRequest( const QgsServerApiContext &context ) const override;
 
     /**
      * Returns a map of contentType => mime type

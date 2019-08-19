@@ -101,14 +101,15 @@ Returns the default response content type in case the client did not specificall
 ask for any particular content type.
 %End
 
-    virtual QList<QgsServerOgcApi::ContentType> contentTypes() const;
+
+    virtual QList<int> contentTypesInt() const /PyName=contentTypes/;
 %Docstring
 Returns the list of content types this handler can serve, default to JSON and HTML.
 In case a specialized type (such as GEOJSON) is supported,
 the generic type (such as JSON) should not be listed.
 %End
 
-    virtual void handleRequest( const QgsServerApiContext &context ) const = 0;
+    virtual void handleRequest( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException ) /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
 %Docstring
 Handles the request within its ``context``
 
@@ -149,7 +150,7 @@ returns an empty string if there are not matches.
 
 
 
-    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const;
+    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const throw( QgsServerApiBadRequestException );
 %Docstring
 Writes ``data`` to the ``context`` response stream, content-type is calculated from the ``context`` request,
 optional ``htmlMetadata`` for the HTML templates can be specified and will be added as "metadata" to

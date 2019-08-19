@@ -115,8 +115,16 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * Returns the list of content types this handler can serve, default to JSON and HTML.
      * In case a specialized type (such as GEOJSON) is supported,
      * the generic type (such as JSON) should not be listed.
+     * \note not available in Python bindings
      */
-    virtual QList<QgsServerOgcApi::ContentType> contentTypes() const { return  { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML }; }
+    virtual QList<QgsServerOgcApi::ContentType> contentTypes() const SIP_SKIP;
+
+    /**
+     * Returns the list of content types this handler can serve, default to JSON and HTML.
+     * In case a specialized type (such as GEOJSON) is supported,
+     * the generic type (such as JSON) should not be listed.
+     */
+    virtual QList<int> contentTypesInt() const SIP_PYNAME( contentTypes );
 
     /**
      * Handles the request within its \a context
@@ -126,7 +134,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \throws QgsServerApiBadRequestError if the method encounters any error
      */
-    virtual void handleRequest( const QgsServerApiContext &context ) const = 0;
+    virtual void handleRequest( const QgsServerApiContext &context ) const SIP_THROW( QgsServerApiBadRequestException ) SIP_VIRTUALERRORHANDLER( serverapi_badrequest_exception_handler );
 
     /**
      * Analyzes the incoming request \a context and returns the validated
@@ -266,7 +274,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * - content_type_name( content_type ): returns a short name from a content type for example "text/html" will return "HTML"
      *
      */
-    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const;
+    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const SIP_THROW( QgsServerApiBadRequestException );
 
     /**
      * Returns an URL to self, to be used for links to the current resources and as a base for constructing links to sub-resources

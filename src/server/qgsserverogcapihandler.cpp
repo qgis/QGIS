@@ -66,6 +66,29 @@ QgsServerOgcApiHandler::~QgsServerOgcApiHandler()
   //qDebug() << "handler destroyed";
 }
 
+QList<QgsServerOgcApi::ContentType> QgsServerOgcApiHandler::contentTypes() const
+{
+  return  { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML };
+}
+
+void QgsServerOgcApiHandler::handleRequest( const QgsServerApiContext &context ) const
+{
+  Q_UNUSED( context );
+  throw QgsServerApiNotImplementedException( QStringLiteral( "Subclasses must implement handleRequest" ) );
+}
+
+QList<int> QgsServerOgcApiHandler::contentTypesInt() const
+{
+  QList<int> ret;
+  const QList<QgsServerOgcApi::ContentType> constCt { contentTypes() };
+  for ( const QgsServerOgcApi::ContentType &t : constCt )
+  {
+    ret.push_back( static_cast<int>( t ) );
+  }
+  return ret;
+}
+
+
 QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) const
 {
 
