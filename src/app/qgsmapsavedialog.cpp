@@ -128,6 +128,11 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
       {
         mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
         mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
+        // avoid showing reason in disabled text color - we want it to stand out
+        QPalette p = mGeoPdfUnavailableReason->palette();
+        p.setColor( QPalette::Disabled, QPalette::WindowText, QPalette::WindowText );
+        mGeoPdfUnavailableReason->setPalette( p );
+        mGeoPDFOptionsStackedWidget->removeWidget( mGeoPDFOptionsStackedWidget->widget( 1 ) );
       }
       else
       {
