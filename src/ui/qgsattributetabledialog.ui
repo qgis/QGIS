@@ -678,16 +678,27 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</iconset>
+   </property>
    <property name="text">
-    <string>...</string>
+    <string/>
    </property>
    <property name="toolTip">
     <string>Handle Filter Expression (save or delete)</string>
    </property>
   </action>
   <action name="mActionSaveAsStoredFilterExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</iconset>
+   </property>
    <property name="text">
     <string>Save Expression as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save expression under defined name</string>
    </property>
   </action>
  </widget>

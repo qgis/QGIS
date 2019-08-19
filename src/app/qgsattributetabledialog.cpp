@@ -197,7 +197,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   // Set button to store or delete stored filter expressions
   mStoreFilterExpressionButton->setDefaultAction( mActionHandleStoreFilterExpression );
-  //connect all options though delete is not available yet
   connect( mActionSaveAsStoredFilterExpression, &QAction::triggered, this, &QgsAttributeTableDialog::saveAsStoredFilterExpression );
   mApplyFilterButton->setDefaultAction( mActionApplyFilter );
 
@@ -505,13 +504,15 @@ void QgsAttributeTableDialog::storeExpressionButtonInit()
   if ( mActionHandleStoreFilterExpression->isChecked() )
   {
     mActionHandleStoreFilterExpression->setToolTip( tr( "Delete stored filter expression" ) );
-    mActionHandleStoreFilterExpression->setText( tr( "D" ) );
+    mActionHandleStoreFilterExpression->setText( tr( "Delete Stored Expression" ) );
+    mActionHandleStoreFilterExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionHandleStoreFilterExpressionChecked.svg" ) ) );
     mStoreFilterExpressionButton->removeAction( mActionSaveAsStoredFilterExpression );
   }
   else
   {
-    mActionHandleStoreFilterExpression->setToolTip( tr( "Store filter expression" ) );
-    mActionHandleStoreFilterExpression->setText( tr( "S" ) );
+    mActionHandleStoreFilterExpression->setToolTip( tr( "Save filter expression" ) );
+    mActionHandleStoreFilterExpression->setText( tr( "Save Expression" ) );
+    mActionHandleStoreFilterExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionHandleStoreFilterExpressionUnchecked.svg" ) ) );
     mStoreFilterExpressionButton->addAction( mActionSaveAsStoredFilterExpression );
   }
 }
@@ -1109,21 +1110,27 @@ void QgsAttributeTableDialog::openConditionalStyles()
 void QgsAttributeTableDialog::saveAsStoredFilterExpression()
 {
   mLayer->storedExpressions()->addStoredExpression( "test", mFilterQuery->text() );
+  mActionHandleStoreFilterExpression->setChecked( false );
   storeExpressionButtonInit();
+  storedFilterExpressionBoxInit();
 }
 
 void QgsAttributeTableDialog::handleStoreFilterExpression()
 {
-  if ( mActionHandleStoreFilterExpression->isChecked() )
+  if ( !mActionHandleStoreFilterExpression->isChecked() )
   {
-    qDebug() << "its checked, here we would delete it...";
+    //care for deleting by name
+    mLayer->storedExpressions()->removeStoredExpression( mFilterQuery->text() );
+    qDebug() << "changed to unchecked, here we would delete it...";
   }
   else
   {
+    //care for updating it by name
     mLayer->storedExpressions()->addStoredExpression( mFilterQuery->text(), mFilterQuery->text() );
-    qDebug() << "its not checked, here we would add it...";
+    qDebug() << "changed to checked, here we would add it...";
   }
   storeExpressionButtonInit();
+  storedFilterExpressionBoxInit();
 }
 
 void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, QgsAttributeForm::FilterType type,
