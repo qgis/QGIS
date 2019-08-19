@@ -38,12 +38,13 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
   public:
 
     /**
-     * Mode for different use cases like
+     * Mode for different use cases
+     * FilterExpression for stored expressions to filter attribute table
+     * DefaultValueExpression for stored expressions used for default values could be an extension
      */
     enum Mode
     {
-      FilterExpression, //!< Expressions to filter features
-      DefaultValueExpression //!< Expressions to create default values (not yet implemented)
+      FilterExpression //!< Expressions to filter features
     };
 
     QgsStoredExpressionManager( Mode mode = FilterExpression )
