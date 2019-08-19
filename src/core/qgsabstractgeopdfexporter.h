@@ -125,6 +125,43 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     };
 
     /**
+     * Contains details of a control point used during georeferencing GeoPDF outputs.
+     * \ingroup core
+     * \since QGIS 3.10
+     */
+    struct ControlPoint
+    {
+
+      /**
+       * Constructor for ControlPoint, at the specified \a pagePoint (in millimeters)
+       * and \a geoPoint (in CRS units).
+       */
+      ControlPoint( const QgsPointXY &pagePoint, const QgsPointXY &geoPoint )
+        : pagePoint( pagePoint )
+        , geoPoint( geoPoint )
+      {}
+
+      //! Coordinate on the page of the control point, in millimeters
+      QgsPointXY pagePoint;
+
+      //! Georeferenced coordinate of the control point, in CRS units
+      QgsPointXY geoPoint;
+    };
+
+    struct GeoReferencedSection
+    {
+      //! Bounds of the georeferenced section on the page, in millimeters
+      QgsRectangle pageBoundsMm;
+
+      //! Coordinate reference system for georeferenced section
+      QgsCoordinateReferenceSystem crs;
+
+      //! List of control points corresponding to this georeferenced section
+      QList< QgsAbstractGeoPdfExporter::ControlPoint > controlPoints;
+
+    };
+
+    /**
      * Called multiple times during the rendering operation, whenever a \a feature associated with the specified
      * \a layerId is rendered.
      */
@@ -137,6 +174,9 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
 
       //! Output DPI
       double dpi = 300;
+
+      //! List of georeferenced sections
+      QList< QgsAbstractGeoPdfExporter::GeoReferencedSection > georeferencedSections;
 
       //! Metadata author tag
       QString author;
