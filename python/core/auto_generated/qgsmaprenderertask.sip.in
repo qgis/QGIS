@@ -10,7 +10,6 @@
 
 
 
-
 class QgsMapRendererTask : QgsTask
 {
 %Docstring
