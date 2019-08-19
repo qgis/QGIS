@@ -83,15 +83,14 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
 
 bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
 {
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
-  Q_UNUSED( components )
-  Q_UNUSED( destinationFile )
-  Q_UNUSED( details )
-  return false;
-#else
   if ( details.includeFeatures && !saveTemporaryLayers() )
     return false;
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
+  Q_UNUSED( components )
+  Q_UNUSED( destinationFile )
+  return false;
+#else
   const QString composition = createCompositionXml( components, details );
   QgsDebugMsg( composition );
   if ( composition.isEmpty() )
@@ -137,7 +136,7 @@ QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &fil
 }
 
 
-void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature )
+void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature, const QString &group )
 {
   // because map layers may be rendered in parallel, we need a mutex here
   QMutexLocker locker( &mMutex );
@@ -145,40 +144,44 @@ void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, con
   // collate all the features which belong to the same layer, replacing their geometries with the rendered feature bounds
   QgsFeature f = feature.feature;
   f.setGeometry( feature.renderedBounds );
-  mCollatedFeatures[ layerId ].append( f );
+  mCollatedFeatures[ group ][ layerId ].append( f );
 }
 
 bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
 {
-  for ( auto it = mCollatedFeatures.constBegin(); it != mCollatedFeatures.constEnd(); ++it )
+  for ( auto groupIt = mCollatedFeatures.constBegin(); groupIt != mCollatedFeatures.constEnd(); ++groupIt )
   {
-    const QString filePath = generateTemporaryFilepath( it.key() + QStringLiteral( ".gpkg" ) );
-
-    VectorComponentDetail detail = componentDetailForLayerId( it.key() );
-    detail.sourceVectorPath = filePath;
-
-    // write out features to disk
-    const QgsFeatureList features = it.value();
-    QString layerName;
-    QgsVectorFileWriter writer( filePath, QString(), features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QStringLiteral( "GPKG" ), QStringList(), QStringList(), nullptr, QgsVectorFileWriter::NoSymbology, nullptr, &layerName );
-    if ( writer.hasError() )
+    for ( auto it = groupIt->constBegin(); it != groupIt->constEnd(); ++it )
     {
-      mErrorMessage = writer.errorMessage();
-      QgsDebugMsg( mErrorMessage );
-      return false;
-    }
-    for ( const QgsFeature &feature : features )
-    {
-      QgsFeature f = feature;
-      if ( !writer.addFeature( f, QgsFeatureSink::FastInsert ) )
+      const QString filePath = generateTemporaryFilepath( it.key() + groupIt.key() + QStringLiteral( ".gpkg" ) );
+
+      VectorComponentDetail detail = componentDetailForLayerId( it.key() );
+      detail.sourceVectorPath = filePath;
+      detail.group = groupIt.key();
+
+      // write out features to disk
+      const QgsFeatureList features = it.value();
+      QString layerName;
+      QgsVectorFileWriter writer( filePath, QString(), features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QStringLiteral( "GPKG" ), QStringList(), QStringList(), nullptr, QgsVectorFileWriter::NoSymbology, nullptr, &layerName );
+      if ( writer.hasError() )
       {
         mErrorMessage = writer.errorMessage();
         QgsDebugMsg( mErrorMessage );
         return false;
       }
+      for ( const QgsFeature &feature : features )
+      {
+        QgsFeature f = feature;
+        if ( !writer.addFeature( f, QgsFeatureSink::FastInsert ) )
+        {
+          mErrorMessage = writer.errorMessage();
+          QgsDebugMsg( mErrorMessage );
+          return false;
+        }
+      }
+      detail.sourceVectorLayer = layerName;
+      mVectorComponents << detail;
     }
-    detail.sourceVectorLayer = layerName;
-    mVectorComponents << detail;
   }
   return true;
 }
