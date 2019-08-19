@@ -238,7 +238,7 @@ json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features
   const auto constFeatures = features;
   for ( const QgsFeature &feature : constFeatures )
   {
-    data["features"].push_back( exportFeatureToJsonObject( feature ) );
+    data[ "features" ].push_back( exportFeatureToJsonObject( feature ) );
   }
   return data;
 }
