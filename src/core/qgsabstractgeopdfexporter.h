@@ -167,8 +167,11 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     /**
      * Called multiple times during the rendering operation, whenever a \a feature associated with the specified
      * \a layerId is rendered.
+     *
+     * The optional \a group argument can be used to differentiate features from the same layer exported
+     * multiple times as part of different layer groups.
      */
-    void pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature );
+    void pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature, const QString &group = QString() );
 
     struct ExportDetails
     {
@@ -264,6 +267,9 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       //! Associated map layer ID
       QString mapLayerId;
 
+      //! Optional layer group name
+      QString group;
+
       //! Field name for display
       QString displayAttribute;
 
@@ -278,7 +284,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
   private:
 
     QMutex mMutex;
-    QMap< QString, QgsFeatureList > mCollatedFeatures;
+    QMap< QString, QMap< QString, QgsFeatureList > > mCollatedFeatures;
 
     /**
      * Returns the PDF output component details for the layer with given \a layerId.
