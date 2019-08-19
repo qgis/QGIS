@@ -39,7 +39,7 @@ bool deleteLayer( const QString &uri, QString &errCause )
   QString tableName = dsUri.table();
   QString geometryCol = dsUri.geometryColumn();
 
-  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );

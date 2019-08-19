@@ -353,7 +353,7 @@ QgsPostgresConn *QgsPostgresProvider::connectionRW()
 
 QgsTransaction *QgsPostgresProvider::transaction() const
 {
-  return static_cast<QgsTransaction *>( mTransaction );
+  return mTransaction;
 }
 
 void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
