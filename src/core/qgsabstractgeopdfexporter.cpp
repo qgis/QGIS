@@ -295,66 +295,66 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   page.appendChild( height );
 
 
-  // georeferencing - TODO
+  // georeferencing
+  for ( const QgsAbstractGeoPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
+  {
+    QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
+    georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced" ) );
+    georeferencing.setAttribute( QStringLiteral( "OGCBestPracticeFormat" ), details.useOgcBestPracticeFormatGeoreferencing ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    georeferencing.setAttribute( QStringLiteral( "ISO32000ExtensionFormat" ), details.useIso32000ExtensionFormatGeoreferencing ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+
+    if ( section.crs.isValid() )
+    {
+      QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
+      // srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
+      if ( !section.crs.authid().startsWith( QStringLiteral( "user" ), Qt::CaseInsensitive ) )
+      {
+        srs.appendChild( doc.createTextNode( section.crs.authid() ) );
+      }
+      else
+      {
+        srs.appendChild( doc.createTextNode( section.crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) ) );
+      }
+      georeferencing.appendChild( srs );
+    }
+
+    /* Define the viewport where georeferenced coordinates are available.
+      If not specified, the extent of BoundingPolygon will be used instead.
+      If none of BoundingBox and BoundingPolygon are specified,
+      the whole PDF page will be assumed to be georeferenced.
+      */
+    QDomElement boundingBox = doc.createElement( QStringLiteral( "BoundingBox" ) );
+    boundingBox.setAttribute( QStringLiteral( "x1" ), QString::number( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
+    boundingBox.setAttribute( QStringLiteral( "y1" ), QString::number( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
+    boundingBox.setAttribute( QStringLiteral( "x2" ), QString::number( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
+    boundingBox.setAttribute( QStringLiteral( "y2" ), QString::number( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
+    georeferencing.appendChild( boundingBox );
+
 #if 0
-  QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
-  georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced" ) );
-  georeferencing.setAttribute( QStringLiteral( "OGCBestPracticeFormat" ), details.useOgcBestPracticeFormatGeoreferencing ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  georeferencing.setAttribute( QStringLiteral( "ISO32000ExtensionFormat" ), details.useIso32000ExtensionFormatGeoreferencing ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
-  // srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
-  srs.appendChild( doc.createTextNode( QStringLiteral( "EPSG:4326" ) ) );
-  georeferencing.appendChild( srs );
-
-  /* Define the viewport where georeferenced coordinates are available.
-    If not specified, the extent of BoundingPolygon will be used instead.
-    If none of BoundingBox and BoundingPolygon are specified,
-    the whole PDF page will be assumed to be georeferenced.
-    */
-  QDomElement boundingBox = doc.createElement( QStringLiteral( "BoundingBox" ) );
-  boundingBox.setAttribute( QStringLiteral( "x1" ), QStringLiteral( "1" ) );
-  boundingBox.setAttribute( QStringLiteral( "y1" ), QStringLiteral( "1" ) );
-  boundingBox.setAttribute( QStringLiteral( "x2" ), QStringLiteral( "9" ) );
-  boundingBox.setAttribute( QStringLiteral( "y2" ), QStringLiteral( "14" ) );
-  georeferencing.appendChild( boundingBox );
-  /*
-    Define a polygon / neatline in PDF units into which the
-    Measure tool will display coordinates.
-    If not specified, BoundingBox will be used instead.
-    If none of BoundingBox and BoundingPolygon are specified,
-    the whole PDF page will be assumed to be georeferenced.
-   */
-  QDomElement boundingPolygon = doc.createElement( QStringLiteral( "BoundingPolygon" ) );
-  boundingPolygon.appendChild( doc.createTextNode( QStringLiteral( "POLYGON((1 1,9 1,9 14,1 14,1 1))" ) ) );
-  georeferencing.appendChild( boundingPolygon );
-
-  QDomElement cp1 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-  cp1.setAttribute( QStringLiteral( "x" ), QStringLiteral( "1" ) );
-  cp1.setAttribute( QStringLiteral( "y" ), QStringLiteral( "1" ) );
-  cp1.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "2" ) );
-  cp1.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "48" ) );
-  georeferencing.appendChild( cp1 );
-  QDomElement cp2 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-  cp2.setAttribute( QStringLiteral( "x" ), QStringLiteral( "1" ) );
-  cp2.setAttribute( QStringLiteral( "y" ), QStringLiteral( "14" ) );
-  cp2.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "2" ) );
-  cp2.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "49" ) );
-  georeferencing.appendChild( cp2 );
-  QDomElement cp3 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-  cp3.setAttribute( QStringLiteral( "x" ), QStringLiteral( "9" ) );
-  cp3.setAttribute( QStringLiteral( "y" ), QStringLiteral( "1" ) );
-  cp3.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "3" ) );
-  cp3.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "48" ) );
-  georeferencing.appendChild( cp3 );
-  QDomElement cp4 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-  cp4.setAttribute( QStringLiteral( "x" ), QStringLiteral( "9" ) );
-  cp4.setAttribute( QStringLiteral( "y" ), QStringLiteral( "14" ) );
-  cp4.setAttribute( QStringLiteral( "GeoX" ), QStringLiteral( "3" ) );
-  cp4.setAttribute( QStringLiteral( "GeoY" ), QStringLiteral( "49" ) );
-  georeferencing.appendChild( cp4 );
-
-  page.appendChild( georeferencing );
+    /*
+      Define a polygon / neatline in PDF units into which the
+      Measure tool will display coordinates.
+      If not specified, BoundingBox will be used instead.
+      If none of BoundingBox and BoundingPolygon are specified,
+      the whole PDF page will be assumed to be georeferenced.
+     */
+    QDomElement boundingPolygon = doc.createElement( QStringLiteral( "BoundingPolygon" ) );
+    boundingPolygon.appendChild( doc.createTextNode( QStringLiteral( "POLYGON((1 1,9 1,9 14,1 14,1 1))" ) ) );
+    georeferencing.appendChild( boundingPolygon );
 #endif
+
+    for ( const ControlPoint &point : section.controlPoints )
+    {
+      QDomElement cp1 = doc.createElement( QStringLiteral( "ControlPoint" ) );
+      cp1.setAttribute( QStringLiteral( "x" ), QString::number( point.pagePoint.x() / 25.4 * 72 ) );
+      cp1.setAttribute( QStringLiteral( "y" ), QString::number( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
+      cp1.setAttribute( QStringLiteral( "GeoX" ), QString::number( point.geoPoint.x() ) );
+      cp1.setAttribute( QStringLiteral( "GeoY" ), QString::number( point.geoPoint.y() ) );
+      georeferencing.appendChild( cp1 );
+    }
+
+    page.appendChild( georeferencing );
+  }
 
   // content
   QDomElement content = doc.createElement( QStringLiteral( "Content" ) );
