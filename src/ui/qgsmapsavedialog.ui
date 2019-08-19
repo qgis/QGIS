@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0">
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
@@ -38,12 +38,15 @@
      </item>
      <item row="0" column="0" colspan="2">
       <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
        <property name="title">
         <string>Extent</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="0" colspan="2">
+     <item row="10" column="0" colspan="2">
       <widget class="QGroupBox" name="mGeoPDFGroupBox">
        <property name="title">
         <string>Create Geospatial PDF (GeoPDF)</string>
@@ -148,6 +151,16 @@
        </property>
       </widget>
      </item>
+     <item row="8" column="0" colspan="2">
+      <widget class="QCheckBox" name="mSimplifyGeometriesCheckbox">
+       <property name="text">
+        <string>Simplify geometries to reduce output file size</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
@@ -155,7 +168,7 @@
        </property>
       </widget>
      </item>
-     <item row="10" column="0" colspan="2">
+     <item row="11" column="0" colspan="2">
       <widget class="QCheckBox" name="mSaveAsRaster">
        <property name="visible">
         <bool>false</bool>
@@ -284,22 +297,22 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
       </widget>
      </item>
-     <item row="11" column="0" colspan="2">
+     <item row="12" column="0" colspan="2">
       <widget class="QLabel" name="mInfo">
        <property name="enabled">
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="8" column="0" colspan="2">
-      <widget class="QCheckBox" name="mSimplifyGeometriesCheckbox">
+     <item row="9" column="0">
+      <widget class="QLabel" name="mTextExportLabel">
        <property name="text">
-        <string>Simplify geometries to reduce output file size</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
+        <string>Text export</string>
        </property>
       </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
      </item>
     </layout>
    </item>
@@ -360,8 +373,18 @@ Rasterizing the map is recommended when such effects are used.</string>
  </customwidgets>
  <tabstops>
   <tabstop>mExtentGroupBox</tabstop>
-  <tabstop>mDrawAnnotations</tabstop>
+  <tabstop>mResolutionSpinBox</tabstop>
+  <tabstop>mOutputWidthSpinBox</tabstop>
+  <tabstop>mLockAspectRatio</tabstop>
+  <tabstop>mOutputHeightSpinBox</tabstop>
   <tabstop>mDrawDecorations</tabstop>
+  <tabstop>mDrawAnnotations</tabstop>
+  <tabstop>mSaveWorldFile</tabstop>
+  <tabstop>mSimplifyGeometriesCheckbox</tabstop>
+  <tabstop>mTextRenderFormatComboBox</tabstop>
+  <tabstop>mGeoPDFGroupBox</tabstop>
+  <tabstop>mGeoPdfFormatComboBox</tabstop>
+  <tabstop>mExportMetadataCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

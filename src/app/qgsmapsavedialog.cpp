@@ -119,6 +119,9 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
       this->setWindowTitle( tr( "Save Map as PDF" ) );
 
+      mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
+      mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
+
       const bool geoPdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
       mGeoPDFGroupBox->setEnabled( geoPdfAvailable );
       mGeoPDFGroupBox->setChecked( false );
@@ -140,6 +143,8 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     {
       mGeoPDFGroupBox->hide();
       mSimplifyGeometriesCheckbox->hide();
+      mTextRenderFormatComboBox->hide();
+      mTextExportLabel->hide();
       QPushButton *button = new QPushButton( tr( "Copy to Clipboard" ) );
       buttonBox->addButton( button, QDialogButtonBox::ResetRole );
       connect( button, &QPushButton::clicked, this, &QgsMapSaveDialog::copyToClipboard );
@@ -487,6 +492,8 @@ void QgsMapSaveDialog::onAccepted()
           simplifyMethod.setThreshold( 0.1f ); // (pixels). We are quite conservative here. This could possibly be bumped all the way up to 1. But let's play it safe.
           ms.setSimplifyMethod( simplifyMethod );
         }
+
+        ms.setTextRenderFormat( static_cast< QgsRenderContext::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() ) );
 
         QgsAbstractGeoPdfExporter::ExportDetails geoPdfExportDetails;
         if ( mGeoPDFGroupBox->isChecked() )
