@@ -1121,6 +1121,9 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
       return detail;
 
     case Layer:
+      if ( !mExportThemes.empty() && mExportThemeIt != mExportThemes.end() )
+        detail.mapTheme = *mExportThemeIt;
+
       if ( mStagedRendererJob )
       {
         switch ( mStagedRendererJob->currentStage() )
