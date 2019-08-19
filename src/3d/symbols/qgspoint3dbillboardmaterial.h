@@ -22,6 +22,7 @@
 #include <Qt3DRender/QPaintedTextureImage>
 
 #include "qgsmarkersymbollayer.h"
+#include "qgs3dmapsettings.h"
 
 class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 {
@@ -43,9 +44,9 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     void setTexture2DFromImage( QImage image, double size = 100 );
 
-    void useDefaultSymbol();
+    void useDefaultSymbol( const Qgs3DMapSettings &map, bool selected = false );
 
-    void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, bool selected = false );
+    void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DMapSettings &map, bool selected = false );
 
     void setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage );
 

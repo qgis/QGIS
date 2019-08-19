@@ -22,12 +22,16 @@
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QNoDepthMask>
 #include <QPainter>
+#include <QDesktopWidget>
 
 #include "qgslogger.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
+#include "qgs3dmapsettings.h"
 
 QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
@@ -144,21 +148,22 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double si
   setSize( QSizeF( size, size ) );
 }
 
-void QgsPoint3DBillboardMaterial::useDefaultSymbol()
+void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DMapSettings &map, bool selected )
 {
   // Default texture
   QgsMarkerSymbol *defaultSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
-  setTexture2DFromSymbol( defaultSymbol );
+  setTexture2DFromSymbol( defaultSymbol, map, selected );
 }
 
-void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, bool selected )
+void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DMapSettings &map, bool selected )
 {
-  QgsRenderContext context = QgsRenderContext();
-  context.setScaleFactor( 276 / 25.4 );
-  double pixelSize = context.convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
+  QgsRenderContext *context = new QgsRenderContext();
+  context->setSelectionColor( map.selectionColor() );
+  context->setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+  double pixelSize = context->convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
 
-  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 0, nullptr, selected );
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 0, context, selected );
   QImage symbolImage = symbolPixmap.toImage();
   QImage flippedSymbolImage = symbolImage.mirrored();
   setTexture2DFromImage( flippedSymbolImage, pixelSize );

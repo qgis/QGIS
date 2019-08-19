@@ -525,8 +525,6 @@ void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
 void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
 {
-  Q_UNUSED( context );
-
   // Billboard Geometry
   QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
   billboardGeometry->setPoints( out.positions );
@@ -543,11 +541,11 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
   if ( symbol )
   {
-    billboardMaterial->setTexture2DFromSymbol( symbol, selected );
+    billboardMaterial->setTexture2DFromSymbol( symbol, context.map(), selected );
   }
   else
   {
-    billboardMaterial->useDefaultSymbol();
+    billboardMaterial->useDefaultSymbol( context.map(), selected );
   }
 
   // Billboard Transform
