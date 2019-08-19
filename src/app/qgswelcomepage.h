@@ -36,7 +36,7 @@ class QgsWelcomePage : public QWidget
     Q_OBJECT
 
   public:
-    explicit QgsWelcomePage( bool skipVersionCheck = false, QWidget *parent = nullptr );
+    explicit QgsWelcomePage( QWidget *parent = nullptr );
 
     ~QgsWelcomePage() override;
 
@@ -59,7 +59,6 @@ class QgsWelcomePage : public QWidget
     void recentProjectItemActivated( const QModelIndex &index );
     void templateProjectItemActivated( const QModelIndex &index );
     void newsItemActivated( const QModelIndex &index );
-    void versionInfoReceived();
     void showContextMenuForProjects( QPoint point );
     void showContextMenuForTemplates( QPoint point );
     void showContextMenuForNews( QPoint point );
@@ -69,8 +68,6 @@ class QgsWelcomePage : public QWidget
     void updateRecentProjectsVisibility();
 
     QgsRecentProjectItemsModel *mRecentProjectsModel = nullptr;
-    QTextBrowser *mVersionInformation = nullptr;
-    QgsVersionInfo *mVersionInfo = nullptr;
     QListView *mRecentProjectsListView = nullptr;
     QLabel *mRecentProjectsTitle = nullptr;
     QListView *mTemplateProjectsListView = nullptr;

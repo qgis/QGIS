@@ -536,7 +536,6 @@ int main( int argc, char *argv[] )
 
   bool myHideSplash = false;
   bool settingsMigrationForce = false;
-  bool mySkipVersionCheck = false;
   bool hideBrowser = false;
 #if defined(ANDROID)
   QgsDebugMsg( QStringLiteral( "Android: Splash hidden" ) );
@@ -625,10 +624,6 @@ int main( int argc, char *argv[] )
         else if ( arg == QLatin1String( "--version-migration" ) )
         {
           settingsMigrationForce = true;
-        }
-        else if ( arg == QLatin1String( "--noversioncheck" ) || arg == QLatin1String( "-V" ) )
-        {
-          mySkipVersionCheck = true;
         }
         else if ( arg == QLatin1String( "--noplugins" ) || arg == QLatin1String( "-P" ) )
         {
@@ -1325,7 +1320,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   myApp.connect(

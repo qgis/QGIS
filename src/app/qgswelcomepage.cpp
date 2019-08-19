@@ -16,7 +16,6 @@
 #include "qgswelcomepage.h"
 #include "qgsproject.h"
 #include "qgisapp.h"
-#include "qgsversioninfo.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
@@ -38,7 +37,7 @@
 
 #define FEED_URL "http://feed.qgis.org/"
 
-QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
+QgsWelcomePage::QgsWelcomePage( QWidget *parent )
   : QWidget( parent )
 {
   QgsSettings settings;
@@ -150,26 +149,6 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   rightContainer->setLayout( rightLayout );
   mSplitter->addWidget( rightContainer );
 
-  mVersionInformation = new QTextBrowser;
-  mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
-  mVersionInformation->setReadOnly( true );
-  mVersionInformation->setOpenExternalLinks( true );
-  mVersionInformation->setStyleSheet( QStringLiteral( "QTextEdit { background-color: #dff0d8; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
-                                      "QScrollBar { background-color: rgba(0,0,0,0); } "
-                                      "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
-                                      "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " ) );
-
-  mainLayout->addWidget( mVersionInformation );
-  mVersionInformation->setVisible( false );
-
-  mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool()
-       && settings.value( QStringLiteral( "qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
-  {
-    connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomePage::versionInfoReceived );
-    mVersionInfo->checkVersion();
-  }
-
   mSplitter->restoreState( settings.value( QStringLiteral( "Windows/WelcomePage/SplitState" ), QVariant(), QgsSettings::App ).toByteArray() );
   if ( mSplitter2 )
     mSplitter2->restoreState( settings.value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
@@ -186,8 +165,6 @@ QgsWelcomePage::~QgsWelcomePage()
   settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState" ), mSplitter->saveState(), QgsSettings::App );
   if ( mSplitter2 && mNewsFeedTitle->isVisible() )
     settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState2" ), mSplitter2->saveState(), QgsSettings::App );
-
-  delete mVersionInfo;
 }
 
 void QgsWelcomePage::setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects )
@@ -221,20 +198,6 @@ void QgsWelcomePage::newsItemActivated( const QModelIndex &index )
 
   const QUrl link = index.data( QgsNewsFeedModel::Link ).toUrl();
   QDesktopServices::openUrl( link );
-}
-
-void QgsWelcomePage::versionInfoReceived()
-{
-  QgsVersionInfo *versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
-  Q_ASSERT( versionInfo );
-
-  if ( versionInfo->newVersionAvailable() )
-  {
-    mVersionInformation->setVisible( true );
-    mVersionInformation->setText( QStringLiteral( "<style> a, a:visited, a:hover { color:#268300; } </style><b>%1</b>: %2" )
-                                  .arg( tr( "New QGIS version available" ),
-                                        QgsStringUtils::insertLinks( versionInfo->downloadInfo() ) ) );
-  }
 }
 
 void QgsWelcomePage::showContextMenuForProjects( QPoint point )

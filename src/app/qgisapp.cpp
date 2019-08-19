@@ -712,7 +712,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
 {
@@ -824,7 +824,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mProjOpen = settings.value( QStringLiteral( "qgis/projOpenAtLaunch" ), 0 ).toInt();
 
   startProfile( QStringLiteral( "Welcome page" ) );
-  mWelcomePage = new QgsWelcomePage( skipVersionCheck );
+  mWelcomePage = new QgsWelcomePage();
   connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [ this ]( int row )
   {
     mRecentProjects.removeAt( row );
