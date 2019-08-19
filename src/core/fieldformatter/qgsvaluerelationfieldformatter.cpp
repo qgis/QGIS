@@ -23,6 +23,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerref.h"
 #include "qgspostgresstringutils.h"
+#include "qgsmessagelog.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -209,7 +210,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
         }
         catch ( json::parse_error &ex )
         {
-          qDebug() << QString::fromStdString( ex.what() );
+          QgsMessageLog::logMessage( QObject::tr( "Cannot parse JSON like string '%1' Error: %2" ).arg( newVal.toString(), ex.what() ) );
         }
       }
     }
