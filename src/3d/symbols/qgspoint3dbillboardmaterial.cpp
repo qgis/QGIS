@@ -136,11 +136,10 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double si
 {
   // Create texture image
   QgsRectangle dummyExtent = QgsRectangle( rand(), rand(), rand(), rand() );
-  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, mName );
+  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, QStringLiteral( "" ) );
 
   setTexture2DFromTextureImage( billboardTextureImage );
 
-  QgsDebugMsg( "Image Size: " + QString::number( image.size().width() ) );
   QgsRenderContext context = QgsRenderContext();
   setSize( QSizeF( size, size ) );
 }
@@ -151,7 +150,6 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol()
   QgsMarkerSymbol *defaultSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   setTexture2DFromSymbol( defaultSymbol );
-  mName = QStringLiteral( "default symbol: " ) + defaultSymbol->color().name();
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, bool selected )
@@ -159,13 +157,11 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   QgsRenderContext context = QgsRenderContext();
   context.setScaleFactor( 276 / 25.4 );
   double pixelSize = context.convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
-  QgsDebugMsg( "Symbol pixel size: " + QString::number( pixelSize ) );
 
   QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 0, nullptr, selected );
   QImage symbolImage = symbolPixmap.toImage();
   QImage flippedSymbolImage = symbolImage.mirrored();
   setTexture2DFromImage( flippedSymbolImage, pixelSize );
-  mName = markerSymbol->color().name();
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage )
@@ -179,11 +175,4 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbs
   texture2D->addTextureImage( textureImage );
 
   setTexture2D( texture2D );
-}
-
-void QgsPoint3DBillboardMaterial::debug( QString title )
-{
-  QgsDebugMsg( "Billboard debug: " + title );
-//  QgsDebugMsg( "Name or color: " + name() );
-//  QgsDebugMsg( "Billboard size: " + QString::number( size().height() ) );
 }

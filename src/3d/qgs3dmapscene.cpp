@@ -526,7 +526,6 @@ void Qgs3DMapScene::onLayerRenderer3DChanged()
 
 void Qgs3DMapScene::onLayersChanged()
 {
-  QgsDebugMsg( "Number of entities: " + QString::number( mLayerEntities.count() ) );
   QSet<QgsMapLayer *> layersBefore = QSet<QgsMapLayer *>::fromList( mLayerEntities.keys() );
   QList<QgsMapLayer *> layersAdded;
   Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
@@ -630,22 +629,16 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
     lm->setViewportSize( cameraController()->viewport().size() );
   }
-  // for to get the billboard also
-  int i = 0;
+  // configure billboard's viewport when the viewport is changed.
   for ( QgsPoint3DBillboardMaterial *bm : newEntity->findChildren<QgsPoint3DBillboardMaterial *>() )
   {
-    i = i + 1;
-    bm->debug();
     connect( mCameraController, &QgsCameraController::viewportChanged, bm, [bm, this]
     {
       bm->setViewportSize( mCameraController->viewport().size() );
-      bm->debug( QStringLiteral( "Viewport changed" ) );
     } );
 
     bm->setViewportSize( mCameraController->viewport().size() );
   }
-
-  QgsDebugMsg( "Number of entity: " + QString::number( mLayerEntities.count() ) );
 }
 
 void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )

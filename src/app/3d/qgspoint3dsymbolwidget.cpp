@@ -110,12 +110,6 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
   emit changed();
 }
 
-void QgsPoint3DSymbolWidget::onBillboardSymbolChanged()
-{
-  QgsDebugMsg( QStringLiteral( "Symbol changed: %1" ).arg( btnChangeSymbol->symbol()->color().name() ) );
-  emit changed();
-}
-
 void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 {
   cboAltClamping->setCurrentIndex( static_cast<int>( symbol.altitudeClamping() ) );

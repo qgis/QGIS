@@ -49,15 +49,10 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     void setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage );
 
-    QString name() {return mName;}
-
-    void debug( QString title = QStringLiteral( "Normal debug" ) );
-
   private:
     Qt3DRender::QParameter *mSize = nullptr;
     Qt3DRender::QParameter *mViewportSize = nullptr;
     Qt3DRender::QParameter *mTexture2D = nullptr;
-    QString mName = QStringLiteral( "Default" );
 };
 
 

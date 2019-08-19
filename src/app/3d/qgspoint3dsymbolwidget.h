@@ -42,7 +42,6 @@ class QgsPoint3DSymbolWidget : public QWidget, private Ui::Point3DSymbolWidget
     void onShapeChanged();
     void onChooseModelClicked( bool checked = false );
     void onOverwriteMaterialChecked( int state );
-    void onBillboardSymbolChanged();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
