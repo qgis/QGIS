@@ -157,13 +157,14 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol()
 void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, bool selected )
 {
   QgsRenderContext context = QgsRenderContext();
+  context.setScaleFactor( 276 / 25.4 );
   double pixelSize = context.convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
   QgsDebugMsg( "Symbol pixel size: " + QString::number( pixelSize ) );
 
-  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ) * 20, int( pixelSize ) * 20 ), 0, nullptr, selected );
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 0, nullptr, selected );
   QImage symbolImage = symbolPixmap.toImage();
   QImage flippedSymbolImage = symbolImage.mirrored();
-  setTexture2DFromImage( flippedSymbolImage, pixelSize * 20 );
+  setTexture2DFromImage( flippedSymbolImage, pixelSize );
   mName = markerSymbol->color().name();
 }
 
