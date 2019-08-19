@@ -566,6 +566,8 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
   for ( const auto &mapLayer : layers )
   {
     const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
+    // Use layer id for operationId
+    const QString layerId { mapLayer->id() };
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "collections/%1" ).arg( shortName ), context.request()->url() ).toStdString() };
 
@@ -576,7 +578,7 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
           { "tags", jsonTags() },
           { "summary", "Describe the '" + title + "' feature collection"},
           { "description", description() },
-          { "operationId", operationId() + '_' + shortName.toStdString() },
+          { "operationId", operationId() + '_' + layerId.toStdString() },
           {
             "responses", {
               {
@@ -725,6 +727,8 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
   {
     const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
+    // Use layer id for operationId
+    const QString layerId { mapLayer->id() };
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     json parameters = {{
@@ -750,7 +754,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
           { "tags", jsonTags() },
           { "summary", "Retrieve features of '" + title + "' feature collection" },
           { "description", description() },
-          { "operationId", operationId() + '_' + shortName.toStdString() },
+          { "operationId", operationId() + '_' + layerId.toStdString() },
           { "parameters", parameters },
           {
             "responses", {
@@ -1113,6 +1117,8 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
   for ( const auto &mapLayer : layers )
   {
     const QString shortName { mapLayer->shortName().isEmpty() ? mapLayer->name() : mapLayer->shortName() };
+    // Use layer id for operationId
+    const QString layerId { mapLayer->id() };
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "collections/%1/items/{featureId}" ).arg( shortName ), context.request()->url() ).toStdString() };
 
@@ -1123,7 +1129,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
           { "tags", jsonTags() },
           { "summary", "Retrieve a single feature from the '" + title + "' feature collection"},
           { "description", description() },
-          { "operationId", operationId() + '_' + shortName.toStdString() },
+          { "operationId", operationId() + '_' + layerId.toStdString() },
           {
             "responses", {
               {
