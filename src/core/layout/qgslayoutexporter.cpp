@@ -556,6 +556,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       QgsLayoutGeoPdfExporter::ComponentLayerDetail component;
       component.name = layerDetail.name;
       component.mapLayerId = layerDetail.mapLayerId;
+      component.group = layerDetail.mapTheme;
       component.sourcePdfPath = geoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) );
       pdfComponents << component;
       preparePrintAsPdf( mLayout, printer, component.sourcePdfPath );
