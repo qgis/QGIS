@@ -1273,7 +1273,7 @@ void TestQgsLayoutMap::testLayeredExport()
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Background ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
   QVERIFY( map->nextExportPart() );
-  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: lines" ) );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1 (test preset2): lines" ) );
   QCOMPARE( map->exportLayerDetails().mapLayerId, linesLayer->id() );
   QCOMPARE( map->exportLayerDetails().mapTheme, QStringLiteral( "test preset2" ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
@@ -1282,7 +1282,7 @@ void TestQgsLayoutMap::testLayeredExport()
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
   QVERIFY( map->nextExportPart() );
-  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points" ) );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1 (test preset2): points" ) );
   QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
   QCOMPARE( map->exportLayerDetails().mapTheme, QStringLiteral( "test preset2" ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
@@ -1292,7 +1292,7 @@ void TestQgsLayoutMap::testLayeredExport()
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
   QVERIFY( map->nextExportPart() );
   // labels
-  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Labels" ) );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1 (test preset2): Labels" ) );
   QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
   QCOMPARE( map->exportLayerDetails().mapTheme, QStringLiteral( "test preset2" ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
@@ -1303,7 +1303,7 @@ void TestQgsLayoutMap::testLayeredExport()
   QVERIFY( map->nextExportPart() );
   // "test preset"
   map->createStagedRenderJob( map->extent(), QSize( 512, 512 ), 72 );
-  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: lines" ) );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1 (test preset): lines" ) );
   QCOMPARE( map->exportLayerDetails().mapLayerId, linesLayer->id() );
   QCOMPARE( map->exportLayerDetails().mapTheme, QStringLiteral( "test preset" ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
@@ -1313,7 +1313,7 @@ void TestQgsLayoutMap::testLayeredExport()
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
   QVERIFY( map->nextExportPart() );
   // labels
-  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Labels" ) );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1 (test preset): Labels" ) );
   QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
   QCOMPARE( map->exportLayerDetails().mapTheme, QStringLiteral( "test preset" ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
@@ -1324,7 +1324,7 @@ void TestQgsLayoutMap::testLayeredExport()
   QVERIFY( map->nextExportPart() );
   map->createStagedRenderJob( map->extent(), QSize( 512, 512 ), 72 );
   // "test preset 3"
-  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points" ) );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1 (test preset3): points" ) );
   QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
   QCOMPARE( map->exportLayerDetails().mapTheme, QStringLiteral( "test preset3" ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
@@ -1334,7 +1334,7 @@ void TestQgsLayoutMap::testLayeredExport()
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
   QVERIFY( map->nextExportPart() );
   // labels
-  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Labels" ) );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1 (test preset3): Labels" ) );
   QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
   QCOMPARE( map->exportLayerDetails().mapTheme, QStringLiteral( "test preset3" ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );

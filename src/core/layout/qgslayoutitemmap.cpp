@@ -1133,7 +1133,10 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
             detail.mapLayerId  = mStagedRendererJob->currentLayerId();
             if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
             {
-              detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
+              if ( !detail.mapTheme.isEmpty() )
+                detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, layer->name() );
+              else
+                detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
             }
             return detail;
           }
@@ -1142,11 +1145,17 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
             detail.mapLayerId  = mStagedRendererJob->currentLayerId();
             if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
             {
-              detail.name = tr( "%1: %2 (Labels)" ).arg( displayName(), layer->name() );
+              if ( !detail.mapTheme.isEmpty() )
+                detail.name = QStringLiteral( "%1 (%2): %3 (Labels)" ).arg( displayName(), detail.mapTheme, layer->name() );
+              else
+                detail.name = tr( "%1: %2 (Labels)" ).arg( displayName(), layer->name() );
             }
             else
             {
-              detail.name = tr( "%1: Labels" ).arg( displayName() );
+              if ( !detail.mapTheme.isEmpty() )
+                detail.name = tr( "%1 (%2): Labels" ).arg( displayName(), detail.mapTheme );
+              else
+                detail.name = tr( "%1: Labels" ).arg( displayName() );
             }
             return detail;
 
