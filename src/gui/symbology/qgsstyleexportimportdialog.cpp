@@ -417,7 +417,7 @@ void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
         mTempFile->close();
         populateStyles();
       }
-      delete progressDlg;
+      progressDlg->deleteLater();
     } );
 
     QgsApplication::taskManager()->addTask( fetcher );
