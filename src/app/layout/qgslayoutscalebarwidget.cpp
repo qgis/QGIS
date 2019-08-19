@@ -40,7 +40,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mFillColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutScaleBarWidget::mFillColorButton_colorChanged );
   connect( mFillColor2Button, &QgsColorButton::colorChanged, this, &QgsLayoutScaleBarWidget::mFillColor2Button_colorChanged );
   connect( mStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutScaleBarWidget::mStrokeColorButton_colorChanged );
-  connect( mStyleComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged );
+  connect( mStyleComboBox, &QComboBox::currentTextChanged, this, &QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged );
   connect( mLabelBarSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged );
   connect( mBoxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mBoxSizeSpinBox_valueChanged );
   connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, &QgsLayoutScaleBarWidget::alignmentChanged );

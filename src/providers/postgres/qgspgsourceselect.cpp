@@ -58,12 +58,12 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   {
     QComboBox *cb = new QComboBox( parent );
     static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point
-      , QgsWkbTypes::LineString
-      , QgsWkbTypes::Polygon
-      , QgsWkbTypes::MultiPoint
-      , QgsWkbTypes::MultiLineString
-      , QgsWkbTypes::MultiPolygon
-      , QgsWkbTypes::NoGeometry };
+        , QgsWkbTypes::LineString
+        , QgsWkbTypes::Polygon
+        , QgsWkbTypes::MultiPoint
+        , QgsWkbTypes::MultiLineString
+        , QgsWkbTypes::MultiPolygon
+        , QgsWkbTypes::NoGeometry };
     for ( QgsWkbTypes::Type type : types )
     {
       cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
@@ -210,9 +210,9 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   connect( btnLoad, &QPushButton::clicked, this, &QgsPgSourceSelect::btnLoad_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsPgSourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsPgSourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::mSearchModeComboBox_currentIndexChanged );
-  connect( cmbConnections, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::cmbConnections_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsPgSourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsPgSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( cmbConnections, &QComboBox::currentTextChanged, this, &QgsPgSourceSelect::cmbConnections_currentIndexChanged );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsPgSourceSelect::mTablesTreeView_clicked );
   connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsPgSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );

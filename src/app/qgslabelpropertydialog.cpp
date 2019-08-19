@@ -53,7 +53,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   connect( mXCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mXCoordSpinBox_valueChanged );
   connect( mYCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged );
   connect( mFontFamilyCmbBx, &QFontComboBox::currentFontChanged, this, &QgsLabelPropertyDialog::mFontFamilyCmbBx_currentFontChanged );
-  connect( mFontStyleCmbBx, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mFontStyleCmbBx_currentIndexChanged );
+  connect( mFontStyleCmbBx, &QComboBox::currentTextChanged, this, &QgsLabelPropertyDialog::mFontStyleCmbBx_currentIndexChanged );
   connect( mFontUnderlineBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontUnderlineBtn_toggled );
   connect( mFontStrikethroughBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontStrikethroughBtn_toggled );
   connect( mFontBoldBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontBoldBtn_toggled );
