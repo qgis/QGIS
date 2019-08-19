@@ -36,7 +36,19 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     Q_OBJECT
 
   public:
-    explicit QgsStoredExpressionManager( QObject *parent = nullptr );
+
+    /**
+     * Mode for different use cases like
+     */
+    enum Mode
+    {
+      FilterExpression, //!< Expressions to filter features
+      DefaultValueExpression //!< Expressions to create default values (not yet implemented)
+    };
+
+    QgsStoredExpressionManager( Mode mode = FilterExpression )
+      : mMode( mode )
+    {}
 
     /**
     * Adds an expression to the list
@@ -80,6 +92,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
   public slots:
 
   private:
+    Mode mMode = FilterExpression;
     QList< QPair< QString, QString > > mStoredExpressions;
 };
 

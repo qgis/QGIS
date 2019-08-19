@@ -25,11 +25,6 @@
 
 #include <QDomElement>
 
-QgsStoredExpressionManager::QgsStoredExpressionManager( QObject *parent ) : QObject( parent )
-{
-
-}
-
 void QgsStoredExpressionManager::addStoredExpression( const QString &name, const QString &expression, const QString &tag )
 {
   Q_UNUSED( tag );
@@ -60,11 +55,22 @@ void QgsStoredExpressionManager::clearStoredExpressions()
 
 bool QgsStoredExpressionManager::writeXml( QDomNode &layer_node ) const
 {
-  QDomElement aStoredExpressions = layer_node.ownerDocument().createElement( QStringLiteral( "storedexpressions" ) );
+  QString elementName;
+
+  switch ( mMode )
+  {
+    case FilterExpression:
+    {
+      elementName = QStringLiteral( "storedfilterexpression" );
+      break;
+    }
+  }
+
+  QDomElement aStoredExpressions = layer_node.ownerDocument().createElement( QStringLiteral( "%1s" ).arg( elementName ) );
 
   for ( const QPair<QString, QString> &storedExpression : mStoredExpressions )
   {
-    QDomElement aStoredExpression = layer_node.ownerDocument().createElement( QStringLiteral( "storedexpression" ) );
+    QDomElement aStoredExpression = layer_node.ownerDocument().createElement( elementName );
     aStoredExpression.setAttribute( QStringLiteral( "name" ), storedExpression.first );
     aStoredExpression.setAttribute( QStringLiteral( "expression" ), storedExpression.second );
     aStoredExpressions.appendChild( aStoredExpression );
@@ -78,11 +84,21 @@ bool QgsStoredExpressionManager::readXml( const QDomNode &layer_node )
 {
   clearStoredExpressions();
 
-  QDomNode aaNode = layer_node.namedItem( QStringLiteral( "storedexpressions" ) );
+  QString elementName;
+  switch ( mMode )
+  {
+    case FilterExpression:
+    {
+      elementName = QStringLiteral( "storedfilterexpression" );
+      break;
+    }
+  }
+
+  QDomNode aaNode = layer_node.namedItem( QStringLiteral( "%1s" ).arg( elementName ) );
 
   if ( !aaNode.isNull() )
   {
-    QDomNodeList aStoredExpressions = aaNode.toElement().elementsByTagName( QStringLiteral( "storedexpression" ) );
+    QDomNodeList aStoredExpressions = aaNode.toElement().elementsByTagName( elementName );
     for ( int i = 0; i < aStoredExpressions.size(); ++i )
     {
       QDomElement aStoredExpression = aStoredExpressions.at( i ).toElement();

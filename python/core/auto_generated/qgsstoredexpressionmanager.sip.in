@@ -27,7 +27,14 @@ the Free Software Foundation; either version 2 of the License, or     *
 #include "qgsstoredexpressionmanager.h"
 %End
   public:
-    explicit QgsStoredExpressionManager( QObject *parent = 0 );
+
+    enum Mode
+    {
+      FilterExpression,
+      DefaultValueExpression
+    };
+
+    QgsStoredExpressionManager( Mode mode = FilterExpression );
 
     void addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
 %Docstring

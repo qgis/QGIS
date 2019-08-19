@@ -2177,6 +2177,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   {
     mAttributeTableConfig.readXml( layerNode );
     mConditionalStyles->readXml( layerNode, context );
+    mStoredExpressions->readXml( layerNode );
   }
 
   if ( categories.testFlag( CustomProperties ) )
@@ -2515,6 +2516,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   {
     mAttributeTableConfig.writeXml( node );
     mConditionalStyles->writeXml( node, doc, context );
+    mStoredExpressions->writeXml( node );
   }
 
   if ( categories.testFlag( Forms ) )
