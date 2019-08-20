@@ -24,7 +24,7 @@
 #include "qgsrendercontext.h"
 
 /**
- * A dialog for customizing the properties of an exported PDF file.
+ * A dialog for customizing the properties of an exported PDF file from a layout.
 */
 class QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportOptionsDialog
 {
