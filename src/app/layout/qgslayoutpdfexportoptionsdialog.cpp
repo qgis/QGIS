@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsabstractgeopdfexporter.h"
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -30,6 +31,26 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
 
   mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
+
+  const bool geoPdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
+  mGeoPDFGroupBox->setEnabled( geoPdfAvailable );
+  mGeoPDFGroupBox->setChecked( false );
+  if ( !geoPdfAvailable )
+  {
+    mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
+    mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
+    // avoid showing reason in disabled text color - we want it to stand out
+    QPalette p = mGeoPdfUnavailableReason->palette();
+    p.setColor( QPalette::Disabled, QPalette::WindowText, QPalette::WindowText );
+    mGeoPdfUnavailableReason->setPalette( p );
+    mGeoPDFOptionsStackedWidget->removeWidget( mGeoPDFOptionsStackedWidget->widget( 1 ) );
+  }
+  else
+  {
+    mGeoPDFOptionsStackedWidget->setCurrentIndex( 1 );
+    mGeoPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
+    mGeoPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
+  }
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutPdfExportOptionsDialog::showHelp );
   QgsGui::enableAutoGeometryRestore( this );
@@ -98,6 +119,16 @@ void QgsLayoutPdfExportOptionsDialog::setGeometriesSimplified( bool enabled )
 bool QgsLayoutPdfExportOptionsDialog::geometriesSimplified() const
 {
   return mSimplifyGeometriesCheckbox->isChecked();
+}
+
+void QgsLayoutPdfExportOptionsDialog::setExportGeoPdf( bool enabled )
+{
+  mGeoPDFGroupBox->setChecked( enabled );
+}
+
+bool QgsLayoutPdfExportOptionsDialog::exportGeoPdf() const
+{
+  return mGeoPDFGroupBox->isChecked();
 }
 
 void QgsLayoutPdfExportOptionsDialog::showHelp()
