@@ -338,10 +338,12 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   page.appendChild( dpi );
   // assumes DPI of 72, which is an assumption on GDALs/PDF side. It's only related to the PDF coordinate space and doesn't affect the actual output DPI!
   QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
-  width.appendChild( doc.createTextNode( QString::number( std::ceil( details.pageSizeMm.width() / 25.4 * 72 ) ) ) );
+  const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
+  width.appendChild( doc.createTextNode( QString::number( pageWidthPdfUnits ) ) );
   page.appendChild( width );
   QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
-  height.appendChild( doc.createTextNode( QString::number( std::ceil( details.pageSizeMm.height() / 25.4 * 72 ) ) ) );
+  const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * 72 );
+  height.appendChild( doc.createTextNode( QString::number( pageHeightPdfUnits ) ) );
   page.appendChild( height );
 
 
@@ -380,7 +382,15 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         the whole PDF page will be assumed to be georeferenced.
        */
       QDomElement boundingPolygon = doc.createElement( QStringLiteral( "BoundingPolygon" ) );
-      boundingPolygon.appendChild( doc.createTextNode( section.pageBoundsPolygon.asWkt() ) );
+
+      // transform to PDF coordinate space
+      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(),
+                     -pageHeightPdfUnits / details.pageSizeMm.height() );
+
+      QgsPolygon p = section.pageBoundsPolygon;
+      p.transform( t );
+      boundingPolygon.appendChild( doc.createTextNode( p.asWkt() ) );
+
       georeferencing.appendChild( boundingPolygon );
     }
     else

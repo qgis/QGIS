@@ -379,7 +379,7 @@ void TestQgsGeoPdfExport::testGeorefPolygon()
   QDomDocument doc;
   doc.setContent( composition );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "SRS" ) ).at( 0 ).toElement().text(), QStringLiteral( "EPSG:4283" ) );
-  QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingPolygon" ) ).at( 0 ).toElement().text(), QStringLiteral( "Polygon ((30 5, 250 15, 240 200, 50 190, 30 5))" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingPolygon" ) ).at( 0 ).toElement().text(), QStringLiteral( "Polygon ((60 -12, 500 -32, 480 -402, 100 -382, 60 -12))" ) );
 
   QDomNodeList cps = doc.elementsByTagName( QStringLiteral( "ControlPoint" ) );
   QCOMPARE( cps.count(), 4 );
