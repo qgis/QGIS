@@ -230,7 +230,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           icon = QgsLayerItem::iconDefault();
       }
 
-      if ( vlayer && vlayer->isEditable() )
+      if ( vlayer && vlayer->isEditable() && testFlag( UseTextFormatting ) )
       {
         const int iconSize = scaleIconSize( 16 );
         QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
@@ -265,7 +265,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       return nodeGroup->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
     }
   }
-  else if ( role == Qt::FontRole )
+  else if ( role == Qt::FontRole && testFlag( UseTextFormatting ) )
   {
     QFont f( QgsLayerTree::isLayer( node ) ? mFontLayer : ( QgsLayerTree::isGroup( node ) ? mFontGroup : QFont() ) );
     if ( index == mCurrentIndex )
@@ -280,7 +280,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     }
     return f;
   }
-  else if ( role == Qt::ForegroundRole )
+  else if ( role == Qt::ForegroundRole && testFlag( UseTextFormatting ) )
   {
     QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
     if ( QgsLayerTree::isLayer( node ) )
