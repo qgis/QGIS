@@ -549,6 +549,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void removeRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
 
+    /**
+     * Creates a transform from layout coordinates to map coordinates.
+     */
+    QTransform layoutToMapCoordsTransform() const;
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;
@@ -730,11 +735,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     //! Returns first map overview or creates an empty one if none
     const QgsLayoutItemMapOverview *constFirstMapOverview() const;
-
-    /**
-     * Creates a transform from layout coordinates to map coordinates.
-     */
-    QTransform layoutToMapCoordsTransform() const;
 
     /**
      * Creates a list of label blocking regions for the map, which correspond to the

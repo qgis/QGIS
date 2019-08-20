@@ -614,6 +614,11 @@ Removes a previously added rendered feature ``handler``.
 .. versionadded:: 3.10
 %End
 
+    QTransform layoutToMapCoordsTransform() const;
+%Docstring
+Creates a transform from layout coordinates to map coordinates.
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
