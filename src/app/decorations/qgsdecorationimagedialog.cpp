@@ -140,12 +140,6 @@ void QgsDecorationImageDialog::updateImagePath( const QString &imagePath )
     if ( hasStrokeParam )
     {
       QColor stroke = hasDefaultStrokeColor ? defaultStroke : pbnChangeOutlineColor->color();
-      QgsDebugMsg( QString( "XXXXXXXXXX %1" ).arg( defaultStrokeOpacity ) );
-      QgsDebugMsg( QString( "XXXXXXXXXX %1" ).arg( defaultStrokeOpacity ) );
-      QgsDebugMsg( QString( "XXXXXXXXXX %1" ).arg( defaultStrokeOpacity ) );
-      QgsDebugMsg( QString( "XXXXXXXXXX %1" ).arg( defaultStrokeOpacity ) );
-      QgsDebugMsg( QString( "XXXXXXXXXX %1" ).arg( defaultStrokeOpacity ) );
-      QgsDebugMsg( QString( "XXXXXXXXXX %1" ).arg( defaultStrokeOpacity ) );
       stroke.setAlphaF( hasStrokeOpacityParam && hasDefaultStrokeOpacity ? defaultStrokeOpacity : 1.0 );
       pbnChangeOutlineColor->setColor( stroke );
     }

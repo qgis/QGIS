@@ -64,7 +64,7 @@ void QgsDecorationImage::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Size" ), mSize );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ImagePath" ), mImagePath );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ImagePath" ), QgsProject::instance()->pathResolver().writePath( mImagePath ) );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 }
@@ -104,6 +104,7 @@ void QgsDecorationImage::setImagePath( const QString &imagePath )
     if ( svg.isValid() )
     {
       mImageFormat = FormatSVG;
+      return;
     }
     bool cached;
     QImage img = QgsApplication::imageCache()->pathAsImage( mImagePath, QSize( 1, 0 ), true, 1.0, cached );
