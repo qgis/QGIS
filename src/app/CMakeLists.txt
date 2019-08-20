@@ -187,6 +187,7 @@ SET(QGIS_APP_SRCS
 
   browser/qgsinbuiltdataitemproviders.cpp
 
+  layout/qgsgeopdflayertreemodel.cpp
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutapputils.cpp
   layout/qgslayoutatlaswidget.cpp
@@ -425,6 +426,7 @@ SET (QGIS_APP_MOC_HDRS
 
   browser/qgsinbuiltdataitemproviders.h
 
+  layout/qgsgeopdflayertreemodel.h
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutatlaswidget.h
