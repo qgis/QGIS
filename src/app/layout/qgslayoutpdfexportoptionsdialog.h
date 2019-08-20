@@ -61,6 +61,9 @@ class QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportO
     void setExportGeoPdfFeatures( bool enabled );
     bool exportGeoPdfFeatures() const;
 
+    void setExportThemes( const QStringList &themes );
+    QStringList exportThemes() const;
+
   private slots:
 
     void showHelp();

@@ -20,6 +20,8 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsabstractgeopdfexporter.h"
+#include "qgsproject.h"
+#include "qgsmapthemecollection.h"
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -50,6 +52,15 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
     mGeoPDFOptionsStackedWidget->setCurrentIndex( 1 );
     mGeoPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
     mGeoPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
+  }
+
+  const QStringList themes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &theme : themes )
+  {
+    QListWidgetItem *item = new QListWidgetItem( theme );
+    item->setFlags( item->flags() | Qt::ItemIsUserCheckable );
+    item->setCheckState( Qt::Unchecked );
+    mThemesList->addItem( item );
   }
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutPdfExportOptionsDialog::showHelp );
@@ -152,6 +163,32 @@ void QgsLayoutPdfExportOptionsDialog::setExportGeoPdfFeatures( bool enabled )
 bool QgsLayoutPdfExportOptionsDialog::exportGeoPdfFeatures() const
 {
   return mExportGeoPdfFeaturesCheckBox->isChecked();
+}
+
+void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
+{
+  mIncludeMapThemesCheck->setChecked( !themes.isEmpty() );
+  for ( int i = 0; i < mThemesList->count(); ++i )
+  {
+    QListWidgetItem *item = mThemesList->item( i );
+    item->setCheckState( themes.contains( item->text() ) ? Qt::Checked : Qt::Unchecked );
+  }
+}
+
+QStringList QgsLayoutPdfExportOptionsDialog::exportThemes() const
+{
+  QStringList res;
+  if ( !mIncludeMapThemesCheck )
+    return res;
+
+  res.reserve( mThemesList->count() );
+  for ( int i = 0; i < mThemesList->count(); ++i )
+  {
+    QListWidgetItem *item = mThemesList->item( i );
+    if ( item->checkState() == Qt::Checked )
+      res << item->text();
+  }
+  return res;
 }
 
 void QgsLayoutPdfExportOptionsDialog::showHelp()

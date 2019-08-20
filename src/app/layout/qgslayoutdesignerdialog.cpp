@@ -4192,6 +4192,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool geoPdf = false;
   bool useOgcBestPracticeFormat = false;
   bool exportGeoPdfFeatures = true;
+  QStringList exportThemes;
   if ( mLayout )
   {
     settings.flags = mLayout->renderContext().flags();
@@ -4203,6 +4204,9 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     geoPdf = mLayout->customProperty( QStringLiteral( "pdfCreateGeoPdf" ), 0 ).toBool();
     useOgcBestPracticeFormat = mLayout->customProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), 0 ).toBool();
     exportGeoPdfFeatures = mLayout->customProperty( QStringLiteral( "pdfExportGeoPdfFeatures" ), 1 ).toBool();
+    const QString themes = mLayout->customProperty( QStringLiteral( "pdfExportThemes" ) ).toString();
+    if ( !themes.isEmpty() )
+      exportThemes = themes.split( QStringLiteral( "~~~" ) );
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "pdfTextFormat" ), -1 ).toInt();
     if ( prevLayoutSettingLabelsAsOutlines >= 0 )
     {
@@ -4224,6 +4228,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setExportGeoPdf( geoPdf );
   dialog.setUseOgcBestPracticeFormat( useOgcBestPracticeFormat );
   dialog.setExportGeoPdfFeatures( exportGeoPdfFeatures );
+  dialog.setExportThemes( exportThemes );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4237,6 +4242,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   geoPdf = dialog.exportGeoPdf();
   useOgcBestPracticeFormat = dialog.useOgcBestPracticeFormat();
   exportGeoPdfFeatures = dialog.exportGeoPdfFeatures();
+  exportThemes = dialog.exportThemes();
 
   if ( mLayout )
   {
@@ -4250,6 +4256,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfCreateGeoPdf" ), geoPdf ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), useOgcBestPracticeFormat ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfExportGeoPdfFeatures" ), exportGeoPdfFeatures ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "pdfExportThemes" ), exportThemes.join( QStringLiteral( "~~~" ) ) );
   }
 
   settings.forceVectorOutput = forceVector;
@@ -4261,6 +4268,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.useOgcBestPracticeFormatGeoreferencing = useOgcBestPracticeFormat;
   settings.useIso32000ExtensionFormatGeoreferencing = !useOgcBestPracticeFormat;
   settings.includeGeoPdfFeatures = exportGeoPdfFeatures;
+  settings.exportThemes = exportThemes;
 
   if ( disableRasterTiles )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
