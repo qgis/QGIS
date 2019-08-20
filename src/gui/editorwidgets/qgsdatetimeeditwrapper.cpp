@@ -167,13 +167,10 @@ QVariant QgsDateTimeEditWrapper::value() const
   {
     case QVariant::DateTime:
       return dateTime;
-      break;
     case QVariant::Date:
       return dateTime.date();
-      break;
     case QVariant::Time:
       return dateTime.time();
-      break;
     default:
       const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
       const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
@@ -185,7 +182,6 @@ QVariant QgsDateTimeEditWrapper::value() const
       {
         return dateTime.toString( fieldFormat );
       }
-      break;
   }
 #ifndef _MSC_VER // avoid warnings
   return QVariant(); // avoid warnings
