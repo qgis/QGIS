@@ -2390,16 +2390,7 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 
 bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
 {
-  if ( mLayer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
-  {
-    int srcFieldIndex;
-    const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
-
-    if ( info && !info->hasUpsertOnEdit() && mMode == QgsAttributeEditorContext::AddFeatureMode )
-      return false;
-  }
-
-  return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature.id() );
+  return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature );
 }
 
 void QgsAttributeForm::updateIcon( QgsEditorWidgetWrapper *eww )

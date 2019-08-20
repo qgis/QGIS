@@ -285,13 +285,12 @@ class CORE_EXPORT QgsVectorLayerUtils
 
 
     /**
-     * \return true if the field at index \param fieldIndex from \param layer is editable,
-     * false if the field is readonly
-     * \param fid feature id value, -1 if it's a new feature
+     * \return true if the \param feature field at index \param fieldIndex from \param layer
+     * is editable, false if the field is readonly
      *
      * \since QGIS 3.10
      */
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, QgsFeatureId fid = -1 );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
 
 };
 

@@ -903,27 +903,33 @@ QgsAttributeMap QgsVectorLayerUtils::QgsFeatureData::attributes() const
   return mAttributes;
 }
 
-bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex,  QgsFeatureId fid )
+bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature )
 {
   return layer->isEditable() &&
          !layer->editFormConfig().readOnly( fieldIndex ) &&
-         ( ( layer->dataProvider() && layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( fid ) );
+         ( ( layer->dataProvider() && layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( feature.id() ) );
 }
 
-bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, QgsFeatureId fid )
+bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature )
 {
-  bool editable = false;
-
   if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
   {
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( fieldIndex, layer->fields(), srcFieldIndex );
 
-    if ( info && info->isEditable() )
-      editable = _fieldIsEditable( info->joinLayer(), srcFieldIndex, fid );
+    if ( !info || !info->isEditable() )
+      return false;
+
+    // check that joined feature exist, else it is not editable
+    if ( !info->hasUpsertOnEdit() )
+    {
+      const QgsFeature joinedFeature = layer->joinBuffer()->joinedFeatureOf( info, feature );
+      if ( !joinedFeature.isValid() )
+        return false;
+    }
+
+    return _fieldIsEditable( info->joinLayer(), srcFieldIndex, feature );
   }
   else
-    editable = _fieldIsEditable( layer, fieldIndex, fid );
-
-  return editable;
+    return _fieldIsEditable( layer, fieldIndex, feature );
 }
