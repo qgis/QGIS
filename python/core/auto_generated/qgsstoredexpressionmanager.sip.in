@@ -72,6 +72,23 @@ Returns the list of named expressions
 :param tag: some content, maybe scope where to be shown
 %End
 
+
+    QgsStoredExpression storedExpression( const QUuid &id, const QString &tag = QString() );
+%Docstring
+Returns an expression according to the id
+
+:param id: id of the expression as identification
+:param tag: some content, maybe scope where to be shown
+%End
+
+    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const QString &tag = QString() );
+%Docstring
+Returns an expression according to the expression text
+
+:param expression: id of the expression as identification
+:param tag: some content, maybe scope where to be shown
+%End
+
     void clearStoredExpressions();
 %Docstring
 clears list of stored expressions

@@ -182,6 +182,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void saveAsStoredFilterExpression();
     void editStoredFilterExpression();
     void handleStoreFilterExpression();
+    void updateCurrentStoredFilterExpression( const QString &value );
 
     void openConditionalStyles();
 

@@ -106,6 +106,23 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     */
     QList< QgsStoredExpression > storedExpressions( const QString &tag = QString() );
 
+
+    /**
+    * Returns an expression according to the id
+    *
+    *  \param id               id of the expression as identification
+    *  \param tag               some content, maybe scope where to be shown
+    */
+    QgsStoredExpression storedExpression( const QUuid &id, const QString &tag = QString() );
+
+    /**
+    * Returns an expression according to the expression text
+    *
+    *  \param expression        id of the expression as identification
+    *  \param tag               some content, maybe scope where to be shown
+    */
+    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const QString &tag = QString() );
+
     //! clears list of stored expressions
     void clearStoredExpressions();
 

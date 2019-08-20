@@ -701,6 +701,18 @@
     <string>Save expression under defined name</string>
    </property>
   </action>
+  <action name="mActionEditStoredFilterExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit the expression (change name or content)</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

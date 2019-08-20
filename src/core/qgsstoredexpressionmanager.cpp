@@ -31,6 +31,7 @@ QUuid QgsStoredExpressionManager::addStoredExpression( const QString &name, cons
 
   QgsStoredExpression storedExpression; //( name, expression );
 
+  storedExpression.id = QUuid::createUuid();
   storedExpression.name = name;
   storedExpression.expression = expression;
 
@@ -67,6 +68,34 @@ QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( cons
   Q_UNUSED( tag );
 
   return mStoredExpressions;
+}
+
+QgsStoredExpression QgsStoredExpressionManager::storedExpression( const QUuid &id, const QString &tag )
+{
+  Q_UNUSED( tag );
+
+  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
+  {
+    if ( storedExpression.id == id )
+    {
+      return storedExpression;
+    }
+  }
+  return QgsStoredExpression();
+}
+
+QgsStoredExpression QgsStoredExpressionManager::findStoredExpressionByExpression( const QString &expression, const QString &tag )
+{
+  Q_UNUSED( tag );
+
+  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
+  {
+    if ( storedExpression.expression == expression )
+    {
+      return storedExpression;
+    }
+  }
+  return QgsStoredExpression();
 }
 
 void QgsStoredExpressionManager::clearStoredExpressions()
