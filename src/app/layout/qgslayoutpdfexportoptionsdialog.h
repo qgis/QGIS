@@ -68,6 +68,10 @@ class QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportO
 
     void showHelp();
 
+  private:
+
+    bool mGeopdfAvailable = true;
+
 };
 
 #endif // QGSLAYOUTPDFEXPORTOPTIONSDIALOG_H
