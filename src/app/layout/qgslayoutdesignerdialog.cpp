@@ -36,6 +36,7 @@
 #include "qgslayoutviewtooleditnodes.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutimageexportoptionsdialog.h"
+#include "qgslayoutpdfexportoptionsdialog.h"
 #include "qgslayoutitemmap.h"
 #include "qgsprintlayout.h"
 #include "qgsmapcanvas.h"
@@ -4205,36 +4206,25 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   }
 
   // open options dialog
-  QDialog dialog( this );
-  Ui::QgsPdfExportOptionsDialog options;
-  options.setupUi( &dialog );
+  QgsLayoutPdfExportOptionsDialog dialog( this );
 
-  connect( options.buttonBox, &QDialogButtonBox::helpRequested, this, [ & ]
-  {
-    QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
-  }
-         );
-
-  options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
-  options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
-
-  options.mTextRenderFormatComboBox->setCurrentIndex( options.mTextRenderFormatComboBox->findData( prevTextRenderFormat ) );
-  options.mForceVectorCheckBox->setChecked( forceVector );
-  options.mAppendGeoreferenceCheckbox->setEnabled( mLayout && mLayout->referenceMap() && mLayout->referenceMap()->page() == 0 );
-  options.mAppendGeoreferenceCheckbox->setChecked( appendGeoreference );
-  options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
-  options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
-  options.mSimplifyGeometriesCheckbox->setChecked( simplify );
+  dialog.setTextRenderFormat( prevTextRenderFormat );
+  dialog.setForceVector( forceVector );
+  dialog.enableGeoreferencingOptions( mLayout && mLayout->referenceMap() && mLayout->referenceMap()->page() == 0 );
+  dialog.setGeoreferencingEnabled( appendGeoreference );
+  dialog.setMetadataEnabled( includeMetadata );
+  dialog.setRasterTilingDisabled( disableRasterTiles );
+  dialog.setGeometriesSimplified( simplify );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
 
-  appendGeoreference = options.mAppendGeoreferenceCheckbox->isChecked();
-  includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
-  forceVector = options.mForceVectorCheckBox->isChecked();
-  disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
-  simplify = options.mSimplifyGeometriesCheckbox->isChecked();
-  QgsRenderContext::TextRenderFormat textRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
+  appendGeoreference = dialog.georeferencingEnabled();
+  includeMetadata = dialog.metadataEnabled();
+  forceVector = dialog.forceVector();
+  disableRasterTiles = dialog.rasterTilingDisabled();
+  simplify = dialog.geometriesSimplified();
+  QgsRenderContext::TextRenderFormat textRenderFormat = dialog.textRenderFormat();
 
   if ( mLayout )
   {
