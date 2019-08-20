@@ -126,6 +126,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       painter->drawImage( 0, 0, *job.img );
       painter->setOpacity( 1.0 );
     }
+    job.context.setPainter( nullptr );
   }
   else
   {
@@ -144,6 +145,8 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
 
       // render just the current layer's labels
       static_cast< QgsStagedRenderLabelingEngine * >( mLabelingEngineV2.get() )->renderLabelsForLayer( mLabelJob.context, *mLabelLayerIt );
+
+      mLabelJob.context.setPainter( nullptr );
     }
     else
     {
@@ -151,6 +154,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), painter );
       mLabelJob.complete = true;
       mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
+      mLabelJob.context.setPainter( nullptr );
     }
   }
   return true;
