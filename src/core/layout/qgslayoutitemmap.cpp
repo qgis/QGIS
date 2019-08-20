@@ -1083,16 +1083,8 @@ bool QgsLayoutItemMap::nextExportPart()
       FALLTHROUGH
 
     case SelectionBoxes:
-      if ( mExportThemeIt != mExportThemes.end() && mExportThemeIt++ != mExportThemes.end() )
-      {
-        mCurrentExportPart = Start;
-        return nextExportPart();
-      }
-      else
-      {
-        mCurrentExportPart = End;
-        return false;
-      }
+      mCurrentExportPart = End;
+      return false;
 
     case End:
       return false;
