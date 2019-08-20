@@ -258,10 +258,14 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
   QMap< QString, QSet< QString > > createdLayerIds;
   QMap< QString, QDomElement > groupLayerMap;
+  QMap< QString, QString > customGroupNamesToIds;
   if ( details.includeFeatures )
   {
     for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
     {
+      if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
+        continue;
+
       QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
       layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
       layer.setAttribute( QStringLiteral( "name" ), component.name );
@@ -299,6 +303,9 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     if ( component.mapLayerId.isEmpty() || createdLayerIds.value( component.group ).contains( component.mapLayerId ) )
       continue;
 
+    if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
+      continue;
+
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
     layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
     layer.setAttribute( QStringLiteral( "name" ), component.name );
@@ -329,6 +336,22 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
     createdLayerIds[ component.group ].insert( component.mapLayerId );
   }
+
+  // create custom layer tree entries
+  for ( auto it = details.customLayerTreeGroups.constBegin(); it != details.customLayerTreeGroups.constEnd(); ++it )
+  {
+    if ( customGroupNamesToIds.contains( it.value() ) )
+      continue;
+
+    QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
+    const QString id = QUuid::createUuid().toString();
+    customGroupNamesToIds[ it.key() ] == id;
+    layer.setAttribute( QStringLiteral( "id" ), id );
+    layer.setAttribute( QStringLiteral( "name" ), it.value() );
+    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
+    layerTree.appendChild( layer );
+  }
+
   compositionElem.appendChild( layerTree );
 
   // pages
@@ -437,7 +460,12 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       QDomElement ifGroupOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
       ifGroupOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "group_%1" ).arg( component.group ) );
       QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
+      if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), customGroupNamesToIds.value( component.mapLayerId ) );
+      else if ( component.group.isEmpty() )
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
+      else
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
       QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
       pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
       ifLayerOn.appendChild( pdfDataset );
@@ -447,7 +475,12 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     else
     {
       QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
+      if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), customGroupNamesToIds.value( component.mapLayerId ) );
+      else if ( component.group.isEmpty() )
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
+      else
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
       QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
       pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
       ifLayerOn.appendChild( pdfDataset );
@@ -461,7 +494,12 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
     {
       QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
+      if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), customGroupNamesToIds.value( component.mapLayerId ) );
+      else if ( component.group.isEmpty() )
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
+      else
+        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
       QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
       vectorDataset.setAttribute( QStringLiteral( "dataset" ), component.sourceVectorPath );
       vectorDataset.setAttribute( QStringLiteral( "layer" ), component.sourceVectorLayer );

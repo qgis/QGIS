@@ -122,6 +122,10 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
       {
         exportableLayerIds << vl->id();
       }
+
+      const QString groupName = vl->customProperty( QStringLiteral( "geopdf/groupName" ) ).toString();
+      if ( !groupName.isEmpty() )
+        mCustomLayerTreeGroups.insert( vl->id(), groupName );
     }
   }
 
