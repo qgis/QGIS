@@ -345,7 +345,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
     const QString id = QUuid::createUuid().toString();
-    customGroupNamesToIds[ it.key() ] == id;
+    customGroupNamesToIds[ it.key() ] = id;
     layer.setAttribute( QStringLiteral( "id" ), id );
     layer.setAttribute( QStringLiteral( "name" ), it.value() );
     layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
