@@ -277,13 +277,11 @@ The following operations will be performed to convert the input features:
 %End
 
 
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, QgsFeatureId fid = -1 );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
 %Docstring
 
-:return: true if the field at index:param fieldIndex: from:param layer: is editable,
-          false if the field is readonly
-
-:param fid: feature id value, -1 if it's a new feature
+:return: true if the:param feature: field at index:param fieldIndex: from:param layer:
+          is editable, false if the field is readonly
 
 .. versionadded:: 3.10
 %End

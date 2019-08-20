@@ -157,6 +157,7 @@ void QgsAttributeFormEditorWidget::initialize( const QVariant &initialValue, boo
   setIsMixed( mixedValues );
   mMultiEditButton->setIsChanged( false );
   mIsChanged = false;
+  updateWidgets();
 }
 
 QVariant QgsAttributeFormEditorWidget::currentValue() const
@@ -230,7 +231,14 @@ void QgsAttributeFormEditorWidget::updateWidgets()
   bool hasMultiEditButton = ( editPage()->layout()->indexOf( mMultiEditButton ) >= 0 );
 
   const int fieldIndex = mEditorWidget->fieldIdx();
-  bool fieldReadOnly = !QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex );
+
+  bool fieldReadOnly = false;
+  QgsFeature feature;
+  auto it = layer()->getSelectedFeatures();
+  while ( it.nextFeature( feature ) )
+  {
+    fieldReadOnly |= !QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, feature );
+  }
 
   if ( hasMultiEditButton )
   {
