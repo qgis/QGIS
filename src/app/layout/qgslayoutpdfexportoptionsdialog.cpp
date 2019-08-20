@@ -34,10 +34,10 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
 
-  const bool geoPdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
-  mGeoPDFGroupBox->setEnabled( geoPdfAvailable );
+  mGeopdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
+  mGeoPDFGroupBox->setEnabled( mGeopdfAvailable );
   mGeoPDFGroupBox->setChecked( false );
-  if ( !geoPdfAvailable )
+  if ( !mGeopdfAvailable )
   {
     mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
     mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
@@ -134,16 +134,25 @@ bool QgsLayoutPdfExportOptionsDialog::geometriesSimplified() const
 
 void QgsLayoutPdfExportOptionsDialog::setExportGeoPdf( bool enabled )
 {
+  if ( !mGeopdfAvailable )
+    return;
+
   mGeoPDFGroupBox->setChecked( enabled );
 }
 
 bool QgsLayoutPdfExportOptionsDialog::exportGeoPdf() const
 {
+  if ( !mGeopdfAvailable )
+    return false;
+
   return mGeoPDFGroupBox->isChecked();
 }
 
 void QgsLayoutPdfExportOptionsDialog::setUseOgcBestPracticeFormat( bool enabled )
 {
+  if ( !mGeopdfAvailable )
+    return;
+
   if ( enabled )
     mGeoPdfFormatComboBox->setCurrentIndex( 1 );
   else
@@ -152,21 +161,33 @@ void QgsLayoutPdfExportOptionsDialog::setUseOgcBestPracticeFormat( bool enabled 
 
 bool QgsLayoutPdfExportOptionsDialog::useOgcBestPracticeFormat() const
 {
+  if ( !mGeopdfAvailable )
+    return false;
+
   return mGeoPdfFormatComboBox->currentIndex() == 1;
 }
 
 void QgsLayoutPdfExportOptionsDialog::setExportGeoPdfFeatures( bool enabled )
 {
+  if ( !mGeopdfAvailable )
+    return;
+
   mExportGeoPdfFeaturesCheckBox->setChecked( enabled );
 }
 
 bool QgsLayoutPdfExportOptionsDialog::exportGeoPdfFeatures() const
 {
+  if ( !mGeopdfAvailable )
+    return false;
+
   return mExportGeoPdfFeaturesCheckBox->isChecked();
 }
 
 void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
 {
+  if ( !mGeopdfAvailable )
+    return;
+
   mIncludeMapThemesCheck->setChecked( !themes.isEmpty() );
   for ( int i = 0; i < mThemesList->count(); ++i )
   {
@@ -178,6 +199,9 @@ void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes
 QStringList QgsLayoutPdfExportOptionsDialog::exportThemes() const
 {
   QStringList res;
+  if ( !mGeopdfAvailable )
+    return res;
+
   if ( !mIncludeMapThemesCheck )
     return res;
 
