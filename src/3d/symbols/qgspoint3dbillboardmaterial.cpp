@@ -21,7 +21,6 @@
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QNoDepthMask>
-#include <QPainter>
 #include <QDesktopWidget>
 
 #include "qgslogger.h"
@@ -40,19 +39,8 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   addParameter( mSize );
   addParameter( mViewportSize );
 
-  Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage;
-  image->setSource( QUrl( QStringLiteral( "qrc:/shaders/success-kid.png" ) ) );
-
-  // Texture2D
-  Qt3DRender::QTexture2D *texture2D = new Qt3DRender::QTexture2D;
-  texture2D->setGenerateMipMaps( false );
-  texture2D->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture2D->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-
-  texture2D->addTextureImage( image );
-
-  mTexture2D = new Qt3DRender::QParameter( "tex0", texture2D, this );
-
+  // Initialize with empty parameter.
+  mTexture2D = new Qt3DRender::QParameter( "tex0", QVariant(), this );
   addParameter( mTexture2D );
 
   // Blending for handling transparency
