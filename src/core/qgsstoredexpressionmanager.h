@@ -27,9 +27,31 @@
 #include "qgis_core.h"
 #include <QString>
 #include <QObject>
+#include <QUuid>
+
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsstoredexpressionmanager.h>
+% End
+#endif
 
 class QDomNode;
 class QDomDocument;
+
+struct CORE_EXPORT QgsStoredExpression
+{
+  /*  Commented out because of SIP issues - maybe come back to it later
+  QgsStoredExpression( QString name, QString expression )
+    : name( name ),
+      expression( expression )
+  {}
+  */
+
+  QUuid id;
+  QString name;
+  QString expression;
+};
 
 class CORE_EXPORT QgsStoredExpressionManager : public QObject
 {
@@ -57,31 +79,32 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *  \param name              optional name of the expression
     *  \param expression        the expression content
     *  \param tag               some content, maybe scope where to be shown
+    *  \returns generated id as QUuid
     */
-    void addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
+    QUuid addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
 
     /**
     * Removes an expression to the list
     *
-    *  \param name              name of the expression as identification
+    *  \param id                id of the expression as identification
     *  \param tag               some content, maybe scope where to be shown
     */
-    void removeStoredExpression( const QString &name, const QString &tag = QString() );
+    void removeStoredExpression( const QUuid &id, const QString &tag = QString() );
 
     /**
     * Appends a list of expressions to the existing list
     *
-    *  \param namedexpressions  list of expressions and the optional name
+    *  \param storedExpressions list of expressions and the optional name
     *  \param tag               some content, maybe scope where to be shown
     */
-    void addStoredExpressions( QList< QPair< QString, QString > > namedexpressions, const QString &tag = QString() );
+    void addStoredExpressions( QList< QgsStoredExpression > storedExpressions, const QString &tag = QString() );
 
     /**
     * Returns the list of named expressions
     *
     *  \param tag               some content, maybe scope where to be shown
     */
-    QList< QPair< QString, QString > > getStoredExpressions( const QString &tag = QString() );
+    QList< QgsStoredExpression > storedExpressions( const QString &tag = QString() );
 
     //! clears list of stored expressions
     void clearStoredExpressions();
@@ -92,17 +115,13 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     //! Reads the  stored expressions in in XML format
     bool readXml( const QDomNode &layer_node );
 
-    /* ToDo
-    void removeAction()
-    */
-
   signals:
 
   public slots:
 
   private:
     Mode mMode = FilterExpression;
-    QList< QPair< QString, QString > > mStoredExpressions;
+    QList< QgsStoredExpression > mStoredExpressions;
 };
 
 #endif // QGSSTOREDEXPRESSIONMANAGER_H

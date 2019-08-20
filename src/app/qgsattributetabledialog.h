@@ -27,6 +27,7 @@
 #include "qgssearchwidgetwrapper.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qgsstoredexpressionmanager.h"
 
 class QDialogButtonBox;
 class QPushButton;
@@ -37,6 +38,7 @@ class QSignalMapper;
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
+struct QgsStoredExpression;
 
 class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog, private QgsExpressionContextGenerator
 {
@@ -175,9 +177,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void filterEdited();
     void filterQueryChanged( const QString &query );
     void filterQueryAccepted();
-    void storedFilterExpressionChanged( QPair< QString, QString > storedExpression );
+    void storedFilterExpressionChanged( QgsStoredExpression storedExpression );
 
     void saveAsStoredFilterExpression();
+    void editStoredFilterExpression();
     void handleStoreFilterExpression();
 
     void openConditionalStyles();

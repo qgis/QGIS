@@ -25,23 +25,28 @@
 
 #include <QDomElement>
 
-void QgsStoredExpressionManager::addStoredExpression( const QString &name, const QString &expression, const QString &tag )
+QUuid QgsStoredExpressionManager::addStoredExpression( const QString &name, const QString &expression, const QString &tag )
 {
   Q_UNUSED( tag );
 
-  QPair<QString, QString> storedExpression( name, expression );
+  QgsStoredExpression storedExpression; //( name, expression );
+
+  storedExpression.name = name;
+  storedExpression.expression = expression;
 
   mStoredExpressions.append( storedExpression );
+
+  return storedExpression.id;
 }
 
-void QgsStoredExpressionManager::removeStoredExpression( const QString &name, const QString &tag )
+void QgsStoredExpressionManager::removeStoredExpression( const QUuid &id, const QString &tag )
 {
   Q_UNUSED( tag );
 
   int i = 0;
-  for ( const QPair<QString, QString> &storedExpression : mStoredExpressions )
+  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
   {
-    if ( storedExpression.first == name )
+    if ( storedExpression.id == id )
     {
       mStoredExpressions.removeAt( i );
       break;
@@ -50,14 +55,14 @@ void QgsStoredExpressionManager::removeStoredExpression( const QString &name, co
   }
 }
 
-void QgsStoredExpressionManager::addStoredExpressions( QList<QPair<QString, QString> > namedexpressions, const QString &tag )
+void QgsStoredExpressionManager::addStoredExpressions( QList< QgsStoredExpression > storedExpressions, const QString &tag )
 {
   Q_UNUSED( tag );
 
-  mStoredExpressions.append( namedexpressions );
+  mStoredExpressions.append( storedExpressions );
 }
 
-QList<QPair<QString, QString> > QgsStoredExpressionManager::getStoredExpressions( const QString &tag )
+QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( const QString &tag )
 {
   Q_UNUSED( tag );
 
@@ -84,11 +89,11 @@ bool QgsStoredExpressionManager::writeXml( QDomNode &layer_node ) const
 
   QDomElement aStoredExpressions = layer_node.ownerDocument().createElement( QStringLiteral( "%1s" ).arg( elementName ) );
 
-  for ( const QPair<QString, QString> &storedExpression : mStoredExpressions )
+  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
   {
     QDomElement aStoredExpression = layer_node.ownerDocument().createElement( elementName );
-    aStoredExpression.setAttribute( QStringLiteral( "name" ), storedExpression.first );
-    aStoredExpression.setAttribute( QStringLiteral( "expression" ), storedExpression.second );
+    aStoredExpression.setAttribute( QStringLiteral( "name" ), storedExpression.name );
+    aStoredExpression.setAttribute( QStringLiteral( "expression" ), storedExpression.expression );
     aStoredExpressions.appendChild( aStoredExpression );
   }
   layer_node.appendChild( aStoredExpressions );
@@ -121,9 +126,5 @@ bool QgsStoredExpressionManager::readXml( const QDomNode &layer_node )
       addStoredExpression( aStoredExpression.attribute( QStringLiteral( "name" ) ), aStoredExpression.attribute( QStringLiteral( "expression" ) ) );
     }
   }
-  //dave to be removed
-  addStoredExpression( "name test 1", "expression test 1" );
-  addStoredExpression( "name test 2", "expression test 2" );
-  addStoredExpression( "name test 3", "expression test 3" );
   return true;
 }

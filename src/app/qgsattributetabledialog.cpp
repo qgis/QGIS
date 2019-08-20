@@ -487,10 +487,10 @@ void QgsAttributeTableDialog::storedFilterExpressionBoxInit()
     delete a;
   }
 
-  const QList< QPair< QString, QString > > storedExpressions = mLayer->storedExpressions()->getStoredExpressions();
-  for ( const QPair< QString, QString > &storedExpression : storedExpressions )
+  const QList< QgsStoredExpression > storedExpressions = mLayer->storedExpressions()->storedExpressions();
+  for ( const QgsStoredExpression &storedExpression : storedExpressions )
   {
-    QAction *storedExpressionAction = new QAction( storedExpression.first, mFilterButton );
+    QAction *storedExpressionAction = new QAction( storedExpression.name, mFilterButton );
     connect( storedExpressionAction, &QAction::triggered, this, [ = ]()
     {
       QgsAttributeTableDialog::storedFilterExpressionChanged( storedExpression );
@@ -1096,10 +1096,11 @@ void QgsAttributeTableDialog::filterQueryAccepted()
   filterQueryChanged( mFilterQuery->text() );
 }
 
-void QgsAttributeTableDialog::storedFilterExpressionChanged( QPair<QString, QString> storedExpression )
+void QgsAttributeTableDialog::storedFilterExpressionChanged( QgsStoredExpression storedExpression )
 {
-  setFilterExpression( storedExpression.second, QgsAttributeForm::ReplaceFilter, true );
+  setFilterExpression( storedExpression.expression, QgsAttributeForm::ReplaceFilter, true );
   //save name of expression as context in the bookmark-icon
+  //mActionHandleStoreFilterExpression->setData( storedExpression.id );
 }
 
 void QgsAttributeTableDialog::openConditionalStyles()
@@ -1111,6 +1112,12 @@ void QgsAttributeTableDialog::saveAsStoredFilterExpression()
 {
   mLayer->storedExpressions()->addStoredExpression( "test", mFilterQuery->text() );
   mActionHandleStoreFilterExpression->setChecked( false );
+  storeExpressionButtonInit();
+  storedFilterExpressionBoxInit();
+}
+
+void QgsAttributeTableDialog::editStoredFilterExpression()
+{
   storeExpressionButtonInit();
   storedFilterExpressionBoxInit();
 }

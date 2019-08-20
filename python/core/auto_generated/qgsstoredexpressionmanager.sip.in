@@ -10,18 +10,21 @@
 
 
 
+%ModuleHeaderCode
+#include <qgsstoredexpressionmanager.h>
+%End
+
+
+struct QgsStoredExpression
+{
+
+  QUuid id;
+  QString name;
+  QString expression;
+};
+
 class QgsStoredExpressionManager : QObject
 {
-%Docstring
-*************************************************************************
-
-This program is free software; you can redistribute it and/or modify  *
-it under the terms of the GNU General Public License as published by  *
-the Free Software Foundation; either version 2 of the License, or     *
-(at your option) any later version.                                   *
-
-**************************************************************************
-%End
 
 %TypeHeaderCode
 #include "qgsstoredexpressionmanager.h"
@@ -35,32 +38,34 @@ the Free Software Foundation; either version 2 of the License, or     *
 
     QgsStoredExpressionManager( Mode mode = FilterExpression );
 
-    void addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
+    QUuid addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
 %Docstring
 Adds an expression to the list
 
 :param name: optional name of the expression
 :param expression: the expression content
 :param tag: some content, maybe scope where to be shown
+
+:return: generated id as QUuid
 %End
 
-    void removeStoredExpression( const QString &name, const QString &tag = QString() );
+    void removeStoredExpression( const QUuid &id, const QString &tag = QString() );
 %Docstring
 Removes an expression to the list
 
-:param name: name of the expression as identification
+:param id: id of the expression as identification
 :param tag: some content, maybe scope where to be shown
 %End
 
-    void addStoredExpressions( QList< QPair< QString, QString > > namedexpressions, const QString &tag = QString() );
+    void addStoredExpressions( QList< QgsStoredExpression > storedExpressions, const QString &tag = QString() );
 %Docstring
 Appends a list of expressions to the existing list
 
-:param namedexpressions: list of expressions and the optional name
+:param storedExpressions: list of expressions and the optional name
 :param tag: some content, maybe scope where to be shown
 %End
 
-    QList< QPair< QString, QString > > getStoredExpressions( const QString &tag = QString() );
+    QList< QgsStoredExpression > storedExpressions( const QString &tag = QString() );
 %Docstring
 Returns the list of named expressions
 
@@ -81,7 +86,6 @@ Writes the stored expressions out in XML format
 %Docstring
 Reads the  stored expressions in in XML format
 %End
-
 
   signals:
 
