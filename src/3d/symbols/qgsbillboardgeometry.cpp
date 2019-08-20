@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsbillboardmaterial.cpp
+  qgsbillboardgeometry.cpp
   --------------------------------------
   Date                 : Jul 2019
   Copyright            : (C) 2019 by Ismail Sunni

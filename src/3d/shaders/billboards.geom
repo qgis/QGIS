@@ -19,7 +19,6 @@ void main (void)
   vec4 P = gl_in[0].gl_Position;
   P /= P.w;
 
-  //vec2 size = vec2(0.5,0.5);
   vec2 size = BB_SIZE / WIN_SCALE;
 
   gl_Position = P;

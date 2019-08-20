@@ -18,7 +18,7 @@
 #include <QObject>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
-#include <Qt3DRender/QMaterial>>
+#include <Qt3DRender/QMaterial>
 
 #include "qgsmarkersymbollayer.h"
 #include "qgs3dmapsettings.h"
