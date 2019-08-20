@@ -3999,6 +3999,7 @@ void QgisApp::initLayerTreeView()
   model->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
   model->setFlag( QgsLayerTreeModel::ShowLegendAsTree );
   model->setFlag( QgsLayerTreeModel::UseEmbeddedWidgets );
+  model->setFlag( QgsLayerTreeModel::UseTextFormatting );
   model->setAutoCollapseLegendNodes( 10 );
 
   mLayerTreeView->setModel( model );
