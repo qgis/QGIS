@@ -70,7 +70,6 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
 {
   // Get url
   auto path { sanitizeUrl( context.request()->url() ).path() };
-  //path.truncate( context.apiRootPath().length() );
   // Find matching handler
   auto hasMatch { false };
   for ( const auto &h : mHandlers )

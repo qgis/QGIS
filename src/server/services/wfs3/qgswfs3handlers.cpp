@@ -35,6 +35,7 @@
 QgsWfs3APIHandler::QgsWfs3APIHandler( const QgsServerOgcApi *api ):
   mApi( api )
 {
+  setContentTypes( { QgsServerOgcApi::ContentType::OPENAPI3, QgsServerOgcApi::ContentType::HTML } );
 }
 
 void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) const
@@ -188,7 +189,6 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
 
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
 {
-
 }
 
 void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &context ) const
@@ -620,6 +620,7 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
 
 QgsWfs3CollectionsItemsHandler::QgsWfs3CollectionsItemsHandler()
 {
+  setContentTypes( { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML } );
 }
 
 QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters( const QgsServerApiContext &context ) const
@@ -1053,6 +1054,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
 QgsWfs3CollectionsFeatureHandler::QgsWfs3CollectionsFeatureHandler()
 {
+  setContentTypes( { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML } );
 }
 
 void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &context ) const
@@ -1171,6 +1173,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
 
 QgsWfs3StaticHandler::QgsWfs3StaticHandler()
 {
+  setContentTypes( { QgsServerOgcApi::ContentType::HTML } );
 }
 
 void QgsWfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) const
