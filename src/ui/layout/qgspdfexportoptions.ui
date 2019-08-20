@@ -118,27 +118,7 @@
            <number>0</number>
           </property>
           <item row="2" column="0" colspan="2">
-           <widget class="QCheckBox" name="mExportGeoPdfFeaturesCheckBox">
-            <property name="text">
-             <string>Include vector feature information</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Format</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QGroupBox" name="mIncludeMapThemesCheck">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mIncludeMapThemesCheck">
             <property name="title">
              <string>Include multiple map themes</string>
             </property>
@@ -155,15 +135,47 @@
             </layout>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Format</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
+          </item>
          </layout>
         </widget>
        </widget>
       </item>
       <item>
-       <widget class="QTreeView" name="mGeoPdfStructureTree">
-        <property name="headerHidden">
+       <widget class="QgsCollapsibleGroupBoxBasic" name="mExportGeoPdfFeaturesCheckBox">
+        <property name="title">
+         <string>Include vector feature information</string>
+        </property>
+        <property name="checkable">
          <bool>true</bool>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTreeView" name="mGeoPdfStructureTree">
+           <property name="headerHidden">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -228,7 +240,6 @@
   <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>mGeoPDFGroupBox</tabstop>
   <tabstop>mGeoPdfFormatComboBox</tabstop>
-  <tabstop>mExportGeoPdfFeaturesCheckBox</tabstop>
   <tabstop>mDisableRasterTilingCheckBox</tabstop>
   <tabstop>mSimplifyGeometriesCheckbox</tabstop>
  </tabstops>
