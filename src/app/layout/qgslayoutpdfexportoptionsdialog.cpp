@@ -36,9 +36,9 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
 
   mGeopdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
-  mGeoPDFGroupBox->setEnabled( true || mGeopdfAvailable );
+  mGeoPDFGroupBox->setEnabled( mGeopdfAvailable );
   mGeoPDFGroupBox->setChecked( false );
-  if ( false && !mGeopdfAvailable )
+  if ( !mGeopdfAvailable )
   {
     mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
     mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
