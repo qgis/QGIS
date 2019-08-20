@@ -1171,7 +1171,10 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
         if ( !layers.isEmpty() )
         {
           const QgsMapLayer *layer = layers.constLast();
-          detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
+          if ( !detail.mapTheme.isEmpty() )
+            detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, layer->name() );
+          else
+            detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
           detail.mapLayerId = layer->id();
         }
       }

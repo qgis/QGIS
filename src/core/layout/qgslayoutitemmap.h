@@ -840,6 +840,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     friend class QgsLayoutItemLegend;
     friend class TestQgsLayoutMap;
     friend class QgsCompositionConverter;
+    friend class QgsGeoPdfRenderedFeatureHandler;
 
 };
 

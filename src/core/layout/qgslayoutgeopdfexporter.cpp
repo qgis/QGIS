@@ -40,6 +40,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 
     QgsGeoPdfRenderedFeatureHandler( QgsLayoutItemMap *map, QgsLayoutGeoPdfExporter *exporter )
       : mExporter( exporter )
+      , mMap( map )
     {
       // get page size
       const QgsLayoutSize pageSize = map->layout()->pageCollection()->page( map->page() )->pageSize();
@@ -71,6 +72,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       // the alternative is adding a layer ID member to QgsRenderContext, and that's just asking for people to abuse it
       // and use it to retrieve QgsMapLayers mid-way through a render operation. Lesser of two evils it is!
       const QString layerId = context.renderContext.expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
+      const QString theme = ( mMap->mExportThemes.isEmpty() || mMap->mExportThemeIt == mMap->mExportThemes.end() ) ? QString() : *mMap->mExportThemeIt;
 
       // transform from pixels to map item coordinates
       QTransform pixelToMapItemTransform = QTransform::fromScale( 1.0 / context.renderContext.scaleFactor(), 1.0 / context.renderContext.scaleFactor() );
@@ -84,7 +86,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       // always convert to multitype, to make things consistent
       transformed.convertToMultiType();
 
-      mExporter->pushRenderedFeature( layerId, QgsLayoutGeoPdfExporter::RenderedFeature( feature, transformed ) );
+      mExporter->pushRenderedFeature( layerId, QgsLayoutGeoPdfExporter::RenderedFeature( feature, transformed ), theme );
     }
 
     QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
@@ -96,6 +98,7 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
     QTransform mMapToLayoutTransform;
     QTransform mLayoutToPdfTransform;
     QgsLayoutGeoPdfExporter *mExporter = nullptr;
+    QgsLayoutItemMap *mMap = nullptr;
 };
 ///@endcond
 
