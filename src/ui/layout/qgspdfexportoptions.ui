@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>463</height>
+    <height>563</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -104,7 +104,7 @@
          </layout>
         </widget>
         <widget class="QWidget" name="page_2">
-         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -135,6 +135,24 @@
             <property name="text">
              <string>Format</string>
             </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QGroupBox" name="mIncludeMapThemesCheck">
+            <property name="title">
+             <string>Include multiple map themes</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <widget class="QListWidget" name="mThemesList"/>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>

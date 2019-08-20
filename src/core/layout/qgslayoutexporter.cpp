@@ -532,10 +532,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
-
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
-
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
+  mLayout->renderContext().setExportThemes( settings.exportThemes );
 
   ExportResult result = Success;
   if ( settings.writeGeoPdf )

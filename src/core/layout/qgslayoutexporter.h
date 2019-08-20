@@ -344,6 +344,16 @@ class CORE_EXPORT QgsLayoutExporter
        */
       bool includeGeoPdfFeatures = true;
 
+      /**
+       * Optional list of map themes to export as GeoPDF layer groups.
+       *
+       * If set, map item's which are not assigned a specific map theme will iterate through all listed
+       * themes and a GeoPDF layer group will be created for each.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      QStringList exportThemes;
+
     };
 
     /**
