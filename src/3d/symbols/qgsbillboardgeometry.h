@@ -21,19 +21,30 @@
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QAttribute>
 
+
+/**
+ * \ingroup 3d
+ * Geometry of the billboard rendering for points in 3D map view.
+ *
+ * \since QGIS 3.10
+ */
 class QgsBillboardGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
 
     Q_PROPERTY( int count READ count NOTIFY countChanged )
   public:
+    //! Constructor of QgsBillboardGeometry.
     QgsBillboardGeometry( Qt3DCore::QNode *parent = nullptr );
 
+    //! Set the points for the billboard with \a vertices.
     void setPoints( const QVector<QVector3D> &vertices );
 
+    //! Returns the number of points.
     int count();
 
   signals:
+    //! Signal when the number of points changed.
     void countChanged( int count );
 
   private:

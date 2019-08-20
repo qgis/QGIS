@@ -23,6 +23,12 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgs3dmapsettings.h"
 
+/**
+ * \ingroup 3d
+ * Material of the billboard rendering for points in 3D map view.
+ *
+ * \since QGIS 3.10
+ */
 class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
@@ -30,23 +36,34 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
   public:
     QgsPoint3DBillboardMaterial();
 
+    //! Set the billboard size.
     void setSize( const QSizeF size );
+    //! Returns the billboard size.
     QSizeF size() const;
 
+    //! Set the size of the view port.
     void setViewportSize( const QSizeF size );
+    //! Returns the size of the view port.
     QSizeF windowSize() const;
 
+    //! Set the texture2D of the billboard with \a texture2D.
     void setTexture2D( Qt3DRender::QTexture2D *texture2D );
+    //! Returns the texture2D of the billboard.
     Qt3DRender::QTexture2D *texture2D();
 
+    //! Set the texture2D of the billboard from image in \a imagePath.
     void setTexture2DFromImagePath( QString imagePath );
 
+    //! Set the texture2D of the billboard from \a image with \a size.
     void setTexture2DFromImage( QImage image, double size = 100 );
 
+    //! Set default symbol for the texture with \a map and \a selected parameter for rendering.
     void useDefaultSymbol( const Qgs3DMapSettings &map, bool selected = false );
 
+    //! Set \a markerSymbol for the texture with \a map and \a selected parameter for rendering.
     void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DMapSettings &map, bool selected = false );
 
+    //! Set texture2D from \a textureImage
     void setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage );
 
   private:
