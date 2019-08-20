@@ -186,6 +186,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdwgimportdialog.h"
 #include "qgsdecorationtitle.h"
 #include "qgsdecorationcopyright.h"
+#include "qgsdecorationimage.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
 #include "qgsdecorationgrid.h"
@@ -3446,6 +3447,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionDiagramProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) ) );
   mActionDecorationTitle->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/title_label.svg" ) ) );
   mActionDecorationCopyright->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/copyright_label.svg" ) ) );
+  mActionDecorationImage->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ) );
   mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/north_arrow.svg" ) ) );
   mActionDecorationScaleBar->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ) );
   mActionDecorationGrid->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/grid.svg" ) ) );
@@ -4192,30 +4194,34 @@ void QgisApp::setMapTipsDelay( int timerInterval )
 
 void QgisApp::createDecorations()
 {
-  QgsDecorationTitle *mDecorationTitle = new QgsDecorationTitle( this );
-  connect( mActionDecorationTitle, &QAction::triggered, mDecorationTitle, &QgsDecorationTitle::run );
+  QgsDecorationTitle *decorationTitle = new QgsDecorationTitle( this );
+  connect( mActionDecorationTitle, &QAction::triggered, decorationTitle, &QgsDecorationTitle::run );
 
-  QgsDecorationCopyright *mDecorationCopyright = new QgsDecorationCopyright( this );
-  connect( mActionDecorationCopyright, &QAction::triggered, mDecorationCopyright, &QgsDecorationCopyright::run );
+  QgsDecorationCopyright *decorationCopyright = new QgsDecorationCopyright( this );
+  connect( mActionDecorationCopyright, &QAction::triggered, decorationCopyright, &QgsDecorationCopyright::run );
 
-  QgsDecorationNorthArrow *mDecorationNorthArrow = new QgsDecorationNorthArrow( this );
-  connect( mActionDecorationNorthArrow, &QAction::triggered, mDecorationNorthArrow, &QgsDecorationNorthArrow::run );
+  QgsDecorationImage *decorationImage = new QgsDecorationImage( this );
+  connect( mActionDecorationImage, &QAction::triggered, decorationImage, &QgsDecorationImage::run );
 
-  QgsDecorationScaleBar *mDecorationScaleBar = new QgsDecorationScaleBar( this );
-  connect( mActionDecorationScaleBar, &QAction::triggered, mDecorationScaleBar, &QgsDecorationScaleBar::run );
+  QgsDecorationNorthArrow *decorationNorthArrow = new QgsDecorationNorthArrow( this );
+  connect( mActionDecorationNorthArrow, &QAction::triggered, decorationNorthArrow, &QgsDecorationNorthArrow::run );
 
-  QgsDecorationGrid *mDecorationGrid = new QgsDecorationGrid( this );
-  connect( mActionDecorationGrid, &QAction::triggered, mDecorationGrid, &QgsDecorationGrid::run );
+  QgsDecorationScaleBar *decorationScaleBar = new QgsDecorationScaleBar( this );
+  connect( mActionDecorationScaleBar, &QAction::triggered, decorationScaleBar, &QgsDecorationScaleBar::run );
+
+  QgsDecorationGrid *decorationGrid = new QgsDecorationGrid( this );
+  connect( mActionDecorationGrid, &QAction::triggered, decorationGrid, &QgsDecorationGrid::run );
 
   QgsDecorationLayoutExtent *decorationLayoutExtent = new QgsDecorationLayoutExtent( this );
   connect( mActionDecorationLayoutExtent, &QAction::triggered, decorationLayoutExtent, &QgsDecorationLayoutExtent::run );
 
   // add the decorations in a particular order so they are rendered in that order
-  addDecorationItem( mDecorationGrid );
-  addDecorationItem( mDecorationTitle );
-  addDecorationItem( mDecorationCopyright );
-  addDecorationItem( mDecorationNorthArrow );
-  addDecorationItem( mDecorationScaleBar );
+  addDecorationItem( decorationGrid );
+  addDecorationItem( decorationImage );
+  addDecorationItem( decorationTitle );
+  addDecorationItem( decorationCopyright );
+  addDecorationItem( decorationNorthArrow );
+  addDecorationItem( decorationScaleBar );
   addDecorationItem( decorationLayoutExtent );
   connect( mMapCanvas, &QgsMapCanvas::renderComplete, this, &QgisApp::renderDecorationItems );
   connect( this, &QgisApp::newProject, this, &QgisApp::projectReadDecorationItems );
