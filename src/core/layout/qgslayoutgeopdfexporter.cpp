@@ -38,9 +38,10 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
 {
   public:
 
-    QgsGeoPdfRenderedFeatureHandler( QgsLayoutItemMap *map, QgsLayoutGeoPdfExporter *exporter )
+    QgsGeoPdfRenderedFeatureHandler( QgsLayoutItemMap *map, QgsLayoutGeoPdfExporter *exporter, const QStringList &layerIds )
       : mExporter( exporter )
       , mMap( map )
+      , mLayerIds( layerIds )
     {
       // get page size
       const QgsLayoutSize pageSize = map->layout()->pageCollection()->page( map->page() )->pageSize();
@@ -72,6 +73,9 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
       // the alternative is adding a layer ID member to QgsRenderContext, and that's just asking for people to abuse it
       // and use it to retrieve QgsMapLayers mid-way through a render operation. Lesser of two evils it is!
       const QString layerId = context.renderContext.expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
+      if ( !mLayerIds.contains( layerId ) )
+        return;
+
       const QString theme = ( mMap->mExportThemes.isEmpty() || mMap->mExportThemeIt == mMap->mExportThemes.end() ) ? QString() : *mMap->mExportThemeIt;
 
       // transform from pixels to map item coordinates
@@ -99,18 +103,34 @@ class QgsGeoPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
     QTransform mLayoutToPdfTransform;
     QgsLayoutGeoPdfExporter *mExporter = nullptr;
     QgsLayoutItemMap *mMap = nullptr;
+    QStringList mLayerIds;
 };
 ///@endcond
 
 QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
   : mLayout( layout )
 {
+  // build a list of exportable feature layers in advance
+  QStringList exportableLayerIds;
+  const QMap< QString, QgsMapLayer * > layers = mLayout->project()->mapLayers( true );
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() ) )
+    {
+      const QVariant v = vl->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
+      if ( !v.isValid() || v.toBool() )
+      {
+        exportableLayerIds << vl->id();
+      }
+    }
+  }
+
   // on construction, we install a rendered feature handler on layout item maps
   QList< QgsLayoutItemMap * > maps;
   mLayout->layoutItems( maps );
   for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
   {
-    QgsGeoPdfRenderedFeatureHandler *handler = new QgsGeoPdfRenderedFeatureHandler( map, this );
+    QgsGeoPdfRenderedFeatureHandler *handler = new QgsGeoPdfRenderedFeatureHandler( map, this, exportableLayerIds );
     mMapHandlers.insert( map, handler );
     map->addRenderedFeatureHandler( handler );
   }
