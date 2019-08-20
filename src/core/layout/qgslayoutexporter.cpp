@@ -595,6 +595,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       details.keywords = mLayout->project()->metadata().keywords();
     }
 
+    details.includeFeatures = settings.includeGeoPdfFeatures;
+    details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
+    details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
+
     geoPdfExporter->finalize( pdfComponents, filePath, details );
   }
   else

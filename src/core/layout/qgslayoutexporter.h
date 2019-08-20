@@ -316,6 +316,34 @@ class CORE_EXPORT QgsLayoutExporter
        */
       bool writeGeoPdf = false;
 
+      /**
+       * TRUE if ISO3200 extension format georeferencing should be used.
+       *
+       * This is a recommended setting which results in Geospatial PDF files compatible
+       * with the built-in Acrobat geospatial tools.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      bool useIso32000ExtensionFormatGeoreferencing = true;
+
+      /**
+       * TRUE if OGC "best practice" format georeferencing should be used.
+       *
+       * \warning This results in GeoPDF files compatible with the TerraGo suite of tools, but
+       * can break compatibility with the built-in Acrobat geospatial tools (yes, GeoPDF
+       * format is a mess!).
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+      */
+      bool useOgcBestPracticeFormatGeoreferencing = false;
+
+      /**
+       * TRUE if feature vector information (such as attributes) should be exported during GeoPDF exports.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      bool includeGeoPdfFeatures = true;
+
     };
 
     /**

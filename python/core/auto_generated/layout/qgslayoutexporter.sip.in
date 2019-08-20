@@ -196,6 +196,12 @@ Constructor for PdfExportSettings
 
       bool writeGeoPdf;
 
+      bool useIso32000ExtensionFormatGeoreferencing;
+
+      bool useOgcBestPracticeFormatGeoreferencing;
+
+      bool includeGeoPdfFeatures;
+
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );

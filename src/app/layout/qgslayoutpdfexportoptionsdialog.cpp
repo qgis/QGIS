@@ -131,6 +131,29 @@ bool QgsLayoutPdfExportOptionsDialog::exportGeoPdf() const
   return mGeoPDFGroupBox->isChecked();
 }
 
+void QgsLayoutPdfExportOptionsDialog::setUseOgcBestPracticeFormat( bool enabled )
+{
+  if ( enabled )
+    mGeoPdfFormatComboBox->setCurrentIndex( 1 );
+  else
+    mGeoPdfFormatComboBox->setCurrentIndex( 0 );
+}
+
+bool QgsLayoutPdfExportOptionsDialog::useOgcBestPracticeFormat() const
+{
+  return mGeoPdfFormatComboBox->currentIndex() == 1;
+}
+
+void QgsLayoutPdfExportOptionsDialog::setExportGeoPdfFeatures( bool enabled )
+{
+  mExportGeoPdfFeaturesCheckBox->setChecked( enabled );
+}
+
+bool QgsLayoutPdfExportOptionsDialog::exportGeoPdfFeatures() const
+{
+  return mExportGeoPdfFeaturesCheckBox->isChecked();
+}
+
 void QgsLayoutPdfExportOptionsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
