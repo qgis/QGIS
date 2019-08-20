@@ -369,30 +369,33 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       georeferencing.appendChild( srs );
     }
 
-    /* Define the viewport where georeferenced coordinates are available.
-      If not specified, the extent of BoundingPolygon will be used instead.
-      If none of BoundingBox and BoundingPolygon are specified,
-      the whole PDF page will be assumed to be georeferenced.
-      */
-    QDomElement boundingBox = doc.createElement( QStringLiteral( "BoundingBox" ) );
-    boundingBox.setAttribute( QStringLiteral( "x1" ), QString::number( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
-    boundingBox.setAttribute( QStringLiteral( "y1" ), QString::number( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
-    boundingBox.setAttribute( QStringLiteral( "x2" ), QString::number( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
-    boundingBox.setAttribute( QStringLiteral( "y2" ), QString::number( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
-    georeferencing.appendChild( boundingBox );
-
-#if 0
-    /*
-      Define a polygon / neatline in PDF units into which the
-      Measure tool will display coordinates.
-      If not specified, BoundingBox will be used instead.
-      If none of BoundingBox and BoundingPolygon are specified,
-      the whole PDF page will be assumed to be georeferenced.
-     */
-    QDomElement boundingPolygon = doc.createElement( QStringLiteral( "BoundingPolygon" ) );
-    boundingPolygon.appendChild( doc.createTextNode( QStringLiteral( "POLYGON((1 1,9 1,9 14,1 14,1 1))" ) ) );
-    georeferencing.appendChild( boundingPolygon );
-#endif
+    if ( !section.pageBoundsPolygon.isEmpty() )
+    {
+      /*
+        Define a polygon / neatline in PDF units into which the
+        Measure tool will display coordinates.
+        If not specified, BoundingBox will be used instead.
+        If none of BoundingBox and BoundingPolygon are specified,
+        the whole PDF page will be assumed to be georeferenced.
+       */
+      QDomElement boundingPolygon = doc.createElement( QStringLiteral( "BoundingPolygon" ) );
+      boundingPolygon.appendChild( doc.createTextNode( section.pageBoundsPolygon.asWkt() ) );
+      georeferencing.appendChild( boundingPolygon );
+    }
+    else
+    {
+      /* Define the viewport where georeferenced coordinates are available.
+        If not specified, the extent of BoundingPolygon will be used instead.
+        If none of BoundingBox and BoundingPolygon are specified,
+        the whole PDF page will be assumed to be georeferenced.
+        */
+      QDomElement boundingBox = doc.createElement( QStringLiteral( "BoundingBox" ) );
+      boundingBox.setAttribute( QStringLiteral( "x1" ), QString::number( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "y1" ), QString::number( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "x2" ), QString::number( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "y2" ), QString::number( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
+      georeferencing.appendChild( boundingBox );
+    }
 
     for ( const ControlPoint &point : section.controlPoints )
     {

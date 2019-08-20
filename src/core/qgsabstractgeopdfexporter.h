@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include "qgsfeature.h"
 #include "qgsabstractmetadatabase.h"
+#include "qgspolygon.h"
 
 #define SIP_NO_FILE
 
@@ -153,8 +154,20 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
 
     struct GeoReferencedSection
     {
-      //! Bounds of the georeferenced section on the page, in millimeters
+
+      /**
+       * Bounds of the georeferenced section on the page, in millimeters.
+       *
+       * \note if pageBoundsPolygon is specified then this setting is ignored.
+       */
       QgsRectangle pageBoundsMm;
+
+      /**
+       * Bounds of the georeferenced section on the page, in millimeters, as a free-form polygon.
+       *
+       * If specified, this will be used instead of pageBoundsMm.
+       */
+      QgsPolygon pageBoundsPolygon;
 
       //! Coordinate reference system for georeferenced section
       QgsCoordinateReferenceSystem crs;

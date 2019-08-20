@@ -58,6 +58,7 @@ class TestQgsGeoPdfExport : public QObject
     void testComposition();
     void testMetadata();
     void testGeoref();
+    void testGeorefPolygon();
     void testGroups();
 
   private:
@@ -334,6 +335,51 @@ void TestQgsGeoPdfExport::testGeoref()
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingBox" ) ).at( 0 ).toElement().attribute( QStringLiteral( "x2" ) ), QStringLiteral( "717.732" ) );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingBox" ) ).at( 0 ).toElement().attribute( QStringLiteral( "y1" ) ), QStringLiteral( "0" ) );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingBox" ) ).at( 0 ).toElement().attribute( QStringLiteral( "y2" ) ), QStringLiteral( "630" ) );
+
+  QDomNodeList cps = doc.elementsByTagName( QStringLiteral( "ControlPoint" ) );
+  QCOMPARE( cps.count(), 4 );
+  QDomElement cp1;
+  for ( int i = 0; i < 4; ++i )
+  {
+    if ( cps.at( i ).toElement().attribute( QStringLiteral( "GeoX" ) ) == QStringLiteral( "-122.4" )
+         && cps.at( i ).toElement().attribute( QStringLiteral( "GeoY" ) ) == QStringLiteral( "53.6" ) )
+    {
+      cp1 = cps.at( i ).toElement();
+      break;
+    }
+  }
+  QVERIFY( !cp1.isNull() );
+  QCOMPARE( cp1.attribute( QStringLiteral( "x" ) ), QStringLiteral( "0" ) );
+  QCOMPARE( cp1.attribute( QStringLiteral( "y" ) ), QStringLiteral( "-2.83465" ) );
+}
+
+void TestQgsGeoPdfExport::testGeorefPolygon()
+{
+  // test georeferencing a region using polygon bounds
+  TestGeoPdfExporter geoPdfExporter;
+
+  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers;
+  QgsAbstractGeoPdfExporter::ExportDetails details;
+
+  // with points
+  QgsAbstractGeoPdfExporter::GeoReferencedSection section;
+  section.crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4283" ) );
+  section.pageBoundsMm = QgsRectangle( 0, 0, 253.2, 222.25 );
+  QgsPolygon p;
+  p.fromWkt( QStringLiteral( "Polygon((30 5, 250 15, 240 200, 50 190, 30 5))" ) );
+  section.pageBoundsPolygon = p;
+  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 0, 0 ), QgsPointXY( -122.4, 53.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 253.2, 0 ), QgsPointXY( -78, 53.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 253.2, 222.25 ), QgsPointXY( -78, 14.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 0, 222.25 ), QgsPointXY( -122.4, 14.6 ) ) );
+  details.georeferencedSections << section;
+
+  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsg( composition );
+  QDomDocument doc;
+  doc.setContent( composition );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "SRS" ) ).at( 0 ).toElement().text(), QStringLiteral( "EPSG:4283" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingPolygon" ) ).at( 0 ).toElement().text(), QStringLiteral( "Polygon ((30 5, 250 15, 240 200, 50 190, 30 5))" ) );
 
   QDomNodeList cps = doc.elementsByTagName( QStringLiteral( "ControlPoint" ) );
   QCOMPARE( cps.count(), 4 );
