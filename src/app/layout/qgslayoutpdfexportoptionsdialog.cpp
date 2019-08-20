@@ -22,6 +22,7 @@
 #include "qgsabstractgeopdfexporter.h"
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
+#include "qgsgeopdflayertreemodel.h"
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -35,9 +36,9 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
 
   mGeopdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
-  mGeoPDFGroupBox->setEnabled( mGeopdfAvailable );
+  mGeoPDFGroupBox->setEnabled( true || mGeopdfAvailable );
   mGeoPDFGroupBox->setChecked( false );
-  if ( !mGeopdfAvailable )
+  if ( false && !mGeopdfAvailable )
   {
     mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
     mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
@@ -62,6 +63,12 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
     item->setCheckState( Qt::Unchecked );
     mThemesList->addItem( item );
   }
+
+  QgsGeoPdfLayerTreeModel *model = new QgsGeoPdfLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
+  mGeoPdfStructureTree->setModel( model );
+  mGeoPdfStructureTree->resizeColumnToContents( 0 );
+  mGeoPdfStructureTree->header()->show();
+  mGeoPdfStructureTree->setSelectionMode( QAbstractItemView::NoSelection );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutPdfExportOptionsDialog::showHelp );
   QgsGui::enableAutoGeometryRestore( this );
