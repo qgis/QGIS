@@ -55,6 +55,11 @@ class QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportO
 
     void setExportGeoPdf( bool enabled );
     bool exportGeoPdf() const;
+    void setUseOgcBestPracticeFormat( bool enabled );
+    bool useOgcBestPracticeFormat() const;
+
+    void setExportGeoPdfFeatures( bool enabled );
+    bool exportGeoPdfFeatures() const;
 
   private slots:
 
