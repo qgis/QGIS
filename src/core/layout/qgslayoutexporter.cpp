@@ -26,6 +26,7 @@
 #include "qgsabstractlayoutiterator.h"
 #include "qgsfeedback.h"
 #include "qgslayoutgeopdfexporter.h"
+#include "qgslinestring.h"
 #include <QImageWriter>
 #include <QSize>
 #include <QSvgGenerator>
@@ -593,6 +594,46 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       details.subject = mLayout->project()->metadata().abstract();
       details.title = mLayout->project()->metadata().title();
       details.keywords = mLayout->project()->metadata().keywords();
+    }
+
+    if ( settings.appendGeoreference )
+    {
+      // setup georeferencing
+      QList< QgsLayoutItemMap * > maps;
+      mLayout->layoutItems( maps );
+      for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+      {
+        QgsAbstractGeoPdfExporter::GeoReferencedSection georef;
+        georef.crs = map->crs();
+
+        const QPointF topLeft = map->mapToScene( QPointF( 0, 0 ) );
+        const QPointF topRight = map->mapToScene( QPointF( map->rect().width(), 0 ) );
+        const QPointF bottomLeft = map->mapToScene( QPointF( 0, map->rect().height() ) );
+        const QPointF bottomRight = map->mapToScene( QPointF( map->rect().width(), map->rect().height() ) );
+        const QgsLayoutPoint topLeftMm = mLayout->convertFromLayoutUnits( topLeft, QgsUnitTypes::LayoutMillimeters );
+        const QgsLayoutPoint topRightMm = mLayout->convertFromLayoutUnits( topRight, QgsUnitTypes::LayoutMillimeters );
+        const QgsLayoutPoint bottomLeftMm = mLayout->convertFromLayoutUnits( bottomLeft, QgsUnitTypes::LayoutMillimeters );
+        const QgsLayoutPoint bottomRightMm = mLayout->convertFromLayoutUnits( bottomRight, QgsUnitTypes::LayoutMillimeters );
+
+        georef.pageBoundsPolygon.setExteriorRing( new QgsLineString( QVector< QgsPointXY >() << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
+            << QgsPointXY( topRightMm.x(), topRightMm.y() )
+            << QgsPointXY( bottomRightMm.x(), bottomRightMm.y() )
+            << QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() )
+            << QgsPointXY( topLeftMm.x(), topLeftMm.y() ) ) );
+
+        georef.controlPoints.reserve( 4 );
+        const QTransform t = map->layoutToMapCoordsTransform();
+        const QgsPointXY topLeftMap = t.map( topLeft );
+        const QgsPointXY topRightMap = t.map( topRight );
+        const QgsPointXY bottomLeftMap = t.map( bottomLeft );
+        const QgsPointXY bottomRightMap = t.map( bottomRight );
+
+        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topLeftMm.x(), topLeftMm.y() ), topLeftMap );
+        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topRightMm.x(), topRightMm.y() ), topRightMap );
+        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() ), bottomLeftMap );
+        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomRightMm.x(), bottomRightMm.y() ), bottomRightMap );
+        details.georeferencedSections << georef;
+      }
     }
 
     details.includeFeatures = settings.includeGeoPdfFeatures;
