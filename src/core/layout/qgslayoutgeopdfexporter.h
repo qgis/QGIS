@@ -55,12 +55,19 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter : public QgsAbstractGeoPdfExporter
 
     ~QgsLayoutGeoPdfExporter() override;
 
+    /**
+     * Returns any custom layer tree groups defined in the layer's settings.
+     */
+    QMap< QString, QString > customLayerTreeGroups() const { return mCustomLayerTreeGroups; }
+
   private:
 
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override;
 
     QgsLayout *mLayout = nullptr;
     QHash< QgsLayoutItemMap *, QgsGeoPdfRenderedFeatureHandler * > mMapHandlers;
+
+    QMap< QString, QString > mCustomLayerTreeGroups;
 
     friend class TestQgsLayoutGeoPdfExport;
 };

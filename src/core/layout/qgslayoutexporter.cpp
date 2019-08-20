@@ -635,6 +635,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       }
     }
 
+    details.customLayerTreeGroups = geoPdfExporter->customLayerTreeGroups();
     details.includeFeatures = settings.includeGeoPdfFeatures;
     details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
     details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;

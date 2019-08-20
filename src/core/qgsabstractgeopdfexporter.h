@@ -240,6 +240,18 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
        */
       bool includeFeatures = true;
 
+      /**
+       * Optional map of map layer ID to custom logical layer tree group in created PDF file.
+       *
+       * E.g. if the map contains "layer1": "Environment", "layer2": "Environment", "layer3": "Transport"
+       * then the created PDF file will have entries in its layer tree for "Environment" and "Transport",
+       * and toggling "Environment" will toggle BOTH layer1 and layer2.
+       *
+       * Layers which are not included in this group will always have their own individual layer tree entry
+       * created for them automatically.
+       */
+      QMap< QString, QString > customLayerTreeGroups;
+
     };
 
     /**
