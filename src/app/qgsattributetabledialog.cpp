@@ -495,7 +495,7 @@ void QgsAttributeTableDialog::storedFilterExpressionBoxInit()
     QAction *storedExpressionAction = new QAction( storedExpression.name, mFilterButton );
     connect( storedExpressionAction, &QAction::triggered, this, [ = ]()
     {
-      QgsAttributeTableDialog::storedFilterExpressionChanged( storedExpression );
+      setFilterExpression( storedExpression.expression, QgsAttributeForm::ReplaceFilter, true );
     } );
     mStoredFilterExpressionMenu->addAction( storedExpressionAction );
   }
@@ -1100,13 +1100,6 @@ void QgsAttributeTableDialog::filterQueryAccepted()
   filterQueryChanged( mFilterQuery->text() );
 }
 
-void QgsAttributeTableDialog::storedFilterExpressionChanged( QgsStoredExpression storedExpression )
-{
-  setFilterExpression( storedExpression.expression, QgsAttributeForm::ReplaceFilter, true );
-  //save name of expression as context in the bookmark-icon
-  //mActionHandleStoreFilterExpression->setData( storedExpression.id );
-}
-
 void QgsAttributeTableDialog::openConditionalStyles()
 {
   mMainView->openConditionalStyles();
@@ -1115,14 +1108,19 @@ void QgsAttributeTableDialog::openConditionalStyles()
 void QgsAttributeTableDialog::saveAsStoredFilterExpression()
 {
   mLayer->storedExpressions()->addStoredExpression( "test", mFilterQuery->text() );
-  mActionHandleStoreFilterExpression->setChecked( false );
-  storeExpressionButtonInit();
+
+  //update menu list of stored filter expressions
   storedFilterExpressionBoxInit();
+
+  //update bookmark button
+  storeExpressionButtonInit();
 }
 
 void QgsAttributeTableDialog::editStoredFilterExpression()
 {
-  storeExpressionButtonInit();
+  //mLayer->storedExpressions()->updateStoredExpression( mActionHandleStoreFilterExpression->data().toUuid(), name, expression);
+
+  //update menu list of stored filter expressions
   storedFilterExpressionBoxInit();
 }
 
@@ -1130,17 +1128,18 @@ void QgsAttributeTableDialog::handleStoreFilterExpression()
 {
   if ( !mActionHandleStoreFilterExpression->isChecked() )
   {
-    //care for deleting by name
     mLayer->storedExpressions()->removeStoredExpression( mActionHandleStoreFilterExpression->data().toUuid() );
-    qDebug() << "changed to unchecked, here we would delete it...";
   }
   else
   {
-    //care for updating it by name
     mLayer->storedExpressions()->addStoredExpression( mFilterQuery->text(), mFilterQuery->text() );
-    qDebug() << "changed to checked, here we would add it...";
   }
   storeExpressionButtonInit();
+
+  //update the id of the action
+  updateCurrentStoredFilterExpression( mFilterQuery->text() );
+
+  //update menu list of stored filter expressions
   storedFilterExpressionBoxInit();
 }
 
@@ -1148,16 +1147,16 @@ void QgsAttributeTableDialog::updateCurrentStoredFilterExpression( const QString
 {
   //dave make time thingy because this is emmited on every tipe
   QgsStoredExpression currentStoredExpression = mLayer->storedExpressions()->findStoredExpressionByExpression( value );
-  if ( !currentStoredExpression.id.isNull() )
-  {
-    mActionHandleStoreFilterExpression->setChecked( true );
-  }
-  else
-  {
-    mActionHandleStoreFilterExpression->setChecked( false );
-  }
+
+  //set checked when it's an existing stored expression
+  //here it should set the button (with this action) to checked or unchecked, but this toggles blöderweise handleStoreFilterExpression dave :-/
+  mActionHandleStoreFilterExpression->setChecked( !currentStoredExpression.id.isNull() );
+
   mActionHandleStoreFilterExpression->setData( currentStoredExpression.id );
   mActionEditStoredFilterExpression->setData( currentStoredExpression.id );
+
+  //update bookmark button
+  storeExpressionButtonInit();
 }
 
 void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, QgsAttributeForm::FilterType type,
