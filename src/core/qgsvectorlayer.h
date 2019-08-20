@@ -2141,7 +2141,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.10
      */
-    QgsStoredExpressionManager *storedExpressions() { return mStoredExpressions; }
+    QgsStoredExpressionManager *storedFilterExpressions() { return mStoredFilterExpressions; }
 
   public slots:
 
@@ -2649,7 +2649,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mAllowCommit = true;
 
     //! Stored expression used for e.g. filter
-    QgsStoredExpressionManager *mStoredExpressions = nullptr;
+    QgsStoredExpressionManager *mStoredFilterExpressions = nullptr;
 
     friend class QgsVectorLayerFeatureSource;
 

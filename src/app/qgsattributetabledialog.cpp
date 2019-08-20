@@ -489,7 +489,7 @@ void QgsAttributeTableDialog::storedFilterExpressionBoxInit()
     delete a;
   }
 
-  const QList< QgsStoredExpression > storedExpressions = mLayer->storedExpressions()->storedExpressions();
+  const QList< QgsStoredExpression > storedExpressions = mLayer->storedFilterExpressions()->storedExpressions();
   for ( const QgsStoredExpression &storedExpression : storedExpressions )
   {
     QAction *storedExpressionAction = new QAction( storedExpression.name, mFilterButton );
@@ -1107,7 +1107,7 @@ void QgsAttributeTableDialog::openConditionalStyles()
 
 void QgsAttributeTableDialog::saveAsStoredFilterExpression()
 {
-  mLayer->storedExpressions()->addStoredExpression( "test", mFilterQuery->text() );
+  mLayer->storedFilterExpressions()->addStoredExpression( "test", mFilterQuery->text() );
 
   //update menu list of stored filter expressions
   storedFilterExpressionBoxInit();
@@ -1128,11 +1128,11 @@ void QgsAttributeTableDialog::handleStoreFilterExpression()
 {
   if ( !mActionHandleStoreFilterExpression->isChecked() )
   {
-    mLayer->storedExpressions()->removeStoredExpression( mActionHandleStoreFilterExpression->data().toUuid() );
+    mLayer->storedFilterExpressions()->removeStoredExpression( mActionHandleStoreFilterExpression->data().toUuid() );
   }
   else
   {
-    mLayer->storedExpressions()->addStoredExpression( mFilterQuery->text(), mFilterQuery->text() );
+    mLayer->storedFilterExpressions()->addStoredExpression( mFilterQuery->text(), mFilterQuery->text() );
   }
   storeExpressionButtonInit();
 
@@ -1146,7 +1146,7 @@ void QgsAttributeTableDialog::handleStoreFilterExpression()
 void QgsAttributeTableDialog::updateCurrentStoredFilterExpression( const QString &value )
 {
   //dave make time thingy because this is emmited on every tipe
-  QgsStoredExpression currentStoredExpression = mLayer->storedExpressions()->findStoredExpressionByExpression( value );
+  QgsStoredExpression currentStoredExpression = mLayer->storedFilterExpressions()->findStoredExpressionByExpression( value );
 
   //set checked when it's an existing stored expression
   //here it should set the button (with this action) to checked or unchecked, but this toggles blöderweise handleStoreFilterExpression dave :-/

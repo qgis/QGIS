@@ -2300,7 +2300,7 @@ Configuration and logic to apply automatically on any edit happening on this lay
 
 
 
-    QgsStoredExpressionManager *storedExpressions();
+    QgsStoredExpressionManager *storedFilterExpressions();
 %Docstring
 Returns all the stored expressions for this layer as the manager
 
