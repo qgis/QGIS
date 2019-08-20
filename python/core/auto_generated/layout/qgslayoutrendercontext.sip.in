@@ -271,7 +271,7 @@ The default is to use no simplification.
 %Docstring
 Returns a list of map themes to use during the export.
 
-Items which handle layered exports (e.g. maps) may utilise this list to export different
+Items which handle layered exports (e.g. maps) may utilize this list to export different
 representations of the item as export layers, as they iterate through these included themes.
 
 .. seealso:: :py:func:`setExportThemes`
@@ -283,7 +283,7 @@ representations of the item as export layers, as they iterate through these incl
 %Docstring
 Sets a list of map ``themes`` to use during the export.
 
-Items which handle layered exports (e.g. maps) may utilise this list to export different
+Items which handle layered exports (e.g. maps) may utilize this list to export different
 representations of the item as export layers, as they iterate through these included themes.
 
 .. seealso:: :py:func:`exportThemes`

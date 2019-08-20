@@ -262,7 +262,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     /**
      * Returns a list of map themes to use during the export.
      *
-     * Items which handle layered exports (e.g. maps) may utilise this list to export different
+     * Items which handle layered exports (e.g. maps) may utilize this list to export different
      * representations of the item as export layers, as they iterate through these included themes.
      *
      * \see setExportThemes()
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     /**
      * Sets a list of map \a themes to use during the export.
      *
-     * Items which handle layered exports (e.g. maps) may utilise this list to export different
+     * Items which handle layered exports (e.g. maps) may utilize this list to export different
      * representations of the item as export layers, as they iterate through these included themes.
      *
      * \see exportThemes()
