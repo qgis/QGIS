@@ -4189,6 +4189,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool includeMetadata = true;
   bool disableRasterTiles = false;
   bool simplify = true;
+  bool geoPdf = false;
   if ( mLayout )
   {
     settings.flags = mLayout->renderContext().flags();
@@ -4197,6 +4198,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
     simplify = mLayout->customProperty( QStringLiteral( "pdfSimplify" ), 1 ).toBool();
+    geoPdf = mLayout->customProperty( QStringLiteral( "pdfCreateGeoPdf" ), 0 ).toBool();
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "pdfTextFormat" ), -1 ).toInt();
     if ( prevLayoutSettingLabelsAsOutlines >= 0 )
     {
@@ -4215,6 +4217,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setMetadataEnabled( includeMetadata );
   dialog.setRasterTilingDisabled( disableRasterTiles );
   dialog.setGeometriesSimplified( simplify );
+  dialog.setExportGeoPdf( geoPdf );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4225,6 +4228,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   disableRasterTiles = dialog.rasterTilingDisabled();
   simplify = dialog.geometriesSimplified();
   QgsRenderContext::TextRenderFormat textRenderFormat = dialog.textRenderFormat();
+  geoPdf = dialog.exportGeoPdf();
 
   if ( mLayout )
   {
@@ -4235,6 +4239,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfDisableRasterTiles" ), disableRasterTiles ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast< int >( textRenderFormat ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfSimplify" ), simplify ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "pdfCreateGeoPdf" ), geoPdf ? 1 : 0 );
   }
 
   settings.forceVectorOutput = forceVector;
@@ -4242,6 +4247,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
   settings.simplifyGeometries = simplify;
+  settings.writeGeoPdf = geoPdf;
   if ( disableRasterTiles )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
   else

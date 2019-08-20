@@ -53,6 +53,9 @@ class QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportO
     void setGeometriesSimplified( bool enabled );
     bool geometriesSimplified() const;
 
+    void setExportGeoPdf( bool enabled );
+    bool exportGeoPdf() const;
+
   private slots:
 
     void showHelp();
