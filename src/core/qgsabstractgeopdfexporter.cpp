@@ -256,31 +256,78 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   // layertree
   QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
   //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
-  QSet< QString > createdLayerIds;
+  QMap< QString, QSet< QString > > createdLayerIds;
+  QMap< QString, QDomElement > groupLayerMap;
   if ( details.includeFeatures )
   {
     for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
     {
       QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
-      layer.setAttribute( QStringLiteral( "id" ), component.mapLayerId );
+      layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
       layer.setAttribute( QStringLiteral( "name" ), component.name );
       layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
-      layerTree.appendChild( layer );
-      createdLayerIds.insert( component.mapLayerId );
+
+      if ( !component.group.isEmpty() )
+      {
+        if ( groupLayerMap.contains( component.group ) )
+        {
+          groupLayerMap[ component.group ].appendChild( layer );
+        }
+        else
+        {
+          QDomElement group = doc.createElement( QStringLiteral( "Layer" ) );
+          group.setAttribute( QStringLiteral( "id" ), QStringLiteral( "group_%1" ).arg( component.group ) );
+          group.setAttribute( QStringLiteral( "name" ), component.group );
+          group.setAttribute( QStringLiteral( "initiallyVisible" ), groupLayerMap.empty() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+          group.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), QStringLiteral( "__mutually_exclusive_groups__" ) );
+          layerTree.appendChild( group );
+          group.appendChild( layer );
+          groupLayerMap[ component.group ] = group;
+        }
+      }
+      else
+      {
+        layerTree.appendChild( layer );
+      }
+
+      createdLayerIds[ component.group ].insert( component.mapLayerId );
     }
   }
   // some PDF components may not be linked to vector components - e.g. layers with labels but no features
   for ( const ComponentLayerDetail &component : components )
   {
-    if ( component.mapLayerId.isEmpty() || createdLayerIds.contains( component.mapLayerId ) )
+    if ( component.mapLayerId.isEmpty() || createdLayerIds.value( component.group ).contains( component.mapLayerId ) )
       continue;
 
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
-    layer.setAttribute( QStringLiteral( "id" ), component.mapLayerId );
+    layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
     layer.setAttribute( QStringLiteral( "name" ), component.name );
     layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
-    layerTree.appendChild( layer );
-    createdLayerIds.insert( component.mapLayerId );
+
+    if ( !component.group.isEmpty() )
+    {
+      if ( groupLayerMap.contains( component.group ) )
+      {
+        groupLayerMap[ component.group ].appendChild( layer );
+      }
+      else
+      {
+        QDomElement group = doc.createElement( QStringLiteral( "Layer" ) );
+        group.setAttribute( QStringLiteral( "id" ), QStringLiteral( "group_%1" ).arg( component.group ) );
+        group.setAttribute( QStringLiteral( "name" ), component.group );
+        group.setAttribute( QStringLiteral( "initiallyVisible" ), groupLayerMap.empty() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+        group.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), QStringLiteral( "__mutually_exclusive_groups__" ) );
+        layerTree.appendChild( group );
+        group.appendChild( layer );
+        groupLayerMap[ component.group ] = group;
+      }
+    }
+    else
+    {
+      layerTree.appendChild( layer );
+    }
+
+    createdLayerIds[ component.group ].insert( component.mapLayerId );
   }
   compositionElem.appendChild( layerTree );
 
@@ -370,10 +417,23 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
       content.appendChild( pdfDataset );
     }
+    else if ( !component.group.isEmpty() )
+    {
+      // if content belongs to a group, we need nested "IfLayerOn" elements, one for the group and one for the layer
+      QDomElement ifGroupOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
+      ifGroupOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "group_%1" ).arg( component.group ) );
+      QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
+      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
+      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
+      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
+      ifLayerOn.appendChild( pdfDataset );
+      ifGroupOn.appendChild( ifLayerOn );
+      content.appendChild( ifGroupOn );
+    }
     else
     {
       QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
+      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
       QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
       pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
       ifLayerOn.appendChild( pdfDataset );
@@ -387,7 +447,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
     {
       QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
+      ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
       QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
       vectorDataset.setAttribute( QStringLiteral( "dataset" ), component.sourceVectorPath );
       vectorDataset.setAttribute( QStringLiteral( "layer" ), component.sourceVectorLayer );
