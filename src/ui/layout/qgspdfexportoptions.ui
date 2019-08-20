@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>300</height>
+    <height>463</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,14 +60,85 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QCheckBox" name="mSimplifyGeometriesCheckbox">
-        <property name="text">
-         <string>Simplify geometries to reduce output file size</string>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mGeoPDFGroupBox">
+     <property name="title">
+      <string>Create Geospatial PDF (GeoPDF)</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QStackedWidget" name="mGeoPDFOptionsStackedWidget">
+        <property name="currentIndex">
+         <number>1</number>
         </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
+        <widget class="QWidget" name="page">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mGeoPdfUnavailableReason">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_2">
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mExportGeoPdfFeaturesCheckBox">
+            <property name="text">
+             <string>Include vector feature information</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Format</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -89,6 +160,16 @@
         </property>
         <property name="checked">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="mSimplifyGeometriesCheckbox">
+        <property name="text">
+         <string>Simplify geometries to reduce output file size</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -130,10 +211,14 @@
  </customwidgets>
  <tabstops>
   <tabstop>mForceVectorCheckBox</tabstop>
+  <tabstop>mAppendGeoreferenceCheckbox</tabstop>
   <tabstop>mIncludeMetadataCheckbox</tabstop>
-  <tabstop>mSimplifyGeometriesCheckbox</tabstop>
   <tabstop>mTextRenderFormatComboBox</tabstop>
+  <tabstop>mGeoPDFGroupBox</tabstop>
+  <tabstop>mGeoPdfFormatComboBox</tabstop>
+  <tabstop>mExportGeoPdfFeaturesCheckBox</tabstop>
   <tabstop>mDisableRasterTilingCheckBox</tabstop>
+  <tabstop>mSimplifyGeometriesCheckbox</tabstop>
  </tabstops>
  <resources/>
  <connections>
