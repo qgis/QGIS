@@ -210,6 +210,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
 
   // finalize and test collation
   QgsAbstractGeoPdfExporter::ExportDetails details;
+  details.pageSizeMm = QSizeF( 297, 210 );
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
   bool expected = false;
 #else
@@ -249,10 +250,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QVERIFY( layer3->isValid() );
   QCOMPARE( layer3->featureCount(), 10L );
 
-
-
   // test for theme based export here!
-  l.renderContext().setExportThemes( QStringList() << QStringLiteral( "test preset2" ) << QStringLiteral( "test preset" ) << QStringLiteral( "test preset3" ) );
   map2->setFollowVisibilityPreset( true );
   map2->setFollowVisibilityPresetName( QStringLiteral( "test preset3" ) );
 
@@ -261,6 +259,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   settings = QgsLayoutExporter::PdfExportSettings();
   settings.writeGeoPdf = true;
   settings.exportMetadata = false;
+  settings.exportThemes = QStringList() << QStringLiteral( "test preset2" ) << QStringLiteral( "test preset" ) << QStringLiteral( "test preset3" );
   exporter.exportToPdf( outputFile, settings );
 
   // check that features were collected
@@ -293,6 +292,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
 
   // finalize and test collation
   details = QgsAbstractGeoPdfExporter::ExportDetails();
+  details.pageSizeMm = QSizeF( 297, 210 );
   QCOMPARE( geoPdfExporter2.finalize( QList<QgsAbstractGeoPdfExporter::ComponentLayerDetail>(), outputFile, details ), expected );
   QVERIFY( geoPdfExporter2.errorMessage().isEmpty() );
 
