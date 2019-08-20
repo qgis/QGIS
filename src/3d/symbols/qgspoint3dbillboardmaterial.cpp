@@ -127,8 +127,8 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
 void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double size )
 {
   // Create texture image
-  QgsRectangle dummyExtent = QgsRectangle( rand(), rand(), rand(), rand() );
-  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, dummyExtent, QStringLiteral( "" ) );
+  QgsRectangle randomExtent = QgsRectangle( rand(), rand(), rand(), rand() );
+  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, randomExtent, QStringLiteral( "billboard material." ) );
 
   setTexture2DFromTextureImage( billboardTextureImage );
 
