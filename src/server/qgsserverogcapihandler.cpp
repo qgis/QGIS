@@ -66,9 +66,14 @@ QgsServerOgcApiHandler::~QgsServerOgcApiHandler()
   //qDebug() << "handler destroyed";
 }
 
+QgsServerOgcApi::ContentType QgsServerOgcApiHandler::defaultContentType() const
+{
+  return contentTypes().size() > 0 ? contentTypes().first() : QgsServerOgcApi::ContentType::JSON;
+}
+
 QList<QgsServerOgcApi::ContentType> QgsServerOgcApiHandler::contentTypes() const
 {
-  return  { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML };
+  return mContentTypes;
 }
 
 void QgsServerOgcApiHandler::handleRequest( const QgsServerApiContext &context ) const
@@ -76,18 +81,6 @@ void QgsServerOgcApiHandler::handleRequest( const QgsServerApiContext &context )
   Q_UNUSED( context );
   throw QgsServerApiNotImplementedException( QStringLiteral( "Subclasses must implement handleRequest" ) );
 }
-
-QList<int> QgsServerOgcApiHandler::contentTypesInt() const
-{
-  QList<int> ret;
-  const QList<QgsServerOgcApi::ContentType> constCt { contentTypes() };
-  for ( const QgsServerOgcApi::ContentType &t : constCt )
-  {
-    ret.push_back( static_cast<int>( t ) );
-  }
-  return ret;
-}
-
 
 QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) const
 {
@@ -518,4 +511,18 @@ json QgsServerOgcApiHandler::defaultResponse()
 json QgsServerOgcApiHandler::jsonTags() const
 {
   return QgsJsonUtils::jsonFromVariant( tags() );
+}
+
+void QgsServerOgcApiHandler::setContentTypesInt( const QList<int> &contentTypes )
+{
+  mContentTypes.clear();
+  for ( const int &i : qgis::as_const( contentTypes ) )
+  {
+    mContentTypes.push_back( static_cast<QgsServerOgcApi::ContentType>( i ) );
+  }
+}
+
+void QgsServerOgcApiHandler::setContentTypes( const QList<QgsServerOgcApi::ContentType> &contentTypes )
+{
+  mContentTypes = contentTypes;
 }

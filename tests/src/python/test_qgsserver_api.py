@@ -484,6 +484,49 @@ class Handler2(QgsServerOgcApiHandler):
                 QgsServerQueryStringParameter('value2', False, QgsServerQueryStringParameter.Type.String, 'a string value'), ]
 
 
+class Handler3(QgsServerOgcApiHandler):
+    """Custom content types: only accept JSON"""
+
+    templatePathOverride = None
+
+    def __init__(self):
+        super(Handler3, self).__init__()
+        self.setContentTypes([QgsServerOgcApi.JSON])
+
+    def path(self):
+        return QtCore.QRegularExpression(r"/handlerthree")
+
+    def operationId(self):
+        return "handlerThree"
+
+    def summary(self):
+        return "Third of its name"
+
+    def description(self):
+        return "The third handler ever"
+
+    def linkTitle(self):
+        return "Handler Three Link Title"
+
+    def linkType(self):
+        return QgsServerOgcApi.data
+
+    def handleRequest(self, context):
+        """Simple mirror: returns the parameters"""
+
+        params = self.values(context)
+        self.write(params, context)
+
+    def parameters(self, context):
+        return [QgsServerQueryStringParameter('value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value')]
+
+    def templatePath(self, context):
+        if self.templatePathOverride is None:
+            return super(Handler3, self).templatePath(context)
+        else:
+            return self.templatePathOverride
+
+
 class QgsServerOgcAPITest(QgsServerAPITestBase):
     """ QGIS OGC API server tests"""
 
@@ -584,6 +627,44 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
 
         # Test template path
         self.assertTrue(h2.templatePath(ctx).endswith('/resources/server/api/ogc/templates/services/api2/handlerTwo.html'))
+
+    def testOgcApiHandlerContentType(self):
+        """Test OGC API Handler content types"""
+
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://server.qgis.org/api3/handlerthree?value1=9.5')
+        response = QgsBufferServerResponse()
+
+        # Add handler to API and test for /api3
+        ctx = QgsServerApiContext('/services/api3', request, response, project, self.server.serverInterface())
+        api = QgsServerOgcApi(self.server.serverInterface(), '/api3', 'apithree', 'a third api', '1.2')
+        h3 = Handler3()
+        api.registerHandler(h3)
+
+        ctx = QgsServerApiContext('/services/api3/', request, response, project, self.server.serverInterface())
+        api.executeRequest(ctx)
+        self.assertEqual(json.loads(bytes(ctx.response().data()))['value1'], 9.5)
+
+        # Call HTML
+        ctx.request().setUrl(QtCore.QUrl('http://server.qgis.org/api3/handlerthree.html?value1=9.5'))
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            api.executeRequest(ctx)
+        self.assertEqual(str(ex.exception), 'Unsupported Content-Type: HTML')
+
+        h3.setContentTypes([QgsServerOgcApi.HTML])
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            api.executeRequest(ctx)
+        self.assertEqual(str(ex.exception), 'Template not found: handlerThree.html')
+
+        # Define a template path
+        dir = QtCore.QTemporaryDir()
+        with open(dir.path() + '/handlerThree.html', 'w+') as f:
+            f.write("Hello world")
+        h3.templatePathOverride = dir.path() + '/handlerThree.html'
+        ctx.response().clear()
+        api.executeRequest(ctx)
+        self.assertEqual(bytes(ctx.response().data()), b"Hello world")
 
 
 if __name__ == '__main__':

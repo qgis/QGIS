@@ -108,8 +108,10 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     /**
      * Returns the default response content type in case the client did not specifically
      * ask for any particular content type.
+     * The default implementation returns the first content type returned by
+     * contentTypes() or JSON if that list is empty.
      */
-    virtual QgsServerOgcApi::ContentType defaultContentType() const  { return QgsServerOgcApi::ContentType::JSON; }
+    virtual QgsServerOgcApi::ContentType defaultContentType() const;
 
     /**
      * Returns the list of content types this handler can serve, default to JSON and HTML.
@@ -117,14 +119,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * the generic type (such as JSON) should not be listed.
      * \note not available in Python bindings
      */
-    virtual QList<QgsServerOgcApi::ContentType> contentTypes() const SIP_SKIP;
-
-    /**
-     * Returns the list of content types this handler can serve, default to JSON and HTML.
-     * In case a specialized type (such as GEOJSON) is supported,
-     * the generic type (such as JSON) should not be listed.
-     */
-    virtual QList<int> contentTypesInt() const SIP_PYNAME( contentTypes );
+    QList<QgsServerOgcApi::ContentType> contentTypes() const SIP_SKIP;
 
     /**
      * Handles the request within its \a context
@@ -293,14 +288,14 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
      * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
      */
-    const QString templatePath( const QgsServerApiContext &context ) const;
+    virtual const QString templatePath( const QgsServerApiContext &context ) const;
 
     /**
      * Returns the absolute path to the base directory where static resources for
      * this handler are stored in the given \a context.
      *
      */
-    const QString staticPath( const QgsServerApiContext &context ) const;
+    virtual const QString staticPath( const QgsServerApiContext &context ) const;
 
     /**
      * Returns the content type from the \a request.
@@ -338,6 +333,24 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \note not available in Python bindings
      */
     json jsonTags( ) const SIP_SKIP;
+
+  protected:
+
+    /**
+     * Set the content types to \a contentTypes
+     */
+    void setContentTypesInt( const QList<int> &contentTypes ) SIP_PYNAME( setContentTypes );
+
+    /**
+     * Set the content types to \a contentTypes
+     * \note not available in Python bindings
+     */
+    void setContentTypes( const QList<QgsServerOgcApi::ContentType> &contentTypes ) SIP_SKIP;
+
+  private:
+
+    //! List of content types this handler can serve, first is the default
+    QList<QgsServerOgcApi::ContentType> mContentTypes = { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML };
 
 
 };

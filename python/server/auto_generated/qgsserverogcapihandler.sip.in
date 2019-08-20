@@ -99,15 +99,10 @@ Tags
 %Docstring
 Returns the default response content type in case the client did not specifically
 ask for any particular content type.
+The default implementation returns the first content type returned by
+contentTypes() or JSON if that list is empty.
 %End
 
-
-    virtual QList<int> contentTypesInt() const /PyName=contentTypes/;
-%Docstring
-Returns the list of content types this handler can serve, default to JSON and HTML.
-In case a specialized type (such as GEOJSON) is supported,
-the generic type (such as JSON) should not be listed.
-%End
 
     virtual void handleRequest( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException ) /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
 %Docstring
@@ -180,7 +175,7 @@ Returns an URL to self, to be used for links to the current resources and as a b
 :param extension: optional file extension to add (the dot will be added automatically).
 %End
 
-    const QString templatePath( const QgsServerApiContext &context ) const;
+    virtual const QString templatePath( const QgsServerApiContext &context ) const;
 %Docstring
 Returns the HTML template path for the handler in the given ``context``
 
@@ -190,7 +185,7 @@ e.g. for an API with root path "/wfs3" and an handler with operationId "collecti
 will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
 %End
 
-    const QString staticPath( const QgsServerApiContext &context ) const;
+    virtual const QString staticPath( const QgsServerApiContext &context ) const;
 %Docstring
 Returns the absolute path to the base directory where static resources for
 this handler are stored in the given ``context``.
@@ -218,6 +213,13 @@ Returns a vector layer from the ``collectionId`` in the given ``context``
 %End
 
 
+
+  protected:
+
+    void setContentTypesInt( const QList<int> &contentTypes ) /PyName=setContentTypes/;
+%Docstring
+Set the content types to ``contentTypes``
+%End
 
 
 };
