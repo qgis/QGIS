@@ -37,6 +37,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
 #include "qgsmaprenderertask.h"
+#include "qgsmessageviewer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
@@ -101,14 +102,16 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
       QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings() );
       if ( !layers.isEmpty() )
       {
-        // Limit number of items to avoid extreme dialog height
-        if ( layers.count() >= 10 )
+        mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(
+                         QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
+        connect( mInfo, &QLabel::linkActivated, [this]( const QString & )
         {
-          layers = layers.mid( 0, 9 );
-          layers << QChar( 0x2026 );
-        }
-        mInfo->setText( tr( "The following layer(s) use advanced effects:\n%1\nRasterizing map is recommended for proper rendering." ).arg(
-                          QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) ) );
+          QgsMessageViewer *viewer = new QgsMessageViewer( this );
+          viewer->setWindowTitle( tr( "Advanced effects warning" ) );
+          viewer->setMessageAsPlainText( mInfoDetails );
+          viewer->exec();
+        } );
+        mInfo->setText( tr( "%1A number of layers%2 use advanced effects, rasterizing map is recommended for proper rendering." ).arg( QStringLiteral( "<a href='#'>" ), QStringLiteral( "</a>" ) ) );
         mSaveAsRaster->setChecked( true );
       }
       else
