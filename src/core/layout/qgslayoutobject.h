@@ -164,6 +164,14 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapLayers, //!< Map layer set
       MapStylePreset, //!< Layer and style map theme
       MapLabelMargin, //!< Map label margin
+      MapGridEnabled, //!< Map grid enabled
+      MapGridIntervalX, //!< Map grid interval X
+      MapGridIntervalY, //!< Map grid interval Y
+      MapGridOffsetX, //!< Map grid offset X
+      MapGridOffsetY, //!< Map grid offset Y
+      MapGridFrameSize, //!< Map grid frame size
+      MapGridFrameMargin, //!< Map grid frame margin
+      MapGridLabelDistance, //!< Map grid label distance
       //composer picture
       PictureSource, //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color
