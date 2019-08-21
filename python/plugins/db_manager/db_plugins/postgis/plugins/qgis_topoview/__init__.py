@@ -226,11 +226,11 @@ def run(item, action, mainwindow):
 
         faceLayers = [layerFaceMbr, layerFaceGeom, layerFaceSeed]
         nodeLayers = [layerNode, layerNodeLabel]
-        edgeLayers = [layerEdge, layerDirectedEdge, layerEdgeLabel
-                      # , layerEdgeFaceLeft, layerEdgeFaceRight, layerEdgeNextLeft, layerEdgeNextRight
-                      ]
+        edgeLayers = [layerEdge, layerDirectedEdge, layerEdgeLabel, layerFaceLeft, layerFaceRight, layerNextLeft, layerNextRight]
 
         QgsProject.instance().addMapLayers(faceLayers, False)
+        QgsProject.instance().addMapLayers(nodeLayers, False)
+        QgsProject.instance().addMapLayers(edgeLayers, False)
 
         groupFaces = QgsLayerTreeGroup(u'Faces')
         for layer in faceLayers:
