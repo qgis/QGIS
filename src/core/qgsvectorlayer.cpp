@@ -3438,6 +3438,37 @@ const QList< QgsVectorLayerJoinInfo > QgsVectorLayer::vectorJoins() const
   return mJoinBuffer->vectorJoins();
 }
 
+bool QgsVectorLayer::addWmsDimension( const QgsVectorLayer::WmsDimensionInfo &wmsDimInfo )
+{
+  for ( const QgsVectorLayer::WmsDimensionInfo &dim : mWmsDimensions )
+  {
+    if ( dim.name == wmsDimInfo.name )
+    {
+      return false;
+    }
+  }
+  mWmsDimensions.append( wmsDimInfo );
+  return true;
+}
+
+bool QgsVectorLayer::removeWmsDimension( const QString &wmsDimName )
+{
+  for ( int i = 0; i < mWmsDimensions.size(); ++i )
+  {
+    if ( mWmsDimensions[ i ].name == wmsDimName )
+    {
+      mWmsDimensions.removeAt( i );
+      return true;
+    }
+  }
+  return false;
+}
+
+const QList< QgsVectorLayer::WmsDimensionInfo > QgsVectorLayer::wmsDimensions() const
+{
+  return mWmsDimensions;
+}
+
 int QgsVectorLayer::addExpressionField( const QString &exp, const QgsField &fld )
 {
   emit beforeAddingExpressionField( fld.name() );

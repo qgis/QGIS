@@ -48,12 +48,70 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
   {
     if ( !alreadyDefinedDimensions.contains( name.toLower() ) )
     {
-      mNameComboBox->addItem( name );
+      mNameComboBox->addItem( name, QVariant( name.toLower() ) );
     }
   }
   mDefaultValueComboBox->setCurrentIndex( 0 );
   mReferenceValueLabel->setEnabled( false );
   mReferenceValueComboBox->setEnabled( false );
+}
+
+void QgsWmsDimensionDialog::setInfo( const QgsVectorLayer::WmsDimensionInfo &info )
+{
+  int nameDataIndex = mNameComboBox->findData( QVariant( info.name ) );
+  if ( nameDataIndex == -1 )
+  {
+    mNameComboBox->setEditText( info.name );
+  }
+  else
+  {
+    mNameComboBox->setCurrentIndex( nameDataIndex );
+  }
+  mNameComboBox->setEnabled( false );
+
+  mFieldComboBox->setField( info.fieldName );
+  mEndFieldComboBox->setField( info.endFieldName );
+
+  mUnitsLineEdit->setText( info.units );
+  mUnitSymbolLineEdit->setText( info.unitSymbol );
+
+  mDefaultValueComboBox->setCurrentIndex( info.defaultValueType );
+  if ( info.defaultValueType == 3 )
+  {
+    int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue );
+    if ( referenceValueIndex == -1 )
+    {
+      mReferenceValueComboBox->setEditText( info.referenceValue.toString() );
+    }
+    else
+    {
+      mReferenceValueComboBox->setCurrentIndex( referenceValueIndex );
+    }
+  }
+  else
+  {
+    mReferenceValueComboBox->setCurrentIndex( 0 );
+  }
+}
+
+QgsVectorLayer::WmsDimensionInfo QgsWmsDimensionDialog::info() const
+{
+  QString name = mNameComboBox->currentText();
+  if ( mNameComboBox->findText( name ) != -1 )
+  {
+    name = mNameComboBox->currentData().toString();
+  }
+
+  QString refText = mReferenceValueComboBox->currentText();
+  QVariant refValue;
+  if ( mNameComboBox->findText( name ) != -1 )
+  {
+    refValue = mReferenceValueComboBox->currentData();
+  }
+  return QgsVectorLayer::WmsDimensionInfo( name, mFieldComboBox->currentField(),
+         mEndFieldComboBox->currentField(),
+         mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(),
+         mDefaultValueComboBox->currentIndex(), refValue );
 }
 
 void QgsWmsDimensionDialog::nameChanged( const QString &name )
@@ -89,10 +147,10 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
     mFieldComboBox->setFilters( QgsFieldProxyModel::AllTypes );
     mEndFieldComboBox->setFilters( QgsFieldProxyModel::AllTypes );
   }
-  fieldChanged( mFieldComboBox->currentField() );
+  fieldChanged();
 }
 
-void QgsWmsDimensionDialog::fieldChanged( const QString &fieldName )
+void QgsWmsDimensionDialog::fieldChanged()
 {
   QString currentFieldName = mFieldComboBox->currentField();
   int currentFieldIndexOf = mLayer->fields().indexOf( currentFieldName );
