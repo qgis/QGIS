@@ -28,19 +28,74 @@ class TestQgsPathResolver(unittest.TestCase):
 
     def testCustomPreprocessor(self):
         self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'aaaaa')
+        with self.assertRaises(KeyError):
+            QgsPathResolver().removePathPreprocessor('bad')
 
         def run_test():
             def my_processor(path):
                 return path.upper()
 
-            QgsPathResolver.setPathPreprocessor(my_processor)
+            id = QgsPathResolver.setPathPreprocessor(my_processor)
+            self.assertTrue(id)
             self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'AAAAA')
+            return id
 
-        run_test()
+        id = run_test()
         gc.collect()
         # my_processor should be out of scope and cleaned up, unless things are working
         # correctly and ownership was transferred
         self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'AAAAA')
+
+        QgsPathResolver().removePathPreprocessor(id)
+        self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'aaaaa')
+
+        # expect key error
+        with self.assertRaises(KeyError):
+            QgsPathResolver().removePathPreprocessor(id)
+
+    def testChainedPreprocessors(self):
+        """
+        Test that chaining preprocessors works correctly
+        """
+        self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'aaaaa')
+
+        def run_test():
+            def my_processor(path):
+                return 'x' + path + 'x'
+
+            def my_processor2(path):
+                return 'y' + path + 'y'
+
+            id = QgsPathResolver.setPathPreprocessor(my_processor)
+            self.assertTrue(id)
+
+            self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'xaaaaax')
+
+            id2 = QgsPathResolver.setPathPreprocessor(my_processor2)
+            self.assertTrue(id2)
+
+            self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'yxaaaaaxy')
+
+            return id, id2
+
+        id, id2 = run_test()
+        gc.collect()
+        # my_processor should be out of scope and cleaned up, unless things are working
+        # correctly and ownership was transferred
+        self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'yxaaaaaxy')
+
+        QgsPathResolver().removePathPreprocessor(id)
+        self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'yaaaaay')
+
+        # expect key error
+        with self.assertRaises(KeyError):
+            QgsPathResolver().removePathPreprocessor(id)
+
+        QgsPathResolver().removePathPreprocessor(id2)
+        self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'aaaaa')
+
+        with self.assertRaises(KeyError):
+            QgsPathResolver().removePathPreprocessor(id2)
 
     def testLoadLayerWithPreprocessor(self):
         """
