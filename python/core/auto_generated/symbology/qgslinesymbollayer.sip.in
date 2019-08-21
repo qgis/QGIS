@@ -256,6 +256,7 @@ lines at intervals along the line feature.
       FirstVertex,
       CentralPoint,
       CurvePoint,
+      SegmentCenter,
     };
 
     QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true,
