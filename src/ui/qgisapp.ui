@@ -1257,7 +1257,7 @@
     <string>Measure Line</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+K</string>
+    <string>Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="mActionMeasureArea">
@@ -1534,9 +1534,6 @@
    </property>
    <property name="text">
     <string>Add MSSQL Spatial Layer…</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="mActionAddDb2Layer">
