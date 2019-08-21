@@ -85,8 +85,8 @@ class GPKGDBPlugin(DBPlugin):
     @classmethod
     def addConnection(self, conn_name, uri):
         md = QgsProviderRegistry.instance().providerMetadata(self.providerName())
-        conn = md.createConnection(conn_name, uri.database())
-        md.saveConnection(conn)
+        conn = md.createConnection(uri.database(), {})
+        md.saveConnection(conn, conn_name)
         return True
 
     @classmethod

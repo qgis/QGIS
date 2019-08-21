@@ -301,12 +301,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     QgsAbstractDatabaseProviderConnection( const QString &name );
 
     /**
-     * Creates a new connection with \a name and initializes the connection from the \a uri.
+     * Creates a new connection from the given \a uri and \a configuration.
      * The connection is not automatically stored in the settings.
      * \see store()
      */
+    QgsAbstractDatabaseProviderConnection( const QString &uri, const QVariantMap &configuration );
 
-    QgsAbstractDatabaseProviderConnection( const QString &name, const QString &uri );
 
     // Public interface
 

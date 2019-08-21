@@ -35,10 +35,9 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
   setDefaultCapabilities();
 }
 
-QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name, const QString &uri ):
-  QgsAbstractDatabaseProviderConnection( name, uri )
+QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ):
+  QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
-  setUri( uri );
   setDefaultCapabilities();
 }
 
@@ -324,7 +323,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
       QVector<QgsPostgresLayerProperty> properties;
       const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
       conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
-      bool dontResolveType = QgsPostgresConn::dontResolveType( name() );
+      bool dontResolveType = configuration().value( QStringLiteral( "dontResolveType" ), false ).toBool();
 
       // Cannot be const:
       for ( auto &pr : properties )
@@ -423,16 +422,16 @@ QStringList QgsPostgresProviderConnection::schemas( ) const
 }
 
 
-void QgsPostgresProviderConnection::store( const QVariantMap &configuration ) const
+void QgsPostgresProviderConnection::store( const QString &name ) const
 {
   // TODO: move this to class configuration?
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
   // delete the original entry first
-  remove( );
+  remove( name );
 
   QgsSettings settings;
   settings.beginGroup( baseKey );
-  settings.beginGroup( name() );
+  settings.beginGroup( name );
 
   // From URI
   const QgsDataSourceUri dsUri { uri() };
@@ -445,8 +444,8 @@ void QgsPostgresProviderConnection::store( const QVariantMap &configuration ) co
   settings.setValue( "authcfg", dsUri.authConfigId() );
   settings.setValue( "sslmode", dsUri.sslMode() );
 
-  // From GUI config
-  static const QStringList guiParameters
+  // From configuration
+  static const QStringList configurationParameters
   {
     QStringLiteral( "publicOnly" ),
     QStringLiteral( "geometryColumnsOnly" ),
@@ -457,19 +456,19 @@ void QgsPostgresProviderConnection::store( const QVariantMap &configuration ) co
     QStringLiteral( "estimatedMetadata" ),
     QStringLiteral( "projectsInDatabase" )
   };
-  for ( const auto &p : guiParameters )
+  for ( const auto &p : configurationParameters )
   {
-    if ( configuration.contains( p ) )
+    if ( configuration().contains( p ) )
     {
-      settings.setValue( p, configuration.value( p ) );
+      settings.setValue( p, configuration().value( p ) );
     }
   }
   settings.endGroup();
   settings.endGroup();
 }
 
-void QgsPostgresProviderConnection::remove() const
+void QgsPostgresProviderConnection::remove( const QString &name ) const
 {
-  QgsPostgresConn::deleteConnection( name() );
+  QgsPostgresConn::deleteConnection( name );
 }
 

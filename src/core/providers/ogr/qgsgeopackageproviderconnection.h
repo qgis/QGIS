@@ -26,13 +26,13 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
   public:
 
     QgsGeoPackageProviderConnection( const QString &name );
-    QgsGeoPackageProviderConnection( const QString &name, const QString &uri );
+    QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration );
 
 
     // QgsAbstractProviderConnection interface
   public:
-    void store( const QVariantMap &configuration ) const override;
-    void remove() const override;
+    void store( const QString &name ) const override;
+    void remove( const QString &name ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void dropRasterTable( const QString &schema, const QString &name ) const override;

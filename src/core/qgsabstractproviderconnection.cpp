@@ -17,22 +17,17 @@
 
 
 QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name )
-  : mConnectionName( name )
 {
+  Q_UNUSED( name );
   // Note: concrete classes must implement the logic to read the configuration from the settings
   //       and create mUri
 }
 
-QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name, const QString &uri )
-  : mConnectionName( name )
-  , mUri( uri )
+QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &uri, const QVariantMap &configuration )
+  : mUri( uri )
+  , mConfiguration( configuration )
 {
 
-}
-
-QString QgsAbstractProviderConnection::name() const
-{
-  return mConnectionName;
 }
 
 QString QgsAbstractProviderConnection::uri() const
@@ -43,4 +38,14 @@ QString QgsAbstractProviderConnection::uri() const
 void QgsAbstractProviderConnection::setUri( const QString &uri )
 {
   mUri = uri;
+}
+
+QVariantMap QgsAbstractProviderConnection::configuration() const
+{
+  return mConfiguration;
+}
+
+void QgsAbstractProviderConnection::setConfiguration( const QVariantMap &configuration )
+{
+  mConfiguration = configuration;
 }

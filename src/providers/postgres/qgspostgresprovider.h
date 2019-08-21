@@ -566,9 +566,9 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     QgsTransaction *createTransaction( const QString &connString ) override;
     QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
     QgsAbstractProviderConnection *createConnection( const QString &name ) override;
-    QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
     void deleteConnection( const QString &name ) override;
-    void saveConnection( QgsAbstractProviderConnection *createConnection, const QVariantMap &configuration = QVariantMap() ) override;
+    void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
     void initProvider() override;
     void cleanupProvider() override;
 

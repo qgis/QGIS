@@ -58,8 +58,8 @@ class TestPyQgsProviderConnectionBase():
 
     def _test_save_load(self, md, uri):
         """Common tests on connection save and load"""
-        conn = md.createConnection('qgis_test1', self.uri)
-        md.saveConnection(conn)
+        conn = md.createConnection(self.uri, {})
+        md.saveConnection(conn, 'qgis_test1')
         # Check that we retrieve the new connection
         self.assertTrue('qgis_test1' in md.connections().keys())
         self.assertTrue('qgis_test1' in md.dbConnections().keys())
@@ -253,7 +253,7 @@ class TestPyQgsProviderConnectionBase():
         self.assertTrue(isinstance(list(conns.values())[0], QgsAbstractDatabaseProviderConnection))
 
         # Remove connection
-        md.deleteConnection(conn.name())
+        md.deleteConnection('qgis_test1')
         self.assertEqual(list(md.connections().values()), [])
 
     def test_errors(self):
@@ -271,7 +271,7 @@ class TestPyQgsProviderConnectionBase():
                 conn.executeSql('DROP TABLE "notExists"')
 
         # Remove connection
-        md.deleteConnection(conn.name())
+        md.deleteConnection('qgis_test1')
         self.assertEqual(list(md.connections().values()), [])
 
     def test_connections(self):

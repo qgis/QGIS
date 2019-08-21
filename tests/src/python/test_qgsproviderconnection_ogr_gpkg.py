@@ -59,8 +59,8 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
 
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
 
-        conn = md.createConnection('qgis_test1', self.uri)
-        md.saveConnection(conn)
+        conn = md.createConnection(self.uri, {})
+        md.saveConnection(conn, 'qgis_test1')
 
         # Retrieve capabilities
         capabilities = conn.capabilities()
