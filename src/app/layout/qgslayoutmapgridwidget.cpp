@@ -158,6 +158,15 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   //set initial state of frame style controls
   toggleFrameControls( false, false, false );
 
+  registerDataDefinedButton( mEnabledDDBtn, QgsLayoutObject::MapGridEnabled );
+  registerDataDefinedButton( mIntervalXDDBtn, QgsLayoutObject::MapGridIntervalX );
+  registerDataDefinedButton( mIntervalYDDBtn, QgsLayoutObject::MapGridIntervalY );
+  registerDataDefinedButton( mOffsetXDDBtn, QgsLayoutObject::MapGridOffsetX );
+  registerDataDefinedButton( mOffsetYDDBtn, QgsLayoutObject::MapGridOffsetY );
+  registerDataDefinedButton( mFrameSizeDDBtn, QgsLayoutObject::MapGridFrameSize );
+  registerDataDefinedButton( mFrameMarginDDBtn, QgsLayoutObject::MapGridFrameMargin );
+  registerDataDefinedButton( mLabelDistDDBtn, QgsLayoutObject::MapGridLabelDistance );
+
   updateGuiElements();
 
   blockAllSignals( false );
@@ -179,7 +188,14 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
 void QgsLayoutMapGridWidget::populateDataDefinedButtons()
 {
-  // none for now
+  updateDataDefinedButton( mEnabledDDBtn );
+  updateDataDefinedButton( mIntervalXDDBtn );
+  updateDataDefinedButton( mIntervalYDDBtn );
+  updateDataDefinedButton( mOffsetXDDBtn );
+  updateDataDefinedButton( mOffsetYDDBtn );
+  updateDataDefinedButton( mFrameSizeDDBtn );
+  updateDataDefinedButton( mFrameMarginDDBtn );
+  updateDataDefinedButton( mLabelDistDDBtn );
 }
 
 void QgsLayoutMapGridWidget::setGuiElementValues()

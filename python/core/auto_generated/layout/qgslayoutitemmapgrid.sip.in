@@ -864,6 +864,8 @@ Retrieves the second fill color for the grid frame.
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    virtual void refresh();
+
 
       public:
 };

@@ -413,7 +413,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * with QgsLayoutItemMapGrid::Cross styles.
      * \see crossLength()
      */
-    void setCrossLength( const double length ) { mCrossLength = length; }
+    void setCrossLength( const double length );
 
     /**
      * Retrieves the length (in layout units) of the cross segments drawn for the grid. This is only used for grids
@@ -589,7 +589,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Sets the \a distance between the map frame and annotations. Units are layout units.
      * \see annotationFrameDistance()
      */
-    void setAnnotationFrameDistance( const double distance ) { mAnnotationFrameDistance = distance; }
+    void setAnnotationFrameDistance( const double distance );
 
     /**
      * Returns the distance between the map frame and annotations. Units are in layout units.
@@ -715,7 +715,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * setFramePenSize method.
      * \see frameWidth()
      */
-    void setFrameWidth( const double width ) { mGridFrameWidth = width; }
+    void setFrameWidth( const double width );
 
     /**
      * Gets the grid frame width in layout units. This property controls how wide the grid frame is.
@@ -731,7 +731,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see frameMargin()
      * \since QGIS 3.6
      */
-    void setFrameMargin( const double margin ) { mGridFrameMargin = margin; }
+    void setFrameMargin( const double margin );
 
     /**
      * Sets the grid frame Margin (in layout units).
@@ -807,6 +807,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     QgsExpressionContext createExpressionContext() const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+    void refresh() override;
 
   private:
 
@@ -910,6 +911,15 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     mutable QList< QgsPointXY > mTransformedIntersections;
     QRectF mPrevPaintRect;
     mutable QPolygonF mPrevMapPolygon;
+
+    bool mEvaluatedEnabled = true;
+    double mEvaluatedIntervalX = 0;
+    double mEvaluatedIntervalY = 0;
+    double mEvaluatedOffsetX = 0;
+    double mEvaluatedOffsetY = 0;
+    double mEvaluatedFrameSize = 0;
+    double mEvaluatedFrameMargin = 0;
+    double mEvaluatedLabelDistance = 0;
 
     class QgsMapAnnotation
     {
@@ -1016,6 +1026,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
     bool shouldShowDivisionForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;
+    void refreshDataDefinedProperties();
 
     friend class TestQgsLayoutMapGrid;
 
