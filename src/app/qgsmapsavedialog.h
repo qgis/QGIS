@@ -104,6 +104,8 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     int mDpi;
     QSize mSize;
 
+    QString mInfoDetails;
+
   private slots:
 
     void showHelp();

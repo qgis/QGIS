@@ -331,7 +331,10 @@ Rasterizing the map is recommended when such effects are used.</string>
      </item>
      <item row="10" column="0" colspan="2">
       <widget class="QLabel" name="mInfo">
-       <property name="enabled">
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="openExternalLinks">
         <bool>false</bool>
        </property>
       </widget>
