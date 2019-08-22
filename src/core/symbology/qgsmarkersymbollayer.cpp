@@ -2639,7 +2639,11 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 
   mFont = QFont( mFontFamily );
-  mFont.setPixelSize( context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale ) );
+  const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
+  mNonZeroFontSize = !qgsDoubleNear( sizePixels, 0.0 );
+  // if a non zero, but small pixel size results, round up to 2 pixels so that a "dot" is at least visible
+  // (if we set a <=1 pixel size here Qt will reset the font to a default size, leading to much too large symbols)
+  mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
   delete mFontMetrics;
   mFontMetrics = new QFontMetrics( mFont );
   mChrWidth = mFontMetrics->width( mChr );
@@ -2755,7 +2759,7 @@ double QgsFontMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context 
 void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
-  if ( !p )
+  if ( !p || !mNonZeroFontSize )
     return;
 
   QTransform transform;
