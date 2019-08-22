@@ -221,8 +221,13 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mFilterActionMapper, SIGNAL( mapped( QObject * ) ), SLOT( filterColumnChanged( QObject * ) ) );
   connect( mFilterQuery, &QLineEdit::returnPressed, this, &QgsAttributeTableDialog::filterQueryAccepted );
   connect( mActionApplyFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterQueryAccepted );
-  connect( mFilterQuery, &QLineEdit::textChanged, this, &QgsAttributeTableDialog::updateCurrentStoredFilterExpression );
+  connect( mFilterQuery, &QLineEdit::textChanged, this, &QgsAttributeTableDialog::onFilterQueryTextChanged );
   connect( mActionSetStyles, &QAction::triggered, this, &QgsAttributeTableDialog::openConditionalStyles );
+
+  //set delay on entering text
+  mFilterQueryTimer = new QTimer( this );
+  mFilterQueryTimer->setSingleShot( true );
+  connect( mFilterQueryTimer, &QTimer::timeout, this, &QgsAttributeTableDialog::updateCurrentStoredFilterExpression );
 
   // info from layer to table
   connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsAttributeTableDialog::editingToggled );
@@ -506,7 +511,7 @@ void QgsAttributeTableDialog::storeExpressionButtonInit()
 {
   if ( mActionHandleStoreFilterExpression->isChecked() )
   {
-    mActionHandleStoreFilterExpression->setToolTip( tr( "Delete stored filter expression" ) );
+    mActionHandleStoreFilterExpression->setToolTip( tr( "Delete stored expression" ) );
     mActionHandleStoreFilterExpression->setText( tr( "Delete Stored Expression" ) );
     mActionHandleStoreFilterExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionHandleStoreFilterExpressionChecked.svg" ) ) );
     mStoreFilterExpressionButton->removeAction( mActionSaveAsStoredFilterExpression );
@@ -514,7 +519,7 @@ void QgsAttributeTableDialog::storeExpressionButtonInit()
   }
   else
   {
-    mActionHandleStoreFilterExpression->setToolTip( tr( "Save filter expression" ) );
+    mActionHandleStoreFilterExpression->setToolTip( tr( "Save expression with the content as name" ) );
     mActionHandleStoreFilterExpression->setText( tr( "Save Expression" ) );
     mActionHandleStoreFilterExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionHandleStoreFilterExpressionUnchecked.svg" ) ) );
     mStoreFilterExpressionButton->addAction( mActionSaveAsStoredFilterExpression );
@@ -1117,10 +1122,7 @@ void QgsAttributeTableDialog::handleStoreFilterExpression()
     mLayer->storedFilterExpressions()->addStoredExpression( mFilterQuery->text(), mFilterQuery->text() );
   }
 
-  //update action id and button
-  updateCurrentStoredFilterExpression( mFilterQuery->text() );
-
-  //update menu list of stored filter expressions
+  updateCurrentStoredFilterExpression();
   storedFilterExpressionBoxInit();
 }
 
@@ -1135,10 +1137,7 @@ void QgsAttributeTableDialog::saveAsStoredFilterExpression()
   {
     mLayer->storedFilterExpressions()->addStoredExpression( nameEdit->text(), mFilterQuery->text() );
 
-    //update action id and button
-    updateCurrentStoredFilterExpression( mFilterQuery->text() );
-
-    //update menu list of stored filter expressions
+    updateCurrentStoredFilterExpression();
     storedFilterExpressionBoxInit();
   }
 }
@@ -1146,7 +1145,7 @@ void QgsAttributeTableDialog::saveAsStoredFilterExpression()
 void QgsAttributeTableDialog::editStoredFilterExpression()
 {
   QgsDialog *dlg = new QgsDialog( this, nullptr, QDialogButtonBox::Save | QDialogButtonBox::Cancel );
-  dlg->setWindowTitle( tr( "Edit expression as" ) );
+  dlg->setWindowTitle( tr( "Edit expression" ) );
   QLineEdit *nameEdit = new QLineEdit( mLayer->storedFilterExpressions()->storedExpression( mActionHandleStoreFilterExpression->data().toUuid() ).name, dlg );
   dlg->layout()->addWidget( nameEdit );
   QLineEdit *expressionEdit = new QLineEdit( mLayer->storedFilterExpressions()->storedExpression( mActionHandleStoreFilterExpression->data().toUuid() ).expression, dlg );
@@ -1157,21 +1156,18 @@ void QgsAttributeTableDialog::editStoredFilterExpression()
     //update stored expression
     mLayer->storedFilterExpressions()->updateStoredExpression( mActionHandleStoreFilterExpression->data().toUuid(), nameEdit->text(), expressionEdit->text() );
 
-    //update current expressoin
+    //update text
     mFilterQuery->setValue( expressionEdit->text() );
 
-    //update menu list of stored filter expressions
     storedFilterExpressionBoxInit();
   }
 }
 
-void QgsAttributeTableDialog::updateCurrentStoredFilterExpression( const QString &value )
+void QgsAttributeTableDialog::updateCurrentStoredFilterExpression()
 {
-  //dave make time thingy because this is emmited on every tipe
-  QgsStoredExpression currentStoredExpression = mLayer->storedFilterExpressions()->findStoredExpressionByExpression( value );
+  QgsStoredExpression currentStoredExpression = mLayer->storedFilterExpressions()->findStoredExpressionByExpression( mFilterQuery->value() );
 
   //set checked when it's an existing stored expression
-  //here it should set the button (with this action) to checked or unchecked, but this toggles blöderweise handleStoreFilterExpression dave :-/
   mActionHandleStoreFilterExpression->setChecked( !currentStoredExpression.id.isNull() );
 
   mActionHandleStoreFilterExpression->setData( currentStoredExpression.id );
@@ -1179,6 +1175,12 @@ void QgsAttributeTableDialog::updateCurrentStoredFilterExpression( const QString
 
   //update bookmark button
   storeExpressionButtonInit();
+}
+
+void QgsAttributeTableDialog::onFilterQueryTextChanged( const QString &value )
+{
+  Q_UNUSED( value );
+  mFilterQueryTimer->start( 300 );
 }
 
 void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, QgsAttributeForm::FilterType type,

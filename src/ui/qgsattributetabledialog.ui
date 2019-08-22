@@ -665,7 +665,7 @@
   <action name="mActionStoredFilterExpressions">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</iconset>
    </property>
    <property name="text">
     <string>Stored Filter Expressions</string>
@@ -686,7 +686,7 @@
     <string/>
    </property>
    <property name="toolTip">
-    <string>Handle Filter Expression (save or delete)</string>
+    <string>Handle expression (save or delete)</string>
    </property>
   </action>
   <action name="mActionSaveAsStoredFilterExpression">
@@ -710,7 +710,7 @@
     <string>Edit Expression</string>
    </property>
    <property name="toolTip">
-    <string>Edit the expression (change name or content)</string>
+    <string>Edit the stored expression (change name or content)</string>
    </property>
   </action>
  </widget>

@@ -178,17 +178,33 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void filterQueryChanged( const QString &query );
     void filterQueryAccepted();
 
+    /**
+    * handle the expression (save or delete) when the bookmark button for stored
+    * filter expressions is triggered
+    */
     void handleStoreFilterExpression();
+
+    /**
+    * open dialog and give the possiblity to save the expression with a name
+    */
     void saveAsStoredFilterExpression();
+
+    /**
+    * open dialog and give the possiblity to edit the name and the expression
+    * of the stored expression
+    */
     void editStoredFilterExpression();
 
     /**
      * updates the bookmark button and it's actions regarding the stored filter
      * expressions according to the value
-     *
-     * @param value is usually the content of the filter query line edit widget
      */
-    void updateCurrentStoredFilterExpression( const QString &value );
+    void updateCurrentStoredFilterExpression( );
+
+    /**
+     * starts timer with timeout 300 ms
+     */
+    void onFilterQueryTextChanged( const QString &value );
 
     void openConditionalStyles();
 
@@ -226,7 +242,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     //! Initialize column box
     void columnBoxInit();
 
-    //! Initialize storedexpression box e.g after adding/deleting stored expression
+    //! Initialize storedexpression box e.g after adding/deleting/edditing stored expression
     void storedFilterExpressionBoxInit();
     //! Functionalities of store expression button changes regarding the status of it
     void storeExpressionButtonInit();
@@ -254,6 +270,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsSearchWidgetWrapper *mCurrentSearchWidgetWrapper = nullptr;
     QStringList mVisibleFields;
     QgsAttributeEditorContext mEditorContext;
+
+    QTimer *mFilterQueryTimer;
 
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );
