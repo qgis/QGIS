@@ -137,13 +137,13 @@ class APP_EXPORT QgsCustomization : public QObject
 
     void setSettings( QSettings *settings ) { mSettings = settings ;}
 
-    // Return the path to the splash screen
+    // Returns the path to the splash screen
     QString splashPath() const;
 
-    // Load and set default customization
+    // Loads and sets default customization
     void loadDefault();
 
-    // Internal Qt widget which has to bes kipped in paths
+    // Internal Qt widget which has to be skipped in paths
     static QStringList sInternalWidgets;
 
     QString statusPath() const { return mStatusPath; }
