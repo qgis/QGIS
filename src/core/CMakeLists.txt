@@ -1218,6 +1218,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterpyramid.h
   raster/qgsrasterrange.h
   raster/qgsrasterrenderer.h
+  raster/qgsrasterrendererregistry.h
   raster/qgsrasterresamplefilter.h
   raster/qgsrasterresampler.h
   raster/qgsrastershader.h

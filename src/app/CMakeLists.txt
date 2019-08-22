@@ -522,6 +522,7 @@ INCLUDE_DIRECTORIES(
   ../gui/symbology
   ../gui/attributetable
   ../gui/auth
+  ../gui/effects
   ../gui/ogr
   ../gui/raster
   ../gui/editorwidgets
