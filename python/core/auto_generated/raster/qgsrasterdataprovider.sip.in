@@ -152,7 +152,7 @@ Read band offset for raster value
 %End
 
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = 0 );
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
 %Docstring
 Read block of data using given extent and size.

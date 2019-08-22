@@ -229,7 +229,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: remove or make protected all readBlock working with void*
 
     //! Read block of data using given extent and size.
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Returns TRUE if source band has no data value
     virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo - 1 ); }
