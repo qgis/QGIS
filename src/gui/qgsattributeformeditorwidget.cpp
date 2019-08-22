@@ -142,7 +142,7 @@ void QgsAttributeFormEditorWidget::changesCommitted()
 
 
 
-void QgsAttributeFormEditorWidget::initialize( const QVariant &initialValue, bool mixedValues, const QgsAttributeMap &additionalFieldValues )
+void QgsAttributeFormEditorWidget::initialize( const QVariant &initialValue, bool mixedValues, const QVariantList &additionalFieldValues )
 {
   if ( mEditorWidget )
   {
@@ -164,7 +164,7 @@ QVariant QgsAttributeFormEditorWidget::currentValue() const
 
 
 
-void QgsAttributeFormEditorWidget::editorWidgetValuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsAttributeFormEditorWidget::editorWidgetValuesChanged( const QVariant &value, const QVariantList &additionalFieldValues )
 {
   if ( mBlockValueUpdate )
     return;

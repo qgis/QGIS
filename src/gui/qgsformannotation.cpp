@@ -99,10 +99,11 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
           QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vectorLayer, i, attWidget, widget, context );
           if ( eww )
           {
-            const QgsAttributeList additionalFields = eww->additionalFields();
-            QgsAttributeMap additionalFieldValues;
-            for ( int index : additionalFields )
+            const QStringList additionalFields = eww->additionalFields();
+            QVariantList additionalFieldValues;
+            for ( const QString &additionalField : additionalFields )
             {
+              int index = vectorLayer->fields().indexFromName( additionalField );
               additionalFieldValues.insert( index, attrs.at( index ) );
             }
             eww->setValues( attrs.at( i ), additionalFieldValues );

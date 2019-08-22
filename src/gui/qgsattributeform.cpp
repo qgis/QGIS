@@ -246,14 +246,15 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww && eww->field().name() == field )
     {
-      eww->setValues( value, QgsAttributeMap() );
+      eww->setValues( value, QVariantList() );
       eww->setHint( hintText );
     }
-    int index = mLayer->fields().indexFromName( field );
-    if ( eww->additionalFields().contains( index ) )
+    // see if the field is present in additional fields of the editor widget
+    int index = eww->additionalFields().indexOf( field );
+    if ( index >= 0 )
     {
       QVariant mainValue = eww->value();
-      QgsAttributeMap additionalFieldValues = eww->additionalFieldValues();
+      QVariantList additionalFieldValues = eww->additionalFieldValues();
       additionalFieldValues[index] = value;
       eww->setValues( mainValue, additionalFieldValues );
       eww->setHint( hintText );
@@ -775,7 +776,7 @@ QString QgsAttributeForm::createFilterExpression() const
 }
 
 
-void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues )
+void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues )
 {
   QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
   Q_ASSERT( eww );
@@ -797,11 +798,12 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QgsAttri
       emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
 
       // also emit the signal for additional values
-      QgsAttributeMap::const_iterator it = additionalFieldValues.constBegin();
-      for ( ; it != additionalFieldValues.constEnd(); ++it )
+      const QStringList addtionalFields = eww->additionalFields();
+      for ( int i = 0; i < addtionalFields.count(); i++ )
       {
-        const QString fieldName = mLayer->fields().at( it.key() ).name();
-        emit widgetValueChanged( fieldName, it.value(), !mIsSettingFeature );
+        const QString fieldName = addtionalFields.at( i );
+        const QVariant value = additionalFieldValues.at( i );
+        emit widgetValueChanged( fieldName, value, !mIsSettingFeature );
       }
 
       signalEmitted = true;
@@ -2172,10 +2174,10 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
   {
     if ( QgsAttributeFormEditorWidget *w = mFormEditorWidgets.value( fieldIndex, nullptr ) )
     {
-      const QgsAttributeList additionalFields = w->editorWidget()->additionalFields();
-      QgsAttributeMap additionalFieldValues;
-      for ( int additionalFieldIndex : additionalFields )
-        additionalFieldValues.insert( additionalFieldIndex, firstFeature.attribute( additionalFieldIndex ) );
+      const QStringList additionalFields = w->editorWidget()->additionalFields();
+      QVariantList additionalFieldValues;
+      for ( const QString &additionalField : additionalFields )
+        additionalFieldValues << firstFeature.attribute( additionalField );
       w->initialize( firstFeature.attribute( fieldIndex ), true, additionalFieldValues );
     }
   }
@@ -2185,29 +2187,31 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
     if ( QgsAttributeFormEditorWidget *w = mFormEditorWidgets.value( sharedValueIt.key(), nullptr ) )
     {
       bool mixed = false;
-      const QgsAttributeList additionalFields = w->editorWidget()->additionalFields();
-      for ( int additionalFieldIndex : additionalFields )
+      const QStringList additionalFields = w->editorWidget()->additionalFields();
+      for ( const QString &additionalField : additionalFields )
       {
-        if ( constMixedValueFields.contains( additionalFieldIndex ) )
+        int index = mLayer->fields().indexFromName( additionalField );
+        if ( constMixedValueFields.contains( index ) )
         {
           // if additional field are mixed, it is considered as mixed
           mixed = true;
           break;
         }
       }
-      QgsAttributeMap additionalFieldValues;
+      QVariantList additionalFieldValues;
       if ( mixed )
       {
-        for ( int additionalFieldIndex : additionalFields )
-          additionalFieldValues.insert( additionalFieldIndex, firstFeature.attribute( additionalFieldIndex ) );
+        for ( const QString &additionalField : additionalFields )
+          additionalFieldValues << firstFeature.attribute( additionalField );
         w->initialize( firstFeature.attribute( sharedValueIt.key() ), true, additionalFieldValues );
       }
       else
       {
-        for ( int additionalFieldIndex : additionalFields )
+        for ( const QString &additionalField : additionalFields )
         {
-          Q_ASSERT( fieldSharedValues.contains( additionalFieldIndex ) );
-          additionalFieldValues.insert( additionalFieldIndex, fieldSharedValues.value( additionalFieldIndex ) );
+          int index = mLayer->fields().indexFromName( additionalField );
+          Q_ASSERT( fieldSharedValues.contains( index ) );
+          additionalFieldValues << fieldSharedValues.value( index );
         }
         w->initialize( sharedValueIt.value(), false, additionalFieldValues );
       }

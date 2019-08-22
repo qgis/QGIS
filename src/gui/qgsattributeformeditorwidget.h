@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      * \param mixedValues set to TRUE to initially show the mixed values state
      * \param additionalValues a variant map of additional field names with their corresponding values
      */
-    void initialize( const QVariant &initialValue, bool mixedValues = false, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
+    void initialize( const QVariant &initialValue, bool mixedValues = false, const QVariantList &additionalFieldValues = QVariantList() );
 
     /**
      * Returns TRUE if the widget's value has been changed since it was initialized.
@@ -121,12 +121,12 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      * \param value new widget value
      * \since QGIS 3.10
      */
-    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues );
+    void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
 
   private slots:
 
     //! Triggered when editor widget's value changes
-    void editorWidgetValuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues );
+    void editorWidgetValuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
 
     //! Triggered when multi edit tool button requests value reset
     void resetValue();
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
     QgsAggregateToolButton *mAggregateButton = nullptr;
     QVariant mPreviousValue;
-    QgsAttributeMap mPreviousAdditionalValues;
+    QVariantList mPreviousAdditionalValues;
     bool mBlockValueUpdate;
     bool mIsMixed;
     bool mIsChanged;

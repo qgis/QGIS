@@ -120,19 +120,19 @@ void TestQgsAttributeForm::testFieldConstraint()
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
 
   // set value to 1
-  ww->setValues( 1, QgsAttributeMap() );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), validLabel );
 
   // set value to null
   spy.clear();
-  ww->setValues( QVariant(), QgsAttributeMap() );
+  ww->setValues( QVariant(), QVariantList() );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), invalidLabel );
 
   // set value to 1
   spy.clear();
-  ww->setValues( 1, QgsAttributeMap() );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), validLabel );
 
@@ -145,15 +145,15 @@ void TestQgsAttributeForm::testFieldConstraint()
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form3.mWidgets[0] );
 
   // set value to 1
-  ww->setValues( 1, QgsAttributeMap() );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( constraintsLabel( &form3, ww )->text(), validLabel );
 
   // set value to null
-  ww->setValues( QVariant(), QgsAttributeMap() );
+  ww->setValues( QVariant(), QVariantList() );
   QCOMPARE( constraintsLabel( &form3, ww )->text(), warningLabel );
 
   // set value to 1
-  ww->setValues( 1, QgsAttributeMap() );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( constraintsLabel( &form3, ww )->text(), validLabel );
 }
 
@@ -213,7 +213,7 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QSignalSpy spy2( &form2, SIGNAL( widgetValueChanged( QString, QVariant, bool ) ) );
 
   // change value
-  ww0->setValues( 2, QgsAttributeMap() ); // update col0
+  ww0->setValues( 2, QVariantList() ); // update col0
   QCOMPARE( spy2.count(), 1 );
 
   QCOMPARE( constraintsLabel( &form2, ww0 )->text(), inv ); // 2 < ( 1 + 2 )
@@ -223,7 +223,7 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   // change value
   spy2.clear();
-  ww0->setValues( 1, QgsAttributeMap() ); // update col0
+  ww0->setValues( 1, QVariantList() ); // update col0
   QCOMPARE( spy2.count(), 1 );
 
   QCOMPARE( constraintsLabel( &form2, ww0 )->text(), val ); // 1 < ( 1 + 2 )
@@ -277,7 +277,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   form2.setFeature( ft );
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
   okButton = form2.mButtonBox->button( QDialogButtonBox::Ok );
-  ww->setValues( 1, QgsAttributeMap() );
+  ww->setValues( 1, QVariantList() );
   QCOMPARE( okButton->isEnabled(), false );
 
   // valid constraint and editable layer : OK button enabled
@@ -287,7 +287,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form3.mWidgets[0] );
   okButton = form3.mButtonBox->button( QDialogButtonBox::Ok );
 
-  ww->setValues( 2, QgsAttributeMap() );
+  ww->setValues( 2, QVariantList() );
   QCOMPARE( okButton->isEnabled(), true );
 
   // valid constraint and not editable layer : OK button disabled
@@ -302,7 +302,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   form4.setFeature( ft );
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form4.mWidgets[0] );
   okButton = form4.mButtonBox->button( QDialogButtonBox::Ok );
-  ww->setValues( 1, QgsAttributeMap() );
+  ww->setValues( 1, QVariantList() );
   QVERIFY( !okButton->isEnabled() );
   layer->startEditing();
   // just a soft constraint, so OK should be enabled
