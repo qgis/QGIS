@@ -41,12 +41,14 @@ class QDomDocument;
 
 struct CORE_EXPORT QgsStoredExpression
 {
-  /*  Commented out because of SIP issues - maybe come back to it later
+
+  QgsStoredExpression() = default;
+
   QgsStoredExpression( QString name, QString expression )
-    : name( name ),
+    : id( QUuid::createUuid() ),
+      name( name ),
       expression( expression )
   {}
-  */
 
   QUuid id;
   QString name;

@@ -18,6 +18,11 @@
 struct QgsStoredExpression
 {
 
+  QgsStoredExpression();
+
+  QgsStoredExpression( QString name, QString expression );
+      expression( expression );
+
   QUuid id;
   QString name;
   QString expression;

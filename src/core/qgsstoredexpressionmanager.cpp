@@ -29,11 +29,13 @@ QUuid QgsStoredExpressionManager::addStoredExpression( const QString &name, cons
 {
   Q_UNUSED( tag );
 
-  QgsStoredExpression storedExpression; //( name, expression );
+  QgsStoredExpression storedExpression( name, expression );
 
+  /*
   storedExpression.id = QUuid::createUuid();
   storedExpression.name = name;
   storedExpression.expression = expression;
+  */
 
   mStoredExpressions.append( storedExpression );
 
