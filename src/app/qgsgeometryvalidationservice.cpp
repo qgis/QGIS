@@ -354,11 +354,17 @@ void QgsGeometryValidationService::invalidateTopologyChecks( QgsVectorLayer *lay
 
 void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFeatureId fid )
 {
+  if ( !mLayerChecks.contains( layer ) )
+    return;
+
+  const QList< QgsSingleGeometryCheck * > checks = mLayerChecks[layer].singleFeatureChecks;
+  if ( checks.empty() )
+    return;
+
   emit geometryCheckStarted( layer, fid );
 
   QgsGeometry geometry = layer->getGeometry( fid );
 
-  const auto &checks = mLayerChecks[layer].singleFeatureChecks;
   mLayerChecks[layer].singleFeatureCheckErrors.remove( fid );
 
   // The errors are going to be sent out via a signal. We cannot keep ownership in here (or can we?)
