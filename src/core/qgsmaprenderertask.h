@@ -144,7 +144,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QString mFileFormat;
     bool mForceRaster = false;
     bool mSaveWorldFile = false;
-    bool mGeoPDF = true;
+    bool mGeoPDF = false;
     QgsAbstractGeoPdfExporter::ExportDetails mGeoPdfExportDetails;
 
     QList< QgsAnnotation * > mAnnotations;
