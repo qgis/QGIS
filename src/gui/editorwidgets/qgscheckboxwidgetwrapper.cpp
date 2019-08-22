@@ -64,9 +64,21 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
-    connect( mCheckBox, &QAbstractButton::toggled, this, [ = ]( bool state ) { emit valuesChanged( state ); } );
+    connect( mCheckBox, &QAbstractButton::toggled, this, [ = ]( bool state )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( state );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( state );
+  } );
   if ( mGroupBox )
-    connect( mGroupBox, &QGroupBox::toggled, this, [ = ]( bool state ) { emit valuesChanged( state ); } );
+    connect( mGroupBox, &QGroupBox::toggled, this, [ = ]( bool state )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( state );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( state );
+  } );
 }
 
 bool QgsCheckboxWidgetWrapper::valid() const

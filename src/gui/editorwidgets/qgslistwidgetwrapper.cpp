@@ -84,7 +84,7 @@ QVariant QgsListWidgetWrapper::value() const
 
 void QgsListWidgetWrapper::onValueChanged()
 {
-  emit valuesChanged( value() );
+  emitValueChanged();
 }
 
 void QgsListWidgetWrapper::updateConstraintWidgetStatus()

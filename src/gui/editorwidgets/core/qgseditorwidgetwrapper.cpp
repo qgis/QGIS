@@ -90,6 +90,9 @@ void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QVariantLis
 
 void QgsEditorWidgetWrapper::emitValueChanged()
 {
+  Q_NOWARN_DEPRECATED_PUSH
+  emit valueChanged( value() );
+  Q_NOWARN_DEPRECATED_POP
   emit valuesChanged( value(), additionalFieldValues() );
 }
 

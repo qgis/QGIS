@@ -147,6 +147,9 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
   {
     value = QVariant( field().type() );
   }
+  Q_NOWARN_DEPRECATED_PUSH
+  emit valueChanged( value );
+  Q_NOWARN_DEPRECATED_POP
   emit valuesChanged( value );
 }
 
