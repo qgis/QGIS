@@ -45,7 +45,7 @@ raw geometry primitive, such as the point, line, polygon, curve or other geometr
 .. note::
 
    QgsGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
-   of the methods or properties exposed from the QgsGeometry API (or QgsAbstractGeometry subclasses) utilise
+   of the methods or properties exposed from the QgsGeometry API (or QgsAbstractGeometry subclasses) utilize
    geodesic calculations. Accordingly, properties like length() and area() or spatial operations like buffer()
    are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
    methods for working with geodesic calculations and spatial operations on geometries,

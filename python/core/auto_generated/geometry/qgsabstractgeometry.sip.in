@@ -25,7 +25,7 @@ Abstract base class for all geometries
 .. note::
 
    QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
-   of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilise
+   of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
    geodesic calculations. Accordingly, properties like length() and area() and spatial operations like centroid()
    are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
    methods for working with geodesic calculations and spatial operations on geometries,
