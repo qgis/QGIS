@@ -92,6 +92,16 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     void removeStoredExpression( const QUuid &id, const QString &tag = QString() );
 
     /**
+    * Updates an expression by id
+    *
+    *  \param id                id of the expression as identification
+    *  \param name              new name of the expression
+    *  \param expression        new expression content
+    *  \param tag               some content, maybe scope where to be shown
+    */
+    void updateStoredExpression( const QUuid &id, const QString &name, const QString &expression, const QString &tag = QString() );
+
+    /**
     * Appends a list of expressions to the existing list
     *
     *  \param storedExpressions list of expressions and the optional name

@@ -56,6 +56,25 @@ void QgsStoredExpressionManager::removeStoredExpression( const QUuid &id, const 
   }
 }
 
+void QgsStoredExpressionManager::updateStoredExpression( const QUuid &id, const QString &name, const QString &expression, const QString &tag )
+{
+  Q_UNUSED( tag );
+
+  int i = 0;
+  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
+  {
+    if ( storedExpression.id == id )
+    {
+      QgsStoredExpression newStoredExpression = mStoredExpressions.at( i );
+      newStoredExpression.name = name;
+      newStoredExpression.expression = expression;
+      mStoredExpressions.replace( i, newStoredExpression );
+      break;
+    }
+    ++i;
+  }
+}
+
 void QgsStoredExpressionManager::addStoredExpressions( QList< QgsStoredExpression > storedExpressions, const QString &tag )
 {
   Q_UNUSED( tag );

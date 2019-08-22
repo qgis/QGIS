@@ -56,6 +56,7 @@
 #include "qgsguiutils.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsstoredexpressionmanager.h"
+#include "qgsdialog.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -1105,25 +1106,6 @@ void QgsAttributeTableDialog::openConditionalStyles()
   mMainView->openConditionalStyles();
 }
 
-void QgsAttributeTableDialog::saveAsStoredFilterExpression()
-{
-  mLayer->storedFilterExpressions()->addStoredExpression( "test", mFilterQuery->text() );
-
-  //update menu list of stored filter expressions
-  storedFilterExpressionBoxInit();
-
-  //update bookmark button
-  storeExpressionButtonInit();
-}
-
-void QgsAttributeTableDialog::editStoredFilterExpression()
-{
-  //mLayer->storedExpressions()->updateStoredExpression( mActionHandleStoreFilterExpression->data().toUuid(), name, expression);
-
-  //update menu list of stored filter expressions
-  storedFilterExpressionBoxInit();
-}
-
 void QgsAttributeTableDialog::handleStoreFilterExpression()
 {
   if ( !mActionHandleStoreFilterExpression->isChecked() )
@@ -1134,13 +1116,53 @@ void QgsAttributeTableDialog::handleStoreFilterExpression()
   {
     mLayer->storedFilterExpressions()->addStoredExpression( mFilterQuery->text(), mFilterQuery->text() );
   }
-  storeExpressionButtonInit();
 
-  //update the id of the action
+  //update action id and button
   updateCurrentStoredFilterExpression( mFilterQuery->text() );
 
   //update menu list of stored filter expressions
   storedFilterExpressionBoxInit();
+}
+
+void QgsAttributeTableDialog::saveAsStoredFilterExpression()
+{
+  QgsDialog *dlg = new QgsDialog( this, nullptr, QDialogButtonBox::Save | QDialogButtonBox::Cancel );
+  dlg->setWindowTitle( tr( "Save expression as ..." ) );
+  QLineEdit *nameEdit = new QLineEdit( dlg );
+  dlg->layout()->addWidget( nameEdit );
+
+  if ( dlg->exec() == QDialog::Accepted )
+  {
+    mLayer->storedFilterExpressions()->addStoredExpression( nameEdit->text(), mFilterQuery->text() );
+
+    //update action id and button
+    updateCurrentStoredFilterExpression( mFilterQuery->text() );
+
+    //update menu list of stored filter expressions
+    storedFilterExpressionBoxInit();
+  }
+}
+
+void QgsAttributeTableDialog::editStoredFilterExpression()
+{
+  QgsDialog *dlg = new QgsDialog( this, nullptr, QDialogButtonBox::Save | QDialogButtonBox::Cancel );
+  dlg->setWindowTitle( tr( "Edit expression as" ) );
+  QLineEdit *nameEdit = new QLineEdit( mLayer->storedFilterExpressions()->storedExpression( mActionHandleStoreFilterExpression->data().toUuid() ).name, dlg );
+  dlg->layout()->addWidget( nameEdit );
+  QLineEdit *expressionEdit = new QLineEdit( mLayer->storedFilterExpressions()->storedExpression( mActionHandleStoreFilterExpression->data().toUuid() ).expression, dlg );
+  dlg->layout()->addWidget( expressionEdit );
+
+  if ( dlg->exec() == QDialog::Accepted )
+  {
+    //update stored expression
+    mLayer->storedFilterExpressions()->updateStoredExpression( mActionHandleStoreFilterExpression->data().toUuid(), nameEdit->text(), expressionEdit->text() );
+
+    //update current expressoin
+    mFilterQuery->setValue( expressionEdit->text() );
+
+    //update menu list of stored filter expressions
+    storedFilterExpressionBoxInit();
+  }
 }
 
 void QgsAttributeTableDialog::updateCurrentStoredFilterExpression( const QString &value )

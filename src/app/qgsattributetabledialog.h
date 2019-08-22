@@ -178,9 +178,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void filterQueryChanged( const QString &query );
     void filterQueryAccepted();
 
+    void handleStoreFilterExpression();
     void saveAsStoredFilterExpression();
     void editStoredFilterExpression();
-    void handleStoreFilterExpression();
 
     /**
      * updates the bookmark button and it's actions regarding the stored filter

@@ -57,6 +57,16 @@ Removes an expression to the list
 :param tag: some content, maybe scope where to be shown
 %End
 
+    void updateStoredExpression( const QUuid &id, const QString &name, const QString &expression, const QString &tag = QString() );
+%Docstring
+Updates an expression by id
+
+:param id: id of the expression as identification
+:param name: new name of the expression
+:param expression: new expression content
+:param tag: some content, maybe scope where to be shown
+%End
+
     void addStoredExpressions( QList< QgsStoredExpression > storedExpressions, const QString &tag = QString() );
 %Docstring
 Appends a list of expressions to the existing list
