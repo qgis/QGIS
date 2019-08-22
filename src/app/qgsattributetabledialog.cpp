@@ -199,7 +199,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mStoreFilterExpressionButton->setDefaultAction( mActionHandleStoreFilterExpression );
   connect( mActionSaveAsStoredFilterExpression, &QAction::triggered, this, &QgsAttributeTableDialog::saveAsStoredFilterExpression );
   connect( mActionEditStoredFilterExpression, &QAction::triggered, this, &QgsAttributeTableDialog::editStoredFilterExpression );
-  connect( mActionHandleStoreFilterExpression, &QAction::toggled, this, &QgsAttributeTableDialog::handleStoreFilterExpression );
+  connect( mActionHandleStoreFilterExpression, &QAction::triggered, this, &QgsAttributeTableDialog::handleStoreFilterExpression );
   mApplyFilterButton->setDefaultAction( mActionApplyFilter );
 
   mActionFeatureActions = new QToolButton();
