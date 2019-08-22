@@ -2543,6 +2543,21 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
     return false;
   }
 
+  // fast check - are they shared copies of the same underlying geometry?
+  if ( d == g.d )
+    return true;
+
+  // avoid calling geos for trivial point case
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point
+       && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  {
+    return equals( g );
+  }
+
+  //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+  if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
+    return false;
+
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   return geos.isEqual( g.d->geometry.get(), &mLastError );
