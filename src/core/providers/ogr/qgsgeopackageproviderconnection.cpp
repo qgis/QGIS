@@ -35,31 +35,29 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
   setUri( settings.value( QStringLiteral( "path" ) ).toString() );
 }
 
-QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name, const QString &uri ):
-  QgsAbstractDatabaseProviderConnection( name )
+QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration ):
+  QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
   setDefaultCapabilities();
-  setUri( uri );
 }
 
-void QgsGeoPackageProviderConnection::store( const QVariantMap &configuration ) const
+void QgsGeoPackageProviderConnection::store( const QString &name ) const
 {
-  Q_UNUSED( configuration );
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
   settings.beginGroup( QStringLiteral( "GPKG" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
-  settings.beginGroup( name() );
+  settings.beginGroup( name );
   settings.setValue( QStringLiteral( "path" ), uri() );
 }
 
-void QgsGeoPackageProviderConnection::remove() const
+void QgsGeoPackageProviderConnection::remove( const QString &name ) const
 {
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "ogr" ), QgsSettings::Section::Providers );
   settings.beginGroup( QStringLiteral( "GPKG" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
-  settings.remove( name() );
+  settings.remove( name );
 }
 
 
@@ -187,7 +185,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
     {
       if ( row.size() != 6 )
       {
-        throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: wrong number of columns returned by query" ).arg( name() ) );
+        throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: wrong number of columns returned by query" ).arg( uri() ) );
       }
       QgsGeoPackageProviderConnection::TableProperty property;
       property.setTableName( row.at( 0 ).toString() );
@@ -234,7 +232,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 
   if ( ! errCause.isEmpty() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( name() ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( uri() ).arg( errCause ) );
   }
   // Filters
   if ( flags )

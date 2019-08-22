@@ -176,11 +176,12 @@ QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbCo
 QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QString &name, bool cached )
 {
   const QMap<QString, QgsAbstractProviderConnection *> constConns { connections( cached ) };
-  for ( QgsAbstractProviderConnection *conn : constConns )
+  const QStringList constKeys { constConns.keys( ) };
+  for ( const QString &key : constKeys )
   {
-    if ( conn->name() == name )
+    if ( key == name )
     {
-      return conn;
+      return constConns.value( key );
     }
   }
   return nullptr;
@@ -193,9 +194,9 @@ QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QStr
 }
 
 
-QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name, const QString &uri )
+QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
 {
-  Q_UNUSED( name );
+  Q_UNUSED( configuration );
   Q_UNUSED( uri );
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
 }
@@ -206,17 +207,17 @@ void QgsProviderMetadata::deleteConnection( const QString &name )
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteConnection" ) ) );
 }
 
-void QgsProviderMetadata::saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration )
+void QgsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
 {
   Q_UNUSED( connection );
-  Q_UNUSED( configuration );
+  Q_UNUSED( name );
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
 }
 
 ///@cond PRIVATE
-void QgsProviderMetadata::saveConnectionProtected( QgsAbstractProviderConnection *conn, const QVariantMap &configuration )
+void QgsProviderMetadata::saveConnectionProtected( const QgsAbstractProviderConnection *conn, const QString &name )
 {
-  conn->store( configuration );
+  conn->store( name );
   mProviderConnections.clear();
 }
 ///@endcond

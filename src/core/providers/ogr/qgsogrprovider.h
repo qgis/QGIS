@@ -779,9 +779,12 @@ class QgsOgrProviderMetadata: public QgsProviderMetadata
   public:
     QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) override;
     QgsAbstractProviderConnection *createConnection( const QString &name ) override;
-    QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) override;
     void deleteConnection( const QString &name ) override;
-    void saveConnection( QgsAbstractProviderConnection *createConnection, const QVariantMap &configuration ) override;
+    void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
+
+  protected:
+
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
 
 };
 

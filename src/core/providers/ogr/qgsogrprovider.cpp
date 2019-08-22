@@ -6649,7 +6649,6 @@ void QgsOgrProviderMetadata::cleanupProvider()
 
 
 
-
 QgsOgrProviderMetadata::QgsOgrProviderMetadata()
   : QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
 {
@@ -6678,9 +6677,9 @@ QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const Q
   return new QgsGeoPackageProviderConnection( connName );
 }
 
-QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &connName, const QString &uri )
+QgsAbstractProviderConnection *QgsOgrProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
 {
-  return new QgsGeoPackageProviderConnection( connName, uri );
+  return new QgsGeoPackageProviderConnection( uri, configuration );
 }
 
 void QgsOgrProviderMetadata::deleteConnection( const QString &name )
@@ -6688,9 +6687,9 @@ void QgsOgrProviderMetadata::deleteConnection( const QString &name )
   deleteConnectionProtected<QgsGeoPackageProviderConnection>( name );
 }
 
-void QgsOgrProviderMetadata::saveConnection( QgsAbstractProviderConnection *conn, const QVariantMap &configuration )
+void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection *conn, const QString &name )
 {
-  saveConnectionProtected( conn, configuration );
+  saveConnectionProtected( conn, name );
 }
 
 ///@endcond

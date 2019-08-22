@@ -52,8 +52,8 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
 
-        conn = md.createConnection('qgis_test1', self.uri)
-        md.saveConnection(conn)
+        conn = md.createConnection(self.uri, {})
+        md.saveConnection(conn, 'qgis_test1')
 
         # Retrieve capabilities
         capabilities = conn.capabilities()
@@ -96,8 +96,8 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
 
-        conn = md.createConnection('qgis_test1', self.uri)
-        md.saveConnection(conn)
+        conn = md.createConnection(self.uri, {})
+        md.saveConnection(conn, 'qgis_test1')
 
         table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster), 'Raster1')
         self.assertTrue(QgsRasterLayer("PG: %s schema='qgis_test' column='%s' table='%s'" % (conn.uri(), table.geometryColumn(), table.tableName()), 'r1', 'gdal').isValid())

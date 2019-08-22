@@ -261,17 +261,9 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 %End
 
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) /Factory/;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) /Factory/;
 %Docstring
-Creates a new connection by loading the connection with the given ``name`` from the settings.
-Ownership is transferred to the caller.
-
-.. versionadded:: 3.10
-%End
-
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) /Factory/;
-%Docstring
-Creates a new connection with the given ``name`` and data source ``uri``,
+Creates a new connection from ``uri`` and ``configuration``,
 the newly created connection is not automatically stored in the settings, call
 saveConnection() to save it.
 Ownership is transferred to the caller.
@@ -279,6 +271,14 @@ Ownership is transferred to the caller.
 .. seealso:: :py:func:`saveConnection`
 
 .. versionadded:: 3.10
+%End
+
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name );
+%Docstring
+Creates a new connection by loading the connection with the given ``name`` from the settings.
+Ownership is transferred to the caller.
+
+.. seealso:: :py:func:`findConnection`
 %End
 
     virtual void deleteConnection( const QString &name ) throw( QgsProviderConnectionException );
@@ -291,12 +291,12 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 .. versionadded:: 3.10
 %End
 
-    virtual void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() );
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
 %Docstring
 Stores the connection in the settings
 
 :param connection: the connection to be stored in the settings
-:param configuration: stores additional connection settings that not part of the data source URI
+:param name: the name under which the connection will be stored
 
 .. versionadded:: 3.10
 %End

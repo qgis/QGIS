@@ -24,8 +24,8 @@ QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( co
 
 }
 
-QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &name, const QString &uri ):
-  QgsAbstractProviderConnection( name, uri )
+QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &uri, const QVariantMap &configuration ):
+  QgsAbstractProviderConnection( uri, configuration )
 {
 
 }

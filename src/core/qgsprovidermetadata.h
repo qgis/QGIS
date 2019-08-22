@@ -310,21 +310,21 @@ class CORE_EXPORT QgsProviderMetadata
 #endif
 
     /**
-     * Creates a new connection by loading the connection with the given \a name from the settings.
-     * Ownership is transferred to the caller.
-     * \since QGIS 3.10
-     */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_FACTORY ;
-
-    /**
-     * Creates a new connection with the given \a name and data source \a uri,
+     * Creates a new connection from \a uri and \a configuration,
      * the newly created connection is not automatically stored in the settings, call
      * saveConnection() to save it.
      * Ownership is transferred to the caller.
      * \see saveConnection()
      * \since QGIS 3.10
      */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name, const QString &uri ) SIP_FACTORY;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) SIP_FACTORY;
+
+    /**
+     * Creates a new connection by loading the connection with the given \a name from the settings.
+     * Ownership is transferred to the caller.
+     * \see findConnection()
+     */
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name );
 
     /**
      * Removes the connection with the given \a name from the settings.
@@ -337,17 +337,17 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Stores the connection in the settings
      * \param connection the connection to be stored in the settings
-     * \param configuration stores additional connection settings that not part of the data source URI
+     * \param name the name under which the connection will be stored
      * \since QGIS 3.10
      */
-    virtual void saveConnection( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() );
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
 
   protected:
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
 
-    // Common functionality for connections management,to be moved into the class
+    // Common functionality for connections management, to be moved into the class
     // when all the providers are ready
     // T_provider_conn: subclass of QgsAbstractProviderConnection,
     // T_conn: provider connection class (such as QgsOgrDbConnection or QgsPostgresConn)
@@ -370,10 +370,10 @@ class CORE_EXPORT QgsProviderMetadata
     template <class T_provider_conn> void deleteConnectionProtected( const QString &name )
     {
       T_provider_conn conn( name );
-      conn.remove();
+      conn.remove( name );
       mProviderConnections.clear();
     }
-    virtual void saveConnectionProtected( QgsAbstractProviderConnection *connection, const QVariantMap &configuration = QVariantMap() );
+    virtual void saveConnectionProtected( const QgsAbstractProviderConnection *connection, const QString &name );
     //! Provider connections cache
     QMap<QString, QgsAbstractProviderConnection *> mProviderConnections;
 

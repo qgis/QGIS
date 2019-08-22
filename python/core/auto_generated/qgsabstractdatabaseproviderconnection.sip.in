@@ -240,14 +240,14 @@ Creates a new connection with ``name`` by reading its configuration from the set
 If a connection with this name cannot be found, an empty connection will be returned.
 %End
 
-
-    QgsAbstractDatabaseProviderConnection( const QString &name, const QString &uri );
+    QgsAbstractDatabaseProviderConnection( const QString &uri, const QVariantMap &configuration );
 %Docstring
-Creates a new connection with ``name`` and initializes the connection from the ``uri``.
+Creates a new connection from the given ``uri`` and ``configuration``.
 The connection is not automatically stored in the settings.
 
 .. seealso:: :py:func:`store`
 %End
+
 
 
     Capabilities capabilities() const;

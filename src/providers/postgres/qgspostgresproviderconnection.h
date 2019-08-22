@@ -23,7 +23,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
   public:
 
     QgsPostgresProviderConnection( const QString &name );
-    QgsPostgresProviderConnection( const QString &name, const QString &uri );
+    QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration );
 
     // QgsAbstractProviderConnection interface
 
@@ -48,8 +48,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = nullptr ) const override;
     QStringList schemas( ) const override;
-    void store( const QVariantMap &configuration = QVariantMap() ) const override;
-    void remove() const override;
+    void store( const QString &name ) const override;
+    void remove( const QString &name ) const override;
 
 
   private:

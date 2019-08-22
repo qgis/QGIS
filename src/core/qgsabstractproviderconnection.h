@@ -27,12 +27,17 @@
 /**
  * The QgsAbstractProviderConnection provides an interface for data provider connections.
  *
- * Connections objects can be created by passing the connection name and in this case
- * they are automatically loaded from the settings, or by passing a data source URI
- * in the constructor.
+ * Connections objects can be constructed loading them from the connections stored
+ * in the settings by passing the connection name.
+ * A new connection object can also be created by passing a data source URI in the constructor.
+ *
+ * Provider metadata keep a cache of the existing connections, to manage stored
+ * connections it is recommendend to call metadata methods instead of loading and
+ * storing the connections directly.
  *
  * Concrete classes must implement methods to retrieve, save and remove connections from
  * the settings.
+ *
  * \ingroup core
  * \since QGIS 3.10
  */
@@ -65,30 +70,24 @@ class CORE_EXPORT QgsAbstractProviderConnection
     QgsAbstractProviderConnection( const QString &name );
 
     /**
-     * Creates a new connection with \a name and initializes the connection from the \a uri.
+     * Creates a new connection from the given \a uri and \a configuration.
      * The connection is not automatically stored in the settings.
      * \see store()
      */
-    QgsAbstractProviderConnection( const QString &name, const QString &uri );
+    QgsAbstractProviderConnection( const QString &uri, const QVariantMap &configuration );
 
     virtual ~QgsAbstractProviderConnection() = default;
 
     /**
      * Stores the connection in the settings.
-     * \param configuration stores additional connection settings that are used by the
-     * source select dialog and are not part of the data source URI
+     * \param name the name under which the connection will be stored
      */
-    virtual void store( const QVariantMap &configuration = QVariantMap() ) const = 0;
+    virtual void store( const QString &name ) const = 0;
 
     /**
      * Deletes the connection from the settings.
      */
-    virtual void remove( ) const = 0;
-
-    /**
-     * Returns the connection name
-     */
-    QString name() const;
+    virtual void remove( const QString &name ) const = 0;
 
     /**
      * Returns the connection data source URI string representation
@@ -100,10 +99,20 @@ class CORE_EXPORT QgsAbstractProviderConnection
      */
     void setUri( const QString &uri );
 
+    /**
+     * Returns the connection configuration parameters
+     */
+    QVariantMap configuration() const;
+
+    /**
+     * Sets the connection \a configuration
+     */
+    void setConfiguration( const QVariantMap &configuration );
+
   private:
 
-    QString mConnectionName;
     QString mUri;
+    QVariantMap mConfiguration;
 
 };
 
