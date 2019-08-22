@@ -798,10 +798,10 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
       emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
 
       // also emit the signal for additional values
-      const QStringList addtionalFields = eww->additionalFields();
-      for ( int i = 0; i < addtionalFields.count(); i++ )
+      const QStringList additionalFields = eww->additionalFields();
+      for ( int i = 0; i < additionalFields.count(); i++ )
       {
-        const QString fieldName = addtionalFields.at( i );
+        const QString fieldName = additionalFields.at( i );
         const QVariant value = additionalFieldValues.at( i );
         emit widgetValueChanged( fieldName, value, !mIsSettingFeature );
       }

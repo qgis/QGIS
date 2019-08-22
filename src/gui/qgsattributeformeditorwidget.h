@@ -89,7 +89,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     void setConstraintResultVisible( bool editable );
 
     /**
-     * Return the editor widget wrapper
+     * Returns the editor widget wrapper
      * \since QGIS 3.10
      */
     QgsEditorWidgetWrapper *editorWidget() const;

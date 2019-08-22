@@ -61,7 +61,7 @@ Be sure to return a NULL QVariant if it should be set to NULL.
 
     virtual QStringList additionalFields() const;
 %Docstring
-Return the list of additional fields which the editor handles
+Returns the list of additional fields which the editor handles
 
 .. versionadded:: 3.10
 %End
@@ -253,7 +253,7 @@ Emit this signal, whenever the value changed.
 It will also return the values for the additional fields handled by the widget
 
 :param value: The new value
-:param addtionalFieldValues: A map of additional field names with their corresponding values
+:param additionalFieldValues: A map of additional field names with their corresponding values
 
 .. versionadded:: 3.10
 %End

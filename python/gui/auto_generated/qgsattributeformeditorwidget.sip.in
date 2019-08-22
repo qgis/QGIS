@@ -74,7 +74,7 @@ Set the constraint result label visible or invisible according to the layer edit
 
     QgsEditorWidgetWrapper *editorWidget() const;
 %Docstring
-Return the editor widget wrapper
+Returns the editor widget wrapper
 
 .. versionadded:: 3.10
 %End

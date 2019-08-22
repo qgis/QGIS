@@ -85,7 +85,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual QVariant value() const = 0;
 
     /**
-     * Return the list of additional fields which the editor handles
+     * Returns the list of additional fields which the editor handles
      * \since QGIS 3.10
      */
     virtual QStringList additionalFields() const {return QStringList();}
@@ -251,7 +251,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * It will also return the values for the additional fields handled by the widget
      *
      * \param value The new value
-     * \param addtionalFieldValues A map of additional field names with their corresponding values
+     * \param additionalFieldValues A map of additional field names with their corresponding values
      * \since QGIS 3.10
      */
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues = QVariantList() );
