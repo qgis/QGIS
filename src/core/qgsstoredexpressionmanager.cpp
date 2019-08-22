@@ -29,13 +29,13 @@ QUuid QgsStoredExpressionManager::addStoredExpression( const QString &name, cons
 {
   Q_UNUSED( tag );
 
+  /* leads to trouble with sip...
   QgsStoredExpression storedExpression( name, expression );
-
-  /*
+  */
+  QgsStoredExpression storedExpression;
   storedExpression.id = QUuid::createUuid();
   storedExpression.name = name;
   storedExpression.expression = expression;
-  */
 
   mStoredExpressions.append( storedExpression );
 

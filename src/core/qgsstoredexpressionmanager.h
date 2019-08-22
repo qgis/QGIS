@@ -42,6 +42,7 @@ class QDomDocument;
 struct CORE_EXPORT QgsStoredExpression
 {
 
+  /* leads to trouble with sip...
   QgsStoredExpression() = default;
 
   QgsStoredExpression( QString name, QString expression )
@@ -49,6 +50,7 @@ struct CORE_EXPORT QgsStoredExpression
       name( name ),
       expression( expression )
   {}
+  */
 
   QUuid id;
   QString name;

@@ -23,6 +23,7 @@
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionlineedit.h"
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -1130,8 +1131,13 @@ void QgsAttributeTableDialog::saveAsStoredFilterExpression()
 {
   QgsDialog *dlg = new QgsDialog( this, nullptr, QDialogButtonBox::Save | QDialogButtonBox::Cancel );
   dlg->setWindowTitle( tr( "Save expression as ..." ) );
+  QVBoxLayout *layout = dlg->layout();
+  dlg->resize( 400, dlg->height() );
+
+  QLabel *nameLabel = new QLabel( tr( "Name" ), dlg );
   QLineEdit *nameEdit = new QLineEdit( dlg );
-  dlg->layout()->addWidget( nameEdit );
+  layout->addWidget( nameLabel );
+  layout->addWidget( nameEdit );
 
   if ( dlg->exec() == QDialog::Accepted )
   {
@@ -1146,18 +1152,27 @@ void QgsAttributeTableDialog::editStoredFilterExpression()
 {
   QgsDialog *dlg = new QgsDialog( this, nullptr, QDialogButtonBox::Save | QDialogButtonBox::Cancel );
   dlg->setWindowTitle( tr( "Edit expression" ) );
+  QVBoxLayout *layout = dlg->layout();
+  dlg->resize( 400, dlg->height() );
+
+  QLabel *nameLabel = new QLabel( tr( "Name" ), dlg );
   QLineEdit *nameEdit = new QLineEdit( mLayer->storedFilterExpressions()->storedExpression( mActionHandleStoreFilterExpression->data().toUuid() ).name, dlg );
-  dlg->layout()->addWidget( nameEdit );
-  QLineEdit *expressionEdit = new QLineEdit( mLayer->storedFilterExpressions()->storedExpression( mActionHandleStoreFilterExpression->data().toUuid() ).expression, dlg );
-  dlg->layout()->addWidget( expressionEdit );
+  QLabel *expressionLabel = new QLabel( tr( "Expression" ), dlg );
+  QgsExpressionLineEdit *expressionEdit = new QgsExpressionLineEdit( dlg );
+  expressionEdit->setExpression( mLayer->storedFilterExpressions()->storedExpression( mActionHandleStoreFilterExpression->data().toUuid() ).expression );
+
+  layout->addWidget( nameLabel );
+  layout->addWidget( nameEdit );
+  layout->addWidget( expressionLabel );
+  layout->addWidget( expressionEdit );
 
   if ( dlg->exec() == QDialog::Accepted )
   {
     //update stored expression
-    mLayer->storedFilterExpressions()->updateStoredExpression( mActionHandleStoreFilterExpression->data().toUuid(), nameEdit->text(), expressionEdit->text() );
+    mLayer->storedFilterExpressions()->updateStoredExpression( mActionHandleStoreFilterExpression->data().toUuid(), nameEdit->text(), expressionEdit->expression() );
 
     //update text
-    mFilterQuery->setValue( expressionEdit->text() );
+    mFilterQuery->setValue( expressionEdit->expression() );
 
     storedFilterExpressionBoxInit();
   }
