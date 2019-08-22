@@ -171,7 +171,7 @@ void QgsTextEditWrapper::showIndeterminateState()
     mLineEdit->blockSignals( false );
 }
 
-void QgsTextEditWrapper::updateValues( const QVariant &val, const QgsAttributeMap & )
+void QgsTextEditWrapper::updateValues( const QVariant &val, const QVariantList & )
 {
   if ( mLineEdit )
   {

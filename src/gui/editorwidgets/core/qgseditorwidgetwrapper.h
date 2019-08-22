@@ -88,14 +88,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Return the list of additional fields which the editor handles
      * \since QGIS 3.10
      */
-    virtual QgsAttributeList additionalFields() const {return QgsAttributeList();}
+    virtual QStringList additionalFields() const {return QStringList();}
 
     /**
      * Will be used to access the widget's values for potential additional fields handled by the widget
      * \returns A map of additional field names with their corresponding values
+     * \see additionalFields
      * \since QGIS 3.10
      */
-    virtual QgsAttributeMap additionalFieldValues() {return QgsAttributeMap();}
+    virtual QVariantList additionalFieldValues() {return QVariantList();}
 
     /**
      * Access the field index.
@@ -253,7 +254,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param addtionalFieldValues A map of additional field names with their corresponding values
      * \since QGIS 3.10
      */
-    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
+    void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues = QVariantList() );
 
     /**
      * Emit this signal when the constraint status changed.
@@ -297,7 +298,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * to reflect the new values.
      * \since QGIS 3.10
      */
-    void setValues( const QVariant &value, const QgsAttributeMap &additionalValues );
+    void setValues( const QVariant &value, const QVariantList &additionalValues );
 
     /**
      * Will call the value() method to determine the emitted value
@@ -356,7 +357,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     * \note Will be pure virtual in QGIS 4.x
     * \since QGIS 3.10
     */
-    virtual void updateValues( const QVariant &value, const QgsAttributeMap &additionalValues = QgsAttributeMap() ); //TODO QGIS 4: make it pure virtual
+    virtual void updateValues( const QVariant &value, const QVariantList &additionalValues = QVariantList() ); //TODO QGIS 4: make it pure virtual
 
     // TODO QGIS 4: remove
     bool isRunningDeprecatedSetValue = false;

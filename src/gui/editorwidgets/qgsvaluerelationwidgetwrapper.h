@@ -104,7 +104,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
 
   private:
-    void updateValues( const QVariant &value, const QgsAttributeMap & = QgsAttributeMap() ) override;
+    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
 
     /**

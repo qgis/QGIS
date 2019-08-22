@@ -117,7 +117,7 @@ void QgsUniqueValuesWidgetWrapper::showIndeterminateState()
   }
 }
 
-void QgsUniqueValuesWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
+void QgsUniqueValuesWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mComboBox )
   {

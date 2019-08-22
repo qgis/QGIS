@@ -60,7 +60,7 @@ class GUI_EXPORT QgsKeyValueWidgetWrapper : public QgsEditorWidgetWrapper
     void onValueChanged();
 
   private:
-    void updateValues( const QVariant &value, const QgsAttributeMap & = QgsAttributeMap() ) override;
+    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
     void updateConstraintWidgetStatus() override;
 
     QgsKeyValueWidget *mWidget = nullptr;

@@ -74,7 +74,7 @@ bool QgsColorWidgetWrapper::valid() const
   return mColorButton;
 }
 
-void QgsColorWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
+void QgsColorWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mColorButton )
     mColorButton->setColor( !value.isNull() ? QColor( value.toString() ) : QColor() );

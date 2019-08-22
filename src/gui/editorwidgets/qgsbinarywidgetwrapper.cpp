@@ -109,7 +109,7 @@ bool QgsBinaryWidgetWrapper::valid() const
   return mLabel && mButton;
 }
 
-void QgsBinaryWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
+void QgsBinaryWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   mValue = value.isValid() && !value.isNull() && value.canConvert< QByteArray >() ? value.toByteArray() : QByteArray();
   if ( mValue.length() == 0 )

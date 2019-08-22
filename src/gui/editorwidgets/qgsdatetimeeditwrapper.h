@@ -76,7 +76,7 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     void setEnabled( bool enabled ) override;
 
   private:
-    void updateValues( const QVariant &value, const QgsAttributeMap  & = QgsAttributeMap() ) override;
+    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
 };
 
 #endif // QGSDATETIMEEDITWRAPPER_H

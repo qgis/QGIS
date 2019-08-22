@@ -54,7 +54,7 @@ class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   private:
-    void updateValues( const QVariant &value, const QgsAttributeMap  & = QgsAttributeMap() ) override;
+    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
 
     QVariant mValue;
 };

@@ -79,11 +79,11 @@ void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
 void QgsEditorWidgetWrapper::setValue( const QVariant &value )
 {
   isRunningDeprecatedSetValue = true;
-  updateValues( value, QgsAttributeMap() );
+  updateValues( value, QVariantList() );
   isRunningDeprecatedSetValue = false;
 }
 
-void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QgsAttributeMap &additionalValues )
+void QgsEditorWidgetWrapper::setValues( const QVariant &value, const QVariantList &additionalValues )
 {
   updateValues( value, additionalValues );
 }
@@ -123,8 +123,9 @@ bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeNa
   return mFormFeature.setAttribute( attributeName, attributeValue );
 }
 
-void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap &additionalValues )
+void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QVariantList &additionalValues )
 {
+  // this method should be made pure virtual in QGIS 4
   Q_UNUSED( additionalValues );
   Q_NOWARN_DEPRECATED_PUSH
   // avoid infinte recursive loop

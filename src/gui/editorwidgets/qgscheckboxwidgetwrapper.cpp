@@ -74,7 +74,7 @@ bool QgsCheckboxWidgetWrapper::valid() const
   return mCheckBox || mGroupBox;
 }
 
-void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
+void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   bool state = false;
 

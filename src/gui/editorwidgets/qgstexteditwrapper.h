@@ -78,7 +78,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     void textChanged( const QString &text );
 
   private:
-    void updateValues( const QVariant &val, const QgsAttributeMap & = QgsAttributeMap() ) override;
+    void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;
 
     QTextBrowser *mTextBrowser = nullptr;
     QTextEdit *mTextEdit = nullptr;

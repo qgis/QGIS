@@ -59,18 +59,20 @@ Be sure to return a NULL QVariant if it should be set to NULL.
 :return: The current value the widget represents
 %End
 
-    virtual QgsAttributeList additionalFields() const;
+    virtual QStringList additionalFields() const;
 %Docstring
 Return the list of additional fields which the editor handles
 
 .. versionadded:: 3.10
 %End
 
-    virtual QgsAttributeMap additionalFieldValues();
+    virtual QVariantList additionalFieldValues();
 %Docstring
 Will be used to access the widget's values for potential additional fields handled by the widget
 
 :return: A map of additional field names with their corresponding values
+
+.. seealso:: :py:func:`additionalFields`
 
 .. versionadded:: 3.10
 %End
@@ -245,7 +247,7 @@ Emit this signal, whenever the value changed.
 .. deprecated:: since QGIS 3.10 use valuesChanged signal instead
 %End
 
-    void valuesChanged( const QVariant &value, const QgsAttributeMap &additionalFieldValues = QgsAttributeMap() );
+    void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues = QVariantList() );
 %Docstring
 Emit this signal, whenever the value changed.
 It will also return the values for the additional fields handled by the widget
@@ -286,7 +288,7 @@ Is forwarded to the slot setValues()
 
     virtual void setValue( const QVariant &value ) /Deprecated/;
 
-    void setValues( const QVariant &value, const QgsAttributeMap &additionalValues );
+    void setValues( const QVariant &value, const QVariantList &additionalValues );
 %Docstring
 Is called, when the value of the widget or additional field values
 needs to be changed. Update the widget representation

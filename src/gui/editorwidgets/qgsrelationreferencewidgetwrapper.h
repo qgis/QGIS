@@ -69,7 +69,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     void updateConstraintWidgetStatus() override;
 
   private:
-    void updateValues( const QVariant &val, const QgsAttributeMap & = QgsAttributeMap() ) override;
+    void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;
 
     QgsRelationReferenceWidget *mWidget = nullptr;
     QgsMapCanvas *mCanvas = nullptr;

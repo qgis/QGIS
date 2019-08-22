@@ -67,7 +67,7 @@ bool QgsKeyValueWidgetWrapper::valid() const
   return true;
 }
 
-void QgsKeyValueWidgetWrapper::updateValues( const QVariant &value, const QgsAttributeMap & )
+void QgsKeyValueWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   mWidget->setMap( value.toMap() );
 }
