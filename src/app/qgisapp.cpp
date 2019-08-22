@@ -7184,77 +7184,101 @@ void QgisApp::refreshFeatureActions()
 
 void QgisApp::changeDataSource( QgsMapLayer *layer )
 {
-  // Get provider type
-  QString providerType( layer->providerType() );
   QgsMapLayerType layerType( layer->type() );
 
   QgsDataSourceSelectDialog dlg( mBrowserModel, true, layerType );
   dlg.setDescription( tr( "Original source URI: %1" ).arg( layer->publicSource() ) );
+
+  const QVariantMap originalSourceParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
 
   if ( dlg.exec() == QDialog::Accepted )
   {
     QgsMimeDataUtils::Uri uri( dlg.uri() );
     if ( uri.isValid() )
     {
-      bool layerWasValid( layer->isValid() );
-      // Store subset string form vlayer if we are fixing a bad layer
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      QString subsetString;
-      // Get the subset string directly from the data provider because
-      // layer's method will return a null string from invalid layers
-      if ( !layerWasValid && vlayer && vlayer->dataProvider() &&
-           vlayer->dataProvider()->supportsSubsetString() &&
-           !vlayer->dataProvider()->subsetString( ).isEmpty() )
+      auto fixLayer = [this]( QgsMapLayer * layer, const QgsMimeDataUtils::Uri & uri )
       {
-        subsetString = vlayer->dataProvider()->subsetString();
-      }
-      layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
-      // Re-apply original style and subset string  when fixing bad layers
-      if ( !( layerWasValid || layer->originalXmlProperties().isEmpty() ) )
-      {
-        if ( ! subsetString.isEmpty() )
+        bool layerWasValid( layer->isValid() );
+        // Store subset string from vlayer if we are fixing a bad layer
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        QString subsetString;
+        // Get the subset string directly from the data provider because
+        // layer's method will return a null string from invalid layers
+        if ( !layerWasValid && vlayer && vlayer->dataProvider() &&
+             vlayer->dataProvider()->supportsSubsetString() &&
+             !vlayer->dataProvider()->subsetString( ).isEmpty() )
         {
-          vlayer->setSubsetString( subsetString );
+          subsetString = vlayer->dataProvider()->subsetString();
         }
-        QgsReadWriteContext context;
-        context.setPathResolver( QgsProject::instance()->pathResolver() );
-        context.setProjectTranslator( QgsProject::instance() );
-        QString errorMsg;
-        QDomDocument doc;
-        if ( doc.setContent( layer->originalXmlProperties() ) )
+        layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
+        // Re-apply original style and subset string  when fixing bad layers
+        if ( !( layerWasValid || layer->originalXmlProperties().isEmpty() ) )
         {
-          QDomNode layer_node( doc.firstChild( ) );
-          if ( ! layer->readSymbology( layer_node, errorMsg, context ) )
+          if ( ! subsetString.isEmpty() )
           {
-            QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from stored XML for layer %1: %2" )
+            vlayer->setSubsetString( subsetString );
+          }
+          QgsReadWriteContext context;
+          context.setPathResolver( QgsProject::instance()->pathResolver() );
+          context.setProjectTranslator( QgsProject::instance() );
+          QString errorMsg;
+          QDomDocument doc;
+          if ( doc.setContent( layer->originalXmlProperties() ) )
+          {
+            QDomNode layer_node( doc.firstChild( ) );
+            if ( ! layer->readSymbology( layer_node, errorMsg, context ) )
+            {
+              QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from stored XML for layer %1: %2" )
+                           .arg( layer->name( ) )
+                           .arg( errorMsg ) );
+            }
+          }
+          else
+          {
+            QgsDebugMsg( QStringLiteral( "Failed to create XML QDomDocument for layer %1: %2" )
                          .arg( layer->name( ) )
                          .arg( errorMsg ) );
           }
         }
-        else
-        {
-          QgsDebugMsg( QStringLiteral( "Failed to create XML QDomDocument for layer %1: %2" )
-                       .arg( layer->name( ) )
-                       .arg( errorMsg ) );
-        }
-      }
 
-      // All the following code is necessary to refresh the layer
-      QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mLayerTreeView->model() );
-      if ( model )
-      {
-        QgsLayerTreeLayer *tl( model->rootGroup()->findLayer( layer->id() ) );
-        if ( tl && tl->itemVisibilityChecked() )
+        // All the following code is necessary to refresh the layer
+        QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mLayerTreeView->model() );
+        if ( model )
         {
-          tl->setItemVisibilityChecked( false );
-          tl->setItemVisibilityChecked( true );
+          QgsLayerTreeLayer *tl( model->rootGroup()->findLayer( layer->id() ) );
+          if ( tl && tl->itemVisibilityChecked() )
+          {
+            tl->setItemVisibilityChecked( false );
+            tl->setItemVisibilityChecked( true );
+          }
         }
-      }
 
-      // Tell the bridge that we have fixed a layer
-      if ( ! layerWasValid && layer->isValid() )
+        // Tell the bridge that we have fixed a layer
+        if ( ! layerWasValid && layer->isValid() )
+        {
+          QgsProject::instance()->layerTreeRoot()->customLayerOrderChanged( );
+        }
+      };
+
+      fixLayer( layer, uri );
+      const QVariantMap fixedUriParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+
+      // next, we loop through to see if we can auto-fix any other layers with the same source
+      const QMap< QString, QgsMapLayer * > layers = QgsProject::instance()->mapLayers( false );
+      for ( auto it = layers.begin(); it != layers.end(); ++it )
       {
-        QgsProject::instance()->layerTreeRoot()->customLayerOrderChanged( );
+        if ( it.value()->isValid() )
+          continue;
+
+        QVariantMap thisParts = QgsProviderRegistry::instance()->decodeUri( it.value()->providerType(), it.value()->source() );
+        if ( thisParts.contains( QStringLiteral( "path" ) ) && thisParts.value( QStringLiteral( "path" ) ) == originalSourceParts.value( QStringLiteral( "path" ) ) )
+        {
+          // found a broken layer with the same original path, fix this one too
+          uri.uri = it.value()->source().replace( thisParts.value( QStringLiteral( "path" ) ).toString(),
+                                                  fixedUriParts.value( QStringLiteral( "path" ) ).toString() );
+          uri.providerKey = it.value()->providerType();
+          fixLayer( it.value(), uri );
+        }
       }
     }
   }
