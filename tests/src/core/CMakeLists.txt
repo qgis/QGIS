@@ -232,12 +232,12 @@ SET(TESTS
  testqgstranslateproject.cpp
  testqobjectuniqueptr.cpp
  testqgspostgresstringutils.cpp
+ estqgsstoredexpressionmanager.cpp
 )
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS})
 ENDIF(WITH_QTWEBKIT)
-
 
 IF(HAVE_OPENCL)
   SET(TESTS ${TESTS}
