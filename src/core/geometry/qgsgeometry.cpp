@@ -1125,6 +1125,10 @@ bool QgsGeometry::removeDuplicateNodes( double epsilon, bool useZValues )
 
 bool QgsGeometry::intersects( const QgsRectangle &r ) const
 {
+  // fast case, check bounding boxes
+  if ( !boundingBoxIntersects( r ) )
+    return false;
+
   QgsGeometry g = fromRect( r );
   return intersects( g );
 }
