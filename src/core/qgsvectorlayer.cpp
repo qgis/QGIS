@@ -1537,6 +1537,47 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mAuxiliaryLayerKey = asElem.attribute( QStringLiteral( "key" ) );
   }
 
+  // QGIS Server WMS Dimensions
+  const QDomNode wmsDimsNode = layer_node.namedItem( QStringLiteral( "wmsDimensions" ) );
+  if ( !wmsDimsNode.isNull() )
+  {
+    const QDomElement wmsDimsElem = wmsDimsNode.toElement();
+    QDomNodeList wmsDimsList = wmsDimsElem.elementsByTagName( QStringLiteral( "dimension" ) );
+    for ( int i = 0; i < wmsDimsList.size(); ++i )
+    {
+      QDomElement dimElem = wmsDimsList.at( i ).toElement();
+      QString dimName = dimElem.attribute( QStringLiteral( "name" ) );
+      QString dimFieldName = dimElem.attribute( QStringLiteral( "fieldName" ) );
+      // check field name
+      int dimFieldNameIndex = mFields.indexOf( dimFieldName );
+      if ( dimFieldNameIndex == -1 )
+      {
+        continue;
+      }
+      QVariant dimRefValue;
+      int dimDefaultValueType = dimElem.attribute( QStringLiteral( "defaultValueType" ) ).toInt();
+      if ( dimDefaultValueType == 3 )
+      {
+        QString dimRefValueStr = dimElem.attribute( QStringLiteral( "referenceValue" ) );
+        if ( !dimRefValueStr.isEmpty() )
+        {
+          QgsField dimField = mFields.at( dimFieldNameIndex );
+          dimRefValue = QVariant( dimRefValueStr );
+          if ( !dimField.convertCompatible( dimRefValue ) )
+          {
+            continue;
+          }
+        }
+      }
+      QgsVectorLayer::WmsDimensionInfo dim( dimName, dimFieldName,
+                                            dimElem.attribute( QStringLiteral( "endFieldName" ) ),
+                                            dimElem.attribute( QStringLiteral( "units" ) ),
+                                            dimElem.attribute( QStringLiteral( "unitSymbol" ) ),
+                                            dimDefaultValueType, dimRefValue );
+      addWmsDimension( dim );
+    }
+  }
+
   return mValid;               // should be true if read successfully
 
 } // void QgsVectorLayer::readXml
@@ -1822,6 +1863,25 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
     asElem.setAttribute( QStringLiteral( "key" ), pkField );
   }
   layer_node.appendChild( asElem );
+
+  // save QGIS Server WMS Dimension definitions
+  if ( mWmsDimensions.size() > 0 )
+  {
+    QDomElement wmsDimsElem = document.createElement( QStringLiteral( "wmsDimensions" ) );
+    for ( const QgsVectorLayer::WmsDimensionInfo &dim : mWmsDimensions )
+    {
+      QDomElement dimElem = document.createElement( QStringLiteral( "dimension" ) );
+      dimElem.setAttribute( QStringLiteral( "name" ), dim.name );
+      dimElem.setAttribute( QStringLiteral( "fieldName" ), dim.fieldName );
+      dimElem.setAttribute( QStringLiteral( "endFieldName" ), dim.endFieldName );
+      dimElem.setAttribute( QStringLiteral( "units" ), dim.units );
+      dimElem.setAttribute( QStringLiteral( "unitSymbol" ), dim.unitSymbol );
+      dimElem.setAttribute( QStringLiteral( "defaultValueType" ), dim.defaultValueType );
+      dimElem.setAttribute( QStringLiteral( "referenceValue" ), dim.referenceValue.toString() );
+      wmsDimsElem.appendChild( dimElem );
+    }
+    layer_node.appendChild( wmsDimsElem );
+  }
 
   // renderer specific settings
   QString errorMsg;
