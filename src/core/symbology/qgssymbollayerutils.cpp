@@ -3749,6 +3749,9 @@ QString QgsSymbolLayerUtils::svgSymbolNameToPath( const QString &n, const QgsPat
   if ( n.isEmpty() )
     return QString();
 
+  if ( n.startsWith( QLatin1String( "base64:" ) ) )
+    return n;
+
   // we might have a full path...
   if ( QFileInfo::exists( n ) )
     return QFileInfo( n ).canonicalFilePath();
@@ -3811,6 +3814,9 @@ QString QgsSymbolLayerUtils::svgSymbolPathToName( const QString &p, const QgsPat
 {
   if ( p.isEmpty() )
     return QString();
+
+  if ( p.startsWith( QLatin1String( "base64:" ) ) )
+    return p;
 
   if ( !QFileInfo::exists( p ) )
     return p;
