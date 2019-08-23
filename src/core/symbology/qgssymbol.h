@@ -322,7 +322,7 @@ class CORE_EXPORT QgsSymbol
      *
      * Optionally a custom render context may be given in order to ensure that the preview icon exactly
      * matches the settings from that context.
-     * \param selected set to TRUE to render the symbol in a selected state \since QGIS 3.10
+     * \param selected set to TRUE to render the symbol in a selected state
      *
      * \see exportImage()
      * \see asImage()
