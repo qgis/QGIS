@@ -32,6 +32,11 @@ class QgsPoint3DSymbol : QgsAbstract3DSymbol
 Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
 %End
 
+    QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
+%Docstring
+Copy Constructor for QgsPoint3DSymbol
+%End
+
     QgsPoint3DSymbol( QgsMarkerSymbol *symbol );
 %Docstring
 Constructor for QgsPoint3DSymbol with symbol as the billboardSymbol

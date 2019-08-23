@@ -23,15 +23,7 @@
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
-
-  QgsPoint3DSymbol *point3DSymbol = new  QgsPoint3DSymbol( mBillboardSymbol ? mBillboardSymbol->clone() : nullptr );
-  point3DSymbol->setShape( mShape );
-  point3DSymbol->setMaterial( mMaterial );
-  point3DSymbol->setTransform( mTransform );
-  point3DSymbol->setShapeProperties( mShapeProperties );
-  point3DSymbol->setAltitudeClamping( mAltClamping );
-  point3DSymbol->setDataDefinedProperties( mDataDefinedProperties );
-  return point3DSymbol;
+  return new QgsPoint3DSymbol( *this );
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol()
@@ -39,11 +31,24 @@ QgsPoint3DSymbol::QgsPoint3DSymbol()
   setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
 }
 
+QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other ) :
+  mAltClamping( other.altitudeClamping() )
+  , mMaterial( other.material() )
+  , mShape( other.shape() )
+  , mShapeProperties( other.shapeProperties() )
+  , mTransform( other.transform() )
+  , mBillboardSymbol( other.billboardSymbol() ? other.billboardSymbol()->clone() : nullptr )
+{
+  setDataDefinedProperties( other.dataDefinedProperties() );
+}
+
 QgsPoint3DSymbol::QgsPoint3DSymbol( QgsMarkerSymbol *symbol )
   : mBillboardSymbol( symbol )
 {
 
 }
+
+
 
 void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
