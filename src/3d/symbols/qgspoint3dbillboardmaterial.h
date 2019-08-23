@@ -46,22 +46,19 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
     //! Returns the size of the view port.
     QSizeF windowSize() const;
 
-    //! Set the texture2D of the billboard from image in \a imagePath.
-    void setTexture2DFromImagePath( QString imagePath );
-
-    //! Set the texture2D of the billboard from \a image with \a size.
-    void setTexture2DFromImage( QImage image, double size = 100 );
-
     //! Set default symbol for the texture with \a map and \a selected parameter for rendering.
     void useDefaultSymbol( const Qgs3DMapSettings &map, bool selected = false );
 
     //! Set \a markerSymbol for the texture with \a map and \a selected parameter for rendering.
     void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DMapSettings &map, bool selected = false );
 
+  private:
+    //! Set the texture2D of the billboard from \a image with \a size.
+    void setTexture2DFromImage( QImage image, double size = 100 );
+
     //! Set texture2D from \a textureImage
     void setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage );
 
-  private:
     Qt3DRender::QParameter *mSize = nullptr;
     Qt3DRender::QParameter *mViewportSize = nullptr;
     Qt3DRender::QParameter *mTexture2D = nullptr;

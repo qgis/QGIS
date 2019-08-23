@@ -104,15 +104,6 @@ QSizeF QgsPoint3DBillboardMaterial::windowSize() const
   return mViewportSize->value().value<QSizeF>();
 }
 
-void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
-{
-  // Texture Image
-  Qt3DRender::QTextureImage *textureImage = new Qt3DRender::QTextureImage;
-  textureImage->setSource( QUrl( imagePath ) );
-
-  setTexture2DFromTextureImage( textureImage );
-}
-
 void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double size )
 {
   // Create texture image
