@@ -4227,8 +4227,13 @@ void QgisApp::updateRecentProjectPaths()
   const auto constMRecentProjects = mRecentProjects;
   for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
-    QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).completeBaseName(),
-                      QDir::toNativeSeparators( recentProject.path ) ) );
+    QAction *action = mRecentProjectsMenu->addAction(
+                        QStringLiteral( "%1 (%2)" )
+                        .arg( recentProject.title != recentProject.path
+                              ? recentProject.title
+                              : QFileInfo( recentProject.path ).completeBaseName(), QDir::toNativeSeparators( recentProject.path )
+                            ).replace( "&", "&&" )
+                      );
     //action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
     if ( recentProject.pin )
@@ -6432,9 +6437,8 @@ void QgisApp::openProject( QAction *action )
   if ( checkTasksDependOnProject() )
     return;
 
-  QString debugme = action->data().toString();
   if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
-    addProject( debugme );
+    addProject( action->data().toString().replace( "&&", "&" ) );
 }
 
 void QgisApp::runScript( const QString &filePath )
