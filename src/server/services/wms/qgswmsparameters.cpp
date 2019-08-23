@@ -2011,4 +2011,26 @@ namespace QgsWms
 
     return options;
   }
+
+  QMap<QString, QString> QgsWmsParameters::dimensionValues() const
+  {
+    QMap<QString, QString> dimValues;
+    const QStringList reservedNames { "TIME", "ELEVATION" };
+    for ( const QString &key : reservedNames )
+    {
+      if ( mUnmanagedParameters.contains( key ) )
+      {
+        dimValues[key] = mUnmanagedParameters[key];
+      }
+    }
+    const QStringList unmanagedNames = mUnmanagedParameters.keys();
+    for ( const QString &key : unmanagedNames )
+    {
+      if ( key.startsWith( QStringLiteral( "DIM_" ) ) )
+      {
+        dimValues[key.mid( 4 )] = mUnmanagedParameters[key];
+      }
+    }
+    return dimValues;
+  }
 }

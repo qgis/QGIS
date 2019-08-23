@@ -2702,6 +2702,7 @@ namespace QgsWms
     if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
+      QStringList expList;
       for ( const QgsWmsParametersFilter &filter : filters )
       {
         if ( filter.mType == QgsWmsParametersFilter::OGC_FE )
@@ -2715,12 +2716,7 @@ namespace QgsWms
                                           QStringLiteral( "Filter string rejected. Error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
           }
           QDomElement filterElem = filterXml.firstChildElement();
-          std::unique_ptr<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer ) );
-
-          if ( expression )
-          {
-            mFeatureFilter.setFilter( filteredLayer, *expression );
-          }
+          expList << QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer )->dump();
         }
         else if ( filter.mType == QgsWmsParametersFilter::SQL )
         {
@@ -2746,6 +2742,199 @@ namespace QgsWms
             newSubsetString.prepend( "(" );
           }
           filteredLayer->setSubsetString( newSubsetString );
+        }
+      }
+      // WMS Dimension filters
+      const QList<QgsVectorLayer::WmsDimensionInfo> wmsDims = filteredLayer->wmsDimensions();
+      if ( !wmsDims.isEmpty() )
+      {
+        QMap<QString, QString> dimParamValues = mContext.parameters().dimensionValues();
+        for ( const QgsVectorLayer::WmsDimensionInfo &dim : wmsDims )
+        {
+          // Check field index
+          int fieldIndex = filteredLayer->fields().indexOf( dim.fieldName );
+          if ( fieldIndex == -1 )
+          {
+            continue;
+          }
+          // Check end field index
+          int endFieldIndex = -1;
+          if ( !dim.endFieldName.isEmpty() )
+          {
+            endFieldIndex = filteredLayer->fields().indexOf( dim.endFieldName );
+            if ( endFieldIndex == -1 )
+            {
+              continue;
+            }
+          }
+          // Apply dimension filtering
+          if ( !dimParamValues.contains( dim.name.toUpper() ) )
+          {
+            // Default value based on type configured by user
+            QVariant defValue;
+            if ( dim.defaultValueType == 0 )
+            {
+              continue; // no filter by default for this dimension
+            }
+            else if ( dim.defaultValueType == 3 )
+            {
+              defValue = dim.referenceValue;
+            }
+            else
+            {
+              // get unique values
+              QSet<QVariant> uniqueValues = filteredLayer->uniqueValues( fieldIndex );
+              if ( endFieldIndex != -1 )
+              {
+                uniqueValues.unite( filteredLayer->uniqueValues( endFieldIndex ) );
+              }
+              // sort unique values
+              QList<QVariant> values = uniqueValues.toList();
+              std::sort( values.begin(), values.end() );
+              if ( dim.defaultValueType == 1 )
+              {
+                defValue = values.first();
+              }
+              else if ( dim.defaultValueType == 2 )
+              {
+                defValue = values.last();
+              }
+            }
+            // build expression
+            if ( endFieldIndex == -1 )
+            {
+              expList << QgsExpression::createFieldEqualityExpression( dim.fieldName, defValue );
+            }
+            else
+            {
+              QStringList expElems;
+              expElems << QgsExpression::quotedColumnRef( dim.fieldName )
+                       << QStringLiteral( "<=" ) << QgsExpression::quotedValue( defValue )
+                       << QStringLiteral( "AND" ) << QgsExpression::quotedColumnRef( dim.endFieldName )
+                       << QStringLiteral( ">=" ) << QgsExpression::quotedValue( defValue );
+              expList << expElems.join( ' ' );
+            }
+          }
+          else
+          {
+            // Get field to convert value provided in parameters
+            QgsField dimField = filteredLayer->fields().at( fieldIndex );
+            // Value provided in parameters
+            QString dimParamValue = dimParamValues[dim.name.toUpper()];
+            // The expression list for this dimension
+            QStringList dimExplist;
+            // Multiple values are seprated by ,
+            QStringList dimValues = dimParamValue.split( ',' );
+            for ( int i = 0; i < dimValues.size(); ++i )
+            {
+              QString dimValue = dimValues[i];
+              // Trim value if necessary
+              if ( dimValue.size() > 1 )
+              {
+                dimValue = dimValue.trimmed();
+              }
+              // Range value is separated by / for example 0/1
+              if ( dimValue.contains( '/' ) )
+              {
+                QStringList rangeValues = dimValue.split( '/' );
+                // Check range value size
+                if ( rangeValues.size() != 2 )
+                {
+                  continue; // throw an error
+                }
+                // Get range values
+                QVariant rangeMin = QVariant( rangeValues[0] );
+                QVariant rangeMax = QVariant( rangeValues[1] );
+                // Convert and check range values
+                if ( !dimField.convertCompatible( rangeMin ) )
+                {
+                  continue; // throw an error
+                }
+                if ( !dimField.convertCompatible( rangeMax ) )
+                {
+                  continue; // throw an error
+                }
+                // Build expression for this range
+                QStringList expElems;
+                if ( endFieldIndex == -1 )
+                {
+                  // The field values are between min and max range
+                  expElems << QgsExpression::quotedColumnRef( dim.fieldName )
+                           << QStringLiteral( ">=" ) << QgsExpression::quotedValue( rangeMin )
+                           << QStringLiteral( "AND" ) << QgsExpression::quotedColumnRef( dim.fieldName )
+                           << QStringLiteral( "<=" ) << QgsExpression::quotedValue( rangeMax );
+                }
+                else
+                {
+                  // The start field or the end field are lesser than min range
+                  // or the start field or the end field are greater than min range
+                  expElems << QStringLiteral( "(" ) << QgsExpression::quotedColumnRef( dim.fieldName )
+                           << QStringLiteral( ">=" ) << QgsExpression::quotedValue( rangeMin )
+                           << QStringLiteral( "OR" ) << QgsExpression::quotedColumnRef( dim.endFieldName )
+                           << QStringLiteral( ">=" ) << QgsExpression::quotedValue( rangeMin )
+                           << QStringLiteral( ") AND (" ) << QgsExpression::quotedColumnRef( dim.fieldName )
+                           << QStringLiteral( "<=" ) << QgsExpression::quotedValue( rangeMax )
+                           << QStringLiteral( "OR" ) << QgsExpression::quotedColumnRef( dim.endFieldName )
+                           << QStringLiteral( "<=" ) << QgsExpression::quotedValue( rangeMax )
+                           << QStringLiteral( ")" );
+                }
+                dimExplist << expElems.join( ' ' );
+              }
+              else
+              {
+                QVariant dimVariant = QVariant( dimValue );
+                if ( !dimField.convertCompatible( dimVariant ) )
+                {
+                  continue; // throw an error
+                }
+                // Build expression for this value
+                if ( endFieldIndex == -1 )
+                {
+                  // Field is equal to
+                  dimExplist << QgsExpression::createFieldEqualityExpression( dim.fieldName, dimVariant );
+                }
+                else
+                {
+                  // The start field is lesser or equal to
+                  // and the end field is greater or equal to
+                  QStringList expElems;
+                  expElems << QgsExpression::quotedColumnRef( dim.fieldName )
+                           << QStringLiteral( "<=" ) << QgsExpression::quotedValue( dimVariant )
+                           << QStringLiteral( "AND" ) << QgsExpression::quotedColumnRef( dim.endFieldName )
+                           << QStringLiteral( ">=" ) << QgsExpression::quotedValue( dimVariant );
+                  dimExplist << expElems.join( ' ' );
+                }
+              }
+            }
+            // Build the expression for this dimension
+            if ( dimExplist.size() == 1 )
+            {
+              expList << dimExplist;
+            }
+            else if ( dimExplist.size() > 1 )
+            {
+              expList << QStringLiteral( "( %1 )" ).arg( dimExplist.join( QStringLiteral( " ) OR ( " ) ) );
+            }
+          }
+        }
+      }
+
+      // Join and apply expressions provided by OGC filter and Dimensions
+      QString exp;
+      if ( expList.size() == 1 )
+      {
+        exp = expList[0];
+      }
+      else if ( expList.size() > 1 )
+      {
+        exp = QStringLiteral( "( %1 )" ).arg( expList.join( QStringLiteral( " ) AND ( " ) ) );
+      }
+      if ( !exp.isEmpty() )
+      {
+        QgsExpression *expression = new QgsExpression( exp );
+        if ( expression )
+        {
+          mFeatureFilter.setFilter( filteredLayer, *expression );
         }
       }
     }
