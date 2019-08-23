@@ -340,7 +340,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     QString mEvaluatedPath;
 
     //! Loads an image file into the picture item and redraws the item
-    void loadPicture( const QString &path );
+    void loadPicture( const QVariant &data );
 
     /**
      * Returns part of a raster image which will be shown, given current picture

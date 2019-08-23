@@ -336,24 +336,23 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
   QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
-  QString source = mSourcePath;
+  QVariant source( mSourcePath );
 
   //data defined source set?
   mHasExpressionError = false;
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::PictureSource ) )
   {
-    bool ok = false;
-    source = mDataDefinedProperties.valueAsString( QgsLayoutObject::PictureSource, *evalContext, source, &ok );
-    if ( ok )
-    {
-      source = source.trimmed();
-      QgsDebugMsg( QStringLiteral( "exprVal PictureSource:%1" ).arg( source ) );
-    }
-    else
+    source = mDataDefinedProperties.value( QgsLayoutObject::PictureSource, *evalContext, QVariant( source ) );
+    if ( !source.canConvert( QMetaType::QString ) )
     {
       mHasExpressionError = true;
       source = QString();
       QgsMessageLog::logMessage( tr( "Picture expression eval error" ) );
+    }
+    else if ( source.type() != QVariant::ByteArray )
+    {
+      source = source.toString().trimmed();
+      QgsDebugMsg( QStringLiteral( "exprVal PictureSource:%1" ).arg( source.toString() ) );
     }
   }
 
@@ -483,25 +482,40 @@ void QgsLayoutItemPicture::updateMapRotation()
   setPictureRotation( rotation );
 }
 
-void QgsLayoutItemPicture::loadPicture( const QString &path )
+void QgsLayoutItemPicture::loadPicture( const QVariant &data )
 {
   mIsMissingImage = false;
-  mEvaluatedPath = path;
-  if ( path.startsWith( QLatin1String( "http" ) ) )
+  QVariant imageData( data );
+  mEvaluatedPath = data.toString();
+
+  if ( mEvaluatedPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
+  {
+    QByteArray base64 = mEvaluatedPath.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+    imageData = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
+  }
+
+  if ( imageData.type() == QVariant::ByteArray )
+  {
+    if ( mImage.loadFromData( imageData.toByteArray() ) )
+    {
+      mMode = FormatRaster;
+    }
+  }
+  else if ( mEvaluatedPath.startsWith( QLatin1String( "http" ) ) )
   {
     //remote location
-    loadRemotePicture( path );
+    loadRemotePicture( mEvaluatedPath );
   }
   else
   {
     //local location
-    loadLocalPicture( path );
+    loadLocalPicture( mEvaluatedPath );
   }
   if ( mMode != FormatUnknown ) //make sure we start with a new QImage
   {
     recalculateSize();
   }
-  else if ( mHasExpressionError || !( path.isEmpty() ) )
+  else if ( mHasExpressionError || !mEvaluatedPath.isEmpty() )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mMode = FormatSVG;
