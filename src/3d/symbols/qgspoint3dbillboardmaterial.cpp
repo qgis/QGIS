@@ -104,11 +104,6 @@ QSizeF QgsPoint3DBillboardMaterial::windowSize() const
   return mViewportSize->value().value<QSizeF>();
 }
 
-void QgsPoint3DBillboardMaterial::setTexture2D( Qt3DRender::QTexture2D *texture2D )
-{
-  mTexture2D->setValue( QVariant::fromValue( texture2D ) );
-}
-
 void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
 {
   // Texture Image
@@ -125,8 +120,6 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double si
   QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, randomExtent, QStringLiteral( "billboard material." ) );
 
   setTexture2DFromTextureImage( billboardTextureImage );
-
-  QgsRenderContext context = QgsRenderContext();
   setSize( QSizeF( size, size ) );
 }
 
@@ -161,5 +154,5 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbs
 
   texture2D->addTextureImage( textureImage );
 
-  setTexture2D( texture2D );
+  mTexture2D->setValue( QVariant::fromValue( texture2D ) );
 }
