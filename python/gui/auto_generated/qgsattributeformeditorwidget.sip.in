@@ -47,7 +47,7 @@ Resets the widget to an initial value.
 
 :param initialValue: initial value to show in widget
 :param mixedValues: set to ``True`` to initially show the mixed values state
-:param additionalValues: a variant map of additional field names with their corresponding values
+:param additionalFieldValues: a variant map of additional field names with their corresponding values
 %End
 
     bool hasChanged() const;
@@ -109,6 +109,7 @@ Emitted when the widget's value changes
 Emitted when the widget's value changes
 
 :param value: new widget value
+:param additionalFieldValues: of the potential additional fields
 
 .. versionadded:: 3.10
 %End

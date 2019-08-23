@@ -63,7 +63,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      * Resets the widget to an initial value.
      * \param initialValue initial value to show in widget
      * \param mixedValues set to TRUE to initially show the mixed values state
-     * \param additionalValues a variant map of additional field names with their corresponding values
+     * \param additionalFieldValues a variant map of additional field names with their corresponding values
      */
     void initialize( const QVariant &initialValue, bool mixedValues = false, const QVariantList &additionalFieldValues = QVariantList() );
 
@@ -119,6 +119,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     /**
      * Emitted when the widget's value changes
      * \param value new widget value
+     * \param additionalFieldValues of the potential additional fields
      * \since QGIS 3.10
      */
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
