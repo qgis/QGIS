@@ -555,6 +555,10 @@ class QgsPluginInstaller(QObject):
 
         pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
 
+        if not pluginName:
+            QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Install from ZIP Plugin Installer"), self.tr('The plugin directory was not found inside the ZIP file. You should create a plugin folder, put the files inside and create the ZIP file again.'), QMessageBox.Ok)
+            return
+
         pluginsDirectory = qgis.utils.home_plugin_path
         if not QDir(pluginsDirectory).exists():
             QDir().mkpath(pluginsDirectory)
