@@ -60,7 +60,7 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
 
     case QgsMapLayerType::RasterLayer:
     {
-      mSlider->setValue( 1000 - qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 1000 );
+      mSlider->setValue( qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 1000 );
       // TODO: there is no signal for raster layers
       break;
     }
@@ -100,7 +100,7 @@ void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
     }
     case QgsMapLayerType::RasterLayer:
     {
-      qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( 1 - value / 1000.0 );
+      qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( value / 1000.0 );
       break;
     }
 
