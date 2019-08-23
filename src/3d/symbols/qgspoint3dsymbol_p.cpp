@@ -551,7 +551,6 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   // Billboard Transform
   Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
   billboardTransform->setMatrix( mSymbol.billboardTransform() );
-  billboardTransform->setTranslation( QVector3D( 0.0f, 0.0f, 0.0f ) + billboardTransform->translation() );
 
   // Build the entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;

@@ -109,12 +109,6 @@ void QgsPoint3DBillboardMaterial::setTexture2D( Qt3DRender::QTexture2D *texture2
   mTexture2D->setValue( QVariant::fromValue( texture2D ) );
 }
 
-Qt3DRender::QTexture2D *QgsPoint3DBillboardMaterial::texture2D()
-{
-  QVariant variant = mTexture2D->value();
-  return qvariant_cast<Qt3DRender::QTexture2D *>( variant );
-}
-
 void QgsPoint3DBillboardMaterial::setTexture2DFromImagePath( QString imagePath )
 {
   // Texture Image
@@ -146,12 +140,12 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DMapSettings &map,
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DMapSettings &map, bool selected )
 {
-  QgsRenderContext *context = new QgsRenderContext();
-  context->setSelectionColor( map.selectionColor() );
-  context->setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
-  double pixelSize = context->convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
+  QgsRenderContext context;
+  context.setSelectionColor( map.selectionColor() );
+  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+  double pixelSize = context.convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
 
-  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 0, context, selected );
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 0, &context, selected );
   QImage symbolImage = symbolPixmap.toImage();
   QImage flippedSymbolImage = symbolImage.mirrored();
   setTexture2DFromImage( flippedSymbolImage, pixelSize );

@@ -41,7 +41,7 @@ class QgsBillboardGeometry : public Qt3DRender::QGeometry
     void setPoints( const QVector<QVector3D> &vertices );
 
     //! Returns the number of points.
-    int count();
+    int count() const;
 
   signals:
     //! Signal when the number of points changed.

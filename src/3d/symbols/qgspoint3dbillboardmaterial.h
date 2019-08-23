@@ -48,8 +48,6 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
 
     //! Set the texture2D of the billboard with \a texture2D.
     void setTexture2D( Qt3DRender::QTexture2D *texture2D );
-    //! Returns the texture2D of the billboard.
-    Qt3DRender::QTexture2D *texture2D();
 
     //! Set the texture2D of the billboard from image in \a imagePath.
     void setTexture2DFromImagePath( QString imagePath );

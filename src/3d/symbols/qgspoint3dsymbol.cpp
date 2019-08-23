@@ -126,8 +126,6 @@ QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
 
   QMatrix4x4 billboardTransformMatrix;
   billboardTransformMatrix.translate( QVector3D( 0, md[13], 0 ) );
-  billboardTransformMatrix.scale( QVector3D( 1, 1, 1 ) );
-  billboardTransformMatrix.rotate( QQuaternion::fromEulerAngles( 0, 0, 0 ) );
 
   return billboardTransformMatrix;
 

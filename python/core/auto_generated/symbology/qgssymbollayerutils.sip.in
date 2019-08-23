@@ -185,7 +185,7 @@ Returns a pixmap preview for a color ramp.
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
 :param customContext: render context to use when rendering symbol
-:param selected: state of the rendered feature is selected or not
+:param selected: set to ``True`` to render the symbol in a selected state
 
 .. note::
 

@@ -53,7 +53,7 @@ void QgsBillboardGeometry::setPoints( const QVector<QVector3D> &vertices )
 
 }
 
-int QgsBillboardGeometry::count()
+int QgsBillboardGeometry::count() const
 {
   return mVertexCount;
 }

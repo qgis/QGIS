@@ -222,7 +222,6 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
       break;
     case 7:  // billboard
-      QgsDebugMsg( QStringLiteral( "Set billboard from symbol." ) );
       QgsMarkerSymbol *billboardSymbol = static_cast<QgsMarkerSymbol *>( btnChangeSymbol->symbol() ) ;
       sym.setBillboardSymbol( billboardSymbol );
       break;
