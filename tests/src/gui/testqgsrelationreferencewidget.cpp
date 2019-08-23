@@ -414,7 +414,9 @@ void TestQgsRelationReferenceWidget::testAddEntry()
   w.setEditorContext( context, nullptr, nullptr );
   w.addEntry();
 
+  Q_NOWARN_DEPRECATED_PUSH
   QCOMPARE( w.mComboBox->identifierValue().toInt(), 13 );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 

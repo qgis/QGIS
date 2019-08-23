@@ -121,6 +121,7 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 {
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QVERIFY( cb->identifierValue().isNull() );
 
   cb->setSourceLayer( mLayer.get() );
@@ -135,6 +136,7 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 
   cb->setIdentifierValue( 20 );
   QCOMPARE( cb->identifierValue(), QVariant( 20 ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsFeatureListComboBox::testAllowNull()
