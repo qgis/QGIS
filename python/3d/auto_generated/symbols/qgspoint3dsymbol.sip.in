@@ -29,7 +29,12 @@ class QgsPoint3DSymbol : QgsAbstract3DSymbol
   public:
     QgsPoint3DSymbol();
 %Docstring
-Constructor for QgsPoint3DSymbol.
+Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
+%End
+
+    QgsPoint3DSymbol( QgsMarkerSymbol *symbol );
+%Docstring
+Constructor for QgsPoint3DSymbol with symbol as the billboardSymbol
 %End
 
     virtual QString type() const;

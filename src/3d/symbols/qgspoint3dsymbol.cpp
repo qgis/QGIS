@@ -20,9 +20,29 @@
 #include "qgsxmlutils.h"
 #include "qgssymbollayerutils.h"
 
+
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
-  return new QgsPoint3DSymbol( *this );
+
+  QgsPoint3DSymbol *point3DSymbol = new  QgsPoint3DSymbol( mBillboardSymbol ? mBillboardSymbol->clone() : nullptr );
+  point3DSymbol->setShape( mShape );
+  point3DSymbol->setMaterial( mMaterial );
+  point3DSymbol->setTransform( mTransform );
+  point3DSymbol->setShapeProperties( mShapeProperties );
+  point3DSymbol->setAltitudeClamping( mAltClamping );
+  point3DSymbol->setDataDefinedProperties( mDataDefinedProperties );
+  return point3DSymbol;
+}
+
+QgsPoint3DSymbol::QgsPoint3DSymbol()
+{
+  setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+}
+
+QgsPoint3DSymbol::QgsPoint3DSymbol( QgsMarkerSymbol *symbol )
+  : mBillboardSymbol( symbol )
+{
+
 }
 
 void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -81,7 +101,7 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   doc.setContent( elem.attribute( QStringLiteral( "billboard-symbol" ) ) );
   QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
 
-  mBillboardSymbol = QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context );
+  setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 }
 
 QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )

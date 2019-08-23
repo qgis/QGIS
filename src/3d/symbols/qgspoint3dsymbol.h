@@ -37,8 +37,11 @@
 class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-    //! Constructor for QgsPoint3DSymbol.
-    QgsPoint3DSymbol() = default;
+    //! Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
+    QgsPoint3DSymbol();
+
+    //! Constructor for QgsPoint3DSymbol with symbol as the billboardSymbol
+    QgsPoint3DSymbol( QgsMarkerSymbol *symbol );
 
     QString type() const override { return "point"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -86,9 +89,9 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
 
     //! Returns a symbol for billboard
-    QgsMarkerSymbol *billboardSymbol() const { return mBillboardSymbol; }
+    QgsMarkerSymbol *billboardSymbol() const { return mBillboardSymbol.get(); }
     //! Set symbol for billboard
-    void setBillboardSymbol( QgsMarkerSymbol *symbol ) { mBillboardSymbol = symbol; }
+    void setBillboardSymbol( QgsMarkerSymbol *symbol ) { mBillboardSymbol.reset( symbol ); }
 
     //! Returns transform for individual objects represented by the symbol
     QMatrix4x4 transform() const { return mTransform; }
@@ -106,7 +109,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     Shape mShape = Cylinder;  //!< What kind of shape to use
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
-    QgsMarkerSymbol *mBillboardSymbol = nullptr;
+    std::unique_ptr<QgsMarkerSymbol> mBillboardSymbol;
 };
 
 

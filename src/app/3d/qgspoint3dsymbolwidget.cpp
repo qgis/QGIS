@@ -52,7 +52,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   btnChangeSymbol->setSymbolType( QgsSymbol::Marker );
   btnChangeSymbol->setDialogTitle( tr( "Billboard symbol" ) );
 
-  setSymbol( QgsPoint3DSymbol() );
+  setSymbol( QgsPoint3DSymbol( ) );
   onShapeChanged();
 
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::changed );
@@ -153,7 +153,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
     case 7:  // billboard
       if ( symbol.billboardSymbol() )
       {
-        btnChangeSymbol->setSymbol( symbol.billboardSymbol() );
+        btnChangeSymbol->setSymbol( symbol.billboardSymbol()->clone() );
       }
       break;
   }
@@ -192,7 +192,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
 {
   QVariantMap vm;
-  QgsPoint3DSymbol sym;
+  QgsPoint3DSymbol sym = QgsPoint3DSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
@@ -222,8 +222,7 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
       vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
       break;
     case 7:  // billboard
-      QgsMarkerSymbol *billboardSymbol = static_cast<QgsMarkerSymbol *>( btnChangeSymbol->symbol() ) ;
-      sym.setBillboardSymbol( billboardSymbol );
+      sym.setBillboardSymbol( btnChangeSymbol->clonedSymbol<QgsMarkerSymbol>() );
       break;
   }
 
