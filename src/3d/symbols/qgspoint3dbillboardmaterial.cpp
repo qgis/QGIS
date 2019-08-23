@@ -120,7 +120,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double si
   QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, randomExtent, QStringLiteral( "billboard material." ) );
 
   setTexture2DFromTextureImage( billboardTextureImage );
-  setSize( QSizeF( size, size ) );
+  setSize( QSizeF( size + size, size + size ) );
 }
 
 void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DMapSettings &map, bool selected )
@@ -138,7 +138,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
   double pixelSize = context.convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
 
-  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 0, &context, selected );
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 2, &context, selected );
   QImage symbolImage = symbolPixmap.toImage();
   QImage flippedSymbolImage = symbolImage.mirrored();
   setTexture2DFromImage( flippedSymbolImage, pixelSize );
