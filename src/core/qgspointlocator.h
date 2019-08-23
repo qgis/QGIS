@@ -16,6 +16,9 @@
 #ifndef QGSPOINTLOCATOR_H
 #define QGSPOINTLOCATOR_H
 
+#include <QFuture>
+#include <QFutureWatcher>
+
 class QgsPointXY;
 class QgsVectorLayer;
 class QgsFeatureRenderer;
@@ -120,10 +123,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
     /**
      * Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
-     * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
-     * FALSE if the creation of index has been prematurely stopped due to the limit of features, otherwise TRUE
+     * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
+     * This method is non blocking and index is built in an other thread. Signals indexStarting and indexFinished
+     * are triggered to let you know when index build is started and finished.
     */
-    bool init( int maxFeaturesToIndex = -1 );
+    void init( int maxFeaturesToIndex = -1 );
 
     //! Indicate whether the data have been already indexed
     bool hasIndex() const;
@@ -282,11 +286,26 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     int cachedGeometryCount() const { return mGeoms.count(); }
 
+  signals:
+
+    /**
+     * Emitted whenever index has been built and initialization is finished
+     * \param ok FALSE if the creation of index has been prematurely stopped due to the limit of
+     * features, otherwise TRUE
+     */
+    void initFinished( bool ok );
+
+    /**
+     * Emitted whenever index initialization has started
+     */
+    void initStarted();
+
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
   protected slots:
     void destroyIndex();
   private slots:
+    void onRebuildIndexFinished();
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
@@ -309,6 +328,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
     std::unique_ptr< QgsRectangle > mExtent;
 
     std::unique_ptr<QgsRenderContext> mContext;
+    QFuture<bool> mFuture;
+    QFutureWatcher<bool> mFutureWatcher;
+    int mMaxFeaturesToIndex = -1;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;

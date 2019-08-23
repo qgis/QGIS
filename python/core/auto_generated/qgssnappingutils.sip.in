@@ -172,13 +172,13 @@ Emitted when the snapping settings object changes.
 %End
 
   protected:
-    virtual void prepareIndexStarting( int count );
+    virtual void prepareIndexStarting();
 %Docstring
-Called when starting to index - can be overridden and e.g. progress dialog can be provided
+Called when starting to index
 %End
-    virtual void prepareIndexProgress( int index );
+    virtual void prepareIndexFinished();
 %Docstring
-Called when finished indexing a layer. When index == count the indexing is complete
+Called when finished indexing a layer
 %End
 
     void clearAllLocators();

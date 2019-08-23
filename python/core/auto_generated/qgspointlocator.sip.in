@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPointLocator : QObject
 {
 %Docstring
@@ -92,12 +93,13 @@ Configure render context  - if not ``None``, it will use to index only visible f
     typedef QFlags<QgsPointLocator::Type> Types;
 
 
-    bool init( int maxFeaturesToIndex = -1 );
+    void init( int maxFeaturesToIndex = -1 );
 %Docstring
 Prepare the index for queries. Does nothing if the index already exists.
 If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
-to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
-``False`` if the creation of index has been prematurely stopped due to the limit of features, otherwise ``True``
+to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
+This method is non blocking and index is built in an other thread. Signals indexStarting and indexFinished
+are triggered to let you know when index build is started and finished.
 %End
 
     bool hasIndex() const;
@@ -226,6 +228,21 @@ find out if the point is in any polygons
 Returns how many geometries are cached in the index
 
 .. versionadded:: 2.14
+%End
+
+  signals:
+
+    void initFinished( bool ok );
+%Docstring
+Emitted whenever index has been built and initialization is finished
+
+:param ok: ``False`` if the creation of index has been prematurely stopped due to the limit of
+           features, otherwise ``True``
+%End
+
+    void initStarted();
+%Docstring
+Emitted whenever index initialization has started
 %End
 
   protected:

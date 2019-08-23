@@ -190,13 +190,21 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void configChanged( const QgsSnappingConfig &snappingConfig );
 
   protected:
-    //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
-    virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ) }
-    //! Called when finished indexing a layer. When index == count the indexing is complete
-    virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ) }
+    //! Called when starting to index
+    virtual void prepareIndexStarting() {}
+    //! Called when finished indexing a layer
+    virtual void prepareIndexFinished() {}
 
     //! Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
     void clearAllLocators();
+
+  private slots:
+
+    //! called whenever a point locator has finished
+    void onInitFinished( bool ok );
+
+    //! called whenever a point locator has started
+    void onInitStarted();
 
   private:
     void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
@@ -249,12 +257,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! if using hybrid strategy, how many features of one layer may be indexed (to limit amount of consumed memory)
     int mHybridPerLayerFeatureLimit = 50000;
 
-    //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
-    bool mIsIndexing = false;
-
     //! Disable or not the snapping on all features. By default is always TRUE except for non visible features on map canvas.
     bool mEnableSnappingForInvisibleFeature = true;
 
+    //! Number of index currently being prepared
+    int mPreparingIndexCount = 0;
 };
 
 

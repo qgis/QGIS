@@ -37,8 +37,8 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
   protected:
-    void prepareIndexStarting( int count ) override;
-    void prepareIndexProgress( int index ) override;
+    void prepareIndexStarting() override;
+    void prepareIndexFinished() override;
 
   private slots:
     void canvasMapSettingsChanged();
@@ -49,6 +49,7 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
   private:
     QgsMapCanvas *mCanvas = nullptr;
     QProgressDialog *mProgress = nullptr;
+    int mPreparingIndexCount = 0;
 };
 
 

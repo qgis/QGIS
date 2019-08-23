@@ -59,23 +59,18 @@ void QgsMapCanvasSnappingUtils::canvasMapToolChanged()
   setEnableSnappingForInvisibleFeature( QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() );
 }
 
-void QgsMapCanvasSnappingUtils::prepareIndexStarting( int count )
+void QgsMapCanvasSnappingUtils::prepareIndexStarting()
 {
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-  mProgress = new QProgressDialog( tr( "Indexing data…" ), QString(), 0, count, mCanvas->topLevelWidget() );
-  mProgress->setWindowModality( Qt::WindowModal );
+  if ( !mPreparingIndexCount )
+    QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  mPreparingIndexCount++;
 }
 
-void QgsMapCanvasSnappingUtils::prepareIndexProgress( int index )
+void QgsMapCanvasSnappingUtils::prepareIndexFinished()
 {
-  if ( !mProgress )
-    return;
+  mPreparingIndexCount--;
 
-  mProgress->setValue( index );
-  if ( index == mProgress->maximum() )
-  {
-    delete mProgress;
-    mProgress = nullptr;
+  if ( !mPreparingIndexCount )
     QApplication::restoreOverrideCursor();
-  }
 }

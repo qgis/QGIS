@@ -26,9 +26,9 @@ Snapping utils instance that is connected to a canvas and updates the configurat
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0 );
 
   protected:
-    virtual void prepareIndexStarting( int count );
+    virtual void prepareIndexStarting();
 
-    virtual void prepareIndexProgress( int index );
+    virtual void prepareIndexFinished();
 
 
 };
