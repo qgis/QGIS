@@ -135,6 +135,12 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     void setIdentifierValues( const QVariantList &identifierValues );
 
     /**
+     * Sets the identifier values of the currently selected feature to NULL value(s).
+     * \since QGIS 3.10
+     */
+    void setIdentifierValuesToNull();
+
+    /**
      * Shorthand for getting a feature request to query the currently selected
      * feature.
      */

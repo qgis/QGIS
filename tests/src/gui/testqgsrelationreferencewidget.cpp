@@ -403,9 +403,9 @@ void TestQgsRelationReferenceWidget::testAddEntry()
 
       bool startEditing( QgsVectorLayer * ) const override {return true;}
 
-      bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;};
+      bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;}
 
-      bool saveEdits( QgsVectorLayer * ) const override {return true;};
+      bool saveEdits( QgsVectorLayer * ) const override {return true;}
   };
 
   QgsAttributeEditorContext context;

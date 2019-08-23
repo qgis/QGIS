@@ -216,7 +216,16 @@ void QgsFeatureFilterModel::updateCompleter()
   QVector<Entry> entries = mGatherer->entries();
 
   if ( mExtraIdentifierValueIndex == -1 )
-    setExtraIdentifierValuesUnguarded( QVariantList() );
+  {
+    QVariantList nullAttributes;
+    for ( const QString &fieldName : mIdentifierFields )
+    {
+      int idx = mSourceLayer->fields().indexOf( fieldName );
+      nullAttributes << QVariant( mSourceLayer->fields().at( idx ).type() );
+    }
+
+    setExtraIdentifierValuesUnguarded( nullAttributes );
+  }
 
   // Only reloading the current entry?
   if ( mGatherer->data().toBool() )
@@ -573,7 +582,7 @@ void QgsFeatureFilterModel::setIdentifierFields( const QStringList &identifierFi
 
   mIdentifierFields = identifierFields;
   emit identifierFieldChanged();
-  setExtraIdentifierValues( QVariantList() );
+  setExtraIdentifierValuesToNull();
 }
 
 void QgsFeatureFilterModel::reload()
@@ -616,4 +625,19 @@ void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraI
   mIsSettingExtraIdentifierValue = false;
 
   emit extraIdentifierValueChanged();
+}
+
+void QgsFeatureFilterModel::setExtraIdentifierValuesToNull()
+{
+  QVariantList nullAttributes;
+  if ( mSourceLayer )
+  {
+    for ( const QString &fieldName : mIdentifierFields )
+    {
+      int idx = mSourceLayer->fields().indexOf( fieldName );
+      Q_ASSERT( idx >= 0 );
+      nullAttributes << QVariant( mSourceLayer->fields().at( idx ).type() );
+    }
+  }
+  setExtraIdentifierValues( nullAttributes );
 }

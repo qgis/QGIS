@@ -134,6 +134,10 @@ It is normally set to the primary key of the layer.
 The identifier field should be a unique field that can be used to identify individual features.
 It is normally set to the primary key of the layer.
 
+.. note::
+
+   This will also reset identifier fields to NULL
+
 .. versionadded:: 3.10
 %End
 
@@ -165,6 +169,14 @@ still be available in the model.
 %Docstring
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model.
+
+.. versionadded:: 3.10
+%End
+
+    void setExtraIdentifierValuesToNull();
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model as NULL value(s).
 
 .. versionadded:: 3.10
 %End

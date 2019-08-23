@@ -258,6 +258,11 @@ void QgsFeatureListComboBox::setIdentifierValues( const QVariantList &identifier
   mModel->setExtraIdentifierValues( identifierValues );
 }
 
+void QgsFeatureListComboBox::setIdentifierValuesToNull()
+{
+  mModel->setExtraIdentifierValuesToNull();
+}
+
 QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
 {
   if ( mModel->extraIdentifierValues().isEmpty() )

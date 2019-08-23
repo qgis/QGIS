@@ -115,6 +115,13 @@ identifierFields.
 .. versionadded:: 3.10
 %End
 
+    void setIdentifierValuesToNull();
+%Docstring
+Sets the identifier values of the currently selected feature to NULL value(s).
+
+.. versionadded:: 3.10
+%End
+
     QgsFeatureRequest currentFeatureRequest() const;
 %Docstring
 Shorthand for getting a feature request to query the currently selected

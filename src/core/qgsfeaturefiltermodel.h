@@ -159,6 +159,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     /**
      * The identifier field should be a unique field that can be used to identify individual features.
      * It is normally set to the primary key of the layer.
+     * \note This will also reset identifier fields to NULL
      * \since QGIS 3.10
      */
     void setIdentifierFields( const QStringList &identifierFields );
@@ -190,6 +191,13 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      * \since QGIS 3.10
      */
     void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
+
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model as NULL value(s).
+     * \since QGIS 3.10
+     */
+    void setExtraIdentifierValuesToNull();
 
     /**
      * The index at which the extra identifier value is available within the model.
