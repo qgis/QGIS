@@ -258,7 +258,30 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
   {
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( QgsProject::instance()->fileName() );
+
+    /* Project name syntax:
+     *
+     * /home/qgis/projects/ortos_cim_2019.qgz
+     * geopackage:/home/qgis/projects/natural.gpkg?projectName=natural%20earth
+     * postgresql:?service=pg_geotuga&sslmode=disable&dbname=&schema=ortos&project=teste
+     */
+
+    QRegularExpression re_gpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
+    QRegularExpression re_postgres( "^postgresql:", QRegularExpression::CaseInsensitiveOption );
+
+    QString project = QgsProject::instance()->fileName();
+
+    QRegularExpressionMatch match_gpkpg = re_gpkg.match( project );
+    QRegularExpressionMatch match_postgres = re_postgres.match( project );
+
+    if ( !match_postgres.hasMatch() )
+    {
+      if ( match_gpkpg.hasMatch() )
+      {
+        project = match_gpkpg.captured( 2 );
+      }
+      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( project );
+    }
   } );
 
   // get the manner in which the number of decimal places in the mouse

@@ -4389,7 +4389,25 @@ void QgisApp::updateRecentProjectPaths()
                               : QFileInfo( recentProject.path ).completeBaseName(), QDir::toNativeSeparators( recentProject.path )
                             ).replace( "&", "&&" )
                       );
-    //action->setEnabled( QFile::exists( ( recentProject.path ) ) );
+
+    QRegularExpression re_gpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
+    QRegularExpression re_postgres( "^postgresql:", QRegularExpression::CaseInsensitiveOption );
+
+    QRegularExpressionMatch match_gpkpg = re_gpkg.match( recentProject.path );
+    QRegularExpressionMatch match_postgres = re_postgres.match( recentProject.path );
+
+    if ( !match_postgres.hasMatch() )
+    {
+      if ( match_gpkpg.hasMatch() )
+      {
+        action->setEnabled( QFile::exists( match_gpkpg.captured( 2 ) ) );
+      }
+      else
+      {
+        action->setEnabled( QFile::exists( ( recentProject.path ) ) );
+      }
+    }
+
     action->setData( recentProject.path );
     if ( recentProject.pin )
     {
