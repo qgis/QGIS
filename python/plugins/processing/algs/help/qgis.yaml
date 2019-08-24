@@ -330,6 +330,8 @@ qgis:refactorfields: >
 
   The original layer is not modified. A new layer is generated, which contains a modified attribute table, according to the provided fields mapping.
 
+  Rows in orange are not allowed to be NULL in the layer used as target. However, since the algorithm creates a new layer with no constraints, this can be taken only as a hint.
+
 qgis:regularpoints: >
   This algorithm creates a point layer with a given number of regular points, all of them within a given extent.
 

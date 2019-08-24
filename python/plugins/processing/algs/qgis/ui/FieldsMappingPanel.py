@@ -34,6 +34,12 @@ from qgis.PyQt.QtCore import (
     pyqtSlot,
     QCoreApplication
 )
+
+from qgis.PyQt.QtGui import (
+    QBrush,
+    QColor
+)
+
 from qgis.PyQt.QtWidgets import (
     QComboBox,
     QHeaderView,
@@ -54,6 +60,7 @@ from qgis.core import (
     QgsProcessingUtils,
     QgsProject,
     QgsVectorLayer,
+    QgsFieldConstraints
 )
 from qgis.gui import QgsFieldExpressionWidget
 
@@ -109,6 +116,10 @@ class FieldsMappingModel(QAbstractTableModel):
             'name': 'precision',
             'type': QVariant.Int,
             'header': self.tr("Precision")
+        }, {
+            'name': 'not_null',
+            'type': QVariant.Bool,
+            'header': self.tr("NOT NULL")
         }]
 
     def columnIndex(self, column_name):
@@ -187,6 +198,9 @@ class FieldsMappingModel(QAbstractTableModel):
                 hAlign = Qt.AlignLeft
             return hAlign + Qt.AlignVCenter
 
+        if role == Qt.BackgroundRole:
+            return QBrush(QColor(255, 224, 178)) if 'not_null' in field and field['not_null'] else QVariant()
+
     def setData(self, index, value, role=Qt.EditRole):
         field = self._mapping[index.row()]
         column_def = self.columns[index.column()]
@@ -222,13 +236,15 @@ class FieldsMappingModel(QAbstractTableModel):
                     'type': QVariant.Invalid,
                     'length': 0,
                     'precision': 0,
-                    'expression': ''}
+                    'expression': '',
+                    'not_null': False}
 
         return {'name': field.name(),
                 'type': field.type(),
                 'length': field.length(),
                 'precision': field.precision(),
-                'expression': QgsExpression.quotedColumnRef(field.name())}
+                'expression': QgsExpression.quotedColumnRef(field.name()),
+                'not_null': bool(field.constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)}
 
     def loadLayerFields(self, layer):
         self.beginResetModel()
