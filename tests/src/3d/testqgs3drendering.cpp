@@ -41,6 +41,7 @@
 #include "qgsterrainentity_p.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgspoint3dsymbol.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -60,6 +61,7 @@ class TestQgs3DRendering : public QObject
     void testMesh();
     void testRuleBasedRenderer();
     void testAnimationExport();
+    void testBillboardRendering();
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -280,7 +282,6 @@ void TestQgs3DRendering::testExtrudedPolygons()
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
 }
-
 
 void TestQgs3DRendering::testLineRendering()
 {
@@ -509,6 +510,69 @@ void TestQgs3DRendering::testAnimationExport()
 
   QVERIFY( success );
   QVERIFY( QFileInfo( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ).exists() );
+}
+
+void TestQgs3DRendering::testBillboardRendering()
+{
+  QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+
+  QgsVectorLayer *layerPointsZ = new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 0, 0, 50 );
+  QgsPoint *p2 = new QgsPoint( 0, 1000, 100 );
+  QgsPoint *p3 = new QgsPoint( 1000, 1000, 200 );
+
+  QgsFeature f1( QgsFeatureId( 1 ) );
+  QgsFeature f2( QgsFeatureId( 1 ) );
+  QgsFeature f3( QgsFeatureId( 1 ) );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  markerSymbol->setColor( QColor( 255, 0, 0 ) );
+  QgsPoint3DSymbol *point3DSymbol = new QgsPoint3DSymbol( markerSymbol );
+  point3DSymbol->setShape( QgsPoint3DSymbol::Billboard );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( point3DSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layerPointsZ );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "billboard_rendering_1", img, 40 ) );
+
+  // more perspective look
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "billboard_rendering_2", img2, 40 ) );
+
+  delete layerPointsZ;
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
