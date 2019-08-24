@@ -326,8 +326,8 @@ class CORE_EXPORT QgsSymbol
      *
      * \see exportImage()
      * \see asImage()
-     * \since QGIS 2.6
      * \note Parameter selected added in QGIS 3.10
+     * \since QGIS 2.6
      */
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false );
 

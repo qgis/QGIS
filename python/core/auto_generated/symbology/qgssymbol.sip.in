@@ -285,11 +285,11 @@ matches the settings from that context.
 
 .. seealso:: :py:func:`asImage`
 
-.. versionadded:: 2.6
-
 .. note::
 
    Parameter selected added in QGIS 3.10
+
+.. versionadded:: 2.6
 %End
 
     void exportImage( const QString &path, const QString &format, QSize size );
