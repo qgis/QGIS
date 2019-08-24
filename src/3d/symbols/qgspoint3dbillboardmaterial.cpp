@@ -21,17 +21,14 @@
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QNoDepthMask>
-#include <QDesktopWidget>
 
 #include "qgslogger.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgs3dmapsettings.h"
-#include "qgis.h"
 
 QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
@@ -126,7 +123,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
 {
   QgsRenderContext context;
   context.setSelectionColor( map.selectionColor() );
-  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+  context.setScaleFactor( map.outputDpi() / 25.4 );
   double pixelSize = context.convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
 
   QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 2, &context, selected );
