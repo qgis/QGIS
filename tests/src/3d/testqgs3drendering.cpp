@@ -26,6 +26,7 @@
 #include "qgsrastershader.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -45,6 +46,7 @@
 
 #include <QFileInfo>
 #include <QDir>
+#include <QDesktopWidget>
 
 class TestQgs3DRendering : public QObject
 {
@@ -516,15 +518,15 @@ void TestQgs3DRendering::testBillboardRendering()
 {
   QgsRectangle fullExtent( 0, 0, 1000, 1000 );
 
-  QgsVectorLayer *layerPointsZ = new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
 
   QgsPoint *p1 = new QgsPoint( 0, 0, 50 );
   QgsPoint *p2 = new QgsPoint( 0, 1000, 100 );
   QgsPoint *p3 = new QgsPoint( 1000, 1000, 200 );
 
-  QgsFeature f1( QgsFeatureId( 1 ) );
-  QgsFeature f2( QgsFeatureId( 1 ) );
-  QgsFeature f3( QgsFeatureId( 1 ) );
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
 
   f1.setGeometry( QgsGeometry( p1 ) );
   f2.setGeometry( QgsGeometry( p2 ) );
@@ -544,7 +546,7 @@ void TestQgs3DRendering::testBillboardRendering()
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << layerPointsZ );
+  map->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -571,8 +573,6 @@ void TestQgs3DRendering::testBillboardRendering()
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "billboard_rendering_2", img2, 40 ) );
-
-  delete layerPointsZ;
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
