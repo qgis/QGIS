@@ -76,6 +76,7 @@ void TestQgsLayoutPicture::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsApplication::showSettings();
 
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
