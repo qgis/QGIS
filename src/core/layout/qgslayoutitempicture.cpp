@@ -342,8 +342,9 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
   mHasExpressionError = false;
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::PictureSource ) )
   {
-    source = mDataDefinedProperties.value( QgsLayoutObject::PictureSource, *evalContext, QVariant( source ) );
-    if ( !source.canConvert( QMetaType::QString ) )
+    bool ok;
+    source = mDataDefinedProperties.value( QgsLayoutObject::PictureSource, *evalContext, QVariant( source ), &ok );
+    if ( !ok || !source.canConvert( QMetaType::QString ) )
     {
       mHasExpressionError = true;
       source = QString();

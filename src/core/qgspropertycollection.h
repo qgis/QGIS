@@ -106,6 +106,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \param context expression context to evaluate property against
      * \param defaultValue default value to return if no matching, active property found or if the property value
      * cannot be calculated
+     * \param ok if specified, will be set to TRUE if retrieval was successful
      * \returns calculated property value, or default value if property could not be evaluated
      * \see valueAsString()
      * \see valueAsColor()
@@ -113,7 +114,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
+    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_PYARGREMOVE = nullptr ) const = 0;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a string.
@@ -321,7 +322,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      */
     virtual QgsProperty &property( int key );
 
-    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
+    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_PYARGREMOVE = nullptr ) const override;
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     bool isActive( int key ) const override;
@@ -466,9 +467,10 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * \param context expression context to evaluate property against
      * \param defaultValue default value to return if no matching, active property found or if the property value
      * cannot be calculated
+     * \param ok if specified, will be set to TRUE if retrieval was successful
      * \returns calculated property value, or default value if property could not be evaluated
      */
-    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
+    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_PYARGREMOVE = nullptr ) const override;
 
     /**
      * Returns the set of any fields referenced by the active properties from the stack.

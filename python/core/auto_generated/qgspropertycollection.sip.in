@@ -86,7 +86,7 @@ Returns a matching property from the collection, if one exists.
 .. seealso:: :py:func:`hasProperty`
 %End
 
-    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
+    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant()) const = 0;
 %Docstring
 Returns the calculated value of the property with the specified key from within the collection.
 
@@ -370,7 +370,7 @@ Returns a reference to a matching property from the collection, if one exists.
 .. seealso:: :py:func:`hasProperty`
 %End
 
-    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const;
+    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant()) const;
 
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
@@ -522,7 +522,7 @@ Returns the highest priority property with a matching key from within the stack.
 .. seealso:: :py:func:`hasActiveProperty`
 %End
 
-    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const;
+    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant()) const;
 
 %Docstring
 Returns the calculated value of the highest priority property with the specified key from within the stack.

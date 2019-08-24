@@ -203,8 +203,11 @@ QgsProperty &QgsPropertyCollection::property( int key )
   return mProperties[ key ];
 }
 
-QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
+QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue, bool *ok ) const
 {
+  if ( ok )
+    *ok = false;
+
   if ( mProperties.isEmpty() )
     return defaultValue;
 
@@ -212,7 +215,7 @@ QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &cont
   if ( !prop || !prop.isActive() )
     return defaultValue;
 
-  return prop.value( context, defaultValue );
+  return prop.value( context, defaultValue, ok );
 }
 
 bool QgsPropertyCollection::prepare( const QgsExpressionContext &context ) const
@@ -472,14 +475,14 @@ QgsProperty QgsPropertyCollectionStack::property( int key ) const
 }
 
 
-QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
+QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue, bool *ok ) const
 {
   QgsProperty p = property( key );
   if ( !p )
   {
     return defaultValue;
   }
-  return p.value( context, defaultValue );
+  return p.value( context, defaultValue, ok );
 }
 
 QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context ) const
