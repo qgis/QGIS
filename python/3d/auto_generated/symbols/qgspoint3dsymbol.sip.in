@@ -132,6 +132,8 @@ Sets transform for individual objects represented by the symbol
 Returns transform for billboards
 %End
 
+  private:
+    QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
 };
 
 

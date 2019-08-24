@@ -113,6 +113,9 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
     std::unique_ptr<QgsMarkerSymbol> mBillboardSymbol;
+#ifdef SIP_RUN
+    QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
+#endif
 };
 
 
