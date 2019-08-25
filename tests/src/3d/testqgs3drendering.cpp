@@ -43,6 +43,8 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspoint3dsymbol.h"
+#include "qgssymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -538,7 +540,12 @@ void TestQgs3DRendering::testBillboardRendering()
 
   QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
   markerSymbol->setColor( QColor( 255, 0, 0 ) );
-  QgsPoint3DSymbol *point3DSymbol = new QgsPoint3DSymbol( markerSymbol );
+  markerSymbol->setSize( 4 );
+  QgsSimpleMarkerSymbolLayer *sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) ) ;
+  sl->setStrokeColor( QColor( 0, 0, 255 ) );
+  sl->setStrokeWidth( 2 );
+  QgsPoint3DSymbol *point3DSymbol = new QgsPoint3DSymbol();
+  point3DSymbol->setBillboardSymbol( markerSymbol );
   point3DSymbol->setShape( QgsPoint3DSymbol::Billboard );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( point3DSymbol ) );
