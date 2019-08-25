@@ -229,6 +229,16 @@ used to render polygon rings.
 .. seealso:: :py:func:`drawInsidePolygon`
 %End
 
+    bool isSketchEnabled() const;
+    float sketchRoughness() const;
+    float sketchBowing() const;
+    float sketchMaxOffset() const;
+
+    void setSketchEnabled( bool enabled );
+    void setSketchRoughness( float roughness );
+    void setSketchBowing( float bowing );
+    void setSketchMaxOffset( float maxOffset );
+
 };
 
 

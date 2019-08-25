@@ -216,7 +216,19 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      */
     void setDrawInsidePolygon( bool drawInsidePolygon ) { mDrawInsidePolygon = drawInsidePolygon; }
 
+    bool isSketchEnabled() const { return mSketchEnabled; }
+    float sketchRoughness() const { return mSketchRoughness; }
+    float sketchBowing() const { return mSketchBowing; }
+    float sketchMaxOffset() const { return mSketchMaxOffset; }
+
+    void setSketchEnabled( bool enabled ) { mSketchEnabled = enabled; }
+    void setSketchRoughness( float roughness ) { mSketchRoughness = roughness; }
+    void setSketchBowing( float bowing ) { mSketchBowing = bowing; }
+    void setSketchMaxOffset( float maxOffset ) { mSketchMaxOffset = maxOffset; }
+
   private:
+
+    void addRoughPolygon( QPainterPath &path, const QPolygonF &points );
 
     Qt::PenStyle mPenStyle = Qt::SolidLine;
     Qt::PenJoinStyle mPenJoinStyle = DEFAULT_SIMPLELINE_JOINSTYLE;
@@ -232,6 +244,11 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QVector<qreal> mCustomDashVector;
 
     bool mDrawInsidePolygon = false;
+
+    bool mSketchEnabled = false;
+    float mSketchRoughness = 1.f;
+    float mSketchBowing = 1.f;
+    float mSketchMaxOffset = 2.f;
 
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext &context, QPen &pen, QPen &selPen, double &offset );

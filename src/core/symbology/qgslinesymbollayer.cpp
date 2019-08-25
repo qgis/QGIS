@@ -177,6 +177,15 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QgsStringMap &props )
     l->setRingFilter( static_cast< RenderRingFilter>( props[QStringLiteral( "ring_filter" )].toInt() ) );
   }
 
+  if ( props.contains( "sketch" ) )
+    l->setSketchEnabled( props["sketch"].toInt() );
+  if ( props.contains( "sketch_roughness" ) )
+    l->setSketchRoughness( props["sketch_roughness"].toFloat() );
+  if ( props.contains( "sketch_bowing" ) )
+    l->setSketchBowing( props["sketch_bowing"].toFloat() );
+  if ( props.contains( "sketch_max_offset" ) )
+    l->setSketchMaxOffset( props["sketch_max_offset"].toFloat() );
+
   l->restoreOldDataDefinedProperties( props );
 
   return l;
@@ -309,6 +318,89 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QLi
 
 }
 
+
+struct LineParams
+{
+  float roughness = 1.f;
+  float bowing = 1.f;
+  float maxOffset = 2.f;
+  bool doubleLine = true;
+};
+
+
+float nextFloat()
+{
+  return static_cast <float>( rand() ) / static_cast <float>( RAND_MAX );
+}
+
+
+void line( float x1, float y1, float x2, float y2, QPainterPath &path, const LineParams &lp = LineParams() )
+{
+  float roughness = lp.roughness;
+  auto getOffset = [roughness]( float minVal, float maxVal )
+  {
+    return roughness * ( nextFloat() * ( maxVal - minVal ) + minVal );
+  };
+
+  // Ensure random perturbation is no more than 10% of line length.
+  float lenSq = ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 );
+  float offset = lp.maxOffset;
+
+  if ( lp.maxOffset * lp.maxOffset * 100 > lenSq )
+  {
+    offset = ( float )sqrt( lenSq ) / 10;
+  }
+
+  float halfOffset = offset / 2;
+  float divergePoint = 0.2f + nextFloat() * 0.2f;
+
+  // This is the midpoint displacement value to give slightly bowed lines.
+  float midDispX = lp.bowing * lp.maxOffset * ( y2 - y1 ) / 200;
+  float midDispY = lp.bowing * lp.maxOffset * ( x1 - x2 ) / 200;
+
+  midDispX = getOffset( -midDispX, midDispX );
+  midDispY = getOffset( -midDispY, midDispY );
+
+  if ( lp.doubleLine )
+  {
+    // bezier curve #1
+    QPointF p1( x1                  + getOffset( -offset, offset ),          y1                         + getOffset( -offset, offset ) );
+    QPointF p2( midDispX + x1 + ( x2 - x1 )*divergePoint + getOffset( -offset, offset ), midDispY + y1 + ( y2 - y1 )*divergePoint + getOffset( -offset, offset ) );
+    QPointF p3( midDispX + x1 + 2 * ( x2 - x1 )*divergePoint + getOffset( -offset, offset ), midDispY + y1 + 2 * ( y2 - y1 )*divergePoint + getOffset( -offset, offset ) );
+    QPointF p4( x2                  + getOffset( -offset, offset ),          y2                         + getOffset( -offset, offset ) );
+
+    path.moveTo( p1 );
+    path.cubicTo( p2, p3, p4 );
+  }
+
+  // bezier curve #2
+  QPointF p1b( x1                        + getOffset( -halfOffset, halfOffset ),          y1                         + getOffset( -halfOffset, halfOffset ) );
+  QPointF p2b( midDispX + x1 + ( x2 - x1 )*divergePoint + getOffset( -halfOffset, halfOffset ), midDispY + y1 + ( y2 - y1 )*divergePoint + getOffset( -halfOffset, halfOffset ) );
+  QPointF p3b( midDispX + x1 + 2 * ( x2 - x1 )*divergePoint + getOffset( -halfOffset, halfOffset ), midDispY + y1 + 2 * ( y2 - y1 )*divergePoint + getOffset( -halfOffset, halfOffset ) );
+  QPointF p4b( x2                        + getOffset( -halfOffset, halfOffset ),          y2                         + getOffset( -halfOffset, halfOffset ) );
+
+  path.moveTo( p1b );
+  path.cubicTo( p2b, p3b, p4b );
+}
+
+void QgsSimpleLineSymbolLayer::addRoughPolygon( QPainterPath &path, const QPolygonF &points )
+{
+  if ( points.isEmpty() )
+    return;
+  LineParams lp;
+  lp.roughness = mSketchRoughness;
+  lp.bowing = mSketchBowing;
+  lp.maxOffset = mSketchMaxOffset;
+  QPointF oldPt = points[0];
+  for ( int i = 1; i < points.count(); ++i )
+  {
+    QPointF pt = points[i];
+    line( oldPt.x(), oldPt.y(), pt.x(), pt.y(), path, lp );
+    oldPt = pt;
+  }
+}
+
+
 void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
@@ -334,7 +426,10 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     p->drawPolyline( points );
 #else
     QPainterPath path;
-    path.addPolygon( points );
+    if ( mSketchEnabled )
+      addRoughPolygon( path, points );
+    else
+      path.addPolygon( points );
     p->drawPath( path );
 #endif
     p->setRenderHint( QPainter::Antialiasing, true );
@@ -347,7 +442,10 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     p->drawPolyline( points );
 #else
     QPainterPath path;
-    path.addPolygon( points );
+    if ( mSketchEnabled )
+      addRoughPolygon( path, points );
+    else
+      path.addPolygon( points );
     p->drawPath( path );
 #endif
   }
@@ -361,7 +459,10 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
       p->drawPolyline( mline );
 #else
       QPainterPath path;
-      path.addPolygon( mline[ part ] );
+      if ( mSketchEnabled )
+        addRoughPolygon( path, points );
+      else
+        path.addPolygon( mline[ part ] );
       p->drawPath( path );
 #endif
     }
@@ -387,6 +488,10 @@ QgsStringMap QgsSimpleLineSymbolLayer::properties() const
   map[QStringLiteral( "customdash_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mCustomDashPatternMapUnitScale );
   map[QStringLiteral( "draw_inside_polygon" )] = ( mDrawInsidePolygon ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
+  map["sketch"] = mSketchEnabled ? "1" : "0";
+  map["sketch_roughness"] = QString::number( mSketchRoughness );
+  map["sketch_bowing"] = QString::number( mSketchBowing );
+  map["sketch_max_offset"] = QString::number( mSketchMaxOffset );
   return map;
 }
 
@@ -406,6 +511,10 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
   l->setCustomDashVector( mCustomDashVector );
   l->setDrawInsidePolygon( mDrawInsidePolygon );
   l->setRingFilter( mRingFilter );
+  l->setSketchEnabled( mSketchEnabled );
+  l->setSketchRoughness( mSketchRoughness );
+  l->setSketchBowing( mSketchBowing );
+  l->setSketchMaxOffset( mSketchMaxOffset );
   copyDataDefinedProperties( l );
   copyPaintEffect( l );
   return l;

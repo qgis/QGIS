@@ -228,6 +228,11 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
 
+  connect( chkSketchEnabled, &QCheckBox::stateChanged, this, &QgsSimpleLineSymbolLayerWidget::sketchChanged );
+  connect( spinSketchRoughness, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::sketchChanged );
+  connect( spinSketchBowing, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::sketchChanged );
+  connect( spinSketchMaxOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::sketchChanged );
+
   updatePatternIcon();
 
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol );
@@ -308,6 +313,11 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mDrawInsideCheckBox )->setCheckState( drawInsidePolygon ? Qt::Checked : Qt::Unchecked );
 
   whileBlocking( mRingFilterComboBox )->setCurrentIndex( mRingFilterComboBox->findData( mLayer->ringFilter() ) );
+
+  whileBlocking( chkSketchEnabled )->setCheckState( mLayer->isSketchEnabled() ? Qt::Checked : Qt::Unchecked );
+  whileBlocking( spinSketchRoughness )->setValue( mLayer->sketchRoughness() );
+  whileBlocking( spinSketchBowing )->setValue( mLayer->sketchBowing() );
+  whileBlocking( spinSketchMaxOffset )->setValue( mLayer->sketchMaxOffset() );
 
   updatePatternIcon();
 
@@ -431,6 +441,16 @@ void QgsSimpleLineSymbolLayerWidget::mDrawInsideCheckBox_stateChanged( int state
 {
   bool checked = ( state == Qt::Checked );
   mLayer->setDrawInsidePolygon( checked );
+  emit changed();
+}
+
+void QgsSimpleLineSymbolLayerWidget::sketchChanged()
+{
+  mLayer->setSketchEnabled( chkSketchEnabled->isChecked() );
+  mLayer->setSketchRoughness( spinSketchRoughness->value() );
+  mLayer->setSketchBowing( spinSketchBowing->value() );
+  mLayer->setSketchMaxOffset( spinSketchMaxOffset->value() );
+  updatePatternIcon();
   emit changed();
 }
 
