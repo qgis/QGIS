@@ -93,7 +93,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 
     //! Returns a symbol for billboard
     QgsMarkerSymbol *billboardSymbol() const { return mBillboardSymbol.get(); }
-    //! Set symbol for billboard
+    //! Set symbol for billboard and the ownership is transfered
     void setBillboardSymbol( QgsMarkerSymbol *symbol ) { mBillboardSymbol.reset( symbol ); }
 
     //! Returns transform for individual objects represented by the symbol

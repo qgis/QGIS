@@ -134,12 +134,13 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage )
 {
-  // Texture2D (memory leak here?)
+  // Texture2D
   Qt3DRender::QTexture2D *texture2D = new Qt3DRender::QTexture2D( this );
   texture2D->setGenerateMipMaps( false );
   texture2D->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   texture2D->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
 
+  // The textureImage gets parented to texture2D here
   texture2D->addTextureImage( textureImage );
 
   mTexture2D->setValue( QVariant::fromValue( texture2D ) );

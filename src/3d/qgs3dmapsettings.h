@@ -342,7 +342,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     /**
      * Sets DPI used for conversion between real world units (e.g. mm) and pixels
-     * \param dpi the number of dot per inchi
+     * \param dpi the number of dot per inch
      * \since QGIS 3.10
      */
     void setOutputDpi( const double dpi ) {mDpi = dpi;}

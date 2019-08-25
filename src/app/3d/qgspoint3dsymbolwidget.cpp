@@ -23,7 +23,6 @@
 #include "qgssymbolbutton.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
-#include "qgsxmlutils.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : QWidget( parent )

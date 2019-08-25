@@ -53,7 +53,6 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayer.h"
-#include "qgsxmlutils.h"
 
 /// @cond PRIVATE
 
