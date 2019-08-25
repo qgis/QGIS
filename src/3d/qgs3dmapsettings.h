@@ -396,7 +396,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void pointLightsChanged();
 
     /**
-     * Emitted when the camer lens field of view changes
+     * Emitted when the camera lens field of view changes
      * \since QGIS 3.8
      */
     void fieldOfViewChanged();
