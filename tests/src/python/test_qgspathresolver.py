@@ -15,7 +15,12 @@ import qgis  # NOQA
 import tempfile
 import os
 import gc
-from qgis.core import QgsPathResolver, QgsVectorLayer, QgsProject
+from qgis.core import (
+    QgsPathResolver,
+    QgsVectorLayer,
+    QgsProject,
+    QgsApplication
+)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -129,6 +134,15 @@ class TestQgsPathResolver(unittest.TestCase):
         self.assertEqual(l.name(), 'Lines')
         # layer should have correct path now
         self.assertTrue(l.isValid())
+
+    def testInbuiltPath(self):
+        """
+        Test resolving and saving inbuilt data paths
+        """
+        path = "inbuilt:/data/world_map.shp"
+        self.assertEqual(QgsPathResolver().readPath(path), QgsApplication.pkgDataPath() + '/resources/data/world_map.shp')
+
+        self.assertEqual(QgsPathResolver().writePath(QgsApplication.pkgDataPath() + '/resources/data/world_map.shp'), 'inbuilt:/data/world_map.shp')
 
 
 if __name__ == '__main__':
