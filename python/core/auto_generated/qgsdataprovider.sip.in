@@ -61,8 +61,20 @@ Abstract base class for spatial data provider implementations.
 
     struct ProviderOptions
     {
+
+
+      ProviderOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
+%Docstring
+Constructor for ProviderOptions, with the specified ``transformContext`` (usually
+taken from the destination project).
+%End
+
       QgsCoordinateTransformContext transformContext;
+
+
+      bool forceReadOnly;
     };
+
 
     QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
 %Docstring
@@ -391,6 +403,14 @@ Returns ``True`` if metadata was successfully written to the data provider.
 %End
 
 
+
+    virtual bool forcedReadOnly() const;
+%Docstring
+Returns ``True`` if the provider has been forced into a read-only mode
+due to the QgsDataProvider.ProviderOptions.forceReadOnly flag.
+
+.. versionadded:: 3.10
+%End
 
   signals:
 

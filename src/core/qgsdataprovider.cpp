@@ -65,3 +65,9 @@ void QgsDataProvider::setTransformContext( const QgsCoordinateTransformContext &
   QMutexLocker locker( &mOptionsMutex );
   mOptions.transformContext = value;
 }
+
+bool QgsDataProvider::forcedReadOnly() const
+{
+  QMutexLocker locker( &mOptionsMutex );
+  return mOptions.forceReadOnly;
+}

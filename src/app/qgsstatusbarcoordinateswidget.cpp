@@ -229,7 +229,8 @@ void QgsStatusBarCoordinatesWidget::world()
   }
   QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
   QFileInfo fileInfo = QFileInfo( fileName );
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  options.forceReadOnly = true;
   QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
       tr( "World Map" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry

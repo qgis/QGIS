@@ -166,7 +166,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
+    QgsDataProvider::ProviderOptions providerOptions( options.transformContext );
+    providerOptions.forceReadOnly = options.forceReadOnly;
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
   }
 
@@ -215,6 +216,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   if ( mDataProvider )
   {
     options.transformContext = mDataProvider->transformContext();
+    options.forceReadOnly = mDataProvider->forcedReadOnly();
   }
   QgsVectorLayer *layer = new QgsVectorLayer( source(), name(), mProviderKey, options );
   if ( mDataProvider && layer->dataProvider() )

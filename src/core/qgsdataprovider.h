@@ -96,14 +96,38 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Setting options for creating vector data providers.
      *
-     * \note coordinateTransformContext was added in QGIS 3.8
-     *
      * \since QGIS 3.2
      */
     struct ProviderOptions
     {
+
+      // TODO QGIS 4.0 - require transformContext
+
+      /**
+       * Constructor for ProviderOptions, with the specified \a transformContext (usually
+       * taken from the destination project).
+       */
+      ProviderOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+        : transformContext( transformContext )
+        , forceReadOnly( false )
+      {}
+
+      /**
+       * Coordinate transform context (usually taken from destination project)
+       * \since QGIS 3.8
+       */
       QgsCoordinateTransformContext transformContext;
+
+
+      /**
+       * Set to TRUE to force the data provider to open in a read-only mode.
+       *
+       * \since QGIS 3.10
+       */
+      bool forceReadOnly = false;
     };
+
+    // TODO QGIS 4 - required providerOptions
 
     /**
      * Create a new dataprovider with the specified in the \a uri.
@@ -545,6 +569,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
+
+    /**
+     * Returns TRUE if the provider has been forced into a read-only mode
+     * due to the QgsDataProvider::ProviderOptions::forceReadOnly flag.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool forcedReadOnly() const;
 
   signals:
 

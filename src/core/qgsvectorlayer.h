@@ -463,6 +463,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        */
       QgsCoordinateReferenceSystem fallbackCrs;
 
+      /**
+       * Set to TRUE to force the layer's data provider to open in a read-only mode.
+       *
+       * \since QGIS 3.10
+       */
+      bool forceReadOnly = false;
+
     };
 
     /**

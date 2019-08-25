@@ -483,7 +483,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
                           mSubsetString,
                           mOgrGeometryTypeFilter );
 
-  open( OpenModeInitial );
+  open( options.forceReadOnly ? OpenModeForceReadOnly : OpenModeInitial );
 
   int nMaxIntLen = 11;
   int nMaxInt64Len = 21;
