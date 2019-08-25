@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsprojectlistitemdelegate.h"
+#include "qgsprojectstorage.h"
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
@@ -97,6 +98,7 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
 
 Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) const
 {
+  QString path;
   if ( !index.isValid() || !rowCount( index.parent() ) )
     return Qt::NoItemFlags;
 
@@ -107,10 +109,15 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
   // This check can be slow for network based projects, so only run it the first time
   if ( !projectData.checkedExists )
   {
-    if ( QgsApplication::projectStorageRegistry()->projectStorageFromUri( projectData.path ) )
-      // we could check whether a project exists in a custom project storage by checking its metadata,
-      // but that may be slow (e.g. doing some network queries) so for now we always assume such projects exist
-      projectData.exists = true;
+    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( projectData.path );
+    if ( storage )
+    {
+      path = storage->filePath( projectData.path );
+      if ( storage->type() == QStringLiteral( "geopackage" ) && path.isEmpty() )
+        projectData.exists = false;
+      else
+        projectData.exists = true;
+    }
     else
       projectData.exists = QFile::exists( ( projectData.path ) );
     projectData.checkedExists = true;
@@ -141,7 +148,19 @@ void QgsRecentProjectItemsModel::removeProject( const QModelIndex &index )
 
 void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )
 {
+  QString path;
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );
-  projectData.exists = QFile::exists( ( projectData.path ) );
+
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( projectData.path );
+  if ( storage )
+  {
+    path = storage->filePath( projectData.path );
+    if ( storage->type() == QStringLiteral( "geopackage" ) && path.isEmpty() )
+      projectData.exists = false;
+    else
+      projectData.exists = true;
+  }
+  else
+    projectData.exists = QFile::exists( ( projectData.path ) );
   projectData.checkedExists = true;
 }

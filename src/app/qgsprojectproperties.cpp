@@ -63,6 +63,8 @@
 #include "qgsmessagelog.h"
 #include "qgslayercapabilitiesmodel.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 
 //qt includes
 #include <QInputDialog>
@@ -258,30 +260,19 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
   {
-
-    /* Project name syntax:
-     *
-     * /home/qgis/projects/ortos_cim_2019.qgz
-     * geopackage:/home/qgis/projects/natural.gpkg?projectName=natural%20earth
-     * postgresql:?service=pg_geotuga&sslmode=disable&dbname=&schema=ortos&project=teste
-     */
-
-    QRegularExpression re_gpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
-    QRegularExpression re_postgres( "^postgresql:", QRegularExpression::CaseInsensitiveOption );
-
+    QString path;
     QString project = QgsProject::instance()->fileName();
+    QgsProjectStorage *storage = QgsProject::instance()->projectStorage();
+    if ( storage )
+      path = storage->filePath( project );
+    else
+      path = project;
 
-    QRegularExpressionMatch match_gpkpg = re_gpkg.match( project );
-    QRegularExpressionMatch match_postgres = re_postgres.match( project );
-
-    if ( !match_postgres.hasMatch() )
+    if ( !path.isEmpty() )
     {
-      if ( match_gpkpg.hasMatch() )
-      {
-        project = match_gpkpg.captured( 2 );
-      }
-      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( project );
+      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
     }
+
   } );
 
   // get the manner in which the number of decimal places in the mouse
@@ -2631,3 +2622,4 @@ void QgsProjectProperties::onGenerateTsFileButton() const
                             "- release to get qm file including postfix (eg. aproject_de.qm)\n"
                             "When you open it again in QGIS having set the target language (de), the project will be translated and saved with postfix (eg. aproject_de.qgs)." ).arg( l ) ) ;
 }
+
