@@ -78,10 +78,8 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   if ( billboardSymbol() )
   {
     QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), billboardSymbol(), doc, context );
-    QString billboardSymbolString;
-    QTextStream stream( &billboardSymbolString );
-    symbolElem.save( stream, -1 );
-    elem.setAttribute( QStringLiteral( "billboard-symbol" ), billboardSymbolString );
+
+    elem.appendChild( symbolElem );
   }
 }
 
@@ -102,9 +100,7 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
   mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( QStringLiteral( "matrix" ) ) );
 
-  QDomDocument doc( QStringLiteral( "symbol" ) );
-  doc.setContent( elem.attribute( QStringLiteral( "billboard-symbol" ) ) );
-  QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
+  QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
 
   setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 }
