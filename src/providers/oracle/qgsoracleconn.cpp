@@ -76,6 +76,8 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   mDatabase = QSqlDatabase::addDatabase( QStringLiteral( "QOCISPATIAL" ), QStringLiteral( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
   QString options = uri.hasParam( QStringLiteral( "dboptions" ) ) ? uri.param( QStringLiteral( "dboptions" ) ) : QStringLiteral( "OCI_ATTR_PREFETCH_ROWS=1000" );
+  if ( mTransaction )
+    options += ( !options.isEmpty() ? QStringLiteral( ";" ) : QString() ) + QStringLiteral( "COMMIT_ON_SUCCESS=false" );
   QString workspace = uri.hasParam( QStringLiteral( "dbworkspace" ) ) ? uri.param( QStringLiteral( "dbworkspace" ) ) : QString();
   mDatabase.setConnectOptions( options );
   mDatabase.setUserName( uri.username() );
