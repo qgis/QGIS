@@ -191,7 +191,8 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
 {
   QVariantMap vm;
-  QgsPoint3DSymbol sym = QgsPoint3DSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  QgsPoint3DSymbol sym;
+  sym.setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere

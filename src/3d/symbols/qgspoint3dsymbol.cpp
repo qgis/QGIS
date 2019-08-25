@@ -42,14 +42,6 @@ QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other ) :
   setDataDefinedProperties( other.dataDefinedProperties() );
 }
 
-QgsPoint3DSymbol::QgsPoint3DSymbol( QgsMarkerSymbol *symbol )
-  : mBillboardSymbol( symbol )
-{
-
-}
-
-
-
 void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();

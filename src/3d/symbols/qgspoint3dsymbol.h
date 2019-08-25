@@ -43,9 +43,6 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     //! Copy Constructor for QgsPoint3DSymbol
     QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
 
-    //! Constructor for QgsPoint3DSymbol with symbol as the billboardSymbol
-    QgsPoint3DSymbol( QgsMarkerSymbol *symbol );
-
     QString type() const override { return "point"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 

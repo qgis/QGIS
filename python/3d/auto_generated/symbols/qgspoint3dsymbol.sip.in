@@ -37,11 +37,6 @@ Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSy
 Copy Constructor for QgsPoint3DSymbol
 %End
 
-    QgsPoint3DSymbol( QgsMarkerSymbol *symbol );
-%Docstring
-Constructor for QgsPoint3DSymbol with symbol as the billboardSymbol
-%End
-
     virtual QString type() const;
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
