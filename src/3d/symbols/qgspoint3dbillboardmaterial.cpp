@@ -124,12 +124,20 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   QgsRenderContext context;
   context.setSelectionColor( map.selectionColor() );
   context.setScaleFactor( map.outputDpi() / 25.4 );
-  double pixelSize = context.convertToPainterUnits( markerSymbol->size(),  markerSymbol->sizeUnit() );
+  double pixelSize = context.convertToPainterUnits( markerSymbol->size( context ),  markerSymbol->sizeUnit() );
 
-  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( int( pixelSize ), int( pixelSize ) ), 2, &context, selected );
+  // This number is an max estimation ratio between stroke width and symbol size.
+  double strokeRatio = 0.5;
+  // Minimum extra width, just in case the size is small, but the stroke is quite big.
+  // 10 mm is quite big based on Raymond's experiece.
+  // 10 mm has around 37 pixel in 96 dpi, round up become 40.
+  double minimumExtraSize = 40;
+  double extraPixel = minimumExtraSize > pixelSize * strokeRatio ? minimumExtraSize : pixelSize * strokeRatio;
+  int pixelWithExtra = std::ceil( pixelSize + extraPixel );
+  QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( pixelWithExtra, pixelWithExtra ), 0, &context, selected );
   QImage symbolImage = symbolPixmap.toImage();
   QImage flippedSymbolImage = symbolImage.mirrored();
-  setTexture2DFromImage( flippedSymbolImage, pixelSize );
+  setTexture2DFromImage( flippedSymbolImage, pixelWithExtra );
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage )
