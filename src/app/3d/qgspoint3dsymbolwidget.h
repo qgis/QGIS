@@ -32,9 +32,6 @@ class QgsPoint3DSymbolWidget : public QWidget, private Ui::Point3DSymbolWidget
     void setSymbol( const QgsPoint3DSymbol &symbol );
     QgsPoint3DSymbol symbol() const;
 
-    void setLayer( QgsVectorLayer *vlayer );
-    QgsVectorLayer *layer() {return mLayer;}
-
   signals:
     void changed();
 
@@ -42,9 +39,6 @@ class QgsPoint3DSymbolWidget : public QWidget, private Ui::Point3DSymbolWidget
     void onShapeChanged();
     void onChooseModelClicked( bool checked = false );
     void onOverwriteMaterialChecked( int state );
-
-  private:
-    QgsVectorLayer *mLayer = nullptr;
 };
 
 #endif // QGSPOINT3DSYMBOLWIDGET_H

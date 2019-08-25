@@ -243,12 +243,6 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   return sym;
 }
 
-void QgsPoint3DSymbolWidget::setLayer( QgsVectorLayer *vlayer )
-{
-  mLayer = vlayer;
-  btnChangeSymbol->setLayer( vlayer );
-}
-
 void QgsPoint3DSymbolWidget::onShapeChanged()
 {
   QList<QWidget *> allWidgets;
