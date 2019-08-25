@@ -230,9 +230,10 @@ void Qgs3DMapCanvasDockWidget::configure()
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::helpRequested, w, &Qgs3DMapConfigWidget::showHelp );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( w, 1 );

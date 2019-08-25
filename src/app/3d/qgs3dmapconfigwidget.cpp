@@ -25,6 +25,7 @@
 #include "qgsmapthemecollection.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
+#include "qgshelp.h"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent )
   : QWidget( parent )
@@ -239,4 +240,8 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   double tile0width = std::max( te.width(), te.height() );
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
+}
+void Qgs3DMapConfigWidget::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#d-map-view" ) );
 }

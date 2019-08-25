@@ -33,6 +33,8 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     explicit Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent = nullptr );
 
     void apply();
+    //! Displays help on the 3D Map configuration
+    void showHelp();
 
   signals:
 
