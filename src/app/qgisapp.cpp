@@ -4390,22 +4390,24 @@ void QgisApp::updateRecentProjectPaths()
                             ).replace( "&", "&&" )
                       );
 
-    QRegularExpression re_gpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
-    QRegularExpression re_postgres( "^postgresql:", QRegularExpression::CaseInsensitiveOption );
+    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( recentProject.path );
 
-    QRegularExpressionMatch match_gpkpg = re_gpkg.match( recentProject.path );
-    QRegularExpressionMatch match_postgres = re_postgres.match( recentProject.path );
-
-    if ( !match_postgres.hasMatch() )
+    if ( storage )
     {
-      if ( match_gpkpg.hasMatch() )
+      QString path = storage->filePath( recentProject.path );
+      // for geopackage projects, the path will be empty, if not valid
+      if ( storage->type() == QStringLiteral( "geopackage" ) && path.isEmpty() )
       {
-        action->setEnabled( QFile::exists( match_gpkpg.captured( 2 ) ) );
+        action->setEnabled( false );
+        action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorBadLayer.svg" ) ) );
       }
-      else
-      {
-        action->setEnabled( QFile::exists( ( recentProject.path ) ) );
-      }
+    }
+    else
+    {
+      bool exists = QFile::exists( recentProject.path );
+      action->setEnabled( exists );
+      if ( !exists )
+        action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorBadLayer.svg" ) ) );
     }
 
     action->setData( recentProject.path );
