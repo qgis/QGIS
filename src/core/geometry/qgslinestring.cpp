@@ -603,6 +603,7 @@ void QgsLineString::points( QgsPointSequence &pts ) const
 {
   pts.clear();
   int nPoints = numPoints();
+  pts.reserve( nPoints );
   for ( int i = 0; i < nPoints; ++i )
   {
     pts.push_back( pointN( i ) );
