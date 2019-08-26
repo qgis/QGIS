@@ -128,57 +128,11 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsSymbol *symbol() { return mSymbol; }
 
     /**
-     * Load the given symbol into the widget.
+     * Loads the given symbol into the widget.
      * \param symbol The symbol to load.
      * \param parent The parent symbol layer item. If the parent parameter is null, the whole symbol and model will be reset.
-     * \note not available in Python bindings
      */
     void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent = nullptr ) SIP_SKIP;
-
-  protected:
-
-    /**
-     * Reload the current symbol in the view.
-     */
-    void loadSymbol();
-
-    /**
-     * Update the state of the UI based on the currently set symbol layer.
-     */
-    void updateUi();
-
-    /**
-     * Update the lock button states based on the current symbol layer.
-     */
-    void updateLockButton();
-
-    //! \note not available in Python bindings
-    SymbolLayerItem *currentLayerItem() SIP_SKIP;
-
-    /**
-     * The current symbol layer that is active in the interface.
-     * \returns The active symbol layer.
-     */
-    QgsSymbolLayer *currentLayer();
-
-    /**
-     * Move the current active layer by a set offset in the list.
-     * \param offset The offset to move the layer by
-     */
-    void moveLayerByOffset( int offset );
-
-    /**
-     * Set the properties widget for the active symbol layer.
-     * \param widget The widget to set to configure the active symbol layer.
-     */
-    void setWidget( QWidget *widget );
-
-  signals:
-
-    /**
-     * Emiited when a symbol is modified in the widget.
-     */
-    void symbolModified();
 
   public slots:
 
@@ -238,8 +192,50 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     void changeLayer( QgsSymbolLayer *layer );
 
+  signals:
 
-  protected: // data
+    /**
+     * Emiited when a symbol is modified in the widget.
+     */
+    void symbolModified();
+
+  private:
+
+    /**
+     * Reload the current symbol in the view.
+     */
+    void reloadSymbol();
+
+    /**
+     * Update the state of the UI based on the currently set symbol layer.
+     */
+    void updateUi();
+
+    /**
+     * Update the lock button states based on the current symbol layer.
+     */
+    void updateLockButton();
+
+    SymbolLayerItem *currentLayerItem();
+
+    /**
+     * The current symbol layer that is active in the interface.
+     * \returns The active symbol layer.
+     */
+    QgsSymbolLayer *currentLayer();
+
+    /**
+     * Move the current active layer by a set offset in the list.
+     * \param offset The offset to move the layer by
+     */
+    void moveLayerByOffset( int offset );
+
+    /**
+     * Set the properties widget for the active symbol layer.
+     * \param widget The widget to set to configure the active symbol layer.
+     */
+    void setWidget( QWidget *widget );
+
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
     QMenu *mAdvancedMenu = nullptr;
@@ -248,7 +244,6 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QStandardItemModel *model = nullptr;
     QWidget *mPresentWidget = nullptr;
 
-  private:
     std::unique_ptr<DataDefinedRestorer> mDataDefineRestorer;
     QgsSymbolWidgetContext mContext;
     QgsFeature mPreviewFeature;
@@ -303,36 +298,20 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbol *symbol();
 
     /**
+     * Loads the given symbol into the widget.
+     * \param symbol The symbol to load.
+     * \param parent The parent symbol layer item. If the parent parameter is null, the whole symbol and model will be reset.
+     */
+    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent = nullptr ) SIP_SKIP;
+
+    /**
      * Returns a reference to the dialog's button box.
      * \since QGIS 3.10
      */
     QDialogButtonBox *buttonBox() const;
 
-  protected:
-    // Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent *e ) override;
-
-    void loadSymbol();
-
-    //! \note not available in Python bindings
-    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent ) SIP_SKIP;
-
-    void updateUi();
-
-    void updateLockButton();
-
-    //! \note not available in Python bindings
-    SymbolLayerItem *currentLayerItem() SIP_SKIP;
-    QgsSymbolLayer *currentLayer();
-
-    void moveLayerByOffset( int offset );
-
-    void setWidget( QWidget *widget );
-
-  signals:
-    void symbolModified();
-
   public slots:
+
     void moveLayerDown();
     void moveLayerUp();
 
@@ -361,13 +340,39 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
      */
     void changeLayer( QgsSymbolLayer *layer );
 
+  protected:
+
+    // Reimplements dialog keyPress event so we can ignore it
+    void keyPressEvent( QKeyEvent *e ) override;
+
+  private slots:
+
+    void showHelp();
+
+  signals:
+
+    void symbolModified();
+
   private:
+
+    void reloadSymbol();
+
+    void updateUi();
+
+    void updateLockButton();
+
+    SymbolLayerItem *currentLayerItem();
+
+    QgsSymbolLayer *currentLayer();
+
+    void moveLayerByOffset( int offset );
+
+    void setWidget( QWidget *widget );
+
     QgsSymbolSelectorWidget *mSelectorWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
     QgsSymbolWidgetContext mContext;
 
-  private slots:
-    void showHelp();
 };
 
 #endif

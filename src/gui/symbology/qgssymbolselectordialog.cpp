@@ -414,7 +414,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
 }
 
 
-void QgsSymbolSelectorWidget::loadSymbol()
+void QgsSymbolSelectorWidget::reloadSymbol()
 {
   model->clear();
   loadSymbol( mSymbol, static_cast<SymbolLayerItem *>( model->invisibleRootItem() ) );
@@ -553,7 +553,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
   else
   {
     //it is the symbol itself
-    loadSymbol();
+    reloadSymbol();
     QModelIndex newIndex = layersTree->model()->index( 0, 0 );
     layersTree->setCurrentIndex( newIndex );
   }
@@ -824,9 +824,9 @@ void QgsSymbolSelectorDialog::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsSymbolSelectorDialog::loadSymbol()
+void QgsSymbolSelectorDialog::reloadSymbol()
 {
-  mSelectorWidget->loadSymbol();
+  mSelectorWidget->reloadSymbol();
 }
 
 void QgsSymbolSelectorDialog::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
