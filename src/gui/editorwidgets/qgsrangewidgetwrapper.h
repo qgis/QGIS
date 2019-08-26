@@ -71,16 +71,14 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
-  public slots:
-    void setValue( const QVariant &value ) override;
-
   private slots:
-
     // NOTE - cannot be named "valueChanged", otherwise implicit conversion to QVariant results in
     // infinite recursion
     void valueChangedVariant( const QVariant & );
 
   private:
+    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
+
     QSpinBox *mIntSpinBox = nullptr;
     QDoubleSpinBox *mDoubleSpinBox = nullptr;
     QSlider *mSlider = nullptr;

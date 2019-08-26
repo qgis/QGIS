@@ -187,9 +187,19 @@ bool QgsRangeWidgetWrapper::valid() const
 void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant &v )
 {
   if ( v.type() == QVariant::Int )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( v.toInt() );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( v.toInt() );
+  }
   if ( v.type() == QVariant::Double )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( v.toDouble() );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( v.toDouble() );
+  }
 }
 
 QVariant QgsRangeWidgetWrapper::value() const
@@ -232,7 +242,7 @@ QVariant QgsRangeWidgetWrapper::value() const
   return value;
 }
 
-void QgsRangeWidgetWrapper::setValue( const QVariant &value )
+void QgsRangeWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mDoubleSpinBox )
   {
