@@ -71,13 +71,13 @@ Returns the symbol that is currently active in the widget. Can be ``None``.
 :return: The active symbol.
 %End
 
+
   protected:
 
     void loadSymbol();
 %Docstring
 Reload the current symbol in the view.
 %End
-
 
     void updateUi();
 %Docstring
