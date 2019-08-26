@@ -233,6 +233,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \returns prepared uri
      */
     static QString prepareUri( QString uri );
+    static QString prepareUriWithoutDecode( QString uri );
 
     int stepWidth() const override { return mSettings.mStepWidth; }
     int stepHeight() const override { return mSettings.mStepHeight; }

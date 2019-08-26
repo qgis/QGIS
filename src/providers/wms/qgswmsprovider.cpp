@@ -164,6 +164,24 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   QgsDebugMsg( QStringLiteral( "exiting constructor." ) );
 }
 
+QString QgsWmsProvider::prepareUriWithoutDecode( QString uri )
+{
+  if ( uri.contains( QLatin1String( "SERVICE=WMTS" ) ) || uri.contains( QLatin1String( "/WMTSCapabilities.xml" ) ) )
+  {
+    return uri;
+  }
+
+  if ( !uri.contains( QLatin1String( "?" ) ) )
+  {
+    uri.append( '?' );
+  }
+  else if ( uri.right( 1 ) != QLatin1String( "?" ) && uri.right( 1 ) != QLatin1String( "&" ) )
+  {
+    uri.append( '&' );
+  }
+
+  return uri;
+}
 
 QString QgsWmsProvider::prepareUri( QString uri )
 {
