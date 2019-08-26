@@ -354,6 +354,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     * to reflect the new value.
     *
     * \param value The new value of the attribute
+    * \param additionalValues The values of potential additional fields
     * \note Will be pure virtual in QGIS 4.x
     * \since QGIS 3.10
     */
