@@ -20,6 +20,20 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
+
+bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
+{
+  if ( a.size() != b.size() )
+    return false;
+
+  for ( int i = 0; i < a.size(); ++i )
+  {
+    if ( !qgsVariantEqual( a.at( i ), b.at( i ) ) )
+      return false;
+  }
+  return true;
+}
+
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
@@ -103,10 +117,7 @@ bool QgsFeatureFilterModel::isLoading() const
 
 QString QgsFeatureFilterModel::identifierField() const
 {
-  if ( mIdentifierFields.isEmpty() )
-    return QString();
-  else
-    return mIdentifierFields.at( 0 );
+  return mIdentifierFields.value( 0 );
 }
 
 QModelIndex QgsFeatureFilterModel::index( int row, int column, const QModelIndex &parent ) const
@@ -148,8 +159,8 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
 
     case IdentifierValueRole:
     {
-      QVariantList values = mEntries.value( index.row() ).identifierValues;
-      return values.isEmpty() ? QVariant() : values.at( 0 );
+      const QVariantList values = mEntries.value( index.row() ).identifierValues;
+      return values.value( 0 );
     }
 
     case IdentifierValuesRole:
@@ -161,7 +172,8 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
     case Qt::FontRole:
     {
       bool isNull = true;
-      for ( const QVariant &value : mEntries.value( index.row() ).identifierValues )
+      const QVariantList values = mEntries.value( index.row() ).identifierValues;
+      for ( const QVariant &value : values )
       {
         if ( !value.isNull() )
         {
@@ -217,14 +229,7 @@ void QgsFeatureFilterModel::updateCompleter()
 
   if ( mExtraIdentifierValueIndex == -1 )
   {
-    QVariantList nullAttributes;
-    for ( const QString &fieldName : mIdentifierFields )
-    {
-      int idx = mSourceLayer->fields().indexOf( fieldName );
-      nullAttributes << QVariant( mSourceLayer->fields().at( idx ).type() );
-    }
-
-    setExtraIdentifierValuesUnguarded( nullAttributes );
+    setExtraIdentifierValuesUnguarded( QVariantList() );
   }
 
   // Only reloading the current entry?
@@ -265,7 +270,7 @@ void QgsFeatureFilterModel::updateCompleter()
     {
       for ( int i = 0; i < newEntriesSize; ++i )
       {
-        if ( entries.at( i ).identifierValues == mExtraIdentifierValues )
+        if ( qVariantListCompare( entries.at( i ).identifierValues, mExtraIdentifierValues ) )
         {
           currentEntryInNewList = i;
           mEntries.replace( mExtraIdentifierValueIndex, entries.at( i ) );
@@ -493,13 +498,7 @@ void QgsFeatureFilterModel::setExtraIdentifierValuesUnguarded( const QVariantLis
 
 QgsFeatureFilterModel::Entry QgsFeatureFilterModel::nullEntry()
 {
-  QVariantList nullAttributes;
-  for ( const QString &fieldName : mIdentifierFields )
-  {
-    int idx = mSourceLayer->fields().indexOf( fieldName );
-    nullAttributes << QVariant( mSourceLayer->fields().at( idx ).type() );
-  }
-  return Entry( nullAttributes, QgsApplication::nullRepresentation(), QgsFeature() );
+  return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature() );
 }
 
 QgsConditionalStyle QgsFeatureFilterModel::featureStyle( const QgsFeature &feature ) const
@@ -582,7 +581,7 @@ void QgsFeatureFilterModel::setIdentifierFields( const QStringList &identifierFi
 
   mIdentifierFields = identifierFields;
   emit identifierFieldChanged();
-  setExtraIdentifierValuesToNull();
+  setExtraIdentifierValues( QVariantList() );
 }
 
 void QgsFeatureFilterModel::reload()
@@ -605,7 +604,10 @@ QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
 
 void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdentifierValue )
 {
-  setExtraIdentifierValues( QVariantList() << extraIdentifierValue );
+  if ( extraIdentifierValue.isNull() )
+    setExtraIdentifierValues( QVariantList() );
+  else
+    setExtraIdentifierValues( QVariantList() << extraIdentifierValue );
 }
 
 void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraIdentifierValues )
@@ -629,15 +631,5 @@ void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraI
 
 void QgsFeatureFilterModel::setExtraIdentifierValuesToNull()
 {
-  QVariantList nullAttributes;
-  if ( mSourceLayer )
-  {
-    for ( const QString &fieldName : mIdentifierFields )
-    {
-      int idx = mSourceLayer->fields().indexOf( fieldName );
-      Q_ASSERT( idx >= 0 );
-      nullAttributes << QVariant( mSourceLayer->fields().at( idx ).type() );
-    }
-  }
-  setExtraIdentifierValues( nullAttributes );
+  mExtraIdentifierValues = QVariantList();
 }
