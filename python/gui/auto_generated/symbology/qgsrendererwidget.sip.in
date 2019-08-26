@@ -78,6 +78,11 @@ vector layers have been changed. Will request the parent dialog
 to re-synchronize with the variables.
 %End
 
+    void symbolLevelsChanged();
+%Docstring
+Emitted when the symbol levels settings have been changed.
+%End
+
   protected:
 
 
