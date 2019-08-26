@@ -385,6 +385,13 @@ QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
 
 void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
 {
+  if ( !parent )
+  {
+    mSymbol = symbol;
+    model->clear();
+    parent = static_cast<SymbolLayerItem *>( model->invisibleRootItem() );
+  }
+
   SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol );
   QFont boldFont = symbolItem->font();
   boldFont.setBold( true );
