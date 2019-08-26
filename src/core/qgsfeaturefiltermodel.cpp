@@ -599,6 +599,13 @@ QVariant QgsFeatureFilterModel::extraIdentifierValue() const
 
 QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
 {
+  if ( mExtraIdentifierValues.count() != mIdentifierFields.count() )
+  {
+    QVariantList nullValues;
+    for ( int i = 0; i < mIdentifierFields.count(); i++ )
+      nullValues << QVariant();
+    return nullValues;
+  }
   return mExtraIdentifierValues;
 }
 
