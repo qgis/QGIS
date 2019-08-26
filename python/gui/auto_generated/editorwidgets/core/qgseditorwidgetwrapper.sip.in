@@ -66,7 +66,7 @@ Returns the list of additional fields which the editor handles
 .. versionadded:: 3.10
 %End
 
-    virtual QVariantList additionalFieldValues();
+    virtual QVariantList additionalFieldValues() const;
 %Docstring
 Will be used to access the widget's values for potential additional fields handled by the widget
 
