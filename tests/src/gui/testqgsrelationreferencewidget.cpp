@@ -403,9 +403,9 @@ void TestQgsRelationReferenceWidget::testAddEntry()
 
       bool startEditing( QgsVectorLayer * ) const override {return true;}
 
-      bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;};
+      bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;}
 
-      bool saveEdits( QgsVectorLayer * ) const override {return true;};
+      bool saveEdits( QgsVectorLayer * ) const override {return true;}
   };
 
   QgsAttributeEditorContext context;
@@ -414,7 +414,9 @@ void TestQgsRelationReferenceWidget::testAddEntry()
   w.setEditorContext( context, nullptr, nullptr );
   w.addEntry();
 
+  Q_NOWARN_DEPRECATED_PUSH
   QCOMPARE( w.mComboBox->identifierValue().toInt(), 13 );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 
