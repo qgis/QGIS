@@ -110,7 +110,7 @@ Returns a symbol for billboard
 %End
     void setBillboardSymbol( QgsMarkerSymbol *symbol );
 %Docstring
-Set symbol for billboard and the ownership is transfered
+Set symbol for billboard and the ownership is transferred
 %End
 
     QMatrix4x4 transform() const;
