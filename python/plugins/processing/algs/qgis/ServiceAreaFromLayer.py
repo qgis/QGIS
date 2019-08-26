@@ -143,7 +143,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         params.append(QgsProcessingParameterNumber(self.DEFAULT_SPEED,
                                                    self.tr('Default speed (km/h)'),
                                                    QgsProcessingParameterNumber.Double,
-                                                   5.0, False, 0))
+                                                   50.0, False, 0))
         params.append(QgsProcessingParameterDistance(self.TOLERANCE,
                                                      self.tr('Topology tolerance'),
                                                      0.0, self.INPUT, False, 0))
