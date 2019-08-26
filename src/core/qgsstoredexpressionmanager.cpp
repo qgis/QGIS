@@ -1,11 +1,5 @@
 /***************************************************************************
                           qgsstoredexpressionmanager.cpp
-
- These classes store and control the management and execution of actions
- associated with a particular Qgis layer. Actions are defined to be
- external programs that are run with user-specified inputs that can
- depend on the contents of layer attributes.
-
                              -------------------
     begin                : August 2019
     copyright            : (C) 2019 David Signer
@@ -22,80 +16,73 @@
  ***************************************************************************/
 
 #include "qgsstoredexpressionmanager.h"
+#include "qgis.h"
+
 
 #include <QDomElement>
 
-QUuid QgsStoredExpressionManager::addStoredExpression( const QString &name, const QString &expression, const QString &tag )
+QString QgsStoredExpressionManager::addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag )
 {
   Q_UNUSED( tag );
 
-  /* leads to trouble with sip...
-  QgsStoredExpression storedExpression( name, expression );
-  */
-  QgsStoredExpression storedExpression;
-  storedExpression.id = QUuid::createUuid();
-  storedExpression.name = name;
-  storedExpression.expression = expression;
+  QgsStoredExpression storedExpression( name, expression, tag );
 
   mStoredExpressions.append( storedExpression );
 
   return storedExpression.id;
 }
 
-void QgsStoredExpressionManager::removeStoredExpression( const QUuid &id, const QString &tag )
+void QgsStoredExpressionManager::removeStoredExpression( const QString &id )
 {
-  Q_UNUSED( tag );
-
   int i = 0;
-  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
+  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.id == id )
     {
       mStoredExpressions.removeAt( i );
+      //leave the loop after editing source
       break;
     }
     ++i;
   }
 }
 
-void QgsStoredExpressionManager::updateStoredExpression( const QUuid &id, const QString &name, const QString &expression, const QString &tag )
+void QgsStoredExpressionManager::updateStoredExpression( const QString &id, const QString &name, const QString &expression, const QgsStoredExpression::Category &tag )
 {
   Q_UNUSED( tag );
 
   int i = 0;
-  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
+  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.id == id )
     {
       QgsStoredExpression newStoredExpression = mStoredExpressions.at( i );
       newStoredExpression.name = name;
       newStoredExpression.expression = expression;
+      newStoredExpression.tag = tag;
       mStoredExpressions.replace( i, newStoredExpression );
+      //leave the loop after editing source
       break;
     }
     ++i;
   }
 }
 
-void QgsStoredExpressionManager::addStoredExpressions( QList< QgsStoredExpression > storedExpressions, const QString &tag )
+void QgsStoredExpressionManager::addStoredExpressions( QList< QgsStoredExpression > storedExpressions )
 {
-  Q_UNUSED( tag );
-
   mStoredExpressions.append( storedExpressions );
 }
 
-QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( const QString &tag )
+QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( const QgsStoredExpression::Category &tag )
 {
   Q_UNUSED( tag );
 
   return mStoredExpressions;
 }
 
-QgsStoredExpression QgsStoredExpressionManager::storedExpression( const QUuid &id, const QString &tag )
+QgsStoredExpression QgsStoredExpressionManager::storedExpression( const QString &id ) const
 {
-  Q_UNUSED( tag );
-
-  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
+  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.id == id )
     {
@@ -105,13 +92,13 @@ QgsStoredExpression QgsStoredExpressionManager::storedExpression( const QUuid &i
   return QgsStoredExpression();
 }
 
-QgsStoredExpression QgsStoredExpressionManager::findStoredExpressionByExpression( const QString &expression, const QString &tag )
+QgsStoredExpression QgsStoredExpressionManager::findStoredExpressionByExpression( const QString &expression, const QgsStoredExpression::Category &tag ) const
 {
   Q_UNUSED( tag );
 
-  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
+  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
   {
-    if ( storedExpression.expression == expression )
+    if ( storedExpression.expression == expression && storedExpression.tag & tag )
     {
       return storedExpression;
     }
@@ -124,56 +111,36 @@ void QgsStoredExpressionManager::clearStoredExpressions()
   mStoredExpressions.clear();
 }
 
-bool QgsStoredExpressionManager::writeXml( QDomNode &layer_node ) const
+bool QgsStoredExpressionManager::writeXml( QDomNode &layerNode ) const
 {
-  QString elementName;
+  QDomElement aStoredExpressions = layerNode.ownerDocument().createElement( QStringLiteral( "storedexpressions" ) );
 
-  switch ( mMode )
+  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
   {
-    case FilterExpression:
-    {
-      elementName = QStringLiteral( "storedfilterexpression" );
-      break;
-    }
-  }
-
-  QDomElement aStoredExpressions = layer_node.ownerDocument().createElement( QStringLiteral( "%1s" ).arg( elementName ) );
-
-  for ( const QgsStoredExpression &storedExpression : mStoredExpressions )
-  {
-    QDomElement aStoredExpression = layer_node.ownerDocument().createElement( elementName );
+    QDomElement aStoredExpression = layerNode.ownerDocument().createElement( QStringLiteral( "storedexpression" ) );
     aStoredExpression.setAttribute( QStringLiteral( "name" ), storedExpression.name );
     aStoredExpression.setAttribute( QStringLiteral( "expression" ), storedExpression.expression );
+    aStoredExpression.setAttribute( QStringLiteral( "tag" ), storedExpression.tag );
     aStoredExpressions.appendChild( aStoredExpression );
   }
-  layer_node.appendChild( aStoredExpressions );
+  layerNode.appendChild( aStoredExpressions );
 
   return true;
 }
 
-bool QgsStoredExpressionManager::readXml( const QDomNode &layer_node )
+bool QgsStoredExpressionManager::readXml( const QDomNode &layerNode )
 {
   clearStoredExpressions();
 
-  QString elementName;
-  switch ( mMode )
-  {
-    case FilterExpression:
-    {
-      elementName = QStringLiteral( "storedfilterexpression" );
-      break;
-    }
-  }
-
-  QDomNode aaNode = layer_node.namedItem( QStringLiteral( "%1s" ).arg( elementName ) );
+  QDomNode aaNode = layerNode.namedItem( QStringLiteral( "storedexpressions" ) );
 
   if ( !aaNode.isNull() )
   {
-    QDomNodeList aStoredExpressions = aaNode.toElement().elementsByTagName( elementName );
+    QDomNodeList aStoredExpressions = aaNode.toElement().elementsByTagName( QStringLiteral( "storedexpression" ) );
     for ( int i = 0; i < aStoredExpressions.size(); ++i )
     {
       QDomElement aStoredExpression = aStoredExpressions.at( i ).toElement();
-      addStoredExpression( aStoredExpression.attribute( QStringLiteral( "name" ) ), aStoredExpression.attribute( QStringLiteral( "expression" ) ) );
+      addStoredExpression( aStoredExpression.attribute( QStringLiteral( "name" ) ), aStoredExpression.attribute( QStringLiteral( "expression" ) ), QgsStoredExpression::Category( aStoredExpression.attribute( QStringLiteral( "tag" ) ).toInt() ) );
     }
   }
   return true;

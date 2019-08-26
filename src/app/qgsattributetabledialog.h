@@ -179,30 +179,30 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void filterQueryAccepted();
 
     /**
-    * handle the expression (save or delete) when the bookmark button for stored
-    * filter expressions is triggered
+    * Handles the expression (save or delete) when the bookmark button for stored
+    * filter expressions is triggered.
     */
     void handleStoreFilterExpression();
 
     /**
-    * open dialog and give the possiblity to save the expression with a name
+    * Opens dialog and give the possibility to save the expression with a name.
     */
     void saveAsStoredFilterExpression();
 
     /**
-    * open dialog and give the possiblity to edit the name and the expression
-    * of the stored expression
+    * Opens dialog and give the possibility to edit the name and the expression
+    * of the stored expression.
     */
     void editStoredFilterExpression();
 
     /**
-     * updates the bookmark button and it's actions regarding the stored filter
-     * expressions according to the value
+     * Updates the bookmark button and it's actions regarding the stored filter
+     * expressions according to the values
      */
     void updateCurrentStoredFilterExpression( );
 
     /**
-     * starts timer with timeout 300 ms
+     * Starts timer with timeout 300 ms.
      */
     void onFilterQueryTextChanged( const QString &value );
 
@@ -271,7 +271,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QStringList mVisibleFields;
     QgsAttributeEditorContext mEditorContext;
 
-    QTimer *mFilterQueryTimer;
+    QTimer mFilterQueryTimer;
 
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );

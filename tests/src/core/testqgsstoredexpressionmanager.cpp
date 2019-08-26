@@ -35,17 +35,14 @@ class TestQgsStoredExpressionManager : public QObject
 
 void TestQgsStoredExpressionManager::init()
 {
-  mManager = new QgsStoredExpressionManager( QgsStoredExpressionManager::FilterExpression );
+  mManager = new QgsStoredExpressionManager();
 
   QList <QgsStoredExpression> newStoredExpressions;
 
   //fill up
   for ( int i = 0; i < 10; i++ )
   {
-    QgsStoredExpression storedExpression;
-    storedExpression.id = QUuid::createUuid();
-    storedExpression.name = QStringLiteral( "test%1" ).arg( i );
-    storedExpression.expression =  QStringLiteral( "\"age\"=%1" ).arg( i );
+    QgsStoredExpression storedExpression( QStringLiteral( "test%1" ).arg( i ), QStringLiteral( "\"age\"=%1" ).arg( i ) );
     newStoredExpressions.append( storedExpression );
   }
   mManager->addStoredExpressions( newStoredExpressions );
@@ -60,7 +57,7 @@ void TestQgsStoredExpressionManager::storeSingleExpression()
 {
   QString name = QStringLiteral( "test0" );
   QString expression = QStringLiteral( "\"age\"=0" );
-  QUuid id = mManager->addStoredExpression( name, expression );
+  QString id = mManager->addStoredExpression( name, expression );
 
   //get stored expression by id
   QgsStoredExpression storedExpression = mManager->storedExpression( id );
@@ -83,10 +80,7 @@ void TestQgsStoredExpressionManager::storeListOfExpressions()
   //fill up
   for ( int i = 10; i < 20; i++ )
   {
-    QgsStoredExpression storedExpression;
-    storedExpression.id = QUuid::createUuid();
-    storedExpression.name = QStringLiteral( "test%1" ).arg( i );
-    storedExpression.expression =  QStringLiteral( "\"age\"=%1" ).arg( i );
+    QgsStoredExpression storedExpression( QStringLiteral( "test%1" ).arg( i ), QStringLiteral( "\"age\"=%1" ).arg( i ) );
     newStoredExpressions.append( storedExpression );
   }
   mManager->addStoredExpressions( newStoredExpressions );

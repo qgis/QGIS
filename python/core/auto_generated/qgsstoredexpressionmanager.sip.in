@@ -18,86 +18,89 @@
 struct QgsStoredExpression
 {
 
+  enum Category
+  {
+    FilterExpression
+  };
 
-  QUuid id;
+
+  QString id;
   QString name;
   QString expression;
+  Category tag;
 };
 
 class QgsStoredExpressionManager : QObject
 {
+%Docstring
+Manages stored expressions regarding creation, modification and storing in the project
+
+.. versionadded:: 3.10
+%End
 
 %TypeHeaderCode
 #include "qgsstoredexpressionmanager.h"
 %End
   public:
 
-    enum Mode
-    {
-      FilterExpression
-    };
+    QgsStoredExpressionManager();
 
-    QgsStoredExpressionManager( Mode mode = FilterExpression );
-
-    QUuid addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
+    QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 %Docstring
 Adds an expression to the list
 
 :param name: optional name of the expression
-:param expression: the expression content
-:param tag: some content, maybe scope where to be shown
+:param expression: expression text
+:param tag: category of the expression
 
-:return: generated id as QUuid
+:return: generated id as QString
 %End
 
-    void removeStoredExpression( const QUuid &id, const QString &tag = QString() );
+    void removeStoredExpression( const QString &id );
 %Docstring
 Removes an expression to the list
 
 :param id: id of the expression as identification
-:param tag: some content, maybe scope where to be shown
 %End
 
-    void updateStoredExpression( const QUuid &id, const QString &name, const QString &expression, const QString &tag = QString() );
+    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 %Docstring
 Updates an expression by id
 
 :param id: id of the expression as identification
 :param name: new name of the expression
-:param expression: new expression content
-:param tag: some content, maybe scope where to be shown
+:param expression: new expression text
+:param tag: new category of the expression
 %End
 
-    void addStoredExpressions( QList< QgsStoredExpression > storedExpressions, const QString &tag = QString() );
+    void addStoredExpressions( QList< QgsStoredExpression > storedExpressions );
 %Docstring
 Appends a list of expressions to the existing list
 
 :param storedExpressions: list of expressions and the optional name
-:param tag: some content, maybe scope where to be shown
 %End
 
-    QList< QgsStoredExpression > storedExpressions( const QString &tag = QString() );
+    QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 %Docstring
 Returns the list of named expressions
 
-:param tag: some content, maybe scope where to be shown
+:param tag: where the expression is used
 %End
 
 
-    QgsStoredExpression storedExpression( const QUuid &id, const QString &tag = QString() );
+    QgsStoredExpression storedExpression( const QString &id ) const;
 %Docstring
 Returns an expression according to the id
 
 :param id: id of the expression as identification
-:param tag: some content, maybe scope where to be shown
 %End
 
-    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const QString &tag = QString() );
+    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::FilterExpression ) const;
 %Docstring
 Returns an expression according to the expression text
 
 :param expression: id of the expression as identification
-:param tag: some content, maybe scope where to be shown
+:param tag: category of the expression
 %End
 
     void clearStoredExpressions();
@@ -105,12 +108,12 @@ Returns an expression according to the expression text
 clears list of stored expressions
 %End
 
-    bool writeXml( QDomNode &layer_node ) const;
+    bool writeXml( QDomNode &layerNode ) const;
 %Docstring
 Writes the stored expressions out in XML format
 %End
 
-    bool readXml( const QDomNode &layer_node );
+    bool readXml( const QDomNode &layerNode );
 %Docstring
 Reads the  stored expressions in in XML format
 %End

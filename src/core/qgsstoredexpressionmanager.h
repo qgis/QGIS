@@ -1,11 +1,5 @@
 /***************************************************************************
                           qgsstoredexpressionmanager.h
-
- These classes store and control the management and execution of actions
- associated with a particular Qgis layer. Actions are defined to be
- external programs that are run with user-specified inputs that can
- depend on the contents of layer attributes.
-
                              -------------------
     begin                : August 2019
     copyright            : (C) 2019 David Signer
@@ -39,119 +33,125 @@
 class QDomNode;
 class QDomDocument;
 
+/**
+ * \ingroup core
+ * Stored expression containing name, content (expression text) and a category tag.
+ * \since QGIS 3.10
+ */
 struct CORE_EXPORT QgsStoredExpression
 {
 
-  /* leads to trouble with sip...
+  /**
+   * Categories of use cases
+   * FilterExpression for stored expressions to filter attribute table
+   */
+  enum Category
+  {
+    FilterExpression = 1 << 0 //!< Expressions to filter features
+  };
+
+#ifndef SIP_RUN
   QgsStoredExpression() = default;
 
-  QgsStoredExpression( QString name, QString expression )
-    : id( QUuid::createUuid() ),
+  QgsStoredExpression( QString name, QString expression, Category tag = Category::FilterExpression )
+    : id( QUuid::createUuid().toString() ),
       name( name ),
-      expression( expression )
+      expression( expression ),
+      tag( tag )
   {}
-  */
+#endif
 
-  QUuid id;
+  QString id;
   QString name;
   QString expression;
+  Category tag;
 };
 
+/**
+ * \ingroup core
+ * Manages stored expressions regarding creation, modification and storing in the project
+ * \since QGIS 3.10
+ */
 class CORE_EXPORT QgsStoredExpressionManager : public QObject
 {
     Q_OBJECT
 
   public:
 
-    /**
-     * Mode for different use cases
-     * FilterExpression for stored expressions to filter attribute table
-     * DefaultValueExpression for stored expressions used for default values could be an extension
-     */
-    enum Mode
-    {
-      FilterExpression //!< Expressions to filter features
-    };
-
-    QgsStoredExpressionManager( Mode mode = FilterExpression )
-      : mMode( mode )
+    QgsStoredExpressionManager()
     {}
 
     /**
     * Adds an expression to the list
     *
     *  \param name              optional name of the expression
-    *  \param expression        the expression content
-    *  \param tag               some content, maybe scope where to be shown
-    *  \returns generated id as QUuid
+    *  \param expression        expression text
+    *  \param tag               category of the expression
+    *  \returns generated id as QString
     */
-    QUuid addStoredExpression( const QString &name, const QString &expression, const QString &tag = QString() );
+    QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 
     /**
     * Removes an expression to the list
     *
     *  \param id                id of the expression as identification
-    *  \param tag               some content, maybe scope where to be shown
     */
-    void removeStoredExpression( const QUuid &id, const QString &tag = QString() );
+    void removeStoredExpression( const QString &id );
 
     /**
     * Updates an expression by id
     *
     *  \param id                id of the expression as identification
     *  \param name              new name of the expression
-    *  \param expression        new expression content
-    *  \param tag               some content, maybe scope where to be shown
+    *  \param expression        new expression text
+    *  \param tag               new category of the expression
     */
-    void updateStoredExpression( const QUuid &id, const QString &name, const QString &expression, const QString &tag = QString() );
+    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 
     /**
     * Appends a list of expressions to the existing list
     *
     *  \param storedExpressions list of expressions and the optional name
-    *  \param tag               some content, maybe scope where to be shown
     */
-    void addStoredExpressions( QList< QgsStoredExpression > storedExpressions, const QString &tag = QString() );
+    void addStoredExpressions( QList< QgsStoredExpression > storedExpressions );
 
     /**
     * Returns the list of named expressions
     *
-    *  \param tag               some content, maybe scope where to be shown
+    *  \param tag               where the expression is used
     */
-    QList< QgsStoredExpression > storedExpressions( const QString &tag = QString() );
+    QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 
 
     /**
     * Returns an expression according to the id
     *
-    *  \param id               id of the expression as identification
-    *  \param tag               some content, maybe scope where to be shown
+    *  \param id                id of the expression as identification
     */
-    QgsStoredExpression storedExpression( const QUuid &id, const QString &tag = QString() );
+    QgsStoredExpression storedExpression( const QString &id ) const;
 
     /**
     * Returns an expression according to the expression text
     *
     *  \param expression        id of the expression as identification
-    *  \param tag               some content, maybe scope where to be shown
+    *  \param tag               category of the expression
     */
-    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const QString &tag = QString() );
+    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::FilterExpression ) const;
 
     //! clears list of stored expressions
     void clearStoredExpressions();
 
     //! Writes the stored expressions out in XML format
-    bool writeXml( QDomNode &layer_node ) const;
+    bool writeXml( QDomNode &layerNode ) const;
 
     //! Reads the  stored expressions in in XML format
-    bool readXml( const QDomNode &layer_node );
+    bool readXml( const QDomNode &layerNode );
 
   signals:
 
   public slots:
 
   private:
-    Mode mMode = FilterExpression;
     QList< QgsStoredExpression > mStoredExpressions;
 };
 

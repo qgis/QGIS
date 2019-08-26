@@ -1027,7 +1027,6 @@ SET(QGIS_CORE_HDRS
   qgssqlexpressioncompiler.h
   qgssqlstatement.h
   qgsstatisticalsummary.h
-  qgsstoredexpressionmanager.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
   qgstextlabelfeature.h

@@ -2137,11 +2137,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
 
     /**
-     * Returns all the stored expressions for this layer as the manager
+     * Returns the manager of the stored expressions for this layer.
      *
      * \since QGIS 3.10
      */
-    QgsStoredExpressionManager *storedFilterExpressions() { return mStoredFilterExpressions; }
+    QgsStoredExpressionManager *storedExpressionManager() { return mStoredExpressionManager; }
 
   public slots:
 
@@ -2649,7 +2649,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mAllowCommit = true;
 
     //! Stored expression used for e.g. filter
-    QgsStoredExpressionManager *mStoredFilterExpressions = nullptr;
+    QgsStoredExpressionManager *mStoredExpressionManager = nullptr;
 
     friend class QgsVectorLayerFeatureSource;
 
