@@ -95,12 +95,13 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     // TODO QGIS 4.0 - transfer ownership of symbol to widget!
 
     /**
-       * Symbol selector widget that can be used to select and build a symbol
-       * \param symbol The symbol to load into the widget as a start point.
-       * \param style The style used by the widget.
-       * \param vl The vector layer for the symbol.
-       * \param parent
-       */
+     * Symbol selector widget that can be used to select and build a symbol
+     * \param symbol The symbol to load into the widget as a start point.
+     * \param style The style used by the widget.
+     * \param vl The vector layer for the symbol.
+     * \param parent
+     * \note The ownership of the symbol is not transferred and must exist for the lifetime of the widget.
+     */
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Returns menu for "advanced" button - create it if doesn't exist and show the advanced button
@@ -127,10 +128,13 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     QgsSymbol *symbol() { return mSymbol; }
 
+    // TODO QGIS 4.0 - transfer ownership of symbol to widget!
+
     /**
      * Loads the given symbol into the widget.
      * \param symbol The symbol to load.
      * \param parent The parent symbol layer item. If the parent parameter is null, the whole symbol and model will be reset.
+     * \note The ownership of the symbol is not transferred and must exist for the lifetime of the widget.
      */
     void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent = nullptr ) SIP_SKIP;
 

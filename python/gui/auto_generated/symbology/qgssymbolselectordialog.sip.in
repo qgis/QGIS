@@ -37,6 +37,10 @@ Symbol selector widget that can be used to select and build a symbol
 :param style: The style used by the widget.
 :param vl: The vector layer for the symbol.
 :param parent:
+
+.. note::
+
+   The ownership of the symbol is not transferred and must exist for the lifetime of the widget.
 %End
 
     QMenu *advancedMenu();
@@ -70,6 +74,7 @@ Returns the symbol that is currently active in the widget. Can be ``None``.
 
 :return: The active symbol.
 %End
+
 
 
   public slots:
