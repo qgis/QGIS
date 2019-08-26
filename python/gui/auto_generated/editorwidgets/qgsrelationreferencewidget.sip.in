@@ -51,9 +51,19 @@ class QgsRelationReferenceWidget : QWidget
 this sets the related feature using from the foreign key
 %End
 
-    QVariant foreignKey() const;
+ QVariant foreignKey() const /Deprecated/;
 %Docstring
 returns the related feature foreign key
+
+.. deprecated:: since QGIS 3.10
+%End
+
+
+    QVariantList foreignKeys() const;
+%Docstring
+Returns the related feature foreign keys
+
+.. versionadded:: 3.10
 %End
 
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
@@ -160,7 +170,20 @@ unset the currently related feature
     void init();
 
   signals:
-    void foreignKeyChanged( const QVariant & );
+
+ void foreignKeyChanged( const QVariant & ) /Deprecated/;
+%Docstring
+Emitted when the foreign key changed
+
+.. deprecated:: since QGIS 3.10
+%End
+
+    void foreignKeysChanged( const QVariantList & );
+%Docstring
+Emitted when the foreign keys changed
+
+.. versionadded:: 3.10
+%End
 
 };
 
