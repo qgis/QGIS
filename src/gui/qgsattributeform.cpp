@@ -326,14 +326,31 @@ bool QgsAttributeForm::saveEdits()
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
       {
-        QVariant dstVar = dst.at( eww->fieldIdx() );
-        QVariant srcVar = eww->value();
+        QVariantList dstVars = QVariantList() << dst.at( eww->fieldIdx() );
+        QVariantList srcVars = QVariantList() << eww->value();
+        QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
 
-        if ( !qgsVariantEqual( dstVar, srcVar ) && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
+        // append additional fields
+        const QStringList additionalFields = eww->additionalFields();
+        for ( const QString &fieldName : additionalFields )
         {
-          dst[eww->fieldIdx()] = srcVar;
+          int idx = eww->layer()->fields().lookupField( fieldName );
+          fieldIndexes << idx;
+          dstVars << dst.at( idx );
+        }
+        srcVars.append( eww->additionalFieldValues() );
 
-          doUpdate = true;
+        Q_ASSERT( dstVars.count() == srcVars.count() );
+
+        for ( int i = 0; i < dstVars.count(); i++ )
+        {
+
+          if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() && fieldIsEditable( fieldIndexes[i] ) )
+          {
+            dst[fieldIndexes[i]] = srcVars[i];
+
+            doUpdate = true;
+          }
         }
       }
     }
@@ -439,12 +456,29 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
       {
-        QVariant dstVar = dst.at( eww->fieldIdx() );
-        QVariant srcVar = eww->value();
+        QVariantList dstVars = QVariantList() << dst.at( eww->fieldIdx() );
+        QVariantList srcVars = QVariantList() << eww->value();
+        QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
 
-        if ( !qgsVariantEqual( dstVar, srcVar ) && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
+        // append additional fields
+        const QStringList additionalFields = eww->additionalFields();
+        for ( const QString &fieldName : additionalFields )
         {
-          dst[eww->fieldIdx()] = srcVar;
+          int idx = eww->layer()->fields().lookupField( fieldName );
+          fieldIndexes << idx;
+          dstVars << dst.at( idx );
+        }
+        srcVars.append( eww->additionalFieldValues() );
+
+        Q_ASSERT( dstVars.count() == srcVars.count() );
+
+        for ( int i = 0; i < dstVars.count(); i++ )
+        {
+
+          if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() && fieldIsEditable( fieldIndexes[i] ) )
+          {
+            dst[fieldIndexes[i]] = srcVars[i];
+          }
         }
       }
     }
@@ -961,12 +995,31 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
 
     if ( dst.count() > eww->fieldIdx() )
     {
-      QVariant dstVar = dst.at( eww->fieldIdx() );
-      QVariant srcVar = eww->value();
-      // need to check dstVar.isNull() != srcVar.isNull()
-      // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-      if ( ( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() )
-        dst[eww->fieldIdx()] = srcVar;
+      QVariantList dstVars = QVariantList() << dst.at( eww->fieldIdx() );
+      QVariantList srcVars = QVariantList() << eww->value();
+      QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
+
+      // append additional fields
+      const QStringList additionalFields = eww->additionalFields();
+      for ( const QString &fieldName : additionalFields )
+      {
+        int idx = eww->layer()->fields().lookupField( fieldName );
+        fieldIndexes << idx;
+        dstVars << dst.at( idx );
+      }
+      srcVars.append( eww->additionalFieldValues() );
+
+      Q_ASSERT( dstVars.count() == srcVars.count() );
+
+      for ( int i = 0; i < dstVars.count(); i++ )
+      {
+        // need to check dstVar.isNull() != srcVar.isNull()
+        // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
+        if ( ( !qgsVariantEqual( dstVars[i], srcVars[i] ) || dstVars[i].isNull() != srcVars[i].isNull() ) && srcVars[i].isValid() )
+        {
+          dst[fieldIndexes[i]] = srcVars[i];
+        }
+      }
     }
     else
     {
