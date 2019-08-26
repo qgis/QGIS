@@ -49,6 +49,15 @@ class QgsRelationReferenceWidget : QWidget
     void setForeignKey( const QVariant &value );
 %Docstring
 this sets the related feature using from the foreign key
+
+.. deprecated:: since QGIS 3.10 use setForeignKeys
+%End
+
+    void setForeignKeys( const QVariantList &values );
+%Docstring
+Sets the related feature using the foreign keys
+
+.. versionadded:: 3.10
 %End
 
  QVariant foreignKey() const /Deprecated/;
@@ -147,6 +156,13 @@ Determines if a button for adding new features should be shown.
 .. versionadded:: 2.16
 %End
 
+    QgsRelation relation() const;
+%Docstring
+Returns the current relation, which might be invalid
+
+.. versionadded:: 3.10
+%End
+
   public slots:
     void openForm();
 %Docstring
@@ -158,7 +174,7 @@ open the form of the related feature in a new dialog
 activate the map tool to select a new related feature on the map
 %End
 
-    void deleteForeignKey();
+    void deleteForeignKeys();
 %Docstring
 unset the currently related feature
 %End

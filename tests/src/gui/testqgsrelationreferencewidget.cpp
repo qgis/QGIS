@@ -296,7 +296,7 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
 
   // delete the foreign key
-  w.deleteForeignKey();
+  w.deleteForeignKeys();
 
   QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
   QCOMPARE( cbs[0]->isEnabled(), true );

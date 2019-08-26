@@ -83,8 +83,17 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     void setRelationEditable( bool editable );
 
-    //! this sets the related feature using from the foreign key
+    /**
+     * this sets the related feature using from the foreign key
+     * \deprecated since QGIS 3.10 use setForeignKeys
+     */
     void setForeignKey( const QVariant &value );
+
+    /**
+     * Sets the related feature using the foreign keys
+     * \since QGIS 3.10
+     */
+    void setForeignKeys( const QVariantList &values );
 
     /**
      * returns the related feature foreign key
@@ -166,6 +175,12 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setAllowAddFeatures( bool allowAddFeatures );
 
+    /**
+     * Returns the current relation, which might be invalid
+     * \since QGIS 3.10
+     */
+    QgsRelation relation() const;
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -174,7 +189,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void mapIdentification();
 
     //! unset the currently related feature
-    void deleteForeignKey();
+    void deleteForeignKeys();
 
   protected:
     void showEvent( QShowEvent *e ) override;
@@ -230,7 +245,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsHighlight *mHighlight = nullptr;
     QgsMapToolIdentifyFeature *mMapTool = nullptr;
     QgsMessageBarItem *mMessageBarItem = nullptr;
-    QString mRelationName;
     QgsAttributeForm *mReferencedAttributeForm = nullptr;
     QgsVectorLayer *mReferencedLayer = nullptr;
     QgsVectorLayer *mReferencingLayer = nullptr;

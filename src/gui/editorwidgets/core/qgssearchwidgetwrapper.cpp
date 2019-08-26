@@ -130,3 +130,8 @@ void QgsSearchWidgetWrapper::setAggregate( const QString &aggregate )
   mAggregate = aggregate;
 }
 
+int QgsSearchWidgetWrapper::fieldIndex() const
+{
+  return mFieldIdx;
+}
+

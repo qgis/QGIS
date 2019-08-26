@@ -45,6 +45,20 @@
 #include "qgsidentifymenu.h"
 
 
+bool qVariantListIsNull( const QVariantList &list )
+{
+  if ( list.isEmpty() )
+    return false;
+
+  for ( int i = 0; i < list.size(); ++i )
+  {
+    if ( !list.at( i ).isNull() )
+      return false;
+  }
+  return true;
+}
+
+
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   : QWidget( parent )
 {
@@ -145,7 +159,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   connect( mOpenFormButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::openForm );
   connect( mHighlightFeatureButton, &QToolButton::triggered, this, &QgsRelationReferenceWidget::highlightActionTriggered );
   connect( mMapIdentificationButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::mapIdentification );
-  connect( mRemoveFKButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::deleteForeignKey );
+  connect( mRemoveFKButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::deleteForeignKeys );
   connect( mAddEntryButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::addEntry );
   connect( mComboBox, &QComboBox::editTextChanged, this, &QgsRelationReferenceWidget::updateAddEntryButton );
   connect( mComboBox, &QgsFeatureListComboBox::modelUpdated, this, &QgsRelationReferenceWidget::updateIndex );
@@ -201,7 +215,6 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
 
     mRelation = relation;
     mReferencingLayer = relation.referencingLayer();
-    mRelationName = relation.name();
     mReferencedLayer = relation.referencedLayer();
     const QList<QgsRelation::FieldPair> fieldPairs = relation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : fieldPairs )
@@ -253,13 +266,18 @@ void QgsRelationReferenceWidget::setRelationEditable( bool editable )
 
 void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
 {
-  if ( !value.isValid() )
+  setForeignKeys( QVariantList() << value );
+}
+
+void QgsRelationReferenceWidget::setForeignKeys( const QVariantList &values )
+{
+  if ( !values.isEmpty() )
   {
     return;
   }
-  if ( value.isNull() )
+  if ( qVariantListIsNull( values ) )
   {
-    deleteForeignKey();
+    deleteForeignKeys();
     return;
   }
 
@@ -270,8 +288,14 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   {
     // Attributes from the referencing layer
     QgsAttributes attrs = QgsAttributes( mReferencingLayer->fields().count() );
-    // Set the value on the foreign key field of the referencing record
-    attrs[ mReferencingLayer->fields().lookupField( mRelation.fieldPairs().at( 0 ).first )] = value;
+    // Set the value on the foreign key fields of the referencing record
+
+    const QList<QgsRelation::FieldPair> fieldPairs = mRelation.fieldPairs();
+    for ( int i = 0; i < fieldPairs.count(); i++ )
+    {
+      int idx = mReferencingLayer->fields().lookupField( fieldPairs.at( i ).referencingField() );
+      attrs[idx] = values.at( i );
+    }
 
     QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
 
@@ -301,9 +325,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   }
   else
   {
-    Q_NOWARN_DEPRECATED_PUSH
-    mComboBox->setIdentifierValue( value );
-    Q_NOWARN_DEPRECATED_POP
+    mComboBox->setIdentifierValues( values );
 
     if ( mChainFilters )
     {
@@ -330,7 +352,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   emitForeignKeysChanged( foreignKeys() );
 }
 
-void QgsRelationReferenceWidget::deleteForeignKey()
+void QgsRelationReferenceWidget::deleteForeignKeys()
 {
   // deactivate filter comboboxes
   if ( mChainFilters && !mFilterComboBoxes.isEmpty() )
@@ -708,7 +730,7 @@ void QgsRelationReferenceWidget::mapIdentification()
 
   if ( mMessageBar )
   {
-    QString title = tr( "Relation %1 for %2." ).arg( mRelationName, mReferencingLayer->name() );
+    QString title = tr( "Relation %1 for %2." ).arg( mRelation.name(), mReferencingLayer->name() );
     QString msg = tr( "Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel." ).arg( mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     mMessageBar->pushItem( mMessageBarItem );
@@ -744,6 +766,11 @@ void QgsRelationReferenceWidget::setAllowAddFeatures( bool allowAddFeatures )
 {
   mAllowAddFeatures = allowAddFeatures;
   updateAddEntryButton();
+}
+
+QgsRelation QgsRelationReferenceWidget::relation() const
+{
+  return mRelation;
 }
 
 void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )

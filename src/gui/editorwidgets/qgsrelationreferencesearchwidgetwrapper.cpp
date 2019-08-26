@@ -45,11 +45,26 @@ QString QgsRelationReferenceSearchWidgetWrapper::expression() const
 
 QVariant QgsRelationReferenceSearchWidgetWrapper::value() const
 {
-  if ( mWidget )
+  if ( !mWidget )
+    return QVariant( );
+
+  const QVariantList fkeys = mWidget->foreignKeys();
+
+  if ( fkeys.isEmpty() )
   {
-    return mWidget->foreignKey();
+    return QVariant( );
   }
-  return QVariant();
+  else
+  {
+    const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
+    Q_ASSERT( fieldPairs.count() == fkeys.count() );
+    for ( int i = 0; i < fieldPairs.count(); i++ )
+    {
+      if ( fieldPairs.at( i ).referencingField() == layer()->fields().at( fieldIndex() ).name() )
+        return fkeys.at( i );
+    }
+    return QVariant(); // should not happen
+  }
 }
 
 QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::supportedFlags() const
@@ -123,7 +138,12 @@ bool QgsRelationReferenceSearchWidgetWrapper::valid() const
 
 void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &value )
 {
-  if ( !value.isValid() )
+  onValuesChanged( QVariantList() << value );
+}
+
+void QgsRelationReferenceSearchWidgetWrapper::onValuesChanged( const QVariantList &values )
+{
+  if ( !values.isEmpty() )
   {
     clearExpression();
     emit valueCleared();
@@ -131,6 +151,8 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &va
   else
   {
     QgsSettings settings;
+    // TODO: adapt for composite keys
+    QVariant value = values.at( 0 );
     setExpression( value.isNull() ? QgsApplication::nullRepresentation() : value.toString() );
     emit valueChanged();
   }
@@ -188,7 +210,7 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setRelation( relation, false );
 
   mWidget->showIndeterminateState();
-  connect( mWidget, &QgsRelationReferenceWidget::foreignKeyChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValueChanged );
+  connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValuesChanged );
 }
 
 
