@@ -1886,7 +1886,7 @@
    </property>
    <property name="toolTip">
     <string>Moves a Label or Diagram
-Acts on all editable layers.</string>
+Acts on all layers.</string>
    </property>
   </action>
   <action name="mActionRotateLabel">
@@ -1903,7 +1903,7 @@ Acts on all editable layers.</string>
    <property name="toolTip">
     <string>Rotates a Label
 Holding Ctrl (Cmd) while rotating increments by 15 deg.
-Acts on all editable layers.</string>
+Acts on all layers.</string>
    </property>
   </action>
   <action name="mActionChangeLabelProperties">
@@ -1920,7 +1920,7 @@ Acts on all editable layers.</string>
    <property name="toolTip">
     <string>Change Label Properties
 Allows customization of individual label properties such as font size and color.
-Acts on all editable layers.</string>
+Acts on all layers.</string>
    </property>
   </action>
   <action name="mActionStyleManager">
@@ -2190,7 +2190,7 @@ Acts on all editable layers.</string>
     <string>Pin/Unpin Labels and Diagrams
 Click or marquee on label/diagram to pin.
 Shift clicking or marqueeing unpins labels, while Ctrl (Cmd) toggles label state.
-Acts on all editable layers.</string>
+Acts on all layers.</string>
    </property>
   </action>
   <action name="mActionShowPinnedLabels">
@@ -2260,7 +2260,7 @@ Shows highlight rectangles around labels which are fixed in place, e.g. due to m
     <string>Show/Hide Labels And Diagrams
 Click or marquee on features to show individual labels or diagrams.
 Shift+click or marquee on a label or diagram to hide it.
-Acts on the currently active editable layer only.</string>
+Acts on the currently active layer only.</string>
    </property>
   </action>
   <action name="mActionHtmlAnnotation">
