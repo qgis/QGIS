@@ -96,7 +96,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \see additionalFields
      * \since QGIS 3.10
      */
-    virtual QVariantList additionalFieldValues() {return QVariantList();}
+    virtual QVariantList additionalFieldValues() const {return QVariantList();}
 
     /**
      * Access the field index.
