@@ -354,28 +354,6 @@ Constructor for LayerOptions.
 
     };
 
-    struct WmsDimensionInfo
-    {
-
-      explicit WmsDimensionInfo( const QString &dimName,
-                                 const QString &dimFieldName,
-                                 const QString &dimEndFieldName = QString(),
-                                 const QString &dimUnits = QString(),
-                                 const QString &dimUnitSymbol = QString(),
-                                 const int &dimDefaultValueType = 0,
-                                 const QVariant &dimReferenceValue = QVariant() );
-%Docstring
-Constructor for WmsDimensionInfo.
-%End
-      QString name;
-      QString fieldName;
-      QString endFieldName;
-      QString units;
-      QString unitSymbol;
-      int defaultValueType;
-      QVariant referenceValue;
-    };
-
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 %Docstring
@@ -568,27 +546,9 @@ which is used by the layer, so any changes are immediately applied.
 %End
 
 
-    bool addWmsDimension( const QgsVectorLayer::WmsDimensionInfo &wmsDimInfo );
+    QgsVectorLayerServerProperties *serverProperties();
 %Docstring
-Add a QGIS Server WMS Dimension
-
-:param wmsDimInfo: QGIS Server WMS Dimension object with, name, field, etc
-
-:return: ``True`` if QGIS Server WMS Dimension has been successfully added
-
-.. versionadded:: 3.10
-%End
-
-    bool removeWmsDimension( const QString &wmsDimName );
-%Docstring
-Removes a QGIS Server WMS Dimension
-
-:return: ``True`` if QGIS Server WMS Dimension was found and successfully removed
-%End
-
-    const QList<QgsVectorLayer::WmsDimensionInfo> wmsDimensions() const;
-%Docstring
-Returns the QGIS Server WMS Dimension list.
+Returns QGIS Server Properties of the vector layer
 
 .. versionadded:: 3.10
 %End

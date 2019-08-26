@@ -17,6 +17,7 @@
 
 #include "qgswmsparameters.h"
 #include "qgsdatasourceuri.h"
+#include "qgsvectorlayerserverproperties.h"
 #include "qgsmessagelog.h"
 #include "qgswmsserviceexception.h"
 
@@ -2015,20 +2016,17 @@ namespace QgsWms
   QMap<QString, QString> QgsWmsParameters::dimensionValues() const
   {
     QMap<QString, QString> dimValues;
-    const QStringList reservedNames { "TIME", "ELEVATION" };
-    for ( const QString &key : reservedNames )
-    {
-      if ( mUnmanagedParameters.contains( key ) )
-      {
-        dimValues[key] = mUnmanagedParameters[key];
-      }
-    }
+    const QStringList reservedNames = QgsVectorLayerServerProperties::predefinedWmsDimensionNames();
     const QStringList unmanagedNames = mUnmanagedParameters.keys();
     for ( const QString &key : unmanagedNames )
     {
       if ( key.startsWith( QStringLiteral( "DIM_" ) ) )
       {
         dimValues[key.mid( 4 )] = mUnmanagedParameters[key];
+      }
+      else if ( reservedNames.contains( key.toLower() ) )
+      {
+        dimValues[key] = mUnmanagedParameters[key];
       }
     }
     return dimValues;

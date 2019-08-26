@@ -38,6 +38,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterdataprovider.h"
 
+#include "qgsvectorlayerserverproperties.h"
+
 
 namespace QgsWms
 {
@@ -1206,8 +1208,8 @@ namespace QgsWms
           if ( l->type() == QgsMapLayerType::VectorLayer )
           {
             QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
-            const QList<QgsVectorLayer::WmsDimensionInfo> wmsDims = vl->wmsDimensions();
-            for ( const  QgsVectorLayer::WmsDimensionInfo &dim : wmsDims )
+            const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = vl->serverProperties()->wmsDimensions();
+            for ( const  QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
             {
               int fieldIndex = vl->fields().indexOf( dim.fieldName );
               // Check field index
@@ -1243,15 +1245,15 @@ namespace QgsWms
               {
                 dimElem.setAttribute( QStringLiteral( "unitSymbol" ), dim.unitSymbol );
               }
-              if ( dim.defaultValueType == 1 )
+              if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MinValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), values.first().toString() );
               }
-              else if ( dim.defaultValueType == 2 )
+              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MaxValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), values.last().toString() );
               }
-              else if ( dim.defaultValueType == 3 )
+              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::ReferenceValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), dim.referenceValue.toString() );
               }

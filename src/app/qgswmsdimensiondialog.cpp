@@ -41,22 +41,32 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
   connect( mFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mEndFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mNameComboBox, &QComboBox::editTextChanged, this, &QgsWmsDimensionDialog::nameChanged );
-  connect( mDefaultValueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::defaultValueChanged );
+  connect( mDefaultDisplayComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::defaultDisplayChanged );
 
   // Set available names
-  for ( const QString &name : mPredefinedNames )
+  for ( const QString &name : QgsVectorLayerServerProperties::predefinedWmsDimensionNames() )
   {
-    if ( !alreadyDefinedDimensions.contains( name.toLower() ) )
+    if ( !alreadyDefinedDimensions.contains( name ) )
     {
-      mNameComboBox->addItem( name, QVariant( name.toLower() ) );
+      mNameComboBox->addItem( QStringLiteral( "%1%2" ).arg( name.left( 1 ).toUpper(), name.mid( 1 ) ), QVariant( name ) );
     }
   }
-  mDefaultValueComboBox->setCurrentIndex( 0 );
+
+  // Set default display combobox
+  mDefaultDisplayComboBox->clear();
+  QMap<int, QString> defaultDisplayLabels = QgsVectorLayerServerProperties::wmsDimensionDefaultDisplayLabels();
+  for ( const int &k : defaultDisplayLabels.keys() )
+  {
+    mDefaultDisplayComboBox->addItem( defaultDisplayLabels[k], QVariant( k ) );
+  }
+  // Set default display to All values
+  mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( QgsVectorLayerServerProperties::WmsDimensionInfo::AllValues ) ) );
+
   mReferenceValueLabel->setEnabled( false );
   mReferenceValueComboBox->setEnabled( false );
 }
 
-void QgsWmsDimensionDialog::setInfo( const QgsVectorLayer::WmsDimensionInfo &info )
+void QgsWmsDimensionDialog::setInfo( const QgsVectorLayerServerProperties::WmsDimensionInfo &info )
 {
   int nameDataIndex = mNameComboBox->findData( QVariant( info.name ) );
   if ( nameDataIndex == -1 )
@@ -75,8 +85,8 @@ void QgsWmsDimensionDialog::setInfo( const QgsVectorLayer::WmsDimensionInfo &inf
   mUnitsLineEdit->setText( info.units );
   mUnitSymbolLineEdit->setText( info.unitSymbol );
 
-  mDefaultValueComboBox->setCurrentIndex( info.defaultValueType );
-  if ( info.defaultValueType == 3 )
+  mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( info.defaultDisplayType ) ) );
+  if ( info.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::ReferenceValue )
   {
     int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue );
     if ( referenceValueIndex == -1 )
@@ -94,24 +104,26 @@ void QgsWmsDimensionDialog::setInfo( const QgsVectorLayer::WmsDimensionInfo &inf
   }
 }
 
-QgsVectorLayer::WmsDimensionInfo QgsWmsDimensionDialog::info() const
+QgsVectorLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() const
 {
+  // Is the name a predefined value?
   QString name = mNameComboBox->currentText();
   if ( mNameComboBox->findText( name ) != -1 )
   {
     name = mNameComboBox->currentData().toString();
   }
 
+  // Gets the reference value
   QString refText = mReferenceValueComboBox->currentText();
   QVariant refValue;
   if ( mNameComboBox->findText( name ) != -1 )
   {
     refValue = mReferenceValueComboBox->currentData();
   }
-  return QgsVectorLayer::WmsDimensionInfo( name, mFieldComboBox->currentField(),
+  return QgsVectorLayerServerProperties::WmsDimensionInfo( name, mFieldComboBox->currentField(),
          mEndFieldComboBox->currentField(),
          mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(),
-         mDefaultValueComboBox->currentIndex(), refValue );
+         mDefaultDisplayComboBox->currentData().toInt(), refValue );
 }
 
 void QgsWmsDimensionDialog::nameChanged( const QString &name )
@@ -124,9 +136,11 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
   mUnitSymbolLineEdit->setEnabled( true );
   mUnitSymbolLineEdit->clear();
 
-  if ( mPredefinedNames.contains( name ) )
+  // Is the name a predefined value?
+  if ( mNameComboBox->findText( name ) != -1 )
   {
-    if ( mPredefinedNames.indexOf( name ) == 0 )  // Time
+    QString data = mNameComboBox->currentData().toString();
+    if ( data.compare( QLatin1String( "time" ) ) == 0 ) // Time
     {
       mFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::DateTime );
       mEndFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::DateTime );
@@ -136,7 +150,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
       mUnitSymbolLabel->setEnabled( false );
       mUnitSymbolLineEdit->setEnabled( false );
     }
-    else if ( mPredefinedNames.indexOf( name ) == 1 ) // Elevation
+    else if ( data.compare( QLatin1String( "elevation" ) ) == 0 ) // Elevation
     {
       mFieldComboBox->setFilters( QgsFieldProxyModel::Numeric );
       mEndFieldComboBox->setFilters( QgsFieldProxyModel::Numeric );
@@ -147,6 +161,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
     mFieldComboBox->setFilters( QgsFieldProxyModel::AllTypes );
     mEndFieldComboBox->setFilters( QgsFieldProxyModel::AllTypes );
   }
+
   fieldChanged();
 }
 
@@ -174,7 +189,7 @@ void QgsWmsDimensionDialog::fieldChanged()
   }
 }
 
-void QgsWmsDimensionDialog::defaultValueChanged( int index )
+void QgsWmsDimensionDialog::defaultDisplayChanged( int index )
 {
   if ( index == 3 )
   {

@@ -25,6 +25,7 @@
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerserverproperties.h"
 #include "layertree/qgslayertree.h"
 #include "layertree/qgslayertreemodel.h"
 #include "layertree/qgslayertreegroup.h"
@@ -228,7 +229,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );
 
     //! Adds a QGIS Server WMS dimension to mWmsDimensionTreeWidget
-    void addWmsDimensionInfoToTreeWidget( const QgsVectorLayer::WmsDimensionInfo &wmsDim, int insertIndex = -1 );
+    void addWmsDimensionInfoToTreeWidget( const QgsVectorLayerServerProperties::WmsDimensionInfo &wmsDim, int insertIndex = -1 );
 
     void updateAuxiliaryStoragePage();
     void deleteAuxiliaryField( int index );

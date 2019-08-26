@@ -19,11 +19,10 @@
 #define QGSWMSDIMENSIONDIALOG_H
 
 #include "ui_qgswmsdimensiondialogbase.h"
-#include "qgsvectorlayer.h"
+#include "qgsvectorlayerserverproperties.h"
 #include "qgis_app.h"
 
-/*class QgsVectorLayer;
-class QgsVectorLayer::WmsDimensionInfo;*/
+class QgsVectorLayer;
 
 class APP_EXPORT QgsWmsDimensionDialog: public QDialog, private Ui::QgsWmsDimensionDialogBase
 {
@@ -31,20 +30,18 @@ class APP_EXPORT QgsWmsDimensionDialog: public QDialog, private Ui::QgsWmsDimens
   public:
     QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList alreadyDefinedDimensions, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    QgsVectorLayer::WmsDimensionInfo info() const;
+    QgsVectorLayerServerProperties::WmsDimensionInfo info() const;
 
-    void setInfo( const QgsVectorLayer::WmsDimensionInfo &info );
+    void setInfo( const QgsVectorLayerServerProperties::WmsDimensionInfo &info );
 
   private slots:
     void nameChanged( const QString &name );
     void fieldChanged();
-    void defaultValueChanged( int index );
+    void defaultDisplayChanged( int index );
 
   private:
     //! Target layer
     QgsVectorLayer *mLayer = nullptr;
-    //! Predefined WMS dimension names
-    const QStringList mPredefinedNames { "Time", "Elevation" };
 };
 
 

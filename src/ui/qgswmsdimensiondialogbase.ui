@@ -85,9 +85,9 @@
     </widget>
    </item>
    <item row="5" column="0">
-    <widget class="QLabel" name="mDefaultValueLabel">
+    <widget class="QLabel" name="mDefaultDisplayLabel">
      <property name="text">
-      <string>Default value</string>
+      <string>Default display</string>
      </property>
     </widget>
    </item>
@@ -99,7 +99,7 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QComboBox" name="mDefaultValueComboBox">
+    <widget class="QComboBox" name="mDefaultDisplayComboBox">
      <item>
       <property name="text">
        <string>All values</string>

@@ -2716,7 +2716,12 @@ namespace QgsWms
                                           QStringLiteral( "Filter string rejected. Error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
           }
           QDomElement filterElem = filterXml.firstChildElement();
-          expList << QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer )->dump();
+          std::unique_ptr<QgsExpression> filterExp( QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer ) );
+
+          if ( filterExp )
+          {
+            expList << filterExp->dump();
+          }
         }
         else if ( filter.mType == QgsWmsParametersFilter::SQL )
         {
@@ -2745,11 +2750,11 @@ namespace QgsWms
         }
       }
       // WMS Dimension filters
-      const QList<QgsVectorLayer::WmsDimensionInfo> wmsDims = filteredLayer->wmsDimensions();
+      const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = filteredLayer->serverProperties()->wmsDimensions();
       if ( !wmsDims.isEmpty() )
       {
         QMap<QString, QString> dimParamValues = mContext.parameters().dimensionValues();
-        for ( const QgsVectorLayer::WmsDimensionInfo &dim : wmsDims )
+        for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
         {
           // Check field index
           int fieldIndex = filteredLayer->fields().indexOf( dim.fieldName );
@@ -2772,11 +2777,11 @@ namespace QgsWms
           {
             // Default value based on type configured by user
             QVariant defValue;
-            if ( dim.defaultValueType == 0 )
+            if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::AllValues )
             {
               continue; // no filter by default for this dimension
             }
-            else if ( dim.defaultValueType == 3 )
+            else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::ReferenceValue )
             {
               defValue = dim.referenceValue;
             }
@@ -2791,11 +2796,11 @@ namespace QgsWms
               // sort unique values
               QList<QVariant> values = uniqueValues.toList();
               std::sort( values.begin(), values.end() );
-              if ( dim.defaultValueType == 1 )
+              if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MinValue )
               {
                 defValue = values.first();
               }
-              else if ( dim.defaultValueType == 2 )
+              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MaxValue )
               {
                 defValue = values.last();
               }
@@ -2823,7 +2828,7 @@ namespace QgsWms
             QString dimParamValue = dimParamValues[dim.name.toUpper()];
             // The expression list for this dimension
             QStringList dimExplist;
-            // Multiple values are seprated by ,
+            // Multiple values are separated by ,
             QStringList dimValues = dimParamValue.split( ',' );
             for ( int i = 0; i < dimValues.size(); ++i )
             {
@@ -2931,7 +2936,7 @@ namespace QgsWms
       }
       if ( !exp.isEmpty() )
       {
-        QgsExpression *expression = new QgsExpression( exp );
+        std::unique_ptr<QgsExpression> expression( new QgsExpression( exp ) );
         if ( expression )
         {
           mFeatureFilter.setFilter( filteredLayer, *expression );

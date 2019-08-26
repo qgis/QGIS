@@ -35,6 +35,7 @@
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorsimplifymethod.h"
+#include "qgsvectorlayerserverproperties.h"
 #include "qgseditformconfig.h"
 #include "qgsattributetableconfig.h"
 #include "qgsaggregatecalculator.h"
@@ -467,40 +468,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     };
 
     /**
-     * Setting to define QGIS Server WMS Dimension.
-     * \since QGIS 3.10
-     */
-    struct WmsDimensionInfo
-    {
-
-      /**
-       * Constructor for WmsDimensionInfo.
-       */
-      explicit WmsDimensionInfo( const QString &dimName,
-                                 const QString &dimFieldName,
-                                 const QString &dimEndFieldName = QString(),
-                                 const QString &dimUnits = QString(),
-                                 const QString &dimUnitSymbol = QString(),
-                                 const int &dimDefaultValueType = 0,
-                                 const QVariant &dimReferenceValue = QVariant() )
-        : name( dimName )
-        , fieldName( dimFieldName )
-        , endFieldName( dimEndFieldName )
-        , units( dimUnits )
-        , unitSymbol( dimUnitSymbol )
-        , defaultValueType( dimDefaultValueType )
-        , referenceValue( dimReferenceValue )
-      {}
-      QString name;
-      QString fieldName;
-      QString endFieldName;
-      QString units;
-      QString unitSymbol;
-      int defaultValueType;
-      QVariant referenceValue;
-    };
-
-    /**
      * Constructor - creates a vector layer
      *
      * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
@@ -682,24 +649,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     const QgsActionManager *actions() const SIP_SKIP { return mActions; }
 
     /**
-     * Add a QGIS Server WMS Dimension
-     * \param wmsDimInfo QGIS Server WMS Dimension object with, name, field, etc
-     * \returns TRUE if QGIS Server WMS Dimension has been successfully added
-     * \since QGIS 3.10
-    */
-    bool addWmsDimension( const QgsVectorLayer::WmsDimensionInfo &wmsDimInfo );
-
-    /**
-     * Removes a QGIS Server WMS Dimension
-     * \returns TRUE if QGIS Server WMS Dimension was found and successfully removed
-    */
-    bool removeWmsDimension( const QString &wmsDimName );
-
-    /**
-     * Returns the QGIS Server WMS Dimension list.
+     * Returns QGIS Server Properties of the vector layer
      * \since QGIS 3.10
      */
-    const QList<QgsVectorLayer::WmsDimensionInfo> wmsDimensions() const;
+    QgsVectorLayerServerProperties *serverProperties() { return mServerProperties; }
 
     /**
      * Returns the number of features that are selected in this layer.
@@ -2686,8 +2639,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //stores information about joined layers
     QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;
 
-    //!stores QGIS Server WMS Dimension definitions
-    QList<QgsVectorLayer::WmsDimensionInfo> mWmsDimensions;
+    //!stores information about server properties
+    QgsVectorLayerServerProperties *mServerProperties = nullptr;
 
     //! stores information about expression fields on this layer
     QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
