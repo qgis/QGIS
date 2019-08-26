@@ -128,20 +128,20 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     QgsSymbol *symbol() { return mSymbol; }
 
+    /**
+     * Load the given symbol into the widget.
+     * \param symbol The symbol to load.
+     * \param parent The parent symbol layer item. If the parent parameter is null, the whole symbol and model will be reset.
+     * \note not available in Python bindings
+     */
+    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent = nullptr ) SIP_SKIP;
+
   protected:
 
     /**
      * Reload the current symbol in the view.
      */
     void loadSymbol();
-
-    /**
-     * Load the given symbol into the widget.
-     * \param symbol The symbol to load.
-     * \param parent The parent symbol layer item.
-     * \note not available in Python bindings
-     */
-    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent ) SIP_SKIP;
 
     /**
      * Update the state of the UI based on the currently set symbol layer.
