@@ -1774,7 +1774,12 @@ QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
 
 void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
+  if ( mRepaintRequestedFired )
+    return;
+
+  mRepaintRequestedFired = true;
   emit repaintRequested( deferredUpdate );
+  mRepaintRequestedFired = false;
 }
 
 void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
@@ -1802,54 +1807,6 @@ void QgsMapLayer::emitStyleChanged()
 void QgsMapLayer::setExtent( const QgsRectangle &r )
 {
   mExtent = r;
-}
-
-static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const QgsMapLayer *that, const QSet<QgsMapLayerDependency> &layers )
-{
-  QList<const QgsMapLayer *> lst;
-  if ( vl == that )
-  {
-    const auto constLayers = layers;
-    for ( const QgsMapLayerDependency &dep : constLayers )
-    {
-      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
-        lst << l;
-    }
-  }
-  else
-  {
-    const auto constDependencies = vl->dependencies();
-    for ( const QgsMapLayerDependency &dep : constDependencies )
-    {
-      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
-        lst << l;
-    }
-  }
-  return lst;
-}
-
-static bool _depHasCycleDFS( const QgsMapLayer *n, QHash<const QgsMapLayer *, int> &mark, const QgsMapLayer *that, const QSet<QgsMapLayerDependency> &layers )
-{
-  if ( mark.value( n ) == 1 ) // temporary
-    return true;
-  if ( mark.value( n ) == 0 ) // not visited
-  {
-    mark[n] = 1; // temporary
-    const auto depOutEdges { _depOutEdges( n, that, layers ) };
-    for ( const QgsMapLayer *m : depOutEdges )
-    {
-      if ( _depHasCycleDFS( m, mark, that, layers ) )
-        return true;
-    }
-    mark[n] = 2; // permanent
-  }
-  return false;
-}
-
-bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const
-{
-  QHash<const QgsMapLayer *, int> marks;
-  return _depHasCycleDFS( this, marks, this, layers );
 }
 
 bool QgsMapLayer::isReadOnly() const
@@ -1907,8 +1864,6 @@ bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;
   }
-  if ( hasDependencyCycle( deps ) )
-    return false;
 
   mDependencies = deps;
   emit dependenciesChanged();
@@ -1938,4 +1893,3 @@ void QgsMapLayer::onNotifiedTriggerRepaint( const QString &message )
   if ( refreshOnNotifyMessage().isEmpty() || refreshOnNotifyMessage() == message )
     triggerRepaint();
 }
-
