@@ -84,10 +84,12 @@ void Qgs3DMeasureDialog::addPoint()
       // Add new entry in the table
       QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( 0.0, 'f', mDecimalPlaces ) ) );
       item->setTextAlignment( 0, Qt::AlignRight );
+      item->setTextAlignment( 1, Qt::AlignRight );
       mTable->addTopLevelItem( item );
       mTable->scrollToItem( item );
 
-      item->setText( 0, QString::number( convertLength( lastDistance(), mDisplayedDistanceUnit ) ) );
+      item->setText( 0, QString::number( convertLength( lastZDistance(), mDisplayedDistanceUnit ) ) );
+      item->setText( 1, QString::number( convertLength( lastDistance(), mDisplayedDistanceUnit ) ) );
       mTotal += lastDistance();
       editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
     }
@@ -104,6 +106,13 @@ double Qgs3DMeasureDialog::lastDistance()
   QgsPoint lastPoint = mTool->points().rbegin()[0];
   QgsPoint secondLastPoint = mTool->points().rbegin()[1];
   return lastPoint.distance3D( secondLastPoint );
+}
+
+double Qgs3DMeasureDialog::lastZDistance()
+{
+  QgsPoint lastPoint = mTool->points().rbegin()[0];
+  QgsPoint secondLastPoint = mTool->points().rbegin()[1];
+  return lastPoint.z() - secondLastPoint.z();
 }
 
 void Qgs3DMeasureDialog::repopulateComboBoxUnits()
@@ -167,16 +176,15 @@ void Qgs3DMeasureDialog::updateSettings()
   mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit(
                              settings.value( QStringLiteral( "qgis/measure/displayunits" ),
                                  QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceUnknownUnit ) ).toString() );
-  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) ) ) );
-  // Choose unit in the combobox
+  setupTableHeader();
   mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mDisplayedDistanceUnit ) );
 }
 
 void Qgs3DMeasureDialog::unitsChanged( int index )
 {
   mDisplayedDistanceUnit = static_cast< QgsUnitTypes::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
-  // Set the table header to show displayed unit
-  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) ) ) );
+
+  setupTableHeader();
 
   // Reset table
   mTable->clear();
@@ -192,8 +200,13 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
     if ( !isFirstPoint )
     {
       double distance = p1.distance3D( p2 );
-      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces ) ) );
+      double zDistance = p2.z() - p1.z();
+      QStringList content;
+      content << QLocale().toString( convertLength( zDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces )
+              << QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
+      QTreeWidgetItem *item = new QTreeWidgetItem( content );
       item->setTextAlignment( 0, Qt::AlignRight );
+      item->setTextAlignment( 1, Qt::AlignRight );
       mTable->addTopLevelItem( item );
       mTable->scrollToItem( item );
     }
@@ -225,4 +238,18 @@ void Qgs3DMeasureDialog::showHelp()
 void Qgs3DMeasureDialog::openConfigTab()
 {
   QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageMapTools" ) );
+}
+
+void Qgs3DMeasureDialog::setupTableHeader()
+{
+  // Set the table header to show displayed unit
+  QStringList headers;
+  headers << tr( "Z Distance [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) )
+          << tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) );
+  QTreeWidgetItem *headerItem = new QTreeWidgetItem( headers );
+  headerItem->setTextAlignment( 0, Qt::AlignRight );
+  headerItem->setTextAlignment( 1, Qt::AlignRight );
+  mTable->setHeaderItem( headerItem );
+  mTable->resizeColumnToContents( 0 );
+  mTable->resizeColumnToContents( 1 );
 }

@@ -45,6 +45,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Get last distance in map distance unit
     double lastDistance();
 
+    //! Get last Z value distance in map distance unit
+    double lastZDistance();
+
     //! Populating unit combo box
     void repopulateComboBoxUnits();
 
@@ -91,6 +94,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Open configuration tab
     void openConfigTab();
+
+    //! Setup the header of the table
+    void setupTableHeader();
 };
 
 #endif // QGS3DMEASUREDIALOG_H
