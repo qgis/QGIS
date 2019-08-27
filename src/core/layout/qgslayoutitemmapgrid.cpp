@@ -1079,9 +1079,12 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     case QgsLayoutItemMapGrid::Zebra:
     case QgsLayoutItemMapGrid::ZebraNautical:
+      gridFrameDistance = mEvaluatedGridFrameWidth + ( mEvaluatedGridFrameLineThickness / 2.0 );
+      break;
+
     case QgsLayoutItemMapGrid::LineBorder:
     case QgsLayoutItemMapGrid::LineBorderNautical:
-      gridFrameDistance += ( mEvaluatedGridFrameLineThickness / 2.0 );
+      gridFrameDistance = mEvaluatedGridFrameLineThickness / 2.0;
       break;
 
     case QgsLayoutItemMapGrid::NoFrame:
