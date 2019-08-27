@@ -2246,7 +2246,7 @@ QgsLayoutItemMapGrid::FrameSideFlags QgsLayoutItemMapGrid::frameSideFlags() cons
 
 QgsExpressionContext QgsLayoutItemMapGrid::createExpressionContext() const
 {
-  QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
+  QgsExpressionContext context = QgsLayoutItemMapItem::createExpressionContext();
   context.appendScope( new QgsExpressionContextScope( tr( "Grid" ) ) );
   context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_number" ), 0, true ) );
   context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), "x", true ) );

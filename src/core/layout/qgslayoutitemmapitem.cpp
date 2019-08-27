@@ -121,6 +121,14 @@ void QgsLayoutItemMapItem::setStackingLayer( QgsMapLayer *layer )
   mStackingLayer.setLayer( layer );
 }
 
+QgsExpressionContext QgsLayoutItemMapItem::createExpressionContext() const
+{
+  if ( mMap )
+    return mMap->createExpressionContext();
+
+  return QgsLayoutObject::createExpressionContext();
+}
+
 bool QgsLayoutItemMapItem::accept( QgsStyleEntityVisitorInterface * ) const
 {
   return true;
