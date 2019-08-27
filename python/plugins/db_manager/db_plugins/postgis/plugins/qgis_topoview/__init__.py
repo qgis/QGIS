@@ -6,9 +6,10 @@ Name                 : TopoViewer plugin for DB Manager
 Description          : Create a project to display topology schema on Qgis
 Date                 : Sep 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
-email                : brush.tyler@gmail.com
+                       (C) 2019 by Sandro Santilli
+email                : strk@kbt.io
 
-Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
+Based on qgis_pgis_topoview by Sandro Santilli <strk@kbt.io>
  ***************************************************************************/
 
 /***************************************************************************
@@ -243,6 +244,8 @@ def run(item, action, mainwindow):
         QgsProject.instance().addMapLayers(nodeLayers, False)
         QgsProject.instance().addMapLayers(edgeLayers, False)
 
+        # Organize layers in groups
+
         groupFaces = QgsLayerTreeGroup(u'Faces')
         for layer in faceLayers:
             nodeLayer = groupFaces.addLayer(layer)
@@ -264,7 +267,32 @@ def run(item, action, mainwindow):
         supergroup = QgsLayerTreeGroup(u'Topology "%s"' % toponame)
         supergroup.insertChildNodes(-1, [groupFaces, groupNodes, groupEdges])
 
-        QgsProject.instance().layerTreeRoot().addChildNode(supergroup)
+        layerTree = QgsProject.instance().layerTreeRoot()
+
+        layerTree.addChildNode(supergroup)
+
+        # Set layers rendering order
+
+        order = layerTree.layerOrder()
+
+        order.insert(0, order.pop(order.index(layerFaceMbr)))
+        order.insert(0, order.pop(order.index(layerFaceGeom)))
+        order.insert(0, order.pop(order.index(layerEdge)))
+        order.insert(0, order.pop(order.index(layerDirectedEdge)))
+
+        order.insert(0, order.pop(order.index(layerNode)))
+        order.insert(0, order.pop(order.index(layerFaceSeed)))
+
+        order.insert(0, order.pop(order.index(layerNodeLabel)))
+        order.insert(0, order.pop(order.index(layerEdgeLabel)))
+
+        order.insert(0, order.pop(order.index(layerNextLeft)))
+        order.insert(0, order.pop(order.index(layerNextRight)))
+        order.insert(0, order.pop(order.index(layerFaceLeft)))
+        order.insert(0, order.pop(order.index(layerFaceRight)))
+
+        layerTree.setHasCustomLayerOrder(True)
+        layerTree.setCustomLayerOrder(order)
 
     finally:
 
