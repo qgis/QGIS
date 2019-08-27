@@ -74,6 +74,8 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::MapGridOffsetX, QgsPropertyDefinition( "dataDefinedMapGridOffsetX", QObject::tr( "Grid offset X" ), QgsPropertyDefinition::Double ) },
     { QgsLayoutObject::MapGridOffsetY, QgsPropertyDefinition( "dataDefinedMapGridOffsetY", QObject::tr( "Grid offset Y" ), QgsPropertyDefinition::Double ) },
     { QgsLayoutObject::MapGridFrameSize, QgsPropertyDefinition( "dataDefinedMapGridFrameSize", QObject::tr( "Grid frame size" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridFrameLineThickness, QgsPropertyDefinition( "dataDefinedMapGridFrameLineThickness", QObject::tr( "Grid frame line thickness" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridCrossSize, QgsPropertyDefinition( "dataDefinedMapGridCrossSize", QObject::tr( "Grid cross size" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapGridFrameMargin, QgsPropertyDefinition( "dataDefinedMapGridFrameMargin", QObject::tr( "Grid frame margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapGridLabelDistance, QgsPropertyDefinition( "dataDefinedMapGridLabelDistance", QObject::tr( "Grid label distance" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::PictureSource, QgsPropertyDefinition( "dataDefinedSource", QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },

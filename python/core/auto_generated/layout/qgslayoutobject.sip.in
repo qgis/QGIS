@@ -144,6 +144,8 @@ A base class for objects which belong to a layout.
       MapGridFrameSize,
       MapGridFrameMargin,
       MapGridLabelDistance,
+      MapGridCrossSize,
+      MapGridFrameLineThickness,
       //composer picture
       PictureSource,
       PictureSvgBackgroundColor,

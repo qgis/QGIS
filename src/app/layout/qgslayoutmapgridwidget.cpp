@@ -167,6 +167,8 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   registerDataDefinedButton( mFrameSizeDDBtn, QgsLayoutObject::MapGridFrameSize );
   registerDataDefinedButton( mFrameMarginDDBtn, QgsLayoutObject::MapGridFrameMargin );
   registerDataDefinedButton( mLabelDistDDBtn, QgsLayoutObject::MapGridLabelDistance );
+  registerDataDefinedButton( mCrossWidthDDBtn, QgsLayoutObject::MapGridCrossSize );
+  registerDataDefinedButton( mFrameLineThicknessDDBtn, QgsLayoutObject::MapGridFrameLineThickness );
 
   updateGuiElements();
 
@@ -197,6 +199,8 @@ void QgsLayoutMapGridWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mFrameSizeDDBtn );
   updateDataDefinedButton( mFrameMarginDDBtn );
   updateDataDefinedButton( mLabelDistDDBtn );
+  updateDataDefinedButton( mCrossWidthDDBtn );
+  updateDataDefinedButton( mFrameLineThicknessDDBtn );
 }
 
 void QgsLayoutMapGridWidget::setGuiElementValues()
@@ -507,6 +511,7 @@ void QgsLayoutMapGridWidget::setGridItems()
     case QgsLayoutItemMapGrid::Cross:
       mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Cross" ) ) );
       mCrossWidthSpinBox->setVisible( true );
+      mCrossWidthDDBtn->setVisible( true );
       mCrossWidthLabel->setVisible( true );
       mGridLineStyleButton->setVisible( true );
       mLineStyleLabel->setVisible( true );
@@ -518,6 +523,7 @@ void QgsLayoutMapGridWidget::setGridItems()
     case QgsLayoutItemMapGrid::Markers:
       mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Markers" ) ) );
       mCrossWidthSpinBox->setVisible( false );
+      mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
       mGridLineStyleButton->setVisible( false );
       mLineStyleLabel->setVisible( false );
@@ -529,6 +535,7 @@ void QgsLayoutMapGridWidget::setGridItems()
     case QgsLayoutItemMapGrid::Solid:
       mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
       mCrossWidthSpinBox->setVisible( false );
+      mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
       mGridLineStyleButton->setVisible( true );
       mLineStyleLabel->setVisible( true );
@@ -540,6 +547,7 @@ void QgsLayoutMapGridWidget::setGridItems()
     case QgsLayoutItemMapGrid::FrameAnnotationsOnly:
       mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Frame and annotations only" ) ) );
       mCrossWidthSpinBox->setVisible( false );
+      mCrossWidthDDBtn->setVisible( false );
       mCrossWidthLabel->setVisible( false );
       mGridLineStyleButton->setVisible( false );
       mLineStyleLabel->setVisible( false );
@@ -947,6 +955,7 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( const QStrin
   {
     mMapGrid->setStyle( QgsLayoutItemMapGrid::Cross );
     mCrossWidthSpinBox->setVisible( true );
+    mCrossWidthDDBtn->setVisible( true );
     mCrossWidthLabel->setVisible( true );
     mGridLineStyleButton->setVisible( true );
     mLineStyleLabel->setVisible( true );
@@ -959,6 +968,7 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( const QStrin
   {
     mMapGrid->setStyle( QgsLayoutItemMapGrid::Markers );
     mCrossWidthSpinBox->setVisible( false );
+    mCrossWidthDDBtn->setVisible( false );
     mCrossWidthLabel->setVisible( false );
     mGridLineStyleButton->setVisible( false );
     mLineStyleLabel->setVisible( false );
@@ -971,6 +981,7 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( const QStrin
   {
     mMapGrid->setStyle( QgsLayoutItemMapGrid::Solid );
     mCrossWidthSpinBox->setVisible( false );
+    mCrossWidthDDBtn->setVisible( false );
     mCrossWidthLabel->setVisible( false );
     mGridLineStyleButton->setVisible( true );
     mLineStyleLabel->setVisible( true );
@@ -983,6 +994,7 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( const QStrin
   {
     mMapGrid->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
     mCrossWidthSpinBox->setVisible( false );
+    mCrossWidthDDBtn->setVisible( false );
     mCrossWidthLabel->setVisible( false );
     mGridLineStyleButton->setVisible( false );
     mLineStyleLabel->setVisible( false );

@@ -746,7 +746,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see framePenSize()
      * \see setFramePenColor()
      */
-    void setFramePenSize( const double width ) { mGridFramePenThickness = width; }
+    void setFramePenSize( const double width );
 
     /**
      * Retrieves the width of the stroke drawn in the grid frame.
@@ -917,9 +917,11 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mEvaluatedIntervalY = 0;
     double mEvaluatedOffsetX = 0;
     double mEvaluatedOffsetY = 0;
-    double mEvaluatedFrameSize = 0;
-    double mEvaluatedFrameMargin = 0;
-    double mEvaluatedLabelDistance = 0;
+    double mEvaluatedGridFrameWidth = 0;
+    double mEvaluatedGridFrameMargin = 0;
+    double mEvaluatedAnnotationFrameDistance = 0;
+    double mEvaluatedCrossLength = 0;
+    double mEvaluatedGridFrameLineThickness = 0;
 
     class QgsMapAnnotation
     {
