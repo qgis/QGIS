@@ -79,6 +79,7 @@ class CORE_EXPORT QgsPathResolver
      * \note Setting a new \a processor replaces any existing processor.
      *
      * Example - replace an outdated folder path with a new one:
+     *
      * \code{.py}
      *   def my_processor(path):
      *      return path.replace('c:/Users/ClintBarton/Documents/Projects', 'x:/Projects/')
@@ -87,6 +88,7 @@ class CORE_EXPORT QgsPathResolver
      * \endcode
      *
      * Example - replace a stored database host with a new one:
+     *
      * \code{.py}
      *   def my_processor(path):
      *      return path.replace('host=10.1.1.115', 'host=10.1.1.116')
@@ -95,6 +97,7 @@ class CORE_EXPORT QgsPathResolver
      * \endcode
      *
      * Example - replace stored database credentials with new ones:
+     *
      * \code{.py}
      *   def my_processor(path):
      *      path = path.replace("user='gis_team'", "user='team_awesome'")
