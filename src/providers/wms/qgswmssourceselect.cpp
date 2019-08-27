@@ -455,7 +455,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     return;
   }
 
-  QgsWmsCapabilitiesDownload capDownload( QgsWmsProvider::prepareUriWithoutDecode( mUri.param( "url" ) ), wmsSettings.authorization(), true );
+  QgsWmsCapabilitiesDownload capDownload( QgsWmsProvider::prepareUri( mUri.param( "url" ), false ), wmsSettings.authorization(), true );
   connect( &capDownload, &QgsWmsCapabilitiesDownload::statusChanged, this, &QgsWMSSourceSelect::showStatusMessage );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
