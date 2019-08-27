@@ -194,10 +194,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
      * \param customContext render context to use when rendering symbol
+     * \param selected set to TRUE to render the symbol in a selected state
      * \note Parameter customContext added in QGIS 2.6
+     * \note Parameter selected added in QGIS 3.10
      * \see symbolPreviewIcon()
      */
-    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false );
 
     /**
      * Draws a symbol layer preview to a QPicture

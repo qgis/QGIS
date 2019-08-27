@@ -322,12 +322,17 @@ class CORE_EXPORT QgsSymbol
      *
      * Optionally a custom render context may be given in order to ensure that the preview icon exactly
      * matches the settings from that context.
+     * \param painter destination painter
+     * \param size size of the icon
+     * \param customContext the context in which the rendering happens
+     * \param selected set to TRUE to render the symbol in a selected state
      *
      * \see exportImage()
      * \see asImage()
+     * \note Parameter selected added in QGIS 3.10
      * \since QGIS 2.6
      */
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false );
 
     /**
      * Export the symbol as an image format, to the specified \a path and with the given \a size.

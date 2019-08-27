@@ -30,6 +30,7 @@
 #include <Qt3DExtras/QTorusGeometry>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QSceneLoader>
+#include <Qt3DRender/QPaintedTextureImage>
 
 #include <Qt3DRender/QMesh>
 
@@ -46,6 +47,12 @@
 #include "qgsvectorlayer.h"
 #include "qgspoint.h"
 #include "qgs3dutils.h"
+#include "qgsbillboardgeometry.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgslogger.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbollayer.h"
 
 /// @cond PRIVATE
 
@@ -460,6 +467,99 @@ Qt3DCore::QTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D positio
 
 // --------------
 
+//* BILLBOARD RENDERING *//
+
+class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
+{
+  public:
+    QgsPoint3DBillboardSymbolHandler( const QgsPoint3DSymbol &symbol, const QgsFeatureIds &selectedIds )
+      : mSymbol( symbol ), mSelectedIds( selectedIds ) {}
+
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
+    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
+
+  private:
+
+    //! temporary data we will pass to the tessellator
+    struct PointData
+    {
+      QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
+    };
+
+    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
+
+    // input specific for this class
+    const QgsPoint3DSymbol &mSymbol;
+    // inputs - generic
+    QgsFeatureIds mSelectedIds;
+
+    // outputs
+    PointData outNormal;  //!< Features that are not selected
+    PointData outSelected;  //!< Features that are selected
+};
+
+bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
+{
+  Q_UNUSED( context )
+  Q_UNUSED( attributeNames )
+  return true;
+}
+
+void QgsPoint3DBillboardSymbolHandler::processFeature( QgsFeature &feature, const Qgs3DRenderContext &context )
+{
+  PointData &out = mSelectedIds.contains( feature.id() ) ? outSelected : outNormal;
+
+  if ( feature.geometry().isNull() )
+    return;
+
+  Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol.altitudeClamping(), out.positions );
+}
+
+void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
+{
+  makeEntity( parent, context, outNormal, false );
+  makeEntity( parent, context, outSelected, true );
+}
+
+void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
+{
+  // Billboard Geometry
+  QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
+  billboardGeometry->setPoints( out.positions );
+
+  // Billboard Geometry Renderer
+  Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+  billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+  billboardGeometryRenderer->setGeometry( billboardGeometry );
+  billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
+
+  // Billboard Material
+  QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();
+  QgsMarkerSymbol *symbol = mSymbol.billboardSymbol();
+
+  if ( symbol )
+  {
+    billboardMaterial->setTexture2DFromSymbol( symbol, context.map(), selected );
+  }
+  else
+  {
+    billboardMaterial->useDefaultSymbol( context.map(), selected );
+  }
+
+  // Billboard Transform
+  Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
+  billboardTransform->setMatrix( mSymbol.billboardTransform() );
+
+  // Build the entity
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+
+  entity->addComponent( billboardMaterial );
+  entity->addComponent( billboardTransform );
+  entity->addComponent( billboardGeometryRenderer );
+  entity->setParent( parent );
+}
+
 
 namespace Qgs3DSymbolImpl
 {
@@ -468,6 +568,9 @@ namespace Qgs3DSymbolImpl
   {
     if ( symbol.shape() == QgsPoint3DSymbol::Model )
       return new QgsModelPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
+    // Add proper handler for billboard
+    else if ( symbol.shape() == QgsPoint3DSymbol::Billboard )
+      return new QgsPoint3DBillboardSymbolHandler( symbol, layer->selectedFeatureIds() );
     else
       return new QgsInstancedPoint3DSymbolHandler( symbol, layer->selectedFeatureIds() );
   }

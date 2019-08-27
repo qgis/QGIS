@@ -11445,6 +11445,7 @@ void QgisApp::new3DMapCanvas()
     defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
     defaultPointLight.setConstantAttenuation( 0 );
     map->setPointLights( QList<QgsPointLightSettings>() << defaultPointLight );
+    map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
     dock->setMapSettings( map );
 
@@ -13956,6 +13957,7 @@ void QgisApp::readProject( const QDomDocument &doc )
         QgsFlatTerrainGenerator *flatTerrainGen = static_cast<QgsFlatTerrainGenerator *>( map->terrainGenerator() );
         flatTerrainGen->setExtent( mMapCanvas->fullExtent() );
       }
+      map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
       mapCanvasDock3D->setMapSettings( map );
 

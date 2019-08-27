@@ -21,6 +21,7 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgs3dtypes.h"
+#include "qgssymbol.h"
 
 #include <QMatrix4x4>
 
@@ -36,8 +37,11 @@
 class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-    //! Constructor for QgsPoint3DSymbol.
-    QgsPoint3DSymbol() = default;
+    //! Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
+    QgsPoint3DSymbol();
+
+    //! Copy Constructor for QgsPoint3DSymbol
+    QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
 
     QString type() const override { return "point"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -66,6 +70,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
       Plane,
       ExtrudedText,  //!< Supported in Qt 5.9+
       Model,
+      Billboard,
     };
 
     //! Returns shape enum value from a string
@@ -83,10 +88,18 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     //! Sets a key-value dictionary of point shape properties
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
 
+    //! Returns a symbol for billboard
+    QgsMarkerSymbol *billboardSymbol() const { return mBillboardSymbol.get(); }
+    //! Set symbol for billboard and the ownership is transferred
+    void setBillboardSymbol( QgsMarkerSymbol *symbol ) { mBillboardSymbol.reset( symbol ); }
+
     //! Returns transform for individual objects represented by the symbol
     QMatrix4x4 transform() const { return mTransform; }
     //! Sets transform for individual objects represented by the symbol
     void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
+
+    //! Returns transform for billboards
+    QMatrix4x4 billboardTransform() const;
 
   private:
     //! how to handle altitude of vector features
@@ -96,6 +109,10 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     Shape mShape = Cylinder;  //!< What kind of shape to use
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
+    std::unique_ptr<QgsMarkerSymbol> mBillboardSymbol;
+#ifdef SIP_RUN
+    QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
+#endif
 };
 
 

@@ -49,6 +49,7 @@
 #include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
+#include "qgspoint3dbillboardmaterial.h"
 
 #include "qgslinematerial_p.h"
 
@@ -627,6 +628,16 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     } );
 
     lm->setViewportSize( cameraController()->viewport().size() );
+  }
+  // configure billboard's viewport when the viewport is changed.
+  for ( QgsPoint3DBillboardMaterial *bm : newEntity->findChildren<QgsPoint3DBillboardMaterial *>() )
+  {
+    connect( mCameraController, &QgsCameraController::viewportChanged, bm, [bm, this]
+    {
+      bm->setViewportSize( mCameraController->viewport().size() );
+    } );
+
+    bm->setViewportSize( mCameraController->viewport().size() );
   }
 }
 
