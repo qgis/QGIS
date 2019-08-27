@@ -1682,6 +1682,12 @@ static QVariant fcnLPad( const QVariantList &values, const QgsExpressionContext 
 
 static QVariant fcnFormatString( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( values.size() < 1 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function format requires at least 1 argument" ) );
+    return QVariant();
+  }
+
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   for ( int n = 1; n < values.length(); n++ )
   {
