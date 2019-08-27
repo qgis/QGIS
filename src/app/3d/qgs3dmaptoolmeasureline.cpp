@@ -119,6 +119,11 @@ void Qgs3DMapToolMeasureLine::deactivate()
   mDialog->hide();
 }
 
+QCursor Qgs3DMapToolMeasureLine::cursor() const
+{
+  return Qt::CrossCursor;
+}
+
 void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
 {
   handleClick( event, event->worldIntersection() );

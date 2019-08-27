@@ -135,6 +135,7 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   if ( tool == mMapTool )
     return;
 
+  // For Camera Control tool
   if ( mMapTool && !tool )
   {
     mEngine->window()->removeEventFilter( this );
@@ -145,7 +146,6 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   {
     mEngine->window()->installEventFilter( this );
     mScene->cameraController()->setEnabled( tool->allowsCameraControls() );
-    mEngine->window()->setCursor( tool->cursor() );
   }
 
   if ( mMapTool )
@@ -154,7 +154,11 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   mMapTool = tool;
 
   if ( mMapTool )
+  {
     mMapTool->activate();
+    mEngine->window()->setCursor( mMapTool->cursor() );
+  }
+
 }
 
 bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
