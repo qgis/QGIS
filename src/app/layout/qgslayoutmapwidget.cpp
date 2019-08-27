@@ -71,7 +71,6 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mRemoveGridPushButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mRemoveGridPushButton_clicked );
   connect( mGridUpButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mGridUpButton_clicked );
   connect( mGridDownButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mGridDownButton_clicked );
-  connect( mDrawGridCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapWidget::mDrawGridCheckBox_toggled );
   connect( mGridListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutMapWidget::mGridListWidget_currentItemChanged );
   connect( mGridListWidget, &QListWidget::itemChanged, this, &QgsLayoutMapWidget::mGridListWidget_itemChanged );
   connect( mGridPropertiesButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mGridPropertiesButton_clicked );
@@ -1077,17 +1076,11 @@ void QgsLayoutMapWidget::mGridListWidget_currentItemChanged( QListWidgetItem *cu
   Q_UNUSED( previous )
   if ( !current )
   {
-    mDrawGridCheckBox->setEnabled( false );
-    mDrawGridCheckBox->setChecked( false );
     mGridPropertiesButton->setEnabled( false );
     return;
   }
 
-  mDrawGridCheckBox->setEnabled( true );
-  mDrawGridCheckBox->setChecked( currentGrid()->enabled() );
   mGridPropertiesButton->setEnabled( currentGrid()->enabled() );
-
-  mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( currentGrid()->name() ) );
 }
 
 void QgsLayoutMapWidget::mGridListWidget_itemChanged( QListWidgetItem *item )
@@ -1106,11 +1099,6 @@ void QgsLayoutMapWidget::mGridListWidget_itemChanged( QListWidgetItem *item )
   mMapItem->beginCommand( tr( "Rename Grid" ) );
   grid->setName( item->text() );
   mMapItem->endCommand();
-  if ( item->isSelected() )
-  {
-    //update checkbox title if item is current item
-    mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
-  }
 }
 
 void QgsLayoutMapWidget::mGridPropertiesButton_clicked()
@@ -1176,30 +1164,6 @@ void QgsLayoutMapWidget::loadGridEntries()
   {
     mGridListWidget_currentItemChanged( nullptr, nullptr );
   }
-}
-
-void QgsLayoutMapWidget::mDrawGridCheckBox_toggled( bool state )
-{
-  QgsLayoutItemMapGrid *grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mGridPropertiesButton->setEnabled( state );
-
-  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Toggle Grid Display" ) );
-  if ( state )
-  {
-    grid->setEnabled( true );
-  }
-  else
-  {
-    grid->setEnabled( false );
-  }
-  mMapItem->updateBoundingRect();
-  mMapItem->update();
-  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::mAddOverviewPushButton_clicked()

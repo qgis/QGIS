@@ -89,6 +89,7 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mCoordinatePrecisionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mCoordinatePrecisionSpinBox_valueChanged );
   connect( mDistanceToMapFrameSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged );
   connect( mAnnotationFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mAnnotationFontColorButton_colorChanged );
+  connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::gridEnabledToggled );
   setPanelTitle( tr( "Map Grid Properties" ) );
 
   mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
@@ -219,6 +220,7 @@ void QgsLayoutMapGridWidget::updateGuiElements()
 void QgsLayoutMapGridWidget::blockAllSignals( bool block )
 {
   //grid
+  mEnabledCheckBox->blockSignals( block );
   mGridTypeComboBox->blockSignals( block );
   mIntervalXSpinBox->blockSignals( block );
   mIntervalYSpinBox->blockSignals( block );
@@ -486,6 +488,7 @@ void QgsLayoutMapGridWidget::setGridItems()
   mGridMarkerStyleButton->registerExpressionContextGenerator( mMapGrid );
   mGridLineStyleButton->registerExpressionContextGenerator( mMapGrid );
 
+  mEnabledCheckBox->setChecked( mMapGrid->enabled() );
   mIntervalXSpinBox->setValue( mMapGrid->intervalX() );
   mIntervalYSpinBox->setValue( mMapGrid->intervalY() );
   mOffsetXSpinBox->setValue( mMapGrid->offsetX() );
@@ -1164,6 +1167,20 @@ void QgsLayoutMapGridWidget::markerSymbolChanged()
   mMap->beginCommand( tr( "Change Grid Marker Style" ), QgsLayoutItem::UndoMapGridMarkerSymbol );
   mMapGrid->setMarkerSymbol( mGridMarkerStyleButton->clonedSymbol<QgsMarkerSymbol>() );
   mMap->endCommand();
+  mMap->update();
+}
+
+void QgsLayoutMapGridWidget::gridEnabledToggled( bool active )
+{
+  if ( !mMapGrid || !mMap )
+  {
+    return;
+  }
+
+  mMap->beginCommand( tr( "Toggle Grid Display" ) );
+  mMapGrid->setEnabled( active );
+  mMap->endCommand();
+  mMap->updateBoundingRect();
   mMap->update();
 }
 

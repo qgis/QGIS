@@ -105,6 +105,7 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void annotationFontChanged();
     void lineSymbolChanged();
     void markerSymbolChanged();
+    void gridEnabledToggled( bool active );
 
   private:
     QPointer< QgsLayoutItemMap > mMap;
