@@ -1422,9 +1422,9 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
 {
   //check if we are using degrees (ie, geographic crs)
   bool geographic = false;
-  if ( mCRS.isValid() && mCRS.isGeographic() )
+  if ( mCRS.isValid() )
   {
-    geographic = true;
+    geographic = mCRS.isGeographic();
   }
   else if ( mMap && mMap->layout() )
   {
