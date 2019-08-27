@@ -1342,12 +1342,25 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   textRect.setTop( bottom - textHeight );
   textRect.setBottom( bottom );
 
+  const double iconWidth = QFontMetricsF( QFont() ).width( 'X' ) * Qgis::UI_SCALE_FACTOR;
+
+  if ( settings.callout() && settings.callout()->enabled() )
+  {
+    // draw callout preview
+    const double textWidth = QgsTextRenderer::textWidth( context, tempFormat, text );
+    QgsCallout *callout = settings.callout();
+    callout->startRender( context );
+    QgsCallout::QgsCalloutContext calloutContext;
+    QRectF labelRect( textRect.left() + ( textRect.width() - textWidth ) / 2.0, textRect.top(), textWidth, textRect.height() );
+    callout->render( context, labelRect, 0, QgsGeometry::fromPointXY( QgsPointXY( labelRect.left() - iconWidth * 1.5, labelRect.bottom() + iconWidth ) ), calloutContext );
+    callout->stopRender( context );
+  }
+
   QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
 
   if ( size.width() > 30 )
   {
     // draw a label icon
-    const double iconWidth = QFontMetricsF( QFont() ).width( 'X' ) * Qgis::UI_SCALE_FACTOR;
 
     QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ).paint( &painter, QRect(
           rect.width() - iconWidth * 3, rect.height() - iconWidth * 3,
