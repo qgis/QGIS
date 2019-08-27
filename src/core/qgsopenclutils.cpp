@@ -39,7 +39,10 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
   for ( auto &p : platforms )
   {
     std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
-    QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+    QgsMessageLog::logMessage( QObject::tr( "Found OpenCL platform %1: %2" )
+                               .arg( QString::fromStdString( platver ),
+                                     QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
+                               LOGMESSAGE_TAG );
     if ( platver.find( "OpenCL " ) != std::string::npos )
     {
       std::vector<cl::Device> _devices;
@@ -50,15 +53,17 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
       }
       catch ( cl::Error &e )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
-                          .arg( errorText( e.err() ),
-                                QString::fromStdString( e.what() ),
-                                QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
+        QgsMessageLog::logMessage( QObject::tr( "Error %1 on platform %3 searching for OpenCL device: %2" )
+                                   .arg( errorText( e.err() ),
+                                         QString::fromStdString( e.what() ),
+                                         QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), LOGMESSAGE_TAG );
       }
       if ( _devices.size() > 0 )
       {
         for ( unsigned long i = 0; i < _devices.size(); i++ )
         {
+          QgsMessageLog::logMessage( QObject::tr( "Found OpenCL device: %1" )
+                                     .arg( deviceId( _devices[i] ) ), LOGMESSAGE_TAG );
           existingDevices.push_back( _devices[i] );
         }
       }
