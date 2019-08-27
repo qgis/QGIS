@@ -189,6 +189,8 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    QgsExpressionContext createExpressionContext() const override;
+
   protected:
 
     //! Friendly display name

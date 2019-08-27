@@ -286,6 +286,24 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         myTestResult, myMessage = checker.testLayout(0, 100)
         assert myTestResult, myMessage
 
+    def testExpressionContext(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        map.setExtent(QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125))
+        map.setScale(1000)
+        layout.addLayoutItem(map)
+
+        # grid expression context should inherit from map, so variables like @map_scale can be used
+        context = map.grid().createExpressionContext()
+        self.assertAlmostEqual(context.variable('map_scale'), 1000, 5)
+        self.assertEqual(context.variable('grid_number'), 0)
+        self.assertEqual(context.variable('grid_axis'), 'x')
+        self.assertEqual(context.variable('item_uuid'), map.uuid())
+
 
 if __name__ == '__main__':
     unittest.main()
