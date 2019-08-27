@@ -147,11 +147,7 @@ void Qgs3DMeasureDialog::reject()
 void Qgs3DMeasureDialog::restart()
 {
   mTool->restart();
-
-  mTable->clear();
-  mTotal = 0.;
-  // Update total with new displayed unit
-  editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
+  resetTable();
 }
 
 void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
@@ -250,4 +246,12 @@ void Qgs3DMeasureDialog::addMeasurement( double distance, double zDistance )
   item->setTextAlignment( 1, Qt::AlignRight );
   mTable->addTopLevelItem( item );
   mTable->scrollToItem( item );
+}
+
+void Qgs3DMeasureDialog::resetTable()
+{
+  mTable->clear();
+  mTotal = 0.;
+  // Update total with new displayed unit
+  editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
 }

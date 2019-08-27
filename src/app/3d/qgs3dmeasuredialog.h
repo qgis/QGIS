@@ -54,6 +54,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Remove last point
     void removeLastPoint();
 
+    // Clear the content of the table
+    void resetTable();
+
   public slots:
     void reject() override;
 
