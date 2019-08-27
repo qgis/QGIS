@@ -15,6 +15,7 @@
         <file>qgsquickmessagelog.qml</file>
         <file>qgsquickphotopanel.qml</file>
         <file>qgsquickpositionmarker.qml</file>
+        <file>qgsquickicontextitem.qml</file>
         <file>qgsquickscalebar.qml</file>
     </qresource>
 </RCC>
