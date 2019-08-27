@@ -82,14 +82,7 @@ void Qgs3DMeasureDialog::addPoint()
     if ( !mTool->done() )
     {
       // Add new entry in the table
-      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( 0.0, 'f', mDecimalPlaces ) ) );
-      item->setTextAlignment( 0, Qt::AlignRight );
-      item->setTextAlignment( 1, Qt::AlignRight );
-      mTable->addTopLevelItem( item );
-      mTable->scrollToItem( item );
-
-      item->setText( 0, QString::number( convertLength( lastZDistance(), mDisplayedDistanceUnit ) ) );
-      item->setText( 1, QString::number( convertLength( lastDistance(), mDisplayedDistanceUnit ) ) );
+      addMeasurement( lastDistance(), lastZDistance() );
       mTotal += lastDistance();
       editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
     }
@@ -201,14 +194,7 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
     {
       double distance = p1.distance3D( p2 );
       double zDistance = p2.z() - p1.z();
-      QStringList content;
-      content << QLocale().toString( convertLength( zDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces )
-              << QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
-      QTreeWidgetItem *item = new QTreeWidgetItem( content );
-      item->setTextAlignment( 0, Qt::AlignRight );
-      item->setTextAlignment( 1, Qt::AlignRight );
-      mTable->addTopLevelItem( item );
-      mTable->scrollToItem( item );
+      addMeasurement( distance, zDistance );
     }
     p1 = p2;
     isFirstPoint = false;
@@ -252,4 +238,16 @@ void Qgs3DMeasureDialog::setupTableHeader()
   mTable->setHeaderItem( headerItem );
   mTable->resizeColumnToContents( 0 );
   mTable->resizeColumnToContents( 1 );
+}
+
+void Qgs3DMeasureDialog::addMeasurement( double distance, double zDistance )
+{
+  QStringList content;
+  content << QLocale().toString( convertLength( zDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces )
+          << QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
+  QTreeWidgetItem *item = new QTreeWidgetItem( content );
+  item->setTextAlignment( 0, Qt::AlignRight );
+  item->setTextAlignment( 1, Qt::AlignRight );
+  mTable->addTopLevelItem( item );
+  mTable->scrollToItem( item );
 }

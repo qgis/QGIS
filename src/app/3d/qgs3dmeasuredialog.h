@@ -97,6 +97,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Setup the header of the table
     void setupTableHeader();
+
+    //! Add measurement (3d-distance and z-distance) to the table
+    void addMeasurement( double distance, double zDistance );
 };
 
 #endif // QGS3DMEASUREDIALOG_H
