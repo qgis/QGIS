@@ -149,7 +149,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     {
       MapUnit, //!< Grid units follow map units
       MM, //!< Grid units in millimeters
-      CM //!< Grid units in centimeters
+      CM, //!< Grid units in centimeters
+      DynamicPageSizeBased, //!< Dynamically sized, based on a on-page size range
     };
 
     /**
@@ -389,6 +390,50 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see offsetX()
      */
     double offsetY() const { return mGridOffsetY; }
+
+    /**
+     * Returns the minimum width (in millimeters) for grid segments. This
+     * property is only effective if the units() is set
+     * to DynamicPageSizeBased.
+     * \see units()
+     * \see setMinimumIntervalWidth()
+     * \see maximumIntervalWidth()
+     * \since QGIS 3.10
+     */
+    double minimumIntervalWidth() const { return mMinimumIntervalWidth; }
+
+    /**
+     * Sets the minimum \a width (in millimeters) for grid segments. This
+     * property is only effective if the units() is set
+     * to DynamicPageSizeBased.
+     * \see minimumIntervalWidth()
+     * \see setMaximumIntervalWidth()
+     * \see setUnits()
+     * \since QGIS 3.10
+     */
+    void setMinimumIntervalWidth( double width );
+
+    /**
+     * Returns the maximum width (in millimeters) for grid segments. This
+     * property is only effective if the units() is set
+     * to DynamicPageSizeBased.
+     * \see units()
+     * \see setMaximumIntervalWidth()
+     * \see minimumIntervalWidth()
+     * \since QGIS 3.10
+     */
+    double maximumIntervalWidth() const { return mMaximumIntervalWidth; }
+
+    /**
+     * Sets the maximum \a width (in millimeters) for grid segments. This
+     * property is only effective if the units() is set
+     * to DynamicPageSizeBased.
+     * \see maximumIntervalWidth()
+     * \see setMinimumIntervalWidth()
+     * \see setUnits()
+     * \since QGIS 3.10
+     */
+    void setMaximumIntervalWidth( double width );
 
     //
     // GRID APPEARANCE
@@ -887,6 +932,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     QColor mGridFrameFillColor2 = Qt::black;
     double mCrossLength = 3.0;
     double mGridFrameMargin = 0.0;
+
+    double mMinimumIntervalWidth = 5;
+    double mMaximumIntervalWidth = 10;
 
     //! Divisions for frame on left map side
     DisplayMode mLeftFrameDivisions = QgsLayoutItemMapGrid::ShowAll;

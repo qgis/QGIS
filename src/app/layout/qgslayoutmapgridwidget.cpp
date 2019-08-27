@@ -61,7 +61,7 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mGridFrameFill2ColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mGridFrameFill2ColorButton_colorChanged );
   connect( mGridTypeComboBox, &QComboBox::currentTextChanged, this, &QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged );
   connect( mMapGridCRSButton, &QPushButton::clicked, this, &QgsLayoutMapGridWidget::mMapGridCRSButton_clicked );
-  connect( mMapGridUnitComboBox, &QComboBox::currentTextChanged, this, &QgsLayoutMapGridWidget::mMapGridUnitComboBox_currentIndexChanged );
+  connect( mMapGridUnitComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::intervalUnitChanged );
   connect( mGridBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mGridBlendComboBox_currentIndexChanged );
   connect( mCheckGridLeftSide, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::mCheckGridLeftSide_toggled );
   connect( mCheckGridRightSide, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::mCheckGridRightSide_toggled );
@@ -88,6 +88,8 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mAnnotationFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mAnnotationFormatComboBox_currentIndexChanged );
   connect( mCoordinatePrecisionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mCoordinatePrecisionSpinBox_valueChanged );
   connect( mDistanceToMapFrameSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged );
+  connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::minIntervalChanged );
+  connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::maxIntervalChanged );
   connect( mAnnotationFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mAnnotationFontColorButton_colorChanged );
   connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::gridEnabledToggled );
   setPanelTitle( tr( "Map Grid Properties" ) );
@@ -95,6 +97,11 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
 
   blockAllSignals( true );
+
+  mMapGridUnitComboBox->addItem( tr( "Map Unit" ), QgsLayoutItemMapGrid::MapUnit );
+  mMapGridUnitComboBox->addItem( tr( "Fit Segment Width" ), QgsLayoutItemMapGrid::DynamicPageSizeBased );
+  mMapGridUnitComboBox->addItem( tr( "Millimeter" ), QgsLayoutItemMapGrid::MM );
+  mMapGridUnitComboBox->addItem( tr( "Centimeter" ), QgsLayoutItemMapGrid::CM );
 
   mGridTypeComboBox->insertItem( 0, tr( "Solid" ) );
   mGridTypeComboBox->insertItem( 1, tr( "Cross" ) );
@@ -270,6 +277,8 @@ void QgsLayoutMapGridWidget::blockAllSignals( bool block )
   mCoordinatePrecisionSpinBox->blockSignals( block );
   mAnnotationFontColorButton->blockSignals( block );
   mAnnotationFontButton->blockSignals( block );
+  mMinWidthSpinBox->blockSignals( block );
+  mMaxWidthSpinBox->blockSignals( block );
 }
 
 void QgsLayoutMapGridWidget::handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, const QgsLayoutItemMapGrid::DisplayMode mode )
@@ -625,19 +634,21 @@ void QgsLayoutMapGridWidget::setGridItems()
   mCoordinatePrecisionSpinBox->setValue( mMapGrid->annotationPrecision() );
 
   //Unit
-  QgsLayoutItemMapGrid::GridUnit gridUnit = mMapGrid->units();
-  if ( gridUnit == QgsLayoutItemMapGrid::MapUnit )
+  mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findData( mMapGrid->units() ) );
+  switch ( mMapGrid->units() )
   {
-    mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findText( tr( "Map unit" ) ) );
+    case QgsLayoutItemMapGrid::MapUnit:
+    case QgsLayoutItemMapGrid::MM:
+    case QgsLayoutItemMapGrid::CM:
+      mIntervalStackedWidget->setCurrentIndex( 0 );
+      break;
+
+    case QgsLayoutItemMapGrid::DynamicPageSizeBased:
+      mIntervalStackedWidget->setCurrentIndex( 1 );
+      break;
   }
-  else if ( gridUnit == QgsLayoutItemMapGrid::MM )
-  {
-    mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findText( tr( "Millimeter" ) ) );
-  }
-  else if ( gridUnit == QgsLayoutItemMapGrid::CM )
-  {
-    mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findText( tr( "Centimeter" ) ) );
-  }
+  mMinWidthSpinBox->setValue( mMapGrid->minimumIntervalWidth() );
+  mMaxWidthSpinBox->setValue( mMapGrid->maximumIntervalWidth() );
 
   //CRS button
   QgsCoordinateReferenceSystem gridCrs = mMapGrid->crs();
@@ -905,29 +916,50 @@ void QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged( int )
   mMap->endCommand();
 }
 
-void QgsLayoutMapGridWidget::mMapGridUnitComboBox_currentIndexChanged( const QString &text )
+void QgsLayoutMapGridWidget::intervalUnitChanged( int )
 {
   if ( !mMapGrid || !mMap )
   {
     return;
   }
 
+  const QgsLayoutItemMapGrid::GridUnit unit = static_cast< QgsLayoutItemMapGrid::GridUnit >( mMapGridUnitComboBox->currentData().toInt() );
+  switch ( unit )
+  {
+    case QgsLayoutItemMapGrid::MapUnit:
+    case QgsLayoutItemMapGrid::MM:
+    case QgsLayoutItemMapGrid::CM:
+      mIntervalStackedWidget->setCurrentIndex( 0 );
+      break;
+
+    case QgsLayoutItemMapGrid::DynamicPageSizeBased:
+      mIntervalStackedWidget->setCurrentIndex( 1 );
+      break;
+  }
+
   mMap->beginCommand( tr( "Change Grid Unit" ) );
-  if ( text == tr( "Map unit" ) )
-  {
-    mMapGrid->setUnits( QgsLayoutItemMapGrid::MapUnit );
-  }
-  else if ( text == tr( "Millimeter" ) )
-  {
-    mMapGrid->setUnits( QgsLayoutItemMapGrid::MM );
-  }
-  else if ( text == tr( "Centimeter" ) )
-  {
-    mMapGrid->setUnits( QgsLayoutItemMapGrid::CM );
-  }
+  mMapGrid->setUnits( unit );
   mMap->updateBoundingRect();
   mMap->update();
   mMap->endCommand();
+}
+
+void QgsLayoutMapGridWidget::minIntervalChanged( double interval )
+{
+  mMap->beginCommand( tr( "Change Grid Interval Range" ), QgsLayoutItem::UndoMapGridIntervalRange );
+  mMapGrid->setMinimumIntervalWidth( interval );
+  mMap->endCommand();
+  mMap->updateBoundingRect();
+  mMap->update();
+}
+
+void QgsLayoutMapGridWidget::maxIntervalChanged( double interval )
+{
+  mMap->beginCommand( tr( "Change Grid Interval Range" ), QgsLayoutItem::UndoMapGridIntervalRange );
+  mMapGrid->setMaximumIntervalWidth( interval );
+  mMap->endCommand();
+  mMap->updateBoundingRect();
+  mMap->update();
 }
 
 void QgsLayoutMapGridWidget::mGridBlendComboBox_currentIndexChanged( int index )

@@ -270,6 +270,8 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const
   mapGridElem.setAttribute( QStringLiteral( "annotationPrecision" ), mGridAnnotationPrecision );
   mapGridElem.setAttribute( QStringLiteral( "unit" ), mGridUnit );
   mapGridElem.setAttribute( QStringLiteral( "blendMode" ), mBlendMode );
+  mapGridElem.setAttribute( QStringLiteral( "minimumIntervalWidth" ), QString::number( mMinimumIntervalWidth ) );
+  mapGridElem.setAttribute( QStringLiteral( "maximumIntervalWidth" ), QString::number( mMaximumIntervalWidth ) );
 
   bool ok = QgsLayoutItemMapItem::writeXml( mapGridElem, doc, context );
   elem.appendChild( mapGridElem );
@@ -366,7 +368,9 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mGridAnnotationFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "annotationFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mGridAnnotationPrecision = itemElem.attribute( QStringLiteral( "annotationPrecision" ), QStringLiteral( "3" ) ).toInt();
   int gridUnitInt = itemElem.attribute( QStringLiteral( "unit" ), QString::number( MapUnit ) ).toInt();
-  mGridUnit = ( gridUnitInt <= static_cast< int >( CM ) ) ? static_cast< GridUnit >( gridUnitInt ) : MapUnit;
+  mGridUnit = ( gridUnitInt <= static_cast< int >( DynamicPageSizeBased ) ) ? static_cast< GridUnit >( gridUnitInt ) : MapUnit;
+  mMinimumIntervalWidth = itemElem.attribute( QStringLiteral( "minimumIntervalWidth" ), QStringLiteral( "5" ) ).toDouble();
+  mMaximumIntervalWidth = itemElem.attribute( QStringLiteral( "maximumIntervalWidth" ), QStringLiteral( "10" ) ).toDouble();
 
   refreshDataDefinedProperties();
   return ok;
@@ -2183,6 +2187,28 @@ void QgsLayoutItemMapGrid::setOffsetY( const double offset )
     return;
   }
   mGridOffsetY = offset;
+  mTransformDirty = true;
+  refreshDataDefinedProperties();
+}
+
+void QgsLayoutItemMapGrid::setMinimumIntervalWidth( double minWidth )
+{
+  if ( qgsDoubleNear( minWidth, mMinimumIntervalWidth ) )
+  {
+    return;
+  }
+  mMinimumIntervalWidth = minWidth;
+  mTransformDirty = true;
+  refreshDataDefinedProperties();
+}
+
+void QgsLayoutItemMapGrid::setMaximumIntervalWidth( double maxWidth )
+{
+  if ( qgsDoubleNear( maxWidth, mMaximumIntervalWidth ) )
+  {
+    return;
+  }
+  mMaximumIntervalWidth = maxWidth;
   mTransformDirty = true;
   refreshDataDefinedProperties();
 }
