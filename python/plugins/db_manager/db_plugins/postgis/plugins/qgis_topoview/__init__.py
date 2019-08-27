@@ -121,11 +121,12 @@ def run(item, action, mainwindow):
         face_extent = layerFaceMbr.extent()
 
         # face geometry
-        sql = u'SELECT face_id, topology.ST_GetFaceGeometry(%s,' \
+        sql = u'SELECT face_id, mbr, topology.ST_GetFaceGeometry(%s,' \
               'face_id)::geometry(polygon, %s) as geom ' \
               'FROM %s.face WHERE face_id > 0' % \
               (quoteStr(toponame), toposrid, quoteId(toponame))
         uri.setDataSource('', u'(%s\n)' % sql, 'geom', '', 'face_id')
+        uri.setParam('bbox', 'mbr')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Polygon)
         layerFaceGeom = QgsVectorLayer(uri.uri(False), u'%s.face' % toponame, provider)
@@ -133,12 +134,13 @@ def run(item, action, mainwindow):
         layerFaceGeom.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
 
         # face_seed
-        sql = u'SELECT face_id, ST_PointOnSurface(' \
+        sql = u'SELECT face_id, mbr, ST_PointOnSurface(' \
               'topology.ST_GetFaceGeometry(%s,' \
               'face_id))::geometry(point, %s) as geom ' \
               'FROM %s.face WHERE face_id > 0' % \
               (quoteStr(toponame), toposrid, quoteId(toponame))
         uri.setDataSource('', u'(%s)' % sql, 'geom', '', 'face_id')
+        uri.setParam('bbox', 'mbr')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Point)
         layerFaceSeed = QgsVectorLayer(uri.uri(False), u'%s.face_seed' % toponame, provider)
@@ -151,6 +153,7 @@ def run(item, action, mainwindow):
 
         # node
         uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
+        uri.removeParam('bbox')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Point)
         layerNode = QgsVectorLayer(uri.uri(False), u'%s.node' % toponame, provider)
@@ -161,6 +164,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Point)
+        uri.removeParam('bbox')
         layerNodeLabel = QgsVectorLayer(uri.uri(False), u'%s.node_id' % toponame, provider)
         layerNodeLabel.setExtent(node_extent)
         layerNodeLabel.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
@@ -171,6 +175,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.LineString)
+        uri.removeParam('bbox')
         layerEdge = QgsVectorLayer(uri.uri(False), u'%s.edge' % toponame, provider)
         edge_extent = layerEdge.extent()
 
@@ -178,6 +183,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.LineString)
+        uri.removeParam('bbox')
         layerDirectedEdge = QgsVectorLayer(uri.uri(False), u'%s.directed_edge' % toponame, provider)
         layerDirectedEdge.setExtent(edge_extent)
         layerDirectedEdge.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
@@ -186,6 +192,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.LineString)
+        uri.removeParam('bbox')
         layerEdgeLabel = QgsVectorLayer(uri.uri(False), u'%s.edge_id' % toponame, provider)
         layerEdgeLabel.setExtent(edge_extent)
         layerEdgeLabel.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
@@ -194,6 +201,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.LineString)
+        uri.removeParam('bbox')
         layerFaceLeft = QgsVectorLayer(uri.uri(False), u'%s.face_left' % toponame, provider)
         layerFaceLeft.setExtent(edge_extent)
         layerFaceLeft.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
@@ -202,6 +210,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.LineString)
+        uri.removeParam('bbox')
         layerFaceRight = QgsVectorLayer(uri.uri(False), u'%s.face_right' % toponame, provider)
         layerFaceRight.setExtent(edge_extent)
         layerFaceRight.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
@@ -210,6 +219,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.LineString)
+        uri.removeParam('bbox')
         layerNextLeft = QgsVectorLayer(uri.uri(False), u'%s.next_left' % toponame, provider)
         layerNextLeft.setExtent(edge_extent)
         layerNextLeft.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
@@ -218,6 +228,7 @@ def run(item, action, mainwindow):
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.LineString)
+        uri.removeParam('bbox')
         layerNextRight = QgsVectorLayer(uri.uri(False), u'%s.next_right' % toponame, provider)
         layerNextRight.setExtent(edge_extent)
         layerNextRight.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
