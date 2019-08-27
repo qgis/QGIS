@@ -1,11 +1,9 @@
-QToolTip
+QWidget
 {
-    border: 1px solid #222;
-    background-color: @itemdarkbackground;
-    color: @itembackground;
+    background: transparent;
 }
 
-QWindow, QMainWindow, QWidget
+QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QTabWidget, QGroupBox
 {
     color: @text;
     background-color: @background;
@@ -21,6 +19,13 @@ QWidget:item:selected
 {
     background-color: @selection;
     color: @text;
+}
+
+QToolTip
+{
+    border: 1px solid #222;
+    background-color: @itemdarkbackground;
+    color: @itembackground;
 }
 
 QMenuBar {
