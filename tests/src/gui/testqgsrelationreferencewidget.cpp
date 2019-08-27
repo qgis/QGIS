@@ -249,17 +249,17 @@ void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
 
   // update foreign key
-  w.setForeignKey( QVariant( 12 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 12 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "steel" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "collar" ) );
 
-  w.setForeignKey( QVariant( 10 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 10 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "brides" ) );
 
-  w.setForeignKey( QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
@@ -289,7 +289,7 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
   QCOMPARE( cbs[2]->isEnabled(), false );
 
   // set a foreign key
-  w.setForeignKey( QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
 
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
@@ -328,18 +328,18 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
 
   QSignalSpy spy( &w, SIGNAL( foreignKeyChanged( QVariant ) ) );
 
-  w.setForeignKey( 11 );
-  QCOMPARE( w.foreignKey(), QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << 11 );
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
   QCOMPARE( spy.count(), 1 );
 
-  w.setForeignKey( 12 );
-  QCOMPARE( w.foreignKey(), QVariant( 12 ) );
+  w.setForeignKeys( QVariantList() << 12 );
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
   QCOMPARE( spy.count(), 2 );
 
-  w.setForeignKey( QVariant( QVariant::Int ) );
-  Q_ASSERT( w.foreignKey().isNull() );
+  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
+  Q_ASSERT( w.foreignKeys().at( 0 ).isNull() );
   QCOMPARE( spy.count(), 3 );
 }
 

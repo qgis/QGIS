@@ -46,7 +46,7 @@ class QgsRelationReferenceWidget : QWidget
 
     void setRelationEditable( bool editable );
 
-    void setForeignKey( const QVariant &value );
+ void setForeignKey( const QVariant &value ) /Deprecated/;
 %Docstring
 this sets the related feature using from the foreign key
 

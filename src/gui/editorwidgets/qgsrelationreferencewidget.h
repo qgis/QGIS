@@ -87,7 +87,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      * this sets the related feature using from the foreign key
      * \deprecated since QGIS 3.10 use setForeignKeys
      */
-    void setForeignKey( const QVariant &value );
+    Q_DECL_DEPRECATED void setForeignKey( const QVariant &value ) SIP_DEPRECATED;
 
     /**
      * Sets the related feature using the foreign keys

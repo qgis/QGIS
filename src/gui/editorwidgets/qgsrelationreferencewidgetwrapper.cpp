@@ -146,7 +146,8 @@ QVariantList QgsRelationReferenceWidgetWrapper::additionalFieldValues() const
   {
     QVariantList values = mWidget->foreignKeys();
     const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
-    for ( int i = 0; i < fieldPairs.count(); i++ )
+    int fieldCount = std::min( fieldPairs.count(), values.count() );
+    for ( int i = 0; i < fieldCount; i++ )
     {
       if ( fieldPairs.at( i ).referencingField() == field().name() )
       {
