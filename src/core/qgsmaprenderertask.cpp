@@ -287,14 +287,17 @@ bool QgsMapRendererTask::run()
   {
     mDestPainter->end();
 
-    if ( mForceRaster && mFileFormat == QStringLiteral( "PDF" ) )
+    if ( mFileFormat == QStringLiteral( "PDF" ) )
     {
 #ifndef QT_NO_PRINTER
-      QPainter pp;
-      pp.begin( mPrinter.get() );
-      QRectF rect( 0, 0, mImage.width(), mImage.height() );
-      pp.drawImage( rect, mImage, rect );
-      pp.end();
+      if ( mForceRaster )
+      {
+        QPainter pp;
+        pp.begin( mPrinter.get() );
+        QRectF rect( 0, 0, mImage.width(), mImage.height() );
+        pp.drawImage( rect, mImage, rect );
+        pp.end();
+      }
 
       if ( mSaveWorldFile )
       {
