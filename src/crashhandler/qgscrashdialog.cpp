@@ -16,6 +16,7 @@
 
 
 #include "qgscrashdialog.h"
+#include "qgsstringutils.h"
 
 #include <QClipboard>
 #include <QProcess>
@@ -68,7 +69,7 @@ void QgsCrashDialog::createBugReport()
   QString userText = "## User Feedback\n\n" + mUserFeedbackText->toPlainText();
   QString details = "## Report Details\n\n" + mReportData;
   QString finalText = userText + "\n\n" + details;
-  QString markdown = htmlToMarkdown( finalText );
+  QString markdown = QgsStringUtils::htmlToMarkdown( finalText );
   clipboard->setText( markdown );
 }
 
@@ -80,13 +81,3 @@ void QgsCrashDialog::reloadQGIS()
     accept();
   }
 }
-
-QString QgsCrashDialog::htmlToMarkdown( const QString &html )
-{
-  QString markdown = html;
-  markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
-  markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
-  markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
-  return markdown;
-}
-
