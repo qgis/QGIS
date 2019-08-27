@@ -171,6 +171,9 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
 
   createDefaultGridLineSymbol();
   createDefaultGridMarkerSymbol();
+
+  connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapGrid::refreshDataDefinedProperties );
+  connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapGrid::refreshDataDefinedProperties );
 }
 
 void QgsLayoutItemMapGrid::createDefaultGridLineSymbol()
@@ -369,8 +372,8 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mGridAnnotationPrecision = itemElem.attribute( QStringLiteral( "annotationPrecision" ), QStringLiteral( "3" ) ).toInt();
   int gridUnitInt = itemElem.attribute( QStringLiteral( "unit" ), QString::number( MapUnit ) ).toInt();
   mGridUnit = ( gridUnitInt <= static_cast< int >( DynamicPageSizeBased ) ) ? static_cast< GridUnit >( gridUnitInt ) : MapUnit;
-  mMinimumIntervalWidth = itemElem.attribute( QStringLiteral( "minimumIntervalWidth" ), QStringLiteral( "5" ) ).toDouble();
-  mMaximumIntervalWidth = itemElem.attribute( QStringLiteral( "maximumIntervalWidth" ), QStringLiteral( "10" ) ).toDouble();
+  mMinimumIntervalWidth = itemElem.attribute( QStringLiteral( "minimumIntervalWidth" ), QStringLiteral( "50" ) ).toDouble();
+  mMaximumIntervalWidth = itemElem.attribute( QStringLiteral( "maximumIntervalWidth" ), QStringLiteral( "100" ) ).toDouble();
 
   refreshDataDefinedProperties();
   return ok;
@@ -589,15 +592,22 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
   QList< QPair< double, QLineF > > horizontalLines;
 
   //is grid in a different crs than map?
-  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mMap->crs() )
+  switch ( mGridUnit )
   {
-    drawGridCrsTransform( context, dotsPerMM, horizontalLines, verticalLines );
-  }
-  else
-  {
-    drawGridNoTransform( context, dotsPerMM, horizontalLines, verticalLines );
-  }
+    case MapUnit:
+    case DynamicPageSizeBased:
+      if ( mCRS.isValid() && mCRS != mMap->crs() )
+      {
+        drawGridCrsTransform( context, dotsPerMM, horizontalLines, verticalLines );
+        break;
+      }
 
+      FALLTHROUGH
+    case CM:
+    case MM:
+      drawGridNoTransform( context, dotsPerMM, horizontalLines, verticalLines );
+      break;
+  }
   p->restore();
 
   p->setClipping( false );
@@ -1549,16 +1559,25 @@ int QgsLayoutItemMapGrid::xGridLines( QList< QPair< double, QLineF > > &lines ) 
   double gridIntervalY = mEvaluatedIntervalY;
   double gridOffsetY = mEvaluatedOffsetY;
   double annotationScale = 1.0;
-  if ( mGridUnit != MapUnit )
+  switch ( mGridUnit )
   {
-    mapBoundingRect = mMap->rect();
-    mapPolygon = QPolygonF( mMap->rect() );
-    if ( mGridUnit == CM )
+    case CM:
+    case MM:
     {
-      annotationScale = 0.1;
-      gridIntervalY *= 10;
-      gridOffsetY *= 10;
+      mapBoundingRect = mMap->rect();
+      mapPolygon = QPolygonF( mMap->rect() );
+      if ( mGridUnit == CM )
+      {
+        annotationScale = 0.1;
+        gridIntervalY *= 10;
+        gridOffsetY *= 10;
+      }
+      break;
     }
+
+    case MapUnit:
+    case DynamicPageSizeBased:
+      break;
   }
 
   //consider to round up to the next step in case the left boundary is > 0
@@ -1566,7 +1585,7 @@ int QgsLayoutItemMapGrid::xGridLines( QList< QPair< double, QLineF > > &lines ) 
   double currentLevel = static_cast< int >( ( mapBoundingRect.top() - gridOffsetY ) / gridIntervalY + roundCorrection ) * gridIntervalY + gridOffsetY;
 
   int gridLineCount = 0;
-  if ( qgsDoubleNear( mMap->mapRotation(), 0.0 ) || mGridUnit != MapUnit )
+  if ( qgsDoubleNear( mMap->mapRotation(), 0.0 ) || ( mGridUnit != MapUnit && mGridUnit != DynamicPageSizeBased ) )
   {
     //no rotation. Do it 'the easy way'
 
@@ -1634,16 +1653,25 @@ int QgsLayoutItemMapGrid::yGridLines( QList< QPair< double, QLineF > > &lines ) 
   double gridIntervalX = mEvaluatedIntervalX;
   double gridOffsetX = mEvaluatedOffsetX;
   double annotationScale = 1.0;
-  if ( mGridUnit != MapUnit )
+  switch ( mGridUnit )
   {
-    mapBoundingRect = mMap->rect();
-    mapPolygon = QPolygonF( mMap->rect() );
-    if ( mGridUnit == CM )
+    case CM:
+    case MM:
     {
-      annotationScale = 0.1;
-      gridIntervalX *= 10;
-      gridOffsetX *= 10;
+      mapBoundingRect = mMap->rect();
+      mapPolygon = QPolygonF( mMap->rect() );
+      if ( mGridUnit == CM )
+      {
+        annotationScale = 0.1;
+        gridIntervalX *= 10;
+        gridOffsetX *= 10;
+      }
+      break;
     }
+
+    case MapUnit:
+    case DynamicPageSizeBased:
+      break;
   }
 
   //consider to round up to the next step in case the left boundary is > 0
@@ -1651,7 +1679,7 @@ int QgsLayoutItemMapGrid::yGridLines( QList< QPair< double, QLineF > > &lines ) 
   double currentLevel = static_cast< int >( ( mapBoundingRect.left() - gridOffsetX ) / gridIntervalX + roundCorrection ) * gridIntervalX + gridOffsetX;
 
   int gridLineCount = 0;
-  if ( qgsDoubleNear( mMap->mapRotation(), 0.0 ) || mGridUnit != MapUnit )
+  if ( qgsDoubleNear( mMap->mapRotation(), 0.0 ) || ( mGridUnit != MapUnit && mGridUnit != DynamicPageSizeBased ) )
   {
     //no rotation. Do it 'the easy way'
     double xCanvasCoord;
@@ -1941,8 +1969,36 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   QgsExpressionContext context = createExpressionContext();
 
   mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::MapGridEnabled, context, true );
-  mEvaluatedIntervalX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridIntervalX, context, mGridIntervalX );
-  mEvaluatedIntervalY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridIntervalY, context, mGridIntervalY );
+  switch ( mGridUnit )
+  {
+    case MapUnit:
+    case MM:
+    case CM:
+    {
+      mEvaluatedIntervalX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridIntervalX, context, mGridIntervalX );
+      mEvaluatedIntervalY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridIntervalY, context, mGridIntervalY );
+      break;
+    }
+
+    case DynamicPageSizeBased:
+    {
+      if ( mMaximumIntervalWidth < mMinimumIntervalWidth )
+      {
+        mEvaluatedEnabled = false;
+      }
+      else
+      {
+        const double mapWidthMm = mLayout->renderContext().measurementConverter().convert( mMap->sizeWithUnits(), QgsUnitTypes::LayoutMillimeters ).width();
+        const double mapWidthMapUnits = mapWidth();
+        double minUnitsPerSeg = ( mMinimumIntervalWidth * mapWidthMapUnits ) / mapWidthMm;
+        double maxUnitsPerSeg = ( mMaximumIntervalWidth * mapWidthMapUnits ) / mapWidthMm;
+        const double interval = QgsLayoutUtils::calculatePrettySize( minUnitsPerSeg, maxUnitsPerSeg );
+        mEvaluatedIntervalX = interval;
+        mEvaluatedIntervalY = interval;
+      }
+      break;
+    }
+  }
   mEvaluatedOffsetX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridOffsetX, context, mGridOffsetX );
   mEvaluatedOffsetY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridOffsetY, context, mGridOffsetY );
   mEvaluatedGridFrameWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridFrameSize, context, mGridFrameWidth );
@@ -1950,6 +2006,34 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   mEvaluatedAnnotationFrameDistance = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridLabelDistance, context, mAnnotationFrameDistance );
   mEvaluatedCrossLength = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridCrossSize, context, mCrossLength );
   mEvaluatedGridFrameLineThickness = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridFrameLineThickness, context, mGridFramePenThickness );
+}
+
+double QgsLayoutItemMapGrid::mapWidth() const
+{
+  if ( !mMap )
+  {
+    return 0.0;
+  }
+
+  QgsRectangle mapExtent = mMap->extent();
+  const QgsUnitTypes::DistanceUnit distanceUnit = mCRS.isValid() ? mCRS.mapUnits() : mMap->crs().mapUnits();
+  if ( distanceUnit == QgsUnitTypes::DistanceUnknownUnit )
+  {
+    return mapExtent.width();
+  }
+  else
+  {
+    QgsDistanceArea da;
+
+    da.setSourceCrs( mMap->crs(), mLayout->project()->transformContext() );
+    da.setEllipsoid( mLayout->project()->ellipsoid() );
+
+    QgsUnitTypes::DistanceUnit units = da.lengthUnits();
+    double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), mapExtent.yMinimum() ),
+                                     QgsPointXY( mapExtent.xMaximum(), mapExtent.yMinimum() ) );
+    measure /= QgsUnitTypes::fromUnitToUnitFactor( distanceUnit, units );
+    return measure;
+  }
 }
 
 bool sortByDistance( QPair<qreal, QgsLayoutItemMapGrid::BorderSide> a, QPair<qreal, QgsLayoutItemMapGrid::BorderSide> b )
@@ -2112,13 +2196,22 @@ void QgsLayoutItemMapGrid::calculateMaxExtension( double &top, double &right, do
   //collect grid lines
   QList< QPair< double, QLineF > > verticalLines;
   QList< QPair< double, QLineF > > horizontalLines;
-  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mMap->crs() )
+  switch ( mGridUnit )
   {
-    drawGridCrsTransform( context, 0, horizontalLines, verticalLines, true );
-  }
-  else
-  {
-    drawGridNoTransform( context, 0, horizontalLines, verticalLines, true );
+    case MapUnit:
+    case DynamicPageSizeBased:
+    {
+      if ( mCRS.isValid() && mCRS != mMap->crs() )
+      {
+        drawGridCrsTransform( context, 0, horizontalLines, verticalLines, true );
+        break;
+      }
+    }
+    FALLTHROUGH
+    case CM:
+    case MM:
+      drawGridNoTransform( context, 0, horizontalLines, verticalLines, true );
+      break;
   }
 
   if ( mGridFrameStyle != QgsLayoutItemMapGrid::NoFrame )

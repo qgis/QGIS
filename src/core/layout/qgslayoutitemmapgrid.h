@@ -933,8 +933,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mCrossLength = 3.0;
     double mGridFrameMargin = 0.0;
 
-    double mMinimumIntervalWidth = 5;
-    double mMaximumIntervalWidth = 10;
+    double mMinimumIntervalWidth = 50;
+    double mMaximumIntervalWidth = 100;
 
     //! Divisions for frame on left map side
     DisplayMode mLeftFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
@@ -1077,6 +1077,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
     bool shouldShowDivisionForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;
     void refreshDataDefinedProperties();
+
+    //! Returns diagonal of map in CRS units
+    double mapWidth() const;
 
     friend class TestQgsLayoutMapGrid;
 
