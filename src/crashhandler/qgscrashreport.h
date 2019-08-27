@@ -70,8 +70,6 @@ class QgsCrashReport
      */
     Flags flags() const { return mFlags; }
 
-    const QString toMarkdown();
-
     /**
      * Generate a string version of the report.
      * \return A formatted string including all the information from the report.

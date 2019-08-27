@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscrashreport.h"
+#include "qgsstringutils.h"
 
 #include <QDir>
 #include <QFile>
@@ -34,19 +35,11 @@ void QgsCrashReport::setFlags( QgsCrashReport::Flags flags )
   mFlags = flags;
 }
 
-const QString QgsCrashReport::toMarkdown()
-{
-  QString markdown = toHtml();
-  markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
-  markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
-  markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
-  return markdown;
-}
-
 const QString QgsCrashReport::toHtml() const
 {
   QStringList reportData;
-  reportData.append( "<b>Crash ID</b>: " + crashID() );
+  QString crashID = crashID();
+  reportData.append( QStringLiteral( "<b>Crash ID</b>: <a href='https://github.com/qgis/QGIS/search?q=%1&type=Issues'>%1</a>" ).arg( crashID ) );
 
   if ( flags().testFlag( QgsCrashReport::Stack ) )
   {
@@ -161,7 +154,7 @@ void QgsCrashReport::exportToCrashFolder()
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream stream( &file );
-    stream << toMarkdown() << endl;
+    stream << QgsStringUtils::htmlToMarkdown( toHtml() ) << endl;
   }
   file.close();
 }
