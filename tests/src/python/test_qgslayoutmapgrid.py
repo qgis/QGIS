@@ -521,6 +521,66 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         myTestResult, myMessage = checker.testLayout()
         self.assertTrue(myTestResult, myMessage)
 
+    def testDynamicInterval(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+        myRectangle = QgsRectangle(781662.375, 3339523.125,
+                                   793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setEnabled(True)
+        map.grid().setUnits(QgsLayoutItemMapGrid.DynamicPageSizeBased)
+        map.grid().setMinimumIntervalWidth(50)
+        map.grid().setMaximumIntervalWidth(100)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setGridLineColor(QColor(0, 255, 0))
+        map.grid().setGridLineWidth(0.5)
+        map.grid().setAnnotationFont(getTestFont('Bold', 20))
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left)
+        map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right)
+        map.grid().setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top)
+        map.grid().setAnnotationPosition(QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom)
+        map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right)
+        map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom)
+        map.grid().setAnnotationFontColor(QColor(255, 0, 0, 150))
+        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.updateBoundingRect()
+
+        map.grid().refresh()
+
+        checker = QgsLayoutChecker('composermap_dynamic_5_10', layout)
+        checker.setControlPathPrefix("composer_mapgrid")
+        myTestResult, myMessage = checker.testLayout()
+        self.assertTrue(myTestResult, myMessage)
+
+        map.setScale(map.scale() * 1.1)
+
+        checker = QgsLayoutChecker('composermap_dynamic_5_10_2', layout)
+        checker.setControlPathPrefix("composer_mapgrid")
+        myTestResult, myMessage = checker.testLayout()
+        self.assertTrue(myTestResult, myMessage)
+
+        map.setScale(map.scale() * 1.8)
+
+        checker = QgsLayoutChecker('composermap_dynamic_5_10_3', layout)
+        checker.setControlPathPrefix("composer_mapgrid")
+        myTestResult, myMessage = checker.testLayout()
+        self.assertTrue(myTestResult, myMessage)
+
+        map.grid().setMinimumIntervalWidth(10)
+        map.grid().setMaximumIntervalWidth(40)
+        map.grid().refresh()
+
+        checker = QgsLayoutChecker('composermap_dynamic_5_10_4', layout)
+        checker.setControlPathPrefix("composer_mapgrid")
+        myTestResult, myMessage = checker.testLayout()
+        self.assertTrue(myTestResult, myMessage)
+
 
 if __name__ == '__main__':
     unittest.main()
