@@ -74,6 +74,9 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     //! returns whether the resulting image will be georeferenced (embedded or via world file)
     bool saveWorldFile() const;
 
+    //! returns whether metadata such as title and subject will be exported whenever possible
+    bool exportMetadata() const;
+
     //! returns whether the map will be rasterized
     bool saveAsRaster() const;
 

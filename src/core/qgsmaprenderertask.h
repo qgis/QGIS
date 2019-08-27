@@ -32,6 +32,7 @@
 #ifndef QT_NO_PRINTER
 #include <QPrinter>
 #endif
+
 class QgsMapRendererCustomPainterJob;
 class QgsAbstractGeoPdfExporter;
 
@@ -98,6 +99,11 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      */
     void setSaveWorldFile( bool save ) { mSaveWorldFile = save; }
 
+    /**
+     * Sets whether metadata such as title and subject will be exported whenever possible.
+     */
+    void setExportMetadata( bool exportMetadata ) { mExportMetadata = exportMetadata; }
+
     void cancel() override;
 
   signals:
@@ -144,6 +150,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QString mFileFormat;
     bool mForceRaster = false;
     bool mSaveWorldFile = false;
+    bool mExportMetadata = false;
     bool mGeoPDF = false;
     QgsAbstractGeoPdfExporter::ExportDetails mGeoPdfExportDetails;
 
