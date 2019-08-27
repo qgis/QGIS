@@ -33,6 +33,16 @@
        </property>
       </widget>
      </item>
+     <item row="8" column="0" colspan="2">
+      <widget class="QCheckBox" name="mExportMetadataCheckBox">
+       <property name="text">
+        <string>Export RDF metadata (title, author, etc.)</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="1">
       <widget class="QgsScaleWidget" name="mScaleWidget" native="true"/>
      </item>
@@ -46,7 +56,7 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0" colspan="2">
+     <item row="9" column="0" colspan="2">
       <widget class="QGroupBox" name="mGeoPDFGroupBox">
        <property name="title">
         <string>Create Geospatial PDF (GeoPDF)</string>
@@ -100,16 +110,6 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item row="2" column="0" colspan="2">
-             <widget class="QCheckBox" name="mExportMetadataCheckBox">
-              <property name="text">
-               <string>Export RDF metadata (title, author, etc.)</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="1">
              <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
             </item>
@@ -120,7 +120,7 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0" colspan="2">
+            <item row="2" column="0" colspan="2">
              <widget class="QCheckBox" name="mExportGeoPdfFeaturesCheckBox">
               <property name="text">
                <string>Include vector feature information</string>
@@ -137,7 +137,7 @@
        </layout>
       </widget>
      </item>
-     <item row="9" column="0" colspan="2">
+     <item row="10" column="0" colspan="2">
       <widget class="QgsCollapsibleGroupBox" name="mAdvancedPdfSettings">
        <property name="title">
         <string>Advanced Settings</string>
@@ -329,7 +329,7 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="0" colspan="2">
+     <item row="11" column="0" colspan="2">
       <widget class="QLabel" name="mInfo">
        <property name="wordWrap">
         <bool>true</bool>
