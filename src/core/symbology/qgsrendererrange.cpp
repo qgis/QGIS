@@ -14,22 +14,12 @@
  ***************************************************************************/
 
 #include "qgsrendererrange.h"
-#include "qgsclassificationmethod.h"
-
 
 QgsRendererRange::QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol, const QString &label, bool render )
   : mLowerValue( lowerValue )
   , mUpperValue( upperValue )
   , mSymbol( symbol )
   , mLabel( label )
-  , mRender( render )
-{}
-
-QgsRendererRange::QgsRendererRange( const QgsClassificationRange &classInfo, QgsSymbol *symbol, bool render )
-  : mLowerValue( classInfo.lowerBound() )
-  , mUpperValue( classInfo.upperBound() )
-  , mSymbol( symbol )
-  , mLabel( classInfo.label() )
   , mRender( render )
 {}
 
