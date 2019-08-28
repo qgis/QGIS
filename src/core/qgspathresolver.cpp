@@ -16,7 +16,7 @@
 #include "qgspathresolver.h"
 
 #include "qgis.h"
-
+#include "qgsapplication.h"
 #include <QFileInfo>
 #include <QUrl>
 #include <QUuid>
@@ -40,6 +40,11 @@ QString QgsPathResolver::readPath( const QString &f ) const
     return QString();
 
   QString src = filename;
+  if ( src.startsWith( QLatin1String( "inbuilt:" ) ) )
+  {
+    // strip away "inbuilt:" prefix, replace with actual  inbuilt data folder path
+    return QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) + src.mid( 8 );
+  }
 
   if ( mBaseFileName.isNull() )
   {
@@ -168,7 +173,18 @@ bool QgsPathResolver::removePathPreprocessor( const QString &id )
 
 QString QgsPathResolver::writePath( const QString &src ) const
 {
-  if ( mBaseFileName.isEmpty() || src.isEmpty() )
+  if ( src.isEmpty() )
+  {
+    return src;
+  }
+
+  if ( src.startsWith( QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) ) )
+  {
+    // replace inbuilt data folder path with "inbuilt:" prefix
+    return QStringLiteral( "inbuilt:" ) + src.mid( QgsApplication::pkgDataPath().length() + 10 );
+  }
+
+  if ( mBaseFileName.isEmpty() )
   {
     return src;
   }

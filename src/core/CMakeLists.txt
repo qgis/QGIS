@@ -45,6 +45,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgspointdisplacementrenderer.cpp
   symbology/qgspointdistancerenderer.cpp
   symbology/qgsrenderer.cpp
+  symbology/qgsrendererrange.cpp
   symbology/qgsrendererregistry.cpp
   symbology/qgsrulebasedrenderer.cpp
   symbology/qgssinglesymbolrenderer.cpp
@@ -1207,6 +1208,7 @@ SET(QGIS_CORE_HDRS
   symbology/qgspointdisplacementrenderer.h
   symbology/qgspointdistancerenderer.h
   symbology/qgsrenderer.h
+  symbology/qgsrendererrange.h
   symbology/qgsrendererregistry.h
   symbology/qgsrulebasedrenderer.h
   symbology/qgssinglesymbolrenderer.h
@@ -1427,7 +1429,8 @@ ADD_DEPENDENCIES(qgis_core version)
 # because of htonl
 IF (WIN32)
   FIND_LIBRARY(SETUPAPI_LIBRARY NAMES setupapi PATHS $ENV{LIB})
-  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY} dbghelp)
+  FIND_LIBRARY(VERSION_LIBRARY NAMES version PATHS $ENV{LIB})
+  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY} dbghelp ${VERSION_LIBRARY})
 ENDIF (WIN32)
 
 IF (APPLE)

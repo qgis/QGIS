@@ -173,7 +173,7 @@ void QgsChunkedEntity::update( const SceneState &state )
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 
-  qDebug() << "update: active " << mActiveNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << mFrustumCulled << " | loading " << mChunkLoaderQueue->count() << " loaded " << mReplacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
+//  qDebug() << "update: active " << mActiveNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << mFrustumCulled << " | loading " << mChunkLoaderQueue->count() << " loaded " << mReplacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
 }
 
 void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )

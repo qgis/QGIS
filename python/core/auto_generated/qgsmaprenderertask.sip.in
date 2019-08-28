@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapRendererTask : QgsTask
 {
 %Docstring
@@ -63,6 +64,11 @@ Adds ``decorations`` to be rendered on the map.
     void setSaveWorldFile( bool save );
 %Docstring
 Sets whether the image file will be georeferenced (embedded or via a world file).
+%End
+
+    void setExportMetadata( bool exportMetadata );
+%Docstring
+Sets whether metadata such as title and subject will be exported whenever possible.
 %End
 
     virtual void cancel();

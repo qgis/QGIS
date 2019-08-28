@@ -50,7 +50,6 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void mGridFrameFill2ColorButton_colorChanged( const QColor &newColor );
     void mGridTypeComboBox_currentIndexChanged( const QString &text );
     void mMapGridCRSButton_clicked();
-    void mMapGridUnitComboBox_currentIndexChanged( const QString &text );
     void mGridBlendComboBox_currentIndexChanged( int index );
     void mCheckGridLeftSide_toggled( bool checked );
     void mCheckGridRightSide_toggled( bool checked );
@@ -105,6 +104,10 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void annotationFontChanged();
     void lineSymbolChanged();
     void markerSymbolChanged();
+    void gridEnabledToggled( bool active );
+    void intervalUnitChanged( int index );
+    void minIntervalChanged( double interval );
+    void maxIntervalChanged( double interval );
 
   private:
     QPointer< QgsLayoutItemMap > mMap;

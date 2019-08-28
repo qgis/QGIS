@@ -336,6 +336,8 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
   QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
+  mDataDefinedProperties.prepare( *evalContext );
+
   QVariant source( mSourcePath );
 
   //data defined source set?
@@ -344,7 +346,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
   {
     bool ok = false;
     const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::PictureSource );
-    source = sourceProperty.value( *evalContext, QVariant( source ), &ok );
+    source = sourceProperty.value( *evalContext, source, &ok );
     if ( !ok || !source.canConvert( QMetaType::QString ) )
     {
       mHasExpressionError = true;

@@ -1879,6 +1879,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->textFont.setCapitalization( static_cast< QFont::Capitalization >( textStyleElem.attribute( QStringLiteral( "fontCapitals" ), QStringLiteral( "0" ) ).toUInt() ) );
   d->textFont.setUnderline( textStyleElem.attribute( QStringLiteral( "fontUnderline" ) ).toInt() );
   d->textFont.setStrikeOut( textStyleElem.attribute( QStringLiteral( "fontStrikeout" ) ).toInt() );
+  d->textFont.setKerning( textStyleElem.attribute( QStringLiteral( "fontKerning" ), QStringLiteral( "1" ) ).toInt() );
   d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, textStyleElem.attribute( QStringLiteral( "fontLetterSpacing" ), QStringLiteral( "0" ) ).toDouble() );
   d->textFont.setWordSpacing( textStyleElem.attribute( QStringLiteral( "fontWordSpacing" ), QStringLiteral( "0" ) ).toDouble() );
   d->textColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( QStringLiteral( "textColor" ), QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
@@ -1973,6 +1974,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "fontCapitals" ), static_cast< unsigned int >( d->textFont.capitalization() ) );
   textStyleElem.setAttribute( QStringLiteral( "fontLetterSpacing" ), d->textFont.letterSpacing() );
   textStyleElem.setAttribute( QStringLiteral( "fontWordSpacing" ), d->textFont.wordSpacing() );
+  textStyleElem.setAttribute( QStringLiteral( "fontKerning" ), d->textFont.kerning() );
   textStyleElem.setAttribute( QStringLiteral( "textOpacity" ), d->opacity );
   textStyleElem.setAttribute( QStringLiteral( "textOrientation" ), QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );

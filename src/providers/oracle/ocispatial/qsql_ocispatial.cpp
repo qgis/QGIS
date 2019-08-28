@@ -344,6 +344,7 @@ class QOCISpatialDriverPrivate : public QSqlDriverPrivate
     int serverVersion = -1;
     ub4 prefetchRows = QOCISPATIAL_PREFETCH_ROWS;
     ub4 prefetchMem = QOCISPATIAL_PREFETCH_MEM;
+    bool commitOnSuccess = true;
     QString user;
 
     OCIType *geometryTDO = nullptr;
@@ -429,6 +430,7 @@ class QOCISpatialResultPrivate: public QSqlCachedResultPrivate
     QList<QOCISDOGeometryObj *> sdoobj;
     QList<QOCISDOGeometryInd *> sdoind;
     bool transaction;
+    bool commitOnSuccess = true;
     int serverVersion;
     ub4 prefetchRows, prefetchMem;
     OCIType *geometryTDO = nullptr;
@@ -2116,7 +2118,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
   r = OCIStmtExecute( d->svc, d->sql, d->err,
                       arrayBind ? 1 : columns[0].recordCount,
                       0, nullptr, nullptr,
-                      d->transaction ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS );
+                      d->transaction || !d->commitOnSuccess ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS );
 
   if ( r != OCI_SUCCESS && r != OCI_SUCCESS_WITH_INFO )
   {
@@ -3353,6 +3355,7 @@ QOCISpatialResultPrivate::QOCISpatialResultPrivate( QOCISpatialResult *q, const 
   , env( drv_d_func()->env )
   , svc( const_cast<OCISvcCtx * &>( drv_d_func()->svc ) )
   , transaction( drv_d_func()->transaction )
+  , commitOnSuccess( drv_d_func()->commitOnSuccess )
   , serverVersion( drv_d_func()->serverVersion )
   , prefetchRows( drv_d_func()->prefetchRows )
   , prefetchMem( drv_d_func()->prefetchMem )
@@ -3610,7 +3613,7 @@ bool QOCISpatialResult::exec()
   }
 
   iters = stmtType == OCI_STMT_SELECT ? 0 : 1;
-  mode = d->transaction ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS;
+  mode = d->transaction || !d->commitOnSuccess ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS;
 
   qDebug() << "iters:" << iters;
 
@@ -3839,6 +3842,10 @@ static void qParseOpts( const QString &options, QOCISpatialDriverPrivate *d )
         d->prefetchMem = QOCISPATIAL_PREFETCH_MEM;
       else if ( intVal >= 0 )
         d->prefetchMem = static_cast<ub4>( intVal );
+    }
+    else if ( opt == QLatin1String( "COMMIT_ON_SUCCESS" ) )
+    {
+      d->commitOnSuccess = val.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
     }
     else
     {

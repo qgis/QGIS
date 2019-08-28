@@ -205,7 +205,12 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
     mReferencedLayer = relation.referencedLayer();
     mReferencedField = relation.fieldPairs().at( 0 ).second;
     if ( mComboBox )
+    {
+      mComboBox->setSourceLayer( mReferencedLayer );
+      Q_NOWARN_DEPRECATED_PUSH
       mComboBox->setIdentifierField( mReferencedField );
+      Q_NOWARN_DEPRECATED_PUSH
+    }
 
     mReferencedFieldIdx = mReferencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
     mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
@@ -292,7 +297,9 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   }
   else
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mComboBox->setIdentifierValue( value );
+    Q_NOWARN_DEPRECATED_POP
 
     if ( mChainFilters )
     {
@@ -344,7 +351,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
   }
   else
   {
-    mComboBox->setIdentifierValue( QVariant( QVariant::Int ) );
+    mComboBox->setIdentifierValuesToNull();
   }
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
@@ -378,7 +385,7 @@ void QgsRelationReferenceWidget::showIndeterminateState()
   }
   else
   {
-    whileBlocking( mComboBox )->setIdentifierValue( QVariant() );
+    whileBlocking( mComboBox )->setIdentifierValuesToNull();
   }
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
@@ -392,7 +399,9 @@ QVariant QgsRelationReferenceWidget::foreignKey() const
   }
   else
   {
+    Q_NOWARN_DEPRECATED_PUSH
     return mComboBox->identifierValue();
+    Q_NOWARN_DEPRECATED_POP
   }
 }
 
@@ -540,7 +549,9 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setSourceLayer( mReferencedLayer );
     mComboBox->setDisplayExpression( mReferencedLayer->displayExpression() );
     mComboBox->setAllowNull( mAllowNull );
+    Q_NOWARN_DEPRECATED_PUSH
     mComboBox->setIdentifierField( mReferencedField );
+    Q_NOWARN_DEPRECATED_POP
 
     QVariant nullValue = QgsApplication::nullRepresentation();
 
@@ -695,7 +706,9 @@ void QgsRelationReferenceWidget::comboReferenceChanged( int index )
   highlightFeature( mFeature );
   updateAttributeEditorFrame( mFeature );
 
+  Q_NOWARN_DEPRECATED_PUSH
   emitForeignKeyChanged( mComboBox->identifierValue() );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature &feature )
@@ -896,7 +909,9 @@ void QgsRelationReferenceWidget::addEntry()
 
   if ( mEditorContext.vectorLayerTools()->addFeature( mReferencedLayer, attributes, QgsGeometry(), &f ) )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mComboBox->setIdentifierValue( f.attribute( mReferencedFieldIdx ) );
+    Q_NOWARN_DEPRECATED_POP
     mAddEntryButton->setEnabled( false );
   }
 }

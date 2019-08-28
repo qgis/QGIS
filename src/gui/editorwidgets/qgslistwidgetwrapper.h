@@ -56,13 +56,11 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
-  public slots:
-    void setValue( const QVariant &value ) override;
-
   private slots:
     void onValueChanged();
 
   private:
+    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
     void updateConstraintWidgetStatus() override;
 
     QgsListWidget *mWidget = nullptr;

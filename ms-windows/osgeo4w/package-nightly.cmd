@@ -150,7 +150,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D PROJ_LIBRARY=%O4W_ROOT%/apps/proj-dev/lib/proj_6_1.lib ^
+	-D PROJ_LIBRARY=%O4W_ROOT%/apps/proj-dev/lib/proj_6_2.lib ^
 	-D PROJ_INCLUDE_DIR=%O4W_ROOT%/apps/proj-dev/include ^
 	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-dev/lib/gdal_i.lib ^
 	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-dev/include ^

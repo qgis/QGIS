@@ -220,7 +220,7 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
   if ( !mLastSavePointIsDirty && !mSavepoints.isEmpty() )
     return mSavepoints.top();
 
-  const QString name( QUuid::createUuid().toString() );
+  const QString name( QStringLiteral( "qgis" ) + ( QUuid::createUuid().toString().mid( 1, 24 ).replace( '-', QString() ) ) );
 
   if ( !executeSql( QStringLiteral( "SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error ) )
   {

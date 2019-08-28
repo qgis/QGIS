@@ -340,6 +340,21 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      */
     void setFieldOfView( const float fieldOfView );
 
+    /**
+     * Sets DPI used for conversion between real world units (e.g. mm) and pixels
+     * \param dpi the number of dot per inch
+     * \since QGIS 3.10
+     */
+    void setOutputDpi( const double dpi ) {mDpi = dpi;}
+
+
+    /**
+     * Returns DPI used for conversion between real world units (e.g. mm) and pixels
+     * Default value is 96
+     * \since QGIS 3.10
+     */
+    double outputDpi() const { return mDpi; }
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -396,7 +411,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void pointLightsChanged();
 
     /**
-     * Emitted when the camer lens field of view changes
+     * Emitted when the camera lens field of view changes
      * \since QGIS 3.8
      */
     void fieldOfViewChanged();
@@ -430,6 +445,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     QgsCoordinateTransformContext mTransformContext;
     QgsPathResolver mPathResolver;
     QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
+    double mDpi = 96;  //!< Dot per inch value for the screen / painter
 };
 
 

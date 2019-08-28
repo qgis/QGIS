@@ -268,6 +268,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mFontStyleComboBox_currentIndexChanged( const QString &text );
     void mFontUnderlineBtn_toggled( bool ckd );
     void mFontStrikethroughBtn_toggled( bool ckd );
+    void kerningToggled( bool checked );
     void mFontWordSpacingSpinBox_valueChanged( double spacing );
     void mFontLetterSpacingSpinBox_valueChanged( double spacing );
     void mFontSizeUnitWidget_changed();

@@ -26,6 +26,7 @@
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsfeaturerequest.h"
 #include "qgsvectorlayer.h"
+
 #include <QFile>
 #include <QTextStream>
 #ifndef QT_NO_PRINTER
@@ -287,30 +288,72 @@ bool QgsMapRendererTask::run()
   {
     mDestPainter->end();
 
-    if ( mForceRaster && mFileFormat == QStringLiteral( "PDF" ) )
+    if ( mFileFormat == QStringLiteral( "PDF" ) )
     {
 #ifndef QT_NO_PRINTER
-      QPainter pp;
-      pp.begin( mPrinter.get() );
-      QRectF rect( 0, 0, mImage.width(), mImage.height() );
-      pp.drawImage( rect, mImage, rect );
-      pp.end();
+      if ( mForceRaster )
+      {
+        QPainter pp;
+        pp.begin( mPrinter.get() );
+        QRectF rect( 0, 0, mImage.width(), mImage.height() );
+        pp.drawImage( rect, mImage, rect );
+        pp.end();
+      }
 
-      if ( mSaveWorldFile )
+      if ( mSaveWorldFile || mExportMetadata )
       {
         CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", QString::number( mMapSettings.outputDpi() ).toLocal8Bit().constData() );
         gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
         if ( outputDS )
         {
-          double a, b, c, d, e, f;
-          QgsMapSettingsUtils::worldFileParameters( mMapSettings, a, b, c, d, e, f );
-          c -= 0.5 * a;
-          c -= 0.5 * b;
-          f -= 0.5 * d;
-          f -= 0.5 * e;
-          double geoTransform[6] = { c, a, b, f, d, e };
-          GDALSetGeoTransform( outputDS.get(), geoTransform );
-          GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+          if ( mSaveWorldFile )
+          {
+            double a, b, c, d, e, f;
+            QgsMapSettingsUtils::worldFileParameters( mMapSettings, a, b, c, d, e, f );
+            c -= 0.5 * a;
+            c -= 0.5 * b;
+            f -= 0.5 * d;
+            f -= 0.5 * e;
+            double geoTransform[6] = { c, a, b, f, d, e };
+            GDALSetGeoTransform( outputDS.get(), geoTransform );
+            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+          }
+
+          if ( mExportMetadata )
+          {
+            QString creationDateString;
+            const QDateTime creationDateTime = mGeoPdfExportDetails.creationDateTime;
+            if ( creationDateTime.isValid() )
+            {
+              creationDateString = QStringLiteral( "D:%1" ).arg( mGeoPdfExportDetails.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
+              if ( creationDateTime.timeZone().isValid() )
+              {
+                int offsetFromUtc = creationDateTime.timeZone().offsetFromUtc( creationDateTime );
+                creationDateString += ( offsetFromUtc >= 0 ) ? '+' : '-';
+                offsetFromUtc = std::abs( offsetFromUtc );
+                int offsetHours = offsetFromUtc / 3600;
+                int offsetMins = ( offsetFromUtc % 3600 ) / 60;
+                creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
+              }
+            }
+            GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toLocal8Bit().constData(), nullptr );
+
+            GDALSetMetadataItem( outputDS.get(), "AUTHOR", mGeoPdfExportDetails.author.toLocal8Bit().constData(), nullptr );
+            const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+            GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toLocal8Bit().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toLocal8Bit().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "SUBJECT", mGeoPdfExportDetails.subject.toLocal8Bit().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "TITLE", mGeoPdfExportDetails.title.toLocal8Bit().constData(), nullptr );
+
+            const QgsAbstractMetadataBase::KeywordMap keywords = mGeoPdfExportDetails.keywords;
+            QStringList allKeywords;
+            for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
+            {
+              allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
+            }
+            const QString keywordString = allKeywords.join( ';' );
+            GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toLocal8Bit().constData(), nullptr );
+          }
         }
         CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", nullptr );
       }

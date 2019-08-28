@@ -6,7 +6,7 @@ set -e
 # Setup ccache
 ##############
 export CCACHE_TEMPDIR=/tmp
-ccache -M 1G
+ccache -M 1.2G
 
 # Temporarily uncomment to debug ccache issues
 # export CCACHE_LOGFILE=/tmp/cache.debug

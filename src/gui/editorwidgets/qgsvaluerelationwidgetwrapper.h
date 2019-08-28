@@ -78,10 +78,6 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
-  public slots:
-
-    void setValue( const QVariant &value ) override;
-
     /**
      * Will be called when a value in the current edited form or table row
      * changes
@@ -108,6 +104,8 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
 
   private:
+    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
+
 
     /**
      * Returns the value configured in `NofColumns` or 1 if not

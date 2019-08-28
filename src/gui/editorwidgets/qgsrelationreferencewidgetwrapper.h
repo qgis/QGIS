@@ -60,17 +60,17 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     void showIndeterminateState() override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
   private slots:
     void foreignKeyChanged( QVariant value );
 
   protected:
-
     void updateConstraintWidgetStatus() override;
 
   private:
+    void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;
+
     QgsRelationReferenceWidget *mWidget = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;

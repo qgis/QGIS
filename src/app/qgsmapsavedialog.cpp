@@ -148,6 +148,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
     case Image:
     {
+      mExportMetadataCheckBox->hide();
       mGeoPDFGroupBox->hide();
       mAdvancedPdfSettings->hide();
       mTextExportLabel->hide();
@@ -305,6 +306,11 @@ bool QgsMapSaveDialog::drawDecorations() const
 bool QgsMapSaveDialog::saveWorldFile() const
 {
   return mSaveWorldFile->isChecked();
+}
+
+bool QgsMapSaveDialog::exportMetadata() const
+{
+  return mExportMetadataCheckBox->isChecked();;
 }
 
 bool QgsMapSaveDialog::saveAsRaster() const
@@ -502,19 +508,20 @@ void QgsMapSaveDialog::onAccepted()
         ms.setTextRenderFormat( static_cast< QgsRenderContext::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() ) );
 
         QgsAbstractGeoPdfExporter::ExportDetails geoPdfExportDetails;
+        if ( mExportMetadataCheckBox->isChecked() )
+        {
+          // These details will be used on non-GeoPDF exports is the export metadata checkbox is checked
+          geoPdfExportDetails.author = QgsProject::instance()->metadata().author();
+          geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+          geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+          geoPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
+          geoPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
+          geoPdfExportDetails.title = QgsProject::instance()->metadata().title();
+          geoPdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
+        }
+
         if ( mGeoPDFGroupBox->isChecked() )
         {
-          if ( mExportMetadataCheckBox->isChecked() )
-          {
-            geoPdfExportDetails.author = QgsProject::instance()->metadata().author();
-            geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
-            geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
-            geoPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
-            geoPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
-            geoPdfExportDetails.title = QgsProject::instance()->metadata().title();
-            geoPdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
-          }
-
           if ( mGeoPdfFormatComboBox->currentIndex() == 0 )
           {
             geoPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
@@ -541,6 +548,11 @@ void QgsMapSaveDialog::onAccepted()
         }
 
         mapRendererTask->setSaveWorldFile( saveWorldFile() );
+
+        if ( exportMetadata() )
+        {
+          mapRendererTask->setExportMetadata( exportMetadata() );
+        }
 
         connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
         {

@@ -1,6 +1,5 @@
 /***************************************************************************
-  qgsfieldlistcombobox.h - QgsFieldListComboBox
-
+  qgsfeaturelistcombobox.h - QgsFeatureListComboBox
  ---------------------
  begin                : 10.3.2017
  copyright            : (C) 2017 by Matthias Kuhn
@@ -27,6 +26,7 @@ class QgsFeatureFilterModel;
 class QgsAnimatedIcon;
 class QgsFilterLineEdit;
 
+
 /**
  * \ingroup gui
  * This offers a combobox with autocompleter that allows selecting features from a layer.
@@ -44,6 +44,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
     Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
     Q_PROPERTY( QVariant identifierValue READ identifierValue WRITE setIdentifierValue NOTIFY identifierValueChanged )
+    Q_PROPERTY( QVariantList identifierValues READ identifierValues WRITE setIdentifierValues NOTIFY identifierValueChanged )
     Q_PROPERTY( QString identifierField READ identifierField WRITE setIdentifierField NOTIFY identifierFieldChanged )
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
 
@@ -63,6 +64,12 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * The layer from which features should be listed.
      */
     void setSourceLayer( QgsVectorLayer *sourceLayer );
+
+    /**
+     * Sets the current index by using the given feature
+     * \since QGIS 3.10
+     */
+    void setCurrentFeature( const QgsFeature &feature );
 
     /**
      * The display expression will be used to display features as well as
@@ -101,14 +108,37 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * The identifier value of the currently selected feature. A value from the
      * identifierField.
+     * \deprecated since QGIS 3.10
      */
-    QVariant identifierValue() const;
+    Q_DECL_DEPRECATED QVariant identifierValue() const SIP_DEPRECATED;
+
+    /**
+     * The identifier values of the currently selected feature. A value from the
+     * identifierField.
+     * \since QGIS 3.10
+     */
+    QVariantList identifierValues() const;
+
 
     /**
      * The identifier value of the currently selected feature. A value from the
      * identifierField.
+     * \deprecated since QGIS 3.10 use setIdentifierValues
      */
-    void setIdentifierValue( const QVariant &identifierValue );
+    Q_DECL_DEPRECATED void setIdentifierValue( const QVariant &identifierValue ) SIP_DEPRECATED;
+
+    /**
+     * The identifier values of the currently selected feature. A value from the
+     * identifierFields.
+     * \since QGIS 3.10
+     */
+    void setIdentifierValues( const QVariantList &identifierValues );
+
+    /**
+     * Sets the identifier values of the currently selected feature to NULL value(s).
+     * \since QGIS 3.10
+     */
+    void setIdentifierValuesToNull();
 
     /**
      * Shorthand for getting a feature request to query the currently selected
@@ -129,14 +159,30 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * Field name that will be used to uniquely identify the current feature.
      * Normally the primary key of the layer.
+     * \deprecated since QGIS 3.10
      */
-    QString identifierField() const;
+    Q_DECL_DEPRECATED QString identifierField() const SIP_DEPRECATED;
 
     /**
      * Field name that will be used to uniquely identify the current feature.
      * Normally the primary key of the layer.
+     * \since QGIS 3.10
      */
-    void setIdentifierField( const QString &identifierField );
+    QStringList identifierFields() const;
+
+    /**
+     * Field name that will be used to uniquely identify the current feature.
+     * Normally the primary key of the layer.
+     * \deprecated since QGIS 3.10
+     */
+    Q_DECL_DEPRECATED void setIdentifierField( const QString &identifierField ) SIP_DEPRECATED;
+
+    /**
+     * Field name that will be used to uniquely identify the current feature.
+     * Normally the primary key of the layer.
+     * \since QGIS 3.10
+     */
+    void setIdentifierFields( const QStringList &identifierFields );
 
     /**
      * The index of the currently selected item.
@@ -224,5 +270,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     friend class TestQgsFeatureListComboBox;
 };
+
+
 
 #endif // QGSFIELDLISTCOMBOBOX_H

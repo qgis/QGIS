@@ -172,7 +172,13 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mLineEdit )
   {
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); }, Qt::UniqueConnection );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      emit valueChanged( value );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( value );
+    }, Qt::UniqueConnection );
   }
 }
 
@@ -181,7 +187,7 @@ bool QgsValueRelationWidgetWrapper::valid() const
   return mTableWidget || mLineEdit || mComboBox;
 }
 
-void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
+void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mTableWidget )
   {
@@ -268,7 +274,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     {
       populate();
       // Restore value
-      setValue( value( ) );
+      updateValues( value( ) );
       // If the value has changed as a result of another widget's value change,
       // we need to emit the signal to make sure other dependent widgets are
       // updated.
@@ -305,7 +311,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
     // set in the next, which is typically the "down" in a drill-down
     QTimer::singleShot( 0, this, [ this ]
     {
-      setValue( mCache.at( 0 ).key );
+      updateValues( mCache.at( 0 ).key );
     } );
   }
 }

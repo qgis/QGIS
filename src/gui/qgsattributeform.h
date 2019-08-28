@@ -286,7 +286,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void refreshFeature();
 
   private slots:
-    void onAttributeChanged( const QVariant &value );
+    void onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
     void onUpdatedFields();

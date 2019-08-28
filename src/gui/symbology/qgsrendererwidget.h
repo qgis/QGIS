@@ -88,6 +88,11 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      */
     void layerVariablesChanged();
 
+    /**
+     * Emitted when the symbol levels settings have been changed.
+     */
+    void symbolLevelsChanged();
+
   protected:
     QgsVectorLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;

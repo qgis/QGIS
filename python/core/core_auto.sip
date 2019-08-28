@@ -269,6 +269,7 @@
 %Include auto_generated/symbology/qgspointdisplacementrenderer.sip
 %Include auto_generated/symbology/qgspointdistancerenderer.sip
 %Include auto_generated/symbology/qgsrenderer.sip
+%Include auto_generated/symbology/qgsrendererrange.sip
 %Include auto_generated/symbology/qgsrendererregistry.sip
 %Include auto_generated/symbology/qgsrulebasedrenderer.sip
 %Include auto_generated/symbology/qgssinglesymbolrenderer.sip

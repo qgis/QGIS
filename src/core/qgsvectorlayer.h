@@ -2479,6 +2479,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onRelationsLoaded();
     void onSymbolsCounted();
     void onDirtyTransaction( const QString &sql, const QString &name );
+    void emitDataChanged();
 
   private:
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
@@ -2641,6 +2642,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mAllowCommit = true;
 
     friend class QgsVectorLayerFeatureSource;
+
+    //! To avoid firing multiple time dataChanged signal on circular layer circular dependencies
+    bool mDataChangedFired = false;
 };
 
 

@@ -26,6 +26,7 @@ class QgsField;
 
 #include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup gui
@@ -37,6 +38,9 @@ class QgsField;
  * by a field of a vector layer, or return the value it currently holds. Every time it is changed
  * it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
  * changed status of the widget will be saved.
+ *
+ * It can also handle additional fields of a vector layer and would set the widget
+ * for their corresponding values and emit valuesChanged signal.
  *
  */
 class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
@@ -79,6 +83,20 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \returns The current value the widget represents
      */
     virtual QVariant value() const = 0;
+
+    /**
+     * Returns the list of additional fields which the editor handles
+     * \since QGIS 3.10
+     */
+    virtual QStringList additionalFields() const {return QStringList();}
+
+    /**
+     * Will be used to access the widget's values for potential additional fields handled by the widget
+     * \returns A map of additional field names with their corresponding values
+     * \see additionalFields
+     * \since QGIS 3.10
+     */
+    virtual QVariantList additionalFieldValues() const {return QVariantList();}
 
     /**
      * Access the field index.
@@ -224,8 +242,19 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Emit this signal, whenever the value changed.
      *
      * \param value The new value
+     * \deprecated since QGIS 3.10 use valuesChanged signal instead
      */
-    void valueChanged( const QVariant &value );
+    Q_DECL_DEPRECATED void valueChanged( const QVariant &value );
+
+    /**
+     * Emit this signal, whenever the value changed.
+     * It will also return the values for the additional fields handled by the widget
+     *
+     * \param value The new value
+     * \param additionalFieldValues A map of additional field names with their corresponding values
+     * \since QGIS 3.10
+     */
+    void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues = QVariantList() );
 
     /**
      * Emit this signal when the constraint status changed.
@@ -247,7 +276,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Will be called when the feature changes
      *
-     * Is forwarded to the slot setValue()
+     * Is forwarded to the slot setValues()
      *
      * \param feature The new feature
      */
@@ -258,8 +287,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * to reflect the new value.
      *
      * \param value The new value of the attribute
+     * \deprecated since QGIS 3.10
      */
-    virtual void setValue( const QVariant &value ) = 0;
+    // TODO Q_DECL_DEPRECATED
+    virtual void setValue( const QVariant &value ) SIP_DEPRECATED;
+
+    /**
+     * Is called, when the value of the widget or additional field values
+     * needs to be changed. Update the widget representation
+     * to reflect the new values.
+     * \since QGIS 3.10
+     */
+    void setValues( const QVariant &value, const QVariantList &additionalValues );
 
     /**
      * Will call the value() method to determine the emitted value
@@ -311,9 +350,25 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
   private:
 
     /**
+    * Is called, when the value of the widget needs to be changed. Update the widget representation
+    * to reflect the new value.
+    *
+    * \param value The new value of the attribute
+    * \param additionalValues The values of potential additional fields
+    * \note Will be pure virtual in QGIS 4.x
+    * \since QGIS 3.10
+    */
+    virtual void updateValues( const QVariant &value, const QVariantList &additionalValues = QVariantList() ); //TODO QGIS 4: make it pure virtual
+
+    // TODO QGIS 4: remove
+    bool isRunningDeprecatedSetValue = false;
+
+    /**
      * mFieldIdx the widget feature field id
      */
     int mFieldIdx = -1;
+
+    QList<int> mAdditionalFieldIndexes;
 
     /**
      * The feature currently being edited, in its current state

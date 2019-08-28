@@ -145,24 +145,44 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
       const QgsWkbTypes::Type type = wkbType();
 
-      bool equal = pt->wkbType() == type;
+      if ( pt->wkbType() != type )
+        return false;
 
-      if ( std::isnan( pt->x() ) || std::isnan( mX ) )
-        equal &= std::isnan( pt->x() ) && std::isnan( mX ) ;
-      else
-        equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
+      const bool nan1X = std::isnan( mX );
+      const bool nan2X = std::isnan( pt->x() );
+      if ( nan1X != nan2X )
+        return false;
+      if ( !nan1X && !qgsDoubleNear( mX, pt->x(), 1E-8 ) )
+        return false;
 
-      if ( std::isnan( pt->y() ) || std::isnan( mY ) )
-        equal &= std::isnan( pt->y() ) && std::isnan( mY ) ;
-      else
-        equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
+      const bool nan1Y = std::isnan( mY );
+      const bool nan2Y = std::isnan( pt->y() );
+      if ( nan1Y != nan2Y )
+        return false;
+      if ( !nan1Y && !qgsDoubleNear( mY, pt->y(), 1E-8 ) )
+        return false;
 
       if ( QgsWkbTypes::hasZ( type ) )
-        equal &= qgsDoubleNear( pt->z(), mZ, 1E-8 ) || ( std::isnan( pt->z() ) && std::isnan( mZ ) );
-      if ( QgsWkbTypes::hasM( type ) )
-        equal &= qgsDoubleNear( pt->m(), mM, 1E-8 ) || ( std::isnan( pt->m() ) && std::isnan( mM ) );
+      {
+        const bool nan1Z = std::isnan( mZ );
+        const bool nan2Z = std::isnan( pt->z() );
+        if ( nan1Z != nan2Z )
+          return false;
+        if ( !nan1Z && !qgsDoubleNear( mZ, pt->z(), 1E-8 ) )
+          return false;
+      }
 
-      return equal;
+      if ( QgsWkbTypes::hasM( type ) )
+      {
+        const bool nan1M = std::isnan( mM );
+        const bool nan2M = std::isnan( pt->m() );
+        if ( nan1M != nan2M )
+          return false;
+        if ( !nan1M && !qgsDoubleNear( mM, pt->m(), 1E-8 ) )
+          return false;
+      }
+
+      return true;
     }
 
     bool operator!=( const QgsAbstractGeometry &other ) const override

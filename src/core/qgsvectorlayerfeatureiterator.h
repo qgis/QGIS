@@ -256,6 +256,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );
 #endif
 
+    void createExpressionContext();
     std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
     QgsFeedback *mInterruptionChecker = nullptr;

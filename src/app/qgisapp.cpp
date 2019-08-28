@@ -11445,6 +11445,7 @@ void QgisApp::new3DMapCanvas()
     defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
     defaultPointLight.setConstantAttenuation( 0 );
     map->setPointLights( QList<QgsPointLightSettings>() << defaultPointLight );
+    map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
     dock->setMapSettings( map );
 
@@ -13695,9 +13696,9 @@ void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
 
   if ( settings.value( QStringLiteral( "qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() )
   {
-    QString smalltext = tr( "This project file was saved by an older version of QGIS."
-                            " When saving this project file, QGIS will update it to the latest version, "
-                            "possibly rendering it useless for older versions of QGIS." );
+    QString smalltext = tr( "This project file was saved by QGIS version %1."
+                            " When saving this project file, QGIS will update it to version %2, "
+                            "possibly rendering it useless for older versions of QGIS." ).arg( oldVersion, Qgis::QGIS_VERSION );
 
     QString title = tr( "Project file is older" );
 
@@ -13956,6 +13957,7 @@ void QgisApp::readProject( const QDomDocument &doc )
         QgsFlatTerrainGenerator *flatTerrainGen = static_cast<QgsFlatTerrainGenerator *>( map->terrainGenerator() );
         flatTerrainGen->setExtent( mMapCanvas->fullExtent() );
       }
+      map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
       mapCanvasDock3D->setMapSettings( map );
 

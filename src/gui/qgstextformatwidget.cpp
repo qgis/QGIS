@@ -91,6 +91,7 @@ void QgsTextFormatWidget::initWidget()
   connect( mChkNoObstacle, &QCheckBox::toggled, this, &QgsTextFormatWidget::mChkNoObstacle_toggled );
   connect( chkLineOrientationDependent, &QCheckBox::toggled, this, &QgsTextFormatWidget::chkLineOrientationDependent_toggled );
   connect( mToolButtonConfigureSubstitutes, &QToolButton::clicked, this, &QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked );
+  connect( mKerningCheckBox, &QCheckBox::toggled, this, &QgsTextFormatWidget::kerningToggled );
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
@@ -464,7 +465,8 @@ void QgsTextFormatWidget::initWidget()
           << mGeometryGeneratorType
           << mBackgroundSymbolButton
           << mCalloutsDrawCheckBox
-          << mCalloutStyleComboBox;
+          << mCalloutStyleComboBox
+          << mKerningCheckBox;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
@@ -818,6 +820,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
 
   mFontWordSpacingSpinBox->setValue( format.font().wordSpacing() );
   mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
+  whileBlocking( mKerningCheckBox )->setChecked( format.font().kerning() );
 
   QgsFontUtils::updateFontViaStyle( mRefFont, format.namedStyle() );
   updateFont( mRefFont );
@@ -1119,6 +1122,7 @@ void QgsTextFormatWidget::updateFont( const QFont &font )
   mFontCapitalsComboBox->setCurrentIndex( idx == -1 ? 0 : idx );
   mFontUnderlineBtn->setChecked( mRefFont.underline() );
   mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
+  mKerningCheckBox->setChecked( mRefFont.kerning() );
   blockFontChangeSignals( false );
 
   // update font name with font face
@@ -1136,6 +1140,7 @@ void QgsTextFormatWidget::blockFontChangeSignals( bool blk )
   mFontStrikethroughBtn->blockSignals( blk );
   mFontWordSpacingSpinBox->blockSignals( blk );
   mFontLetterSpacingSpinBox->blockSignals( blk );
+  mKerningCheckBox->blockSignals( blk );
 }
 
 void QgsTextFormatWidget::updatePreview()
@@ -1325,6 +1330,12 @@ void QgsTextFormatWidget::mFontUnderlineBtn_toggled( bool ckd )
 void QgsTextFormatWidget::mFontStrikethroughBtn_toggled( bool ckd )
 {
   mRefFont.setStrikeOut( ckd );
+  updateFont( mRefFont );
+}
+
+void QgsTextFormatWidget::kerningToggled( bool checked )
+{
+  mRefFont.setKerning( checked );
   updateFont( mRefFont );
 }
 

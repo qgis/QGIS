@@ -267,7 +267,7 @@ void QgsRelationAddDlg::checkDefinitionValid()
   for ( int i = 0; i < mFieldPairWidgets.count(); i++ )
   {
     valid &= mFieldPairWidgets.at( i )->isPairEnabled() || !mFieldPairWidgets.at( i )->referencingField().isNull();
-    valid &= mFieldPairWidgets.at( i )->isPairEnabled()  || !mFieldPairWidgets.at( i )->referencedField().isNull();
+    valid &= mFieldPairWidgets.at( i )->isPairEnabled() || !mFieldPairWidgets.at( i )->referencedField().isNull();
   }
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( valid );
 }
