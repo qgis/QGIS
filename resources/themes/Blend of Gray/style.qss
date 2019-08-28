@@ -80,6 +80,54 @@ QAbstractSpinBox::down-button {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
+QAbstractSpinBox::drop-down {
+     subcontrol-origin: border;
+     subcontrol-position: top right;
+     width: 0.8em;
+     border: 0px;
+}
+
+QAbstractSpinBox::down-arrow
+{
+    image: url(@theme_path/icons/arrow-down.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+
+/* ==================================================================================== */
+/* CALENDAR
+/* ==================================================================================== */
+
+/* header row */
+QCalendarWidget QWidget {
+    color: @itembackground;
+    alternate-background-color: @background;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar
+{
+    color: @text;
+    background-color: @background;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar QWidget
+{
+    color: @text;
+}
+
+/* normal days */
+QCalendarWidget QAbstractItemView:enabled 
+{
+    color: @text;
+    background-color: @itembackground;
+    selection-background-color: @selection;
+    selection-color: @text;
+}
+
+QCalendarWidget QAbstractItemView:disabled
+{
+    color: @itemalternativebackground;
+}
 
 /* ==================================================================================== */
 /* MENU                                                                                 */
