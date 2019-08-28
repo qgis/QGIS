@@ -15,24 +15,31 @@ from plugins.db_manager.dlg_sql_window import check_comments_in_sql
 
 
 class TestPyQgsDBManagerSQLWindow(unittest.TestCase):
+
     def test_no_comment_parsing(self):
         query = "SELECT * FROM test"
         self.assertEqual(check_comments_in_sql(query), query)
+
     def test_comment_parsing(self):
         query = "SELECT * FROM test -- WHERE a = 1 "
         self.assertEqual(check_comments_in_sql(query), "SELECT * FROM test")
+
     def test_comment_parsing_newline(self):
         query = "SELECT * FROM test -- WHERE a = 1 \n ORDER BY b"
         self.assertEqual(check_comments_in_sql(query), "SELECT * FROM test   ORDER BY b")
+
     def test_comment_parsing_newline2(self):
         query = "SELECT * FROM test \n-- WHERE a = 1 \n ORDER BY b"
         self.assertEqual(check_comments_in_sql(query), "SELECT * FROM test   ORDER BY b")
+
     def test_comment_parsing_nothing(self):
         query = "--SELECT * FROM test"
         self.assertEqual(check_comments_in_sql(query), "")
+
     def test_comment_parsing_quote(self):
         query = "SELECT * FROM test WHERE a = '--sdf'"
         self.assertEqual(check_comments_in_sql(query), query)
+        
     def test_comment_parsing_identifier(self):
         query = 'SELECT * FROM "test--1" WHERE a = 1'
         self.assertEqual(check_comments_in_sql(query), query)
