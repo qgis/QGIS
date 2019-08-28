@@ -584,6 +584,200 @@ Content-Type: application/openapi+json;version=3.0
         "tags": "Capabilities"
       }
     },
+    "/wfs3/collections/exclude_attribute/items": {
+      "get": {
+        "description": "Every feature in a dataset belongs to a collection. A dataset may consist of multiple feature collections. A feature collection is often a collection of features of a similar type, based on a common schema. Use content negotiation or specify a file extension to request HTML (.html) or GeoJSON (.json).",
+        "operationId": "getFeatures_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de",
+        "parameters": [
+          [
+            {
+              "$ref": "#/components/parameters/limit"
+            },
+            {
+              "$ref": "#/components/parameters/offset"
+            },
+            {
+              "$ref": "#/components/parameters/resultType"
+            },
+            {
+              "$ref": "#/components/parameters/bbox"
+            },
+            {
+              "$ref": "#/components/parameters/bbox-crs"
+            }
+          ],
+          {
+            "description": "Filter the collection by 'id'",
+            "explode": false,
+            "in": "query",
+            "name": "id",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Filter the collection by 'name'",
+            "explode": false,
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Filter the collection by 'utf8nameè'",
+            "explode": false,
+            "in": "query",
+            "name": "utf8nameè",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": [
+          [
+            "200",
+            {
+              "content": {
+                "application/geo+json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/featureCollectionGeoJSON"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "Metadata about the collection 'A test vector layer' shared by this API."
+            }
+          ],
+          {
+            "default": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  },
+                  "text/html": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          }
+        ],
+        "summary": "Retrieve features of 'A test vector layer' feature collection",
+        "tags": "Features"
+      }
+    },
+    "/wfs3/collections/short-name/items": {
+      "get": {
+        "description": "Every feature in a dataset belongs to a collection. A dataset may consist of multiple feature collections. A feature collection is often a collection of features of a similar type, based on a common schema. Use content negotiation or specify a file extension to request HTML (.html) or GeoJSON (.json).",
+        "operationId": "getFeatures_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774",
+        "parameters": [
+          [
+            {
+              "$ref": "#/components/parameters/limit"
+            },
+            {
+              "$ref": "#/components/parameters/offset"
+            },
+            {
+              "$ref": "#/components/parameters/resultType"
+            },
+            {
+              "$ref": "#/components/parameters/bbox"
+            },
+            {
+              "$ref": "#/components/parameters/bbox-crs"
+            }
+          ],
+          {
+            "description": "Filter the collection by 'id'",
+            "explode": false,
+            "in": "query",
+            "name": "id",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Filter the collection by 'name'",
+            "explode": false,
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Filter the collection by 'utf8nameè'",
+            "explode": false,
+            "in": "query",
+            "name": "utf8nameè",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": [
+          [
+            "200",
+            {
+              "content": {
+                "application/geo+json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/featureCollectionGeoJSON"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "Metadata about the collection 'A test vector layer' shared by this API."
+            }
+          ],
+          {
+            "default": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  },
+                  "text/html": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          }
+        ],
+        "summary": "Retrieve features of 'A test vector layer' feature collection",
+        "tags": "Features"
+      }
+    },
     "/wfs3/collections/testlayer èé/items": {
       "get": {
         "description": "Every feature in a dataset belongs to a collection. A dataset may consist of multiple feature collections. A feature collection is often a collection of features of a similar type, based on a common schema. Use content negotiation or specify a file extension to request HTML (.html) or GeoJSON (.json).",
@@ -771,6 +965,186 @@ Content-Type: application/openapi+json;version=3.0
         "tags": "Capabilities"
       }
     },
+    "/wfs3collections/exclude_attribute": {
+      "get": {
+        "description": "Metadata about a feature collection.",
+        "operationId": "describeCollection_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de",
+        "responses": [
+          [
+            "200",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/collectionInfo"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "Metadata about the collection 'A test vector layer' shared by this API."
+            }
+          ],
+          {
+            "default": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  },
+                  "text/html": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          }
+        ],
+        "summary": "Describe the 'A test vector layer' feature collection",
+        "tags": "Capabilities"
+      }
+    },
+    "/wfs3collections/exclude_attribute/items/{featureId}": {
+      "get": {
+        "description": "Retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)",
+        "operationId": "getFeature_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de",
+        "responses": [
+          [
+            "200",
+            {
+              "content": {
+                "application/geo+json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/featureGeoJSON"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "Retrieve a 'A test vector layer' feature by 'featureId'."
+            }
+          ],
+          {
+            "default": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  },
+                  "text/html": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          }
+        ],
+        "summary": "Retrieve a single feature from the 'A test vector layer' feature collection",
+        "tags": "Features"
+      }
+    },
+    "/wfs3collections/short-name": {
+      "get": {
+        "description": "Metadata about a feature collection.",
+        "operationId": "describeCollection_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774",
+        "responses": [
+          [
+            "200",
+            {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/collectionInfo"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "Metadata about the collection 'A test vector layer' shared by this API."
+            }
+          ],
+          {
+            "default": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  },
+                  "text/html": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          }
+        ],
+        "summary": "Describe the 'A test vector layer' feature collection",
+        "tags": "Capabilities"
+      }
+    },
+    "/wfs3collections/short-name/items/{featureId}": {
+      "get": {
+        "description": "Retrieve a feature; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)",
+        "operationId": "getFeature_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774",
+        "responses": [
+          [
+            "200",
+            {
+              "content": {
+                "application/geo+json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/featureGeoJSON"
+                  }
+                },
+                "text/html": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "Retrieve a 'A test vector layer' feature by 'featureId'."
+            }
+          ],
+          {
+            "default": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/exception"
+                  },
+                  "text/html": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "description": "An error occurred."
+            }
+          }
+        ],
+        "summary": "Retrieve a single feature from the 'A test vector layer' feature collection",
+        "tags": "Features"
+      }
+    },
     "/wfs3collections/testlayer èé": {
       "get": {
         "description": "Metadata about a feature collection.",
@@ -877,5 +1251,5 @@ Content-Type: application/openapi+json;version=3.0
       "name": "Features"
     }
   ],
-  "timeStamp": "2019-08-19T14:43:48Z"
+  "timeStamp": "2019-08-27T20:35:54Z"
 }

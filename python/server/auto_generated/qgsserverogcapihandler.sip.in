@@ -207,9 +207,11 @@ Fallback to the default content type of the handler if none of the above matches
 Returns a link to the parent page up to ``levels`` in the HTML hierarchy from the given ``url``, MAP query argument is preserved
 %End
 
-    static QgsVectorLayer *layerFromCollection( const QgsServerApiContext &context, const QString &collectionId );
+    static QgsVectorLayer *layerFromCollectionId( const QgsServerApiContext &context, const QString &collectionId );
 %Docstring
-Returns a vector layer from the ``collectionId`` in the given ``context``
+Returns a vector layer from the ``collectionId`` in the given ``context``.
+
+:raises QgsServerApiNotFoundError: if the layer could not be found.
 %End
 
 

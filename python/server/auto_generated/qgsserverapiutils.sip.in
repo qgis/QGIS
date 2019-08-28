@@ -12,6 +12,7 @@
 
 
 
+
 class QgsServerApiUtils
 {
 %Docstring
@@ -57,7 +58,6 @@ This method takes into account the ACL restrictions provided by QGIS Server Acce
 .. note::
 
    project must not be NULL
-   TODO: implement ACL
 %End
 
 
