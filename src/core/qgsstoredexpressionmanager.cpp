@@ -23,8 +23,6 @@
 
 QString QgsStoredExpressionManager::addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag )
 {
-  Q_UNUSED( tag );
-
   QgsStoredExpression storedExpression( name, expression, tag );
 
   mStoredExpressions.append( storedExpression );
@@ -49,8 +47,6 @@ void QgsStoredExpressionManager::removeStoredExpression( const QString &id )
 
 void QgsStoredExpressionManager::updateStoredExpression( const QString &id, const QString &name, const QString &expression, const QgsStoredExpression::Category &tag )
 {
-  Q_UNUSED( tag );
-
   int i = 0;
   for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
   {
@@ -75,9 +71,16 @@ void QgsStoredExpressionManager::addStoredExpressions( QList< QgsStoredExpressio
 
 QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( const QgsStoredExpression::Category &tag )
 {
-  Q_UNUSED( tag );
+  QList< QgsStoredExpression > storedExpressions;
 
-  return mStoredExpressions;
+  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
+  {
+    if ( storedExpression.tag & tag )
+    {
+      storedExpressions.append( storedExpression );
+    }
+  }
+  return storedExpressions;
 }
 
 QgsStoredExpression QgsStoredExpressionManager::storedExpression( const QString &id ) const
@@ -94,8 +97,6 @@ QgsStoredExpression QgsStoredExpressionManager::storedExpression( const QString 
 
 QgsStoredExpression QgsStoredExpressionManager::findStoredExpressionByExpression( const QString &expression, const QgsStoredExpression::Category &tag ) const
 {
-  Q_UNUSED( tag );
-
   for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.expression == expression && storedExpression.tag & tag )

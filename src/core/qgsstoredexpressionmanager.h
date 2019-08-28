@@ -44,10 +44,13 @@ struct CORE_EXPORT QgsStoredExpression
   /**
    * Categories of use cases
    * FilterExpression for stored expressions to filter attribute table
+   * DefaultValueExpression for stored expressions to use for default values (not yet used)
    */
   enum Category
   {
-    FilterExpression = 1 << 0 //!< Expressions to filter features
+    FilterExpression        = 1 << 0, //!< Expressions to filter features
+    DefaultValueExpression  = 1 << 1,  //!< Expressions to determine default values (not yet used)
+    All                     = FilterExpression | DefaultValueExpression
   };
 
 #ifndef SIP_RUN
@@ -86,7 +89,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *
     *  \param name              optional name of the expression
     *  \param expression        expression text
-    *  \param tag               category of the expression
+    *  \param tag               category of the expression - default FilterExpression
     *  \returns generated id as QString
     */
     QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
@@ -106,7 +109,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *  \param expression        new expression text
     *  \param tag               new category of the expression
     */
-    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
+    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag );
 
     /**
     * Appends a list of expressions to the existing list
@@ -118,9 +121,9 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     /**
     * Returns the list of named expressions
     *
-    *  \param tag               where the expression is used
+    *  \param tag               where the expression is used - default all
     */
-    QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
+    QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All );
 
 
     /**
@@ -134,9 +137,9 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     * Returns an expression according to the expression text
     *
     *  \param expression        id of the expression as identification
-    *  \param tag               category of the expression
+    *  \param tag               category of the expression - default all
     */
-    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::FilterExpression ) const;
+    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
 
     //! clears list of stored expressions
     void clearStoredExpressions();

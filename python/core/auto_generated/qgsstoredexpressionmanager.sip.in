@@ -20,7 +20,9 @@ struct QgsStoredExpression
 
   enum Category
   {
-    FilterExpression
+    FilterExpression,
+    DefaultValueExpression,
+    All
   };
 
 
@@ -51,7 +53,7 @@ Adds an expression to the list
 
 :param name: optional name of the expression
 :param expression: expression text
-:param tag: category of the expression
+:param tag: category of the expression - default FilterExpression
 
 :return: generated id as QString
 %End
@@ -63,7 +65,7 @@ Removes an expression to the list
 :param id: id of the expression as identification
 %End
 
-    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
+    void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag );
 %Docstring
 Updates an expression by id
 
@@ -80,11 +82,11 @@ Appends a list of expressions to the existing list
 :param storedExpressions: list of expressions and the optional name
 %End
 
-    QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
+    QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All );
 %Docstring
 Returns the list of named expressions
 
-:param tag: where the expression is used
+:param tag: where the expression is used - default all
 %End
 
 
@@ -95,12 +97,12 @@ Returns an expression according to the id
 :param id: id of the expression as identification
 %End
 
-    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::FilterExpression ) const;
+    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
 %Docstring
 Returns an expression according to the expression text
 
 :param expression: id of the expression as identification
-:param tag: category of the expression
+:param tag: category of the expression - default all
 %End
 
     void clearStoredExpressions();

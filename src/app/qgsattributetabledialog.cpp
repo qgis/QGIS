@@ -1168,7 +1168,7 @@ void QgsAttributeTableDialog::editStoredFilterExpression()
   if ( dlg->exec() == QDialog::Accepted )
   {
     //update stored expression
-    mLayer->storedExpressionManager()->updateStoredExpression( mActionHandleStoreFilterExpression->data().toString(), nameEdit->text(), expressionEdit->expression() );
+    mLayer->storedExpressionManager()->updateStoredExpression( mActionHandleStoreFilterExpression->data().toString(), nameEdit->text(), expressionEdit->expression(), QgsStoredExpression::Category::FilterExpression );
 
     //update text
     mFilterQuery->setValue( expressionEdit->expression() );
