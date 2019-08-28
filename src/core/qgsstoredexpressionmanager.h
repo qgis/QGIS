@@ -54,8 +54,19 @@ struct CORE_EXPORT QgsStoredExpression
   };
 
 #ifndef SIP_RUN
+
+  /**
+   * Constructor for QgsStoredExpression
+   */
   QgsStoredExpression() = default;
 
+  /**
+   * Create a new QgsStoredExpression with a generated uuid as id
+   *
+   *  \param name           descriptive name of the expression
+   *  \param expression     expression text
+   *  \param tag            category of the expression use case - default FilterExpression
+   */
   QgsStoredExpression( QString name, QString expression, Category tag = Category::FilterExpression )
     : id( QUuid::createUuid().toString() ),
       name( name ),
@@ -64,9 +75,13 @@ struct CORE_EXPORT QgsStoredExpression
   {}
 #endif
 
+  //! generated uuid used for identification
   QString id;
+  //! descriptive name of the expression
   QString name;
+  //! expression text
   QString expression;
+  //! category of the expression use case
   Category tag;
 };
 
@@ -81,16 +96,18 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
 
   public:
 
-    QgsStoredExpressionManager()
-    {}
+    /**
+    * Constructor for QgsStoredExpressionManager
+    */
+    QgsStoredExpressionManager() = default;
 
     /**
     * Adds an expression to the list
     *
     *  \param name              optional name of the expression
     *  \param expression        expression text
-    *  \param tag               category of the expression - default FilterExpression
-    *  \returns generated id as QString
+    *  \param tag               category of the expression use case - default FilterExpression
+    *  \returns generated id
     */
     QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 
@@ -102,12 +119,12 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     void removeStoredExpression( const QString &id );
 
     /**
-    * Updates an expression by id
+    * Updates an expression by \a id.
     *
     *  \param id                id of the expression as identification
     *  \param name              new name of the expression
     *  \param expression        new expression text
-    *  \param tag               new category of the expression
+    *  \param tag               new category of the expression use case
     */
     void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag );
 
@@ -116,32 +133,32 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *
     *  \param storedExpressions list of expressions and the optional name
     */
-    void addStoredExpressions( QList< QgsStoredExpression > storedExpressions );
+    void addStoredExpressions( const QList< QgsStoredExpression > &storedExpressions );
 
     /**
     * Returns the list of named expressions
     *
-    *  \param tag               where the expression is used - default all
+    *  \param tag               category of the expression use case - default all
     */
     QList< QgsStoredExpression > storedExpressions( const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All );
 
 
     /**
-    * Returns an expression according to the id
+    * Returns an expression according to the \a id
     *
     *  \param id                id of the expression as identification
     */
     QgsStoredExpression storedExpression( const QString &id ) const;
 
     /**
-    * Returns an expression according to the expression text
+    * Returns an expression according to the \a expression text
     *
     *  \param expression        id of the expression as identification
-    *  \param tag               category of the expression - default all
+    *  \param tag               category of the expression use case - default all
     */
     QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
 
-    //! clears list of stored expressions
+    //! Clears list of stored expressions
     void clearStoredExpressions();
 
     //! Writes the stored expressions out in XML format

@@ -46,6 +46,9 @@ Manages stored expressions regarding creation, modification and storing in the p
   public:
 
     QgsStoredExpressionManager();
+%Docstring
+Constructor for QgsStoredExpressionManager
+%End
 
     QString addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag =  QgsStoredExpression::Category::FilterExpression );
 %Docstring
@@ -53,9 +56,9 @@ Adds an expression to the list
 
 :param name: optional name of the expression
 :param expression: expression text
-:param tag: category of the expression - default FilterExpression
+:param tag: category of the expression use case - default FilterExpression
 
-:return: generated id as QString
+:return: generated id
 %End
 
     void removeStoredExpression( const QString &id );
@@ -67,15 +70,15 @@ Removes an expression to the list
 
     void updateStoredExpression( const QString &id, const QString &name, const QString &expression, const  QgsStoredExpression::Category &tag );
 %Docstring
-Updates an expression by id
+Updates an expression by ``id``.
 
 :param id: id of the expression as identification
 :param name: new name of the expression
 :param expression: new expression text
-:param tag: new category of the expression
+:param tag: new category of the expression use case
 %End
 
-    void addStoredExpressions( QList< QgsStoredExpression > storedExpressions );
+    void addStoredExpressions( const QList< QgsStoredExpression > &storedExpressions );
 %Docstring
 Appends a list of expressions to the existing list
 
@@ -86,28 +89,28 @@ Appends a list of expressions to the existing list
 %Docstring
 Returns the list of named expressions
 
-:param tag: where the expression is used - default all
+:param tag: category of the expression use case - default all
 %End
 
 
     QgsStoredExpression storedExpression( const QString &id ) const;
 %Docstring
-Returns an expression according to the id
+Returns an expression according to the ``id``
 
 :param id: id of the expression as identification
 %End
 
     QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
 %Docstring
-Returns an expression according to the expression text
+Returns an expression according to the ``expression`` text
 
 :param expression: id of the expression as identification
-:param tag: category of the expression - default all
+:param tag: category of the expression use case - default all
 %End
 
     void clearStoredExpressions();
 %Docstring
-clears list of stored expressions
+Clears list of stored expressions
 %End
 
     bool writeXml( QDomNode &layerNode ) const;

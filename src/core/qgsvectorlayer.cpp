@@ -159,6 +159,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
   mStoredExpressionManager = new QgsStoredExpressionManager();
+  mStoredExpressionManager->setParent( this );
 
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
   mJoinBuffer->setParent( this );

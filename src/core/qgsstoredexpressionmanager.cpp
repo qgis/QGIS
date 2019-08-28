@@ -52,7 +52,7 @@ void QgsStoredExpressionManager::updateStoredExpression( const QString &id, cons
   {
     if ( storedExpression.id == id )
     {
-      QgsStoredExpression newStoredExpression = mStoredExpressions.at( i );
+      QgsStoredExpression newStoredExpression = storedExpression;
       newStoredExpression.name = name;
       newStoredExpression.expression = expression;
       newStoredExpression.tag = tag;
@@ -64,7 +64,7 @@ void QgsStoredExpressionManager::updateStoredExpression( const QString &id, cons
   }
 }
 
-void QgsStoredExpressionManager::addStoredExpressions( QList< QgsStoredExpression > storedExpressions )
+void QgsStoredExpressionManager::addStoredExpressions( const QList< QgsStoredExpression > &storedExpressions )
 {
   mStoredExpressions.append( storedExpressions );
 }

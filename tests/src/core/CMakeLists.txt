@@ -232,7 +232,7 @@ SET(TESTS
  testqgstranslateproject.cpp
  testqobjectuniqueptr.cpp
  testqgspostgresstringutils.cpp
- estqgsstoredexpressionmanager.cpp
+ testqgsstoredexpressionmanager.cpp
 )
 
 IF(WITH_QTWEBKIT)
