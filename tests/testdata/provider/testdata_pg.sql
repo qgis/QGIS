@@ -638,3 +638,18 @@ INSERT INTO qgis_test.geometries_table VALUES
 CREATE VIEW qgis_test.geometries_view AS (SELECT * FROM qgis_test.geometries_table);
 
 CREATE TABLE qgis_test.geometryless_table (name VARCHAR, value INTEGER);
+
+---------------------------------------------
+--
+-- View with separate bbox field
+--
+
+CREATE VIEW qgis_test.some_poly_data_shift_bbox AS
+ SELECT pk,
+        geom,
+        ST_Translate(
+          ST_Envelope(geom),
+          ST_XMax(ST_Envelope(geom)) - ST_XMin(ST_Envelope(geom)),
+          0.0
+        ) AS shiftbox
+   FROM qgis_test.some_poly_data;
