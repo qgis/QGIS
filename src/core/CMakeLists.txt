@@ -45,6 +45,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgspointdisplacementrenderer.cpp
   symbology/qgspointdistancerenderer.cpp
   symbology/qgsrenderer.cpp
+  symbology/qgsrendererrange.cpp
   symbology/qgsrendererregistry.cpp
   symbology/qgsrulebasedrenderer.cpp
   symbology/qgssinglesymbolrenderer.cpp
@@ -1207,6 +1208,7 @@ SET(QGIS_CORE_HDRS
   symbology/qgspointdisplacementrenderer.h
   symbology/qgspointdistancerenderer.h
   symbology/qgsrenderer.h
+  symbology/qgsrendererrange.h
   symbology/qgsrendererregistry.h
   symbology/qgsrulebasedrenderer.h
   symbology/qgssinglesymbolrenderer.h
