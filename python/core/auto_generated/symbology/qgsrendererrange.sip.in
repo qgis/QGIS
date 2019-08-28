@@ -25,7 +25,6 @@ class QgsRendererRange
 Constructor for QgsRendererRange.
 %End
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
-    QgsRendererRange( const QgsClassificationRange &classInfo, QgsSymbol *symbol /Transfer/, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
 
