@@ -427,7 +427,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer_with_short_name/items?name=tw*')
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_with_short_name_eq_tw_star.json')
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_with_short_name_eq_two_star.json')
 
 
 class Handler1(QgsServerOgcApiHandler):
