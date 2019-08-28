@@ -65,6 +65,9 @@ class APP_EXPORT QgsMapThemes : public QObject
     //! Handles removal of current preset from the project's collection
     void removeCurrentPreset();
 
+    //! Handles renaming of the current map theme
+    void renameCurrentPreset();
+
     //! Handles creation of preset menu
     void menuAboutToShow();
 
@@ -91,6 +94,7 @@ class APP_EXPORT QgsMapThemes : public QObject
     QAction *mMenuSeparator = nullptr;
     QAction *mActionAddPreset = nullptr;
     QAction *mActionRemoveCurrentPreset = nullptr;
+    QAction *mActionRenameCurrentPreset = nullptr;
     QList<QAction *> mMenuPresetActions;
     QList<QAction *> mMenuReplaceActions;
 };

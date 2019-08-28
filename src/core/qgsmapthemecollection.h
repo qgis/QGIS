@@ -257,12 +257,18 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     void update( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
 
     /**
-     * Remove an existing map theme from collection.
+     * Removes an existing map theme from collection.
      * \since QGIS 3.0
      */
     void removeMapTheme( const QString &name );
 
-    //! Remove all map themes from the collection.
+    /**
+     * Renames an existing map theme in the collection.
+     * \since QGIS 3.12
+     */
+    void renameMapTheme( const QString &name, const QString &newName );
+
+    //! Removes all map themes from the collection.
     void clear();
 
     /**
@@ -372,6 +378,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * \since QGIS 3.0
      */
     void mapThemeChanged( const QString &theme );
+
+    /**
+     * Emitted when a map theme within the collection is renamed.
+     * \since QGIS 3.12
+     */
+    void mapThemeRenamed( const QString &name, const QString &newName );
 
     /**
      * Emitted when the project changes
