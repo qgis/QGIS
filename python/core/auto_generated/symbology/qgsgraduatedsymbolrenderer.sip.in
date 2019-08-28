@@ -271,12 +271,11 @@ Set if we want a central class astride the pivot value
 .. versionadded:: 3.4
 %End
 
-    static void makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride );
+    static void makeBreaksSymmetric( QList<double> &breaks /Out/, double symmetryPoint, bool astride );
 %Docstring
 Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
 Does not put a break on the symmetryPoint. This is done before.
 
-:param breaks: The breaks of an already-done classification
 :param symmetryPoint: The point around which we want a symmetry
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 

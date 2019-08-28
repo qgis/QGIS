@@ -281,7 +281,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \since QGIS 3.4
      */
-    static void makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride );
+    static void makeBreaksSymmetric( QList<double> &breaks SIP_OUT, double symmetryPoint, bool astride );
 
     /**
      * Compute the equal interval classification
