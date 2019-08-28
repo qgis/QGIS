@@ -226,7 +226,7 @@ class QgsAuthOAuth2Config : public QObject
     static QStringList configLocations( const QString &extradir = QString() );
 
     //! Load and parse standard directories of configs (e.g. JSON) to a mapped cache
-    static QgsStringMap mappedOAuth2ConfigsCache( QObject *parent, const QString &extradir = QString::null );
+    static QgsStringMap mappedOAuth2ConfigsCache( QObject *parent, const QString &extradir = QString() );
 
     //! Path where config is stored
     static QString oauth2ConfigsPkgDataDir();
@@ -247,10 +247,10 @@ class QgsAuthOAuth2Config : public QObject
     static QString tokenCacheDirectory( bool temporary = false );
 
     //! Path of the token cache file, with optional \a suffix
-    static QString tokenCacheFile( const QString &suffix = QString::null );
+    static QString tokenCacheFile( const QString &suffix = QString() );
 
     //! Path of the token cache file, with optional \a suffix and \a temporary flag
-    static QString tokenCachePath( const QString &suffix = QString::null, bool temporary = false );
+    static QString tokenCachePath( const QString &suffix = QString(), bool temporary = false );
 
   public slots:
     //! Set the id to \a value
