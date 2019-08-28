@@ -22,6 +22,7 @@
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgsdatadefinedsizelegend.h"
+#include "qgsclassificationmethod.h"
 
 #include <QRegExp>
 
