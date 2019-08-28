@@ -1,5 +1,6 @@
 QWidget
 {
+    color: @text;
     background: transparent;
 }
 
