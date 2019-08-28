@@ -26,7 +26,6 @@ class QDomDocument;
 class QDomElement;
 
 class QgsSymbol;
-class QgsClassificationRange;
 
 
 /**
@@ -42,7 +41,6 @@ class CORE_EXPORT QgsRendererRange
      */
     QgsRendererRange() = default;
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
-    QgsRendererRange( const QgsClassificationRange &classInfo, QgsSymbol *symbol SIP_TRANSFER, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
     // default dtor is OK
