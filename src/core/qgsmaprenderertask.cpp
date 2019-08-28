@@ -174,6 +174,9 @@ bool QgsMapRendererTask::run()
 
   if ( mGeoPDF )
   {
+#ifdef QT_NO_PRINTER
+    return false;
+#else
     QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > pdfComponents;
 
     QgsMapRendererStagedRenderJob *job = static_cast< QgsMapRendererStagedRenderJob * >( mJob.get() );
@@ -228,6 +231,7 @@ bool QgsMapRendererTask::run()
     mTempPainter.reset();
     mPrinter.reset();
     return true;
+#endif
   }
   else
     static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->renderPrepared();
@@ -413,7 +417,9 @@ bool QgsMapRendererTask::run()
   }
 
   mTempPainter.reset();
+#ifndef QT_NO_PRINTER
   mPrinter.reset();
+#endif
 
   return true;
 }
@@ -466,7 +472,6 @@ void QgsMapRendererTask::prepare()
     }
 #else
     mError = ImageUnsupportedFormat;
-    return false;
 #endif // ! QT_NO_PRINTER
   }
 
