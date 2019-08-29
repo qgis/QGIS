@@ -119,7 +119,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case Size2D:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "double size [<b>width,height</b>]" );
+      mHelpText = QObject::tr( "string of doubles '<b>width,height</b>' or array of doubles <b>[width, height]</b>" );
       break;
 
     case LineStyle:
@@ -163,7 +163,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case Offset:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "double offset [<b>x,y</b>]" );
+      mHelpText = QObject::tr( "string of doubles '<b>x,y</b>' or array of doubles <b>[x, y]</b>" );
       break;
 
     case Custom:
