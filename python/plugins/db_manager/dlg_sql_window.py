@@ -89,6 +89,7 @@ def check_comments_in_sql(raw_sql_input):
     sql = ' '.join(lines)
     return sql.strip()
 
+
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
     QUERY_HISTORY_LIMIT = 20

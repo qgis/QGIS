@@ -44,5 +44,6 @@ class TestPyQgsDBManagerSQLWindow(unittest.TestCase):
         query = 'SELECT * FROM "test--1" WHERE a = 1'
         self.assertEqual(check_comments_in_sql(query), query)
 
+
 if __name__ == '__main__':
     unittest.main()
