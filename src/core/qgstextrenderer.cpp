@@ -1053,10 +1053,11 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   exprVal = properties.value( QgsPalLayerSettings::ShapeOffset, context.expressionContext() );
   if ( exprVal.isValid() )
   {
-    QString offset = exprVal.toString();
-    if ( !offset.isEmpty() )
+    bool ok = false;
+    const QPointF res = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
+    if ( ok )
     {
-      d->offset = QgsSymbolLayerUtils::decodePoint( offset );
+      d->offset = res;
     }
   }
   exprVal = properties.value( QgsPalLayerSettings::ShapeOffsetUnits, context.expressionContext() );
@@ -1075,10 +1076,11 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
   exprVal = properties.value( QgsPalLayerSettings::ShapeRadii, context.expressionContext() );
   if ( exprVal.isValid() )
   {
-    QString ptstr = exprVal.toString();
-    if ( !ptstr.isEmpty() )
+    bool ok = false;
+    const QSizeF res = QgsSymbolLayerUtils::toSize( exprVal, &ok );
+    if ( ok )
     {
-      d->radii = QgsSymbolLayerUtils::decodeSize( ptstr );
+      d->radii = res;
     }
   }
 

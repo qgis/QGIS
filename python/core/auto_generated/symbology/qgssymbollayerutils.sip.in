@@ -94,6 +94,23 @@ Decodes a QSizeF from a string.
 .. seealso:: :py:func:`decodeSize`
 %End
 
+    static QPointF toPoint( const QVariant &value, bool *ok /Out/ = 0 );
+%Docstring
+Converts a ``value`` to a point.
+
+:param value: value to convert
+
+:return: - converted point
+         - ok: will be set to ``True`` if value was successfully converted
+
+
+.. seealso:: :py:func:`decodePoint`
+
+.. seealso:: :py:func:`toSize`
+
+.. versionadded:: 3.10
+%End
+
     static QString encodeSize( QSizeF size );
 %Docstring
 Encodes a QSizeF to a string.
@@ -114,6 +131,23 @@ Decodes a QSizeF from a string.
 .. seealso:: :py:func:`decodePoint`
 
 .. versionadded:: 3.0
+%End
+
+    static QSizeF toSize( const QVariant &value, bool *ok /Out/ = 0 );
+%Docstring
+Converts a ``value`` to a size.
+
+:param value: value to convert
+
+:return: - converted size
+         - ok: will be set to ``True`` if value was successfully converted
+
+
+.. seealso:: :py:func:`decodeSize`
+
+.. seealso:: :py:func:`toPoint`
+
+.. versionadded:: 3.10
 %End
 
     static QString encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale );
