@@ -2425,31 +2425,49 @@ static QVariant fcnMakePointM( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnMakeLine( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  if ( values.count() < 2 )
+  if ( values.empty() )
   {
     return QVariant();
   }
 
-  QgsLineString *lineString = new QgsLineString();
-  lineString->clear();
+  QVector<QgsPoint> points;
+  points.reserve( values.count() );
 
-  for ( const QVariant &value : values )
+  auto addPoint = [&points]( const QgsGeometry & geom )
   {
-    QgsGeometry geom = QgsExpressionUtils::getGeometry( value, parent );
     if ( geom.isNull() )
-      continue;
+      return;
 
     if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
-      continue;
+      return;
 
     const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
     if ( !point )
-      continue;
+      return;
 
-    lineString->addVertex( *point );
+    points << *point;
+  };
+
+  for ( const QVariant &value : values )
+  {
+    if ( value.type() == QVariant::List )
+    {
+      const QVariantList list = value.toList();
+      for ( const QVariant &v : list )
+      {
+        addPoint( QgsExpressionUtils::getGeometry( v, parent ) );
+      }
+    }
+    else
+    {
+      addPoint( QgsExpressionUtils::getGeometry( value, parent ) );
+    }
   }
 
-  return QVariant::fromValue( QgsGeometry( lineString ) );
+  if ( points.count() < 2 )
+    return QVariant();
+
+  return QgsGeometry( new QgsLineString( points ) );
 }
 
 static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

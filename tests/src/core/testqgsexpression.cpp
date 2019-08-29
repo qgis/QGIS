@@ -994,6 +994,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "make_line" ) << "geom_to_wkt(make_line(make_point(2,4),make_point(4,6)))" << false << QVariant( "LineString (2 4, 4 6)" );
       QTest::newRow( "make_line" ) << "geom_to_wkt(make_line(make_point(2,4),make_point(4,6),make_point(7,9)))" << false << QVariant( "LineString (2 4, 4 6, 7 9)" );
       QTest::newRow( "make_line" ) << "geom_to_wkt(make_line(make_point(2,4,1,3),make_point(4,6,9,8),make_point(7,9,3,4)))" << false << QVariant( "LineStringZM (2 4 1 3, 4 6 9 8, 7 9 3 4)" );
+      QTest::newRow( "make_line array" ) << "geom_to_wkt(make_line(array(make_point(2,4),make_point(4,6))))" << false << QVariant( "LineString (2 4, 4 6)" );
+      QTest::newRow( "make_line one" ) << "geom_to_wkt(make_line(array(make_point(2,4))))" << false << QVariant();
+      QTest::newRow( "make_line array mixed" ) << "geom_to_wkt(make_line(array(make_point(2,4),make_point(4,6)),make_point(8,9)))" << false << QVariant( "LineString (2 4, 4 6, 8 9)" );
+      QTest::newRow( "make_line array bad" ) << "geom_to_wkt(make_line(array(make_point(2,4),66)))" << true << QVariant();
+      QTest::newRow( "make_line array empty" ) << "geom_to_wkt(make_line(array()))" << false << QVariant();
       QTest::newRow( "make_polygon bad" ) << "make_polygon(make_point(2,4))" << false << QVariant();
       QTest::newRow( "make_polygon" ) << "geom_to_wkt(make_polygon(geom_from_wkt('LINESTRING( 0 0, 0 1, 1 1, 1 0, 0 0 )')))" << false << QVariant( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
       QTest::newRow( "make_polygon rings" ) << "geom_to_wkt(make_polygon(geom_from_wkt('LINESTRING( 0 0, 0 1, 1 1, 1 0, 0 0 )'),geom_from_wkt('LINESTRING( 0.1 0.1, 0.1 0.2, 0.2 0.2, 0.2 0.1, 0.1 0.1 )'),geom_from_wkt('LINESTRING( 0.8 0.8, 0.8 0.9, 0.9 0.9, 0.9 0.8, 0.8 0.8 )')))" << false
