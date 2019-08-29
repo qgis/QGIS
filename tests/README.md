@@ -43,7 +43,7 @@ machine does not have an X server.  In that case you need to run the test under
 `xvfb-run`.  For example:
 
 ```
-    xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest -V -R PyQgsServerWMSGetMap
+    xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest -V -R PyQgsServerWMSGetMap
 ```
 
 # Advanced configuration
