@@ -784,8 +784,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/14
-    if ( $LINE =~ m/^(\s*(class|namespace))(\s+Q_DECL_DEPRECATED)?\s+([A-Z]+_EXPORT\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    # https://regex101.com/r/6FWntP/15
+    if ( $LINE =~ m/^(\s*(class))(\s+Q_DECL_DEPRECATED)?\s+([A-Z]+_EXPORT\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
