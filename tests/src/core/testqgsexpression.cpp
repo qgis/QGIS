@@ -976,6 +976,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString ((6501338.13976828 4850981.51459331, 6501343.09036573 4850984.01453377, 6501338.13976828 4850988.96491092, 6501335.63971657 4850984.01453377, 6501338.13976828 4850981.51459331))'))" << false << QVariant( true );
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString ((6501338.13976828 4850981.51459331, 6501343.09036573 4850984.01453377, 6501338.13976828 4850988.96491092, 6501335.63971657 4850984.01453377, 6501438.13976828 4850981.51459331))'))" << false << QVariant( false );
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString EMPTY'))" << false << QVariant();
+      QTest::newRow( "collect_geometries none" ) << "geom_to_wkt(collect_geometries())" << false << QVariant( "" );
+      QTest::newRow( "collect_geometries not" ) << "geom_to_wkt(collect_geometries(45))" << true << QVariant();
+      QTest::newRow( "collect_geometries one" ) << "geom_to_wkt(collect_geometries(make_point(4,5)))" << false << QVariant( "MultiPoint ((4 5))" );
+      QTest::newRow( "collect_geometries two" ) << "geom_to_wkt(collect_geometries(make_point(4,5), make_point(6,7)))" << false << QVariant( "MultiPoint ((4 5),(6 7))" );
+      QTest::newRow( "collect_geometries mixed" ) << "geom_to_wkt(collect_geometries(make_point(4,5), 'x'))" << true << QVariant();
+      QTest::newRow( "collect_geometries array empty" ) << "geom_to_wkt(collect_geometries(array()))" << false << QVariant( "" );
+      QTest::newRow( "collect_geometries array one" ) << "geom_to_wkt(collect_geometries(array(make_point(4,5))))" << false << QVariant( "MultiPoint ((4 5))" );
+      QTest::newRow( "collect_geometries array two" ) << "geom_to_wkt(collect_geometries(array(make_point(4,5), make_point(6,7))))" << false << QVariant( "MultiPoint ((4 5),(6 7))" );
       QTest::newRow( "make_point" ) << "geom_to_wkt(make_point(2.2,4.4))" << false << QVariant( "Point (2.2 4.4)" );
       QTest::newRow( "make_point z" ) << "geom_to_wkt(make_point(2.2,4.4,5.5))" << false << QVariant( "PointZ (2.2 4.4 5.5)" );
       QTest::newRow( "make_point zm" ) << "geom_to_wkt(make_point(2.2,4.4,5.5,6.6))" << false << QVariant( "PointZM (2.2 4.4 5.5 6.6)" );
