@@ -82,7 +82,7 @@ void QgsFeatureListComboBox::setCurrentFeature( const QgsFeature &feature )
   {
     values << feature.attribute( field );
   }
-  setCurrentIndex( findData( values, QgsFeatureFilterModel::Role::IdentifierValueRole ) );
+  setIdentifierValues( values );
 }
 
 QString QgsFeatureListComboBox::displayExpression() const
