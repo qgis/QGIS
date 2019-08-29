@@ -9,7 +9,7 @@ Make sure that you have enabled building of tests in CMake.
 # Run tests
 
 You can run all tests using `make check`.
-Note you will need `xvfb-run` for that (sudo apt-get install xfvb).
+Note you will need `xvfb-run` for that (sudo apt-get install xvfb).
 
 Individual tests can be run using `ctest`.
 
