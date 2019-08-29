@@ -515,11 +515,11 @@ or by simply specificing a start and end color.
 .. versionadded:: 2.3
 %End
 
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
-Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
+Sets the color ``ramp`` used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
 
-:param ramp: color ramp to use for shapeburst fill
+Ownership of ``ramp`` is transferred to the fill.
 
 .. seealso:: :py:func:`setColorType`
 
