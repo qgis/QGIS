@@ -969,6 +969,14 @@ calculated by countSymbolFeatures()
 :return: number of features rendered by symbol or -1 if failed or counts are not available
 %End
 
+    QgsFeatureIds symbolFeatureIds( const QString &legendKey ) const;
+%Docstring
+Ids of features rendered with specified legend key. Features must be first
+calculated by countSymbolFeatures()
+
+:return: Ids of features rendered by symbol or -1 if failed or Ids are not available
+%End
+
     virtual FeatureAvailability hasFeatures() const ${SIP_FINAL};
 
 %Docstring

@@ -998,6 +998,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     long featureCount( const QString &legendKey ) const;
 
     /**
+     * Ids of features rendered with specified legend key. Features must be first
+     * calculated by countSymbolFeatures()
+     * \returns Ids of features rendered by symbol or -1 if failed or Ids are not available
+     */
+    QgsFeatureIds symbolFeatureIds( const QString &legendKey ) const;
+
+    /**
      * Determines if this vector layer has features.
      *
      * \warning when a layer is editable and some features
@@ -2622,6 +2629,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     // Feature counts for each renderer legend key
     QHash<QString, long> mSymbolFeatureCountMap;
+    QHash<QString, QgsFeatureIds> mSymbolFeatureIdMap;
 
     //! True while an undo command is active
     bool mEditCommandActive = false;

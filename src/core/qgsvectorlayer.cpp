@@ -697,10 +697,16 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   if ( !mSymbolFeatureCounted )
     return -1;
 
-  return mSymbolFeatureCountMap.value( legendKey );
+  return mSymbolFeatureCountMap.value( legendKey, -1 );
 }
 
+QgsFeatureIds QgsVectorLayer::symbolFeatureIds( const QString &legendKey ) const
+{
+  if ( !mSymbolFeatureCounted )
+    return QgsFeatureIds();
 
+  return mSymbolFeatureIdMap.value( legendKey, QgsFeatureIds() );
+}
 
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
@@ -708,6 +714,7 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
     return mFeatureCounter;
 
   mSymbolFeatureCountMap.clear();
+  mSymbolFeatureIdMap.clear();
 
   if ( !mValid )
   {
@@ -3332,6 +3339,7 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     mRenderer = r;
     mSymbolFeatureCounted = false;
     mSymbolFeatureCountMap.clear();
+    mSymbolFeatureIdMap.clear();
 
     emit rendererChanged();
     emit styleChanged();
@@ -4571,8 +4579,9 @@ void QgsVectorLayer::onSymbolsCounted()
 {
   if ( mFeatureCounter )
   {
-    mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
     mSymbolFeatureCounted = true;
+    mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
+    mSymbolFeatureIdMap = mFeatureCounter->symbolFeatureIdMap();
     emit symbolFeatureCountMapChanged();
   }
 }
