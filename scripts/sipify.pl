@@ -957,7 +957,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
-    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
         my $enum_decl = $1;
         $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
         write_output("ENU1", "$enum_decl");
@@ -965,7 +965,7 @@ while ($LINE_IDX < $LINE_COUNT){
         write_output("ENU1", "\n");
         my $enum_qualname = $+{enum_qualname};
         my $is_scope_based = "0";
-        $is_scope_based = "1" if defined $2;
+        $is_scope_based = "1" if defined $+{isclass};
         my $monkeypatch = "0";
         $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\))?/;
         my $enum_mk_base = "";
