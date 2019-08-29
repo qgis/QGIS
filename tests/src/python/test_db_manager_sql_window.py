@@ -39,7 +39,7 @@ class TestPyQgsDBManagerSQLWindow(unittest.TestCase):
     def test_comment_parsing_quote(self):
         query = "SELECT * FROM test WHERE a = '--sdf'"
         self.assertEqual(check_comments_in_sql(query), query)
-        
+
     def test_comment_parsing_identifier(self):
         query = 'SELECT * FROM "test--1" WHERE a = 1'
         self.assertEqual(check_comments_in_sql(query), query)

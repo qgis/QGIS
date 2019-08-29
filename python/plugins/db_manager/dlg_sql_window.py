@@ -59,6 +59,7 @@ from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 
 import re
 
+
 def check_comments_in_sql(raw_sql_input):
     lines = []
     for line in raw_sql_input.split('\n'):
