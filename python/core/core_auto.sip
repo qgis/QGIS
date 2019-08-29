@@ -383,6 +383,7 @@
 %Include auto_generated/qgsrelation.sip
 %Include auto_generated/qgsrunprocess.sip
 %Include auto_generated/qgssnappingconfig.sip
+%Include auto_generated/qgsstoredexpressionmanager.sip
 %Include auto_generated/qgstaskmanager.sip
 %Include auto_generated/qgstolerance.sip
 %Include auto_generated/qgstrackedvectorlayertools.sip

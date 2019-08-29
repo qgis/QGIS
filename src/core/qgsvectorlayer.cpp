@@ -86,6 +86,7 @@
 #include "qgsstyle.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
+#include "qgsstoredexpressionmanager.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
@@ -157,6 +158,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mGeometryOptions = qgis::make_unique<QgsGeometryOptions>();
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
+  mStoredExpressionManager = new QgsStoredExpressionManager();
+  mStoredExpressionManager->setParent( this );
 
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
   mJoinBuffer->setParent( this );
@@ -204,6 +207,7 @@ QgsVectorLayer::~QgsVectorLayer()
 
   delete mRenderer;
   delete mConditionalStyles;
+  delete mStoredExpressionManager;
 
   if ( mFeatureCounter )
     mFeatureCounter->cancel();
@@ -2174,6 +2178,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   {
     mAttributeTableConfig.readXml( layerNode );
     mConditionalStyles->readXml( layerNode, context );
+    mStoredExpressionManager->readXml( layerNode );
   }
 
   if ( categories.testFlag( CustomProperties ) )
@@ -2512,6 +2517,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   {
     mAttributeTableConfig.writeXml( node );
     mConditionalStyles->writeXml( node, doc, context );
+    mStoredExpressionManager->writeXml( node );
   }
 
   if ( categories.testFlag( Forms ) )
