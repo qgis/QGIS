@@ -957,11 +957,13 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
-    if ( $LINE =~ m/^(\s*enum\s+(class\s+)?(\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
-        write_output("ENU1", "$1");
+    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+        my $enum_decl = $1;
+        $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
+        write_output("ENU1", "$enum_decl");
         write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
         write_output("ENU1", "\n");
-        my $enum_qualname = $3;
+        my $enum_qualname = $+{enum_qualname};
         my $is_scope_based = "0";
         $is_scope_based = "1" if defined $2;
         my $monkeypatch = "0";
