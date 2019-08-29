@@ -58,13 +58,13 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         s2, ok = QgsSymbolLayerUtils.toSize([4, 5, 6])
         self.assertFalse(ok)
 
-        s2, ok = QgsSymbolLayerUtils.toSize([4,5])
+        s2, ok = QgsSymbolLayerUtils.toSize([4, 5])
         self.assertTrue(ok)
-        self.assertEqual(s2, QSizeF(4,5))
+        self.assertEqual(s2, QSizeF(4, 5))
 
-        s2, ok = QgsSymbolLayerUtils.toSize(['4','5'])
+        s2, ok = QgsSymbolLayerUtils.toSize(['4', '5'])
         self.assertTrue(ok)
-        self.assertEqual(s2, QSizeF(4,5))
+        self.assertEqual(s2, QSizeF(4, 5))
 
         # string values
         s = QSizeF()
@@ -117,13 +117,13 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         s2, ok = QgsSymbolLayerUtils.toPoint([4, 5, 6])
         self.assertFalse(ok)
 
-        s2, ok = QgsSymbolLayerUtils.toPoint([4,5])
+        s2, ok = QgsSymbolLayerUtils.toPoint([4, 5])
         self.assertTrue(ok)
-        self.assertEqual(s2, QPointF(4,5))
+        self.assertEqual(s2, QPointF(4, 5))
 
-        s2, ok = QgsSymbolLayerUtils.toPoint(['4','5'])
+        s2, ok = QgsSymbolLayerUtils.toPoint(['4', '5'])
         self.assertTrue(ok)
-        self.assertEqual(s2, QPointF(4,5))
+        self.assertEqual(s2, QPointF(4, 5))
 
         # string values
         s = QPointF()
