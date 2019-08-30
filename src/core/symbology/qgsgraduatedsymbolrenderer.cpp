@@ -13,6 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDomDocument>
+#include <QDomElement>
+
+#include <ctime>
 
 #include "qgsgraduatedsymbolrenderer.h"
 
@@ -35,12 +39,11 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
-
-#include <QDomDocument>
-#include <QDomElement>
-#include <QSettings> // for legend
-#include <limits> // for jenks classification
-#include <ctime>
+#include "qgsclassificationmethod.h"
+#include "qgsclassificationequalinterval.h"
+#include "qgsapplication.h"
+#include "qgsclassificationmethodregistry.h"
+#include "qgsclassificationcustom.h"
 
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
@@ -57,6 +60,8 @@ QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName,
   {
     mRanges << range;
   }
+
+  mClassificationMethod.reset( new QgsClassificationCustom() );
 }
 
 QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
@@ -232,9 +237,17 @@ bool QgsGraduatedSymbolRenderer::updateRangeUpperValue( int rangeIndex, double v
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
   QgsRendererRange &range = mRanges[rangeIndex];
-  bool isDefaultLabel = range.label() == mLabelFormat.labelForRange( range );
+  QgsClassificationMethod::ClassPosition pos = QgsClassificationMethod::Inner;
+  if ( rangeIndex == 0 )
+    pos = QgsClassificationMethod::LowerBound;
+  else if ( rangeIndex == mRanges.count() )
+    pos = QgsClassificationMethod::UpperBound;
+
+  bool isDefaultLabel = mClassificationMethod->labelForRange( range, pos ) == range.label();
   range.setUpperValue( value );
-  if ( isDefaultLabel ) range.setLabel( mLabelFormat.labelForRange( range ) );
+  if ( isDefaultLabel )
+    range.setLabel( mClassificationMethod->labelForRange( range, pos ) );
+
   return true;
 }
 
@@ -242,10 +255,19 @@ bool QgsGraduatedSymbolRenderer::updateRangeLowerValue( int rangeIndex, double v
 {
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
+
   QgsRendererRange &range = mRanges[rangeIndex];
-  bool isDefaultLabel = range.label() == mLabelFormat.labelForRange( range );
+  QgsClassificationMethod::ClassPosition pos = QgsClassificationMethod::Inner;
+  if ( rangeIndex == 0 )
+    pos = QgsClassificationMethod::LowerBound;
+  else if ( rangeIndex == mRanges.count() )
+    pos = QgsClassificationMethod::UpperBound;
+
+  bool isDefaultLabel = mClassificationMethod->labelForRange( range, pos ) == range.label();
   range.setLowerValue( value );
-  if ( isDefaultLabel ) range.setLabel( mLabelFormat.labelForRange( range ) );
+  if ( isDefaultLabel )
+    range.setLabel( mClassificationMethod->labelForRange( range, pos ) );
+
   return true;
 }
 
@@ -268,11 +290,8 @@ QString QgsGraduatedSymbolRenderer::dump() const
 QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
 {
   QgsGraduatedSymbolRenderer *r = new QgsGraduatedSymbolRenderer( mAttrName, mRanges );
-  r->setMode( mMode );
-  r->setUseSymmetricMode( mUseSymmetricMode );
-  r->setSymmetryPoint( mSymmetryPoint );
-  r->setListForCboPrettyBreaks( mListForCboPrettyBreaks );
-  r->setAstride( mAstride );
+
+  r->setClassificationMethod( mClassificationMethod->clone() );
 
   if ( mSourceSymbol )
     r->setSourceSymbol( mSourceSymbol->clone() );
@@ -282,7 +301,6 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
-  r->setLabelFormat( labelFormat() );
   r->setGraduatedMethod( graduatedMethod() );
   copyRendererData( r );
   return r;
@@ -337,317 +355,16 @@ bool QgsGraduatedSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor
 
 void QgsGraduatedSymbolRenderer::makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride )
 {
-  // remove the breaks that are above the existing opposite sign classes
-  // to keep colors symmetrically balanced around symmetryPoint
-  // if astride is true, remove the symmetryPoint break so that
-  // the 2 classes form only one
-
-  if ( breaks.size() > 1 ) //to avoid crash when only 1 class
-  {
-    std::sort( breaks.begin(), breaks.end() );
-    // breaks contain the maximum of the distrib but not the minimum
-    double distBelowSymmetricValue = std::fabs( breaks[0] - symmetryPoint );
-    double distAboveSymmetricValue = std::fabs( breaks[ breaks.size() - 2 ] - symmetryPoint ) ;
-    double absMin = std::min( distAboveSymmetricValue, distBelowSymmetricValue );
-
-    // make symmetric
-    for ( int i = 0; i <= breaks.size() - 2; ++i )
-    {
-      // part after "absMin" is for doubles rounding issues
-      if ( std::fabs( breaks.at( i ) - symmetryPoint ) >= ( absMin - std::fabs( breaks[0] - breaks[1] ) / 100. ) )
-      {
-        breaks.removeAt( i );
-        --i;
-      }
-    }
-    // remove symmetry point
-    if ( astride ) // && breaks.indexOf( symmetryPoint ) != -1) // if symmetryPoint is found
-    {
-      breaks.removeAt( breaks.indexOf( symmetryPoint ) );
-    }
-  }
+  return QgsClassificationMethod::makeBreaksSymmetric( breaks, symmetryPoint, astride );
 }
 
 QList<double> QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride )
 {
-  // Equal interval algorithm
-  // Returns breaks based on dividing the range ('minimum' to 'maximum') into 'classes' parts.
-  QList<double> breaks;
-  if ( !useSymmetricMode ) // nomal mode
-  {
-    double step = ( maximum - minimum ) / classes;
-
-    double value = minimum;
-    breaks.reserve( classes );
-    for ( int i = 0; i < classes; i++ )
-    {
-      value += step;
-      breaks.append( value );
-    }
-    // floating point arithmetics is not precise:
-    // set the last break to be exactly maximum so we do not miss it
-    breaks[classes - 1] = maximum;
-  }
-  else if ( useSymmetricMode ) // symmetric mode
-  {
-    double distBelowSymmetricValue = std::abs( minimum - symmetryPoint );
-    double distAboveSymmetricValue = std::abs( maximum - symmetryPoint ) ;
-
-    if ( astride )
-    {
-      if ( classes % 2 == 0 ) // we want odd number of classes
-        ++classes;
-    }
-    else
-    {
-      if ( classes % 2 == 1 ) // we want even number of classes
-        ++classes;
-    }
-    double step = 2 * std::min( distBelowSymmetricValue, distAboveSymmetricValue ) / classes;
-
-    breaks.reserve( classes );
-    double value = ( distBelowSymmetricValue < distAboveSymmetricValue ) ?  minimum : maximum - classes * step;
-
-    for ( int i = 0; i < classes; i++ )
-    {
-      value += step;
-      breaks.append( value );
-    }
-    breaks[classes - 1] = maximum;
-  }
-  return breaks;
-}
-
-static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
-{
-  // q-th quantile of a data set:
-  // value where q fraction of data is below and (1-q) fraction is above this value
-  // Xq = (1 - r) * X_NI1 + r * X_NI2
-  //   NI1 = (int) (q * (n+1))
-  //   NI2 = NI1 + 1
-  //   r = q * (n+1) - (int) (q * (n+1))
-  // (indices of X: 1...n)
-
-  // sort the values first
-  std::sort( values.begin(), values.end() );
-
-  QList<double> breaks;
-
-  // If there are no values to process: bail out
-  if ( values.isEmpty() )
-    return breaks;
-
-  int n = values.count();
-  double Xq = n > 0 ? values[0] : 0.0;
-
-  breaks.reserve( classes );
-  for ( int i = 1; i < classes; i++ )
-  {
-    if ( n > 1 )
-    {
-      double q = i  / static_cast< double >( classes );
-      double a = q * ( n - 1 );
-      int aa = static_cast<  int >( a );
-
-      double r = a - aa;
-      Xq = ( 1 - r ) * values[aa] + r * values[aa + 1];
-    }
-    breaks.append( Xq );
-  }
-
-  breaks.append( values[ n - 1 ] );
-
-  return breaks;
-}
-
-static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList<double> &labels, bool useSymmetricMode, double symmetryPoint, bool astride )
-{
-
-  // C++ implementation of the standard deviation class interval algorithm
-  // as implemented in the 'classInt' package available for the R statistical
-  // prgramming language.
-
-  // Returns breaks based on 'prettyBreaks' of the centred and scaled
-  // values of 'values', and may have a number of classes different from 'classes'.
-
-  // If there are no values to process: bail out
-  if ( values.isEmpty() )
-    return QList<double>();
-
-  double mean = 0.0;
-  double stdDev = 0.0;
-  int n = values.count();
-  double minimum = values[0];
-  double maximum = values[0];
-
-  for ( int i = 0; i < n; i++ )
-  {
-    mean += values[i];
-    minimum = std::min( values[i], minimum ); // could use precomputed max and min
-    maximum = std::max( values[i], maximum ); // but have to go through entire list anyway
-  }
-  mean = mean / static_cast< double >( n );
-
-  double sd = 0.0;
-  for ( int i = 0; i < n; i++ )
-  {
-    sd = values[i] - mean;
-    stdDev += sd * sd;
-  }
-  stdDev = std::sqrt( stdDev / n );
-
-  if ( !useSymmetricMode )
-    symmetryPoint = mean; // otherwise symmetryPoint = symmetryPoint
-
-  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - symmetryPoint ) / stdDev, ( maximum - symmetryPoint ) / stdDev, classes );
-  QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, 0.0, astride ); //0.0 because breaks where computed on a centered distribution
-
-  for ( int i = 0; i < breaks.count(); i++ ) //unNormalize breaks and put labels
-  {
-    labels.append( breaks[i] );
-    breaks[i] = ( breaks[i] * stdDev ) + symmetryPoint;
-  }
-  return breaks;
-} // _calcStdDevBreaks
-
-static QList<double> _calcJenksBreaks( QList<double> values, int classes,
-                                       double minimum, double maximum,
-                                       int maximumSize = 3000 )
-{
-  // Jenks Optimal (Natural Breaks) algorithm
-  // Based on the Jenks algorithm from the 'classInt' package available for
-  // the R statistical prgramming language, and from Python code from here:
-  // http://danieljlewis.org/2010/06/07/jenks-natural-breaks-algorithm-in-python/
-  // and is based on a JAVA and Fortran code available here:
-  // https://stat.ethz.ch/pipermail/r-sig-geo/2006-March/000811.html
-
-  // Returns class breaks such that classes are internally homogeneous while
-  // assuring heterogeneity among classes.
-
-  if ( values.isEmpty() )
-    return QList<double>();
-
-  if ( classes <= 1 )
-  {
-    return QList<double>() << maximum;
-  }
-
-  if ( classes >= values.size() )
-  {
-    return values;
-  }
-
-  QVector<double> sample;
-
-  // if we have lots of values, we need to take a random sample
-  if ( values.size() > maximumSize )
-  {
-    // for now, sample at least maximumSize values or a 10% sample, whichever
-    // is larger. This will produce a more representative sample for very large
-    // layers, but could end up being computationally intensive...
-
-    sample.resize( std::max( maximumSize, values.size() / 10 ) );
-
-    QgsDebugMsg( QStringLiteral( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ) );
-    QgsDebugMsg( QStringLiteral( "values:%1" ).arg( values.size() ) );
-
-    sample[ 0 ] = minimum;
-    sample[ 1 ] = maximum;
-    for ( int i = 2; i < sample.size(); i++ )
-    {
-      // pick a random integer from 0 to n
-      double r = qrand();
-      int j = std::floor( r / RAND_MAX * ( values.size() - 1 ) );
-      sample[ i ] = values[ j ];
-    }
-  }
-  else
-  {
-    sample = values.toVector();
-  }
-
-  int n = sample.size();
-
-  // sort the sample values
-  std::sort( sample.begin(), sample.end() );
-
-  QVector< QVector<int> > matrixOne( n + 1 );
-  QVector< QVector<double> > matrixTwo( n + 1 );
-
-  for ( int i = 0; i <= n; i++ )
-  {
-    matrixOne[i].resize( classes + 1 );
-    matrixTwo[i].resize( classes + 1 );
-  }
-
-  for ( int i = 1; i <= classes; i++ )
-  {
-    matrixOne[0][i] = 1;
-    matrixOne[1][i] = 1;
-    matrixTwo[0][i] = 0.0;
-    for ( int j = 2; j <= n; j++ )
-    {
-      matrixTwo[j][i] = std::numeric_limits<double>::max();
-    }
-  }
-
-  for ( int l = 2; l <= n; l++ )
-  {
-    double s1 = 0.0;
-    double s2 = 0.0;
-    int w = 0;
-
-    double v = 0.0;
-
-    for ( int m = 1; m <= l; m++ )
-    {
-      int i3 = l - m + 1;
-
-      double val = sample[ i3 - 1 ];
-
-      s2 += val * val;
-      s1 += val;
-      w++;
-
-      v = s2 - ( s1 * s1 ) / static_cast< double >( w );
-      int i4 = i3 - 1;
-      if ( i4 != 0 )
-      {
-        for ( int j = 2; j <= classes; j++ )
-        {
-          if ( matrixTwo[l][j] >= v + matrixTwo[i4][j - 1] )
-          {
-            matrixOne[l][j] = i4;
-            matrixTwo[l][j] = v + matrixTwo[i4][j - 1];
-          }
-        }
-      }
-    }
-    matrixOne[l][1] = 1;
-    matrixTwo[l][1] = v;
-  }
-
-  QVector<double> breaks( classes );
-  breaks[classes - 1] = sample[n - 1];
-
-  for ( int j = classes, k = n; j >= 2; j-- )
-  {
-    int id = matrixOne[k][j] - 1;
-    breaks[j - 2] = sample[id];
-    k = matrixOne[k][j] - 1;
-  }
-
-  return breaks.toList();
-} //_calcJenksBreaks
-
-static QStringList _breaksAsStrings( const QList<double> &breaks ) // get QStringList from QList<double> without maxi break (min is not in)
-{
-  QStringList breaksAsStrings;
-  for ( int i = 0; i < breaks.count() - 1; i++ )
-  {
-    breaksAsStrings << QString::number( breaks.at( i ), 'f', 2 );
-  }
-  return breaksAsStrings;
+  QgsClassificationEqualInterval *method = new QgsClassificationEqualInterval();
+  method->setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
+  QList<QgsClassificationRange> _classes = method->classes( minimum, maximum, classes );
+  delete method;
+  return QgsClassificationMethod::listToValues( _classes );
 }
 
 QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
@@ -664,17 +381,26 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   bool astride
 )
 {
+  Q_UNUSED( listForCboPrettyBreaks )
+
   QgsRangeList ranges;
   QgsGraduatedSymbolRenderer *r = new QgsGraduatedSymbolRenderer( attrName, ranges );
   r->setSourceSymbol( symbol->clone() );
   r->setSourceColorRamp( ramp->clone() );
-  r->setMode( mode );
-  r->setUseSymmetricMode( useSymmetricMode );
-  r->setSymmetryPoint( symmetryPoint );
-  r->setListForCboPrettyBreaks( listForCboPrettyBreaks );
-  r->setAstride( astride );
-  r->setLabelFormat( labelFormat );
-  r->updateClasses( vlayer, mode, classes, useSymmetricMode, symmetryPoint, astride );
+
+  QString methodId = methodIdFromMode( mode );
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+
+  if ( method )
+  {
+    method->setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
+    method->setLabelFormat( labelFormat.format() );
+    method->setLabelTrimTrailingZeroes( labelFormat.trimTrailingZeroes() );
+    method->setLabelPrecision( labelFormat.precision() );
+  }
+  r->setClassificationMethod( method );
+
+  r->updateClasses( vlayer, classes );
   return r;
 }
 
@@ -683,122 +409,30 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
 {
   if ( mAttrName.isEmpty() )
     return;
-  setMode( mode );
-  setSymmetryPoint( symmetryPoint );
-  setUseSymmetricMode( useSymmetricMode );
-  setAstride( astride );
 
-  // Custom classes are not recalculated
-  if ( mode == Custom )
+  QString methodId = methodIdFromMode( mode );
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  if ( method )
+  {
+    method->setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
+  }
+
+  updateClasses( vlayer, nclasses );
+}
+
+void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int numberOfClasses )
+{
+  if ( mClassificationMethod->id() == QgsClassificationCustom::METHOD_ID )
     return;
 
-  if ( nclasses < 1 )
-    nclasses = 1;
+  QList<QgsClassificationRange> classes = mClassificationMethod->classes( vl, mAttrName, numberOfClasses );
 
-  QList<double> values;
-  bool valuesLoaded = false;
-  double minimum;
-  double maximum;
-
-  int attrNum = vlayer->fields().lookupField( mAttrName );
-
-  bool ok;
-  if ( attrNum == -1 )
-  {
-    values = QgsVectorLayerUtils::getDoubleValues( vlayer, mAttrName, ok );
-    if ( !ok || values.isEmpty() )
-      return;
-
-    auto result = std::minmax_element( values.begin(), values.end() );
-    minimum = *result.first;
-    maximum = *result.second;
-    valuesLoaded = true;
-  }
-  else
-  {
-    minimum = vlayer->minimumValue( attrNum ).toDouble();
-    maximum = vlayer->maximumValue( attrNum ).toDouble();
-  }
-
-  QgsDebugMsg( QStringLiteral( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );
-  QList<double> breaks;
-  QList<double> labels;
-
-  switch ( mode )
-  {
-    case EqualInterval:
-    {
-      breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum, maximum, nclasses, mUseSymmetricMode, symmetryPoint, astride );
-      break;
-    }
-
-    case Pretty:
-    {
-      breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
-      setListForCboPrettyBreaks( _breaksAsStrings( breaks ) );
-
-      if ( useSymmetricMode )
-        QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
-      break;
-    }
-
-    case Quantile:
-    case Jenks:
-    case StdDev:
-    {
-      // get values from layer
-      if ( !valuesLoaded )
-      {
-        values = QgsVectorLayerUtils::getDoubleValues( vlayer, mAttrName, ok );
-      }
-      // calculate the breaks
-      if ( mode == Quantile )
-        breaks = _calcQuantileBreaks( values, nclasses );
-      else if ( mode == Jenks )
-        breaks = _calcJenksBreaks( values, nclasses, minimum, maximum );
-      else if ( mode == StdDev )
-        breaks = _calcStdDevBreaks( values, nclasses, labels, mUseSymmetricMode, symmetryPoint, astride );
-      break;
-    }
-
-    case Custom:
-      Q_ASSERT( false );
-      break;
-  }
-
-  double lower, upper = minimum;
-  QString label;
   deleteAllClasses();
 
-  // "breaks" list contains all values at class breaks plus maximum as last break
-  int i = 0;
-  for ( QList<double>::iterator it = breaks.begin(); it != breaks.end(); ++it, ++i )
+  for ( QList<QgsClassificationRange>::iterator it = classes.begin(); it != classes.end(); ++it )
   {
-    lower = upper; // upper border from last interval
-    upper = *it;
-
-    // Label - either StdDev label or default label for a range
-    if ( mode == StdDev )
-    {
-      if ( i == 0 )
-      {
-        label = "< " + QString::number( labels[i], 'f', 2 ) + " Std Dev";
-      }
-      else if ( i == labels.count() - 1 )
-      {
-        label = ">= " + QString::number( labels[i - 1], 'f', 2 ) + " Std Dev";
-      }
-      else
-      {
-        label = QString::number( labels[i - 1], 'f', 2 ) + " Std Dev" + " - " + QString::number( labels[i], 'f', 2 ) + " Std Dev";
-      }
-    }
-    else
-    {
-      label = mLabelFormat.labelForRange( lower, upper );
-    }
-    QgsSymbol *newSymbol = mSourceSymbol ? mSourceSymbol->clone() : QgsSymbol::defaultSymbol( vlayer->geometryType() );
-    addClass( QgsRendererRange( lower, upper, newSymbol, label ) );
+    QgsSymbol *newSymbol = mSourceSymbol ? mSourceSymbol->clone() : QgsSymbol::defaultSymbol( vl->geometryType() );
+    addClass( QgsRendererRange( *it, newSymbol ) );
   }
   updateColorRamp( nullptr );
 }
@@ -873,37 +507,62 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   }
 
   // try to load mode
-  QDomElement modeElem = element.firstChildElement( QStringLiteral( "mode" ) );
+
+  QDomElement modeElem = element.firstChildElement( QStringLiteral( "mode" ) ); // old format,  backward compatibility
+  QDomElement methodElem = element.firstChildElement( QStringLiteral( "classificationMethod" ) );
+  QgsClassificationMethod *method = nullptr;
+
+  // TODO QGIS 4 Remove
+  // backward compatibility for QGIS project < 3.10
   if ( !modeElem.isNull() )
   {
     QString modeString = modeElem.attribute( QStringLiteral( "name" ) );
+    QString methodId;
     if ( modeString == QLatin1String( "equal" ) )
-      r->setMode( EqualInterval );
+      methodId = QLatin1String( "EqualInterval" );
     else if ( modeString == QLatin1String( "quantile" ) )
-      r->setMode( Quantile );
+      methodId = QLatin1String( "Quantile" );
     else if ( modeString == QLatin1String( "jenks" ) )
-      r->setMode( Jenks );
+      methodId = QLatin1String( "Jenks" );
     else if ( modeString == QLatin1String( "stddev" ) )
-      r->setMode( StdDev );
+      methodId = QLatin1String( "StdDev" );
     else if ( modeString == QLatin1String( "pretty" ) )
-      r->setMode( Pretty );
-  }
+      methodId = QLatin1String( "Pretty" );
 
-  // symmetric mode
-  QDomElement symmetricModeElem = element.firstChildElement( QStringLiteral( "symmetricMode" ) );
-  if ( !symmetricModeElem.isNull() )
+    method = QgsApplication::classificationMethodRegistry()->method( methodId );
+
+    // symmetric mode
+    QDomElement symmetricModeElem = element.firstChildElement( QStringLiteral( "symmetricMode" ) );
+    if ( !symmetricModeElem.isNull() )
+    {
+      // symmetry
+      QString symmetricEnabled = symmetricModeElem.attribute( QStringLiteral( "enabled" ) );
+      QString symmetricPointString = symmetricModeElem.attribute( QStringLiteral( "symmetryPoint" ) );
+      QString astrideEnabled = symmetricModeElem.attribute( QStringLiteral( "astride" ) );
+      method->setSymmetricMode( symmetricEnabled == QLatin1String( "true" ), symmetricPointString.toDouble(), astrideEnabled == QLatin1String( "true" ) );
+    }
+    QDomElement labelFormatElem = element.firstChildElement( QStringLiteral( "labelformat" ) );
+    if ( !labelFormatElem.isNull() )
+    {
+      // label format
+      QString format = labelFormatElem.attribute( QStringLiteral( "format" ), "%1" + QStringLiteral( " - " ) + "%2" );
+      int precision = labelFormatElem.attribute( QStringLiteral( "decimalplaces" ), QStringLiteral( "4" ) ).toInt();
+      bool trimTrailingZeroes = labelFormatElem.attribute( QStringLiteral( "trimtrailingzeroes" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
+      method->setLabelFormat( format );
+      method->setLabelPrecision( precision );
+      method->setLabelTrimTrailingZeroes( trimTrailingZeroes );
+    }
+    // End of backward compatibility
+  }
+  else
   {
-    QString symmetricEnabled = symmetricModeElem.attribute( QStringLiteral( "enabled" ) );
-    symmetricEnabled == QLatin1String( "true" ) ? r->setUseSymmetricMode( true ) : r->setUseSymmetricMode( false );
-
-    QString symmetricPointString = symmetricModeElem.attribute( QStringLiteral( "symmetryPoint" ) );
-    r->setSymmetryPoint( symmetricPointString.toDouble() );
-    QString breaksForPretty = symmetricModeElem.attribute( QStringLiteral( "valueForCboPrettyBreaks" ) );
-    r->setListForCboPrettyBreaks( breaksForPretty.split( '/' ) );
-
-    QString astrideEnabled = symmetricModeElem.attribute( QStringLiteral( "astride" ) );
-    astrideEnabled == QLatin1String( "true" ) ? r->setAstride( true ) : r->setAstride( false );
+    // QGIS project 3.10+
+    method = QgsClassificationMethod::create( methodElem, context );
   }
+
+  // apply the method
+  r->setClassificationMethod( method );
+
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
@@ -933,20 +592,12 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     }
   }
 
-  QDomElement labelFormatElem = element.firstChildElement( QStringLiteral( "labelformat" ) );
-  if ( ! labelFormatElem.isNull() )
-  {
-    QgsRendererRangeLabelFormat labelFormat;
-    labelFormat.setFromDomElement( labelFormatElem );
-    r->setLabelFormat( labelFormat );
-  }
-
   QDomElement ddsLegendSizeElem = element.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
   if ( !ddsLegendSizeElem.isNull() )
   {
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
   }
-  // TODO: symbol levels
+// TODO: symbol levels
   return r;
 }
 
@@ -1002,64 +653,15 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     rendererElem.appendChild( colorRampElem );
   }
 
-  // save mode
-  QString modeString;
-  switch ( mMode )
-  {
-    case EqualInterval:
-      modeString = QStringLiteral( "equal" );
-      break;
-    case Quantile:
-      modeString = QStringLiteral( "quantile" );
-      break;
-    case Jenks:
-      modeString = QStringLiteral( "jenks" );
-      break;
-    case StdDev:
-      modeString = QStringLiteral( "stddev" );
-      break;
-    case Pretty:
-      modeString = QStringLiteral( "pretty" );
-      break;
-    case Custom:
-      break;
-  }
-  if ( !modeString.isEmpty() )
-  {
-    QDomElement modeElem = doc.createElement( QStringLiteral( "mode" ) );
-    modeElem.setAttribute( QStringLiteral( "name" ), modeString );
-    rendererElem.appendChild( modeElem );
-  }
-
-  // symmetry
-  QDomElement symmetricModeElem = doc.createElement( QStringLiteral( "symmetricMode" ) );
-  symmetricModeElem.setAttribute( QStringLiteral( "enabled" ), mUseSymmetricMode ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  symmetricModeElem.setAttribute( QStringLiteral( "symmetryPoint" ), mSymmetryPoint );
-  symmetricModeElem.setAttribute( QStringLiteral( "astride" ), mAstride ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  if ( Pretty == mMode )
-  {
-    QString breaks;
-    for ( int i = 0; i < mListForCboPrettyBreaks.size() - 1; i++ ) // -1 to write 1/2/3 instead of 1/2/3/
-    {
-      breaks.append( mListForCboPrettyBreaks.at( i ) );
-      breaks.append( '/' );
-    }
-    if ( mListForCboPrettyBreaks.size() > 0 ) //make sure we can go at size-1
-      breaks.append( mListForCboPrettyBreaks.at( mListForCboPrettyBreaks.size() - 1 ) ); //add the last break
-    symmetricModeElem.setAttribute( QStringLiteral( "valueForCboPrettyBreaks" ), breaks );
-  }
-
-  rendererElem.appendChild( symmetricModeElem );
+  // save classification method
+  QDomElement classificationMethodElem = mClassificationMethod->save( doc, context );
+  rendererElem.appendChild( classificationMethodElem );
 
   QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( QStringLiteral( "sizescale" ) );
   rendererElem.appendChild( sizeScaleElem );
-
-  QDomElement labelFormatElem = doc.createElement( QStringLiteral( "labelformat" ) );
-  mLabelFormat.saveToDomElement( labelFormatElem );
-  rendererElem.appendChild( labelFormatElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -1093,6 +695,27 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::baseLegendSymbolItems() const
   }
   return lst;
 }
+
+Q_NOWARN_DEPRECATED_PUSH
+QString QgsGraduatedSymbolRenderer::methodIdFromMode( QgsGraduatedSymbolRenderer::Mode mode )
+{
+  switch ( mode )
+  {
+    case EqualInterval:
+      return QLatin1String( "EqualInterval" );
+    case Quantile:
+      return QLatin1String( "Quantile" );
+    case Jenks:
+      return QLatin1String( "Jenks" );
+    case StdDev:
+      return QLatin1String( "StdDev" );
+    case Pretty:
+      return QLatin1String( "Pretty" );
+    case Custom:
+      return QString();
+  }
+}
+Q_NOWARN_DEPRECATED_POP
 
 QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
 {
@@ -1318,7 +941,7 @@ void QgsGraduatedSymbolRenderer::addClass( QgsSymbol *symbol )
 void QgsGraduatedSymbolRenderer::addClass( double lower, double upper )
 {
   QgsSymbol *newSymbol = mSourceSymbol->clone();
-  QString label = mLabelFormat.labelForRange( lower, upper );
+  QString label = mClassificationMethod->labelForRange( lower, upper );
   mRanges.append( QgsRendererRange( lower, upper, newSymbol, label ) );
 }
 
@@ -1333,13 +956,14 @@ void QgsGraduatedSymbolRenderer::addBreak( double breakValue, bool updateSymbols
       QgsRendererRange newRange = QgsRendererRange();
       newRange.setLowerValue( breakValue );
       newRange.setUpperValue( range.upperValue() );
-      newRange.setLabel( mLabelFormat.labelForRange( newRange ) );
+      newRange.setLabel( mClassificationMethod->labelForRange( newRange ) );
       newRange.setSymbol( mSourceSymbol->clone() );
 
       //update old range
-      bool isDefaultLabel = range.label() == mLabelFormat.labelForRange( range );
+      bool isDefaultLabel = range.label() == mClassificationMethod->labelForRange( range );
       range.setUpperValue( breakValue );
-      if ( isDefaultLabel ) range.setLabel( mLabelFormat.labelForRange( range.lowerValue(), breakValue ) );
+      if ( isDefaultLabel )
+        range.setLabel( mClassificationMethod->labelForRange( range.lowerValue(), breakValue ) );
       it.setValue( range );
 
       it.insert( newRange );
@@ -1378,14 +1002,28 @@ void QgsGraduatedSymbolRenderer::deleteAllClasses()
 
 void QgsGraduatedSymbolRenderer::setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges )
 {
-  if ( updateRanges && labelFormat != mLabelFormat )
-  {
-    for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
-    {
-      it->setLabel( labelFormat.labelForRange( *it ) );
-    }
-  }
   mLabelFormat = labelFormat;
+  mClassificationMethod->setLabelFormat( labelFormat.format() );
+  mClassificationMethod->setLabelPrecision( labelFormat.precision() );
+  mClassificationMethod->setLabelTrimTrailingZeroes( labelFormat.trimTrailingZeroes() );
+
+  if ( updateRanges )
+  {
+    updateRangeLabels();
+  }
+}
+
+void QgsGraduatedSymbolRenderer::updateRangeLabels()
+{
+  for ( int i = 0; i < mRanges.count(); i++ )
+  {
+    QgsClassificationMethod::ClassPosition pos = QgsClassificationMethod::Inner;
+    if ( i == 0 )
+      pos = QgsClassificationMethod::LowerBound;
+    else if ( i == mRanges.count() - 1 )
+      pos = QgsClassificationMethod::UpperBound;
+    mRanges[i].setLabel( mClassificationMethod->labelForRange( mRanges[i], pos ) );
+  }
 }
 
 
@@ -1416,7 +1054,8 @@ void QgsGraduatedSymbolRenderer::calculateLabelPrecision( bool updateRanges )
     nextDpMinRange *= 10.0;
   }
   mLabelFormat.setPrecision( ndp );
-  if ( updateRanges ) setLabelFormat( mLabelFormat, true );
+  if ( updateRanges )
+    setLabelFormat( mLabelFormat, true );
 }
 
 void QgsGraduatedSymbolRenderer::moveClass( int from, int to )
@@ -1520,6 +1159,16 @@ void QgsGraduatedSymbolRenderer::sortByLabel( Qt::SortOrder order )
   }
 }
 
+QgsClassificationMethod *QgsGraduatedSymbolRenderer::classificationMethod() const
+{
+  return mClassificationMethod.get();
+}
+
+void QgsGraduatedSymbolRenderer::setClassificationMethod( QgsClassificationMethod *method )
+{
+  mClassificationMethod.reset( method );
+}
+
 QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   QgsGraduatedSymbolRenderer *r = nullptr;
@@ -1581,3 +1230,5 @@ const char *QgsGraduatedSymbolRenderer::graduatedMethodStr( GraduatedMethod meth
   }
   return "";
 }
+
+
