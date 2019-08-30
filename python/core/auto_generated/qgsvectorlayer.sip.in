@@ -975,6 +975,8 @@ Ids of features rendered with specified legend key. Features must be first
 calculated by countSymbolFeatures()
 
 :return: Ids of features rendered by symbol or -1 if failed or Ids are not available
+
+.. versionadded:: 3.10
 %End
 
     virtual FeatureAvailability hasFeatures() const ${SIP_FINAL};
