@@ -22,6 +22,9 @@ from qgis.server import QgsServer, QgsAccessControlFilter, QgsServerRequest, Qgs
 from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.PyQt.QtCore import QSize
 import tempfile
+import urllib.request
+import urllib.parse
+import urllib.error
 from test_qgsserver import QgsServerTestBase
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 import base64
@@ -55,6 +58,224 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
 
     def test_wms_getcapabilities(self):
         self.wms_request_compare('GetCapabilities')
+
+    def test_wms_getmap_default(self):
+        # default rendering
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_All_NoValue")
+
+    def test_wms_getmap_simple_value(self):
+        # dimension with value
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ELEVATION": "1000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_Value")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_RANGE_ELEVATION": "1000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_RangeElevation_Value")
+
+        # multi dimension with value
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ELEVATION": "1000",
+            "DIM_RANGE_ELEVATION": "1000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_RangeElevation_Value")
+
+    def test_wms_getmap_range_value(self):
+        # dimension with range value
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ELEVATION": "1000/2000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_RangeValue")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_RANGE_ELEVATION": "1000/2000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_RangeElevation_RangeValue")
+
+    def test_wms_getmap_multi_values(self):
+        # dimension with multi values
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ELEVATION": "1000,2000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_MultiValues")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_RANGE_ELEVATION": "1000,2000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_RangeElevation_MultiValues")
+
+    def test_wms_getmap_mix_values(self):
+        # dimension with mix values
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ELEVATION": "1000/1500,2000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_MixValues")
+        # same as ELEVATION=1000/2000
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_RangeValue")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_RANGE_ELEVATION": "1000/1500,2000"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_RangeElevation_MixValues")
+        # same as DIM_RANGE_ELEVATION=1000/2000
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_RangeElevation_RangeValue")
+
+    def test_wms_getmap_with_filter(self):
+        # dimension with filter
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Slopes,Contours",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ELEVATION": "800/2200",
+            "FILTER": "Contours:\"elev\" <= 1200"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_RangeValue_Filter")
+        # same as ELEVATION=1000
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_Value")
 
 
 if __name__ == "__main__":
