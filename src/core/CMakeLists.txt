@@ -26,6 +26,15 @@ SET(QGIS_CORE_SRCS
   gps/qgsgpsdetector.cpp
   gps/qgsnmeaconnection.cpp
 
+  symbology/classification/qgsclassificationmethodregistry.cpp
+  symbology/classification/qgsclassificationmethod.cpp
+  symbology/classification/qgsclassificationcustom.cpp
+  symbology/classification/qgsclassificationequalinterval.cpp
+  symbology/classification/qgsclassificationprettybreaks.cpp
+  symbology/classification/qgsclassificationquantile.cpp
+  symbology/classification/qgsclassificationjenks.cpp
+  symbology/classification/qgsclassificationstandarddeviation.cpp
+
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
@@ -1196,6 +1205,15 @@ SET(QGIS_CORE_HDRS
   scalebar/qgssingleboxscalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
+  symbology/classification/qgsclassificationmethodregistry.h
+  symbology/classification/qgsclassificationmethod.h
+  symbology/classification/qgsclassificationcustom.h
+  symbology/classification/qgsclassificationequalinterval.h
+  symbology/classification/qgsclassificationprettybreaks.h
+  symbology/classification/qgsclassificationquantile.h
+  symbology/classification/qgsclassificationjenks.h
+  symbology/classification/qgsclassificationstandarddeviation.h
+
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
@@ -1317,6 +1335,7 @@ INCLUDE_DIRECTORIES(
   renderer
   scalebar
   symbology
+  symbology/classification
   metadata
   mesh
   validity
