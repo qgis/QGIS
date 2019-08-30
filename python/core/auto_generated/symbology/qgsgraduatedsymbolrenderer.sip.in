@@ -192,7 +192,6 @@ Set the pivot point
 %End
 
 
-
  bool astride() const /Deprecated/;
 %Docstring
 Returns if we want to have a central class astride the pivot value
@@ -498,7 +497,6 @@ Gets the symbol which is used to represent ``value``.
 %Docstring
 Returns the matching legend key for a value.
 %End
-
 
 
 

@@ -133,67 +133,52 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     };
 
     //! \deprecated since QGIS 3.10 use classficationMethod instead
-    Q_DECL_DEPRECATED Mode mode() const SIP_DEPRECATED { return mMode; }
+    Q_DECL_DEPRECATED Mode mode() const SIP_DEPRECATED { return modeFromMethodId( mClassificationMethod->id() ); }
     //! \deprecated since QGIS 3.10 use classficationMethod instead
-    Q_DECL_DEPRECATED void setMode( Mode mode ) SIP_DEPRECATED { mMode = mode; }
+    Q_DECL_DEPRECATED void setMode( Mode mode ) SIP_DEPRECATED;
 
     /**
      * Returns if we want to classify symmetric around a given value
      * \since QGIS 3.4
      * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    Q_DECL_DEPRECATED bool useSymmetricMode() const SIP_DEPRECATED { return mUseSymmetricMode; }
+    Q_DECL_DEPRECATED bool useSymmetricMode() const SIP_DEPRECATED { return mClassificationMethod->symmetricModeEnabled(); }
 
     /**
      * Set if we want to classify symmetric around a given value
      * \since QGIS 3.4
      * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    Q_DECL_DEPRECATED  void setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED { mUseSymmetricMode = useSymmetricMode; }
+    Q_DECL_DEPRECATED  void setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED;
 
     /**
      * Returns the pivot value for symmetric classification
      * \since QGIS 3.4
      * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    Q_DECL_DEPRECATED double symmetryPoint() const SIP_DEPRECATED { return mSymmetryPoint; }
+    Q_DECL_DEPRECATED double symmetryPoint() const SIP_DEPRECATED { return mClassificationMethod->symmetryPoint(); }
 
     /**
      * Set the pivot point
      * \since QGIS 3.4
      * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    Q_DECL_DEPRECATED void setSymmetryPoint( double symmetryPoint ) SIP_DEPRECATED { mSymmetryPoint = symmetryPoint; }
+    Q_DECL_DEPRECATED void setSymmetryPoint( double symmetryPoint ) SIP_DEPRECATED;
 
-    /**
-     * Returns the list of breaks used in the prettybreaks mode. Needed to recover this list in saved configuration, or when property window in closed and reopened
-     * \note Not available in Python bindings, not stable API
-     * \since QGIS 3.4
-     * \deprecated since QGIS 3.10 use classficationMethod instead
-     */
-    Q_DECL_DEPRECATED QStringList listForCboPrettyBreaks() const SIP_DEPRECATED { return mListForCboPrettyBreaks; } SIP_SKIP
-
-    /**
-     * Set the list of breaks used in the prettybreaks mode, which is needed to recover this list in saved configuration, or when property window is closed and reopened
-     * \note Not available in Python bindings, not stable API
-     * \since QGIS 3.4
-     * \deprecated since QGIS 3.10 use classficationMethod instead
-     */
-    Q_DECL_DEPRECATED void setListForCboPrettyBreaks( const QStringList &listForCboPrettyBreaks ) SIP_DEPRECATED { mListForCboPrettyBreaks = listForCboPrettyBreaks; } SIP_SKIP
 
     /**
      * Returns if we want to have a central class astride the pivot value
      * \since QGIS 3.4
      * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    Q_DECL_DEPRECATED bool astride() const SIP_DEPRECATED { return mAstride; }
+    Q_DECL_DEPRECATED bool astride() const SIP_DEPRECATED { return mClassificationMethod->astride(); }
 
     /**
      * Set if we want a central class astride the pivot value
      * \since QGIS 3.4
      * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    Q_DECL_DEPRECATED void setAstride( bool astride ) SIP_DEPRECATED { mAstride = astride; }
+    Q_DECL_DEPRECATED void setAstride( bool astride ) SIP_DEPRECATED;
 
     /**
      * Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
@@ -242,7 +227,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \since QGIS 2.6
      * \deprecated since QGIS 3.10 use classificationMethod() and QgsClassificationMethod::setLabelFormat instead
      */
-    Q_DECL_DEPRECATED const QgsRendererRangeLabelFormat &labelFormat() const { return mLabelFormat; } SIP_DEPRECATED
+    Q_DECL_DEPRECATED const QgsRendererRangeLabelFormat &labelFormat() const;
 
     /**
      * Set the label format used to generate default classification labels
@@ -421,10 +406,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
   protected:
     QString mAttrName;
     QgsRangeList mRanges;
-    Mode mMode = Custom;
     std::unique_ptr<QgsSymbol> mSourceSymbol;
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
-    QgsRendererRangeLabelFormat mLabelFormat;
 
     std::unique_ptr<QgsExpression> mExpression;
     GraduatedMethod mGraduatedMethod = GraduatedColor;
@@ -450,11 +433,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     std::shared_ptr<QgsClassificationMethod> mClassificationMethod;
 
-    bool mUseSymmetricMode = false;
-    double mSymmetryPoint = 0.0;
-    QStringList mListForCboPrettyBreaks = QStringList();
-    bool mAstride = false;
-
   private:
 
     /**
@@ -468,13 +446,13 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     // TODO QGIS 4: remove
     Q_NOWARN_DEPRECATED_PUSH
     static QString methodIdFromMode( QgsGraduatedSymbolRenderer::Mode mode );
+    static QgsGraduatedSymbolRenderer::Mode modeFromMethodId( const QString &methodId );
     Q_NOWARN_DEPRECATED_POP
 
 #ifdef SIP_RUN
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
     QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );
 #endif
-
 };
 
 #endif // QGSGRADUATEDSYMBOLRENDERER_H

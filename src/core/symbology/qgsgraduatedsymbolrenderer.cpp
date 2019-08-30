@@ -437,6 +437,14 @@ void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int nu
   updateColorRamp( nullptr );
 }
 
+const QgsRendererRangeLabelFormat &QgsGraduatedSymbolRenderer::labelFormat() const
+{
+  // this is leaking but will be removed in QGIS 4
+  Q_NOWARN_DEPRECATED_PUSH
+  QgsRendererRangeLabelFormat *format = new QgsRendererRangeLabelFormat( mClassificationMethod->labelFormat(), mClassificationMethod->labelPrecision(), mClassificationMethod->labelTrimTrailingZeroes() );
+  Q_NOWARN_DEPRECATED_POP
+  return *format;
+}
 
 QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -518,6 +526,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   {
     QString modeString = modeElem.attribute( QStringLiteral( "name" ) );
     QString methodId;
+    // the strings saved in the project does not match with the old Mode enum
     if ( modeString == QLatin1String( "equal" ) )
       methodId = QLatin1String( "EqualInterval" );
     else if ( modeString == QLatin1String( "quantile" ) )
@@ -714,6 +723,22 @@ QString QgsGraduatedSymbolRenderer::methodIdFromMode( QgsGraduatedSymbolRenderer
     case Custom:
       return QString();
   }
+}
+
+QgsGraduatedSymbolRenderer::Mode QgsGraduatedSymbolRenderer::modeFromMethodId( const QString &methodId )
+{
+  if ( methodId == QLatin1String( "EqualInterval" ) )
+    return EqualInterval;
+  if ( methodId == QLatin1String( "Quantile" ) )
+    return Quantile;
+  if ( methodId == QLatin1String( "Jenks" ) )
+    return Jenks;
+  if ( methodId == QLatin1String( "StdDev" ) )
+    return StdDev;
+  if ( methodId == QLatin1String( "Pretty" ) )
+    return Pretty;
+  else
+    return Custom;
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -1002,7 +1027,6 @@ void QgsGraduatedSymbolRenderer::deleteAllClasses()
 
 void QgsGraduatedSymbolRenderer::setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges )
 {
-  mLabelFormat = labelFormat;
   mClassificationMethod->setLabelFormat( labelFormat.format() );
   mClassificationMethod->setLabelPrecision( labelFormat.precision() );
   mClassificationMethod->setLabelTrimTrailingZeroes( labelFormat.trimTrailingZeroes() );
@@ -1053,9 +1077,9 @@ void QgsGraduatedSymbolRenderer::calculateLabelPrecision( bool updateRanges )
     ndp--;
     nextDpMinRange *= 10.0;
   }
-  mLabelFormat.setPrecision( ndp );
+  mClassificationMethod->setLabelPrecision( ndp );
   if ( updateRanges )
-    setLabelFormat( mLabelFormat, true );
+    updateRangeLabels();
 }
 
 void QgsGraduatedSymbolRenderer::moveClass( int from, int to )
@@ -1167,6 +1191,28 @@ QgsClassificationMethod *QgsGraduatedSymbolRenderer::classificationMethod() cons
 void QgsGraduatedSymbolRenderer::setClassificationMethod( QgsClassificationMethod *method )
 {
   mClassificationMethod.reset( method );
+}
+
+void QgsGraduatedSymbolRenderer::setMode( QgsGraduatedSymbolRenderer::Mode mode )
+{
+  QString methodId = methodIdFromMode( mode );
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  setClassificationMethod( method );
+}
+
+void QgsGraduatedSymbolRenderer::setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED
+{
+  mClassificationMethod->setSymmetricMode( useSymmetricMode, mClassificationMethod->symmetryPoint(), mClassificationMethod->astride() );
+}
+
+void QgsGraduatedSymbolRenderer::setSymmetryPoint( double symmetryPoint ) SIP_DEPRECATED
+{
+  mClassificationMethod->setSymmetricMode( mClassificationMethod->symmetricModeEnabled(), symmetryPoint, mClassificationMethod->astride() );
+}
+
+void QgsGraduatedSymbolRenderer::setAstride( bool astride ) SIP_DEPRECATED
+{
+  mClassificationMethod->setSymmetricMode( mClassificationMethod->symmetricModeEnabled(), mClassificationMethod->symmetryPoint(), astride );
 }
 
 QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
