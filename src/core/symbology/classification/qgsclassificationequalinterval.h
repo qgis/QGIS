@@ -38,7 +38,7 @@ class CORE_EXPORT QgsClassificationEqualInterval : public QgsClassificationMetho
 
   private:
     QList<double> calculateBreaks( double minimum, double maximum,
-                                   const QList<double> &values, int numberOfClasses ) override;
+                                   const QList<double> &values, int nclasses ) override;
 
 
 };

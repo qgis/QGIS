@@ -420,12 +420,12 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   updateClasses( vlayer, nclasses );
 }
 
-void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int numberOfClasses )
+void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int nclasses )
 {
   if ( mClassificationMethod->id() == QgsClassificationCustom::METHOD_ID )
     return;
 
-  QList<QgsClassificationRange> classes = mClassificationMethod->classes( vl, mAttrName, numberOfClasses );
+  QList<QgsClassificationRange> classes = mClassificationMethod->classes( vl, mAttrName, nclasses );
 
   deleteAllClasses();
 
@@ -1202,12 +1202,12 @@ void QgsGraduatedSymbolRenderer::setMode( QgsGraduatedSymbolRenderer::Mode mode 
 
 void QgsGraduatedSymbolRenderer::setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED
 {
-  mClassificationMethod->setSymmetricMode( useSymmetricMode, mClassificationMethod->symmetryPoint(), mClassificationMethod->astride() );
+  mClassificationMethod->setSymmetricMode( useSymmetricMode, mClassificationMethod->symmetryPoint(), mClassificationMethod->symmetryAstride() );
 }
 
 void QgsGraduatedSymbolRenderer::setSymmetryPoint( double symmetryPoint ) SIP_DEPRECATED
 {
-  mClassificationMethod->setSymmetricMode( mClassificationMethod->symmetricModeEnabled(), symmetryPoint, mClassificationMethod->astride() );
+  mClassificationMethod->setSymmetricMode( mClassificationMethod->symmetricModeEnabled(), symmetryPoint, mClassificationMethod->symmetryAstride() );
 }
 
 void QgsGraduatedSymbolRenderer::setAstride( bool astride ) SIP_DEPRECATED

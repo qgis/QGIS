@@ -45,7 +45,7 @@ QgsClassificationMethod::QgsClassificationMethod( bool valuesRequired, bool symm
 
 void QgsClassificationMethod::copyBase( QgsClassificationMethod *c ) const
 {
-  c->setSymmetricMode( mSymmetricEnabled, mSymmetryPoint, mAstride );
+  c->setSymmetricMode( mSymmetricEnabled, mSymmetryPoint, mSymmetryAstride );
   c->setLabelFormat( mLabelFormat );
   c->setLabelPrecision( mLabelPrecision );
   c->setLabelTrimTrailingZeroes( mLabelTrimTrailingZeroes );
@@ -96,7 +96,7 @@ QDomElement QgsClassificationMethod::save( QDomDocument &doc, const QgsReadWrite
   QDomElement symmetricModeElem = doc.createElement( QStringLiteral( "symmetricMode" ) );
   symmetricModeElem.setAttribute( QStringLiteral( "enabled" ), symmetricModeEnabled() ? 1 : 0 );
   symmetricModeElem.setAttribute( QStringLiteral( "symmetrypoint" ), symmetryPoint() );
-  symmetricModeElem.setAttribute( QStringLiteral( "astride" ), mAstride ? 1 : 0 );
+  symmetricModeElem.setAttribute( QStringLiteral( "astride" ), mSymmetryAstride ? 1 : 0 );
   methodElem.appendChild( symmetricModeElem );
 
   // label format
@@ -119,7 +119,7 @@ void QgsClassificationMethod::setSymmetricMode( bool enabled, double symmetryPoi
 {
   mSymmetricEnabled = enabled;
   mSymmetryPoint = symmetryPoint;
-  mAstride = astride;
+  mSymmetryAstride = astride;
 }
 
 void QgsClassificationMethod::setLabelPrecision( int precision )
@@ -159,13 +159,13 @@ QString QgsClassificationMethod::formatNumber( double value ) const
   }
 }
 
-QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *vl, const QString &expression, int numberOfClasses )
+QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *vl, const QString &expression, int nclasses )
 {
   if ( expression.isEmpty() )
     return QList<QgsClassificationRange>();
 
-  if ( numberOfClasses < 1 )
-    numberOfClasses = 1;
+  if ( nclasses < 1 )
+    nclasses = 1;
 
   QList<double> values;
   double minimum;
@@ -191,24 +191,24 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   }
 
   // get the breaks
-  const QList<double> breaks = calculateBreaks( minimum, maximum, values, numberOfClasses );
+  const QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
   // create classes
   return breaksToClasses( breaks );
 }
 
-QList<QgsClassificationRange> QgsClassificationMethod::classes( const QList<double> &values, int numberOfClasses )
+QList<QgsClassificationRange> QgsClassificationMethod::classes( const QList<double> &values, int nclasses )
 {
   auto result = std::minmax_element( values.begin(), values.end() );
   double minimum = *result.first;
   double maximum = *result.second;
 
   // get the breaks
-  const QList<double> breaks = calculateBreaks( minimum, maximum, values, numberOfClasses );
+  const QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
   // create classes
   return breaksToClasses( breaks );
 }
 
-QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, double maximum, int numberOfClasses )
+QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, double maximum, int nclasses )
 {
   if ( mValuesRequired )
   {
@@ -216,7 +216,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, 
   }
 
   // get the breaks
-  QList<double> breaks = calculateBreaks( minimum, maximum, QList<double>(), numberOfClasses );
+  QList<double> breaks = calculateBreaks( minimum, maximum, QList<double>(), nclasses );
   breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );

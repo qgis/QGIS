@@ -41,6 +41,13 @@ class CORE_EXPORT QgsRendererRange
      * Constructor for QgsRendererRange.
      */
     QgsRendererRange() = default;
+
+    /**
+     * Creates a renderer symbol range
+     * \param range The classification range
+     * \param symbol The symbol for this renderer range
+     * \param render If true, it will be renderered
+     */
     QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol SIP_TRANSFER, bool render = true );
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );

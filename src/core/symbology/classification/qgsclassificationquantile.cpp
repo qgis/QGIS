@@ -41,7 +41,7 @@ QgsClassificationMethod *QgsClassificationQuantile::clone() const
 
 
 QList<double> QgsClassificationQuantile::calculateBreaks( double minimum, double maximum,
-    const QList<double> &values, int numberOfClasses )
+    const QList<double> &values, int nclasses )
 {
   Q_UNUSED( minimum )
   Q_UNUSED( maximum )
@@ -67,12 +67,12 @@ QList<double> QgsClassificationQuantile::calculateBreaks( double minimum, double
   int n = _values.count();
   double Xq = n > 0 ? _values[0] : 0.0;
 
-  breaks.reserve( numberOfClasses );
-  for ( int i = 1; i < numberOfClasses; i++ )
+  breaks.reserve( nclasses );
+  for ( int i = 1; i < nclasses; i++ )
   {
     if ( n > 1 )
     {
-      double q = i  / static_cast< double >( numberOfClasses );
+      double q = i  / static_cast< double >( nclasses );
       double a = q * ( n - 1 );
       int aa = static_cast<  int >( a );
 

@@ -47,7 +47,7 @@ QgsClassificationMethod *QgsClassificationStandardDeviation::clone() const
 
 
 QList<double> QgsClassificationStandardDeviation::calculateBreaks( double minimum, double maximum,
-    const QList<double> &values, int numberOfClasses )
+    const QList<double> &values, int nclasses )
 {
   // C++ implementation of the standard deviation class interval algorithm
   // as implemented in the 'classInt' package available for the R statistical
@@ -81,8 +81,8 @@ QList<double> QgsClassificationStandardDeviation::calculateBreaks( double minimu
   // if not symmetric, the symmetry point is the mean
   mSymmetryPoint = symmetricModeEnabled() ? symmetryPoint() : mean;
 
-  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - mSymmetryPoint ) / mStdDev, ( maximum - mSymmetryPoint ) / mStdDev, numberOfClasses );
-  makeBreaksSymmetric( breaks, 0.0, astride() ); //0.0 because breaks where computed on a centered distribution
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - mSymmetryPoint ) / mStdDev, ( maximum - mSymmetryPoint ) / mStdDev, nclasses );
+  makeBreaksSymmetric( breaks, 0.0, symmetryAstride() ); //0.0 because breaks where computed on a centered distribution
 
   for ( int i = 0; i < breaks.count(); i++ )
     breaks[i] = ( breaks[i] * mStdDev ) + mSymmetryPoint;

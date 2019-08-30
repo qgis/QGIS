@@ -171,7 +171,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \since QGIS 3.4
      * \deprecated since QGIS 3.10 use classficationMethod instead
      */
-    Q_DECL_DEPRECATED bool astride() const SIP_DEPRECATED { return mClassificationMethod->astride(); }
+    Q_DECL_DEPRECATED bool astride() const SIP_DEPRECATED { return mClassificationMethod->symmetryAstride(); }
 
     /**
      * Set if we want a central class astride the pivot value
@@ -218,9 +218,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Recalculate classes for a layer
-     * \param vlayer  The layer being rendered (from which data values are calculated)
+     * \param vl  The layer being rendered (from which data values are calculated)
+     * \param nclasses the number of classes
      */
-    void updateClasses( const QgsVectorLayer *vl, int numberOfClasses );
+    void updateClasses( const QgsVectorLayer *vl, int nclasses );
 
     /**
      * Returns the label format used to generate default classification labels
@@ -245,7 +246,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     void calculateLabelPrecision( bool updateRanges = true );
 
-    Q_NOWARN_DEPRECATED_PUSH
+    Q_NOWARN_DEPRECATED_PUSH;
 
     /**
      * Creates a new graduated renderer.
@@ -263,7 +264,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \returns new QgsGraduatedSymbolRenderer object
      * \deprecated since QGIS 3.10
      */
-    Q_DECL_DEPRECATED static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
+    static Q_DECL_DEPRECATED QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
         const QString &attrName,
         int classes,
         Mode mode,
@@ -274,7 +275,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
         double symmetryPoint = 0.0,
         QStringList listForCboPrettyBreaks = QStringList(),
         bool astride = false ) SIP_DEPRECATED;
-    Q_NOWARN_DEPRECATED_POP
+    Q_NOWARN_DEPRECATED_POP;
 
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;

@@ -37,7 +37,7 @@ QString QgsClassificationEqualInterval::id() const
 }
 
 QList<double> QgsClassificationEqualInterval::calculateBreaks( double minimum, double maximum,
-    const QList<double> &values, int numberOfClasses )
+    const QList<double> &values, int nclasses )
 {
   Q_UNUSED( values )
 
@@ -46,45 +46,45 @@ QList<double> QgsClassificationEqualInterval::calculateBreaks( double minimum, d
   QList<double> breaks;
   if ( !symmetricModeEnabled() ) // normal mode
   {
-    double step = ( maximum - minimum ) / numberOfClasses;
+    double step = ( maximum - minimum ) / nclasses;
 
     double value = minimum;
-    breaks.reserve( numberOfClasses );
-    for ( int i = 0; i < numberOfClasses; i++ )
+    breaks.reserve( nclasses );
+    for ( int i = 0; i < nclasses; i++ )
     {
       value += step;
       breaks << value;
     }
     // floating point arithmetics is not precise:
     // set the last break to be exactly maximum so we do not miss it
-    breaks[numberOfClasses - 1] = maximum;
+    breaks[nclasses - 1] = maximum;
   }
   else // symmetric mode
   {
     double distBelowSymmetricValue = std::abs( minimum - symmetryPoint() );
     double distAboveSymmetricValue = std::abs( maximum - symmetryPoint() ) ;
 
-    if ( astride() )
+    if ( symmetryAstride() )
     {
-      if ( numberOfClasses % 2 == 0 ) // we want odd number of classes
-        ++numberOfClasses;
+      if ( nclasses % 2 == 0 ) // we want odd number of classes
+        ++nclasses;
     }
     else
     {
-      if ( numberOfClasses % 2 == 1 ) // we want even number of classes
-        ++numberOfClasses;
+      if ( nclasses % 2 == 1 ) // we want even number of classes
+        ++nclasses;
     }
-    double step = 2 * std::min( distBelowSymmetricValue, distAboveSymmetricValue ) / numberOfClasses;
+    double step = 2 * std::min( distBelowSymmetricValue, distAboveSymmetricValue ) / nclasses;
 
-    breaks.reserve( numberOfClasses );
-    double value = ( distBelowSymmetricValue < distAboveSymmetricValue ) ?  minimum : maximum - numberOfClasses * step;
+    breaks.reserve( nclasses );
+    double value = ( distBelowSymmetricValue < distAboveSymmetricValue ) ?  minimum : maximum - nclasses * step;
 
-    for ( int i = 0; i < numberOfClasses; i++ )
+    for ( int i = 0; i < nclasses; i++ )
     {
       value += step;
       breaks << value;
     }
-    breaks[numberOfClasses - 1] = maximum;
+    breaks[nclasses - 1] = maximum;
   }
 
   return breaks;

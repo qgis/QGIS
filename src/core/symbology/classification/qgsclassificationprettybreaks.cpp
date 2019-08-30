@@ -36,13 +36,13 @@ QString QgsClassificationPrettyBreaks::id() const
   return QStringLiteral( "Pretty" );
 }
 
-QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double minimum, double maximum, const QList<double> &values, int numberOfClasses )
+QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double minimum, double maximum, const QList<double> &values, int nclasses )
 {
   Q_UNUSED( values );
-  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, numberOfClasses );
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
 
   if ( symmetricModeEnabled() )
-    makeBreaksSymmetric( breaks, symmetryPoint(), astride() );
+    makeBreaksSymmetric( breaks, symmetryPoint(), symmetryAstride() );
 
   return breaks;
 }

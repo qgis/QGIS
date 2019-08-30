@@ -44,11 +44,11 @@ QString QgsClassificationCustom::id() const
 }
 
 QList<double> QgsClassificationCustom::calculateBreaks( double minimum, double maximum,
-    const QList<double> &values, int numberOfClasses )
+    const QList<double> &values, int nclasses )
 {
   Q_UNUSED( minimum )
   Q_UNUSED( maximum )
   Q_UNUSED( values )
-  Q_UNUSED( numberOfClasses )
+  Q_UNUSED( nclasses )
   return QList<double>();
 }

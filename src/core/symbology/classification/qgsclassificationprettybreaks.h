@@ -36,7 +36,7 @@ class CORE_EXPORT QgsClassificationPrettyBreaks : public QgsClassificationMethod
 
   private:
     QList<double> calculateBreaks( double minimum, double maximum,
-                                   const QList<double> &values, int numberOfClasses ) override;
+                                   const QList<double> &values, int nclasses ) override;
 };
 
 #endif // QGSCLASSIFICATIONPRETTYBREAKS_H

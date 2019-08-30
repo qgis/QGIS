@@ -42,7 +42,7 @@ QgsClassificationMethod *QgsClassificationJenks::clone() const
 
 
 QList<double> QgsClassificationJenks::calculateBreaks( double minimum, double maximum,
-    const QList<double> &values, int numberOfClasses )
+    const QList<double> &values, int nclasses )
 {
   // Jenks Optimal (Natural Breaks) algorithm
   // Based on the Jenks algorithm from the 'classInt' package available for
@@ -57,12 +57,12 @@ QList<double> QgsClassificationJenks::calculateBreaks( double minimum, double ma
   if ( values.isEmpty() )
     return QList<double>();
 
-  if ( numberOfClasses <= 1 )
+  if ( nclasses <= 1 )
   {
     return QList<double>() <<  maximum;
   }
 
-  if ( numberOfClasses >= values.size() )
+  if ( nclasses >= values.size() )
   {
     return values;
   }
@@ -106,11 +106,11 @@ QList<double> QgsClassificationJenks::calculateBreaks( double minimum, double ma
 
   for ( int i = 0; i <= n; i++ )
   {
-    matrixOne[i].resize( numberOfClasses + 1 );
-    matrixTwo[i].resize( numberOfClasses + 1 );
+    matrixOne[i].resize( nclasses + 1 );
+    matrixTwo[i].resize( nclasses + 1 );
   }
 
-  for ( int i = 1; i <= numberOfClasses; i++ )
+  for ( int i = 1; i <= nclasses; i++ )
   {
     matrixOne[0][i] = 1;
     matrixOne[1][i] = 1;
@@ -143,7 +143,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double minimum, double ma
       int i4 = i3 - 1;
       if ( i4 != 0 )
       {
-        for ( int j = 2; j <= numberOfClasses; j++ )
+        for ( int j = 2; j <= nclasses; j++ )
         {
           if ( matrixTwo[l][j] >= v + matrixTwo[i4][j - 1] )
           {
@@ -157,10 +157,10 @@ QList<double> QgsClassificationJenks::calculateBreaks( double minimum, double ma
     matrixTwo[l][1] = v;
   }
 
-  QVector<double> breaks( numberOfClasses );
-  breaks[numberOfClasses - 1] = sample[n - 1];
+  QVector<double> breaks( nclasses );
+  breaks[nclasses - 1] = sample[n - 1];
 
-  for ( int j = numberOfClasses, k = n; j >= 2; j-- )
+  for ( int j = nclasses, k = n; j >= 2; j-- )
   {
     int id = matrixOne[k][j] - 1;
     breaks[j - 2] = sample[id];

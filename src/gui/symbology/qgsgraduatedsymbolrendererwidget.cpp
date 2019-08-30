@@ -654,7 +654,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 
     mGroupBoxSymmetric->setVisible( method->symmetricModeAvailable() );
     mGroupBoxSymmetric->setChecked( method->symmetricModeEnabled() );
-    cbxAstride->setChecked( method->astride() );
+    cbxAstride->setChecked( method->symmetryAstride() );
     if ( method->symmetricModeEnabled() )
       cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QString::number( method->symmetryPoint(), 'f', method->labelPrecision() + 2 ) );
 

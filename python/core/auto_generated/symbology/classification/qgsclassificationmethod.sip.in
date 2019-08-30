@@ -151,20 +151,20 @@ Returns if the symmetric mode is enabled
 Returns the symmetry point for symmetric mode
 %End
 
-    bool astride() const;
+    bool symmetryAstride() const;
 %Docstring
 Returns if the symmetric mode is astride
 if ``True``, it will remove the symmetry point break so that the 2 classes form only one
 %End
 
-    void setSymmetricMode( bool enabled, double symmetryPoint = 0, bool astride = false );
+    void setSymmetricMode( bool enabled, double symmetryPoint = 0, bool symmetryAstride = false );
 %Docstring
 Defines if the symmetric mode is enables and configures its parameters.
 If the symmetric mode is not available in the current implementation, calling this method has no effect.
 
 :param enabled: if the symmetric mode is enabled
 :param symmetryPoint: the value of the symmetry point
-:param astride: if ``True``, it will remove the symmetry point break so that the 2 classes form only one
+:param symmetryAstride: if ``True``, it will remove the symmetry point break so that the 2 classes form only one
 %End
 
     QString labelFormat() const;
@@ -197,26 +197,26 @@ Defines if the trailing 0 are trimmed in the label
 Transforms a list of classes to a list of breaks
 %End
 
-    QList<QgsClassificationRange> classes( const QgsVectorLayer *vl, const QString &expression, int numberOfClasses );
+    QList<QgsClassificationRange> classes( const QgsVectorLayer *vl, const QString &expression, int nclasses );
 %Docstring
 This will calculate the breaks for a given layer to define the classes.
 The breaks do not contain the uppper and lower bounds (minimum and maximum values).
 
 :param vl: The vector layer
 :param fieldName: The name of the field on which the classes are calculated
-:param numberOfClasses: The number of classes to be returned
+:param nclasses: The number of classes to be returned
 %End
 
-    QList<QgsClassificationRange> classes( const QList<double> &values, int numberOfClasses );
+    QList<QgsClassificationRange> classes( const QList<double> &values, int nclasses );
 %Docstring
 This will calculate the breaks for a list of values.
 The breaks do not contain the uppper and lower bounds (minimum and maximum values)
 
 :param values: The list of values
-:param numberOfClasses: The number of classes to be returned
+:param nclasses: The number of classes to be returned
 %End
 
-    QList<QgsClassificationRange> classes( double minimum, double maximum, int numberOfClasses );
+    QList<QgsClassificationRange> classes( double minimum, double maximum, int nclasses );
 %Docstring
 This will calculate the classes for defined bounds without any values.
 The breaks do not contain the uppper and lower bounds (minimum and maximum values)
@@ -226,20 +226,20 @@ The breaks do not contain the uppper and lower bounds (minimum and maximum value
    If the method implementation requires values, this will return an empty list.
 
 :param values: The list of values
-:param numberOfClasses: The number of classes to be returned
+:param nclasses: The number of classes to be returned
 %End
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
     static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 
-    static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride );
+    static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool symmetryAstride );
 %Docstring
 Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
 Does not put a break on the symmetryPoint. This is done before.
 
 :param breaks: The breaks of an already-done classification
 :param symmetryPoint: The point around which we want a symmetry
-:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+:param symmetryAstride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 %End
 
     QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;

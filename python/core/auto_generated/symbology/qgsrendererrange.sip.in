@@ -24,7 +24,15 @@ class QgsRendererRange
 %Docstring
 Constructor for QgsRendererRange.
 %End
+
     QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true );
+%Docstring
+Creates a renderer symbol range
+
+:param range: The classification range
+:param symbol: The symbol for this renderer range
+:param render: If true, it will be renderered
+%End
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
