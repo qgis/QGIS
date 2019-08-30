@@ -711,6 +711,14 @@ Returns the application's plugin layer registry, used for managing plugin layer 
 .. versionadded:: 3.0
 %End
 
+    static QgsClassificationMethodRegistry *classificationMethodRegistry() /KeepReference/;
+%Docstring
+Returns the application's classification methods registry, used in graduated renderer
+
+.. versionadded:: 3.10
+%End
+
+
     static QgsMessageLog *messageLog();
 %Docstring
 Returns the application's message log.

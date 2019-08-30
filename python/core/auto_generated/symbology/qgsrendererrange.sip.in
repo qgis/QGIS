@@ -24,6 +24,7 @@ class QgsRendererRange
 %Docstring
 Constructor for QgsRendererRange.
 %End
+    QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true );
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
@@ -64,11 +65,14 @@ Creates a DOM element representing the range in SLD format.
 
 typedef QList<QgsRendererRange> QgsRangeList;
 
-class QgsRendererRangeLabelFormat
+
+class QgsRendererRangeLabelFormat /Deprecated/
 {
 %Docstring
 
 .. versionadded:: 2.6
+
+.. deprecated:: since QGIS 3.10, use QgsClassificationMethod instead
 %End
 
 %TypeHeaderCode

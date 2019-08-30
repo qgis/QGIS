@@ -1,0 +1,277 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/classification/qgsclassificationmethod.h          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+%ModuleCode
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationjenks.h"
+#include "qgsclassificationprettybreaks.h"
+#include "qgsclassificationquantile.h"
+#include "qgsclassificationstandarddeviation.h"
+%End
+
+
+
+class QgsClassificationRange
+{
+%Docstring
+QgsClassificationRange contains the information about a classification range
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationmethod.h"
+%End
+  public:
+    QgsClassificationRange( const QString &label, const double &lowerBound, const double &upperBound );
+%Docstring
+Constructor
+%End
+    double lowerBound() const;
+%Docstring
+Returns the lower bound
+%End
+    double upperBound() const;
+%Docstring
+Returns the upper bound
+%End
+
+    QString label() const;
+%Docstring
+Returns the lower bound
+%End
+
+};
+
+
+
+class QgsClassificationMethod /Abstract/
+{
+%Docstring
+QgsClassification is an abstract class for implementations of classification methods
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationmethod.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsClassificationEqualInterval *>( sipCpp ) )
+      sipType = sipType_QgsClassificationEqualInterval;
+    else if ( dynamic_cast<QgsClassificationJenks *>( sipCpp ) )
+      sipType = sipType_QgsClassificationJenks;
+    else if ( dynamic_cast<QgsClassificationPrettyBreaks *>( sipCpp ) )
+      sipType = sipType_QgsClassificationPrettyBreaks;
+    else if ( dynamic_cast<QgsClassificationQuantile *>( sipCpp ) )
+      sipType = sipType_QgsClassificationQuantile;
+    else if ( dynamic_cast<QgsClassificationStandardDeviation *>( sipCpp ) )
+      sipType = sipType_QgsClassificationStandardDeviation;
+    else
+      sipType = 0;
+%End
+  public:
+
+    enum ClassPosition
+    {
+      LowerBound,
+      Inner,
+      UpperBound
+    };
+
+    explicit QgsClassificationMethod( bool valuesRequired, bool symmetricModeAvailable, int codeComplexity = 1 );
+%Docstring
+Creates a classification method.
+
+:param valuesRequired: if ``True``, this means that the method requires a set of values to determine the classes
+:param symmetricModeAvailable: if ``True``, this allows using symmetric classification
+:param codeCommplexity: as the exponent in the big O notation
+\param
+%End
+
+    virtual ~QgsClassificationMethod();
+
+    virtual QgsClassificationMethod *clone() const = 0 /Factory/;
+
+    virtual QString name() const = 0;
+%Docstring
+The readable and translate name of the method
+%End
+
+    virtual QString id() const = 0; // as saved in the project, must be unique in registry
+
+    virtual QString labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position = Inner ) const;
+%Docstring
+Returns the label for a range
+%End
+
+
+    virtual void saveExtra( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes extra information about the method
+%End
+    virtual void readExtra( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads extra information to apply it to the method
+%End
+
+
+    bool valuesRequired() const;
+%Docstring
+Returns if the method requires values to calculate the classes
+If not, bounds are sufficient
+%End
+
+    int codeComplexity() const;
+%Docstring
+Code complexity as the exponent in Big O notation
+%End
+
+    bool symmetricModeAvailable() const;
+%Docstring
+Returns if the method supports symmetric calculation
+%End
+
+    bool symmetricModeEnabled() const;
+%Docstring
+Returns if the symmetric mode is enabled
+%End
+
+    double symmetryPoint() const;
+%Docstring
+Returns the symmetry point for symmetric mode
+%End
+
+    bool astride() const;
+%Docstring
+Returns if the symmetric mode is astride
+if ``True``, it will remove the symmetry point break so that the 2 classes form only one
+%End
+
+    void setSymmetricMode( bool enabled, double symmetryPoint = 0, bool astride = false );
+%Docstring
+Defines if the symmetric mode is enables and configures its parameters.
+If the symmetric mode is not available in the current implementation, calling this method has no effect.
+
+:param enabled: if the symmetric mode is enabled
+:param symmetryPoint: the value of the symmetry point
+:param astride: if ``True``, it will remove the symmetry point break so that the 2 classes form only one
+%End
+
+    QString labelFormat() const;
+%Docstring
+Returns the format of the label for the classes
+%End
+    void setLabelFormat( const QString &format );
+%Docstring
+Defines the format of the labels for the classes, using %1 and %2 for the bounds
+%End
+    int labelPrecision() const;
+%Docstring
+Returns the precision for the formatting of the labels
+%End
+    void setLabelPrecision( int labelPrecision );
+%Docstring
+Defines the precision for the formatting of the labels
+%End
+    bool labelTrimTrailingZeroes() const;
+%Docstring
+Returns if the trailing 0 are trimmed in the label
+%End
+    void setLabelTrimTrailingZeroes( bool trimTrailingZeroes );
+%Docstring
+Defines if the trailing 0 are trimmed in the label
+%End
+
+    static QList<double> listToValues( const QList<QgsClassificationRange> classes );
+%Docstring
+Transforms a list of classes to a list of breaks
+%End
+
+    QList<QgsClassificationRange> classes( const QgsVectorLayer *vl, const QString &expression, int numberOfClasses );
+%Docstring
+This will calculate the breaks for a given layer to define the classes.
+The breaks do not contain the uppper and lower bounds (minimum and maximum values).
+
+:param vl: The vector layer
+:param fieldName: The name of the field on which the classes are calculated
+:param numberOfClasses: The number of classes to be returned
+%End
+
+    QList<QgsClassificationRange> classes( const QList<double> &values, int numberOfClasses );
+%Docstring
+This will calculate the breaks for a list of values.
+The breaks do not contain the uppper and lower bounds (minimum and maximum values)
+
+:param values: The list of values
+:param numberOfClasses: The number of classes to be returned
+%End
+
+    QList<QgsClassificationRange> classes( double minimum, double maximum, int numberOfClasses );
+%Docstring
+This will calculate the classes for defined bounds without any values.
+The breaks do not contain the uppper and lower bounds (minimum and maximum values)
+
+.. warning::
+
+   If the method implementation requires values, this will return an empty list.
+
+:param values: The list of values
+:param numberOfClasses: The number of classes to be returned
+%End
+
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+    static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+
+    static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride );
+%Docstring
+Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
+Does not put a break on the symmetryPoint. This is done before.
+
+:param breaks: The breaks of an already-done classification
+:param symmetryPoint: The point around which we want a symmetry
+:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+%End
+
+    QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;
+%Docstring
+Returns the label for a range
+%End
+
+
+
+    static const int MAX_PRECISION;
+    static const int MIN_PRECISION;
+
+  protected:
+
+    void copyBase( QgsClassificationMethod *c ) const;
+%Docstring
+Copy the parameters (shall be used in clone implementation)
+%End
+
+    QString formatNumber( double value ) const;
+%Docstring
+Format the number according to label properties
+%End
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/classification/qgsclassificationmethod.h          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

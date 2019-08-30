@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/classification/qgsclassificationstandarddeviation.h *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsClassificationStandardDeviation : QgsClassificationMethod
+{
+%Docstring
+QgsClassificationCustom is an implementation of QgsClassification
+based on standard deviation
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationstandarddeviation.h"
+%End
+  public:
+    QgsClassificationStandardDeviation();
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+    virtual QgsClassificationMethod *clone() const;
+
+    virtual QString labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position ) const;
+
+    virtual void saveExtra( QDomElement &element, const QgsReadWriteContext &context ) const;
+
+    virtual void readExtra( const QDomElement &element, const QgsReadWriteContext &context );
+
+
+    static const QString METHOD_ID;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/classification/qgsclassificationstandarddeviation.h *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -255,6 +255,14 @@
 %Include auto_generated/scalebar/qgsscalebarrenderer.sip
 %Include auto_generated/scalebar/qgssingleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsticksscalebarrenderer.sip
+%Include auto_generated/symbology/classification/qgsclassificationmethodregistry.sip
+%Include auto_generated/symbology/classification/qgsclassificationmethod.sip
+%Include auto_generated/symbology/classification/qgsclassificationcustom.sip
+%Include auto_generated/symbology/classification/qgsclassificationequalinterval.sip
+%Include auto_generated/symbology/classification/qgsclassificationprettybreaks.sip
+%Include auto_generated/symbology/classification/qgsclassificationquantile.sip
+%Include auto_generated/symbology/classification/qgsclassificationjenks.sip
+%Include auto_generated/symbology/classification/qgsclassificationstandarddeviation.sip
 %Include auto_generated/symbology/qgs25drenderer.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/symbology/qgscategorizedsymbolrenderer.sip

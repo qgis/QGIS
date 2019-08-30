@@ -1,0 +1,43 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/classification/qgsclassificationequalinterval.h   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsClassificationEqualInterval : QgsClassificationMethod
+{
+%Docstring
+QgsClassificationCustom is an implementation of QgsClassification
+for equal intervals
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationequalinterval.h"
+%End
+  public:
+    QgsClassificationEqualInterval();
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+    virtual QgsClassificationMethod *clone() const;
+
+
+    static const QString METHOD_ID;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/classification/qgsclassificationequalinterval.h   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
