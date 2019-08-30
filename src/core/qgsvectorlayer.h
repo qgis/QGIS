@@ -1001,6 +1001,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Ids of features rendered with specified legend key. Features must be first
      * calculated by countSymbolFeatures()
      * \returns Ids of features rendered by symbol or -1 if failed or Ids are not available
+     * \since QGIS 3.10
      */
     QgsFeatureIds symbolFeatureIds( const QString &legendKey ) const;
 
