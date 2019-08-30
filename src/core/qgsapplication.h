@@ -40,6 +40,7 @@ class QgsRasterRendererRegistry;
 class QgsGpsConnectionRegistry;
 class QgsDataItemProviderRegistry;
 class QgsPluginLayerRegistry;
+class QgsClassificationMethodRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
@@ -638,6 +639,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsPluginLayerRegistry *pluginLayerRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's classification methods registry, used in graduated renderer
+     * \since QGIS 3.10
+     */
+    static QgsClassificationMethodRegistry *classificationMethodRegistry() SIP_KEEPREFERENCE;
+
+
+    /**
      * Returns the application's message log.
      * \since QGIS 3.0
      */
@@ -869,6 +877,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
+      QgsClassificationMethodRegistry *mClassificationMethodRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
       QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;

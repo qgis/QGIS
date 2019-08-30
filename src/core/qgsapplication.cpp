@@ -41,6 +41,7 @@
 #include "qgssymbollayerutils.h"
 #include "callouts/qgscalloutsregistry.h"
 #include "qgspluginlayerregistry.h"
+#include "qgsclassificationmethodregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
@@ -1920,6 +1921,11 @@ QgsPluginLayerRegistry *QgsApplication::pluginLayerRegistry()
   return members()->mPluginLayerRegistry;
 }
 
+QgsClassificationMethodRegistry *QgsApplication::classificationMethodRegistry()
+{
+  return members()->mClassificationMethodRegistry;
+}
+
 QgsMessageLog *QgsApplication::messageLog()
 {
   return members()->mMessageLog;
@@ -1983,6 +1989,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mProjectStorageRegistry = new QgsProjectStorageRegistry();
   mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
   mValidityCheckRegistry = new QgsValidityCheckRegistry();
+  mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -2010,6 +2017,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSymbolLayerRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
+  delete mClassificationMethodRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()
