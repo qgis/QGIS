@@ -412,10 +412,8 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
 
   QString methodId = methodIdFromMode( mode );
   QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
-  if ( method )
-  {
-    method->setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
-  }
+  method->setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
+  setClassificationMethod( method );
 
   updateClasses( vlayer, nclasses );
 }
