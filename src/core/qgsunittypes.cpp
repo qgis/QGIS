@@ -661,7 +661,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
     case AreaHectares:
       return QObject::tr( "ha", "area" );
     case AreaAcres:
-      return QObject::tr( "ac²", "area" );
+      return QObject::tr( "ac", "area" );
     case AreaSquareNauticalMiles:
       return QObject::tr( "NM²", "area" );
     case AreaSquareDegrees:
