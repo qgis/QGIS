@@ -191,7 +191,8 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   }
 
   // get the breaks
-  const QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
+  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
+  breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );
 }
@@ -203,7 +204,8 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QList<doub
   double maximum = *result.second;
 
   // get the breaks
-  const QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
+  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
+  breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );
 }

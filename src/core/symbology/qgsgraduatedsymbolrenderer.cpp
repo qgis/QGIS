@@ -326,8 +326,7 @@ QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) c
   Q_UNUSED( context )
   QgsSymbolList lst;
   lst.reserve( mRanges.count() );
-  const auto constMRanges = mRanges;
-  for ( const QgsRendererRange &range : constMRanges )
+  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
   {
     lst.append( range.symbol() );
   }
@@ -336,7 +335,7 @@ QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) c
 
 bool QgsGraduatedSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  for ( const QgsRendererRange &range : mRanges )
+  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
   {
     QgsStyleSymbolEntity entity( range.symbol() );
     if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "%1 - %2" ).arg( range.lowerValue() ).arg( range.upperValue() ), range.label() ) ) )
