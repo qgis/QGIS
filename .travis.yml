@@ -1,5 +1,5 @@
 language: python # This lets us use newer python versions from virtualenv
-python: "3.5"
+python: "3.7"
 compiler: clang
 dist: bionic
 sudo: false
