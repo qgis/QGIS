@@ -1792,6 +1792,9 @@ namespace QgsWms
            || tokenIt->compare( QLatin1String( ">" ) ) == 0
            || tokenIt->compare( QLatin1String( ">=" ) ) == 0
            || tokenIt->compare( QLatin1String( "%" ) ) == 0
+           || tokenIt->compare( QLatin1String( "IS" ), Qt::CaseInsensitive ) == 0
+           || tokenIt->compare( QLatin1String( "NOT" ), Qt::CaseInsensitive ) == 0
+           || tokenIt->compare( QLatin1String( "NULL" ), Qt::CaseInsensitive ) == 0
            || tokenIt->compare( QLatin1String( "AND" ), Qt::CaseInsensitive ) == 0
            || tokenIt->compare( QLatin1String( "OR" ), Qt::CaseInsensitive ) == 0
            || tokenIt->compare( QLatin1String( "IN" ), Qt::CaseInsensitive ) == 0
@@ -2729,7 +2732,7 @@ namespace QgsWms
                                         " Note: Text strings have to be enclosed in single or double quotes."
                                         " A space between each word / special character is mandatory."
                                         " Allowed Keywords and special characters are "
-                                        " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
+                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
                                         " Not allowed are semicolons in the filter expression." ).arg(
                                           filter.mFilter ) );
           }
