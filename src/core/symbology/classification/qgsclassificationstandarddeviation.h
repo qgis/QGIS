@@ -46,6 +46,7 @@ class CORE_EXPORT QgsClassificationStandardDeviation : public QgsClassificationM
     QString valueToLabel( const double &value ) const override;
 
     double mStdDev = 1.0;
+    double mEffectiveSymmetryPoint = 0.0;
 };
 
 #endif // QGSCLASSIFICATIONSTANDARDDEVIATION_H

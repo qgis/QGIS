@@ -40,6 +40,7 @@ QgsClassificationMethod::QgsClassificationMethod( bool valuesRequired, bool symm
   : mValuesRequired( valuesRequired )
   , mSymmetricModeAvailable( symmetricModeAvailable )
   , mCodeComplexity( codeComplexity )
+  , mLabelFormat( QStringLiteral( "%1 - %2 " ) )
 {
 }
 

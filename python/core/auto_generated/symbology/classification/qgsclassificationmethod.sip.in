@@ -268,8 +268,6 @@ Copy the parameters (shall be used in clone implementation)
 Format the number according to label properties
 %End
 
-
-
 };
 
 /************************************************************************

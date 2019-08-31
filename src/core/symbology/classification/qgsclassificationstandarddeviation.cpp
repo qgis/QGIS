@@ -80,13 +80,13 @@ QList<double> QgsClassificationStandardDeviation::calculateBreaks( double minimu
   mStdDev = std::sqrt( mStdDev / n );
 
   // if not symmetric, the symmetry point is the mean
-  mSymmetryPoint = symmetricModeEnabled() ? symmetryPoint() : mean;
+  mEffectiveSymmetryPoint = symmetricModeEnabled() ? symmetryPoint() : mean;
 
-  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - mSymmetryPoint ) / mStdDev, ( maximum - mSymmetryPoint ) / mStdDev, nclasses );
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - mEffectiveSymmetryPoint ) / mStdDev, ( maximum - mEffectiveSymmetryPoint ) / mStdDev, nclasses );
   makeBreaksSymmetric( breaks, 0.0, symmetryAstride() ); //0.0 because breaks where computed on a centered distribution
 
   for ( int i = 0; i < breaks.count(); i++ )
-    breaks[i] = ( breaks[i] * mStdDev ) + mSymmetryPoint;
+    breaks[i] = ( breaks[i] * mStdDev ) + mEffectiveSymmetryPoint;
 
   return breaks;
 }
@@ -116,7 +116,7 @@ QString QgsClassificationStandardDeviation::labelForRange( const double &lowerVa
 
 QString QgsClassificationStandardDeviation::valueToLabel( const double &value ) const
 {
-  double normalized = ( value - mSymmetryPoint ) / mStdDev;
+  double normalized = ( value - mEffectiveSymmetryPoint ) / mStdDev;
   return QString::number( normalized, 'f', 2 ) + " Std Dev";
 }
 
@@ -126,11 +126,13 @@ void QgsClassificationStandardDeviation::saveExtra( QDomElement &element, const 
   Q_UNUSED( context )
 
   element.setAttribute( QLatin1Literal( "std_dev" ), QString::number( mStdDev, 'f', 16 ) );
+  element.setAttribute( QLatin1Literal( "effective_symmetry_point" ), QString::number( mEffectiveSymmetryPoint, 'f', 16 ) );
 }
 
 void QgsClassificationStandardDeviation::readExtra( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
 
-  mStdDev = element.attribute( "mStdDev", QLatin1Literal( "1.0" ) ).toDouble();
+  mStdDev = element.attribute( "std_dev", QLatin1Literal( "1.0" ) ).toDouble();
+  mEffectiveSymmetryPoint = element.attribute( "effective_symmetry_point", QLatin1Literal( "0.0" ) ).toDouble();
 }

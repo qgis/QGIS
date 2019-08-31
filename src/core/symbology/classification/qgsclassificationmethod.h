@@ -250,16 +250,6 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     //! Format the number according to label properties
     QString formatNumber( double value ) const;
 
-    // parameters (set by setters)
-    // if some are added here, they should be handled in the clone method
-    bool mSymmetricEnabled = false;
-    double mSymmetryPoint = 0;
-    bool mSymmetryAstride = false;
-    QString mLabelFormat;
-    int mLabelPrecision = 4;
-    bool mLabelTrimTrailingZeroes = true;
-
-
   private:
 
     /**
@@ -281,6 +271,16 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     bool mValuesRequired; // if all values are required to calculate breaks
     bool mSymmetricModeAvailable;
     int mCodeComplexity;
+
+    // parameters (set by setters)
+    // if some are added here, they should be handled in the clone method
+    bool mSymmetricEnabled = false;
+    double mSymmetryPoint = 0;
+    bool mSymmetryAstride = false;
+    int mLabelPrecision = 4;
+    bool mLabelTrimTrailingZeroes = true;
+    QString mLabelFormat;
+
 
     // values used to manage number formatting - precision and trailing zeroes
     double mLabelNumberScale = 1.0;
