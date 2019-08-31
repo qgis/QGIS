@@ -42,6 +42,7 @@ QgsClassificationMethod *QgsClassificationStandardDeviation::clone() const
 {
   QgsClassificationStandardDeviation *c = new QgsClassificationStandardDeviation();
   copyBase( c );
+  c->mStdDev = mStdDev;
   return c;
 }
 
