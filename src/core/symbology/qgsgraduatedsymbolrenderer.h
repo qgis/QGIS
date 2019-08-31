@@ -121,7 +121,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     void setClassificationMethod( QgsClassificationMethod *method SIP_TRANSFER );
 
-    //! \deprecated since QGIS 3.10 use QgsClassificationMethod::MethodId instead
+    /**
+      * Classification mode
+      * /! \deprecated since QGIS 3.10 use QgsClassificationMethod::MethodId instead
+      */
     enum Q_DECL_DEPRECATED Mode
     {
       EqualInterval,
