@@ -23,6 +23,7 @@
 #include "qgsclassificationjenks.h"
 #include "qgsclassificationstandarddeviation.h"
 #include "qgsclassificationprettybreaks.h"
+#include "qgsclassificationlogarithmic.h"
 
 QgsClassificationMethodRegistry::QgsClassificationMethodRegistry()
 {
@@ -31,6 +32,7 @@ QgsClassificationMethodRegistry::QgsClassificationMethodRegistry()
   addMethod( new QgsClassificationJenks() );
   addMethod( new QgsClassificationStandardDeviation() );
   addMethod( new QgsClassificationPrettyBreaks() );
+  addMethod( new QgsClassificationLogarithmic() );
 }
 
 bool QgsClassificationMethodRegistry::addMethod( QgsClassificationMethod *method )

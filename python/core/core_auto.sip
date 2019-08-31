@@ -166,6 +166,7 @@
 %Include auto_generated/classification/qgsclassificationquantile.sip
 %Include auto_generated/classification/qgsclassificationjenks.sip
 %Include auto_generated/classification/qgsclassificationstandarddeviation.sip
+%Include auto_generated/classification/qgsclassificationlogarithmic.sip
 %Include auto_generated/diagram/qgsdiagram.sip
 %Include auto_generated/diagram/qgspiediagram.sip
 %Include auto_generated/diagram/qgstextdiagram.sip

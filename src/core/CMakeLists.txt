@@ -28,6 +28,7 @@ SET(QGIS_CORE_SRCS
   classification/qgsclassificationquantile.cpp
   classification/qgsclassificationjenks.cpp
   classification/qgsclassificationstandarddeviation.cpp
+  classification/qgsclassificationlogarithmic.cpp
 
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
@@ -1092,6 +1093,7 @@ SET(QGIS_CORE_HDRS
   classification/qgsclassificationquantile.h
   classification/qgsclassificationjenks.h
   classification/qgsclassificationstandarddeviation.h
+  classification/qgsclassificationlogarithmic.h
 
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
