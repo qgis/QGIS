@@ -1,7 +1,7 @@
 language: python # This lets us use newer python versions from virtualenv
 python: "3.5"
 compiler: clang
-dist: xenial
+dist: bionic
 sudo: false
 cache:
   apt: true
@@ -60,7 +60,7 @@ matrix:
       addons:
         apt:
           sources:
-            - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
+           # - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
           packages:
             - doxygen
             - graphviz
