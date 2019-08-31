@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * QgsClassificationCustom is an implementation of QgsClassification
+ * QgsClassificationQuantile is an implementation of QgsClassificationMethod
  * based on quantiles
  * \since QGIS 3.10
  */

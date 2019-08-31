@@ -12,7 +12,7 @@
 class QgsClassificationQuantile : QgsClassificationMethod
 {
 %Docstring
-QgsClassificationCustom is an implementation of QgsClassification
+QgsClassificationQuantile is an implementation of QgsClassificationMethod
 based on quantiles
 
 .. versionadded:: 3.10

@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * QgsClassificationCustom is an implementation of QgsClassification
+ * QgsClassificationEqualInterval is an implementation of QgsClassificationMethod
  * for equal intervals
  * \since QGIS 3.10
  */

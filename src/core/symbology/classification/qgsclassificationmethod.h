@@ -112,6 +112,10 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 
     virtual ~QgsClassificationMethod() = default;
 
+    /**
+     * Returns a clone of the method.
+     * Implementation can take advantage of copyBase method which copies the parameters of the base class
+     */
     virtual QgsClassificationMethod *clone() const = 0 SIP_FACTORY;
 
     //! The readable and translate name of the method

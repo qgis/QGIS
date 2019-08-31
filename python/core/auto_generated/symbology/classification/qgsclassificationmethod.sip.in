@@ -101,6 +101,10 @@ Creates a classification method.
     virtual ~QgsClassificationMethod();
 
     virtual QgsClassificationMethod *clone() const = 0 /Factory/;
+%Docstring
+Returns a clone of the method.
+Implementation can take advantage of copyBase method which copies the parameters of the base class
+%End
 
     virtual QString name() const = 0;
 %Docstring
