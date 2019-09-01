@@ -146,7 +146,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   QgsDebugMsg( tipHtml );
 
-  mWidget->move( pixelPosition.x() + 20,
+  mWidget->move( pixelPosition.x(),
                  pixelPosition.y() );
 
   mWebView->setHtml( tipHtml );
