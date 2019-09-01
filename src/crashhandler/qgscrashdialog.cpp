@@ -26,8 +26,8 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   setupUi( this );
   setWindowTitle( tr( "Oh Uh!" ) );
 
-  mCrashHeaderMessage->setText( tr( ":( QGIS Crashed" ) );
-  mCrashMessage->setText( tr( "Sorry. It looks something unexpected happened that we didn't handle and QGIS crashed." ) );
+  mCrashHeaderMessage->setText( tr( "QGIS unexpectedly ended" ) );
+  mCrashMessage->setText( tr( "Sorry :( It looks something unexpected happened that we didn't handle and QGIS ended unexpectedly." ) );
   connect( mReloadQGISButton, &QPushButton::clicked, this, &QgsCrashDialog::reloadQGIS );
   connect( mCopyReportButton, &QPushButton::clicked, this, &QgsCrashDialog::createBugReport );
   mCopyReportButton->setEnabled( false );
