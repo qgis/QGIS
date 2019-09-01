@@ -516,8 +516,6 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mFormatNumChkBx->hide();
       mFormatNumDDBtn->hide();
       mSubstitutionsFrame->hide();
-      mFontBoldBtn->hide();
-      mFontItalicBtn->hide();
       mTextOrientationComboBox->removeItem( mTextOrientationComboBox->findData( QgsTextFormat::RotationBasedOrientation ) );
       break;
   }
