@@ -596,13 +596,10 @@
         <font>
          <family>MS Shell Dlg 2</family>
          <pointsize>30</pointsize>
-         <weight>9</weight>
+         <weight>50</weight>
          <italic>false</italic>
          <bold>false</bold>
         </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">font: 75 30pt &quot;MS Shell Dlg 2&quot;;</string>
        </property>
        <property name="text">
         <string>Header</string>
@@ -622,22 +619,6 @@
        </property>
        <property name="text">
         <string>Message</string>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="mHelpLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Help Message</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
