@@ -34,10 +34,10 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   mCrashMessage->setText( tr( "Sorry :( It looks something unexpected happened that we didn't handle and QGIS ended unexpectedly."
                               "<br><br>" )
                           +  tr( "Keen to help us fix bugs? "
-                                 "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers.</a>"
+                                 "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers</a>."
                                  "<br><br>"
                                  "You can also send us a helpful bug report using the Copy Report button <br>and opening a ticket at "
-                                 "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>" ) );
+                                 "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>." ) );
   mCrashMessage->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mCrashMessage->setOpenExternalLinks( true );
 
