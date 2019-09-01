@@ -409,7 +409,7 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
 
   QString currentTheme = mMapCanvas->theme();
 
-  QAction *actionFollowMain = new QAction( tr( "(default)" ), mMenu );
+  QAction *actionFollowMain = new QAction( tr( "(none)" ), mMenu );
   actionFollowMain->setCheckable( true );
   if ( currentTheme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( currentTheme ) )
   {
