@@ -332,15 +332,6 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
   return connections;
 }
 
-#ifdef HAVE_GUI
-QWidget *QgsWMSRootItem::paramWidget()
-{
-  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
-  return select;
-}
-#endif
-
-
 // ---------------------------------------------------------------------------
 
 

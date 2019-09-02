@@ -90,8 +90,20 @@ class GUI_EXPORT QgsProviderGuiRegistry
     SIP_SKIP typedef std::map<QString, QgsProviderGuiMetadata *> GuiProviders;
 
   private:
-    //! Loads the dynamic plugins on the given path
+
+    /**
+     * Loads the dynamic plugins on the given path
+     * When QGIS is compiled with FORCE_STATIC_PROVIDERS,
+     * the function is no-op
+     */
     void loadDynamicProviders( const QString &pluginPath );
+
+    /**
+     * Loads the static providers
+     * By default only ogr and gdal providers, but when QGIS is compiled with
+     * FORCE_STATIC_PROVIDERS, it also loads all the rest of providers
+     */
+    void loadStaticProviders( );
 
     //! Associative container of provider metadata handles
     GuiProviders mProviders;

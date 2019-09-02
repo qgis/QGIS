@@ -199,7 +199,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
-    showProperties( directoryItem );
+    showProperties( directoryItem, context );
   } );
   menu->addAction( propertiesAction );
 
@@ -264,7 +264,7 @@ void QgsAppDirectoryItemGuiProvider::toggleFastScan( QgsDirectoryItem *item )
   settings.setValue( QStringLiteral( "qgis/scanItemsFastScanUris" ), fastScanDirs );
 }
 
-void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item )
+void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context )
 {
   if ( ! item )
     return;
@@ -272,7 +272,7 @@ void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item )
   QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( QStringLiteral( "browser" ), QgisApp::instance() );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
 
-  dialog->setItem( item );
+  dialog->setItem( item, context );
   dialog->show();
 }
 
@@ -423,7 +423,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
-    showPropertiesForItem( layerItem );
+    showPropertiesForItem( layerItem, context );
   } );
   menu->addAction( propertiesAction );
 
@@ -523,14 +523,14 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths, QgsDat
   }
 }
 
-void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item )
+void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( ! item )
     return;
 
   QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( QStringLiteral( "browser" ), QgisApp::instance() );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
-  dialog->setItem( item );
+  dialog->setItem( item, context );
   dialog->show();
 }
 

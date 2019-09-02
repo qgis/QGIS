@@ -1495,6 +1495,16 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${LIBZIP_LIBRARY}
 )
 
+IF (FORCE_STATIC_PROVIDERS)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/providers/wms
+  )
+
+  TARGET_LINK_LIBRARIES(qgis_core
+    wmsprovider_a
+  )
+ENDIF (FORCE_STATIC_PROVIDERS)
+
 IF (MSVC)
   #needed for linking to gdal which needs odbc
   SET(TARGET_LINK_LIBRARIES qgis_core odbc32 odbccp32)

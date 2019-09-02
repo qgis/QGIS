@@ -142,7 +142,15 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns TRUE if this item is equal to another item (by testing item type and path).
      */
     virtual bool equal( const QgsDataItem *other );
-    virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
+
+    /**
+     * Returns source widget from data item for QgsBrowserPropertiesWidget
+     *
+     * Use QgsDataItemGuiProvider::createParamWidget() instead
+     *
+     * \deprecated QGIS 3.10
+     */
+    Q_DECL_DEPRECATED virtual QWidget *paramWidget() SIP_FACTORY SIP_DEPRECATED { return nullptr; }
 
     /**
      * Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
@@ -625,7 +633,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
-    QWidget *paramWidget() override SIP_FACTORY;
+    Q_DECL_DEPRECATED QWidget *paramWidget() override SIP_FACTORY SIP_DEPRECATED;
     bool hasDragEnabled() const override { return true; }
     QgsMimeDataUtils::Uri mimeUri() const override;
 
@@ -682,12 +690,13 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 };
 
-
 // ---------
 
 /**
  * \ingroup core
  * \class QgsDirectoryParamWidget
+ *
+ * TODO: move to qgis_gui for QGIS 4
  */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {

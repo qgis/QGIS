@@ -92,12 +92,7 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 
     QVariant sortKey() const override { return 7; }
 
-#ifdef HAVE_GUI
-    QWidget *paramWidget() override;
-#endif
-
   public slots:
-
 };
 
 

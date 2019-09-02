@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswmsprovidergui.h"
 #include "qgswmsprovider.h"
 #include "qgswmssourceselect.h"
 #include "qgssourceselectprovider.h"
 #include "qgstilescalewidget.h"
 #include "qgsproviderguimetadata.h"
 #include "qgswmsdataitemguiproviders.h"
-
+#include "qgswmsdataitems.h"
 
 //! Provider for WMS layers source select
 class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
@@ -36,33 +37,33 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
-
-class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
+QgsWmsProviderGuiMetadata::QgsWmsProviderGuiMetadata()
+  : QgsProviderGuiMetadata( QgsWmsProvider::WMS_KEY )
 {
-  public:
-    QgsWmsProviderGuiMetadata(): QgsProviderGuiMetadata( QgsWmsProvider::WMS_KEY ) {}
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsWmsSourceSelectProvider;
-      return providers;
-    }
+}
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-    {
-      return QList<QgsDataItemGuiProvider *>()
-             << new QgsWmsDataItemGuiProvider
-             << new QgsXyzDataItemGuiProvider;
-    }
+QList<QgsSourceSelectProvider *> QgsWmsProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsWmsSourceSelectProvider;
+  return providers;
+}
 
-    void registerGui( QMainWindow *widget ) override
-    {
-      QgsTileScaleWidget::showTileScale( widget );
-    }
-};
+QList<QgsDataItemGuiProvider *> QgsWmsProviderGuiMetadata::dataItemGuiProviders()
+{
+  return QList<QgsDataItemGuiProvider *>()
+         << new QgsWmsDataItemGuiProvider
+         << new QgsXyzDataItemGuiProvider;
+}
 
+void QgsWmsProviderGuiMetadata::registerGui( QMainWindow *widget )
+{
+  QgsTileScaleWidget::showTileScale( widget );
+}
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
   return new QgsWmsProviderGuiMetadata();
 }
+#endif

@@ -61,3 +61,8 @@ bool QgsDataItemGuiProvider::handleDrop( QgsDataItem *, QgsDataItemGuiContext, c
 {
   return false;
 }
+
+QWidget *QgsDataItemGuiProvider::createParamWidget( QgsDataItem *, QgsDataItemGuiContext )
+{
+  return nullptr;
+}
