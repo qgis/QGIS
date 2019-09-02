@@ -230,7 +230,6 @@ QList<QgsClassificationRange> QgsClassificationMethod::breaksToClasses( const QL
 {
   QList<QgsClassificationRange> classes;
 
-  QString label;
   for ( int i = 1; i < breaks.count(); i++ )
   {
 
