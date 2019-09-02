@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QRegularExpression>
+
 #include "qgis.h"
 #include "qgsclassificationmethod.h"
 #include "qgsvectorlayerutils.h"
@@ -24,8 +26,8 @@
 const int QgsClassificationMethod::MAX_PRECISION = 15;
 const int QgsClassificationMethod::MIN_PRECISION = -6;
 
-static const QRegExp RE_TRAILING_ZEROES = QRegExp( "[.,]?0*$" );
-static const QRegExp RE_NEGATIVE_ZERO = QRegExp( "^\\-0(?:[.,]0*)?$" );
+static const QRegularExpression RE_TRAILING_ZEROES = QRegularExpression( "[.,]?0*$" );
+static const QRegularExpression RE_NEGATIVE_ZERO = QRegularExpression( "^\\-0(?:[.,]0*)?$" );
 
 QList<double> QgsClassificationMethod::listToValues( const QList<QgsClassificationRange> classes )
 {
@@ -36,9 +38,8 @@ QList<double> QgsClassificationMethod::listToValues( const QList<QgsClassificati
   return values;
 }
 
-QgsClassificationMethod::QgsClassificationMethod( bool valuesRequired, bool symmetricModeAvailable, int codeComplexity )
-  : mValuesRequired( valuesRequired )
-  , mSymmetricModeAvailable( symmetricModeAvailable )
+QgsClassificationMethod::QgsClassificationMethod( MethodProperties properties, int codeComplexity )
+  : mFlags( properties )
   , mCodeComplexity( codeComplexity )
   , mLabelFormat( QStringLiteral( "%1 - %2 " ) )
 {
@@ -82,7 +83,7 @@ QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &ele
   // Read specific properties from the implementation
   QDomElement extraElem = element.firstChildElement( QStringLiteral( "extraInformation" ) );
   if ( !extraElem.isNull() )
-    method->readExtra( extraElem, context );
+    method->readXml( extraElem, context );
 
   return method;
 }
@@ -109,7 +110,7 @@ QDomElement QgsClassificationMethod::save( QDomDocument &doc, const QgsReadWrite
 
   // extra information
   QDomElement extraElem = doc.createElement( QStringLiteral( "extraInformation" ) );
-  saveExtra( extraElem, context );
+  writeXml( extraElem, context );
   methodElem.appendChild( extraElem );
 
   return methodElem;
@@ -145,7 +146,7 @@ QString QgsClassificationMethod::formatNumber( double value ) const
     QString valueStr = QLocale().toString( value, 'f', mLabelPrecision );
     if ( mLabelTrimTrailingZeroes )
       valueStr = valueStr.remove( RE_TRAILING_ZEROES );
-    if ( RE_NEGATIVE_ZERO.exactMatch( valueStr ) )
+    if ( RE_NEGATIVE_ZERO.match( valueStr ).hasMatch() )
       valueStr = valueStr.mid( 1 );
     return valueStr;
   }
@@ -175,7 +176,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   int fieldIndex = layer->fields().indexFromName( expression );
 
   bool ok;
-  if ( mValuesRequired || fieldIndex == -1 )
+  if ( valuesRequired() || fieldIndex == -1 )
   {
     values = QgsVectorLayerUtils::getDoubleValues( layer, expression, ok );
     if ( !ok || values.isEmpty() )
@@ -213,7 +214,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QList<doub
 
 QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, double maximum, int nclasses )
 {
-  if ( mValuesRequired )
+  if ( valuesRequired() )
   {
     QgsDebugMsg( QString( "The classification method %1 tries to calculate classes without values while they are required." ).arg( name() ) );
   }

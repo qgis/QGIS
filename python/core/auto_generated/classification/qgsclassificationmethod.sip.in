@@ -85,6 +85,16 @@ QgsClassificationMethod is an abstract class for implementations of classificati
 %End
   public:
 
+    enum MethodProperty
+    {
+      NoFlag,
+      ValuesNotRequired,
+      SymmetricModeAvailable,
+    };
+    typedef QFlags<QgsClassificationMethod::MethodProperty> MethodProperties;
+
+
+
     enum ClassPosition
     {
       LowerBound,
@@ -92,13 +102,12 @@ QgsClassificationMethod is an abstract class for implementations of classificati
       UpperBound
     };
 
-    explicit QgsClassificationMethod( bool valuesRequired, bool symmetricModeAvailable, int codeComplexity = 1 );
+    explicit QgsClassificationMethod( MethodProperties properties = NoFlag, int codeComplexity = 1 );
 %Docstring
 Creates a classification method.
 
-:param valuesRequired: if ``True``, this means that the method requires a set of values to determine the classes
-:param symmetricModeAvailable: if ``True``, this allows using symmetric classification
-:param codeCommplexity: as the exponent in the big O notation
+:param properties: The properties of the implemented method
+:param codeComplexity: as the exponent in the big O notation
 %End
 
     virtual ~QgsClassificationMethod();
@@ -125,11 +134,11 @@ Returns the label for a range
 %End
 
 
-    virtual void saveExtra( QDomElement &element, const QgsReadWriteContext &context ) const;
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes extra information about the method
 %End
-    virtual void readExtra( const QDomElement &element, const QgsReadWriteContext &context );
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads extra information to apply it to the method
 %End
@@ -239,12 +248,19 @@ This will calculate the classes for defined bounds without any values.
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-save
-@param doc
-@param context
-@return
+Saves the method to a DOM element and return it
+
+:param doc: the DOM document
+:param context: the read/write context
 %End
+
     static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Reads the DOM element and return a new classification method from it
+
+:param element: the DOM element
+:param context: the read/write context
+%End
 
     static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride );
 %Docstring
@@ -279,6 +295,9 @@ Format the number according to label properties
 %End
 
 };
+
+QFlags<QgsClassificationMethod::MethodProperty> operator|(QgsClassificationMethod::MethodProperty f1, QFlags<QgsClassificationMethod::MethodProperty> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

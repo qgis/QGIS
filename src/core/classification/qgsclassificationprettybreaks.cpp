@@ -20,8 +20,7 @@
 
 
 QgsClassificationPrettyBreaks::QgsClassificationPrettyBreaks()
-  : QgsClassificationMethod( false /*valuesRequired*/,
-                             true /*symmetricMode*/ )
+  : QgsClassificationMethod( ValuesNotRequired | SymmetricModeAvailable )
 {
 
 }

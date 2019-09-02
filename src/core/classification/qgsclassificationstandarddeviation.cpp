@@ -22,8 +22,7 @@ const QString QgsClassificationStandardDeviation::METHOD_ID = QStringLiteral( "S
 
 
 QgsClassificationStandardDeviation::QgsClassificationStandardDeviation()
-  : QgsClassificationMethod( true /*valuesRequired*/,
-                             true /*symmetricMode*/ )
+  : QgsClassificationMethod( SymmetricModeAvailable )
 {
 
 }
@@ -121,7 +120,7 @@ QString QgsClassificationStandardDeviation::valueToLabel( const double &value ) 
 }
 
 
-void QgsClassificationStandardDeviation::saveExtra( QDomElement &element, const QgsReadWriteContext &context ) const
+void QgsClassificationStandardDeviation::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
 
@@ -129,7 +128,7 @@ void QgsClassificationStandardDeviation::saveExtra( QDomElement &element, const 
   element.setAttribute( QLatin1Literal( "effective_symmetry_point" ), QString::number( mEffectiveSymmetryPoint, 'f', 16 ) );
 }
 
-void QgsClassificationStandardDeviation::readExtra( const QDomElement &element, const QgsReadWriteContext &context )
+void QgsClassificationStandardDeviation::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
 

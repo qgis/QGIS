@@ -20,9 +20,7 @@
 const QString QgsClassificationEqualInterval::METHOD_ID = QStringLiteral( "EqualInterval" );
 
 QgsClassificationEqualInterval::QgsClassificationEqualInterval()
-  : QgsClassificationMethod( false /*valuesRequired*/,
-                             true /*symmetricMode*/,
-                             0 /*codeComplexity*/ )
+  : QgsClassificationMethod( ValuesNotRequired | SymmetricModeAvailable, 0 /*codeComplexity*/ )
 {
 }
 

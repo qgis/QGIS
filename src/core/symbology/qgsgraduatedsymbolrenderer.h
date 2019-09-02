@@ -120,7 +120,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /**
       * Classification mode
-      * /! \deprecated since QGIS 3.10 use QgsClassificationMethod::MethodId instead
+      * \deprecated since QGIS 3.10 use QgsClassificationMethod::MethodId instead
       */
     enum Q_DECL_DEPRECATED Mode
     {

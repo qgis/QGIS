@@ -17,8 +17,7 @@
 #include "qgsclassificationquantile.h"
 
 QgsClassificationQuantile::QgsClassificationQuantile()
-  : QgsClassificationMethod( true /*valuesRequired*/,
-                             false /*symmetricMode*/ )
+  : QgsClassificationMethod()
 {
 }
 

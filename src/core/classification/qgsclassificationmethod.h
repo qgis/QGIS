@@ -96,21 +96,30 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 
   public:
 
+    //! Flags for the classification method
+    enum MethodProperty
+    {
+      NoFlag                 = 0,       //!< No flag
+      ValuesNotRequired      = 1 << 1,  //!< Values are not required to calculate, min/max are enough
+      SymmetricModeAvailable = 1 << 2,  //!< This allows using symmetric classification
+    };
+    Q_DECLARE_FLAGS( MethodProperties, MethodProperty )
+
+
     //! Defines the class position
     enum ClassPosition
     {
-      LowerBound,
-      Inner,
-      UpperBound
+      LowerBound, //!< The class is at the lower bound
+      Inner,      //!< The class is not at a bound
+      UpperBound  //!< The class is at the upper bound
     };
 
     /**
       * Creates a classification method.
-      * \param valuesRequired if TRUE, this means that the method requires a set of values to determine the classes
-      * \param symmetricModeAvailable if TRUE, this allows using symmetric classification
-      * \param codeCommplexity as the exponent in the big O notation
+      * \param properties The properties of the implemented method
+      * \param codeComplexity as the exponent in the big O notation
       */
-    explicit QgsClassificationMethod( bool valuesRequired, bool symmetricModeAvailable, int codeComplexity = 1 );
+    explicit QgsClassificationMethod( MethodProperties properties = NoFlag, int codeComplexity = 1 );
 
     virtual ~QgsClassificationMethod() = default;
 
@@ -133,9 +142,9 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 
 
     //! Writes extra information about the method
-    virtual void saveExtra( QDomElement &element, const QgsReadWriteContext &context ) const {Q_UNUSED( element ); Q_UNUSED( context )}
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const {Q_UNUSED( element ); Q_UNUSED( context )}
     //! Reads extra information to apply it to the method
-    virtual void readExtra( const QDomElement &element, const QgsReadWriteContext &context ) {Q_UNUSED( element ); Q_UNUSED( context )}
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) {Q_UNUSED( element ); Q_UNUSED( context )}
 
     // *******************
     // non-virtual methods
@@ -144,7 +153,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * Returns if the method requires values to calculate the classes
      * If not, bounds are sufficient
      */
-    bool valuesRequired() const {return mValuesRequired;}
+    bool valuesRequired() const {return !mFlags.testFlag( ValuesNotRequired );}
 
     //! Code complexity as the exponent in Big O notation
     int codeComplexity() const {return mCodeComplexity;}
@@ -152,12 +161,12 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     /**
      * Returns if the method supports symmetric calculation
      */
-    bool symmetricModeAvailable() const {return mSymmetricModeAvailable;}
+    bool symmetricModeAvailable() const {return mFlags.testFlag( SymmetricModeAvailable );}
 
     /**
      * Returns if the symmetric mode is enabled
      */
-    bool symmetricModeEnabled() const {return mSymmetricModeAvailable && mSymmetricEnabled;}
+    bool symmetricModeEnabled() const {return symmetricModeAvailable() && mSymmetricEnabled;}
 
     /**
      * Returns the symmetry point for symmetric mode
@@ -221,12 +230,17 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     QList<QgsClassificationRange> classes( double minimum, double maximum, int nclasses );
 
     /**
-     * @brief save
-     * @param doc
-     * @param context
-     * @return
+     * Saves the method to a DOM element and return it
+     * \param doc the DOM document
+     * \param context the read/write context
      */
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads the DOM element and return a new classification method from it
+     * \param element the DOM element
+     * \param context the read/write context
+     */
     static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
@@ -274,9 +288,8 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     QList<QgsClassificationRange> breaksToClasses( const QList<double> &breaks ) const;
 
     // implementation properties (set by initialization)
-    bool mValuesRequired; // if all values are required to calculate breaks
-    bool mSymmetricModeAvailable;
-    int mCodeComplexity;
+    MethodProperties mFlags = nullptr;
+    int mCodeComplexity = 1;
 
     // parameters (set by setters)
     // if some are added here, they should be handled in the clone method
@@ -292,5 +305,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     double mLabelNumberScale = 1.0;
     QString mLabelNumberSuffix;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsClassificationMethod::MethodProperties )
 
 #endif // QGSCLASSIFICATIONMETHOD_H

@@ -17,8 +17,7 @@
 #include "qgsclassificationjenks.h"
 
 QgsClassificationJenks::QgsClassificationJenks()
-  : QgsClassificationMethod( true /*valuesRequired*/,
-                             false /*symmetricMode*/ )
+  : QgsClassificationMethod()
 {
 
 }

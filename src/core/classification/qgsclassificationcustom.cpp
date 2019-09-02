@@ -19,8 +19,7 @@ const QString QgsClassificationCustom::METHOD_ID = QStringLiteral( "Custom" );
 
 
 QgsClassificationCustom::QgsClassificationCustom()
-  : QgsClassificationMethod( false /*valuesRequired*/,
-                             false /*symmetricMode*/,
+  : QgsClassificationMethod( ValuesNotRequired,
                              0 /*codeComplexity*/ )
 {
 }

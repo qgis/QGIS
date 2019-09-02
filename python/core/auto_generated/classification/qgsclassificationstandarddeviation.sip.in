@@ -31,9 +31,9 @@ based on standard deviation
 
     virtual QString labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position ) const;
 
-    virtual void saveExtra( QDomElement &element, const QgsReadWriteContext &context ) const;
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
-    virtual void readExtra( const QDomElement &element, const QgsReadWriteContext &context );
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
     static const QString METHOD_ID;
