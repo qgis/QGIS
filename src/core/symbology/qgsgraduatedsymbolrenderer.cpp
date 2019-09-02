@@ -71,8 +71,7 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
 
 QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
 {
-  const auto constMRanges = mRanges;
-  for ( const QgsRendererRange &range : constMRanges )
+  for ( const QgsRendererRange &range : mRanges )
   {
     if ( range.lowerValue() <= value && range.upperValue() >= value )
     {
@@ -89,8 +88,7 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
 QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
 {
   int i = 0;
-  const auto constMRanges = mRanges;
-  for ( const QgsRendererRange &range : constMRanges )
+  for ( const QgsRendererRange &range : mRanges )
   {
     if ( range.lowerValue() <= value && range.upperValue() >= value )
     {
@@ -153,8 +151,7 @@ void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext &context, const Q
     mExpression->prepare( &context.expressionContext() );
   }
 
-  const auto constMRanges = mRanges;
-  for ( const QgsRendererRange &range : constMRanges )
+  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
   {
     if ( !range.symbol() )
       continue;
@@ -167,8 +164,7 @@ void QgsGraduatedSymbolRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
 
-  const auto constMRanges = mRanges;
-  for ( const QgsRendererRange &range : constMRanges )
+  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
   {
     if ( !range.symbol() )
       continue;
@@ -693,8 +689,8 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::baseLegendSymbolItems() const
 {
   QgsLegendSymbolList lst;
   int i = 0;
-  const auto constMRanges = mRanges;
-  for ( const QgsRendererRange &range : constMRanges )
+  lst.reserve( mRanges.size() );
+  for ( const QgsRendererRange &range : mRanges )
   {
     lst << QgsLegendSymbolItem( range.symbol(), range.label(), QString::number( i++ ), true );
   }
@@ -745,8 +741,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
-    const auto constMRanges = mRanges;
-    for ( const QgsRendererRange &range : constMRanges )
+    for ( const QgsRendererRange &range : mRanges )
     {
       const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( range.symbol() );
       if ( ddSize )
@@ -874,8 +869,7 @@ void QgsGraduatedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp )
 
   if ( mSourceColorRamp )
   {
-    const auto constMRanges = mRanges;
-    for ( const QgsRendererRange &range : constMRanges )
+    for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
     {
       QgsSymbol *symbol = range.symbol() ? range.symbol()->clone() : nullptr;
       if ( symbol )
@@ -897,8 +891,7 @@ void QgsGraduatedSymbolRenderer::updateSymbols( QgsSymbol *sym )
     return;
 
   int i = 0;
-  const auto constMRanges = mRanges;
-  for ( const QgsRendererRange &range : constMRanges )
+  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
   {
     std::unique_ptr<QgsSymbol> symbol( sym->clone() );
     if ( mGraduatedMethod == GraduatedColor )
@@ -1054,8 +1047,7 @@ void QgsGraduatedSymbolRenderer::calculateLabelPrecision( bool updateRanges )
 {
   // Find the minimum size of a class
   double minClassRange = 0.0;
-  const auto constMRanges = mRanges;
-  for ( const QgsRendererRange &rendererRange : constMRanges )
+  for ( const QgsRendererRange &rendererRange : qgis::as_const( mRanges ) )
   {
     double range = rendererRange.upperValue() - rendererRange.lowerValue();
     if ( range <= 0.0 )
