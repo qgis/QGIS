@@ -9,6 +9,7 @@
 // or else upgrading old project file will not work
 // reliably.
 #define VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
+#define QGIS_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
 
 //used in vim src/core/qgis.cpp
 //The way below should work but it resolves to a number like 0110 which the compiler treats as octal I think
@@ -17,6 +18,7 @@
 //reinstate this more generic approach below at some point though
 //#define VERSION_INT ${CPACK_PACKAGE_VERSION_MAJOR}${CPACK_PACKAGE_VERSION_MINOR}${CPACK_PACKAGE_VERSION_PATCH}
 #define VERSION_INT ${QGIS_VERSION_INT}
+#define QGIS_VERSION_INT ${QGIS_VERSION_INT}
 #define ABISYM(x) x ## ${QGIS_VERSION_INT}
 //used in main.cpp and anywhere else where the release name is needed
 #define RELEASE_NAME "${RELEASE_NAME}"
