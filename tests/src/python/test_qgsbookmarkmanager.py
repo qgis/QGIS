@@ -11,6 +11,7 @@ __date__ = '02/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
+import os
 
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -322,6 +323,26 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertEqual(manager.bookmarkById('2').name(), 'new b2 2')
         self.assertEqual(len(changed_spy), 3)
         self.assertEqual(changed_spy[-1][0], '2')
+
+    def testOldBookmarks(self):
+        """
+        Test upgrading older bookmark storage format
+        """
+        project_path = os.path.join(TEST_DATA_DIR, 'projects', 'old_bookmarks.qgs')
+        p = QgsProject()
+        self.assertTrue(p.read(project_path))
+        self.assertEqual(len(p.bookmarkManager().bookmarks()), 3)
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_0').name(), 'b1')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_0').extent().crs().authid(), 'EPSG:4283')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_0').extent().toString(1), '150.0,-23.0 : 150.6,-22.0')
+
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_1').name(), 'b2')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_1').extent().crs().authid(), 'EPSG:4283')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_1').extent().toString(1), '149.0,-21.6 : 149.4,-21.1')
+
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').name(), 'b3')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').extent().crs().authid(), 'EPSG:28355')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').extent().toString(1), '807985.7,7450916.9 : 876080.0,7564407.4')
 
 
 if __name__ == '__main__':

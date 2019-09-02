@@ -208,17 +208,17 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
   if ( bookmarksElem.isNull() )
   {
     // handle legacy projects
-    const int count = QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
+    const int count = mProject->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
     for ( int i = 0; i < count; ++i )
     {
-      const double minX = QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( i ) );
-      const double minY = QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( i ) );
-      const double maxX = QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( i ) );
-      const double maxY = QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( i ) );
-      const long srid = QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( i ) );
+      const double minX = mProject->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( i ) );
+      const double minY = mProject->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( i ) );
+      const double maxX = mProject->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( i ) );
+      const double maxY = mProject->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( i ) );
+      const long srid = mProject->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( i ) );
       QgsBookmark b;
       b.setId( QStringLiteral( "bookmark_%1" ).arg( i ) );
-      b.setName( QgsProject::instance()->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( i ) ) );
+      b.setName( mProject->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( i ) ) );
       b.setExtent( QgsReferencedRectangle( QgsRectangle( minX, minY, maxX, maxY ), QgsCoordinateReferenceSystem::fromSrsId( srid ) ) );
 
       bool added = false;
