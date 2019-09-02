@@ -41,7 +41,7 @@
 #include "qgssymbollayerutils.h"
 #include "callouts/qgscalloutsregistry.h"
 #include "qgspluginlayerregistry.h"
-#include "qgsclassificationmethodregistry.h"
+#include "classification/qgsclassificationmethodregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
@@ -56,6 +56,7 @@
 #include "qgsprojutils.h"
 #include "qgsvaliditycheckregistry.h"
 #include "qgsnewsfeedparser.h"
+#include "qgsbookmarkmanager.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -1926,6 +1927,11 @@ QgsClassificationMethodRegistry *QgsApplication::classificationMethodRegistry()
   return members()->mClassificationMethodRegistry;
 }
 
+QgsBookmarkManager *QgsApplication::bookmarkManager()
+{
+  return members()->mBookmarkManager;
+}
+
 QgsMessageLog *QgsApplication::messageLog()
 {
   return members()->mMessageLog;
@@ -1990,6 +1996,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
   mValidityCheckRegistry = new QgsValidityCheckRegistry();
   mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
+  mBookmarkManager = new QgsBookmarkManager( QStringLiteral( "bookmarks" ), nullptr );
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -2018,6 +2025,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
   delete mClassificationMethodRegistry;
+  delete mBookmarkManager;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

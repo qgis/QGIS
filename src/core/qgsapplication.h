@@ -53,6 +53,7 @@ class QgsNetworkContentFetcherRegistry;
 class QgsValidityCheckRegistry;
 class QTranslator;
 class QgsCalloutRegistry;
+class QgsBookmarkManager;
 
 /**
  * \ingroup core
@@ -644,6 +645,11 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsClassificationMethodRegistry *classificationMethodRegistry() SIP_KEEPREFERENCE;
 
+    /**
+     * Returns the application's bookmark manager, used for storing installation-wide bookmarks.
+     * \since QGIS 3.10
+     */
+    static QgsBookmarkManager *bookmarkManager();
 
     /**
      * Returns the application's message log.
@@ -891,6 +897,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
+      QgsBookmarkManager *mBookmarkManager = nullptr;
       QString mNullRepresentation;
 
       ApplicationMembers();

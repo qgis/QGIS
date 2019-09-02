@@ -133,8 +133,18 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
 
     /**
      * Constructor for QgsBookmarkManager, with the specified \a parent project.
+     *
+     * This constructor creates a bookmark manager which stores bookmarks in a QgsProject instance.
      */
     explicit QgsBookmarkManager( QgsProject *project SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Constructor for QgsBookmarkManager, with the specified \a parent object.
+     *
+     * This constructor creates a bookmark manager which stores bookmarks in QgsSettings, using
+     * the specified \a settingKey.
+     */
+    explicit QgsBookmarkManager( const QString &settingKey, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsBookmarkManager() override;
 
@@ -228,7 +238,10 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
   private:
 
     QgsProject *mProject = nullptr;
+    QString mSettingKey;
     QList< QgsBookmark > mBookmarks;
+
+    void store();
 
 };
 
