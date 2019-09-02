@@ -261,7 +261,8 @@ Recalculate classes for a layer
 :param nclasses: the number of classes
 %End
 
- const QgsRendererRangeLabelFormat &labelFormat() const;
+
+ QgsRendererRangeLabelFormat labelFormat() const /Deprecated/;
 %Docstring
 Returns the label format used to generate default classification labels
 
