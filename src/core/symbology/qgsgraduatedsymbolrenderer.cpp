@@ -433,14 +433,12 @@ void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int nc
   updateColorRamp( nullptr );
 }
 
-const QgsRendererRangeLabelFormat &QgsGraduatedSymbolRenderer::labelFormat() const
+Q_NOWARN_DEPRECATED_PUSH
+QgsRendererRangeLabelFormat QgsGraduatedSymbolRenderer::labelFormat() const
 {
-  // this is leaking but will be removed in QGIS 4
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsRendererRangeLabelFormat *format = new QgsRendererRangeLabelFormat( mClassificationMethod->labelFormat(), mClassificationMethod->labelPrecision(), mClassificationMethod->labelTrimTrailingZeroes() );
-  Q_NOWARN_DEPRECATED_POP
-  return *format;
+  return QgsRendererRangeLabelFormat( mClassificationMethod->labelFormat(), mClassificationMethod->labelPrecision(), mClassificationMethod->labelTrimTrailingZeroes() );
 }
+Q_NOWARN_DEPRECATED_POP
 
 QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {

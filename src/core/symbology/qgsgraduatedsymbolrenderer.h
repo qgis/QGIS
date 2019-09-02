@@ -232,7 +232,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \since QGIS 2.6
      * \deprecated since QGIS 3.10 use classificationMethod() and QgsClassificationMethod::setLabelFormat instead
      */
-    Q_DECL_DEPRECATED const QgsRendererRangeLabelFormat &labelFormat() const;
+    Q_DECL_DEPRECATED QgsRendererRangeLabelFormat labelFormat() const SIP_DEPRECATED;
 
     /**
      * Set the label format used to generate default classification labels
