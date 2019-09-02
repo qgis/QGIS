@@ -524,15 +524,15 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     QString methodId;
     // the strings saved in the project does not match with the old Mode enum
     if ( modeString == QLatin1String( "equal" ) )
-      methodId = QLatin1String( "EqualInterval" );
+      methodId = QStringLiteral( "EqualInterval" );
     else if ( modeString == QLatin1String( "quantile" ) )
-      methodId = QLatin1String( "Quantile" );
+      methodId = QStringLiteral( "Quantile" );
     else if ( modeString == QLatin1String( "jenks" ) )
-      methodId = QLatin1String( "Jenks" );
+      methodId = QStringLiteral( "Jenks" );
     else if ( modeString == QLatin1String( "stddev" ) )
-      methodId = QLatin1String( "StdDev" );
+      methodId = QStringLiteral( "StdDev" );
     else if ( modeString == QLatin1String( "pretty" ) )
-      methodId = QLatin1String( "Pretty" );
+      methodId = QStringLiteral( "Pretty" );
 
     method = QgsApplication::classificationMethodRegistry()->method( methodId );
 
@@ -707,18 +707,19 @@ QString QgsGraduatedSymbolRenderer::methodIdFromMode( QgsGraduatedSymbolRenderer
   switch ( mode )
   {
     case EqualInterval:
-      return QLatin1String( "EqualInterval" );
+      return QStringLiteral( "EqualInterval" );
     case Quantile:
-      return QLatin1String( "Quantile" );
+      return QStringLiteral( "Quantile" );
     case Jenks:
-      return QLatin1String( "Jenks" );
+      return QStringLiteral( "Jenks" );
     case StdDev:
-      return QLatin1String( "StdDev" );
+      return QStringLiteral( "StdDev" );
     case Pretty:
-      return QLatin1String( "Pretty" );
+      return QStringLiteral( "Pretty" );
     case Custom:
       return QString();
   }
+  return QString();
 }
 
 QgsGraduatedSymbolRenderer::Mode QgsGraduatedSymbolRenderer::modeFromMethodId( const QString &methodId )
@@ -1263,16 +1264,16 @@ QgsDataDefinedSizeLegend *QgsGraduatedSymbolRenderer::dataDefinedSizeLegend() co
   return mDataDefinedSizeLegend.get();
 }
 
-const char *QgsGraduatedSymbolRenderer::graduatedMethodStr( GraduatedMethod method )
+QString QgsGraduatedSymbolRenderer::graduatedMethodStr( GraduatedMethod method )
 {
   switch ( method )
   {
     case GraduatedColor:
-      return "GraduatedColor";
+      return QStringLiteral( "GraduatedColor" );
     case GraduatedSize:
-      return "GraduatedSize";
+      return QStringLiteral( "GraduatedSize" );
   }
-  return "";
+  return QString();
 }
 
 
