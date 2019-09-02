@@ -709,6 +709,12 @@ Returns the new CRS srsid(), or -1 if the CRS could not be saved.
 Returns auth id of related geographic CRS
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCoordinateReferenceSystem: %1>" ).arg( sipCpp->authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 
     static QStringList recentProjections();
 %Docstring
