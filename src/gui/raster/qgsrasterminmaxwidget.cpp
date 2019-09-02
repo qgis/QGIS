@@ -99,7 +99,6 @@ void QgsRasterMinMaxWidget::setFromMinMaxOrigin( const QgsRasterMinMaxOrigin &mi
   switch ( minMaxOrigin.limits() )
   {
     case QgsRasterMinMaxOrigin::None:
-    default:
       mUserDefinedRadioButton->setChecked( true );
       break;
 
@@ -118,7 +117,6 @@ void QgsRasterMinMaxWidget::setFromMinMaxOrigin( const QgsRasterMinMaxOrigin &mi
 
   switch ( minMaxOrigin.extent() )
   {
-    default:
     case QgsRasterMinMaxOrigin::WholeRaster:
       mStatisticsExtentCombo->setCurrentIndex( IDX_WHOLE_RASTER );
       break;
