@@ -29,7 +29,7 @@ const int QgsClassificationMethod::MIN_PRECISION = -6;
 static const QRegularExpression RE_TRAILING_ZEROES = QRegularExpression( "[.,]?0*$" );
 static const QRegularExpression RE_NEGATIVE_ZERO = QRegularExpression( "^\\-0(?:[.,]0*)?$" );
 
-QList<double> QgsClassificationMethod::listToValues( const QList<QgsClassificationRange> classes )
+QList<double> QgsClassificationMethod::listToValues( const QList<QgsClassificationRange> &classes )
 {
   QList<double> values;
   values.reserve( classes.count() );
@@ -288,7 +288,7 @@ QString QgsClassificationMethod::labelForRange( const QgsRendererRange &range, Q
   return labelForRange( range.lowerValue(), range.upperValue(), position );
 }
 
-QString QgsClassificationMethod::labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position ) const
+QString QgsClassificationMethod::labelForRange( const double lowerValue, const double upperValue, ClassPosition position ) const
 {
   Q_UNUSED( position )
 

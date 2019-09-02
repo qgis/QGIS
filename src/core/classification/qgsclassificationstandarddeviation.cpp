@@ -90,9 +90,7 @@ QList<double> QgsClassificationStandardDeviation::calculateBreaks( double minimu
   return breaks;
 }
 
-
-
-QString QgsClassificationStandardDeviation::labelForRange( const double &lowerValue, const double &upperValue, QgsClassificationMethod::ClassPosition position ) const
+QString QgsClassificationStandardDeviation::labelForRange( const double lowerValue, const double upperValue, QgsClassificationMethod::ClassPosition position ) const
 {
   const QString lowerLabel = valueToLabel( lowerValue );
   const QString upperLabel = valueToLabel( upperValue );
@@ -113,7 +111,7 @@ QString QgsClassificationStandardDeviation::labelForRange( const double &lowerVa
 }
 
 
-QString QgsClassificationStandardDeviation::valueToLabel( const double &value ) const
+QString QgsClassificationStandardDeviation::valueToLabel( const double value ) const
 {
   double normalized = ( value - mEffectiveSymmetryPoint ) / mStdDev;
   return QString::number( normalized, 'f', 2 ) + " Std Dev";

@@ -47,7 +47,7 @@ class CORE_EXPORT QgsClassificationRange
 {
   public:
     //! Constructor
-    QgsClassificationRange( const QString &label, const double &lowerBound, const double &upperBound )
+    QgsClassificationRange( const QString &label, double lowerBound, double upperBound )
       : mLabel( label )
       , mLowerBound( lowerBound )
       , mUpperBound( upperBound )
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     /**
      * Returns the label for a range
      */
-    virtual QString labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position = Inner ) const;
+    virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position = Inner ) const;
 
 
     //! Writes extra information about the method
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     void setLabelTrimTrailingZeroes( bool trimTrailingZeroes ) { mLabelTrimTrailingZeroes = trimTrailingZeroes; }
 
     //! Transforms a list of classes to a list of breaks
-    static QList<double> listToValues( const QList<QgsClassificationRange> classes );
+    static QList<double> listToValues( const QList<QgsClassificationRange> &classes );
 
     /**
      * This will calculate the classes for a given layer to define the classes.
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
                                            const QList<double> &values, int nclasses ) = 0;
 
     //! This is called after calculating the breaks or restoring from XML, so it can rely on private variables
-    virtual QString valueToLabel( const double &value ) const {return formatNumber( value );}
+    virtual QString valueToLabel( double value ) const {return formatNumber( value );}
 
 
     //! Create a list of ranges from a list of classes

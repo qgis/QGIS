@@ -33,7 +33,7 @@ class CORE_EXPORT QgsClassificationStandardDeviation : public QgsClassificationM
     QString name() const override;
     QString id() const override;
     QgsClassificationMethod *clone() const override;
-    QString labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position ) const override;
+    QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const override;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
@@ -43,7 +43,7 @@ class CORE_EXPORT QgsClassificationStandardDeviation : public QgsClassificationM
     QList<double> calculateBreaks( double minimum, double maximum,
                                    const QList<double> &values, int nclasses ) override;
 
-    QString valueToLabel( const double &value ) const override;
+    QString valueToLabel( double value ) const override;
 
     double mStdDev = 1.0;
     double mEffectiveSymmetryPoint = 0.0;
