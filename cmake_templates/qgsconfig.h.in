@@ -9,7 +9,7 @@
 // or else upgrading old project file will not work
 // reliably.
 #define VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
-#define QGIS_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
+#define _QGIS_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
 
 //used in vim src/core/qgis.cpp
 //The way below should work but it resolves to a number like 0110 which the compiler treats as octal I think
