@@ -102,6 +102,9 @@ class CORE_EXPORT QgsBookmark
     % End
 #endif
 
+    bool operator==( const QgsBookmark &other );
+    bool operator!=( const QgsBookmark &other );
+
   private:
 
     QString mId;
