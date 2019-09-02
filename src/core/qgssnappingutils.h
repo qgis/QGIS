@@ -52,8 +52,14 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
   public:
 
-    //! Constructor for QgsSnappingUtils
-    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enableSnappingForInvisibleFeature = true );
+    /**
+     * Constructor for QgsSnappingUtils
+     * \param parent parent object
+     * \param enableSnappingForInvisibleFeature TRUE if we want to snap feature even if there are not visible
+     * \param asynchronous indicated if point locator creation has to be made asynchronously (see QgsPointLocator())
+     */
+    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enableSnappingForInvisibleFeature = true,
+                      bool asynchronous = false );
     ~QgsSnappingUtils() override;
 
     // main actions
@@ -262,6 +268,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! Number of index currently being prepared
     int mPreparingIndexCount = 0;
+
+    //! true if we have to build point locator asynchronously
+    bool mAsynchronous = false;
+
+    friend class TestQgsVertexTool;
 };
 
 

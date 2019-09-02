@@ -35,9 +35,14 @@ which keeps the configuration in sync with map canvas (e.g. current view, active
 %End
   public:
 
-    QgsSnappingUtils( QObject *parent /TransferThis/ = 0, bool enableSnappingForInvisibleFeature = true );
+    QgsSnappingUtils( QObject *parent /TransferThis/ = 0, bool enableSnappingForInvisibleFeature = true,
+                      bool asynchronous = false );
 %Docstring
 Constructor for QgsSnappingUtils
+
+:param parent: parent object
+:param enableSnappingForInvisibleFeature: ``True`` if we want to snap feature even if there are not visible
+:param asynchronous: indicated if point locator creation has to be made asynchronously (see :py:class:`QgsPointLocator`())
 %End
     ~QgsSnappingUtils();
 

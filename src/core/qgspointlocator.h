@@ -68,11 +68,17 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * to set the correct \a transformContext if a \a destinationCrs is specified. This is usually taken
      * from the current QgsProject::transformContext().
      *
+     * \param asynchronous if FALSE, point locator init() method will block until index is completely
+     * finished. if TRUE, index building will be done in another thread and init() method returns
+     * immediatly. initStarted() and initFinished() signals can be used to control current state of
+     * the point locator.
+     *
      * If \a extent is not NULLPTR, the locator will index only a subset of the layer which falls within that extent.
      */
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
-                              const QgsRectangle *extent = nullptr );
+                              const QgsRectangle *extent = nullptr,
+                              bool asynchronous = false );
 
     ~QgsPointLocator() override;
 
@@ -332,6 +338,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     QFuture<bool> mFuture;
     QFutureWatcher<bool> mFutureWatcher;
     int mMaxFeaturesToIndex = -1;
+    bool mAsynchronous = false;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;

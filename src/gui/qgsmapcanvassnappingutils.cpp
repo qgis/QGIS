@@ -22,7 +22,7 @@
 #include <QProgressDialog>
 
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent )
-  : QgsSnappingUtils( parent, QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() )
+  : QgsSnappingUtils( parent, QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool(), true )
   , mCanvas( canvas )
 
 {

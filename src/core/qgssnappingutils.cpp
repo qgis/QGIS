@@ -21,10 +21,12 @@
 #include "qgslogger.h"
 #include "qgsrenderer.h"
 
-QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
+QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature,
+                                    bool asynchronous )
   : QObject( parent )
   , mSnappingConfig( QgsProject::instance() )
   , mEnableSnappingForInvisibleFeature( enableSnappingForInvisibleFeature )
+  , mAsynchronous( asynchronous )
 {
 }
 
@@ -41,7 +43,7 @@ QgsPointLocator *QgsSnappingUtils::locatorForLayer( QgsVectorLayer *vl )
 
   if ( !mLocators.contains( vl ) )
   {
-    QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext() );
+    QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), nullptr, mAsynchronous );
     connect( vlpl, &QgsPointLocator::initFinished, this, &QgsSnappingUtils::onInitFinished );
     connect( vlpl, &QgsPointLocator::initStarted, this, &QgsSnappingUtils::onInitStarted );
     mLocators.insert( vl, vlpl );
@@ -76,7 +78,7 @@ QgsPointLocator *QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer *vl,
 
   QgsRectangle rect( pointMap.x() - tolerance, pointMap.y() - tolerance,
                      pointMap.x() + tolerance, pointMap.y() + tolerance );
-  QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), &rect );
+  QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), &rect, mAsynchronous );
   connect( vlpl, &QgsPointLocator::initFinished, this, &QgsSnappingUtils::onInitFinished );
   connect( vlpl, &QgsPointLocator::initStarted, this, &QgsSnappingUtils::onInitStarted );
 

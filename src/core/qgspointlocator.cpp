@@ -524,8 +524,10 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 ////////////////////////////////////////////////////////////////////////////
 
 
-QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent )
+QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent,
+                                  bool asynchronous )
   : mLayer( layer )
+  , mAsynchronous( asynchronous )
 {
   if ( destCRS.isValid() )
   {
@@ -608,8 +610,17 @@ void QgsPointLocator::init( int maxFeaturesToIndex )
   }
 
   emit initStarted();
-  mFuture = QtConcurrent::run( this, &QgsPointLocator::rebuildIndex, maxFeaturesToIndex );
-  mFutureWatcher.setFuture( mFuture );
+
+  if ( mAsynchronous )
+  {
+    mFuture = QtConcurrent::run( this, &QgsPointLocator::rebuildIndex, maxFeaturesToIndex );
+    mFutureWatcher.setFuture( mFuture );
+  }
+  else
+  {
+    const bool ok = rebuildIndex( maxFeaturesToIndex );
+    emit initFinished( ok );
+  }
 }
 
 bool QgsPointLocator::hasIndex() const
