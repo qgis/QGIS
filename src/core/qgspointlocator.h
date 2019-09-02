@@ -124,7 +124,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
-     * This method is non blocking and index is built in an other thread. Signals indexStarting and indexFinished
+     * This method is non blocking and index is built in another thread. Signals indexStarting and indexFinished
      * are triggered to let you know when index build is started and finished.
     */
     void init( int maxFeaturesToIndex = -1 );
