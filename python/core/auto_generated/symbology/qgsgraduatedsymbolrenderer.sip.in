@@ -142,6 +142,7 @@ This will take ownership of the method
       Custom
     };
 
+
  Mode mode() const /Deprecated/;
 %Docstring
 
