@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationcustom.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsClassificationCustom : QgsClassificationMethod
+{
+%Docstring
+QgsClassificationCustom is a dummy implementation of QgsClassification
+which does not compute any break.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationcustom.h"
+%End
+  public:
+    QgsClassificationCustom();
+
+    virtual QgsClassificationMethod *clone() const;
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+
+    static const QString METHOD_ID;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationcustom.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

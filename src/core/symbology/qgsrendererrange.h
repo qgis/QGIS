@@ -26,6 +26,7 @@ class QDomDocument;
 class QDomElement;
 
 class QgsSymbol;
+class QgsClassificationRange;
 
 
 /**
@@ -40,6 +41,14 @@ class CORE_EXPORT QgsRendererRange
      * Constructor for QgsRendererRange.
      */
     QgsRendererRange() = default;
+
+    /**
+     * Creates a renderer symbol range
+     * \param range The classification range
+     * \param symbol The symbol for this renderer range
+     * \param render If true, it will be renderered
+     */
+    QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol SIP_TRANSFER, bool render = true );
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
@@ -88,12 +97,14 @@ class CORE_EXPORT QgsRendererRange
 
 typedef QList<QgsRendererRange> QgsRangeList;
 
+
 /**
  * \ingroup core
  * \class QgsRendererRangeLabelFormat
  * \since QGIS 2.6
+ * \deprecated since QGIS 3.10, use QgsClassificationMethod instead
  */
-class CORE_EXPORT QgsRendererRangeLabelFormat
+class Q_DECL_DEPRECATED CORE_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
 {
   public:
     QgsRendererRangeLabelFormat();

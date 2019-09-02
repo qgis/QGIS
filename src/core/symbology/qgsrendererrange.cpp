@@ -14,6 +14,17 @@
  ***************************************************************************/
 
 #include "qgsrendererrange.h"
+#include "qgsclassificationmethod.h"
+
+
+QgsRendererRange::QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol, bool render )
+  : mLowerValue( range.lowerBound() )
+  , mUpperValue( range.upperBound() )
+  , mSymbol( symbol )
+  , mLabel( range.label() )
+  , mRender( render )
+{
+}
 
 QgsRendererRange::QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol, const QString &label, bool render )
   : mLowerValue( lowerValue )

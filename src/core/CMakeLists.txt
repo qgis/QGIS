@@ -20,6 +20,15 @@ SET(QGIS_CORE_SRCS
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
+  classification/qgsclassificationmethodregistry.cpp
+  classification/qgsclassificationmethod.cpp
+  classification/qgsclassificationcustom.cpp
+  classification/qgsclassificationequalinterval.cpp
+  classification/qgsclassificationprettybreaks.cpp
+  classification/qgsclassificationquantile.cpp
+  classification/qgsclassificationjenks.cpp
+  classification/qgsclassificationstandarddeviation.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
@@ -1075,6 +1084,15 @@ SET(QGIS_CORE_HDRS
   callouts/qgscallout.h
   callouts/qgscalloutsregistry.h
 
+  classification/qgsclassificationmethodregistry.h
+  classification/qgsclassificationmethod.h
+  classification/qgsclassificationcustom.h
+  classification/qgsclassificationequalinterval.h
+  classification/qgsclassificationprettybreaks.h
+  classification/qgsclassificationquantile.h
+  classification/qgsclassificationjenks.h
+  classification/qgsclassificationstandarddeviation.h
+
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
@@ -1294,6 +1312,7 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
+  classification
   dxf
   effects
   ${CMAKE_SOURCE_DIR}/src/core/expression

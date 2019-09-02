@@ -158,6 +158,14 @@
 %Include auto_generated/auth/qgsauthmethod.sip
 %Include auto_generated/callouts/qgscallout.sip
 %Include auto_generated/callouts/qgscalloutsregistry.sip
+%Include auto_generated/classification/qgsclassificationmethodregistry.sip
+%Include auto_generated/classification/qgsclassificationmethod.sip
+%Include auto_generated/classification/qgsclassificationcustom.sip
+%Include auto_generated/classification/qgsclassificationequalinterval.sip
+%Include auto_generated/classification/qgsclassificationprettybreaks.sip
+%Include auto_generated/classification/qgsclassificationquantile.sip
+%Include auto_generated/classification/qgsclassificationjenks.sip
+%Include auto_generated/classification/qgsclassificationstandarddeviation.sip
 %Include auto_generated/diagram/qgsdiagram.sip
 %Include auto_generated/diagram/qgspiediagram.sip
 %Include auto_generated/diagram/qgstextdiagram.sip
