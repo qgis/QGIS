@@ -121,6 +121,16 @@ rather accessed through a QgsProject via :py:func:`QgsProject.bookmarkManager()`
     explicit QgsBookmarkManager( QgsProject *project /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBookmarkManager, with the specified ``parent`` project.
+
+This constructor creates a bookmark manager which stores bookmarks in a QgsProject instance.
+%End
+
+    explicit QgsBookmarkManager( const QString &settingKey, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBookmarkManager, with the specified ``parent`` object.
+
+This constructor creates a bookmark manager which stores bookmarks in :py:class:`QgsSettings`, using
+the specified ``settingKey``.
 %End
 
     ~QgsBookmarkManager();

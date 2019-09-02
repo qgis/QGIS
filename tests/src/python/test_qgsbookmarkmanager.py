@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 import qgis  # NOQA
 import os
 
+from qgis.PyQt.QtCore import QCoreApplication, QLocale
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsBookmark,
@@ -20,7 +21,9 @@ from qgis.core import (QgsBookmark,
                        QgsProject,
                        QgsReferencedRectangle,
                        QgsRectangle,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsSettings,
+                       QgsApplication)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -32,6 +35,16 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsBookmarkManager(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestQgsBookmarkManager.com")
+        QCoreApplication.setApplicationName("QGIS_TestQgsBookmarkManager")
+        QgsSettings().clear()
+        QLocale.setDefault(QLocale(QLocale.English))
+        start_app()
 
     def setUp(self):
         """Run before each test."""
@@ -343,6 +356,72 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').name(), 'b3')
         self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').extent().crs().authid(), 'EPSG:28355')
         self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').extent().toString(1), '807985.7,7450916.9 : 876080.0,7564407.4')
+
+    def testQSettingsStorage(self):
+        """
+        Test QSettings bound manager
+        """
+        manager = QgsBookmarkManager('test_key')
+
+        # add a bunch of bookmarks
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        manager.addBookmark(b2)
+        manager.addBookmark(b3)
+
+        # create another new manager with same key, should contain existing bookmarks
+        manager2 = QgsBookmarkManager('test_key')
+        self.assertEqual(manager2.bookmarks(), [b, b2, b3])
+
+        # but a manager with a different key should not...
+        manager3 = QgsBookmarkManager('test_key2')
+        self.assertEqual(manager3.bookmarks(), [])
+
+    def testApplicationInstance(self):
+        """
+        Test storage in the application instance
+        """
+        manager = QgsApplication.bookmarkManager()
+
+        # add a bunch of bookmarks
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        manager.addBookmark(b2)
+        manager.addBookmark(b3)
+
+        manager2 = QgsApplication.bookmarkManager()
+        self.assertEqual(manager2.bookmarks(), [b, b2, b3])
+
+        manager3 = QgsBookmarkManager(QgsProject.instance())
+        self.assertEqual(manager3.bookmarks(), [])
 
 
 if __name__ == '__main__':

@@ -718,6 +718,12 @@ Returns the application's classification methods registry, used in graduated ren
 .. versionadded:: 3.10
 %End
 
+    static QgsBookmarkManager *bookmarkManager();
+%Docstring
+Returns the application's bookmark manager, used for storing installation-wide bookmarks.
+
+.. versionadded:: 3.10
+%End
 
     static QgsMessageLog *messageLog();
 %Docstring

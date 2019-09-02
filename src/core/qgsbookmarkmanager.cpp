@@ -15,6 +15,7 @@
 
 #include "qgsbookmarkmanager.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 #include <QUuid>
 
 //
@@ -91,6 +92,25 @@ QgsBookmarkManager::QgsBookmarkManager( QgsProject *project )
 
 }
 
+
+QgsBookmarkManager::QgsBookmarkManager( const QString &settingKey, QObject *parent )
+  : QObject( parent )
+  , mSettingKey( settingKey )
+{
+  // restore state
+  const QString textXml = QgsSettings().value( settingKey, QString(), QgsSettings::Core ).toString();
+  if ( !textXml.isEmpty() )
+  {
+    QDomDocument doc;
+    doc.setContent( textXml );
+    QDomElement elem = doc.documentElement();
+    readXml( elem, doc );
+  }
+
+  // TODO - convert old bookmarks from db
+}
+
+
 QgsBookmarkManager::~QgsBookmarkManager()
 {
   clear();
@@ -122,7 +142,7 @@ QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
   emit bookmarkAboutToBeAdded( bookmark.id() );
   mBookmarks << bookmark;
   emit bookmarkAdded( bookmark.id() );
-  mProject->setDirty( true );
+  store();
   return bookmark.id();
 }
 
@@ -149,7 +169,7 @@ bool QgsBookmarkManager::removeBookmark( const QString &id )
   emit bookmarkAboutToBeRemoved( id );
   mBookmarks.removeAt( pos );
   emit bookmarkRemoved( id );
-  mProject->setDirty( true );
+  store();
   return true;
 }
 
@@ -163,7 +183,7 @@ bool QgsBookmarkManager::updateBookmark( const QgsBookmark &bookmark )
     {
       mBookmarks[i] = bookmark;
       emit bookmarkChanged( bookmark.id() );
-      mProject->setDirty( true );
+      store();
       return true;
     }
     i++;
@@ -205,7 +225,7 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
     bookmarksElem = element.firstChildElement( QStringLiteral( "Bookmarks" ) );
   }
   bool result = true;
-  if ( bookmarksElem.isNull() )
+  if ( mProject && bookmarksElem.isNull() )
   {
     // handle legacy projects
     const int count = mProject->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
@@ -251,4 +271,23 @@ QDomElement QgsBookmarkManager::writeXml( QDomDocument &doc ) const
     bookmarksElem.appendChild( bookmarkElem );
   }
   return bookmarksElem;
+}
+
+void QgsBookmarkManager::store()
+{
+  if ( mProject )
+  {
+    mProject->setDirty( true );
+  }
+  else if ( !mSettingKey.isEmpty() )
+  {
+    // yeah, fine, whatever... storing xml in settings IS kinda ugly. But the alternative
+    // is a second marshalling implementation designed just for that, and I'd rather avoid the
+    // duplicate code. Plus, this is all internal anyway... just use the public stable API and don't
+    // concern your pretty little mind about all these technical details.
+    QDomDocument textDoc;
+    QDomElement textElem = writeXml( textDoc );
+    textDoc.appendChild( textElem );
+    QgsSettings().setValue( mSettingKey, textDoc.toString(), QgsSettings::Core );
+  }
 }
