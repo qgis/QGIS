@@ -1,0 +1,309 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsBookmarkManager.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = '(C) 2019 by Nyall Dawson'
+__date__ = '02/09/2019'
+__copyright__ = 'Copyright 2019, The QGIS Project'
+
+import qgis  # NOQA
+
+from qgis.PyQt.QtXml import QDomDocument
+
+from qgis.core import (QgsBookmark,
+                       QgsBookmarkManager,
+                       QgsProject,
+                       QgsReferencedRectangle,
+                       QgsRectangle,
+                       QgsCoordinateReferenceSystem)
+
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtTest import QSignalSpy
+
+start_app()
+TEST_DATA_DIR = unitTestDataPath()
+
+
+class TestQgsBookmarkManager(unittest.TestCase):
+
+    def setUp(self):
+        """Run before each test."""
+        self.manager = None
+        self.aboutFired = False
+
+    def tearDown(self):
+        """Run after each test."""
+        pass
+
+    def testBookmark(self):
+        b = QgsBookmark()
+        self.assertFalse(b.id())
+        self.assertFalse(b.name())
+        b.setId('id')
+        self.assertEqual(b.id(), 'id')
+        b.setName('name')
+        self.assertEqual(b.name(), 'name')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertEqual(b.extent(), QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+
+    def testBookmarkEquality(self):
+        b = QgsBookmark()
+        b.setId('id')
+        b.setName('name')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+        b2 = QgsBookmark()
+        b2.setId('id')
+        b2.setName('name')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertEqual(b, b2)
+        b2.setId('x')
+        self.assertNotEqual(b, b2)
+        b2.setId('id')
+        self.assertEqual(b, b2)
+        b2.setName('x')
+        self.assertNotEqual(b, b2)
+        b2.setName('name')
+        self.assertEqual(b, b2)
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 5), QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertNotEqual(b, b2)
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326')))
+        self.assertNotEqual(b, b2)
+
+    def testAddBookmark(self):
+        project = QgsProject()
+        b = QgsBookmark()
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+
+        manager = QgsBookmarkManager(project)
+
+        bookmark_about_to_be_added_spy = QSignalSpy(manager.bookmarkAboutToBeAdded)
+        bookmark_added_spy = QSignalSpy(manager.bookmarkAdded)
+        id, res = manager.addBookmark(b)
+        self.assertTrue(res)
+        self.assertEqual(len(bookmark_about_to_be_added_spy), 1)
+        self.assertEqual(bookmark_about_to_be_added_spy[0][0], id)
+        self.assertEqual(len(bookmark_added_spy), 1)
+        self.assertEqual(bookmark_added_spy[0][0], id)
+
+        b = manager.bookmarkById(id)
+        self.assertEqual(b.name(), 'b1')
+        self.assertEqual(b.extent(), QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+
+        # adding it again should fail
+        id, res = manager.addBookmark(b)
+        self.assertFalse(res)
+
+        # try adding a second bookmark
+        b2 = QgsBookmark()
+        b2.setId('my id')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        id2, res = manager.addBookmark(b2)
+        self.assertTrue(res)
+        self.assertEqual(id2, 'my id')
+        self.assertEqual(len(bookmark_added_spy), 2)
+        self.assertEqual(bookmark_about_to_be_added_spy[1][0], 'my id')
+        self.assertEqual(len(bookmark_about_to_be_added_spy), 2)
+        self.assertEqual(bookmark_added_spy[1][0], 'my id')
+
+        # adding a bookmark with duplicate id should fail
+        b3 = QgsBookmark()
+        b3.setId('my id')
+
+        id, res = manager.addBookmark(b3)
+        self.assertFalse(res)
+
+    def testBookmarks(self):
+        project = QgsProject()
+        manager = QgsBookmarkManager(project)
+
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        self.assertEqual(manager.bookmarks(), [b])
+        manager.addBookmark(b2)
+        self.assertEqual(manager.bookmarks(), [b, b2])
+        manager.addBookmark(b3)
+        self.assertEqual(manager.bookmarks(), [b, b2, b3])
+
+    def bookmarkAboutToBeRemoved(self, id):
+        # bookmark should still exist at this time
+        self.assertEqual(id, '1')
+        self.assertTrue(self.manager.bookmarkById('1').name())
+        self.aboutFired = True
+
+    def testRemoveBookmark(self):
+        project = QgsProject()
+
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        self.manager = QgsBookmarkManager(project)
+        bookmark_removed_spy = QSignalSpy(self.manager.bookmarkRemoved)
+        bookmark_about_to_be_removed_spy = QSignalSpy(self.manager.bookmarkAboutToBeRemoved)
+        # tests that bookmark still exists when bookmarkAboutToBeRemoved is fired
+        self.manager.bookmarkAboutToBeRemoved.connect(self.bookmarkAboutToBeRemoved)
+
+        # not added, should fail
+        self.assertFalse(self.manager.removeBookmark(b.id()))
+        self.assertEqual(len(bookmark_removed_spy), 0)
+        self.assertEqual(len(bookmark_about_to_be_removed_spy), 0)
+
+        self.assertTrue(self.manager.addBookmark(b)[1])
+        self.assertEqual(self.manager.bookmarks(), [b])
+        self.assertTrue(self.manager.removeBookmark(b.id()))
+        self.assertEqual(len(self.manager.bookmarks()), 0)
+        self.assertEqual(len(bookmark_removed_spy), 1)
+        self.assertEqual(bookmark_removed_spy[0][0], '1')
+        self.assertEqual(len(bookmark_about_to_be_removed_spy), 1)
+        self.assertEqual(bookmark_about_to_be_removed_spy[0][0], '1')
+        self.assertTrue(self.aboutFired)
+        self.manager = None
+
+    def testClear(self):
+        project = QgsProject()
+        manager = QgsBookmarkManager(project)
+
+        # add a bunch of bookmarks
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        manager.addBookmark(b2)
+        manager.addBookmark(b3)
+
+        bookmark_removed_spy = QSignalSpy(manager.bookmarkRemoved)
+        bookmark_about_to_be_removed_spy = QSignalSpy(manager.bookmarkAboutToBeRemoved)
+        manager.clear()
+        self.assertEqual(len(manager.bookmarks()), 0)
+        self.assertEqual(len(bookmark_removed_spy), 3)
+        self.assertEqual(len(bookmark_about_to_be_removed_spy), 3)
+
+    def testBookmarksById(self):
+        project = QgsProject()
+        manager = QgsBookmarkManager(project)
+
+        # add a bunch of bookmarks
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        manager.addBookmark(b2)
+        manager.addBookmark(b3)
+
+        self.assertFalse(manager.bookmarkById('asdf').name())
+        self.assertEqual(manager.bookmarkById('1'), b)
+        self.assertEqual(manager.bookmarkById('2'), b2)
+        self.assertEqual(manager.bookmarkById('3'), b3)
+
+    def testReadWriteXml(self):
+        """
+        Test reading and writing bookmark manager state to XML
+        """
+        project = QgsProject()
+        manager = QgsBookmarkManager(project)
+
+        # add a bunch of bookmarks
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        manager.addBookmark(b2)
+        manager.addBookmark(b3)
+
+        # save to xml
+        doc = QDomDocument("testdoc")
+        elem = manager.writeXml(doc)
+        doc.appendChild(elem)
+
+        # restore from xml
+        project2 = QgsProject()
+        manager2 = QgsBookmarkManager(project2)
+        self.assertTrue(manager2.readXml(elem, doc))
+
+        self.assertEqual(len(manager2.bookmarks()), 3)
+        names = [c.name() for c in manager2.bookmarks()]
+        self.assertCountEqual(names, ['b1', 'b2', 'b3'])
+
+    def testRenameSignal(self):
+        project = QgsProject()
+        manager = QgsLayoutManager(project)
+        layout = QgsPrintLayout(project)
+        layout.setName('c1')
+        manager.addLayout(layout)
+        layout2 = QgsPrintLayout(project)
+        layout2.setName('c2')
+        manager.addLayout(layout2)
+
+        layout_renamed_spy = QSignalSpy(manager.layoutRenamed)
+        layout.setName('d1')
+        self.assertEqual(len(layout_renamed_spy), 1)
+        # self.assertEqual(layout_renamed_spy[0][0], layout)
+        self.assertEqual(layout_renamed_spy[0][1], 'd1')
+        layout2.setName('d2')
+        self.assertEqual(len(layout_renamed_spy), 2)
+        # self.assertEqual(layout_renamed_spy[1][0], layout2)
+        self.assertEqual(layout_renamed_spy[1][1], 'd2')
+
+
+if __name__ == '__main__':
+    unittest.main()
