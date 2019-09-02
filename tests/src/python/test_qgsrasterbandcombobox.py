@@ -107,6 +107,14 @@ class TestQgsRasterBandComboBox(unittest.TestCase):
         self.assertEqual(combo.currentBand(), -1)
         self.assertEqual(len(signal_spy), 6)
 
+        combo.setLayer(layer)
+        combo.setCurrentText('bad')
+        self.assertEqual(combo.currentBand(), -1)
+        combo.setCurrentText('5')
+        self.assertEqual(combo.currentBand(), 5)
+        combo.setCurrentText('6.5')
+        self.assertEqual(combo.currentBand(), -1)
+
     def testOneBandRaster(self):
         path = os.path.join(unitTestDataPath('raster'),
                             'band1_float32_noct_epsg4326.tif')
