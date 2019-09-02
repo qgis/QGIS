@@ -337,6 +337,8 @@ void QgsApplication::init( QString profileFolder )
   colorSchemeRegistry()->addDefaultSchemes();
   colorSchemeRegistry()->initStyleScheme();
 
+  bookmarkManager()->convertOldBookmarks();
+
   ABISYM( mInitialized ) = true;
 }
 

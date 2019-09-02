@@ -133,8 +133,6 @@ This constructor creates a bookmark manager which stores bookmarks in :py:class:
 the specified ``settingKey``.
 %End
 
-    ~QgsBookmarkManager();
-
     QString addBookmark( const QgsBookmark &bookmark, bool *ok /Out/ = 0 );
 %Docstring
 Adds a ``bookmark`` to the manager.

@@ -16,7 +16,10 @@
 #include "qgsbookmarkmanager.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssqliteutils.h"
+#include "qgsapplication.h"
 #include <QUuid>
+#include <sqlite3.h>
 
 //
 // QgsBookMark
@@ -98,22 +101,23 @@ QgsBookmarkManager::QgsBookmarkManager( const QString &settingKey, QObject *pare
   , mSettingKey( settingKey )
 {
   // restore state
-  const QString textXml = QgsSettings().value( settingKey, QString(), QgsSettings::Core ).toString();
-  if ( !textXml.isEmpty() )
+  QgsSettings settings;
+  if ( !settings.value( settingKey, QVariant(), QgsSettings::Core ).isValid() )
   {
-    QDomDocument doc;
-    doc.setContent( textXml );
-    QDomElement elem = doc.documentElement();
-    readXml( elem, doc );
+    mNeedToConvertOldBookmarks = true;
+    // we can't do the conversion yet -- we need to wait till the application is initialized first...
   }
-
-  // TODO - convert old bookmarks from db
-}
-
-
-QgsBookmarkManager::~QgsBookmarkManager()
-{
-  clear();
+  else
+  {
+    const QString textXml = settings.value( settingKey, QString(), QgsSettings::Core ).toString();
+    if ( !textXml.isEmpty() )
+    {
+      QDomDocument doc;
+      doc.setContent( textXml );
+      QDomElement elem = doc.documentElement();
+      readXml( elem, doc );
+    }
+  }
 }
 
 QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
@@ -289,5 +293,40 @@ void QgsBookmarkManager::store()
     QDomElement textElem = writeXml( textDoc );
     textDoc.appendChild( textElem );
     QgsSettings().setValue( mSettingKey, textDoc.toString(), QgsSettings::Core );
+  }
+}
+
+void QgsBookmarkManager::convertOldBookmarks()
+{
+  if ( !mNeedToConvertOldBookmarks )
+    return;
+
+  //convert old bookmarks from db
+  sqlite3_database_unique_ptr database;
+  int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+  if ( result != SQLITE_OK )
+  {
+    return;
+  }
+
+  sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT name,project_name,xmin,ymin,xmax,ymax,projection_srid FROM tbl_bookmarks" ), result );
+  if ( result == SQLITE_OK )
+  {
+    while ( preparedStatement.step() == SQLITE_ROW )
+    {
+      const QString name = preparedStatement.columnAsText( 0 );
+      const QString group = preparedStatement.columnAsText( 1 );
+      const double xMin = preparedStatement.columnAsDouble( 2 );
+      const double yMin = preparedStatement.columnAsDouble( 3 );
+      const double xMax = preparedStatement.columnAsDouble( 4 );
+      const double yMax = preparedStatement.columnAsDouble( 5 );
+      const long long srid = preparedStatement.columnAsInt64( 6 );
+
+      QgsBookmark b;
+      b.setName( name );
+      const QgsRectangle extent( xMin, yMin, xMax, yMax );
+      b.setExtent( QgsReferencedRectangle( extent, QgsCoordinateReferenceSystem::fromSrsId( srid ) ) );
+      addBookmark( b );
+    }
   }
 }
