@@ -146,6 +146,17 @@ drop, and to prevent the default drop behavior for items.
 
 .. versionadded:: 3.10
 %End
+
+    virtual QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) /Factory/;
+%Docstring
+Creates source widget from data item for :py:class:`QgsBrowserPropertiesWidget`
+By default it returns None.
+Caller takes responsibility of deleting created.
+
+The function is replacement of :py:func:`QgsDataItem.paramWidget()`
+
+.. versionadded:: 3.10
+%End
 };
 
 /************************************************************************

@@ -35,6 +35,9 @@
 #include "providers/gdal/qgsgdalprovider.h"
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
+#ifdef HAVE_STATIC_PROVIDERS
+#include "qgswmsprovider.h"
+#endif
 
 static QgsProviderRegistry *sInstance = nullptr;
 
@@ -97,8 +100,6 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
 
 void QgsProviderRegistry::init()
 {
-  typedef QgsProviderMetadata *factory_function( );
-
   // add static providers
   Q_NOWARN_DEPRECATED_PUSH
   mProviders[ QgsMemoryProvider::providerKey() ] = new QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription(), &QgsMemoryProvider::createProvider );
@@ -106,8 +107,16 @@ void QgsProviderRegistry::init()
   Q_NOWARN_DEPRECATED_POP
   mProviders[ QgsGdalProvider::providerKey() ] = new QgsGdalProviderMetadata();
   mProviders[ QgsOgrProvider::providerKey() ] = new QgsOgrProviderMetadata();
+#ifdef HAVE_STATIC_PROVIDERS
+  mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
+#endif
 
   // add dynamic providers
+#ifdef HAVE_STATIC_PROVIDERS
+  QgsDebugMsg( QStringLiteral( "Forced only static providers" ) );
+#else
+  typedef QgsProviderMetadata *factory_function( );
+
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
@@ -177,7 +186,7 @@ void QgsProviderRegistry::init()
     // add this provider to the provider map
     mProviders[meta->key()] = meta;
   }
-
+#endif
   QgsDebugMsg( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ) );
 
   // now initialize all providers

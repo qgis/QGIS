@@ -3226,6 +3226,10 @@ QString  QgsWmsProvider::name() const
   return WMS_KEY;
 }
 
+QString QgsWmsProvider::providerKey()
+{
+  return WMS_KEY;
+}
 
 QString  QgsWmsProvider::description() const
 {
@@ -4262,7 +4266,9 @@ QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
   return providers;
 }
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsWmsProviderMetadata();
 }
+#endif

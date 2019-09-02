@@ -122,7 +122,15 @@ Removes a child item and returns it without deleting it. Emits relevant signals 
 %Docstring
 Returns ``True`` if this item is equal to another item (by testing item type and path).
 %End
-    virtual QWidget *paramWidget() /Factory/;
+
+ virtual QWidget *paramWidget() /Factory,Deprecated/;
+%Docstring
+Returns source widget from data item for :py:class:`QgsBrowserPropertiesWidget`
+
+Use QgsDataItemGuiProvider.createParamWidget() instead
+
+.. deprecated:: QGIS 3.10
+%End
 
     virtual QList<QAction *> actions( QWidget *parent );
 %Docstring
@@ -616,7 +624,7 @@ Returns the full path to the directory the item represents.
 
     virtual QIcon icon();
 
-    virtual QWidget *paramWidget() /Factory/;
+ virtual QWidget *paramWidget() /Factory,Deprecated/;
 
     virtual bool hasDragEnabled() const;
     virtual QgsMimeDataUtils::Uri mimeUri() const;
@@ -680,9 +688,12 @@ Data item that can be used to report problems (e.g. network error)
 };
 
 
-
 class QgsDirectoryParamWidget : QTreeWidget
 {
+%Docstring
+
+TODO: move to qgis_gui for QGIS 4
+%End
 
 %TypeHeaderCode
 #include "qgsdataitem.h"

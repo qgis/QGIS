@@ -71,5 +71,7 @@
 
 #cmakedefine HAVE_QT5SERIALPORT
 
+#cmakedefine HAVE_STATIC_PROVIDERS
+
 #endif
 

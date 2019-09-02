@@ -29,6 +29,8 @@
 #include <QFileDialog>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
+#include <QDesktopServices>
+#include <QDragEnterEvent>
 
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
@@ -45,10 +47,8 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsapplication.h"
-#include <QDesktopServices>
-
-#include <QDragEnterEvent>
-
+#include "qgsdataitemguiproviderregistry.h"
+#include "qgsdataitemguiprovider.h"
 
 /// @cond PRIVATE
 
@@ -71,7 +71,7 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString &tex
 
 void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
 {
-  int height = size.height() + 2 * frameWidth();
+  int height = static_cast<int>( size.height() ) + 2 * frameWidth();
   setMinimumHeight( height );
   setMaximumHeight( height );
 }
@@ -88,7 +88,7 @@ void QgsBrowserPropertiesWidget::setWidget( QWidget *paramWidget )
   layout->addWidget( paramWidget );
 }
 
-QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataItem *item, QWidget *parent )
+QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataItem *item, const QgsDataItemGuiContext &context, QWidget *parent )
 {
   QgsBrowserPropertiesWidget *propertiesWidget = nullptr;
   // In general, we would like to show all items' paramWidget, but top level items like
@@ -100,8 +100,24 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
+    // try new infrastructure of creation of layer widgets
+    QWidget *paramWidget = nullptr;
+    const QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
+    for ( QgsDataItemGuiProvider *provider : providers )
+    {
+      paramWidget = provider->createParamWidget( item, context );
+      if ( paramWidget )
+        break;
+    }
+    if ( !paramWidget )
+    {
+      // try old infrastructure
+      Q_NOWARN_DEPRECATED_PUSH
+      paramWidget = item->paramWidget();
+      Q_NOWARN_DEPRECATED_POP
+    }
+
     // prefer item's widget over standard layer widget
-    QWidget *paramWidget = item->paramWidget();
     if ( paramWidget )
     {
       propertiesWidget = new QgsBrowserPropertiesWidget( parent );
@@ -342,12 +358,12 @@ QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString &settingsS
   QgsGui::instance()->enableAutoGeometryRestore( this );
 }
 
-void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item )
+void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item, const QgsDataItemGuiContext &context )
 {
   if ( !item )
     return;
 
-  mPropertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, this );
+  mPropertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, context, this );
   mLayout->addWidget( mPropertiesWidget );
   setWindowTitle( item->type() == QgsDataItem::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
 }

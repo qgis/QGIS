@@ -32,6 +32,7 @@
 // version without notice, or even be removed.
 //
 
+#include <QSortFilterProxyModel>
 
 #include "ui_qgsbrowserdockwidgetbase.h"
 #include "ui_qgsbrowserlayerpropertiesbase.h"
@@ -41,13 +42,14 @@
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
-#include <QSortFilterProxyModel>
+#include "qgsdataitemguiprovider.h"
 
 class QgsBrowserGuiModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
+class QgsDirectoryParamWidget;
 
 #define SIP_NO_FILE
 
@@ -84,9 +86,9 @@ class QgsBrowserPropertiesWidget : public QWidget
       */
     explicit QgsBrowserPropertiesWidget( QWidget *parent = nullptr );
     //! Factory method to create a new browser properties widget
-    static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, QWidget *parent = nullptr );
+    static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, const QgsDataItemGuiContext &context, QWidget *parent = nullptr );
     //! Stub
-    virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ) }
+    virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ); }
     //! Sets content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget *widget );
 
@@ -173,7 +175,7 @@ class GUI_EXPORT QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBro
     QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent = nullptr );
 
     //! Create dialog from the given item and add it
-    void setItem( QgsDataItem *item );
+    void setItem( QgsDataItem *item, const QgsDataItemGuiContext &context );
 
   private:
     QgsBrowserPropertiesWidget *mPropertiesWidget = nullptr;
