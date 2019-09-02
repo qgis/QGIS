@@ -284,25 +284,44 @@ class TestQgsBookmarkManager(unittest.TestCase):
         names = [c.name() for c in manager2.bookmarks()]
         self.assertCountEqual(names, ['b1', 'b2', 'b3'])
 
-    def testRenameSignal(self):
+    def testUpdateBookmark(self):
         project = QgsProject()
-        manager = QgsLayoutManager(project)
-        layout = QgsPrintLayout(project)
-        layout.setName('c1')
-        manager.addLayout(layout)
-        layout2 = QgsPrintLayout(project)
-        layout2.setName('c2')
-        manager.addLayout(layout2)
+        manager = QgsBookmarkManager(project)
+        changed_spy = QSignalSpy(manager.bookmarkChanged)
 
-        layout_renamed_spy = QSignalSpy(manager.layoutRenamed)
-        layout.setName('d1')
-        self.assertEqual(len(layout_renamed_spy), 1)
-        # self.assertEqual(layout_renamed_spy[0][0], layout)
-        self.assertEqual(layout_renamed_spy[0][1], 'd1')
-        layout2.setName('d2')
-        self.assertEqual(len(layout_renamed_spy), 2)
-        # self.assertEqual(layout_renamed_spy[1][0], layout2)
-        self.assertEqual(layout_renamed_spy[1][1], 'd2')
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        self.assertFalse(manager.updateBookmark(b))
+        self.assertEqual(len(changed_spy), 0)
+        manager.addBookmark(b)
+
+        b.setName('new b1')
+        self.assertTrue(manager.updateBookmark(b))
+        self.assertEqual(manager.bookmarkById('1').name(), 'new b1')
+        self.assertEqual(len(changed_spy), 1)
+        self.assertEqual(changed_spy[-1][0], '1')
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+        manager.addBookmark(b2)
+
+        b.setName('new b1 2')
+        b2.setName('new b2 2')
+        self.assertTrue(manager.updateBookmark(b))
+        self.assertEqual(manager.bookmarkById('1').name(), 'new b1 2')
+        self.assertEqual(manager.bookmarkById('2').name(), 'b2')
+        self.assertEqual(len(changed_spy), 2)
+        self.assertEqual(changed_spy[-1][0], '1')
+        self.assertTrue(manager.updateBookmark(b2))
+        self.assertEqual(manager.bookmarkById('1').name(), 'new b1 2')
+        self.assertEqual(manager.bookmarkById('2').name(), 'new b2 2')
+        self.assertEqual(len(changed_spy), 3)
+        self.assertEqual(changed_spy[-1][0], '2')
 
 
 if __name__ == '__main__':

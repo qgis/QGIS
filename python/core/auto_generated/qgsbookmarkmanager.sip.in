@@ -156,6 +156,19 @@ of removing a bookmark which is not contained in the manager).
 .. seealso:: :py:func:`clear`
 %End
 
+    bool updateBookmark( const QgsBookmark &bookmark );
+%Docstring
+Updates the definition of a ``bookmark`` in the manager.
+
+Replaces the current definition of the bookmark with matching ID in the manager with
+a new definition (new bookmark name or extent).
+
+Returns ``True`` if the bookmark was successfully updated, or
+``False`` if the bookmark could not be updated (eg bookmark is not stored in the manager).
+
+.. seealso:: :py:func:`bookmarkChanged`
+%End
+
     void clear();
 %Docstring
 Removes and deletes all bookmarks from the manager.
@@ -211,9 +224,9 @@ Emitted when a bookmark was removed from the manager
 Emitted when a bookmark is about to be removed from the manager
 %End
 
-    void bookmarkRenamed( const QgsBookmark &bookmark, const QString &newName );
+    void bookmarkChanged( const QString &id );
 %Docstring
-Emitted when a bookmark is renamed
+Emitted when a bookmark is changed
 %End
 
 };
