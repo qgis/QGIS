@@ -205,7 +205,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \deprecated since QGIS 3.10 use QgsClassificationEqualInterval class instead
      */
-    Q_DECL_DEPRECATED static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride );
+    Q_DECL_DEPRECATED static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride ) SIP_DEPRECATED;
 
     /**
      * Recalculate classes for a layer

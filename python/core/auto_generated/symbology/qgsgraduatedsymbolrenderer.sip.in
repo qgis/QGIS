@@ -223,7 +223,7 @@ Does not put a break on the symmetryPoint. This is done before.
 .. deprecated:: since QGIS 3.10, use QgsClassificationMethod.makeBreaksSymmetric instead
 %End
 
- static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride );
+ static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride ) /Deprecated/;
 %Docstring
 Compute the equal interval classification
 
