@@ -146,8 +146,6 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
      */
     explicit QgsBookmarkManager( const QString &settingKey, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsBookmarkManager() override;
-
     /**
      * Adds a \a bookmark to the manager.
      *
@@ -242,6 +240,10 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     QList< QgsBookmark > mBookmarks;
 
     void store();
+    bool mNeedToConvertOldBookmarks = false;
+    void convertOldBookmarks();
+
+    friend class QgsApplication;
 
 };
 
