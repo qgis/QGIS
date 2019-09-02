@@ -26,6 +26,8 @@ class QgsClassificationRange
 {
 %Docstring
 QgsClassificationRange contains the information about a classification range
+
+.. versionadded:: 3.10
 %End
 
 %TypeHeaderCode
@@ -57,7 +59,9 @@ Returns the lower bound
 class QgsClassificationMethod /Abstract/
 {
 %Docstring
-QgsClassification is an abstract class for implementations of classification methods
+QgsClassificationMethod is an abstract class for implementations of classification methods
+
+.. seealso:: :py:class:`QgsClassificationMethodRegistry`
 
 .. versionadded:: 3.10
 %End
@@ -95,7 +99,6 @@ Creates a classification method.
 :param valuesRequired: if ``True``, this means that the method requires a set of values to determine the classes
 :param symmetricModeAvailable: if ``True``, this allows using symmetric classification
 :param codeCommplexity: as the exponent in the big O notation
-\param
 %End
 
     virtual ~QgsClassificationMethod();
@@ -111,7 +114,10 @@ Implementation can take advantage of copyBase method which copies the parameters
 The readable and translate name of the method
 %End
 
-    virtual QString id() const = 0; // as saved in the project, must be unique in registry
+    virtual QString id() const = 0;
+%Docstring
+The id of the method as saved in the project, must be unique in registry
+%End
 
     virtual QString labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position = Inner ) const;
 %Docstring
@@ -203,18 +209,16 @@ Transforms a list of classes to a list of breaks
 
     QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses );
 %Docstring
-This will calculate the breaks for a given layer to define the classes.
-The breaks do not contain the uppper and lower bounds (minimum and maximum values).
+This will calculate the classes for a given layer to define the classes.
 
 :param layer: The vector layer
-:param fieldName: The name of the field on which the classes are calculated
+:param expression: The name of the field on which the classes are calculated
 :param nclasses: The number of classes to be returned
 %End
 
     QList<QgsClassificationRange> classes( const QList<double> &values, int nclasses );
 %Docstring
-This will calculate the breaks for a list of values.
-The breaks do not contain the uppper and lower bounds (minimum and maximum values)
+This will calculate the classes for a list of values.
 
 :param values: The list of values
 :param nclasses: The number of classes to be returned
@@ -223,27 +227,33 @@ The breaks do not contain the uppper and lower bounds (minimum and maximum value
     QList<QgsClassificationRange> classes( double minimum, double maximum, int nclasses );
 %Docstring
 This will calculate the classes for defined bounds without any values.
-The breaks do not contain the uppper and lower bounds (minimum and maximum values)
 
 .. warning::
 
    If the method implementation requires values, this will return an empty list.
 
-:param values: The list of values
+:param minimum: The minimum value for the breaks
+:param maximum: The maximum value for the breaks
 :param nclasses: The number of classes to be returned
 %End
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+save
+@param doc
+@param context
+@return
+%End
     static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 
-    static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool symmetryAstride );
+    static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride );
 %Docstring
 Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
 Does not put a break on the symmetryPoint. This is done before.
 
 :param breaks: The breaks of an already-done classification
 :param symmetryPoint: The point around which we want a symmetry
-:param symmetryAstride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 %End
 
     QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;

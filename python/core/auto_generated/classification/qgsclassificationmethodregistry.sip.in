@@ -36,7 +36,7 @@ Returns false if a method with same id already exists.
 
     QgsClassificationMethod *method( const QString &id ) /Factory/;
 %Docstring
-Return a new instance of the method for the given id
+Returns a new instance of the method for the given id
 %End
 
     QMap<QString, QString> methodNames() const;

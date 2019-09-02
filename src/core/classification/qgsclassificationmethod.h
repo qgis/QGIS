@@ -16,6 +16,7 @@
 #ifndef QGSCLASSIFICATIONMETHOD_H
 #define QGSCLASSIFICATIONMETHOD_H
 
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsprocessingparameters.h"
 
@@ -40,6 +41,7 @@ class QgsRendererRange;
 /**
  * \ingroup core
  * QgsClassificationRange contains the information about a classification range
+ * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationRange
 {
@@ -68,7 +70,8 @@ class CORE_EXPORT QgsClassificationRange
 
 /**
  * \ingroup core
- * QgsClassification is an abstract class for implementations of classification methods
+ * QgsClassificationMethod is an abstract class for implementations of classification methods
+ * \see QgsClassificationMethodRegistry
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
@@ -106,7 +109,6 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
       * \param valuesRequired if TRUE, this means that the method requires a set of values to determine the classes
       * \param symmetricModeAvailable if TRUE, this allows using symmetric classification
       * \param codeCommplexity as the exponent in the big O notation
-      * \param
       */
     explicit QgsClassificationMethod( bool valuesRequired, bool symmetricModeAvailable, int codeComplexity = 1 );
 
@@ -121,8 +123,8 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     //! The readable and translate name of the method
     virtual QString name() const = 0;
 
-    //! The id of the method
-    virtual QString id() const = 0; // as saved in the project, must be unique in registry
+    //! The id of the method as saved in the project, must be unique in registry
+    virtual QString id() const = 0;
 
     /**
      * Returns the label for a range
@@ -195,17 +197,15 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     static QList<double> listToValues( const QList<QgsClassificationRange> classes );
 
     /**
-     * This will calculate the breaks for a given layer to define the classes.
-     * The breaks do not contain the uppper and lower bounds (minimum and maximum values).
+     * This will calculate the classes for a given layer to define the classes.
      * \param layer The vector layer
-     * \param fieldName The name of the field on which the classes are calculated
+     * \param expression The name of the field on which the classes are calculated
      * \param nclasses The number of classes to be returned
      */
     QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses );
 
     /**
-     * This will calculate the breaks for a list of values.
-     * The breaks do not contain the uppper and lower bounds (minimum and maximum values)
+     * This will calculate the classes for a list of values.
      * \param values The list of values
      * \param nclasses The number of classes to be returned
      */
@@ -213,13 +213,19 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 
     /**
      * This will calculate the classes for defined bounds without any values.
-     * The breaks do not contain the uppper and lower bounds (minimum and maximum values)
      * \warning If the method implementation requires values, this will return an empty list.
-     * \param values The list of values
+     * \param minimum The minimum value for the breaks
+     * \param maximum The maximum value for the breaks
      * \param nclasses The number of classes to be returned
      */
     QList<QgsClassificationRange> classes( double minimum, double maximum, int nclasses );
 
+    /**
+     * @brief save
+     * @param doc
+     * @param context
+     * @return
+     */
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
     static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
@@ -228,9 +234,9 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * Does not put a break on the symmetryPoint. This is done before.
      * \param breaks The breaks of an already-done classification
      * \param symmetryPoint The point around which we want a symmetry
-     * \param symmetryAstride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      */
-    static void makeBreaksSymmetric( QList<double> &breaks SIP_INOUT, double symmetryPoint, bool symmetryAstride );
+    static void makeBreaksSymmetric( QList<double> &breaks SIP_INOUT, double symmetryPoint, bool astride );
 
     /**
      * Returns the label for a range
