@@ -17,7 +17,7 @@ from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
-    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange
+    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark
 
 start_app()
 
@@ -191,6 +191,14 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(QgsProject.instance().__repr__(), "<QgsProject: '' (singleton instance)>")
         QgsProject.instance().setFileName('/home/test/my_project.qgs')
         self.assertEqual(QgsProject.instance().__repr__(), "<QgsProject: '/home/test/my_project.qgs' (singleton instance)>")
+
+    def testQgsBookmark(self):
+        b = QgsBookmark()
+        self.assertEqual(b.__repr__(), "<QgsBookmark: '' (0 0, 0 0 - )>")
+        b.setName('test bookmark')
+        self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (0 0, 0 0 - )>")
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (1 2, 3 4 - EPSG:3111)>")
 
 
 if __name__ == "__main__":

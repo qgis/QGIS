@@ -70,6 +70,7 @@ class QgsLayerTree;
 class QgsLabelingEngineSettings;
 class QgsAuxiliaryStorage;
 class QgsMapLayer;
+class QgsBookmarkManager;
 
 /**
  * \ingroup core
@@ -544,6 +545,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.0
      */
     QgsLayoutManager *layoutManager();
+
+    /**
+     * Returns the project's bookmark manager, which manages bookmarks within
+     * the project.
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    const QgsBookmarkManager *bookmarkManager() const SIP_SKIP;
+
+    /**
+     * Returns the project's bookmark manager, which manages bookmarks within
+     * the project.
+     * \since QGIS 3.10
+     */
+    QgsBookmarkManager *bookmarkManager();
 
     /**
      * Returns pointer to the root (invisible) node of the project's layer tree
@@ -1599,6 +1615,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
+
+    QgsBookmarkManager *mBookmarkManager = nullptr;
 
     QgsLayerTree *mRootGroup = nullptr;
 
