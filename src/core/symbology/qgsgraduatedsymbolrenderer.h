@@ -227,7 +227,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     void updateClasses( const QgsVectorLayer *vl, int nclasses );
 
-    Q_NOWARN_DEPRECATED_PUSH
+    Q_NOWARN_DEPRECATED_PUSH;
 
     /**
      * Returns the label format used to generate default classification labels
@@ -244,7 +244,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \deprecated since QGIS 3.10 use classificationMethod() and QgsClassificationMethod::setLabelFormat instead
      */
     Q_DECL_DEPRECATED void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false ) SIP_DEPRECATED;
-    Q_NOWARN_DEPRECATED_POP
+
+    Q_NOWARN_DEPRECATED_POP;
 
     /**
      * Reset the label decimal places to a numberbased on the minimum class interval
