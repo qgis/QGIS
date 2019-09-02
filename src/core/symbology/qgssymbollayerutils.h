@@ -123,6 +123,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QPointF decodePoint( const QString &string );
 
     /**
+     * Converts a \a value to a point.
+     *
+     * \param value value to convert
+     * \param ok if specified, will be set to TRUE if value was successfully converted
+     *
+     * \returns converted point
+     *
+     * \see decodePoint()
+     * \see toSize()
+     * \since QGIS 3.10
+     */
+    static QPointF toPoint( const QVariant &value, bool *ok SIP_OUT = nullptr );
+
+    /**
      * Encodes a QSizeF to a string.
      * \see decodeSize()
      * \see encodePoint()
@@ -137,6 +151,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.0
      */
     static QSizeF decodeSize( const QString &string );
+
+    /**
+     * Converts a \a value to a size.
+     *
+     * \param value value to convert
+     * \param ok if specified, will be set to TRUE if value was successfully converted
+     *
+     * \returns converted size
+     *
+     * \see decodeSize()
+     * \see toPoint()
+     * \since QGIS 3.10
+     */
+    static QSizeF toSize( const QVariant &value, bool *ok SIP_OUT = nullptr );
 
     static QString encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale );
     static QgsMapUnitScale decodeMapUnitScale( const QString &str );
@@ -194,10 +222,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
      * \param customContext render context to use when rendering symbol
+     * \param selected set to TRUE to render the symbol in a selected state
      * \note Parameter customContext added in QGIS 2.6
+     * \note Parameter selected added in QGIS 3.10
      * \see symbolPreviewIcon()
      */
-    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false );
 
     /**
      * Draws a symbol layer preview to a QPicture

@@ -2391,9 +2391,10 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
-    QString offsetString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), QString(), &ok );
+    const QVariant val = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), QString() );
+    const QPointF res = QgsSymbolLayerUtils::toPoint( val, &ok );
     if ( ok )
-      offset = QgsSymbolLayerUtils::decodePoint( offsetString );
+      offset = res;
   }
   double offsetX = offset.x();
   double offsetY = offset.y();

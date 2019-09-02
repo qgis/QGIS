@@ -36,7 +36,7 @@
 #include <QMessageBox>
 #include <QSplitter>
 
-#define FEED_URL "http://feed.qgis.org/"
+#define FEED_URL "https://feed.qgis.org/"
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )

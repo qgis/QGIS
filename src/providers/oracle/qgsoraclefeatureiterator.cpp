@@ -17,6 +17,7 @@
 #include "qgsoracleprovider.h"
 #include "qgsoracleconnpool.h"
 #include "qgsoracleexpressioncompiler.h"
+#include "qgsoracletransaction.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -29,7 +30,15 @@
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
 {
-  mConnection = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mSource->mUri ), request.timeout(), request.requestMayBeNested() );
+  if ( !source->mTransactionConnection )
+  {
+    mConnection = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mSource->mUri ), request.timeout(), request.requestMayBeNested() );
+  }
+  else
+  {
+    mConnection = source->mTransactionConnection;
+    mIsTransactionConnection = true;
+  }
   if ( !mConnection )
   {
     close();
@@ -442,7 +451,7 @@ bool QgsOracleFeatureIterator::close()
   if ( mQry.isActive() )
     mQry.finish();
 
-  if ( mConnection )
+  if ( mConnection && !mIsTransactionConnection )
     QgsOracleConnPool::instance()->releaseConnection( mConnection );
   mConnection = nullptr;
 
@@ -528,8 +537,10 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
 
 bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantList &args, int retryCount )
 {
+  lock();
   if ( !QgsOracleProvider::exec( mQry, query, args ) )
   {
+    unlock();
     if ( retryCount != 0 )
     {
       // If the connection has been closed try again N times in case of timeout
@@ -547,7 +558,23 @@ bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantLi
     }
     return false;
   }
+  else
+  {
+    unlock();
+  }
   return true;
+}
+
+void QgsOracleFeatureIterator::lock()
+{
+  if ( mIsTransactionConnection )
+    mConnection->lock();
+}
+
+void QgsOracleFeatureIterator::unlock()
+{
+  if ( mIsTransactionConnection )
+    mConnection->unlock();
 }
 
 // -----------
@@ -567,6 +594,19 @@ QgsOracleFeatureSource::QgsOracleFeatureSource( const QgsOracleProvider *p )
   , mCrs( p->crs() )
   , mShared( p->mShared )
 {
+  if ( p->mTransaction )
+  {
+    mTransactionConnection = p->mTransaction->connection();
+    mTransactionConnection->ref();
+  }
+}
+
+QgsOracleFeatureSource::~QgsOracleFeatureSource()
+{
+  if ( mTransactionConnection )
+  {
+    mTransactionConnection->unref();
+  }
 }
 
 QgsFeatureIterator QgsOracleFeatureSource::getFeatures( const QgsFeatureRequest &request )

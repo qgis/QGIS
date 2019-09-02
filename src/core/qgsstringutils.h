@@ -283,6 +283,15 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 3.10
      */
     static QString substituteVerticalCharacters( QString string );
+
+    /**
+     * Convert simple HTML to markdown. Only br, b and link are supported.
+     * \param html HTML to convert to markdown
+     * \returns String formatted as markdown
+     * \since QGIS 3.10
+     */
+    static QString htmlToMarkdown( const QString &html );
+
 };
 
 #endif //QGSSTRINGUTILS_H

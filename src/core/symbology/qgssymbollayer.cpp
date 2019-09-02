@@ -467,9 +467,10 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    bool ok = false;
+    const QPointF offset = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
+    if ( ok )
     {
-      QPointF offset = QgsSymbolLayerUtils::decodePoint( exprVal.toString() );
       offsetX = offset.x();
       offsetY = offset.y();
     }

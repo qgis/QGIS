@@ -119,6 +119,11 @@ void Qgs3DMapToolMeasureLine::deactivate()
   mDialog->hide();
 }
 
+QCursor Qgs3DMapToolMeasureLine::cursor() const
+{
+  return Qt::CrossCursor;
+}
+
 void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
 {
   handleClick( event, event->worldIntersection() );
@@ -204,7 +209,7 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
   int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
   int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
-  phongMaterial.setAmbient( QColor( myRed, myGreen, myBlue, 100 ) );
+  phongMaterial.setAmbient( QColor( myRed, myGreen, myBlue ) );
   lineSymbol->setMaterial( phongMaterial );
 
   // Set renderer

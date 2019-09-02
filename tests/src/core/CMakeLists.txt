@@ -27,6 +27,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
@@ -232,12 +233,12 @@ SET(TESTS
  testqgstranslateproject.cpp
  testqobjectuniqueptr.cpp
  testqgspostgresstringutils.cpp
+ testqgsstoredexpressionmanager.cpp
 )
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS})
 ENDIF(WITH_QTWEBKIT)
-
 
 IF(HAVE_OPENCL)
   SET(TESTS ${TESTS}

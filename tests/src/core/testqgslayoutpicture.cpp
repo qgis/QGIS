@@ -76,6 +76,7 @@ void TestQgsLayoutPicture::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsApplication::showSettings();
 
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
@@ -397,6 +398,7 @@ void TestQgsLayoutPicture::pictureExpression()
   QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mPicture->refreshPicture();
+  QVERIFY( !mPicture->isMissingImage() );
 
   QgsLayoutChecker checker( QStringLiteral( "composerpicture_expression" ), mLayout );
   checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
@@ -414,10 +416,11 @@ void TestQgsLayoutPicture::pictureInvalidExpression()
   QString expr = QStringLiteral( "bad expression" );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mPicture->refreshPicture();
+  QVERIFY( mPicture->isMissingImage() );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_badexpression" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromValue( QString() ) );
+  mPicture->refreshPicture();
+  QVERIFY( !mPicture->isMissingImage() );
 
   mLayout->removeItem( mPicture );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty() );

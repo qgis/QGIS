@@ -9,7 +9,7 @@ Make sure that you have enabled building of tests in CMake.
 # Run tests
 
 You can run all tests using `make check`.
-Note you will need `xvfb-run` for that (sudo apt-get install xfvb).
+Note you will need `xvfb-run` for that (sudo apt-get install xvfb).
 
 Individual tests can be run using `ctest`.
 
@@ -43,7 +43,7 @@ machine does not have an X server.  In that case you need to run the test under
 `xvfb-run`.  For example:
 
 ```
-    xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest -V -R PyQgsServerWMSGetMap
+    xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest -V -R PyQgsServerWMSGetMap
 ```
 
 # Advanced configuration

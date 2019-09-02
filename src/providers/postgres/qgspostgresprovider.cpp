@@ -105,6 +105,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   mSchemaName = mUri.schema();
   mTableName = mUri.table();
   mGeometryColumn = mUri.geometryColumn();
+  mBoundingBoxColumn = mUri.param( "bbox" );
+  if ( mBoundingBoxColumn.isEmpty() )
+  {
+    mBoundingBoxColumn = mGeometryColumn;
+  }
   mSqlWhereClause = mUri.sql();
   mRequestedSrid = mUri.srid();
   mRequestedGeomType = mUri.wkbType();
@@ -353,7 +358,7 @@ QgsPostgresConn *QgsPostgresProvider::connectionRW()
 
 QgsTransaction *QgsPostgresProvider::transaction() const
 {
-  return static_cast<QgsTransaction *>( mTransaction );
+  return mTransaction;
 }
 
 void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )

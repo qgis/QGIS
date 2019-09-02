@@ -57,6 +57,12 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   mSelector = new QgsSymbolSelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, &QgsSingleSymbolRendererWidget::changeSingleSymbol );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
+  connect( this, &QgsRendererWidget::symbolLevelsChanged, [ = ]()
+  {
+    delete mSingleSymbol;
+    mSingleSymbol = mRenderer->symbol()->clone();
+    mSelector->loadSymbol( mSingleSymbol );
+  } );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );

@@ -78,7 +78,6 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mGridDownButton_clicked();
 
     QgsLayoutItemMapGrid *currentGrid();
-    void mDrawGridCheckBox_toggled( bool state );
     void mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void mGridListWidget_itemChanged( QListWidgetItem *item );
     void mGridPropertiesButton_clicked();

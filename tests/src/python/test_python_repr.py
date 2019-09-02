@@ -16,7 +16,8 @@ from PyQt5.QtCore import QVariant
 from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
-    QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer
+    QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
+    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject
 
 start_app()
 
@@ -45,6 +46,11 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsPointXYRepr(self):
         p = QgsPointXY(123.456, 987.654)
         self.assertTrue(p.__repr__().startswith('<QgsPointXY: POINT(123.456'))
+
+    def testQgsReferencedPointXYRepr(self):
+        p = QgsReferencedPointXY(QgsPointXY(123.456, 987.654), QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertTrue(p.__repr__().startswith('<QgsReferencedPointXY: POINT(123.456'))
+        self.assertTrue(p.__repr__().endswith('(EPSG:4326)>'))
 
     def testQgsCircleRepr(self):
         c = QgsCircle(QgsPoint(1, 1), 2.0)
@@ -122,6 +128,26 @@ class TestPython__repr__(unittest.TestCase):
         r = QgsRectangle(1, 2, 3, 4)
         self.assertEqual(r.__repr__(), '<QgsRectangle: 1 2, 3 4>')
 
+    def testQgsReferencedRectangleRepr(self):
+        r = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(r.__repr__(), '<QgsReferencedRectangle: 1 2, 3 4 (EPSG:4326)>')
+
+    def testQgsCoordinateReferenceSystem(self):
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
+        self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326>')
+        crs = QgsCoordinateReferenceSystem('EPSG:3111')
+        self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:3111>')
+
+    def testQgsCoordinateTransform(self):
+        xform = QgsCoordinateTransform()
+        self.assertEqual(xform.__repr__(), '<QgsCoordinateTransform: NULL to NULL>')
+        xform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem(), QgsProject.instance())
+        self.assertEqual(xform.__repr__(), '<QgsCoordinateTransform: EPSG:4326 to NULL>')
+        xform = QgsCoordinateTransform(QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem('EPSG:4326'), QgsProject.instance())
+        self.assertEqual(xform.__repr__(), '<QgsCoordinateTransform: NULL to EPSG:4326>')
+        xform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:3111'), QgsCoordinateReferenceSystem('EPSG:4326'), QgsProject.instance())
+        self.assertEqual(xform.__repr__(), '<QgsCoordinateTransform: EPSG:3111 to EPSG:4326>')
+
     def testQgsVector(self):
         v = QgsVector(1, 2)
         self.assertEqual(v.__repr__(), '<QgsVector: Vector (1, 2)>')
@@ -151,7 +177,16 @@ class TestPython__repr__(unittest.TestCase):
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
             'QGIS搖滾', 'memory')
-        assert (vl.__repr__(), "<QgsMapLayer: 'QGIS搖滾' (memory)>")
+        self.assertEqual(vl.__repr__(), "<QgsMapLayer: 'QGIS搖滾' (memory)>")
+
+    def testQgsProjectRepr(self):
+        p = QgsProject()
+        self.assertEqual(p.__repr__(), "<QgsProject: ''>")
+        p.setFileName('/home/test/my_project.qgs')
+        self.assertEqual(p.__repr__(), "<QgsProject: '/home/test/my_project.qgs'>")
+        self.assertEqual(QgsProject.instance().__repr__(), "<QgsProject: '' (singleton instance)>")
+        QgsProject.instance().setFileName('/home/test/my_project.qgs')
+        self.assertEqual(QgsProject.instance().__repr__(), "<QgsProject: '/home/test/my_project.qgs' (singleton instance)>")
 
 
 if __name__ == "__main__":

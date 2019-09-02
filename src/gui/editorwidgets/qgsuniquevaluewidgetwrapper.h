@@ -62,10 +62,9 @@ class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
-  public slots:
-    void setValue( const QVariant &value ) override;
-
   private:
+    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
+
     QComboBox *mComboBox = nullptr;
     QLineEdit *mLineEdit = nullptr;
 };

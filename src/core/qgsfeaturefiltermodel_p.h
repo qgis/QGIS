@@ -1,6 +1,5 @@
 /***************************************************************************
   qgsfeaturefiltermodel_p - QgsFieldExpressionValuesGatherer
-
  ---------------------
  begin                : 10.3.2017
  copyright            : (C) 2017 by Matthias Kuhn
@@ -37,11 +36,14 @@ class QgsFieldExpressionValuesGatherer: public QThread
     Q_OBJECT
 
   public:
-    QgsFieldExpressionValuesGatherer( QgsVectorLayer *layer, const QString &displayExpression, const QString &identifierField, const QgsFeatureRequest &request = QgsFeatureRequest() )
+    QgsFieldExpressionValuesGatherer( QgsVectorLayer *layer,
+                                      const QString &displayExpression,
+                                      const QStringList &identifierFields,
+                                      const QgsFeatureRequest &request = QgsFeatureRequest() )
       : mSource( new QgsVectorLayerFeatureSource( layer ) )
       , mDisplayExpression( displayExpression )
       , mRequest( request )
-      , mIdentifierField( identifierField )
+      , mIdentifierFields( identifierFields )
     {
     }
 
@@ -54,12 +56,17 @@ class QgsFieldExpressionValuesGatherer: public QThread
       mDisplayExpression.prepare( &mExpressionContext );
 
       QgsFeature feat;
-      const int attribute = mSource->fields().indexOf( mIdentifierField );
+      QList<int> attributeIndexes;
+      for ( const QString &fieldName : qgis::as_const( mIdentifierFields ) )
+        attributeIndexes << mSource->fields().indexOf( fieldName );
 
       while ( mIterator.nextFeature( feat ) )
       {
         mExpressionContext.setFeature( feat );
-        mEntries.append( QgsFeatureFilterModel::Entry( feat.attribute( attribute ), mDisplayExpression.evaluate( &mExpressionContext ).toString(), feat ) );
+        QVariantList attributes;
+        for ( const int idx : attributeIndexes )
+          attributes << feat.attribute( idx );
+        mEntries.append( QgsFeatureFilterModel::Entry( attributes, mDisplayExpression.evaluate( &mExpressionContext ).toString(), feat ) );
 
         if ( mWasCanceled )
           return;
@@ -120,7 +127,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
     QgsFeatureIterator mIterator;
     bool mWasCanceled = false;
     QVector<QgsFeatureFilterModel::Entry> mEntries;
-    QString mIdentifierField;
+    QStringList mIdentifierFields;
     QVariant mData;
 };
 

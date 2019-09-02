@@ -39,6 +39,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QString mConnInfo;
 
     QString mGeometryColumn;
+    QString mBoundingBoxColumn;
     QString mSqlWhereClause;
     QgsFields mFields;
     QgsPostgresGeometryColumnType mSpatialColType;

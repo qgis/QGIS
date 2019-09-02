@@ -1,7 +1,7 @@
 language: python # This lets us use newer python versions from virtualenv
-python: "3.5"
+python: "3.7"
 compiler: clang
-dist: xenial
+dist: bionic
 sudo: false
 cache:
   apt: true
@@ -60,7 +60,7 @@ matrix:
       addons:
         apt:
           sources:
-            - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
+           # - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
           packages:
             - doxygen
             - graphviz
@@ -127,7 +127,6 @@ matrix:
         - TRIGGER_PYQGIS_DOC=TRUE
         - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_disco"
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-disco.dockerfile
-        - INSTALL_LIBSECCOMP=TRUE
         - CC=/usr/lib/ccache/gcc
         - CXX=/usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
 

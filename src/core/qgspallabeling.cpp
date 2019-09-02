@@ -1342,12 +1342,25 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   textRect.setTop( bottom - textHeight );
   textRect.setBottom( bottom );
 
+  const double iconWidth = QFontMetricsF( QFont() ).width( 'X' ) * Qgis::UI_SCALE_FACTOR;
+
+  if ( settings.callout() && settings.callout()->enabled() )
+  {
+    // draw callout preview
+    const double textWidth = QgsTextRenderer::textWidth( context, tempFormat, text );
+    QgsCallout *callout = settings.callout();
+    callout->startRender( context );
+    QgsCallout::QgsCalloutContext calloutContext;
+    QRectF labelRect( textRect.left() + ( textRect.width() - textWidth ) / 2.0, textRect.top(), textWidth, textRect.height() );
+    callout->render( context, labelRect, 0, QgsGeometry::fromPointXY( QgsPointXY( labelRect.left() - iconWidth * 1.5, labelRect.bottom() + iconWidth ) ), calloutContext );
+    callout->stopRender( context );
+  }
+
   QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
 
   if ( size.width() > 30 )
   {
     // draw a label icon
-    const double iconWidth = QFontMetricsF( QFont() ).width( 'X' ) * Qgis::UI_SCALE_FACTOR;
 
     QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ).paint( &painter, QRect(
           rect.width() - iconWidth * 3, rect.height() - iconWidth * 3,
@@ -1899,17 +1912,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::CurvedCharAngleInOut ) )
     {
       exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::CurvedCharAngleInOut, context.expressionContext() );
-      if ( exprVal.isValid() )
+      bool ok = false;
+      const QPointF maxcharanglePt = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
+      if ( ok )
       {
-        QString ptstr = exprVal.toString().trimmed();
-        QgsDebugMsgLevel( QStringLiteral( "exprVal CurvedCharAngleInOut:%1" ).arg( ptstr ), 4 );
-
-        if ( !ptstr.isEmpty() )
-        {
-          QPointF maxcharanglePt = QgsSymbolLayerUtils::decodePoint( ptstr );
-          maxcharanglein = qBound( 20.0, static_cast< double >( maxcharanglePt.x() ), 60.0 );
-          maxcharangleout = qBound( 20.0, static_cast< double >( maxcharanglePt.y() ), 95.0 );
-        }
+        maxcharanglein = qBound( 20.0, static_cast< double >( maxcharanglePt.x() ), 60.0 );
+        maxcharangleout = qBound( 20.0, static_cast< double >( maxcharanglePt.y() ), 95.0 );
       }
     }
     // make sure maxcharangleout is always negative
@@ -2121,15 +2129,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     context.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( QPointF( xOffset, yOffset ) ) );
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetXY, context.expressionContext() );
-    if ( exprVal.isValid() )
+    bool ok = false;
+    const QPointF ddOffPt = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
+    if ( ok )
     {
-      QString ptstr = exprVal.toString().trimmed();
-      if ( !ptstr.isEmpty() )
-      {
-        QPointF ddOffPt = QgsSymbolLayerUtils::decodePoint( ptstr );
-        xOff = ddOffPt.x();
-        yOff = ddOffPt.y();
-      }
+      xOff = ddOffPt.x();
+      yOff = ddOffPt.y();
     }
   }
 
@@ -2761,22 +2766,22 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
       }
       case DDPointF:
       {
-        QString ptstr = exprVal.toString().trimmed();
-
-        if ( !ptstr.isEmpty() )
+        bool ok = false;
+        const QPointF res = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
+        if ( ok )
         {
-          dataDefinedValues.insert( p, QVariant( QgsSymbolLayerUtils::decodePoint( ptstr ) ) );
+          dataDefinedValues.insert( p, res );
           return true;
         }
         return false;
       }
       case DDSizeF:
       {
-        QString ptstr = exprVal.toString().trimmed();
-
-        if ( !ptstr.isEmpty() )
+        bool ok = false;
+        const QSizeF res = QgsSymbolLayerUtils::toSize( exprVal, &ok );
+        if ( ok )
         {
-          dataDefinedValues.insert( p, QVariant( QgsSymbolLayerUtils::decodeSize( ptstr ) ) );
+          dataDefinedValues.insert( p, res );
           return true;
         }
         return false;

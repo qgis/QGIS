@@ -638,6 +638,8 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
   exp->setAreaUnits( QgsProject::instance()->areaUnits() );
 
+  if ( !mExpressionContext )
+    createExpressionContext();
   exp->prepare( mExpressionContext.get() );
   const auto referencedColumns = exp->referencedColumns();
   for ( const QString &col : referencedColumns )
@@ -676,10 +678,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   mFetchJoinInfo.clear();
   mOrderedJoinInfoList.clear();
 
-  mExpressionContext.reset( new QgsExpressionContext() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
-  mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
+  mExpressionContext.reset();
 
   mFieldsToPrepare = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
@@ -890,6 +889,9 @@ void QgsVectorLayerFeatureIterator::addExpressionAttribute( QgsFeature &f, int a
   QgsExpression *exp = mExpressionFieldInfo.value( attrIndex );
   if ( exp )
   {
+    if ( !mExpressionContext )
+      createExpressionContext();
+
     mExpressionContext->setFeature( f );
     QVariant val = exp->evaluate( mExpressionContext.get() );
     ( void )mSource->mFields.at( attrIndex ).convertCompatible( val );
@@ -1083,6 +1085,14 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 {
   if ( mSource->mChangedGeometries.contains( f.id() ) )
     f.setGeometry( mSource->mChangedGeometries[f.id()] );
+}
+
+void QgsVectorLayerFeatureIterator::createExpressionContext()
+{
+  mExpressionContext = qgis::make_unique< QgsExpressionContext >();
+  mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
 }
 
 bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )

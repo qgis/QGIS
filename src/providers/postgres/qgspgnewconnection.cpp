@@ -206,19 +206,19 @@ void QgsPgNewConnection::testConnection()
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), true );
 
-  if ( conn->pgVersion() < 90500 )
-  {
-    cb_projectsInDatabase->setEnabled( false );
-    cb_projectsInDatabase->setToolTip( tr( "Saving projects in databases not available for PostgreSQL databases earlier than 9.5" ) );
-  }
-  else
-  {
-    cb_projectsInDatabase->setEnabled( true );
-    cb_projectsInDatabase->setToolTip( QString() );
-  }
-
   if ( conn )
   {
+    if ( conn->pgVersion() < 90500 )
+    {
+      cb_projectsInDatabase->setEnabled( false );
+      cb_projectsInDatabase->setToolTip( tr( "Saving projects in databases not available for PostgreSQL databases earlier than 9.5" ) );
+    }
+    else
+    {
+      cb_projectsInDatabase->setEnabled( true );
+      cb_projectsInDatabase->setToolTip( QString() );
+    }
+
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
                       Qgis::Info );

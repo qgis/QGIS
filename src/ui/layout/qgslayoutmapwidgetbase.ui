@@ -87,9 +87,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-257</y>
-        <width>373</width>
-        <height>960</height>
+        <y>-583</y>
+        <width>368</width>
+        <height>1276</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -591,16 +591,6 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_13">
             <item>
-             <widget class="QCheckBox" name="mDrawGridCheckBox">
-              <property name="text">
-               <string>Draw grid</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="mGridPropertiesButton">
               <property name="text">
                <string>Modify Grid…</string>
@@ -991,8 +981,6 @@
   <tabstop>mGridUpButton</tabstop>
   <tabstop>mGridDownButton</tabstop>
   <tabstop>mGridListWidget</tabstop>
-  <tabstop>mDrawGridCheckBox</tabstop>
-  <tabstop>mDrawGridCheckBox</tabstop>
   <tabstop>mGridPropertiesButton</tabstop>
   <tabstop>mGridPropertiesButton</tabstop>
   <tabstop>mOverviewsGroupBox</tabstop>

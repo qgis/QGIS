@@ -118,18 +118,30 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
   switch ( field().type() )
   {
     case QVariant::DateTime:
+      Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( dateTime );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( dateTime );
       break;
     case QVariant::Date:
+      Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( dateTime.date() );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( dateTime.date() );
       break;
     case QVariant::Time:
+      Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( dateTime.time() );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( dateTime.time() );
       break;
     default:
       if ( !dateTime.isValid() || dateTime.isNull() )
       {
+        Q_NOWARN_DEPRECATED_PUSH
         emit valueChanged( QVariant( field().type() ) );
+        Q_NOWARN_DEPRECATED_POP
+        emit valuesChanged( QVariant( field().type() ) );
       }
       else
       {
@@ -137,11 +149,17 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
         const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
         if ( fieldIsoFormat )
         {
+          Q_NOWARN_DEPRECATED_PUSH
           emit valueChanged( dateTime.toString( Qt::ISODate ) );
+          Q_NOWARN_DEPRECATED_POP
+          emit valuesChanged( dateTime.toString( Qt::ISODate ) );
         }
         else
         {
+          Q_NOWARN_DEPRECATED_PUSH
           emit valueChanged( dateTime.toString( fieldFormat ) );
+          Q_NOWARN_DEPRECATED_POP
+          emit valuesChanged( dateTime.toString( fieldFormat ) );
         }
       }
       break;
@@ -188,7 +206,7 @@ QVariant QgsDateTimeEditWrapper::value() const
 #endif
 }
 
-void QgsDateTimeEditWrapper::setValue( const QVariant &value )
+void QgsDateTimeEditWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( !mQDateTimeEdit )
     return;

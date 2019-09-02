@@ -40,8 +40,6 @@ class QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
     void setBugReport( const QString &reportData );
     void setReloadArgs( const QString &reloadArgs );
 
-    static QString htmlToMarkdown( const QString &html );
-
   private slots:
     void showReportWidget();
     void createBugReport();

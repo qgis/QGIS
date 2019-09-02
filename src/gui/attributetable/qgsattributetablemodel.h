@@ -57,7 +57,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
       FieldIndexRole,               //!< Get the field index of this column
       UserRole,                     //!< Start further roles starting from this role
       // Insert new values here, SortRole needs to be the last one
-      SortRole,                     //!< Roles used for sorting start here
+      SortRole,                     //!< Role used for sorting start here
     };
 
   public:

@@ -130,6 +130,7 @@ if errorlevel 1 goto error
 if "%CMAKEGEN%"=="" set CMAKEGEN=Ninja
 
 for %%i in (%PYTHONHOME%) do set PYVER=%%~ni
+for %%i in (%OSGEO4W_ROOT%\apps\proj-dev\lib\proj_*_*.lib) do set PROJ_LIBRARY=%%i
 
 cmake -G "%CMAKEGEN%" ^
 	-D CMAKE_CXX_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
@@ -150,7 +151,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D PROJ_LIBRARY=%O4W_ROOT%/apps/proj-dev/lib/proj_6_1.lib ^
+	-D PROJ_LIBRARY=%PROJ_LIBRARY% ^
 	-D PROJ_INCLUDE_DIR=%O4W_ROOT%/apps/proj-dev/include ^
 	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-dev/lib/gdal_i.lib ^
 	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-dev/include ^

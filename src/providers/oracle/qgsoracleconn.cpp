@@ -31,17 +31,20 @@ int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
 
-QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri )
+QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool transaction )
 {
-  QString conninfo = toPoolName( uri );
-  if ( sConnections.contains( conninfo ) )
+  const QString conninfo = toPoolName( uri );
+  if ( !transaction )
   {
-    QgsDebugMsg( QStringLiteral( "Using cached connection for %1" ).arg( conninfo ) );
-    sConnections[conninfo]->mRef++;
-    return sConnections[conninfo];
+    if ( sConnections.contains( conninfo ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Using cached connection for %1" ).arg( conninfo ) );
+      sConnections[conninfo]->mRef++;
+      return sConnections[conninfo];
+    }
   }
 
-  QgsOracleConn *conn = new QgsOracleConn( uri );
+  QgsOracleConn *conn = new QgsOracleConn( uri, transaction );
 
   if ( conn->mRef == 0 )
   {
@@ -49,15 +52,19 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri )
     return nullptr;
   }
 
-  sConnections.insert( conninfo, conn );
+  if ( !transaction )
+  {
+    sConnections.insert( conninfo, conn );
+  }
 
   return conn;
 }
 
-QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
+QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   : mRef( 1 )
   , mCurrentUser( QString() )
   , mHasSpatial( -1 )
+  , mTransaction( transaction )
 {
   QgsDebugMsg( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo( false ) );
 
@@ -69,6 +76,8 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
   mDatabase = QSqlDatabase::addDatabase( QStringLiteral( "QOCISPATIAL" ), QStringLiteral( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
   QString options = uri.hasParam( QStringLiteral( "dboptions" ) ) ? uri.param( QStringLiteral( "dboptions" ) ) : QStringLiteral( "OCI_ATTR_PREFETCH_ROWS=1000" );
+  if ( mTransaction )
+    options += ( !options.isEmpty() ? QStringLiteral( ";" ) : QString() ) + QStringLiteral( "COMMIT_ON_SUCCESS=false" );
   QString workspace = uri.hasParam( QStringLiteral( "dbworkspace" ) ) ? uri.param( QStringLiteral( "dbworkspace" ) ) : QString();
   mDatabase.setConnectOptions( options );
   mDatabase.setUserName( uri.username() );
@@ -177,21 +186,7 @@ QString QgsOracleConn::connInfo()
 
 void QgsOracleConn::disconnect()
 {
-  if ( --mRef > 0 )
-    return;
-
-  QString key = sConnections.key( this, QString() );
-
-  if ( !key.isNull() )
-  {
-    sConnections.remove( key );
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "Connection not found" ) );
-  }
-
-  deleteLater();
+  unref();
 }
 
 void QgsOracleConn::reconnect()
@@ -201,6 +196,28 @@ void QgsOracleConn::reconnect()
     mDatabase.close();
     mDatabase.open();
   }
+}
+
+void QgsOracleConn::unref()
+{
+  if ( --mRef > 0 )
+    return;
+
+  if ( !mTransaction )
+  {
+    QString key = sConnections.key( this, QString() );
+
+    if ( !key.isNull() )
+    {
+      sConnections.remove( key );
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Connection not found" ) );
+    }
+  }
+
+  deleteLater();
 }
 
 bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )
@@ -388,6 +405,69 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
   v.replace( '\'', QStringLiteral( "''" ) );
   v.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\\\\\"" ) );
   return v.prepend( '\'' ).append( '\'' );
+}
+
+bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMessage )
+{
+  QMutexLocker locker( &mLock );
+  QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
+
+  QSqlQuery qry( mDatabase );
+  if ( !exec( qry, query, QVariantList() ) )
+  {
+    QString error = qry.lastError().text();
+    if ( logError )
+    {
+      QgsMessageLog::logMessage( tr( "Connection error: %1 returned %2" )
+                                 .arg( query ).arg( error ),
+                                 tr( "Oracle" ) );
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Connection error: %1 returned %2" )
+                   .arg( query ).arg( error ) );
+    }
+    if ( errorMessage )
+      *errorMessage = error;
+    return false;
+  }
+  return true;
+}
+
+bool QgsOracleConn::begin( QSqlDatabase &db )
+{
+  if ( mTransaction )
+  {
+    return exec( QStringLiteral( "SAVEPOINT sp%1" ).arg( ++mSavePointId ) );
+  }
+  else
+  {
+    return db.transaction();
+  }
+}
+
+bool QgsOracleConn::commit( QSqlDatabase &db )
+{
+  if ( mTransaction )
+  {
+    return exec( QStringLiteral( "SAVEPOINT sp%1" ).arg( ++mSavePointId ) );
+  }
+  else
+  {
+    return db.commit();
+  }
+}
+
+bool QgsOracleConn::rollback( QSqlDatabase &db )
+{
+  if ( mTransaction )
+  {
+    return exec( QStringLiteral( "ROLLBACK TO SAVEPOINT sp%1" ).arg( mSavePointId ) );
+  }
+  else
+  {
+    return db.rollback();
+  }
 }
 
 QString QgsOracleConn::fieldExpression( const QgsField &fld )

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>482</width>
-    <height>618</height>
+    <width>498</width>
+    <height>641</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -357,26 +357,7 @@ Negative rounds to powers of 10</string>
          <property name="checkable">
           <bool>true</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-          <item row="0" column="1">
-           <widget class="QgsDoubleSpinBox" name="spinSymmetryPointForOtherMethods">
-            <property name="specialValueText">
-             <string/>
-            </property>
-            <property name="minimum">
-             <double>-99999999999999995164818811802792197885196090803013355167206819763650035712.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>99999999999999995164818811802792197885196090803013355167206819763650035712.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>100.000000000000000</double>
-            </property>
-            <property name="showClearButton" stdset="0">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0">
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -384,8 +365,12 @@ Negative rounds to powers of 10</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QComboBox" name="cboSymmetryPointForPretty"/>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cboSymmetryPoint">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="cbxAstride">

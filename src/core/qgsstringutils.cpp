@@ -448,6 +448,28 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   return converted;
 }
 
+QString QgsStringUtils::htmlToMarkdown( const QString &html )
+{
+
+  QString converted = html;
+  converted.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
+  converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
+  converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
+
+  static QRegExp hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+  int offset = 0;
+  while ( hrefRegEx.indexIn( converted, offset ) != -1 )
+  {
+    QString url = hrefRegEx.cap( 1 ).replace( QStringLiteral( "\"" ), QString() );
+    QString name = hrefRegEx.cap( 2 );
+    QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
+    converted.replace( hrefRegEx, anchor );
+    offset = hrefRegEx.pos( 1 ) + anchor.length();
+  }
+
+  return converted;
+}
+
 QString QgsStringUtils::wordWrap( const QString &string, const int length, const bool useMaxLineLength, const QString &customDelimiter )
 {
   if ( string.isEmpty() || length == 0 )

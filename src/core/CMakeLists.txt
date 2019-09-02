@@ -20,6 +20,15 @@ SET(QGIS_CORE_SRCS
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
+  classification/qgsclassificationmethodregistry.cpp
+  classification/qgsclassificationmethod.cpp
+  classification/qgsclassificationcustom.cpp
+  classification/qgsclassificationequalinterval.cpp
+  classification/qgsclassificationprettybreaks.cpp
+  classification/qgsclassificationquantile.cpp
+  classification/qgsclassificationjenks.cpp
+  classification/qgsclassificationstandarddeviation.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
@@ -45,6 +54,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgspointdisplacementrenderer.cpp
   symbology/qgspointdistancerenderer.cpp
   symbology/qgsrenderer.cpp
+  symbology/qgsrendererrange.cpp
   symbology/qgsrendererregistry.cpp
   symbology/qgsrulebasedrenderer.cpp
   symbology/qgssinglesymbolrenderer.cpp
@@ -341,6 +351,7 @@ SET(QGIS_CORE_SRCS
   qgssqliteutils.cpp
   qgsspatialiteutils.cpp
   qgsstatisticalsummary.cpp
+  qgsstoredexpressionmanager.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstaskmanager.cpp
@@ -699,6 +710,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrunprocess.h
   qgssnappingconfig.h
   qgssnappingutils.h
+  qgsstoredexpressionmanager.h
   qgstaskmanager.h
   qgstolerance.h
   qgstracer.h
@@ -1072,6 +1084,15 @@ SET(QGIS_CORE_HDRS
   callouts/qgscallout.h
   callouts/qgscalloutsregistry.h
 
+  classification/qgsclassificationmethodregistry.h
+  classification/qgsclassificationmethod.h
+  classification/qgsclassificationcustom.h
+  classification/qgsclassificationequalinterval.h
+  classification/qgsclassificationprettybreaks.h
+  classification/qgsclassificationquantile.h
+  classification/qgsclassificationjenks.h
+  classification/qgsclassificationstandarddeviation.h
+
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
@@ -1207,6 +1228,7 @@ SET(QGIS_CORE_HDRS
   symbology/qgspointdisplacementrenderer.h
   symbology/qgspointdistancerenderer.h
   symbology/qgsrenderer.h
+  symbology/qgsrendererrange.h
   symbology/qgsrendererregistry.h
   symbology/qgsrulebasedrenderer.h
   symbology/qgssinglesymbolrenderer.h
@@ -1290,6 +1312,7 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
+  classification
   dxf
   effects
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -1427,7 +1450,8 @@ ADD_DEPENDENCIES(qgis_core version)
 # because of htonl
 IF (WIN32)
   FIND_LIBRARY(SETUPAPI_LIBRARY NAMES setupapi PATHS $ENV{LIB})
-  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY} dbghelp)
+  FIND_LIBRARY(VERSION_LIBRARY NAMES version PATHS $ENV{LIB})
+  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY} dbghelp ${VERSION_LIBRARY})
 ENDIF (WIN32)
 
 IF (APPLE)

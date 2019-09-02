@@ -1716,6 +1716,12 @@ static QVariant fcnLPad( const QVariantList &values, const QgsExpressionContext 
 
 static QVariant fcnFormatString( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( values.size() < 1 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function format requires at least 1 argument" ) );
+    return QVariant();
+  }
+
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   for ( int n = 1; n < values.length(); n++ )
   {
@@ -2355,6 +2361,36 @@ static QVariant fcnSmooth( const QVariantList &values, const QgsExpressionContex
   return smoothed;
 }
 
+static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariantList list;
+  if ( values.size() == 1 && ( values.at( 0 ).type() == QVariant::List || values.at( 0 ).type() == QVariant::StringList ) )
+  {
+    list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  }
+  else
+  {
+    list = values;
+  }
+
+  QVector< QgsGeometry > parts;
+  parts.reserve( list.size() );
+  for ( const QVariant &value : qgis::as_const( list ) )
+  {
+    if ( value.canConvert<QgsGeometry>() )
+    {
+      parts << value.value<QgsGeometry>();
+    }
+    else
+    {
+      parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
+      return QgsGeometry();
+    }
+  }
+
+  return QgsGeometry::collectGeometry( parts );
+}
+
 static QVariant fcnMakePoint( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( values.count() < 2 || values.count() > 4 )
@@ -2389,31 +2425,49 @@ static QVariant fcnMakePointM( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnMakeLine( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  if ( values.count() < 2 )
+  if ( values.empty() )
   {
     return QVariant();
   }
 
-  QgsLineString *lineString = new QgsLineString();
-  lineString->clear();
+  QVector<QgsPoint> points;
+  points.reserve( values.count() );
 
-  for ( const QVariant &value : values )
+  auto addPoint = [&points]( const QgsGeometry & geom )
   {
-    QgsGeometry geom = QgsExpressionUtils::getGeometry( value, parent );
     if ( geom.isNull() )
-      continue;
+      return;
 
     if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
-      continue;
+      return;
 
     const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
     if ( !point )
-      continue;
+      return;
 
-    lineString->addVertex( *point );
+    points << *point;
+  };
+
+  for ( const QVariant &value : values )
+  {
+    if ( value.type() == QVariant::List )
+    {
+      const QVariantList list = value.toList();
+      for ( const QVariant &v : list )
+      {
+        addPoint( QgsExpressionUtils::getGeometry( v, parent ) );
+      }
+    }
+    else
+    {
+      addPoint( QgsExpressionUtils::getGeometry( value, parent ) );
+    }
   }
 
-  return QVariant::fromValue( QgsGeometry( lineString ) );
+  if ( points.count() < 2 )
+    return QVariant();
+
+  return QgsGeometry( new QgsLineString( points ) );
 }
 
 static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5275,6 +5329,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "end_point" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnEndPoint, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "nodes_to_points" ), -1, fcnNodesToPoints, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "segments_to_lines" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnSegmentsToLines, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "collect_geometries" ), -1, fcnCollectGeometries, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "make_point" ), -1, fcnMakePoint, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "make_point_m" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "x" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "y" ) )
