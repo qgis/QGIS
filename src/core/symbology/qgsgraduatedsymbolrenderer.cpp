@@ -365,6 +365,7 @@ QList<double> QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( double minimu
   return QgsClassificationMethod::listToValues( _classes );
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   QgsVectorLayer *vlayer,
   const QString &attrName,
@@ -401,6 +402,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   r->updateClasses( vlayer, classes );
   return r;
 }
+Q_NOWARN_DEPRECATED_POP
 
 void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses,
     bool useSymmetricMode, double symmetryPoint, bool astride )
@@ -1019,6 +1021,7 @@ void QgsGraduatedSymbolRenderer::deleteAllClasses()
   mRanges.clear();
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 void QgsGraduatedSymbolRenderer::setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges )
 {
   mClassificationMethod->setLabelFormat( labelFormat.format() );
@@ -1030,6 +1033,7 @@ void QgsGraduatedSymbolRenderer::setLabelFormat( const QgsRendererRangeLabelForm
     updateRangeLabels();
   }
 }
+Q_NOWARN_DEPRECATED_POP
 
 void QgsGraduatedSymbolRenderer::updateRangeLabels()
 {
