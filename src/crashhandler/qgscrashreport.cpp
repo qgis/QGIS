@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscrashreport.h"
-#include "qgsstringutils.h"
 
 #include <QDir>
 #include <QFile>
@@ -38,8 +37,8 @@ void QgsCrashReport::setFlags( QgsCrashReport::Flags flags )
 const QString QgsCrashReport::toHtml() const
 {
   QStringList reportData;
-  QString crashID = crashID();
-  reportData.append( QStringLiteral( "<b>Crash ID</b>: <a href='https://github.com/qgis/QGIS/search?q=%1&type=Issues'>%1</a>" ).arg( crashID ) );
+  QString thisCrashID = crashID();
+  reportData.append( QStringLiteral( "<b>Crash ID</b>: <a href='https://github.com/qgis/QGIS/search?q=%1&type=Issues'>%1</a>" ).arg( thisCrashID ) );
 
   if ( flags().testFlag( QgsCrashReport::Stack ) )
   {
@@ -158,7 +157,7 @@ void QgsCrashReport::exportToCrashFolder()
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream stream( &file );
-    stream << QgsStringUtils::htmlToMarkdown( toHtml() ) << endl;
+    stream << htmlToMarkdown( toHtml() ) << endl;
   }
   file.close();
 }
@@ -168,4 +167,25 @@ QString QgsCrashReport::crashReportFolder()
   return QStandardPaths::standardLocations( QStandardPaths::AppLocalDataLocation ).value( 0 ) +
          "/crashes/" +
          QUuid::createUuid().toString().replace( "{", "" ).replace( "}", "" );
+}
+
+QString QgsCrashReport::htmlToMarkdown( const QString &html )
+{
+  QString converted = html;
+  converted.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
+  converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
+  converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
+
+  static QRegExp hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+  int offset = 0;
+  while ( hrefRegEx.indexIn( converted, offset ) != -1 )
+  {
+    QString url = hrefRegEx.cap( 1 ).replace( QStringLiteral( "\"" ), QString() );
+    QString name = hrefRegEx.cap( 2 );
+    QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
+    converted.replace( hrefRegEx, anchor );
+    offset = hrefRegEx.pos( 1 ) + anchor.length();
+  }
+
+  return converted;
 }

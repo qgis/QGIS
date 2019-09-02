@@ -16,7 +16,8 @@
 
 
 #include "qgscrashdialog.h"
-#include "qgsstringutils.h"
+
+#include "qgscrashreport.h"
 
 #include <QClipboard>
 #include <QProcess>
@@ -70,7 +71,7 @@ void QgsCrashDialog::createBugReport()
   QString userText = "## User Feedback\n\n" + mUserFeedbackText->toPlainText();
   QString details = "## Report Details\n\n" + mReportData;
   QString finalText = userText + "\n\n" + details;
-  QString markdown = QgsStringUtils::htmlToMarkdown( finalText );
+  QString markdown = QgsCrashReport::htmlToMarkdown( finalText );
   clipboard->setText( markdown );
 }
 

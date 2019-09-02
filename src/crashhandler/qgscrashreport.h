@@ -88,10 +88,18 @@ class QgsCrashReport
 
     void setVersionInfo( const QStringList &versionInfo ) { mVersionInfo = versionInfo; }
 
+    /**
+     * convert htmlToMarkdown (copied from QgsStringUtils::htmlToMarkdown)
+     * \param html text in html
+     * \return the reformatted text in markdown
+     */
+    static QString htmlToMarkdown( const QString &html );
+
   private:
     Flags mFlags;
     QgsStackTrace *mStackTrace;
     QStringList mVersionInfo;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCrashReport::Flags )
