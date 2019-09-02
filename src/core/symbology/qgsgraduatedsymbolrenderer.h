@@ -277,7 +277,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
         bool useSymmetricMode = false,
         double symmetryPoint = 0.0,
-        QStringList listForCboPrettyBreaks = QStringList(),
+        const QStringList &listForCboPrettyBreaks = QStringList(),
         bool astride = false ) SIP_DEPRECATED;
     Q_NOWARN_DEPRECATED_POP;
 

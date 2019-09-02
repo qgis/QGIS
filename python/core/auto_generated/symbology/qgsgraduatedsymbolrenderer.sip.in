@@ -301,7 +301,7 @@ Reset the label decimal places to a numberbased on the minimum class interval
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
         bool useSymmetricMode = false,
         double symmetryPoint = 0.0,
-        QStringList listForCboPrettyBreaks = QStringList(),
+        const QStringList &listForCboPrettyBreaks = QStringList(),
         bool astride = false ) /Deprecated/;
 %Docstring
 Creates a new graduated renderer.

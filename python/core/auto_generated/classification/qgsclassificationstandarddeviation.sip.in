@@ -29,7 +29,7 @@ based on standard deviation
 
     virtual QgsClassificationMethod *clone() const;
 
-    virtual QString labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position ) const;
+    virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const;
 
     virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 

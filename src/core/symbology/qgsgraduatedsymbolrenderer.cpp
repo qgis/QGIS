@@ -375,7 +375,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   const QgsRendererRangeLabelFormat &labelFormat,
   bool useSymmetricMode,
   double symmetryPoint,
-  QStringList listForCboPrettyBreaks,
+  const QStringList &listForCboPrettyBreaks,
   bool astride
 )
 {
