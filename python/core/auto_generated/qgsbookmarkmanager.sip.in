@@ -1,0 +1,224 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbookmarkmanager.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsBookmark
+{
+%Docstring
+
+Represents a spatial bookmark, with a name, CRS and extent.
+
+QgsBookmark objects are typically used alongside the QgsBookmarkManager class,
+which handles storage of a set of bookmarks.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsbookmarkmanager.h"
+%End
+  public:
+
+    QgsBookmark();
+%Docstring
+Default constructor, creates an empty bookmark.
+%End
+
+    QString id() const;
+%Docstring
+Returns the bookmark's unique ID.
+
+.. seealso:: :py:func:`setId`
+%End
+
+    void setId( const QString &id );
+%Docstring
+Sets the bookmark's unique ``id``.
+
+.. seealso:: :py:func:`id`
+%End
+
+    QString name() const;
+%Docstring
+Returns the bookmark's name, which is a user-visible string identifying
+the bookmark.
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the bookmark's ``name``, which is a user-visible string identifying
+the bookmark.
+
+.. seealso:: :py:func:`name`
+%End
+
+    QgsReferencedRectangle extent() const;
+%Docstring
+Returns the bookmark's spatial extent.
+
+.. seealso:: :py:func:`setExtent`
+%End
+
+    void setExtent( const QgsReferencedRectangle &extent );
+%Docstring
+Sets the bookmark's spatial ``extent``.
+
+.. seealso:: :py:func:`extent`
+%End
+
+    static QgsBookmark fromXml( const QDomElement &element, const QDomDocument &doc );
+%Docstring
+Creates a bookmark using the properties from a DOM ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Returns a DOM element representing the bookmark's properties.
+
+.. seealso:: :py:func:`fromXml`
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsBookmark: '%1' (%2 - %3)>" ).arg( sipCpp->name(), sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+class QgsBookmarkManager : QObject
+{
+%Docstring
+
+Manages storage of a set of bookmarks.
+
+QgsBookmarkManager handles the storage, serializing and deserializing
+of geographic bookmarks. Usually this class is not constructed directly, but
+rather accessed through a QgsProject via :py:func:`QgsProject.bookmarkManager()`
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsbookmarkmanager.h"
+%End
+  public:
+
+    explicit QgsBookmarkManager( QgsProject *project /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBookmarkManager, with the specified ``parent`` project.
+%End
+
+    ~QgsBookmarkManager();
+
+    QString addBookmark( const QgsBookmark &bookmark, bool *ok /Out/ = 0 );
+%Docstring
+Adds a ``bookmark`` to the manager.
+
+:param bookmark: the bookmark to add
+
+:return: - The bookmark's ID (or newly generated ID, if no ID was originally set and one was automatically generated)
+         - ok: will be set to ``True`` if the bookmark was successfully added, or ``False`` if the bookmark could not be added (eg as a result of a duplicate bookmark ID).
+
+
+.. seealso:: :py:func:`removeBookmark`
+
+.. seealso:: :py:func:`bookmarkAdded`
+%End
+
+    bool removeBookmark( const QString &id );
+%Docstring
+Removes the bookmark with matching ``id`` from the manager.
+
+Returns ``True`` if the removal was successful, or ``False`` if the removal failed (eg as a result
+of removing a bookmark which is not contained in the manager).
+
+.. seealso:: :py:func:`addBookmark`
+
+.. seealso:: :py:func:`bookmarkRemoved`
+
+.. seealso:: :py:func:`bookmarkAboutToBeRemoved`
+
+.. seealso:: :py:func:`clear`
+%End
+
+    void clear();
+%Docstring
+Removes and deletes all bookmarks from the manager.
+
+.. seealso:: :py:func:`removeBookmark`
+%End
+
+    QList< QgsBookmark > bookmarks() const;
+%Docstring
+Returns a list of all bookmarks contained in the manager.
+%End
+
+    QgsBookmark bookmarkById( const QString &id ) const;
+%Docstring
+Returns the bookmark with a matching ``id``, or an empty bookmark if no matching bookmarks
+were found.
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc );
+%Docstring
+Reads the manager's state from a DOM element, restoring all bookmarks
+present in the XML document.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Returns a DOM element representing the state of the manager.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+  signals:
+
+    void bookmarkAboutToBeAdded( const QString &id );
+%Docstring
+Emitted when a bookmark is about to be added to the manager
+%End
+
+    void bookmarkAdded( const QString &id );
+%Docstring
+Emitted when a bookmark has been added to the manager
+%End
+
+    void bookmarkRemoved( const QString &id );
+%Docstring
+Emitted when a bookmark was removed from the manager
+%End
+
+    void bookmarkAboutToBeRemoved( const QString &id );
+%Docstring
+Emitted when a bookmark is about to be removed from the manager
+%End
+
+    void bookmarkRenamed( const QgsBookmark &bookmark, const QString &newName );
+%Docstring
+Emitted when a bookmark is renamed
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbookmarkmanager.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

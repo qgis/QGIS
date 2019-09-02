@@ -555,6 +555,15 @@ the project.
 .. versionadded:: 3.0
 %End
 
+
+    QgsBookmarkManager *bookmarkManager();
+%Docstring
+Returns the project's bookmark manager, which manages bookmarks within
+the project.
+
+.. versionadded:: 3.10
+%End
+
     QgsLayerTree *layerTreeRoot() const;
 %Docstring
 Returns pointer to the root (invisible) node of the project's layer tree

@@ -49,6 +49,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsmeshlayer.h"
 #include "qgslayoutmanager.h"
+#include "qgsbookmarkmanager.h"
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
 #include "qgsauxiliarystorage.h"
@@ -358,6 +359,7 @@ QgsProject::QgsProject( QObject *parent )
   , mRelationManager( new QgsRelationManager( this ) )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
+  , mBookmarkManager( new QgsBookmarkManager( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsProjectArchive() )
@@ -724,6 +726,7 @@ void QgsProject::clear()
   mRelationManager->clear();
   mAnnotationManager->clear();
   mLayoutManager->clear();
+  mBookmarkManager->clear();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
   emit topologicalEditingChanged();
@@ -1393,6 +1396,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   mAnnotationManager->readXml( doc->documentElement(), context );
   mLayoutManager->readXml( doc->documentElement(), *doc );
+  mBookmarkManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
@@ -1937,6 +1941,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement layoutElem = mLayoutManager->writeXml( *doc );
   qgisNode.appendChild( layoutElem );
+
+  QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
+  qgisNode.appendChild( bookmarkElem );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -2595,6 +2602,16 @@ const QgsLayoutManager *QgsProject::layoutManager() const
 QgsLayoutManager *QgsProject::layoutManager()
 {
   return mLayoutManager.get();
+}
+
+const QgsBookmarkManager *QgsProject::bookmarkManager() const
+{
+  return mBookmarkManager;
+}
+
+QgsBookmarkManager *QgsProject::bookmarkManager()
+{
+  return mBookmarkManager;
 }
 
 QgsLayerTree *QgsProject::layerTreeRoot() const
