@@ -166,6 +166,19 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     bool removeBookmark( const QString &id );
 
     /**
+     * Updates the definition of a \a bookmark in the manager.
+     *
+     * Replaces the current definition of the bookmark with matching ID in the manager with
+     * a new definition (new bookmark name or extent).
+     *
+     * Returns TRUE if the bookmark was successfully updated, or
+     * FALSE if the bookmark could not be updated (eg bookmark is not stored in the manager).
+     *
+     * \see bookmarkChanged()
+     */
+    bool updateBookmark( const QgsBookmark &bookmark );
+
+    /**
      * Removes and deletes all bookmarks from the manager.
      * \see removeBookmark()
      */
@@ -209,8 +222,8 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     //! Emitted when a bookmark is about to be removed from the manager
     void bookmarkAboutToBeRemoved( const QString &id );
 
-    //! Emitted when a bookmark is renamed
-    void bookmarkRenamed( const QgsBookmark &bookmark, const QString &newName );
+    //! Emitted when a bookmark is changed
+    void bookmarkChanged( const QString &id );
 
   private:
 

@@ -153,6 +153,24 @@ bool QgsBookmarkManager::removeBookmark( const QString &id )
   return true;
 }
 
+bool QgsBookmarkManager::updateBookmark( const QgsBookmark &bookmark )
+{
+  // check for duplicate ID
+  int i = 0;
+  for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+  {
+    if ( b.id() == bookmark.id() )
+    {
+      mBookmarks[i] = bookmark;
+      emit bookmarkChanged( bookmark.id() );
+      mProject->setDirty( true );
+      return true;
+    }
+    i++;
+  }
+  return false;
+}
+
 void QgsBookmarkManager::clear()
 {
   const QList< QgsBookmark > bookmarks = mBookmarks;
