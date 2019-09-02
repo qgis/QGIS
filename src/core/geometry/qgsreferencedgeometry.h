@@ -90,6 +90,9 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
       return QVariant::fromValue( *this );
     }
 
+    bool operator==( const QgsReferencedRectangle &other );
+    bool operator!=( const QgsReferencedRectangle &other );
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -127,6 +130,9 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
     {
       return QVariant::fromValue( *this );
     }
+
+    bool operator==( const QgsReferencedPointXY &other );
+    bool operator!=( const QgsReferencedPointXY &other );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

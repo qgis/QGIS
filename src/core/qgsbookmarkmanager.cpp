@@ -53,6 +53,16 @@ QDomElement QgsBookmark::writeXml( QDomDocument &doc ) const
   return bookmarkElem;
 }
 
+bool QgsBookmark::operator==( const QgsBookmark &other )
+{
+  return mId == other.mId && mName == other.mName && mExtent == other.mExtent;
+}
+
+bool QgsBookmark::operator!=( const QgsBookmark &other )
+{
+  return !( *this == other );
+}
+
 QString QgsBookmark::name() const
 {
   return mName;
