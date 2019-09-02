@@ -359,10 +359,9 @@ void QgsGraduatedSymbolRenderer::makeBreaksSymmetric( QList<double> &breaks, dou
 
 QList<double> QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride )
 {
-  QgsClassificationEqualInterval *method = new QgsClassificationEqualInterval();
-  method->setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
-  QList<QgsClassificationRange> _classes = method->classes( minimum, maximum, classes );
-  delete method;
+  QgsClassificationEqualInterval method;
+  method.setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
+  QList<QgsClassificationRange> _classes = method.classes( minimum, maximum, classes );
   return QgsClassificationMethod::listToValues( _classes );
 }
 
