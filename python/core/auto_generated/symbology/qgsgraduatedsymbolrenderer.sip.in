@@ -9,8 +9,6 @@
 
 
 
-
-
 class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 {
 

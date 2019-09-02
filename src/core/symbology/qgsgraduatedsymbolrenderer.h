@@ -15,9 +15,6 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERER_H
 #define QGSGRADUATEDSYMBOLRENDERER_H
 
-#include <QRegExp>
-
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"

@@ -28,12 +28,13 @@ QgsClassificationMethodRegistry is not usually directly created, but rather acce
   public:
     QgsClassificationMethodRegistry();
 
-    void addMethod( QgsClassificationMethod *method /Transfer/ );
+    bool addMethod( QgsClassificationMethod *method /Transfer/ );
 %Docstring
 Adds a method to the registry
+Returns false if a method with same id already exists.
 %End
 
-    QgsClassificationMethod *method( const QString &id );
+    QgsClassificationMethod *method( const QString &id ) /Factory/;
 %Docstring
 Return a new instance of the method for the given id
 %End

@@ -197,11 +197,11 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     /**
      * This will calculate the breaks for a given layer to define the classes.
      * The breaks do not contain the uppper and lower bounds (minimum and maximum values).
-     * \param vl The vector layer
+     * \param layer The vector layer
      * \param fieldName The name of the field on which the classes are calculated
      * \param nclasses The number of classes to be returned
      */
-    QList<QgsClassificationRange> classes( const QgsVectorLayer *vl, const QString &expression, int nclasses );
+    QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses );
 
     /**
      * This will calculate the breaks for a list of values.

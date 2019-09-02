@@ -38,11 +38,14 @@ class CORE_EXPORT QgsClassificationMethodRegistry
   public:
     QgsClassificationMethodRegistry();
 
-    //! Adds a method to the registry
-    void addMethod( QgsClassificationMethod *method SIP_TRANSFER );
+    /**
+     * Adds a method to the registry
+     * Returns false if a method with same id already exists.
+     */
+    bool addMethod( QgsClassificationMethod *method SIP_TRANSFER );
 
     //! Return a new instance of the method for the given id
-    QgsClassificationMethod *method( const QString &id );
+    QgsClassificationMethod *method( const QString &id ) SIP_FACTORY;
 
     //! Returns a map <id, name> of all registered methods
     QMap<QString, QString> methodNames() const;

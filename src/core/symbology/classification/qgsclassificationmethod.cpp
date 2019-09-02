@@ -160,7 +160,7 @@ QString QgsClassificationMethod::formatNumber( double value ) const
   }
 }
 
-QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *vl, const QString &expression, int nclasses )
+QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *layer, const QString &expression, int nclasses )
 {
   if ( expression.isEmpty() )
     return QList<QgsClassificationRange>();
@@ -172,12 +172,12 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   double minimum;
   double maximum;
 
-  int fieldIndex = vl->fields().indexFromName( expression );
+  int fieldIndex = layer->fields().indexFromName( expression );
 
   bool ok;
   if ( mValuesRequired || fieldIndex == -1 )
   {
-    values = QgsVectorLayerUtils::getDoubleValues( vl, expression, ok );
+    values = QgsVectorLayerUtils::getDoubleValues( layer, expression, ok );
     if ( !ok || values.isEmpty() )
       return QList<QgsClassificationRange>();
 
@@ -187,8 +187,8 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   }
   else
   {
-    minimum = vl->minimumValue( fieldIndex ).toDouble();
-    maximum = vl->maximumValue( fieldIndex ).toDouble();
+    minimum = layer->minimumValue( fieldIndex ).toDouble();
+    maximum = layer->maximumValue( fieldIndex ).toDouble();
   }
 
   // get the breaks

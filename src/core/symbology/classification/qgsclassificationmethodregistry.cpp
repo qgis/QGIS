@@ -33,9 +33,13 @@ QgsClassificationMethodRegistry::QgsClassificationMethodRegistry()
   addMethod( new QgsClassificationPrettyBreaks() );
 }
 
-void QgsClassificationMethodRegistry::addMethod( QgsClassificationMethod *method )
+bool QgsClassificationMethodRegistry::addMethod( QgsClassificationMethod *method )
 {
+  if ( mMethods.contains( method->id() ) )
+    return false;
+
   mMethods.insert( method->id(), method );
+  return true;
 }
 
 QgsClassificationMethod *QgsClassificationMethodRegistry::method( const QString &id )
