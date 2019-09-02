@@ -442,11 +442,20 @@ QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel( QObject *parent )
   : QAbstractTableModel( parent )
 {
   connect(
-    QgisApp::instance(), &QgisApp::projectRead,
-    this, &QgsProjectBookmarksTableModel::projectRead );
+    QgsProject::instance()->bookmarkManager(), &QgsBookmarkManager::bookmarkAdded,
+    this, &QgsProjectBookmarksTableModel::bookmarkAdded );
   connect(
-    QgisApp::instance(), &QgisApp::newProject,
-    this, &QgsProjectBookmarksTableModel::projectRead );
+    QgsProject::instance()->bookmarkManager(), &QgsBookmarkManager::bookmarkAboutToBeAdded,
+    this, &QgsProjectBookmarksTableModel::bookmarkAboutToBeAdded );
+  connect(
+    QgsProject::instance()->bookmarkManager(), &QgsBookmarkManager::bookmarkRemoved,
+    this, &QgsProjectBookmarksTableModel::bookmarkRemoved );
+  connect(
+    QgsProject::instance()->bookmarkManager(), &QgsBookmarkManager::bookmarkAboutToBeRemoved,
+    this, &QgsProjectBookmarksTableModel::bookmarkAboutToBeRemoved );
+  connect(
+    QgsProject::instance()->bookmarkManager(), &QgsBookmarkManager::bookmarkChanged,
+    this, &QgsProjectBookmarksTableModel::bookmarkChanged );
 }
 
 int QgsProjectBookmarksTableModel::rowCount( const QModelIndex &parent ) const
@@ -563,7 +572,9 @@ bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModel
   for ( int i = 0; i < count; ++i )
   {
     bool res = false;
+    mBlocked = true;
     QgsProject::instance()->bookmarkManager()->addBookmark( QgsBookmark(), &res );
+    mBlocked = false;
     result &= res;
   }
   endInsertRows();
@@ -584,9 +595,72 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
   return true;
 }
 
-void QgsProjectBookmarksTableModel::projectRead()
+void QgsProjectBookmarksTableModel::bookmarkAboutToBeAdded( const QString & )
 {
-  emit layoutChanged();
+  if ( mBlocked )
+    return;
+
+  beginInsertRows( QModelIndex(), QgsProject::instance()->bookmarkManager()->bookmarks().count(), QgsProject::instance()->bookmarkManager()->bookmarks().count() );
+}
+
+void QgsProjectBookmarksTableModel::bookmarkAdded( const QString & )
+{
+  if ( mBlocked )
+    return;
+
+  endInsertRows();
+}
+
+void QgsProjectBookmarksTableModel::bookmarkAboutToBeRemoved( const QString &id )
+{
+  if ( mBlocked )
+    return;
+
+  QList< QgsBookmark > bookmarks = QgsProject::instance()->bookmarkManager()->bookmarks();
+  bool found = false;
+  int i = 0;
+  for ( i = 0; i < bookmarks.count(); ++i )
+  {
+    if ( bookmarks.at( i ).id() == id )
+    {
+      found = true;
+      break;
+    }
+  }
+  if ( !found )
+    return;
+
+  beginRemoveRows( QModelIndex(), i, i );
+}
+
+void QgsProjectBookmarksTableModel::bookmarkRemoved( const QString & )
+{
+  if ( mBlocked )
+    return;
+
+  endRemoveRows();
+}
+
+void QgsProjectBookmarksTableModel::bookmarkChanged( const QString &id )
+{
+  if ( mBlocked )
+    return;
+
+  QList< QgsBookmark > bookmarks = QgsProject::instance()->bookmarkManager()->bookmarks();
+  bool found = false;
+  int i = 0;
+  for ( i = 0; i < bookmarks.count(); ++i )
+  {
+    if ( bookmarks.at( i ).id() == id )
+    {
+      found = true;
+      break;
+    }
+  }
+  if ( !found )
+    return;
+
+  emit dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
 }
 
 

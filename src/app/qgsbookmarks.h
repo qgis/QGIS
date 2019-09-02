@@ -25,6 +25,8 @@
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 
+class QgsBookmark;
+
 /*
  * Model for project bookmarks
  */
@@ -49,7 +51,14 @@ class QgsProjectBookmarksTableModel: public QAbstractTableModel
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
   private slots:
-    void projectRead();
+    void bookmarkAboutToBeAdded( const QString &id );
+    void bookmarkAdded( const QString &id );
+    void bookmarkAboutToBeRemoved( const QString &id );
+    void bookmarkRemoved( const QString &id );
+    void bookmarkChanged( const QString &id );
+  private:
+    bool mBlocked = false;
+
 };
 
 
