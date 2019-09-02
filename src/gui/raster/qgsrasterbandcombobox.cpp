@@ -23,8 +23,23 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
 {
   connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
-    emit bandChanged( currentIndex() >= 0 ? currentData().toInt() : -1 );
+    if ( mLayer && mLayer->isValid() )
+      emit bandChanged( currentIndex() >= 0 ? currentData().toInt() : -1 );
   } );
+
+  connect( this, &QComboBox::currentTextChanged, this, [ = ]( const QString & value )
+  {
+    if ( !mLayer || !mLayer->isValid() )
+    {
+      bool ok = false;
+      const int band = value.toInt( &ok );
+      if ( ok )
+        emit bandChanged( band );
+    }
+  } );
+
+  // default to editable, until a layer is set
+  setEditable( true );
 }
 
 QgsRasterLayer *QgsRasterBandComboBox::layer() const
@@ -34,14 +49,29 @@ QgsRasterLayer *QgsRasterBandComboBox::layer() const
 
 int QgsRasterBandComboBox::currentBand() const
 {
-  return currentIndex() >= 0 ? currentData().toInt() : -1;
+  if ( !mLayer || !mLayer->dataProvider() || !mLayer->isValid() )
+  {
+    bool ok = false;
+    const int band = currentText().toInt( &ok );
+    if ( ok )
+      return band;
+    return -1;
+  }
+  else
+  {
+    if ( currentIndex() < 0 )
+      return -1;
+
+    return currentData().toInt();
+  }
 }
 
 void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
 {
+  const int oldBand = currentBand();
+
   QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer );
   mLayer = rl;
-  int oldBand = currentBand();
 
   blockSignals( true );
   clear();
@@ -52,8 +82,9 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
   if ( mLayer )
   {
     QgsRasterDataProvider *provider = mLayer->dataProvider();
-    if ( provider )
+    if ( provider && mLayer->isValid() )
     {
+      setEditable( false );
       //fill available bands into combo box
       int nBands = provider->bandCount();
       for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
@@ -61,18 +92,43 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
         addItem( displayBandName( provider, i ), i );
       }
     }
+    else
+    {
+      setEditable( true );
+    }
+  }
+  else
+  {
+    setEditable( true );
   }
 
-  if ( count() > 0 )
-    setCurrentIndex( findData( oldBand ) >= 0 ? findData( oldBand ) : 0 );
+  if ( oldBand >= 0 )
+    setBand( oldBand );
+  else
+    setCurrentIndex( 0 );
 
   blockSignals( false );
-  emit bandChanged( currentIndex() >= 0 ? currentData().toInt() : -1 );
+  const int newBand = currentBand();
+  if ( newBand != oldBand )
+    emit bandChanged( newBand );
 }
 
 void QgsRasterBandComboBox::setBand( int band )
 {
-  setCurrentIndex( findData( band ) );
+  if ( !mLayer || !mLayer->dataProvider() || !mLayer->isValid() )
+  {
+    if ( band < 0 )
+    {
+      setCurrentIndex( -1 );
+      emit bandChanged( -1 );
+    }
+    else
+      setCurrentText( QString::number( band ) );
+  }
+  else
+  {
+    setCurrentIndex( findData( band ) );
+  }
 }
 
 bool QgsRasterBandComboBox::isShowingNotSetOption() const
