@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsrenderer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslinestring.h"
 #include <spatialindex/SpatialIndex.h>
@@ -593,12 +594,18 @@ void QgsPointLocator::onRebuildIndexFinished()
 
 void QgsPointLocator::init( int maxFeaturesToIndex )
 {
-  if ( hasIndex() )
+  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::NullGeometry // nothing to index
+       || hasIndex()
+       || mFuture.isRunning() ) // already running, return!
     return;
 
-  if ( mFuture.isRunning() )
-    // already running, return!
-    return;
+  mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
+
+  if ( mContext )
+  {
+    mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+  }
 
   emit initStarted();
   mFuture = QtConcurrent::run( this, &QgsPointLocator::rebuildIndex, maxFeaturesToIndex );
@@ -616,15 +623,14 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   QTime t;
   t.start();
 
-  QgsDebugMsg( QStringLiteral( "rebuildIndex %1" ).arg( mLayer->id() ) );
+  QgsVectorLayerFeatureSource source( mLayer );
+
+  QgsDebugMsg( QStringLiteral( "rebuildIndex %1" ).arg( source.id() ) );
 
   destroyIndex();
 
   QLinkedList<RTree::Data *> dataList;
   QgsFeature f;
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::NullGeometry )
-    return true; // nothing to index
 
   QgsFeatureRequest request;
   request.setNoAttributes();
@@ -649,22 +655,20 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
 
   bool filter = false;
-  std::unique_ptr< QgsFeatureRenderer > renderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
   QgsRenderContext *ctx = nullptr;
   if ( mContext )
   {
-    mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
     ctx = mContext.get();
-    if ( renderer )
+    if ( mRenderer )
     {
       // setup scale for scale dependent visibility (rule based)
-      renderer->startRender( *ctx, mLayer->fields() );
-      filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
-      request.setSubsetOfAttributes( renderer->usedAttributes( *ctx ), mLayer->fields() );
+      mRenderer->startRender( *ctx, source.fields() );
+      filter = mRenderer->capabilities() & QgsFeatureRenderer::Filter;
+      request.setSubsetOfAttributes( mRenderer->usedAttributes( *ctx ), source.fields() );
     }
   }
 
-  QgsFeatureIterator fi = mLayer->getFeatures( request );
+  QgsFeatureIterator fi = source.getFeatures( request );
   int indexedCount = 0;
 
   while ( fi.nextFeature( f ) )
@@ -672,10 +676,10 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     if ( !f.hasGeometry() )
       continue;
 
-    if ( filter && ctx && renderer )
+    if ( filter && ctx && mRenderer )
     {
       ctx->expressionContext().setFeature( f );
-      if ( !renderer->willRenderFeature( f, *ctx ) )
+      if ( !mRenderer->willRenderFeature( f, *ctx ) )
       {
         continue;
       }
@@ -736,12 +740,12 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
                 leafCapacity, dimension, variant, indexId ) );
 
-  if ( ctx && renderer )
+  if ( ctx && mRenderer )
   {
-    renderer->stopRender( *ctx );
+    mRenderer->stopRender( *ctx );
   }
 
-  QgsDebugMsg( QStringLiteral( "RebuildIndex : %1 ms (%2)" ).arg( t.elapsed() ).arg( mLayer->id() ) );
+  QgsDebugMsg( QStringLiteral( "RebuildIndex : %1 ms (%2)" ).arg( t.elapsed() ).arg( source.id() ) );
 
   return true;
 }

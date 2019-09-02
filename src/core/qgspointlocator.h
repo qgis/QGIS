@@ -328,6 +328,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     std::unique_ptr< QgsRectangle > mExtent;
 
     std::unique_ptr<QgsRenderContext> mContext;
+    std::unique_ptr<QgsFeatureRenderer> mRenderer;
     QFuture<bool> mFuture;
     QFutureWatcher<bool> mFutureWatcher;
     int mMaxFeaturesToIndex = -1;
