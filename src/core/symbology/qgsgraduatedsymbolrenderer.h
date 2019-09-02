@@ -437,7 +437,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString legendKeyForValue( double value ) const;
 
     //! \note not available in Python bindings
-    static const char *graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
+    static QString graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
 
     std::shared_ptr<QgsClassificationMethod> mClassificationMethod;
 

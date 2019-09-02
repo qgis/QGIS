@@ -122,14 +122,14 @@ void QgsClassificationStandardDeviation::writeXml( QDomElement &element, const Q
 {
   Q_UNUSED( context )
 
-  element.setAttribute( QLatin1Literal( "std_dev" ), QString::number( mStdDev, 'f', 16 ) );
-  element.setAttribute( QLatin1Literal( "effective_symmetry_point" ), QString::number( mEffectiveSymmetryPoint, 'f', 16 ) );
+  element.setAttribute( QStringLiteral( "std_dev" ), QString::number( mStdDev, 'f', 16 ) );
+  element.setAttribute( QStringLiteral( "effective_symmetry_point" ), QString::number( mEffectiveSymmetryPoint, 'f', 16 ) );
 }
 
 void QgsClassificationStandardDeviation::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
 
-  mStdDev = element.attribute( "std_dev", QLatin1Literal( "1.0" ) ).toDouble();
-  mEffectiveSymmetryPoint = element.attribute( "effective_symmetry_point", QLatin1Literal( "0.0" ) ).toDouble();
+  mStdDev = element.attribute( QStringLiteral( "std_dev" ), QStringLiteral( "1.0" ) ).toDouble();
+  mEffectiveSymmetryPoint = element.attribute( QStringLiteral( "effective_symmetry_point" ), QStringLiteral( "0.0" ) ).toDouble();
 }
