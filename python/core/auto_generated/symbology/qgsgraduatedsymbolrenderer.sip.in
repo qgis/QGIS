@@ -283,6 +283,7 @@ Set the label format used to generate default classification labels
 .. deprecated:: since QGIS 3.10 use classificationMethod() and QgsClassificationMethod.setLabelFormat instead
 %End
 
+
     void calculateLabelPrecision( bool updateRanges = true );
 %Docstring
 Reset the label decimal places to a numberbased on the minimum class interval
