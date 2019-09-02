@@ -1,27 +1,28 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationequalinterval.h   *
+ * src/core/classification/qgsclassificationquantile.h                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsClassificationEqualInterval : QgsClassificationMethod
+
+class QgsClassificationQuantile : QgsClassificationMethod
 {
 %Docstring
-QgsClassificationEqualInterval is an implementation of QgsClassificationMethod
-for equal intervals
+QgsClassificationQuantile is an implementation of QgsClassificationMethod
+based on quantiles
 
 .. versionadded:: 3.10
 %End
 
 %TypeHeaderCode
-#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationquantile.h"
 %End
   public:
-    QgsClassificationEqualInterval();
+    QgsClassificationQuantile();
 
     virtual QString name() const;
 
@@ -30,14 +31,12 @@ for equal intervals
     virtual QgsClassificationMethod *clone() const;
 
 
-    static const QString METHOD_ID;
-
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationequalinterval.h   *
+ * src/core/classification/qgsclassificationquantile.h                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

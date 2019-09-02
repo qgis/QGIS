@@ -1,27 +1,27 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationjenks.h           *
+ * src/core/classification/qgsclassificationprettybreaks.h              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsClassificationJenks : QgsClassificationMethod
+class QgsClassificationPrettyBreaks : QgsClassificationMethod
 {
 %Docstring
-QgsClassificationJenks is an implementation of QgsClassificationMethod
-for natural breaks based on Jenks method
+QgsClassificationPrettryBreaks is an implementation of QgsClassificationMethod
+for pretty breaks
 
 .. versionadded:: 3.10
 %End
 
 %TypeHeaderCode
-#include "qgsclassificationjenks.h"
+#include "qgsclassificationprettybreaks.h"
 %End
   public:
-    QgsClassificationJenks();
+    QgsClassificationPrettyBreaks();
 
     virtual QString name() const;
 
@@ -35,7 +35,7 @@ for natural breaks based on Jenks method
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationjenks.h           *
+ * src/core/classification/qgsclassificationprettybreaks.h              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

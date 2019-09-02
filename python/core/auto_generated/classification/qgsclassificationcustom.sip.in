@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationcustom.h          *
+ * src/core/classification/qgsclassificationcustom.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -38,7 +38,7 @@ which does not compute any break.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationcustom.h          *
+ * src/core/classification/qgsclassificationcustom.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

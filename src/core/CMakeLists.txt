@@ -20,20 +20,20 @@ SET(QGIS_CORE_SRCS
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
+  classification/qgsclassificationmethodregistry.cpp
+  classification/qgsclassificationmethod.cpp
+  classification/qgsclassificationcustom.cpp
+  classification/qgsclassificationequalinterval.cpp
+  classification/qgsclassificationprettybreaks.cpp
+  classification/qgsclassificationquantile.cpp
+  classification/qgsclassificationjenks.cpp
+  classification/qgsclassificationstandarddeviation.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
   gps/qgsgpsdetector.cpp
   gps/qgsnmeaconnection.cpp
-
-  symbology/classification/qgsclassificationmethodregistry.cpp
-  symbology/classification/qgsclassificationmethod.cpp
-  symbology/classification/qgsclassificationcustom.cpp
-  symbology/classification/qgsclassificationequalinterval.cpp
-  symbology/classification/qgsclassificationprettybreaks.cpp
-  symbology/classification/qgsclassificationquantile.cpp
-  symbology/classification/qgsclassificationjenks.cpp
-  symbology/classification/qgsclassificationstandarddeviation.cpp
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
@@ -1084,6 +1084,15 @@ SET(QGIS_CORE_HDRS
   callouts/qgscallout.h
   callouts/qgscalloutsregistry.h
 
+  classification/qgsclassificationmethodregistry.h
+  classification/qgsclassificationmethod.h
+  classification/qgsclassificationcustom.h
+  classification/qgsclassificationequalinterval.h
+  classification/qgsclassificationprettybreaks.h
+  classification/qgsclassificationquantile.h
+  classification/qgsclassificationjenks.h
+  classification/qgsclassificationstandarddeviation.h
+
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
@@ -1205,15 +1214,6 @@ SET(QGIS_CORE_HDRS
   scalebar/qgssingleboxscalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
-  symbology/classification/qgsclassificationmethodregistry.h
-  symbology/classification/qgsclassificationmethod.h
-  symbology/classification/qgsclassificationcustom.h
-  symbology/classification/qgsclassificationequalinterval.h
-  symbology/classification/qgsclassificationprettybreaks.h
-  symbology/classification/qgsclassificationquantile.h
-  symbology/classification/qgsclassificationjenks.h
-  symbology/classification/qgsclassificationstandarddeviation.h
-
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
@@ -1312,6 +1312,7 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
+  classification
   dxf
   effects
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -1335,7 +1336,6 @@ INCLUDE_DIRECTORIES(
   renderer
   scalebar
   symbology
-  symbology/classification
   metadata
   mesh
   validity

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationmethod.h          *
+ * src/core/classification/qgsclassificationmethod.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -273,7 +273,7 @@ Format the number according to label properties
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationmethod.h          *
+ * src/core/classification/qgsclassificationmethod.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

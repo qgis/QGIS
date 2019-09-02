@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationmethodregistry.h  *
+ * src/core/classification/qgsclassificationmethodregistry.h            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -49,7 +49,7 @@ Returns a map <id, name> of all registered methods
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationmethodregistry.h  *
+ * src/core/classification/qgsclassificationmethodregistry.h            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

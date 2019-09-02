@@ -1,27 +1,27 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationstandarddeviation.h *
+ * src/core/classification/qgsclassificationjenks.h                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsClassificationStandardDeviation : QgsClassificationMethod
+class QgsClassificationJenks : QgsClassificationMethod
 {
 %Docstring
-QgsClassificationCustom is an implementation of QgsClassificationMethod
-based on standard deviation
+QgsClassificationJenks is an implementation of QgsClassificationMethod
+for natural breaks based on Jenks method
 
 .. versionadded:: 3.10
 %End
 
 %TypeHeaderCode
-#include "qgsclassificationstandarddeviation.h"
+#include "qgsclassificationjenks.h"
 %End
   public:
-    QgsClassificationStandardDeviation();
+    QgsClassificationJenks();
 
     virtual QString name() const;
 
@@ -29,21 +29,13 @@ based on standard deviation
 
     virtual QgsClassificationMethod *clone() const;
 
-    virtual QString labelForRange( const double &lowerValue, const double &upperValue, ClassPosition position ) const;
-
-    virtual void saveExtra( QDomElement &element, const QgsReadWriteContext &context ) const;
-
-    virtual void readExtra( const QDomElement &element, const QgsReadWriteContext &context );
-
-
-    static const QString METHOD_ID;
 
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/symbology/classification/qgsclassificationstandarddeviation.h *
+ * src/core/classification/qgsclassificationjenks.h                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
