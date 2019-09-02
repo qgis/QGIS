@@ -183,6 +183,8 @@ QgsRasterMinMaxOrigin QgsRasterMinMaxWidget::minMaxOrigin()
 void QgsRasterMinMaxWidget::doComputations()
 {
   QgsDebugMsg( QStringLiteral( "Entered." ) );
+  if ( !mLayer->dataProvider() )
+    return;
 
   QgsRectangle myExtent = extent(); // empty == full
   int mySampleSize = sampleSize(); // 0 == exact
