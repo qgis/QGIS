@@ -98,7 +98,7 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
   switch ( position )
   {
     case LowerBound:
-      return "< " + upperLabel + " Std Dev";
+      return QObject::tr( "< %1 Std Dev" ).arg( upperLabel );
     case Inner:
     {
       QString label( labelFormat() );
@@ -106,15 +106,16 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
       return label;
     }
     case UpperBound:
-      return ">= " + lowerLabel + " Std Dev";
+      return QObject::tr( "≥ %1 Std Dev" ).arg( lowerLabel );
   }
+  return QString();
 }
 
 
 QString QgsClassificationStandardDeviation::valueToLabel( const double value ) const
 {
   double normalized = ( value - mEffectiveSymmetryPoint ) / mStdDev;
-  return QString::number( normalized, 'f', 2 ) + " Std Dev";
+  return QObject::tr( " %1 Std Dev" ).arg( QString::number( normalized, 'f', 2 ) );
 }
 
 
