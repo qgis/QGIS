@@ -217,6 +217,9 @@ class BatchPanelFillWidget(QToolButton):
         for k, v in params.items():
             alg_scope.setVariable(k, v, True)
 
+        # add batchCount in the alg scope to be used in the expressions. 0 is only an example value
+        alg_scope.setVariable('batch_number', 0, True)
+
         expression_context.appendScope(alg_scope)
 
         # mark the parameter variables as highlighted for discoverability
@@ -252,6 +255,9 @@ class BatchPanelFillWidget(QToolButton):
 
                 for k, v in params.items():
                     alg_scope.setVariable(k, v, True)
+
+                # add batch row number as evaluable variable in algorithm scope
+                alg_scope.setVariable('batch_number', row, True)
 
                 expression_context.appendScope(alg_scope)
 
