@@ -46,7 +46,7 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
   proj_operation_factory_context_set_spatial_criterion( pjContext, operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
 
-#if PROJ_VERSION_MAJOR> 6 or PROJ_VERSION_MINOR >= 2
+#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
   if ( includeSuperseded )
     proj_operation_factory_context_set_discard_superseded( pjContext, operationContext, false );
 #else
@@ -312,7 +312,7 @@ QgsDatumTransform::TransformInfo QgsDatumTransform::datumTransformInfo( int datu
   return info;
 }
 
-#if PROJ_VERSION_MAJOR >= 6
+#if PROJ_VERSION_MAJOR>=6
 QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( PJ *op )
 {
   PJ_CONTEXT *pjContext = QgsProjContext::get();
@@ -348,7 +348,7 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
     details.bounds.setYMaximum( northLat );
   }
 
-#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
   details.remarks = QString( proj_get_remarks( op ) );
   details.scope = QString( proj_get_scope( op ) );
 #endif
@@ -375,7 +375,7 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
     details.grids.append( gridDetails );
   }
 
-#if PROJ_VERSION_MAJOR > 6 or PROJ_VERSION_MINOR >= 2
+#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
   for ( int j = 0; j < proj_concatoperation_get_step_count( pjContext, op ); ++j )
   {
     QgsProjUtils::proj_pj_unique_ptr step( proj_concatoperation_get_step( pjContext, op, j ) );

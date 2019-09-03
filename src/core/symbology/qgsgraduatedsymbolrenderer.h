@@ -133,7 +133,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     };
     // TODO QGIS 4: remove
     // this could not be tagged with Q_DECL_DEPRECATED due to Doxygen warning
-    // migth be fixed in newer Doxygen (does not on 1.8.13, might be ok on 1.8.16)
+    // might be fixed in newer Doxygen (does not on 1.8.13, might be ok on 1.8.16)
 
 
     //! \deprecated since QGIS 3.10 use classficationMethod instead
