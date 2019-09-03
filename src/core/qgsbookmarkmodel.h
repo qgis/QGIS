@@ -26,7 +26,7 @@ class QgsBookmark;
 
 /**
  * \ingroup core
- * \class QgsBookmarkModel
+ * \class QgsBookmarkManagerModel
  *
  * \brief Implements a model for the contents of QgsBookmarkManager objects.
  *
