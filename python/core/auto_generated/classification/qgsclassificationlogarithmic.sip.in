@@ -1,35 +1,36 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/classification/qgsclassificationjenks.h                     *
+ * src/core/classification/qgsclassificationlogarithmic.h               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsClassificationJenks : QgsClassificationMethod
+
+class QgsClassificationLogarithmic : QgsClassificationMethod
 {
 %Docstring
-QgsClassificationJenks is an implementation of QgsClassificationMethod
-for natural breaks based on Jenks method
+Implementation of a logarithmic scale method
 
 .. versionadded:: 3.10
 %End
 
 %TypeHeaderCode
-#include "qgsclassificationjenks.h"
+#include "qgsclassificationlogarithmic.h"
 %End
   public:
-    QgsClassificationJenks();
+    QgsClassificationLogarithmic();
+    virtual QgsClassificationMethod *clone() const;
 
     virtual QString name() const;
 
     virtual QString id() const;
 
-    virtual QgsClassificationMethod *clone() const;
-
     virtual QIcon icon() const;
+
+    virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const;
 
 
 };
@@ -37,7 +38,7 @@ for natural breaks based on Jenks method
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/classification/qgsclassificationjenks.h                     *
+ * src/core/classification/qgsclassificationlogarithmic.h               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

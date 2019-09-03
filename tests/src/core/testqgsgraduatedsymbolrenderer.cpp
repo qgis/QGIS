@@ -199,7 +199,7 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
       QgsClassificationEqualInterval method;
       method.setSymmetricMode( useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
       QList<QgsClassificationRange> ranges = method.classes( minimum[valTest], maximum[valTest], nclasses );
-      breaks = QgsClassificationMethod::listToValues( ranges );
+      breaks = QgsClassificationMethod::rangesToBreaks( ranges );
       QCOMPARE( breaks.count() % 2, 0 );
       // because the minimum is not in the breaks
       newPosOfSymmetryPoint = breaks.count() / 2 ;
@@ -209,7 +209,7 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
       astride = true;
       method.setSymmetricMode( useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
       ranges = method.classes( minimum[valTest], maximum[valTest], nclasses );
-      breaks = QgsClassificationMethod::listToValues( ranges );
+      breaks = QgsClassificationMethod::rangesToBreaks( ranges );
       QCOMPARE( breaks.count() % 2, 1 );
       QVERIFY( !breaks.contains( symmetryPointForEqualInterval[valTest] ) );
     }

@@ -33,6 +33,7 @@ class CORE_EXPORT QgsClassificationEqualInterval : public QgsClassificationMetho
     QString name() const override;
     QString id() const override;
     QgsClassificationMethod *clone() const override;
+    QIcon icon() const override;
 
     static const QString METHOD_ID;
 

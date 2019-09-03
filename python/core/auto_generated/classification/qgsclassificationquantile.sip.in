@@ -30,6 +30,8 @@ based on quantiles
 
     virtual QgsClassificationMethod *clone() const;
 
+    virtual QIcon icon() const;
+
 
 };
 

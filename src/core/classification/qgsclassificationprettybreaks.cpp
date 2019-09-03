@@ -17,6 +17,7 @@
 
 #include "qgsclassificationprettybreaks.h"
 #include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
 
 
 QgsClassificationPrettyBreaks::QgsClassificationPrettyBreaks()
@@ -51,4 +52,9 @@ QgsClassificationMethod *QgsClassificationPrettyBreaks::clone() const
   QgsClassificationPrettyBreaks *c = new QgsClassificationPrettyBreaks();
   copyBase( c );
   return c;
+}
+
+QIcon QgsClassificationPrettyBreaks::icon() const
+{
+  return QgsApplication::getThemeIcon( "classification_methods/mClassificationPrettyBreak.svg" );
 }

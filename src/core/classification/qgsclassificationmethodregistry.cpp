@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QIcon>
 
 #include "qgsclassificationmethodregistry.h"
 
@@ -23,6 +24,7 @@
 #include "qgsclassificationjenks.h"
 #include "qgsclassificationstandarddeviation.h"
 #include "qgsclassificationprettybreaks.h"
+#include "qgsclassificationlogarithmic.h"
 
 QgsClassificationMethodRegistry::QgsClassificationMethodRegistry()
 {
@@ -31,6 +33,7 @@ QgsClassificationMethodRegistry::QgsClassificationMethodRegistry()
   addMethod( new QgsClassificationJenks() );
   addMethod( new QgsClassificationStandardDeviation() );
   addMethod( new QgsClassificationPrettyBreaks() );
+  addMethod( new QgsClassificationLogarithmic() );
 }
 
 bool QgsClassificationMethodRegistry::addMethod( QgsClassificationMethod *method )
@@ -52,7 +55,16 @@ QMap<QString, QString> QgsClassificationMethodRegistry::methodNames() const
 {
   QMap<QString, QString> methods;
   for ( const QgsClassificationMethod *method : qgis::as_const( mMethods ) )
-    methods.insert( method->id(), method->name() );
+    methods.insert( method->name(), method->id() );
   return methods;
+}
+
+QIcon QgsClassificationMethodRegistry::icon( const QString &id ) const
+{
+  QgsClassificationMethod *method = mMethods.value( id, nullptr );
+  if ( method )
+    return method->icon();
+  else
+    return QIcon();
 }
 

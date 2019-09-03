@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits> // for jenks classification
+#include <limits>
 #include "qgsclassificationjenks.h"
+#include "qgsapplication.h"
 
 QgsClassificationJenks::QgsClassificationJenks()
   : QgsClassificationMethod()
@@ -37,6 +38,11 @@ QgsClassificationMethod *QgsClassificationJenks::clone() const
   QgsClassificationJenks *c = new QgsClassificationJenks();
   copyBase( c );
   return c;
+}
+
+QIcon QgsClassificationJenks::icon() const
+{
+  return QgsApplication::getThemeIcon( "classification_methods/mClassificationNaturalBreak.svg" );
 }
 
 

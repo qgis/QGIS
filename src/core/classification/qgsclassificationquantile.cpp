@@ -15,6 +15,7 @@
 
 
 #include "qgsclassificationquantile.h"
+#include "qgsapplication.h"
 
 QgsClassificationQuantile::QgsClassificationQuantile()
   : QgsClassificationMethod()
@@ -23,7 +24,7 @@ QgsClassificationQuantile::QgsClassificationQuantile()
 
 QString QgsClassificationQuantile::name() const
 {
-  return QObject::tr( "Quantile (Equal Count)" );
+  return QObject::tr( "Equal Count (Quantile))" );
 }
 
 QString QgsClassificationQuantile::id() const
@@ -36,6 +37,11 @@ QgsClassificationMethod *QgsClassificationQuantile::clone() const
   QgsClassificationQuantile *c = new QgsClassificationQuantile();
   copyBase( c );
   return c;
+}
+
+QIcon QgsClassificationQuantile::icon() const
+{
+  return QgsApplication::getThemeIcon( "classification_methods/mClassificationEqualCount.svg" );
 }
 
 

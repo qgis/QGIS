@@ -29,7 +29,7 @@ const int QgsClassificationMethod::MIN_PRECISION = -6;
 static const QRegularExpression RE_TRAILING_ZEROES = QRegularExpression( "[.,]?0*$" );
 static const QRegularExpression RE_NEGATIVE_ZERO = QRegularExpression( "^\\-0(?:[.,]0*)?$" );
 
-QList<double> QgsClassificationMethod::listToValues( const QList<QgsClassificationRange> &classes )
+QList<double> QgsClassificationMethod::rangesToBreaks( const QList<QgsClassificationRange> &classes )
 {
   QList<double> values;
   values.reserve( classes.count() );
@@ -237,7 +237,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::breaksToClasses( const QL
     const double upperValue = breaks.at( i );
 
     ClassPosition pos = Inner;
-    if ( i == 0 )
+    if ( i == 1 )
       pos = LowerBound;
     else if ( i == breaks.count() - 1 )
       pos = UpperBound;
@@ -294,7 +294,5 @@ QString QgsClassificationMethod::labelForRange( const double lowerValue, const d
   const QString lowerLabel = valueToLabel( lowerValue );
   const QString upperLabel = valueToLabel( upperValue );
 
-  QString label( mLabelFormat );
-  label.replace( QLatin1String( "%1" ), lowerLabel ).replace( QLatin1String( "%2" ), upperLabel );
-  return label;
+  return labelFormat().arg( lowerLabel ).arg( upperLabel );
 }

@@ -17,7 +17,7 @@ from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
-    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject
+    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange
 
 start_app()
 
@@ -59,6 +59,10 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsCircularstringRepr(self):
         cs = QgsCircularString(QgsPoint(1, 2), QgsPoint(2, 3), QgsPoint(3, 4))
         self.assertEqual(cs.__repr__(), '<QgsCircularString: CircularString (1 2, 2 3, 3 4)>')
+
+    def testQgsClassificationRange(self):
+        c = QgsClassificationRange('from 1 to 2', 1, 2)
+        self.assertEqual(c.__repr__(), "<QgsClassificationRange: 'from 1 to 2'>")
 
     def testQgsCompoundcurveRepr(self):
         cs = QgsCircularString(QgsPoint(1, 2), QgsPoint(2, 3), QgsPoint(3, 4))

@@ -16,6 +16,8 @@
 #ifndef QGSCLASSIFICATIONMETHOD_H
 #define QGSCLASSIFICATIONMETHOD_H
 
+#include <QIcon>
+
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsprocessingparameters.h"
@@ -59,6 +61,14 @@ class CORE_EXPORT QgsClassificationRange
 
     //! Returns the lower bound
     QString label() const {return mLabel;}
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsClassificationRange: '%1'>" ).arg( sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     QString mLabel;
@@ -135,6 +145,9 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     //! The id of the method as saved in the project, must be unique in registry
     virtual QString id() const = 0;
 
+    //! The icon of the method
+    virtual QIcon icon() const {return QIcon();}
+
     /**
      * Returns the label for a range
      */
@@ -203,7 +216,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     void setLabelTrimTrailingZeroes( bool trimTrailingZeroes ) { mLabelTrimTrailingZeroes = trimTrailingZeroes; }
 
     //! Transforms a list of classes to a list of breaks
-    static QList<double> listToValues( const QList<QgsClassificationRange> &classes );
+    static QList<double> rangesToBreaks( const QList<QgsClassificationRange> &classes );
 
     /**
      * This will calculate the classes for a given layer to define the classes.
