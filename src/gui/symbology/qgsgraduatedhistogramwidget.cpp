@@ -141,6 +141,8 @@ void QgsGraduatedHistogramWidget::mouseRelease( double value )
   {
     //if distance from markers is too big, add a break
     mRenderer->addBreak( value );
+    // to fix the deprecated call to reset() in QgsGraduatedSymbolRendererWidget::refreshRanges,
+    // this class should work on the model in the widget rather than adding break via the renderer.
     emit rangesModified( true );
   }
 
