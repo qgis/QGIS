@@ -423,6 +423,49 @@ class TestQgsBookmarkManager(unittest.TestCase):
         manager3 = QgsBookmarkManager(QgsProject.instance())
         self.assertEqual(manager3.bookmarks(), [])
 
+    def testMoveBookmark(self):
+        """
+        Test moving a bookmark from one manager to another
+        """
+        p = QgsProject()
+        manager = QgsBookmarkManager(p)
+        manager2 = QgsBookmarkManager(p)
+
+        # add a bunch of bookmarks
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        manager.addBookmark(b2)
+        manager2.addBookmark(b3)
+
+        self.assertEqual(manager.bookmarks(), [b, b2])
+        self.assertEqual(manager2.bookmarks(), [b3])
+
+        self.assertFalse(manager.moveBookmark('bbbb', manager2))
+        self.assertFalse(manager.moveBookmark(b3.id(), manager2))
+        self.assertEqual(manager.bookmarks(), [b, b2])
+        self.assertEqual(manager2.bookmarks(), [b3])
+        self.assertTrue(manager.moveBookmark(b.id(), manager2))
+        self.assertEqual(manager.bookmarks(), [b2])
+        self.assertEqual(manager2.bookmarks(), [b3, b])
+        self.assertFalse(manager.moveBookmark(b.id(), manager2))
+        self.assertTrue(manager2.moveBookmark(b3.id(), manager))
+        self.assertEqual(manager.bookmarks(), [b2, b3])
+        self.assertEqual(manager2.bookmarks(), [b])
+
 
 if __name__ == '__main__':
     unittest.main()
