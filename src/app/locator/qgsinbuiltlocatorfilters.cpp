@@ -18,6 +18,7 @@
 #include <QToolButton>
 #include <QClipboard>
 
+#include "qgsapplication.h"
 #include "qgsinbuiltlocatorfilters.h"
 #include "qgsproject.h"
 #include "qgslayertree.h"
@@ -625,8 +626,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
       result.filter = this;
       result.displayString = name;
       result.userData = index;
-      //TODO Create svg for "Bookmark"
-      //TODO result.icon =
+      result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
       result.score = static_cast< double >( string.length() ) / name.length();
       emit resultFetched( result );
     }
