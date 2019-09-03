@@ -27,7 +27,7 @@
 
 class QgsBookmark;
 class QgsBookmarkManager;
-class QgsBookmarkManagerModel;
+class QgsBookmarkManagerProxyModel;
 
 /**
  * \brief QgsDoubleSpinBoxBookmarksDelegate class shows 6 digits when value is a double
@@ -74,7 +74,7 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     void lstBookmarks_doubleClicked( const QModelIndex & );
 
   private:
-    QgsBookmarkManagerModel *mBookmarkModel = nullptr;
+    QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
 
     void saveWindowLocation();
 

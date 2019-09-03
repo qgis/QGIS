@@ -49,7 +49,7 @@ model data is a merge of the bookmarks stored in both managers.
       ColumnStore,
     };
 
-    QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent = 0 );
+    QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBookmarkManagerModel, associated with a main ``manager``
 (usually the application bookmark manager, accessed via QgsApplication.bookmarkManager())
@@ -75,6 +75,28 @@ and a secondary ``projectManager`` (a project based bookmark manager).
 
 };
 
+class QgsBookmarkManagerProxyModel : QSortFilterProxyModel
+{
+%Docstring
+
+A QSortFilterProxyModel subclass for sorting the entries in a QgsBookmarkManagerModel.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsbookmarkmodel.h"
+%End
+  public:
+
+    QgsBookmarkManagerProxyModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBookmarkManagerProxyModel, associated with a main ``manager``
+(usually the application bookmark manager, accessed via QgsApplication.bookmarkManager())
+and a secondary ``projectManager`` (a project based bookmark manager).
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *
