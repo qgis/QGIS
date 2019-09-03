@@ -52,7 +52,7 @@ class CORE_EXPORT QgsClassificationMethodRegistry
     //! Returns a map <name, id> of all registered methods.
     QMap<QString, QString> methodNames() const;
 
-    //! Return the icon for a given method id
+    //! Returns the icon for a given method id
     QIcon icon( const QString &id ) const;
 
   private:

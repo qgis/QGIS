@@ -47,7 +47,7 @@ Returns a map <name, id> of all registered methods.
 
     QIcon icon( const QString &id ) const;
 %Docstring
-Return the icon for a given method id
+Returns the icon for a given method id
 %End
 
 };
