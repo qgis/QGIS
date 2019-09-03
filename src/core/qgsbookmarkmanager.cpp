@@ -117,6 +117,11 @@ QgsBookmarkManager::QgsBookmarkManager( QObject *parent )
   // we defer actually loading bookmarks until initialize() is called..
 }
 
+QgsBookmarkManager::~QgsBookmarkManager()
+{
+  store();
+}
+
 QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
 {
   if ( ok )
@@ -143,7 +148,11 @@ QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
   emit bookmarkAboutToBeAdded( bookmark.id() );
   mBookmarks << bookmark;
   emit bookmarkAdded( bookmark.id() );
-  store();
+  if ( mProject )
+  {
+    mProject->setDirty( true );
+  }
+
   return bookmark.id();
 }
 
@@ -170,7 +179,11 @@ bool QgsBookmarkManager::removeBookmark( const QString &id )
   emit bookmarkAboutToBeRemoved( id );
   mBookmarks.removeAt( pos );
   emit bookmarkRemoved( id );
-  store();
+  if ( mProject )
+  {
+    mProject->setDirty( true );
+  }
+
   return true;
 }
 
@@ -184,7 +197,11 @@ bool QgsBookmarkManager::updateBookmark( const QgsBookmark &bookmark )
     {
       mBookmarks[i] = bookmark;
       emit bookmarkChanged( bookmark.id() );
-      store();
+      if ( mProject )
+      {
+        mProject->setDirty( true );
+      }
+
       return true;
     }
     i++;
@@ -228,8 +245,6 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
   bool result = true;
   if ( mProject && bookmarksElem.isNull() )
   {
-    mBlockStorage = true;
-
     // handle legacy projects
     const int count = mProject->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
     for ( int i = 0; i < count; ++i )
@@ -248,12 +263,10 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
       addBookmark( b, &added );
       result = added && result;
     }
-    mBlockStorage = false;
     return result;
   }
 
   //restore each
-  mBlockStorage = true;
   QDomNodeList bookmarkNodes = element.elementsByTagName( QStringLiteral( "Bookmark" ) );
   for ( int i = 0; i < bookmarkNodes.size(); ++i )
   {
@@ -262,7 +275,6 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
     addBookmark( b, &added );
     result = added && result;
   }
-  mBlockStorage = false;
 
   return result;
 }
@@ -411,14 +423,7 @@ bool QgsBookmarkManager::importFromFile( const QString &path )
 
 void QgsBookmarkManager::store()
 {
-  if ( mBlockStorage )
-    return;
-
-  if ( mProject )
-  {
-    mProject->setDirty( true );
-  }
-  else if ( !mFilePath.isEmpty() )
+  if ( !mFilePath.isEmpty() )
   {
     QFile f( mFilePath );
     if ( !f.open( QFile::WriteOnly | QIODevice::Truncate ) )
@@ -458,7 +463,6 @@ void QgsBookmarkManager::initialize( const QString &filePath )
       return;
     }
 
-    mBlockStorage = true;
     sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT name,project_name,xmin,ymin,xmax,ymax,projection_srid FROM tbl_bookmarks" ), result );
     if ( result == SQLITE_OK )
     {
@@ -479,7 +483,6 @@ void QgsBookmarkManager::initialize( const QString &filePath )
         addBookmark( b );
       }
     }
-    mBlockStorage = false;
     store();
   }
   else
