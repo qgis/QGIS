@@ -53,6 +53,12 @@ Returns the upper bound
 Returns the lower bound
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsClassificationRange: '%1'>" ).arg( sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 

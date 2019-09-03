@@ -62,6 +62,14 @@ class CORE_EXPORT QgsClassificationRange
     //! Returns the lower bound
     QString label() const {return mLabel;}
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsClassificationRange: '%1'>" ).arg( sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
     QString mLabel;
     double mLowerBound;
