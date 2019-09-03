@@ -342,6 +342,7 @@
 %Include auto_generated/qgsauxiliarystorage.sip
 %Include auto_generated/qgsblockingnetworkrequest.sip
 %Include auto_generated/qgsbookmarkmanager.sip
+%Include auto_generated/qgsbookmarkmodel.sip
 %Include auto_generated/qgsbrowsermodel.sip
 %Include auto_generated/qgsbrowserproxymodel.sip
 %Include auto_generated/qgscoordinatereferencesystem.sip

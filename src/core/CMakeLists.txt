@@ -192,6 +192,7 @@ SET(QGIS_CORE_SRCS
   qgsbearingutils.cpp
   qgsblockingnetworkrequest.cpp
   qgsbookmarkmanager.cpp
+  qgsbookmarkmodel.cpp
   qgsbrowsermodel.cpp
   qgsbrowserproxymodel.cpp
   qgscachedfeatureiterator.cpp
@@ -653,6 +654,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsauxiliarystorage.h
   qgsblockingnetworkrequest.h
   qgsbookmarkmanager.h
+  qgsbookmarkmodel.h
   qgsbrowsermodel.h
   qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
