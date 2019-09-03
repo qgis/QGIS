@@ -358,7 +358,7 @@ QList<double> QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( double minimu
   QgsClassificationEqualInterval method;
   method.setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
   QList<QgsClassificationRange> _classes = method.classes( minimum, maximum, classes );
-  return QgsClassificationMethod::listToValues( _classes );
+  return QgsClassificationMethod::rangesToBreaks( _classes );
 }
 
 Q_NOWARN_DEPRECATED_PUSH

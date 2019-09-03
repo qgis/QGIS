@@ -29,7 +29,7 @@ const int QgsClassificationMethod::MIN_PRECISION = -6;
 static const QRegularExpression RE_TRAILING_ZEROES = QRegularExpression( "[.,]?0*$" );
 static const QRegularExpression RE_NEGATIVE_ZERO = QRegularExpression( "^\\-0(?:[.,]0*)?$" );
 
-QList<double> QgsClassificationMethod::listToValues( const QList<QgsClassificationRange> &classes )
+QList<double> QgsClassificationMethod::rangesToBreaks( const QList<QgsClassificationRange> &classes )
 {
   QList<double> values;
   values.reserve( classes.count() );

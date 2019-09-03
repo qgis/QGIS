@@ -216,7 +216,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     void setLabelTrimTrailingZeroes( bool trimTrailingZeroes ) { mLabelTrimTrailingZeroes = trimTrailingZeroes; }
 
     //! Transforms a list of classes to a list of breaks
-    static QList<double> listToValues( const QList<QgsClassificationRange> &classes );
+    static QList<double> rangesToBreaks( const QList<QgsClassificationRange> &classes );
 
     /**
      * This will calculate the classes for a given layer to define the classes.
