@@ -115,6 +115,7 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   cfg.setType( QgsSnappingConfig::VertexAndSegment );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
+  mCanvas->snappingUtils()->mAsynchronous = false;
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerPointZ << mLayerPointZSnap );
   mCanvas->setCurrentLayer( mLayerPointZ );

@@ -276,6 +276,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     friend class TestQgsVertexTool;
     friend class TestQgsMapToolTrimExtendFeature;
+    friend class TestQgsMapToolReshape;
+    friend class TestQgsMapToolAddFeaturePoint;
 };
 
 
