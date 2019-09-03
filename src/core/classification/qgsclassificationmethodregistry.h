@@ -22,6 +22,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+class QIcon;
+
 class QgsClassificationMethod;
 
 /**
@@ -49,6 +51,9 @@ class CORE_EXPORT QgsClassificationMethodRegistry
 
     //! Returns a map <id, name> of all registered methods
     QMap<QString, QString> methodNames() const;
+
+    //! Return the icon for a given method id
+    QIcon icon( const QString &id ) const;
 
   private:
 

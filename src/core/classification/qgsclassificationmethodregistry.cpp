@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QIcon>
 
 #include "qgsclassificationmethodregistry.h"
 
@@ -56,5 +57,14 @@ QMap<QString, QString> QgsClassificationMethodRegistry::methodNames() const
   for ( const QgsClassificationMethod *method : qgis::as_const( mMethods ) )
     methods.insert( method->id(), method->name() );
   return methods;
+}
+
+QIcon QgsClassificationMethodRegistry::icon( const QString &id ) const
+{
+  QgsClassificationMethod *method = mMethods.value( id, nullptr );
+  if ( method )
+    return method->icon();
+  else
+    return QIcon();
 }
 
