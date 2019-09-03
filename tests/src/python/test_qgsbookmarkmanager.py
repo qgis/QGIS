@@ -396,6 +396,10 @@ class TestQgsBookmarkManager(unittest.TestCase):
         manager.addBookmark(b2)
         manager.addBookmark(b3)
 
+        # destroy manager, causes write to disk
+        manager.deleteLater()
+        del manager
+
         # create another new manager with same key, should contain existing bookmarks
         manager2 = QgsBookmarkManager()
         self.assertFalse(manager2.bookmarks())

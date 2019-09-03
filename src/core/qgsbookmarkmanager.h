@@ -161,6 +161,8 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
      */
     explicit QgsBookmarkManager( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    ~QgsBookmarkManager() override;
+
     /**
      * @brief initialize
      */
@@ -287,7 +289,6 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
 
     void store();
     bool mInitialized = false;
-    bool mBlockStorage = false;
 
 };
 
