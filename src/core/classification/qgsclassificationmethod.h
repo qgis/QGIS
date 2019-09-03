@@ -16,6 +16,8 @@
 #ifndef QGSCLASSIFICATIONMETHOD_H
 #define QGSCLASSIFICATIONMETHOD_H
 
+#include <QIcon>
+
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsprocessingparameters.h"
@@ -134,6 +136,9 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 
     //! The id of the method as saved in the project, must be unique in registry
     virtual QString id() const = 0;
+
+    //! The icon of the method
+    virtual QIcon icon() const {return QIcon();}
 
     /**
      * Returns the label for a range

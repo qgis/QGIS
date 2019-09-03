@@ -29,6 +29,8 @@ for pretty breaks
 
     virtual QgsClassificationMethod *clone() const;
 
+    virtual QIcon icon() const;
+
 
 };
 

@@ -33,6 +33,7 @@ class CORE_EXPORT QgsClassificationStandardDeviation : public QgsClassificationM
     QString name() const override;
     QString id() const override;
     QgsClassificationMethod *clone() const override;
+    QIcon icon() const override;
     QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const override;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;

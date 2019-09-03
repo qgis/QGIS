@@ -16,6 +16,7 @@
 #include <QObject>
 
 #include "qgsclassificationequalinterval.h"
+#include "qgsapplication.h"
 
 const QString QgsClassificationEqualInterval::METHOD_ID = QStringLiteral( "EqualInterval" );
 
@@ -94,4 +95,9 @@ QgsClassificationMethod *QgsClassificationEqualInterval::clone() const
   QgsClassificationEqualInterval *c = new QgsClassificationEqualInterval();
   copyBase( c );
   return c;
+}
+
+QIcon QgsClassificationEqualInterval::icon() const
+{
+  return QgsApplication::getThemeIcon( "classification_methods/mClassificationEqualInterval.svg" );
 }

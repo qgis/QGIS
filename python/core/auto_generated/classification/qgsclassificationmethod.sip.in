@@ -10,6 +10,7 @@
 
 
 
+
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
 %ModuleCode
@@ -126,6 +127,11 @@ The readable and translate name of the method
     virtual QString id() const = 0;
 %Docstring
 The id of the method as saved in the project, must be unique in registry
+%End
+
+    virtual QIcon icon() const;
+%Docstring
+The icon of the method
 %End
 
     virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position = Inner ) const;

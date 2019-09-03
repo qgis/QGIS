@@ -32,6 +32,7 @@ class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
     QgsClassificationMethod *clone() const override;
     QString name() const override;
     QString id() const override;
+    QIcon icon() const override;
     QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const override;
 
   private:

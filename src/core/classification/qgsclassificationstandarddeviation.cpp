@@ -17,6 +17,7 @@
 
 #include "qgsclassificationstandarddeviation.h"
 #include "qgsgraduatedsymbolrenderer.h"
+#include "qgsapplication.h"
 
 const QString QgsClassificationStandardDeviation::METHOD_ID = QStringLiteral( "StdDev" );
 
@@ -43,6 +44,11 @@ QgsClassificationMethod *QgsClassificationStandardDeviation::clone() const
   copyBase( c );
   c->mStdDev = mStdDev;
   return c;
+}
+
+QIcon QgsClassificationStandardDeviation::icon() const
+{
+  return QgsApplication::getThemeIcon( "classification_methods/mClassificationStandardDeviation.svg" );
 }
 
 

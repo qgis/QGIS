@@ -29,6 +29,8 @@ for natural breaks based on Jenks method
 
     virtual QgsClassificationMethod *clone() const;
 
+    virtual QIcon icon() const;
+
 
 };
 

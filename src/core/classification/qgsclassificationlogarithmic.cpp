@@ -15,6 +15,7 @@
 
 #include "qgsclassificationlogarithmic.h"
 #include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
 
 QgsClassificationLogarithmic::QgsClassificationLogarithmic()
   : QgsClassificationMethod( ValuesNotRequired, 0 )
@@ -38,6 +39,11 @@ QString QgsClassificationLogarithmic::name() const
 QString QgsClassificationLogarithmic::id() const
 {
   return QStringLiteral( "Logarithmic" );
+}
+
+QIcon QgsClassificationLogarithmic::icon() const
+{
+  return QgsApplication::getThemeIcon( "classification_methods/mClassificationLogarithmic.svg" );
 }
 
 QList<double> QgsClassificationLogarithmic::calculateBreaks( double minimum, double maximum, const QList<double> &values, int nclasses )
