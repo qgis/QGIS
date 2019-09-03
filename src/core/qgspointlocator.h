@@ -332,6 +332,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
     int mMaxFeaturesToIndex = -1;
     bool mAsynchronous = false;
     bool mIsIndexing = false;
+    QgsFeatureIds mAddedFeatures;
+    QgsFeatureIds mDeletedFeatures;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;

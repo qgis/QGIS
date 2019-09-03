@@ -591,6 +591,14 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 void QgsPointLocator::onRebuildIndexFinished( bool ok )
 {
   mIsIndexing = false;
+
+  // treat added and deleted feature while indexing
+  for ( QgsFeatureId fid : mAddedFeatures )
+    onFeatureAdded( fid );
+
+  for ( QgsFeatureId fid : mDeletedFeatures )
+    onFeatureDeleted( fid );
+
   emit initFinished( ok );
 }
 
@@ -778,10 +786,17 @@ void QgsPointLocator::destroyIndex()
 
 void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 {
+  if ( mIsIndexing )
+  {
+    // will modify index once current indexing is finished
+    mAddedFeatures << fid;
+    return;
+  }
+
   if ( !mRTree )
   {
     if ( mIsEmptyLayer )
-      rebuildIndex(); // first feature - let's built the index
+      init(); // first feature - let's built the index
     return; // nothing to do if we are not initialized yet
   }
 
@@ -847,6 +862,20 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 
 void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 {
+  if ( mIsIndexing )
+  {
+    if ( mAddedFeatures.contains( fid ) )
+    {
+      mAddedFeatures.remove( fid );
+    }
+    else
+    {
+      // will modify index once current indexing is finished
+      mDeletedFeatures << fid;
+    }
+    return;
+  }
+
   if ( !mRTree )
     return; // nothing to do if we are not initialized yet
 
