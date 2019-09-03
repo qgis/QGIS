@@ -106,7 +106,7 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
       return label;
     }
     case UpperBound:
-      return QStringLiteral( "≥ %1" ).arg( lowerLabel );
+      return QStringLiteral( "≥ %1" ).arg( upperLabel );
   }
   return QString();
 }
