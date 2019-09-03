@@ -237,7 +237,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::breaksToClasses( const QL
     const double upperValue = breaks.at( i );
 
     ClassPosition pos = Inner;
-    if ( i == 0 )
+    if ( i == 1 )
       pos = LowerBound;
     else if ( i == breaks.count() - 1 )
       pos = UpperBound;
