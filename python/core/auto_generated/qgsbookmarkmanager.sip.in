@@ -61,6 +61,22 @@ the bookmark.
 .. seealso:: :py:func:`name`
 %End
 
+    QString group() const;
+%Docstring
+Returns the bookmark's group, which is a user-visible string identifying
+the bookmark's category.
+
+.. seealso:: :py:func:`setGroup`
+%End
+
+    void setGroup( const QString &group );
+%Docstring
+Sets the bookmark's ``group``, which is a user-visible string identifying
+the bookmark's category.
+
+.. seealso:: :py:func:`group`
+%End
+
     QgsReferencedRectangle extent() const;
 %Docstring
 Returns the bookmark's spatial extent.
@@ -215,6 +231,25 @@ Returns a DOM element representing the state of the manager.
 Moves the bookmark with matching ``id`` from this manager to a ``destination`` manager.
 
 Returns ``True`` if the bookmark was successfully moved.
+%End
+
+    bool exportToFile( const QString &path ) const;
+%Docstring
+Exports the bookmarks to an xml file at the specified ``path``.
+
+Returns ``True`` if the export was successful.
+
+.. seealso:: :py:func:`importFile`
+%End
+
+
+    bool importFromFile( const QString &path );
+%Docstring
+Imports the bookmarks from an xml file at the specified ``path``.
+
+Returns ``True`` if the import was successful.
+
+.. seealso:: :py:func:`exportToFile`
 %End
 
   signals:

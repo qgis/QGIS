@@ -26,17 +26,18 @@
 #include "qgis_app.h"
 
 class QgsBookmark;
+class QgsBookmarkManager;
 
 /*
  * Model for project bookmarks
  */
-class QgsProjectBookmarksTableModel: public QAbstractTableModel
+class QgsBookmarkManagerModel: public QAbstractTableModel
 {
     Q_OBJECT
 
   public:
 
-    QgsProjectBookmarksTableModel( QObject *parent = nullptr );
+    QgsBookmarkManagerModel( QgsBookmarkManager *manager, QObject *parent = nullptr );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
@@ -58,6 +59,7 @@ class QgsProjectBookmarksTableModel: public QAbstractTableModel
     void bookmarkChanged( const QString &id );
   private:
     bool mBlocked = false;
+    QgsBookmarkManager *mManager = nullptr;
 
 };
 
@@ -133,7 +135,6 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
     QAbstractTableModel &mProjectTableModel;
     QTreeView *mTreeView = nullptr;
     bool projectAvailable() const;
-    void moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row );
 
   signals:
 
@@ -169,8 +170,8 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     void lstBookmarks_doubleClicked( const QModelIndex & );
 
   private:
-    QSqlTableModel *mQgisModel = nullptr;
-    QgsProjectBookmarksTableModel *mProjectModel = nullptr;
+    QgsBookmarkManagerModel *mQgisModel = nullptr;
+    QgsBookmarkManagerModel *mProjectModel = nullptr;
     QgsMergedBookmarksTableModel *mMergedModel = nullptr;
     QgsBookmarksProxyModel *mProxyModel = nullptr;
 
