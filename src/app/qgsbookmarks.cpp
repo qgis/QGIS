@@ -283,8 +283,16 @@ void QgsBookmarks::exportToXml()
     fileName += QLatin1String( ".xml" );
   }
 
-  // TODO - how to handle project bookmarks too?
-  QgsApplication::bookmarkManager()->exportToFile( fileName );
+  if ( !QgsBookmarkManager::exportToFile( fileName, QList< const QgsBookmarkManager * >() << QgsApplication::bookmarkManager()
+                                          << QgsProject::instance()->bookmarkManager() ) )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Export Bookmarks" ), tr( "Error exporting bookmark file" ) );
+  }
+  else
+  {
+    QgisApp::instance()->messageBar()->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" )
+        .arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+  }
 
   settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
 }
@@ -577,7 +585,7 @@ QVariant QgsMergedBookmarksTableModel::data( const QModelIndex &index, int role 
     }
     else // ... it is a project stored bookmark
     {
-      value = mProjectTableModel.data( this->index( 0, index.column() ), role );
+      value = mProjectTableModel.data( this->index( index.row() - mQgisTableModel.rowCount(), index.column() ), role );
     }
   }
   return value;

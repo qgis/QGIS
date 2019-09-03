@@ -246,13 +246,13 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     bool moveBookmark( const QString &id, QgsBookmarkManager *destination );
 
     /**
-     * Exports the bookmarks to an xml file at the specified \a path.
+     * Exports all bookmarks from a list of \a managers to an xml file at the specified \a path.
      *
      * Returns TRUE if the export was successful.
      *
      * \see importFile()
      */
-    bool exportToFile( const QString &path ) const;
+    static bool exportToFile( const QString &path, QList<const QgsBookmarkManager *> &managers );
 
 
     /**
