@@ -216,6 +216,13 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
      */
     QDomElement writeXml( QDomDocument &doc ) const;
 
+    /**
+     * Moves the bookmark with matching \a id from this manager to a \a destination manager.
+     *
+     * Returns TRUE if the bookmark was successfully moved.
+     */
+    bool moveBookmark( const QString &id, QgsBookmarkManager *destination );
+
   signals:
 
     //! Emitted when a bookmark is about to be added to the manager

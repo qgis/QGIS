@@ -210,6 +210,13 @@ Returns a DOM element representing the state of the manager.
 .. seealso:: :py:func:`readXml`
 %End
 
+    bool moveBookmark( const QString &id, QgsBookmarkManager *destination );
+%Docstring
+Moves the bookmark with matching ``id`` from this manager to a ``destination`` manager.
+
+Returns ``True`` if the bookmark was successfully moved.
+%End
+
   signals:
 
     void bookmarkAboutToBeAdded( const QString &id );

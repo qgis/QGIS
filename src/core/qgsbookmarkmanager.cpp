@@ -277,6 +277,18 @@ QDomElement QgsBookmarkManager::writeXml( QDomDocument &doc ) const
   return bookmarksElem;
 }
 
+bool QgsBookmarkManager::moveBookmark( const QString &id, QgsBookmarkManager *destination )
+{
+  QgsBookmark b = bookmarkById( id );
+  if ( b.id().isEmpty() )
+    return false;
+
+  removeBookmark( id );
+  bool ok = false;
+  destination->addBookmark( b, &ok );
+  return ok;
+}
+
 void QgsBookmarkManager::store()
 {
   if ( mProject )
