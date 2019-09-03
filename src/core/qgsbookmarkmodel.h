@@ -43,6 +43,15 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
 
   public:
 
+    //! Custom model roles
+    enum CustomRoles
+    {
+      RoleExtent = Qt::UserRole, //!< Bookmark extent as a QgsReferencedRectangle
+      RoleName, //!< Bookmark name
+      RoleId, //!< Bookmark ID
+      RoleGroup, //!< Bookmark group
+    };
+
     //! Model columns
     enum Columns
     {
