@@ -465,8 +465,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   const QMap<QString, QString> methods = QgsApplication::classificationMethodRegistry()->methodNames();
   for ( QMap<QString, QString>::const_iterator it = methods.constBegin(); it != methods.constEnd(); ++it )
   {
-    QIcon icon = QgsApplication::classificationMethodRegistry()->icon( it.key() );
-    cboGraduatedMode->addItem( icon, it.value(), it.key() );
+    QIcon icon = QgsApplication::classificationMethodRegistry()->icon( it.value() );
+    cboGraduatedMode->addItem( icon, it.key(), it.value() );
   }
 
   connect( methodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged );

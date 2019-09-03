@@ -42,7 +42,7 @@ Returns a new instance of the method for the given id
 
     QMap<QString, QString> methodNames() const;
 %Docstring
-Returns a map <id, name> of all registered methods
+Returns a map <name, id> of all registered methods.
 %End
 
     QIcon icon( const QString &id ) const;

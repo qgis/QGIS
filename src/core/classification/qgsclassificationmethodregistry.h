@@ -49,7 +49,7 @@ class CORE_EXPORT QgsClassificationMethodRegistry
     //! Returns a new instance of the method for the given id
     QgsClassificationMethod *method( const QString &id ) SIP_FACTORY;
 
-    //! Returns a map <id, name> of all registered methods
+    //! Returns a map <name, id> of all registered methods.
     QMap<QString, QString> methodNames() const;
 
     //! Return the icon for a given method id
