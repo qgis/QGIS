@@ -209,7 +209,7 @@ QStringList QgsLayoutPdfExportOptionsDialog::exportThemes() const
   if ( !mGeopdfAvailable )
     return res;
 
-  if ( !mIncludeMapThemesCheck )
+  if ( !mIncludeMapThemesCheck || !mIncludeMapThemesCheck->isChecked() )
     return res;
 
   res.reserve( mThemesList->count() );
