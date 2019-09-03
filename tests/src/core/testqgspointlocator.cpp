@@ -346,6 +346,30 @@ class TestQgsPointLocator : public QObject
 
       delete vlEmptyGeom;
     }
+
+    void testAsynchronousMode()
+    {
+      QgsPointLocator loc( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr, true );
+      QgsPointXY pt( 2, 2 );
+
+      QEventLoop loop;
+      connect( &loc, &QgsPointLocator::initFinished, &loop, &QEventLoop::quit );
+
+      // locator is not ready yet
+      QgsPointLocator::Match m = loc.nearestVertex( pt, 999 );
+      QVERIFY( !m.isValid() );
+      loop.exec();
+
+      // now locator is ready
+      m = loc.nearestVertex( pt, 999 );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.layer(), mVL );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
+      QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
+      QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
+      QCOMPARE( m.vertexIndex(), 2 );
+    }
 };
 
 QGSTEST_MAIN( TestQgsPointLocator )
