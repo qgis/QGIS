@@ -278,6 +278,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     friend class TestQgsMapToolTrimExtendFeature;
     friend class TestQgsMapToolReshape;
     friend class TestQgsMapToolAddFeaturePoint;
+    friend class TestQgsMapToolReverseLine;
 };
 
 

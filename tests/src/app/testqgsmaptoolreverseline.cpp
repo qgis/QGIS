@@ -25,7 +25,7 @@
 #include "testqgsmaptoolutils.h"
 #include "qgsmaptoolreverseline.h"
 #include "qgsmapmouseevent.h"
-
+#include "qgssnappingutils.h"
 
 class TestQgsMapToolReverseLine : public QObject
 {
@@ -60,7 +60,7 @@ void TestQgsMapToolReverseLine::initTestCase()
 
   mCanvas = new QgsMapCanvas();
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
-
+  mCanvas->snappingUtils()->mAsynchronous = false;
 }
 
 void TestQgsMapToolReverseLine::cleanupTestCase()
