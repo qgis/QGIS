@@ -98,7 +98,7 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
   switch ( position )
   {
     case LowerBound:
-      return QObject::tr( "< %1 Std Dev" ).arg( upperLabel );
+      return QStringLiteral( "< %1" ).arg( upperLabel );
     case Inner:
     {
       QString label( labelFormat() );
@@ -106,7 +106,7 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
       return label;
     }
     case UpperBound:
-      return QObject::tr( "≥ %1 Std Dev" ).arg( lowerLabel );
+      return QStringLiteral( "≥ %1" ).arg( lowerLabel );
   }
   return QString();
 }
