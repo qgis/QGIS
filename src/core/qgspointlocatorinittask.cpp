@@ -17,6 +17,8 @@
 
 #include "qgsvectorlayer.h"
 
+/// @cond PRIVATE
+
 QgsPointLocatorInitTask::QgsPointLocatorInitTask( QgsPointLocator *loc )
   : QgsTask( tr( "Indexing %1" ).arg( loc->layer()->id() ), QgsTask::Flags() )
   , mLoc( loc )
@@ -28,3 +30,5 @@ bool QgsPointLocatorInitTask::run()
   emit rebuildIndexFinished( ok );
   return true;
 }
+
+/// @endcond

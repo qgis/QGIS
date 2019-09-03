@@ -51,4 +51,6 @@ class QgsPointLocatorInitTask : public QgsTask
     QgsPointLocator *mLoc = nullptr;
 };
 
+/// @endcond
+
 #endif // QGSPOINTLOCATORINITTASK_H

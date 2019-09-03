@@ -68,7 +68,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * to set the correct \a transformContext if a \a destinationCrs is specified. This is usually taken
      * from the current QgsProject::transformContext().
      *
-     * \param asynchronous if FALSE, point locator init() method will block until point locator index
+     * if \a asynchronous is FALSE, point locator init() method will block until point locator index
      * is completely built. if TRUE, index building will be done in another thread and init() method returns
      * immediately. initFinished() signal will be emitted once the initialization is over.
      *
