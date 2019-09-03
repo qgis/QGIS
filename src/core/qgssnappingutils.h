@@ -199,11 +199,13 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     /**
      * This methods is now deprecated and never called
+     * \deprecated since QGIS 3.10
      */
     Q_DECL_DEPRECATED virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ); }
 
     /**
      * This methods is now deprecated and never called
+     * \deprecated since QGIS 3.10
      */
     Q_DECL_DEPRECATED virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
 
