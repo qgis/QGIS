@@ -250,7 +250,7 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
      *
      * Returns TRUE if the export was successful.
      *
-     * \see importFile()
+     * \see importFromFile()
      */
     static bool exportToFile( const QString &path, QList<const QgsBookmarkManager *> &managers );
 
