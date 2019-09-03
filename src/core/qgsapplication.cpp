@@ -337,7 +337,7 @@ void QgsApplication::init( QString profileFolder )
   colorSchemeRegistry()->addDefaultSchemes();
   colorSchemeRegistry()->initStyleScheme();
 
-  bookmarkManager()->convertOldBookmarks();
+  bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
 
   ABISYM( mInitialized ) = true;
 }
@@ -1998,7 +1998,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
   mValidityCheckRegistry = new QgsValidityCheckRegistry();
   mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
-  mBookmarkManager = new QgsBookmarkManager( QStringLiteral( "bookmarks" ), nullptr );
+  mBookmarkManager = new QgsBookmarkManager( nullptr );
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()

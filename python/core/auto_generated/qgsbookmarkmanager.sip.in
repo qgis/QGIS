@@ -134,19 +134,24 @@ rather accessed through a QgsProject via :py:func:`QgsProject.bookmarkManager()`
 %End
   public:
 
-    explicit QgsBookmarkManager( QgsProject *project /TransferThis/ = 0 );
+    static QgsBookmarkManager *createProjectBasedManager( QgsProject *project );
 %Docstring
-Constructor for QgsBookmarkManager, with the specified ``parent`` project.
+Returns a newly created QgsBookmarkManager using a project-based bookmark store, linked to the specified ``project``.
 
-This constructor creates a bookmark manager which stores bookmarks in a QgsProject instance.
+The returned object is parented to the ``project``.
 %End
 
-    explicit QgsBookmarkManager( const QString &settingKey, QObject *parent /TransferThis/ = 0 );
+    explicit QgsBookmarkManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBookmarkManager, with the specified ``parent`` object.
 
-This constructor creates a bookmark manager which stores bookmarks in :py:class:`QgsSettings`, using
-the specified ``settingKey``.
+This constructor creates a bookmark manager which stores bookmarks in an XML file. A call to
+initialize() is required to initialize the manager and set the corresponding file path.
+%End
+
+    void initialize( const QString &filePath );
+%Docstring
+initialize
 %End
 
     QString addBookmark( const QgsBookmark &bookmark, bool *ok /Out/ = 0 );
