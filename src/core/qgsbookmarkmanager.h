@@ -71,6 +71,20 @@ class CORE_EXPORT QgsBookmark
     void setName( const QString &name );
 
     /**
+     * Returns the bookmark's group, which is a user-visible string identifying
+     * the bookmark's category.
+     * \see setGroup()
+     */
+    QString group() const;
+
+    /**
+     * Sets the bookmark's \a group, which is a user-visible string identifying
+     * the bookmark's category.
+     * \see group()
+     */
+    void setGroup( const QString &group );
+
+    /**
      * Returns the bookmark's spatial extent.
      * \see setExtent()
      */
@@ -109,6 +123,7 @@ class CORE_EXPORT QgsBookmark
 
     QString mId;
     QString mName;
+    QString mGroup;
     QgsReferencedRectangle mExtent;
 
 };
@@ -222,6 +237,25 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
      * Returns TRUE if the bookmark was successfully moved.
      */
     bool moveBookmark( const QString &id, QgsBookmarkManager *destination );
+
+    /**
+     * Exports the bookmarks to an xml file at the specified \a path.
+     *
+     * Returns TRUE if the export was successful.
+     *
+     * \see importFile()
+     */
+    bool exportToFile( const QString &path ) const;
+
+
+    /**
+     * Imports the bookmarks from an xml file at the specified \a path.
+     *
+     * Returns TRUE if the import was successful.
+     *
+     * \see exportToFile()
+     */
+    bool importFromFile( const QString &path );
 
   signals:
 
