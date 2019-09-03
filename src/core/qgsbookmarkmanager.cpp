@@ -303,7 +303,7 @@ bool QgsBookmarkManager::moveBookmark( const QString &id, QgsBookmarkManager *de
   return ok;
 }
 
-bool QgsBookmarkManager::exportToFile( const QString &path ) const
+bool QgsBookmarkManager::exportToFile( const QString &path, QList<const QgsBookmarkManager *> &managers )
 {
   // note - we don't use the other writeXml implementation, to maintain older format compatibility
   QDomDocument doc( QStringLiteral( "qgis_bookmarks" ) );
@@ -319,39 +319,43 @@ bool QgsBookmarkManager::exportToFile( const QString &path ) const
       << QStringLiteral( "ymax" )
       << QStringLiteral( "sr_id" );
 
-  for ( const QgsBookmark &b : mBookmarks )
+  for ( const QgsBookmarkManager *manager : managers )
   {
-    QDomElement bookmark = doc.createElement( QStringLiteral( "bookmark" ) );
-    root.appendChild( bookmark );
+    const QList< QgsBookmark > bookmarks = manager->bookmarks();
+    for ( const QgsBookmark &b : bookmarks )
+    {
+      QDomElement bookmark = doc.createElement( QStringLiteral( "bookmark" ) );
+      root.appendChild( bookmark );
 
-    QDomElement id = doc.createElement( QStringLiteral( "id" ) );
-    id.appendChild( doc.createTextNode( b.id() ) );
-    bookmark.appendChild( id );
+      QDomElement id = doc.createElement( QStringLiteral( "id" ) );
+      id.appendChild( doc.createTextNode( b.id() ) );
+      bookmark.appendChild( id );
 
-    QDomElement name = doc.createElement( QStringLiteral( "name" ) );
-    name.appendChild( doc.createTextNode( b.name() ) );
-    bookmark.appendChild( name );
+      QDomElement name = doc.createElement( QStringLiteral( "name" ) );
+      name.appendChild( doc.createTextNode( b.name() ) );
+      bookmark.appendChild( name );
 
-    QDomElement group = doc.createElement( QStringLiteral( "project" ) );
-    group.appendChild( doc.createTextNode( b.group() ) );
-    bookmark.appendChild( group );
+      QDomElement group = doc.createElement( QStringLiteral( "project" ) );
+      group.appendChild( doc.createTextNode( b.group() ) );
+      bookmark.appendChild( group );
 
-    QDomElement xMin = doc.createElement( QStringLiteral( "xmin" ) );
-    xMin.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().xMinimum() ) ) );
-    bookmark.appendChild( xMin );
-    QDomElement yMin = doc.createElement( QStringLiteral( "ymin" ) );
-    yMin.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().yMinimum() ) ) );
-    bookmark.appendChild( yMin );
-    QDomElement xMax = doc.createElement( QStringLiteral( "xmax" ) );
-    xMax.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().xMaximum() ) ) );
-    bookmark.appendChild( xMax );
-    QDomElement yMax = doc.createElement( QStringLiteral( "ymax" ) );
-    yMax.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().yMaximum() ) ) );
-    bookmark.appendChild( yMax );
+      QDomElement xMin = doc.createElement( QStringLiteral( "xmin" ) );
+      xMin.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().xMinimum() ) ) );
+      bookmark.appendChild( xMin );
+      QDomElement yMin = doc.createElement( QStringLiteral( "ymin" ) );
+      yMin.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().yMinimum() ) ) );
+      bookmark.appendChild( yMin );
+      QDomElement xMax = doc.createElement( QStringLiteral( "xmax" ) );
+      xMax.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().xMaximum() ) ) );
+      bookmark.appendChild( xMax );
+      QDomElement yMax = doc.createElement( QStringLiteral( "ymax" ) );
+      yMax.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().yMaximum() ) ) );
+      bookmark.appendChild( yMax );
 
-    QDomElement crs = doc.createElement( QStringLiteral( "sr_id" ) );
-    crs.appendChild( doc.createTextNode( QString::number( b.extent().crs().srsid() ) ) );
-    bookmark.appendChild( crs );
+      QDomElement crs = doc.createElement( QStringLiteral( "sr_id" ) );
+      crs.appendChild( doc.createTextNode( QString::number( b.extent().crs().srsid() ) ) );
+      bookmark.appendChild( crs );
+    }
   }
 
   QFile f( path );

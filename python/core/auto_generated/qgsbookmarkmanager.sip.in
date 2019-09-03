@@ -240,9 +240,9 @@ Moves the bookmark with matching ``id`` from this manager to a ``destination`` m
 Returns ``True`` if the bookmark was successfully moved.
 %End
 
-    bool exportToFile( const QString &path ) const;
+    static bool exportToFile( const QString &path, QList<const QgsBookmarkManager *> &managers );
 %Docstring
-Exports the bookmarks to an xml file at the specified ``path``.
+Exports all bookmarks from a list of ``managers`` to an xml file at the specified ``path``.
 
 Returns ``True`` if the export was successful.
 

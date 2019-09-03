@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 import qgis  # NOQA
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTemporaryDir
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTemporaryDir, QEvent
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsBookmark,
@@ -398,6 +398,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
 
         # destroy manager, causes write to disk
         manager.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         del manager
 
         # create another new manager with same key, should contain existing bookmarks
@@ -486,6 +487,56 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertTrue(manager2.moveBookmark(b3.id(), manager))
         self.assertEqual(manager.bookmarks(), [b2, b3])
         self.assertEqual(manager2.bookmarks(), [b])
+
+    def testExportImport(self):
+        p = QgsProject()
+        manager = QgsBookmarkManager.createProjectBasedManager(p)
+        manager2 = QgsBookmarkManager.createProjectBasedManager(p)
+        manager3 = QgsBookmarkManager.createProjectBasedManager(p)
+
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/bookmarks.xml".format(tmpDir.path())
+
+        # no managers
+        self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, []))
+        self.assertTrue(manager3.importFromFile(tmpFile))
+        self.assertFalse(manager3.bookmarks())
+
+        # no bookmarks
+        self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, [manager]))
+        self.assertTrue(manager3.importFromFile(tmpFile))
+        self.assertFalse(manager3.bookmarks())
+
+        # add a bunch of bookmarks
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        manager.addBookmark(b2)
+        manager2.addBookmark(b3)
+
+        # export one manager's bookmarks
+        self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, [manager]))
+        self.assertTrue(manager3.importFromFile(tmpFile))
+        self.assertEqual([(b.name(), b.extent()) for b in manager3.bookmarks()], [(b.name(), b.extent()) for b in [b, b2]])
+
+        manager3.clear()
+        # export both manager's bookmarks
+        self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, [manager, manager2]))
+        self.assertTrue(manager3.importFromFile(tmpFile))
+        self.assertEqual([(b.name(), b.extent()) for b in manager3.bookmarks()], [(b.name(), b.extent()) for b in [b, b2, b3]])
 
 
 if __name__ == '__main__':
