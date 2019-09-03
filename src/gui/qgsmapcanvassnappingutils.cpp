@@ -58,19 +58,3 @@ void QgsMapCanvasSnappingUtils::canvasMapToolChanged()
 {
   setEnableSnappingForInvisibleFeature( QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() );
 }
-
-void QgsMapCanvasSnappingUtils::prepareIndexStarting()
-{
-  if ( !mPreparingIndexCount )
-    QApplication::setOverrideCursor( Qt::BusyCursor );
-
-  mPreparingIndexCount++;
-}
-
-void QgsMapCanvasSnappingUtils::prepareIndexFinished()
-{
-  mPreparingIndexCount--;
-
-  if ( !mPreparingIndexCount )
-    QApplication::restoreOverrideCursor();
-}

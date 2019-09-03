@@ -45,7 +45,6 @@ QgsPointLocator *QgsSnappingUtils::locatorForLayer( QgsVectorLayer *vl )
   {
     QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), nullptr, mAsynchronous );
     connect( vlpl, &QgsPointLocator::initFinished, this, &QgsSnappingUtils::onInitFinished );
-    connect( vlpl, &QgsPointLocator::initStarted, this, &QgsSnappingUtils::onInitStarted );
     mLocators.insert( vl, vlpl );
   }
   return mLocators.value( vl );
@@ -80,7 +79,6 @@ QgsPointLocator *QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer *vl,
                      pointMap.x() + tolerance, pointMap.y() + tolerance );
   QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), &rect, mAsynchronous );
   connect( vlpl, &QgsPointLocator::initFinished, this, &QgsSnappingUtils::onInitFinished );
-  connect( vlpl, &QgsPointLocator::initStarted, this, &QgsSnappingUtils::onInitStarted );
 
   mTemporaryLocators.insert( vl, vlpl );
   return mTemporaryLocators.value( vl );
@@ -355,13 +353,6 @@ void QgsSnappingUtils::onInitFinished( bool ok )
   {
     mHybridMaxAreaPerLayer[loc->layer()->id()] /= 4;
   }
-
-  prepareIndexFinished();
-}
-
-void QgsSnappingUtils::onInitStarted()
-{
-  prepareIndexStarting();
 }
 
 void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers )

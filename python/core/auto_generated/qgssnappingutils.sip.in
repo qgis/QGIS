@@ -177,13 +177,15 @@ Emitted when the snapping settings object changes.
 %End
 
   protected:
-    virtual void prepareIndexStarting();
+
+ virtual void prepareIndexStarting( int count );
 %Docstring
-Called when starting to index
+This methods is now deprecated and never called
 %End
-    virtual void prepareIndexFinished();
+
+ virtual void prepareIndexProgress( int index );
 %Docstring
-Called when finished indexing a layer
+This methods is now deprecated and never called
 %End
 
     void clearAllLocators();

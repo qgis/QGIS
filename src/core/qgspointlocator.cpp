@@ -22,9 +22,11 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsrenderer.h"
+#include "qgsapplication.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslinestring.h"
+#include "qgspointlocatorinittask.h"
 #include <spatialindex/SpatialIndex.h>
 
 #include <QLinkedListIterator>
@@ -543,8 +545,6 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
   connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsPointLocator::onGeometryChanged );
   connect( mLayer, &QgsVectorLayer::attributeValueChanged, this, &QgsPointLocator::onAttributeValueChanged );
   connect( mLayer, &QgsVectorLayer::dataChanged, this, &QgsPointLocator::destroyIndex );
-
-  connect( &mFutureWatcher, &QFutureWatcher<bool>::finished, this, &QgsPointLocator::onRebuildIndexFinished );
 }
 
 
@@ -560,8 +560,8 @@ QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
 
 void QgsPointLocator::setExtent( const QgsRectangle *extent )
 {
-  if ( mFuture.isRunning() )
-    // already running, return!
+  if ( mIsIndexing )
+    // already indexing, return!
     return;
 
   mExtent.reset( extent ? new QgsRectangle( *extent ) : nullptr );
@@ -571,8 +571,8 @@ void QgsPointLocator::setExtent( const QgsRectangle *extent )
 
 void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 {
-  if ( mFuture.isRunning() )
-    // already running, return!
+  if ( mIsIndexing )
+    // already indexing, return!
     return;
 
   disconnect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
@@ -588,10 +588,10 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
 }
 
-
-void QgsPointLocator::onRebuildIndexFinished()
+void QgsPointLocator::onRebuildIndexFinished( bool ok )
 {
-  emit initFinished( mFuture.result() );
+  mIsIndexing = false;
+  emit initFinished( ok );
 }
 
 void QgsPointLocator::init( int maxFeaturesToIndex )
@@ -599,7 +599,7 @@ void QgsPointLocator::init( int maxFeaturesToIndex )
   const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::NullGeometry // nothing to index
        || hasIndex()
-       || mFuture.isRunning() ) // already running, return!
+       || mIsIndexing ) // already indexing, return!
     return;
 
   mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
@@ -609,23 +609,26 @@ void QgsPointLocator::init( int maxFeaturesToIndex )
     mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
   }
 
-  emit initStarted();
+  mIsIndexing = true;
 
   if ( mAsynchronous )
   {
-    mFuture = QtConcurrent::run( this, &QgsPointLocator::rebuildIndex, maxFeaturesToIndex );
-    mFutureWatcher.setFuture( mFuture );
+    QgsPointLocatorInitTask *task = new QgsPointLocatorInitTask( this );
+    connect( task, &QgsPointLocatorInitTask::rebuildIndexFinished, this, &QgsPointLocator::onRebuildIndexFinished );
+    connect( task, &QgsPointLocatorInitTask::taskTerminated, this, [ = ] { mIsIndexing = false; } );
+    QgsApplication::taskManager()->addTask( task );
   }
   else
   {
     const bool ok = rebuildIndex( maxFeaturesToIndex );
+    mIsIndexing = false;
     emit initFinished( ok );
   }
 }
 
 bool QgsPointLocator::hasIndex() const
 {
-  return mFuture.isRunning() || mRTree || mIsEmptyLayer;
+  return mIsIndexing || mRTree || mIsEmptyLayer;
 }
 
 
@@ -876,7 +879,7 @@ void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const 
 
 QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, double tolerance, MatchFilter *filter )
 {
-  if ( mFuture.isRunning() )
+  if ( mIsIndexing )
     return Match();
 
   if ( !mRTree )
@@ -897,7 +900,7 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
 
 QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, double tolerance, MatchFilter *filter )
 {
-  if ( mFuture.isRunning() )
+  if ( mIsIndexing )
     return Match();
 
   if ( !mRTree )
@@ -922,7 +925,7 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
 
 QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, double tolerance, MatchFilter *filter )
 {
-  if ( mFuture.isRunning() )
+  if ( mIsIndexing )
     return Match();
 
   if ( !mRTree )
@@ -959,7 +962,7 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
 
 QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
 {
-  if ( mFuture.isRunning() )
+  if ( mIsIndexing )
     return MatchList();
 
   if ( !mRTree )
@@ -988,7 +991,7 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point
 
 QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
 {
-  if ( mFuture.isRunning() )
+  if ( mIsIndexing )
     return MatchList();
 
   if ( !mRTree )
@@ -1014,7 +1017,7 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &po
 
 QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point )
 {
-  if ( mFuture.isRunning() )
+  if ( mIsIndexing )
     return MatchList();
 
   if ( !mRTree )

@@ -196,10 +196,16 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void configChanged( const QgsSnappingConfig &snappingConfig );
 
   protected:
-    //! Called when starting to index
-    virtual void prepareIndexStarting() {}
-    //! Called when finished indexing a layer
-    virtual void prepareIndexFinished() {}
+
+    /**
+     * This methods is now deprecated and never called
+     */
+    Q_DECL_DEPRECATED virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ); }
+
+    /**
+     * This methods is now deprecated and never called
+     */
+    Q_DECL_DEPRECATED virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
 
     //! Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
     void clearAllLocators();
@@ -208,9 +214,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! called whenever a point locator has finished
     void onInitFinished( bool ok );
-
-    //! called whenever a point locator has started
-    void onInitStarted();
 
   private:
     void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
@@ -266,13 +269,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! Disable or not the snapping on all features. By default is always TRUE except for non visible features on map canvas.
     bool mEnableSnappingForInvisibleFeature = true;
 
-    //! Number of index currently being prepared
-    int mPreparingIndexCount = 0;
-
     //! true if we have to build point locator asynchronously
     bool mAsynchronous = false;
 
     friend class TestQgsVertexTool;
+    friend class TestQgsMapToolTrimExtendFeature;
 };
 
 

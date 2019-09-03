@@ -68,10 +68,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * to set the correct \a transformContext if a \a destinationCrs is specified. This is usually taken
      * from the current QgsProject::transformContext().
      *
-     * \param asynchronous if FALSE, point locator init() method will block until index is completely
-     * finished. if TRUE, index building will be done in another thread and init() method returns
-     * immediatly. initStarted() and initFinished() signals can be used to control current state of
-     * the point locator.
+     * \param asynchronous if FALSE, point locator init() method will block until point locator index
+     * is completely built. if TRUE, index building will be done in another thread and init() method returns
+     * immediately. initFinished() signal will be emitted once the initialization is over.
      *
      * If \a extent is not NULLPTR, the locator will index only a subset of the layer which falls within that extent.
      */
@@ -301,17 +300,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     void initFinished( bool ok );
 
-    /**
-     * Emitted whenever index initialization has started
-     */
-    void initStarted();
-
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
   protected slots:
     void destroyIndex();
   private slots:
-    void onRebuildIndexFinished();
+    void onRebuildIndexFinished( bool ok );
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
@@ -335,16 +329,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     std::unique_ptr<QgsRenderContext> mContext;
     std::unique_ptr<QgsFeatureRenderer> mRenderer;
-    QFuture<bool> mFuture;
-    QFutureWatcher<bool> mFutureWatcher;
     int mMaxFeaturesToIndex = -1;
     bool mAsynchronous = false;
+    bool mIsIndexing = false;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;
     friend class QgsPointLocator_VisitorArea;
     friend class QgsPointLocator_VisitorEdgesInRect;
     friend class QgsPointLocator_VisitorVerticesInRect;
+    friend class QgsPointLocatorInitTask;
 };
 
 
