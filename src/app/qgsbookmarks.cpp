@@ -226,11 +226,11 @@ QMap<QString, QModelIndex> QgsBookmarks::getIndexMap()
 
   for ( int i = 0; i < rowCount; ++i )
   {
-    QModelIndex idx = mBookmarkModel->index( i, 1 ); //Name col
+    QModelIndex idx = mBookmarkModel->index( i, QgsBookmarkManagerModel::ColumnName ); //Name col
     if ( idx.isValid() )
     {
       QString name = idx.data( Qt::DisplayRole ).toString();
-      QString project = idx.sibling( idx.row(), 2 ).data().toString();
+      QString project = idx.sibling( idx.row(), QgsBookmarkManagerModel::ColumnGroup ).data().toString();
       if ( !project.isEmpty() )
       {
         name = name + " (" + project + ")";
