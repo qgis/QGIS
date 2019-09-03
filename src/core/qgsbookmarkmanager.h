@@ -147,19 +147,24 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
   public:
 
     /**
-     * Constructor for QgsBookmarkManager, with the specified \a parent project.
+     * Returns a newly created QgsBookmarkManager using a project-based bookmark store, linked to the specified \a project.
      *
-     * This constructor creates a bookmark manager which stores bookmarks in a QgsProject instance.
+     * The returned object is parented to the \a project.
      */
-    explicit QgsBookmarkManager( QgsProject *project SIP_TRANSFERTHIS = nullptr );
+    static QgsBookmarkManager *createProjectBasedManager( QgsProject *project );
 
     /**
      * Constructor for QgsBookmarkManager, with the specified \a parent object.
      *
-     * This constructor creates a bookmark manager which stores bookmarks in QgsSettings, using
-     * the specified \a settingKey.
+     * This constructor creates a bookmark manager which stores bookmarks in an XML file. A call to
+     * initialize() is required to initialize the manager and set the corresponding file path.
      */
-    explicit QgsBookmarkManager( const QString &settingKey, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsBookmarkManager( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * @brief initialize
+     */
+    void initialize( const QString &filePath );
 
     /**
      * Adds a \a bookmark to the manager.
@@ -277,14 +282,12 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
   private:
 
     QgsProject *mProject = nullptr;
-    QString mSettingKey;
+    QString mFilePath;
     QList< QgsBookmark > mBookmarks;
 
     void store();
-    bool mNeedToConvertOldBookmarks = false;
-    void convertOldBookmarks();
-
-    friend class QgsApplication;
+    bool mInitialized = false;
+    bool mBlockStorage = false;
 
 };
 

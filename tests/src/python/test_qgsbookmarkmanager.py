@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 import qgis  # NOQA
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsBookmark,
@@ -63,6 +63,8 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertEqual(b.id(), 'id')
         b.setName('name')
         self.assertEqual(b.name(), 'name')
+        b.setGroup('group')
+        self.assertEqual(b.group(), 'group')
         b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertEqual(b.extent(), QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
 
@@ -70,10 +72,12 @@ class TestQgsBookmarkManager(unittest.TestCase):
         b = QgsBookmark()
         b.setId('id')
         b.setName('name')
+        b.setGroup('group')
         b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         b2 = QgsBookmark()
         b2.setId('id')
         b2.setName('name')
+        b2.setGroup('group')
         b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertEqual(b, b2)
         b2.setId('x')
@@ -83,6 +87,10 @@ class TestQgsBookmarkManager(unittest.TestCase):
         b2.setName('x')
         self.assertNotEqual(b, b2)
         b2.setName('name')
+        self.assertEqual(b, b2)
+        b2.setGroup('x')
+        self.assertNotEqual(b, b2)
+        b2.setGroup('group')
         self.assertEqual(b, b2)
         b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 5), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertNotEqual(b, b2)
@@ -95,7 +103,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         b.setName('b1')
         b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
 
-        manager = QgsBookmarkManager(project)
+        manager = QgsBookmarkManager.createProjectBasedManager(project)
 
         bookmark_about_to_be_added_spy = QSignalSpy(manager.bookmarkAboutToBeAdded)
         bookmark_added_spy = QSignalSpy(manager.bookmarkAdded)
@@ -137,7 +145,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
 
     def testBookmarks(self):
         project = QgsProject()
-        manager = QgsBookmarkManager(project)
+        manager = QgsBookmarkManager.createProjectBasedManager(project)
 
         b = QgsBookmark()
         b.setId('1')
@@ -175,7 +183,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         b.setName('b1')
         b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
-        self.manager = QgsBookmarkManager(project)
+        self.manager = QgsBookmarkManager.createProjectBasedManager(project)
         bookmark_removed_spy = QSignalSpy(self.manager.bookmarkRemoved)
         bookmark_about_to_be_removed_spy = QSignalSpy(self.manager.bookmarkAboutToBeRemoved)
         # tests that bookmark still exists when bookmarkAboutToBeRemoved is fired
@@ -199,7 +207,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
 
     def testClear(self):
         project = QgsProject()
-        manager = QgsBookmarkManager(project)
+        manager = QgsBookmarkManager.createProjectBasedManager(project)
 
         # add a bunch of bookmarks
         b = QgsBookmark()
@@ -230,7 +238,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
 
     def testBookmarksById(self):
         project = QgsProject()
-        manager = QgsBookmarkManager(project)
+        manager = QgsBookmarkManager.createProjectBasedManager(project)
 
         # add a bunch of bookmarks
         b = QgsBookmark()
@@ -262,7 +270,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         Test reading and writing bookmark manager state to XML
         """
         project = QgsProject()
-        manager = QgsBookmarkManager(project)
+        manager = QgsBookmarkManager.createProjectBasedManager(project)
 
         # add a bunch of bookmarks
         b = QgsBookmark()
@@ -291,7 +299,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
 
         # restore from xml
         project2 = QgsProject()
-        manager2 = QgsBookmarkManager(project2)
+        manager2 = QgsBookmarkManager.createProjectBasedManager(project2)
         self.assertTrue(manager2.readXml(elem, doc))
 
         self.assertEqual(len(manager2.bookmarks()), 3)
@@ -300,7 +308,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
 
     def testUpdateBookmark(self):
         project = QgsProject()
-        manager = QgsBookmarkManager(project)
+        manager = QgsBookmarkManager.createProjectBasedManager(project)
         changed_spy = QSignalSpy(manager.bookmarkChanged)
 
         b = QgsBookmark()
@@ -357,11 +365,16 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').extent().crs().authid(), 'EPSG:28355')
         self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').extent().toString(1), '807985.7,7450916.9 : 876080.0,7564407.4')
 
-    def testQSettingsStorage(self):
+    def testFileStorage(self):
         """
         Test QSettings bound manager
         """
-        manager = QgsBookmarkManager('test_key')
+        manager = QgsBookmarkManager()
+
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/bookmarks.xml".format(tmpDir.path())
+
+        manager.initialize(tmpFile)
 
         # add a bunch of bookmarks
         b = QgsBookmark()
@@ -384,11 +397,15 @@ class TestQgsBookmarkManager(unittest.TestCase):
         manager.addBookmark(b3)
 
         # create another new manager with same key, should contain existing bookmarks
-        manager2 = QgsBookmarkManager('test_key')
+        manager2 = QgsBookmarkManager()
+        self.assertFalse(manager2.bookmarks())
+        manager2.initialize(tmpFile)
         self.assertEqual(manager2.bookmarks(), [b, b2, b3])
 
         # but a manager with a different key should not...
-        manager3 = QgsBookmarkManager('test_key2')
+        tmpFile2 = "{}/bookmarks2.xml".format(tmpDir.path())
+        manager3 = QgsBookmarkManager()
+        manager3.initialize(tmpFile2)
         self.assertEqual(manager3.bookmarks(), [])
 
     def testApplicationInstance(self):

@@ -100,36 +100,21 @@ void QgsBookmark::setExtent( const QgsReferencedRectangle &extent )
 }
 
 
-QgsBookmarkManager::QgsBookmarkManager( QgsProject *project )
-  : QObject( project )
-  , mProject( project )
-{
+//
+// QgsBookmarkManager
+//
 
+QgsBookmarkManager *QgsBookmarkManager::createProjectBasedManager( QgsProject *project )
+{
+  QgsBookmarkManager *res = new QgsBookmarkManager( project );
+  res->mProject = project;
+  return res;
 }
 
-
-QgsBookmarkManager::QgsBookmarkManager( const QString &settingKey, QObject *parent )
+QgsBookmarkManager::QgsBookmarkManager( QObject *parent )
   : QObject( parent )
-  , mSettingKey( settingKey )
 {
-  // restore state
-  QgsSettings settings;
-  if ( !settings.value( settingKey, QVariant(), QgsSettings::Core ).isValid() )
-  {
-    mNeedToConvertOldBookmarks = true;
-    // we can't do the conversion yet -- we need to wait till the application is initialized first...
-  }
-  else
-  {
-    const QString textXml = settings.value( settingKey, QString(), QgsSettings::Core ).toString();
-    if ( !textXml.isEmpty() )
-    {
-      QDomDocument doc;
-      doc.setContent( textXml );
-      QDomElement elem = doc.documentElement();
-      readXml( elem, doc );
-    }
-  }
+  // we defer actually loading bookmarks until initialize() is called..
 }
 
 QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
@@ -243,6 +228,8 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
   bool result = true;
   if ( mProject && bookmarksElem.isNull() )
   {
+    mBlockStorage = true;
+
     // handle legacy projects
     const int count = mProject->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
     for ( int i = 0; i < count; ++i )
@@ -261,10 +248,12 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
       addBookmark( b, &added );
       result = added && result;
     }
+    mBlockStorage = false;
     return result;
   }
 
   //restore each
+  mBlockStorage = true;
   QDomNodeList bookmarkNodes = element.elementsByTagName( QStringLiteral( "Bookmark" ) );
   for ( int i = 0; i < bookmarkNodes.size(); ++i )
   {
@@ -273,6 +262,7 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
     addBookmark( b, &added );
     result = added && result;
   }
+  mBlockStorage = false;
 
   return result;
 }
@@ -421,54 +411,93 @@ bool QgsBookmarkManager::importFromFile( const QString &path )
 
 void QgsBookmarkManager::store()
 {
+  if ( mBlockStorage )
+    return;
+
   if ( mProject )
   {
     mProject->setDirty( true );
   }
-  else if ( !mSettingKey.isEmpty() )
+  else if ( !mFilePath.isEmpty() )
   {
-    // yeah, fine, whatever... storing xml in settings IS kinda ugly. But the alternative
-    // is a second marshalling implementation designed just for that, and I'd rather avoid the
-    // duplicate code. Plus, this is all internal anyway... just use the public stable API and don't
-    // concern your pretty little mind about all these technical details.
-    QDomDocument textDoc;
-    QDomElement textElem = writeXml( textDoc );
-    textDoc.appendChild( textElem );
-    QgsSettings().setValue( mSettingKey, textDoc.toString(), QgsSettings::Core );
+    QFile f( mFilePath );
+    if ( !f.open( QFile::WriteOnly | QIODevice::Truncate ) )
+    {
+      f.close();
+      return;
+    }
+
+    QDomDocument doc;
+    QDomElement elem = writeXml( doc );
+    doc.appendChild( elem );
+
+    QTextStream out( &f );
+    out.setCodec( "UTF - 8" );
+    doc.save( out, 2 );
+    f.close();
   }
 }
 
-void QgsBookmarkManager::convertOldBookmarks()
+void QgsBookmarkManager::initialize( const QString &filePath )
 {
-  if ( !mNeedToConvertOldBookmarks )
+  if ( mInitialized )
     return;
 
-  //convert old bookmarks from db
-  sqlite3_database_unique_ptr database;
-  int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
-  if ( result != SQLITE_OK )
-  {
-    return;
-  }
+  mFilePath = filePath;
 
-  sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT name,project_name,xmin,ymin,xmax,ymax,projection_srid FROM tbl_bookmarks" ), result );
-  if ( result == SQLITE_OK )
+  mInitialized = true;
+
+  // restore state
+  if ( !QFileInfo::exists( mFilePath ) )
   {
-    while ( preparedStatement.step() == SQLITE_ROW )
+    //convert old bookmarks from db
+    sqlite3_database_unique_ptr database;
+    int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+    if ( result != SQLITE_OK )
     {
-      const QString name = preparedStatement.columnAsText( 0 );
-      const QString group = preparedStatement.columnAsText( 1 );
-      const double xMin = preparedStatement.columnAsDouble( 2 );
-      const double yMin = preparedStatement.columnAsDouble( 3 );
-      const double xMax = preparedStatement.columnAsDouble( 4 );
-      const double yMax = preparedStatement.columnAsDouble( 5 );
-      const long long srid = preparedStatement.columnAsInt64( 6 );
-
-      QgsBookmark b;
-      b.setName( name );
-      const QgsRectangle extent( xMin, yMin, xMax, yMax );
-      b.setExtent( QgsReferencedRectangle( extent, QgsCoordinateReferenceSystem::fromSrsId( srid ) ) );
-      addBookmark( b );
+      return;
     }
+
+    mBlockStorage = true;
+    sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT name,project_name,xmin,ymin,xmax,ymax,projection_srid FROM tbl_bookmarks" ), result );
+    if ( result == SQLITE_OK )
+    {
+      while ( preparedStatement.step() == SQLITE_ROW )
+      {
+        const QString name = preparedStatement.columnAsText( 0 );
+        const QString group = preparedStatement.columnAsText( 1 );
+        const double xMin = preparedStatement.columnAsDouble( 2 );
+        const double yMin = preparedStatement.columnAsDouble( 3 );
+        const double xMax = preparedStatement.columnAsDouble( 4 );
+        const double yMax = preparedStatement.columnAsDouble( 5 );
+        const long long srid = preparedStatement.columnAsInt64( 6 );
+
+        QgsBookmark b;
+        b.setName( name );
+        const QgsRectangle extent( xMin, yMin, xMax, yMax );
+        b.setExtent( QgsReferencedRectangle( extent, QgsCoordinateReferenceSystem::fromSrsId( srid ) ) );
+        addBookmark( b );
+      }
+    }
+    mBlockStorage = false;
+    store();
+  }
+  else
+  {
+    QFile f( mFilePath );
+    if ( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      return;
+    }
+
+    QDomDocument doc;
+    if ( !doc.setContent( &f ) )
+    {
+      return;
+    }
+    f.close();
+
+    QDomElement elem = doc.documentElement();
+    readXml( elem, doc );
   }
 }
