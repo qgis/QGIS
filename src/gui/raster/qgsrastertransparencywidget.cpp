@@ -70,8 +70,6 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
 
 void QgsRasterTransparencyWidget::syncToLayer()
 {
-  if ( ! mRasterLayer->isValid() )
-    return;
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( provider )
