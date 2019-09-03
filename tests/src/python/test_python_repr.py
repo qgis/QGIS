@@ -62,8 +62,7 @@ class TestPython__repr__(unittest.TestCase):
 
     def testQgsClassificationRange(self):
         c = QgsClassificationRange('from 1 to 2', 1, 2)
-        self.assertEqual(c.__repr__(), 'from 1 to 2')
-
+        self.assertEqual(c.__repr__(), "<QgsClassificationRange: 'from 1 to 2'>")
 
     def testQgsCompoundcurveRepr(self):
         cs = QgsCircularString(QgsPoint(1, 2), QgsPoint(2, 3), QgsPoint(3, 4))
