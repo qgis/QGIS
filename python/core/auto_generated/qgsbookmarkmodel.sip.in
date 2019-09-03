@@ -29,6 +29,14 @@ model data is a merge of the bookmarks stored in both managers.
 %End
   public:
 
+    enum CustomRoles
+    {
+      RoleExtent,
+      RoleName,
+      RoleId,
+      RoleGroup,
+    };
+
     enum Columns
     {
       ColumnName,
