@@ -121,7 +121,12 @@
         <file>themes/default/cap_flat.svg</file>
         <file>themes/default/cap_round.svg</file>
         <file>themes/default/cap_square.svg</file>
-        <file>themes/default/console/iconClassConsole.svg</file>
+        <file>themes/default/classification/mClassificationEqualCount.svg</file>
+        <file>themes/default/classification/mClassificationEqualInterval.svg</file>
+        <file>themes/default/classification/mClassificationLogarithmic.svg</file>
+        <file>themes/default/classification/mClassificationNaturalBreak.svg</file>
+        <file>themes/default/classification/mClassificationPrettyBreak.svg</file>
+        <file>themes/default/classification/mClassificationStandardDeviation.svg</file>
         <file>themes/default/console/iconClearConsole.svg</file>
         <file>themes/default/console/iconCodepadConsole.svg</file>
         <file>themes/default/console/iconHelpConsole.svg</file>
