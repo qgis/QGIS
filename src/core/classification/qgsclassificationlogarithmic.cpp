@@ -89,9 +89,6 @@ QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double u
       break;
   }
 
-  QString label( labelFormat() );
-  label.replace( QLatin1String( "%1" ), lowerLabel ).replace( QLatin1String( "%2" ), upperLabel );
-  return label;
-
+  return labelFormat().arg( lowerLabel ).arg( upperLabel );
 }
 

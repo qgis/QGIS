@@ -294,7 +294,5 @@ QString QgsClassificationMethod::labelForRange( const double lowerValue, const d
   const QString lowerLabel = valueToLabel( lowerValue );
   const QString upperLabel = valueToLabel( upperValue );
 
-  QString label( mLabelFormat );
-  label.replace( QLatin1String( "%1" ), lowerLabel ).replace( QLatin1String( "%2" ), upperLabel );
-  return label;
+  return labelFormat().arg( lowerLabel ).arg( upperLabel );
 }
