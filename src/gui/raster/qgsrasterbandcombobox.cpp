@@ -24,7 +24,14 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     if ( mLayer && mLayer->isValid() )
-      emit bandChanged( currentIndex() >= 0 ? currentData().toInt() : -1 );
+    {
+      const int newBand = currentIndex() >= 0 ? currentData().toInt() : -1 ;
+      if ( newBand != mPrevBand )
+      {
+        emit bandChanged( currentIndex() >= 0 ? currentData().toInt() : -1 );
+        mPrevBand = newBand;
+      }
+    }
   } );
 
   connect( this, &QComboBox::currentTextChanged, this, [ = ]( const QString & value )
@@ -33,8 +40,16 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
     {
       bool ok = false;
       const int band = value.toInt( &ok );
-      if ( ok )
+      if ( ok && band != mPrevBand )
+      {
         emit bandChanged( band );
+        mPrevBand = band;
+      }
+      else if ( mShowNotSet && mPrevBand != -1 )
+      {
+        emit bandChanged( -1 );
+        mPrevBand = -1;
+      }
     }
   } );
 
@@ -109,8 +124,9 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
 
   blockSignals( false );
   const int newBand = currentBand();
-  if ( newBand != oldBand )
-    emit bandChanged( newBand );
+  //if ( newBand != oldBand )
+  //  emit bandChanged( newBand );
+  mPrevBand = newBand;
 }
 
 void QgsRasterBandComboBox::setBand( int band )
@@ -120,7 +136,8 @@ void QgsRasterBandComboBox::setBand( int band )
     if ( band < 0 )
     {
       setCurrentIndex( -1 );
-      emit bandChanged( -1 );
+      if ( mPrevBand != -1 )
+        emit bandChanged( -1 );
     }
     else
       setCurrentText( QString::number( band ) );
@@ -129,6 +146,7 @@ void QgsRasterBandComboBox::setBand( int band )
   {
     setCurrentIndex( findData( band ) );
   }
+  mPrevBand = band;
 }
 
 bool QgsRasterBandComboBox::isShowingNotSetOption() const
