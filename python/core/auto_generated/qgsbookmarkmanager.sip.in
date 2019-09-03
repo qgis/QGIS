@@ -246,7 +246,7 @@ Exports all bookmarks from a list of ``managers`` to an xml file at the specifie
 
 Returns ``True`` if the export was successful.
 
-.. seealso:: :py:func:`importFile`
+.. seealso:: :py:func:`importFromFile`
 %End
 
 
