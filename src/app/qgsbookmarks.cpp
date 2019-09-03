@@ -72,7 +72,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
   mBookmarkToolbar->addWidget( btnImpExp );
 
-  mBookmarkModel = new QgsBookmarkManagerModel( QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager(), this );
+  mBookmarkModel = new QgsBookmarkManagerProxyModel( QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager(), this );
 
   lstBookmarks->setModel( mBookmarkModel );
   lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate( this ) );

@@ -361,3 +361,18 @@ QgsBookmark QgsBookmarkManagerModel::bookmarkForIndex( const QModelIndex &index 
     return mProjectManager->bookmarks().at( index.row() - managerCount );
   return QgsBookmark();
 }
+
+//
+// QgsBookmarkManagerProxyModel
+//
+
+QgsBookmarkManagerProxyModel::QgsBookmarkManagerProxyModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mModel( new QgsBookmarkManagerModel( manager, projectManager, this ) )
+{
+  setSourceModel( mModel );
+  setDynamicSortFilter( true );
+  setSortLocaleAware( true );
+  setFilterCaseSensitivity( Qt::CaseInsensitive );
+  sort( 0 );
+}

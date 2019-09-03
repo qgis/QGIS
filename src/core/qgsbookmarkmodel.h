@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QAbstractTableModel>
+#include <QSortFilterProxyModel>
 
 class QgsBookmarkManager;
 class QgsBookmark;
@@ -70,7 +71,7 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
      * (usually the application bookmark manager, accessed via QgsApplication::bookmarkManager())
      * and a secondary \a projectManager (a project based bookmark manager).
      */
-    QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = nullptr, QObject *parent = nullptr );
+    QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = nullptr, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -96,5 +97,28 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
 
 };
 
+/**
+ * \ingroup core
+ * \class QgsBookmarkManagerProxyModel
+ *
+ * \brief A QSortFilterProxyModel subclass for sorting the entries in a QgsBookmarkManagerModel.
+ *
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsBookmarkManagerProxyModel : public QSortFilterProxyModel
+{
+  public:
+
+    /**
+     * Constructor for QgsBookmarkManagerProxyModel, associated with a main \a manager
+     * (usually the application bookmark manager, accessed via QgsApplication::bookmarkManager())
+     * and a secondary \a projectManager (a project based bookmark manager).
+     */
+    QgsBookmarkManagerProxyModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = nullptr, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+  private:
+
+    QgsBookmarkManagerModel *mModel = nullptr;
+};
 
 #endif // QGSBOOKMARKMODEL_H
