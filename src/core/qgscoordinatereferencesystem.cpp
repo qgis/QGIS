@@ -1877,6 +1877,15 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
   return true;
 }
 
+#if defined(PJ_VERSION) && PJ_VERSION>=600
+static void qgis_stderr_logger( void *app_data, int level, const char *msg )
+{
+  if ( strcmp( msg, "proj_create: crs not found" ) == 0 )
+    return;
+  pj_stderr_logger( app_data, level, msg );
+}
+#endif
+
 int QgsCoordinateReferenceSystem::syncDatabase()
 {
   setlocale( LC_ALL, "C" );
@@ -2087,6 +2096,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   projCtx pContext = pj_ctx_alloc();
 
 #if !defined(PJ_VERSION) || PJ_VERSION!=470
+#if defined(PJ_VERSION) && PJ_VERSION>=600
+  pj_ctx_set_logger( pContext, qgis_stderr_logger );
+#endif
   sql = QStringLiteral( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' AND NOT deprecated AND NOT noupdate" );
   statement = database.prepare( sql, result );
   if ( result == SQLITE_OK )
