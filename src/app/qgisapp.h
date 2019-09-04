@@ -1067,6 +1067,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new file from a template project
     bool fileNewFromTemplate( const QString &fileName );
 
+    //! Show the spatial bookmarks dialog
+    void showBookmarks( bool show );
+
+    //! Create a new spatial bookmark
+    void newBookmark();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -1394,10 +1400,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open project properties dialog and show the projections tab
     void projectPropertiesProjections();
     /*  void urlData(); */
-    //! Show the spatial bookmarks dialog
-    void showBookmarks( bool show );
-    //! Create a new spatial bookmark
-    void newBookmark();
     //! activates the add feature tool
     void addFeature();
     //! activates the move feature tool

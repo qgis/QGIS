@@ -208,6 +208,11 @@ Removes and deletes all bookmarks from the manager.
 .. seealso:: :py:func:`removeBookmark`
 %End
 
+    QStringList groups() const;
+%Docstring
+Returns a list of all bookmark groups contained in the manager.
+%End
+
     QList< QgsBookmark > bookmarks() const;
 %Docstring
 Returns a list of all bookmarks contained in the manager.
@@ -216,6 +221,12 @@ Returns a list of all bookmarks contained in the manager.
     QgsBookmark bookmarkById( const QString &id ) const;
 %Docstring
 Returns the bookmark with a matching ``id``, or an empty bookmark if no matching bookmarks
+were found.
+%End
+
+    QList< QgsBookmark > bookmarksByGroup( const QString &group );
+%Docstring
+Returns a list of bookmark with a matching ``group``, or an empty list if no matching bookmarks
 were found.
 %End
 
