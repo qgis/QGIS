@@ -180,7 +180,7 @@ void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
     {
       canvasExtent = ct.transform( rect );
     }
-    catch ( QgsCsException& )
+    catch ( QgsCsException & )
     {
       QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
       return;
