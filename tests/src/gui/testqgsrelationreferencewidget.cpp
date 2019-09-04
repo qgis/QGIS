@@ -469,7 +469,7 @@ void TestQgsRelationReferenceWidget::testAddEntryNoGeom()
 
   QVERIFY( !w.mCurrentMapTool );
 
-  QCOMPARE( w.mComboBox->identifierValues().at( 0 ), 13 );
+  QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
