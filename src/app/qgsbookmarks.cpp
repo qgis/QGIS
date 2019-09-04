@@ -168,32 +168,32 @@ void QgsBookmarks::zoomToBookmark()
   zoomToBookmarkIndex( index );
 }
 
-void  QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
+void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
 {
-  double xmin = index.sibling( index.row(), 3 ).data().toDouble();
-  double ymin = index.sibling( index.row(), 4 ).data().toDouble();
-  double xmax = index.sibling( index.row(), 5 ).data().toDouble();
-  double ymax = index.sibling( index.row(), 6 ).data().toDouble();
-  QString authid = index.sibling( index.row(), 7 ).data().toString();
-
-  QgsRectangle rect = QgsRectangle( xmin, ymin, xmax, ymax );
-
-  // backwards compatibility, older version had -1 in the srid column
-  if ( ! authid.isEmpty( ) &&
-       authid != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid() )
+  QgsReferencedRectangle rect = index.data( QgsBookmarkManagerModel::RoleExtent ).value< QgsReferencedRectangle >();
+  QgsRectangle canvasExtent = rect;
+  if ( rect.crs() != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() )
   {
-    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid ),
+    QgsCoordinateTransform ct( rect.crs(),
                                QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
-    rect = ct.transform( rect );
-    if ( rect.isEmpty() )
+    try
     {
-      QMessageBox::warning( this, tr( "Empty Extent" ), tr( "Reprojected extent is empty." ) );
+      canvasExtent = ct.transform( rect );
+    }
+    catch ( QgsCsException& )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
+      return;
+    }
+    if ( canvasExtent.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Bookmark extent is empty" ) );
       return;
     }
   }
 
   // set the extent to the bookmark and refresh
-  QgisApp::instance()->setExtent( rect );
+  QgisApp::instance()->mapCanvas()->setExtent( canvasExtent );
   QgisApp::instance()->mapCanvas()->refresh();
 }
 
