@@ -235,6 +235,14 @@ class TestQgsBookmarkManagerModel(unittest.TestCase):
         self.assertEqual([b.name() for b in app_manager.bookmarks()], ['new name', 'new name 2'])
         self.assertFalse(model.setData(model.index(1, 7), Qt.Unchecked, Qt.CheckStateRole))
 
+        # remove rows
+        model.removeRows(0, 1)
+        self.assertEqual([b.name() for b in project_manager.bookmarks()], ['b2'])
+        self.assertEqual([b.name() for b in app_manager.bookmarks()], ['new name 2'])
+        model.removeRows(0, 2)
+        self.assertEqual([b.name() for b in project_manager.bookmarks()], [])
+        self.assertEqual([b.name() for b in app_manager.bookmarks()], [])
+
 
 if __name__ == '__main__':
     unittest.main()
