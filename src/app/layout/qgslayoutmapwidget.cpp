@@ -32,6 +32,8 @@
 #include "qgslayoutatlas.h"
 #include "qgslayoutdesignerinterface.h"
 #include "qgsguiutils.h"
+#include "qgsbookmarkmodel.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -88,6 +90,17 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   mMapRotationSpinBox->setClearValue( 0 );
 
   mDockToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+
+  mBookmarkMenu = new QMenu( this );
+  QToolButton *btnBookmarks = new QToolButton( this );
+  btnBookmarks->setAutoRaise( true );
+  btnBookmarks->setToolTip( tr( "Bookmarks" ) );
+  btnBookmarks->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
+  btnBookmarks->setPopupMode( QToolButton::InstantPopup );
+  btnBookmarks->setMenu( mBookmarkMenu );
+
+  mDockToolbar->insertWidget( mActionMoveContent, btnBookmarks );
+  connect( mBookmarkMenu, &QMenu::aboutToShow, this, &QgsLayoutMapWidget::aboutToShowBookmarkMenu );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, item );
@@ -380,6 +393,73 @@ void QgsLayoutMapWidget::switchToMoveContentTool()
 {
   if ( mInterface )
     mInterface->activateTool( QgsLayoutDesignerInterface::ToolMoveItemContent );
+}
+
+void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
+{
+  mBookmarkMenu->clear();
+
+  // query the bookmarks now? or once during widget creation... Hmm. Either way, there's potentially a
+  // delay if there's LOTS of bookmarks. Let's avoid the cost until bookmarks are actually required.
+  if ( !mBookmarkModel )
+    mBookmarkModel = new QgsBookmarkManagerProxyModel( QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager(), this );
+
+  QMap< QString, QMenu * > groupMenus;
+  for ( int i = 0; i < mBookmarkModel->rowCount(); ++i )
+  {
+    const QString group = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), QgsBookmarkManagerModel::RoleGroup ).toString();
+    QMenu *destMenu = mBookmarkMenu;
+    if ( !group.isEmpty() )
+    {
+      destMenu = groupMenus.value( group );
+      if ( !destMenu )
+      {
+        destMenu = new QMenu( group, mBookmarkMenu );
+        groupMenus[ group ] = destMenu;
+      }
+    }
+    QAction *action = new QAction( mBookmarkModel->data( mBookmarkModel->index( i, 0 ), QgsBookmarkManagerModel::RoleName ).toString(), mBookmarkMenu );
+    const QgsReferencedRectangle extent = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), QgsBookmarkManagerModel::RoleExtent ).value< QgsReferencedRectangle >();
+    connect( action, &QAction::triggered, this, [ = ]
+    {
+      if ( !mMapItem )
+      {
+        return;
+      }
+
+      QgsRectangle newExtent = extent;
+
+      //transform?
+      if ( extent.crs() != mMapItem->crs() )
+      {
+        try
+        {
+          QgsCoordinateTransform xForm( extent.crs(), mMapItem->crs(), QgsProject::instance() );
+          newExtent = xForm.transformBoundingBox( newExtent );
+        }
+        catch ( QgsCsException & )
+        {
+          //transform failed, better not proceed
+          return;
+        }
+      }
+
+      mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Extent" ) );
+      mMapItem->zoomToExtent( newExtent );
+      mMapItem->layout()->undoStack()->endCommand();
+    } );
+    destMenu->addAction( action );
+  }
+
+  QStringList groupKeys = groupMenus.keys();
+  groupKeys.sort( Qt::CaseInsensitive );
+  for ( int i = 0; i < groupKeys.count(); ++i )
+  {
+    if ( mBookmarkMenu->actions().at( i ) )
+      mBookmarkMenu->insertMenu( mBookmarkMenu->actions().at( i ), groupMenus.value( groupKeys.at( i ) ) );
+    else
+      mBookmarkMenu->addMenu( groupMenus.value( groupKeys.at( i ) ) );
+  }
 }
 
 void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
