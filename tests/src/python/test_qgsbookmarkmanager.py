@@ -169,6 +169,39 @@ class TestQgsBookmarkManager(unittest.TestCase):
         manager.addBookmark(b3)
         self.assertEqual(manager.bookmarks(), [b, b2, b3])
 
+    def testBookmarkGroups(self):
+        project = QgsProject()
+        manager = QgsBookmarkManager.createProjectBasedManager(project)
+
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        manager.addBookmark(b)
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setGroup('group1')
+        manager.addBookmark(b2)
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setGroup('group2')
+        manager.addBookmark(b3)
+
+        # test that groups are adjusted when bookmarks are added
+        self.assertEqual(manager.groups(), ['', 'group1', 'group2'])
+
+        manager.removeBookmark('3')
+
+        # test that groups are adjusted when a bookmark is removed
+        self.assertEqual(manager.groups(), ['', 'group1'])
+
+        b2.setGroup('groupmodified')
+        manager.updateBookmark(b2)
+
+        # test that groups are adjusted when a bookmark group is edited
+        self.assertEqual(manager.groups(), ['', 'groupmodified'])
+
     def bookmarkAboutToBeRemoved(self, id):
         # bookmark should still exist at this time
         self.assertEqual(id, '1')

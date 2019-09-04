@@ -216,6 +216,11 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     void clear();
 
     /**
+     * Returns a list of all bookmark groups contained in the manager.
+     */
+    QStringList groups() const;
+
+    /**
      * Returns a list of all bookmarks contained in the manager.
      */
     QList< QgsBookmark > bookmarks() const;
@@ -225,6 +230,12 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
      * were found.
      */
     QgsBookmark bookmarkById( const QString &id ) const;
+
+    /**
+     * Returns a list of bookmark with a matching \a group, or an empty list if no matching bookmarks
+     * were found.
+     */
+    QList< QgsBookmark > bookmarksByGroup( const QString &group );
 
     /**
      * Reads the manager's state from a DOM element, restoring all bookmarks
@@ -287,6 +298,7 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     QgsProject *mProject = nullptr;
     QString mFilePath;
     QList< QgsBookmark > mBookmarks;
+    QStringList mGroups;
 
     void store();
     bool mInitialized = false;
