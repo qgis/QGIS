@@ -455,7 +455,7 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
   groupKeys.sort( Qt::CaseInsensitive );
   for ( int i = 0; i < groupKeys.count(); ++i )
   {
-    if ( mBookmarkMenu->actions().at( i ) )
+    if ( mBookmarkMenu->actions().value( i ) )
       mBookmarkMenu->insertMenu( mBookmarkMenu->actions().at( i ), groupMenus.value( groupKeys.at( i ) ) );
     else
       mBookmarkMenu->addMenu( groupMenus.value( groupKeys.at( i ) ) );
