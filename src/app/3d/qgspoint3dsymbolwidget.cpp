@@ -16,6 +16,7 @@
 #include "qgspoint3dsymbolwidget.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include "qgslayoututils.h"
 #include "qgsreadwritecontext.h"
 #include "qgssettings.h"
 
@@ -183,9 +184,9 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
   spinSX->setValue( sx );
   spinSY->setValue( sy );
   spinSZ->setValue( sz );
-  spinRX->setValue( rot.x() );
-  spinRY->setValue( rot.y() );
-  spinRZ->setValue( rot.z() );
+  spinRX->setValue( QgsLayoutUtils::normalizedAngle( rot.x() ) );
+  spinRY->setValue( QgsLayoutUtils::normalizedAngle( rot.y() ) );
+  spinRZ->setValue( QgsLayoutUtils::normalizedAngle( rot.z() ) );
 }
 
 QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
