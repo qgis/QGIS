@@ -611,6 +611,7 @@ void QgsPointLocator::init( int maxFeaturesToIndex )
     return;
 
   mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
+  mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );
 
   if ( mContext )
   {
@@ -639,15 +640,27 @@ bool QgsPointLocator::hasIndex() const
   return mIsIndexing || mRTree || mIsEmptyLayer;
 }
 
+bool QgsPointLocator::prepare()
+{
+  if ( mIsIndexing )
+    return false;
+
+  if ( !mRTree )
+  {
+    init();
+    if ( mIsIndexing || !mRTree ) // asynchronous mode and currently indexing or still invalid?
+      return false;
+  }
+
+  return true;
+}
 
 bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 {
   QTime t;
   t.start();
 
-  QgsVectorLayerFeatureSource source( mLayer );
-
-  QgsDebugMsg( QStringLiteral( "rebuildIndex %1" ).arg( source.id() ) );
+  QgsDebugMsg( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ) );
 
   destroyIndex();
 
@@ -684,13 +697,13 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     if ( mRenderer )
     {
       // setup scale for scale dependent visibility (rule based)
-      mRenderer->startRender( *ctx, source.fields() );
+      mRenderer->startRender( *ctx, mSource->fields() );
       filter = mRenderer->capabilities() & QgsFeatureRenderer::Filter;
-      request.setSubsetOfAttributes( mRenderer->usedAttributes( *ctx ), source.fields() );
+      request.setSubsetOfAttributes( mRenderer->usedAttributes( *ctx ), mSource->fields() );
     }
   }
 
-  QgsFeatureIterator fi = source.getFeatures( request );
+  QgsFeatureIterator fi = mSource->getFeatures( request );
   int indexedCount = 0;
 
   while ( fi.nextFeature( f ) )
@@ -767,7 +780,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     mRenderer->stopRender( *ctx );
   }
 
-  QgsDebugMsg( QStringLiteral( "RebuildIndex : %1 ms (%2)" ).arg( t.elapsed() ).arg( source.id() ) );
+  QgsDebugMsg( QStringLiteral( "RebuildIndex end : %1 ms (%2)" ).arg( t.elapsed() ).arg( mSource->id() ) );
 
   return true;
 }
@@ -908,15 +921,8 @@ void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const 
 
 QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, double tolerance, MatchFilter *filter )
 {
-  if ( mIsIndexing )
+  if ( !prepare() )
     return Match();
-
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return Match();
-  }
 
   Match m;
   QgsPointLocator_VisitorNearestVertex visitor( this, m, point, filter );
@@ -929,15 +935,8 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
 
 QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, double tolerance, MatchFilter *filter )
 {
-  if ( mIsIndexing )
+  if ( !prepare() )
     return Match();
-
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return Match();
-  }
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry )
@@ -954,15 +953,8 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
 
 QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, double tolerance, MatchFilter *filter )
 {
-  if ( mIsIndexing )
+  if ( !prepare() )
     return Match();
-
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return Match();
-  }
 
   MatchList mlist = pointInPolygon( point );
   if ( !mlist.isEmpty() && mlist.at( 0 ).isValid() )
@@ -991,15 +983,8 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
 
 QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
 {
-  if ( mIsIndexing )
+  if ( !prepare() )
     return MatchList();
-
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return MatchList();
-  }
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry )
@@ -1020,15 +1005,8 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point
 
 QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
 {
-  if ( mIsIndexing )
+  if ( !prepare() )
     return MatchList();
-
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return MatchList();
-  }
 
   MatchList lst;
   QgsPointLocator_VisitorVerticesInRect visitor( this, lst, rect, filter );
@@ -1043,18 +1021,10 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &po
   return verticesInRect( rect, filter );
 }
 
-
 QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point )
 {
-  if ( mIsIndexing )
+  if ( !prepare() )
     return MatchList();
-
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return MatchList();
-  }
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )

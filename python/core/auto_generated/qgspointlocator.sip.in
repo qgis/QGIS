@@ -103,8 +103,11 @@ Configure render context  - if not ``None``, it will use to index only visible f
 Prepare the index for queries. Does nothing if the index already exists.
 If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
 to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
-This method is non blocking and index is built in another thread. Signals indexStarting and indexFinished
-are triggered to let you know when index build is started and finished.
+
+This method is either blocking or non blocking according to ``asynchronous`` parameter passed
+in the constructor
+
+.. seealso:: :py:class:`QgsPointLocator`
 %End
 
     bool hasIndex() const;
@@ -235,6 +238,14 @@ Returns how many geometries are cached in the index
 .. versionadded:: 2.14
 %End
 
+    bool isIndexing() const;
+%Docstring
+Returns ``True`` if the point locator is currently indexing the data.
+This method is usefull if constructor parameter ``asynchronous`` is ``True``
+
+.. seealso:: :py:class:`QgsPointLocator`
+%End
+
   signals:
 
     void initFinished( bool ok );
@@ -247,6 +258,14 @@ Emitted whenever index has been built and initialization is finished
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
+
+    bool prepare();
+%Docstring
+prepare index if need and returns ``True`` if the index is ready to be used
+
+.. versionadded:: 3.10
+%End
+
   protected slots:
     void destroyIndex();
 };

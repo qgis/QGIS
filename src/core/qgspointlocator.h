@@ -24,6 +24,7 @@ class QgsVectorLayer;
 class QgsFeatureRenderer;
 class QgsRenderContext;
 class QgsRectangle;
+class QgsVectorLayerFeatureSource;
 
 #include "qgis_core.h"
 #include "qgspointxy.h"
@@ -129,9 +130,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
-     * This method is non blocking and index is built in another thread. Signals indexStarting and indexFinished
-     * are triggered to let you know when index build is started and finished.
-    */
+     *
+     * This method is either blocking or non blocking according to \a asynchronous parameter passed
+     * in the constructor
+     * \see QgsPointLocator()
+     */
     void init( int maxFeaturesToIndex = -1 );
 
     //! Indicate whether the data have been already indexed
@@ -291,6 +294,14 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     int cachedGeometryCount() const { return mGeoms.count(); }
 
+    /**
+     * Returns TRUE if the point locator is currently indexing the data.
+     * This method is usefull if constructor parameter \a asynchronous is TRUE
+     *
+     * \see QgsPointLocator()
+     */
+    bool isIndexing() const { return mIsIndexing; }
+
   signals:
 
     /**
@@ -302,6 +313,13 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
+
+    /**
+     * prepare index if need and returns TRUE if the index is ready to be used
+     * \since 3.10
+     */
+    bool prepare();
+
   protected slots:
     void destroyIndex();
   private slots:
@@ -329,6 +347,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     std::unique_ptr<QgsRenderContext> mContext;
     std::unique_ptr<QgsFeatureRenderer> mRenderer;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     int mMaxFeaturesToIndex = -1;
     bool mAsynchronous = false;
     bool mIsIndexing = false;
@@ -341,6 +360,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     friend class QgsPointLocator_VisitorEdgesInRect;
     friend class QgsPointLocator_VisitorVerticesInRect;
     friend class QgsPointLocatorInitTask;
+    friend class TestQgsPointLocator;
 };
 
 

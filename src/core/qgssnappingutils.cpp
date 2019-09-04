@@ -91,6 +91,9 @@ bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &
 
   QgsPointLocator *loc = locatorForLayer( vl );
 
+  if ( loc->isIndexing() )
+    return true;
+
   if ( mStrategy == IndexAlwaysFull && loc->hasIndex() )
     return true;
 
