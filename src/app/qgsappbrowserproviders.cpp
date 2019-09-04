@@ -13,15 +13,45 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsappbrowserproviders.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsappbrowserproviders.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
 #include "qgsstyleexportimportdialog.h"
 #include "qgsstyle.h"
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsguiutils.h"
+
 #include <QDesktopServices>
+
+QIcon QgsBookmarksItem::iconBookmarks()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) );
+}
+
+QVariant QgsBookmarksItem::sortKey() const
+{
+  return QStringLiteral( " 1" );
+}
+
+QIcon QgsBookmarkManagerItem::iconBookmarkManager()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
+}
+
+QIcon QgsBookmarkGroupItem::iconBookmarkGroup()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
+}
+
+QIcon QgsBookmarkItem::iconBookmark()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
+}
 
 //
 // QgsQlrDataItem
@@ -526,4 +556,155 @@ QgsDataItem *QgsProjectDataItemProvider::createDataItem( const QString &path, Qg
     return new QgsProjectRootDataItem( parentItem, path );
   }
   return nullptr;
+}
+
+//
+// QgsBookmarksDataItemProvider
+//
+
+QString QgsBookmarksDataItemProvider::name()
+{
+  return QStringLiteral( "bookmarks_item" );
+}
+
+int QgsBookmarksDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
+QgsDataItem *QgsBookmarksDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  Q_UNUSED( path );
+  return new QgsBookmarksItem( parentItem, QObject::tr( "Spatial Bookmarks" ), QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager() );
+}
+
+QgsBookmarksItem::QgsBookmarksItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *applicationManager, QgsBookmarkManager *projectManager )
+  : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:" ) )
+{
+  mType = Custom;
+  mCapabilities = Fast;
+  mApplicationManager = applicationManager;
+  mProjectManager = projectManager;
+  mIconName = QStringLiteral( "/mActionShowBookmarks.svg" );
+  populate();
+}
+
+QVector<QgsDataItem *> QgsBookmarksItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  if ( mApplicationManager )
+    children << new QgsBookmarkManagerItem( this, tr( "User Bookmarks" ), mApplicationManager );
+  if ( mProjectManager )
+    children << new QgsBookmarkManagerItem( this, tr( "Project Bookmarks" ), mProjectManager );
+  return children;
+}
+
+QList<QAction *> QgsBookmarksItem::actions( QWidget *parent )
+{
+  QAction *showBookmarksPanel = new QAction( tr( "&Show Spatial Bookmarks Panel" ), parent );
+  connect( showBookmarksPanel, &QAction::triggered, this, [ = ]
+  {
+    QgisApp::instance()->showBookmarks( true );
+  } );
+  QAction *addBookmark = new QAction( tr( "&New Spatial Bookmark" ), parent );
+  connect( addBookmark, &QAction::triggered, this, [ = ]
+  {
+    QgisApp::instance()->newBookmark();
+  } );
+  return QList<QAction *>() << showBookmarksPanel << addBookmark;
+}
+
+QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *manager )
+  : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:%1" ).arg( name.toLower() ) )
+{
+  mType = Custom;
+  mCapabilities = Fast;
+  mManager = manager;
+  mIconName = QStringLiteral( "/mIconFolder.svg" );
+
+  connect( mManager, &QgsBookmarkManager::bookmarkAdded, [ = ]( const QString & ) { depopulate(); refresh(); } );
+  connect( mManager, &QgsBookmarkManager::bookmarkChanged, [ = ]( const QString & ) { depopulate(); refresh(); } );
+  connect( mManager, &QgsBookmarkManager::bookmarkRemoved, [ = ]( const QString & ) { depopulate(); refresh(); } );
+
+  populate();
+}
+
+QVector<QgsDataItem *> QgsBookmarkManagerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  for ( const QString &group : mManager->groups() )
+  {
+    if ( group.isEmpty() )
+    {
+      for ( const QgsBookmark bookmark : mManager->bookmarksByGroup( QString() ) )
+      {
+        children << new QgsBookmarkItem( this, bookmark.name(), bookmark );
+      }
+    }
+    else
+    {
+      children << new QgsBookmarkGroupItem( this, group, mManager );
+    }
+  }
+  return children;
+}
+
+QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *manager )
+  : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:%1" ).arg( name.toLower() ) )
+{
+  mType = Custom;
+  mCapabilities = Fast;
+  mManager = manager;
+  mIconName = QStringLiteral( "/mIconFolder.svg" );
+  populate();
+}
+
+QVector<QgsDataItem *> QgsBookmarkGroupItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  for ( const QgsBookmark bookmark : mManager->bookmarksByGroup( mName ) )
+  {
+    children << new QgsBookmarkItem( this, bookmark.name(), bookmark );
+  }
+  return children;
+}
+
+QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, QgsBookmark bookmark )
+  : QgsDataItem( Custom, parent, name, QStringLiteral( "bookmarks:%1/%2" ).arg( bookmark.group().toLower(), bookmark.id() ) )
+{
+  mType = Custom;
+  mCapabilities = NoCapabilities;
+  mBookmark = bookmark;
+  mIconName = QStringLiteral( "/mItemBookmark.svg" );
+  setState( Populated ); // no more children
+}
+
+bool QgsBookmarkItem::handleDoubleClick()
+{
+  QgsReferencedRectangle rect = mBookmark.extent();
+  QgsRectangle canvasExtent = rect;
+  if ( rect.crs() != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() )
+  {
+    QgsCoordinateTransform ct( rect.crs(),
+                               QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
+    try
+    {
+      canvasExtent = ct.transform( rect );
+    }
+    catch ( QgsCsException & )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
+      return true;
+    }
+    if ( canvasExtent.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Bookmark extent is empty" ) );
+      return  true;
+    }
+  }
+
+  // set the extent to the bookmark and refresh
+  QgisApp::instance()->mapCanvas()->setExtent( canvasExtent );
+  QgisApp::instance()->mapCanvas()->refresh();
+  return true;
 }

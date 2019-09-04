@@ -37,6 +37,7 @@
 class QgsDataProvider;
 class QgsDataItem;
 class QgsAnimatedIcon;
+class QgsBookmarkManager;
 
 typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 
