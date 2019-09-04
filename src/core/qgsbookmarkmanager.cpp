@@ -147,6 +147,8 @@ QString QgsBookmarkManager::addBookmark( const QgsBookmark &b, bool *ok )
 
   emit bookmarkAboutToBeAdded( bookmark.id() );
   mBookmarks << bookmark;
+  if ( !mGroups.contains( bookmark.group() ) )
+    mGroups << bookmark.group();
   emit bookmarkAdded( bookmark.id() );
   if ( mProject )
   {
@@ -161,12 +163,14 @@ bool QgsBookmarkManager::removeBookmark( const QString &id )
   if ( id.isEmpty() )
     return false;
 
+  QString group;
   int pos = -1;
   int i = 0;
   for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
   {
     if ( b.id() == id )
     {
+      group = b.group();
       pos = i;
       break;
     }
@@ -178,6 +182,8 @@ bool QgsBookmarkManager::removeBookmark( const QString &id )
 
   emit bookmarkAboutToBeRemoved( id );
   mBookmarks.removeAt( pos );
+  if ( bookmarksByGroup( group ).isEmpty() )
+    mGroups.removeOne( group );
   emit bookmarkRemoved( id );
   if ( mProject )
   {
@@ -195,6 +201,13 @@ bool QgsBookmarkManager::updateBookmark( const QgsBookmark &bookmark )
   {
     if ( b.id() == bookmark.id() )
     {
+      if ( mBookmarks[i].group() != bookmark.group() )
+      {
+        if ( bookmarksByGroup( mBookmarks[i].group() ).count() == 1 )
+          mGroups.removeOne( mBookmarks[i].group() );
+        if ( !mGroups.contains( bookmark.group() ) )
+          mGroups << bookmark.group();
+      }
       mBookmarks[i] = bookmark;
       emit bookmarkChanged( bookmark.id() );
       if ( mProject )
@@ -218,6 +231,11 @@ void QgsBookmarkManager::clear()
   }
 }
 
+QStringList QgsBookmarkManager::groups() const
+{
+  return mGroups;
+}
+
 QList<QgsBookmark> QgsBookmarkManager::bookmarks() const
 {
   return mBookmarks;
@@ -231,6 +249,17 @@ QgsBookmark QgsBookmarkManager::bookmarkById( const QString &id ) const
       return b;
   }
   return QgsBookmark();
+}
+
+QList<QgsBookmark> QgsBookmarkManager::bookmarksByGroup( const QString &group )
+{
+  QList<QgsBookmark> bookmarks;
+  for ( const QgsBookmark &b : mBookmarks )
+  {
+    if ( b.group() == group )
+      bookmarks << b;
+  }
+  return bookmarks;
 }
 
 bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument &doc )
