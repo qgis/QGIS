@@ -21,13 +21,13 @@ QgsBookmarkManagerModel::QgsBookmarkManagerModel( QgsBookmarkManager *manager, Q
   , mManager( manager )
   , mProjectManager( projectManager )
 {
-  for ( QgsBookmarkManager *manager : { manager, projectManager } )
+  for ( QgsBookmarkManager *obj : { manager, projectManager } )
   {
-    connect( manager, &QgsBookmarkManager::bookmarkAdded, this, &QgsBookmarkManagerModel::bookmarkAdded );
-    connect( manager, &QgsBookmarkManager::bookmarkAboutToBeAdded, this, &QgsBookmarkManagerModel::bookmarkAboutToBeAdded );
-    connect( manager, &QgsBookmarkManager::bookmarkRemoved, this, &QgsBookmarkManagerModel::bookmarkRemoved );
-    connect( manager, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, &QgsBookmarkManagerModel::bookmarkAboutToBeRemoved );
-    connect( manager, &QgsBookmarkManager::bookmarkChanged, this, &QgsBookmarkManagerModel::bookmarkChanged );
+    connect( obj, &QgsBookmarkManager::bookmarkAdded, this, &QgsBookmarkManagerModel::bookmarkAdded );
+    connect( obj, &QgsBookmarkManager::bookmarkAboutToBeAdded, this, &QgsBookmarkManagerModel::bookmarkAboutToBeAdded );
+    connect( obj, &QgsBookmarkManager::bookmarkRemoved, this, &QgsBookmarkManagerModel::bookmarkRemoved );
+    connect( obj, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, &QgsBookmarkManagerModel::bookmarkAboutToBeRemoved );
+    connect( obj, &QgsBookmarkManager::bookmarkChanged, this, &QgsBookmarkManagerModel::bookmarkChanged );
   }
 }
 
