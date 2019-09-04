@@ -77,10 +77,10 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   lstBookmarks->setModel( mBookmarkModel );
   lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate( this ) );
   lstBookmarks->setSortingEnabled( true );
-  lstBookmarks->sortByColumn( 1, Qt::AscendingOrder );
+  lstBookmarks->sortByColumn( 0, Qt::AscendingOrder );
 
   QgsSettings settings;
-  lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "Windows/Bookmarks/headerstate" ) ).toByteArray() );
+  lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "Windows/Bookmarks/headerstateV2" ) ).toByteArray() );
 }
 
 QgsBookmarks::~QgsBookmarks()
@@ -91,7 +91,7 @@ QgsBookmarks::~QgsBookmarks()
 void QgsBookmarks::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/Bookmarks/headerstate" ), lstBookmarks->header()->saveState() );
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/headerstateV2" ), lstBookmarks->header()->saveState() );
 }
 
 void QgsBookmarks::addClicked()
