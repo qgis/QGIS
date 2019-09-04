@@ -48,6 +48,8 @@
 #include "annotations/qgsannotationmanager.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsstyle.h"
+#include "qgsbookmarkmanager.h"
+
 class TestQgsProcessingAlgs: public QObject
 {
     Q_OBJECT
@@ -89,6 +91,9 @@ class TestQgsProcessingAlgs: public QObject
 
     void styleFromProject();
     void combineStyles();
+
+    void bookmarksToLayer();
+    void layerToBookmarks();
 
   private:
 
@@ -1450,6 +1455,164 @@ void TestQgsProcessingAlgs::combineStyles()
   QVERIFY( s.textFormatNames().contains( QStringLiteral( "format2" ) ) );
   QCOMPARE( s.labelSettingsCount(), 1 );
   QVERIFY( s.labelSettingsNames().contains( QStringLiteral( "label1" ) ) );
+}
+
+void TestQgsProcessingAlgs::bookmarksToLayer()
+{
+  QgsApplication::bookmarkManager()->clear();
+  // create some bookmarks
+  QgsBookmark b1;
+  b1.setName( QStringLiteral( "test name" ) );
+  b1.setGroup( QStringLiteral( "test group" ) );
+  b1.setExtent( QgsReferencedRectangle( QgsRectangle( 1, 2, 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
+  QgsApplication::bookmarkManager()->addBookmark( b1 );
+
+  QgsBookmark b2;
+  b2.setName( QStringLiteral( "test name 2" ) );
+  b2.setExtent( QgsReferencedRectangle( QgsRectangle( 16259461, -2477192, 16391255, -2372535 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) );
+  QgsApplication::bookmarkManager()->addBookmark( b2 );
+  QgsBookmark b3;
+  b3.setName( QStringLiteral( "test name 3" ) );
+  b3.setExtent( QgsReferencedRectangle( QgsRectangle( 11, 21, 31, 41 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
+  QgsProject p;
+  p.bookmarkManager()->addBookmark( b3 );
+
+  // ok, run alg
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:bookmarkstolayer" ) ) );
+  QVERIFY( alg != nullptr );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "SOURCE" ), QVariantList() << 0 );
+  parameters.insert( QStringLiteral( "CRS" ), QStringLiteral( "EPSG:4326" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  // check result
+  QgsFeature f;
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QgsFeatureIterator it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "test name 3" ) );
+  QCOMPARE( f.attribute( 1 ).toString(), QString() );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((11 21, 31 21, 31 41, 11 41, 11 21))" ) );
+  QVERIFY( !it.nextFeature( f ) );
+
+  // user bookmarks
+  parameters.insert( QStringLiteral( "SOURCE" ), QVariantList() << 1 );
+  ok = false;
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:bookmarkstolayer" ) ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "test name" ) );
+  QCOMPARE( f.attribute( 1 ).toString(), QStringLiteral( "test group" ) );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((1 2, 3 2, 3 4, 1 4, 1 2))" ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "test name 2" ) );
+  QCOMPARE( f.attribute( 1 ).toString(), QString() );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))" ) );
+  QVERIFY( !it.nextFeature( f ) );
+
+  // both
+  parameters.insert( QStringLiteral( "SOURCE" ), QVariantList() << 0 << 1 );
+  ok = false;
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:bookmarkstolayer" ) ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "test name 3" ) );
+  QCOMPARE( f.attribute( 1 ).toString(), QString() );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((11 21, 31 21, 31 41, 11 41, 11 21))" ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "test name" ) );
+  QCOMPARE( f.attribute( 1 ).toString(), QStringLiteral( "test group" ) );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((1 2, 3 2, 3 4, 1 4, 1 2))" ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "test name 2" ) );
+  QCOMPARE( f.attribute( 1 ).toString(), QString() );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))" ) );
+  QVERIFY( !it.nextFeature( f ) );
+
+}
+
+void TestQgsProcessingAlgs::layerToBookmarks()
+{
+  std::unique_ptr<QgsVectorLayer> inputLayer( qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=province:string&field=municipality:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( inputLayer->isValid() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << QStringLiteral( "b1" ) << QStringLiteral( "g1" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((11 21, 31 21, 31 41, 11 41, 11 21))" ) ) );
+  inputLayer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << QStringLiteral( "b2" ) << QString() );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -22, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 147 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -21, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22, 146 -22))" ) ) );
+  inputLayer->dataProvider()->addFeature( f );
+
+  QgsApplication::bookmarkManager()->clear();
+
+  // run alg
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:layertobookmarks" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QgsProject p;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( inputLayer.get() ) );
+  parameters.insert( QStringLiteral( "DESTINATION" ), 0 );
+  parameters.insert( QStringLiteral( "NAME_EXPRESSION" ), QStringLiteral( "upper(province)" ) );
+  parameters.insert( QStringLiteral( "GROUP_EXPRESSION" ), QStringLiteral( "upper(municipality)" ) );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( p.bookmarkManager()->bookmarks().count(), 2 );
+  QCOMPARE( p.bookmarkManager()->bookmarks().at( 0 ).name(), QStringLiteral( "B1" ) );
+  QCOMPARE( p.bookmarkManager()->bookmarks().at( 0 ).group(), QStringLiteral( "G1" ) );
+  QCOMPARE( p.bookmarkManager()->bookmarks().at( 0 ).extent().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( p.bookmarkManager()->bookmarks().at( 0 ).extent().toString( 0 ), QStringLiteral( "11,21 : 31,41" ) );
+  QCOMPARE( p.bookmarkManager()->bookmarks().at( 1 ).name(), QStringLiteral( "B2" ) );
+  QCOMPARE( p.bookmarkManager()->bookmarks().at( 1 ).group(), QString() );
+  QCOMPARE( p.bookmarkManager()->bookmarks().at( 1 ).extent().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( p.bookmarkManager()->bookmarks().at( 1 ).extent().toString( 0 ), QStringLiteral( "146,-22 : 147,-21" ) );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().count(), 0 );
+  p.bookmarkManager()->clear();
+
+  // send to application bookmarks
+  parameters.insert( QStringLiteral( "DESTINATION" ), 1 );
+  parameters.insert( QStringLiteral( "GROUP_EXPRESSION" ), QVariant() );
+
+  ok = false;
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:layertobookmarks" ) ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( p.bookmarkManager()->bookmarks().count(), 0 );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().count(), 2 );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 0 ).name(), QStringLiteral( "B1" ) );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 0 ).group(), QString() );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 0 ).extent().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 0 ).extent().toString( 0 ), QStringLiteral( "11,21 : 31,41" ) );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 1 ).name(), QStringLiteral( "B2" ) );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 1 ).group(), QString() );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 1 ).extent().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( QgsApplication::bookmarkManager()->bookmarks().at( 1 ).extent().toString( 0 ), QStringLiteral( "146,-22 : 147,-21" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
