@@ -230,10 +230,14 @@ bool QgsBookmarkManagerModel::removeRows( int row, int count, const QModelIndex 
 {
   beginRemoveRows( parent, row, row + count );
 
-  QList< QgsBookmark > bookmarks = mManager->bookmarks();
+  QList< QgsBookmark > appBookmarks = mManager->bookmarks();
+  QList< QgsBookmark > projectBookmarks = mProjectManager->bookmarks();
   for ( int r = row + count - 1; r >= row; --r )
   {
-    mManager->removeBookmark( bookmarks.at( r ).id() );
+    if ( r >= appBookmarks.count() )
+      mProjectManager->removeBookmark( projectBookmarks.at( r - appBookmarks.size() ).id() );
+    else
+      mManager->removeBookmark( appBookmarks.at( r ).id() );
   }
   endRemoveRows();
   return true;
