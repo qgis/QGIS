@@ -136,7 +136,8 @@ class CORE_EXPORT QgsBookmark
  *
  * QgsBookmarkManager handles the storage, serializing and deserializing
  * of geographic bookmarks. Usually this class is not constructed directly, but
- * rather accessed through a QgsProject via QgsProject::bookmarkManager().
+ * rather accessed through a QgsProject via QgsProject::bookmarkManager(), or via
+ * the application-wide bookmark store at QgsApplication::bookmarkManager().
  *
  * \since QGIS 3.10
  */

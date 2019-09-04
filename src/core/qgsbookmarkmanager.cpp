@@ -366,7 +366,7 @@ bool QgsBookmarkManager::exportToFile( const QString &path, QList<const QgsBookm
   }
 
   QTextStream out( &f );
-  out.setCodec( "UTF - 8" );
+  out.setCodec( "UTF-8" );
   doc.save( out, 2 );
   f.close();
 
@@ -441,7 +441,7 @@ void QgsBookmarkManager::store()
     doc.appendChild( elem );
 
     QTextStream out( &f );
-    out.setCodec( "UTF - 8" );
+    out.setCodec( "UTF-8" );
     doc.save( out, 2 );
     f.close();
   }
