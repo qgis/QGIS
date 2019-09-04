@@ -296,7 +296,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     /**
      * Returns TRUE if the point locator is currently indexing the data.
-     * This method is usefull if constructor parameter \a asynchronous is TRUE
+     * This method is useful if constructor parameter \a asynchronous is TRUE
      *
      * \see QgsPointLocator()
      */

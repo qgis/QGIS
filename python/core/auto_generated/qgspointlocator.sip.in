@@ -241,7 +241,7 @@ Returns how many geometries are cached in the index
     bool isIndexing() const;
 %Docstring
 Returns ``True`` if the point locator is currently indexing the data.
-This method is usefull if constructor parameter ``asynchronous`` is ``True``
+This method is useful if constructor parameter ``asynchronous`` is ``True``
 
 .. seealso:: :py:class:`QgsPointLocator`
 %End

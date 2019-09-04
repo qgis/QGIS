@@ -360,7 +360,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( !m.isValid() );
       QVERIFY( loc.mIsIndexing );
 
-      // we block until initFinished is called from an other thread
+      // we block until initFinished is called from another thread
       loop.exec();
 
       QVERIFY( !loc.mIsIndexing );
@@ -412,7 +412,7 @@ class TestQgsPointLocator : public QObject
       mVL->changeGeometry( ff.id(), *newGeom );
       delete newGeom;
 
-      // we block until initFinished is called from an other thread
+      // we block until initFinished is called from another thread
       loop.exec();
 
       QVERIFY( !loc.mIsIndexing );
