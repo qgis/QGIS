@@ -124,7 +124,8 @@ Manages storage of a set of bookmarks.
 
 QgsBookmarkManager handles the storage, serializing and deserializing
 of geographic bookmarks. Usually this class is not constructed directly, but
-rather accessed through a QgsProject via :py:func:`QgsProject.bookmarkManager()`
+rather accessed through a QgsProject via QgsProject.bookmarkManager(), or via
+the application-wide bookmark store at :py:func:`QgsApplication.bookmarkManager()`
 
 .. versionadded:: 3.10
 %End

@@ -367,7 +367,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
 
     def testFileStorage(self):
         """
-        Test QSettings bound manager
+        Test file bound manager
         """
         manager = QgsBookmarkManager()
 
