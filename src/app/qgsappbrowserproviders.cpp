@@ -53,6 +53,25 @@ QIcon QgsBookmarkItem::iconBookmark()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
 }
 
+bool QgsBookmarkItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::Uri QgsBookmarkItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.layerType = QStringLiteral( "custom" );
+  u.providerKey = QStringLiteral( "bookmark" );
+  u.name = name();
+
+  QDomDocument doc;
+  doc.appendChild( mBookmark.writeXml( doc ) );
+  u.uri = doc.toString();
+
+  return u;
+}
+
 //
 // QgsQlrDataItem
 //
@@ -707,5 +726,51 @@ bool QgsBookmarkItem::handleDoubleClick()
   // set the extent to the bookmark and refresh
   QgisApp::instance()->mapCanvas()->setExtent( canvasExtent );
   QgisApp::instance()->mapCanvas()->refresh();
+  return true;
+}
+
+QString QgsBookmarkDropHandler::customUriProviderKey() const
+{
+  return QStringLiteral( "bookmark" );
+}
+
+bool QgsBookmarkDropHandler::canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas * )
+{
+  return uri.providerKey == customUriProviderKey();
+}
+
+bool QgsBookmarkDropHandler::handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const
+{
+  QDomDocument doc;
+  doc.setContent( uri.uri );
+  QDomElement elem = doc.documentElement();
+  QgsBookmark b = QgsBookmark::fromXml( elem, doc );
+
+  QgsReferencedRectangle rect = b.extent();
+  QgsRectangle canvasExtent = rect;
+  if ( rect.crs() != canvas->mapSettings().destinationCrs() )
+  {
+    QgsCoordinateTransform ct( rect.crs(),
+                               canvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    try
+    {
+      canvasExtent = ct.transform( rect );
+    }
+    catch ( QgsCsException & )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to canvas CRS." ) );
+      return true;
+    }
+    if ( canvasExtent.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Bookmark extent is empty" ) );
+      return true;
+    }
+  }
+
+  // set the extent to the bookmark and refresh
+  canvas->setExtent( canvasExtent );
+  canvas->refresh();
+
   return true;
 }
