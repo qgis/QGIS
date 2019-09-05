@@ -45,7 +45,7 @@ QString QgsBookmarksToLayerAlgorithm::name() const
 
 QString QgsBookmarksToLayerAlgorithm::displayName() const
 {
-  return QObject::tr( "Convert bookmarks to layer" );
+  return QObject::tr( "Convert spatial bookmarks to layer" );
 }
 
 QStringList QgsBookmarksToLayerAlgorithm::tags() const
@@ -65,13 +65,13 @@ QString QgsBookmarksToLayerAlgorithm::groupId() const
 
 QString QgsBookmarksToLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new layer containing polygon features for stored bookmarks.\n\n"
+  return QObject::tr( "This algorithm creates a new layer containing polygon features for stored spatial bookmarks.\n\n"
                       "The export can be filtered to only bookmarks belonging to the current project, to all user bookmarks, or a combination of both." );
 }
 
 QString QgsBookmarksToLayerAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Converts stored bookmarks to a polygon layer." );
+  return QObject::tr( "Converts stored spatial bookmarks to a polygon layer." );
 }
 
 QIcon QgsBookmarksToLayerAlgorithm::icon() const
@@ -180,7 +180,7 @@ QString QgsLayerToBookmarksAlgorithm::name() const
 
 QString QgsLayerToBookmarksAlgorithm::displayName() const
 {
-  return QObject::tr( "Convert layer to bookmarks" );
+  return QObject::tr( "Convert layer to spatial bookmarks" );
 }
 
 QStringList QgsLayerToBookmarksAlgorithm::tags() const
@@ -200,12 +200,12 @@ QString QgsLayerToBookmarksAlgorithm::groupId() const
 
 QString QgsLayerToBookmarksAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates bookmarks corresponding to the extent of features contained in a layer." );
+  return QObject::tr( "This algorithm creates spatial bookmarks corresponding to the extent of features contained in a layer." );
 }
 
 QString QgsLayerToBookmarksAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Converts feature extents to stored bookmarks." );
+  return QObject::tr( "Converts feature extents to stored spatial bookmarks." );
 }
 
 QIcon QgsLayerToBookmarksAlgorithm::icon() const
