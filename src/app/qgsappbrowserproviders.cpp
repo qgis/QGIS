@@ -16,6 +16,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsappbrowserproviders.h"
+#include "qgsbookmarkeditordialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsproject.h"
@@ -647,7 +648,12 @@ QVector<QgsDataItem *> QgsBookmarkManagerItem::createChildren()
     }
     else
     {
-      children << new QgsBookmarkGroupItem( this, group, mManager );
+      QgsBookmarkGroupItem *item = new QgsBookmarkGroupItem( this, group, mManager );
+
+      // we want directories shown before files
+      item->setSortKey( QStringLiteral( "  %1" ).arg( group ) );
+
+      children << item;
     }
   }
   return children;
@@ -777,25 +783,33 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
 {
   if ( qobject_cast< QgsBookmarksItem * >( item ) )
   {
-    QAction *showBookmarksPanel = new QAction( tr( "&Show Spatial Bookmarks Panel" ), menu );
-    connect( showBookmarksPanel, &QAction::triggered, this, [ = ]
-    {
-      QgisApp::instance()->showBookmarks( true );
-    } );
-    menu->addAction( showBookmarksPanel );
-    QAction *addBookmark = new QAction( tr( "&New Spatial Bookmark" ), menu );
+    QAction *addBookmark = new QAction( tr( "New Spatial Bookmark…" ), menu );
     connect( addBookmark, &QAction::triggered, this, [ = ]
     {
       QgisApp::instance()->newBookmark();
     } );
     menu->addAction( addBookmark );
+    QAction *showBookmarksPanel = new QAction( tr( "Show Spatial Bookmarks Panel" ), menu );
+    connect( showBookmarksPanel, &QAction::triggered, this, [ = ]
+    {
+      QgisApp::instance()->showBookmarks( true );
+    } );
+    menu->addAction( showBookmarksPanel );
   }
   else if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
   {
-    QAction *actionDelete = new QAction( tr( "Delete Bookmark" ), menu );
+    QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), menu );
+    connect( actionEdit, &QAction::triggered, this, [bookmarkItem]
+    {
+      QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmarkItem->bookmark(), bookmarkItem->manager() == QgsProject::instance()->bookmarkManager(), QgisApp::instance(), QgisApp::instance()->mapCanvas() );
+      dlg->setAttribute( Qt::WA_DeleteOnClose );
+      dlg->show();
+    } );
+    menu->addAction( actionEdit );
+    QAction *actionDelete = new QAction( tr( "Delete Spatial Bookmark" ), menu );
     connect( actionDelete, &QAction::triggered, this, [bookmarkItem]
     {
-      if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark" ),
+      if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmark" ),
                                   QObject::tr( "Are you sure you want to delete the %1 bookmark?" ).arg( bookmarkItem->name() ),
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
         return;

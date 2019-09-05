@@ -14,9 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbookmarks.h"
+#include "qgsbookmarkeditordialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
@@ -113,17 +116,13 @@ void QgsBookmarks::addClicked()
     }
   }
 
-  QgsBookmark b;
-  b.setName( tr( "New bookmark" ) );
-  b.setGroup( projStr );
-  b.setExtent( QgsReferencedRectangle( canvas->extent(), canvas->mapSettings().destinationCrs() ) );
-  QgsApplication::bookmarkManager()->addBookmark( b );
-
-  QModelIndex newIdx = mBookmarkModel->index( QgsApplication::bookmarkManager()->bookmarks().count() - 1, 0 );
-  // Edit new bookmark title
-  lstBookmarks->scrollTo( newIdx );
-  lstBookmarks->setCurrentIndex( newIdx );
-  lstBookmarks->edit( newIdx );
+  QgsBookmark bookmark;
+  bookmark.setName( tr( "New bookmark" ) );
+  bookmark.setGroup( projStr );
+  bookmark.setExtent( QgsReferencedRectangle( canvas->extent(), canvas->mapSettings().destinationCrs() ) );
+  QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, false, this, canvas );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 }
 
 void QgsBookmarks::deleteClicked()

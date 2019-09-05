@@ -164,6 +164,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #endif
 #include "qgsappscreenshots.h"
 #include "qgsbookmarks.h"
+#include "qgsbookmarkeditordialog.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsclipboard.h"
@@ -13684,8 +13685,27 @@ void QgisApp::customProjection()
 
 void QgisApp::newBookmark()
 {
-  showBookmarks( true );
-  mBookMarksDockWidget->addClicked();
+  QString projStr;
+  if ( QgsProject::instance() )
+  {
+    if ( !QgsProject::instance()->title().isEmpty() )
+    {
+      projStr = QgsProject::instance()->title();
+    }
+    else if ( !QgsProject::instance()->fileName().isEmpty() )
+    {
+      QFileInfo fi( QgsProject::instance()->fileName() );
+      projStr = fi.exists() ? fi.fileName() : QString();
+    }
+  }
+
+  QgsBookmark bookmark;
+  bookmark.setName( tr( "New bookmark" ) );
+  bookmark.setGroup( QgsProject::instance()->title() );
+  bookmark.setExtent( QgsReferencedRectangle( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() ) );
+  QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, false, this, mapCanvas() );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 }
 
 void QgisApp::showBookmarks( bool show )

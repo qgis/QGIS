@@ -30,6 +30,7 @@ SET(QGIS_APP_SRCS
   qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
+  qgsbookmarkeditordialog.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
@@ -275,6 +276,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributesforminitcode.h
   qgsattributetabledialog.h
   qgsbookmarks.h
+  qgsbookmarkeditordialog.h
   qgsclipboard.h
   qgscustomization.h
   qgscustomprojectiondialog.h
