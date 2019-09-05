@@ -56,7 +56,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   {
     fontSize = oldFontPointSize.toInt();
   }
-  QgsDebugMsg( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
   opts.insert( QStringLiteral( "fontPointSize" ), settings.value( QStringLiteral( "fontPointSize" ), QVariant( fontSize ) ) );
 
   QString fontFamily = mDefaultFont.family();
@@ -75,7 +75,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
       fontFamily = mDefaultFont.family();
     }
   }
-  QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
 
   opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "toolbarSpacing" ), QString() ) );
@@ -94,11 +94,11 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
   // QgisApp-wide font
   QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
-  QgsDebugMsg( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
   if ( fontSize.isEmpty() ) { return; }
 
   QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
-  QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
   if ( fontFamily.isEmpty() ) { return; }
 
   const QString defaultSize = QString::number( mDefaultFont.pointSize() );
@@ -170,7 +170,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 #endif
   }
 
-  QgsDebugMsg( QStringLiteral( "Stylesheet built: %1" ).arg( ss ) );
+  QgsDebugMsgLevel( QStringLiteral( "Stylesheet built: %1" ).arg( ss ), 2 );
 
   emit appStyleSheetChanged( ss );
 }
@@ -192,7 +192,7 @@ void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 void QgisAppStyleSheet::setActiveValues()
 {
   mStyle = qApp->style()->objectName(); // active style name (lowercase)
-  QgsDebugMsg( QStringLiteral( "Style name: %1" ).arg( mStyle ) );
+  QgsDebugMsgLevel( QStringLiteral( "Style name: %1" ).arg( mStyle ), 2 );
 
   mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
   mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen

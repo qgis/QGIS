@@ -61,7 +61,7 @@ void QgsMapRendererParallelJob::start()
   mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2.get(), canUseLabelCache );
 
-  QgsDebugMsg( QStringLiteral( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
 
   // start async job
 
@@ -76,7 +76,7 @@ void QgsMapRendererParallelJob::cancel()
   if ( !isActive() )
     return;
 
-  QgsDebugMsg( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ) );
+  QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
@@ -112,7 +112,7 @@ void QgsMapRendererParallelJob::cancelWithoutBlocking()
   if ( !isActive() )
     return;
 
-  QgsDebugMsg( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ) );
+  QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
@@ -143,7 +143,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mFutureWatcher.waitForFinished();
 
-    QgsDebugMsg( QStringLiteral( "waitForFinished (1): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
+    QgsDebugMsgLevel( QStringLiteral( "waitForFinished (1): %1 ms" ).arg( t.elapsed() / 1000.0 ), 2 );
 
     renderLayersFinished();
   }
@@ -157,7 +157,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mLabelingFutureWatcher.waitForFinished();
 
-    QgsDebugMsg( QStringLiteral( "waitForFinished (2): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
+    QgsDebugMsgLevel( QStringLiteral( "waitForFinished (2): %1 ms" ).arg( t.elapsed() / 1000.0 ), 2 );
 
     renderingFinished();
   }
@@ -207,7 +207,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   // compose final image
   mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
 
-  QgsDebugMsg( QStringLiteral( "PARALLEL layers finished" ) );
+  QgsDebugMsgLevel( QStringLiteral( "PARALLEL layers finished" ), 2 );
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
   {
@@ -228,7 +228,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 
 void QgsMapRendererParallelJob::renderingFinished()
 {
-  QgsDebugMsg( QStringLiteral( "PARALLEL finished" ) );
+  QgsDebugMsgLevel( QStringLiteral( "PARALLEL finished" ), 2 );
 
   logRenderingTime( mLayerJobs, mLabelJob );
 

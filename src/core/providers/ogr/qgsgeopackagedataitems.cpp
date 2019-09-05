@@ -53,7 +53,7 @@ int QgsGeoPackageDataItemProvider::capabilities() const
 
 QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
-  QgsDebugMsg( "path = " + path );
+  QgsDebugMsgLevel( "path = " + path, 2 );
   if ( path.isEmpty() )
   {
     return new QgsGeoPackageRootItem( parentItem, QStringLiteral( "GeoPackage" ), QStringLiteral( "gpkg:" ) );

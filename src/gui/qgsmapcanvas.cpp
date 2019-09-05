@@ -363,7 +363,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     }
   }
 
-  QgsDebugMsg( QStringLiteral( "Layers have changed, refreshing" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Layers have changed, refreshing" ), 2 );
   emit layersChanged();
 
   updateAutoRefreshTimer();
@@ -405,7 +405,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   mSettings.setDestinationCrs( crs );
   updateScale();
 
-  QgsDebugMsg( QStringLiteral( "refreshing after destination CRS changed" ) );
+  QgsDebugMsgLevel( QStringLiteral( "refreshing after destination CRS changed" ), 2 );
   refresh();
 
   emit destinationCrsChanged();
@@ -494,25 +494,25 @@ void QgsMapCanvas::refresh()
 {
   if ( !mSettings.hasValidSettings() )
   {
-    QgsDebugMsg( QStringLiteral( "CANVAS refresh - invalid settings -> nothing to do" ) );
+    QgsDebugMsgLevel( QStringLiteral( "CANVAS refresh - invalid settings -> nothing to do" ), 2 );
     return;
   }
 
   if ( !mRenderFlag || mFrozen )
   {
-    QgsDebugMsg( QStringLiteral( "CANVAS render flag off" ) );
+    QgsDebugMsgLevel( QStringLiteral( "CANVAS render flag off" ), 2 );
     return;
   }
 
   if ( mRefreshScheduled )
   {
-    QgsDebugMsg( QStringLiteral( "CANVAS refresh already scheduled" ) );
+    QgsDebugMsgLevel( QStringLiteral( "CANVAS refresh already scheduled" ), 2 );
     return;
   }
 
   mRefreshScheduled = true;
 
-  QgsDebugMsg( QStringLiteral( "CANVAS refresh scheduling" ) );
+  QgsDebugMsgLevel( QStringLiteral( "CANVAS refresh scheduling" ), 2 );
 
   // schedule a refresh
   mRefreshTimer->start( 1 );
@@ -597,7 +597,7 @@ void QgsMapCanvas::mapThemeChanged( const QString &theme )
 
 void QgsMapCanvas::rendererJobFinished()
 {
-  QgsDebugMsg( QStringLiteral( "CANVAS finish! %1" ).arg( !mJobCanceled ) );
+  QgsDebugMsgLevel( QStringLiteral( "CANVAS finish! %1" ).arg( !mJobCanceled ), 2 );
 
   mMapUpdateTimer.stop();
 
@@ -737,7 +737,7 @@ void QgsMapCanvas::stopRendering()
 {
   if ( mJob )
   {
-    QgsDebugMsg( QStringLiteral( "CANVAS stop rendering!" ) );
+    QgsDebugMsgLevel( QStringLiteral( "CANVAS stop rendering!" ), 2 );
     mJobCanceled = true;
     disconnect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
     connect( mJob, &QgsMapRendererQImageJob::finished, mJob, &QgsMapRendererQImageJob::deleteLater );
@@ -841,12 +841,12 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
     if ( !mSettings.hasValidSettings() )
     {
       // we can't even just move the map center
-      QgsDebugMsg( QStringLiteral( "Empty extent - ignoring" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Empty extent - ignoring" ), 2 );
       return;
     }
 
     // ### QGIS 3: do not allow empty extent - require users to call setCenter() explicitly
-    QgsDebugMsg( QStringLiteral( "Empty extent - keeping old scale with new center!" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Empty extent - keeping old scale with new center!" ), 2 );
     setCenter( r.center() );
   }
   else
@@ -1301,25 +1301,25 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
     switch ( e->key() )
     {
       case Qt::Key_Left:
-        QgsDebugMsg( QStringLiteral( "Pan left" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Pan left" ), 2 );
         setCenter( center() - QgsVector( dx, 0 ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
 
       case Qt::Key_Right:
-        QgsDebugMsg( QStringLiteral( "Pan right" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Pan right" ), 2 );
         setCenter( center() + QgsVector( dx, 0 ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
 
       case Qt::Key_Up:
-        QgsDebugMsg( QStringLiteral( "Pan up" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Pan up" ), 2 );
         setCenter( center() + QgsVector( 0, dy ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
 
       case Qt::Key_Down:
-        QgsDebugMsg( QStringLiteral( "Pan down" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Pan down" ), 2 );
         setCenter( center() - QgsVector( 0, dy ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
@@ -1327,7 +1327,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
 
 
       case Qt::Key_Space:
-        QgsDebugMsg( QStringLiteral( "Pressing pan selector" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Pressing pan selector" ), 2 );
 
         //mCanvasProperties->dragging = true;
         if ( ! e->isAutoRepeat() )
@@ -1339,12 +1339,12 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         break;
 
       case Qt::Key_PageUp:
-        QgsDebugMsg( QStringLiteral( "Zoom in" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Zoom in" ), 2 );
         zoomIn();
         break;
 
       case Qt::Key_PageDown:
-        QgsDebugMsg( QStringLiteral( "Zoom out" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Zoom out" ), 2 );
         zoomOut();
         break;
 
@@ -1368,7 +1368,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         }
         else e->ignore();
 
-        QgsDebugMsg( "Ignoring key: " + QString::number( e->key() ) );
+        QgsDebugMsgLevel( "Ignoring key: " + QString::number( e->key() ), 2 );
     }
   }
 
@@ -1378,14 +1378,14 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
 
 void QgsMapCanvas::keyReleaseEvent( QKeyEvent *e )
 {
-  QgsDebugMsg( QStringLiteral( "keyRelease event" ) );
+  QgsDebugMsgLevel( QStringLiteral( "keyRelease event" ), 2 );
 
   switch ( e->key() )
   {
     case Qt::Key_Space:
       if ( !e->isAutoRepeat() && mCanvasProperties->panSelectorDown )
       {
-        QgsDebugMsg( QStringLiteral( "Releasing pan selector" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Releasing pan selector" ), 2 );
         QApplication::restoreOverrideCursor();
         mCanvasProperties->panSelectorDown = false;
         panActionEnd( mCanvasProperties->mouseLastXY );
@@ -1400,7 +1400,7 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent *e )
       }
       else e->ignore();
 
-      QgsDebugMsg( "Ignoring key release: " + QString::number( e->key() ) );
+      QgsDebugMsgLevel( "Ignoring key release: " + QString::number( e->key() ), 2 );
   }
 
   emit keyReleased( e );
@@ -1533,8 +1533,8 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
       // right button was pressed in zoom tool? return to previous non zoom tool
       if ( e->button() == Qt::RightButton && mMapTool->flags() & QgsMapTool::Transient )
       {
-        QgsDebugMsg( QStringLiteral( "Right click in map tool zoom or pan, last tool is %1." ).arg(
-                       mLastNonZoomMapTool ? QStringLiteral( "not null" ) : QStringLiteral( "null" ) ) );
+        QgsDebugMsgLevel( QStringLiteral( "Right click in map tool zoom or pan, last tool is %1." ).arg(
+                            mLastNonZoomMapTool ? QStringLiteral( "not null" ) : QStringLiteral( "null" ) ), 2 );
 
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
 
@@ -1618,7 +1618,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   // Zoom the map canvas in response to a mouse wheel event. Moving the
   // wheel forward (away) from the user zooms in
 
-  QgsDebugMsg( "Wheel event delta " + QString::number( e->delta() ) );
+  QgsDebugMsgLevel( "Wheel event delta " + QString::number( e->delta() ), 2 );
 
   if ( mMapTool )
   {
@@ -2270,7 +2270,7 @@ void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *event )
 
 void QgsMapCanvas::mapToolDestroyed()
 {
-  QgsDebugMsg( QStringLiteral( "maptool destroyed" ) );
+  QgsDebugMsgLevel( QStringLiteral( "maptool destroyed" ), 2 );
   mMapTool = nullptr;
 }
 

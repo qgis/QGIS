@@ -504,6 +504,7 @@ void QgsApplication::setAuthDatabaseDirPath( const QString &authDbDirPath )
 
 QString QgsApplication::prefixPath()
 {
+#if 0
   if ( ABISYM( mRunningFromBuildDir ) )
   {
     static bool sOnce = true;
@@ -515,6 +516,7 @@ QString QgsApplication::prefixPath()
     }
     sOnce = false;
   }
+#endif
 
   return ABISYM( mPrefixPath );
 }

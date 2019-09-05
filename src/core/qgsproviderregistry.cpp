@@ -201,16 +201,16 @@ void QgsProviderRegistry::init()
     if ( !fileVectorFilters.isEmpty() )
     {
       mVectorFileFilters += fileVectorFilters;
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( fileVectorFilters.split( ";;" ).count() ) );
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( fileVectorFilters.split( ";;" ).count() ), 2 );
     }
 
     // now get raster file filters, if any
     QString fileRasterFilters = meta->filters( QgsProviderMetadata::FilterType::FilterRaster );
     if ( !fileRasterFilters.isEmpty() )
     {
-      QgsDebugMsg( "raster filters: " + fileRasterFilters );
+      QgsDebugMsgLevel( "raster filters: " + fileRasterFilters, 2 );
       mRasterFileFilters += fileRasterFilters;
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( fileRasterFilters.split( ";;" ).count() ) );
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( fileRasterFilters.split( ";;" ).count() ), 2 );
     }
 
     // now get mesh file filters, if any
@@ -218,7 +218,7 @@ void QgsProviderRegistry::init()
     if ( !fileMeshFilters.isEmpty() )
     {
       mMeshFileFilters += fileMeshFilters;
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...loaded OK (%2 file mesh filters)" ).arg( key ).arg( mMeshFileFilters.split( ";;" ).count() ) );
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file mesh filters)" ).arg( key ).arg( mMeshFileFilters.split( ";;" ).count() ), 2 );
 
     }
 
@@ -226,7 +226,7 @@ void QgsProviderRegistry::init()
     if ( !fileMeshDatasetFilters.isEmpty() )
     {
       mMeshDatasetFileFilters += fileMeshDatasetFilters;
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...loaded OK (%2 file dataset filters)" ).arg( key ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ) );
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file dataset filters)" ).arg( key ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ), 2 );
     }
 
     // call initProvider() - allows provider to register its services to QGIS

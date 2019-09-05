@@ -1023,8 +1023,8 @@ void QgsCustomization::loadDefault()
 
   // Check customization state
   int status = mySettings.value( mStatusPath, QgsCustomization::NotSet ).toInt();
-  QgsDebugMsg( "Status path = " + mStatusPath );
-  QgsDebugMsg( QStringLiteral( "status = %1" ).arg( status ) );
+  QgsDebugMsgLevel( "Status path = " + mStatusPath, 2 );
+  QgsDebugMsgLevel( QStringLiteral( "status = %1" ).arg( status ), 2 );
   if ( status == QgsCustomization::User || status == QgsCustomization::Default )
     return;
 

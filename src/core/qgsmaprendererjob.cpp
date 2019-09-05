@@ -450,7 +450,7 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
   {
     if ( mCache && !job.cached && !job.context.renderingStopped() )
     {
-      QgsDebugMsg( QStringLiteral( "caching label result image" ) );
+      QgsDebugMsgLevel( QStringLiteral( "caching label result image" ), 2 );
       mCache->setCacheImage( LABEL_CACHE_ID, *job.img, _qgis_listQPointerToRaw( job.participatingLayers ) );
     }
 
@@ -598,7 +598,7 @@ void QgsMapRendererJob::drawLabeling( QgsRenderContext &renderContext, QgsLabeli
     labelingEngine2->run( renderContext );
   }
 
-  QgsDebugMsg( QStringLiteral( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
+  QgsDebugMsgLevel( QStringLiteral( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ), 2 );
 }
 
 void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )

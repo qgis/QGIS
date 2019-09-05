@@ -458,7 +458,7 @@ void QgsEffectStackCompactWidget::showDialog()
   if ( !mStack )
     return;
 
-  QgsEffectStack *clone = static_cast<QgsEffectStack *>( mStack->clone() );
+  QgsEffectStack *clone = mStack->clone();
   QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
   if ( mPreviewPicture )
   {

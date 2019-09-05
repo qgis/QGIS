@@ -3225,11 +3225,11 @@ QString createFilters( const QString &type )
     }                          // each loaded OGR driver
 
     // sort file filters alphabetically
-    QgsDebugMsg( "myFileFilters: " + sFileFilters );
+    QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
     QStringList filters = sFileFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
     filters.sort();
     sFileFilters = filters.join( QStringLiteral( ";;" ) ) + ";;";
-    QgsDebugMsg( "myFileFilters: " + sFileFilters );
+    QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
 
     // VSIFileHandler (.zip and .gz files) - second
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
@@ -3249,7 +3249,7 @@ QString createFilters( const QString &type )
     // cleanup
     if ( sFileFilters.endsWith( QLatin1String( ";;" ) ) ) sFileFilters.chop( 2 );
 
-    QgsDebugMsg( "myFileFilters: " + sFileFilters );
+    QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
   }
 
   if ( type == QLatin1String( "file" ) )

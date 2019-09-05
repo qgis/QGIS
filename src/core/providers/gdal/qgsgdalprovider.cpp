@@ -2147,7 +2147,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
   fileFiltersString.clear();
 
-  QgsDebugMsg( QStringLiteral( "GDAL driver count: %1" ).arg( GDALGetDriverCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "GDAL driver count: %1" ).arg( GDALGetDriverCount() ), 2 );
 
   for ( int i = 0; i < GDALGetDriverCount(); ++i )
   {
@@ -2288,8 +2288,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   // cleanup
   if ( fileFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileFiltersString.chop( 2 );
 
-  QgsDebugMsg( "Raster filter list built: " + fileFiltersString );
-  QgsDebugMsg( "Raster extension list built: " + extensions.join( " " ) );
+  QgsDebugMsgLevel( "Raster filter list built: " + fileFiltersString, 2 );
+  QgsDebugMsgLevel( "Raster extension list built: " + extensions.join( ' ' ), 2 );
 }                               // buildSupportedRasterFileFilter_()
 
 

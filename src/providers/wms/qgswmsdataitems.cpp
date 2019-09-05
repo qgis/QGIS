@@ -60,7 +60,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
   QgsDataSourceUri uri;
   uri.setEncodedUri( mUri );
 
-  QgsDebugMsg( "mUri = " + mUri );
+  QgsDebugMsgLevel( "mUri = " + mUri, 2 );
 
   QgsWmsSettings wmsSettings;
   if ( !wmsSettings.parseUri( mUri ) )
@@ -94,7 +94,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( capabilityProperty.layers ) )
     {
       // Attention, the name may be empty
-      QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
+      QgsDebugMsgLevel( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title, 2 );
       QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
 
       QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
@@ -204,7 +204,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
 {
   mSupportedCRS = mLayerProperty.crs;
   mSupportFormats = mCapabilitiesProperty.capability.request.getMap.format;
-  QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
+  QgsDebugMsgLevel( "uri = " + mDataSourceUri.encodedUri(), 2 );
 
   mUri = createUri();
 
@@ -212,7 +212,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
   for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperty.layer ) )
   {
     // Attention, the name may be empty
-    QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
+    QgsDebugMsgLevel( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title, 2 );
     QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
     QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
     //mChildren.append( layer );
@@ -337,7 +337,7 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
 
 QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
-  QgsDebugMsg( "path = " + path );
+  QgsDebugMsgLevel( "path = " + path, 2 );
   if ( path.isEmpty() )
   {
     return new QgsWMSRootItem( parentItem, QStringLiteral( "WMS/WMTS" ), QStringLiteral( "wms:" ) );
@@ -414,7 +414,7 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
       {
         for ( const QString &encodedUri : encodedUris )
         {
-          QgsDebugMsg( encodedUri );
+          QgsDebugMsgLevel( encodedUri, 3 );
           QgsDataSourceUri uri;
           QgsSettings settings;
           QString key( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + "/" + connectionName );
@@ -426,7 +426,7 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
             uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
           }
 
-          QgsDebugMsg( QStringLiteral( "WMS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ) );
+          QgsDebugMsgLevel( QStringLiteral( "WMS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ), 2 );
 
           QgsDataItem *item = new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, uri.encodedUri() );
           if ( item )
@@ -479,7 +479,7 @@ QVector<QgsDataItem *> QgsXyzTileDataItemProvider::createDataItems( const QStrin
         for ( ; urlDataIt != urlData.constEnd(); ++urlDataIt )
         {
           const QString layerName = urlDataIt.key();
-          QgsDebugMsg( urlDataIt.value() );
+          QgsDebugMsgLevel( urlDataIt.value(), 2 );
           QgsDataSourceUri uri;
           uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
           uri.setParam( QStringLiteral( "url" ), urlDataIt.value() );
