@@ -479,6 +479,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionMapTips() { return mActionMapTips; }
     QAction *actionNewBookmark() { return mActionNewBookmark; }
     QAction *actionShowBookmarks() { return mActionShowBookmarks; }
+    QAction *actionShowBookmarkManager() { return mActionShowBookmarkManager; }
     QAction *actionDraw() { return mActionDraw; }
 
     QAction *actionDataSourceManager() { return mActionDataSourceManager; }
@@ -1070,8 +1071,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new file from a template project
     bool fileNewFromTemplate( const QString &fileName );
 
-    //! Show the spatial bookmarks dialog
-    void showBookmarks( bool show );
+    //! Show the spatial bookmark manager panel
+    void showBookmarkManager( bool show );
+
+    //! Show and focus the browser panel to spatial bookmarks
+    void showBookmarks();
 
     //! Create a new spatial bookmark
     void newBookmark( bool inProject = false );

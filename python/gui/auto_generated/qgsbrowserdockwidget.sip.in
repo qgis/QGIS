@@ -122,6 +122,10 @@ Sets filter case sensitivity
 %Docstring
 Apply filter to the model
 %End
+    void setActiveIndex( const QModelIndex &index );
+%Docstring
+Sets the selection to ``index`` and expand it
+%End
     void updateProjectHome();
 %Docstring
 Update project home directory

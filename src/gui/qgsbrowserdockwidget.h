@@ -127,6 +127,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void setCaseSensitive( bool caseSensitive );
     //! Apply filter to the model
     void setFilter();
+    //! Sets the selection to \a index and expand it
+    void setActiveIndex( const QModelIndex &index );
     //! Update project home directory
     void updateProjectHome();
 
