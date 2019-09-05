@@ -968,6 +968,16 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     } );
     menu->addAction( showBookmarksPanel );
   }
+  else if ( QgsBookmarkManagerItem *managerItem = qobject_cast< QgsBookmarkManagerItem * >( item ) )
+  {
+    QAction *addBookmark = new QAction( tr( "New Spatial Bookmark…" ), menu );
+    const bool inProject = managerItem->manager() != QgsApplication::bookmarkManager();
+    connect( addBookmark, &QAction::triggered, this, [ = ]
+    {
+      QgisApp::instance()->newBookmark( inProject );
+    } );
+    menu->addAction( addBookmark );
+  }
   else if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), menu );
