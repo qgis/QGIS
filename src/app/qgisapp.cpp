@@ -1777,11 +1777,28 @@ void QgisApp::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   if ( !mCustomDropHandlers.contains( handler ) )
     mCustomDropHandlers << handler;
+
+  const auto canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
+  {
+    canvas->setCustomDropHandlers( mCustomDropHandlers );
+  }
 }
 
 void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
 {
   mCustomDropHandlers.removeOne( handler );
+
+  const auto canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
+  {
+    canvas->setCustomDropHandlers( mCustomDropHandlers );
+  }
+}
+
+QVector<QPointer<QgsCustomDropHandler> > QgisApp::customDropHandlers() const
+{
+  return mCustomDropHandlers;
 }
 
 void QgisApp::registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
@@ -3876,6 +3893,8 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
     QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, mapCanvas );
     Q_UNUSED( canvasItem ) //item is already added automatically to canvas scene
   }
+
+  mapCanvas->setCustomDropHandlers( mCustomDropHandlers );
 
   markDirty();
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );

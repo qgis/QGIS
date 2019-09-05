@@ -15,13 +15,14 @@
 
 #include "qgstest.h"
 
-#include <qgsapplication.h>
-#include <qgsmapcanvas.h>
-#include <qgsvectorlayer.h>
-#include <qgsproject.h>
-#include <qgsrenderchecker.h>
-#include <qgsvectordataprovider.h>
-#include <qgsmaptoolpan.h>
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsrenderchecker.h"
+#include "qgsvectordataprovider.h"
+#include "qgsmaptoolpan.h"
+#include "qgscustomdrophandler.h"
 
 namespace QTest
 {
@@ -57,6 +58,7 @@ class TestQgsMapCanvas : public QObject
     void testScaleLockCanvasResize();
     void testZoomByWheel();
     void testShiftZoom();
+    void testDragDrop();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -429,6 +431,75 @@ void TestQgsMapCanvas::testShiftZoom()
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.00001 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.00001 );
+}
+
+class TestNoDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+
+  public:
+
+    QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
+    bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return false; }
+    bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return false; }
+};
+
+class TestYesDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+
+  public:
+
+    QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
+    bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return true; }
+    bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return true; }
+};
+
+void TestQgsMapCanvas::testDragDrop()
+{
+  // default drag, should not be accepted
+  std::unique_ptr< QMimeData > data = qgis::make_unique< QMimeData >();
+  std::unique_ptr< QDragEnterEvent > event = qgis::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  mCanvas->dragEnterEvent( event.get() );
+  QVERIFY( !event->isAccepted() );
+
+  // with mime data
+  QgsMimeDataUtils::UriList list;
+  QgsMimeDataUtils::Uri uri;
+  uri.name = QStringLiteral( "name" );
+  uri.providerKey = QStringLiteral( "test" );
+  list << uri;
+  data.reset( QgsMimeDataUtils::encodeUriList( list ) );
+  event = qgis::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  mCanvas->dragEnterEvent( event.get() );
+  // still not accepted by default
+  QVERIFY( !event->isAccepted() );
+
+  // add a custom drop handler to the canvas
+  TestNoDropHandler handler;
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler );
+  mCanvas->dragEnterEvent( event.get() );
+  // not accepted by handler
+  QVERIFY( !event->isAccepted() );
+
+  TestYesDropHandler handler2;
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler << &handler2 );
+  mCanvas->dragEnterEvent( event.get() );
+  // IS accepted by handler
+  QVERIFY( event->isAccepted() );
+
+  // check drop event logic
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() );
+  std::unique_ptr< QDropEvent > dropEvent = qgis::make_unique< QDropEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  mCanvas->dropEvent( dropEvent.get() );
+  QVERIFY( !dropEvent->isAccepted() );
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler );
+  mCanvas->dropEvent( dropEvent.get() );
+  QVERIFY( !dropEvent->isAccepted() );
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler << &handler2 );
+  mCanvas->dropEvent( dropEvent.get() );
+  // is accepted!
+  QVERIFY( dropEvent->isAccepted() );
 }
 
 QGSTEST_MAIN( TestQgsMapCanvas )

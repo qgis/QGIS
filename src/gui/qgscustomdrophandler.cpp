@@ -45,3 +45,13 @@ bool QgsCustomDropHandler::handleFileDrop( const QString &file )
   Q_UNUSED( file )
   return false;
 }
+
+bool QgsCustomDropHandler::canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * )
+{
+  return false;
+}
+
+bool QgsCustomDropHandler::handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const
+{
+  return false;
+}

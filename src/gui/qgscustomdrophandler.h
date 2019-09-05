@@ -19,6 +19,8 @@
 #include "qgsmimedatautils.h"
 #include "qgis_gui.h"
 
+class QgsMapCanvas;
+
 /**
  * \ingroup gui
  * Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.
@@ -135,6 +137,45 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
      * quickly do not apply.
      */
     virtual bool handleFileDrop( const QString &file );
+
+    /**
+     * Returns TRUE if the handler is capable of handling the provided mime \a uri
+     * when dropped onto a map \a canvas.
+     *
+     * The base class implementation returns FALSE regardless of mime data.
+     *
+     * This method is called when mime data is dragged over a map canvas, in order
+     * to determine whether any handlers are capable of handling the data and to
+     * determine whether the drag action should be accepted.
+     *
+     * \warning Subclasses should be very careful about implementing this. If they
+     * incorrectly return TRUE to a \a uri, it will prevent the default application
+     * drop handling from occurring and will break the ability to drag and drop layers
+     * and files onto QGIS.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas );
+
+    /**
+     * Called from QGIS after a drop event with custom \a uri known by the handler occurs
+     * onto a map \a canvas.
+     *
+     * In order for handleCustomUriCanvasDrop() to be called, subclasses must
+     * also implement customUriProviderKey() to indicate the providerKey
+     * value which the handler accepts.
+     *
+     * If the function returns TRUE, it means the handler has accepted the drop
+     * and it should not be further processed (e.g. by other QgsCustomDropHandlers).
+     *
+     * Subclasses which implement this must also implement corresponding versions of
+     * canHandleCustomUriCanvasDrop().
+     *
+     * \see customUriProviderKey()
+     * \see canHandleCustomUriCanvasDrop()
+     * \since QGIS 3.10
+     */
+    virtual bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const;
 };
 
 #endif // QGSCUSTOMDROPHANDLER_H
