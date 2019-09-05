@@ -645,7 +645,6 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
         addChildItem( new QgsBookmarkGroupItem( this, newDetails.group(), mManager ), true );
       }
     }
-
   } );
   connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [ = ]( const QString & id )
   {
@@ -676,6 +675,11 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
             {
               newGroup->addBookmark( newDetails );
             }
+            else
+            {
+              // need to create a new group for this (will automatically add the new bookmark)
+              addChildItem( new QgsBookmarkGroupItem( this, newDetails.group(), mManager ), true );
+            }
           }
           break;
         }
@@ -701,6 +705,11 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
               if ( QgsBookmarkGroupItem *newGroup = groupItem( newDetails.group() ) )
               {
                 newGroup->addBookmark( newDetails );
+              }
+              else
+              {
+                // need to create a new group for this (will automatically add the new bookmark)
+                addChildItem( new QgsBookmarkGroupItem( this, newDetails.group(), mManager ), true );
               }
             }
             else
