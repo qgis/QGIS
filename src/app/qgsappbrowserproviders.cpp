@@ -572,9 +572,8 @@ int QgsBookmarksDataItemProvider::capabilities() const
   return QgsDataProvider::Database;
 }
 
-QgsDataItem *QgsBookmarksDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+QgsDataItem *QgsBookmarksDataItemProvider::createDataItem( const QString &, QgsDataItem *parentItem )
 {
-  Q_UNUSED( path );
   return new QgsBookmarksItem( parentItem, QObject::tr( "Spatial Bookmarks" ), QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager() );
 }
 
@@ -636,7 +635,7 @@ QVector<QgsDataItem *> QgsBookmarkManagerItem::createChildren()
   {
     if ( group.isEmpty() )
     {
-      for ( const QgsBookmark bookmark : mManager->bookmarksByGroup( QString() ) )
+      for ( const QgsBookmark &bookmark : mManager->bookmarksByGroup( QString() ) )
       {
         children << new QgsBookmarkItem( this, bookmark.name(), bookmark );
       }
@@ -662,19 +661,21 @@ QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &
 QVector<QgsDataItem *> QgsBookmarkGroupItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  for ( const QgsBookmark bookmark : mManager->bookmarksByGroup( mName ) )
+  const QList< QgsBookmark > bookmarks = mManager->bookmarksByGroup( mName );
+  children.reserve( bookmarks.size() );
+  for ( const QgsBookmark &bookmark : bookmarks )
   {
     children << new QgsBookmarkItem( this, bookmark.name(), bookmark );
   }
   return children;
 }
 
-QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, QgsBookmark bookmark )
+QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark )
   : QgsDataItem( Custom, parent, name, QStringLiteral( "bookmarks:%1/%2" ).arg( bookmark.group().toLower(), bookmark.id() ) )
+  , mBookmark( bookmark )
 {
   mType = Custom;
   mCapabilities = NoCapabilities;
-  mBookmark = bookmark;
   mIconName = QStringLiteral( "/mItemBookmark.svg" );
   setState( Populated ); // no more children
 }
