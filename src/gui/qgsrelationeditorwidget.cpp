@@ -30,6 +30,7 @@
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayerselectionmanager.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -135,8 +136,6 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
 
   mDualView = new QgsDualView( this );
   mDualView->setView( mViewMode );
-  mFeatureSelectionMgr = new QgsGenericFeatureSelectionManager( mDualView );
-  mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
 
   mRelationLayout->addWidget( mDualView );
 
@@ -151,7 +150,6 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
   connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
   connect( mZoomToFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::zoomToSelectedFeatures );
-  connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 
   connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
 
@@ -198,8 +196,16 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   if ( mVisible )
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
-    mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
+    initDualView( mRelation.referencingLayer(), myRequest );
   }
+}
+
+void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
+{
+  mDualView->init( layer, nullptr, request, mEditorContext );
+  mFeatureSelectionMgr = new QgsVectorLayerSelectionManager( layer, mDualView );
+  mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
+  connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 }
 
 void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const QgsRelation &nmrelation )
@@ -295,7 +301,7 @@ void QgsRelationEditorWidget::updateButtons()
 {
   bool editable = false;
   bool linkable = false;
-  bool selectionNotEmpty = mFeatureSelectionMgr->selectedFeatureCount();
+  bool selectionNotEmpty = mFeatureSelectionMgr ? mFeatureSelectionMgr->selectedFeatureCount() : false;
 
   if ( mRelation.isValid() )
   {
@@ -730,11 +736,11 @@ void QgsRelationEditorWidget::updateUi()
 
       nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
 
-      mDualView->init( mNmRelation.referencedLayer(), nullptr, nmRequest, mEditorContext );
+      initDualView( mNmRelation.referencedLayer(), nmRequest );
     }
     else
     {
-      mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
+      initDualView( mRelation.referencingLayer(), myRequest );
     }
   }
 }

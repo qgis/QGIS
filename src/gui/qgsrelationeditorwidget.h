@@ -28,7 +28,7 @@
 #include "qgis_gui.h"
 
 class QgsFeature;
-class QgsGenericFeatureSelectionManager;
+class QgsVectorLayerSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
@@ -160,10 +160,11 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
   private:
     void updateUi();
+    void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
 
     QgsDualView *mDualView = nullptr;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
-    QgsGenericFeatureSelectionManager *mFeatureSelectionMgr = nullptr;
+    QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
