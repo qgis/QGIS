@@ -972,13 +972,13 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     } );
     menu->addAction( showBookmarksPanel );
     menu->addSeparator();
-    QAction *importBookmarks = new QAction( tr( "Import Bookmarks…" ), menu );
+    QAction *importBookmarks = new QAction( tr( "Import Spatial Bookmarks…" ), menu );
     connect( importBookmarks, &QAction::triggered, this, [ = ]
     {
       importBookmarksToManager( QgsApplication::bookmarkManager(), context.messageBar() );
     } );
     menu->addAction( importBookmarks );
-    QAction *exportBookmarks = new QAction( tr( "Export Bookmarks…" ), menu );
+    QAction *exportBookmarks = new QAction( tr( "Export Spatial Bookmarks…" ), menu );
     connect( exportBookmarks, &QAction::triggered, this, [ = ]
     {
       exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << QgsApplication::bookmarkManager() << QgsProject::instance()->bookmarkManager(), context.messageBar() );
@@ -995,14 +995,14 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     } );
     menu->addAction( addBookmark );
     menu->addSeparator();
-    QAction *importBookmarks = new QAction( tr( "Import Bookmarks…" ), menu );
+    QAction *importBookmarks = new QAction( tr( "Import Spatial Bookmarks…" ), menu );
     connect( importBookmarks, &QAction::triggered, this, [ = ]
     {
       importBookmarksToManager( managerItem->manager(), context.messageBar() );
     } );
     menu->addAction( importBookmarks );
 
-    QAction *exportBookmarks = new QAction( tr( "Export Bookmarks…" ), menu );
+    QAction *exportBookmarks = new QAction( tr( "Export Spatial Bookmarks…" ), menu );
     connect( exportBookmarks, &QAction::triggered, this, [ = ]
     {
       exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << managerItem->manager(), context.messageBar() );
@@ -1030,12 +1030,12 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       }
     }
 
-    QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Bookmark" ) : tr( "Delete Bookmarks" ), menu );
+    QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Spatial Bookmark" ) : tr( "Delete Spatial Bookmarks" ), menu );
     connect( actionDelete, &QAction::triggered, this, [bookmarkItem, ids]
     {
       if ( ids.count() == 1 )
       {
-        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark" ),
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmark" ),
                                     QObject::tr( "Are you sure you want to delete the %1 bookmark?" ).arg( bookmarkItem->name() ),
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
@@ -1044,7 +1044,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       }
       else
       {
-        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmarks" ),
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmarks" ),
                                     QObject::tr( "Are you sure you want to delete the %1 selected bookmarks?" ).arg( ids.count() ),
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
@@ -1068,7 +1068,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       }
     }
 
-    QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Group" ) : tr( "Delete Groups" ), menu );
+    QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Bookmark Group" ) : tr( "Delete Bookmark Groups" ), menu );
     connect( actionDelete, &QAction::triggered, this, [selectedItems, groups, manager]
     {
       if ( groups.count() == 1 )
