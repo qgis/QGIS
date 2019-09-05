@@ -701,6 +701,9 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
             // group has changed!
             // first remove from existing group
             group->deleteChildItem( bookmarkItem );
+            if ( group->children().empty() )
+              deleteChildItem( group );
+
             // and add a child to the new group
             if ( !newDetails.group().isEmpty() )
             {
@@ -730,7 +733,11 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
     if ( !b.group().isEmpty() )
     {
       if ( QgsBookmarkGroupItem *group = groupItem( b.group() ) )
+      {
         group->removeBookmarkChildById( id );
+        if ( group->children().empty() )
+          deleteChildItem( group );
+      }
     }
     else if ( QgsBookmarkItem *bookmarkItem = childItemById( id ) )
     {
@@ -1083,7 +1090,6 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
         {
           manager->removeBookmark( bookmark.id() );
         }
-        selectedItems.at( 0 )->parent()->deleteChildItem( selectedItems.at( 0 ) );
       }
       else
       {
@@ -1100,7 +1106,6 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
           {
             manager->removeBookmark( bookmark.id() );
           }
-          selectedItems.at( i )->parent()->deleteChildItem( selectedItems.at( i ) );
           i++;
         }
       }
