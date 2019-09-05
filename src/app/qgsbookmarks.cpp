@@ -171,30 +171,21 @@ void QgsBookmarks::zoomToBookmark()
 void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
 {
   QgsReferencedRectangle rect = index.data( QgsBookmarkManagerModel::RoleExtent ).value< QgsReferencedRectangle >();
-  QgsRectangle canvasExtent = rect;
-  if ( rect.crs() != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() )
+  try
   {
-    QgsCoordinateTransform ct( rect.crs(),
-                               QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
-    try
+    if ( QgisApp::instance()->mapCanvas()->setReferencedExtent( rect ) )
     {
-      canvasExtent = ct.transform( rect );
+      QgisApp::instance()->mapCanvas()->refresh();
     }
-    catch ( QgsCsException & )
-    {
-      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
-      return;
-    }
-    if ( canvasExtent.isEmpty() )
+    else
     {
       QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Bookmark extent is empty" ) );
-      return;
     }
   }
-
-  // set the extent to the bookmark and refresh
-  QgisApp::instance()->mapCanvas()->setExtent( canvasExtent );
-  QgisApp::instance()->mapCanvas()->refresh();
+  catch ( QgsCsException & )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
+  }
 }
 
 void QgsBookmarks::importFromXml()

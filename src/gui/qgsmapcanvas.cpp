@@ -73,6 +73,7 @@ email                : sherman at mrcc.com
 #include "qgsexpressioncontextutils.h"
 #include "qgsmimedatautils.h"
 #include "qgscustomdrophandler.h"
+#include "qgsreferencedgeometry.h"
 
 /**
  * \ingroup gui
@@ -877,7 +878,25 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
   // update controls' enabled state
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
   emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-} // setExtent
+}
+
+bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
+{
+  QgsRectangle canvasExtent = extent;
+  if ( extent.crs() != mapSettings().destinationCrs() )
+  {
+    QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), QgsProject::instance() );
+    canvasExtent = ct.transform( extent );
+
+    if ( canvasExtent.isEmpty() )
+    {
+      return false;
+    }
+  }
+
+  setExtent( canvasExtent );
+  return true;
+}
 
 void QgsMapCanvas::setCenter( const QgsPointXY &center )
 {
