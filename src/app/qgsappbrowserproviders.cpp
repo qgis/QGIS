@@ -756,10 +756,6 @@ QVector<QgsDataItem *> QgsBookmarkManagerItem::createChildren()
     else
     {
       QgsBookmarkGroupItem *item = new QgsBookmarkGroupItem( this, group, mManager );
-
-      // we want directories shown before files
-      item->setSortKey( QStringLiteral( "  %1" ).arg( group ) );
-
       children << item;
     }
   }
@@ -806,6 +802,9 @@ QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &
   mCapabilities = Fast;
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
+
+  setSortKey( QStringLiteral( "  %1" ).arg( name ) );
+
   populate();
 }
 
