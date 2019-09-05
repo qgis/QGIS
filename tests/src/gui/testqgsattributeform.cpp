@@ -625,6 +625,7 @@ void TestQgsAttributeForm::testEditableJoin()
   layerA->startEditing();
   layerB->startEditing();
   layerC->startEditing();
+  layerA->select( ftA.id() );
   form.setMode( QgsAttributeEditorContext::MultiEditMode );
 
   // multi edit button must be displayed for A
