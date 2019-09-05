@@ -285,6 +285,7 @@
      <addaction name="mActionSelectByForm"/>
      <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionDeselectAll"/>
+     <addaction name="mActionReselect"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
     </widget>
@@ -3229,6 +3230,14 @@ Acts on the currently active layer only.</string>
    <property name="toolTip">
     <string>Toggles Display of Unplaced Labels
 Shows placeholders for labels which could not be placed, e.g. due to overlaps with other map labels.</string>
+   </property>
+  </action>
+  <action name="mActionReselect">
+   <property name="text">
+    <string>Reselect Features</string>
+   </property>
+   <property name="toolTip">
+    <string>Reselect Features from Current Layer</string>
    </property>
   </action>
  </widget>

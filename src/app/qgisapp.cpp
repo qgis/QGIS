@@ -2181,6 +2181,21 @@ void QgisApp::createActions()
   connect( mActionSelectRadius, &QAction::triggered, this, &QgisApp::selectByRadius );
   connect( mActionDeselectAll, &QAction::triggered, this, &QgisApp::deselectAll );
   connect( mActionSelectAll, &QAction::triggered, this, &QgisApp::selectAll );
+  connect( mActionReselect, &QAction::triggered, this, [ = ]
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+    if ( !vlayer )
+    {
+      visibleMessageBar()->pushMessage(
+        tr( "No active vector layer" ),
+        tr( "To reselect features, choose a vector layer in the legend." ),
+        Qgis::Info,
+        messageTimeout() );
+      return;
+    }
+
+    vlayer->reselect();
+  } );
   connect( mActionInvertSelection, &QAction::triggered, this, &QgisApp::invertSelection );
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgisApp::selectByExpression );
   connect( mActionSelectByForm, &QAction::triggered, this, &QgisApp::selectByForm );
@@ -2423,6 +2438,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionSelectRadius );
   mMapToolGroup->addAction( mActionDeselectAll );
   mMapToolGroup->addAction( mActionSelectAll );
+  mMapToolGroup->addAction( mActionReselect );
   mMapToolGroup->addAction( mActionInvertSelection );
   mMapToolGroup->addAction( mActionMeasure );
   mMapToolGroup->addAction( mActionMeasureArea );
@@ -2746,6 +2762,7 @@ void QgisApp::createToolBars()
       break;
     case 3:
       defSelectionAction = mActionInvertSelection;
+      break;
       break;
   }
   bt->setDefaultAction( defSelectionAction );
@@ -12665,6 +12682,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionLabeling->setEnabled( false );
     mActionOpenTable->setEnabled( false );
     mActionSelectAll->setEnabled( false );
+    mActionReselect->setEnabled( false );
     mActionInvertSelection->setEnabled( false );
     mActionOpenFieldCalc->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
@@ -12799,6 +12817,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectByForm->setEnabled( true );
       mActionOpenTable->setEnabled( true );
       mActionSelectAll->setEnabled( true );
+      mActionReselect->setEnabled( true );
       mActionInvertSelection->setEnabled( true );
       mActionSaveLayerDefinition->setEnabled( true );
       mActionLayerSaveAs->setEnabled( true );
@@ -13028,6 +13047,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
+      mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
       mActionSelectByExpression->setEnabled( false );
       mActionSelectByForm->setEnabled( false );
@@ -13116,6 +13136,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
+      mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
       mActionSelectByExpression->setEnabled( false );
       mActionSelectByForm->setEnabled( false );
