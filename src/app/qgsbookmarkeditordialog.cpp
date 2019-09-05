@@ -57,6 +57,8 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsBookmarkEditorDialog::crsChanged );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsBookmarkEditorDialog::onAccepted );
+
+  mName->setFocus();
 }
 
 void QgsBookmarkEditorDialog::crsChanged( const QgsCoordinateReferenceSystem &crs )
