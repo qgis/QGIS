@@ -629,7 +629,30 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
 
   connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
   connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
-  connect( mManager, &QgsBookmarkManager::bookmarkRemoved, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
+  connect( mManager, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, [ = ]( const QString & id )
+  {
+    QgsBookmark b = mManager->bookmarkById( id );
+    const QVector<QgsDataItem *> c = children();
+    for ( QgsDataItem *i : c )
+    {
+      if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( i ) )
+      {
+        if ( bookmarkItem->bookmark().id() == id )
+        {
+          deleteChildItem( bookmarkItem );
+          break;
+        }
+      }
+      else if ( QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( i ) )
+      {
+        if ( groupItem->group() == b.group() )
+        {
+          groupItem->removeBookmarkChildById( id );
+          break;
+        }
+      }
+    }
+  } );
 
   populate();
 }
@@ -680,6 +703,22 @@ QVector<QgsDataItem *> QgsBookmarkGroupItem::createChildren()
     children << new QgsBookmarkItem( this, bookmark.name(), bookmark, mManager );
   }
   return children;
+}
+
+void QgsBookmarkGroupItem::removeBookmarkChildById( const QString &id )
+{
+  const QVector<QgsDataItem *> c = children();
+  for ( QgsDataItem *i : c )
+  {
+    if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( i ) )
+    {
+      if ( bookmarkItem->bookmark().id() == id )
+      {
+        deleteChildItem( bookmarkItem );
+        return;
+      }
+    }
+  }
 }
 
 QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager )
