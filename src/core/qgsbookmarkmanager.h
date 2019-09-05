@@ -264,7 +264,7 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
      *
      * \see importFromFile()
      */
-    static bool exportToFile( const QString &path, QList<const QgsBookmarkManager *> &managers );
+    static bool exportToFile( const QString &path, const QList<const QgsBookmarkManager *> &managers );
 
 
     /**
