@@ -818,7 +818,7 @@ bool QgsBookmarksItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
   return false;
 }
 
-void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext )
 {
   if ( qobject_cast< QgsBookmarksItem * >( item ) )
   {
@@ -845,15 +845,39 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       dlg->show();
     } );
     menu->addAction( actionEdit );
-    QAction *actionDelete = new QAction( tr( "Delete Spatial Bookmark" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [bookmarkItem]
-    {
-      if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmark" ),
-                                  QObject::tr( "Are you sure you want to delete the %1 bookmark?" ).arg( bookmarkItem->name() ),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-        return;
 
-      bookmarkItem->manager()->removeBookmark( bookmarkItem->bookmark().id() );
+    QStringList ids;
+    for ( QgsDataItem *i : selectedItems )
+    {
+      if ( QgsBookmarkItem *b = qobject_cast< QgsBookmarkItem * >( i ) )
+      {
+        if ( b->manager() == bookmarkItem->manager() )
+          ids << b->bookmark().id();
+      }
+    }
+
+    QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Bookmark" ) : tr( "Delete Bookmarks" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [bookmarkItem, ids]
+    {
+      if ( ids.count() == 1 )
+      {
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark" ),
+                                    QObject::tr( "Are you sure you want to delete the %1 bookmark?" ).arg( bookmarkItem->name() ),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+          return;
+
+        bookmarkItem->manager()->removeBookmark( bookmarkItem->bookmark().id() );
+      }
+      else
+      {
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmarks" ),
+                                    QObject::tr( "Are you sure you want to delete the %1 selected bookmarks?" ).arg( ids.count() ),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+          return;
+
+        for ( const QString &id : ids )
+          bookmarkItem->manager()->removeBookmark( id );
+      }
     } );
     menu->addAction( actionDelete );
   }
