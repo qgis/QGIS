@@ -266,6 +266,7 @@ class QgsBookmarksItemGuiProvider : public QObject, public QgsDataItemGuiProvide
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
     bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+    bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context ) override;
 
 };
 

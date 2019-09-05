@@ -682,7 +682,7 @@ QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, cons
   , mBookmark( bookmark )
 {
   mType = Custom;
-  mCapabilities = NoCapabilities;
+  mCapabilities = Rename;
   mIconName = QStringLiteral( "/mItemBookmark.svg" );
   setState( Populated ); // no more children
 }
@@ -846,6 +846,22 @@ bool QgsBookmarksItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataI
     // set the extent to the bookmark and refresh
     QgisApp::instance()->mapCanvas()->setExtent( canvasExtent );
     QgisApp::instance()->mapCanvas()->refresh();
+    return true;
+  }
+  return false;
+}
+
+bool QgsBookmarksItemGuiProvider::rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context )
+{
+  if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
+  {
+    QgsBookmark bookmark = bookmarkItem->bookmark();
+    bookmark.setName( name );
+    if ( !bookmarkItem->manager()->updateBookmark( bookmark ) )
+    {
+      context.messageBar()->pushWarning( tr( "Rename Bookmark" ), tr( "Could not rename bookmark" ) );
+      return true;
+    }
     return true;
   }
   return false;
