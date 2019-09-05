@@ -628,10 +628,11 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
   mIconName = QStringLiteral( "/mIconFolder.svg" );
 
   connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
-  connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
-  connect( mManager, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, [ = ]( const QString & id )
+  connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [ = ]( const QString & id )
   {
-    QgsBookmark b = mManager->bookmarkById( id );
+    QgsBookmark newDetails = mManager->bookmarkById( id );
+
+    // have to do a deep dive to find the old item...!
     const QVector<QgsDataItem *> c = children();
     for ( QgsDataItem *i : c )
     {
@@ -639,18 +640,71 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
       {
         if ( bookmarkItem->bookmark().id() == id )
         {
-          deleteChildItem( bookmarkItem );
+          // found the target! now, what's changed?
+          if ( bookmarkItem->bookmark().group() == newDetails.group() )
+          {
+            // good, not the group. Just update the existing bookmark then.
+            bookmarkItem->setBookmark( newDetails );
+            return;
+          }
+          else
+          {
+            // group has changed, ouch!
+            // first remove from existing group
+            deleteChildItem( bookmarkItem );
+            // and add a child to the new group
+            if ( QgsBookmarkGroupItem *newGroup = groupItem( newDetails.group() ) )
+            {
+              newGroup->addBookmark( newDetails );
+            }
+          }
           break;
         }
       }
-      else if ( QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( i ) )
+      else if ( QgsBookmarkGroupItem *group = qobject_cast< QgsBookmarkGroupItem * >( i ) )
       {
-        if ( groupItem->group() == b.group() )
+        if ( QgsBookmarkItem *bookmarkItem = group->childItemById( id ) )
         {
-          groupItem->removeBookmarkChildById( id );
+          // ok, found old group, now compare
+          if ( bookmarkItem->bookmark().group() == newDetails.group() )
+          {
+            // good, not the group. Just update the existing bookmark then.
+            bookmarkItem->setBookmark( newDetails );
+          }
+          else
+          {
+            // group has changed!
+            // first remove from existing group
+            group->deleteChildItem( bookmarkItem );
+            // and add a child to the new group
+            if ( !newDetails.group().isEmpty() )
+            {
+              if ( QgsBookmarkGroupItem *newGroup = groupItem( newDetails.group() ) )
+              {
+                newGroup->addBookmark( newDetails );
+              }
+            }
+            else
+            {
+              addChildItem( new QgsBookmarkItem( this, newDetails.name(), newDetails, mManager ), true );
+            }
+          }
           break;
         }
       }
+    }
+  } );
+  connect( mManager, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, [ = ]( const QString & id )
+  {
+    QgsBookmark b = mManager->bookmarkById( id );
+    if ( !b.group().isEmpty() )
+    {
+      if ( QgsBookmarkGroupItem *group = groupItem( b.group() ) )
+        group->removeBookmarkChildById( id );
+    }
+    else if ( QgsBookmarkItem *bookmarkItem = childItemById( id ) )
+    {
+      deleteChildItem( bookmarkItem );
     }
   } );
 
@@ -682,6 +736,38 @@ QVector<QgsDataItem *> QgsBookmarkManagerItem::createChildren()
   return children;
 }
 
+QgsBookmarkGroupItem *QgsBookmarkManagerItem::groupItem( const QString &group )
+{
+  const QVector<QgsDataItem *> c = children();
+  for ( QgsDataItem *i : c )
+  {
+    if ( QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( i ) )
+    {
+      if ( groupItem->group() == group )
+      {
+        return groupItem;
+      }
+    }
+  }
+  return nullptr;
+}
+
+QgsBookmarkItem *QgsBookmarkManagerItem::childItemById( const QString &id )
+{
+  const QVector<QgsDataItem *> c = children();
+  for ( QgsDataItem *i : c )
+  {
+    if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( i ) )
+    {
+      if ( bookmarkItem->bookmark().id() == id )
+      {
+        return bookmarkItem;
+      }
+    }
+  }
+  return nullptr;
+}
+
 QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *manager )
   : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:%1" ).arg( name.toLower() ) )
   , mGroup( name )
@@ -705,7 +791,12 @@ QVector<QgsDataItem *> QgsBookmarkGroupItem::createChildren()
   return children;
 }
 
-void QgsBookmarkGroupItem::removeBookmarkChildById( const QString &id )
+void QgsBookmarkGroupItem::addBookmark( const QgsBookmark &bookmark )
+{
+  addChildItem( new QgsBookmarkItem( this, bookmark.name(), bookmark, mManager ), true );
+}
+
+QgsBookmarkItem *QgsBookmarkGroupItem::childItemById( const QString &id )
 {
   const QVector<QgsDataItem *> c = children();
   for ( QgsDataItem *i : c )
@@ -714,11 +805,17 @@ void QgsBookmarkGroupItem::removeBookmarkChildById( const QString &id )
     {
       if ( bookmarkItem->bookmark().id() == id )
       {
-        deleteChildItem( bookmarkItem );
-        return;
+        return bookmarkItem;
       }
     }
   }
+  return nullptr;
+}
+
+void QgsBookmarkGroupItem::removeBookmarkChildById( const QString &id )
+{
+  if ( QgsBookmarkItem *bookmarkItem = childItemById( id ) )
+    deleteChildItem( bookmarkItem );
 }
 
 QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager )
@@ -730,6 +827,12 @@ QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, cons
   mCapabilities = Rename;
   mIconName = QStringLiteral( "/mItemBookmark.svg" );
   setState( Populated ); // no more children
+}
+
+void QgsBookmarkItem::setBookmark( const QgsBookmark &bookmark )
+{
+  setName( bookmark.name() );
+  mBookmark = bookmark;
 }
 
 QString QgsBookmarkDropHandler::customUriProviderKey() const

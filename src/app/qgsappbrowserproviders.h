@@ -297,6 +297,9 @@ class APP_EXPORT QgsBookmarksItem : public QgsDataCollectionItem
     QgsBookmarkManager *mProjectManager = nullptr;
 };
 
+class QgsBookmarkGroupItem;
+class QgsBookmarkItem;
+
 /**
  * Contains bookmarks content
 */
@@ -313,6 +316,8 @@ class APP_EXPORT QgsBookmarkManagerItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
     QgsBookmarkManager *manager() { return mManager; }
+    QgsBookmarkGroupItem *groupItem( const QString &group );
+    QgsBookmarkItem *childItemById( const QString &id );
 
     //! Icon for bookmark manager
     static QIcon iconBookmarkManager();
@@ -321,6 +326,7 @@ class APP_EXPORT QgsBookmarkManagerItem : public QgsDataCollectionItem
 
     QgsBookmarkManager *mManager = nullptr;
 };
+
 
 /**
  * Contains bookmarks
@@ -337,9 +343,12 @@ class APP_EXPORT QgsBookmarkGroupItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    void addBookmark( const QgsBookmark &bookmark );
+
     QString group() const { return mGroup; }
     QgsBookmarkManager *manager() { return mManager; }
 
+    QgsBookmarkItem *childItemById( const QString &id );
     void removeBookmarkChildById( const QString &id );
 
     //! Icon for bookmark group
@@ -365,6 +374,7 @@ class APP_EXPORT QgsBookmarkItem : public QgsDataItem
     QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager );
     QgsBookmarkManager *manager() { return mManager; }
     QgsBookmark bookmark() const { return mBookmark; }
+    void setBookmark( const QgsBookmark &bookmark );
 
     //! Icon for bookmark item
     static QIcon iconBookmark();
