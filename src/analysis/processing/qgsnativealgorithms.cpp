@@ -101,6 +101,7 @@
 #include "qgsalgorithmsplitlineantimeridian.h"
 #include "qgsalgorithmsplitlinesbylength.h"
 #include "qgsalgorithmsplitwithlines.h"
+#include "qgsalgorithmsplitfeaturesbyattributecharacter.h"
 #include "qgsalgorithmstringconcatenation.h"
 #include "qgsalgorithmsubdivide.h"
 #include "qgsalgorithmswapxy.h"
@@ -252,6 +253,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSimplifyAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );
   addAlgorithm( new QgsSnapToGridAlgorithm() );
+  addAlgorithm( new QgsSplitFeaturesByAttributeCharacterAlgorithm() );
   addAlgorithm( new QgsSplitGeometryAtAntimeridianAlgorithm() );
   addAlgorithm( new QgsSplitLinesByLengthAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );

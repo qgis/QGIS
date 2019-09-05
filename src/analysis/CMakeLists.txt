@@ -104,6 +104,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
   processing/qgsalgorithmsnaptogrid.cpp
+  processing/qgsalgorithmsplitfeaturesbyattributecharacter.cpp
   processing/qgsalgorithmsplitlineantimeridian.cpp
   processing/qgsalgorithmsplitlinesbylength.cpp
   processing/qgsalgorithmsplitwithlines.cpp
