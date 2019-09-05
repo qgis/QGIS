@@ -802,6 +802,7 @@ QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &
   mCapabilities = Fast;
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
+  setToolTip( name );
 
   setSortKey( QStringLiteral( "  %1" ).arg( name ) );
 
@@ -855,12 +856,14 @@ QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, cons
   mType = Custom;
   mCapabilities = Rename;
   mIconName = QStringLiteral( "/mItemBookmark.svg" );
+  setToolTip( name );
   setState( Populated ); // no more children
 }
 
 void QgsBookmarkItem::setBookmark( const QgsBookmark &bookmark )
 {
   setName( bookmark.name() );
+  setToolTip( bookmark.name() );
   mBookmark = bookmark;
 }
 
