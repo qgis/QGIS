@@ -20,6 +20,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgscustomdrophandler.h"
+#include "qgsdataitemguiprovider.h"
 
 /**
  * Custom data item for QLR files.
@@ -251,6 +252,21 @@ class APP_EXPORT QgsBookmarksDataItemProvider : public QgsDataItemProvider
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
+class QgsBookmarksItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBookmarksItemGuiProvider() = default;
+
+    QString name() override;
+    bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+    bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
+
+};
+
+
 /**
  * Contains content of user and project bookmark managers
 */
@@ -294,6 +310,8 @@ class APP_EXPORT QgsBookmarkManagerItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QgsBookmarkManager *manager() { return mManager; }
+
     //! Icon for bookmark manager
     static QIcon iconBookmarkManager();
 
@@ -317,12 +335,16 @@ class APP_EXPORT QgsBookmarkGroupItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QString group() const { return mGroup; }
+    QgsBookmarkManager *manager() { return mManager; }
+
     //! Icon for bookmark group
     static QIcon iconBookmarkGroup();
 
   private:
 
     QgsBookmarkManager *mManager = nullptr;
+    QString mGroup;
 };
 
 /**
@@ -336,7 +358,8 @@ class APP_EXPORT QgsBookmarkItem : public QgsDataItem
     /**
      * Constructor for QgsBookmarkGroupItem.
      */
-    QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark );
+    QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager );
+    QgsBookmarkManager *manager() { return mManager; }
 
     //! Icon for bookmark item
     static QIcon iconBookmark();
@@ -345,6 +368,8 @@ class APP_EXPORT QgsBookmarkItem : public QgsDataItem
     bool handleDoubleClick() override;
 
   private:
+
+    QgsBookmarkManager *mManager = nullptr;
 
     QgsBookmark mBookmark;
 };
