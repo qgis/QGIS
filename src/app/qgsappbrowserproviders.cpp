@@ -27,6 +27,7 @@
 #include "qgsguiutils.h"
 
 #include <QDesktopServices>
+#include <QMessageBox>
 
 QIcon QgsBookmarksItem::iconBookmarks()
 {
@@ -617,21 +618,6 @@ QVector<QgsDataItem *> QgsBookmarksItem::createChildren()
   return children;
 }
 
-QList<QAction *> QgsBookmarksItem::actions( QWidget *parent )
-{
-  QAction *showBookmarksPanel = new QAction( tr( "&Show Spatial Bookmarks Panel" ), parent );
-  connect( showBookmarksPanel, &QAction::triggered, this, [ = ]
-  {
-    QgisApp::instance()->showBookmarks( true );
-  } );
-  QAction *addBookmark = new QAction( tr( "&New Spatial Bookmark" ), parent );
-  connect( addBookmark, &QAction::triggered, this, [ = ]
-  {
-    QgisApp::instance()->newBookmark();
-  } );
-  return QList<QAction *>() << showBookmarksPanel << addBookmark;
-}
-
 QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *manager )
   : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:%1" ).arg( name.toLower() ) )
 {
@@ -692,43 +678,13 @@ QVector<QgsDataItem *> QgsBookmarkGroupItem::createChildren()
 
 QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager )
   : QgsDataItem( Custom, parent, name, QStringLiteral( "bookmarks:%1/%2" ).arg( bookmark.group().toLower(), bookmark.id() ) )
-  , mBookmark( bookmark )
   , mManager( manager )
+  , mBookmark( bookmark )
 {
   mType = Custom;
   mCapabilities = NoCapabilities;
   mIconName = QStringLiteral( "/mItemBookmark.svg" );
   setState( Populated ); // no more children
-}
-
-bool QgsBookmarkItem::handleDoubleClick()
-{
-  QgsReferencedRectangle rect = mBookmark.extent();
-  QgsRectangle canvasExtent = rect;
-  if ( rect.crs() != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() )
-  {
-    QgsCoordinateTransform ct( rect.crs(),
-                               QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
-    try
-    {
-      canvasExtent = ct.transform( rect );
-    }
-    catch ( QgsCsException & )
-    {
-      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
-      return true;
-    }
-    if ( canvasExtent.isEmpty() )
-    {
-      QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Bookmark extent is empty" ) );
-      return  true;
-    }
-  }
-
-  // set the extent to the bookmark and refresh
-  QgisApp::instance()->mapCanvas()->setExtent( canvasExtent );
-  QgisApp::instance()->mapCanvas()->refresh();
-  return true;
 }
 
 QString QgsBookmarkDropHandler::customUriProviderKey() const
@@ -825,5 +781,72 @@ bool QgsBookmarksItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
     }
   }
 
+  return false;
+}
+
+void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+{
+  if ( qobject_cast< QgsBookmarksItem * >( item ) )
+  {
+    QAction *showBookmarksPanel = new QAction( tr( "&Show Spatial Bookmarks Panel" ), menu );
+    connect( showBookmarksPanel, &QAction::triggered, this, [ = ]
+    {
+      QgisApp::instance()->showBookmarks( true );
+    } );
+    menu->addAction( showBookmarksPanel );
+    QAction *addBookmark = new QAction( tr( "&New Spatial Bookmark" ), menu );
+    connect( addBookmark, &QAction::triggered, this, [ = ]
+    {
+      QgisApp::instance()->newBookmark();
+    } );
+    menu->addAction( addBookmark );
+  }
+  else if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
+  {
+    QAction *actionDelete = new QAction( tr( "Delete Bookmark" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [bookmarkItem]
+    {
+      if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark" ),
+                                  QObject::tr( "Are you sure you want to delete the %1 bookmark?" ).arg( bookmarkItem->name() ),
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        return;
+
+      bookmarkItem->manager()->removeBookmark( bookmarkItem->bookmark().id() );
+    } );
+    menu->addAction( actionDelete );
+  }
+}
+
+bool QgsBookmarksItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context )
+{
+  if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
+  {
+    QgsReferencedRectangle rect = bookmarkItem->bookmark().extent();
+    QgsRectangle canvasExtent = rect;
+    if ( rect.crs() != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() )
+    {
+      QgsCoordinateTransform ct( rect.crs(),
+                                 QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
+      try
+      {
+        canvasExtent = ct.transform( rect );
+      }
+      catch ( QgsCsException & )
+      {
+        context.messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
+        return true;
+      }
+      if ( canvasExtent.isEmpty() )
+      {
+        context.messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Bookmark extent is empty" ) );
+        return  true;
+      }
+    }
+
+    // set the extent to the bookmark and refresh
+    QgisApp::instance()->mapCanvas()->setExtent( canvasExtent );
+    QgisApp::instance()->mapCanvas()->refresh();
+    return true;
+  }
   return false;
 }

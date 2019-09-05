@@ -263,6 +263,9 @@ class QgsBookmarksItemGuiProvider : public QObject, public QgsDataItemGuiProvide
     QString name() override;
     bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
     bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 
 };
 
@@ -284,8 +287,6 @@ class APP_EXPORT QgsBookmarksItem : public QgsDataCollectionItem
 
     //! Icon for boomark manager container
     static QIcon iconBookmarks();
-
-    QList< QAction * > actions( QWidget *parent ) override;
 
     QVariant sortKey() const override;
 
@@ -360,12 +361,12 @@ class APP_EXPORT QgsBookmarkItem : public QgsDataItem
      */
     QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager );
     QgsBookmarkManager *manager() { return mManager; }
+    QgsBookmark bookmark() const { return mBookmark; }
 
     //! Icon for bookmark item
     static QIcon iconBookmark();
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::Uri mimeUri() const override;
-    bool handleDoubleClick() override;
 
   private:
 
