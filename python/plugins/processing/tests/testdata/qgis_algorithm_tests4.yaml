@@ -2263,4 +2263,46 @@ tests:
             custom_overlay3_b.geojson_pc:
               precision: 3
 
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character
+    params:
+      CHAR: B
+      FIELD: val
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: false
+    results:
+      OUTPUT:
+        name: expected/split_by_char_a.gml
+        type: vector
+
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character 2
+    params:
+      CHAR: aB
+      FIELD: val
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: false
+    results:
+      OUTPUT:
+        name: expected/split_by_char_b.gml
+        type: vector
+
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character regex
+    params:
+      CHAR: \d
+      FIELD: val2
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: true
+    results:
+      OUTPUT:
+        name: expected/split_by_char_regex.gml
+        type: vector
+
 # See ../README.md for a description of the file format
