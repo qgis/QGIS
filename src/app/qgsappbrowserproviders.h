@@ -268,6 +268,10 @@ class QgsBookmarksItemGuiProvider : public QObject, public QgsDataItemGuiProvide
     bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context ) override;
     bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context ) override;
 
+  private:
+
+    void exportBookmarksFromManagers( const QList< const QgsBookmarkManager * > &managers, QgsMessageBar *messageBar );
+    void importBookmarksToManager( QgsBookmarkManager *manager, QgsMessageBar *messageBar );
 };
 
 

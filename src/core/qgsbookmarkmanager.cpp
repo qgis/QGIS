@@ -332,7 +332,7 @@ bool QgsBookmarkManager::moveBookmark( const QString &id, QgsBookmarkManager *de
   return ok;
 }
 
-bool QgsBookmarkManager::exportToFile( const QString &path, QList<const QgsBookmarkManager *> &managers )
+bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const QgsBookmarkManager *> &managers )
 {
   // note - we don't use the other writeXml implementation, to maintain older format compatibility
   QDomDocument doc( QStringLiteral( "qgis_bookmarks" ) );

@@ -26,9 +26,11 @@
 #include "qgslayertree.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsguiutils.h"
+#include "qgsfileutils.h"
 
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QFileDialog>
 
 QIcon QgsBookmarksItem::iconBookmarks()
 {
@@ -953,7 +955,7 @@ bool QgsBookmarksItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
   return false;
 }
 
-void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext )
+void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
   if ( qobject_cast< QgsBookmarksItem * >( item ) )
   {
@@ -969,6 +971,19 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       QgisApp::instance()->showBookmarks( true );
     } );
     menu->addAction( showBookmarksPanel );
+    menu->addSeparator();
+    QAction *importBookmarks = new QAction( tr( "Import Bookmarks…" ), menu );
+    connect( importBookmarks, &QAction::triggered, this, [ = ]
+    {
+      importBookmarksToManager( QgsApplication::bookmarkManager(), context.messageBar() );
+    } );
+    menu->addAction( importBookmarks );
+    QAction *exportBookmarks = new QAction( tr( "Export Bookmarks…" ), menu );
+    connect( exportBookmarks, &QAction::triggered, this, [ = ]
+    {
+      exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << QgsApplication::bookmarkManager() << QgsProject::instance()->bookmarkManager(), context.messageBar() );
+    } );
+    menu->addAction( exportBookmarks );
   }
   else if ( QgsBookmarkManagerItem *managerItem = qobject_cast< QgsBookmarkManagerItem * >( item ) )
   {
@@ -979,6 +994,20 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       QgisApp::instance()->newBookmark( inProject );
     } );
     menu->addAction( addBookmark );
+    menu->addSeparator();
+    QAction *importBookmarks = new QAction( tr( "Import Bookmarks…" ), menu );
+    connect( importBookmarks, &QAction::triggered, this, [ = ]
+    {
+      importBookmarksToManager( managerItem->manager(), context.messageBar() );
+    } );
+    menu->addAction( importBookmarks );
+
+    QAction *exportBookmarks = new QAction( tr( "Export Bookmarks…" ), menu );
+    connect( exportBookmarks, &QAction::triggered, this, [ = ]
+    {
+      exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << managerItem->manager(), context.messageBar() );
+    } );
+    menu->addAction( exportBookmarks );
   }
   else if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
   {
@@ -1118,4 +1147,55 @@ bool QgsBookmarksItemGuiProvider::rename( QgsDataItem *item, const QString &name
     return true;
   }
   return false;
+}
+
+void QgsBookmarksItemGuiProvider::exportBookmarksFromManagers( const QList<const QgsBookmarkManager *> &managers, QgsMessageBar *messageBar )
+{
+  QgsSettings settings;
+
+  QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Export Bookmarks" ), lastUsedDir,
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  // ensure the user never omitted the extension from the file name
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << QStringLiteral( "xml" ) );
+
+  if ( !QgsBookmarkManager::exportToFile( fileName, managers ) )
+  {
+    messageBar->pushWarning( tr( "Export Bookmarks" ), tr( "Error exporting bookmark file" ) );
+  }
+  else
+  {
+    messageBar->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" )
+                             .arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+  }
+
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
+}
+
+void QgsBookmarksItemGuiProvider::importBookmarksToManager( QgsBookmarkManager *manager, QgsMessageBar *messageBar )
+{
+  QgsSettings settings;
+
+  QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getOpenFileName( QgisApp::instance(), tr( "Import Bookmarks" ), lastUsedDir,
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !manager->importFromFile( fileName ) )
+  {
+    messageBar->pushWarning( tr( "Import Bookmarks" ), tr( "Error importing bookmark file" ) );
+  }
+  else
+  {
+    messageBar->pushSuccess( tr( "Import Bookmarks" ), tr( "Bookmarks imported successfully" ) );
+  }
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
 }
