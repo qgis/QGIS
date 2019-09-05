@@ -588,6 +588,16 @@ void QgsBrowserDockWidget::enablePropertiesWidget( bool enable )
   }
 }
 
+void QgsBrowserDockWidget::setActiveIndex( const QModelIndex &index )
+{
+  if ( index.isValid() )
+  {
+    QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
+    mBrowserView->expand( proxyIndex );
+    mBrowserView->setCurrentIndex( proxyIndex );
+  }
+}
+
 void QgsBrowserDockWidget::splitterMoved()
 {
   QList<int> sizes = mSplitter->sizes();

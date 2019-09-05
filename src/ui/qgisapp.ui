@@ -144,6 +144,7 @@
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
+    <addaction name="mActionShowBookmarkManager"/>
     <addaction name="mActionDraw"/>
     <addaction name="separator"/>
     <addaction name="mActionShowAllLayers"/>
@@ -1373,13 +1374,25 @@
      <normaloff>:/images/themes/default/mActionNewBookmark.svg</normaloff>:/images/themes/default/mActionNewBookmark.svg</iconset>
    </property>
    <property name="text">
-    <string>New Bookmark…</string>
+    <string>New Spatial Bookmark…</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
    </property>
   </action>
   <action name="mActionShowBookmarks">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowBookmarks.svg</normaloff>:/images/themes/default/mActionShowBookmarks.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show Spatial Bookmarks</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="mActionShowBookmarkManager">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1388,10 +1401,7 @@
      <normaloff>:/images/themes/default/mActionShowBookmarks.svg</normaloff>:/images/themes/default/mActionShowBookmarks.svg</iconset>
    </property>
    <property name="text">
-    <string>Show Bookmarks</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+B</string>
+    <string>Show Spatial Bookmark Manager</string>
    </property>
   </action>
   <action name="mActionDraw">

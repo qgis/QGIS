@@ -972,10 +972,10 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       QgisApp::instance()->newBookmark();
     } );
     menu->addAction( addBookmark );
-    QAction *showBookmarksPanel = new QAction( tr( "Show Spatial Bookmarks Panel" ), menu );
+    QAction *showBookmarksPanel = new QAction( tr( "Show Spatial Bookmarks Manager" ), menu );
     connect( showBookmarksPanel, &QAction::triggered, this, [ = ]
     {
-      QgisApp::instance()->showBookmarks( true );
+      QgisApp::instance()->showBookmarkManager( true );
     } );
     menu->addAction( showBookmarksPanel );
     menu->addSeparator();
