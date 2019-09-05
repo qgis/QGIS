@@ -1018,6 +1018,28 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
   }
   else if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
   {
+    QAction *actionZoom = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ), tr( "Zoom to Bookmark" ), menu );
+    connect( actionZoom, &QAction::triggered, this, [bookmarkItem, context]
+    {
+      try
+      {
+        if ( !QgisApp::instance()->mapCanvas()->setReferencedExtent( bookmarkItem->bookmark().extent() ) )
+        {
+          context.messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Bookmark extent is empty" ) );
+        }
+        else
+        {
+          QgisApp::instance()->mapCanvas()->refresh();
+        }
+      }
+      catch ( QgsCsException & )
+      {
+        context.messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Could not reproject bookmark extent to project CRS." ) );
+      }
+    } );
+    menu->addAction( actionZoom );
+    menu->addSeparator();
+
     QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [bookmarkItem]
     {
