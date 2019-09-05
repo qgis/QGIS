@@ -719,6 +719,7 @@ for the canvas.
 .. versionadded:: 3.0
 %End
 
+
   public slots:
 
     void refresh();
@@ -983,74 +984,35 @@ The ``layer`` argument indicates the associated map layer, if available.
 
     virtual bool event( QEvent *e );
 
-%Docstring
-Overridden standard event to be gestures aware
-%End
-
     virtual void keyPressEvent( QKeyEvent *e );
-
-%Docstring
-Overridden key press event
-%End
 
     virtual void keyReleaseEvent( QKeyEvent *e );
 
-%Docstring
-Overridden key release event
-%End
-
     virtual void mouseDoubleClickEvent( QMouseEvent *e );
-
-%Docstring
-Overridden mouse double-click event
-%End
 
     virtual void mouseMoveEvent( QMouseEvent *e );
 
-%Docstring
-Overridden mouse move event
-%End
-
     virtual void mousePressEvent( QMouseEvent *e );
-
-%Docstring
-Overridden mouse press event
-%End
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
 
-%Docstring
-Overridden mouse release event
-%End
-
     virtual void wheelEvent( QWheelEvent *e );
-
-%Docstring
-Overridden mouse wheel event
-%End
 
     virtual void resizeEvent( QResizeEvent *e );
 
-%Docstring
-Overridden resize event
-%End
-
     virtual void paintEvent( QPaintEvent *e );
-
-%Docstring
-Overridden paint event
-%End
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
 
-%Docstring
-Overridden drag enter event
-%End
 
     void moveCanvasContents( bool reset = false );
 %Docstring
 called when panning is in action, reset indicates end of panning
 %End
+
+    virtual void dropEvent( QDropEvent *event );
+
+
 
 
 

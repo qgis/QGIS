@@ -71,6 +71,8 @@ email                : sherman at mrcc.com
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmimedatautils.h"
+#include "qgscustomdrophandler.h"
 
 /**
  * \ingroup gui
@@ -714,6 +716,11 @@ bool QgsMapCanvas::previewJobsEnabled() const
 void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
 {
   mUsePreviewJobs = enabled;
+}
+
+void QgsMapCanvas::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler> > &handlers )
+{
+  mDropHandlers = handlers;
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -1988,6 +1995,40 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
   setSceneRect( -pnt.x(), -pnt.y(), viewport()->size().width(), viewport()->size().height() );
 }
 
+void QgsMapCanvas::dropEvent( QDropEvent *event )
+{
+  if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
+  {
+    const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+    bool allHandled = true;
+    for ( const QgsMimeDataUtils::Uri &uri : lst )
+    {
+      bool handled = false;
+      for ( QgsCustomDropHandler *handler : qgis::as_const( mDropHandlers ) )
+      {
+        if ( handler && handler->customUriProviderKey() == uri.providerKey )
+        {
+          if ( handler->handleCustomUriCanvasDrop( uri, this ) )
+          {
+            handled = true;
+            break;
+          }
+        }
+      }
+      if ( !handled )
+        allHandled = false;
+    }
+    if ( allHandled )
+      event->accept();
+    else
+      event->ignore();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
 QPoint QgsMapCanvas::mouseLastXY()
 {
   return mCanvasProperties->mouseLastXY;
@@ -2170,12 +2211,42 @@ void QgsMapCanvas::selectionChangedSlot()
   }
 }
 
-void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *e )
+void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *event )
 {
   // By default graphics view delegates the drag events to graphics items.
   // But we do not want that and by ignoring the drag enter we let the
   // parent (e.g. QgisApp) to handle drops of map layers etc.
-  e->ignore();
+
+  // so we ONLY accept the event if we know in advance that a custom drop handler
+  // wants it
+
+  if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
+  {
+    const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+    bool allHandled = true;
+    for ( const QgsMimeDataUtils::Uri &uri : lst )
+    {
+      bool handled = false;
+      for ( QgsCustomDropHandler *handler : qgis::as_const( mDropHandlers ) )
+      {
+        if ( handler->canHandleCustomUriCanvasDrop( uri, this ) )
+        {
+          handled = true;
+          break;
+        }
+      }
+      if ( !handled )
+        allHandled = false;
+    }
+    if ( allHandled )
+      event->accept();
+    else
+      event->ignore();
+  }
+  else
+  {
+    event->ignore();
+  }
 }
 
 void QgsMapCanvas::mapToolDestroyed()
