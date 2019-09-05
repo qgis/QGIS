@@ -1074,7 +1074,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showBookmarks( bool show );
 
     //! Create a new spatial bookmark
-    void newBookmark();
+    void newBookmark( bool inProject = false );
 
   protected:
 
