@@ -1190,6 +1190,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsBookmarksDataItemProvider() );
+  registerCustomDropHandler( new QgsBookmarkDropHandler() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsQlrDataItemProvider() );
   registerCustomDropHandler( new QgsQlrDropHandler() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsQptDataItemProvider() );

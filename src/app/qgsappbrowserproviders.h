@@ -336,16 +336,31 @@ class APP_EXPORT QgsBookmarkItem : public QgsDataItem
     /**
      * Constructor for QgsBookmarkGroupItem.
      */
-    QgsBookmarkItem( QgsDataItem *parent, const QString &name, QgsBookmark bookmark );
+    QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark );
 
     //! Icon for bookmark item
     static QIcon iconBookmark();
-
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
     bool handleDoubleClick() override;
 
   private:
 
     QgsBookmark mBookmark;
+};
+
+/**
+ * Handles drag and drop of bookmarks files to canvases.
+ */
+class QgsBookmarkDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+
+  public:
+
+    QString customUriProviderKey() const override;
+    bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) override;
+    bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const override;
 };
 
 #endif // QGSAPPBROWSERPROVIDERS_H
