@@ -1014,6 +1014,58 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     } );
     menu->addAction( actionDelete );
   }
+  else if ( QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( item ) )
+  {
+    QStringList groups;
+    QgsBookmarkManager *manager = groupItem->manager();
+    for ( QgsDataItem *i : selectedItems )
+    {
+      if ( QgsBookmarkGroupItem *g = qobject_cast< QgsBookmarkGroupItem * >( i ) )
+      {
+        if ( g->manager() == manager )
+          groups << g->group();
+      }
+    }
+
+    QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Group" ) : tr( "Delete Groups" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [selectedItems, groups, manager]
+    {
+      if ( groups.count() == 1 )
+      {
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark Group" ),
+                                    QObject::tr( "Are you sure you want to delete the %1 bookmark group? This will delete all bookmarks in this group." ).arg( groups.at( 0 ) ),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+          return;
+
+        const QList<QgsBookmark> matching = manager->bookmarksByGroup( groups.at( 0 ) );
+        for ( const QgsBookmark &bookmark : matching )
+        {
+          manager->removeBookmark( bookmark.id() );
+        }
+        selectedItems.at( 0 )->parent()->deleteChildItem( selectedItems.at( 0 ) );
+      }
+      else
+      {
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark Groups" ),
+                                    QObject::tr( "Are you sure you want to delete the %1 selected bookmark groups? This will delete all bookmarks in these groups." ).arg( groups.count() ),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+          return;
+
+        int i = 0;
+        for ( const QString &g : groups )
+        {
+          const QList<QgsBookmark> matching = manager->bookmarksByGroup( g );
+          for ( const QgsBookmark &bookmark : matching )
+          {
+            manager->removeBookmark( bookmark.id() );
+          }
+          selectedItems.at( i )->parent()->deleteChildItem( selectedItems.at( i ) );
+          i++;
+        }
+      }
+    } );
+    menu->addAction( actionDelete );
+  }
 }
 
 bool QgsBookmarksItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context )
