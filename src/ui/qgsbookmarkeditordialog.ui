@@ -116,7 +116,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mName</tabstop>
+  <tabstop>mGroup</tabstop>
   <tabstop>mExtentGroupBox</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>mSaveLocation</tabstop>
  </tabstops>
  <resources/>
  <connections>

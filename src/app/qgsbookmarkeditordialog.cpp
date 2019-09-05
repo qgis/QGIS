@@ -21,6 +21,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsextentgroupbox.h"
+#include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsproject.h"
@@ -33,12 +34,14 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   mName->setText( mBookmark.name() );
 
   QSet<QString> groups = QSet<QString>::fromList( QgsProject::instance()->bookmarkManager()->groups() << QgsApplication::instance()->bookmarkManager()->groups() );
   QStringList groupsList = groups.toList();
   groupsList.removeOne( QString() );
+  groupsList.sort();
   mGroup->addItems( groupsList );
   mGroup->setEditText( mBookmark.group() );
 
@@ -48,8 +51,8 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
   mExtentGroupBox->setMapCanvas( mMapCanvas );
   mCrsSelector->setCrs( mBookmark.extent().crs() );
 
-  mSaveLocation->addItem( tr( "User bookmarks" ), ApplicationManager );
-  mSaveLocation->addItem( tr( "Project bookmarks" ), ProjectManager );
+  mSaveLocation->addItem( tr( "User Bookmarks" ), ApplicationManager );
+  mSaveLocation->addItem( tr( "Project Bookmarks" ), ProjectManager );
   mSaveLocation->setCurrentIndex( mSaveLocation->findData( mInProject ? ProjectManager : ApplicationManager ) );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsBookmarkEditorDialog::crsChanged );

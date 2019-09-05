@@ -102,23 +102,8 @@ void QgsBookmarks::addClicked()
   QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
   Q_ASSERT( canvas );
 
-  QString projStr;
-  if ( QgsProject::instance() )
-  {
-    if ( !QgsProject::instance()->title().isEmpty() )
-    {
-      projStr = QgsProject::instance()->title();
-    }
-    else if ( !QgsProject::instance()->fileName().isEmpty() )
-    {
-      QFileInfo fi( QgsProject::instance()->fileName() );
-      projStr = fi.exists() ? fi.fileName() : QString();
-    }
-  }
-
   QgsBookmark bookmark;
   bookmark.setName( tr( "New bookmark" ) );
-  bookmark.setGroup( projStr );
   bookmark.setExtent( QgsReferencedRectangle( canvas->extent(), canvas->mapSettings().destinationCrs() ) );
   QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, false, this, canvas );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
