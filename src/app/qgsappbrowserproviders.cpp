@@ -640,9 +640,9 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
 
-  connect( mManager, &QgsBookmarkManager::bookmarkAdded, [ = ]( const QString & ) { depopulate(); refresh(); } );
-  connect( mManager, &QgsBookmarkManager::bookmarkChanged, [ = ]( const QString & ) { depopulate(); refresh(); } );
-  connect( mManager, &QgsBookmarkManager::bookmarkRemoved, [ = ]( const QString & ) { depopulate(); refresh(); } );
+  connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
+  connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
+  connect( mManager, &QgsBookmarkManager::bookmarkRemoved, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
 
   populate();
 }
@@ -656,7 +656,7 @@ QVector<QgsDataItem *> QgsBookmarkManagerItem::createChildren()
     {
       for ( const QgsBookmark &bookmark : mManager->bookmarksByGroup( QString() ) )
       {
-        children << new QgsBookmarkItem( this, bookmark.name(), bookmark );
+        children << new QgsBookmarkItem( this, bookmark.name(), bookmark, mManager );
       }
     }
     else
@@ -669,6 +669,7 @@ QVector<QgsDataItem *> QgsBookmarkManagerItem::createChildren()
 
 QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *manager )
   : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:%1" ).arg( name.toLower() ) )
+  , mGroup( name )
 {
   mType = Custom;
   mCapabilities = Fast;
@@ -684,14 +685,15 @@ QVector<QgsDataItem *> QgsBookmarkGroupItem::createChildren()
   children.reserve( bookmarks.size() );
   for ( const QgsBookmark &bookmark : bookmarks )
   {
-    children << new QgsBookmarkItem( this, bookmark.name(), bookmark );
+    children << new QgsBookmarkItem( this, bookmark.name(), bookmark, mManager );
   }
   return children;
 }
 
-QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark )
+QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager )
   : QgsDataItem( Custom, parent, name, QStringLiteral( "bookmarks:%1/%2" ).arg( bookmark.group().toLower(), bookmark.id() ) )
   , mBookmark( bookmark )
+  , mManager( manager )
 {
   mType = Custom;
   mCapabilities = NoCapabilities;
@@ -773,4 +775,55 @@ bool QgsBookmarkDropHandler::handleCustomUriCanvasDrop( const QgsMimeDataUtils::
   canvas->refresh();
 
   return true;
+}
+
+QString QgsBookmarksItemGuiProvider::name()
+{
+  return QStringLiteral( "bookmark_item" );
+}
+
+bool QgsBookmarksItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( qobject_cast< QgsBookmarkManagerItem * >( item ) )
+    return true;
+
+  if ( qobject_cast< QgsBookmarkGroupItem * >( item ) )
+    return true;
+
+  return false;
+}
+
+bool QgsBookmarksItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction )
+{
+  QgsBookmarkManagerItem *managerItem = qobject_cast< QgsBookmarkManagerItem * >( item );
+  QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( item );
+  if ( managerItem || groupItem )
+  {
+    QgsBookmarkManager *target = managerItem ? managerItem->manager() : groupItem->manager();
+    if ( QgsMimeDataUtils::isUriList( data ) )
+    {
+      const QgsMimeDataUtils::UriList list = QgsMimeDataUtils::decodeUriList( data );
+      for ( const QgsMimeDataUtils::Uri &uri : list )
+      {
+        QDomDocument doc;
+        doc.setContent( uri.uri );
+        QDomElement elem = doc.documentElement();
+        QgsBookmark b = QgsBookmark::fromXml( elem, doc );
+
+        if ( !groupItem )
+          b.setGroup( QString() );
+        else
+          b.setGroup( groupItem->group() );
+
+        // if bookmark doesn't already exist in manager, we add it. Otherwise we update it.
+        if ( target->bookmarkById( b.id() ).id().isEmpty() )
+          target->addBookmark( b );
+        else
+          target->updateBookmark( b );
+      }
+      return true;
+    }
+  }
+
+  return false;
 }
