@@ -22,6 +22,12 @@ QWidget:item:selected
     color: @text;
 }
 
+QWebView, QTextBrowser
+{
+    color: #000000;
+    background-color: #ffffff;
+}
+
 QToolTip
 {
     border: 1px solid #222;
