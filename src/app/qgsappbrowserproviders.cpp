@@ -627,7 +627,26 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
 
-  connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [ = ]( const QString & ) { depopulate(); refresh(); } );
+  connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [ = ]( const QString & id )
+  {
+    QgsBookmark newDetails = mManager->bookmarkById( id );
+    if ( newDetails.group().isEmpty() )
+      addChildItem( new QgsBookmarkItem( this, newDetails.name(), newDetails, mManager ), true );
+    else
+    {
+      if ( QgsBookmarkGroupItem *newGroup = groupItem( newDetails.group() ) )
+      {
+        // existing group, add this bookmark to it
+        newGroup->addBookmark( newDetails );
+      }
+      else
+      {
+        // need to create a new group for this (will automatically add the new bookmark)
+        addChildItem( new QgsBookmarkGroupItem( this, newDetails.group(), mManager ), true );
+      }
+    }
+
+  } );
   connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [ = ]( const QString & id )
   {
     QgsBookmark newDetails = mManager->bookmarkById( id );
@@ -714,11 +733,13 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
 QVector<QgsDataItem *> QgsBookmarkManagerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  for ( const QString &group : mManager->groups() )
+  const QStringList groupNames = mManager->groups();
+  for ( const QString &group : groupNames )
   {
     if ( group.isEmpty() )
     {
-      for ( const QgsBookmark &bookmark : mManager->bookmarksByGroup( QString() ) )
+      const QList<QgsBookmark> matching = mManager->bookmarksByGroup( QString() );
+      for ( const QgsBookmark &bookmark : matching )
       {
         children << new QgsBookmarkItem( this, bookmark.name(), bookmark, mManager );
       }
