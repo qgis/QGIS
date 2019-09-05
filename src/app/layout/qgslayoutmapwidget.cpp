@@ -678,24 +678,15 @@ void QgsLayoutMapWidget::viewExtentInCanvas()
 
   if ( !currentMapExtent.isEmpty() )
   {
-    //transform?
-    if ( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs()
-         != mMapItem->crs() )
+    try
     {
-      try
-      {
-        QgsCoordinateTransform xForm( mMapItem->crs(),
-                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
-        currentMapExtent = xForm.transformBoundingBox( currentMapExtent );
-      }
-      catch ( QgsCsException & )
-      {
-        //transform failed, better not proceed
-        return;
-      }
+      QgisApp::instance()->mapCanvas()->setReferencedExtent( QgsReferencedRectangle( currentMapExtent, mMapItem->crs() ) );
     }
-
-    QgisApp::instance()->mapCanvas()->setExtent( currentMapExtent );
+    catch ( QgsCsException & )
+    {
+      //transform failed, better not proceed
+      return;
+    }
     QgisApp::instance()->mapCanvas()->refresh();
   }
 }

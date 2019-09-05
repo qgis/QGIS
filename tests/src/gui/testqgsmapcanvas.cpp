@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsmaptoolpan.h"
 #include "qgscustomdrophandler.h"
+#include "qgsreferencedgeometry.h"
 
 namespace QTest
 {
@@ -52,6 +53,7 @@ class TestQgsMapCanvas : public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testPanByKeyboard();
+    void testSetExtent();
     void testMagnification();
     void testMagnificationExtent();
     void testMagnificationScale();
@@ -107,6 +109,16 @@ void TestQgsMapCanvas::testPanByKeyboard()
     }
     QVERIFY( mCanvas->extent() == originalExtent );
   }
+}
+
+void TestQgsMapCanvas::testSetExtent()
+{
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 0, 0, 10, 10 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) ) );
+  QCOMPARE( mCanvas->extent().toString( 0 ), QStringLiteral( "-3,-3 : 13,13" ) );
+  QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 16259461, -2477192, 16391255, -2372535 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) ) );
+  QCOMPARE( mCanvas->extent().toString( 0 ), QStringLiteral( "146,-22 : 147,-21" ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( ) );
 }
 
 void TestQgsMapCanvas::testMagnification()

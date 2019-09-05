@@ -65,6 +65,7 @@ class QgsMapTool;
 class QgsSnappingUtils;
 class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
+class QgsReferencedRectangle;
 
 /**
  * \ingroup gui
@@ -208,6 +209,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Sets the extent of the map canvas
     void setExtent( const QgsRectangle &r, bool magnified = false );
+
+    /**
+     * Sets the canvas to the specified \a extent.
+     *
+     * \returns TRUE if the zoom was successful.
+     *
+     * \throws QgsCsException if a transformation error occurred.
+     * \since QGIS 3.10
+     */
+    bool setReferencedExtent( const QgsReferencedRectangle &extent ) SIP_THROW( QgsCsException );
 
     /**
      * Gets the current map canvas rotation in clockwise degrees

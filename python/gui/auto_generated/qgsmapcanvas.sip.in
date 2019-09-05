@@ -178,6 +178,17 @@ Returns the combined extent for all layers on the map canvas
 Sets the extent of the map canvas
 %End
 
+    bool setReferencedExtent( const QgsReferencedRectangle &extent ) throw( QgsCsException );
+%Docstring
+Sets the canvas to the specified ``extent``.
+
+:return: ``True`` if the zoom was successful.
+
+:raises QgsCsException: if a transformation error occurred.
+
+.. versionadded:: 3.10
+%End
+
     double rotation() const;
 %Docstring
 Gets the current map canvas rotation in clockwise degrees
