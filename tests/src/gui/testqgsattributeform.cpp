@@ -945,6 +945,8 @@ void TestQgsAttributeForm::testDefaultValueUpdate()
   layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col0\"+\"col1\"" ) ) );
   layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"" ) ) );
 
+  layer->startEditing();
+
   // build a form for this feature
   QgsFeature ft( layer->dataProvider()->fields(), 1 );
   ft.setAttribute( QStringLiteral( "col0" ), 0 );
@@ -1005,6 +1007,8 @@ void TestQgsAttributeForm::testDefaultValueUpdateRecursion()
   layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ) ) );
   layer->setDefaultValueDefinition( 2, QgsDefaultValue( QStringLiteral( "\"col1\"+1" ) ) );
   layer->setDefaultValueDefinition( 3, QgsDefaultValue( QStringLiteral( "\"col2\"+1" ) ) );
+
+  layer->startEditing();
 
   // build a form for this feature
   QgsFeature ft( layer->dataProvider()->fields(), 1 );
