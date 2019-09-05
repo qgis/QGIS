@@ -2193,8 +2193,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Clear selection
      *
      * \see selectByIds()
+     * \see reselect()
      */
     void removeSelection();
+
+    /**
+     * Reselects the previous set of selected features. This is only applicable
+     * after a prior call to removeSelection().
+     *
+     * Any other modifications to the selection following a call to removeSelection() clears
+     * memory of the previous selection and consequently calling reselect() has no impact.
+     *
+     * \see removeSelection()
+     * \since QGIS 3.10
+     */
+    void reselect();
 
     /**
      * Update the extents for the layer. This is necessary if features are
@@ -2544,6 +2557,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
         it always needs to be removed from mSelectedFeatureIds as well.
      */
     QgsFeatureIds mSelectedFeatureIds;
+
+    /**
+     * Stores the previous set of selected features, to allow for "reselect" operations.
+     */
+    QgsFeatureIds mPreviousSelectedFeatureIds;
 
     //! Field map to commit
     QgsFields mFields;

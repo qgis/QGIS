@@ -2360,6 +2360,21 @@ Deselects features by their ID
 Clear selection
 
 .. seealso:: :py:func:`selectByIds`
+
+.. seealso:: :py:func:`reselect`
+%End
+
+    void reselect();
+%Docstring
+Reselects the previous set of selected features. This is only applicable
+after a prior call to removeSelection().
+
+Any other modifications to the selection following a call to removeSelection() clears
+memory of the previous selection and consequently calling reselect() has no impact.
+
+.. seealso:: :py:func:`removeSelection`
+
+.. versionadded:: 3.10
 %End
 
     virtual void updateExtents( bool force = false );
