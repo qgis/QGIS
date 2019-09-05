@@ -340,6 +340,8 @@ class APP_EXPORT QgsBookmarkGroupItem : public QgsDataCollectionItem
     QString group() const { return mGroup; }
     QgsBookmarkManager *manager() { return mManager; }
 
+    void removeBookmarkChildById( const QString &id );
+
     //! Icon for bookmark group
     static QIcon iconBookmarkGroup();
 
