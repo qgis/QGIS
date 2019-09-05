@@ -97,6 +97,40 @@ bool QgsBrowserGuiModel::dropMimeData( const QMimeData *data, Qt::DropAction act
   return false;
 }
 
+bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  QgsDataItem *item = dataItem( index );
+  if ( !item )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "RENAME PROBLEM!" ), 4 );
+    return false;
+  }
+
+  if ( !( item->capabilities2() & QgsDataItem::Rename ) )
+    return false;
+
+  switch ( role )
+  {
+    case Qt::EditRole:
+    {
+      // new support
+      const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
+      for ( QgsDataItemGuiProvider *provider : providers )
+      {
+        if ( provider->rename( item, value.toString(), createDataItemContext() ) )
+        {
+          return true;
+        }
+      }
+
+      Q_NOWARN_DEPRECATED_PUSH
+      return item->rename( value.toString() );
+      Q_NOWARN_DEPRECATED_POP
+    }
+  }
+  return false;
+}
+
 void QgsBrowserGuiModel::setMessageBar( QgsMessageBar *bar )
 {
   mMessageBar = bar;

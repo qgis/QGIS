@@ -197,7 +197,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
     // Checks that name does not exist yet
     if ( layerItem->tableNames().contains( newName ) )
     {
-      return false;
+      return true;
     }
     // Check if the layer(s) are in the registry
     const QList<QgsMapLayer *> layersList( layerItem->layersInProject() );
@@ -206,7 +206,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
       if ( QMessageBox::question( nullptr, QObject::tr( "Rename Layer" ), QObject::tr( "The layer <b>%1</b> is loaded in the current project with name <b>%2</b>,"
                                   " do you want to remove it from the project and rename it?" ).arg( layerItem->name(), layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       {
-        return false;
+        return true;
       }
     }
     if ( ! layersList.isEmpty() )
@@ -229,7 +229,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
         if ( QMessageBox::question( nullptr, QObject::tr( "Rename Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
                                     " do you want to remove it from the project and rename it?" ).arg( layerItem->name(), layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
         {
-          return false;
+          return true;
         }
       }
       if ( ! layersList.isEmpty() )
@@ -267,9 +267,6 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
     return errCause.isEmpty();
   }
 
-  QMessageBox::warning( nullptr, QObject::tr( "Rename layer" ),
-                        QObject::tr( "The layer <b>%1</b> cannot be renamed because this feature is not yet implemented for this kind of layers." )
-                        .arg( item->name() ) );
   return false;
 }
 
