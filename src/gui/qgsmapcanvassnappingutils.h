@@ -34,7 +34,7 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
     Q_OBJECT
   public:
-    QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr );
+    QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr, bool asynchronous = false );
 
   private slots:
     void canvasMapSettingsChanged();

@@ -60,7 +60,6 @@ void TestQgsMapToolReverseLine::initTestCase()
 
   mCanvas = new QgsMapCanvas();
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
-  mCanvas->snappingUtils()->mAsynchronous = false;
 }
 
 void TestQgsMapToolReverseLine::cleanupTestCase()

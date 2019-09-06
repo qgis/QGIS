@@ -248,7 +248,6 @@ void TestQgsVertexTool::initTestCase()
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerLineZ );
 
   QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
-  snappingUtils->mAsynchronous = false;
   mCanvas->setSnappingUtils( snappingUtils );
 
   // create vertex tool

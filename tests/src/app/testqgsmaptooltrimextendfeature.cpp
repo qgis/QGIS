@@ -164,7 +164,6 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       mapSettings.setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() << vlTopoEdit.get() << vlTopoLimit.get() );
 
       QgsSnappingUtils *mSnappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
-      mSnappingUtils->mAsynchronous = false;
       QgsSnappingConfig snappingConfig = mSnappingUtils->config();
       mSnappingUtils->setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );

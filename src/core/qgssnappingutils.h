@@ -273,12 +273,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! true if we have to build point locator asynchronously
     bool mAsynchronous = false;
-
-    friend class TestQgsVertexTool;
-    friend class TestQgsMapToolTrimExtendFeature;
-    friend class TestQgsMapToolReshape;
-    friend class TestQgsMapToolAddFeaturePoint;
-    friend class TestQgsMapToolReverseLine;
 };
 
 
