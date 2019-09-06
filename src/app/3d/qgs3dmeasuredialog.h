@@ -48,6 +48,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Get last Z value distance in map distance unit
     double lastZDistance();
 
+    //! Get last horisontal value distance in map distance unit
+    double lastHorisontalDistance();
+
     //! Populating unit combo box
     void repopulateComboBoxUnits();
 
@@ -102,7 +105,7 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void setupTableHeader();
 
     //! Add measurement (3d-distance and z-distance) to the table
-    void addMeasurement( double distance, double zDistance );
+    void addMeasurement( double distance, double zDistance, double horisontalDistance );
 };
 
 #endif // QGS3DMEASUREDIALOG_H

@@ -82,7 +82,7 @@ void Qgs3DMeasureDialog::addPoint()
     if ( !mTool->done() )
     {
       // Add new entry in the table
-      addMeasurement( lastDistance(), lastZDistance() );
+      addMeasurement( lastDistance(), lastZDistance(), lastHorisontalDistance() );
       mTotal += lastDistance();
       editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
     }
@@ -106,6 +106,13 @@ double Qgs3DMeasureDialog::lastZDistance()
   QgsPoint lastPoint = mTool->points().rbegin()[0];
   QgsPoint secondLastPoint = mTool->points().rbegin()[1];
   return lastPoint.z() - secondLastPoint.z();
+}
+
+double Qgs3DMeasureDialog::lastHorisontalDistance()
+{
+  QgsPoint lastPoint = mTool->points().rbegin()[0];
+  QgsPoint secondLastPoint = mTool->points().rbegin()[1];
+  return lastPoint.distance( secondLastPoint );
 }
 
 void Qgs3DMeasureDialog::repopulateComboBoxUnits()
@@ -190,7 +197,8 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
     {
       double distance = p1.distance3D( p2 );
       double zDistance = p2.z() - p1.z();
-      addMeasurement( distance, zDistance );
+      double horisontalDistance = p1.distance( p2 );
+      addMeasurement( distance, zDistance, horisontalDistance );
     }
     p1 = p2;
     isFirstPoint = false;
@@ -226,24 +234,29 @@ void Qgs3DMeasureDialog::setupTableHeader()
 {
   // Set the table header to show displayed unit
   QStringList headers;
-  headers << tr( "Z Distance [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) )
-          << tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) );
+  headers << tr( "Horisontal Distance [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) )
+          << tr( "Vertical Distance [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) )
+          << tr( "3D Distance [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) );
   QTreeWidgetItem *headerItem = new QTreeWidgetItem( headers );
   headerItem->setTextAlignment( 0, Qt::AlignRight );
   headerItem->setTextAlignment( 1, Qt::AlignRight );
+  headerItem->setTextAlignment( 2, Qt::AlignRight );
   mTable->setHeaderItem( headerItem );
   mTable->resizeColumnToContents( 0 );
   mTable->resizeColumnToContents( 1 );
+  mTable->resizeColumnToContents( 2 );
 }
 
-void Qgs3DMeasureDialog::addMeasurement( double distance, double zDistance )
+void Qgs3DMeasureDialog::addMeasurement( double distance, double zDistance, double horisontalDistance )
 {
   QStringList content;
-  content << QLocale().toString( convertLength( zDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces )
+  content << QLocale().toString( convertLength( horisontalDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces )
+          << QLocale().toString( convertLength( zDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces )
           << QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
   QTreeWidgetItem *item = new QTreeWidgetItem( content );
   item->setTextAlignment( 0, Qt::AlignRight );
   item->setTextAlignment( 1, Qt::AlignRight );
+  item->setTextAlignment( 2, Qt::AlignRight );
   mTable->addTopLevelItem( item );
   mTable->scrollToItem( item );
 }
