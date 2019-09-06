@@ -54,6 +54,7 @@ class QgsValidityCheckRegistry;
 class QTranslator;
 class QgsCalloutRegistry;
 class QgsBookmarkManager;
+class QgsStyleModel;
 
 /**
  * \ingroup core
@@ -652,6 +653,15 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsBookmarkManager *bookmarkManager();
 
     /**
+     * Returns a shared QgsStyleModel containing the default style library (see QgsStyle::defaultStyle()).
+     *
+     * Using this shared model instead of creating a new QgsStyleModel improves performance.
+     *
+     * \since QGIS 3.10
+     */
+    static QgsStyleModel *defaultStyleModel();
+
+    /**
      * Returns the application's message log.
      * \since QGIS 3.0
      */
@@ -898,6 +908,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
       QgsBookmarkManager *mBookmarkManager = nullptr;
+      QgsStyleModel *mStyleModel = nullptr;
       QString mNullRepresentation;
 
       ApplicationMembers();

@@ -37,6 +37,7 @@ class QgsCheckableStyleModel: public QgsStyleProxyModel
     Q_OBJECT
   public:
 
+    explicit QgsCheckableStyleModel( QgsStyleModel *sourceModel, QObject *parent = nullptr, bool readOnly = false );
     explicit QgsCheckableStyleModel( QgsStyle *style, QObject *parent = nullptr, bool readOnly = false );
 
     void setCheckable( bool checkable );

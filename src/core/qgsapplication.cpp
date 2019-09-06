@@ -57,6 +57,7 @@
 #include "qgsvaliditycheckregistry.h"
 #include "qgsnewsfeedparser.h"
 #include "qgsbookmarkmanager.h"
+#include "qgsstylemodel.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -338,6 +339,7 @@ void QgsApplication::init( QString profileFolder )
   colorSchemeRegistry()->initStyleScheme();
 
   bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
+  members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
 
   ABISYM( mInitialized ) = true;
 }
@@ -1936,6 +1938,11 @@ QgsBookmarkManager *QgsApplication::bookmarkManager()
   return members()->mBookmarkManager;
 }
 
+QgsStyleModel *QgsApplication::defaultStyleModel()
+{
+  return members()->mStyleModel;
+}
+
 QgsMessageLog *QgsApplication::messageLog()
 {
   return members()->mMessageLog;
@@ -2005,6 +2012,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
+  delete mStyleModel;
   delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;

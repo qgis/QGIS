@@ -796,6 +796,11 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsStyle *style, QObject *parent )
   , mStyle( style )
 {
   mModel = new QgsStyleModel( mStyle, this );
+  initialize();
+}
+
+void QgsStyleProxyModel::initialize()
+{
   setSortCaseSensitivity( Qt::CaseInsensitive );
 //  setSortLocaleAware( true );
   setSourceModel( mModel );
@@ -838,6 +843,14 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsStyle *style, QObject *parent )
     if ( mSmartGroupId >= 0 )
       setSmartGroupId( mSmartGroupId );
   } );
+}
+
+QgsStyleProxyModel::QgsStyleProxyModel( QgsStyleModel *model, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mModel( model )
+  , mStyle( model->style() )
+{
+  initialize();
 }
 
 bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
@@ -906,6 +919,7 @@ void QgsStyleProxyModel::setFilterString( const QString &filter )
   mFilterString = filter;
   invalidateFilter();
 }
+
 
 bool QgsStyleProxyModel::favoritesOnly() const
 {

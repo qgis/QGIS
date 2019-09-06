@@ -21,12 +21,19 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgswindowmanagerinterface.h"
+#include "qgsapplication.h"
 
 //
 // QgsReadOnlyStyleModel
 //
 
 ///@cond PRIVATE
+QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyleModel *sourceModel, QObject *parent )
+  : QgsStyleProxyModel( sourceModel, parent )
+{
+
+}
+
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
 {
@@ -123,7 +130,8 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 {
   mStyle = style;
 
-  mModel = new QgsReadOnlyStyleModel( mStyle, this );
+  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsApplication::defaultStyleModel(), this )
+           : new QgsReadOnlyStyleModel( mStyle, this );
 
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
