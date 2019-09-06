@@ -27,7 +27,7 @@ import os
 import json
 import zipfile
 
-from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
+from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile, QSettings
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFrame, QMessageBox, QLabel, QVBoxLayout
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
@@ -556,7 +556,20 @@ class QgsPluginInstaller(QObject):
         pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
 
         if not pluginName:
-            QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Install from ZIP Plugin Installer"), self.tr('The plugin directory was not found inside the ZIP file. You should create a plugin folder, put the files inside and create the ZIP file again.'), QMessageBox.Ok)
+            import webbrowser
+            import re
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setWindowTitle(self.tr("QGIS Python Install from ZIP Plugin Installer"))
+            msg_box.setText(self.tr("The Zip file is not a valid QGIS python plugin. No root folder was found inside."))
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            more_info_btn = msg_box.addButton(self.tr("More Information"), QMessageBox.HelpRole)
+            msg_box.exec()
+            version = 'testing' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+            locale = QSettings().value("locale/userLocale", type=str)
+            qgis_lang = str( locale[:2] )
+            if msg_box.clickedButton() == more_info_btn:
+                webbrowser.open("https://docs.qgis.org/{version}/{lang}/docs/user_manual/plugins/plugins.html#the-install-from-zip-tab".format(version=version, lang=qgis_lang))
             return
 
         pluginsDirectory = qgis.utils.home_plugin_path
