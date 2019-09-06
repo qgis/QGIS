@@ -211,7 +211,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
 
     static QgsGeometry geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
-    static bool pointFromXY( QString &sX, QString &sY, QgsPointXY &point, const QString &decimalPoint, bool xyDms );
+    static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString &decimalPoint, bool xyDms );
+    static void appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint );
     static double dmsStringToDouble( const QString &sX, bool *xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer
@@ -232,10 +233,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QString mWktFieldName;
     QString mXFieldName;
     QString mYFieldName;
+    QString mZFieldName;
+    QString mMFieldName;
     bool mDetectTypes = true;
 
     mutable int mXFieldIndex = -1;
     mutable int mYFieldIndex = -1;
+    mutable int mZFieldIndex = -1;
+    mutable int mMFieldIndex = -1;
     mutable int mWktFieldIndex = -1;
 
     // mWktPrefix regexp is used to clean up
