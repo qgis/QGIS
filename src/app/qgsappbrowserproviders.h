@@ -270,7 +270,7 @@ class QgsBookmarksItemGuiProvider : public QObject, public QgsDataItemGuiProvide
 
   private:
 
-    void exportBookmarksFromManagers( const QList< const QgsBookmarkManager * > &managers, QgsMessageBar *messageBar );
+    void exportBookmarksFromManagers( const QList< const QgsBookmarkManager * > &managers, QgsMessageBar *messageBar, const QString &group = QString() );
     void importBookmarksToManager( QgsBookmarkManager *manager, QgsMessageBar *messageBar );
 };
 

@@ -266,11 +266,13 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     /**
      * Exports all bookmarks from a list of \a managers to an xml file at the specified \a path.
      *
+     * If \a group is set then only bookmarks from the matching group will be exported.
+     *
      * Returns TRUE if the export was successful.
      *
      * \see importFromFile()
      */
-    static bool exportToFile( const QString &path, const QList<const QgsBookmarkManager *> &managers );
+    static bool exportToFile( const QString &path, const QList<const QgsBookmarkManager *> &managers, const QString &group = QString() );
 
 
     /**

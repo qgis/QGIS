@@ -979,13 +979,13 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     } );
     menu->addAction( showBookmarksPanel );
     menu->addSeparator();
-    QAction *importBookmarks = new QAction( tr( "Import Spatial Bookmarks…" ), menu );
+    QAction *importBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ), tr( "Import Spatial Bookmarks…" ), menu );
     connect( importBookmarks, &QAction::triggered, this, [ = ]
     {
       importBookmarksToManager( QgsApplication::bookmarkManager(), context.messageBar() );
     } );
     menu->addAction( importBookmarks );
-    QAction *exportBookmarks = new QAction( tr( "Export Spatial Bookmarks…" ), menu );
+    QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
     connect( exportBookmarks, &QAction::triggered, this, [ = ]
     {
       exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << QgsApplication::bookmarkManager() << QgsProject::instance()->bookmarkManager(), context.messageBar() );
@@ -1002,14 +1002,14 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     } );
     menu->addAction( addBookmark );
     menu->addSeparator();
-    QAction *importBookmarks = new QAction( tr( "Import Spatial Bookmarks…" ), menu );
+    QAction *importBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ), tr( "Import Spatial Bookmarks…" ), menu );
     connect( importBookmarks, &QAction::triggered, this, [ = ]
     {
       importBookmarksToManager( managerItem->manager(), context.messageBar() );
     } );
     menu->addAction( importBookmarks );
 
-    QAction *exportBookmarks = new QAction( tr( "Export Spatial Bookmarks…" ), menu );
+    QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
     connect( exportBookmarks, &QAction::triggered, this, [ = ]
     {
       exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << managerItem->manager(), context.messageBar() );
@@ -1097,6 +1097,14 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       }
     }
 
+    QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
+    connect( exportBookmarks, &QAction::triggered, this, [ = ]
+    {
+      exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << groupItem->manager(), context.messageBar(), groupItem->group() );
+    } );
+    menu->addAction( exportBookmarks );
+    menu->addSeparator();
+
     QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Bookmark Group" ) : tr( "Delete Bookmark Groups" ), menu );
     connect( actionDelete, &QAction::triggered, this, [selectedItems, groups, manager]
     {
@@ -1181,7 +1189,7 @@ bool QgsBookmarksItemGuiProvider::rename( QgsDataItem *item, const QString &name
   return false;
 }
 
-void QgsBookmarksItemGuiProvider::exportBookmarksFromManagers( const QList<const QgsBookmarkManager *> &managers, QgsMessageBar *messageBar )
+void QgsBookmarksItemGuiProvider::exportBookmarksFromManagers( const QList<const QgsBookmarkManager *> &managers, QgsMessageBar *messageBar, const QString &group )
 {
   QgsSettings settings;
 
@@ -1196,7 +1204,7 @@ void QgsBookmarksItemGuiProvider::exportBookmarksFromManagers( const QList<const
   // ensure the user never omitted the extension from the file name
   fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << QStringLiteral( "xml" ) );
 
-  if ( !QgsBookmarkManager::exportToFile( fileName, managers ) )
+  if ( !QgsBookmarkManager::exportToFile( fileName, managers, group ) )
   {
     messageBar->pushWarning( tr( "Export Bookmarks" ), tr( "Error exporting bookmark file" ) );
   }
