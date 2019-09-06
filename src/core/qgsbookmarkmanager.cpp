@@ -344,7 +344,7 @@ bool QgsBookmarkManager::moveBookmark( const QString &id, QgsBookmarkManager *de
   return ok;
 }
 
-bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const QgsBookmarkManager *> &managers )
+bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const QgsBookmarkManager *> &managers, const QString &group )
 {
   // note - we don't use the other writeXml implementation, to maintain older format compatibility
   QDomDocument doc( QStringLiteral( "qgis_bookmarks" ) );
@@ -365,6 +365,9 @@ bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const Qg
     const QList< QgsBookmark > bookmarks = manager->bookmarks();
     for ( const QgsBookmark &b : bookmarks )
     {
+      if ( !group.isEmpty() && b.group() != group )
+        continue;
+
       QDomElement bookmark = doc.createElement( QStringLiteral( "bookmark" ) );
       root.appendChild( bookmark );
 

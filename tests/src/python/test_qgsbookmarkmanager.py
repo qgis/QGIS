@@ -544,6 +544,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         b = QgsBookmark()
         b.setId('1')
         b.setName('b1')
+        b.setGroup('g1')
         b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
@@ -554,6 +555,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         b3 = QgsBookmark()
         b3.setId('3')
         b3.setName('b3')
+        b3.setGroup('g1')
         b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
@@ -570,6 +572,12 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, [manager, manager2]))
         self.assertTrue(manager3.importFromFile(tmpFile))
         self.assertEqual([(b.name(), b.extent()) for b in manager3.bookmarks()], [(b.name(), b.extent()) for b in [b, b2, b3]])
+
+        manager3.clear()
+        # restrict to group
+        self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, [manager, manager2], 'g1'))
+        self.assertTrue(manager3.importFromFile(tmpFile))
+        self.assertEqual([(b.name(), b.extent()) for b in manager3.bookmarks()], [(b.name(), b.extent()) for b in [b, b3]])
 
     def testRenameGroup(self):
         """
