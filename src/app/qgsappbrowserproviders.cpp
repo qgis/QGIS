@@ -808,7 +808,7 @@ QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &
   , mGroup( name )
 {
   mType = Custom;
-  mCapabilities = Fast;
+  mCapabilities = Fast | Rename;
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
   setToolTip( name );
@@ -1171,6 +1171,11 @@ bool QgsBookmarksItemGuiProvider::rename( QgsDataItem *item, const QString &name
       context.messageBar()->pushWarning( tr( "Rename Bookmark" ), tr( "Could not rename bookmark" ) );
       return true;
     }
+    return true;
+  }
+  else if ( QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( item ) )
+  {
+    groupItem->manager()->renameGroup( groupItem->group(), name );
     return true;
   }
   return false;

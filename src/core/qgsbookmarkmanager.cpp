@@ -236,6 +236,18 @@ QStringList QgsBookmarkManager::groups() const
   return mGroups;
 }
 
+void QgsBookmarkManager::renameGroup( const QString &oldName, const QString &newName )
+{
+  for ( int i = 0; i < mBookmarks.count(); ++i )
+  {
+    if ( mBookmarks.at( i ).group() == oldName )
+    {
+      mBookmarks[ i ].setGroup( newName );
+      emit bookmarkChanged( mBookmarks.at( i ).id() );
+    }
+  }
+}
+
 QList<QgsBookmark> QgsBookmarkManager::bookmarks() const
 {
   return mBookmarks;

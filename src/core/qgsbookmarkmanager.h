@@ -221,6 +221,12 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     QStringList groups() const;
 
     /**
+     * Renames an existing group from \a oldName to \a newName. This updates
+     * all existing bookmarks to reflect the new name.
+     */
+    void renameGroup( const QString &oldName, const QString &newName );
+
+    /**
      * Returns a list of all bookmarks contained in the manager.
      */
     QList< QgsBookmark > bookmarks() const;
