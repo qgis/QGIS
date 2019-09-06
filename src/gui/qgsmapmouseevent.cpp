@@ -49,7 +49,7 @@ QgsPointXY QgsMapMouseEvent::snapPoint()
   mHasCachedSnapResult = true;
 
   QgsSnappingUtils *snappingUtils = mMapCanvas->snappingUtils();
-  mSnapMatch = snappingUtils->snapToMap( mMapPoint );
+  mSnapMatch = snappingUtils->snapToMapRelaxed( mMapPoint );
 
   if ( mSnapMatch.isValid() )
   {

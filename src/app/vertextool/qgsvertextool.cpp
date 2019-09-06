@@ -760,7 +760,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
 
       snapUtils->setConfig( config );
       SelectedMatchFilter filter( tol, mLockedFeature.get() );
-      m = snapUtils->snapToMap( mapPoint, &filter );
+      m = snapUtils->snapToMapRelaxed( mapPoint, &filter );
 
       // we give priority to snap matches that are from selected features
       if ( filter.hasSelectedMatch() )
@@ -787,7 +787,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
 
     snapUtils->setConfig( config );
     SelectedMatchFilter filter( tol, mLockedFeature.get() );
-    m = snapUtils->snapToMap( mapPoint, &filter );
+    m = snapUtils->snapToMapRelaxed( mapPoint, &filter );
 
     // we give priority to snap matches that are from selected features
     if ( filter.hasSelectedMatch() )
@@ -802,7 +802,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   if ( mLastSnap )
   {
     OneFeatureFilter filterLast( mLastSnap->layer(), mLastSnap->featureId() );
-    QgsPointLocator::Match lastMatch = snapUtils->snapToMap( mapPoint, &filterLast );
+    QgsPointLocator::Match lastMatch = snapUtils->snapToMapRelaxed( mapPoint, &filterLast );
     // but skip the the previously used feature if it would only snap to segment, while now we have snap to vertex
     // so that if there is a point on a line, it gets priority (as is usual with combined vertex+segment snapping)
     bool matchHasVertexLastHasEdge = m.hasVertex() && lastMatch.hasEdge();
@@ -834,7 +834,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
   {
     if ( currentVlayer->isEditable() && currentVlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
     {
-      QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( currentVlayer )->pointInPolygon( mapPoint );
+      QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( currentVlayer )->pointInPolygon( mapPoint, true );
       if ( !matchList.isEmpty() )
       {
         m = matchList.first();
@@ -854,7 +854,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
 
       if ( vlayer->isEditable() && vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
-        QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( vlayer )->pointInPolygon( mapPoint );
+        QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( vlayer )->pointInPolygon( mapPoint, true );
         if ( !matchList.isEmpty() )
         {
           m = matchList.first();
@@ -886,7 +886,7 @@ QList<QgsPointLocator::Match> QgsVertexTool::findEditableLayerMatches( const Qgs
 
   if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
   {
-    matchList << locator->pointInPolygon( mapPoint );
+    matchList << locator->pointInPolygon( mapPoint, true );
   }
 
   double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
@@ -1773,7 +1773,7 @@ QList<QgsPointLocator::Match> QgsVertexTool::layerVerticesSnappedToPoint( QgsVec
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
-  loc->nearestVertex( mapPoint, 0, &myfilter );
+  loc->nearestVertex( mapPoint, 0, &myfilter, true );
   return myfilter.matches;
 }
 

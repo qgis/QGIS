@@ -38,6 +38,9 @@ which keeps the configuration in sync with map canvas (e.g. current view, active
     QgsSnappingUtils( QObject *parent /TransferThis/ = 0, bool enableSnappingForInvisibleFeature = true );
 %Docstring
 Constructor for QgsSnappingUtils
+
+:param parent: parent object
+:param enableSnappingForInvisibleFeature: ``True`` if we want to snap feature even if there are not visible
 %End
     ~QgsSnappingUtils();
 
@@ -45,6 +48,8 @@ Constructor for QgsSnappingUtils
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 %Docstring
 Gets a point locator for the given layer. If such locator does not exist, it will be created
+
+:param vl: the vector layer
 %End
 
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0 );
@@ -53,6 +58,25 @@ Snap to map according to the current configuration. Optional filter allows disca
 %End
     QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
 
+    QgsPointLocator::Match snapToMapRelaxed( QPoint point, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Snap to map according to the current configuration.
+Unlike the snapToMap() method, this method is non blocking and return matches from point locators which
+are not currently indexing
+
+:param point: point in canvas coordinates
+:param filter: allows discarding unwanted matches.
+%End
+
+    QgsPointLocator::Match snapToMapRelaxed( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Snap to map according to the current configuration.
+Unlike the snapToMap() method, this method is non blocking and return matches from point locators which
+are not currently indexing
+
+:param pointMap: point in map coordinates
+:param filter: allows discarding unwanted matches.
+%End
 
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
@@ -172,13 +196,14 @@ Emitted when the snapping settings object changes.
 %End
 
   protected:
+
     virtual void prepareIndexStarting( int count );
 %Docstring
-Called when starting to index - can be overridden and e.g. progress dialog can be provided
+Called when starting to index with snapToMap - can be overridden and e.g. progress dialog can be provided
 %End
     virtual void prepareIndexProgress( int index );
 %Docstring
-Called when finished indexing a layer. When index == count the indexing is complete
+Called when finished indexing a layer with snapToMap. When index == count the indexing is complete
 %End
 
     void clearAllLocators();

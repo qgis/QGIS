@@ -22,6 +22,13 @@
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 
+// initialize point locator
+void initPointLocator( QgsSnappingUtils *snappingUtils, QgsVectorLayer *layer )
+{
+  QgsPointLocator *loc = snappingUtils->locatorForLayer( layer );
+  loc->init();
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsCadUtils class.
@@ -98,6 +105,8 @@ void TestQgsCadUtils::initTestCase()
   mSnappingUtils = new QgsSnappingUtils;
   mSnappingUtils->setConfig( snapConfig );
   mSnappingUtils->setMapSettings( mMapSettings );
+
+  initPointLocator( mSnappingUtils, mLayerPolygon );
 }
 
 //runs after all tests

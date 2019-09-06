@@ -41,13 +41,13 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   res.softLockCommonAngle = -1;
 
   // try to snap to anything
-  QgsPointLocator::Match snapMatch = ctx.snappingUtils->snapToMap( originalMapPoint );
+  QgsPointLocator::Match snapMatch = ctx.snappingUtils->snapToMapRelaxed( originalMapPoint );
   QgsPointXY point = snapMatch.isValid() ? snapMatch.point() : originalMapPoint;
 
   // try to snap explicitly to a segment - useful for some constraints
   QgsPointXY edgePt0, edgePt1;
   EdgesOnlyFilter edgesOnlyFilter;
-  QgsPointLocator::Match edgeMatch = ctx.snappingUtils->snapToMap( originalMapPoint, &edgesOnlyFilter );
+  QgsPointLocator::Match edgeMatch = ctx.snappingUtils->snapToMapRelaxed( originalMapPoint, &edgesOnlyFilter );
   if ( edgeMatch.hasEdge() )
     edgeMatch.edgePoints( edgePt0, edgePt1 );
 

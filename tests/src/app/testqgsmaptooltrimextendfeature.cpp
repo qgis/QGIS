@@ -29,9 +29,17 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgisapp.h"
 
 #include "qgsmaptooltrimextendfeature.h"
 
+
+// initialize point locator
+void initPointLocator( QgsSnappingUtils *snappingUtils, QgsVectorLayer *layer )
+{
+  QgsPointLocator *loc = snappingUtils->locatorForLayer( layer );
+  loc->init();
+}
 
 class TestQgsMapToolTrimExtendFeature : public QObject
 {
@@ -172,6 +180,12 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       snappingConfig.setUnits( QgsTolerance::Pixels );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       mSnappingUtils->setConfig( snappingConfig );
+
+      initPointLocator( mSnappingUtils, vlPolygon.get() );
+      initPointLocator( mSnappingUtils, vlMultiLine.get() );
+      initPointLocator( mSnappingUtils, vlLineZ.get() );
+      initPointLocator( mSnappingUtils, vlTopoEdit.get() );
+      initPointLocator( mSnappingUtils, vlTopoLimit.get() );
 
       mCanvas->setSnappingUtils( mSnappingUtils );
     }

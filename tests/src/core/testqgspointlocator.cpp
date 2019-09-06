@@ -346,6 +346,96 @@ class TestQgsPointLocator : public QObject
 
       delete vlEmptyGeom;
     }
+
+    void testAsynchronousMode()
+    {
+      QgsPointLocator loc( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
+      QgsPointXY pt( 2, 2 );
+
+      QEventLoop loop;
+      connect( &loc, &QgsPointLocator::initFinished, &loop, &QEventLoop::quit );
+
+      // locator is not ready yet
+      QgsPointLocator::Match m = loc.nearestVertex( pt, 999, nullptr, true );
+      QVERIFY( !m.isValid() );
+      QVERIFY( loc.mIsIndexing );
+
+      // we block until initFinished is called from another thread
+      loop.exec();
+
+      QVERIFY( !loc.mIsIndexing );
+
+      // now locator is ready
+      m = loc.nearestVertex( pt, 999 );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.layer(), mVL );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
+      QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
+      QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
+      QCOMPARE( m.vertexIndex(), 2 );
+    }
+
+    void testLayerUpdatesAsynchronous()
+    {
+
+      QgsPointLocator loc( mVL );
+
+      QEventLoop loop;
+      connect( &loc, &QgsPointLocator::initFinished, &loop, &QEventLoop::quit );
+
+      // trigger locator initialization
+      QgsPointLocator::Match mAddV0 = loc.nearestVertex( QgsPointXY( 12, 12 ), 999, nullptr, true );
+
+      // locator is not ready yet
+      QVERIFY( !mAddV0.isValid() );
+      QVERIFY( loc.mIsIndexing );
+
+      mVL->startEditing();
+
+      // add a new feature
+      QgsFeature ff( 0 );
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
+      polyline << QgsPointXY( 10, 11 ) << QgsPointXY( 11, 10 ) << QgsPointXY( 11, 11 ) << QgsPointXY( 10, 11 );
+      polygon << polyline;
+      QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon ) ;
+      ff.setGeometry( ffGeom );
+      QgsFeatureList flist;
+      flist << ff;
+      bool resA = mVL->addFeature( ff );
+      QVERIFY( resA );
+
+      // indexing is still running, change geometry
+      QgsGeometry *newGeom = new QgsGeometry( ff.geometry() );
+      newGeom->moveVertex( 10, 10, 2 ); // change 11,11 to 10,10
+      mVL->changeGeometry( ff.id(), *newGeom );
+      delete newGeom;
+
+      // we block until initFinished is called from another thread
+      loop.exec();
+
+      QVERIFY( !loc.mIsIndexing );
+
+      // verify it is changed in the point locator
+      QgsPointLocator::Match mChV = loc.nearestVertex( QgsPointXY( 12, 12 ), 999 );
+      QVERIFY( mChV.isValid() );
+      QVERIFY( mChV.point() != QgsPointXY( 11, 11 ) ); // that point does not exist anymore
+      mChV = loc.nearestVertex( QgsPointXY( 9, 9 ), 999 );
+      QVERIFY( mChV.isValid() );
+      QVERIFY( mChV.point() == QgsPointXY( 10, 10 ) ); // updated point
+
+      // delete feature while no indexing is running
+      bool resD = mVL->deleteFeature( ff.id() );
+      QVERIFY( resD );
+
+      // verify it is deleted from the point locator
+      QgsPointLocator::Match mDelV = loc.nearestVertex( QgsPointXY( 12, 12 ), 999 );
+      QVERIFY( mDelV.isValid() );
+      QCOMPARE( mDelV.point(), QgsPointXY( 1, 1 ) );
+
+      mVL->rollBack();
+    }
 };
 
 QGSTEST_MAIN( TestQgsPointLocator )
