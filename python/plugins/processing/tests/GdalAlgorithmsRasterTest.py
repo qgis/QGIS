@@ -1669,9 +1669,9 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_EXTENT_CRS': custom_crs2,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -t_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -r near -te 18.67 45.78 18.7 45.81 -te_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -of JPEG ' +
+                 '-s_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -t_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -r near -te 18.67 45.78 18.7 45.81 -te_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -of GTiff ' +
                  source + ' ' +
-                 outdir + '/check.jpg'])
+                 outdir + '/check.tif'])
 
             # with non-EPSG crs code
             self.assertEqual(
