@@ -571,6 +571,67 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertTrue(manager3.importFromFile(tmpFile))
         self.assertEqual([(b.name(), b.extent()) for b in manager3.bookmarks()], [(b.name(), b.extent()) for b in [b, b2, b3]])
 
+    def testRenameGroup(self):
+        """
+        Test renaming a bookmark group
+        """
+        p = QgsProject()
+        manager = QgsBookmarkManager(p)
+
+        # add a bunch of bookmarks
+        b = QgsBookmark()
+        b.setId('1')
+        b.setName('b1')
+        b.setGroup('g1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b2 = QgsBookmark()
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setGroup('g1')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        b3 = QgsBookmark()
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setGroup('g3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+
+        manager.addBookmark(b)
+        manager.addBookmark(b2)
+        manager.addBookmark(b3)
+
+        changed_spy = QSignalSpy(manager.bookmarkChanged)
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g1', 'g1', 'g3'])
+
+        manager.renameGroup('xxxxx', 'yyyyy')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g1', 'g1', 'g3'])
+        self.assertEqual(len(changed_spy), 0)
+        manager.renameGroup('', '')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g1', 'g1', 'g3'])
+        self.assertEqual(len(changed_spy), 0)
+        manager.renameGroup('g1', 'g2')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g2', 'g2', 'g3'])
+        self.assertEqual(len(changed_spy), 2)
+        self.assertEqual(changed_spy[0][0], '1')
+        self.assertEqual(changed_spy[1][0], '2')
+        manager.renameGroup('g3', 'g2')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g2', 'g2', 'g2'])
+        self.assertEqual(len(changed_spy), 3)
+        self.assertEqual(changed_spy[2][0], '3')
+        manager.renameGroup('g2', 'g')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g', 'g', 'g'])
+        self.assertEqual(len(changed_spy), 6)
+        self.assertEqual(changed_spy[3][0], '1')
+        self.assertEqual(changed_spy[4][0], '2')
+        self.assertEqual(changed_spy[5][0], '3')
+
 
 if __name__ == '__main__':
     unittest.main()
