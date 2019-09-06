@@ -486,6 +486,8 @@ void QgsProject::setPresetHomePath( const QString &path )
     return;
 
   mHomePath = path;
+  mCachedHomePath.clear();
+
   emit homePathChanged();
 
   setDirty( true );
@@ -570,6 +572,8 @@ void QgsProject::setFileName( const QString &name )
   QString oldHomePath = homePath();
 
   mFile.setFileName( name );
+  mCachedHomePath.clear();
+
   emit fileNameChanged();
 
   QString newHomePath = homePath();
@@ -704,7 +708,8 @@ void QgsProject::clear()
 
   mFile.setFileName( QString() );
   mProperties.clearKeys();
-  mHomePath = QString();
+  mHomePath.clear();
+  mCachedHomePath.clear();
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
@@ -1042,6 +1047,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 bool QgsProject::read( const QString &filename, QgsProject::ReadFlags flags )
 {
   mFile.setFileName( filename );
+  mCachedHomePath.clear();
 
   return read( flags );
 }
@@ -1089,6 +1095,7 @@ bool QgsProject::read( QgsProject::ReadFlags flags )
     if ( !mTranslator )
     {
       mFile.setFileName( filename );
+      mCachedHomePath.clear();
     }
     else
     {
@@ -1180,6 +1187,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   clear();
   mAuxiliaryStorage = std::move( aStorage );
   mFile.setFileName( fileName );
+  mCachedHomePath.clear();
 
   // now get any properties
   _getProperties( *doc, mProperties );
@@ -1697,6 +1705,7 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
 bool QgsProject::write( const QString &filename )
 {
   mFile.setFileName( filename );
+  mCachedHomePath.clear();
 
   return write();
 }
@@ -2562,26 +2571,36 @@ void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 
 QString QgsProject::homePath() const
 {
+  if ( !mCachedHomePath.isEmpty() )
+    return mCachedHomePath;
+
   if ( !mHomePath.isEmpty() )
   {
     QFileInfo homeInfo( mHomePath );
     if ( !homeInfo.isRelative() )
+    {
+      mCachedHomePath = mHomePath;
       return mHomePath;
+    }
   }
 
   QFileInfo pfi( fileName() );
   if ( !pfi.exists() )
+  {
+    mCachedHomePath = mHomePath;
     return mHomePath;
+  }
 
   if ( !mHomePath.isEmpty() )
   {
     // path is relative to project file
-    return QDir::cleanPath( pfi.path() + '/' + mHomePath );
+    mCachedHomePath = QDir::cleanPath( pfi.path() + '/' + mHomePath );
   }
   else
   {
-    return pfi.canonicalPath();
+    mCachedHomePath = pfi.canonicalPath();
   }
+  return mCachedHomePath;
 }
 
 QString QgsProject::presetHomePath() const
