@@ -1642,6 +1642,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * created based on file name.
      */
     QString mHomePath;
+    mutable QString mCachedHomePath;
+
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     bool mAutoTransaction = false;       // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
