@@ -937,7 +937,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   startProfile( QStringLiteral( "Snapping utils" ) );
-  mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
+  mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this, true );
   mMapCanvas->setSnappingUtils( mSnappingUtils );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, mSnappingUtils, &QgsSnappingUtils::setConfig );
   connect( QgsProject::instance(), &QgsProject::collectAttachedFiles, this, &QgisApp::generateProjectAttachedFiles );

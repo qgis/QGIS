@@ -34,11 +34,16 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
     Q_OBJECT
   public:
-    QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
-  protected:
-    void prepareIndexStarting( int count ) override;
-    void prepareIndexProgress( int index ) override;
+    /**
+     * Construct map canvas snapping utils object
+     *
+     * \param canvas map canvas
+     * \param parent parent object
+     * \param asynchronous if TRUE snapping cache index will be non blocking and done in another thread,
+     * if FALSE it will block until indexing is done
+     */
+    QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr, bool asynchronous = false );
 
   private slots:
     void canvasMapSettingsChanged();
