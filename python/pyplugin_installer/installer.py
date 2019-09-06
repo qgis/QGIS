@@ -27,13 +27,13 @@ import os
 import json
 import zipfile
 
-from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile, QSettings
+from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFrame, QMessageBox, QLabel, QVBoxLayout
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
 from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsNetworkRequestParameters
-from qgis.gui import QgsMessageBar, QgsPasswordLineEdit
+from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
                         reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
 from .installer_data import (repositories, plugins, officialRepo,
@@ -556,8 +556,6 @@ class QgsPluginInstaller(QObject):
         pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
 
         if not pluginName:
-            import webbrowser
-            import re
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Warning)
             msg_box.setWindowTitle(self.tr("QGIS Python Install from ZIP Plugin Installer"))
@@ -565,11 +563,8 @@ class QgsPluginInstaller(QObject):
             msg_box.setStandardButtons(QMessageBox.Ok)
             more_info_btn = msg_box.addButton(self.tr("More Information"), QMessageBox.HelpRole)
             msg_box.exec()
-            version = 'testing' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
-            locale = QSettings().value("locale/userLocale", type=str)
-            qgis_lang = str( locale[:2] )
             if msg_box.clickedButton() == more_info_btn:
-                webbrowser.open("https://docs.qgis.org/{version}/{lang}/docs/user_manual/plugins/plugins.html#the-install-from-zip-tab".format(version=version, lang=qgis_lang))
+                QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
             return
 
         pluginsDirectory = qgis.utils.home_plugin_path
