@@ -450,6 +450,7 @@ void QgsProject::setTitle( const QString &title )
     return;
 
   mMetadata.setTitle( title );
+  mProjectScope.reset();
   emit metadataChanged();
 
   setDirty( true );
@@ -484,6 +485,7 @@ void QgsProject::setPresetHomePath( const QString &path )
 
   mHomePath = path;
   mCachedHomePath.clear();
+  mProjectScope.reset();
 
   emit homePathChanged();
 
@@ -570,6 +572,7 @@ void QgsProject::setFileName( const QString &name )
 
   mFile.setFileName( name );
   mCachedHomePath.clear();
+  mProjectScope.reset();
 
   emit fileNameChanged();
 
@@ -657,6 +660,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 
   mCrs = crs;
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
+  mProjectScope.reset();
   setDirty( true );
   emit crsChanged();
 }
@@ -671,6 +675,7 @@ QString QgsProject::ellipsoid() const
 
 void QgsProject::setEllipsoid( const QString &ellipsoid )
 {
+  mProjectScope.reset();
   writeEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), ellipsoid );
   emit ellipsoidChanged( ellipsoid );
 }
@@ -697,6 +702,7 @@ void QgsProject::clear()
 {
   QgsSettings s;
 
+  mProjectScope.reset();
   mFile.setFileName( QString() );
   mProperties.clearKeys();
   mHomePath.clear();
@@ -1035,6 +1041,7 @@ bool QgsProject::read( const QString &filename )
 {
   mFile.setFileName( filename );
   mCachedHomePath.clear();
+  mProjectScope.reset();
 
   return read();
 }
@@ -1083,6 +1090,7 @@ bool QgsProject::read()
     {
       mFile.setFileName( filename );
       mCachedHomePath.clear();
+      mProjectScope.reset();
     }
     else
     {
@@ -1175,6 +1183,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   mAuxiliaryStorage = std::move( aStorage );
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
+  mProjectScope.reset();
 
   // now get any properties
   _getProperties( *doc, mProperties );
@@ -1523,6 +1532,7 @@ void QgsProject::setCustomVariables( const QVariantMap &variables )
   writeEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ), variableValues );
 
   mCustomVariables = variables;
+  mProjectScope.reset();
 
   emit customVariablesChanged();
 }
@@ -1579,6 +1589,67 @@ QgsExpressionContext QgsProject::createExpressionContext() const
           << QgsExpressionContextUtils::projectScope( this );
 
   return context;
+}
+
+QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
+{
+  // MUCH cheaper to clone than build
+  if ( mProjectScope )
+  {
+    std::unique_ptr< QgsExpressionContextScope > projectScope = qgis::make_unique< QgsExpressionContextScope >( *mProjectScope );
+    // we can't cache these
+    projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_distance_units" ), QgsUnitTypes::toString( distanceUnits() ), true, true ) );
+    projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_area_units" ), QgsUnitTypes::toString( areaUnits() ), true, true ) );
+    return projectScope.release();
+  }
+
+  mProjectScope = qgis::make_unique< QgsExpressionContextScope >( QObject::tr( "Project" ) );
+
+  const QVariantMap vars = customVariables();
+
+  QVariantMap::const_iterator it = vars.constBegin();
+
+  for ( ; it != vars.constEnd(); ++it )
+  {
+    mProjectScope->setVariable( it.key(), it.value(), true );
+  }
+
+  QString projectPath = projectStorage() ? fileName() : absoluteFilePath();
+  QString projectFolder = QFileInfo( projectPath ).path();
+  QString projectFilename = QFileInfo( projectPath ).fileName();
+  QString projectBasename = baseName();
+
+  //add other known project variables
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ), title(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_path" ), QDir::toNativeSeparators( projectPath ), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_folder" ), QDir::toNativeSeparators( projectFolder ), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), projectFilename, true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_basename" ), projectBasename, true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_home" ), QDir::toNativeSeparators( homePath() ), true, true ) );
+  QgsCoordinateReferenceSystem projectCrs = crs();
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_ellipsoid" ), ellipsoid(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "_project_transform_context" ), QVariant::fromValue<QgsCoordinateTransformContext>( transformContext() ), true, true ) );
+
+  // metadata
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_author" ), metadata().author(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_abstract" ), metadata().abstract(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_creation_date" ), metadata().creationDateTime(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_identifier" ), metadata().identifier(), true, true ) );
+
+  // keywords
+  QVariantMap keywords;
+  QgsAbstractMetadataBase::KeywordMap metadataKeywords = metadata().keywords();
+  for ( auto it = metadataKeywords.constBegin(); it != metadataKeywords.constEnd(); ++it )
+  {
+    keywords.insert( it.key(), it.value() );
+  }
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_keywords" ), keywords, true, true ) );
+
+  mProjectScope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( this ) );
+
+  return createExpressionContextScope();
 }
 
 void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
@@ -1692,6 +1763,7 @@ bool QgsProject::write( const QString &filename )
 {
   mFile.setFileName( filename );
   mCachedHomePath.clear();
+  mProjectScope.reset();
 
   return write();
 }
@@ -3008,6 +3080,8 @@ void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
     return;
 
   mMetadata = metadata;
+  mProjectScope.reset();
+
   emit metadataChanged();
 
   setDirty( true );
@@ -3059,6 +3133,7 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   }
   writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ), customColors );
   writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ), customColorLabels );
+  mProjectScope.reset();
   emit projectColorsChanged();
 }
 
@@ -3088,3 +3163,54 @@ QString QgsProject::translate( const QString &context, const QString &sourceText
   }
   return result;
 }
+
+/// @cond PRIVATE
+GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+{
+  if ( !project )
+    return;
+
+  //build up color list from project. Do this in advance for speed
+  QStringList colorStrings = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
+  QStringList colorLabels = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
+
+  //generate list from custom colors
+  int colorIndex = 0;
+  for ( QStringList::iterator it = colorStrings.begin();
+        it != colorStrings.end(); ++it )
+  {
+    QColor color = QgsSymbolLayerUtils::decodeColor( *it );
+    QString label;
+    if ( colorLabels.length() > colorIndex )
+    {
+      label = colorLabels.at( colorIndex );
+    }
+
+    mColors.insert( label.toLower(), color );
+    colorIndex++;
+  }
+}
+
+GetNamedProjectColor::GetNamedProjectColor( const QHash<QString, QColor> &colors )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+  , mColors( colors )
+{
+}
+
+QVariant GetNamedProjectColor::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  QString colorName = values.at( 0 ).toString().toLower();
+  if ( mColors.contains( colorName ) )
+  {
+    return QStringLiteral( "%1,%2,%3" ).arg( mColors.value( colorName ).red() ).arg( mColors.value( colorName ).green() ).arg( mColors.value( colorName ).blue() );
+  }
+  else
+    return QVariant();
+}
+
+QgsScopedExpressionFunction *GetNamedProjectColor::clone() const
+{
+  return new GetNamedProjectColor( mColors );
+}
+///@endcond
