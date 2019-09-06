@@ -30,6 +30,8 @@
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayertools.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsmaptooldigitizefeature.h"
 
 class TestQgsRelationReferenceWidget : public QObject
 {
@@ -50,6 +52,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testSetGetForeignKey();
     void testIdentifyOnMap();
     void testAddEntry();
+    void testAddEntryNoGeom();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -376,50 +379,98 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   mLayer1->rollBack();
 }
 
+// Monkey patch gui vector layer tool in order to simple add a new feature in
+// referenced layer
+class DummyVectorLayerTools : public QgsVectorLayerTools
+{
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
+    {
+      feat->setAttribute( QStringLiteral( "pk" ), 13 );
+      feat->setAttribute( QStringLiteral( "material" ), QStringLiteral( "steel" ) );
+      feat->setAttribute( QStringLiteral( "diameter" ), 140 );
+      feat->setAttribute( QStringLiteral( "raccord" ), "collar" );
+      layer->addFeature( *feat );
+      return true;
+    }
+
+    bool startEditing( QgsVectorLayer * ) const override {return true;}
+
+    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;};
+
+    bool saveEdits( QgsVectorLayer * ) const override {return true;};
+};
 
 void TestQgsRelationReferenceWidget::testAddEntry()
 {
   // check that a new added entry in referenced layer populate correctly the
   // referencing combobox
-  QWidget parentWidget;
-  QgsRelationReferenceWidget w( &parentWidget );
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
   QVERIFY( mLayer1->startEditing() );
   w.setRelation( *mRelation, true );
   w.init();
 
-  // Monkey patch gui vector layer tool in order to simple add a new feature in
-  // referenced layer
-  class DummyVectorLayerTools : public QgsVectorLayerTools
-  {
-      bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
-      {
-        feat->setAttribute( QStringLiteral( "pk" ), 13 );
-        feat->setAttribute( QStringLiteral( "material" ), "steel" );
-        feat->setAttribute( QStringLiteral( "diameter" ), 140 );
-        feat->setAttribute( QStringLiteral( "raccord" ), "collar" );
-        layer->addFeature( *feat );
-        return true;
-      }
-
-      bool startEditing( QgsVectorLayer * ) const override {return true;}
-
-      bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;}
-
-      bool saveEdits( QgsVectorLayer * ) const override {return true;}
-  };
-
+  QgsAdvancedDigitizingDockWidget cadDockWidget( &canvas );
   QgsAttributeEditorContext context;
   DummyVectorLayerTools tools;
   context.setVectorLayerTools( &tools );
-  w.setEditorContext( context, nullptr, nullptr );
+  context.setCadDockWidget( &cadDockWidget );
+  w.setEditorContext( context, &canvas, nullptr );
   w.addEntry();
 
-  Q_NOWARN_DEPRECATED_PUSH
-  QCOMPARE( w.mComboBox->identifierValue().toInt(), 13 );
-  Q_NOWARN_DEPRECATED_POP
+  QVERIFY( w.mCurrentMapTool );
+  QgsFeature feat( mLayer1->fields() );
+  w.mMapToolDigitize->digitized( feat );
+
+  QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
 }
 
+void TestQgsRelationReferenceWidget::testAddEntryNoGeom()
+{
+  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
 
+  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+
+  // create relation
+  QgsRelation mRelation;
+  mRelation.setId( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setName( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setReferencingLayer( mLayer1.id() );
+  mRelation.setReferencedLayer( mLayer2.id() );
+  mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  QVERIFY( mRelation.isValid() );
+  QgsProject::instance()->relationManager()->addRelation( mRelation );
+
+  // add feature
+  QgsFeature ft0( mLayer1.fields() );
+  ft0.setAttribute( QStringLiteral( "pk" ), 0 );
+  ft0.setAttribute( QStringLiteral( "fk" ), 0 );
+  mLayer1.startEditing();
+  mLayer1.addFeature( ft0 );
+  mLayer1.commitChanges();
+
+  // check that a new added entry in referenced layer populate correctly the
+  // referencing combobox
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
+  QVERIFY( mLayer1.startEditing() );
+  w.setRelation( mRelation, true );
+  w.init();
+
+  QgsAdvancedDigitizingDockWidget cadDockWidget( &canvas );
+  QgsAttributeEditorContext context;
+  DummyVectorLayerTools tools;
+  context.setVectorLayerTools( &tools );
+  context.setCadDockWidget( &cadDockWidget );
+  w.setEditorContext( context, &canvas, nullptr );
+  w.addEntry();
+
+  QVERIFY( !w.mCurrentMapTool );
+
+  QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
+}
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
 #include "testqgsrelationreferencewidget.moc"

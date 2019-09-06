@@ -196,6 +196,7 @@ void QgsRelationReferenceWidgetWrapper::updateValues( const QVariant &val, const
   Q_ASSERT( values.count() == fieldPairs.count() );
 
   mWidget->setForeignKeys( values );
+  mWidget->setFormFeature( formFeature() );
 }
 
 void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )

@@ -158,6 +158,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
   mEditorContext.setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mEditorContext.setCadDockWidget( QgisApp::instance()->cadDockWidget() );
 
   QgsFeatureRequest r;
   bool needsGeom = false;

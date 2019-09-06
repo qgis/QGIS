@@ -234,6 +234,7 @@ SET(QGIS_GUI_SRCS
   qgsaggregatetoolbutton.cpp
   qgsalignmentcombobox.cpp
   qgsattributedialog.cpp
+  qgsattributeeditorcontext.cpp
   qgsattributeform.cpp
   qgsattributeformeditorwidget.cpp
   qgsattributeforminterface.cpp
@@ -337,6 +338,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptooladvanceddigitizing.cpp
   qgsmaptoolcapture.cpp
   qgsmaptooledit.cpp
+  qgsmaptooldigitizefeature.cpp
   qgsmaptoolemitpoint.cpp
   qgsmaptoolextent.cpp
   qgsmaptoolidentify.cpp
@@ -522,6 +524,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaptooladvanceddigitizing.h
   qgsmaptoolcapture.h
   qgsmaptooledit.h
+  qgsmaptooldigitizefeature.h
   qgsmaptoolemitpoint.h
   qgsmaptoolextent.h
   qgsmaptoolidentify.h

@@ -19,6 +19,7 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgis_sip.h"
 #include "qgsfeature.h"
+#include "qobjectuniqueptr.h"
 
 #include <QComboBox>
 #include <QToolButton>
@@ -32,7 +33,9 @@ class QgsVectorLayerTools;
 class QgsMapCanvas;
 class QgsMessageBar;
 class QgsHighlight;
+class QgsMapTool;
 class QgsMapToolIdentifyFeature;
+class QgsMapToolDigitizeFeature;
 class QgsMessageBarItem;
 class QgsFeatureListComboBox;
 class QgsCollapsibleGroupBox;
@@ -181,6 +184,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     QgsRelation relation() const;
 
+    /**
+     * Set the current form feature (from the referencing layer)
+     *
+     * \since QGIS 3.10
+     */
+    void setFormFeature( const QgsFeature &formFeature );
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -215,11 +225,14 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void deleteHighlight();
     void comboReferenceChanged( int index );
     void featureIdentified( const QgsFeature &feature );
+    void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
     void mapToolDeactivated();
     void filterChanged();
     void addEntry();
     void updateAddEntryButton();
+    void entryAdded( const QgsFeature &f );
+    void onKeyPressed( QKeyEvent *e );
 
     /**
      * Updates the FK index as soon as the underlying model is updated when
@@ -239,11 +252,14 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMessageBar *mMessageBar = nullptr;
     QVariantList mForeignKeys;
     QgsFeature mFeature;
+    QgsFeature mFormFeature;
     // Index of the referenced layer key
     QStringList mReferencedFields;
     bool mAllowNull = true;
     QgsHighlight *mHighlight = nullptr;
-    QgsMapToolIdentifyFeature *mMapTool = nullptr;
+    QgsMapTool *mCurrentMapTool = nullptr;
+    QObjectUniquePtr<QgsMapToolIdentifyFeature> mMapToolIdentify;
+    QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QgsMessageBarItem *mMessageBarItem = nullptr;
     QgsAttributeForm *mReferencedAttributeForm = nullptr;
     QgsVectorLayer *mReferencedLayer = nullptr;

@@ -17,27 +17,54 @@
 #define QGSMAPTOOLDIGITIZEFEATURE_H
 
 #include "qgsmaptoolcapture.h"
-#include "qgis_app.h"
+#include "qgis_gui.h"
 
 class QgsFeature;
 
-//! This tool digitizes geometry of new point/line/polygon features on already existing vector layers
-class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
+/**
+ * \ingroup gui
+ * \brief This tool digitizes geometry of new point/line/polygon features on already existing vector layers
+ * Once the map tool is enabled, user can digitize the feature geometry.
+ * A signal will then be emitted.
+ * \since QGIS 3.10
+ */
+class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 {
     Q_OBJECT
+
   public:
-    //! \since QGIS 3.2
-    QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsMapLayer *layer, CaptureMode mode );
+
+    /**
+     * \brief QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
+     * \param canvas the map canvas
+     * \param cadDockWidget widget to setup advanced digitizing parameters
+     * \param mode type of geometry to capture (point/line/polygon), QgsMapToolCapture::CaptureNone to autodetect geometry
+     */
+    QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = QgsMapToolCapture::CaptureNone );
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void digitized( QgsFeature &f );
+    /**
+     * Change the layer edited by the map tool
+     * \param vl the layer to be edited by the map tool
+     */
+    void setLayer( QgsMapLayer *vl );
 
     void activate() override;
     void deactivate() override;
 
   signals:
-    void digitizingCompleted( const QgsFeature & );
+
+    /**
+     * Emitted whenever the digitizing has been successfully completed
+     * \param feature the new digitized feature
+     */
+    void digitizingCompleted( const QgsFeature &feature );
+
+    /**
+     * Emitted whenever the digitizing has been ended without digitizing
+     * any feature
+     */
     void digitizingFinished( );
 
   protected:
@@ -57,6 +84,12 @@ class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
   private:
 
     /**
+     * Called when the feature has been digitized.
+     * \param f the new created feature
+     */
+    virtual void digitized( const QgsFeature &f );
+
+    /**
      * individual layer per digitizing session
      * \since QGIS 3.0 */
     QgsMapLayer *mLayer = nullptr;
@@ -70,6 +103,8 @@ class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
      * Check if CaptureMode matches layer type. Default is true.
      * \since QGIS 2.12 */
     bool mCheckGeometryType;
+
+    friend class TestQgsRelationReferenceWidget;
 };
 
 #endif // QGSMAPTOOLDIGITIZEFEATURE_H
