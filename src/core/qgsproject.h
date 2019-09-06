@@ -36,6 +36,7 @@
 #include "qgssnappingconfig.h"
 #include "qgsprojectversion.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsprojectproperty.h"
@@ -87,7 +88,7 @@ class QgsBookmarkManager;
 
 */
 
-class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator, public QgsProjectTranslator
+class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsProjectTranslator
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
@@ -664,6 +665,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setEvaluateDefaultValues( bool evaluateDefaultValues );
 
     QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContextScope *createExpressionContextScope() const override;
 
     /**
      * The snapping configuration for this project.
@@ -1660,6 +1662,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     bool mIsBeingDeleted = false;
 
+    mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
+
     friend class QgsProjectDirtyBlocker;
 
     // Required to avoid creating a new project in it's destructor
@@ -1732,5 +1736,32 @@ class CORE_EXPORT QgsProjectDirtyBlocker
    \note not available in Python bindings.
  */
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc ) SIP_SKIP;
+
+
+
+/// @cond PRIVATE
+#ifndef SIP_RUN
+class GetNamedProjectColor : public QgsScopedExpressionFunction
+{
+  public:
+    GetNamedProjectColor( const QgsProject *project );
+
+    /**
+     * Optimized constructor for GetNamedProjectColor when a list of map is already available
+     * and does not need to be read from a project.
+     */
+    GetNamedProjectColor( const QHash< QString, QColor > &colors );
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+
+  private:
+
+    QHash< QString, QColor > mColors;
+
+};
+
+#endif
+///@endcond
 
 #endif
