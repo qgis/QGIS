@@ -588,9 +588,16 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
 }
 
-void QgsPointLocator::onRebuildIndexFinished( bool ok )
+void QgsPointLocator::onInitTaskTerminated()
 {
   mIsIndexing = false;
+  mRenderer.reset();
+  mSource.reset();
+}
+
+void QgsPointLocator::onRebuildIndexFinished( bool ok )
+{
+  onInitTaskTerminated();
 
   // treat added and deleted feature while indexing
   for ( QgsFeatureId fid : mAddedFeatures )
@@ -602,13 +609,13 @@ void QgsPointLocator::onRebuildIndexFinished( bool ok )
   emit initFinished( ok );
 }
 
-void QgsPointLocator::init( int maxFeaturesToIndex )
+bool QgsPointLocator::init( int maxFeaturesToIndex )
 {
   const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::NullGeometry // nothing to index
        || hasIndex()
        || mIsIndexing ) // already indexing, return!
-    return;
+    return true;
 
   mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
   mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );
@@ -624,14 +631,16 @@ void QgsPointLocator::init( int maxFeaturesToIndex )
   {
     QgsPointLocatorInitTask *task = new QgsPointLocatorInitTask( this );
     connect( task, &QgsPointLocatorInitTask::rebuildIndexFinished, this, &QgsPointLocator::onRebuildIndexFinished );
-    connect( task, &QgsPointLocatorInitTask::taskTerminated, this, [ = ] { mIsIndexing = false; } );
+    connect( task, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskTerminated );
     QgsApplication::taskManager()->addTask( task );
+    return true;
   }
   else
   {
     const bool ok = rebuildIndex( maxFeaturesToIndex );
     mIsIndexing = false;
     emit initFinished( ok );
+    return ok;
   }
 }
 

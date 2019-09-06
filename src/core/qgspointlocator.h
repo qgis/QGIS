@@ -16,9 +16,6 @@
 #ifndef QGSPOINTLOCATOR_H
 #define QGSPOINTLOCATOR_H
 
-#include <QFuture>
-#include <QFutureWatcher>
-
 class QgsPointXY;
 class QgsVectorLayer;
 class QgsFeatureRenderer;
@@ -132,10 +129,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
      *
      * This method is either blocking or non blocking according to \a asynchronous parameter passed
-     * in the constructor
+     * in the constructor.
+     * Returns false if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise true
+     *
      * \see QgsPointLocator()
      */
-    void init( int maxFeaturesToIndex = -1 );
+    bool init( int maxFeaturesToIndex = -1 );
 
     //! Indicate whether the data have been already indexed
     bool hasIndex() const;
@@ -314,15 +313,10 @@ class CORE_EXPORT QgsPointLocator : public QObject
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
 
-    /**
-     * prepare index if need and returns TRUE if the index is ready to be used
-     * \since 3.10
-     */
-    bool prepare();
-
   protected slots:
     void destroyIndex();
   private slots:
+    void onInitTaskTerminated();
     void onRebuildIndexFinished( bool ok );
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
@@ -330,6 +324,10 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
   private:
+
+    //! prepare index if need and returns TRUE if the index is ready to be used
+    bool prepare();
+
     //! Storage manager
     std::unique_ptr< SpatialIndex::IStorageManager > mStorage;
 

@@ -11,7 +11,6 @@
 
 
 
-
 class QgsPointLocator : QObject
 {
 %Docstring
@@ -98,14 +97,15 @@ Configure render context  - if not ``None``, it will use to index only visible f
     typedef QFlags<QgsPointLocator::Type> Types;
 
 
-    void init( int maxFeaturesToIndex = -1 );
+    bool init( int maxFeaturesToIndex = -1 );
 %Docstring
 Prepare the index for queries. Does nothing if the index already exists.
 If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
 to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
 
 This method is either blocking or non blocking according to ``asynchronous`` parameter passed
-in the constructor
+in the constructor.
+Returns false if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise true
 
 .. seealso:: :py:class:`QgsPointLocator`
 %End
@@ -258,13 +258,6 @@ Emitted whenever index has been built and initialization is finished
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
-
-    bool prepare();
-%Docstring
-prepare index if need and returns ``True`` if the index is ready to be used
-
-.. versionadded:: 3.10
-%End
 
   protected slots:
     void destroyIndex();
