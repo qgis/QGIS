@@ -293,6 +293,9 @@ int QgsStyleModel::columnCount( const QModelIndex & ) const
 
 void QgsStyleModel::addDesiredIconSize( QSize size )
 {
+  if ( mAdditionalSizes.contains( size ) )
+    return;
+
   mAdditionalSizes << size;
   mSymbolIconCache.clear();
   mColorRampIconCache.clear();
