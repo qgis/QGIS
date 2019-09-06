@@ -13,7 +13,7 @@
 
 
 
-class QgsProject : QObject, QgsExpressionContextGenerator, QgsProjectTranslator
+class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring
 Reads and writes project states.
@@ -639,6 +639,8 @@ Defines if default values should be evaluated on provider side when requested an
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
+    virtual QgsExpressionContextScope *createExpressionContextScope() const;
 
 
     QgsSnappingConfig snappingConfig() const;
@@ -1492,6 +1494,9 @@ This will block dirtying the specified ``project`` for the lifetime of this obje
   private:
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
+
+
+
 
 
 /************************************************************************
