@@ -13,8 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgsbookmarkmodel.h"
 #include "qgsbookmarkmanager.h"
+
+#include <QIcon>
 
 QgsBookmarkManagerModel::QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager, QObject *parent )
   : QAbstractTableModel( parent )
@@ -62,6 +65,9 @@ QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) con
 
     case RoleGroup:
       return b.group();
+
+    case Qt::DecorationRole:
+      return index.column() == ColumnName ? QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) ) : QIcon();
 
     case Qt::DisplayRole:
     case Qt::EditRole:
