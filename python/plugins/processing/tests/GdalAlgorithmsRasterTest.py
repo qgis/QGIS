@@ -1659,6 +1659,20 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            # with target using custom projection and user-defined extent
+            custom_crs2 = 'proj4: +proj=longlat +a=6378388 +b=6356912 +no_defs'
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'SOURCE_CRS': custom_crs2,
+                                        'TARGET_CRS': custom_crs2,
+                                        'TARGET_EXTENT': '18.67,18.70,45.78,45.81',
+                                        'TARGET_EXTENT_CRS': custom_crs2,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdalwarp',
+                 '-s_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -t_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -r near -te 18.67 45.78 18.7 45.81 -te_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -of GTiff ' +
+                 source + ' ' +
+                 outdir + '/check.tif'])
+
             # with non-EPSG crs code
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
