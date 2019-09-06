@@ -51,12 +51,19 @@
 //
 
 ///@cond PRIVATE
+QgsCheckableStyleModel::QgsCheckableStyleModel( QgsStyleModel *sourceModel, QObject *parent, bool readOnly )
+  : QgsStyleProxyModel( sourceModel, parent )
+  , mStyle( sourceModel->style() )
+  , mReadOnly( readOnly )
+{
+
+}
+
 QgsCheckableStyleModel::QgsCheckableStyleModel( QgsStyle *style, QObject *parent, bool readOnly )
   : QgsStyleProxyModel( style, parent )
   , mStyle( style )
   , mReadOnly( readOnly )
 {
-
 }
 
 void QgsCheckableStyleModel::setCheckable( bool checkable )
@@ -242,7 +249,8 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 2;
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
-  mModel = new QgsCheckableStyleModel( mStyle, this, mReadOnly );
+  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsCheckableStyleModel( QgsApplication::defaultStyleModel(), this, mReadOnly )
+           : new QgsCheckableStyleModel( mStyle, this, mReadOnly );
   mModel->addDesiredIconSize( listItems->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   listItems->setModel( mModel );
@@ -579,7 +587,7 @@ void QgsStyleManagerDialog::copyItem()
     case QgsStyle::SmartgroupEntity:
       return;
 
-  };
+  }
 }
 
 void QgsStyleManagerDialog::pasteItem()

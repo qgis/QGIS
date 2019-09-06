@@ -725,6 +725,15 @@ Returns the application's bookmark manager, used for storing installation-wide b
 .. versionadded:: 3.10
 %End
 
+    static QgsStyleModel *defaultStyleModel();
+%Docstring
+Returns a shared QgsStyleModel containing the default style library (see QgsStyle.defaultStyle()).
+
+Using this shared model instead of creating a new QgsStyleModel improves performance.
+
+.. versionadded:: 3.10
+%End
+
     static QgsMessageLog *messageLog();
 %Docstring
 Returns the application's message log.
