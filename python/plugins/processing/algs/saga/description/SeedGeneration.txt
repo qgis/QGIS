@@ -8,7 +8,7 @@ QgsProcessingParameterBoolean|NORMALIZE|Normalize Features|True
 QgsProcessingParameterEnum|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
 QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Double|1|False|0.0|None
 QgsProcessingParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True
-QgsProcessingParameterNumber|DW_BANDWIDTH|aussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|5|False|0.0|None
+QgsProcessingParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|5|False|0.0|None
 QgsProcessingParameterRasterDestination|SEED_GRID|Seeds Grid
 QgsProcessingParameterRasterDestination|VARIANCE|Variance
 QgsProcessingParameterVectorDestination|SEED_POINTS|Seeds Points
