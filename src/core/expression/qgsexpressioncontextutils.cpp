@@ -72,71 +72,7 @@ void QgsExpressionContextUtils::removeGlobalVariable( const QString &name )
     QgsApplication::setCustomVariables( vars );
 }
 
-
 /// @cond PRIVATE
-
-class GetNamedProjectColor : public QgsScopedExpressionFunction
-{
-  public:
-    GetNamedProjectColor( const QgsProject *project )
-      : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
-    {
-      if ( !project )
-        return;
-
-      //build up color list from project. Do this in advance for speed
-      QStringList colorStrings = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
-      QStringList colorLabels = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
-
-      //generate list from custom colors
-      int colorIndex = 0;
-      for ( QStringList::iterator it = colorStrings.begin();
-            it != colorStrings.end(); ++it )
-      {
-        QColor color = QgsSymbolLayerUtils::decodeColor( *it );
-        QString label;
-        if ( colorLabels.length() > colorIndex )
-        {
-          label = colorLabels.at( colorIndex );
-        }
-
-        mColors.insert( label.toLower(), color );
-        colorIndex++;
-      }
-    }
-
-    /**
-     * Optimized constructor for GetNamedProjectColor when a list of map is already available
-     * and does not need to be read from a project.
-     */
-    GetNamedProjectColor( const QHash< QString, QColor > &colors )
-      : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
-      , mColors( colors )
-    {
-    }
-
-
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
-    {
-      QString colorName = values.at( 0 ).toString().toLower();
-      if ( mColors.contains( colorName ) )
-      {
-        return QStringLiteral( "%1,%2,%3" ).arg( mColors.value( colorName ).red() ).arg( mColors.value( colorName ).green() ).arg( mColors.value( colorName ).blue() );
-      }
-      else
-        return QVariant();
-    }
-
-    QgsScopedExpressionFunction *clone() const override
-    {
-      return new GetNamedProjectColor( mColors );
-    }
-
-  private:
-
-    QHash< QString, QColor > mColors;
-
-};
 
 class GetLayoutItemVariables : public QgsScopedExpressionFunction
 {
@@ -238,57 +174,13 @@ QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeatur
 
 QgsExpressionContextScope *QgsExpressionContextUtils::projectScope( const QgsProject *project )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Project" ) );
-
   if ( !project )
+  {
+    QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Project" ) );
     return scope;
-
-  const QVariantMap vars = project->customVariables();
-
-  QVariantMap::const_iterator it = vars.constBegin();
-
-  for ( ; it != vars.constEnd(); ++it )
-  {
-    scope->setVariable( it.key(), it.value(), true );
   }
-
-  QString projectPath = project->projectStorage() ? project->fileName() : project->absoluteFilePath();
-  QString projectFolder = QFileInfo( projectPath ).path();
-  QString projectFilename = QFileInfo( projectPath ).fileName();
-  QString projectBasename = project->baseName();
-
-  //add other known project variables
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ), project->title(), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_path" ), QDir::toNativeSeparators( projectPath ), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_folder" ), QDir::toNativeSeparators( projectFolder ), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), projectFilename, true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_basename" ), projectBasename, true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_home" ), QDir::toNativeSeparators( project->homePath() ), true, true ) );
-  QgsCoordinateReferenceSystem projectCrs = project->crs();
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_ellipsoid" ), project->ellipsoid(), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_distance_units" ), QgsUnitTypes::toString( project->distanceUnits() ), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_area_units" ), QgsUnitTypes::toString( project->areaUnits() ), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "_project_transform_context" ), QVariant::fromValue<QgsCoordinateTransformContext>( project->transformContext() ), true, true ) );
-
-  // metadata
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_author" ), project->metadata().author(), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_abstract" ), project->metadata().abstract(), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_creation_date" ), project->metadata().creationDateTime(), true, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_identifier" ), project->metadata().identifier(), true, true ) );
-
-  // keywords
-  QVariantMap keywords;
-  QgsAbstractMetadataBase::KeywordMap metadataKeywords = project->metadata().keywords();
-  for ( auto it = metadataKeywords.constBegin(); it != metadataKeywords.constEnd(); ++it )
-  {
-    keywords.insert( it.key(), it.value() );
-  }
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_keywords" ), keywords, true, true ) );
-
-  scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( project ) );
-  return scope;
+  else
+    return project->createExpressionContextScope();
 }
 
 void QgsExpressionContextUtils::setProjectVariable( QgsProject *project, const QString &name, const QVariant &value )
