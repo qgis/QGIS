@@ -11505,13 +11505,13 @@ void QgisApp::new3DMapCanvas()
   // we can't go any further - invalid extent would break everything
   if ( fullExtent.isEmpty() || !fullExtent.isFinite() )
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Project extent is not valid." ) );
+    QMessageBox::warning( this, tr( "New 3D Map View" ), tr( "Project extent is not valid. Please switch on the visibility of a layer." ) );
     return;
   }
 
   if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "3D view currently does not support unprojected coordinate reference systems (CRS).\nPlease switch project's CRS to a projected CRS." ) );
+    QMessageBox::warning( this, tr( "New 3D Map View" ), tr( "3D view currently does not support unprojected coordinate reference systems (CRS).\nPlease switch project's CRS to a projected CRS." ) );
     return;
   }
 
