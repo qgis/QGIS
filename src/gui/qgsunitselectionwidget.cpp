@@ -159,7 +159,7 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   mMapUnitIdx = -1;
   if ( units.contains( QgsUnitTypes::RenderMillimeters ) )
   {
-    mUnitCombo->addItem( tr( "Millimeter" ), QgsUnitTypes::RenderMillimeters );
+    mUnitCombo->addItem( tr( "Millimeters" ), QgsUnitTypes::RenderMillimeters );
   }
   if ( units.contains( QgsUnitTypes::RenderPoints ) )
   {
