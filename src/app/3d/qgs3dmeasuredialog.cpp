@@ -234,9 +234,9 @@ void Qgs3DMeasureDialog::setupTableHeader()
 {
   // Set the table header to show displayed unit
   QStringList headers;
-  headers << tr( "Horisontal Distance [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) )
-          << tr( "Vertical Distance [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) )
-          << tr( "3D Distance [%1]" ).arg( QgsUnitTypes::toString( mDisplayedDistanceUnit ) );
+  headers << tr( "Horisontal Distance" )
+          << tr( "Vertical Distance" )
+          << tr( "3D Distance" );
   QTreeWidgetItem *headerItem = new QTreeWidgetItem( headers );
   headerItem->setTextAlignment( 0, Qt::AlignRight );
   headerItem->setTextAlignment( 1, Qt::AlignRight );
