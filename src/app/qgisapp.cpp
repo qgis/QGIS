@@ -11505,7 +11505,7 @@ void QgisApp::new3DMapCanvas()
   // we can't go any further - invalid extent would break everything
   if ( fullExtent.isEmpty() || !fullExtent.isFinite() )
   {
-    QMessageBox::warning( this, tr( "New 3D Map View" ), tr( "Project extent is not valid. Please switch on the visibility of a layer." ) );
+    QMessageBox::warning( this, tr( "New 3D Map View" ), tr( "Project extent is not valid. Please add or activate a layer to render." ) );
     return;
   }
 
