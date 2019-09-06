@@ -152,12 +152,23 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   bool haveGeom = true;
   if ( geomTypeXY->isChecked() )
   {
+    QString field;
     if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
     {
-      QString field = cmbXField->currentText();
+      field = cmbXField->currentText();
       url.addQueryItem( QStringLiteral( "xField" ), field );
       field = cmbYField->currentText();
       url.addQueryItem( QStringLiteral( "yField" ), field );
+    }
+    if ( !cmbZField->currentText().isEmpty() )
+    {
+      field = cmbZField->currentText();
+      url.addQueryItem( QStringLiteral( "zField" ), field );
+    }
+    if ( !cmbMField->currentText().isEmpty() )
+    {
+      field = cmbMField->currentText();
+      url.addQueryItem( QStringLiteral( "mField" ), field );
     }
   }
   else if ( geomTypeWKT->isChecked() )
@@ -407,11 +418,15 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   QString columnX = cmbXField->currentText();
   QString columnY = cmbYField->currentText();
+  QString columnZ = cmbZField->currentText();
+  QString columnM = cmbMField->currentText();
   QString columnWkt = cmbWktField->currentText();
 
   // clear the field lists
   cmbXField->clear();
   cmbYField->clear();
+  cmbZField->clear();
+  cmbMField->clear();
   cmbWktField->clear();
 
   // clear the sample text box
@@ -532,6 +547,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     if ( field.isEmpty() ) continue;
     cmbXField->addItem( field );
     cmbYField->addItem( field );
+    cmbZField->addItem( field );
+    cmbMField->addItem( field );
     cmbWktField->addItem( field );
     fieldNo++;
   }
@@ -541,6 +558,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   cmbWktField->setCurrentIndex( cmbWktField->findText( columnWkt ) );
   cmbXField->setCurrentIndex( cmbXField->findText( columnX ) );
   cmbYField->setCurrentIndex( cmbYField->findText( columnY ) );
+  cmbZField->setCurrentIndex( cmbYField->findText( columnZ ) );
+  cmbMField->setCurrentIndex( cmbYField->findText( columnM ) );
 
   // Now try setting optional X,Y fields - will only reset the fields if
   // not already set.

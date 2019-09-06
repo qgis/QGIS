@@ -43,6 +43,8 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
     int mYFieldIndex;
+    int mZFieldIndex;
+    int mMFieldIndex;
     int mWktFieldIndex;
     bool mWktHasPrefix;
     QgsWkbTypes::GeometryType mGeometryType;
