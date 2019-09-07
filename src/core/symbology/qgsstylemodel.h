@@ -130,6 +130,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QStringList mTextFormatNames;
     QStringList mLabelSettingsNames;
     QList< QSize > mAdditionalSizes;
+    mutable std::unique_ptr< QgsExpressionContext > mExpressionContext;
 
     mutable QHash< QString, QIcon > mSymbolIconCache;
     mutable QHash< QString, QIcon > mColorRampIconCache;
