@@ -277,6 +277,9 @@ static void proj_collecting_logger( void *user_data, int /*level*/, const char *
 
 static void proj_logger( void *, int level, const char *message )
 {
+#ifndef QGISDEBUG
+  Q_UNUSED( message )
+#endif
   if ( level == PJ_LOG_ERROR )
   {
     QgsDebugMsg( QString( message ) );

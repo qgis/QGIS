@@ -1453,8 +1453,10 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
 
   if ( !d->mPj )
   {
+#ifdef QGISDEBUG
     const int errNo = proj_context_errno( ctx );
     QgsDebugMsg( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
+#endif
     d->mIsValid = false;
   }
   else
@@ -2441,6 +2443,9 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 #if PROJ_VERSION_MAJOR>=6
 static void sync_db_proj_logger( void * /* user_data */, int level, const char *message )
 {
+#ifndef QGISDEBUG
+  Q_UNUSED( message )
+#endif
   if ( level == PJ_LOG_ERROR )
   {
     QgsDebugMsgLevel( QStringLiteral( "PROJ: %1" ).arg( message ), 2 );
