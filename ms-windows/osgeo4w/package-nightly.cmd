@@ -257,7 +257,7 @@ if errorlevel 1 (echo creation of registry template & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e '/^call py3_env.bat/acall gdal-dev-env.bat' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of desktop template failed & goto error)
 
-set batches=
+set batches=bin/%PACKAGENAME%.bat.tmpl
 for %%g IN (%GRASS_VERSIONS%) do (
 	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
 	for /F "delims=." %%i in ("!gv!") do set v=%%i
@@ -269,7 +269,6 @@ for %%g IN (%GRASS_VERSIONS%) do (
 
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of python wrapper template failed & goto error)
-
 
 touch exclude
 if exist ..\skipbuild (echo skip build & goto skipbuild)
