@@ -47,6 +47,7 @@ class translate(GdalAlgorithm):
     TARGET_CRS = 'TARGET_CRS'
     NODATA = 'NODATA'
     COPY_SUBDATASETS = 'COPY_SUBDATASETS'
+    SCALE = 'SCALE'
     OPTIONS = 'OPTIONS'
     EXTRA = 'EXTRA'
     DATA_TYPE = 'DATA_TYPE'
@@ -71,6 +72,9 @@ class translate(GdalAlgorithm):
                                                        optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.COPY_SUBDATASETS,
                                                         self.tr('Copy all subdatasets of this file to individual output files'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.SCALE,
+                                                        self.tr('Rescale the input pixels values'),
                                                         defaultValue=False))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
@@ -144,6 +148,9 @@ class translate(GdalAlgorithm):
 
         if self.parameterAsBoolean(parameters, self.COPY_SUBDATASETS, context):
             arguments.append('-sds')
+
+        if self.parameterAsBoolean(parameters, self.SCALE, context):
+            arguments.append('-scale')
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
         if data_type:
