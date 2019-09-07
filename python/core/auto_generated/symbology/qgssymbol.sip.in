@@ -272,7 +272,7 @@ layer.
 .. seealso:: :py:func:`setColor`
 %End
 
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0 );
 %Docstring
 Draws an icon of the symbol that occupies an area given by ``size`` using the specified ``painter``.
 
@@ -283,6 +283,7 @@ matches the settings from that context.
 :param size: size of the icon
 :param customContext: the context in which the rendering happens
 :param selected: set to ``True`` to render the symbol in a selected state
+:param expressionContext: optional custom expression context
 
 .. seealso:: :py:func:`exportImage`
 
