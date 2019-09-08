@@ -56,7 +56,7 @@ const QString QgsCrashReport::toHtml() const
     {
       reportData.append( QStringLiteral( "Stack trace could not be generated." ) );
     }
-    else if ( mStackTrace->symbolsLoaded )
+    else if ( !mStackTrace->symbolsLoaded )
     {
       reportData.append( QStringLiteral( "Stack trace could not be generated due to missing symbols." ) );
     }
