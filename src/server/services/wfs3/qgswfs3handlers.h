@@ -42,7 +42,7 @@ class QgsWfs3AbstractItemsHandler: public QgsServerOgcApiHandler
      */
     void checkLayerIsAccessible( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
-    QgsFeatureRequest filteredRequest( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+    QgsFeatureRequest filteredRequest( const QgsMapLayer *layer, const QgsServerApiContext &context ) const;
 };
 
 /**

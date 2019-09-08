@@ -202,7 +202,7 @@ void QgsWfs3AbstractItemsHandler::checkLayerIsAccessible( const QgsVectorLayer *
   }
 }
 
-QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const
+QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsMapLayer *layer, const QgsServerApiContext &context ) const
 {
   QgsFeatureRequest featureRequest;
   QgsExpressionContext expressionContext;
@@ -213,25 +213,26 @@ QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorL
   featureRequest.setExpressionContext( expressionContext );
 
   //is there alias info for this vector layer?
+  const QgsVectorLayer *vLayer = static_cast<const QgsVectorLayer *>( layer );
   QMap< int, QString > layerAliasInfo;
-  const QgsStringMap aliasMap = layer->attributeAliases();
+  const QgsStringMap aliasMap = vLayer->attributeAliases();
   for ( const auto &aliasKey : aliasMap.keys() )
   {
-    int attrIndex = layer->fields().lookupField( aliasKey );
+    int attrIndex = vLayer->fields().lookupField( aliasKey );
     if ( attrIndex != -1 )
     {
-      layerAliasInfo.insert( attrIndex, aliasIt.value() );
+      layerAliasInfo.insert( attrIndex, aliasMap.value( aliasKey ) );
     }
   }
 
-  QgsAttributeList attrIndexes = layer->attributeList();
+  QgsAttributeList attrIndexes = vLayer->attributeList();
 
   // Removed attributes
   //excluded attributes for this layer
-  const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
+  const QSet<QString> &layerExcludedAttributes = vLayer->excludeAttributesWfs();
   if ( !attrIndexes.isEmpty() && !layerExcludedAttributes.isEmpty() )
   {
-    const QgsFields &fields = layer->fields();
+    const QgsFields &fields = vLayer->fields();
     for ( const QString &excludedAttribute : layerExcludedAttributes )
     {
       int fieldNameIdx = fields.indexOf( excludedAttribute );
@@ -248,16 +249,16 @@ QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorL
   QgsAccessControl *accessControl = context.serverInterface()->accessControls();
   if ( accessControl )
   {
-    accessControl->filterFeatures( layer, featureRequest );
+    accessControl->filterFeatures( vLayer, featureRequest );
 
     QStringList attributes = QStringList();
     for ( int idx : attrIndexes )
     {
-      attributes.append( layer->fields().field( idx ).name() );
+      attributes.append( vLayer->fields().field( idx ).name() );
     }
     featureRequest.setSubsetOfAttributes(
-      accessControl->layerAttributes( layer, attributes ),
-      layer->fields() );
+      accessControl->layerAttributes( vLayer, attributes ),
+      vLayer->fields() );
   }
 #endif
 

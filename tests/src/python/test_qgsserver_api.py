@@ -419,7 +419,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 404) # Not found
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/layer_with_short_name/items?name=two')
         self.server.handleRequest(request, response, project)
-        self.assertEqual(response.statusCode(), 200) # Bad request
+        self.assertEqual(response.statusCode(), 200)
         self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_with_short_name_eq_two.json')
 
     def test_wfs3_field_filters_star(self):
