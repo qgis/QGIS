@@ -43,6 +43,7 @@ goto cmake_x86_64
 
 :cmake_x86
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin
+set DBGHLP_PATH=%PF86%\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x86
 set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
@@ -53,6 +54,7 @@ goto cmake
 
 :cmake_x86_64
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin\amd64
+set DBGHLP_PATH=%PF86%\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64
 set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
@@ -365,6 +367,11 @@ if not exist %PKGDIR%\python\PyQt5\uic\widget-plugins mkdir %PKGDIR%\python\PyQt
 move %PYTHONHOME%\Lib\site-packages\PyQt5\uic\widget-plugins\qgis_customwidgets.py %PKGDIR%\python\PyQt5\uic\widget-plugins
 if errorlevel 1 (echo move of customwidgets binding failed & goto error)
 
+for %%i in (dbghelp.dll symsrv.dll) do (
+	copy "%DBGHLP_PATH%\%%i" %OSGEO4W_ROOT%\apps\%PACKAGENAME%
+	if errorlevel 1 (echo %%i not found & goto error)
+)
+
 if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAGENAME%
 %TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
@@ -400,6 +407,8 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/resources/2to3migration.txt" ^
 	"apps/%PACKAGENAME%/resources/qgis_global_settings.ini" ^
 	"apps/%PACKAGENAME%/qgiscrashhandler.exe" ^
+	"apps/%PACKAGENAME%/dbghelp.dll" ^
+	"apps/%PACKAGENAME%/symsrv.dll" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
 	"bin/%PACKAGENAME%-designer.bat.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%.bat" ^
