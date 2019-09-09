@@ -98,7 +98,6 @@ void QgsGeoPackageRootItem::newConnection()
 
 QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
-  , mPath( path )
 {
   mToolTip = path;
   mCapabilities |= Collapse;
@@ -148,7 +147,7 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
 bool QgsGeoPackageCollectionItem::deleteRasterLayer( const QString &layerName, QString &errCause )
 {
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
-  QgsAbstractDatabaseProviderConnection *conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->findConnection( name() ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path(), QVariantMap() ) ) );
   if ( conn )
   {
     try
@@ -163,7 +162,7 @@ bool QgsGeoPackageCollectionItem::deleteRasterLayer( const QString &layerName, Q
   }
   else
   {
-    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( name() );
+    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( path() );
     return false;
   }
   return true;
@@ -172,7 +171,7 @@ bool QgsGeoPackageCollectionItem::deleteRasterLayer( const QString &layerName, Q
 bool QgsGeoPackageCollectionItem::deleteVectorLayer( const QString &layerName, QString &errCause )
 {
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
-  QgsAbstractDatabaseProviderConnection *conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->findConnection( name() ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path(), QVariantMap() ) ) );
   if ( conn )
   {
     try
@@ -187,7 +186,7 @@ bool QgsGeoPackageCollectionItem::deleteVectorLayer( const QString &layerName, Q
   }
   else
   {
-    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( name() );
+    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( path() );
     return false;
   }
   return true;
@@ -315,13 +314,14 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 
 bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey() ) };
-  QgsAbstractDatabaseProviderConnection *conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->findConnection( parent()->name() ) ) };
-  if ( conn )
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
+  QString tableName = name();
+  if ( conn->tableExists( QString(), tableName ) )
   {
     try
     {
-      conn->dropRasterTable( QString(), collection()->name() );
+      conn->dropRasterTable( QString(), tableName );
     }
     catch ( QgsProviderConnectionException &ex )
     {
@@ -331,7 +331,9 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
   }
   else
   {
-    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( collection()->name() );
+    errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
+               .arg( tableName )
+               .arg( collection()->path() );
     return false;
   }
   return true;
@@ -339,13 +341,14 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 
 bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 {
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey() ) };
-  QgsAbstractDatabaseProviderConnection *conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->findConnection( parent()->name() ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
+  QString tableName = name();
   if ( conn )
   {
     try
     {
-      conn->dropVectorTable( QString(), collection()->name() );
+      conn->dropVectorTable( QString(), tableName );
     }
     catch ( QgsProviderConnectionException &ex )
     {
@@ -355,7 +358,9 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
   }
   else
   {
-    errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( collection()->name() );
+    errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
+               .arg( tableName )
+               .arg( parent()->path() );
     return false;
   }
   return true;
