@@ -131,7 +131,6 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
   // no modification
   if ( !mGeometryModified )
   {
-    mLayer->destroyEditCommand();
     cancel();
     return;
   }
