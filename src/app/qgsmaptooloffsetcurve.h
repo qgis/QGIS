@@ -21,6 +21,7 @@
 #include "qgis_app.h"
 #include "ui_qgsoffsetuserinputwidget.h"
 #include "qgspointlocator.h"
+#include "qgsfeature.h"
 
 class QGridLayout;
 
@@ -101,6 +102,8 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
 
     //! Forces geometry copy (no modification of geometry in current layer)
     bool mCtrlHeldOnFirstClick = false;
+
+    QgsFeature mSourceFeature;
 
     double calculateOffset( const QgsPointXY &mapPoint );
 
