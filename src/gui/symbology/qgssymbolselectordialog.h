@@ -277,7 +277,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
      * \param embedded TRUE to embed in renderer properties dialog, FALSE otherwise
      */
     QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool embedded = false );
-    ~QgsSymbolSelectorDialog() override;
 
     //! Returns menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
