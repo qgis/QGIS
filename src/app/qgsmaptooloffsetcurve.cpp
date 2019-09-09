@@ -76,7 +76,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( ( match.hasEdge() || match.hasArea() ) && match.layer() )
     {
-      mLayer = match.layer();
+      mSourceLayer = match.layer();
       QgsFeature fet;
       if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
       {
@@ -90,12 +90,12 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         mModifiedFeature = fet.id();
         createUserInputWidget();
 
-        bool hasZ = QgsWkbTypes::hasZ( mLayer->wkbType() );
-        bool hasM = QgsWkbTypes::hasZ( mLayer->wkbType() );
+        bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
+        bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
         if ( hasZ || hasM )
         {
           emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." )
-                               .arg( mLayer->name(),
+                               .arg( mSourceLayer->name(),
                                      hasZ ? QStringLiteral( "Z" ) : QString(),
                                      hasZ && hasM ? QStringLiteral( "/" ) : QString(),
                                      hasM ? QStringLiteral( "M" ) : QString() )
@@ -120,7 +120,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers modifiers )
 {
-  if ( !mLayer || offset == 0.0 )
+  if ( !mSourceLayer || offset == 0.0 )
   {
     cancel();
     return;
@@ -317,12 +317,16 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
     return;
   }
 
-  mLayer->beginEditCommand( tr( "Offset curve" ) );
+  QgsVectorLayer *destLayer = qobject_cast< QgsVectorLayer * >( canvas()->currentLayer() );
+  if ( !destLayer )
+    return;
+
+  destLayer->beginEditCommand( tr( "Offset curve" ) );
 
   bool editOk;
   if ( !mCtrlHeldOnFirstClick && !( modifiers & Qt::ControlModifier ) )
   {
-    editOk = mLayer->changeGeometry( mModifiedFeature, mModifiedGeometry );
+    editOk = destLayer->changeGeometry( mModifiedFeature, mModifiedGeometry );
   }
   else
   {
@@ -342,34 +346,34 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
   if ( editOk )
   {
-    mLayer->endEditCommand();
+    destLayer->endEditCommand();
   }
   else
   {
-    mLayer->destroyEditCommand();
+    destLayer->destroyEditCommand();
     emit messageEmitted( QStringLiteral( "Could not apply offset" ), Qgis::Critical );
   }
 
   deleteRubberBandAndGeometry();
   deleteUserInputWidget();
-  mLayer->triggerRepaint();
-  mLayer = nullptr;
+  destLayer->triggerRepaint();
+  mSourceLayer = nullptr;
 }
 
 void QgsMapToolOffsetCurve::cancel()
 {
   deleteUserInputWidget();
   deleteRubberBandAndGeometry();
-  mLayer = nullptr;
+  mSourceLayer = nullptr;
 }
 
 double QgsMapToolOffsetCurve::calculateOffset( const QgsPointXY &mapPoint )
 {
   double offset = 0.0;
-  if ( mLayer )
+  if ( mSourceLayer )
   {
     //get offset from current position rectangular to feature
-    QgsPointXY layerCoords = toLayerCoordinates( mLayer, mapPoint );
+    QgsPointXY layerCoords = toLayerCoordinates( mSourceLayer, mapPoint );
 
     QgsPointXY minDistPoint;
     int beforeVertex;
@@ -572,7 +576,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
     return;
   }
 
-  if ( !mLayer )
+  if ( !mSourceLayer )
   {
     return;
   }
@@ -598,7 +602,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
   {
     deleteRubberBandAndGeometry();
     deleteUserInputWidget();
-    mLayer = nullptr;
+    mSourceLayer = nullptr;
     mGeometryModified = false;
     emit messageDiscarded();
     emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), Qgis::Critical );
@@ -606,7 +610,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
   else
   {
     mModifiedGeometry = offsetGeom;
-    mRubberBand->setToGeometry( mModifiedGeometry, mLayer );
+    mRubberBand->setToGeometry( mModifiedGeometry, mSourceLayer );
   }
 }
 
