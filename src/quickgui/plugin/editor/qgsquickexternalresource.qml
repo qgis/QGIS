@@ -185,14 +185,14 @@ Item {
         }
         else if (image.currentValue && QgsQuick.Utils.fileExists(absolutePath)) {
           fieldItem.state = "valid"
-          return absolutePath
+          return "file://" + absolutePath
         }
         else if (!image.currentValue) {
           fieldItem.state = "notSet"
           return ""
         }
         fieldItem.state = "notAvailable"
-        return absolutePath
+        return "file://" + absolutePath
       }
     }
   }
