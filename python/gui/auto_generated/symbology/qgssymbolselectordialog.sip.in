@@ -203,7 +203,6 @@ Constructor for QgsSymbolSelectorDialog.
 :param parent: Parent widget
 :param embedded: True to embed in renderer properties dialog, false otherwise
 %End
-    ~QgsSymbolSelectorDialog();
 
     QMenu *advancedMenu();
 %Docstring
