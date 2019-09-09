@@ -95,10 +95,10 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         if ( hasZ || hasM )
         {
           emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." )
-                               .arg( mLayer->name() )
-                               .arg( hasZ ? "Z" : "" )
-                               .arg( hasZ && hasM ? "/" : "" )
-                               .arg( hasM ? "M" : "" )
+                               .arg( mLayer->name(),
+                                     hasZ ? QStringLiteral( "Z" ) : QString(),
+                                     hasZ && hasM ? QStringLiteral( "/" ) : QString(),
+                                     hasM ? QStringLiteral( "M" ) : QString() )
                                , Qgis::Warning );
         }
       }
@@ -366,7 +366,7 @@ void QgsMapToolOffsetCurve::cancel()
   mLayer = nullptr;
 }
 
-double QgsMapToolOffsetCurve::calculateOffset( QgsPointXY mapPoint )
+double QgsMapToolOffsetCurve::calculateOffset( const QgsPointXY &mapPoint )
 {
   double offset = 0.0;
   if ( mLayer )
@@ -644,10 +644,10 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mOffsetSpinBox->installEventFilter( this );
   connect( mOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsOffsetUserWidget::offsetChanged );
 
-  connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettings().setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), ( QgsGeometry::JoinStyle )mJoinStyleComboBox->currentData().toInt() ); emit offsetConfigChanged(); } );
+  connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettings().setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), static_cast< QgsGeometry::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
   connect( mQuadrantSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, [ = ]( const int quadSegments ) { QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), quadSegments ); emit offsetConfigChanged(); } );
   connect( mMiterLimitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double miterLimit ) { QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), miterLimit ); emit offsetConfigChanged(); } );
-  connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettings().setEnumValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), ( QgsGeometry::EndCapStyle ) mCapStyleComboBox->currentData().toInt() ); emit offsetConfigChanged(); } );
+  connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettings().setEnumValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), static_cast< QgsGeometry::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
 
   bool showAdvanced = s.value( QStringLiteral( "/qgis/digitizing/offset_show_advanced" ), false ).toBool();
   mShowAdvancedButton->setChecked( showAdvanced );
