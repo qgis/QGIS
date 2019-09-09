@@ -72,10 +72,19 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     deleteRubberBandAndGeometry();
     mGeometryModified = false;
 
-    QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(),
-                                   QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
+    QgsPointLocator::Match match;
 
-    if ( ( match.hasEdge() || match.hasArea() ) && match.layer() )
+    if ( e->modifiers() & Qt::ControlModifier )
+    {
+      match = mCanvas->snappingUtils()->snapToMap( e->pos(), nullptr );
+    }
+    else
+    {
+      match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(),
+              QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
+    }
+
+    if ( match.layer() )
     {
       mSourceLayer = match.layer();
       QgsFeature fet;
@@ -418,8 +427,16 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mOriginalGeometry.isNull() || !mRubberBand )
   {
-    QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(),
-                                   QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
+    QgsPointLocator::Match match;
+    if ( e->modifiers() & Qt::ControlModifier )
+    {
+      match = mCanvas->snappingUtils()->snapToMap( e->pos(), nullptr );
+    }
+    else
+    {
+      match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(),
+              QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
+    }
     mSnapIndicator->setMatch( match );
     return;
   }
@@ -468,10 +485,6 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
   QgsWkbTypes::Type geomType = geom.wkbType();
   if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry )
   {
-    if ( !match.hasEdge() )
-    {
-      return;
-    }
     if ( !geom.isMultipart() )
     {
       mManipulatedGeometry = geom;
@@ -489,7 +502,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
   }
   else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry )
   {
-    if ( !match.hasEdge() && match.hasArea() )
+    if ( !match.hasEdge() && !match.hasVertex() && match.hasArea() )
     {
       if ( !geom.isMultipart() )
       {
@@ -512,7 +525,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
         }
       }
     }
-    else if ( match.hasEdge() )
+    else if ( match.hasEdge() || match.hasVertex() )
     {
       int vertex = match.vertexIndex();
       QgsVertexId vertexId;
