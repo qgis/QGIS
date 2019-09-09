@@ -108,7 +108,6 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
       cancel();
-      notifyNotVectorLayer();
     }
   }
   else
@@ -124,7 +123,6 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
   if ( !mLayer || offset == 0.0 )
   {
     cancel();
-    notifyNotVectorLayer();
     return;
   }
 
