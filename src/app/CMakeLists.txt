@@ -51,6 +51,7 @@ SET(QGIS_APP_SRCS
   qgssourcefieldsproperties.cpp
   qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
+  qgsinstallgridshiftdialog.cpp
   qgsfeatureaction.cpp
   qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
@@ -297,6 +298,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsgeometryvalidationmodel.h
   qgshtmlannotationdialog.h
   qgsidentifyresultsdialog.h
+  qgsinstallgridshiftdialog.h
   qgslabelengineconfigdialog.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
