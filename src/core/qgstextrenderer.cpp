@@ -805,6 +805,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
     setPaintEffect( nullptr );
 }
 
+
 void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   QDomElement backgroundElem = elem.firstChildElement( QStringLiteral( "background" ) );
@@ -1924,14 +1925,6 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   else
   {
     mShadowSettings.readXml( textStyleElem );
-  }
-  if ( textStyleElem.firstChildElement( QStringLiteral( "background" ) ).isNull() )
-  {
-    mBackgroundSettings.readXml( elem, context );
-  }
-  else
-  {
-    mBackgroundSettings.readXml( textStyleElem, context );
   }
 
   QDomElement ddElem = textStyleElem.firstChildElement( QStringLiteral( "dd_properties" ) );

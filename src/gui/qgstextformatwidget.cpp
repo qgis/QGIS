@@ -471,6 +471,14 @@ void QgsTextFormatWidget::initWidget()
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
+  connect( mBufferDrawChkBx, &QCheckBox::stateChanged, [ = ]( int state )
+  {
+    mBufferFrame->setEnabled( state == Qt::Checked );
+  } );
+  connect( mShapeDrawChkBx, &QCheckBox::stateChanged, [ = ]( int state )
+  {
+    mShapeFrame->setEnabled( state == Qt::Checked );
+  } );
 
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
@@ -791,6 +799,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
 
   // buffer
   mBufferDrawChkBx->setChecked( buffer.enabled() );
+  mBufferFrame->setEnabled( buffer.enabled() );
   spinBufferSize->setValue( buffer.size() );
   mBufferUnitWidget->setUnit( buffer.sizeUnit() );
   mBufferUnitWidget->setMapUnitScale( buffer.sizeMapUnitScale() );
@@ -843,6 +852,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
 
   // shape background
   mShapeDrawChkBx->setChecked( background.enabled() );
+  mShapeFrame->setEnabled( background.enabled() );
   mShapeTypeCmbBx->blockSignals( true );
   mShapeTypeCmbBx->setCurrentIndex( mShapeTypeCmbBx->findData( background.type() ) );
   mShapeTypeCmbBx->blockSignals( false );
