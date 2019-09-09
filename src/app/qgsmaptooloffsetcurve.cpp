@@ -392,6 +392,9 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mOriginalGeometry.isNull() || !mRubberBand )
   {
+    QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(),
+                                   QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
+    mSnapIndicator->setMatch( match );
     return;
   }
 
