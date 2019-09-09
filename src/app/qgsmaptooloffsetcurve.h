@@ -102,7 +102,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Forces geometry copy (no modification of geometry in current layer)
     bool mCtrlHeldOnFirstClick = false;
 
-    double calculateOffset( QgsPointXY mapPoint );
+    double calculateOffset( const QgsPointXY &mapPoint );
 
     void createUserInputWidget();
     void deleteUserInputWidget();
