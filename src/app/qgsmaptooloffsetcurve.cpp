@@ -31,6 +31,7 @@
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
 #include "qgslogger.h"
+#include "qgsvectorlayerutils.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
@@ -80,6 +81,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature fet;
       if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
       {
+        mSourceFeature = fet;
         mCtrlHeldOnFirstClick = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
         prepareGeometry( match, fet );
         mRubberBand = createRubberBand();
@@ -323,25 +325,45 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
   destLayer->beginEditCommand( tr( "Offset curve" ) );
 
-  bool editOk;
+  bool editOk = true;
   if ( !mCtrlHeldOnFirstClick && !( modifiers & Qt::ControlModifier ) )
   {
     editOk = destLayer->changeGeometry( mModifiedFeature, mModifiedGeometry );
   }
   else
   {
-    QgsFeature f;
-    f.setGeometry( mModifiedGeometry );
-
-    //add empty values for all fields (allows inserting attribute values via the feature form in the same session)
-    QgsAttributes attrs( mLayer->fields().count() );
-    const QgsFields &fields = mLayer->fields();
-    for ( int idx = 0; idx < fields.count(); ++idx )
+    QgsCoordinateTransform ct( mSourceLayer->crs(), destLayer->crs(), QgsProject::instance() );
+    try
     {
-      attrs[idx] = QVariant();
+      QgsGeometry g = mModifiedGeometry;
+      g.transform( ct );
+
+      QgsFeature f = mSourceFeature;
+      f.setGeometry( g );
+
+      // auto convert source feature attributes to destination attributes, make geometry compatible
+      // note that this may result in multiple features, e.g. if inserting multipart feature into single-part layer
+      QgsFeatureList features = QgsVectorLayerUtils::makeFeatureCompatible( f, destLayer );
+      for ( const QgsFeature &feature : features )
+      {
+        QgsAttributeMap attrs;
+        for ( int idx = 0; idx < destLayer->fields().count(); ++idx )
+        {
+          if ( !feature.attribute( idx ).isNull() )
+            attrs[idx] = feature.attribute( idx );
+        }
+
+        QgsExpressionContext context = destLayer->createExpressionContext();
+        // use createFeature to ensure default values and provider side constraints are respected
+        f = QgsVectorLayerUtils::createFeature( destLayer, feature.geometry(), attrs, &context );
+
+        editOk = editOk && destLayer->addFeature( f );
+      }
     }
-    f.setAttributes( attrs );
-    editOk = mLayer->addFeature( f );
+    catch ( QgsCsException & )
+    {
+      editOk = false;
+    }
   }
 
   if ( editOk )
