@@ -155,11 +155,10 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
   QVector<QgsDataItem *> layers;
   if ( capabilities.errorCode() == QgsWfsCapabilities::NoError )
   {
-    QgsWfsCapabilities::Capabilities caps = capabilities.capabilities();
-    Q_FOREACH ( const QgsWfsCapabilities::FeatureType &featureType, caps.featureTypes )
+    const auto featureTypes = capabilities.capabilities().featureTypes;
+    for ( const QgsWfsCapabilities::FeatureType &featureType : featureTypes )
     {
-      //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
-      QgsWfsLayerItem *layer = new QgsWfsLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
+      QgsWfsLayerItem *layer = new QgsWfsLayerItem( this, mName, uri, featureType.name, featureType.title, !featureType.crslist.isEmpty() ? featureType.crslist.first() : QString() );
       layers.append( layer );
     }
   }
