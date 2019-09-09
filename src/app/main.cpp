@@ -105,6 +105,7 @@ typedef SInt32 SRefCon;
 #include "qgsversionmigration.h"
 #include "qgsfirstrundialog.h"
 #include "qgsproxystyle.h"
+#include "qgsmessagebar.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -399,7 +400,16 @@ void myMessageOutput( QtMsgType type, const char *msg )
       {
         // TODO: Verify this code in action.
         dumpBacktrace( 20 );
-        QgsMessageLog::logMessage( msg, QStringLiteral( "Qt" ) );
+
+        // also be super obnoxious -- we DON'T want to allow these errors to be ignored!!
+        if ( QgisApp::instance() && QgisApp::instance()->thread() == QThread::currentThread() )
+        {
+          QgisApp::instance()->messageBar()->pushCritical( QStringLiteral( "Qt" ), msg );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( msg, QStringLiteral( "Qt" ) );
+        }
       }
 #endif
 
