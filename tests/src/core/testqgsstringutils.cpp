@@ -204,6 +204,7 @@ void TestQgsStringUtils::camelCase()
 void TestQgsStringUtils::htmlToMarkdown()
 {
   QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b> <a href=\"http://qgis.org\">!</a>" ) ), QString( "**Visit** [!](http://qgis.org)" ) );
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b><br><a href='http://qgis.org'>QGIS</a>" ) ), QString( "**Visit**\n[QGIS](http://qgis.org)" ) );
 }
 
 void TestQgsStringUtils::ampersandEncode_data()
