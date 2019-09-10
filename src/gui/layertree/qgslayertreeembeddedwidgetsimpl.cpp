@@ -32,7 +32,7 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   : mLayer( layer )
 {
   setAutoFillBackground( true ); // override the content from model
-  QLabel *l = new QLabel( QStringLiteral( "Opacity" ), this );
+  QLabel *l = new QLabel( tr( "Opacity" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 1000 );
   int sliderW = static_cast< int >( QFontMetricsF( font() ).width( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
