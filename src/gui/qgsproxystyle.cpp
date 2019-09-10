@@ -64,12 +64,16 @@ QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &p
   {
     case QIcon::Disabled:
     {
-      // override disabled icon style, with something which works better across different light/dark themes.
-      // the default Qt style here only works nicely for light themes.
-      QImage im = pixmap.toImage().convertToFormat( QImage::Format_ARGB32 );
-      QgsImageOperation::adjustHueSaturation( im, 0.2 );
-      QgsImageOperation::multiplyOpacity( im, 0.3 );
-      return QPixmap::fromImage( im );
+      if ( !pixmap.isNull() )
+      {
+        // override disabled icon style, with something which works better across different light/dark themes.
+        // the default Qt style here only works nicely for light themes.
+        QImage im = pixmap.toImage().convertToFormat( QImage::Format_ARGB32 );
+        QgsImageOperation::adjustHueSaturation( im, 0.2 );
+        QgsImageOperation::multiplyOpacity( im, 0.3 );
+        return QPixmap::fromImage( im );
+      }
+      break;
     }
 
     case QIcon::Normal:
