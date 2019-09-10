@@ -1640,13 +1640,27 @@ void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
   mBtnStyle->setVisible( ! isMetadataPanel );
   mBtnMetadata->setVisible( isMetadataPanel );
 
-  if ( index != mOptStackedWidget->indexOf( mOptsPage_Information ) || mMetadataFilled )
-    return;
+  if ( index == mOptStackedWidget->indexOf( mOptsPage_Information ) && ! mMetadataFilled )
+  {
+    //set the metadata contents (which can be expensive)
+    teMetadataViewer->clear();
+    teMetadataViewer->setHtml( htmlMetadata() );
+    mMetadataFilled = true;
+  }
 
-  //set the metadata contents (which can be expensive)
-  teMetadataViewer->clear();
-  teMetadataViewer->setHtml( htmlMetadata() );
-  mMetadataFilled = true;
+  // Adjust size (GH issue #31449)
+  // make the stacked widget size to the current page only
+  for ( int i = 0; i < mOptStackedWidget->count(); ++i )
+  {
+    // determine the vertical size policy
+    QSizePolicy::Policy policy = QSizePolicy::Ignored;
+    if ( i == index )
+      policy = QSizePolicy::MinimumExpanding;
+
+    // update the size policy
+    mOptStackedWidget->widget( i )->setSizePolicy( policy, policy );
+  }
+  mOptStackedWidget->adjustSize();
 }
 
 void QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled( bool checked )
