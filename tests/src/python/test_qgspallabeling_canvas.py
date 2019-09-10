@@ -51,8 +51,6 @@ class TestCanvasBase(TestQgsPalLabeling):
         TestQgsPalLabeling.tearDownClass()
         cls.removeMapLayer(cls.layer)
         cls.layer = None
-        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
-        QThreadPool.globalInstance().waitForDone()
 
     def setUp(self):
         """Run before each test."""
