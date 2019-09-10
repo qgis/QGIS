@@ -2730,7 +2730,7 @@ Acts on the currently active layer only.</string>
   </action>
   <action name="mActionReportaBug">
    <property name="text">
-    <string>Report an issue</string>
+    <string>Report an Issue</string>
    </property>
   </action>
   <action name="mActionDiagramProperties">
