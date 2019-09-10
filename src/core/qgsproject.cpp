@@ -1186,7 +1186,6 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
     // Shows a warning when an old project file is read.
     emit oldProjectVersionWarning( fileVersion.text() );
-    QgsDebugMsg( QStringLiteral( "Emitting oldProjectVersionWarning(oldVersion)." ) );
 
     projectFile.updateRevision( thisVersion );
   }
@@ -1205,7 +1204,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   QgsDebugMsg( QString::number( mProperties.count() ) + " properties read" );
 
+#if 0
   dump_( mProperties );
+#endif
 
   // get older style project title
   QString oldTitle;
@@ -2000,8 +2001,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
   mLabelingEngineSettings->writeSettingsToProject( this );
 
   // now add the optional extra properties
-
+#if 0
   dump_( mProperties );
+#endif
 
   QgsDebugMsg( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ) );
 
