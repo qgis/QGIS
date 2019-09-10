@@ -40,10 +40,6 @@ class TestQgsMapRenderer(unittest.TestCase):
     def setUp(self):
         pass
 
-    def tearDown(self):
-        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
-        QThreadPool.globalInstance().waitForDone()
-
     def checkRendererUseCachedLabels(self, job_type):
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
