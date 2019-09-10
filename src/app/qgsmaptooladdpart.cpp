@@ -198,7 +198,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       bool topologicalEditing = QgsProject::instance()->topologicalEditing();
       if ( topologicalEditing )
       {
-        addTopologicalPoints( points() );
+        addTopologicalPoints( pointsZM() );
       }
 
       vlayer->endEditCommand();

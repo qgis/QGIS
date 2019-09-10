@@ -89,7 +89,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
 
-    QgsPointSequence pointList = points();
+    QgsPointSequence pointList = pointsZM();
 
     QgsGeometry::OperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
 

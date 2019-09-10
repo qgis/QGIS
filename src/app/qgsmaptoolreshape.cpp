@@ -88,8 +88,8 @@ bool QgsMapToolReshape::isBindingLine( QgsVectorLayer *vlayer, const QgsRectangl
 
   bool begin = false;
   bool end = false;
-  const QgsPointXY beginPoint = points().first();
-  const QgsPointXY endPoint = points().last();
+  const QgsPointXY beginPoint = pointsZM().first();
+  const QgsPointXY endPoint = pointsZM().last();
 
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setNoAttributes() );
   QgsFeature f;
@@ -114,11 +114,11 @@ bool QgsMapToolReshape::isBindingLine( QgsVectorLayer *vlayer, const QgsRectangl
 
 void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 {
-  QgsPointXY firstPoint = points().at( 0 );
+  QgsPointXY firstPoint = pointsZM().at( 0 );
   QgsRectangle bbox( firstPoint.x(), firstPoint.y(), firstPoint.x(), firstPoint.y() );
   for ( int i = 1; i < size(); ++i )
   {
-    bbox.combineExtentWith( points().at( i ).x(), points().at( i ).y() );
+    bbox.combineExtentWith( pointsZM().at( i ).x(), pointsZM().at( i ).y() );
   }
 
 
