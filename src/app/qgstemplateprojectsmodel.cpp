@@ -39,12 +39,10 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   for ( const QString &templatePath : paths )
   {
     const QString path = templatePath + QDir::separator() + QStringLiteral( "project_templates" );
-    scanDirectory( path );
-    mFileSystemWatcher.addPath( path );
+    addTemplateDirectory( path );
   }
 
-  scanDirectory( templateDirName );
-  mFileSystemWatcher.addPath( templateDirName );
+  addTemplateDirectory( templateDirName );
 
   connect( &mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsTemplateProjectsModel::scanDirectory );
 
@@ -75,6 +73,15 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   emptyProjectItem->setData( previewImage.pixmap(), Qt::DecorationRole );
 
   appendRow( emptyProjectItem );
+}
+
+void QgsTemplateProjectsModel::addTemplateDirectory( const QString &path )
+{
+  if ( QDir().exists( path ) )
+  {
+    scanDirectory( path );
+    mFileSystemWatcher.addPath( path );
+  }
 }
 
 void QgsTemplateProjectsModel::scanDirectory( const QString &path )
