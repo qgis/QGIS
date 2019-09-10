@@ -24,7 +24,7 @@ QgsClassificationQuantile::QgsClassificationQuantile()
 
 QString QgsClassificationQuantile::name() const
 {
-  return QObject::tr( "Equal Count (Quantile))" );
+  return QObject::tr( "Equal Count (Quantile)" );
 }
 
 QString QgsClassificationQuantile::id() const
