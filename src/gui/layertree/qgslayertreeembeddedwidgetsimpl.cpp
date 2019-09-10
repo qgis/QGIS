@@ -31,7 +31,7 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   : mLayer( layer )
 {
   setAutoFillBackground( true ); // override the content from model
-  QLabel *l = new QLabel( QStringLiteral( "Opacity" ), this );
+  QLabel *l = new QLabel( tr( "Opacity" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 1000 );
   QHBoxLayout *lay = new QHBoxLayout();
