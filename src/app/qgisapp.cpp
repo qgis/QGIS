@@ -4601,7 +4601,7 @@ void QgisApp::sponsors()
 {
   QgsSettings settings;
   QString qgisSponsorsUrl = settings.value( QStringLiteral( "qgis/qgisSponsorsUrl" ),
-                            tr( "http://qgis.org/en/site/about/sponsorship.html" ) ).toString();
+                            tr( "https://qgis.org/en/site/about/sustaining_members.html" ) ).toString();
   openURL( qgisSponsorsUrl, false );
 }
 

@@ -269,13 +269,14 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   else if ( mProvider == QLatin1String( "gdal" ) && mPyramids )
   {
     message = tr( "For details on pyramids options please see the following pages" );
-    message += QLatin1String( "\n\nhttp://www.gdal.org/gdaladdo.html\n\nhttp://www.gdal.org/frmt_gtiff.html" );
+    message += QLatin1String( "\n\nhttps://gdal.org/programs/gdaladdo.html\n\nhttps://gdal.org/drivers/raster/gtiff.html" );
   }
   else
     message = tr( "No help available" );
 
   // show simple non-modal dialog - should we make the basic xml prettier?
   QgsDialog *dlg = new QgsDialog( this );
+  dlg->setWindowTitle( tr( "Create Options for %1" ).arg( mFormat ) );
   QTextEdit *textEdit = new QTextEdit( dlg );
   textEdit->setReadOnly( true );
   // message = tr( "Create Options:\n\n%1" ).arg( message );
