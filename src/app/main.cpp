@@ -397,7 +397,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
       // Print all warnings except setNamedColor.
       // Only seems to happen on windows
       if ( 0 != strncmp( msg, "QColor::setNamedColor: Unknown color name 'param", 48 )
-           && 0 != strncmp( msg, "Logged warning", 14 ))
+           && 0 != strncmp( msg, "Logged warning", 14 ) )
       {
         // TODO: Verify this code in action.
         dumpBacktrace( 20 );
