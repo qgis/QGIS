@@ -19,6 +19,7 @@
 #define QGS_WFS3_HANDLERS_H
 
 #include "qgsserverogcapihandler.h"
+#include "qgsfields.h"
 
 class QgsFeatureRequest;
 class QgsServerOgcApi;
@@ -42,7 +43,22 @@ class QgsWfs3AbstractItemsHandler: public QgsServerOgcApiHandler
      */
     void checkLayerIsAccessible( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
-    QgsFeatureRequest filteredRequest( const QgsMapLayer *layer, const QgsServerApiContext &context ) const;
+    /**
+     * Creates a filtered QgsFeatureRequest containing only fields published for WMS and plugin filters applied.
+     * \param layer the vector layer
+     * \param context the server api context
+     * \return QgsFeatureRequest with filters applied
+     */
+    QgsFeatureRequest filteredRequest( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns a filtered list of fields containing only fields published for WMS and plugin filters applied.
+     * @param layer the vector layer
+     * @param context the server api context
+     * @return QgsFields list with filters applied
+     */
+    QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+
 };
 
 /**
@@ -224,7 +240,7 @@ class QgsWfs3CollectionsItemsHandler: public QgsWfs3AbstractItemsHandler
   private:
 
     // Retrieve the fields filter parameters
-    const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer ) const;
+    const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer,  const QgsServerApiContext &context ) const;
 };
 
 

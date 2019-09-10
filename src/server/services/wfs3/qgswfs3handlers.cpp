@@ -33,6 +33,7 @@
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsfilterrestorer.h"
+#include "qgsaccesscontrol.h"
 #endif
 
 #include <QMimeDatabase>
@@ -202,47 +203,15 @@ void QgsWfs3AbstractItemsHandler::checkLayerIsAccessible( const QgsVectorLayer *
   }
 }
 
-QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsMapLayer *layer, const QgsServerApiContext &context ) const
+QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorLayer *vLayer, const QgsServerApiContext &context ) const
 {
   QgsFeatureRequest featureRequest;
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
                     << QgsExpressionContextUtils::projectScope( context.project() )
-                    << QgsExpressionContextUtils::layerScope( layer );
+                    << QgsExpressionContextUtils::layerScope( vLayer );
 
   featureRequest.setExpressionContext( expressionContext );
-
-  //is there alias info for this vector layer?
-  const QgsVectorLayer *vLayer = static_cast<const QgsVectorLayer *>( layer );
-  QMap< int, QString > layerAliasInfo;
-  const QgsStringMap aliasMap = vLayer->attributeAliases();
-  for ( const auto &aliasKey : aliasMap.keys() )
-  {
-    int attrIndex = vLayer->fields().lookupField( aliasKey );
-    if ( attrIndex != -1 )
-    {
-      layerAliasInfo.insert( attrIndex, aliasMap.value( aliasKey ) );
-    }
-  }
-
-  QgsAttributeList attrIndexes = vLayer->attributeList();
-
-  // Removed attributes
-  //excluded attributes for this layer
-  const QSet<QString> &layerExcludedAttributes = vLayer->excludeAttributesWfs();
-  if ( !attrIndexes.isEmpty() && !layerExcludedAttributes.isEmpty() )
-  {
-    const QgsFields &fields = vLayer->fields();
-    for ( const QString &excludedAttribute : layerExcludedAttributes )
-    {
-      int fieldNameIdx = fields.indexOf( excludedAttribute );
-      if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
-      {
-        attrIndexes.removeOne( fieldNameIdx );
-      }
-    }
-  }
-  featureRequest.setSubsetOfAttributes( attrIndexes );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   // Python plugins can make further modifications to the allowed attributes
@@ -250,19 +219,53 @@ QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsMapLaye
   if ( accessControl )
   {
     accessControl->filterFeatures( vLayer, featureRequest );
-
-    QStringList attributes = QStringList();
-    for ( int idx : attrIndexes )
-    {
-      attributes.append( vLayer->fields().field( idx ).name() );
-    }
-    featureRequest.setSubsetOfAttributes(
-      accessControl->layerAttributes( vLayer, attributes ),
-      vLayer->fields() );
   }
 #endif
 
+  QSet<QString> publishedAttrs;
+  const QgsFields constFields { publishedFields( vLayer, context ) };
+  for ( const QgsField &f : constFields )
+  {
+    publishedAttrs.insert( f.name() );
+  }
+  featureRequest.setSubsetOfAttributes( publishedAttrs, vLayer->fields() );
   return featureRequest;
+}
+
+QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vLayer, const QgsServerApiContext &context ) const
+{
+
+  QStringList publishedAttributes = QStringList();
+  // Removed attributes
+  // WFS excluded attributes for this layer
+  const QSet<QString> &layerExcludedAttributes = vLayer->excludeAttributesWfs();
+  const QgsFields &fields = vLayer->fields();
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    if ( ! layerExcludedAttributes.contains( fields.at( i ).name() ) )
+    {
+      publishedAttributes.push_back( fields.at( i ).name() );
+    }
+  }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  // Python plugins can make further modifications to the allowed attributes
+  QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+  if ( accessControl )
+  {
+    publishedAttributes = accessControl->layerAttributes( vLayer, publishedAttributes );
+  }
+#endif
+
+  QgsFields publishedFields;
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    if ( publishedAttributes.contains( fields.at( i ).name() ) )
+    {
+      publishedFields.append( fields.at( i ) );
+    }
+  }
+  return publishedFields;
 }
 
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
@@ -765,7 +768,8 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
       } );
       offset.setDescription( QStringLiteral( "Offset for features to retrieve [0-%1]" ).arg( mapLayer->featureCount( ) ) );
       offsetValidatorSet = true;
-      for ( const auto &p : fieldParameters( mapLayer ) )
+      const QList<QgsServerQueryStringParameter> constFieldParameters { fieldParameters( mapLayer, context ) };
+      for ( const auto &p : constFieldParameters )
       {
         params.push_back( p );
       }
@@ -845,7 +849,8 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
       }
     };
 
-    for ( const auto &p : fieldParameters( mapLayer ) )
+    const QList<QgsServerQueryStringParameter> constFieldParameters { fieldParameters( mapLayer, context ) };
+    for ( const auto &p : constFieldParameters )
     {
       const std::string name { p.name().toStdString() };
       parameters.push_back( p.data() );
@@ -899,14 +904,15 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
   return data;
 }
 
-const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::fieldParameters( const QgsVectorLayer *mapLayer ) const
+const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::fieldParameters( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
 {
   QList<QgsServerQueryStringParameter> params;
   if ( mapLayer )
   {
-    const QgsFields constFields { QgsServerApiUtils::publishedFields( mapLayer ) };
+    const QgsFields constFields { publishedFields( mapLayer, context ) };
     for ( const auto &f : constFields )
     {
+      const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
       QgsServerQueryStringParameter::Type t;
       switch ( f.type() )
       {
@@ -922,8 +928,8 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
           t = QgsServerQueryStringParameter::Type::String;
           break;
       }
-      QgsServerQueryStringParameter fieldParam { f.name(), false,
-          t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( f.name() )
+      QgsServerQueryStringParameter fieldParam { fName, false,
+          t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( fName )
           .arg( QgsServerQueryStringParameter::typeName( t ) ) };
       params.push_back( fieldParam );
     }
@@ -987,10 +993,11 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
     // Attribute filters
     QgsStringMap attrFilters;
-    const QgsFields constField { QgsServerApiUtils::publishedFields( mapLayer ) };
-    for ( const QgsField &f : constField )
+    const QgsFields constFields { publishedFields( mapLayer, context ) };
+    for ( const QgsField &f : constFields )
     {
-      const QString val = params.value( f.name() ).toString() ;
+      const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
+      const QString val = params.value( fName ).toString() ;
       if ( ! val.isEmpty() )
       {
         QString sanitized { QgsServerApiUtils::sanitizedFieldValue( val ) };
@@ -998,7 +1005,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         {
           throw QgsServerApiBadRequestException( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name() ).arg( val ) );
         }
-        attrFilters[f.name()] = sanitized;
+        attrFilters[fName] = sanitized;
       }
     }
 
@@ -1018,18 +1025,22 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     }
 
     // Inputs are valid, process request
-    QgsFeatureRequest req;
+    QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
     if ( ! filterRect.isNull() )
     {
       QgsCoordinateTransform ct( bboxCrs, mapLayer->crs(), context.project()->transformContext() );
       ct.transform( filterRect );
-      req.setFilterRect( ct.transform( filterRect ) );
+      featureRequest.setFilterRect( ct.transform( filterRect ) );
     }
 
     QString filterExpression;
     if ( ! attrFilters.isEmpty() )
     {
       QStringList expressions;
+      if ( featureRequest.filterExpression() && ! featureRequest.filterExpression()->expression().isEmpty() )
+      {
+        expressions.push_back( featureRequest.filterExpression()->expression() );
+      }
       for ( auto it = attrFilters.constBegin(); it != attrFilters.constEnd(); it++ )
       {
         // Handle star
@@ -1045,17 +1056,19 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         }
       }
       filterExpression = expressions.join( QStringLiteral( " AND " ) );
-      req.setFilterExpression( filterExpression );
+      featureRequest.setFilterExpression( filterExpression );
     }
 
     // WFS3 core specs only serves 4326
-    req.setDestinationCrs( crs, context.project()->transformContext() );
-    // Add offset to limit because paging is not supported from QgsFeatureRequest
-    req.setLimit( limit + offset );
+    featureRequest.setDestinationCrs( crs, context.project()->transformContext() );
+    // Add offset to limit because paging is not supported by QgsFeatureRequest
+    featureRequest.setLimit( limit + offset );
     QgsJsonExporter exporter { mapLayer };
+    exporter.setAttributes( featureRequest.subsetOfAttributes() );
+    exporter.setAttributeDisplayName( true );
     exporter.setSourceCrs( mapLayer->crs() );
     QgsFeatureList featureList;
-    QgsFeatureIterator features { mapLayer->getFeatures( req ) };
+    QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
     QgsFeature feat;
     long i { 0 };
     while ( features.nextFeature( feat ) )
@@ -1076,11 +1089,11 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
     {
       if ( filterExpression.isEmpty() )
       {
-        req.setNoAttributes();
+        featureRequest.setNoAttributes();
       }
-      req.setFlags( QgsFeatureRequest::Flag::NoGeometry );
-      req.setLimit( -1 );
-      features = mapLayer->getFeatures( req );
+      featureRequest.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+      featureRequest.setLimit( -1 );
+      features = mapLayer->getFeatures( featureRequest );
       while ( features.nextFeature( feat ) )
       {
         matchedFeaturesCount++;
@@ -1191,7 +1204,6 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   if ( context.request()->method() == QgsServerRequest::Method::GetMethod )
   {
     const QString featureId { match.captured( QStringLiteral( "featureId" ) ) };
-    QgsJsonExporter exporter { mapLayer };
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = context.serverInterface()->accessControls();
@@ -1213,6 +1225,9 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
     }
 
+    QgsJsonExporter exporter { mapLayer };
+    exporter.setAttributes( featureRequest.subsetOfAttributes() );
+    exporter.setAttributeDisplayName( true );
     json data = exporter.exportFeatureToJsonObject( feature );
     data["links"] = links( context );
     json navigation = json::array();

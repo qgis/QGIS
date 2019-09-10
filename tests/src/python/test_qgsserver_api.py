@@ -118,7 +118,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
     """ QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regeregenerate_api_reference = True
+    regeregenerate_api_reference = False
 
     def dump(self, response):
         """Returns the response body as str"""
@@ -417,17 +417,26 @@ class QgsServerAPITest(QgsServerAPITestBase):
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer3/items?name=two')
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 404) # Not found
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/layer_with_short_name/items?name=two')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?name=two')
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 200)
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_with_short_name_eq_two.json')
+        self.compareApi(request, project, 'test_wfs3_collections_items_layer1_with_short_name_eq_two.json')
 
     def test_wfs3_field_filters_star(self):
         """Test field filters"""
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer_with_short_name/items?name=tw*')
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_with_short_name_eq_two_star.json')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?name=tw*')
+        response = self.compareApi(request, project, 'test_wfs3_collections_items_layer1_with_short_name_eq_tw_star.json')
+        self.assertEqual(response.statusCode(), 200)
+
+    def test_wfs3_excluded_attributes(self):
+        """Test excluded attributes"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/exclude_attribute/items/0.geojson')
+        response = self.compareApi(request, project, 'test_wfs3_collections_items_exclude_attribute_0.json')
+        self.assertEqual(response.statusCode(), 200)
 
 
 class Handler1(QgsServerOgcApiHandler):

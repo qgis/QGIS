@@ -91,12 +91,6 @@ QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs
   }
 }
 
-const QgsFields QgsServerApiUtils::publishedFields( const QgsVectorLayer *layer )
-{
-  // TODO: implement plugin's ACL filtering
-  return layer->fields();
-}
-
 const QVector<QgsMapLayer *> QgsServerApiUtils::publishedWfsLayers( const QgsProject *project )
 {
   const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );

@@ -618,17 +618,6 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'name'",
-            "explode": false,
-            "in": "query",
-            "name": "name",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "style": "form"
-          },
-          {
             "description": "Filter the collection by 'utf8nameè'",
             "explode": false,
             "in": "query",
@@ -704,10 +693,10 @@ Content-Type: application/openapi+json;version=3.0
             }
           ],
           {
-            "description": "Filter the collection by 'id'",
+            "description": "Filter the collection by 'alias_id'",
             "explode": false,
             "in": "query",
-            "name": "id",
+            "name": "alias_id",
             "required": false,
             "schema": {
               "type": "integer"
@@ -715,10 +704,10 @@ Content-Type: application/openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Filter the collection by 'name'",
+            "description": "Filter the collection by 'alias_name'",
             "explode": false,
             "in": "query",
-            "name": "name",
+            "name": "alias_name",
             "required": false,
             "schema": {
               "type": "string"
@@ -1438,5 +1427,5 @@ Content-Type: application/openapi+json;version=3.0
       "name": "Features"
     }
   ],
-  "timeStamp": "2019-09-08T18:57:09Z"
+  "timeStamp": "2019-09-10T18:18:14Z"
 }

@@ -72,14 +72,6 @@ class SERVER_EXPORT QgsServerApiUtils
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 
     /**
-     * Returns the list of fields accessible to the service for a given \a layer.
-     *
-     * This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
-     * TODO: implement ACL
-     */
-    static const QgsFields publishedFields( const QgsVectorLayer *layer );
-
-    /**
      * Returns the list of layers accessible to the service for a given \a project.
      *
      * This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.

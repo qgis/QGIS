@@ -173,6 +173,7 @@ void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &co
   QDateTime time { QDateTime::currentDateTime() };
   time.setTimeSpec( Qt::TimeSpec::UTC );
   data["timeStamp"] = time.toString( Qt::DateFormat::ISODate ).toStdString() ;
+  context.response()->setStatusCode( 200 );
   context.response()->setHeader( QStringLiteral( "Content-Type" ), contentType );
 #ifdef QGISDEBUG
   context.response()->write( data.dump( 2 ) );
