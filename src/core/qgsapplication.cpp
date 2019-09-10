@@ -1244,6 +1244,9 @@ QgsAuthManager *QgsApplication::authManager()
 
 void QgsApplication::exitQgis()
 {
+  // make sure all threads are done before exiting
+  QThreadPool::globalInstance()->waitForDone();
+
   // don't create to delete
   if ( instance() )
     delete instance()->mAuthManager;
