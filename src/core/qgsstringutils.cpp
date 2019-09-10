@@ -461,6 +461,7 @@ QString QgsStringUtils::htmlToMarkdown( const QString &html )
   while ( hrefRegEx.indexIn( converted, offset ) != -1 )
   {
     QString url = hrefRegEx.cap( 1 ).replace( QStringLiteral( "\"" ), QString() );
+    url.replace( QStringLiteral( "'" ), QString() );
     QString name = hrefRegEx.cap( 2 );
     QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
     converted.replace( hrefRegEx, anchor );
