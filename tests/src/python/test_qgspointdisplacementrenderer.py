@@ -97,11 +97,6 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         #QgsProject.instance().removeAllMapLayers()
         QgsProject.instance().removeMapLayer(layer)
 
-    @classmethod
-    def tearDownClass(cls):
-        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
-        QThreadPool.globalInstance().waitForDone()
-
     def _setProperties(self, r):
         """ set properties for a renderer for testing with _checkProperties"""
         r.setLabelAttributeName('name')
