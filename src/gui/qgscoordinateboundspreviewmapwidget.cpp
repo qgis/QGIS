@@ -14,6 +14,7 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptoolpan.h"
+#include "qgsproject.h"
 
 QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidget *parent )
   : QgsMapCanvas( parent )
@@ -35,7 +36,8 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
   setDestinationCrs( srs );
 
   QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
-  mLayers << new QgsVectorLayer( layerPath );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  mLayers << new QgsVectorLayer( layerPath, tr( "World Map" ), QStringLiteral( "ogr" ), options );
   setLayers( mLayers );
   setMapTool( new QgsMapToolPan( this ) );
   setPreviewJobsEnabled( true );
