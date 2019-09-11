@@ -859,6 +859,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mCentralContainer->insertWidget( 1, mWelcomePage );
 
   centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
+  mInfoBar->raise();
 
   connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgisApp::showMapCanvas );
 
