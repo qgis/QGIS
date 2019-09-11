@@ -73,8 +73,10 @@ QgsDualView::QgsDualView( QWidget *parent )
   auto createShortcuts = [ = ]( const QString & objectName, void ( QgsFeatureListView::* slot )() )
   {
     QShortcut *sc = QgsGui::shortcutsManager()->shortcutByName( objectName );
-    Q_ASSERT( sc ); // the shortcut must have been registered in the shortcuts manager
-    connect( sc, &QShortcut::activated, mFeatureListView, slot );
+    // do not assert for sc as it would lead to crashes in testing
+    // or when using custom widgets lib if built with Debug
+    if ( sc )
+      connect( sc, &QShortcut::activated, mFeatureListView, slot );
   };
   createShortcuts( QStringLiteral( "mAttributeTableFirstEditedFeature" ), &QgsFeatureListView::editFirstFeature );
   createShortcuts( QStringLiteral( "mAttributeTablePreviousEditedFeature" ), &QgsFeatureListView::editPreviousFeature );
