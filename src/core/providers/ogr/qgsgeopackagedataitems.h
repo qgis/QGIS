@@ -60,8 +60,6 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     void addConnection();
     void deleteConnection();
 
-  protected:
-    QString mPath;
 };
 
 
