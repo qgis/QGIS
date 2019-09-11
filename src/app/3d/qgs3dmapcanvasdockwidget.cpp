@@ -174,6 +174,7 @@ void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
   dlg.setWindowTitle( tr( "3D Configuration" ) );
+  dlg.setMinimumSize( 380, 460 );
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
