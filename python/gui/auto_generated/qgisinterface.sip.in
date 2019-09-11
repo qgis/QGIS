@@ -208,6 +208,16 @@ Returns a reference to the main window "Settings" menu.
 Returns a reference to the main window "Plugin" menu.
 %End
 
+    virtual QMenu *pluginHelpMenu() = 0;
+%Docstring
+Returns a reference to the main window "Plugin Help" sub-menu.
+
+Plugins are encouraged to insert help and about actions in this submenu instead of creating
+a submenu under the pluginMenu() which solely contains Plugin Help or About actions.
+
+.. versionadded:: 3.10
+%End
+
     virtual QMenu *rasterMenu() = 0;
 %Docstring
 Returns a reference to the main window "Raster" menu.

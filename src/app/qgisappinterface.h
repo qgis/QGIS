@@ -155,6 +155,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QMenu *addLayerMenu() override;
     QMenu *settingsMenu() override;
     QMenu *pluginMenu() override;
+    QMenu *pluginHelpMenu() override;
     QMenu *rasterMenu() override;
     QMenu *vectorMenu() override;
     QMenu *databaseMenu() override;
