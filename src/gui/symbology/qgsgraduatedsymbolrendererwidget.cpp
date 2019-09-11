@@ -522,6 +522,12 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
     minSizeSpinBox->setValue( .1 );
     maxSizeSpinBox->setValue( 2 );
   }
+  else if ( mGraduatedSymbol->type() == QgsSymbol::Fill )
+  {
+    //set button and label invisible to avoid display of a single item combobox
+    methodComboBox->hide();
+    labelMethod->hide();
+  }
   methodComboBox->blockSignals( false );
 
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsGraduatedSymbolRendererWidget::graduatedColumnChanged );
