@@ -30,6 +30,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -174,7 +175,9 @@ void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
   dlg.setWindowTitle( tr( "3D Configuration" ) );
+  dlg.setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
   dlg.setMinimumSize( 380, 460 );
+  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
