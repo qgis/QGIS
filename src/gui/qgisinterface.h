@@ -235,6 +235,16 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *pluginMenu() = 0;
 
     /**
+     * Returns a reference to the main window "Plugin Help" sub-menu.
+     *
+     * Plugins are encouraged to insert help and about actions in this submenu instead of creating
+     * a submenu under the pluginMenu() which solely contains Plugin Help or About actions.
+     *
+     * \since QGIS 3.10
+     */
+    virtual QMenu *pluginHelpMenu() = 0;
+
+    /**
      * Returns a reference to the main window "Raster" menu.
      */
     virtual QMenu *rasterMenu() = 0;
