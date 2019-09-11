@@ -398,7 +398,12 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 
       if ( match.hasEdge() )
       {
-        layerPoint = match.interpolatedPoint();
+        QgsVertexId vId2;
+        if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex() + 1, vId2 ) )
+          return 2;
+        QgsLineString line( f.geometry().constGet()->vertexAt( vId ), f.geometry().constGet()->vertexAt( vId2 ) );
+
+        layerPoint = QgsGeometryUtils::closestPoint( line,  QgsPoint( match.point() ) );
       }
       else
       {
