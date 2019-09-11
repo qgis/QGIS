@@ -294,7 +294,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
 
       int featureIndex;
       double currentAngle;
-      for ( currentAngle = 0.0, featureIndex = 0; currentAngle < fullPerimeter; currentAngle += angleStep, featureIndex++ )
+      for ( currentAngle = 0.0, featureIndex = 0; currentAngle < fullPerimeter && featureIndex < diagonals.length(); currentAngle += angleStep, featureIndex++ )
       {
         double sinusCurrentAngle = std::sin( currentAngle );
         double cosinusCurrentAngle = std::cos( currentAngle );
