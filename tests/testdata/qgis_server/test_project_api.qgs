@@ -1527,7 +1527,7 @@ def my_form_open(dialog, layer, feature):
       <title>A test vector layer with aliases</title>
       <abstract>A test vector layer with aliases</abstract>
       <keywordList>
-        <value>keywork one</value>
+        <value>keyword one</value>
         <value>keyword 2</value>
       </keywordList>
       <attribution href="">Attribution for this layer is unknown</attribution>
