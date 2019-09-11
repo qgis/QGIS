@@ -236,34 +236,49 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
           break;
         case opEQ:
           if ( cStyle )
-            result = QStringLiteral( "%1 == %2" ).arg( left ).arg( right );
+            result = QStringLiteral( "( float ) ( %1 == %2 )" ).arg( left ).arg( right );
           else
             result = QStringLiteral( "%1 = %2" ).arg( left ).arg( right );
           break;
         case opNE:
-          result = QStringLiteral( "%1 != %2" ).arg( left ).arg( right );
+          if ( cStyle )
+            result = QStringLiteral( "( float ) ( %1 != %2 )" ).arg( left ).arg( right );
+          else
+            result = QStringLiteral( "%1 != %2" ).arg( left ).arg( right );
           break;
         case opGT:
-          result = QStringLiteral( "%1 > %2" ).arg( left ).arg( right );
+          if ( cStyle )
+            result = QStringLiteral( "( float ) ( %1 > %2 )" ).arg( left ).arg( right );
+          else
+            result = QStringLiteral( "%1 > %2" ).arg( left ).arg( right );
           break;
         case opLT:
-          result = QStringLiteral( "%1 < %2" ).arg( left ).arg( right );
+          if ( cStyle )
+            result = QStringLiteral( "( float ) ( %1 < %2" ).arg( left ).arg( right );
+          else
+            result = QStringLiteral( "%1 < %2" ).arg( left ).arg( right );
           break;
         case opGE:
-          result = QStringLiteral( "%1 >= %2" ).arg( left ).arg( right );
+          if ( cStyle )
+            result = QStringLiteral( "( float ) ( %1 >= %2 )" ).arg( left ).arg( right );
+          else
+            result = QStringLiteral( "%1 >= %2" ).arg( left ).arg( right );
           break;
         case opLE:
-          result = QStringLiteral( "%1 <= %2" ).arg( left ).arg( right );
+          if ( cStyle )
+            result = QStringLiteral( "( float ) ( %1 <= %2 )" ).arg( left ).arg( right );
+          else
+            result = QStringLiteral( "%1 <= %2" ).arg( left ).arg( right );
           break;
         case opAND:
           if ( cStyle )
-            result = QStringLiteral( "%1 && %2" ).arg( left ).arg( right );
+            result = QStringLiteral( "( float ) ( %1 && %2 )" ).arg( left ).arg( right );
           else
             result = QStringLiteral( "%1 AND %2" ).arg( left ).arg( right );
           break;
         case opOR:
           if ( cStyle )
-            result = QStringLiteral( "%1 || %2" ).arg( left ).arg( right );
+            result = QStringLiteral( "( float ) ( %1 || %2 )" ).arg( left ).arg( right );
           else
             result = QStringLiteral( "%1 OR %2" ).arg( left ).arg( right );
           break;
@@ -305,7 +320,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       result = QString::number( mNumber );
       if ( cStyle )
       {
-        result = QStringLiteral( "(float) ( %1 )" ).arg( result );
+        result = QStringLiteral( "( float ) ( %1 )" ).arg( result );
       }
       break;
     case tMatrix:
