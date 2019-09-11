@@ -32,6 +32,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsproject.h"
 
 #include <QAction>
 #include <QCursor>
@@ -383,7 +384,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsVectorLayer *sourceLayer = match.layer();
-  if ( match.isValid() && ( match.hasVertex() || match.hasEdge() ) && sourceLayer &&
+  if ( match.isValid() && ( match.hasVertex() || ( QgsProject::instance()->topologicalEditing() && match.hasEdge() ) ) && sourceLayer &&
        ( sourceLayer->crs() == vlayer->crs() ) )
   {
     QgsFeature f;
@@ -396,7 +397,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
       if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex(), vId ) )
         return 2;
 
-      if ( match.hasEdge() )
+      if ( QgsProject::instance()->topologicalEditing() && match.hasEdge() )
       {
         QgsVertexId vId2;
         if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex() + 1, vId2 ) )
