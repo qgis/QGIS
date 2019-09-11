@@ -1138,6 +1138,7 @@ void QgsDelimitedTextProvider::onFileUpdated()
     messages.append( tr( "The file has been updated by another application - reloading" ) );
     reportErrors( messages );
     mRescanRequired = true;
+    emit dataChanged();
   }
 }
 
