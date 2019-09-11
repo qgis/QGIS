@@ -14803,7 +14803,13 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
       {
         QString uri = storageGuiProvider->showSaveGui();
         if ( !uri.isEmpty() )
+        {
           saveProjectToProjectStorage( uri );
+        }
+        else
+        {
+          messageBar()->pushCritical( tr( "Project save failed" ), tr( "The project could not be saved because the project storage URI is empty." ) );
+        }
       } );
     }
     else
@@ -14812,7 +14818,13 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
       {
         QString uri = storageGuiProvider->showLoadGui();
         if ( !uri.isEmpty() )
+        {
           addProject( uri );
+        }
+        else
+        {
+          messageBar()->pushCritical( tr( "Project load failed" ), tr( "The project could not be loaded because the project storage URI is empty." ) );
+        }
       } );
     }
   }
