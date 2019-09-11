@@ -68,6 +68,6 @@ void QgsInstallGridShiftFileDialog::installFromFile()
   }
   else
   {
-    QMessageBox::critical( this, tr( "Install Grid File" ), tr( "Could not copy %1 to %2. Please check folder permissions and ret" ).arg( mGridName, destPath ) );
+    QMessageBox::critical( this, tr( "Install Grid File" ), tr( "Could not copy %1 to %2. Please check folder permissions and retry." ).arg( mGridName, destPath ) );
   }
 }
