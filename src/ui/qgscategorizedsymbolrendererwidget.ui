@@ -20,7 +20,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Column</string>
+      <string>Value</string>
      </property>
     </widget>
    </item>
