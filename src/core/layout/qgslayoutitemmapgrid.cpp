@@ -1968,7 +1968,7 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 {
   QgsExpressionContext context = createExpressionContext();
 
-  mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::MapGridEnabled, context, true );
+  mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::MapGridEnabled, context, enabled() );
   switch ( mGridUnit )
   {
     case MapUnit:
@@ -2228,6 +2228,12 @@ void QgsLayoutItemMapGrid::calculateMaxExtension( double &top, double &right, do
   right = extension.right;
   bottom = extension.bottom;
   left = extension.left;
+}
+
+void QgsLayoutItemMapGrid::setEnabled( bool enabled )
+{
+  QgsLayoutItemMapItem::setEnabled( enabled );
+  refreshDataDefinedProperties();
 }
 
 void QgsLayoutItemMapGrid::setUnits( const QgsLayoutItemMapGrid::GridUnit unit )

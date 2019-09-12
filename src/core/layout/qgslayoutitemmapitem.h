@@ -115,7 +115,7 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      * Controls whether the item will be drawn. Set \a enabled to TRUE to enable drawing of the item.
      * \see enabled()
      */
-    void setEnabled( bool enabled );
+    virtual void setEnabled( bool enabled );
 
     /**
      * Returns whether the item will be drawn.

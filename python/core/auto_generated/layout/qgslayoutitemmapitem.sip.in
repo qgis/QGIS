@@ -103,7 +103,7 @@ Returns the friendly display name for the item.
 .. seealso:: :py:func:`setName`
 %End
 
-    void setEnabled( bool enabled );
+    virtual void setEnabled( bool enabled );
 %Docstring
 Controls whether the item will be drawn. Set ``enabled`` to ``True`` to enable drawing of the item.
 
