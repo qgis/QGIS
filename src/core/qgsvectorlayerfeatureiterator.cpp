@@ -286,6 +286,45 @@ QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
   close();
 }
 
+class QgsThreadStackOverflowGuard
+{
+  public:
+    QgsThreadStackOverflowGuard( QThreadStorage<int> &storage, int maxDepth )
+      : mStorage( storage )
+      , mMaxDepth( maxDepth )
+    {
+      if ( !storage.hasLocalData() )
+      {
+        storage.setLocalData( 0 );
+      }
+      else
+      {
+        storage.setLocalData( storage.localData() + 1 );
+      }
+    }
+
+    ~QgsThreadStackOverflowGuard()
+    {
+      mStorage.setLocalData( mStorage.localData() - 1 );
+    }
+
+    bool hasStackOverflow() const
+    {
+      if ( mStorage.localData() > mMaxDepth )
+        return true;
+      else
+        return false;
+    }
+
+    int depth() const
+    {
+      return mStorage.localData();
+    }
+
+  private:
+    QThreadStorage<int> &mStorage;
+    int mMaxDepth;
+};
 
 
 bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
@@ -294,6 +333,15 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( mClosed )
     return false;
+
+  static QThreadStorage<int> sStackDepth;
+
+  QgsThreadStackOverflowGuard guard( sStackDepth, 255 );
+
+  if ( guard.hasStackOverflow() )
+    return false;
+
+  int depth = guard.depth();
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
@@ -623,8 +671,19 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
   mFetchJoinInfo[ joinInfo ].attributes.push_back( sourceLayerIndex );
 }
 
+
 void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 {
+  static QThreadStorage<int> sStackDepth;
+
+  QgsThreadStackOverflowGuard guard( sStackDepth, 255 );
+
+  if ( guard.hasStackOverflow() )
+    return;
+
+
+  int depth = guard.depth();
+
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 
   int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
