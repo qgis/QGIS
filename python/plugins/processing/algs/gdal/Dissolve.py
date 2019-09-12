@@ -129,7 +129,7 @@ class Dissolve(GdalAlgorithm):
             if f.name() == geometry:
                 continue
 
-            other_fields.append("'{}'".format(f.name()))
+            other_fields.append('"{}"'.format(f.name()))
 
         if other_fields:
             other_fields = ',*'
@@ -153,7 +153,7 @@ class Dissolve(GdalAlgorithm):
 
         statsField = self.parameterAsString(parameters, self.STATISTICS_ATTRIBUTE, context)
         if statsField and self.parameterAsBoolean(parameters, self.COMPUTE_STATISTICS, context):
-            tokens.append("SUM('{0}') AS sum, MIN('{0}') AS min, MAX('{0}') AS max, AVG('{0}') AS avg".format(statsField))
+            tokens.append('SUM("{0}") AS sum, MIN("{0}") AS min, MAX("{0}") AS max, AVG("{0}") AS avg'.format(statsField))
 
         params = ','.join(tokens)
         if params:
@@ -161,12 +161,12 @@ class Dissolve(GdalAlgorithm):
 
         group_by = ''
         if fieldName:
-            group_by = " GROUP BY '{}'".format(fieldName)
+            group_by = ' GROUP BY "{}"'.format(fieldName)
 
         if self.parameterAsBoolean(parameters, self.KEEP_ATTRIBUTES, context):
-            sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, other_fields, params, layerName, group_by)
+            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, other_fields, params, layerName, group_by)
         else:
-            sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, ", '{}'".format(fieldName) if fieldName else '',
+            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, ', "{}"'.format(fieldName) if fieldName else '',
                                                                      params, layerName, group_by)
 
         arguments.append(sql)
