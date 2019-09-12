@@ -233,7 +233,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * List of digitized points
      * \returns List of points
-     * \since 3.12
+     * \since QGIS 3.12
      */
     QgsPointSequence pointsZM() const;
 
@@ -249,7 +249,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Set the points on which to work
      *
      * \param pointList A list of points
-     * \since 3.12
+     * \since QGIS 3.12
      */
     void setPoints( const QgsPointSequence &pointList );
 
