@@ -341,6 +341,12 @@ class GdalUtils:
 
             ogrstr += dsUri.table()
             format = 'OCI'
+        elif provider.lower() == "wfs":
+            uri = QgsDataSourceUri(layer.source())
+            baseUrl = uri.param('url').split('?')[0]
+            layerName = uri.param('typename')
+            ogrstr = "WFS:{} {}".format(baseUrl, layerName)
+            format = 'WFS'
         else:
             ogrstr = str(layer.source()).split("|")[0]
             path, ext = os.path.splitext(ogrstr)
