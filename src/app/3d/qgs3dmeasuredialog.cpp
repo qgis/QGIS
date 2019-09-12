@@ -88,12 +88,15 @@ void Qgs3DMeasureDialog::addPoint()
       addMeasurement( lastDistance(), lastZDistance(), lastHorisontalDistance() );
       mTotal += lastDistance();
       editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
+      mHorisontalTotal += lastHorisontalDistance();
+      editHorisontalTotal->setText( formatDistance( convertLength( mHorisontalTotal, mDisplayedDistanceUnit ) ) );
     }
   }
   else
   {
     // Update total with new displayed unit
     editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
+    editHorisontalTotal->setText( formatDistance( convertLength( mHorisontalTotal, mDisplayedDistanceUnit ) ) );
   }
 }
 
@@ -142,8 +145,10 @@ void Qgs3DMeasureDialog::removeLastPoint()
     // Update total distance
     QgsLineString measureLine( mTool->points() );
     mTotal = measureLine.length3D();
+    mHorisontalTotal = measureLine.length();
     // Update total with new displayed unit
     editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
+    editHorisontalTotal->setText( formatDistance( convertLength( mHorisontalTotal, mDisplayedDistanceUnit ) ) );
   }
 }
 
@@ -208,6 +213,7 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
   }
   // Update total with new displayed unit
   editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
+  editHorisontalTotal->setText( formatDistance( convertLength( mHorisontalTotal, mDisplayedDistanceUnit ) ) );
 }
 
 double Qgs3DMeasureDialog::convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const
@@ -268,6 +274,8 @@ void Qgs3DMeasureDialog::resetTable()
 {
   mTable->clear();
   mTotal = 0.;
+  mHorisontalTotal = 0.;
   // Update total with new displayed unit
   editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
+  editHorisontalTotal->setText( formatDistance( convertLength( mHorisontalTotal, mDisplayedDistanceUnit ) ) );
 }

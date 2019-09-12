@@ -202,7 +202,20 @@
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QLineEdit" name="editHorisontalTotal"/>
+    <widget class="QLineEdit" name="editHorisontalTotal">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

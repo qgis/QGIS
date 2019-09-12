@@ -80,6 +80,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Total length in map distance unit
     double mTotal = 0.0;
 
+    //! Total horisontal length in map distance unit
+    double mHorisontalTotal = 0.0;
+
     //! Number of decimal places we want.
     int mDecimalPlaces = 3;
 
