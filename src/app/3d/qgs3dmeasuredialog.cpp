@@ -30,6 +30,8 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 {
   setupUi( this );
 
+  setWindowTitle( tr( " 3D Measurement Tool" ) );
+
   // New button
   QPushButton *newButton = new QPushButton( tr( "&New" ) );
   buttonBox->addButton( newButton, QDialogButtonBox::ActionRole );
