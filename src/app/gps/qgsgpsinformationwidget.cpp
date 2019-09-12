@@ -39,6 +39,7 @@
 #include "qgsstatusbar.h"
 #include "gmath.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 
 // QWT Charting widget
 
@@ -937,29 +938,17 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   if ( !vlayer )
     return;
 
-  // -------------- preconditions ------------------------
-  // most of these preconditions are already handled due to the button being enabled/disabled based on layer geom type and editing capabilities, but not on valid GPS data
-
-  //lines: bail out if there are not at least two vertices
   if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCaptureList.size() < 2 )
   {
-    QMessageBox::information( nullptr, tr( "Add Feature" ),
-                              tr( "Cannot close a line feature until it has at least two vertices." ) );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Cannot close a line feature until it has at least two vertices." ) );
     return;
   }
-
-  //polygons: bail out if there are not at least three vertices
-  if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCaptureList.size() < 3 )
+  else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCaptureList.size() < 3 )
   {
-    QMessageBox::information( nullptr, tr( "Add Feature" ),
-                              tr( "Cannot close a polygon feature until it has at least three vertices." ) );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
+        tr( "Cannot close a polygon feature until it has at least three vertices." ) );
     return;
   }
-  // -------------- end of preconditions ------------------------
-
-  //
-  // POINT CAPTURING
-  //
 
   // Handle timestamp
   QgsAttributeMap attrMap;
@@ -989,8 +978,8 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       }
       catch ( QgsCsException & )
       {
-        QMessageBox::information( nullptr, tr( "Add Feature" ),
-                                  tr( "Error reprojecting feature to layer CRS." ) );
+        QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ),
+            tr( "Error reprojecting feature to layer CRS." ) );
         return;
       }
 
@@ -1002,11 +991,11 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
           // should canvas->isDrawing() be checked?
           if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
           {
-            QMessageBox::information( this,
-                                      tr( "Save Layer Edits" ),
-                                      tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                                      .arg( vlayer->name(),
-                                            vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
+            QgisApp::instance()->messageBar()->pushCritical(
+              tr( "Save Layer Edits" ),
+              tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+              .arg( vlayer->name(),
+                    vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
           }
 
           vlayer->startEditing();
@@ -1034,8 +1023,8 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         }
         catch ( QgsCsException & )
         {
-          QMessageBox::information( nullptr, tr( "Add Feature" ),
-                                    tr( "Error reprojecting feature to layer CRS." ) );
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
+              tr( "Error reprojecting feature to layer CRS." ) );
           return;
         }
         if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
@@ -1057,8 +1046,8 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         catch ( QgsCsException & )
         {
           connectGpsSlot();
-          QMessageBox::information( nullptr, tr( "Add Feature" ),
-                                    tr( "Error reprojecting feature to layer CRS." ) );
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
+              tr( "Error reprojecting feature to layer CRS." ) );
           return;
         }
 
@@ -1073,13 +1062,13 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         else if ( avoidIntersectionsReturn == 2 )
         {
           //bail out...
-          QMessageBox::critical( nullptr, tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
           connectGpsSlot();
           return;
         }
         else if ( avoidIntersectionsReturn == 3 )
         {
-          QMessageBox::critical( nullptr, tr( "Add Feature" ), tr( "An error was reported during intersection removal." ) );
+          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "An error was reported during intersection removal." ) );
           connectGpsSlot();
           return;
         }
@@ -1093,11 +1082,10 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         {
           if ( !vlayer->commitChanges() )
           {
-            QMessageBox::information( this,
-                                      tr( "Save Layer Edits" ),
-                                      tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                                      .arg( vlayer->name(),
-                                            vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
+            QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ),
+                tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+                .arg( vlayer->name(),
+                      vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
           }
 
           vlayer->startEditing();
