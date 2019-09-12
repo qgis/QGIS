@@ -129,7 +129,7 @@ class Dissolve(GdalAlgorithm):
             if f.name() == geometry:
                 continue
 
-            other_fields.append(f.name())
+            other_fields.append('"{}"'.format(f.name()))
 
         if other_fields:
             other_fields = ',*'
@@ -146,14 +146,14 @@ class Dissolve(GdalAlgorithm):
 
         tokens = []
         if self.parameterAsBoolean(parameters, self.COUNT_FEATURES, context):
-            tokens.append("COUNT({}) AS count".format(geometry))
+            tokens.append('COUNT({}) AS count'.format(geometry))
 
         if self.parameterAsBoolean(parameters, self.COMPUTE_AREA, context):
-            tokens.append("SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter".format(geometry))
+            tokens.append('SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter'.format(geometry))
 
         statsField = self.parameterAsString(parameters, self.STATISTICS_ATTRIBUTE, context)
         if statsField and self.parameterAsBoolean(parameters, self.COMPUTE_STATISTICS, context):
-            tokens.append("SUM({0}) AS sum, MIN({0}) AS min, MAX({0}) AS max, AVG({0}) AS avg".format(statsField))
+            tokens.append('SUM("{0}") AS sum, MIN("{0}") AS min, MAX("{0}") AS max, AVG("{0}") AS avg'.format(statsField))
 
         params = ','.join(tokens)
         if params:
@@ -161,12 +161,12 @@ class Dissolve(GdalAlgorithm):
 
         group_by = ''
         if fieldName:
-            group_by = ' GROUP BY {}'.format(fieldName)
+            group_by = ' GROUP BY "{}"'.format(fieldName)
 
         if self.parameterAsBoolean(parameters, self.KEEP_ATTRIBUTES, context):
-            sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, other_fields, params, layerName, group_by)
+            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, other_fields, params, layerName, group_by)
         else:
-            sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, ', ' + fieldName if fieldName else '',
+            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, ', "{}"'.format(fieldName) if fieldName else '',
                                                                      params, layerName, group_by)
 
         arguments.append(sql)
