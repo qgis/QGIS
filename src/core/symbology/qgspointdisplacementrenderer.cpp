@@ -286,21 +286,18 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
   {
     case Ring:
     {
-      double minDiameterToFitSymbols = nPosition * symbolDiagonal / ( 2.0 * M_PI );
-      double radius = std::max( symbolDiagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
+      const double minDiameterToFitSymbols = nPosition * symbolDiagonal / ( 2.0 * M_PI );
+      const double radius = std::max( symbolDiagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
 
-      double fullPerimeter = 2 * M_PI;
-      double angleStep = fullPerimeter / nPosition;
-
-      int featureIndex;
-      double currentAngle;
-      for ( currentAngle = 0.0, featureIndex = 0; currentAngle < fullPerimeter; currentAngle += angleStep, featureIndex++ )
+      const double angleStep = 2 * M_PI / nPosition;
+      double currentAngle = 0.0;
+      for ( int featureIndex = 0; featureIndex < nPosition; currentAngle += angleStep, featureIndex++ )
       {
-        double sinusCurrentAngle = std::sin( currentAngle );
-        double cosinusCurrentAngle = std::cos( currentAngle );
-        QPointF positionShift( radius * sinusCurrentAngle, radius * cosinusCurrentAngle );
+        const double sinusCurrentAngle = std::sin( currentAngle );
+        const double cosinusCurrentAngle = std::cos( currentAngle );
+        const QPointF positionShift( radius * sinusCurrentAngle, radius * cosinusCurrentAngle );
 
-        QPointF labelShift( ( radius + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * sinusCurrentAngle, ( radius + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * cosinusCurrentAngle );
+        const QPointF labelShift( ( radius + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * sinusCurrentAngle, ( radius + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * cosinusCurrentAngle );
         symbolPositions.append( centerPoint + positionShift );
         labelShifts.append( labelShift );
       }
