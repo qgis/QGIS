@@ -25,6 +25,12 @@
 #include <QString>
 #include "qgsproject.h"
 #include "qgsserverprojectutils.h"
+#include "qgsserverapicontext.h"
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsaccesscontrol.h"
+#include "qgsserverinterface.h"
+#endif
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -66,20 +72,11 @@ class SERVER_EXPORT QgsServerApiUtils
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 
     /**
-     * Returns the list of fields accessible to the service for a given \a layer.
-     *
-     * This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
-     * TODO: implement ACL
-     */
-    static const QgsFields publishedFields( const QgsVectorLayer *layer );
-
-    /**
      * Returns the list of layers accessible to the service for a given \a project.
      *
      * This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
      *
      * \note project must not be NULL
-     * TODO: implement ACL
      */
     static const QVector<QgsMapLayer *> publishedWfsLayers( const QgsProject *project );
 
@@ -92,28 +89,34 @@ class SERVER_EXPORT QgsServerApiUtils
      *
      *     QVector<QgsVectorLayer*> vectorLayers = publishedLayers<QgsVectorLayer>();
      *
-     * TODO: implement ACL
      * \note not available in Python bindings
-     * \see publishedWfsLayers()
      */
     template <typename T>
-    static const QVector<T *> publishedWfsLayers( const QgsProject *project )
+    static const QVector<const T *> publishedWfsLayers( const QgsServerApiContext &context )
     {
-      const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
-      const QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
-      const QStringList wfstInsertLayersId = QgsServerProjectUtils::wfstInsertLayerIds( *project );
-      const QStringList wfstDeleteLayersId = QgsServerProjectUtils::wfstDeleteLayerIds( *project );
-      QVector<T *> result;
-      const auto constLayers { project->layers<T *>() };
-      for ( const auto &layer : constLayers )
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+#endif
+      const QgsProject *project = context.project();
+      QVector<const T *> result;
+      if ( project )
       {
-        if ( wfstUpdateLayersId.contains( layer->id() ) ||
-             wfstInsertLayersId.contains( layer->id() ) ||
-             wfstDeleteLayersId.contains( layer->id() ) )
+        const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+        const auto constLayers { project->layers<T *>() };
+        for ( const auto &layer : constLayers )
         {
+          if ( ! wfsLayerIds.contains( layer->id() ) )
+          {
+            continue;
+          }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+          if ( accessControl && !accessControl->layerReadPermission( layer ) )
+          {
+            continue;
+          }
+#endif
           result.push_back( layer );
         }
-
       }
       return result;
     }

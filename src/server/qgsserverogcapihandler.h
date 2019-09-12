@@ -314,9 +314,10 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     static QString parentLink( const QUrl &url, int levels = 1 );
 
     /**
-     * Returns a vector layer from the \a collectionId in the given \a context
+     * Returns a vector layer from the \a collectionId in the given \a context.
+     * \throws QgsServerApiNotFoundError if the layer could not be found.
      */
-    static QgsVectorLayer *layerFromCollection( const QgsServerApiContext &context, const QString &collectionId );
+    static QgsVectorLayer *layerFromCollectionId( const QgsServerApiContext &context, const QString &collectionId );
 
     /**
      * Returns the defaultResponse as JSON

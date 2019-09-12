@@ -19,13 +19,52 @@
 #define QGS_WFS3_HANDLERS_H
 
 #include "qgsserverogcapihandler.h"
+#include "qgsfields.h"
 
+class QgsFeatureRequest;
 class QgsServerOgcApi;
+
+/**
+ * The QgsWfs3AbstractItemsHandler class provides some
+ * functionality which is common to the handlers that
+ * return items.
+ */
+class QgsWfs3AbstractItemsHandler: public QgsServerOgcApiHandler
+{
+  public:
+
+    /**
+     * Checks if the layer is published in WFS (and perform additional checks for access
+     * control if plugins are enabled)
+     * and throws an exception if it is not.
+     * \param layer the map layer
+     * \param context the server api context
+     * \throws QgsServerApiNotFoundException if the layer is NOT published
+     */
+    void checkLayerIsAccessible( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Creates a filtered QgsFeatureRequest containing only fields published for WMS and plugin filters applied.
+     * \param layer the vector layer
+     * \param context the server api context
+     * \return QgsFeatureRequest with filters applied
+     */
+    QgsFeatureRequest filteredRequest( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns a filtered list of fields containing only fields published for WMS and plugin filters applied.
+     * @param layer the vector layer
+     * @param context the server api context
+     * @return QgsFields list with filters applied
+     */
+    QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+
+};
 
 /**
  * The APIHandler class Wfs3handles the API definition
  */
-class QgsWfs3APIHandler: public QgsServerOgcApiHandler
+class QgsWfs3APIHandler: public QgsWfs3AbstractItemsHandler
 {
   public:
 
@@ -44,6 +83,7 @@ class QgsWfs3APIHandler: public QgsServerOgcApiHandler
 
   private:
     const QgsServerOgcApi *mApi = nullptr;
+
 };
 
 
@@ -125,7 +165,7 @@ class QgsWfs3ConformanceHandler: public QgsServerOgcApiHandler
  * The CollectionsHandler lists all available collections for the current project
  * Path: /collections
  */
-class QgsWfs3CollectionsHandler: public QgsServerOgcApiHandler
+class QgsWfs3CollectionsHandler: public QgsWfs3AbstractItemsHandler
 {
   public:
 
@@ -155,7 +195,7 @@ class QgsWfs3CollectionsHandler: public QgsServerOgcApiHandler
  * The DescribeCollectionHandler describes a single collection
  * Path: /collections/{collectionId}
  */
-class QgsWfs3DescribeCollectionHandler: public QgsServerOgcApiHandler
+class QgsWfs3DescribeCollectionHandler: public QgsWfs3AbstractItemsHandler
 {
   public:
     QgsWfs3DescribeCollectionHandler( );
@@ -175,7 +215,7 @@ class QgsWfs3DescribeCollectionHandler: public QgsServerOgcApiHandler
  * The CollectionsItemsHandler list all items in the collection
  * Path: /collections/{collectionId}
  */
-class QgsWfs3CollectionsItemsHandler: public QgsServerOgcApiHandler
+class QgsWfs3CollectionsItemsHandler: public QgsWfs3AbstractItemsHandler
 {
   public:
     QgsWfs3CollectionsItemsHandler( );
@@ -200,11 +240,11 @@ class QgsWfs3CollectionsItemsHandler: public QgsServerOgcApiHandler
   private:
 
     // Retrieve the fields filter parameters
-    const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer ) const;
+    const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer,  const QgsServerApiContext &context ) const;
 };
 
 
-class QgsWfs3CollectionsFeatureHandler: public QgsServerOgcApiHandler
+class QgsWfs3CollectionsFeatureHandler: public QgsWfs3AbstractItemsHandler
 {
   public:
     QgsWfs3CollectionsFeatureHandler( );

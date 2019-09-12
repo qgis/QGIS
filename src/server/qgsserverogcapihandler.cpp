@@ -173,6 +173,7 @@ void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &co
   QDateTime time { QDateTime::currentDateTime() };
   time.setTimeSpec( Qt::TimeSpec::UTC );
   data["timeStamp"] = time.toString( Qt::DateFormat::ISODate ).toStdString() ;
+  context.response()->setStatusCode( 200 );
   context.response()->setHeader( QStringLiteral( "Content-Type" ), contentType );
 #ifdef QGISDEBUG
   context.response()->write( data.dump( 2 ) );
@@ -230,7 +231,7 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromContext( const QgsServerApiCont
   }
   const QString collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
   // May throw if not found
-  return layerFromCollection( context, collectionId );
+  return layerFromCollectionId( context, collectionId );
 
 }
 
@@ -463,12 +464,12 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
   return result.toString();
 }
 
-QgsVectorLayer *QgsServerOgcApiHandler::layerFromCollection( const QgsServerApiContext &context, const QString &collectionId )
+QgsVectorLayer *QgsServerOgcApiHandler::layerFromCollectionId( const QgsServerApiContext &context, const QString &collectionId )
 {
   const auto mapLayers { context.project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
   if ( mapLayers.count() != 1 )
   {
-    throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Collection with given id (%1) was not found or multiple matches were found" ).arg( collectionId ) );
+    throw QgsServerApiNotFoundError( QStringLiteral( "Collection with given id (%1) was not found or multiple matches were found" ).arg( collectionId ) );
   }
   return mapLayers.first();
 }
