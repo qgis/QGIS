@@ -309,6 +309,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     void calculateMaxExtension( double &top, double &right, double &bottom, double &left ) const;
 
+    void setEnabled( bool enabled ) override;
+
     //
     // GRID UNITS
     //

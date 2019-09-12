@@ -1142,16 +1142,9 @@ QgsLayoutItemMapGrid *QgsLayoutMapWidget::currentGrid()
   return mMapItem->grids()->grid( item->data( Qt::UserRole ).toString() );
 }
 
-void QgsLayoutMapWidget::mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
+void QgsLayoutMapWidget::mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem * )
 {
-  Q_UNUSED( previous )
-  if ( !current )
-  {
-    mGridPropertiesButton->setEnabled( false );
-    return;
-  }
-
-  mGridPropertiesButton->setEnabled( currentGrid()->enabled() );
+  mGridPropertiesButton->setEnabled( static_cast< bool >( current ) );
 }
 
 void QgsLayoutMapWidget::mGridListWidget_itemChanged( QListWidgetItem *item )
@@ -1501,14 +1494,7 @@ void QgsLayoutMapWidget::mOverviewCheckBox_toggled( bool state )
   }
 
   mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Overview Display Toggled" ) );
-  if ( state )
-  {
-    overview->setEnabled( true );
-  }
-  else
-  {
-    overview->setEnabled( false );
-  }
+  overview->setEnabled( state );
   mMapItem->invalidateCache();
   mMapItem->layout()->undoStack()->endCommand();
 }
