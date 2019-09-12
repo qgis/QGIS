@@ -427,7 +427,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         agg.setFidsFilter(list())
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
         self.assertTrue(ok)
-        self.assertEqual(val, 0.0)
+        self.assertEqual(val, NULL)
 
     def testExpressionNoMatch(self):
         """ test aggregate calculation using an expression with no features """
@@ -512,6 +512,51 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertFalse(ok)
         agg, ok = QgsAggregateCalculator.stringToAggregate('bad')
         self.assertFalse(ok)
+
+    def testEmptyAggregate(self):
+        """ Test calculation of aggregates on an empty list"""
+
+        layer = QgsVectorLayer("Point?field=fldint:integer&field=flddbl:double",
+                               "layer", "memory")
+        pr = layer.dataProvider()
+
+        tests = [[QgsAggregateCalculator.Count, 'fldint', 0],
+                 [QgsAggregateCalculator.Count, 'flddbl', 0],
+                 [QgsAggregateCalculator.Sum, 'fldint', NULL],
+                 [QgsAggregateCalculator.Sum, 'flddbl', NULL],
+                 [QgsAggregateCalculator.Mean, 'fldint', NULL],
+                 [QgsAggregateCalculator.Mean, 'flddbl', NULL],
+                 [QgsAggregateCalculator.StDev, 'fldint', NULL],
+                 [QgsAggregateCalculator.StDev, 'flddbl', NULL],
+                 [QgsAggregateCalculator.StDevSample, 'fldint', NULL],
+                 [QgsAggregateCalculator.StDevSample, 'flddbl', NULL],
+                 [QgsAggregateCalculator.Min, 'fldint', NULL],
+                 [QgsAggregateCalculator.Min, 'flddbl', NULL],
+                 [QgsAggregateCalculator.Max, 'fldint', NULL],
+                 [QgsAggregateCalculator.Max, 'flddbl', NULL],
+                 [QgsAggregateCalculator.Range, 'fldint', NULL],
+                 [QgsAggregateCalculator.Range, 'flddbl', NULL],
+                 [QgsAggregateCalculator.Median, 'fldint', NULL],
+                 [QgsAggregateCalculator.Median, 'flddbl', NULL],
+                 [QgsAggregateCalculator.CountDistinct, 'fldint', 0],
+                 [QgsAggregateCalculator.CountDistinct, 'flddbl', 0],
+                 [QgsAggregateCalculator.CountMissing, 'fldint', 0],
+                 [QgsAggregateCalculator.CountMissing, 'flddbl', 0],
+                 [QgsAggregateCalculator.FirstQuartile, 'fldint', NULL],
+                 [QgsAggregateCalculator.FirstQuartile, 'flddbl', NULL],
+                 [QgsAggregateCalculator.ThirdQuartile, 'fldint', NULL],
+                 [QgsAggregateCalculator.ThirdQuartile, 'flddbl', NULL],
+                 [QgsAggregateCalculator.InterQuartileRange, 'fldint', NULL],
+                 [QgsAggregateCalculator.InterQuartileRange, 'flddbl', NULL],
+                 [QgsAggregateCalculator.ArrayAggregate, 'fldint', []],
+                 [QgsAggregateCalculator.ArrayAggregate, 'flddbl', []],
+                 ]
+
+        agg = QgsAggregateCalculator(layer)
+        for t in tests:
+            val, ok = agg.calculate(t[0], t[1])
+            self.assertTrue(ok)
+            self.assertEqual(val, t[2])
 
 
 if __name__ == "__main__":
