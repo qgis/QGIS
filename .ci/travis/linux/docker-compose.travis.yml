@@ -11,11 +11,12 @@ services:
       - SSL_KEY_FILE=/etc/ssl/private/postgres_key.key
       - SSL_CA_FILE=/etc/ssl/certs/issuer_ca_cert.pem
 
-  mssql:
-    image: microsoft/mssql-server-linux:2017-latest
-    environment:
-      ACCEPT_EULA: Y
-      SA_PASSWORD: <YourStrong!Passw0rd>
+# Proving very fragile!
+#  mssql:
+#    image: microsoft/mssql-server-linux:2017-latest
+#    environment:
+#      ACCEPT_EULA: Y
+#      SA_PASSWORD: <YourStrong!Passw0rd>
 
   qgis-deps:
     tty: true
@@ -24,7 +25,7 @@ services:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS
     links:
       - postgres
-      - mssql
+    #  - mssql
     env_file:
       - docker-variables.env
 
