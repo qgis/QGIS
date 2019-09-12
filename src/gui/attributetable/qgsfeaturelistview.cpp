@@ -373,7 +373,7 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
   // could fall back to
   bool validEditSelectionAvailable = false;
 
-  if ( selectedIndexes.isEmpty() || mModel->mapFromMaster( selectedIndexes.first() ).row() == -1 )
+  if ( selectedIndexes.isEmpty() || !selectedIndexes.first().isValid() || mModel->mapFromMaster( selectedIndexes.first() ).row() == -1 )
   {
     validEditSelectionAvailable = false;
   }
