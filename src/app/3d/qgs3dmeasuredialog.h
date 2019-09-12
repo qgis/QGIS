@@ -112,6 +112,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Update total value
     void updateTotal();
+
+    //! Update table based on current setting
+    void updateTable();
 };
 
 #endif // QGS3DMEASUREDIALOG_H

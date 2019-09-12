@@ -59,6 +59,11 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMeasureDialog::unitsChanged );
+
+  // Connect check box
+  connect( verticalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTable );
+  connect( horisontalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTable );
+  connect( horisontalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTotal );
 }
 
 void Qgs3DMeasureDialog::saveWindowLocation()
@@ -182,30 +187,7 @@ void Qgs3DMeasureDialog::updateSettings()
 void Qgs3DMeasureDialog::unitsChanged( int index )
 {
   mDisplayedDistanceUnit = static_cast< QgsUnitTypes::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
-
-  setupTableHeader();
-
-  // Reset table
-  mTable->clear();
-
-  // Repopulate the table based on new displayed unit
-  QVector<QgsPoint>::const_iterator it;
-  bool isFirstPoint = true; // first point
-  QgsPoint p1, p2;
-  QVector< QgsPoint > tmpPoints = mTool->points();
-  for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
-  {
-    p2 = *it;
-    if ( !isFirstPoint )
-    {
-      double distance = p1.distance3D( p2 );
-      double zDistance = p2.z() - p1.z();
-      double horisontalDistance = p1.distance( p2 );
-      addMeasurement( distance, zDistance, horisontalDistance );
-    }
-    p1 = p2;
-    isFirstPoint = false;
-  }
+  updateTable();
   updateTotal();
 }
 
@@ -236,29 +218,45 @@ void Qgs3DMeasureDialog::setupTableHeader()
 {
   // Set the table header to show displayed unit
   QStringList headers;
-  headers << tr( "Horisontal Distance" )
-          << tr( "Vertical Distance" )
-          << tr( "3D Distance" );
+  if ( horisontalDistanceCbx->isChecked() )
+  {
+    headers << tr( "Horisontal Distance" );
+  }
+  if ( verticalDistanceCbx->isChecked() )
+  {
+    headers << tr( "Vertical Distance" );
+  }
+  headers << tr( "3D Distance" );
+
   QTreeWidgetItem *headerItem = new QTreeWidgetItem( headers );
-  headerItem->setTextAlignment( 0, Qt::AlignRight );
-  headerItem->setTextAlignment( 1, Qt::AlignRight );
-  headerItem->setTextAlignment( 2, Qt::AlignRight );
+  for ( int i = 0; i < headers.count(); ++i )
+  {
+    headerItem->setTextAlignment( i, Qt::AlignRight );
+  }
   mTable->setHeaderItem( headerItem );
-  mTable->resizeColumnToContents( 0 );
-  mTable->resizeColumnToContents( 1 );
-  mTable->resizeColumnToContents( 2 );
+  for ( int i = 0; i < headers.count(); ++i )
+  {
+    mTable->resizeColumnToContents( i );
+  }
 }
 
 void Qgs3DMeasureDialog::addMeasurement( double distance, double zDistance, double horisontalDistance )
 {
   QStringList content;
-  content << QLocale().toString( convertLength( horisontalDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces )
-          << QLocale().toString( convertLength( zDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces )
-          << QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
+  if ( horisontalDistanceCbx->isChecked() )
+  {
+    content << QLocale().toString( convertLength( horisontalDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
+  }
+  if ( verticalDistanceCbx->isChecked() )
+  {
+    content << QLocale().toString( convertLength( zDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
+  }
+  content << QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
   QTreeWidgetItem *item = new QTreeWidgetItem( content );
-  item->setTextAlignment( 0, Qt::AlignRight );
-  item->setTextAlignment( 1, Qt::AlignRight );
-  item->setTextAlignment( 2, Qt::AlignRight );
+  for ( int i = 0; i < content.count(); ++i )
+  {
+    item->setTextAlignment( i, Qt::AlignRight );
+  }
   mTable->addTopLevelItem( item );
   mTable->scrollToItem( item );
 }
@@ -268,6 +266,35 @@ void Qgs3DMeasureDialog::updateTotal()
   // Update total with new displayed unit
   editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
   editHorisontalTotal->setText( formatDistance( convertLength( mHorisontalTotal, mDisplayedDistanceUnit ) ) );
+  editHorisontalTotal->setVisible( horisontalDistanceCbx->isChecked() );
+  totalHorisontalDistanceLabel->setVisible( horisontalDistanceCbx->isChecked() );
+}
+
+void Qgs3DMeasureDialog::updateTable()
+{
+  setupTableHeader();
+
+  // Reset table
+  mTable->clear();
+
+  // Repopulate the table based on new displayed unit
+  QVector<QgsPoint>::const_iterator it;
+  bool isFirstPoint = true; // first point
+  QgsPoint p1, p2;
+  QVector< QgsPoint > tmpPoints = mTool->points();
+  for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
+  {
+    p2 = *it;
+    if ( !isFirstPoint )
+    {
+      double distance = p1.distance3D( p2 );
+      double zDistance = p2.z() - p1.z();
+      double horisontalDistance = p1.distance( p2 );
+      addMeasurement( distance, zDistance, horisontalDistance );
+    }
+    p1 = p2;
+    isFirstPoint = false;
+  }
 }
 
 void Qgs3DMeasureDialog::resetTable()
