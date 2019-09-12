@@ -95,7 +95,7 @@ void Qgs3DMeasureDialog::addPoint()
     if ( !mTool->done() )
     {
       // Add new entry in the table
-      addMeasurement( lastDistance(), lastZDistance(), lastHorisontalDistance() );
+      addMeasurement( lastDistance(), lastVerticalDistance(), lastHorisontalDistance() );
       mTotal += lastDistance();
       mHorisontalTotal += lastHorisontalDistance();
       updateTotal();
@@ -114,7 +114,7 @@ double Qgs3DMeasureDialog::lastDistance()
   return lastPoint.distance3D( secondLastPoint );
 }
 
-double Qgs3DMeasureDialog::lastZDistance()
+double Qgs3DMeasureDialog::lastVerticalDistance()
 {
   QgsPoint lastPoint = mTool->points().rbegin()[0];
   QgsPoint secondLastPoint = mTool->points().rbegin()[1];

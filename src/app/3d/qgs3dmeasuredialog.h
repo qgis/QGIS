@@ -46,7 +46,7 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     double lastDistance();
 
     //! Get last Z value distance in map distance unit
-    double lastZDistance();
+    double lastVerticalDistance();
 
     //! Get last horisontal value distance in map distance unit
     double lastHorisontalDistance();
