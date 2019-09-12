@@ -127,7 +127,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void methodComboBox_currentIndexChanged( int );
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
-    void toggleMethodWidgets( int idx );
     void dataDefinedSizeLegend();
     void changeGraduatedSymbol();
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
@@ -168,6 +167,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     };
 
     QgsExpressionContext createExpressionContext() const override;
+    void toggleMethodWidgets( MethodMode mode );
 
     std::unique_ptr< QgsGraduatedSymbolRenderer > mRenderer;
 

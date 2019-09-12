@@ -510,23 +510,31 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   methodComboBox->blockSignals( true );
   methodComboBox->addItem( tr( "Color" ), ColorMode );
-  if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
+  switch ( mGraduatedSymbol->type() )
   {
-    methodComboBox->addItem( tr( "Size" ), SizeMode );
-    minSizeSpinBox->setValue( 1 );
-    maxSizeSpinBox->setValue( 8 );
-  }
-  else if ( mGraduatedSymbol->type() == QgsSymbol::Line )
-  {
-    methodComboBox->addItem( tr( "Size" ), SizeMode );
-    minSizeSpinBox->setValue( .1 );
-    maxSizeSpinBox->setValue( 2 );
-  }
-  else if ( mGraduatedSymbol->type() == QgsSymbol::Fill )
-  {
-    //set button and label invisible to avoid display of a single item combobox
-    methodComboBox->hide();
-    labelMethod->hide();
+    case QgsSymbol::Marker:
+    {
+      methodComboBox->addItem( tr( "Size" ), SizeMode );
+      minSizeSpinBox->setValue( 1 );
+      maxSizeSpinBox->setValue( 8 );
+      break;
+    }
+    case QgsSymbol::Line:
+    {
+      methodComboBox->addItem( tr( "Size" ), SizeMode );
+      minSizeSpinBox->setValue( .1 );
+      maxSizeSpinBox->setValue( 2 );
+      break;
+    }
+    case QgsSymbol::Fill:
+    {
+      //set button and label invisible to avoid display of a single item combobox
+      methodComboBox->hide();
+      labelMethod->hide();
+      break;
+    }
+    case QgsSymbol::Hybrid:
+      break;
   }
   methodComboBox->blockSignals( false );
 
@@ -574,7 +582,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
 void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
 {
-  if ( !mGraduatedSymbol ) return;
+  if ( !mGraduatedSymbol )
+    return;
   mGraduatedSymbol->setOutputUnit( mSizeUnitWidget->unit() );
   mGraduatedSymbol->setMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
   mRenderer->updateSymbols( mGraduatedSymbol.get() );
@@ -704,24 +713,29 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 
   // set source color ramp
   methodComboBox->blockSignals( true );
-  if ( mRenderer->graduatedMethod() == QgsGraduatedSymbolRenderer::GraduatedColor )
+  switch ( mRenderer->graduatedMethod() )
   {
-    methodComboBox->setCurrentIndex( methodComboBox->findData( ColorMode ) );
-    if ( mRenderer->sourceColorRamp() )
+    case QgsGraduatedSymbolRenderer::GraduatedColor:
     {
-      btnColorRamp->setColorRamp( mRenderer->sourceColorRamp() );
+      methodComboBox->setCurrentIndex( methodComboBox->findData( ColorMode ) );
+      if ( mRenderer->sourceColorRamp() )
+      {
+        btnColorRamp->setColorRamp( mRenderer->sourceColorRamp() );
+      }
+      break;
+    }
+    case QgsGraduatedSymbolRenderer::GraduatedSize:
+    {
+      methodComboBox->setCurrentIndex( methodComboBox->findData( SizeMode ) );
+      if ( !mRenderer->ranges().isEmpty() ) // avoid overriding default size with zeros
+      {
+        minSizeSpinBox->setValue( mRenderer->minSymbolSize() );
+        maxSizeSpinBox->setValue( mRenderer->maxSymbolSize() );
+      }
+      break;
     }
   }
-  else
-  {
-    methodComboBox->setCurrentIndex( methodComboBox->findData( SizeMode ) );
-    if ( !mRenderer->ranges().isEmpty() ) // avoid overriding default size with zeros
-    {
-      minSizeSpinBox->setValue( mRenderer->minSymbolSize() );
-      maxSizeSpinBox->setValue( mRenderer->maxSymbolSize() );
-    }
-  }
-  toggleMethodWidgets( methodComboBox->currentIndex() );
+  toggleMethodWidgets( static_cast< MethodMode>( methodComboBox->currentData().toInt() ) );
   methodComboBox->blockSignals( false );
 
   viewGraduated->resizeColumnToContents( 0 );
@@ -739,58 +753,71 @@ void QgsGraduatedSymbolRendererWidget::graduatedColumnChanged( const QString &fi
   mRenderer->setClassAttribute( field );
 }
 
-void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int idx )
+void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
 {
-  toggleMethodWidgets( idx );
-  if ( idx == 0 )
+  const MethodMode newMethod = static_cast< MethodMode >( methodComboBox->currentData().toInt() );
+  toggleMethodWidgets( newMethod );
+  switch ( newMethod )
   {
-    mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedColor );
-    QgsColorRamp *ramp = btnColorRamp->colorRamp();
-
-    if ( !ramp )
+    case ColorMode:
     {
-      QMessageBox::critical( this, tr( "Select Method" ), tr( "No color ramp defined." ) );
-      return;
-    }
-    mRenderer->setSourceColorRamp( ramp );
-    reapplyColorRamp();
-  }
-  else
-  {
-    lblColorRamp->setVisible( false );
-    btnColorRamp->setVisible( false );
-    lblSize->setVisible( true );
-    minSizeSpinBox->setVisible( true );
-    lblSize->setVisible( true );
-    maxSizeSpinBox->setVisible( true );
-    mSizeUnitWidget->setVisible( true );
+      mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedColor );
+      QgsColorRamp *ramp = btnColorRamp->colorRamp();
 
-    mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedSize );
-    reapplySizes();
+      if ( !ramp )
+      {
+        QMessageBox::critical( this, tr( "Select Method" ), tr( "No color ramp defined." ) );
+        return;
+      }
+      mRenderer->setSourceColorRamp( ramp );
+      reapplyColorRamp();
+      break;
+    }
+
+    case SizeMode:
+    {
+      lblColorRamp->setVisible( false );
+      btnColorRamp->setVisible( false );
+      lblSize->setVisible( true );
+      minSizeSpinBox->setVisible( true );
+      lblSize->setVisible( true );
+      maxSizeSpinBox->setVisible( true );
+      mSizeUnitWidget->setVisible( true );
+
+      mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedSize );
+      reapplySizes();
+      break;
+    }
   }
 }
 
-void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( int idx )
+void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
 {
-  if ( idx == 0 )
+  switch ( mode )
   {
-    lblColorRamp->setVisible( true );
-    btnColorRamp->setVisible( true );
-    lblSize->setVisible( false );
-    minSizeSpinBox->setVisible( false );
-    lblSizeTo->setVisible( false );
-    maxSizeSpinBox->setVisible( false );
-    mSizeUnitWidget->setVisible( false );
-  }
-  else
-  {
-    lblColorRamp->setVisible( false );
-    btnColorRamp->setVisible( false );
-    lblSize->setVisible( true );
-    minSizeSpinBox->setVisible( true );
-    lblSizeTo->setVisible( true );
-    maxSizeSpinBox->setVisible( true );
-    mSizeUnitWidget->setVisible( true );
+    case ColorMode:
+    {
+      lblColorRamp->setVisible( true );
+      btnColorRamp->setVisible( true );
+      lblSize->setVisible( false );
+      minSizeSpinBox->setVisible( false );
+      lblSizeTo->setVisible( false );
+      maxSizeSpinBox->setVisible( false );
+      mSizeUnitWidget->setVisible( false );
+      break;
+    }
+
+    case SizeMode:
+    {
+      lblColorRamp->setVisible( false );
+      btnColorRamp->setVisible( false );
+      lblSize->setVisible( true );
+      minSizeSpinBox->setVisible( true );
+      lblSizeTo->setVisible( true );
+      maxSizeSpinBox->setVisible( true );
+      mSizeUnitWidget->setVisible( true );
+      break;
+    }
   }
 }
 
@@ -882,13 +909,6 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   QString attrName = mExpressionWidget->currentField();
   int nclasses = spinGraduatedClasses->value();
 
-  std::unique_ptr<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
-  if ( !ramp )
-  {
-    QMessageBox::critical( this, tr( "Apply Classification" ), tr( "No color ramp defined." ) );
-    return;
-  }
-
   const QString methodId = cboGraduatedMode->currentData().toString();
   QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
   Q_ASSERT( method );
@@ -933,6 +953,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   if ( methodComboBox->currentData() == ColorMode )
   {
+    std::unique_ptr<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
     if ( !ramp )
     {
       QMessageBox::critical( this, tr( "Apply Classification" ), tr( "No color ramp defined." ) );

@@ -1624,6 +1624,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::VolumeUnit fromUnit, Qg
       return 1.0;
     }
   }
+  return 1.0;
 }
 
 QgsUnitTypes::VolumeUnit QgsUnitTypes::distanceToVolumeUnit( QgsUnitTypes::DistanceUnit distanceUnit )
