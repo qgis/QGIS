@@ -105,9 +105,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
 
-      menu->addAction( actions->actionCheckAndAllChildren( menu ) );
+      if ( QAction *checkAll = actions->actionCheckAndAllChildren( menu ) )
+        menu->addAction( checkAll );
 
-      menu->addAction( actions->actionUncheckAndAllChildren( menu ) );
+      if ( QAction *unCheckAll = actions->actionUncheckAndAllChildren( menu ) )
+        menu->addAction( unCheckAll );
 
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
       {
