@@ -1,0 +1,11 @@
+
+{
+  "name": "sha224",
+  "type": "function",
+  "description": "Creates a sha224 hash from a string.",
+  "variableLenArguments": false,
+  "arguments": [
+    {"arg":"string", "description": "the string to hash"}],
+    "examples": [ { "expression":"sha224("QGIS")", "returns":"'4093a619ada631c770f44bc643ead18fb393b93d6a6af1861fcfece0'"}
+    ]
+}

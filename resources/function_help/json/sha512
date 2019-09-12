@@ -1,0 +1,11 @@
+
+{
+  "name": "sha512",
+  "type": "function",
+  "description": "Creates a sha512 hash from a string.",
+  "variableLenArguments": false,
+  "arguments": [
+    {"arg":"string", "description": "the string to hash"}],
+    "examples": [ { "expression":"sha512("QGIS")", "returns":"'c2c092f2ab743bf8edbeb6d028a745f30fc720408465ed369421f0a4e20fa5e27f0c90ad72d3f1d836eaa5d25cd39897d4cf77e19984668ef58da6e3159f18ac'"}
+    ]
+}
