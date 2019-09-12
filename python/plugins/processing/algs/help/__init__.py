@@ -43,7 +43,7 @@ def loadShortHelp():
             with codecs.open(filename, encoding='utf-8') as stream:
                 with warnings.catch_warnings():
                     warnings.filterwarnings("ignore", category=DeprecationWarning)
-                    for k, v in yaml.load(stream).items():
+                    for k, v in yaml.load(stream, Loader=yaml.SafeLoader).items():
                         if v is None:
                             continue
                         h[k] = QCoreApplication.translate("{}Algorithm".format(f[:-5].upper()), v)
