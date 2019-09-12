@@ -72,6 +72,9 @@ void Qgs3DMeasureDialog::saveWindowLocation()
   settings.setValue( QStringLiteral( "Windows/3DMeasure/geometry" ), saveGeometry() );
   const QString &key = "/Windows/3DMeasure/h";
   settings.setValue( key, height() );
+  settings.setValue( "/Windows/3DMeasure/horisontalChecked", horisontalDistanceCbx->isChecked() );
+  settings.setValue( "/Windows/3DMeasure/verticalChecked", verticalDistanceCbx->isChecked() );
+
 }
 
 void Qgs3DMeasureDialog::restorePosition()
@@ -80,6 +83,8 @@ void Qgs3DMeasureDialog::restorePosition()
   restoreGeometry( settings.value( QStringLiteral( "Windows/3DMeasure/geometry" ) ).toByteArray() );
   int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
   resize( width(), wh );
+  horisontalDistanceCbx->setChecked( settings.value( QStringLiteral( "/Windows/3DMeasure/horisontalChecked" ), true ).toBool() );
+  verticalDistanceCbx->setChecked( settings.value( QStringLiteral( "/Windows/3DMeasure/verticalChecked" ), true ).toBool() );
 }
 
 void Qgs3DMeasureDialog::addPoint()
