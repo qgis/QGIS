@@ -38,6 +38,8 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
   mEndFieldComboBox->setLayer( mLayer );
   mEndFieldComboBox->setAllowEmptyFieldName( true );
 
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsWmsDimensionDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsWmsDimensionDialog::reject );
   connect( mFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mEndFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mNameComboBox, &QComboBox::editTextChanged, this, &QgsWmsDimensionDialog::nameChanged );
