@@ -250,6 +250,9 @@ void QgsStatisticalSummary::finalize()
 
 double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat ) const
 {
+  if ( mCount == 0 && stat != Count && stat != Variety && stat != CountMissing )
+    return std::numeric_limits<double>::quiet_NaN();
+
   switch ( stat )
   {
     case Count:
