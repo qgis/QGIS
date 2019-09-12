@@ -43,6 +43,9 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   mEllipsoidal->hide();
   groupBox->hide();
 
+  // Update text for 3D specific
+  totalDistanceLabel->setText( tr( "Total 3D Distance" ) );
+
   // Initialize unit combo box
   // Add a configuration button
   QPushButton *cb = new QPushButton( tr( "&Configuration" ) );

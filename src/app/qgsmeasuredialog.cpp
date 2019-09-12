@@ -42,6 +42,12 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeasureDialog::showHelp );
 
+  // hide 3D related options
+  verticalDistanceCbx->hide();
+  horisontalDistanceCbx->hide();
+  editHorisontalTotal->hide();
+  totalHorisontalDistanceLabel->hide();
+
   QPushButton *nb = new QPushButton( tr( "&New" ) );
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
   connect( nb, &QAbstractButton::clicked, this, &QgsMeasureDialog::restart );
