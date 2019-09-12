@@ -294,12 +294,12 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(name, 'f')
 
             # SQLite provider
-            name = GdalUtils.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
+            name = GdalUtils.ogrLayerName('dbname=\\"/tmp/x.sqlite\\" table="t" (geometry) sql=')
             self.assertEqual(name, 't')
 
             # PostgreSQL provider
             name = GdalUtils.ogrLayerName(
-                'port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
+                'port=5493 sslmode=disable key=\\"edge_id\\" srid=0 type=LineString table="city_data"."edge" (geom) sql=')
             self.assertEqual(name, 'city_data.edge')
 
     def testOgrConnectionStringAndFormat(self):
@@ -389,7 +389,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Buffer(geometry, 5.0) AS geometry,* FROM \'polys2\'" ' +
+                 '-dialect sqlite -sql "SELECT ST_Buffer(geometry, 5.0) AS geometry,* FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -400,7 +400,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(ST_Buffer(geometry, 5.0)) AS geometry,* FROM \'polys2\'" ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(ST_Buffer(geometry, 5.0)) AS geometry,* FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -411,7 +411,19 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Buffer(geometry, 5.0) AS geometry,* FROM \'polys2\'" ' +
+                 '-dialect sqlite -sql "SELECT ST_Buffer(geometry, 5.0) AS geometry,* FROM \\"polys2\\"" ' +
+                 '-explodecollections -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'FIELD': 'total population',
+                                        'EXPLODE_COLLECTIONS': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(ST_Buffer(geometry, 5.0)) AS geometry,* FROM \\"polys2\\" GROUP BY \\"total population\\"" ' +
                  '-explodecollections -f "ESRI Shapefile"'])
 
     def testGdalTranslate(self):
@@ -699,7 +711,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry FROM \'polys2\'" ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -709,8 +721,18 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\" FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'total population',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"total population\\" FROM \\"polys2\\" ' +
+                 'GROUP BY \\"total population\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source_with_space,
@@ -719,8 +741,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  '"' + source_with_space + '" ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'filename_with_spaces\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\" FROM \\"filename_with_spaces\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -730,8 +752,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, \\"my_field\\" FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -741,8 +763,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\" FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -751,7 +773,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry FROM \'polys2\'" ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -762,8 +784,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
-                 'GROUP BY my_field" -explodecollections -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\" FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -explodecollections -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -773,8 +795,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, COUNT(geometry) AS count FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\", COUNT(geometry) AS count FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -785,8 +807,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field, COUNT(the_geom) AS count FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, \\"my_field\\", COUNT(the_geom) AS count FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -796,9 +818,9 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, SUM(ST_Area(geometry)) AS area, ' +
-                 'ST_Perimeter(ST_Union(geometry)) AS perimeter FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\", SUM(ST_Area(geometry)) AS area, ' +
+                 'ST_Perimeter(ST_Union(geometry)) AS perimeter FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -809,9 +831,9 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field, SUM(ST_Area(the_geom)) AS area, ' +
-                 'ST_Perimeter(ST_Union(the_geom)) AS perimeter FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, \\"my_field\\", SUM(ST_Area(the_geom)) AS area, ' +
+                 'ST_Perimeter(ST_Union(the_geom)) AS perimeter FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -822,9 +844,23 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, ' +
-                 'SUM(my_val) AS sum, MIN(my_val) AS min, MAX(my_val) AS max, AVG(my_val) AS avg FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\", ' +
+                 'SUM(\\"my_val\\") AS sum, MIN(\\"my_val\\") AS min, MAX(\\"my_val\\") AS max, AVG(\\"my_val\\") AS avg FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'test field',
+                                        'COMPUTE_STATISTICS': True,
+                                        'STATISTICS_ATTRIBUTE': 'total population',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"test field\\", ' +
+                 'SUM(\\"total population\\") AS sum, MIN(\\"total population\\") AS min, MAX(\\"total population\\") AS max, ' +
+                 'AVG(\\"total population\\") AS avg FROM \\"polys2\\" ' +
+                 'GROUP BY \\"test field\\"" -f "ESRI Shapefile"'])
 
             # compute stats without stats attribute, and vice versa (should be ignored)
             self.assertEqual(
@@ -835,8 +871,9 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\" FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
+
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'FIELD': 'my_field',
@@ -845,8 +882,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
-                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\" FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" -f "ESRI Shapefile"'])
 
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -856,8 +893,8 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
-                 'GROUP BY my_field" "my opts" -f "ESRI Shapefile"'])
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, \\"my_field\\" FROM \\"polys2\\" ' +
+                 'GROUP BY \\"my_field\\"" "my opts" -f "ESRI Shapefile"'])
 
     def testGdal2Tiles(self):
         context = QgsProcessingContext()
@@ -2420,7 +2457,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_OffsetCurve(geometry, 5.0) AS geometry,* FROM \'polys2\'" ' +
+                 '-dialect sqlite -sql "SELECT ST_OffsetCurve(geometry, 5.0) AS geometry,* FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
     def testOneSidedBuffer(self):
@@ -2439,7 +2476,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(geometry, 5.0, 0) AS geometry,* FROM \'polys2\'" ' +
+                 '-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(geometry, 5.0, 0) AS geometry,* FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -2450,7 +2487,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(geometry, 5.0, 0)) AS geometry,* FROM \'polys2\'" ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(geometry, 5.0, 0)) AS geometry,* FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -2461,8 +2498,19 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(geometry, 5.0, 0) AS geometry,* FROM \'polys2\'" ' +
+                 '-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(geometry, 5.0, 0) AS geometry,* FROM \\"polys2\\"" ' +
                  '-explodecollections -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'FIELD': 'total population',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(geometry, 5.0, 0)) AS geometry,* ' +
+                 'FROM \\"polys2\\" GROUP BY \\"total population\\"" -f "ESRI Shapefile"'])
 
     def testPointsAlongLines(self):
         context = QgsProcessingContext()
@@ -2480,7 +2528,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(geometry, 0.2) AS geometry,* FROM \'polys2\'" ' +
+                 '-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(geometry, 0.2) AS geometry,* FROM \\"polys2\\"" ' +
                  '-f "ESRI Shapefile"'])
 
     def testGdalAddo(self):
