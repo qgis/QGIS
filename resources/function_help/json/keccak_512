@@ -1,0 +1,11 @@
+
+{
+  "name": "keccak_512",
+  "type": "function",
+  "description": "Creates a keccak_512 hash from a string.",
+  "variableLenArguments": false,
+  "arguments": [
+    {"arg":"string", "description": "the string to hash"}],
+    "examples": [ { "expression":"keccak_512("QGIS")", "returns":"'6f0f751776b505e317de222508fa5d3ed7099d8f07c74fed54ccee6e7cdc6b89b4a085e309f2ee5210c942bbeb142bdfe48f84f912e0f3f41bdbf47110c2d344'"}
+    ]
+}

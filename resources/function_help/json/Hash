@@ -1,0 +1,5 @@
+{
+  "name": "Hash",
+  "type": "group",
+  "description": "This group contains functions to hash values."
+}

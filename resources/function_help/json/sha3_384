@@ -1,0 +1,11 @@
+
+{
+  "name": "sha3_384",
+  "type": "function",
+  "description": "Creates a sha3_384 hash from a string.",
+  "variableLenArguments": false,
+  "arguments": [
+    {"arg":"string", "description": "the string to hash"}],
+    "examples": [ { "expression":"sha3_384("QGIS")", "returns":"'96052da1e77679e9a65f60d7ead961b287977823144786386eb43647b0901fd8516fa6f1b9d243fb3f28775e6dde6107'"}
+    ]
+}
