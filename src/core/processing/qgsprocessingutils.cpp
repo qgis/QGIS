@@ -651,6 +651,10 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   // a purely QGIS concept.
   requiresTranslation = requiresTranslation || !vl->subsetString().isEmpty();
 
+  // if the layer opened using GDAL's virtual I/O mechanism (/vsizip/, etc.), then
+  // we HAVE to convert as other tools may not work with it
+  requiresTranslation = requiresTranslation || vl->source().startsWith( QLatin1String( "/vsi" ) );
+
   // Check if layer is a disk based format and if so if the layer's path has a compatible filename suffix
   QString diskPath;
   if ( !requiresTranslation )
