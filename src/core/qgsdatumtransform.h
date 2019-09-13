@@ -265,7 +265,7 @@ class CORE_EXPORT QgsDatumTransform
      * operation listed first.
      *
      * Not all operations may be available for use. Check QgsDatumTransform::TransformDetails::isAvailable
-     * first. Operations may require grid transformation files which are not available on the local
+     * first. Operations may require grid shift files which are not available on the local
      * install.
      *
      * If \a includeSuperseded is TRUE, superseded (but not deprecated) transforms will be included

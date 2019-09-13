@@ -68,7 +68,7 @@ p, li { white-space: pre-wrap; }
    <item row="1" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Install Grid Transform File</string>
+      <string>Install Grid Shift File</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0" colspan="2">
@@ -94,7 +94,7 @@ p, li { white-space: pre-wrap; }
       <item row="1" column="1">
        <widget class="QPushButton" name="mInstallButton">
         <property name="text">
-         <string>Install from Folder..</string>
+         <string>Install from Folder…</string>
         </property>
        </widget>
       </item>
