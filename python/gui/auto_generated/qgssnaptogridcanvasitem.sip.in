@@ -9,6 +9,11 @@
 
 
 
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgssnaptogridcanvasitem.h>
+%End
+
 class QgsSnapToGridCanvasItem : QObject, QgsMapCanvasItem
 {
 %Docstring
@@ -20,6 +25,12 @@ Shows a grid on the map canvas given a spatial resolution.
 
 %TypeHeaderCode
 #include "qgssnaptogridcanvasitem.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsSnapToGridCanvasItem *>( sipCpp ) )
+      sipType = sipType_QgsSnapToGridCanvasItem;
+    else
+      sipType = nullptr;
 %End
   public:
 

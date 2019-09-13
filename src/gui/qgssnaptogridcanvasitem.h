@@ -23,6 +23,13 @@
 #include "qgsmapcanvasitem.h"
 #include "qgscoordinatetransform.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgssnaptogridcanvasitem.h>
+% End
+#endif
+
 /**
  * \ingroup gui
  *
@@ -33,6 +40,15 @@
 class GUI_EXPORT QgsSnapToGridCanvasItem : public QObject, public QgsMapCanvasItem
 {
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsSnapToGridCanvasItem *>( sipCpp ) )
+      sipType = sipType_QgsSnapToGridCanvasItem;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
 
   public:
 

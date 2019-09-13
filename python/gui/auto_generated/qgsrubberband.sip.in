@@ -10,6 +10,11 @@
 
 
 
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsrubberband.h>
+%End
+
 class QgsRubberBand : QObject, QgsMapCanvasItem
 {
 %Docstring
@@ -21,6 +26,12 @@ for tracking the mouse while drawing polylines or polygons.
 
 %TypeHeaderCode
 #include "qgsrubberband.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsRubberBand;
+    else
+      sipType = nullptr;
 %End
   public:
 
