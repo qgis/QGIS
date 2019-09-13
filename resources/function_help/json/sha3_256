@@ -6,6 +6,6 @@
   "variableLenArguments": false,
   "arguments": [
     {"arg":"string", "description": "the string to hash"}],
-    "examples": [ { "expression":"sha3_256("QGIS")", "returns":"'540f7354b6b8a6e735f2845250f15f4f3ba4f666c55574d9e9354575de0e980f'"}
+    "examples": [ { "expression":"sha3_256('QGIS')", "returns":"'540f7354b6b8a6e735f2845250f15f4f3ba4f666c55574d9e9354575de0e980f'"}
     ]
 }
