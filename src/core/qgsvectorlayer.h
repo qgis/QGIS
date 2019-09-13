@@ -652,7 +652,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns QGIS Server Properties of the vector layer
      * \since QGIS 3.10
      */
-    QgsVectorLayerServerProperties *serverProperties() { return mServerProperties; }
+    QgsVectorLayerServerProperties *serverProperties() { return mServerProperties.get(); }
 
     /**
      * Returns the number of features that are selected in this layer.
@@ -2640,7 +2640,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;
 
     //!stores information about server properties
-    QgsVectorLayerServerProperties *mServerProperties = nullptr;
+    std::unique_ptr< QgsVectorLayerServerProperties > mServerProperties;
 
     //! stores information about expression fields on this layer
     QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
