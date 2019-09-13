@@ -310,15 +310,15 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
 
   // not possible, no points
   widget->mBtnCloseFeature_clicked();
-  QCOMPARE( multiLineString->featureCount(), 0 );
+  QCOMPARE( multiLineString->featureCount(), 0L );
   // need at least 2 points
   widget->mBtnAddVertex_clicked();
   widget->mBtnCloseFeature_clicked();
-  QCOMPARE( multiLineString->featureCount(), 0 );
+  QCOMPARE( multiLineString->featureCount(), 0L );
 
   widget->mBtnAddVertex_clicked();
   widget->mBtnCloseFeature_clicked();
-  QCOMPARE( multiLineString->featureCount(), 1 );
+  QCOMPARE( multiLineString->featureCount(), 1L );
   QgsFeature f;
   QVERIFY( multiLineString->getFeatures().nextFeature( f ) );
   QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiLineString );
@@ -335,19 +335,19 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
 
   // not possible, no points
   widget->mBtnCloseFeature_clicked();
-  QCOMPARE( multiPolygon->featureCount(), 0 );
+  QCOMPARE( multiPolygon->featureCount(), 0L );
 
   // need at least 3 points
   widget->mBtnAddVertex_clicked();
   widget->mBtnCloseFeature_clicked();
-  QCOMPARE( multiPolygon->featureCount(), 0 );
+  QCOMPARE( multiPolygon->featureCount(), 0L );
   widget->mBtnAddVertex_clicked();
   widget->mBtnCloseFeature_clicked();
-  QCOMPARE( multiPolygon->featureCount(), 0 );
+  QCOMPARE( multiPolygon->featureCount(), 0L );
 
   widget->mBtnAddVertex_clicked();
   widget->mBtnCloseFeature_clicked();
-  QCOMPARE( multiPolygon->featureCount(), 1 );
+  QCOMPARE( multiPolygon->featureCount(), 1L );
   QVERIFY( multiPolygon->getFeatures().nextFeature( f ) );
   QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiPolygon );
   multiPolygon->rollBack();
