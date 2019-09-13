@@ -8231,6 +8231,18 @@ void TestQgsProcessing::convertCompatible()
   QCOMPARE( t->featureCount(), layer->featureCount() );
   layer->setSubsetString( QString() );
 
+  // using GDAL's virtual I/O (/vsizip/, etc.)
+  QString vsiPath = "/vsizip/" + testDataDir + "zip/points2.zip/points.shp";
+  QgsVectorLayer *vsiLayer = new QgsVectorLayer( vsiPath, "vl" );
+  p.addMapLayer( vsiLayer );
+  out = QgsProcessingUtils::convertToCompatibleFormat( vsiLayer, false, QStringLiteral( "test" ), QStringList() << "shp", QString( "shp" ), context, &feedback );
+  QVERIFY( out != layer->source() );
+  QVERIFY( out.endsWith( ".shp" ) );
+  QVERIFY( !out.contains( "/vsizip" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+  t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
+  QCOMPARE( t->featureCount(), layer->featureCount() );
+
   // non-OGR source -- must be translated, regardless of extension. (e.g. delimited text provider handles CSV very different to OGR!)
   std::unique_ptr< QgsVectorLayer > memLayer = qgis::make_unique< QgsVectorLayer> ( "Point", "v1", "memory" );
   for ( int i = 1; i < 6; ++i )
