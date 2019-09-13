@@ -93,19 +93,20 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
     // Add table to existing DB
     QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), collectionItem->parent() );
-
-    connect( actionAddTable, &QAction::triggered, [ = ]
+    QPointer<QgsGeoPackageCollectionItem>collectionItemPtr { collectionItem };
+    connect( actionAddTable, &QAction::triggered, [ collectionItemPtr ]
     {
-      if ( collectionItem )
+      if ( collectionItemPtr )
       {
         QgsNewGeoPackageLayerDialog dialog( nullptr );
-        dialog.setDatabasePath( item->path() );
+        dialog.setDatabasePath( collectionItemPtr->path() );
         dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
         dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
         dialog.lockDatabasePath();
         if ( dialog.exec() == QDialog::Accepted )
         {
-          item->refreshConnections();
+          if ( collectionItemPtr )
+            collectionItemPtr->refreshConnections();
         }
       }
     } );
