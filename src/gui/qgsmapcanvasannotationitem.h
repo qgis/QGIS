@@ -18,6 +18,13 @@
 #ifndef QGSMAPCANVASANNOTATIONITEM_H
 #define QGSMAPCANVASANNOTATIONITEM_H
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsmapcanvasannotationitem.h>
+% End
+#endif
+
 #include "qgsmapcanvasitem.h"
 #include "qgis_gui.h"
 
@@ -32,6 +39,15 @@ class QgsAnnotation;
 class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvasItem
 {
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsMapCanvasAnnotationItem *>( sipCpp ) )
+      sipType = sipType_QgsMapCanvasAnnotationItem;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
 
   public:
 

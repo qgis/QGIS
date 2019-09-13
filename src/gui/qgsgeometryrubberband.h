@@ -24,6 +24,12 @@
 #include <QPen>
 #include "qgis_gui.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsgeometryrubberband.h>
+% End
+#endif
 
 class QgsAbstractGeometry;
 class QgsPoint;
@@ -34,6 +40,16 @@ struct QgsVertexId;
  * A rubberband class for QgsAbstractGeometry (considering curved geometries)*/
 class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsGeometryRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsGeometryRubberBand;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
   public:
     enum IconType
     {
