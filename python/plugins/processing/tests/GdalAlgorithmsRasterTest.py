@@ -186,6 +186,31 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            # with 10% the size and default resampling
+            self.assertEqual(
+                translate_alg.getConsoleCommands({'INPUT': source,
+                                                  'OUTSIZE': '10% 10%',
+                                                  'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-outsize 10% 10% ' +
+                 '-r nearest ' +
+                 '-of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            # with 10% the size and cubic resampling
+            self.assertEqual(
+                translate_alg.getConsoleCommands({'INPUT': source,
+                                                  'OUTSIZE': '10% 10%',
+                                                  'RESAMPLING_ALGORITHM': 2,
+                                                  'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-outsize 10% 10% ' +
+                 '-r cubic ' +
+                 '-of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
             # with target srs
             self.assertEqual(
                 translate_alg.getConsoleCommands({'INPUT': source,

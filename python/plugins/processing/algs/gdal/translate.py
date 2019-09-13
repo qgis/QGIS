@@ -46,6 +46,8 @@ class translate(GdalAlgorithm):
     INPUT = 'INPUT'
     TARGET_CRS = 'TARGET_CRS'
     NODATA = 'NODATA'
+    OUTSIZE = 'OUTSIZE'
+    RESAMPLING_ALGORITHM = 'RESAMPLING_ALGORITHM'
     COPY_SUBDATASETS = 'COPY_SUBDATASETS'
     OPTIONS = 'OPTIONS'
     EXTRA = 'EXTRA'
@@ -58,6 +60,13 @@ class translate(GdalAlgorithm):
     def initAlgorithm(self, config=None):
 
         self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+        self.resampling = ((self.tr('Nearest Neighbour'), 'nearest'),
+                           (self.tr('Bilinear'), 'bilinear'),
+                           (self.tr('Cubic Convolution'), 'cubic'),
+                           (self.tr('B-Spline Convolution'), 'cubicspline'),
+                           (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
+                           (self.tr('Average'), 'average'),
+                           (self.tr('Mode'), 'mode'))
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
@@ -72,6 +81,20 @@ class translate(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.COPY_SUBDATASETS,
                                                         self.tr('Copy all subdatasets of this file to individual output files'),
                                                         defaultValue=False))
+
+        outsize_param = QgsProcessingParameterString(self.OUTSIZE,
+                                                     self.tr('X and Y size of output. Pixel size unless ‘%’ is appended, then will be a fraction of original size. One 0 value will be estimated to preserve aspect ratio.'),
+                                                     defaultValue='100% 100%')
+        outsize_param.setFlags(outsize_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(outsize_param)
+
+        resampling_param = QgsProcessingParameterEnum(self.RESAMPLING_ALGORITHM,
+                                                      self.tr('Resampling method to use, if output size is changed'),
+                                                      options=[i[0] for i in self.resampling],
+                                                      allowMultiple=False,
+                                                      defaultValue=0)
+        resampling_param.setFlags(resampling_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(resampling_param)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
@@ -137,6 +160,13 @@ class translate(GdalAlgorithm):
         if crs.isValid():
             arguments.append('-a_srs')
             arguments.append(GdalUtils.gdal_crs_string(crs))
+
+        outsize = self.parameterAsString(parameters, self.OUTSIZE, context)
+        if not(len(outsize.split(' ')) < 2 or outsize == '100% 100%'):
+            arguments.append('-outsize')
+            arguments += outsize.strip().split(' ')[:2]
+            arguments.append('-r')
+            arguments.append(self.resampling[self.parameterAsEnum(parameters, self.RESAMPLING_ALGORITHM, context)][1])
 
         if nodata is not None:
             arguments.append('-a_nodata')
