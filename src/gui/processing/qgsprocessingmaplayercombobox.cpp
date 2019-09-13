@@ -117,6 +117,8 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   setLayout( vl );
 
   setAcceptDrops( true );
+
+  onLayerChanged( mCombo->currentLayer() );
 }
 
 QgsProcessingMapLayerComboBox::~QgsProcessingMapLayerComboBox() = default;
