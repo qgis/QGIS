@@ -225,12 +225,9 @@ bool QgsColorButton::event( QEvent *e )
 
 void QgsColorButton::setToNoColor()
 {
-  if ( mAllowOpacity )
-  {
-    QColor noColor = QColor( mColor );
-    noColor.setAlpha( 0 );
-    setColor( noColor );
-  }
+  QColor noColor = QColor( mColor );
+  noColor.setAlpha( 0 );
+  setColor( noColor );
 }
 
 void QgsColorButton::mousePressEvent( QMouseEvent *e )
@@ -521,7 +518,7 @@ void QgsColorButton::prepareMenu()
       connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
     }
 
-    if ( mShowNoColorOption && mAllowOpacity )
+    if ( mShowNoColorOption )
     {
       QAction *noColorAction = new QAction( mNoColorString, this );
       noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );

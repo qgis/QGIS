@@ -564,11 +564,13 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
 
   int alphaBand = -1;
   double opacity = 1;
+  QColor nodataColor;
   if ( oldRenderer )
   {
     // Retain alpha band and opacity when switching renderer
     alphaBand = oldRenderer->alphaBand();
     opacity = oldRenderer->opacity();
+    nodataColor = oldRenderer->nodataColor();
   }
 
   QgsRasterRendererRegistryEntry rendererEntry;
@@ -594,6 +596,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       }
       mRasterLayer->renderer()->setAlphaBand( alphaBand );
       mRasterLayer->renderer()->setOpacity( opacity );
+      mRasterLayer->renderer()->setNodataColor( nodataColor );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       mRendererWidget->setMapCanvas( mMapCanvas );
       mRendererStackedWidget->addWidget( mRendererWidget );

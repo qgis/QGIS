@@ -116,7 +116,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
   bool isNoData = false;
   for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {
