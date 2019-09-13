@@ -195,6 +195,12 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
                     active_layer.deleteFeature(f.id())
                     # Get the new ids
                     old_ids = set([f.id() for f in active_layer.getFeatures(req)])
+                    # If multiple new features were created, we need to pass
+                    # them to createFeatures to manage constraints correctly
+                    features_data = []
+                    for f in new_features:
+                        features_data.append(QgsVectorLayerUtils.QgsFeatureData(f.geometry(), dict(enumerate(f.attributes()))))
+                    new_features = QgsVectorLayerUtils.createFeatures(active_layer, features_data, context.expressionContext())
                     if not active_layer.addFeatures(new_features):
                         raise QgsProcessingException(tr("Error adding processed features back into the layer."))
                     new_ids = set([f.id() for f in active_layer.getFeatures(req)])
