@@ -104,6 +104,7 @@ void QgsDataSourceManagerDialog::setCurrentPage( int index )
   mPreviousRow = ui->mOptionsStackedWidget->currentIndex();
   ui->mOptionsStackedWidget->setCurrentIndex( index );
   setWindowTitle( tr( "Data Source Manager | %1" ).arg( ui->mOptionsListWidget->currentItem()->text() ) );
+  resizeAlltabs( index );
 }
 
 void QgsDataSourceManagerDialog::setPreviousPage()
