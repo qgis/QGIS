@@ -494,6 +494,7 @@ namespace QgsWms
     elem = doc.createElement( ( version == QLatin1String( "1.1.1" ) ? "GetLegendGraphic" : "sld:GetLegendGraphic" )/*wms:GetLegendGraphic*/ );
     appendFormat( elem, QStringLiteral( "image/jpeg" ) );
     appendFormat( elem, QStringLiteral( "image/png" ) );
+    appendFormat( elem, QStringLiteral( "application/json" ) );
     elem.appendChild( dcpTypeElem.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
     requestElem.appendChild( elem );
 

@@ -31,6 +31,8 @@
 #include "qgswmsrenderer.h"
 
 #include <QImage>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 namespace QgsWms
 {
@@ -42,6 +44,7 @@ namespace QgsWms
     QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
     // check parameters validity
+    // FIXME fail with png + mode
     checkParameters( parameters );
 
     // init render context
@@ -50,42 +53,60 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::UseSrcWidthHeight );
     context.setParameters( parameters );
 
-    const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
-    ImageOutputFormat outputFormat = parseImageFormat( format );
+    // get the requested output format
+    QgsWmsParameters::Format format = parameters.format();
 
-    QString saveFormat;
-    QString contentType;
-    switch ( outputFormat )
+    // parameters.format() returns NONE if the requested format is image/png with a
+    // mode (e.g. image/png;mode=16bit), so in that case we use parseImageFormat to
+    // give the requested format another chance
+
+    QString imageSaveFormat;
+    QString imageContentType;
+    if ( format == QgsWmsParameters::Format::PNG )
     {
-      case PNG:
-      case PNG8:
-      case PNG16:
-      case PNG1:
-        contentType = "image/png";
-        saveFormat = "PNG";
-        break;
-      case JPEG:
-        contentType = "image/jpeg";
-        saveFormat = "JPEG";
-        break;
-      default:
-        throw QgsServiceException( "InvalidFormat",
-                                   QStringLiteral( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( format ) );
-        break;
+      imageContentType = "image/png";
+      imageSaveFormat = "PNG";
+    }
+    else if ( format == QgsWmsParameters::Format::JPG )
+    {
+      imageContentType = "image/jpeg";
+      imageSaveFormat = "JPEG";
+    }
+    else if ( format == QgsWmsParameters::Format::NONE )
+    {
+      switch ( parseImageFormat( parameters.formatAsString() ) )
+      {
+        case PNG:
+        case PNG8:
+        case PNG16:
+        case PNG1:
+          format = QgsWmsParameters::Format::PNG;
+          imageContentType = "image/png";
+          imageSaveFormat = "PNG";
+          break;
+        default:
+          break;
+      }
+    }
+
+    if ( format == QgsWmsParameters::Format::NONE )
+    {
+      throw QgsServiceException( "InvalidFormat",
+                                 QStringLiteral( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( parameters.formatAsString() ) );
     }
 
     // Get cached image
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
-    if ( cacheManager )
+    if ( cacheManager && !imageSaveFormat.isEmpty() )
     {
       QImage image;
       QByteArray content = cacheManager->getCachedImage( project, request, accessControl );
       if ( !content.isEmpty() && image.loadFromData( content ) )
       {
-        response.setHeader( QStringLiteral( "Content-Type" ), contentType );
-        image.save( response.io(), qPrintable( saveFormat ) );
+        response.setHeader( QStringLiteral( "Content-Type" ), imageContentType );
+        image.save( response.io(), qPrintable( imageSaveFormat ) );
         return;
       }
     }
@@ -97,34 +118,52 @@ namespace QgsWms
     std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
 
     // rendering
-    std::unique_ptr<QImage> result;
-    if ( !parameters.rule().isEmpty() )
+    if ( format == QgsWmsParameters::Format::JSON )
     {
-      QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
-      result.reset( renderer.getLegendGraphics( *node ) );
-    }
-    else
-    {
-      result.reset( renderer.getLegendGraphics( *model.get() ) );
-    }
-
-    tree->clear();
-
-    if ( result )
-    {
-      writeImage( response, *result,  format, context.imageQuality() );
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( cacheManager )
+      QJsonObject result;
+      if ( !parameters.rule().isEmpty() )
       {
-        QByteArray content = response.data();
-        if ( !content.isEmpty() )
-          cacheManager->setCachedImage( &content, project, request, accessControl );
+        throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                      QStringLiteral( "RULE cannot be used with JSON format" ) );
       }
-#endif
+      else
+      {
+        result = renderer.getLegendGraphicsAsJson( *model.get() );
+      }
+      tree->clear();
+      response.setHeader( QStringLiteral( "Content-Type" ), parameters.formatAsString() );
+      QJsonDocument doc( result );
+      response.write( doc.toJson( QJsonDocument::Compact ) );
     }
     else
     {
-      throw QgsException( QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
+      std::unique_ptr<QImage> result;
+      if ( !parameters.rule().isEmpty() )
+      {
+        QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
+        result.reset( renderer.getLegendGraphics( *node ) );
+      }
+      else
+      {
+        result.reset( renderer.getLegendGraphics( *model.get() ) );
+      }
+      tree->clear();
+      if ( result )
+      {
+        writeImage( response, *result, parameters.formatAsString(), context.imageQuality() );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( cacheManager )
+        {
+          QByteArray content = response.data();
+          if ( !content.isEmpty() )
+            cacheManager->setCachedImage( &content, project, request, accessControl );
+        }
+#endif
+      }
+      else
+      {
+        throw QgsException( QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
+      }
     }
   }
 

@@ -68,6 +68,7 @@ Content-Type: text/xml; charset=utf-8
    <GetLegendGraphic>
     <Format>image/jpeg</Format>
     <Format>image/png</Format>
+    <Format>application/json</Format>
     <DCPType>
      <HTTP>
       <Get>
