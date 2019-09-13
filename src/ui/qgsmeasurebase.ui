@@ -40,12 +40,12 @@
     <number>6</number>
    </property>
    <item row="3" column="0">
-    <widget class="QCheckBox" name="horisontalDistanceCbx">
+    <widget class="QCheckBox" name="horizontalDistanceCbx">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <property name="text">
-      <string>Horisontal Distance</string>
+      <string>Horizontal Distance</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -195,14 +195,14 @@
     </spacer>
    </item>
    <item row="5" column="0">
-    <widget class="QLabel" name="totalHorisontalDistanceLabel">
+    <widget class="QLabel" name="totalHorizontalDistanceLabel">
      <property name="text">
-      <string>Total Horisontal Distance</string>
+      <string>Total Horizontal Distance</string>
      </property>
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QLineEdit" name="editHorisontalTotal">
+    <widget class="QLineEdit" name="editHorizontalTotal">
      <property name="font">
       <font>
        <weight>75</weight>

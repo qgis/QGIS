@@ -61,11 +61,9 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMeasureDialog::unitsChanged );
-
-  // Connect check box
   connect( verticalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTable );
-  connect( horisontalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTable );
-  connect( horisontalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTotal );
+  connect( horizontalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTable );
+  connect( horizontalDistanceCbx, &QCheckBox::toggled, this, &Qgs3DMeasureDialog::updateTotal );
 }
 
 void Qgs3DMeasureDialog::saveWindowLocation()
@@ -74,7 +72,7 @@ void Qgs3DMeasureDialog::saveWindowLocation()
   settings.setValue( QStringLiteral( "Windows/3DMeasure/geometry" ), saveGeometry() );
   const QString &key = "/Windows/3DMeasure/h";
   settings.setValue( key, height() );
-  settings.setValue( "/Windows/3DMeasure/horisontalChecked", horisontalDistanceCbx->isChecked() );
+  settings.setValue( "/Windows/3DMeasure/horizontalChecked", horizontalDistanceCbx->isChecked() );
   settings.setValue( "/Windows/3DMeasure/verticalChecked", verticalDistanceCbx->isChecked() );
 
 }
@@ -85,7 +83,7 @@ void Qgs3DMeasureDialog::restorePosition()
   restoreGeometry( settings.value( QStringLiteral( "Windows/3DMeasure/geometry" ) ).toByteArray() );
   int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
   resize( width(), wh );
-  horisontalDistanceCbx->setChecked( settings.value( QStringLiteral( "/Windows/3DMeasure/horisontalChecked" ), true ).toBool() );
+  horizontalDistanceCbx->setChecked( settings.value( QStringLiteral( "/Windows/3DMeasure/horizontalChecked" ), true ).toBool() );
   verticalDistanceCbx->setChecked( settings.value( QStringLiteral( "/Windows/3DMeasure/verticalChecked" ), true ).toBool() );
 }
 
@@ -97,9 +95,9 @@ void Qgs3DMeasureDialog::addPoint()
     if ( !mTool->done() )
     {
       // Add new entry in the table
-      addMeasurement( lastDistance(), lastVerticalDistance(), lastHorisontalDistance() );
+      addMeasurement( lastDistance(), lastVerticalDistance(), lastHorizontalDistance() );
       mTotal += lastDistance();
-      mHorisontalTotal += lastHorisontalDistance();
+      mHorizontalTotal += lastHorizontalDistance();
       updateTotal();
     }
   }
@@ -123,7 +121,7 @@ double Qgs3DMeasureDialog::lastVerticalDistance()
   return lastPoint.z() - secondLastPoint.z();
 }
 
-double Qgs3DMeasureDialog::lastHorisontalDistance()
+double Qgs3DMeasureDialog::lastHorizontalDistance()
 {
   QgsPoint lastPoint = mTool->points().rbegin()[0];
   QgsPoint secondLastPoint = mTool->points().rbegin()[1];
@@ -154,7 +152,7 @@ void Qgs3DMeasureDialog::removeLastPoint()
     // Update total distance
     QgsLineString measureLine( mTool->points() );
     mTotal = measureLine.length3D();
-    mHorisontalTotal = measureLine.length();
+    mHorizontalTotal = measureLine.length();
     updateTotal();
   }
 }
@@ -225,9 +223,9 @@ void Qgs3DMeasureDialog::setupTableHeader()
 {
   // Set the table header to show displayed unit
   QStringList headers;
-  if ( horisontalDistanceCbx->isChecked() )
+  if ( horizontalDistanceCbx->isChecked() )
   {
-    headers << tr( "Horisontal Distance" );
+    headers << tr( "Horizontal Distance" );
   }
   if ( verticalDistanceCbx->isChecked() )
   {
@@ -247,16 +245,16 @@ void Qgs3DMeasureDialog::setupTableHeader()
   }
 }
 
-void Qgs3DMeasureDialog::addMeasurement( double distance, double zDistance, double horisontalDistance )
+void Qgs3DMeasureDialog::addMeasurement( double distance, double verticalDistance, double horizontalDistance )
 {
   QStringList content;
-  if ( horisontalDistanceCbx->isChecked() )
+  if ( horizontalDistanceCbx->isChecked() )
   {
-    content << QLocale().toString( convertLength( horisontalDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
+    content << QLocale().toString( convertLength( horizontalDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
   }
   if ( verticalDistanceCbx->isChecked() )
   {
-    content << QLocale().toString( convertLength( zDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
+    content << QLocale().toString( convertLength( verticalDistance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
   }
   content << QLocale().toString( convertLength( distance, mDisplayedDistanceUnit ), 'f', mDecimalPlaces );
   QTreeWidgetItem *item = new QTreeWidgetItem( content );
@@ -272,9 +270,9 @@ void Qgs3DMeasureDialog::updateTotal()
 {
   // Update total with new displayed unit
   editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
-  editHorisontalTotal->setText( formatDistance( convertLength( mHorisontalTotal, mDisplayedDistanceUnit ) ) );
-  editHorisontalTotal->setVisible( horisontalDistanceCbx->isChecked() );
-  totalHorisontalDistanceLabel->setVisible( horisontalDistanceCbx->isChecked() );
+  editHorizontalTotal->setText( formatDistance( convertLength( mHorizontalTotal, mDisplayedDistanceUnit ) ) );
+  editHorizontalTotal->setVisible( horizontalDistanceCbx->isChecked() );
+  totalHorizontalDistanceLabel->setVisible( horizontalDistanceCbx->isChecked() );
 }
 
 void Qgs3DMeasureDialog::updateTable()
@@ -295,9 +293,9 @@ void Qgs3DMeasureDialog::updateTable()
     if ( !isFirstPoint )
     {
       double distance = p1.distance3D( p2 );
-      double zDistance = p2.z() - p1.z();
-      double horisontalDistance = p1.distance( p2 );
-      addMeasurement( distance, zDistance, horisontalDistance );
+      double verticalDistance = p2.z() - p1.z();
+      double horizontalDistance = p1.distance( p2 );
+      addMeasurement( distance, verticalDistance, horizontalDistance );
     }
     p1 = p2;
     isFirstPoint = false;
@@ -308,6 +306,6 @@ void Qgs3DMeasureDialog::resetTable()
 {
   mTable->clear();
   mTotal = 0.;
-  mHorisontalTotal = 0.;
+  mHorizontalTotal = 0.;
   updateTotal();
 }

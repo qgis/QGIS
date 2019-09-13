@@ -48,8 +48,8 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Get last Z value distance in map distance unit
     double lastVerticalDistance();
 
-    //! Get last horisontal value distance in map distance unit
-    double lastHorisontalDistance();
+    //! Get last horizontal value distance in map distance unit
+    double lastHorizontalDistance();
 
     //! Populating unit combo box
     void repopulateComboBoxUnits();
@@ -80,8 +80,8 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Total length in map distance unit
     double mTotal = 0.0;
 
-    //! Total horisontal length in map distance unit
-    double mHorisontalTotal = 0.0;
+    //! Total horizontal length in map distance unit
+    double mHorizontalTotal = 0.0;
 
     //! Number of decimal places we want.
     int mDecimalPlaces = 3;
@@ -107,8 +107,8 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Setup the header of the table
     void setupTableHeader();
 
-    //! Add measurement (3d-distance and z-distance) to the table
-    void addMeasurement( double distance, double zDistance, double horisontalDistance );
+    //! Add measurement (3d-distance, vertical distance, horizontal distance) to the table
+    void addMeasurement( double distance, double verticalDistance, double horizontalDistance );
 
     //! Update total value
     void updateTotal();

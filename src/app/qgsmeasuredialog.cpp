@@ -44,9 +44,9 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   // hide 3D related options
   verticalDistanceCbx->hide();
-  horisontalDistanceCbx->hide();
-  editHorisontalTotal->hide();
-  totalHorisontalDistanceLabel->hide();
+  horizontalDistanceCbx->hide();
+  editHorizontalTotal->hide();
+  totalHorizontalDistanceLabel->hide();
 
   QPushButton *nb = new QPushButton( tr( "&New" ) );
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
