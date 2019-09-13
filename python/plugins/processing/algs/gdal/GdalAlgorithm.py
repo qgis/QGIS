@@ -119,8 +119,8 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         elif input_layer.dataProvider().name().lower() == 'wfs':
             uri = QgsDataSourceUri(input_layer.source())
             baseUrl = uri.param('url').split('?')[0]
+            ogr_data_path = "WFS:{}".format(baseUrl)
             ogr_layer_name = uri.param('typename')
-            ogr_data_path = "WFS:{} {}".format(baseUrl, ogr_layer_name)
         else:
             # vector layer, but not OGR - get OGR compatible path
             # TODO - handle "selected features only" mode!!
