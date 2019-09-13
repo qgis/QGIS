@@ -30,6 +30,13 @@ class QgsMapLayer;
 class QgsVectorLayer;
 class QgsSymbol;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgshighlight.h>
+% End
+#endif
+
 /**
  * \ingroup gui
  * A class for highlight features on the map.
@@ -48,14 +55,22 @@ class QgsSymbol;
  */
 class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
 {
-
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsHighlight *>( sipCpp ) )
+      sipType = sipType_QgsHighlight;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+  public:
+
     Q_PROPERTY( QColor color READ color WRITE setColor )
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
     Q_PROPERTY( int width READ width WRITE setWidth )
     Q_PROPERTY( int buffer READ buffer WRITE setBuffer )
-
-  public:
 
     /**
      * Constructor for QgsHighlight
@@ -63,7 +78,7 @@ class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
      * \param geom initial geometry of highlight
      * \param layer associated map layer
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, const QgsGeometry &geom, QgsMapLayer *layer );
 
     /**
      * Constructor for highlighting TRUE feature shape using feature attributes
@@ -72,7 +87,7 @@ class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
      * \param feature
      * \param layer vector layer
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, const QgsFeature &feature, QgsVectorLayer *layer );
     ~QgsHighlight() override;
 
     /**
