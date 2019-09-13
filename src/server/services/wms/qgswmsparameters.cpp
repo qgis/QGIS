@@ -814,7 +814,11 @@ namespace QgsWms
     {
       f = Format::PDF;
     }
-
+    else if ( fStr.compare( QLatin1String( "application/json" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 )
+    {
+      f = Format::JSON;
+    }
     return f;
   }
 
