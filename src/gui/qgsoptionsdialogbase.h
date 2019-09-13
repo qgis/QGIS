@@ -92,6 +92,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void restoreOptionsBaseUi( const QString &title = QString() );
 
     /**
+     * Resizes all tabs when the dialog is resized
+     * \param index current tab index
+     * \since QGIS 3.10
+     */
+    void resizeAlltabs( int index );
+
+    /**
      * Determine if the options list is in icon only mode
      */
     bool iconOnly() {return mIconOnly;}
