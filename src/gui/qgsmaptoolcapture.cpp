@@ -397,18 +397,19 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
       if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex(), vId ) )
         return 2;
 
+      const QgsGeometry geom( f.geometry() );
       if ( QgsProject::instance()->topologicalEditing() && match.hasEdge() )
       {
         QgsVertexId vId2;
         if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex() + 1, vId2 ) )
           return 2;
-        QgsLineString line( f.geometry().constGet()->vertexAt( vId ), f.geometry().constGet()->vertexAt( vId2 ) );
+        QgsLineString line( geom.constGet()->vertexAt( vId ), geom.constGet()->vertexAt( vId2 ) );
 
         layerPoint = QgsGeometryUtils::closestPoint( line,  QgsPoint( match.point() ) );
       }
       else
       {
-        layerPoint = f.geometry().constGet()->vertexAt( vId );
+        layerPoint = geom.constGet()->vertexAt( vId );
       }
 
       // ZM support depends on the target layer
