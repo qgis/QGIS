@@ -149,6 +149,8 @@ namespace QgsWms
       // Set layer filter and dimension
       void setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters );
 
+      QStringList dimensionFilter( QgsVectorLayer *layer ) const;
+
       // Set layer python filter
       void setLayerAccessControlFilter( QgsMapLayer *layer ) const;
 
