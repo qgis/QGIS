@@ -1934,15 +1934,6 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
     mBackgroundSettings.readXml( textStyleElem, context );
   }
 
-  if ( textStyleElem.firstChildElement( QStringLiteral( "dd_properties" ) ).isNull() )
-  {
-    mBackgroundSettings.readXml( elem, context );
-  }
-  else
-  {
-    mBackgroundSettings.readXml( textStyleElem, context );
-  }
-
   QDomElement ddElem = textStyleElem.firstChildElement( QStringLiteral( "dd_properties" ) );
   if ( ddElem.isNull() )
   {
