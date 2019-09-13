@@ -286,6 +286,13 @@ QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
   close();
 }
 
+/// @cond private
+
+/**
+ * This class guards against infinite recursion.
+ * The counter will be created per thread and hasStackOverflow will return
+ * true if more than maxDepth instances are created in parallel in a thread.
+ */
 class QgsThreadStackOverflowGuard
 {
   public:
@@ -326,6 +333,7 @@ class QgsThreadStackOverflowGuard
     int mMaxDepth;
 };
 
+/// @endcond private
 
 bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 {
@@ -340,8 +348,6 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( guard.hasStackOverflow() )
     return false;
-
-  int depth = guard.depth();
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
@@ -680,9 +686,6 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   if ( guard.hasStackOverflow() )
     return;
-
-
-  int depth = guard.depth();
 
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 

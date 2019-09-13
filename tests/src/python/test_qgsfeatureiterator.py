@@ -151,7 +151,6 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         self.assertEqual(fet['exp1'], 'Jet')
 
-
     def test_ExpressionFieldNestedCircular(self):
         """ test circular virtual field definitions """
 
