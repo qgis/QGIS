@@ -24,8 +24,6 @@
       <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6.24145873320538,-0.054510556621882 7.24145873320538,-1.05451055662188 5.24145873320538,-1.05451055662188 6.24145873320538,-0.054510556621882</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:fids>polys.1,polys.9</ogr:fids>
       <ogr:name>dd</ogr:name>
-      <ogr:intval>0</ogr:intval>
-      <ogr:floatval>0</ogr:floatval>
     </ogr:aggregate_field>
   </gml:featureMember>
   <gml:featureMember>

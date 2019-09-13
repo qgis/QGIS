@@ -317,7 +317,7 @@ void TestQgsStatisticSummary::noValues()
   QCOMPARE( s.countMissing(), 0 );
   QCOMPARE( s.statistic( QgsStatisticalSummary::CountMissing ), 0.0 );
   QCOMPARE( s.sum(), 0.0 );
-  QCOMPARE( s.statistic( QgsStatisticalSummary::Sum ), 0.0 );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Sum ) ) );
   QVERIFY( std::isnan( s.first() ) );
   QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::First ) ) );
   QVERIFY( std::isnan( s.last() ) );
