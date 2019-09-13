@@ -1958,7 +1958,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # expression field which references itself
         idx = layer.addExpressionField('sum(test2)', QgsField('test2', QVariant.LongLong))
         fet = next(layer.getFeatures())
-        self.assertEqual(fet['test2'], NULL)
+        self.assertEqual(fet['test2'], 0)
 
     def test_ExpressionFieldEllipsoidLengthCalculation(self):
         # create a temporary layer
