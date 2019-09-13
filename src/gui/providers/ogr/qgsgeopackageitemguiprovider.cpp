@@ -93,10 +93,24 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
     // Add table to existing DB
     QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), collectionItem->parent() );
-    QVariantMap data;
-    data.insert( QStringLiteral( "item" ), QVariant::fromValue( QPointer< QgsGeoPackageCollectionItem >( collectionItem ) ) );
-    actionAddTable->setData( data );
-    connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageItemGuiProvider::addTable );
+    QPointer<QgsGeoPackageCollectionItem>collectionItemPtr { collectionItem };
+    connect( actionAddTable, &QAction::triggered, [ collectionItemPtr ]
+    {
+      if ( collectionItemPtr )
+      {
+        QgsNewGeoPackageLayerDialog dialog( nullptr );
+        dialog.setDatabasePath( collectionItemPtr->path() );
+        dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+        dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
+        dialog.lockDatabasePath();
+        if ( dialog.exec() == QDialog::Accepted )
+        {
+          if ( collectionItemPtr )
+            collectionItemPtr->refreshConnections();
+        }
+      }
+    } );
+
     menu->addAction( actionAddTable );
 
     QAction *sep = new QAction( collectionItem->parent() );
@@ -167,25 +181,6 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg()
     {
       QMessageBox::warning( nullptr, title, QObject::tr( "The GeoPackage '%1' cannot be deleted because it is in the current project as '%2',"
                             " remove it from the project and retry." ).arg( path, projectLayer->name() ) );
-    }
-  }
-}
-
-void QgsGeoPackageItemGuiProvider::addTable()
-{
-  QAction *s = qobject_cast<QAction *>( sender() );
-  QVariantMap data = s->data().toMap();
-  QPointer< QgsGeoPackageCollectionItem > item = data[QStringLiteral( "item" )].value<QPointer< QgsGeoPackageCollectionItem >>();
-  if ( item )
-  {
-    QgsNewGeoPackageLayerDialog dialog( nullptr );
-    dialog.setDatabasePath( item->path() );
-    dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-    dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
-    dialog.lockDatabasePath();
-    if ( dialog.exec() == QDialog::Accepted )
-    {
-      item->refreshConnections();
     }
   }
 }
@@ -360,7 +355,7 @@ void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path
 {
   Q_UNUSED( path )
   QString errCause;
-  bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( name, errCause );
+  bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( name, path, errCause );
   if ( !result || !errCause.isEmpty() )
   {
     QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );

@@ -211,11 +211,11 @@ void QgsGeoPackageCollectionItem::deleteConnection()
   mParent->refreshConnections();
 }
 
-bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, QString &errCause )
+bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause )
 {
   QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
-  QgsAbstractDatabaseProviderConnection *conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->findConnection( name ) ) };
+  std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path, QVariantMap() ) ) );
   if ( conn )
   {
     try

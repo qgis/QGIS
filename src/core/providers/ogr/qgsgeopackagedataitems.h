@@ -52,10 +52,11 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     /**
      * Compacts (VACUUM) a geopackage database
      * \param name DB connection name
+     * \param path DB connection path
      * \param errCause contains the error message
      * \return true on success
      */
-    static bool vacuumGeoPackageDb( const QString &name, QString &errCause );
+    static bool vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause );
 
     void addConnection();
     void deleteConnection();

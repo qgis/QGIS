@@ -57,7 +57,6 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
   protected slots:
     void vacuum();
     void renameVectorLayer();
-    void addTable( );
     void deleteGpkg();
 };
 
