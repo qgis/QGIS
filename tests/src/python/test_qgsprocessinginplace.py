@@ -11,18 +11,35 @@ __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import re
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+import os
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QTemporaryDir
 from qgis.core import (
-    QgsFeature, QgsGeometry, QgsSettings, QgsApplication, QgsMemoryProviderUtils, QgsWkbTypes, QgsField, QgsFields, QgsProcessingFeatureSourceDefinition, QgsProcessingContext, QgsProcessingFeedback, QgsCoordinateReferenceSystem, QgsProject, QgsProcessingException
+    QgsFeature,
+    QgsGeometry,
+    QgsSettings,
+    QgsApplication,
+    QgsMemoryProviderUtils,
+    QgsWkbTypes,
+    QgsField,
+    QgsFields,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsCoordinateReferenceSystem,
+    QgsProject,
+    QgsProcessingException,
+    QgsVectorLayer
 )
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 from processing.gui.AlgorithmExecutor import execute_in_place_run
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import QgsVectorLayerUtils, QgsFeatureRequest
+import shutil
 
 start_app()
 
@@ -844,6 +861,42 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(new_features), 1)
         old_features, new_features = self._test_difference_on_invalid_geometries(2)
         self.assertEqual(len(new_features), 1)
+
+    def test_unique_constraints(self):
+        """Test issue #31634"""
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        gpkg_name = 'bug_31634_Multi_to_Singleparts_FID.gpkg'
+        gpkg_path = os.path.join(temp_path, gpkg_name)
+        shutil.copyfile(os.path.join(unitTestDataPath(), gpkg_name), gpkg_path)
+
+        gpkg_layer = QgsVectorLayer(gpkg_path + '|layername=Multi_to_Singleparts_FID_bug', 'lyr', 'ogr')
+        self.assertTrue(gpkg_layer.isValid())
+        QgsProject.instance().addMapLayers([gpkg_layer])
+
+        # Test that makeFeaturesCompatible set to NULL unique constraint fields
+        feature = next(gpkg_layer.getFeatures())
+
+        feedback = ConsoleFeedBack()
+        context = dataobjects.createContext(feedback)
+        context.setProject(QgsProject.instance())
+
+        alg = self.registry.createAlgorithmById('native:multiparttosingleparts')
+        self.assertIsNotNone(alg)
+
+        parameters = {
+            'INPUT': gpkg_layer,
+            'OUTPUT': ':memory',
+        }
+
+        ok, _ = execute_in_place_run(
+            alg, parameters, context=context, feedback=feedback, raise_exceptions=True)
+
+        pks = set()
+        for f in gpkg_layer.getFeatures():
+            pks.add(f.attribute(0))
+
+        self.assertTrue(gpkg_layer.commitChanges())
 
 
 if __name__ == '__main__':
