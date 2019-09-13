@@ -6,6 +6,6 @@
   "variableLenArguments": false,
   "arguments": [
     {"arg":"string", "description": "the string to hash"}],
-    "examples": [ { "expression":"md4("QGIS")", "returns":"'c0fc71c241cdebb6e888cbac0e2b68eb'"}
+    "examples": [ { "expression":"md4('QGIS')", "returns":"'c0fc71c241cdebb6e888cbac0e2b68eb'"}
     ]
 }

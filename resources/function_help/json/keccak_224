@@ -6,6 +6,6 @@
   "variableLenArguments": false,
   "arguments": [
     {"arg":"string", "description": "the string to hash"}],
-    "examples": [ { "expression":"keccak_224("QGIS")", "returns":"'5b0ce6acef8b0a121d4ac4f3eaa8503c799ad4e26a3392d1fb201478'"}
+    "examples": [ { "expression":"keccak_224('QGIS')", "returns":"'5b0ce6acef8b0a121d4ac4f3eaa8503c799ad4e26a3392d1fb201478'"}
     ]
 }
