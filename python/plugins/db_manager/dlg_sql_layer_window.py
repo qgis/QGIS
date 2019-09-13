@@ -176,14 +176,20 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if uri.keyColumn() != '_uid_':
             self.uniqueColumnCheck.setCheckState(Qt.Checked)
             if self.allowMultiColumnPk:
-                itemsData = uri.keyColumn().split(',')
+                # Unchecked default values
                 for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-                    if item.data() in itemsData:
+                    if item.checkState() == Qt.Checked:
+                        item.setCheckState(Qt.Unchecked)
+                # Get key columns
+                itemsData = uri.keyColumn().split(',')
+                # Checked key columns
+                for keyColumn in itemsData:
+                    for item in self.uniqueModel.findItems(keyColumn):
                         item.setCheckState(Qt.Checked)
             else:
                 keyColumn = uri.keyColumn()
                 if self.uniqueModel.findItems(keyColumn):
-                    self.uniqueCombo.setEditText(keyColumn)
+                    self.uniqueCombo.setCurrentIndex(self.uniqueCombo.findText(keyColumn, Qt.MatchExactly))
 
         # Finally layer name, filter and selectAtId
         self.layerNameEdit.setText(layer.name())
