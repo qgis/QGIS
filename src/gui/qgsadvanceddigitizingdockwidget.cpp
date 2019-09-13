@@ -687,9 +687,10 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
    * but they do not take into account if when you snap on a vertex it has
    * a Z value.
    * To get the value we use the snapPoint method. However, we only apply it
-   * when the snapped point corresponds to the constrained point.
+   * when the snapped point corresponds to the constrained point or on an edge
+   * if the topological editing is activated.
    */
-  if ( mSnapMatch.hasVertex() && ( point == mSnapMatch.point() ) )
+  if ( ( mSnapMatch.hasVertex() && ( point == mSnapMatch.point() ) ) || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
   {
     e->snapPoint();
   }
