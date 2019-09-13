@@ -239,7 +239,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
   QRgb *outputBlockData = outputBlock->colorData();
   const QgsRasterShaderFunction *fcn = mShader->rasterShaderFunction();
 

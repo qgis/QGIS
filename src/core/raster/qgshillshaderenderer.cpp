@@ -157,8 +157,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   float cos225_az_mul_cos_alt_mul_z_mul_127 = -32.87001872802012f * cos_alt_mul_z;
   float cos_alt_mul_z_mul_127 = 127.0f * cos_alt_mul_z;
 
-  QRgb defaultNodataColor = NODATA_COLOR;
-
+  const QRgb defaultNodataColor = renderColorForNodataPixel();
 
 #ifdef HAVE_OPENCL
 

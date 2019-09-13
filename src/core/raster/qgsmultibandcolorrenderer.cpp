@@ -238,7 +238,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     blueData = blueBlock->byteData();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
 
   if ( fastDraw )
   {
