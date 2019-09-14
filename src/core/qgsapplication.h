@@ -885,6 +885,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsAuthManager *sAuthManager;
 
     static ApplicationMembers *members();
+
+    static void invalidateCaches();
 };
 
 // clazy:excludeall=qstring-allocations
