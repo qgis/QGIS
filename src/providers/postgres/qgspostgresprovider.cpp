@@ -4523,6 +4523,11 @@ QList<QgsVectorLayer *> QgsPostgresProvider::searchLayers( const QList<QgsVector
 QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const
 {
   QList<QgsRelation> result;
+  if ( !mValid )
+  {
+    QgsLogger::warning( "Error getting the foreign keys of " + mTableName + ": invalid connection" );
+    return result;
+  }
   QString sql(
     "SELECT RC.CONSTRAINT_NAME, KCU1.COLUMN_NAME, KCU2.CONSTRAINT_SCHEMA, KCU2.TABLE_NAME, KCU2.COLUMN_NAME, KCU1.ORDINAL_POSITION "
     "FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS RC "
