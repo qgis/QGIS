@@ -1568,54 +1568,61 @@ QStringList QgsRasterLayer::subLayers() const
 // note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
 QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage::Format format )
 {
-  QImage myQImage( size, format );
+  QImage image( size, format );
 
   if ( ! isValid( ) )
     return  QImage();
 
-  myQImage.setColor( 0, bgColor.rgba() );
-  myQImage.fill( 0 );  //defaults to white, set to transparent for rendering on a map
-
-
-  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
-
-  double myMapUnitsPerPixel;
-  double myX = 0.0;
-  double myY = 0.0;
-  QgsRectangle myExtent = mDataProvider->extent();
-  if ( myExtent.width() / myExtent.height() >= static_cast< double >( myQImage.width() ) / myQImage.height() )
+  if ( image.format() == QImage::Format_Indexed8 )
   {
-    myMapUnitsPerPixel = myExtent.width() / myQImage.width();
-    myY = ( myQImage.height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
+    image.setColor( 0, bgColor.rgba() );
+    image.fill( 0 );  //defaults to white, set to transparent for rendering on a map
   }
   else
   {
-    myMapUnitsPerPixel = myExtent.height() / myQImage.height();
-    myX = ( myQImage.width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
+    image.fill( bgColor );
   }
 
-  double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
-  double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
+  QgsRasterViewPort *rasterViewPort = new QgsRasterViewPort();
 
-  myRasterViewPort->mTopLeftPoint = QgsPointXY( myX, myY );
-  myRasterViewPort->mBottomRightPoint = QgsPointXY( myPixelWidth, myPixelHeight );
-  myRasterViewPort->mWidth = myQImage.width();
-  myRasterViewPort->mHeight = myQImage.height();
+  double mapUnitsPerPixel;
+  double x = 0.0;
+  double y = 0.0;
+  QgsRectangle extent = mDataProvider->extent();
+  if ( extent.width() / extent.height() >= static_cast< double >( image.width() ) / image.height() )
+  {
+    mapUnitsPerPixel = extent.width() / image.width();
+    y = ( image.height() - extent.height() / mapUnitsPerPixel ) / 2;
+  }
+  else
+  {
+    mapUnitsPerPixel = extent.height() / image.height();
+    x = ( image.width() - extent.width() / mapUnitsPerPixel ) / 2;
+  }
 
-  myRasterViewPort->mDrawnExtent = myExtent;
-  myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
-  myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  const double pixelWidth = extent.width() / mapUnitsPerPixel;
+  const double pixelHeight = extent.height() / mapUnitsPerPixel;
 
-  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
+  rasterViewPort->mTopLeftPoint = QgsPointXY( x, y );
+  rasterViewPort->mBottomRightPoint = QgsPointXY( pixelWidth, pixelHeight );
+  rasterViewPort->mWidth = image.width();
+  rasterViewPort->mHeight = image.height();
 
-  QPainter *myQPainter = new QPainter( &myQImage );
-  draw( myQPainter, myRasterViewPort, myMapToPixel );
-  delete myRasterViewPort;
-  delete myMapToPixel;
-  myQPainter->end();
-  delete myQPainter;
+  rasterViewPort->mDrawnExtent = extent;
+  rasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  rasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
 
-  return myQImage;
+  QgsMapToPixel *mapToPixel = new QgsMapToPixel( mapUnitsPerPixel );
+
+  QPainter *painter = new QPainter( &image );
+  draw( painter, rasterViewPort, mapToPixel );
+  delete rasterViewPort;
+  delete mapToPixel;
+
+  painter->end();
+  delete painter;
+
+  return image;
 }
 
 //////////////////////////////////////////////////////////
