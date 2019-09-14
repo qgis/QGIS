@@ -947,7 +947,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         }
       }
       else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-        name = symnode->evaluateLabel( expressionContext, name );
+        name = symnode->evaluateLabel( expressionContext );
     }
     return name;
   }
