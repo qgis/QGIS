@@ -19,6 +19,8 @@
 #include "qgswfsdatasourceuri.h"
 #include "qgsmessagelog.h"
 
+#include <QUrlQuery>
+
 QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   : mURI( uri )
 {
@@ -118,7 +120,10 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
           break;
         }
         else if ( lowerName == QLatin1String( "service" ) ||
-                  lowerName == QLatin1String( "request" ) )
+                  lowerName == QLatin1String( "request" ) ||
+                  lowerName == QLatin1String( "typename" ) ||
+                  lowerName == QLatin1String( "typenames" ) ||
+                  lowerName == QLatin1String( "version" ) )
         {
           url.removeQueryItem( item.first );
           somethingChanged = true;
@@ -176,23 +181,49 @@ QUrl QgsWFSDataSourceURI::baseURL( bool bIncludeServiceWFS ) const
 
 QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, const Method &method ) const
 {
-  QString endpoint;
+  QUrl url;
+  QUrlQuery urlQuery;
   switch ( method )
   {
     case Post:
-      endpoint = mPostEndpoints.contains( request ) ?
-                 mPostEndpoints[ request ] : mURI.param( QgsWFSConstants::URI_PARAM_URL );
+      url = QUrl( mPostEndpoints.contains( request ) ?
+                  mPostEndpoints[ request ] : mURI.param( QgsWFSConstants::URI_PARAM_URL ) );
+      urlQuery = QUrlQuery( url );
       break;
     default:
     case Get:
-      endpoint = mGetEndpoints.contains( request ) ?
-                 mGetEndpoints[ request ] : mURI.param( QgsWFSConstants::URI_PARAM_URL );
+    {
+      const auto defaultUrl( QUrl( mURI.param( QgsWFSConstants::URI_PARAM_URL ) ) );
+      if ( mGetEndpoints.contains( request ) )
+      {
+        // If the input URL has query parameters, and those are not found in the
+        // DCP endpoint, then re-inject them.
+        // I'm not completely sure this is the job of the client to do that.
+        // One could argue that the server should expose them in the DCP endpoint.
+        url = QUrl( mGetEndpoints[ request ] );
+        urlQuery = QUrlQuery( url );
+        const QUrlQuery defaultUrlQuery( defaultUrl );
+        const auto itemsDefaultUrl( defaultUrlQuery.queryItems() );
+        for ( const auto &item : itemsDefaultUrl )
+        {
+          if ( !urlQuery.hasQueryItem( item.first ) )
+          {
+            urlQuery.addQueryItem( item.first, item.second );
+          }
+        }
+      }
+      else
+      {
+        url = defaultUrl;
+        urlQuery = QUrlQuery( url );
+      }
       break;
+    }
   }
-  QUrl url( endpoint );
-  url.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+  urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
   if ( method == Method::Get && ! request.isEmpty() )
-    url.addQueryItem( QStringLiteral( "REQUEST" ), request );
+    urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
+  url.setQuery( urlQuery );
   return url;
 }
 
