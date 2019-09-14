@@ -23,20 +23,26 @@ QReadWriteLock QgsEllipsoidUtils::sEllipsoidCacheLock;
 QHash< QString, QgsEllipsoidUtils::EllipsoidParameters > QgsEllipsoidUtils::sEllipsoidCache;
 QReadWriteLock QgsEllipsoidUtils::sDefinitionCacheLock;
 QList< QgsEllipsoidUtils::EllipsoidDefinition > QgsEllipsoidUtils::sDefinitionCache;
+static bool sDisableCache = false;
 
 QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( const QString &ellipsoid )
 {
   // check cache
-  sEllipsoidCacheLock.lockForRead();
-  QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache.constFind( ellipsoid );
-  if ( cacheIt != sEllipsoidCache.constEnd() )
   {
-    // found a match in the cache
-    QgsEllipsoidUtils::EllipsoidParameters params = cacheIt.value();
+    sEllipsoidCacheLock.lockForRead();
+    if ( !sDisableCache )
+    {
+      QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache.constFind( ellipsoid );
+      if ( cacheIt != sEllipsoidCache.constEnd() )
+      {
+        // found a match in the cache
+        QgsEllipsoidUtils::EllipsoidParameters params = cacheIt.value();
+        sEllipsoidCacheLock.unlock();
+        return params;
+      }
+    }
     sEllipsoidCacheLock.unlock();
-    return params;
   }
-  sEllipsoidCacheLock.unlock();
 
   EllipsoidParameters params;
 
@@ -63,7 +69,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     }
 
     sEllipsoidCacheLock.lockForWrite();
-    sEllipsoidCache.insert( ellipsoid, params );
+    if ( !sDisableCache )
+    {
+      sEllipsoidCache.insert( ellipsoid, params );
+    }
     sEllipsoidCacheLock.unlock();
     return params;
   }
@@ -105,7 +114,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     QgsDebugMsg( QStringLiteral( "setEllipsoid: no row in tbl_ellipsoid for acronym '%1'" ).arg( ellipsoid ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
-    sEllipsoidCache.insert( ellipsoid, params );
+    if ( !sDisableCache )
+    {
+      sEllipsoidCache.insert( ellipsoid, params );
+    }
     sEllipsoidCacheLock.unlock();
     return params;
   }
@@ -118,7 +130,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     QgsDebugMsg( QStringLiteral( "setEllipsoid: wrong format of radius field: '%1'" ).arg( radius ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
-    sEllipsoidCache.insert( ellipsoid, params );
+    if ( !sDisableCache )
+    {
+      sEllipsoidCache.insert( ellipsoid, params );
+    }
     sEllipsoidCacheLock.unlock();
     return params;
   }
@@ -141,7 +156,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     QgsDebugMsg( QStringLiteral( "setEllipsoid: wrong format of parameter2 field: '%1'" ).arg( parameter2 ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
-    sEllipsoidCache.insert( ellipsoid, params );
+    if ( !sDisableCache )
+    {
+      sEllipsoidCache.insert( ellipsoid, params );
+    }
     sEllipsoidCacheLock.unlock();
     return params;
   }
@@ -169,8 +187,12 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   params.crs = destCRS;
 
   sEllipsoidCacheLock.lockForWrite();
-  sEllipsoidCache.insert( ellipsoid, params );
+  if ( !sDisableCache )
+  {
+    sEllipsoidCache.insert( ellipsoid, params );
+  }
   sEllipsoidCacheLock.unlock();
+
   return params;
 }
 
@@ -186,6 +208,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   sDefinitionCacheLock.unlock();
 
   sDefinitionCacheLock.lockForWrite();
+
   sqlite3_database_unique_ptr database;
   sqlite3_statement_unique_ptr statement;
   int result;
@@ -221,7 +244,10 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
     }
   }
 
-  sDefinitionCache = defs;
+  if ( !sDisableCache )
+  {
+    sDefinitionCache = defs;
+  }
   sDefinitionCacheLock.unlock();
 
   return defs;
@@ -235,4 +261,21 @@ QStringList QgsEllipsoidUtils::acronyms()
     result << def.acronym;
   }
   return result;
+}
+
+void QgsEllipsoidUtils::invalidateCache( bool disableCache )
+{
+  sEllipsoidCacheLock.lockForWrite();
+  sDefinitionCacheLock.lockForWrite();
+
+  if ( !sDisableCache )
+  {
+    if ( disableCache )
+      sDisableCache = true;
+    sEllipsoidCache.clear();
+    sDefinitionCache.clear();
+  }
+
+  sDefinitionCacheLock.unlock();
+  sEllipsoidCacheLock.unlock();
 }
