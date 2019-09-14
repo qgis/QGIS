@@ -639,7 +639,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
                   " WHERE c.relkind IN ('v','r','m','p')"
                   " AND has_schema_privilege( n.nspname, 'usage' )"
-                  " AND has_table_privilege( '\"' || n.nspname || '\".\"' || c.relname || '\"', 'select' )"
+                  " AND has_table_privilege( QUOTE_IDENT(n.nspname) || '.' || QUOTE_IDENT(c.relname), 'select' )"
                   " AND (t.typname IN ('geometry','geography','topogeometry') OR b.typname IN ('geometry','geography','topogeometry','pcpatch','raster'))";
 
     // user has select privilege
