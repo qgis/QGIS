@@ -323,6 +323,12 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
+    /**
+     * Returns the expression editor widget.
+     * \since QGIS 3.10
+     */
+    QgsCodeEditorExpression  *expressionEditor() { return txtExpressionString; }
+
   private slots:
     void indicatorClicked( int line, int index, Qt::KeyboardModifiers state );
     void showContextMenu( QPoint );

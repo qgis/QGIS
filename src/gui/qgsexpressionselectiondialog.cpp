@@ -35,6 +35,10 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
 
   QgsGui::enableAutoGeometryRestore( this );
 
+  mActionSelect->setShortcut( QKeySequence( QStringLiteral( "Ctrl+Return" ) ) );
+#if QT_VERSION >= 0x051000
+  mActionSelect->setShortcutVisibleInContextMenu( true );
+#endif
   connect( mActionSelect, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionSelect_triggered );
   connect( mActionAddToSelection, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionAddToSelection_triggered );
   connect( mActionRemoveFromSelection, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionRemoveFromSelection_triggered );

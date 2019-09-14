@@ -22,10 +22,12 @@
 #include "qgshelp.h"
 #include "qgsgui.h"
 
+#include <QKeySequence>
 #include <QListView>
 #include <QMessageBox>
 #include <QRegExp>
 #include <QPushButton>
+#include <QShortcut>
 
 // constructor used when the query builder must make its own
 // connection to the database
@@ -65,6 +67,10 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   pbn = new QPushButton( tr( "&Clear" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::clear );
+
+  QShortcut *acceptShortcut = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Return" ) ), txtSQL );
+  connect( acceptShortcut, &QShortcut::activated, this, &QgsQueryBuilder::accept );
+  buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "OK (Ctrl+Return)" ) );
 
   setupGuiViews();
 

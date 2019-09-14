@@ -320,6 +320,13 @@ when text changes.
 :param enabled: ``True`` to enable auto saving.
 %End
 
+    QgsCodeEditorExpression  *expressionEditor();
+%Docstring
+Returns the expression editor widget.
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void expressionParsed( bool isValid );

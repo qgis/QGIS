@@ -18,6 +18,9 @@
 #include "qgsguiutils.h"
 #include "qgsgui.h"
 
+#include <QKeySequence>
+#include <QShortcut>
+
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
   , mRecentKey( key )
@@ -33,6 +36,10 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->setExpressionText( startText );
   builder->loadFieldNames();
   builder->loadRecent( mRecentKey );
+
+  QShortcut *acceptShortcut = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Return" ) ), builder->expressionEditor() );
+  connect( acceptShortcut, &QShortcut::activated, this, &QgsExpressionBuilderDialog::accept );
+  buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "OK (Ctrl+Return)" ) );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
