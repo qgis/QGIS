@@ -30,6 +30,8 @@
 #include <QTextStream>
 #include <QMessageBox>
 
+#include <cmath>
+
 #include <gdal.h>
 #include <cpl_string.h>
 
@@ -201,14 +203,22 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   destHasNoDataValueList.reserve( nBands );
   destNoDataValueList.reserve( nBands );
 
+  const bool isGpkgOutput = mOutputProviderKey == "gdal" &&
+                            mOutputFormat.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
+  double pixelSize;
+  double geoTransform[6];
+  globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
+  const auto srcProviderExtent( srcProvider->extent() );
+
   for ( int bandNo = 1; bandNo <= nBands; bandNo++ )
   {
     QgsRasterNuller *nuller = pipe->nuller();
 
-    bool srcHasNoDataValue = srcProvider->sourceHasNoDataValue( bandNo );
+    const bool srcHasNoDataValue = srcProvider->sourceHasNoDataValue( bandNo );
     bool destHasNoDataValue = false;
     double destNoDataValue = std::numeric_limits<double>::quiet_NaN();
-    Qgis::DataType destDataType = srcProvider->sourceDataType( bandNo );
+    const Qgis::DataType srcDataType = srcProvider->sourceDataType( bandNo );
+    Qgis::DataType destDataType = srcDataType;
     // TODO: verify what happens/should happen if srcNoDataValue is disabled by setUseSrcNoDataValue
     QgsDebugMsgLevel( QStringLiteral( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->sourceNoDataValue( bandNo ) ), 4 );
     if ( srcHasNoDataValue )
@@ -224,27 +234,34 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destNoDataValue = nuller->noData( bandNo ).value( 0 ).min();
       destHasNoDataValue = true;
     }
-    else
+    // GeoPackage does not support nodata for Byte output, and does not
+    // support non-Byte multiband output, so do not take the risk of an accidental
+    // data type promotion.
+    else if ( !( isGpkgOutput && destDataType == Qgis::Byte ) )
     {
       // Verify if we really need no data value, i.e.
-      QgsRectangle srcExtent = outputExtent;
+      QgsRectangle outputExtentInSrcCrs = outputExtent;
       QgsRasterProjector *projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
         Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs() );
         Q_NOWARN_DEPRECATED_POP
-        srcExtent = ct.transformBoundingBox( outputExtent );
+        outputExtentInSrcCrs = ct.transformBoundingBox( outputExtent );
       }
-      if ( !srcProvider->extent().contains( srcExtent ) )
+      if ( !srcProviderExtent.contains( outputExtentInSrcCrs ) &&
+           ( std::fabs( srcProviderExtent.xMinimum() - outputExtentInSrcCrs.xMinimum() ) > geoTransform[1] / 2 ||
+             std::fabs( srcProviderExtent.xMaximum() - outputExtentInSrcCrs.xMaximum() ) > geoTransform[1] / 2 ||
+             std::fabs( srcProviderExtent.yMinimum() - outputExtentInSrcCrs.yMinimum() ) > std::fabs( geoTransform[5] ) / 2 ||
+             std::fabs( srcProviderExtent.yMaximum() - outputExtentInSrcCrs.yMaximum() ) > std::fabs( geoTransform[5] ) / 2 ) )
       {
-        // Destination extent is larger than source extent, we need destination no data values
+        // Destination extent is (at least partially) outside of source extent, we need destination no data values
         // Get src sample statistics (estimation from sample)
-        QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
+        QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, outputExtentInSrcCrs, 250000 );
 
         // Test if we have free (not used) values
-        double typeMinValue = QgsContrastEnhancement::maximumValuePossible( static_cast< Qgis::DataType >( srcProvider->sourceDataType( bandNo ) ) );
-        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible( static_cast< Qgis::DataType >( srcProvider->sourceDataType( bandNo ) ) );
+        const double typeMinValue = QgsContrastEnhancement::minimumValuePossible( srcDataType );
+        const double typeMaxValue = QgsContrastEnhancement::maximumValuePossible( srcDataType );
         if ( stats.minimumValue > typeMinValue )
         {
           destNoDataValue = typeMinValue;
@@ -286,9 +303,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
 
   //create destProvider for whole dataset here
   QgsRasterDataProvider *destProvider = nullptr;
-  double pixelSize;
-  double geoTransform[6];
-  globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
 
   // initOutput() returns 0 in tile mode!
   destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList );

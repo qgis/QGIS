@@ -236,6 +236,7 @@ bool QgsRasterBlock::setIsNoData()
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( typeIsNumeric( mDataType ) )
   {
+    const size_t dataTypeSize = typeSize( mDataType );
     if ( mHasNoDataValue )
     {
       if ( !mData )
@@ -245,13 +246,18 @@ bool QgsRasterBlock::setIsNoData()
       }
 
       QgsDebugMsgLevel( QStringLiteral( "set mData to mNoDataValue" ), 4 );
-      int dataTypeSize = typeSize( mDataType );
       QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
-
-      char *nodata = noDataByteArray.data();
-      for ( qgssize i = 0; i < static_cast< qgssize >( mWidth )*mHeight; i++ )
+      if ( mNoDataValue == 0 )
       {
-        memcpy( reinterpret_cast< char * >( mData ) + i * dataTypeSize, nodata, dataTypeSize );
+        memset( mData, 0, dataTypeSize * mWidth * mHeight );
+      }
+      else
+      {
+        const char *nodata = noDataByteArray.data();
+        for ( qgssize i = 0; i < static_cast< qgssize >( mWidth )*mHeight; i++ )
+        {
+          memcpy( reinterpret_cast< char * >( mData ) + i * dataTypeSize, nodata, dataTypeSize );
+        }
       }
     }
     else
@@ -266,6 +272,10 @@ bool QgsRasterBlock::setIsNoData()
       }
       QgsDebugMsgLevel( QStringLiteral( "set mNoDataBitmap to 1" ), 4 );
       memset( mNoDataBitmap, 0xff, mNoDataBitmapSize );
+      if ( mData )
+      {
+        memset( mData, 0, dataTypeSize * mWidth * mHeight );
+      }
     }
     return true;
   }
@@ -297,6 +307,7 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( typeIsNumeric( mDataType ) )
   {
+    const size_t dataTypeSize = typeSize( mDataType );
     if ( mHasNoDataValue )
     {
       if ( !mData )
@@ -306,7 +317,6 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
       }
 
       QgsDebugMsgLevel( QStringLiteral( "set mData to mNoDataValue" ), 4 );
-      int dataTypeSize = typeSize( mDataType );
       QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
 
       char *nodata = noDataByteArray.data();
@@ -347,6 +357,11 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
         }
       }
       QgsDebugMsgLevel( QStringLiteral( "set mNoDataBitmap to 1" ), 4 );
+
+      if ( mData )
+      {
+        memset( mData, 0, dataTypeSize * mWidth * mHeight );
+      }
 
       char *nodataRow = new char[mNoDataBitmapWidth]; // full row of no data
       // TODO: we can simply set all bytes to 11111111 (~0) I think

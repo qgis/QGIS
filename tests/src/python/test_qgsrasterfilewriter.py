@@ -26,7 +26,8 @@ from qgis.core import (QgsContrastEnhancement,
                        QgsRasterChecker,
                        QgsRasterPipe,
                        QgsRasterFileWriter,
-                       QgsRasterProjector)
+                       QgsRasterProjector,
+                       QgsRectangle)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -162,7 +163,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
 
         projector = QgsRasterProjector()
         projector.setCrs(provider.crs(), provider.crs())
-        self.assertTrue(pipe.insert(2, projector))
+        self.assertTrue(pipe.set(projector))
 
         self.assertEqual(fw.writeRaster(pipe,
                                         provider.xSize(),
@@ -174,11 +175,86 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         rlayer = QgsRasterLayer('GPKG:%s:imported_table' % test_gpkg)
         self.assertTrue(rlayer.isValid())
         out_provider = rlayer.dataProvider()
-        self.assertEqual(provider.block(1, provider.extent(), source.width(), source.height()).data(),
-                         out_provider.block(1, out_provider.extent(), rlayer.width(), rlayer.height()).data())
+        for i in range(3):
+            src_data = provider.block(i + 1, provider.extent(), source.width(), source.height())
+            out_data = out_provider.block(i + 1, out_provider.extent(), rlayer.width(), rlayer.height())
+            self.assertEqual(src_data.data(), out_data.data())
 
         # remove result file
         os.unlink(test_gpkg)
+
+    def testExportToGpkgWithExtraExtent(self):
+        tmpName = tempfile.mktemp(suffix='.gpkg')
+        source = QgsRasterLayer(os.path.join(self.testDataDir, 'raster', 'band3_byte_noct_epsg4326.tif'), 'my', 'gdal')
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(tmpName)
+        fw.setOutputFormat('gpkg')
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(provider.clone()))
+
+        self.assertEqual(fw.writeRaster(pipe,
+                                        provider.xSize() + 4,
+                                        provider.ySize() + 4,
+                                        QgsRectangle(-3 - 2, -4 - 2, 7 + 2, 6 + 2),
+                                        provider.crs()), 0)
+        del fw
+
+        # Check that the test geopackage contains the raster layer and compare
+        rlayer = QgsRasterLayer(tmpName)
+        self.assertTrue(rlayer.isValid())
+        out_provider = rlayer.dataProvider()
+        for i in range(3):
+            src_data = provider.block(i + 1, provider.extent(), source.width(), source.height())
+            out_data = out_provider.block(i + 1, provider.extent(), source.width(), source.height())
+            self.assertEqual(src_data.data(), out_data.data())
+        out_data = out_provider.block(1, QgsRectangle(7, -4, 7 + 2, 6), 2, 8)
+        # band3_byte_noct_epsg4326 nodata is 255
+        self.assertEqual(out_data.data().data(), b'\xff' * 2 * 8)
+        del out_provider
+        del rlayer
+
+        # remove result file
+        os.unlink(tmpName)
+
+    def testExportToGpkgWithExtraExtentNoNoData(self):
+        tmpName = tempfile.mktemp(suffix='.gpkg')
+        # Remove nodata
+        gdal.Translate('/vsimem/src.tif', os.path.join(self.testDataDir, 'raster', 'band3_byte_noct_epsg4326.tif'), options='-a_nodata none')
+        source = QgsRasterLayer('/vsimem/src.tif', 'my', 'gdal')
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(tmpName)
+        fw.setOutputFormat('gpkg')
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(provider.clone()))
+
+        self.assertEqual(fw.writeRaster(pipe,
+                                        provider.xSize() + 4,
+                                        provider.ySize() + 4,
+                                        QgsRectangle(-3 - 2, -4 - 2, 7 + 2, 6 + 2),
+                                        provider.crs()), 0)
+        del fw
+
+        # Check that the test geopackage contains the raster layer and compare
+        rlayer = QgsRasterLayer(tmpName)
+        self.assertTrue(rlayer.isValid())
+        out_provider = rlayer.dataProvider()
+        for i in range(3):
+            src_data = provider.block(i + 1, provider.extent(), source.width(), source.height())
+            out_data = out_provider.block(i + 1, provider.extent(), source.width(), source.height())
+            self.assertEqual(src_data.data(), out_data.data())
+        out_data = out_provider.block(1, QgsRectangle(7, -4, 7 + 2, 6), 2, 8)
+        # No nodata: defaults to zero
+        self.assertEqual(out_data.data().data(), b'\x00' * 2 * 8)
+        del out_provider
+        del rlayer
+
+        # remove result file
+        gdal.Unlink('/vsimem/src.tif')
+        os.unlink(tmpName)
 
     def _testGeneratePyramids(self, pyramidFormat):
         tmpName = tempfile.mktemp(suffix='.tif')
@@ -196,7 +272,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
 
         projector = QgsRasterProjector()
         projector.setCrs(provider.crs(), provider.crs())
-        self.assertTrue(pipe.insert(2, projector))
+        self.assertTrue(pipe.set(projector))
 
         self.assertEqual(fw.writeRaster(pipe,
                                         provider.xSize(),
