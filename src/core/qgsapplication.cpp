@@ -351,15 +351,20 @@ QgsApplication::~QgsApplication()
   delete mQgisTranslator;
   delete mQtTranslator;
 
-  // invalidate coordinate cache while the PROJ context held by the thread-locale
-  // QgsProjContextStore object is still alive. Otherwise if this later object
-  // is destroyed before the static variables of the cache, we might use freed memory.
-
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to
   // this destructor...
+  invalidateCaches();
+}
+
+void QgsApplication::invalidateCaches()
+{
+  // invalidate coordinate cache while the PROJ context held by the thread-locale
+  // QgsProjContextStore object is still alive. Otherwise if this later object
+  // is destroyed before the static variables of the cache, we might use freed memory.
   QgsCoordinateTransform::invalidateCache( true );
   QgsCoordinateReferenceSystem::invalidateCache( true );
+  QgsEllipsoidUtils::invalidateCache( true );
 }
 
 QgsApplication *QgsApplication::instance()
@@ -1267,11 +1272,7 @@ void QgsApplication::exitQgis()
   if ( QgsProviderRegistry::exists() )
     delete QgsProviderRegistry::instance();
 
-  // invalidate coordinate cache AND DISABLE THEM! while the PROJ context held by the thread-locale
-  // QgsProjContextStore object is still alive. Otherwise if this later object
-  // is destroyed before the static variables of the cache, we might use freed memory.
-  QgsCoordinateTransform::invalidateCache( true );
-  QgsCoordinateReferenceSystem::invalidateCache( true );
+  invalidateCaches();
 
   QgsStyle::cleanDefaultStyle();
 

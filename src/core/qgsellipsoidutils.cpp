@@ -31,6 +31,7 @@ QReadWriteLock QgsEllipsoidUtils::sEllipsoidCacheLock;
 QHash< QString, QgsEllipsoidUtils::EllipsoidParameters > QgsEllipsoidUtils::sEllipsoidCache;
 QReadWriteLock QgsEllipsoidUtils::sDefinitionCacheLock;
 QList< QgsEllipsoidUtils::EllipsoidDefinition > QgsEllipsoidUtils::sDefinitionCache;
+static bool sDisableCache = false;
 
 // maps older QGIS ellipsoid acronyms to proj acronyms/names
 const QMap< QString, QString > sProj6EllipsoidAcronymMap
@@ -179,12 +180,15 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   // check cache
   {
     QgsReadWriteLocker locker( sEllipsoidCacheLock, QgsReadWriteLocker::Read );
-    QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache.constFind( ellipsoid );
-    if ( cacheIt != sEllipsoidCache.constEnd() )
+    if ( !sDisableCache )
     {
-      // found a match in the cache
-      QgsEllipsoidUtils::EllipsoidParameters params = cacheIt.value();
-      return params;
+      QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache.constFind( ellipsoid );
+      if ( cacheIt != sEllipsoidCache.constEnd() )
+      {
+        // found a match in the cache
+        QgsEllipsoidUtils::EllipsoidParameters params = cacheIt.value();
+        return params;
+      }
     }
   }
 
@@ -213,7 +217,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     }
 
     QgsReadWriteLocker locker( sEllipsoidCacheLock, QgsReadWriteLocker::Write );
-    sEllipsoidCache.insert( ellipsoid, params );
+    if ( !sDisableCache )
+    {
+      sEllipsoidCache.insert( ellipsoid, params );
+    }
     return params;
   }
 
@@ -256,7 +263,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     QgsDebugMsg( QStringLiteral( "setEllipsoid: no row in tbl_ellipsoid for acronym '%1'" ).arg( ellipsoid ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
-    sEllipsoidCache.insert( ellipsoid, params );
+    if ( !sDisableCache )
+    {
+      sEllipsoidCache.insert( ellipsoid, params );
+    }
     sEllipsoidCacheLock.unlock();
     return params;
   }
@@ -269,7 +279,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     QgsDebugMsg( QStringLiteral( "setEllipsoid: wrong format of radius field: '%1'" ).arg( radius ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
-    sEllipsoidCache.insert( ellipsoid, params );
+    if ( !sDisableCache )
+    {
+      sEllipsoidCache.insert( ellipsoid, params );
+    }
     sEllipsoidCacheLock.unlock();
     return params;
   }
@@ -292,7 +305,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     QgsDebugMsg( QStringLiteral( "setEllipsoid: wrong format of parameter2 field: '%1'" ).arg( parameter2 ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
-    sEllipsoidCache.insert( ellipsoid, params );
+    if ( !sDisableCache )
+    {
+      sEllipsoidCache.insert( ellipsoid, params );
+    }
     sEllipsoidCacheLock.unlock();
     return params;
   }
@@ -320,14 +336,20 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   params.crs = destCRS;
 
   sEllipsoidCacheLock.lockForWrite();
-  sEllipsoidCache.insert( ellipsoid, params );
+  if ( !sDisableCache )
+  {
+    sEllipsoidCache.insert( ellipsoid, params );
+  }
   sEllipsoidCacheLock.unlock();
   return params;
 #else
   params.valid = false;
 
   QgsReadWriteLocker l( sEllipsoidCacheLock, QgsReadWriteLocker::Write );
-  sEllipsoidCache.insert( ellipsoid, params );
+  if ( !sDisableCache )
+  {
+    sEllipsoidCache.insert( ellipsoid, params );
+  }
 
   return params;
 #endif
@@ -388,7 +410,10 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
             }
 
             defs << def;
-            sEllipsoidCache.insert( def.acronym, def.parameters );
+            if ( !sDisableCache )
+            {
+              sEllipsoidCache.insert( def.acronym, def.parameters );
+            }
           }
 
           codesIt++;
@@ -444,7 +469,10 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   {
     return collator.compare( a.description, b.description ) < 0;
   } );
-  sDefinitionCache = defs;
+  if ( !sDisableCache )
+  {
+    sDefinitionCache = defs;
+  }
 
   return defs;
 }
@@ -458,4 +486,18 @@ QStringList QgsEllipsoidUtils::acronyms()
     result << def.acronym;
   }
   return result;
+}
+
+void QgsEllipsoidUtils::invalidateCache( bool disableCache )
+{
+  QgsReadWriteLocker locker1( sEllipsoidCacheLock, QgsReadWriteLocker::Write );
+  QgsReadWriteLocker locker2( sDefinitionCacheLock, QgsReadWriteLocker::Write );
+
+  if ( !sDisableCache )
+  {
+    if ( disableCache )
+      sDisableCache = true;
+    sEllipsoidCache.clear();
+    sDefinitionCache.clear();
+  }
 }
