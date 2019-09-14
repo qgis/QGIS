@@ -3564,7 +3564,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <Name>my:typename</Name>
       <Title>Title</Title>
       <Abstract>Abstract</Abstract>
-      <DefaultCRS>urn:ogc:def:crs:OGC:1.3:CRS84</DefaultCRS>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
       <WGS84BoundingBox>
         <LowerCorner>2 49</LowerCorner>
         <UpperCorner>3 50</UpperCorner>
@@ -3607,18 +3607,18 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
    xmlns:wfs="http://www.opengis.net/wfs"
    xmlns:ogc="http://www.opengis.net/ogc">
       <gml:boundedBy>
-        <gml:Envelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
-            <gml:lowerCorner>2 49</gml:lowerCorner>
-            <gml:upperCorner>3 50</gml:upperCorner>
+        <gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326">
+            <gml:lowerCorner>49 2</gml:lowerCorner>
+            <gml:upperCorner>50 3</gml:upperCorner>
         </gml:Envelope>
       </gml:boundedBy>
     <gml:featureMember>
       <my:typename gml:id="typename.1">
         <my:geometryProperty>
-          <gml:MultiGeometry srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+          <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::4326">
             <gml:geometryMember>
               <gml:LineString>
-                <gml:coordinates>2,49 3,50</gml:coordinates>
+                <gml:coordinates>49,2 50,3</gml:coordinates>
               </gml:LineString>
             </gml:geometryMember>
           </gml:MultiGeometry>
@@ -3660,7 +3660,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <Name>points</Name>
       <Title>Title</Title>
       <Abstract>Abstract</Abstract>
-      <DefaultCRS>urn:ogc:def:crs:OGC:1.3:CRS84</DefaultCRS>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::3857</DefaultCRS>
       <WGS84BoundingBox>
         <LowerCorner>-98.6523 32.7233</LowerCorner>
         <UpperCorner>23.2868 69.9882</UpperCorner>
@@ -3776,10 +3776,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </gml:featureMember>
 </wfs:FeatureCollection>"""
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::3857"""), 'wb') as f:
             f.write(get_feature_1.encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&SRSNAME=urn:ogc:def:crs:EPSG::3857"""), 'wb') as f:
             f.write(get_features.encode('UTF-8'))
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='points' version='1.1.0'", 'test', 'WFS')
@@ -3819,7 +3819,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <Name>points</Name>
       <Title>Title</Title>
       <Abstract>Abstract</Abstract>
-      <DefaultCRS>urn:ogc:def:crs:OGC:1.3:CRS84</DefaultCRS>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::3857</DefaultCRS>
       <WGS84BoundingBox>
         <LowerCorner>-98.6523 32.7233</LowerCorner>
         <UpperCorner>23.2868 69.9882</UpperCorner>
@@ -3935,10 +3935,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </gml:featureMember>
 </wfs:FeatureCollection>"""
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::3857"""), 'wb') as f:
             f.write(get_feature_1.encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&SRSNAME=urn:ogc:def:crs:EPSG::3857"""), 'wb') as f:
             f.write(get_features.encode('UTF-8'))
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='points' version='1.1.0'", 'test', 'WFS')
