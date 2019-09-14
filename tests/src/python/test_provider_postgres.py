@@ -1222,6 +1222,15 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(g.childCount(), 1)
         self.assertTrue(g.childGeometry(0).vertexCount() > 3)
 
+    def testValidLayerDiscoverRelationsNone(self):
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
+
+    def testInvalidLayerDiscoverRelations(self):
+        vl = QgsVectorLayer('{} table="qgis_test"."invalid_layer" sql='.format(self.dbconn), "invalid_layer", "postgres")
+        self.assertFalse(vl.isValid())
+        self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
