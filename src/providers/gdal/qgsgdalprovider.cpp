@@ -200,19 +200,14 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   : QgsRasterDataProvider( other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
   , mUpdate( false )
 {
-  QString driverShortName;
-  if ( other.mGdalBaseDataset )
-  {
-    driverShortName = GDALGetDriverShortName( GDALGetDatasetDriver( other.mGdalBaseDataset ) );
-  }
-
+  mDriverName = other.mDriverName;
 
   // The JP2OPENJPEG driver might consume too much memory on large datasets
   // so make sure to really use a single one.
   // The PostGISRaster driver internally uses a per-thread connection cache.
   // This can lead to crashes if two datasets created by the same thread are used at the same time.
-  bool forceUseSameDataset = ( driverShortName.toUpper() == QStringLiteral( "JP2OPENJPEG" ) ||
-                               driverShortName == QStringLiteral( "PostGISRaster" ) ||
+  bool forceUseSameDataset = ( mDriverName.toUpper() == QStringLiteral( "JP2OPENJPEG" ) ||
+                               mDriverName == QStringLiteral( "PostGISRaster" ) ||
                                CSLTestBoolean( CPLGetConfigOption( "QGIS_GDAL_FORCE_USE_SAME_DATASET", "FALSE" ) ) );
 
   if ( forceUseSameDataset )
@@ -541,13 +536,17 @@ QString QgsGdalProvider::htmlMetadata()
   if ( !initIfNeeded() )
     return QString();
 
+  GDALDriverH hDriver = GDALGetDriverByName( mDriverName.toLocal8Bit().constData() );
+  if ( !hDriver )
+    return QString();
+
   QString myMetadata;
 
   // GDAL Driver description
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Description" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetDescription( GDALGetDatasetDriver( mGdalDataset ) ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Description" ) + QStringLiteral( "</td><td>" ) + mDriverName + QStringLiteral( "</td></tr>\n" );
 
   // GDAL Driver Metadata
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Metadata" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetMetadataItem( GDALGetDatasetDriver( mGdalDataset ), GDAL_DMD_LONGNAME, nullptr ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Metadata" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetMetadataItem( hDriver, GDAL_DMD_LONGNAME, nullptr ) ) + QStringLiteral( "</td></tr>\n" );
 
   // Dataset description
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dataset Description" ) + QStringLiteral( "</td><td>" ) + QString::fromUtf8( GDALGetDescription( mGdalDataset ) ) + QStringLiteral( "</td></tr>\n" );
@@ -996,7 +995,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return QString();
 
-  if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "netCDF" ) == 0 || strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "GTiff" ) == 0 )
+  if ( mDriverName == QLatin1String( "netCDF" ) || mDriverName == QLatin1String( "GTiff" ) )
   {
     char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
     if ( GDALmetadata )
@@ -1231,10 +1230,7 @@ int QgsGdalProvider::capabilities() const
                    | QgsRasterDataProvider::BuildPyramids
                    | QgsRasterDataProvider::Create
                    | QgsRasterDataProvider::Remove;
-  GDALDriverH myDriver = GDALGetDatasetDriver( mGdalDataset );
-  QString name = GDALGetDriverShortName( myDriver );
-  QgsDebugMsg( "driver short name = " + name );
-  if ( name != QLatin1String( "WMS" ) )
+  if ( mDriverName != QLatin1String( "WMS" ) )
   {
     capability |= QgsRasterDataProvider::Size;
   }
@@ -2652,6 +2648,7 @@ bool QgsGdalProvider::initIfNeeded()
 
 void QgsGdalProvider::initBaseDataset()
 {
+  mDriverName = GDALGetDriverShortName( GDALGetDatasetDriver( mGdalBaseDataset ) );
   mHasInit = true;
   mValid = true;
 #if 0
@@ -3025,7 +3022,10 @@ bool QgsGdalProvider::remove()
 
   if ( mGdalDataset )
   {
-    GDALDriverH driver = GDALGetDatasetDriver( mGdalDataset );
+    GDALDriverH driver = GDALGetDriverByName( mDriverName.toLocal8Bit().constData() );
+    if ( !driver )
+      return false;
+
     closeDataset();
 
     CPLErrorReset();
