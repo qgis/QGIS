@@ -20,7 +20,8 @@ import tempfile
 
 from osgeo import gdal
 from qgis.PyQt.QtCore import QTemporaryFile, QDir
-from qgis.core import (QgsRaster,
+from qgis.core import (QgsContrastEnhancement,
+                       QgsRaster,
                        QgsRasterLayer,
                        QgsRasterChecker,
                        QgsRasterPipe,
@@ -204,6 +205,8 @@ class TestQgsRasterFileWriter(unittest.TestCase):
                                         provider.crs()), 0)
         del fw
         ds = gdal.Open(tmpName)
+        self.assertEqual(ds.RasterCount, 1)
+        self.assertEqual(ds.GetRasterBand(1).Checksum(), 4672)
         self.assertEqual(ds.GetRasterBand(1).GetOverviewCount(), 1)
         fl = ds.GetFileList()
         if pyramidFormat == QgsRaster.PyramidsGTiff:
@@ -224,6 +227,62 @@ class TestQgsRasterFileWriter(unittest.TestCase):
 
     def testGeneratePyramidsErdas(self):
         return self._testGeneratePyramids(QgsRaster.PyramidsErdas)
+
+    def testWriteAsRawInvalidOutputFile(self):
+        tmpName = "/this/is/invalid/file.tif"
+        source = QgsRasterLayer(os.path.join(self.testDataDir, 'raster', 'byte.tif'), 'my', 'gdal')
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(tmpName)
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(provider.clone()))
+
+        self.assertEqual(fw.writeRaster(pipe,
+                                        provider.xSize(),
+                                        provider.ySize(),
+                                        provider.extent(),
+                                        provider.crs()), QgsRasterFileWriter.DestProviderError)
+        del fw
+
+    def testWriteAsImage(self):
+        tmpName = tempfile.mktemp(suffix='.tif')
+        source = QgsRasterLayer(os.path.join(self.testDataDir, 'raster', 'byte.tif'), 'my', 'gdal')
+        source.setContrastEnhancement(algorithm=QgsContrastEnhancement.NoEnhancement)
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(tmpName)
+
+        self.assertEqual(fw.writeRaster(source.pipe(),
+                                        provider.xSize(),
+                                        provider.ySize(),
+                                        provider.extent(),
+                                        provider.crs()), QgsRasterFileWriter.NoError)
+        ds = gdal.Open(tmpName)
+        self.assertEqual(ds.RasterCount, 4)
+        self.assertEqual(ds.GetRasterBand(1).Checksum(), 4672)
+        self.assertEqual(ds.GetRasterBand(2).Checksum(), 4672)
+        self.assertEqual(ds.GetRasterBand(3).Checksum(), 4672)
+        self.assertEqual(ds.GetRasterBand(4).Checksum(), 4873)
+        ds = None
+
+        del fw
+        os.unlink(tmpName)
+
+    def testWriteAsImageInvalidOutputPath(self):
+        tmpName = "/this/is/invalid/file.tif"
+        source = QgsRasterLayer(os.path.join(self.testDataDir, 'raster', 'byte.tif'), 'my', 'gdal')
+        source.setContrastEnhancement(algorithm=QgsContrastEnhancement.NoEnhancement)
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(tmpName)
+
+        self.assertEqual(fw.writeRaster(source.pipe(),
+                                        provider.xSize(),
+                                        provider.ySize(),
+                                        provider.extent(),
+                                        provider.crs()), QgsRasterFileWriter.DestProviderError)
+        del fw
 
 
 if __name__ == '__main__':
