@@ -318,7 +318,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
                                         provider.xSize(),
                                         provider.ySize(),
                                         provider.extent(),
-                                        provider.crs()), QgsRasterFileWriter.DestProviderError)
+                                        provider.crs()), QgsRasterFileWriter.CreateDatasourceError)
         del fw
 
     def testWriteAsImage(self):
@@ -357,8 +357,33 @@ class TestQgsRasterFileWriter(unittest.TestCase):
                                         provider.xSize(),
                                         provider.ySize(),
                                         provider.extent(),
-                                        provider.crs()), QgsRasterFileWriter.DestProviderError)
+                                        provider.crs()), QgsRasterFileWriter.CreateDatasourceError)
         del fw
+
+    def testWriteAsRawGS7BG(self):
+        ''' Test that despite writing a Byte raster, we correctly handle GS7BG creating a Float64 '''
+        tmpName = tempfile.mktemp(suffix='.grd')
+        source = QgsRasterLayer(os.path.join(self.testDataDir, 'raster', 'byte.tif'), 'my', 'gdal')
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(tmpName)
+        fw.setOutputFormat('GS7BG')
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(provider.clone()))
+
+        self.assertEqual(fw.writeRaster(pipe,
+                                        provider.xSize(),
+                                        provider.ySize(),
+                                        provider.extent(),
+                                        provider.crs()), QgsRasterFileWriter.NoError)
+        del fw
+
+        ds = gdal.Open(tmpName)
+        self.assertEqual(ds.RasterCount, 1)
+        self.assertEqual(ds.GetRasterBand(1).Checksum(), 4672)
+        ds = None
+        os.unlink(tmpName)
 
 
 if __name__ == '__main__':

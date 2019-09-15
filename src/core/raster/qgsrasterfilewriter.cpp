@@ -301,44 +301,74 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     }
   }
 
-  //create destProvider for whole dataset here
-  QgsRasterDataProvider *destProvider = nullptr;
-
-  // initOutput() returns 0 in tile mode!
-  destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList );
-
-  WriterError error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, feedback );
-
-  if ( error == NoDataConflict )
+  WriterError error;
+  for ( int attempt = 0; attempt < 2; attempt ++ )
   {
-    // The value used for no data was found in source data, we must use wider data type
-    if ( destProvider ) // no tiles
+    //create destProvider for whole dataset here
+    // initOutput() returns 0 in tile mode!
+    std::unique_ptr<QgsRasterDataProvider> destProvider(
+      initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList ) );
+    if ( !mTiledMode )
     {
-      destProvider->remove();
-      delete destProvider;
-      destProvider = nullptr;
-    }
-    else // VRT
-    {
-      // TODO: remove created VRT
+      if ( !destProvider )
+      {
+        return CreateDatasourceError;
+      }
+      if ( !destProvider->isValid() )
+      {
+        return CreateDatasourceError;
+      }
+      if ( nCols != destProvider->xSize() || nRows != destProvider->ySize() )
+      {
+        QgsDebugMsg( QStringLiteral( "Created raster does not have requested dimensions" ) );
+        return CreateDatasourceError;
+      }
+      if ( nBands != destProvider->bandCount() )
+      {
+        QgsDebugMsg( QStringLiteral( "Created raster does not have requested band count" ) );
+        return CreateDatasourceError;
+      }
+      if ( nBands )
+      {
+        // Some driver like GS7BG may accept Byte as requested data type,
+        // but actually return a driver with Float64...
+        destDataType = destProvider->dataType( 1 );
+      }
     }
 
-    // But we don't know which band -> wider all
-    for ( int i = 0; i < nBands; i++ )
-    {
-      double destNoDataValue;
-      Qgis::DataType destDataType = QgsRasterBlock::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
-      destDataTypeList.replace( i, destDataType );
-      destNoDataValueList.replace( i, destNoDataValue );
-    }
-    destDataType = destDataTypeList.value( 0 );
+    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider.get(), feedback );
 
-    // Try again
-    destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList );
-    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, feedback );
+    if ( attempt == 0 && error == NoDataConflict )
+    {
+      // The value used for no data was found in source data, we must use wider data type
+      if ( destProvider ) // no tiles
+      {
+        destProvider->remove();
+        destProvider.reset();
+      }
+      else // VRT
+      {
+        // TODO: remove created VRT
+      }
+
+      // But we don't know which band -> wider all
+      for ( int i = 0; i < nBands; i++ )
+      {
+        double destNoDataValue;
+        Qgis::DataType destDataType = QgsRasterBlock::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
+        destDataTypeList.replace( i, destDataType );
+        destNoDataValueList.replace( i, destNoDataValue );
+      }
+      destDataType = destDataTypeList.value( 0 );
+
+      // Try again
+    }
+    else
+    {
+      break;
+    }
   }
 
-  delete destProvider;
   return error;
 }
 
@@ -476,7 +506,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         }
         if ( !partDestProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, 0, 0 ) )
         {
-          return DestProviderError;
+          return WriteError;
         }
         addToVRT( partFileName( fileIndex ), i, iterCols, iterRows, iterLeft, iterTop );
       }
@@ -489,7 +519,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       {
         if ( !destProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, iterLeft, iterTop ) )
         {
-          return DestProviderError;
+          return WriteError;
         }
       }
     }
@@ -537,10 +567,33 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
 
-  std::unique_ptr< QgsRasterDataProvider > destProvider( initOutput( nCols, nRows, crs, geoTransform, 4, Qgis::Byte ) );
-  if ( destProvider && !destProvider->isValid() )
+  const int nOutputBands = 4;
+  std::unique_ptr< QgsRasterDataProvider > destProvider( initOutput( nCols, nRows, crs, geoTransform, nOutputBands, Qgis::Byte ) );
+  if ( !mTiledMode )
   {
-    return DestProviderError;
+    if ( !destProvider )
+    {
+      return CreateDatasourceError;
+    }
+    if ( !destProvider->isValid() )
+    {
+      return CreateDatasourceError;
+    }
+    if ( nCols != destProvider->xSize() || nRows != destProvider->ySize() )
+    {
+      QgsDebugMsg( QStringLiteral( "Created raster does not have requested dimensions" ) );
+      return CreateDatasourceError;
+    }
+    if ( nOutputBands != destProvider->bandCount() )
+    {
+      QgsDebugMsg( QStringLiteral( "Created raster does not have requested band count" ) );
+      return CreateDatasourceError;
+    }
+    if ( Qgis::Byte != destProvider->dataType( 1 ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Created raster does not have requested data type" ) );
+      return CreateDatasourceError;
+    }
   }
 
   iter->startRasterRead( 1, nCols, nRows, outputExtent, feedback );
@@ -604,7 +657,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
            !partDestProvider->write( &blueData[0], 3, iterCols, iterRows, 0, 0 ) ||
            !partDestProvider->write( &alphaData[0], 4, iterCols, iterRows, 0, 0 ) )
       {
-        return DestProviderError;
+        return WriteError;
       }
 
       addToVRT( partFileName( fileIndex ), 1, iterCols, iterRows, iterLeft, iterTop );
@@ -619,7 +672,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
            !destProvider->write( &blueData[0], 3, iterCols, iterRows, iterLeft, iterTop ) ||
            !destProvider->write( &alphaData[0], 4, iterCols, iterRows, iterLeft, iterTop ) )
       {
-        return DestProviderError;
+        return WriteError;
       }
     }
 
