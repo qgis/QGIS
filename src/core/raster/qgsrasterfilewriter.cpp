@@ -323,16 +323,28 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       }
       if ( !destProvider->isValid() )
       {
+        if ( feedback && !destProvider->error().isEmpty() )
+        {
+          feedback->appendError( destProvider->error().summary() );
+        }
         return CreateDatasourceError;
       }
       if ( nCols != destProvider->xSize() || nRows != destProvider->ySize() )
       {
         QgsDebugMsg( QStringLiteral( "Created raster does not have requested dimensions" ) );
+        if ( feedback )
+        {
+          feedback->appendError( QObject::tr( "Created raster does not have requested dimensions" ) );
+        }
         return CreateDatasourceError;
       }
       if ( nBands != destProvider->bandCount() )
       {
         QgsDebugMsg( QStringLiteral( "Created raster does not have requested band count" ) );
+        if ( feedback )
+        {
+          feedback->appendError( QObject::tr( "Created raster does not have requested band count" ) );
+        }
         return CreateDatasourceError;
       }
       if ( nBands )
@@ -583,21 +595,37 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     }
     if ( !destProvider->isValid() )
     {
+      if ( feedback && !destProvider->error().isEmpty() )
+      {
+        feedback->appendError( destProvider->error().summary() );
+      }
       return CreateDatasourceError;
     }
     if ( nCols != destProvider->xSize() || nRows != destProvider->ySize() )
     {
       QgsDebugMsg( QStringLiteral( "Created raster does not have requested dimensions" ) );
+      if ( feedback )
+      {
+        feedback->appendError( QObject::tr( "Created raster does not have requested dimensions" ) );
+      }
       return CreateDatasourceError;
     }
     if ( nOutputBands != destProvider->bandCount() )
     {
       QgsDebugMsg( QStringLiteral( "Created raster does not have requested band count" ) );
+      if ( feedback )
+      {
+        feedback->appendError( QObject::tr( "Created raster does not have requested band count" ) );
+      }
       return CreateDatasourceError;
     }
     if ( Qgis::Byte != destProvider->dataType( 1 ) )
     {
       QgsDebugMsg( QStringLiteral( "Created raster does not have requested data type" ) );
+      if ( feedback )
+      {
+        feedback->appendError( QObject::tr( "Created raster does not have requested data type" ) );
+      }
       return CreateDatasourceError;
     }
   }

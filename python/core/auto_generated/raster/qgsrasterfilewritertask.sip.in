@@ -71,6 +71,17 @@ parameter indicates the file path for the written file(s).
 %Docstring
 Emitted when an error occurs which prevented the file being written (or if
 the task is canceled). The writing ``error`` will be reported.
+
+.. deprecated:: since QGIS 3.10. Use errorOccurred(int, const QString&)
+%End
+
+    void errorOccurred( int error, const QString &errorMessage );
+%Docstring
+Emitted when an error occurs which prevented the file being written (or if
+the task is canceled). The writing ``error`` will be reported and a
+``errorMessage`` will be potentially set.
+
+.. versionadded:: 3.10
 %End
 
   protected:

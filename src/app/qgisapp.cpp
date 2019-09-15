@@ -7816,12 +7816,24 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   } );
 
   // when an error occurs:
-  connect( writerTask, &QgsRasterFileWriterTask::errorOccurred, this, [ = ]( int error )
+  connect( writerTask, qgis::overload< int, const QString &>::of( &QgsRasterFileWriterTask::errorOccurred ), this, [ = ]( int error, const QString & errorMessage )
   {
     if ( error != QgsRasterFileWriter::WriteCanceled )
     {
+      QString errorCodeStr;
+      if ( error == QgsRasterFileWriter::SourceProviderError )
+        errorCodeStr = tr( "source provider" );
+      else if ( error == QgsRasterFileWriter::DestProviderError )
+        errorCodeStr = tr( "destination provider" );
+      else if ( error == QgsRasterFileWriter::CreateDatasourceError )
+        errorCodeStr = tr( "data source creation" );
+      else if ( error == QgsRasterFileWriter::WriteError )
+        errorCodeStr = tr( "write error" );
+      QString fullErrorMsg( tr( "Cannot write raster. Error code: %1" ).arg( errorCodeStr ) );
+      if ( !errorMessage.isEmpty() )
+        fullErrorMsg += "\n" + errorMessage;
       QMessageBox::warning( this, tr( "Save Raster" ),
-                            tr( "Cannot write raster. Error code: %1" ).arg( error ),
+                            fullErrorMsg,
                             QMessageBox::Ok );
     }
   } );
