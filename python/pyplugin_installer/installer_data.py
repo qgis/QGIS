@@ -407,7 +407,9 @@ class Repositories(QObject):
                         trusted = True
                     icon = pluginNodes.item(i).firstChildElement("icon").text().strip()
                     if icon and not icon.startswith("http"):
-                        icon = "http://{}/{}".format(QUrl(self.mRepositories[reposName]["url"]).host(), icon)
+                        url = QUrl(self.mRepositories[reposName]["url"])
+                        if url.scheme() in ('http', 'https'):
+                            icon = "{}://{}/{}".format(url.scheme(), url.host(), icon)
 
                     if pluginNodes.item(i).toElement().hasAttribute("plugin_id"):
                         plugin_id = pluginNodes.item(i).toElement().attribute("plugin_id")
