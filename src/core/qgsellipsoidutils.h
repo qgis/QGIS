@@ -90,6 +90,19 @@ class CORE_EXPORT QgsEllipsoidUtils
      */
     static QStringList acronyms();
 
+#ifndef SIP_RUN
+
+    /**
+     * Clears the internal cache used.
+     *
+     * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
+     * argument is for internal use only.
+     *
+     * \since QGIS 3.10
+     */
+    static void invalidateCache( bool disableCache = false );
+#endif
+
   private:
 
     // ellipsoid cache
