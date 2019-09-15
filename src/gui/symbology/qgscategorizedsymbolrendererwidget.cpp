@@ -831,6 +831,9 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   {
     QgsCategoryList prevCats = mRenderer->categories();
     keepExistingColors = !prevCats.isEmpty();
+    QgsRandomColorRamp randomColors;
+    if ( keepExistingColors && btnColorRamp->isRandomColorRamp() )
+      randomColors.setTotalColorCount( cats.size() );
     for ( int i = 0; i < cats.size(); ++i )
     {
       bool contains = false;
@@ -862,7 +865,14 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
       }
 
       if ( !contains )
+      {
+        if ( keepExistingColors && btnColorRamp->isRandomColorRamp() )
+        {
+          // insure that append symbols have random colors
+          cats.at( i ).symbol()->setColor( randomColors.color( i ) );
+        }
         prevCats.append( cats.at( i ) );
+      }
     }
     cats = prevCats;
   }
