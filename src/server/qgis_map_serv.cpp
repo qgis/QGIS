@@ -26,6 +26,7 @@
 #include <fcgi_stdio.h>
 #include <cstdlib>
 
+#include <QFontDatabase>
 #include <QString>
 
 int fcgi_accept()
@@ -71,7 +72,7 @@ int main( int argc, char *argv[] )
   // When using FCGI with IIS, environment variables (QT_QPA_FONTDIR in this case) are lost after fcgi_accept().
   QFontDatabase fontDB;
 #endif
-  
+
   // Starts FCGI loop
   while ( fcgi_accept() >= 0 )
   {
