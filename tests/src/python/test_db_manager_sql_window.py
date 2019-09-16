@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for the DBManager SQL Window
 
+From build dir, run: ctest -R PyQgsDBManagerSQLWindow -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -16,31 +18,33 @@ from plugins.db_manager.dlg_sql_window import check_comments_in_sql
 
 class TestPyQgsDBManagerSQLWindow(unittest.TestCase):
 
-    def test_no_comment_parsing(self):
+    def test_check_comment_parsing(self):
+        """Test we can parse the comment in a SQL query."""
+        # No comment
         query = "SELECT * FROM test"
         self.assertEqual(check_comments_in_sql(query), query)
 
-    def test_comment_parsing(self):
+        # One comment
         query = "SELECT * FROM test -- WHERE a = 1 "
         self.assertEqual(check_comments_in_sql(query), "SELECT * FROM test")
 
-    def test_comment_parsing_newline(self):
+        # One comment with a new line
         query = "SELECT * FROM test -- WHERE a = 1 \n ORDER BY b"
         self.assertEqual(check_comments_in_sql(query), "SELECT * FROM test   ORDER BY b")
 
-    def test_comment_parsing_newline2(self):
+        # One comment with 2 new lines
         query = "SELECT * FROM test \n-- WHERE a = 1 \n ORDER BY b"
         self.assertEqual(check_comments_in_sql(query), "SELECT * FROM test   ORDER BY b")
 
-    def test_comment_parsing_nothing(self):
+        # Only comment
         query = "--SELECT * FROM test"
         self.assertEqual(check_comments_in_sql(query), "")
 
-    def test_comment_parsing_quote(self):
+        # Not a comment within a value
         query = "SELECT * FROM test WHERE a = '--sdf'"
         self.assertEqual(check_comments_in_sql(query), query)
 
-    def test_comment_parsing_identifier(self):
+        # Not a comment within a field
         query = 'SELECT * FROM "test--1" WHERE a = 1'
         self.assertEqual(check_comments_in_sql(query), query)
 
