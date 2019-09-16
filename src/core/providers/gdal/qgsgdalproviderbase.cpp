@@ -26,6 +26,8 @@
 #include "qgsgdalproviderbase.h"
 #include "qgssettings.h"
 
+#include <mutex>
+
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
 
@@ -219,18 +221,8 @@ int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdal
 
 void QgsGdalProviderBase::registerGdalDrivers()
 {
-  GDALAllRegister();
-  QgsSettings mySettings;
-  QString myJoinedList = mySettings.value( QStringLiteral( "gdal/skipList" ), "" ).toString();
-  if ( !myJoinedList.isEmpty() )
-  {
-    QStringList myList = myJoinedList.split( ' ' );
-    for ( int i = 0; i < myList.size(); ++i )
-    {
-      QgsApplication::skipGdalDriver( myList.at( i ) );
-    }
-    QgsApplication::applyGdalSkippedDrivers();
-  }
+  static std::once_flag initialized;
+  std::call_once( initialized, QgsApplication::registerGdalDriversFromSettings );
 }
 
 QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
