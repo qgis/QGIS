@@ -48,8 +48,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>409</width>
-        <height>1447</height>
+        <width>407</width>
+        <height>1429</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -108,6 +108,46 @@
           <string>Appearance</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0,0">
+          <item row="8" column="1" colspan="2">
+           <widget class="QgsDoubleSpinBox" name="mMinWidthSpinBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>999.990000000000009</double>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QgsDoubleSpinBox" name="mIntervalXSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="decimals">
+             <number>12</number>
+            </property>
+            <property name="maximum">
+             <double>9999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mIntervalXDDBtn">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="mIntervalYLabel">
+            <property name="text">
+             <string>Y</string>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="1" colspan="2">
            <widget class="QPushButton" name="mMapGridCRSButton">
             <property name="text">
@@ -115,7 +155,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1" colspan="2">
+          <item row="10" column="1" colspan="2">
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="2" column="1">
              <widget class="QgsPropertyOverrideButton" name="mOffsetYDDBtn">
@@ -159,7 +199,7 @@
             </item>
            </layout>
           </item>
-          <item row="7" column="1">
+          <item row="11" column="1">
            <widget class="QgsDoubleSpinBox" name="mCrossWidthSpinBox">
             <property name="suffix">
              <string> mm</string>
@@ -172,7 +212,7 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="1" colspan="2">
+          <item row="12" column="1" colspan="2">
            <widget class="QgsSymbolButton" name="mGridLineStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -198,140 +238,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="3">
-           <widget class="QStackedWidget" name="mIntervalStackedWidget">
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <widget class="QWidget" name="page">
-             <layout class="QGridLayout" name="gridLayout_7" columnstretch="0,1,0">
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item row="0" column="1">
-               <widget class="QgsDoubleSpinBox" name="mIntervalXSpinBox">
-                <property name="prefix">
-                 <string/>
-                </property>
-                <property name="decimals">
-                 <number>12</number>
-                </property>
-                <property name="maximum">
-                 <double>9999999.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QgsPropertyOverrideButton" name="mIntervalYDDBtn">
-                <property name="text">
-                 <string>…</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QgsDoubleSpinBox" name="mIntervalYSpinBox">
-                <property name="prefix">
-                 <string/>
-                </property>
-                <property name="decimals">
-                 <number>12</number>
-                </property>
-                <property name="maximum">
-                 <double>9999999.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QgsPropertyOverrideButton" name="mIntervalXDDBtn">
-                <property name="text">
-                 <string>…</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>X</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Y</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="page_2">
-             <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item row="0" column="1">
-               <widget class="QgsDoubleSpinBox" name="mMinWidthSpinBox">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="suffix">
-                 <string> mm</string>
-                </property>
-                <property name="maximum">
-                 <double>999.990000000000009</double>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="suffix">
-                 <string> mm</string>
-                </property>
-                <property name="maximum">
-                 <double>999.990000000000009</double>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Minimum</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Maximum</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-          <item row="8" column="0">
+          <item row="12" column="0">
            <widget class="QLabel" name="mLineStyleLabel">
             <property name="text">
              <string>Line style</string>
@@ -351,7 +258,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="11" column="0">
            <widget class="QLabel" name="mCrossWidthLabel">
             <property name="text">
              <string>Cross width</string>
@@ -361,7 +268,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="10" column="0">
            <widget class="QLabel" name="mOffsetXLabel_2">
             <property name="text">
              <string>Offset</string>
@@ -378,14 +285,14 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="0">
+          <item row="14" column="0">
            <widget class="QLabel" name="mGridBlendLabel">
             <property name="text">
              <string>Blend mode</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="2">
+          <item row="11" column="2">
            <widget class="QgsPropertyOverrideButton" name="mCrossWidthDDBtn">
             <property name="text">
              <string>…</string>
@@ -395,10 +302,10 @@
           <item row="2" column="1" colspan="2">
            <widget class="QComboBox" name="mGridTypeComboBox"/>
           </item>
-          <item row="10" column="1" colspan="2">
+          <item row="14" column="1" colspan="2">
            <widget class="QgsBlendModeComboBox" name="mGridBlendComboBox"/>
           </item>
-          <item row="9" column="1" colspan="2">
+          <item row="13" column="1" colspan="2">
            <widget class="QgsSymbolButton" name="mGridMarkerStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -411,7 +318,7 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
+          <item row="13" column="0">
            <widget class="QLabel" name="mMarkerStyleLabel">
             <property name="text">
              <string>Marker style</string>
@@ -423,6 +330,60 @@
           </item>
           <item row="4" column="1" colspan="2">
            <widget class="QComboBox" name="mMapGridUnitComboBox"/>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="mMinWidthLabel">
+            <property name="text">
+             <string>Minimum</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="mIntervalXLabel">
+            <property name="text">
+             <string>X</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QgsDoubleSpinBox" name="mIntervalYSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="decimals">
+             <number>12</number>
+            </property>
+            <property name="maximum">
+             <double>9999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mIntervalYDDBtn">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1" colspan="2">
+           <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>999.990000000000009</double>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="mMaxWidthLabel">
+            <property name="text">
+             <string>Maximum</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
