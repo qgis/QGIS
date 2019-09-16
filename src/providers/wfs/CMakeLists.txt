@@ -91,6 +91,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (wfsprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(wfsprovider ui)
 ENDIF ()
 
 ########################################################

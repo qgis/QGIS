@@ -83,6 +83,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (oracleprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(oracleprovider ui)
 ENDIF ()
 
 

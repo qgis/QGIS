@@ -53,6 +53,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (delimitedtextprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(delimitedtextprovider ui)
 ENDIF ()
 
 TARGET_COMPILE_DEFINITIONS(delimitedtextprovider PRIVATE "-DQT_NO_FOREACH")

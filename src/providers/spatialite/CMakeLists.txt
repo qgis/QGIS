@@ -75,6 +75,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (spatialiteprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(spatialiteprovider ui)
 ENDIF ()
 
 # clang-tidy

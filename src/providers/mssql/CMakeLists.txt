@@ -74,6 +74,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (mssqlprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(mssqlprovider ui)
 ENDIF ()
 
 ########################################################

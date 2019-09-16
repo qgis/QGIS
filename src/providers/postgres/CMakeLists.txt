@@ -99,6 +99,8 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (postgresprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(postgresprovider_a ui)
+  ADD_DEPENDENCIES(postgresprovider ui)
 ENDIF ()
 
 

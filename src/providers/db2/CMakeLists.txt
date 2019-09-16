@@ -72,6 +72,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (db2provider
     qgis_gui
   )
+  ADD_DEPENDENCIES(db2provider ui)
 ENDIF ()
 
 ########################################################

@@ -85,6 +85,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (virtuallayerprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(virtuallayerprovider ui)
 ENDIF ()
 
 INSTALL(TARGETS virtuallayerprovider
