@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QSpinBox>
+#include "gdal.h"
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -599,6 +600,12 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   {
     mEncodingComboBox->setEnabled( true );
   }
+
+  GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
+  if ( hDriver )
+  {
+    mAddToCanvas->setEnabled( GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr );
+  }
 }
 
 void QgsVectorLayerSaveAsDialog::mReplaceRawFieldValues_stateChanged( int )
@@ -870,7 +877,7 @@ QgsAttributeList QgsVectorLayerSaveAsDialog::attributesAsDisplayedValues() const
 
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
 {
-  return mAddToCanvas->isChecked();
+  return mAddToCanvas->isChecked() && mAddToCanvas->isEnabled();
 }
 
 void QgsVectorLayerSaveAsDialog::setAddToCanvas( bool enabled )
