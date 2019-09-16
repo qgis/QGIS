@@ -23,6 +23,15 @@ Manages QGIS Server properties for a vector layer
 #include "qgsvectorlayerserverproperties.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum PredefinedWmsDimensionName
+    {
+      TIME,
+      ELEVATION
+    };
 
     struct WmsDimensionInfo
     {
@@ -59,13 +68,6 @@ Constructor for WmsDimensionInfo.
 Constructor - Creates a Vector Layer QGIS Server Properties
 
 :param layer: The vector layer
-%End
-
-    static QStringList predefinedWmsDimensionNames();
-%Docstring
-Returns predefined/restricted WMS Dimension names
-
-.. versionadded:: 3.10
 %End
 
     static QMap<int, QString> wmsDimensionDefaultDisplayLabels();

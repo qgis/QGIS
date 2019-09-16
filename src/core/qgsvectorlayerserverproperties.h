@@ -37,8 +37,20 @@ class QDomDocument;
  */
 class CORE_EXPORT QgsVectorLayerServerProperties
 {
+    Q_GADGET
 
   public:
+
+    /**
+     * Predefined/Restricted WMS Dimension name
+     * \since QGIS 3.10
+     */
+    enum PredefinedWmsDimensionName
+    {
+      TIME,
+      ELEVATION
+    };
+    Q_ENUM( PredefinedWmsDimensionName )
 
     /**
      * Setting to define QGIS Server WMS Dimension.
@@ -92,12 +104,6 @@ class CORE_EXPORT QgsVectorLayerServerProperties
      * \param layer  The vector layer
      */
     QgsVectorLayerServerProperties( QgsVectorLayer *layer = nullptr );
-
-    /**
-     * Returns predefined/restricted WMS Dimension names
-     * \since QGIS 3.10
-     */
-    static QStringList predefinedWmsDimensionNames() { return { "time", "elevation" }; }
 
     /**
      * Returns WMS Dimension default display labels

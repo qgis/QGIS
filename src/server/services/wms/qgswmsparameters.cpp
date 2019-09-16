@@ -2016,7 +2016,7 @@ namespace QgsWms
   QMap<QString, QString> QgsWmsParameters::dimensionValues() const
   {
     QMap<QString, QString> dimValues;
-    const QStringList reservedNames = QgsVectorLayerServerProperties::predefinedWmsDimensionNames();
+    const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsVectorLayerServerProperties::PredefinedWmsDimensionName>() );
     const QStringList unmanagedNames = mUnmanagedParameters.keys();
     for ( const QString &key : unmanagedNames )
     {
@@ -2024,7 +2024,7 @@ namespace QgsWms
       {
         dimValues[key.mid( 4 )] = mUnmanagedParameters[key];
       }
-      else if ( reservedNames.contains( key.toLower() ) )
+      else if ( pnMetaEnum.keyToValue( key.toUpper().toStdString().c_str() ) != -1 )
       {
         dimValues[key] = mUnmanagedParameters[key];
       }
