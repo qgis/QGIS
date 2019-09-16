@@ -12,9 +12,14 @@
 # py files located under /usr/share/qgis/python/plugins
 %global __python %{__python3}
 
-%if 0%{?fedora} >= 30
+# SPEC do not support elseif until very recent releases
+%if 0%{?fedora} >= 31
+%define grass grass78
+%endif
+%if 0%{?fedora} == 30
 %define grass grass76
-%else
+%endif
+%if 0%{?fedora} < 30
 %define grass grass74
 %endif
 
