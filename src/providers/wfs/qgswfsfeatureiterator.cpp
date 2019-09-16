@@ -549,11 +549,6 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         success = false;
         break;
       }
-      if ( mErrorCode != NoError )
-      {
-        success = false;
-        break;
-      }
 
       QByteArray data;
       bool finished = false;
@@ -574,12 +569,22 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
       if ( !parser->processData( data, finished, gmlProcessErrorMsg ) )
       {
         success = false;
-        mErrorMessage = tr( "Error when parsing GetFeature response" ) + " : " + gmlProcessErrorMsg;
-        QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+        // Only add an error message if no general networking related error has been
+        // previously reported by QgsWfsRequest logic.
+        // We indeed make processData() run even if an error has been reported,
+        // so that we have a chance to parse XML errors (isException() case below)
+        if ( mErrorCode == NoError )
+        {
+          mErrorMessage = tr( "Error when parsing GetFeature response" ) + " : " + gmlProcessErrorMsg;
+          QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+        }
         break;
       }
-      if ( parser->isException() && finished )
+      else if ( parser->isException() )
       {
+        // Only process the exception report if we get the full error response.
+        if ( !finished )
+          continue;
         success = false;
 
         // Some GeoServer instances in WFS 2.0 with paging throw an exception
@@ -590,6 +595,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         {
           QgsDebugMsg( QStringLiteral( "Got exception %1. Re-trying with paging disabled" ).arg( parser->exceptionText() ) );
           mPageSize = 0;
+          mShared->mPageSize = 0;
         }
         // GeoServer doesn't like typenames prefixed by namespace prefix, despite
         // the examples in the WFS 2.0 spec showing that
@@ -603,6 +609,12 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
           mErrorMessage = tr( "Server generated an exception in GetFeature response" ) + ": " + parser->exceptionText();
           QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
         }
+        break;
+      }
+      // Test error code only after having let a chance to the parser to process the ExceptionReport
+      else if ( mErrorCode != NoError )
+      {
+        success = false;
         break;
       }
 
