@@ -57,9 +57,9 @@ class test_filter(QgsLocatorFilter):
             result = QgsLocatorResult()
             result.displayString = self.identifier + str(i)
             if self.groupResult:
-                if i < 6:
+                if i in (0, 1, 3, 5, 6):
                     result.group = 'first group'
-                elif i < 8:
+                elif i in (4, 8):
                     result.group = 'second group'
             self.resultFetched.emit(result)
 
@@ -362,21 +362,21 @@ class TestQgsLocator(unittest.TestCase):
         self.assertEqual(p.data(p.index(6, 0), QgsLocatorModel.ResultTypeRole), 1)
         self.assertEqual(p.data(p.index(7, 0)), 'b1')
         self.assertEqual(p.data(p.index(7, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(8, 0)), 'b2')
+        self.assertEqual(p.data(p.index(8, 0)), 'b3')
         self.assertEqual(p.data(p.index(8, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(9, 0)), 'b3')
+        self.assertEqual(p.data(p.index(9, 0)), 'b5')
         self.assertEqual(p.data(p.index(9, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(10, 0)), 'b4')
+        self.assertEqual(p.data(p.index(10, 0)), 'b6')
         self.assertEqual(p.data(p.index(10, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(11, 0)), 'b5')
-        self.assertEqual(p.data(p.index(11, 0), QgsLocatorModel.ResultTypeRole), 1)
-        self.assertEqual(p.data(p.index(12, 0)).strip(), 'second group')
+        self.assertEqual(p.data(p.index(11, 0)).strip(), 'second group')
+        self.assertEqual(p.data(p.index(11, 0), QgsLocatorModel.ResultTypeRole), 2)
+        self.assertEqual(p.data(p.index(12, 0)), 'b4')
         self.assertEqual(p.data(p.index(12, 0), QgsLocatorModel.ResultTypeRole), 2)
-        self.assertEqual(p.data(p.index(13, 0)), 'b6')
+        self.assertEqual(p.data(p.index(13, 0)), 'b8')
         self.assertEqual(p.data(p.index(13, 0), QgsLocatorModel.ResultTypeRole), 2)
-        self.assertEqual(p.data(p.index(14, 0)), 'b7')
-        self.assertEqual(p.data(p.index(14, 0), QgsLocatorModel.ResultTypeRole), 2)
-        self.assertEqual(p.data(p.index(15, 0)), 'b8')
+        self.assertEqual(p.data(p.index(14, 0)), 'b2')
+        self.assertEqual(p.data(p.index(14, 0), QgsLocatorModel.ResultTypeRole), QgsLocatorModel.NoGroup)
+        self.assertEqual(p.data(p.index(15, 0)), 'b7')
         self.assertEqual(p.data(p.index(15, 0), QgsLocatorModel.ResultTypeRole), QgsLocatorModel.NoGroup)
 
     def testAutoModel(self):
