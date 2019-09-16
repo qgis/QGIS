@@ -77,14 +77,15 @@ class QgsBookmarkManager;
  * \ingroup core
  * Reads and writes project states.
  *
-  \note
-
-  Has two general kinds of state to make persistent.  (I.e., to read and
-  write.)  First, QGIS proprietary information.  Second plug-in information.
-
-  A singleton since there shall only be one active project at a time; and
-  provides canonical location for plug-ins and main app to find/set
-  properties.
+ * \note
+ *
+ * Has two general kinds of state to make persistent. (I.e., to read and
+ * write.) First, QGIS proprietary information. Second plugin information.
+ *
+ * A singleton since there shall only be one active project at a time; and
+ * provides canonical location for plugins and main app to find/set
+ * properties.
+ *
 
 */
 
@@ -165,7 +166,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \see fileName()
      * \since QGIS 2.9
-     * \deprecated Use absoluteFilePath(), baseName() or lastModifiedTime() instead
+     * \deprecated QGIS 3.2 Use absoluteFilePath(), baseName() or lastModifiedTime() instead
      */
     Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
 
@@ -595,19 +596,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Set a list of layers which should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
     Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of layers which should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
     Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QStringList &layerIds );
 
     /**
      * Gets the list of layers which currently should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
     Q_DECL_DEPRECATED QStringList nonIdentifiableLayers() const;
 
@@ -1094,7 +1095,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
-     * \deprecated since QGIS 3.4 use QgsMapLayer::flags() instead
+     * \deprecated QGIS 3.4 use QgsMapLayer::flags() instead
      * \since QGIS 3.2
      */
     Q_DECL_DEPRECATED QSet<QgsMapLayer *> requiredLayers() const;
@@ -1104,7 +1105,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4 use QgsMapLayer::setFlags() instead
      * \since QGIS 3.2
      */
     Q_DECL_DEPRECATED void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
@@ -1277,7 +1278,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted when the list of layer which are excluded from map identification changes
-     * \deprecated since QGIS 3.4
+     * \deprecated QGIS 3.4
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
