@@ -39,6 +39,7 @@
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsunittypes.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -1026,6 +1027,30 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
     currentExpression = layerNode->labelExpression();
   QgsExpressionContext legendContext = mLegend->createExpressionContext();
   legendContext.appendScope( vl->createExpressionContextScope() );
+
+  QgsExpressionContextScope *symbolLegendScope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
+
+  QgsFeatureRenderer *r = vl->renderer();
+
+  if ( r )
+  {
+    const QgsLegendSymbolList legendSymbols = r->legendSymbolItems();
+
+    if ( !legendSymbols.empty() )
+    {
+      QgsSymbolLegendNode legendNode( layerNode, legendSymbols.first() );
+
+      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), legendNode.symbolLabel().remove( QStringLiteral( "[%" ) ).remove( QStringLiteral( "%]" ) ), true ) );
+      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), legendSymbols.first().ruleKey(), true ) );
+      if ( vl )
+      {
+        symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( legendSymbols.first().ruleKey() ) ), true ) );
+      }
+    }
+  }
+
+  legendContext.appendScope( symbolLegendScope );
+
   QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", legendContext );
   if ( expressiondialog.exec() )
     layerNode->setLabelExpression( expressiondialog.expressionText() );
