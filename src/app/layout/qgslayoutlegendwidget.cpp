@@ -1027,9 +1027,6 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
     currentExpression = layerNode->labelExpression();
   QgsExpressionContext legendContext = mLegend->createExpressionContext();
   legendContext.appendScope( vl->createExpressionContextScope() );
-  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", legendContext );
-  if ( expressiondialog.exec() )
-    layerNode->setLabelExpression( expressiondialog.expressionText() );
 
   QgsExpressionContextScope *symbolLegendScope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
 
@@ -1052,7 +1049,11 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
     }
   }
 
+  legendContext.appendScope( symbolLegendScope );
 
+  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", legendContext );
+  if ( expressiondialog.exec() )
+    layerNode->setLabelExpression( expressiondialog.expressionText() );
 
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->updateLegend();
