@@ -2533,6 +2533,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );
 #endif
+    //! Returns the minimum or maximum value
+    QVariant minimumOrMaximumValue( int index, bool minimum ) const;
 
   private:                       // Private attributes
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
