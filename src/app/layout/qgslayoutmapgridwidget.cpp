@@ -640,11 +640,11 @@ void QgsLayoutMapGridWidget::setGridItems()
     case QgsLayoutItemMapGrid::MapUnit:
     case QgsLayoutItemMapGrid::MM:
     case QgsLayoutItemMapGrid::CM:
-      mIntervalStackedWidget->setCurrentIndex( 0 );
+      showFixedIntervalWidth( true );
       break;
 
     case QgsLayoutItemMapGrid::DynamicPageSizeBased:
-      mIntervalStackedWidget->setCurrentIndex( 1 );
+      showFixedIntervalWidth( false );
       break;
   }
   mMinWidthSpinBox->setValue( mMapGrid->minimumIntervalWidth() );
@@ -916,6 +916,20 @@ void QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged( int )
   mMap->endCommand();
 }
 
+void QgsLayoutMapGridWidget::showFixedIntervalWidth( bool fixedWidth )
+{
+  mIntervalXSpinBox->setVisible( fixedWidth );
+  mIntervalXLabel->setVisible( fixedWidth );
+  mIntervalXDDBtn->setVisible( fixedWidth );
+  mIntervalYSpinBox->setVisible( fixedWidth );
+  mIntervalYLabel->setVisible( fixedWidth );
+  mIntervalYDDBtn->setVisible( fixedWidth );
+  mMaxWidthSpinBox->setVisible( !fixedWidth );
+  mMaxWidthLabel->setVisible( !fixedWidth );
+  mMinWidthSpinBox->setVisible( !fixedWidth );
+  mMinWidthLabel->setVisible( !fixedWidth );
+}
+
 void QgsLayoutMapGridWidget::intervalUnitChanged( int )
 {
   if ( !mMapGrid || !mMap )
@@ -929,11 +943,11 @@ void QgsLayoutMapGridWidget::intervalUnitChanged( int )
     case QgsLayoutItemMapGrid::MapUnit:
     case QgsLayoutItemMapGrid::MM:
     case QgsLayoutItemMapGrid::CM:
-      mIntervalStackedWidget->setCurrentIndex( 0 );
+      showFixedIntervalWidth( true );
       break;
 
     case QgsLayoutItemMapGrid::DynamicPageSizeBased:
-      mIntervalStackedWidget->setCurrentIndex( 1 );
+      showFixedIntervalWidth( false );
       break;
   }
 

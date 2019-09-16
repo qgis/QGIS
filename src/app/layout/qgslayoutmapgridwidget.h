@@ -108,6 +108,8 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void intervalUnitChanged( int index );
     void minIntervalChanged( double interval );
     void maxIntervalChanged( double interval );
+    //! Sets visibility of Interval elements
+    void showFixedIntervalWidth( bool fixedWidth );
 
   private:
     QPointer< QgsLayoutItemMap > mMap;
