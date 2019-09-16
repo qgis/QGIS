@@ -223,13 +223,28 @@ class ParametersPanel(BASE, WIDGET):
                 check = QCheckBox()
                 check.setText(QCoreApplication.translate('ParametersPanel', 'Open output file after running algorithm'))
 
-                def skipOutputChanged(checkbox, skipped):
-                    checkbox.setEnabled(not skipped)
-                    if skipped:
-                        checkbox.setChecked(False)
+                def skipOutputChanged(widget, checkbox, skipped):
+
+                    enabled = not skipped
+
+                    # Do not try to open formats that are write-only.
+                    value = widget.getValue()
+                    if value and isinstance(value, QgsProcessingOutputLayerDefinition):
+                        filename = value.sink.staticValue()
+                        if filename not in ('memory:', ''):
+                            path, ext = os.path.splitext(filename)
+                            format = QgsVectorFileWriter.driverForExtension(ext)
+                            drv = gdal.GetDriverByName(format)
+                            if drv:
+                                if drv.GetMetadataItem(gdal.DCAP_OPEN) is None:
+                                    enabled = False
+
+                    checkbox.setEnabled(enabled)
+                    checkbox.setChecked(enabled)
+
                 check.setChecked(not widget.outputIsSkipped())
                 check.setEnabled(not widget.outputIsSkipped())
-                widget.skipOutputChanged.connect(partial(skipOutputChanged, check))
+                widget.skipOutputChanged.connect(partial(skipOutputChanged, widget, check))
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name()] = check
 

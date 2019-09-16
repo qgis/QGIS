@@ -800,6 +800,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(formats[1].driverName, 'ESRI Shapefile')
         self.assertEqual(formats[1].globs, ['*.shp'])
         self.assertTrue('ODS' in [f.driverName for f in formats])
+        self.assertTrue('PGDUMP' in [f.driverName for f in formats])
 
         interlis_format = [f for f in formats if f.driverName == 'Interlis 2'][0]
         self.assertEqual(interlis_format.globs, ['*.xtf', '*.xml', '*.ili'])
