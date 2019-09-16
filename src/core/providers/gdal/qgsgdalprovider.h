@@ -294,6 +294,11 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Whether a per-dataset mask band is exposed as an alpha band for the point of view of the rest of the application.
     bool mMaskBandExposedAsAlpha = false;
 
+    //! \brief Driver short name.
+    // It is kept in case the driver would be de-registered after the provider has been created.
+    // Which is a very dangerous situation (see #29212)
+    QString mDriverName;
+
     //! Wrapper for GDALGetRasterBand() that takes into account mMaskBandExposedAsAlpha.
     GDALRasterBandH getBand( int bandNo ) const;
 
