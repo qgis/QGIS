@@ -26,6 +26,7 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgshelp.h"
 
 QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inProject, QWidget *parent, QgsMapCanvas *mapCanvas )
   : QDialog( parent )
@@ -57,6 +58,7 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsBookmarkEditorDialog::crsChanged );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsBookmarkEditorDialog::onAccepted );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsBookmarkEditorDialog::showHelp );
 
   mName->setFocus();
 }
@@ -64,6 +66,11 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
 void QgsBookmarkEditorDialog::crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mExtentGroupBox->setOutputCrs( crs );
+}
+
+void QgsBookmarkEditorDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#spatial-bookmarks" ) );
 }
 
 void QgsBookmarkEditorDialog::onAccepted()
