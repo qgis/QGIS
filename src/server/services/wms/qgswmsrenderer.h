@@ -99,7 +99,7 @@ namespace QgsWms
        * of the JSON object.
        * \param model The layer tree model to use for building the legend
        * \returns the legend as a JSON object
-       * \since QGIS 3.9
+       * \since QGIS 3.12
        */
       QJsonObject getLegendGraphicsAsJson( QgsLayerTreeModel &model );
 

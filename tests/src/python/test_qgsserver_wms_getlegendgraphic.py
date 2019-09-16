@@ -29,7 +29,7 @@ from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
 
-from test_qgsserver import QgsServerTestBase
+from test_qgsserver_wms import TestQgsServerWMSTestBase
 from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
@@ -37,7 +37,7 @@ RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
 RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
-class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
+class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
     """QGIS Server WMS Tests for GetLegendGraphic request"""
 
     # Set to True to re-generate reference files for this class
@@ -915,6 +915,18 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_3857", max_size_diff=QSize(10, 2))
+
+    def test_wms_GetLegendGraphic_JSON(self):
+        self.wms_request_compare("GetLegendGraphic",
+                                 "&LAYERS=testlayer%20%C3%A8%C3%A9"
+                                 "&FORMAT=application/json",
+                                 "wms_getlegendgraphic_json")
+
+    def test_wms_GetLegendGraphic_JSON_multiple_layers(self):
+        self.wms_request_compare("GetLegendGraphic",
+                                 "&LAYERS=testlayer%20%C3%A8%C3%A9,testlayer3"
+                                 "&FORMAT=application/json",
+                                 "wms_getlegendgraphic_json_multiple_layers")
 
 
 if __name__ == '__main__':
