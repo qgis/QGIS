@@ -296,40 +296,53 @@ QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 class QgsThreadStackOverflowGuard
 {
   public:
-    QgsThreadStackOverflowGuard( QThreadStorage<int> &storage, int maxDepth )
+
+    QgsThreadStackOverflowGuard( QThreadStorage<QStack<QString>> &storage, const QString &stackFrameInformation, int maxDepth )
       : mStorage( storage )
       , mMaxDepth( maxDepth )
     {
       if ( !storage.hasLocalData() )
       {
-        storage.setLocalData( 0 );
+        storage.setLocalData( QStack<QString>() );
       }
-      else
-      {
-        storage.setLocalData( storage.localData() + 1 );
-      }
+
+      storage.localData().push( stackFrameInformation );
     }
 
     ~QgsThreadStackOverflowGuard()
     {
-      mStorage.setLocalData( mStorage.localData() - 1 );
+      mStorage.localData().pop();
     }
 
     bool hasStackOverflow() const
     {
-      if ( mStorage.localData() > mMaxDepth )
+      if ( mStorage.localData().size() > mMaxDepth )
         return true;
       else
         return false;
     }
 
+    QString topFrames() const
+    {
+      QStringList dumpStack;
+      const QStack<QString> &stack = mStorage.localData();
+
+      int dumpSize = std::min( stack.size(), 10 );
+      for ( int i = 0; i < dumpSize; ++i )
+      {
+        dumpStack += stack.at( i );
+      }
+
+      return dumpStack.join( '\n' );
+    }
+
     int depth() const
     {
-      return mStorage.localData();
+      return mStorage.localData().size();
     }
 
   private:
-    QThreadStorage<int> &mStorage;
+    QThreadStorage<QStack<QString>> &mStorage;
     int mMaxDepth;
 };
 
@@ -342,12 +355,15 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mClosed )
     return false;
 
-  static QThreadStorage<int> sStackDepth;
+  static QThreadStorage<QStack<QString>> sStack;
 
-  QgsThreadStackOverflowGuard guard( sStackDepth, 255 );
+  QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 255 );
 
   if ( guard.hasStackOverflow() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Stack overflow, too many nested feature iterators.\nIterated layers:\n%3\n..." ).arg( mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::Critical );
     return false;
+  }
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
@@ -680,12 +696,15 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
 
 void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 {
-  static QThreadStorage<int> sStackDepth;
+  static QThreadStorage<QStack<QString>> sStack;
 
-  QgsThreadStackOverflowGuard guard( sStackDepth, 255 );
+  QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 255 );
 
   if ( guard.hasStackOverflow() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Stack overflow when preparing field %1 of layer %2.\nLast frames:\n%3\n..." ).arg( mSource->fields().at( fieldIdx ).name(), mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::Critical );
     return;
+  }
 
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 
