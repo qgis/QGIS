@@ -57,6 +57,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (geonodeprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(geonodeprovider ui)
 ENDIF ()
 
 TARGET_COMPILE_DEFINITIONS(geonodeprovider PRIVATE "-DQT_NO_FOREACH")

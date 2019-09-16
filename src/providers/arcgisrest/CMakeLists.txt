@@ -79,6 +79,8 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider_a
     qgis_gui
   )
+  ADD_DEPENDENCIES(arcgisfeatureserverprovider ui)
+  ADD_DEPENDENCIES(arcgisfeatureserverprovider_a ui)
 ENDIF ()
 
 INSTALL (TARGETS arcgisfeatureserverprovider
@@ -125,6 +127,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES(arcgismapserverprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(arcgismapserverprovider ui)
 ENDIF ()
 
 INSTALL (TARGETS arcgismapserverprovider

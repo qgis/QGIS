@@ -173,6 +173,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (mdalprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(mdalprovider ui)
 ENDIF (WITH_GUI)
 
 IF (HDF5_FOUND)
