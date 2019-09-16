@@ -4124,6 +4124,13 @@ void QgsOgrProvider::open( OpenMode mode )
   QgsDebugMsgLevel( "mSubsetString: " + mSubsetString, 3 );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
   CPLSetConfigOption( "GPX_ELE_AS_25D", "YES" );  // use GPX elevation as z values
+  if ( !CPLGetConfigOption( "OSM_USE_CUSTOM_INDEXING", nullptr ) )
+  {
+    // Disable custom/fast indexing by default, as it can prevent some .osm.pbf
+    // files to be loaded.
+    // See https://github.com/qgis/QGIS/issues/31062
+    CPLSetConfigOption( "OSM_USE_CUSTOM_INDEXING", "NO" );
+  }
 
   if ( mFilePath.startsWith( QLatin1String( "MySQL:" ) ) && !mLayerName.isEmpty() && !mFilePath.endsWith( ",tables=" + mLayerName ) )
   {
