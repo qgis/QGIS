@@ -186,7 +186,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       TARGET_LINK_LIBRARIES(grassprovider${GRASS_BUILD_VERSION}
         qgis_gui
       )
-      ADD_DEPENDENCIES(grassprovider ui)
+      ADD_DEPENDENCIES(grassprovider${GRASS_BUILD_VERSION} ui)
     ENDIF ()
 
     #
