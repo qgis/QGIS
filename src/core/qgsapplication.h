@@ -515,7 +515,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
-     */
+    */
     static void restoreGdalDriver( const QString &driver );
 
     /**
@@ -528,8 +528,32 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Apply the skipped drivers list to gdal
      * \see skipGdalDriver
      * \see restoreGdalDriver
-     * \see skippedGdalDrivers */
+     * \see skippedGdalDrivers
+     */
     static void applyGdalSkippedDrivers();
+
+    /**
+     * Register gdal drivers, excluding the ones mentioned in "gdal/skipList" setting.
+     * \since QGIS 3.10
+     */
+    static void registerGdalDriversFromSettings();
+
+    /**
+     * Returns the list of gdal drivers that have been disabled in the current session,
+     * and thus, for safety, should not be disabled right now, but at the
+     * next application restart.
+     * \since QGIS 3.10
+     */
+    static QStringList deferredSkippedGdalDrivers() { return sDeferredSkippedGdalDrivers; }
+
+    /**
+     * Sets the list of gdal drivers that should be disabled (\a skippedGdalDrivers),
+     * but excludes for now the ones defines in \a deferredSkippedGdalDrivers.
+     * This writes the "gdal/skipList" setting.
+     * \since QGIS 3.10
+     */
+    static void setSkippedGdalDrivers( const QStringList &skippedGdalDrivers,
+                                       const QStringList &deferredSkippedGdalDrivers );
 
     /**
      * Gets maximum concurrent thread count
@@ -857,6 +881,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * \see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
+
+    /**
+     * List of gdal drivers that have been disabled in the current session,
+     * and thus, for safety, should not be disabled right now, but at the
+     * next application restart */
+    static QStringList sDeferredSkippedGdalDrivers;
 
     /**
      * \since QGIS 2.4 */

@@ -2187,7 +2187,9 @@ void QgsOptions::optionsStackedWidget_CurrentChanged( int index )
 
 void QgsOptions::loadGdalDriverList()
 {
-  QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
+  QgsApplication::registerGdalDriversFromSettings();
+
+  const QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
   GDALDriverH myGdalDriver; // current driver
   QString myGdalDriverDescription;
   QStringList myDrivers;
@@ -2249,8 +2251,8 @@ void QgsOptions::loadGdalDriverList()
     myDriversLongName[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_LONGNAME", "" ) );
 
   }
-  // restore GDAL_SKIP just in case
-  CPLSetConfigOption( "GDAL_SKIP", mySkippedDrivers.join( QStringLiteral( " " ) ).toUtf8() );
+  // restore active drivers
+  QgsApplication::applyGdalSkippedDrivers();
 
   myDrivers.removeDuplicates();
   // myDrivers.sort();
@@ -2304,19 +2306,38 @@ void QgsOptions::loadGdalDriverList()
 
 void QgsOptions::saveGdalDriverList()
 {
+  bool driverUnregisterNeeded = false;
+  const auto oldSkippedGdalDrivers = QgsApplication::skippedGdalDrivers();
+  auto deferredSkippedGdalDrivers = QgsApplication::deferredSkippedGdalDrivers();
+  QStringList skippedGdalDrivers;
   for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
   {
     QTreeWidgetItem *mypItem = lstGdalDrivers->topLevelItem( i );
+    const auto &driverName( mypItem->text( 0 ) );
     if ( mypItem->checkState( 0 ) == Qt::Unchecked )
     {
-      QgsApplication::skipGdalDriver( mypItem->text( 0 ) );
+      skippedGdalDrivers << driverName;
+      if ( !deferredSkippedGdalDrivers.contains( driverName ) &&
+           !oldSkippedGdalDrivers.contains( driverName ) )
+      {
+        deferredSkippedGdalDrivers << driverName;
+        driverUnregisterNeeded = true;
+      }
     }
     else
     {
-      QgsApplication::restoreGdalDriver( mypItem->text( 0 ) );
+      if ( deferredSkippedGdalDrivers.contains( driverName ) )
+      {
+        deferredSkippedGdalDrivers.removeAll( driverName );
+      }
     }
   }
-  mSettings->setValue( QStringLiteral( "gdal/skipList" ), QgsApplication::skippedGdalDrivers().join( QStringLiteral( " " ) ) );
+  if ( driverUnregisterNeeded )
+  {
+    QMessageBox::information( this, tr( "Drivers Disabled" ),
+                              tr( "One or more drivers have been disabled. This will only take effect after QGIS is restarted." ) );
+  }
+  QgsApplication::setSkippedGdalDrivers( skippedGdalDrivers, deferredSkippedGdalDrivers );
 }
 
 void QgsOptions::addScale()
