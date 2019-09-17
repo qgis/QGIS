@@ -4508,7 +4508,9 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
   // And remove the associated image
   while ( static_cast< uint >( mRecentProjects.count() ) > maxProjects + pinnedCount )
   {
-    QFile( mRecentProjects.takeLast().previewImagePath ).remove();
+    const QString previewImagePath = mRecentProjects.takeLast().previewImagePath;
+    if ( QFileInfo::exists( previewImagePath ) )
+      QFile( mRecentProjects.takeLast().previewImagePath ).remove();
   }
 
   // Persist the list
