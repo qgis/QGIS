@@ -908,20 +908,35 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mEnabledCheckBox</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mEnabledDDBtn</tabstop>
   <tabstop>mGridTypeComboBox</tabstop>
   <tabstop>mMapGridCRSButton</tabstop>
+  <tabstop>mMapGridUnitComboBox</tabstop>
+  <tabstop>mIntervalXSpinBox</tabstop>
+  <tabstop>mIntervalXDDBtn</tabstop>
+  <tabstop>mIntervalYSpinBox</tabstop>
+  <tabstop>mIntervalYDDBtn</tabstop>
+  <tabstop>mMinWidthSpinBox</tabstop>
+  <tabstop>mMaxWidthSpinBox</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>
+  <tabstop>mOffsetXDDBtn</tabstop>
   <tabstop>mOffsetYSpinBox</tabstop>
+  <tabstop>mOffsetYDDBtn</tabstop>
   <tabstop>mCrossWidthSpinBox</tabstop>
+  <tabstop>mCrossWidthDDBtn</tabstop>
   <tabstop>mGridLineStyleButton</tabstop>
   <tabstop>mGridMarkerStyleButton</tabstop>
   <tabstop>mGridBlendComboBox</tabstop>
   <tabstop>mGridFrameGroupBox</tabstop>
   <tabstop>mFrameStyleComboBox</tabstop>
   <tabstop>mFrameWidthSpinBox</tabstop>
+  <tabstop>mFrameSizeDDBtn</tabstop>
   <tabstop>mGridFrameMarginSpinBox</tabstop>
+  <tabstop>mFrameMarginDDBtn</tabstop>
   <tabstop>mGridFramePenSizeSpinBox</tabstop>
+  <tabstop>mFrameLineThicknessDDBtn</tabstop>
   <tabstop>mGridFramePenColorButton</tabstop>
   <tabstop>mGridFrameFill1ColorButton</tabstop>
   <tabstop>mGridFrameFill2ColorButton</tabstop>
@@ -951,6 +966,7 @@
   <tabstop>mAnnotationFontButton</tabstop>
   <tabstop>mAnnotationFontColorButton</tabstop>
   <tabstop>mDistanceToMapFrameSpinBox</tabstop>
+  <tabstop>mLabelDistDDBtn</tabstop>
   <tabstop>mCoordinatePrecisionSpinBox</tabstop>
  </tabstops>
  <resources>
