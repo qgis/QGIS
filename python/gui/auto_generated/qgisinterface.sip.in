@@ -632,6 +632,15 @@ Take screenshots for user documentation
 .. versionadded:: 3.4
 %End
 
+    virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
+%Docstring
+Returns the insertion group with its insertion index
+In Python, returns a tuple (insertionGroup, insertionIndex)
+
+.. versionadded:: 3.10
+%End
+
+
   public slots: // TODO: do these functions really need to be slots?
 
 

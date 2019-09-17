@@ -45,6 +45,20 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * A structure to define the insertion point to the layer tree
+     * \since QGIS 3.10
+     */
+    struct InsertionPoint
+    {
+      InsertionPoint( QgsLayerTreeGroup *parent, int position )
+        : parent( parent ), position( position ) {}
+
+      QgsLayerTreeGroup *parent;
+      int position;
+    };
+
     //! Create the instance that synchronizes given project with a layer tree root
     explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -57,8 +71,16 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     /**
      * Set where the new layers should be inserted - can be used to follow current selection.
      * By default it is root group with zero index.
+     * \deprecated since QGIS 3.10
      */
-    void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index );
+    Q_DECL_DEPRECATED void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index ) SIP_DEPRECATED;
+
+    /**
+     * Set where the new layers should be inserted - can be used to follow current selection.
+     * By default it is root group with zero index.
+     * \since QGIS 3.10
+     */
+    void setLayerInsertionPoint( const InsertionPoint &insertionPoint );
 
   signals:
 
@@ -85,8 +107,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     bool mEnabled;
     bool mNewLayersVisible;
 
-    QgsLayerTreeGroup *mInsertionPointGroup = nullptr;
-    int mInsertionPointIndex;
+    InsertionPoint mInsertionPoint;
 };
 
 #endif // QGSLAYERTREEREGISTRYBRIDGE_H
