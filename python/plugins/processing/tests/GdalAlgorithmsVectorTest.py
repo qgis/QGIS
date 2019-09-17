@@ -113,7 +113,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                     'NO_METADATA': False}, context, feedback),
             ['ogrinfo',
              '-al -so ' +
-             source])
+             source + ' polys2'])
 
         source = os.path.join(testDataPath, 'filename with spaces.gml')
         self.assertEqual(
@@ -122,7 +122,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                     'NO_METADATA': False}, context, feedback),
             ['ogrinfo',
              '-al -so "' +
-             source + '"'])
+             source + '" filename_with_spaces'])
 
         source = os.path.join(testDataPath, 'filename with spaces.gml')
         self.assertEqual(
@@ -131,7 +131,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                     'NO_METADATA': False}, context, feedback),
             ['ogrinfo',
              '-al "' +
-             source + '"'])
+             source + '" filename_with_spaces'])
 
         source = os.path.join(testDataPath, 'filename with spaces.gml')
         self.assertEqual(
@@ -140,7 +140,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                     'NO_METADATA': True}, context, feedback),
             ['ogrinfo',
              '-al -so -nomd "' +
-             source + '"'])
+             source + '" filename_with_spaces'])
 
     def testBuffer(self):
         context = QgsProcessingContext()
