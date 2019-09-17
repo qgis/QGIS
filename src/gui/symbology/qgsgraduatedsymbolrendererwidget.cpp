@@ -1134,6 +1134,8 @@ void QgsGraduatedSymbolRendererWidget::addClass()
 {
   mModel->addClass( mGraduatedSymbol.get() );
   mHistogramWidget->refresh();
+  emit widgetChanged();
+
 }
 
 void QgsGraduatedSymbolRendererWidget::deleteClasses()
@@ -1141,12 +1143,14 @@ void QgsGraduatedSymbolRendererWidget::deleteClasses()
   QList<int> classIndexes = selectedClasses();
   mModel->deleteRows( classIndexes );
   mHistogramWidget->refresh();
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererWidget::deleteAllClasses()
 {
   mModel->removeAllRows();
   mHistogramWidget->refresh();
+  emit widgetChanged();
 }
 
 bool QgsGraduatedSymbolRendererWidget::rowsOrdered()
