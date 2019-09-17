@@ -547,8 +547,6 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), mHistogramWidget, &QgsHistogramWidget::setSourceFieldExp );
 
   mExpressionWidget->registerExpressionContextGenerator( this );
-
-  spinGraduatedClasses->setKeyboardTracking( false );
 }
 
 void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
