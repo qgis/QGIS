@@ -302,7 +302,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
       QString text;
       if ( !singleOpDetails.scope.isEmpty() )
       {
-        text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), singleOpDetails.scope );
+        text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), formatScope( singleOpDetails.scope ) );
       }
       if ( !singleOpDetails.remarks.isEmpty() )
       {
@@ -686,6 +686,19 @@ void QgsDatumTransformDialog::applyDefaultTransform()
 #endif
     QgsProject::instance()->setTransformContext( context );
   }
+}
+
+QString QgsDatumTransformDialog::formatScope( const QString &s )
+{
+  QString scope = s;
+
+  QRegularExpression reGNSS( QStringLiteral( "\\bGNSS\\b" ) );
+  scope.replace( reGNSS, QObject::tr( "GNSS (Global Navigation Satellite System)" ) );
+
+  QRegularExpression reCORS( QStringLiteral( "\\bCORS\\b" ) );
+  scope.replace( reCORS, QObject::tr( "CORS (Continually Operating Reference Station)" ) );
+
+  return scope;
 }
 
 QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::selectedDatumTransform()
