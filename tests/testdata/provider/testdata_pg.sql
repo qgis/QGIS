@@ -653,3 +653,12 @@ CREATE VIEW qgis_test.some_poly_data_shift_bbox AS
           0.0
         ) AS shiftbox
    FROM qgis_test.some_poly_data;
+
+
+---------------------------------------------
+--
+-- View with tid PK field
+--
+
+CREATE TABLE qgis_test.b31799_test_table AS (SELECT (ST_DumpPoints(ST_GeneratePoints(ST_Expand('SRID=4326;POINT(0 0)'::geometry,90),10))).geom, random());
+CREATE VIEW qgis_test.b31799_test_view_ctid AS (SELECT ctid, geom, random() FROM qgis_test.b31799_test_table, pg_sleep(0.1));
