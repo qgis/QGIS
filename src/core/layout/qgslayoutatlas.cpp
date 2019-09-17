@@ -439,7 +439,7 @@ QString QgsLayoutAtlas::currentFilename() const
   return mCurrentFilename;
 }
 
-QgsExpressionContext QgsLayoutAtlas::createExpressionContext()
+QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
 {
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope();
@@ -447,10 +447,10 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext()
     expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() )
                       << QgsExpressionContextUtils::layoutScope( mLayout );
 
-  expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
+  expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( const_cast< QgsLayoutAtlas * >( this ) ) );
 
   if ( mCoverageLayer )
-    expressionContext.lastScope()->setFields( mCoverageLayer->fields() );
+    expressionContext.appendScope( mCoverageLayer->createExpressionContextScope() );
 
   if ( mLayout && mEnabled )
     expressionContext.lastScope()->setFeature( mCurrentFeature );

@@ -20,6 +20,7 @@
 #include "qgsvectorlayerref.h"
 #include "qgslayoutserializableobject.h"
 #include "qgsabstractlayoutiterator.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <QObject>
 
 class QgsLayout;
@@ -37,7 +38,7 @@ class QgsLayout;
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject
+class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -252,6 +253,8 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      */
     int currentFeatureNumber() const { return mCurrentFeatureNo; }
 
+    QgsExpressionContext createExpressionContext() const override;
+
   public slots:
 
     bool next() override;
@@ -390,7 +393,6 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     int mCurrentFeatureNo = -1;
     QgsFeature mCurrentFeature;
 
-    QgsExpressionContext createExpressionContext();
 
     friend class AtlasFeatureSorter;
 };
