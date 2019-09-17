@@ -2369,7 +2369,13 @@ void QgsLayoutItemMap::updateAtlasFeature()
     double originalScale = calc.calculate( originalExtent, rect().width() );
     double geomCenterX = ( xa1 + xa2 ) / 2.0;
     double geomCenterY = ( ya1 + ya2 ) / 2.0;
-    const QVector<qreal> scales = mLayout->renderContext().predefinedScales();
+    QVector<qreal> scales;
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( !mLayout->reportContext().predefinedScales().empty() ) // remove when deprecated method is removed
+      scales = mLayout->reportContext().predefinedScales();
+    else
+      scales = mLayout->renderContext().predefinedScales();
+    Q_NOWARN_DEPRECATED_POP
     if ( mAtlasScalingMode == Fixed || isPointLayer || scales.isEmpty() )
     {
       // only translate, keep the original scale (i.e. width x height)
