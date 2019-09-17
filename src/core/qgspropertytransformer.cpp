@@ -175,6 +175,9 @@ bool QgsGenericNumericTransformer::loadVariant( const QVariant &transformer )
 
 double QgsGenericNumericTransformer::value( double input ) const
 {
+  if ( qgsDoubleNear( mMaxValue, mMinValue ) )
+    return qBound( mMinOutput, input, mMaxOutput );
+
   input = transformNumeric( input );
   if ( qgsDoubleNear( mExponent, 1.0 ) )
     return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
