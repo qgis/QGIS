@@ -958,6 +958,31 @@ void QgsCoordinateTransform::invalidateCache( bool disableCache )
   sTransforms.clear();
 }
 
+#if PROJ_VERSION_MAJOR>=6
+void QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( void *pj_context )
+{
+  // Not completely sure about object order destruction after main() has
+  // exited. So it is safer to check sDisableCache before using sCacheLock
+  // in case sCacheLock would have been destroyed before the current TLS
+  // QgsProjContext object that has called us...
+  if ( sDisableCache )
+    return;
+
+  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  if ( sDisableCache )
+    return;
+
+  for ( auto it = sTransforms.begin(); it != sTransforms.end(); )
+  {
+    auto &v = it.value();
+    if ( v.d->removeObjectsBelongingToCurrentThread( pj_context ) )
+      it = sTransforms.erase( it );
+    else
+      ++it;
+  }
+}
+#endif
+
 double QgsCoordinateTransform::scaleFactor( const QgsRectangle &ReferenceExtent ) const
 {
   QgsPointXY source1( ReferenceExtent.xMinimum(), ReferenceExtent.yMinimum() );

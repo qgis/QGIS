@@ -102,6 +102,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     ProjData threadLocalProjData();
 
+#if PROJ_VERSION_MAJOR>=6
+    // Only meant to be called by QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread()
+    bool removeObjectsBelongingToCurrentThread( void *pj_context );
+#endif
+
     /**
      * Flag to indicate whether the transform is valid (ie has a valid
      * source and destination crs)
