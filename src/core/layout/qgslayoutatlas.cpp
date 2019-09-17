@@ -340,7 +340,7 @@ bool QgsLayoutAtlas::endRender()
   return true;
 }
 
-int QgsLayoutAtlas::count()
+int QgsLayoutAtlas::count() const
 {
   return mFeatureIds.size();
 }
@@ -447,7 +447,7 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
     expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() )
                       << QgsExpressionContextUtils::layoutScope( mLayout );
 
-  expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( const_cast< QgsLayoutAtlas * >( this ) ) );
+  expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
 
   if ( mCoverageLayer )
     expressionContext.appendScope( mCoverageLayer->createExpressionContextScope() );

@@ -105,7 +105,7 @@ Returns the parent report section.
 Returns the associated project.
 %End
 
-    virtual int count();
+    virtual int count() const;
 
     virtual QString filePath( const QString &baseFilePath, const QString &extension );
 
