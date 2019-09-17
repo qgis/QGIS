@@ -66,8 +66,8 @@ inline qint32 FID2PKINT( qint64 x )
 
 static bool tableExists( QgsPostgresConn &conn, const QString &name )
 {
-  QgsPostgresResult res( conn.PQexec( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=" + QgsPostgresConn::quotedValue( name ) ) );
-  return res.PQgetvalue( 0, 0 ).toInt() > 0;
+  QgsPostgresResult res( conn.PQexec( "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( 't' );
 }
 
 QgsPostgresPrimaryKeyType
@@ -1121,36 +1121,59 @@ bool QgsPostgresProvider::loadFields()
 
 void QgsPostgresProvider::setEditorWidgets()
 {
-  if ( tableExists( *connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
+  if ( ! tableExists( *connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
   {
-    for ( int i = 0; i < mAttributeFields.count(); ++i )
-    {
-      // CREATE TABLE qgis_editor_widget_styles (schema_name TEXT NOT NULL, table_name TEXT NOT NULL, field_name TEXT NOT NULL,
-      //                                         type TEXT NOT NULL, config TEXT,
-      //                                         PRIMARY KEY(schema_name, table_name, field_name));
-      QgsField &field = mAttributeFields[i];
-      const QString sql = QStringLiteral( "SELECT type, config FROM %1 WHERE schema_name = %2 and table_name = %3 and field_name = %4 LIMIT 1" ).
-                          arg( EDITOR_WIDGET_STYLES_TABLE, quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( field.name() ) );
-      QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-      for ( int i = 0; i < result.PQntuples(); ++i )
-      {
-        const QString type = result.PQgetvalue( i, 0 );
-        QVariantMap config;
-        if ( !result.PQgetisnull( i, 1 ) ) // Can be null and it's OK
-        {
-          const QString configTxt = result.PQgetvalue( i, 1 );
-          QDomDocument doc;
-          if ( doc.setContent( configTxt ) )
-          {
-            config = QgsXmlUtils::readVariant( doc.documentElement() ).toMap();
-          }
-          else
-          {
-            QgsMessageLog::logMessage( tr( "Cannot parse widget configuration for field %1.%2.%3\n" ).arg( mSchemaName, mTableName, field.name() ), tr( "PostGIS" ) );
-          }
-        }
+    return;
+  }
 
+  QStringList quotedFnames;
+  const QStringList fieldNames = mAttributeFields.names();
+  for ( const QString &name : fieldNames )
+  {
+    quotedFnames << quotedValue( name );
+  }
+
+  // We expect the table to be created like this:
+  //
+  // CREATE TABLE qgis_editor_widget_styles (schema_name TEXT NOT NULL, table_name TEXT NOT NULL, field_name TEXT NOT NULL,
+  //                                         type TEXT NOT NULL, config TEXT,
+  //                                         PRIMARY KEY(schema_name, table_name, field_name));
+  const QString sql = QStringLiteral( "SELECT field_name, type, config "
+                                      "FROM %1 WHERE schema_name = %2 "
+                                      "AND table_name = %3 "
+                                      "AND field_name IN ( %4 )" ) .
+                      arg( EDITOR_WIDGET_STYLES_TABLE, quotedValue( mSchemaName ),
+                           quotedValue( mTableName ), quotedFnames.join( "," ) );
+  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+  for ( int i = 0; i < result.PQntuples(); ++i )
+  {
+    if ( result.PQgetisnull( i, 2 ) ) continue; // config can be null and it's OK
+
+    const QString &configTxt = result.PQgetvalue( i, 2 );
+    const QString &type = result.PQgetvalue( i, 1 );
+    const QString &fname = result.PQgetvalue( i, 0 );
+    QVariantMap config;
+    QDomDocument doc;
+    if ( doc.setContent( configTxt ) )
+    {
+      config = QgsXmlUtils::readVariant( doc.documentElement() ).toMap();
+    }
+    else
+    {
+      QgsMessageLog::logMessage(
+        tr( "Cannot parse widget configuration for field %1.%2.%3\n" )
+        .arg( mSchemaName, mTableName, fname ), tr( "PostGIS" )
+      );
+      continue;
+    }
+
+    // Set corresponding editor widget
+    for ( auto &field : mAttributeFields )
+    {
+      if ( field.name() == fname )
+      {
         field.setEditorWidgetSetup( QgsEditorWidgetSetup( type, config ) );
+        break;
       }
     }
   }
@@ -4723,29 +4746,26 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     return false;
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  QgsPostgresResult res( conn->PQexec( "CREATE TABLE IF NOT EXISTS layer_styles("
+                                       "id SERIAL PRIMARY KEY"
+                                       ",f_table_catalog varchar"
+                                       ",f_table_schema varchar"
+                                       ",f_table_name varchar"
+                                       ",f_geometry_column varchar"
+                                       ",styleName text"
+                                       ",styleQML xml"
+                                       ",styleSLD xml"
+                                       ",useAsDefault boolean"
+                                       ",description text"
+                                       ",owner varchar(63) DEFAULT CURRENT_USER"
+                                       ",ui xml"
+                                       ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
+                                       ")" ) );
+  if ( res.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QgsPostgresResult res( conn->PQexec( "CREATE TABLE layer_styles("
-                                         "id SERIAL PRIMARY KEY"
-                                         ",f_table_catalog varchar"
-                                         ",f_table_schema varchar"
-                                         ",f_table_name varchar"
-                                         ",f_geometry_column varchar"
-                                         ",styleName text"
-                                         ",styleQML xml"
-                                         ",styleSLD xml"
-                                         ",useAsDefault boolean"
-                                         ",description text"
-                                         ",owner varchar(63) DEFAULT CURRENT_USER"
-                                         ",ui xml"
-                                         ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                         ")" ) );
-    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
-    {
-      errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
-      conn->unref();
-      return false;
-    }
+    errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+    conn->unref();
+    return false;
   }
 
   if ( dsUri.database().isEmpty() ) // typically when a service file is used
@@ -4798,7 +4818,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                        .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
                        .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
-  QgsPostgresResult res( conn->PQexec( checkQuery ) );
+  res = conn->PQexec( checkQuery );
   if ( res.PQntuples() > 0 )
   {
     if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
