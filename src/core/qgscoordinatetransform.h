@@ -536,6 +536,15 @@ class CORE_EXPORT QgsCoordinateTransform
         const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
 #endif
 
+#ifndef SIP_RUN
+#if PROJ_VERSION_MAJOR>=6
+  protected:
+    friend class QgsProjContext;
+
+    // Only meant to be called by QgsProjContext::~QgsProjContext()
+    static void removeFromCacheObjectsBelongingToCurrentThread( void *pj_context );
+#endif
+#endif
   private:
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;

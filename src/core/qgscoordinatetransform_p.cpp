@@ -683,4 +683,20 @@ void QgsCoordinateTransformPrivate::freeProj()
   mProjProjections.clear();
 }
 
+#if PROJ_VERSION_MAJOR>=6
+bool QgsCoordinateTransformPrivate::removeObjectsBelongingToCurrentThread( void *pj_context )
+{
+  QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+
+  QMap < uintptr_t, ProjData >::iterator it = mProjProjections.find( reinterpret_cast< uintptr_t>( pj_context ) );
+  if ( it != mProjProjections.end() )
+  {
+    proj_destroy( it.value() );
+    mProjProjections.erase( it );
+  }
+
+  return mProjProjections.isEmpty();
+}
+#endif
+
 ///@endcond

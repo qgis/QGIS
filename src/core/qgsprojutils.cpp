@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "qgsprojutils.h"
 #include "qgis.h"
+#include "qgscoordinatetransform.h"
+
 #include <QString>
 #include <QSet>
 #include <QRegularExpression>
@@ -45,6 +47,9 @@ QgsProjContext::QgsProjContext()
 QgsProjContext::~QgsProjContext()
 {
 #if PROJ_VERSION_MAJOR>=6
+  // Call removeFromCacheObjectsBelongingToCurrentThread() before
+  // destroying the context
+  QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( mContext );
   proj_context_destroy( mContext );
 #else
   pj_ctx_free( mContext );
