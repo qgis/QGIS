@@ -898,6 +898,19 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
 
+        # no items -- no crash!
+        l.pageCollection().resizeToContents(QgsMargins(1, 2, 3, 4), QgsUnitTypes.LayoutCentimeters)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize("A5", QgsLayoutItemPage.Landscape)
+        l.pageCollection().addPage(page)
+        # no items, no change
+        l.pageCollection().resizeToContents(QgsMargins(1, 2, 3, 4), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(l.pageCollection().pageCount(), 1)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().width(), 210.0, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().height(), 148.0, 2)
+
+        p = QgsProject()
+        l = QgsLayout(p)
         shape1 = QgsLayoutItemShape(l)
         shape1.attemptResize(QgsLayoutSize(90, 50))
         shape1.attemptMove(QgsLayoutPoint(90, 50))
