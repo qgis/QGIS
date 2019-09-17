@@ -277,11 +277,13 @@ double QgsLayoutPageCollection::pageShadowWidth() const
 
 void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits )
 {
-  if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Resize to Contents" ) );
-
   //calculate current bounds
   QRectF bounds = mLayout->layoutBounds( true, 0.0 );
+  if ( bounds.isEmpty() )
+    return;
+
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Resize to Contents" ) );
 
   for ( int page = mPages.count() - 1; page > 0; page-- )
   {
