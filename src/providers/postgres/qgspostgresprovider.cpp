@@ -66,8 +66,8 @@ inline qint32 FID2PKINT( qint64 x )
 
 static bool tableExists( QgsPostgresConn &conn, const QString &name )
 {
-  QgsPostgresResult res( conn.PQexec( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=" + QgsPostgresConn::quotedValue( name ) ) );
-  return res.PQgetvalue( 0, 0 ).toInt() > 0;
+  QgsPostgresResult res( conn.PQexec( "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( 't' );
 }
 
 QgsPostgresPrimaryKeyType
