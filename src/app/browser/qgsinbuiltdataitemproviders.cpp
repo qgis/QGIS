@@ -36,6 +36,8 @@
 #include "qgsapplication.h"
 #include "processing/qgsprojectstylealgorithms.h"
 #include "qgsstylemanagerdialog.h"
+
+#include <QFileInfo>
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -429,11 +431,23 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
 
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
   {
-    QAction *action = menu->addAction( tr( "File Properties…" ) );
-    connect( action, &QAction::triggered, this, [ = ]
+    bool isFile = false;
+    if ( layerItem )
     {
-      QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
-    } );
+      isFile = layerItem->providerKey() == QStringLiteral( "ogr" ) || layerItem->providerKey() == QStringLiteral( "gdal" );
+    }
+    else
+    {
+      isFile = QFileInfo::exists( item->path() );
+    }
+    if ( isFile )
+    {
+      QAction *action = menu->addAction( tr( "File Properties…" ) );
+      connect( action, &QAction::triggered, this, [ = ]
+      {
+        QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
+      } );
+    }
   }
 }
 
