@@ -1779,6 +1779,11 @@ void QgsLayoutItemMap::connectUpdateSlot()
     } );
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
+  connect( &mLayout->renderContext(), &QgsLayoutRenderContext::predefinedScalesChanged, this, [ = ]
+  {
+    if ( mAtlasScalingMode == Predefined )
+      updateAtlasFeature();
+  } );
 
   connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
 }
@@ -2364,8 +2369,8 @@ void QgsLayoutItemMap::updateAtlasFeature()
     double originalScale = calc.calculate( originalExtent, rect().width() );
     double geomCenterX = ( xa1 + xa2 ) / 2.0;
     double geomCenterY = ( ya1 + ya2 ) / 2.0;
-
-    if ( mAtlasScalingMode == Fixed || isPointLayer )
+    const QVector<qreal> scales = mLayout->renderContext().predefinedScales();
+    if ( mAtlasScalingMode == Fixed || isPointLayer || scales.isEmpty() )
     {
       // only translate, keep the original scale (i.e. width x height)
       double xMin = geomCenterX - originalExtent.width() / 2.0;
@@ -2385,7 +2390,6 @@ void QgsLayoutItemMap::updateAtlasFeature()
       // choose one of the predefined scales
       double newWidth = originalExtent.width();
       double newHeight = originalExtent.height();
-      QVector<qreal> scales = mLayout->reportContext().predefinedScales();
       for ( int i = 0; i < scales.size(); i++ )
       {
         double ratio = scales[i] / originalScale;

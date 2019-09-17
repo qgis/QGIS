@@ -291,6 +291,25 @@ representations of the item as export layers, as they iterate through these incl
 .. versionadded:: 3.10
 %End
 
+    void setPredefinedScales( const QVector<qreal> &scales );
+%Docstring
+Sets the list of predefined ``scales`` to use with the layout. This is used
+for maps which are set to the predefined atlas scaling mode.
+
+.. seealso:: :py:func:`predefinedScales`
+
+.. versionadded:: 3.10
+%End
+
+    QVector<qreal> predefinedScales() const;
+%Docstring
+Returns the current list of predefined scales for use with the layout.
+
+.. seealso:: :py:func:`setPredefinedScales`
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutRenderContext::Flags flags );
@@ -303,6 +322,15 @@ Emitted whenever the context's ``flags`` change.
     void dpiChanged();
 %Docstring
 Emitted when the context's DPI is changed.
+%End
+
+    void predefinedScalesChanged();
+%Docstring
+Emitted when the list of predefined scales changes.
+
+.. seealso:: :py:func:`predefinedScales`
+
+.. versionadded:: 3.10
 %End
 
 };

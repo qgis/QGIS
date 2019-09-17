@@ -318,6 +318,7 @@ class LayoutContextSettingsRestorer
       , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
       , mPreviousSimplifyMethod( layout->renderContext().simplifyMethod() )
       , mExportThemes( layout->renderContext().exportThemes() )
+      , mPredefinedScales( layout->renderContext().predefinedScales() )
     {
     }
     Q_NOWARN_DEPRECATED_POP
@@ -332,6 +333,7 @@ class LayoutContextSettingsRestorer
       Q_NOWARN_DEPRECATED_POP
       mLayout->renderContext().setSimplifyMethod( mPreviousSimplifyMethod );
       mLayout->renderContext().setExportThemes( mExportThemes );
+      mLayout->renderContext().setPredefinedScales( mPredefinedScales );
     }
 
     LayoutContextSettingsRestorer( const LayoutContextSettingsRestorer &other ) = delete;
@@ -345,6 +347,7 @@ class LayoutContextSettingsRestorer
     int mPreviousExportLayer = 0;
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;
     QStringList mExportThemes;
+    QVector< double > mPredefinedScales;
 
 };
 ///@endcond PRIVATE
@@ -379,6 +382,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   ( void )dpiRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
   mLayout->renderContext().setFlags( settings.flags );
+  mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
   QList< int > pages;
   if ( settings.pages.empty() )
@@ -516,6 +520,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   LayoutContextSettingsRestorer contextRestorer( mLayout );
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
+  mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
   if ( settings.simplifyGeometries )
   {
@@ -708,6 +713,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
     iterator->layout()->renderContext().setFlags( settings.flags );
+    iterator->layout()->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
     if ( settings.simplifyGeometries )
     {
@@ -825,6 +831,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
   mLayout->renderContext().setDpi( settings.dpi );
 
   mLayout->renderContext().setFlags( settings.flags );
+  mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
@@ -885,6 +892,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
     iterator->layout()->renderContext().setFlags( settings.flags );
+    iterator->layout()->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
@@ -943,6 +951,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mLayout->renderContext().setFlags( settings.flags );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
+  mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
   if ( settings.simplifyGeometries )
   {

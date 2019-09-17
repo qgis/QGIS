@@ -625,6 +625,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Create cache image
     void recreateCachedImageInBackground();
 
+    void updateAtlasFeature();
   private:
 
     QgsLayoutItemMap::MapItemFlags mMapFlags = nullptr;
@@ -828,8 +829,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
 
     void refreshLabelMargin( bool updateItem );
-
-    void updateAtlasFeature();
 
     QgsRectangle computeAtlasRectangle();
 
