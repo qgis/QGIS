@@ -4530,6 +4530,7 @@ void QgsOgrProvider::close()
 
 void QgsOgrProvider::reloadData()
 {
+  mFeaturesCounted = QgsVectorDataProvider::Uncounted;
   bool wasValid = mValid;
   forceReload();
   close();
