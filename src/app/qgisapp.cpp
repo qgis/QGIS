@@ -3670,18 +3670,21 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), &QgsProject::layerLoaded,
            this, [this]( int i, int n )
   {
-    if ( !mProjectLoadingProxyTask )
+    if ( !mProjectLoadingProxyTask && i < n )
     {
       const QString name = QgsProject::instance()->title().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->title();
       mProjectLoadingProxyTask = new QgsProxyProgressTask( tr( "Loading “%1”" ).arg( name ) );
       QgsApplication::taskManager()->addTask( mProjectLoadingProxyTask );
     }
 
-    mProjectLoadingProxyTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
-    if ( i == n )
+    if ( mProjectLoadingProxyTask )
     {
-      mProjectLoadingProxyTask->finalize( true );
-      mProjectLoadingProxyTask = nullptr;
+      mProjectLoadingProxyTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
+      if ( i >= n )
+      {
+        mProjectLoadingProxyTask->finalize( true );
+        mProjectLoadingProxyTask = nullptr;
+      }
     }
   } );
   connect( QgsProject::instance(), &QgsProject::loadingLayer,
