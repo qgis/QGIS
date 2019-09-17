@@ -386,9 +386,13 @@ void myMessageOutput( QtMsgType type, const char *msg )
       break;
     case QtWarningMsg:
     {
-      // Ignore libpng iCPP known incorrect SRGB profile errors
-      // (which are thrown by 3rd party components we have no control over and have low value anyway).
-      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 )
+      /* Ignore:
+       * - libpng iCPP known incorrect SRGB profile errors (which are thrown by 3rd party components
+       *  we have no control over and have low value anyway);
+       * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
+       */
+      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 ||
+           strstr( msg, "Could not add child element to parent element because the types are incorrect" ) )
         break;
 
       myPrint( "Warning: %s\n", msg );
