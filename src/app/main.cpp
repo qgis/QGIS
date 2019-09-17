@@ -407,7 +407,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
         dumpBacktrace( 20 );
 
         // also be super obnoxious -- we DON'T want to allow these errors to be ignored!!
-        if ( QgisApp::instance() && QgisApp::instance()->thread() == QThread::currentThread() )
+        if ( QgisApp::instance() && QgisApp::instance()->messageBar() && QgisApp::instance()->thread() == QThread::currentThread() )
         {
           QgisApp::instance()->messageBar()->pushCritical( QStringLiteral( "Qt" ), msg );
         }
