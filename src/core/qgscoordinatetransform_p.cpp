@@ -24,6 +24,7 @@
 #if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
 #include <proj.h>
+#include <proj_experimental.h>
 #else
 #include <proj_api.h>
 #endif
@@ -652,16 +653,33 @@ void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, Q
 void QgsCoordinateTransformPrivate::freeProj()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+  if ( mProjProjections.isEmpty() )
+    return;
   QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constBegin();
+#if PROJ_VERSION_MAJOR>=6
+  // During destruction of PJ* objects, the errno is set in the underlying
+  // context. Consequently the context attached to the PJ* must still exist !
+  // Which is not necessarily the case currently unfortunately. So
+  // create a temporary dummy context, and attach it to the PJ* before destroying
+  // it
+  PJ_CONTEXT *tmpContext = proj_context_create();
   for ( ; it != mProjProjections.constEnd(); ++it )
   {
-#if PROJ_VERSION_MAJOR>=6
+    proj_assign_context( it.value(), tmpContext );
     proj_destroy( it.value() );
-#else
-    pj_free( it.value().first );
-    pj_free( it.value().second );
-#endif
   }
+  proj_context_destroy( tmpContext );
+#else
+  projCtx tmpContext = pj_ctx_alloc();
+  for ( ; it != mProjProjections.constEnd(); ++it )
+  {
+    pj_set_ctx( it.value().first, tmpContext );
+    pj_free( it.value().first );
+    pj_set_ctx( it.value().second, tmpContext );
+    pj_free( it.value().second );
+  }
+  pj_ctx_free( tmpContext );
+#endif
   mProjProjections.clear();
 }
 
