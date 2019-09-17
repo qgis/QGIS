@@ -550,6 +550,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), mHistogramWidget, &QgsHistogramWidget::setSourceFieldExp );
 
   mExpressionWidget->registerExpressionContextGenerator( this );
+
+  spinGraduatedClasses->setKeyboardTracking( false );
 }
 
 void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
@@ -999,12 +1001,29 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
+  // Update all classes first, this will fill labels with possibly wrong values because
+  // precision was not updated (it needs to be done after the classes have been calculated)
   mRenderer->updateClasses( mLayer, mode, nclasses, useSymmetricMode, symmetryPoint, astride );
+
+  // Store old precision
+  const int oldPrecision { mRenderer->labelFormat().precision() };
+
+  // Update label precision now that we have the ranges filled in with correct values
+  // and before we update the labels
+  mRenderer->calculateLabelPrecision( false );
+
+  // If precision has changed, we have bogus labels that needs to be updated
+  if ( mRenderer->labelFormat().precision() != oldPrecision )
+  {
+    for ( int i = 0; i < mRenderer->ranges().count(); i++ )
+    {
+      mRenderer->updateRangeLabel( i, mRenderer->labelFormat().labelForRange( mRenderer->ranges().at( i ) ) );
+    }
+  }
 
   if ( methodComboBox->currentIndex() == 1 )
     mRenderer->setSymbolSizes( minSizeSpinBox->value(), maxSizeSpinBox->value() );
 
-  mRenderer->calculateLabelPrecision();
   QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
