@@ -29,13 +29,23 @@ The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/read
     explicit QgsDateTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDateTimeEdit
+The current date and time is used by default.
+The widget is allowing null by default.
 %End
 
     void setAllowNull( bool allowNull );
 %Docstring
 Determines if the widget allows setting null date/time.
+
+.. seealso:: :py:func:`allowNull`
 %End
+
     bool allowNull() const;
+%Docstring
+If the widget allows setting null date/time.
+
+.. seealso:: :py:func:`setAllowNull`
+%End
 
     void setDateTime( const QDateTime &dateTime );
 %Docstring
@@ -52,7 +62,11 @@ dateTime returns the date time which can eventually be a null date/time
 
 .. note::
 
-   since QDateTimeEdit.dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
+    You mustn't call date() or time() because they can't return a NULL value.
+
+.. note::
+
+   since QDateTimeEdit.dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit
 %End
 
     virtual void clear();
