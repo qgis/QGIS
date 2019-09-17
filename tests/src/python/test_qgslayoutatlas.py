@@ -430,8 +430,8 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Predefined)
 
         scales = [1800000, 5000000]
-        self.layout.reportContext().setPredefinedScales(scales)
-        for i, s in enumerate(self.layout.reportContext().predefinedScales()):
+        self.layout.renderContext().setPredefinedScales(scales)
+        for i, s in enumerate(self.layout.renderContext().predefinedScales()):
             self.assertEqual(s, scales[i])
 
         self.atlas.beginRender()
