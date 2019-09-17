@@ -146,6 +146,11 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      */
     void applyDefaultTransform();
 
+    /**
+     * Cleans up a PROJ scope string, adding friendly acronym descriptions.
+     */
+    QString formatScope( const QString &scope );
+
 #if PROJ_VERSION_MAJOR>=6
     QList< QgsDatumTransform::TransformDetails > mDatumTransforms;
 #else
