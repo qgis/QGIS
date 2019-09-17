@@ -940,6 +940,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
     return false;
 
   const QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
+  const int totalLayerCount = sortedLayerNodes.count();
 
   int i = 0;
   for ( const QDomNode &node : sortedLayerNodes )
@@ -971,7 +972,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
         emit loadingLayerMessageReceived( tr( "Loading layer %1" ).arg( name ), messages );
       }
     }
-    emit layerLoaded( i + 1, nl.count() );
+    emit layerLoaded( i + 1, totalLayerCount );
     i++;
   }
 
