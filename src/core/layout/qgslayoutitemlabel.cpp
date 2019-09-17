@@ -486,6 +486,7 @@ void QgsLayoutItemLabel::setFrameStrokeWidth( const QgsLayoutMeasurement strokeW
 
 void QgsLayoutItemLabel::refresh()
 {
+  invalidateCache();
   QgsLayoutItem::refresh();
   refreshExpressionContext();
 }
