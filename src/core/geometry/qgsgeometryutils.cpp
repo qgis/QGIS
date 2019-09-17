@@ -910,6 +910,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double increment = tolerance; //one segment per degree
   if ( toleranceType == QgsAbstractGeometry::MaximumDifference )
   {
+    // Ensure tolerance is not higher than twice the radius
+    tolerance = std::min( tolerance, radius * 2 );
     double halfAngle = std::acos( -tolerance / radius + 1 );
     increment = 2 * halfAngle;
   }
