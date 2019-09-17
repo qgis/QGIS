@@ -32,7 +32,7 @@ namespace QgsWms
                                const QString &version, const QgsServerRequest &request,
                                QgsServerResponse &response );
 
-  void checkParameters( const QgsWmsParameters &parameters );
+  void checkParameters( QgsWmsParameters &parameters );
 
   QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree );
 
