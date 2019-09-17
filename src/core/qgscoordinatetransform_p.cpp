@@ -333,13 +333,20 @@ void QgsCoordinateTransformPrivate::setFinder()
 void QgsCoordinateTransformPrivate::freeProj()
 {
   mProjLock.lockForWrite();
-  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constBegin();
-  for ( ; it != mProjProjections.constEnd(); ++it )
+  if ( !mProjProjections.isEmpty() )
   {
-    pj_free( it.value().first );
-    pj_free( it.value().second );
+    projCtx tmpContext = pj_ctx_alloc();
+    QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constBegin();
+    for ( ; it != mProjProjections.constEnd(); ++it )
+    {
+      pj_set_ctx( it.value().first, tmpContext );
+      pj_free( it.value().first );
+      pj_set_ctx( it.value().second, tmpContext );
+      pj_free( it.value().second );
+    }
+    pj_ctx_free( tmpContext );
+    mProjProjections.clear();
   }
-  mProjProjections.clear();
   mProjLock.unlock();
 }
 
