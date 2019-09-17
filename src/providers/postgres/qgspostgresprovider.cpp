@@ -4725,29 +4725,26 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     return false;
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  QgsPostgresResult res( conn->PQexec( "CREATE TABLE IF NOT EXISTS layer_styles("
+                                       "id SERIAL PRIMARY KEY"
+                                       ",f_table_catalog varchar"
+                                       ",f_table_schema varchar"
+                                       ",f_table_name varchar"
+                                       ",f_geometry_column varchar"
+                                       ",styleName text"
+                                       ",styleQML xml"
+                                       ",styleSLD xml"
+                                       ",useAsDefault boolean"
+                                       ",description text"
+                                       ",owner varchar(63) DEFAULT CURRENT_USER"
+                                       ",ui xml"
+                                       ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
+                                       ")" ) );
+  if ( res.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QgsPostgresResult res( conn->PQexec( "CREATE TABLE layer_styles("
-                                         "id SERIAL PRIMARY KEY"
-                                         ",f_table_catalog varchar"
-                                         ",f_table_schema varchar"
-                                         ",f_table_name varchar"
-                                         ",f_geometry_column varchar"
-                                         ",styleName text"
-                                         ",styleQML xml"
-                                         ",styleSLD xml"
-                                         ",useAsDefault boolean"
-                                         ",description text"
-                                         ",owner varchar(63) DEFAULT CURRENT_USER"
-                                         ",ui xml"
-                                         ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                         ")" ) );
-    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
-    {
-      errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
-      conn->unref();
-      return false;
-    }
+    errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+    conn->unref();
+    return false;
   }
 
   if ( dsUri.database().isEmpty() ) // typically when a service file is used
@@ -4800,7 +4797,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                        .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
                        .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
-  QgsPostgresResult res( conn->PQexec( checkQuery ) );
+  res = conn->PQexec( checkQuery );
   if ( res.PQntuples() > 0 )
   {
     if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
