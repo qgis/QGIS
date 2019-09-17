@@ -281,6 +281,21 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      */
     void setExportThemes( const QStringList &themes );
 
+    /**
+     * Sets the list of predefined \a scales to use with the layout. This is used
+     * for maps which are set to the predefined atlas scaling mode.
+     * \see predefinedScales()
+     * \since QGIS 3.10
+     */
+    void setPredefinedScales( const QVector<qreal> &scales );
+
+    /**
+     * Returns the current list of predefined scales for use with the layout.
+     * \see setPredefinedScales()
+     * \since QGIS 3.10
+     */
+    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
+
   signals:
 
     /**
@@ -293,6 +308,13 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * Emitted when the context's DPI is changed.
      */
     void dpiChanged();
+
+    /**
+     * Emitted when the list of predefined scales changes.
+     * \see predefinedScales()
+     * \since QGIS 3.10
+     */
+    void predefinedScalesChanged();
 
   private:
 
@@ -316,6 +338,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QStringList mExportThemes;
 
     QgsVectorSimplifyMethod mSimplifyMethod;
+
+    QVector<qreal> mPredefinedScales;
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;

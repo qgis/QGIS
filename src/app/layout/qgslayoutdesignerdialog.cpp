@@ -1919,6 +1919,7 @@ void QgsLayoutDesignerDialog::print()
 
   QgsLayoutExporter::PrintExportSettings printSettings;
   printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+  printSettings.predefinedMapScales = predefinedScales();
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
   QgsApplication::taskManager()->addTask( proxyTask );
@@ -2351,7 +2352,7 @@ void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
 
   if ( checked )
   {
-    loadAtlasPredefinedScalesFromProject();
+    loadPredefinedScalesFromProject();
   }
 
   if ( checked )
@@ -2413,7 +2414,7 @@ void QgsLayoutDesignerDialog::atlasPageComboEditingFinished()
   else if ( page != atlas->currentFeatureNumber() + 1 )
   {
     QgisApp::instance()->mapCanvas()->stopRendering();
-    loadAtlasPredefinedScalesFromProject();
+    loadPredefinedScalesFromProject();
     atlas->seekTo( page - 1 );
   }
 }
@@ -2426,7 +2427,7 @@ void QgsLayoutDesignerDialog::atlasNext()
 
   QgisApp::instance()->mapCanvas()->stopRendering();
 
-  loadAtlasPredefinedScalesFromProject();
+  loadPredefinedScalesFromProject();
   printAtlas->next();
 }
 
@@ -2438,7 +2439,7 @@ void QgsLayoutDesignerDialog::atlasPrevious()
 
   QgisApp::instance()->mapCanvas()->stopRendering();
 
-  loadAtlasPredefinedScalesFromProject();
+  loadPredefinedScalesFromProject();
   printAtlas->previous();
 }
 
@@ -2450,7 +2451,7 @@ void QgsLayoutDesignerDialog::atlasFirst()
 
   QgisApp::instance()->mapCanvas()->stopRendering();
 
-  loadAtlasPredefinedScalesFromProject();
+  loadPredefinedScalesFromProject();
   printAtlas->first();
 }
 
@@ -2462,7 +2463,7 @@ void QgsLayoutDesignerDialog::atlasLast()
 
   QgisApp::instance()->mapCanvas()->stopRendering();
 
-  loadAtlasPredefinedScalesFromProject();
+  loadPredefinedScalesFromProject();
   printAtlas->last();
 }
 
@@ -2474,8 +2475,6 @@ void QgsLayoutDesignerDialog::printAtlas()
   QgsLayoutAtlas *printAtlas = atlas();
   if ( !printAtlas || !printAtlas->enabled() )
     return;
-
-  loadAtlasPredefinedScalesFromProject();
 
   if ( containsWmsLayers() )
   {
@@ -2507,6 +2506,7 @@ void QgsLayoutDesignerDialog::printAtlas()
 
   QgsLayoutExporter::PrintExportSettings printSettings;
   printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+  printSettings.predefinedMapScales = predefinedScales();
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -2622,8 +2622,6 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   QgsLayoutAtlas *printAtlas = atlas();
   if ( !printAtlas || !printAtlas->enabled() )
     return;
-
-  loadAtlasPredefinedScalesFromProject();
 
   // else, it has an atlas to render, so a directory must first be selected
   if ( printAtlas->filenameExpression().isEmpty() )
@@ -2784,7 +2782,6 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
-  loadAtlasPredefinedScalesFromProject();
   if ( containsWmsLayers() )
   {
     showWmsPrintingWarning();
@@ -2955,7 +2952,6 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
-  loadAtlasPredefinedScalesFromProject();
   if ( containsWmsLayers() )
   {
     showWmsPrintingWarning();
@@ -3564,6 +3560,7 @@ void QgsLayoutDesignerDialog::printReport()
   QgsLayoutExporter::PrintExportSettings printSettings;
   if ( mLayout )
     printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+  printSettings.predefinedMapScales = predefinedScales();
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -4058,6 +4055,7 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     settings.imageSize = imageSize;
   }
   settings.generateWorldFile = imageDlg.generateWorldFile();
+  settings.predefinedMapScales = predefinedScales();
   settings.flags |= QgsLayoutRenderContext::FlagUseAdvancedEffects;
   if ( imageDlg.antialiasing() )
     settings.flags |= QgsLayoutRenderContext::FlagAntialiasing;
@@ -4172,6 +4170,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
   settings.simplifyGeometries = simplify;
+  settings.predefinedMapScales = predefinedScales();
 
   if ( disableRasterTiles )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
@@ -4269,6 +4268,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.useIso32000ExtensionFormatGeoreferencing = !useOgcBestPracticeFormat;
   settings.includeGeoPdfFeatures = exportGeoPdfFeatures;
   settings.exportThemes = exportThemes;
+  settings.predefinedMapScales = predefinedScales();
 
   if ( disableRasterTiles )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
@@ -4354,12 +4354,19 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   mView->setSectionLabel( atlas->nameForPage( atlas->currentFeatureNumber() ) );
 }
 
-void QgsLayoutDesignerDialog::loadAtlasPredefinedScalesFromProject()
+void QgsLayoutDesignerDialog::loadPredefinedScalesFromProject()
 {
+  if ( mLayout )
+    mLayout->renderContext().setPredefinedScales( predefinedScales() );
+}
+
+QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
+{
+  QgsProject *project = mMasterLayout->layoutProject();
   QVector<qreal> projectScales;
   // first look at project's scales
-  QStringList scales( mLayout->project()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
-  bool hasProjectScales( mLayout->project()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
+  QStringList scales( project->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
+  bool hasProjectScales( project->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales
@@ -4376,7 +4383,8 @@ void QgsLayoutDesignerDialog::loadAtlasPredefinedScalesFromProject()
       projectScales.push_back( parts[1].toDouble() );
     }
   }
-  mLayout->reportContext().setPredefinedScales( projectScales );
+
+  return projectScales;
 }
 
 QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()

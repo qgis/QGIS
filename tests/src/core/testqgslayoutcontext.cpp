@@ -257,11 +257,17 @@ void TestQgsLayoutContext::scales()
   QVector< qreal > scales;
   scales << 1 << 15 << 5 << 10;
 
-  QgsLayoutReportContext context( nullptr );
+  QgsLayoutRenderContext context( nullptr );
+  QSignalSpy spyScalesChanged( &context, &QgsLayoutRenderContext::predefinedScalesChanged );
   context.setPredefinedScales( scales );
+
+  QCOMPARE( spyScalesChanged.count(), 1 );
 
   // should be sorted
   QCOMPARE( context.predefinedScales(), QVector< qreal >() << 1 << 5 << 10 << 15 );
+
+  context.setPredefinedScales( context.predefinedScales() );
+  QCOMPARE( spyScalesChanged.count(), 1 );
 }
 
 void TestQgsLayoutContext::simplifyMethod()

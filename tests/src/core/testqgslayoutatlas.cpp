@@ -262,9 +262,9 @@ void TestQgsLayoutAtlas::predefinedscales_render()
   QVector<qreal> scales;
   scales << 1800000.0;
   scales << 5000000.0;
-  mLayout->reportContext().setPredefinedScales( scales );
+  mLayout->renderContext().setPredefinedScales( scales );
   {
-    const QVector<qreal> &setScales = mLayout->reportContext().predefinedScales();
+    const QVector<qreal> &setScales = mLayout->renderContext().predefinedScales();
     for ( int i = 0; i < setScales.size(); i++ )
     {
       QVERIFY( setScales[i] == scales[i] );

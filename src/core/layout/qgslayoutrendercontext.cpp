@@ -120,3 +120,14 @@ void QgsLayoutRenderContext::setExportThemes( const QStringList &exportThemes )
 {
   mExportThemes = exportThemes;
 }
+
+void QgsLayoutRenderContext::setPredefinedScales( const QVector<qreal> &scales )
+{
+  if ( scales == mPredefinedScales )
+    return;
+
+  mPredefinedScales = scales;
+  // make sure the list is sorted
+  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() ); // clazy:exclude=detaching-member
+  emit predefinedScalesChanged();
+}

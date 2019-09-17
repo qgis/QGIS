@@ -141,6 +141,8 @@ Constructor for ImageExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QVector<qreal> predefinedMapScales;
+
     };
 
     ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
@@ -204,6 +206,8 @@ Constructor for PdfExportSettings
 
       QStringList exportThemes;
 
+      QVector<qreal> predefinedMapScales;
+
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
@@ -259,6 +263,8 @@ Constructor for PrintExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QVector<qreal> predefinedMapScales;
+
     };
 
     ExportResult print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings );
@@ -308,6 +314,7 @@ Constructor for SvgExportSettings
 
       bool simplifyGeometries;
 
+      QVector<qreal> predefinedMapScales;
     };
 
     ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );

@@ -210,6 +210,13 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
 
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
+
     };
 
     /**
@@ -354,6 +361,13 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QStringList exportThemes;
 
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
+
     };
 
     /**
@@ -418,6 +432,13 @@ class CORE_EXPORT QgsLayoutExporter
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
+
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
 
     };
 
@@ -519,6 +540,12 @@ class CORE_EXPORT QgsLayoutExporter
        */
       bool simplifyGeometries = true;
 
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
     };
 
     /**
