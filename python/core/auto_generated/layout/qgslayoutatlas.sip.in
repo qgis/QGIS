@@ -267,7 +267,7 @@ number of matching features.
 
     virtual bool endRender();
 
-    virtual int count();
+    virtual int count() const;
 
     virtual QString filePath( const QString &baseFilePath, const QString &extension );
 
