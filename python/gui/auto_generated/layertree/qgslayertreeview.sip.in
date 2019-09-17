@@ -184,6 +184,23 @@ Returns width of contextual menu mark, at right of layer node items.
 
 
 
+    SIP_PYTUPLE insertionPoint() const;
+%Docstring
+Returns the insertion point as a tuple (insertionGroup, insertionIndex)
+
+.. versionadded:: 3.10
+%End
+%MethodCode
+    QPair<QgsLayerTreeGroup *, int> result = sipCpp->insertionPoint();
+    sipRes = PyTuple_New( 2 );
+    PyObject *group = sipConvertFromType( result.first, sipType_QgsLayerTreeGroup, nullptr );
+    PyObject *index = PyLong_FromLong( result.second );
+    PyTuple_SET_ITEM( sipRes, 0, group );
+    PyTuple_SET_ITEM( sipRes, 1, index );
+%End
+
+
+
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring

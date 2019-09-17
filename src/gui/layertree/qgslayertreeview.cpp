@@ -428,6 +428,45 @@ QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNod
   return mIndicators.value( node );
 }
 
+QPair<QgsLayerTreeGroup *, int> QgsLayerTreeView::insertionPoint() const
+{
+  // defaults
+  QgsLayerTreeGroup *insertGroup = layerTreeModel()->rootGroup();
+  QModelIndex current = currentIndex();
+
+  int index = 0;
+
+  if ( current.isValid() )
+  {
+    index = current.row();
+
+    QgsLayerTreeNode *_currentNode = currentNode();
+    if ( _currentNode )
+    {
+      // if the insertion point is actually a group, insert new layers into the group
+      if ( QgsLayerTree::isGroup( _currentNode ) )
+      {
+        // if the group is embedded go to the first non-embedded group, at worst the top level item
+        QgsLayerTreeGroup *insertGroup = QgsLayerTreeUtils::firstGroupWithoutCustomProperty( QgsLayerTree::toGroup( _currentNode ), QStringLiteral( "embedded" ) );
+
+        return qMakePair( insertGroup, 0 );
+      }
+
+      // otherwise just set the insertion point in front of the current node
+      QgsLayerTreeNode *parentNode = _currentNode->parent();
+      if ( QgsLayerTree::isGroup( parentNode ) )
+      {
+        // if the group is embedded go to the first non-embedded group, at worst the top level item
+        QgsLayerTreeGroup *parentGroup = QgsLayerTree::toGroup( parentNode );
+        insertGroup = QgsLayerTreeUtils::firstGroupWithoutCustomProperty( parentGroup, QStringLiteral( "embedded" ) );
+        if ( parentGroup != insertGroup )
+          index = 0;
+      }
+    }
+  }
+  return qMakePair( insertGroup, index );
+}
+
 ///@cond PRIVATE
 QStringList QgsLayerTreeView::viewOnlyCustomProperties()
 {

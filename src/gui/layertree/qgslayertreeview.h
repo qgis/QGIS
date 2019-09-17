@@ -169,6 +169,29 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     int layerMarkWidth() const { return mLayerMarkWidth; }
 
+    /**
+     * Returns the insertion group with its insertion index
+     * \since QGIS 3.10
+     */
+    QPair<QgsLayerTreeGroup *, int> insertionPoint() const SIP_SKIP;
+
+#ifdef SIP_RUN
+
+    /**
+     * Returns the insertion point as a tuple (insertionGroup, insertionIndex)
+     * \since QGIS 3.10
+     */
+    SIP_PYTUPLE insertionPoint() const;
+    % MethodCode
+    QPair<QgsLayerTreeGroup *, int> result = sipCpp->insertionPoint();
+    sipRes = PyTuple_New( 2 );
+    PyObject *group = sipConvertFromType( result.first, sipType_QgsLayerTreeGroup, nullptr );
+    PyObject *index = PyLong_FromLong( result.second );
+    PyTuple_SET_ITEM( sipRes, 0, group );
+    PyTuple_SET_ITEM( sipRes, 1, index );
+    % End
+#endif
+
 ///@cond PRIVATE
 
     /**
