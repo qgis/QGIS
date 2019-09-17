@@ -91,8 +91,8 @@ namespace QgsWms
 
     if ( format == QgsWmsParameters::Format::NONE )
     {
-      throw QgsServiceException( "InvalidFormat",
-                                 QStringLiteral( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( parameters.formatAsString() ) );
+      throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
+                                    QStringLiteral( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( parameters.formatAsString() ) );
     }
 
     // Get cached image
