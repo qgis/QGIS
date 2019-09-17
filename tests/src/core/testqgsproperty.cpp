@@ -807,6 +807,13 @@ void TestQgsProperty::genericNumericTransformer()
   QGSCOMPARENEAR( t.value( 150 ), 13.5355, 0.001 );
   QCOMPARE( t.value( 200 ), 20.0 );
 
+  // invalid settings, where minValue = maxValue
+  QgsGenericNumericTransformer invalid( 1.0, 1.0, 0, 1.0 );
+  QCOMPARE( invalid.value( -1 ), 0.0 );
+  QCOMPARE( invalid.value( 0 ), 0.0 );
+  QCOMPARE( invalid.value( 1.0 ), 1.0 );
+  QCOMPARE( invalid.value( 2.0 ), 1.0 );
+
   //as expression
   QgsGenericNumericTransformer t3( 15,
                                    25,
