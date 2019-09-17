@@ -566,6 +566,15 @@ void TestQgsLayoutMap::mapRotation()
   QgsLayoutChecker checker( QStringLiteral( "composerrotation_maprotation" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testLayout( mReport, 0, 200 ) );
+
+  // test that rotation correctly applies to restored items
+  QDomDocument doc;
+  QDomElement documentElement = doc.createElement( QStringLiteral( "ComposerItemClipboard" ) );
+  map->writeXml( documentElement, doc, QgsReadWriteContext() );
+
+  QgsLayoutItemMap map2( &l );
+  QVERIFY( map2.readXml( documentElement.firstChildElement(), doc, QgsReadWriteContext() ) );
+  QCOMPARE( map2.mapRotation(), 90.0 );
 }
 
 void TestQgsLayoutMap::mapItemRotation()
