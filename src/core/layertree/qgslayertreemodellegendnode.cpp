@@ -491,24 +491,25 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   }
 
   // setup temporary render context
-  QgsRenderContext context;
-  context.setScaleFactor( settings.dpi() / 25.4 );
-  context.setRendererScale( settings.mapScale() );
-  context.setFlag( QgsRenderContext::Antialiasing, true );
-  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
-  context.setForceVectorOutput( true );
-  context.setPainter( ctx ? ctx->painter : nullptr );
-
+  QgsRenderContext *context = nullptr;
+  std::unique_ptr< QgsRenderContext > tempRenderContext;
   if ( ctx && ctx->context )
-  {
-    context.setExpressionContext( ctx->context->expressionContext() );
-  }
+    context = ctx->context;
   else
   {
+    tempRenderContext = qgis::make_unique< QgsRenderContext >();
+    tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
+    tempRenderContext->setRendererScale( settings.mapScale() );
+    tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
+    tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
+    tempRenderContext->setForceVectorOutput( true );
+    tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
+
     // setup a minimal expression context
     QgsExpressionContext expContext;
     expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
-    context.setExpressionContext( expContext );
+    tempRenderContext->setExpressionContext( expContext );
+    context = tempRenderContext.get();
   }
 
   //Consider symbol size for point markers
@@ -522,7 +523,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
   {
     // allow marker symbol to occupy bigger area if necessary
-    double size = markerSymbol->size( context ) / context.scaleFactor();
+    double size = markerSymbol->size( *context ) / context->scaleFactor();
     height = size;
     width = size;
     if ( width < settings.symbolSize().width() )
@@ -541,7 +542,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     QPainter *p = ctx->painter;
 
     //setup painter scaling to dots so that raster symbology is drawn to scale
-    double dotsPerMM = context.scaleFactor();
+    double dotsPerMM = context->scaleFactor();
 
     int opacity = 255;
     if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layerNode()->layer() ) )
@@ -571,9 +572,9 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       tempImage.fill( Qt::transparent );
       QPainter imagePainter( &tempImage );
       imagePainter.setRenderHint( QPainter::Antialiasing );
-      context.setPainter( &imagePainter );
-      s->drawPreviewIcon( &imagePainter, tempImageSize, &context );
-      context.setPainter( ctx->painter );
+      context->setPainter( &imagePainter );
+      s->drawPreviewIcon( &imagePainter, tempImageSize, context );
+      context->setPainter( ctx->painter );
       //reduce opacity of image
       imagePainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
       imagePainter.fillRect( tempImage.rect(), QColor( 0, 0, 0, opacity ) );
@@ -583,15 +584,15 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     }
     else
     {
-      s->drawPreviewIcon( p, QSize( width * dotsPerMM, height * dotsPerMM ), &context );
+      s->drawPreviewIcon( p, QSize( width * dotsPerMM, height * dotsPerMM ), context );
     }
 
     if ( !mTextOnSymbolLabel.isEmpty() )
     {
-      QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( context ) );
+      QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( *context ) );
       qreal yBaselineVCenter = ( height * dotsPerMM + fm.ascent() - fm.descent() ) / 2;
       QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
-                                 QStringList() << mTextOnSymbolLabel, context, mTextOnSymbolTextFormat );
+                                 QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
     }
 
     p->restore();
