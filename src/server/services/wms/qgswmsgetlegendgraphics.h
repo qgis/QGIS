@@ -33,8 +33,8 @@ namespace QgsWms
                                QgsServerResponse &response );
 
   /**
-   * checkParameters checks request \a parameters and sets HEIGHT and WIDTH to default values
-   * in case BBOX is specified for contextual legend and HEIGHT or WIDTH are not.
+   * checkParameters checks request \a parameters and sets SRCHEIGHT and SRCWIDTH to default values
+   * in case BBOX is specified for contextual legend and (SRC)HEIGHT or (SRC)WIDTH are not.
    */
   void checkParameters( QgsWmsParameters &parameters );
 
