@@ -228,7 +228,8 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
           else
           {
             QgsFeature feature = QgsVectorLayerUtils::createFeature( layer, error->geometry() );
-            if ( !layer->addFeature( feature ) )
+            QgsFeatureList features = QgsVectorLayerUtils::makeFeatureCompatible( feature, layer );
+            if ( !layer->addFeatures( features ) )
             {
               error->setFixFailed( tr( "Could not add feature to layer %1" ).arg( layer->name() ) );
             }
