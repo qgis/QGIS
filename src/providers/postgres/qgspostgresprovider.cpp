@@ -1051,7 +1051,7 @@ bool QgsPostgresProvider::loadFields()
       {
         // be tolerant in case of views: this might be a field used as a key
         const QgsPostgresProvider::Relkind type = relkind();
-        if ( ( type == Relkind::View || type == Relkind::MaterializedView ) && parseUriKey(mUri.keyColumn()).contains(fieldName) )
+        if ( ( type == Relkind::View || type == Relkind::MaterializedView ) && parseUriKey( mUri.keyColumn( ) ).contains( fieldName ) )
         {
           // Assume it is convertible to text
           fieldType = QVariant::String;
