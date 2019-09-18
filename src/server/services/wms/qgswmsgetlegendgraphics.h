@@ -32,6 +32,10 @@ namespace QgsWms
                                const QString &version, const QgsServerRequest &request,
                                QgsServerResponse &response );
 
+  /**
+   * checkParameters checks request \a parameters and sets HEIGHT and WIDTH to default values
+   * in case BBOX is specified for contextual legend and HEIGHT or WIDTH are not.
+   */
   void checkParameters( QgsWmsParameters &parameters );
 
   QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree );

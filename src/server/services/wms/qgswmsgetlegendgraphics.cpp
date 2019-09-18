@@ -171,7 +171,7 @@ namespace QgsWms
   QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree )
   {
 
-    QgsWmsParameters parameters = context.parameters();
+    const QgsWmsParameters parameters = context.parameters();
     std::unique_ptr<QgsLayerTreeModel> model( new QgsLayerTreeModel( &tree ) );
 
     if ( context.scaleDenominator() > 0 )
