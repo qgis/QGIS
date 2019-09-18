@@ -716,6 +716,11 @@ QAbstractItemView, QListView
   selection-color: @itemdarkbackground;
 }
 
+QAbstractItemView:disabled, QListView:disabled
+{
+    color: @itemalternativebackground;
+}
+
 QAbstractItemView::selected, QListView::selected {
     border: 0px;
     outline: none;
@@ -734,6 +739,10 @@ QTreeView {
 QTreeView::item, QTreeView::branch {
     background: transparent;
     color: @text;
+}
+
+QTreeView::item:disabled {
+    color: @itemalternativebackground;
 }
 
 QTreeView::item:hover, QTreeView::branch:hover {
@@ -790,6 +799,10 @@ QTableView {
     color: @text;
     selection-background-color: @selection;
     selection-color: @itemdarkbackground;
+}
+
+QTableView:disabled {
+    color: @itemalternativebackground;
 }
 
 QTableView QTableCornerButton::section {
