@@ -99,7 +99,10 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
         mLayerChecks.remove( vectorLayer );
       } );
 
-      enableLayerChecks( vectorLayer );
+      connect( vectorLayer, &QgsMapLayer::beforeResolveReferences, this, [this, vectorLayer]()
+      {
+        enableLayerChecks( vectorLayer );
+      } );
     }
   }
 }

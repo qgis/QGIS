@@ -1254,6 +1254,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   signals:
 
+    /**
+     * Emitted when all layers are loaded and references can be resolved,
+     * just before the references of this layer are resolved.
+     *
+     * \since QGIS 3.10
+     */
+    void beforeResolveReferences( QgsProject *project );
+
     //! Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar)
     void statusChanged( const QString &status );
 

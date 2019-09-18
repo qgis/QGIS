@@ -612,6 +612,7 @@ QString QgsMapLayer::decodedSource( const QString &source, const QString &dataPr
 
 void QgsMapLayer::resolveReferences( QgsProject *project )
 {
+  emit beforeResolveReferences( project );
   if ( m3DRenderer )
     m3DRenderer->resolveReferences( *project );
 }
