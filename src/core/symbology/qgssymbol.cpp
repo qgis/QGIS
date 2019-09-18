@@ -491,22 +491,30 @@ QColor QgsSymbol::color() const
 
 void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext )
 {
-  QgsRenderContext context = customContext ? *customContext : QgsRenderContext::fromQPainter( painter );
-  context.setForceVectorOutput( true );
-  QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr );
+  QgsRenderContext *context = customContext;
+  std::unique_ptr< QgsRenderContext > tempContext;
+  if ( !context )
+  {
+    tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( painter ) ) );
+    context = tempContext.get();
+  }
+
+  const bool prevForceVector = context->forceVectorOutput();
+  context->setForceVectorOutput( true );
+  QgsSymbolRenderContext symbolContext( *context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr );
   symbolContext.setSelected( selected );
   symbolContext.setOriginalGeometryType( mType == Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
 
-  if ( expressionContext )
+  if ( !customContext && expressionContext )
   {
-    context.setExpressionContext( *expressionContext );
+    context->setExpressionContext( *expressionContext );
   }
   else if ( !customContext )
   {
     // if no render context was passed, build a minimal expression context
     QgsExpressionContext expContext;
     expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
-    context.setExpressionContext( expContext );
+    context->setExpressionContext( expContext );
   }
 
   const auto constMLayers = mLayers;
@@ -533,6 +541,8 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     else
       layer->drawPreviewIcon( symbolContext, size );
   }
+
+  context->setForceVectorOutput( prevForceVector );
 }
 
 void QgsSymbol::exportImage( const QString &path, const QString &format, QSize size )
