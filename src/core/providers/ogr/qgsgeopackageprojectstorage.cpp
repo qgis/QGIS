@@ -29,6 +29,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsapplication.h"
 #include "qgsogrutils.h"
+#include "qgsproject.h"
 
 
 static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::Metadata &metadata )
@@ -354,7 +355,12 @@ bool QgsGeoPackageProjectStorage::removeProject( const QString &uri )
     errCause = QObject::tr( "Could not remove project %1: %2" ).arg( uri, errCause );
     QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
   }
-  return  errCause.isEmpty();
+  else if ( QgsProject::instance()->fileName() == uri )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Current project was removed from storage, marking it dirty." ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
+    QgsProject::instance()->setDirty( true );
+  }
+  return errCause.isEmpty();
 }
 
 bool QgsGeoPackageProjectStorage::renameProject( const QString &uri, const QString &uriNew )
