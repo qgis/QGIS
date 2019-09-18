@@ -179,7 +179,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   if ( !getGeometryDetails() ) // gets srid, geometry and data type
   {
     // the table is not a geometry table
-    QgsMessageLog::logMessage( tr( "invalid PostgreSQL layer" ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "Invalid PostgreSQL layer" ), tr( "PostGIS" ) );
     disconnectDb();
     return;
   }
@@ -191,7 +191,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   {
     if ( !getTopoLayerInfo() ) // gets topology name and layer id
     {
-      QgsMessageLog::logMessage( tr( "invalid PostgreSQL topology layer" ), tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( tr( "Invalid PostgreSQL topology layer" ), tr( "PostGIS" ) );
       mValid = false;
       disconnectDb();
       return;
@@ -939,7 +939,7 @@ bool QgsPostgresProvider::loadFields()
           }
           else if ( formattedFieldType != QLatin1String( "numeric" ) )
           {
-            QgsMessageLog::logMessage( tr( "unexpected formatted field type '%1' for field %2" )
+            QgsMessageLog::logMessage( tr( "Unexpected formatted field type '%1' for field %2" )
                                        .arg( formattedFieldType,
                                              fieldName ),
                                        tr( "PostGIS" ) );
@@ -1010,7 +1010,7 @@ bool QgsPostgresProvider::loadFields()
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "unexpected formatted field type '%1' for field %2" )
+          QgsDebugMsg( QStringLiteral( "Unexpected formatted field type '%1' for field %2" )
                        .arg( formattedFieldType,
                              fieldName ) );
           fieldSize = -1;
@@ -1028,7 +1028,7 @@ bool QgsPostgresProvider::loadFields()
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "unexpected formatted field type '%1' for field %2" )
+          QgsMessageLog::logMessage( tr( "Unexpected formatted field type '%1' for field %2" )
                                      .arg( formattedFieldType,
                                            fieldName ) );
           fieldSize = -1;
@@ -1049,8 +1049,19 @@ bool QgsPostgresProvider::loadFields()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName, fieldTypeName ), tr( "PostGIS" ) );
-        continue;
+        // be tolerant in case of views: this might be a field used as a key
+        const QgsPostgresProvider::Relkind type = relkind();
+        if ( ( type == Relkind::View || type == Relkind::MaterializedView ) && parseUriKey( mUri.keyColumn( ) ).contains( fieldName ) )
+        {
+          // Assume it is convertible to text
+          fieldType = QVariant::String;
+          fieldSize = -1;
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName, fieldTType ), tr( "PostGIS" ) );
+          continue;
+        }
       }
 
       if ( isArray )
@@ -1368,7 +1379,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
       // If the relation is a view try to find a suitable column to use as
       // the primary key.
 
-      QgsPostgresProvider::Relkind type = relkind();
+      const QgsPostgresProvider::Relkind type = relkind();
 
       if ( type == Relkind::OrdinaryTable || type == Relkind::PartitionedTable )
       {
