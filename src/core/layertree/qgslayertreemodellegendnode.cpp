@@ -546,7 +546,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
     int opacity = 255;
     if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layerNode()->layer() ) )
-      opacity = ( 255 * vectorLayer->opacity() );
+      opacity = static_cast<int >( std::round( 255 * vectorLayer->opacity() ) );
 
     p->save();
     p->setRenderHint( QPainter::Antialiasing );
@@ -565,26 +565,31 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
     if ( opacity != 255 && settings.useAdvancedEffects() )
     {
+      const int maxBleed = static_cast< int >( std::ceil( QgsSymbolLayerUtils::estimateMaxSymbolBleed( s, *context ) ) );
+
       //semi transparent layer, so need to draw symbol to an image (to flatten it first)
       //create image which is same size as legend rect, in case symbol bleeds outside its alloted space
-      QSize tempImageSize( width * dotsPerMM, height * dotsPerMM );
+      const QSize symbolSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast<int >( std::round( height * dotsPerMM ) ) );
+      const QSize tempImageSize( symbolSize.width() + maxBleed * 2, symbolSize.height() + maxBleed * 2 );
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );
       tempImage.fill( Qt::transparent );
       QPainter imagePainter( &tempImage );
       imagePainter.setRenderHint( QPainter::Antialiasing );
       context->setPainter( &imagePainter );
-      s->drawPreviewIcon( &imagePainter, tempImageSize, context );
+      imagePainter.translate( maxBleed, maxBleed );
+      s->drawPreviewIcon( &imagePainter, symbolSize, context );
+      imagePainter.translate( -maxBleed, -maxBleed );
       context->setPainter( ctx->painter );
       //reduce opacity of image
       imagePainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
       imagePainter.fillRect( tempImage.rect(), QColor( 0, 0, 0, opacity ) );
       imagePainter.end();
       //draw rendered symbol image
-      p->drawImage( 0, 0, tempImage );
+      p->drawImage( -maxBleed, -maxBleed, tempImage );
     }
     else
     {
-      s->drawPreviewIcon( p, QSize( width * dotsPerMM, height * dotsPerMM ), context );
+      s->drawPreviewIcon( p, QSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast< int >( std::round( height * dotsPerMM ) ) ), context );
     }
 
     if ( !mTextOnSymbolLabel.isEmpty() )
