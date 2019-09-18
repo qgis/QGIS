@@ -128,7 +128,7 @@ namespace QgsWms
     }
   }
 
-  void checkParameters( const QgsWmsParameters &parameters )
+  void checkParameters( QgsWmsParameters &parameters )
   {
     if ( parameters.allLayersNickname().isEmpty() )
     {
@@ -153,10 +153,24 @@ namespace QgsWms
       throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                     parameters[QgsWmsParameter::BBOX] );
     }
+    // If we have a contextual legend (BBOX is set)
+    // make sure (SRC)WIDTH and/or (SRC)HEIGHT are set, default to 800x600
+    if ( ! parameters.bbox().isEmpty() )
+    {
+      if ( parameters.width().isEmpty() && parameters.srcWidth().isEmpty() )
+      {
+        parameters.set( QgsWmsParameter::SRCWIDTH, 800 );
+      }
+      if ( parameters.height().isEmpty() && parameters.srcHeight().isEmpty() )
+      {
+        parameters.set( QgsWmsParameter::SRCHEIGHT, 600 );
+      }
+    }
   }
 
   QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree )
   {
+
     const QgsWmsParameters parameters = context.parameters();
     std::unique_ptr<QgsLayerTreeModel> model( new QgsLayerTreeModel( &tree ) );
 
@@ -170,7 +184,6 @@ namespace QgsWms
     {
       QgsRenderer renderer( context );
       const QgsRenderer::HitTest symbols = renderer.symbols();
-
       for ( QgsLayerTreeNode *node : tree.children() )
       {
         QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( node );

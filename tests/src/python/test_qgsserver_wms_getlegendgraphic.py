@@ -804,6 +804,25 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR", max_size_diff=QSize(10, 2))
 
+    def test_BBoxNoWidthNoHeight(self):
+        """Test with BBOX and no width/height (like QGIS client does)"""
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_wms_grouped_nested_layers.qgs',
+            "SERVICE": "WMS",
+            "VERSION": "1.3",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "areas%20and%20symbols",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:4326",
+            "BBOX": "52.44462990911360123,10.6723591605239374,52.44631832182876963,10.6795952150175264",
+            "SLD_VERSION": "1.1",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self.assertFalse(b'Exception' in r)
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_NoWidthNoHeight", max_size_diff=QSize(10, 2))
+
 
 if __name__ == '__main__':
     unittest.main()
