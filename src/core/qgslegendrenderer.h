@@ -215,7 +215,7 @@ class CORE_EXPORT QgsLegendRenderer
      * Returns a list of component groups for the specified \a parentGroup, respecting the current layer's
      * splitting settings.
      */
-    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, bool splitLayer );
+    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, bool splitLayer, QgsRenderContext *context );
 
     /**
      * Divides a list of component groups into columns, and sets the column index for each group in the list.
