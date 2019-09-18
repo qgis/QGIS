@@ -25,6 +25,7 @@
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerserverproperties.h"
 #include "layertree/qgslayertree.h"
 #include "layertree/qgslayertreemodel.h"
 #include "layertree/qgslayertreegroup.h"
@@ -130,6 +131,11 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void mButtonRemoveJoin_clicked();
 
+    void mButtonAddWmsDimension_clicked();
+    void mButtonEditWmsDimension_clicked();
+    void mWmsDimensionsTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mButtonRemoveWmsDimension_clicked();
+
     void mSimplifyDrawingGroupBox_toggled( bool checked );
 
   signals:
@@ -221,6 +227,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );
+
+    //! Adds a QGIS Server WMS dimension to mWmsDimensionTreeWidget
+    void addWmsDimensionInfoToTreeWidget( const QgsVectorLayerServerProperties::WmsDimensionInfo &wmsDim, int insertIndex = -1 );
 
     void updateAuxiliaryStoragePage();
     void deleteAuxiliaryField( int index );

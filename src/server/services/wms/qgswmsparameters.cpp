@@ -17,6 +17,7 @@
 
 #include "qgswmsparameters.h"
 #include "qgsdatasourceuri.h"
+#include "qgsvectorlayerserverproperties.h"
 #include "qgsmessagelog.h"
 #include "qgswmsserviceexception.h"
 
@@ -2010,5 +2011,24 @@ namespace QgsWms
     }
 
     return options;
+  }
+
+  QMap<QString, QString> QgsWmsParameters::dimensionValues() const
+  {
+    QMap<QString, QString> dimValues;
+    const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsVectorLayerServerProperties::PredefinedWmsDimensionName>() );
+    const QStringList unmanagedNames = mUnmanagedParameters.keys();
+    for ( const QString &key : unmanagedNames )
+    {
+      if ( key.startsWith( QStringLiteral( "DIM_" ) ) )
+      {
+        dimValues[key.mid( 4 )] = mUnmanagedParameters[key];
+      }
+      else if ( pnMetaEnum.keyToValue( key.toUpper().toStdString().c_str() ) != -1 )
+      {
+        dimValues[key] = mUnmanagedParameters[key];
+      }
+    }
+    return dimValues;
   }
 }

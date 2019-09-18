@@ -146,8 +146,10 @@ namespace QgsWms
       // Set layer opacity
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;
 
-      // Set layer filter
+      // Set layer filter and dimension
       void setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters );
+
+      QStringList dimensionFilter( QgsVectorLayer *layer ) const;
 
       // Set layer python filter
       void setLayerAccessControlFilter( QgsMapLayer *layer ) const;

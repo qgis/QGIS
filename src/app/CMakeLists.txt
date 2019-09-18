@@ -21,6 +21,7 @@ SET(QGIS_APP_SRCS
   qgsaddtaborgroup.cpp
   qgsappscreenshots.cpp
   qgsjoindialog.cpp
+  qgswmsdimensiondialog.cpp
   qgsannotationwidget.cpp
   qgsappsslerrorhandler.cpp
   qgsattributeactiondialog.cpp
@@ -266,6 +267,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsappcoordinateoperationhandlers.h
   qgsappscreenshots.h
   qgsjoindialog.h
+  qgswmsdimensiondialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
   qgsapplayertreeviewmenuprovider.h

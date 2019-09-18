@@ -38,6 +38,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterdataprovider.h"
 
+#include "qgsvectorlayerserverproperties.h"
+
 
 namespace QgsWms
 {
@@ -1200,6 +1202,73 @@ namespace QgsWms
             metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), metadataUrl );
             metaUrlElem.appendChild( metaUrlORElem );
             layerElem.appendChild( metaUrlElem );
+          }
+
+          // Add dimensions
+          if ( l->type() == QgsMapLayerType::VectorLayer )
+          {
+            QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+            const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = vl->serverProperties()->wmsDimensions();
+            for ( const  QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
+            {
+              int fieldIndex = vl->fields().indexOf( dim.fieldName );
+              // Check field index
+              if ( fieldIndex == -1 )
+              {
+                continue;
+              }
+              // get unique values
+              QSet<QVariant> uniqueValues = vl->uniqueValues( fieldIndex );
+
+              // get unique values from endfield name if define
+              if ( !dim.endFieldName.isEmpty() )
+              {
+                int endFieldIndex = vl->fields().indexOf( dim.endFieldName );
+                // Check end field index
+                if ( endFieldIndex == -1 )
+                {
+                  continue;
+                }
+                uniqueValues.unite( vl->uniqueValues( endFieldIndex ) );
+              }
+              // sort unique values
+              QList<QVariant> values = uniqueValues.toList();
+              std::sort( values.begin(), values.end() );
+
+              QDomElement dimElem = doc.createElement( QStringLiteral( "Dimension" ) );
+              dimElem.setAttribute( QStringLiteral( "name" ), dim.name );
+              if ( !dim.units.isEmpty() )
+              {
+                dimElem.setAttribute( QStringLiteral( "units" ), dim.units );
+              }
+              if ( !dim.unitSymbol.isEmpty() )
+              {
+                dimElem.setAttribute( QStringLiteral( "unitSymbol" ), dim.unitSymbol );
+              }
+              if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MinValue )
+              {
+                dimElem.setAttribute( QStringLiteral( "default" ), values.first().toString() );
+              }
+              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MaxValue )
+              {
+                dimElem.setAttribute( QStringLiteral( "default" ), values.last().toString() );
+              }
+              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::ReferenceValue )
+              {
+                dimElem.setAttribute( QStringLiteral( "default" ), dim.referenceValue.toString() );
+              }
+              dimElem.setAttribute( QStringLiteral( "multipleValue" ), '1' );
+              dimElem.setAttribute( QStringLiteral( "nearestValue" ), '0' );
+              // values list
+              QStringList strValues;
+              for ( const QVariant &v : values )
+              {
+                strValues << v.toString();
+              }
+              QDomText dimValuesText = doc.createTextNode( strValues.join( QStringLiteral( ", " ) ) );
+              dimElem.appendChild( dimValuesText );
+              layerElem.appendChild( dimElem );
+            }
           }
 
           if ( projectSettings )

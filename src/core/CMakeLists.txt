@@ -395,6 +395,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerundopassthroughcommand.cpp
   qgsvectorlayerutils.cpp
   qgsvectorsimplifymethod.cpp
+  qgsvectorlayerserverproperties.cpp
   qgsvirtuallayerdefinition.cpp
   qgsvirtuallayerdefinitionutils.cpp
   qgsmapthemecollection.cpp
@@ -738,6 +739,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayerrenderer.h
   qgsvectorlayertools.h
   qgsvectorsimplifymethod.h
+  qgsvectorlayerserverproperties.h
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h

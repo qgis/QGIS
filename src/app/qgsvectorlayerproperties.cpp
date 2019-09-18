@@ -22,6 +22,7 @@
 #include "qgisapp.h"
 #include "qgsactionmanager.h"
 #include "qgsjoindialog.h"
+#include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsapplydialog.h"
@@ -114,6 +115,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mButtonEditJoin, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonEditJoin_clicked );
   connect( mJoinTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked );
   connect( mButtonRemoveJoin, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonRemoveJoin_clicked );
+  connect( mButtonAddWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonAddWmsDimension_clicked );
+  connect( mButtonEditWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonEditWmsDimension_clicked );
+  connect( mWmsDimensionsTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked );
+  connect( mButtonRemoveWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked );
   connect( mSimplifyDrawingGroupBox, &QGroupBox::toggled, this, &QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
 
@@ -325,6 +330,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       mLayer->legendUrlFormat()
     )
   );
+
+  //insert existing dimension info
+  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &wmsDims = mLayer->serverProperties()->wmsDimensions();
+  for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
+  {
+    addWmsDimensionInfoToTreeWidget( dim );
+  }
 
   QString myStyle = QgsApplication::reportStyleSheet();
   myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
@@ -1576,6 +1588,155 @@ void QgsVectorLayerProperties::mButtonRemoveJoin_clicked()
   setPbnQueryBuilderEnabled();
   mSourceFieldsPropertiesDialog->init();
   mAttributesFormPropertiesDialog->init();
+}
+
+
+void QgsVectorLayerProperties::mButtonAddWmsDimension_clicked()
+{
+  if ( !mLayer )
+    return;
+
+  // get wms dimensions name
+  QStringList alreadyDefinedDimensions;
+  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &dims = mLayer->serverProperties()->wmsDimensions();
+  for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : dims )
+  {
+    alreadyDefinedDimensions << dim.name;
+  }
+
+  QgsWmsDimensionDialog d( mLayer, alreadyDefinedDimensions );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsVectorLayerServerProperties::WmsDimensionInfo info = d.info();
+    // save dimension
+    mLayer->serverProperties()->addWmsDimension( info );
+    addWmsDimensionInfoToTreeWidget( info );
+  }
+}
+
+void QgsVectorLayerProperties::mButtonEditWmsDimension_clicked()
+{
+  QTreeWidgetItem *currentWmsDimensionItem = mWmsDimensionsTreeWidget->currentItem();
+  mWmsDimensionsTreeWidget_itemDoubleClicked( currentWmsDimensionItem, 0 );
+}
+
+void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int )
+{
+  if ( !mLayer || !item )
+  {
+    return;
+  }
+
+  QString wmsDimName = item->data( 0, Qt::UserRole ).toString();
+  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &dims = mLayer->serverProperties()->wmsDimensions();
+  QStringList alreadyDefinedDimensions;
+  int j = -1;
+  for ( int i = 0; i < dims.size(); ++i )
+  {
+    QString dimName = dims[i].name;
+    if ( dimName == wmsDimName )
+    {
+      j = i;
+    }
+    else
+    {
+      alreadyDefinedDimensions << dimName;
+    }
+  }
+  if ( j == -1 )
+  {
+    return;
+  }
+
+  QgsWmsDimensionDialog d( mLayer, alreadyDefinedDimensions );
+  d.setWindowTitle( tr( "Edit WMS Dimension" ) );
+  d.setInfo( dims[j] );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsVectorLayerServerProperties::WmsDimensionInfo info = d.info();
+
+    // remove old
+    mLayer->serverProperties()->removeWmsDimension( wmsDimName );
+    int idx = mWmsDimensionsTreeWidget->indexOfTopLevelItem( item );
+    mWmsDimensionsTreeWidget->takeTopLevelItem( idx );
+
+    // save new
+    mLayer->serverProperties()->addWmsDimension( info );
+    addWmsDimensionInfoToTreeWidget( info, idx );
+  }
+}
+
+void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsVectorLayerServerProperties::WmsDimensionInfo &wmsDim, const int insertIndex )
+{
+  QTreeWidgetItem *wmsDimensionItem = new QTreeWidgetItem();
+  wmsDimensionItem->setFlags( Qt::ItemIsEnabled );
+
+  wmsDimensionItem->setText( 0, tr( "Dimension" ) );
+  wmsDimensionItem->setText( 1, wmsDim.name );
+
+  QFont f = wmsDimensionItem->font( 0 );
+  f.setBold( true );
+  wmsDimensionItem->setFont( 0, f );
+  wmsDimensionItem->setFont( 1, f );
+
+  wmsDimensionItem->setData( 0, Qt::UserRole, wmsDim.name );
+
+  QTreeWidgetItem *childWmsDimensionField = new QTreeWidgetItem();
+  childWmsDimensionField->setText( 0, tr( "Field" ) );
+  childWmsDimensionField->setText( 1, wmsDim.fieldName );
+  childWmsDimensionField->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionField );
+
+  QTreeWidgetItem *childWmsDimensionEndField = new QTreeWidgetItem();
+  childWmsDimensionEndField->setText( 0, tr( "End field" ) );
+  childWmsDimensionEndField->setText( 1, wmsDim.endFieldName );
+  childWmsDimensionEndField->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionEndField );
+
+  QTreeWidgetItem *childWmsDimensionUnits = new QTreeWidgetItem();
+  childWmsDimensionUnits->setText( 0, tr( "Units" ) );
+  childWmsDimensionUnits->setText( 1, wmsDim.units );
+  childWmsDimensionUnits->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionUnits );
+
+  QTreeWidgetItem *childWmsDimensionUnitSymbol = new QTreeWidgetItem();
+  childWmsDimensionUnitSymbol->setText( 0, tr( "Unit symbol" ) );
+  childWmsDimensionUnitSymbol->setText( 1, wmsDim.unitSymbol );
+  childWmsDimensionUnitSymbol->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionUnitSymbol );
+
+  QTreeWidgetItem *childWmsDimensionDefaultValue = new QTreeWidgetItem();
+  childWmsDimensionDefaultValue->setText( 0, tr( "Default display" ) );
+  childWmsDimensionDefaultValue->setText( 1, QgsVectorLayerServerProperties::wmsDimensionDefaultDisplayLabels()[wmsDim.defaultDisplayType] );
+  childWmsDimensionDefaultValue->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionDefaultValue );
+
+  QTreeWidgetItem *childWmsDimensionRefValue = new QTreeWidgetItem();
+  childWmsDimensionRefValue->setText( 0, tr( "Reference value" ) );
+  childWmsDimensionRefValue->setText( 1, wmsDim.referenceValue.toString() );
+  childWmsDimensionRefValue->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionRefValue );
+
+  if ( insertIndex >= 0 )
+    mWmsDimensionsTreeWidget->insertTopLevelItem( insertIndex, wmsDimensionItem );
+  else
+    mWmsDimensionsTreeWidget->addTopLevelItem( wmsDimensionItem );
+
+  mWmsDimensionsTreeWidget->setCurrentItem( wmsDimensionItem );
+  mWmsDimensionsTreeWidget->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+}
+
+void QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked()
+{
+  QTreeWidgetItem *currentWmsDimensionItem = mWmsDimensionsTreeWidget->currentItem();
+  if ( !mLayer || !currentWmsDimensionItem )
+  {
+    return;
+  }
+
+  mLayer->serverProperties()->removeWmsDimension( currentWmsDimensionItem->data( 0, Qt::UserRole ).toString() );
+  mWmsDimensionsTreeWidget->takeTopLevelItem( mWmsDimensionsTreeWidget->indexOfTopLevelItem( currentWmsDimensionItem ) );
 }
 
 
