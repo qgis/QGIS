@@ -27,6 +27,7 @@ email                : matthias@opengis.ch
 #include "qgsreadwritelocker.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsmessagelog.h"
 
 #include <QtConcurrent>
 #include <QFutureWatcher>
@@ -276,9 +277,16 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
       if ( checkConfiguration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
       {
         QgsVectorLayer *gapsLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( checkConfiguration.value( "allowedGapsLayer" ).toString() );
-        connect( layer, &QgsVectorLayer::editingStarted, gapsLayer, [gapsLayer] { gapsLayer->startEditing(); } );
-        connect( layer, &QgsVectorLayer::beforeRollBack, gapsLayer, [gapsLayer] { gapsLayer->rollBack(); } );
-        connect( layer, &QgsVectorLayer::editingStopped, gapsLayer, [gapsLayer] { gapsLayer->commitChanges(); } );
+        if ( gapsLayer )
+        {
+          connect( layer, &QgsVectorLayer::editingStarted, gapsLayer, [gapsLayer] { gapsLayer->startEditing(); } );
+          connect( layer, &QgsVectorLayer::beforeRollBack, gapsLayer, [gapsLayer] { gapsLayer->rollBack(); } );
+          connect( layer, &QgsVectorLayer::editingStopped, gapsLayer, [gapsLayer] { gapsLayer->commitChanges(); } );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "Allowed gaps layer %1 configured but not loaded. Allowed gaps not working." ).arg( checkConfiguration.value( "allowedGapsLayer" ).toString() ), tr( "Geometry validation" ) );
+        }
       }
     }
   }

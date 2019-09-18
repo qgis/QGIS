@@ -37,10 +37,13 @@ void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const
   if ( configuration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
   {
     QgsVectorLayer *layer = context->project()->mapLayer<QgsVectorLayer *>( configuration.value( "allowedGapsLayer" ).toString() );
-    mAllowedGapsLayer = layer;
-    mAllowedGapsSource = qgis::make_unique<QgsVectorLayerFeatureSource>( layer );
+    if ( layer )
+    {
+      mAllowedGapsLayer = layer;
+      mAllowedGapsSource = qgis::make_unique<QgsVectorLayerFeatureSource>( layer );
 
-    mAllowedGapsBuffer = configuration.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble();
+      mAllowedGapsBuffer = configuration.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble();
+    }
   }
   else
   {
