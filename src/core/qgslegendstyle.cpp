@@ -29,13 +29,6 @@
 
 QgsLegendStyle::QgsLegendStyle()
 {
-  //get default layout font from settings
-  QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
-  if ( !defaultFontString.isEmpty() )
-  {
-    mFont.setFamily( defaultFontString );
-  }
 }
 
 void QgsLegendStyle::setMargin( double margin )

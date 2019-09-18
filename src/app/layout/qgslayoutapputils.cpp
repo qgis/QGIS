@@ -209,6 +209,17 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
       legend->setTitleAlignment( Qt::AlignRight );
     }
 
+    //set default legend font from settings
+    QgsSettings settings;
+    const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+    if ( !defaultFontString.isEmpty() )
+    {
+      legend->rstyle( QgsLegendStyle::Title ).rfont().setFamily( defaultFontString );
+      legend->rstyle( QgsLegendStyle::Group ).rfont().setFamily( defaultFontString );
+      legend->rstyle( QgsLegendStyle::Subgroup ).rfont().setFamily( defaultFontString );
+      legend->rstyle( QgsLegendStyle::SymbolLabel ).rfont().setFamily( defaultFontString );
+    }
+
     legend->updateLegend();
   } );
 
