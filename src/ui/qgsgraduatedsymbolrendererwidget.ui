@@ -329,7 +329,7 @@ Negative rounds to powers of 10</string>
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinGraduatedClasses">
+          <widget class="QgsSpinBox" name="spinGraduatedClasses">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -357,7 +357,7 @@ Negative rounds to powers of 10</string>
          <property name="checkable">
           <bool>true</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0">
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -397,7 +397,7 @@ Negative rounds to powers of 10</string>
             <string>Add class</string>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset>
              <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
            </property>
           </widget>
@@ -408,7 +408,7 @@ Negative rounds to powers of 10</string>
             <string>Delete</string>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset>
              <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
            </property>
           </widget>
@@ -526,6 +526,11 @@ Negative rounds to powers of 10</string>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mExpressionWidget</tabstop>
@@ -549,8 +554,6 @@ Negative rounds to powers of 10</string>
   <tabstop>btnAdvanced</tabstop>
   <tabstop>cbxLinkBoundaries</tabstop>
  </tabstops>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
