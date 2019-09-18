@@ -586,6 +586,29 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual([f[0] for f in vl.getFeatures()], [True, False, NULL])
         self.assertEqual([f[0].__class__.__name__ for f in vl.getFeatures()], ['bool', 'bool', 'QVariant'])
 
+    def testReloadDataAndFeatureCount(self):
+
+        filename = '/vsimem/test.json'
+        gdal.FileFromMemBuffer(filename, """{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [2, 49] } },
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [3, 50] } }
+]
+}""")
+        vl = QgsVectorLayer(filename, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+        gdal.FileFromMemBuffer(filename, """{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [2, 49] } }
+]
+}""")
+        vl.reload()
+        self.assertEqual(vl.featureCount(), 1)
+        gdal.Unlink(filename)
+
 
 if __name__ == '__main__':
     unittest.main()
