@@ -54,6 +54,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void ellipseMarkerSymbol();
+    void ellipseMarkerSymbolSize();
     void ellipseMarkerSymbolBevelJoin();
     void ellipseMarkerSymbolMiterJoin();
     void ellipseMarkerSymbolRoundJoin();
@@ -135,6 +136,21 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbol()
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
   QVERIFY( imageCheck( "ellipsemarker" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolSize()
+{
+  mReport += QLatin1String( "<h2>Ellipse marker symbol layer setSize / size test</h2>\n" );
+
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  // Verify size value derived from width/height (largest value)
+  QCOMPARE( mEllipseMarkerLayer->size(), 6.0 );
+
+  mEllipseMarkerLayer->setSize( 2 );
+  // Verify width / height values adjusted from setSize
+  QCOMPARE( mEllipseMarkerLayer->symbolHeight(), 1.0 );
+  QCOMPARE( mEllipseMarkerLayer->symbolWidth(), 2.0 );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolBevelJoin()

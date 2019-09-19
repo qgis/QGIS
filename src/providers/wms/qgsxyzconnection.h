@@ -32,6 +32,8 @@ struct QgsXyzConnection
   QString password;
   // Referer
   QString referer;
+  // tile pixel ratio (0 = unknown (not scaled), 1.0 = 256x256, 2.0 = 512x512)
+  double tilePixelRatio = 0;
   bool hidden = false;
 
   QString encodedUri() const;

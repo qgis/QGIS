@@ -17,7 +17,7 @@
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
 #include <QList>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgis_core.h"
 
@@ -49,7 +49,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     /**
      * Returns the list of available providers.
      */
-    QList<QgsDataItemProvider *> providers() const { return mProviders; }
+    QList<QgsDataItemProvider *> providers() const;
 
     /**
      * Adds a \a provider implementation to the registry. Ownership of the provider

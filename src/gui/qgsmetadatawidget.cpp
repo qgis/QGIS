@@ -46,7 +46,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
   mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
   mDefaultCategories << tr( "Utilities Communication" ) << tr( "Economy" ) << tr( "Society" ) << tr( "Imagery Base Maps Earth Cover" );
-  mDefaultCategoriesModel = new QStringListModel( mDefaultCategories );
+  mDefaultCategoriesModel = new QStringListModel( mDefaultCategories, this );
   mDefaultCategoriesModel->sort( 0 );  // Sorting using translations
   listDefaultCategories->setModel( mDefaultCategoriesModel );
 
@@ -295,6 +295,8 @@ void QgsMetadataWidget::addConstraint()
 void QgsMetadataWidget::removeSelectedConstraint()
 {
   const QModelIndexList selectedRows = tabConstraints->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
   mConstraintsModel->removeRow( selectedRows[0].row() );
 }
 
@@ -394,6 +396,9 @@ void QgsMetadataWidget::addLink()
 void QgsMetadataWidget::removeSelectedLink()
 {
   const QModelIndexList selectedRows = tabLinks->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
+
   mLinksModel->removeRow( selectedRows[0].row() );
 }
 

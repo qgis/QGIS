@@ -26,15 +26,26 @@
 #include "qgsexception.h"
 
 QgsPointXY::QgsPointXY( const QgsPointXY &p )
+  : mX( p.x() )
+  , mY( p.y() )
+  , mIsEmpty( p.isEmpty() )
 {
-  mX = p.x();
-  mY = p.y();
 }
 
 QgsPointXY::QgsPointXY( const QgsPoint &point )
-  : mX( point.x() )
-  , mY( point.y() )
 {
+  if ( point.isEmpty() )
+  {
+    mX = 0.0;
+    mY = 0.0;
+    mIsEmpty = true;
+  }
+  else
+  {
+    mX = point.x();
+    mY = point.y();
+    mIsEmpty = false;
+  }
 }
 
 QString QgsPointXY::toString( int precision ) const
@@ -57,7 +68,13 @@ QString QgsPointXY::toString( int precision ) const
 
 QString QgsPointXY::asWkt() const
 {
-  return QStringLiteral( "POINT(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
+  QString wkt = QStringLiteral( "POINT" );
+  if ( isEmpty() )
+    wkt += QStringLiteral( " EMPTY" );
+  else
+    wkt += QStringLiteral( "(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
+
+  return wkt;
 }
 
 double QgsPointXY::azimuth( const QgsPointXY &other ) const

@@ -20,6 +20,7 @@
 #include "qgsgloweffect.h"
 #include "qgstransformeffect.h"
 #include "qgscoloreffect.h"
+#include "qgsapplication.h"
 
 QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString &name, const QString &visibleName )
   : mName( name )
@@ -157,6 +158,12 @@ bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect *effect )
   if ( !dynamic_cast< QgsInnerGlowEffect * >( effectStack->effect( 4 ) ) )
     return false;
 
-  //we don't go as far as to check the individual effect's properties
+  QgsDrawSourceEffect *sourceEffect = static_cast< QgsDrawSourceEffect * >( effectStack->effect( 2 ) );
+  if ( !qgsDoubleNear( sourceEffect->opacity(), 1.0 ) )
+    return false;
+  if ( sourceEffect->blendMode() != QPainter::CompositionMode_SourceOver )
+    return false;
+
+  //we don't go as far as to check disabled effect's properties
   return true;
 }

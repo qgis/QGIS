@@ -71,7 +71,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * Returns a specific page (by \a pageNumber) from the collection.
      * Internal page numbering starts at 0 - so a \a pageNumber of 0
      * corresponds to the first page in the collection.
-     * A nullptr is returned if an invalid page number is specified.
+     * A NULLPTR is returned if an invalid page number is specified.
      * \see pages()
      */
     QgsLayoutItemPage *page( int pageNumber );
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * Returns a specific page (by \a pageNumber) from the collection.
      * Internal page numbering starts at 0 - so a \a pageNumber of 0
      * corresponds to the first page in the collection.
-     * A nullptr is returned if an invalid page number is specified.
+     * A NULLPTR is returned if an invalid page number is specified.
      * \see pages()
      * \note Not available in Python bindings.
      */
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns whether the specified \a page number should be included in exports of the layouts.
      *
-     * \warning This will always return true unless the layout is being currently exported -- it cannot
+     * \warning This will always return TRUE unless the layout is being currently exported -- it cannot
      * be used in advance to determine whether a given page will be exported!
      *
      * \see pageIsEmpty()
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QSizeF maximumPageSize() const;
 
     /**
-     * Returns true if the layout has uniform page sizes, e.g. all pages are the same size.
+     * Returns TRUE if the layout has uniform page sizes, e.g. all pages are the same size.
      *
      * This method does not consider differing units as non-uniform sizes, only the actual
      * physical size of the pages.
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns the page at a specified \a point (in layout coordinates).
      *
-     * If no page exists at \a point, nullptr will be returned.
+     * If no page exists at \a point, NULLPTR will be returned.
      *
      * \note Unlike pageNumberForPoint(), this method only returns pages which
      * directly intersect with the specified point.

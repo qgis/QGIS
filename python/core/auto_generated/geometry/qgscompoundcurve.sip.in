@@ -50,8 +50,6 @@ Compound curve geometry type
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
-
 
     virtual double length() const;
 
@@ -172,7 +170,10 @@ Appends first point if not already closed.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsCompoundCurve: %1>" ).arg( sipCpp->asWkt() );
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsCompoundCurve: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

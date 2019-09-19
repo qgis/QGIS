@@ -31,7 +31,7 @@
 
 bool QgsLayoutTableStyle::writeXml( QDomElement &styleElem, QDomDocument &doc ) const
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   styleElem.setAttribute( QStringLiteral( "cellBackgroundColor" ), QgsSymbolLayerUtils::encodeColor( cellBackgroundColor ) );
   styleElem.setAttribute( QStringLiteral( "enabled" ), enabled );
   return true;
@@ -410,11 +410,12 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
       for ( const QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
       {
+        const QRectF fullCell( currentX, currentY, mMaxColumnWidthMap[col] + 2 * mCellMargin, rowHeight );
         //draw background
         p->save();
         p->setPen( Qt::NoPen );
         p->setBrush( backgroundColor( row, col ) );
-        p->drawRect( QRectF( currentX, currentY, mMaxColumnWidthMap[col] + 2 * mCellMargin, rowHeight ) );
+        p->drawRect( fullCell );
         p->restore();
 
         // currentY = gridSize;
@@ -423,21 +424,19 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
         QVariant cellContents = mTableContents.at( row ).at( col );
         QString str = cellContents.toString();
 
-        Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
-        if ( column->width() <= 0 && mWrapBehavior == TruncateText )
-        {
-          //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
-          //which may slightly exceed the calculated width
-          //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
-          textFlag = Qt::TextDontClip;
-        }
-        else if ( textRequiresWrapping( str, column->width(), mContentFont ) )
+        // disable text clipping to target text rectangle, because we manually clip to the full cell bounds below
+        // and it's ok if text overlaps into the margin (e.g. extenders or italicized text)
+        Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( Qt::TextDontClip );
+        if ( ( mWrapBehavior != TruncateText || column->width() > 0 ) && textRequiresWrapping( str, column->width(), mContentFont ) )
         {
           str = wrappedText( str, column->width(), mContentFont );
         }
 
-        cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], rowHeight );
-        QgsLayoutUtils::drawText( p, cell, str, mContentFont, mContentFontColor, column->hAlignment(), column->vAlignment(), textFlag );
+        p->save();
+        p->setClipRect( fullCell );
+        const QRectF textCell = QRectF( currentX, currentY + mCellMargin, mMaxColumnWidthMap[col], rowHeight - 2 * mCellMargin );
+        QgsLayoutUtils::drawText( p, textCell, str, mContentFont, mContentFontColor, column->hAlignment(), column->vAlignment(), textFlag );
+        p->restore();
 
         currentX += mMaxColumnWidthMap[ col ];
         currentX += mCellMargin;
@@ -469,7 +468,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       {
         for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
         {
-          Q_UNUSED( column );
+          Q_UNUSED( column )
 
           //draw background
 
@@ -792,7 +791,7 @@ QMap<int, QString> QgsLayoutTable::headerLabels() const
 
 QSizeF QgsLayoutTable::fixedFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( mTableSize.width(), 0 );
 }
 
@@ -895,7 +894,8 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
         //column width set to automatic, so check content size
         QStringList multiLineSplit = ( *colIt ).toString().split( '\n' );
         currentCellTextWidth = 0;
-        Q_FOREACH ( const QString &line, multiLineSplit )
+        const auto constMultiLineSplit = multiLineSplit;
+        for ( const QString &line : constMultiLineSplit )
         {
           currentCellTextWidth = std::max( currentCellTextWidth, QgsLayoutUtils::textWidthMM( mContentFont, line ) );
         }
@@ -1111,7 +1111,8 @@ bool QgsLayoutTable::textRequiresWrapping( const QString &text, double columnWid
 
   QStringList multiLineSplit = text.split( '\n' );
   double currentTextWidth = 0;
-  Q_FOREACH ( const QString &line, multiLineSplit )
+  const auto constMultiLineSplit = multiLineSplit;
+  for ( const QString &line : constMultiLineSplit )
   {
     currentTextWidth = std::max( currentTextWidth, QgsLayoutUtils::textWidthMM( font, line ) );
   }
@@ -1123,7 +1124,8 @@ QString QgsLayoutTable::wrappedText( const QString &value, double columnWidth, c
 {
   QStringList lines = value.split( '\n' );
   QStringList outLines;
-  Q_FOREACH ( const QString &line, lines )
+  const auto constLines = lines;
+  for ( const QString &line : constLines )
   {
     if ( textRequiresWrapping( line, columnWidth, font ) )
     {
@@ -1131,7 +1133,8 @@ QString QgsLayoutTable::wrappedText( const QString &value, double columnWidth, c
       QStringList words = line.split( ' ' );
       QStringList linesToProcess;
       QString wordsInCurrentLine;
-      Q_FOREACH ( const QString &word, words )
+      const auto constWords = words;
+      for ( const QString &word : constWords )
       {
         if ( textRequiresWrapping( word, columnWidth, font ) )
         {
@@ -1151,12 +1154,19 @@ QString QgsLayoutTable::wrappedText( const QString &value, double columnWidth, c
       if ( !wordsInCurrentLine.isEmpty() )
         linesToProcess << wordsInCurrentLine;
 
-      Q_FOREACH ( const QString &line, linesToProcess )
+      const auto constLinesToProcess = linesToProcess;
+      for ( const QString &line : constLinesToProcess )
       {
         QString remainingText = line;
         int lastPos = remainingText.lastIndexOf( ' ' );
         while ( lastPos > -1 )
         {
+          //check if remaining text is short enough to go in one line
+          if ( !textRequiresWrapping( remainingText, columnWidth, font ) )
+          {
+            break;
+          }
+
           if ( !textRequiresWrapping( remainingText.left( lastPos ), columnWidth, font ) )
           {
             outLines << remainingText.left( lastPos );

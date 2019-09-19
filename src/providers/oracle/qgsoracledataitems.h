@@ -24,6 +24,7 @@
 #include "qgsoraclesourceselect.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsdataitemprovider.h"
 
 class QSqlDatabase;
 
@@ -102,6 +103,7 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
     void addLayer( const QgsOracleLayerProperty &layerProperty );
 };
 
+Q_NOWARN_DEPRECATED_PUSH // deleteLayer deprecated
 class QgsOracleLayerItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -114,10 +116,22 @@ class QgsOracleLayerItem : public QgsLayerItem
     QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
-    void deleteLayer();
+    bool deleteLayer();
 
   private:
     QgsOracleLayerProperty mLayerProperty;
+};
+Q_NOWARN_DEPRECATED_POP
+
+//! Provider for ORACLE root data item
+class QgsOracleDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+
+    int capabilities() const override;
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSORACLEDATAITEMS_H

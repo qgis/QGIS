@@ -84,12 +84,12 @@ Inherited method not used. You cannot add an interior ring into a triangle.
     virtual bool deleteVertex( QgsVertexId position );
 
 %Docstring
-Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
+Inherited method not used. You cannot delete or insert a vertex directly. Returns always ``False``.
 %End
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
 
 %Docstring
-Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
+Inherited method not used. You cannot delete or insert a vertex directly. Returns always ``False``.
 %End
     virtual bool moveVertex( QgsVertexId vId, const QgsPoint &newPos );
 
@@ -146,7 +146,7 @@ Returns the three angles of the triangle.
 %Docstring
 Convenient method checking if the geometry is degenerate (have duplicate or colinear point(s)).
 
-:return: True if the triangle is degenerate or empty, otherwise false.
+:return: ``True`` if the triangle is degenerate or empty, otherwise ``False``.
          Example:
 .. code-block:: python
 
@@ -170,7 +170,7 @@ Is the triangle isocele (two sides with the same length)?
 
 :param lengthTolerance: The tolerance to use
 
-:return: True or False. Always false for empty triangle.
+:return: ``True`` or ``False``. Always ``False`` for empty triangle.
          * Example:
 .. code-block:: python
 
@@ -190,7 +190,7 @@ Is the triangle equilateral (three sides with the same length)?
 
 :param lengthTolerance: The tolerance to use
 
-:return: True or False. Always false for empty triangle.
+:return: ``True`` or ``False``. Always ``False`` for empty triangle.
          * Example:
 .. code-block:: python
 
@@ -210,7 +210,7 @@ Is the triangle right-angled?
 
 :param angleTolerance: The tolerance to use
 
-:return: True or False. Always false for empty triangle.
+:return: ``True`` or ``False``. Always ``False`` for empty triangle.
          * Example:
 .. code-block:: python
 
@@ -230,7 +230,7 @@ Is the triangle scalene (all sides have different lengths)?
 
 :param lengthTolerance: The tolerance to use
 
-:return: True or False. Always false for empty triangle.
+:return: ``True`` or ``False``. Always ``False`` for empty triangle.
          * Example:
 .. code-block:: python
 

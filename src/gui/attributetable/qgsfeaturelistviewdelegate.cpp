@@ -98,7 +98,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
   // Text layout options
   QRect textLayoutBounds( iconLayoutBounds.x() + iconLayoutBounds.width(), option.rect.y(), option.rect.width() - ( iconLayoutBounds.x() + iconLayoutBounds.width() ), option.rect.height() );
 
-  QStyleOptionViewItem textOption;
+  QStyleOptionViewItem textOption = option;
   textOption.state |= QStyle::State_Enabled;
   if ( isEditSelection )
   {

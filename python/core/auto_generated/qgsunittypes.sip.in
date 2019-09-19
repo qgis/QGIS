@@ -34,6 +34,14 @@ Helper functions for various unit types.
       USCSSystem
     };
 
+    enum UnitType
+    {
+      TypeDistance,
+      TypeArea,
+      TypeVolume,
+      TypeUnknown,
+    };
+
     enum DistanceUnit
     {
       DistanceMeters,
@@ -71,6 +79,21 @@ Helper functions for various unit types.
       AreaUnknownUnit,
     };
 
+    enum VolumeUnit
+    {
+      VolumeCubicMeters,
+      VolumeCubicFeet,
+      VolumeCubicYards,
+      VolumeBarrel,
+      VolumeCubicDecimeter,
+      VolumeLiters,
+      VolumeGallonUS,
+      VolumeCubicInch,
+      VolumeCubicCentimeter,
+      VolumeCubicDegrees,
+      VolumeUnknownUnit,
+    };
+
     enum AngleUnit
     {
       AngleDegrees,
@@ -79,6 +102,8 @@ Helper functions for various unit types.
       AngleMinutesOfArc,
       AngleSecondsOfArc,
       AngleTurn,
+      AngleMilliradiansSI,
+      AngleMilNATO,
       AngleUnknownUnit,
     };
 
@@ -130,6 +155,32 @@ Helper functions for various unit types.
 
     typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
 
+    static QString encodeUnitType( QgsUnitTypes::UnitType type );
+%Docstring
+Encodes a unit ``type`` to a string.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeUnitType`
+
+.. versionadded:: 3.10
+%End
+
+    static QgsUnitTypes::UnitType decodeUnitType( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a unit type from a ``string``.
+
+:param string: string to decode
+
+:return: - decoded unit type
+         - ok: boolean, will be set to ``True`` if string was converted successfully
+
+.. seealso:: :py:func:`encodeUnitType`
+
+.. versionadded:: 3.10
+%End
+
+
 
     static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 %Docstring
@@ -152,9 +203,9 @@ Encodes a distance unit to a string.
 Decodes a distance unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -184,7 +235,9 @@ Returns a translated abbreviation representing a distance unit.
 Converts a translated string to a distance unit.
 
 :param string: string representing a distance unit
-:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: - the distance unit
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 %End
@@ -221,9 +274,9 @@ Encodes an areal unit to a string.
 Decodes an areal unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -253,7 +306,9 @@ Returns a translated abbreviation representing an areal unit.
 Converts a translated string to an areal unit.
 
 :param string: string representing an areal unit
-:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: - the area unit
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 %End
@@ -277,6 +332,116 @@ Converts a distance unit to its corresponding area unit, e.g., meters to square 
 :return: matching areal unit
 %End
 
+    static QgsUnitTypes::DistanceUnit areaToDistanceUnit( QgsUnitTypes::AreaUnit areaUnit );
+%Docstring
+Converts an area unit to its corresponding distance unit, e.g., square meters to meters
+
+:param areaUnit: area unit to convert
+
+:return: matching distance unit
+
+.. versionadded:: 3.10
+%End
+
+
+    static DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
+%Docstring
+Returns the type for an volume unit.
+
+.. versionadded:: 3.10
+%End
+
+    static QString encodeUnit( QgsUnitTypes::VolumeUnit unit );
+%Docstring
+Encodes a volume ``unit`` to a string.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeVolumeUnit`
+
+.. versionadded:: 3.10
+%End
+
+    static VolumeUnit decodeVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a volume unit from a ``string``.
+
+:param string: string to decode
+
+:return: - decoded units
+         - ok: boolean, will be set to ``True`` if string was converted successfully
+
+.. seealso:: :py:func:`encodeUnit`
+
+.. versionadded:: 3.10
+%End
+
+    static QString toString( QgsUnitTypes::VolumeUnit unit );
+%Docstring
+Returns a translated string representing a volume ``unit``.
+
+.. seealso:: :py:func:`stringToVolumeUnit`
+
+.. versionadded:: 3.10
+%End
+
+    static QString toAbbreviatedString( QgsUnitTypes::VolumeUnit unit );
+%Docstring
+Returns a translated abbreviation representing a volume ``unit``.
+
+.. seealso:: :py:func:`stringToVolumeUnit`
+
+.. versionadded:: 3.10
+%End
+
+    static VolumeUnit stringToVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Converts a translated`` ``string to a volume unit.
+
+:param string: string representing a volume unit
+
+:return: - the volume unit
+         - ok: boolean, will be set to ``True`` if string was converted successfully
+
+.. seealso:: :py:func:`toString`
+
+.. versionadded:: 3.10
+%End
+
+    static double fromUnitToUnitFactor( QgsUnitTypes::VolumeUnit fromUnit, QgsUnitTypes::VolumeUnit toUnit );
+%Docstring
+Returns the conversion factor between the specified volume units.
+
+:param fromUnit: volume unit to convert from
+:param toUnit: volume unit to convert to
+
+:return: multiplication factor to convert between units
+
+.. versionadded:: 3.10
+%End
+
+    static QgsUnitTypes::VolumeUnit distanceToVolumeUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+%Docstring
+Converts a distance unit to its corresponding volume unit, e.g., meters to cubic meters
+
+:param distanceUnit: distance unit to convert
+
+:return: matching volume unit
+
+.. versionadded:: 3.10
+%End
+
+    static QgsUnitTypes::DistanceUnit volumeToDistanceUnit( QgsUnitTypes::VolumeUnit volumeUnit );
+%Docstring
+Converts a volume unit to its corresponding distance unit, e.g., cubic meters to meters
+
+:param volumeUnit: volume unit to convert
+
+:return: matching distance unit
+
+.. versionadded:: 3.10
+%End
+
 
     static QString encodeUnit( QgsUnitTypes::AngleUnit unit );
 %Docstring
@@ -294,9 +459,9 @@ Encodes an angular unit to a string.
 Decodes an angular unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -359,7 +524,7 @@ Returns an distance formatted as a friendly string.
 :param distance: distance to format
 :param decimals: number of decimal places to show
 :param unit: unit of distance
-:param keepBaseUnit: set to false to allow conversion of large distances to more suitable units, e.g., meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large distances to more suitable units, e.g., meters to
                      kilometers
 
 :return: formatted distance string
@@ -376,7 +541,7 @@ Returns an area formatted as a friendly string.
 :param area: area to format
 :param decimals: number of decimal places to show
 :param unit: unit of area
-:param keepBaseUnit: set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large areas to more suitable units, e.g., square meters to
                      square kilometers
 
 :return: formatted area string
@@ -403,18 +568,28 @@ Encodes a render unit to a string.
 Decodes a render unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
+
 
     static QString toString( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Returns a translated string representing a render ``unit``.
 
 .. versionadded:: 3.0
+%End
+
+    static QString toAbbreviatedString( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Returns a translated abbreviation representing a render unit.
+
+:param unit: unit to convert to string
+
+.. versionadded:: 3.8
 %End
 
 
@@ -437,9 +612,9 @@ Encodes a layout unit to a string.
 Decodes a layout unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 

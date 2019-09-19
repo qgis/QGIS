@@ -9,19 +9,20 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
 import os
+import tempfile
+import shutil
 
 from qgis.PyQt.QtCore import QVariant, Qt
-from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
                        QgsAction,
+                       QgsCoordinateTransformContext,
                        QgsDataProvider,
                        QgsDefaultValue,
                        QgsEditorWidgetSetup,
@@ -65,6 +66,8 @@ from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 start_app()
 
@@ -182,6 +185,25 @@ def dumpEditBuffer(layer):
     print("CHANGED GEOM:")
     for fid, geom in editBuffer.changedGeometries().items():
         print(("%d | %s" % (f.id(), f.geometry().asWkt())))
+
+
+class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
+
+    """
+    Tests a vector layer against the feature source tests, using a real layer source (not a memory layer)
+    """
+    @classmethod
+    def getSource(cls):
+        vl = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp'), 'test')
+        assert (vl.isValid())
+        return vl
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QgsGui.editorWidgetRegistry().initEditors()
+        # Create test layer for FeatureSourceTestCase
+        cls.source = cls.getSource()
 
 
 class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
@@ -328,13 +350,106 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.name(), 'new name2')
         self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiLineString)
-        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        # depending on proj version, the projection for this layer is either 4326 or 4030
+        self.assertIn(layer.crs().authid(), ('EPSG:4326', 'EPSG:4030'))
         self.assertIn(lines_path, layer.dataProvider().dataSourceUri())
         self.assertEqual(len(spy), 2)
 
         # should have reset renderer!
         self.assertNotEqual(layer.renderer(), r)
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Line)
+
+    def testSetDataSourceInvalidToValid(self):
+        """
+        Test that changing an invalid layer path to valid maintains the renderer
+        """
+        layer = createLayerWithOnePoint()
+        layer.setCrs(QgsCoordinateReferenceSystem("epsg:3111"))
+        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry))
+        layer.setRenderer(r)
+        self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Marker)
+
+        # change to invalid path
+        options = QgsDataProvider.ProviderOptions()
+        layer.setDataSource('nothing', 'new name', 'ogr', options)
+
+        self.assertFalse(layer.isValid())
+        # these properties should be kept intact!
+        self.assertEqual(layer.name(), 'new name')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(layer.crs().authid(), 'EPSG:3111')
+        # should have kept the same renderer!
+        self.assertEqual(layer.renderer(), r)
+
+        # set to a valid path
+        points_path = os.path.join(unitTestDataPath(), 'points.shp')
+        layer.setDataSource(points_path, 'new name2', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertIn(points_path, layer.dataProvider().dataSourceUri())
+
+        # should STILL have kept renderer!
+        self.assertEqual(layer.renderer(), r)
+
+    def testStoreWkbTypeInvalidLayers(self):
+        """
+        Test that layer wkb types are restored for projects with invalid layer paths
+        """
+        layer = createLayerWithOnePoint()
+        layer.setName('my test layer')
+        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry))
+        r.symbol().setColor(QColor('#123456'))
+        layer.setRenderer(r)
+        self.assertEqual(layer.renderer().symbol().color().name(), '#123456')
+
+        p = QgsProject()
+        p.addMapLayer(layer)
+
+        # reset layer to a bad path
+        options = QgsDataProvider.ProviderOptions()
+        layer.setDataSource('nothing', 'new name', 'ogr', options)
+        # should have kept the same renderer and wkb type!
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(layer.renderer().symbol().color().name(), '#123456')
+
+        # save project to a temporary file
+        temp_path = tempfile.mkdtemp()
+        temp_project_path = os.path.join(temp_path, 'temp.qgs')
+        self.assertTrue(p.write(temp_project_path))
+
+        # restore project
+        p2 = QgsProject()
+        self.assertTrue(p2.read(temp_project_path))
+
+        l2 = p2.mapLayersByName('new name')[0]
+        self.assertFalse(l2.isValid())
+
+        # should have kept the same renderer and wkb type!
+        self.assertEqual(l2.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(l2.renderer().symbol().color().name(), '#123456')
+
+        shutil.rmtree(temp_path, True)
+
+    def testFallbackCrsWkbType(self):
+        """
+        Test fallback CRS and WKB types are used when layer path is invalid
+        """
+        vl = QgsVectorLayer('this is an outrage!!!')
+        self.assertFalse(vl.isValid()) # i'd certainly hope so...
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Unknown)
+        self.assertFalse(vl.crs().isValid())
+
+        # with fallback
+        options = QgsVectorLayer.LayerOptions()
+        options.fallbackWkbType = QgsWkbTypes.CircularString
+        options.fallbackCrs = QgsCoordinateReferenceSystem('EPSG:3111')
+        vl = QgsVectorLayer("i'm the moon", options=options)
+        self.assertFalse(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.CircularString)
+        self.assertEqual(vl.crs().authid(), 'EPSG:3111')
 
     def test_layer_crs(self):
         """
@@ -2011,6 +2126,54 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.selectByRect(QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.RemoveFromSelection)
         self.assertEqual(set(layer.selectedFeatureIds()), set([]))
 
+    def testReselect(self):
+        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+
+        layer.selectByIds([1, 3, 5, 7], QgsVectorLayer.SetSelection)
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+
+        layer.reselect() # no effect, selection has not been cleared
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+
+        # clear selection
+        layer.removeSelection()
+        self.assertCountEqual(layer.selectedFeatureIds(), [])
+        # reselect should bring this back
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+        layer.reselect() # no change
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+
+        # change an existing selection
+        layer.selectByIds([1, 3, 5], QgsVectorLayer.SetSelection)
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5])
+        layer.reselect()  # no change
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5])
+
+        layer.removeSelection()
+        self.assertCountEqual(layer.selectedFeatureIds(), [])
+        # reselect should bring this back
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5])
+
+        layer.select(7)
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
+        layer.removeSelection()
+        layer.select([3, 5])
+        self.assertCountEqual(layer.selectedFeatureIds(), [3, 5])
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [3, 5])
+        layer.deselect([5])
+        self.assertCountEqual(layer.selectedFeatureIds(), [3])
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [3])
+        layer.modifySelection([5], [3])
+        self.assertCountEqual(layer.selectedFeatureIds(), [5])
+        layer.reselect()
+        self.assertCountEqual(layer.selectedFeatureIds(), [5])
+
     def testAggregate(self):
         """ Test aggregate calculation """
         layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
@@ -2053,7 +2216,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
         pr = layer.dataProvider()
 
-        string_values = ['this', 'is', 'a', 'test']
+        string_values = ['this', 'is', 'a', 'test', 'a', 'nice', 'test']
         features = []
         for s in string_values:
             f = QgsFeature()
@@ -2065,7 +2228,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         params.delimiter = ' '
         val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenate, 'fldstring', params)
         self.assertTrue(ok)
-        self.assertEqual(val, 'this is a test')
+        self.assertEqual(val, 'this is a test a nice test')
+        val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenateUnique, 'fldstring', params)
+        self.assertTrue(ok)
+        self.assertEqual(val, 'this is a test nice')
 
     def testAggregateInVirtualField(self):
         """
@@ -2087,6 +2253,24 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.addExpressionField('sum(fldint*2)', field)
         vals = [f['virtual'] for f in layer.getFeatures()]
         self.assertEqual(vals, [48, 48, 48, 48, 48, 48, 48])
+
+    def testAggregateFilter(self):
+        """ Test aggregate calculation """
+        layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
+        pr = layer.dataProvider()
+
+        int_values = [4, 2, 3, 2, 5, None, 8]
+        features = []
+        for i in int_values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([i])
+            features.append(f)
+        assert pr.addFeatures(features)
+
+        val, ok = layer.aggregate(QgsAggregateCalculator.Sum, 'fldint', fids=[1, 2])
+        self.assertTrue(ok)
+        self.assertEqual(val, 6.0)
 
     def onLayerOpacityChanged(self, tr):
         self.opacityTest = tr
@@ -2813,6 +2997,26 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.addFeature(feature)
         self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))'), feature.geometry(), 'geometry with unsnapped nodes', 'fixed geometry')
 
+    def testDefaultDisplayExpression(self):
+        """
+        Test that default display expression gravitates to most interesting column names
+        """
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"pk"')
+        self.assertEqual(layer.displayField(), 'pk')
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=fid:int", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"fid"')
+        self.assertEqual(layer.displayField(), 'fid')
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"DESCRIPTION"')
+        self.assertEqual(layer.displayField(), 'DESCRIPTION')
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=NAME:string", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"NAME"')
+        self.assertEqual(layer.displayField(), 'NAME')
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=NAME:string", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"BETTER_NAME"')
+        self.assertEqual(layer.displayField(), 'BETTER_NAME')
+
 
 class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
 
@@ -3141,6 +3345,71 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
         """ Skip max values test - as noted in the docs this is unreliable when features are in the buffer
         """
         pass
+
+
+class TestQgsVectorLayerTransformContext(unittest.TestCase):
+
+    def setUp(self):
+        """Prepare tc"""
+        super(TestQgsVectorLayerTransformContext, self).setUp()
+        self.ctx = QgsCoordinateTransformContext()
+        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+
+    def testTransformContextIsSetInCtor(self):
+        """Test transform context can be set from ctor"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        options = QgsVectorLayer.LayerOptions(self.ctx)
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory', options)
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+    def testTransformContextInheritsFromProject(self):
+        """Test that when a layer is added to a project it inherits its context"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p = QgsProject()
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p.addMapLayers([vl])
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+    def testTransformContextIsSyncedFromProject(self):
+        """Test that when a layer is synced when project context changes"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p = QgsProject()
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p.addMapLayers([vl])
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        # Now change the project context
+        tc2 = QgsCoordinateTransformContext()
+        p.setTransformContext(tc2)
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

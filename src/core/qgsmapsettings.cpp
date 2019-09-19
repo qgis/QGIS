@@ -40,6 +40,7 @@ QgsMapSettings::QgsMapSettings()
   , mSegmentationTolerance( M_PI_2 / 90 )
 {
   mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
+  mSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 
   updateDerived();
 }
@@ -85,6 +86,16 @@ void QgsMapSettings::setExtent( const QgsRectangle &extent, bool magnified )
   mExtent = magnifiedExtent;
 
   updateDerived();
+}
+
+double QgsMapSettings::extentBuffer() const
+{
+  return mExtentBuffer;
+}
+
+void QgsMapSettings::setExtentBuffer( const double buffer )
+{
+  mExtentBuffer = buffer;
 }
 
 double QgsMapSettings::rotation() const
@@ -543,7 +554,8 @@ QgsRectangle QgsMapSettings::fullExtent() const
   // iterate through the map layers and test each layers extent
   // against the current min and max values
   QgsDebugMsgLevel( QStringLiteral( "Layer count: %1" ).arg( mLayers.count() ), 5 );
-  Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, mLayers )
+  const auto constMLayers = mLayers;
+  for ( const QgsWeakMapLayerPointer &layerPtr : constMLayers )
   {
     if ( QgsMapLayer *lyr = layerPtr.data() )
     {
@@ -654,4 +666,24 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
   QDomText renderMapTileText = doc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
   renderMapTileElem.appendChild( renderMapTileText );
   node.appendChild( renderMapTileElem );
+}
+
+QgsGeometry QgsMapSettings::labelBoundaryGeometry() const
+{
+  return mLabelBoundaryGeometry;
+}
+
+void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary )
+{
+  mLabelBoundaryGeometry = boundary;
+}
+
+void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.append( handler );
+}
+
+QList<QgsRenderedFeatureHandlerInterface *> QgsMapSettings::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
 }

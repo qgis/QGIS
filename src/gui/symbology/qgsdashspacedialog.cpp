@@ -15,44 +15,37 @@
 
 #include "qgsdashspacedialog.h"
 #include "qgsapplication.h"
+
+#include <QDialogButtonBox>
 #include <QFile>
 
-QString iconPath( const QString &iconFile )
-{
-  // try active theme
-  QString path = QgsApplication::activeThemePath();
-  if ( QFile::exists( path + iconFile ) )
-    return path + iconFile;
-
-  // use default theme
-  return QgsApplication::defaultThemePath() + iconFile;
-}
-
-QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent ) : QgsPanelWidget( parent )
 {
   setupUi( this );
-  connect( mAddButton, &QPushButton::clicked, this, &QgsDashSpaceDialog::mAddButton_clicked );
-  connect( mRemoveButton, &QPushButton::clicked, this, &QgsDashSpaceDialog::mRemoveButton_clicked );
 
-  mAddButton->setIcon( QIcon( iconPath( "symbologyAdd.svg" ) ) );
-  mRemoveButton->setIcon( QIcon( iconPath( "symbologyRemove.svg" ) ) );
+  mAddButton->setIcon( QgsApplication::getThemeIcon( "symbologyAdd.svg" ) );
+  mRemoveButton->setIcon( QgsApplication::getThemeIcon( "symbologyRemove.svg" ) );
 
   double dash = 0;
   double space = 0;
-  for ( int i = 0; i < ( v.size() - 1 ); ++i )
+  for ( int i = 0; i < ( vectorPattern.size() - 1 ); ++i )
   {
-    dash = v.at( i );
+    dash = vectorPattern.at( i );
     ++i;
-    space = v.at( i );
+    space = vectorPattern.at( i );
     QTreeWidgetItem *entry = new QTreeWidgetItem();
     entry->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
     entry->setText( 0, QString::number( dash ) );
     entry->setText( 1, QString::number( space ) );
     mDashSpaceTreeWidget->addTopLevelItem( entry );
   }
+
+  connect( mAddButton, &QPushButton::clicked, this, &QgsDashSpaceWidget::mAddButton_clicked );
+  connect( mRemoveButton, &QPushButton::clicked, this, &QgsDashSpaceWidget::mRemoveButton_clicked );
+  connect( mDashSpaceTreeWidget, &QTreeWidget::itemChanged, this, [ this ] { emit widgetChanged(); } );
 }
 
-void QgsDashSpaceDialog::mAddButton_clicked()
+void QgsDashSpaceWidget::mAddButton_clicked()
 {
   //add new (default) item
   QTreeWidgetItem *entry = new QTreeWidgetItem();
@@ -60,9 +53,10 @@ void QgsDashSpaceDialog::mAddButton_clicked()
   entry->setText( 0, QStringLiteral( "5" ) );
   entry->setText( 1, QStringLiteral( "2" ) );
   mDashSpaceTreeWidget->addTopLevelItem( entry );
+  emit widgetChanged();
 }
 
-void QgsDashSpaceDialog::mRemoveButton_clicked()
+void QgsDashSpaceWidget::mRemoveButton_clicked()
 {
   //get active item
   QTreeWidgetItem *currentItem = mDashSpaceTreeWidget->currentItem();
@@ -70,9 +64,10 @@ void QgsDashSpaceDialog::mRemoveButton_clicked()
   {
     mDashSpaceTreeWidget->takeTopLevelItem( mDashSpaceTreeWidget->indexOfTopLevelItem( currentItem ) );
   }
+  emit widgetChanged();
 }
 
-QVector<qreal> QgsDashSpaceDialog::dashDotVector() const
+QVector<qreal> QgsDashSpaceWidget::dashDotVector() const
 {
   QVector<qreal> dashVector;
   int nTopLevelItems = mDashSpaceTreeWidget->topLevelItemCount();
@@ -87,3 +82,32 @@ QVector<qreal> QgsDashSpaceDialog::dashDotVector() const
   return dashVector;
 }
 
+void QgsDashSpaceWidget::setUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QTreeWidgetItem *headerItem = mDashSpaceTreeWidget->headerItem();
+  headerItem->setText( 0, QStringLiteral( "%1 (%2)" ).arg( tr( "Dash" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
+  headerItem->setText( 1, QStringLiteral( "%1 (%2)" ).arg( tr( "Space" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
+}
+
+QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent, Qt::WindowFlags f ) : QDialog( parent, f )
+{
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  mWidget = new QgsDashSpaceWidget( v );
+  vLayout->addWidget( mWidget );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QgsDashSpaceDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QgsDashSpaceDialog::reject );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
+  setWindowTitle( tr( "Custom Dash Pattern" ) );
+}
+
+QVector<qreal> QgsDashSpaceDialog::dashDotVector() const
+{
+  return mWidget->dashDotVector();
+}
+
+void QgsDashSpaceDialog::setUnit( QgsUnitTypes::RenderUnit unit )
+{
+  mWidget->setUnit( unit );
+}

@@ -43,6 +43,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mCoordTransform( rh.mCoordTransform )
   , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
+  , mOriginalMapExtent( rh.mOriginalMapExtent )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
   , mScaleFactor( rh.mScaleFactor )
@@ -57,6 +58,9 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mSegmentationToleranceType( rh.mSegmentationToleranceType )
   , mTransformContext( rh.mTransformContext )
   , mPathResolver( rh.mPathResolver )
+  , mTextRenderFormat( rh.mTextRenderFormat )
+  , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
+  , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -69,6 +73,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mPainter = rh.mPainter;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;
+  mOriginalMapExtent = rh.mOriginalMapExtent;
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
   mScaleFactor = rh.mScaleFactor;
@@ -84,6 +89,9 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mDistanceArea = rh.mDistanceArea;
   mTransformContext = rh.mTransformContext;
   mPathResolver = rh.mPathResolver;
+  mTextRenderFormat = rh.mTextRenderFormat;
+  mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
+  mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
@@ -102,6 +110,10 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   else
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
+  }
+  if ( painter && painter->renderHints() & QPainter::Antialiasing )
+  {
+    context.setFlag( QgsRenderContext::Antialiasing, true );
   }
   return context;
 }
@@ -149,8 +161,11 @@ bool QgsRenderContext::testFlag( QgsRenderContext::Flag flag ) const
 QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSettings )
 {
   QgsRenderContext ctx;
+  QgsRectangle extent = mapSettings.visibleExtent();
+  extent.grow( mapSettings.extentBuffer() );
   ctx.setMapToPixel( mapSettings.mapToPixel() );
-  ctx.setExtent( mapSettings.visibleExtent() );
+  ctx.setExtent( extent );
+  ctx.setMapExtent( mapSettings.visibleExtent() );
   ctx.setFlag( DrawEditingInfo, mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
   ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
   ctx.setFlag( UseAdvancedEffects, mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
@@ -172,6 +187,10 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
   ctx.setTransformContext( mapSettings.transformContext() );
   ctx.setPathResolver( mapSettings.pathResolver() );
+  ctx.setTextRenderFormat( mapSettings.textRenderFormat() );
+  ctx.setVectorSimplifyMethod( mapSettings.simplifyMethod() );
+  ctx.mRenderedFeatureHandlers = mapSettings.renderedFeatureHandlers();
+  ctx.mHasRenderedFeatureHandlers = !mapSettings.renderedFeatureHandlers().isEmpty();
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
@@ -446,3 +465,10 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
   }
   return meters;
 }
+
+QList<QgsRenderedFeatureHandlerInterface *> QgsRenderContext::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
+}
+
+

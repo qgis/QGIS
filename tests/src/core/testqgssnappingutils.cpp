@@ -314,6 +314,93 @@ class TestQgsSnappingUtils : public QObject
 
       delete vl;
     }
+
+    void testSnapOnIntersectionCurveZ()
+    {
+      // testing with a layer with curve and Z
+      std::unique_ptr<QgsVectorLayer> vCurveZ( new QgsVectorLayer( QStringLiteral( "CircularStringZ" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" ) ;
+      f1.setGeometry( f1g );
+      QgsFeature f2;
+      QgsGeometry f2g = QgsGeometry::fromWkt( "CircularStringZ (8 0 20, 5 3 30, 8 10 40)" );
+      f2.setGeometry( f2g );
+      QgsFeature f3;
+      QgsGeometry f3g = QgsGeometry::fromWkt( "CircularStringZ" );
+      f3.setGeometry( f3g );
+      QgsFeature f4;
+      // TODO: Issues with Curves, should/must(?) have at least two points.
+      QgsGeometry f4g = QgsGeometry::fromWkt( "CircularStringZ (1 2 3)" );
+      f4.setGeometry( f4g );
+      QgsFeatureList flist;
+      flist << f1 << f2 << f3 << f4;
+      vCurveZ->dataProvider()->addFeatures( flist );
+
+      QVERIFY( vCurveZ->dataProvider()->featureCount() == 4 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.2, QgsTolerance::ProjectUnits );
+      snappingConfig.setIntersectionSnapping( true );
+      snappingConfig.setIndividualLayerSettings( vCurveZ.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( 4.7, 3.7 ) );
+      QVERIFY( m2.isValid() );
+      QCOMPARE( m2.type(), QgsPointLocator::Vertex );
+      QGSCOMPARENEAR( m2.point().x(), 4.8, 0.001 );
+      QGSCOMPARENEAR( m2.point().y(), 3.6, 0.001 );
+    }
+    void testSnapOnIntersectionMultiGeom()
+    {
+      std::unique_ptr<QgsVectorLayer> vMulti( new QgsVectorLayer( QStringLiteral( "MultiLineStringZ" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "MultiLineStringZ ((0 0 0, 0 5 5), (5 0 10, 5 5 10))" );
+      f1.setGeometry( f1g );
+      QgsFeature f2;
+      QgsGeometry f2g = QgsGeometry::fromWkt( "MultiLineStringZ ((-1 2.5 50, 10 2.5 55))" );
+      f2.setGeometry( f2g );
+
+      QgsFeatureList flist;
+      flist << f1 << f2 ;
+      vMulti->dataProvider()->addFeatures( flist );
+
+      QVERIFY( vMulti->dataProvider()->featureCount() == 2 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.2, QgsTolerance::ProjectUnits );
+      snappingConfig.setIntersectionSnapping( true );
+      snappingConfig.setIndividualLayerSettings( vMulti.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 0, 2.6 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::Vertex );
+      QCOMPARE( m.point(), QgsPointXY( 0.0, 2.5 ) );
+
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( 5, 2.6 ) );
+      QVERIFY( m2.isValid() );
+      QCOMPARE( m2.type(), QgsPointLocator::Vertex );
+      QCOMPARE( m2.point(), QgsPointXY( 5.0, 2.5 ) );
+
+    }
 };
 
 QGSTEST_MAIN( TestQgsSnappingUtils )

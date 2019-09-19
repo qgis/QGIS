@@ -22,6 +22,8 @@
 #include "qgsproject.h"
 #include "qgsexternalresourcewidget.h"
 #include "qgsfilterlineedit.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
@@ -173,7 +175,8 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
     }
     if ( cfg.contains( QStringLiteral( "FileWidgetButton" ) ) )
     {
-      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( cfg.value( QStringLiteral( "FileWidgetButton" ) ).toBool() );
+      // Prevent from showing the button in the attribute table, see https://github.com/qgis/QGIS/issues/26948
+      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( cfg.value( QStringLiteral( "FileWidgetButton" ) ).toBool() && context().formMode() != QgsAttributeEditorContext::Popup );
     }
     if ( cfg.contains( QStringLiteral( "DocumentViewer" ) ) )
     {
@@ -186,11 +189,17 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
   }
 
   if ( mLineEdit )
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( value );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( value );
+  } );
 
 }
 
-void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
+void QgsExternalResourceWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mLineEdit )
   {
@@ -207,7 +216,10 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
   if ( mLabel )
   {
     mLabel->setText( value.toString() );
-    emit valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( value.toString() );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
   }
 
   if ( mQgsWidget )

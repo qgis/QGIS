@@ -16,6 +16,7 @@
 #include "qgspenstylecombobox.h"
 
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 
 #include <QList>
 #include <QPair>
@@ -34,7 +35,8 @@ QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget *parent )
          << qMakePair( Qt::DashDotLine, tr( "Dash Dot Line" ) )
          << qMakePair( Qt::DashDotDotLine, tr( "Dash Dot Dot Line" ) );
 
-  setIconSize( QSize( 32, 12 ) );
+  int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  setIconSize( QSize( iconSize * 2, iconSize ) );
 
   for ( int i = 0; i < styles.count(); i++ )
   {

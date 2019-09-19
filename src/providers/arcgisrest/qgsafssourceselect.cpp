@@ -40,11 +40,15 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
   const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
   const QString baseUrl = connection.uri().param( QStringLiteral( "url" ) );
+  const QString referer = connection.uri().param( QStringLiteral( "referer" ) );
+  QgsStringMap headers;
+  if ( ! referer.isEmpty() )
+    headers[ QStringLiteral( "Referer" )] = referer;
 
-  std::function< bool( const QString &, QStandardItem *, const QString & )> visitItemsRecursive;
-  visitItemsRecursive = [this, &visitItemsRecursive, baseUrl, authcfg, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem, const QString & parentName ) -> bool
+  std::function< bool( const QString &, QStandardItem * )> visitItemsRecursive;
+  visitItemsRecursive = [this, &visitItemsRecursive, baseUrl, authcfg, headers, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem ) -> bool
   {
-    const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage );
+    const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage, headers );
 
     if ( serviceInfoMap.isEmpty() )
     {
@@ -62,7 +66,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
       else
         mModel->appendRow( QList<QStandardItem *>() << nameItem );
 
-      if ( !visitItemsRecursive( url, nameItem, name ) )
+      if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
     }, serviceInfoMap, baseUrl );
 
@@ -76,14 +80,14 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
       else
         mModel->appendRow( QList<QStandardItem *>() << nameItem );
 
-      if ( !visitItemsRecursive( url, nameItem, name ) )
+      if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
-    }, serviceInfoMap, baseUrl, parentName );
+    }, serviceInfoMap, baseUrl, QgsArcGisRestUtils::Vector );
 
     QMap< QString, QList<QStandardItem *> > layerItems;
     QMap< QString, QString > parents;
 
-    QgsArcGisRestUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid )
+    QgsArcGisRestUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid, const QString & )
     {
       if ( !parentLayerId.isEmpty() )
         parents.insert( layerId, parentLayerId );
@@ -107,6 +111,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
         }
         idItem->setData( url, UrlRole );
         idItem->setData( true, IsLayerRole );
+        idItem->setData( layerId, IdRole );
         QStandardItem *nameItem = new QStandardItem( name );
         QStandardItem *abstractItem = new QStandardItem( description );
         abstractItem->setToolTip( description );
@@ -116,7 +121,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
         layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
       }
-    }, serviceInfoMap, baseItemUrl );
+    }, serviceInfoMap, baseItemUrl, QgsArcGisRestUtils::Vector );
 
     // create layer groups
     for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
@@ -143,7 +148,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
     return res;
   };
 
-  if ( !visitItemsRecursive( baseUrl, nullptr, QString() ) )
+  if ( !visitItemsRecursive( baseUrl, nullptr ) )
     QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
 
   return true;
@@ -187,7 +192,7 @@ QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
     const QString &layerTitle, const QString & /*layerName*/,
     const QString &crs,
     const QString &filter,
-    const QgsRectangle &bBox ) const
+    const QgsRectangle &bBox, const QString & ) const
 {
   QgsDataSourceUri ds = connection.uri();
   QString url = layerTitle;

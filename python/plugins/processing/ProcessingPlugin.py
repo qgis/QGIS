@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import shutil
 import os
 import sys
@@ -36,13 +32,14 @@ from qgis.core import (QgsApplication,
                        QgsDataItemProvider,
                        QgsDataProvider,
                        QgsDataItem,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsMimeDataUtils)
 from qgis.gui import (QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir, QFileInfo
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon, QKeySequence
+from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -86,7 +83,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
             return False
 
         alg.setProvider(QgsApplication.processingRegistry().providerById('model'))
-        dlg = AlgorithmDialog(alg)
+        dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
         dlg.show()
         return True
 
@@ -162,6 +159,20 @@ class ProcessingPlugin:
 
     def __init__(self, iface):
         self.iface = iface
+        self.options_factory = None
+        self.drop_handler = None
+        self.item_provider = None
+        self.locator_filter = None
+        self.edit_features_locator_filter = None
+        self.initialized = False
+        self.initProcessing()
+
+    def initProcessing(self):
+        if not self.initialized:
+            self.initialized = True
+            Processing.initialize()
+
+    def initGui(self):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr('Processing'))
         iface.registerOptionsWidgetFactory(self.options_factory)
@@ -175,9 +186,7 @@ class ProcessingPlugin:
         iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
         self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.edit_features_locator_filter)
-        Processing.initialize()
 
-    def initGui(self):
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
@@ -204,11 +213,11 @@ class ProcessingPlugin:
 
         self.modelerAction = QAction(
             QgsApplication.getThemeIcon("/processingModel.svg"),
-            QCoreApplication.translate('ProcessingPlugin', 'Graphical &Modeler…'), self.iface.mainWindow())
+            QCoreApplication.translate('ProcessingPlugin', '&Graphical Modeler…'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
         self.iface.registerMainWindowAction(self.modelerAction,
-                                            QKeySequence('Ctrl+Alt+M').toString(QKeySequence.NativeText))
+                                            QKeySequence('Ctrl+Alt+G').toString(QKeySequence.NativeText))
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
@@ -224,6 +233,7 @@ class ProcessingPlugin:
         self.resultsAction = QAction(
             QgsApplication.getThemeIcon("/processingResult.svg"),
             self.tr('&Results Viewer'), self.iface.mainWindow())
+        self.resultsAction.setObjectName('resultsViewer')
         self.resultsAction.setCheckable(True)
         self.iface.registerMainWindowAction(self.resultsAction,
                                             QKeySequence('Ctrl+Alt+R').toString(QKeySequence.NativeText))
@@ -241,6 +251,7 @@ class ProcessingPlugin:
         self.editInPlaceAction.setObjectName('editInPlaceFeatures')
         self.editInPlaceAction.setCheckable(True)
         self.editInPlaceAction.toggled.connect(self.editSelected)
+        self.menu.addAction(self.editInPlaceAction)
         self.toolbox.processingToolbar.addAction(self.editInPlaceAction)
 
         self.toolbox.processingToolbar.addSeparator()
@@ -275,7 +286,7 @@ class ProcessingPlugin:
 
         old_enabled_state = self.editInPlaceAction.isEnabled()
 
-        new_enabled_state = layer is not None and layer.type() == QgsMapLayer.VectorLayer
+        new_enabled_state = layer is not None and layer.type() == QgsMapLayerType.VectorLayer
         self.editInPlaceAction.setEnabled(new_enabled_state)
 
         if new_enabled_state != old_enabled_state:

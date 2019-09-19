@@ -121,9 +121,11 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
     bbox.combineExtentWith( points().at( i ).x(), points().at( i ).y() );
   }
 
-  QgsLineString reshapeLineString( points() );
-  if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
-    reshapeLineString.addZValue( defaultZValue() );
+
+  QgsPointSequence pts;
+  QVector<QgsPoint> points;
+  captureCurve()->points( pts );
+  QgsLineString reshapeLineString( pts );
 
   //query all the features that intersect bounding box of capture line
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setNoAttributes() );
@@ -143,7 +145,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
     {
       // in case of a binding line, we just want to update the line from
       // the starting point and not both side
-      if ( isBinding && !geom.asPolyline().contains( points().first() ) )
+      if ( isBinding && !geom.asPolyline().contains( pts.constFirst() ) )
         continue;
 
       reshapeReturn = geom.reshapeGeometry( reshapeLineString );
@@ -180,6 +182,19 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 
   if ( reshapeDone )
   {
+    // Add topological points
+    if ( QgsProject::instance()->topologicalEditing() )
+    {
+      QList<QgsPointLocator::Match> sm = snappingMatches();
+      Q_ASSERT( pts.size() == sm.size() );
+      for ( int i = 0; i < sm.size() ; ++i )
+      {
+        if ( sm.at( i ).layer() )
+        {
+          sm.at( i ).layer()->addTopologicalPoints( pts.at( i ) );
+        }
+      }
+    }
     vlayer->endEditCommand();
   }
   else

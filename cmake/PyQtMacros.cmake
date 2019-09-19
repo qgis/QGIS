@@ -19,13 +19,13 @@ IF(NOT PYUIC_PROGRAM)
   ENDIF (MSVC)
 
   IF (NOT PYUIC_PROGRAM)
-    MESSAGE(FATAL_ERROR "pyuic[4|5] not found - aborting")
+    MESSAGE(FATAL_ERROR "pyuic5 not found - aborting")
   ENDIF (NOT PYUIC_PROGRAM)
 ENDIF(NOT PYUIC_PROGRAM)
 
 # Adapted from QT4_WRAP_UI
 MACRO(PYQT_WRAP_UI outfiles )
-  IF(WIN32)
+  IF(CMAKE_HOST_WIN32)
     IF(USING_NINJA OR USING_NMAKE)
       SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.bat")
       SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/bin")
@@ -33,11 +33,11 @@ MACRO(PYQT_WRAP_UI outfiles )
       SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.bat")
       SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/bin/${CMAKE_BUILD_TYPE}")
     ENDIF(USING_NINJA OR USING_NMAKE)
-  ELSE(WIN32)
+  ELSE(CMAKE_HOST_WIN32)
     # TODO osx
     SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.sh")
     SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/lib")
-  ENDIF(WIN32)
+  ENDIF(CMAKE_HOST_WIN32)
 
   FOREACH(it ${ARGN})
     GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
@@ -63,7 +63,7 @@ IF(NOT PYRCC_PROGRAM)
   ENDIF (MSVC)
 
   IF (NOT PYRCC_PROGRAM)
-    MESSAGE(FATAL_ERROR "pyrcc[4|5] not found - aborting")
+    MESSAGE(FATAL_ERROR "pyrcc5 not found - aborting")
   ENDIF (NOT PYRCC_PROGRAM)
 ENDIF(NOT PYRCC_PROGRAM)
 
@@ -87,11 +87,6 @@ MACRO (PYQT_ADD_RESOURCES outfiles )
       ENDIF(NOT _ABS_PATH_INDICATOR)
       SET(_RC_DEPENDS ${_RC_DEPENDS} "${_RC_FILE}")
     ENDFOREACH(_RC_FILE)
-    SET(_name_opt)
-    IF(PYQT5_VERSION_STR VERSION_LESS 5.9.1)
-      # option removed in PyQt5 >= 5.9.1
-      SET(_name_opt -name ${outfile})
-    ENDIF()
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
       COMMAND ${PYRCC_PROGRAM} ${_name_opt} -o ${outfile} ${infile}
       MAIN_DEPENDENCY ${infile}

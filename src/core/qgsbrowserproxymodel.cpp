@@ -153,12 +153,12 @@ bool QgsBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &s
   return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
 }
 
-QgsMapLayer::LayerType QgsBrowserProxyModel::layerType() const
+QgsMapLayerType QgsBrowserProxyModel::layerType() const
 {
   return mLayerType;
 }
 
-void QgsBrowserProxyModel::setLayerType( QgsMapLayer::LayerType type )
+void QgsBrowserProxyModel::setLayerType( QgsMapLayerType type )
 {
   mLayerType = type;
   invalidateFilter();

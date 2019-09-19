@@ -66,7 +66,7 @@ Removes all properties from the collection.
 
     virtual bool hasProperty( int key ) const = 0;
 %Docstring
-Returns true if the collection contains a property with the specified key.
+Returns ``True`` if the collection contains a property with the specified key.
 
 :param key: integer key for property. The intended use case is that a context specific enum is cast to
             int and used for the key value.
@@ -89,6 +89,8 @@ Returns a matching property from the collection, if one exists.
     virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 %Docstring
 Returns the calculated value of the property with the specified key from within the collection.
+If you need the validity of the value (like ok provided from the
+valueAs* variants) refer to the property() and :py:func:`QgsProperty.value()`
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
             int and used for the key value.
@@ -117,9 +119,9 @@ Calculates the current value of the property with the specified key and interpre
             int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultString: default string to return if the property cannot be calculated as a string
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to string
+:return: - value parsed to string
+         - ok: will be set to ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -140,9 +142,9 @@ Calculates the current value of the property with the specified key and interpre
             int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultColor: default color to return if the property cannot be calculated as a color
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to color
+:return: - value parsed to color
+         - ok: will be set to ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -163,9 +165,9 @@ Calculates the current value of the property with the specified key and interpre
             int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default double to return if the property cannot be calculated as a double
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to double
+:return: - value parsed to double
+         - ok: will be set to ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -186,9 +188,9 @@ Calculates the current value of the property with the specified key and interpre
             int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default integer to return if the property cannot be calculated as a integer
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to integer
+:return: - value parsed to integer
+         - ok: will be set to ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -209,9 +211,9 @@ Calculates the current value of the property with the specified key and interpre
             int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default boolean to return if the property cannot be calculated as a boolean
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to bool
+:return: - value parsed to bool
+         - ok: will be set to ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -228,7 +230,7 @@ Calculates the current value of the property with the specified key and interpre
 %Docstring
 Prepares the collection against a specified expression context. Calling prepare before evaluating the
 collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
-Returns true if preparation was successful.
+Returns ``True`` if preparation was successful.
 %End
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
@@ -240,7 +242,7 @@ Returns the set of any fields referenced by the active properties from the colle
 
     virtual bool isActive( int key ) const = 0;
 %Docstring
-Returns true if the collection contains an active property with the specified key.
+Returns ``True`` if the collection contains an active property with the specified key.
 
 :param key: integer key for property to test. The intended use case is that a context specific enum is cast to
             int and used for the key value.
@@ -248,7 +250,7 @@ Returns true if the collection contains an active property with the specified ke
 
     virtual bool hasActiveProperties() const = 0;
 %Docstring
-Returns true if the collection has any active properties, or false if all properties
+Returns ``True`` if the collection has any active properties, or ``False`` if all properties
 within the collection are deactivated.
 
 .. seealso:: :py:func:`hasDynamicProperties`
@@ -256,7 +258,7 @@ within the collection are deactivated.
 
     virtual bool hasDynamicProperties() const = 0;
 %Docstring
-Returns true if the collection has any active, non-static properties, or false if either all non-static properties
+Returns ``True`` if the collection has any active, non-static properties, or ``False`` if either all non-static properties
 within the collection are deactivated or if the collection only contains static properties.
 
 .. seealso:: :py:func:`hasActiveProperties`
@@ -309,6 +311,21 @@ A grouped map of multiple QgsProperty objects, each referenced by a integer key 
 Properties within a collection are referenced by an integer key. This is done to avoid the cost of
 string creation and comparisons which would be required by a string key. The intended use case is that
 a context specific enum is cast to int and used for the key value.
+Examples of such enums are :
+
+.. seealso:: :py:func:`QgsLayoutObject.DataDefinedProperty`
+
+.. seealso:: :py:func:`QgsSymbolLayer.Property`
+
+.. seealso:: :py:func:`QgsPalLabeling.Property`
+
+.. seealso:: :py:func:`QgsAbstract3DSymbol.Property`
+
+.. seealso:: :py:func:`QgsDiagramLayerSettings.Property`
+
+.. seealso:: :py:func:`QgsPalLayerSettings.Property`
+
+.. seealso:: :py:func:`QgsWidgetWrapper.Property`
 
 .. versionadded:: 3.0
 %End
@@ -466,7 +483,7 @@ Returns the first collection with a matching name from the stack.
     virtual bool hasActiveProperties() const;
 
 %Docstring
-Returns true if the collection has any active properties, or false if all properties
+Returns ``True`` if the collection has any active properties, or ``False`` if all properties
 within the collection are deactivated.
 
 .. seealso:: :py:func:`isActive`
@@ -477,7 +494,7 @@ within the collection are deactivated.
     virtual bool hasDynamicProperties() const;
 
 %Docstring
-Returns true if the collection has any active, non-static properties, or false if either all non-static properties
+Returns ``True`` if the collection has any active, non-static properties, or ``False`` if either all non-static properties
 within the collection are deactivated or if the collection only contains static properties.
 
 .. seealso:: :py:func:`hasActiveProperties`
@@ -486,7 +503,7 @@ within the collection are deactivated or if the collection only contains static 
     virtual bool isActive( int key ) const;
 
 %Docstring
-Returns true if the stack contains an active property with the specified key.
+Returns ``True`` if the stack contains an active property with the specified key.
 
 :param key: integer key for property to test. The intended use case is that a context specific enum is cast to
             int and used for the key value.

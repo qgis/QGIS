@@ -18,25 +18,12 @@
 #ifndef QGIS_H
 #define QGIS_H
 
-#include <QEvent>
-#include <QString>
-#include <QMetaType>
-#include <QMap>
 #include <QMetaEnum>
-#include <QVariant>
-#include <QDateTime>
-#include <QDate>
-#include <QTime>
-#include <QHash>
-#include <cstdlib>
 #include <cfloat>
 #include <memory>
-#include <type_traits>
 #include <cmath>
-#include <qnumeric.h>
 
 #include "qgstolerance.h"
-#include "qgswkbtypes.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -277,6 +264,9 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
  */
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
+  if ( std::isnan( a ) || std::isnan( b ) )
+    return std::isnan( a ) && std::isnan( b ) ;
+
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
@@ -289,6 +279,9 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  */
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
+  if ( std::isnan( a ) || std::isnan( b ) )
+    return std::isnan( a ) && std::isnan( b ) ;
+
   const float diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
@@ -296,6 +289,9 @@ inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 //! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 {
+  if ( std::isnan( a ) || std::isnan( b ) )
+    return std::isnan( a ) && std::isnan( b ) ;
+
   // The most simple would be to print numbers as %.xe and compare as strings
   // but that is probably too costly
   // Then the fastest would be to set some bits directly, but little/big endian
@@ -314,10 +310,11 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
  *
  * \since QGIS 3.0
  */
-inline double qgsRound( double number, double places )
+inline double qgsRound( double number, int places )
 {
+  double m = ( number < 0.0 ) ? -1.0 : 1.0;
   double scaleFactor = std::pow( 10.0, places );
-  return std::trunc( number * scaleFactor + 0.5 ) / scaleFactor;
+  return ( std::round( number * m * scaleFactor ) / scaleFactor ) * m;
 }
 
 
@@ -430,13 +427,42 @@ template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
     enumMap.insert( static_cast<T>( metaEnum.keyToValue( enumKey ) ), QString( enumKey ) );
   }
   return enumMap;
-};
+}
+
+/**
+ * Returns the value for the given key of an enum.
+ * \since QGIS 3.6
+ */
+template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  return QString::fromUtf8( metaEnum.valueToKey( value ) );
+}
+
+/**
+ * Returns the value corresponding to the given \a key of an enum.
+ * If the key is invalid, it will return the \a defaultValue.
+ * \since QGIS 3.6
+ */
+template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue ) SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  bool ok = false;
+  T v = static_cast<T>( metaEnum.keyToValue( key.toUtf8().data(), &ok ) );
+  if ( ok )
+    return v;
+  else
+    return defaultValue;
+}
+
 
 /**
  * Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
- * \param ok will be set to true if conversion was successful
+ * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to double if possible
  * \see permissiveToInt
  * \since QGIS 2.9
@@ -447,7 +473,7 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
- * \param ok will be set to true if conversion was successful
+ * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to int if possible
  * \see permissiveToDouble
  * \since QGIS 2.9
@@ -458,7 +484,7 @@ CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
  * Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
- * \param ok will be set to true if conversion was successful
+ * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to int if possible
  * \see permissiveToInt
  * \since QGIS 3.4
@@ -477,11 +503,12 @@ CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 /**
- * Compares two QVariant values and returns whether they are equal, NULL values are treated as equal.
+ * Compares two QVariant values and returns whether they are equal, two NULL values are
+ * always treated as equal and 0 is not treated as equal with NULL
  *
  * \param lhs first value
  * \param rhs second value
- * \return true if values are equal
+ * \return TRUE if values are equal
  */
 CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
 

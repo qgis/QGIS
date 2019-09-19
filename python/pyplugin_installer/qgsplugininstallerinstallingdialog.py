@@ -30,7 +30,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
-from qgis.core import QgsNetworkAccessManager, QgsApplication
+from qgis.core import QgsNetworkAccessManager, QgsApplication, QgsNetworkRequestParameters
 
 from .ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from .installer_data import removeDir, repositories
@@ -62,6 +62,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
     def requestDownloading(self):
         self.request = QNetworkRequest(self.url)
+        self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "QgsPluginInstallerInstallingDialog")
         authcfg = repositories.all()[self.plugin["zip_repository"]]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(

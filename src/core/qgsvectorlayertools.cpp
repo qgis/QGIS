@@ -25,7 +25,7 @@ QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )
 {}
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg ) const
+bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -66,6 +66,14 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
       else
       {
         fidList.insert( newFeature.id() );
+        if ( topologicalEditing )
+        {
+          if ( topologicalLayer )
+          {
+            topologicalLayer->addTopologicalPoints( geom );
+          }
+          layer->addTopologicalPoints( geom );
+        }
       }
     }
     else

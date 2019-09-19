@@ -408,7 +408,7 @@ void QgsDateTimeEditConfig::updateDemoWidget()
 
 void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 {
-  Q_UNUSED( idx );
+  Q_UNUSED( idx )
   const QString format = mFieldFormatComboBox->currentData().toString();
   bool custom = format.isEmpty();
   if ( !custom )

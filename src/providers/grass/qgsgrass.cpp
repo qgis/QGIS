@@ -66,6 +66,9 @@ extern "C"
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
+#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <grass/gprojects.h>
 #include <grass/vector.h>
 #include <grass/raster.h>
@@ -601,7 +604,7 @@ void QgsGrass::setMapset( const QString &gisdbase, const QString &location, cons
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QString( "No available mapsets found: %1" ).arg( e.what() ) );
     return;
   }
@@ -700,7 +703,7 @@ void QgsGrass::loadMapsetSearchPath()
 
 void QgsGrass::setMapsetSearchPathWatcher()
 {
-  QgsDebugMsg( "etered" );
+  QgsDebugMsg( "entered." );
   if ( mMapsetSearchPathWatcher )
   {
     delete mMapsetSearchPathWatcher;
@@ -916,7 +919,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   QFileInfo info( mapsetPath );
   QString user = info.owner();
 
-  sTmp = QDir::tempPath() + "/grass6-" + user + "-" + QString::number( pid );
+  sTmp = QDir::tempPath() + "/grass-" + user + "-" + QString::number( pid );
   QDir dir( sTmp );
   if ( dir.exists() )
   {
@@ -1293,7 +1296,8 @@ QStringList QgsGrass::vectorLayers( const QString &gisdbase, const QString &loca
   QgsDebugMsg( "GRASS vector successfully opened" );
 
   // Get layers
-  Q_FOREACH ( QgsGrassVectorLayer *layer, vector.layers() )
+  const auto constLayers = vector.layers();
+  for ( QgsGrassVectorLayer *layer : constLayers )
   {
     QString fs = QString::number( layer->number() );
     QgsDebugMsg( "layer number = " + fs );
@@ -1602,7 +1606,7 @@ bool QgsGrass::defaultRegion( const QString &gisdbase, const QString &location,
   }
   catch ( QgsGrass::Exception &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     return false;
   }
 }
@@ -1898,9 +1902,11 @@ QString QgsGrass::findModule( QString module )
   paths << QgsGrass::grassModulesPaths();
 
   // Extensions first to prefer .bat over .exe on Windows
-  Q_FOREACH ( const QString &ext, extensions )
+  const auto constExtensions = extensions;
+  for ( const QString &ext : constExtensions )
   {
-    Q_FOREACH ( const QString &path, paths )
+    const auto constPaths = paths;
+    for ( const QString &path : constPaths )
     {
       QString full = module + ext;;
       if ( !path.isEmpty() )
@@ -2105,7 +2111,7 @@ QgsCoordinateReferenceSystem QgsGrass::crsDirect( const QString &gisdbase, const
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( e.what() ) );
       return QgsCoordinateReferenceSystem();
     }
@@ -2426,7 +2432,8 @@ void QgsGrass::insertRow( dbDriver *driver, const QString &tableName,
   }
 
   QStringList valuesStringList;
-  Q_FOREACH ( const QVariant &attribute, attributes )
+  const auto constAttributes = attributes;
+  for ( const QVariant &attribute : constAttributes )
   {
     QString valueString;
 

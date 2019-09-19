@@ -18,7 +18,7 @@
 #define QGSRENDERERPROPERTIESDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "ui_qgsrendererpropsdialogbase.h"
 
@@ -33,6 +33,8 @@ class QgsSymbol;
 class QgsPaintEffect;
 class QgsRendererWidget;
 class QgsMapCanvas;
+class QgsSymbolWidgetContext;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -48,7 +50,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * Constructor for QgsRendererPropertiesDialog.
      * \param layer associated layer
      * \param style style collection
-     * \param embedded set to true to indicate that the dialog will be embedded in another widget, rather
+     * \param embedded set to TRUE to indicate that the dialog will be embedded in another widget, rather
      * than shown as a dialog by itself
      * \param parent parent widget
      */
@@ -64,9 +66,15 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
+     * Sets the \a context in which the dialog is shown, e.g., the associated map canvas and expression contexts.
+     * \since QGIS 3.6
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
+
+    /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * \param dockMode True to enable dock mode.
+     * \param dockMode TRUE to enable dock mode.
      */
     void setDockMode( bool dockMode );
 
@@ -105,10 +113,10 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
 
     /**
      * Open a panel or dialog depending on dock mode setting
-     * If dock mode is true this method will emit the showPanel signal
+     * If dock mode is TRUE this method will emit the showPanel signal
      * for connected slots to handle the open event.
      *
-     * If dock mode is false this method will open a dialog
+     * If dock mode is FALSE this method will open a dialog
      * and block the user.
      *
      * \param panel The panel widget to open.
@@ -148,6 +156,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     QgsPaintEffect *mPaintEffect = nullptr;
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QgsFeatureRequest::OrderBy mOrderBy;
 

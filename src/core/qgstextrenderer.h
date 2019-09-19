@@ -17,7 +17,7 @@
 #ifndef QGSTEXTRENDERER_H
 #define QGSTEXTRENDERER_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
@@ -34,6 +34,8 @@ class QgsTextShadowSettingsPrivate;
 class QgsTextSettingsPrivate;
 class QgsVectorLayer;
 class QgsPaintEffect;
+class QgsMarkerSymbol;
+class QgsPropertyCollection;
 
 /**
  * \class QgsTextBufferSettings
@@ -42,7 +44,6 @@ class QgsPaintEffect;
   * \note QgsTextBufferSettings objects are implicitly shared.
   * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsTextBufferSettings
 {
   public:
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsTextBufferSettings
 
     /**
      * Sets whether the text buffer will be drawn.
-     * \param enabled set to true to draw buffer
+     * \param enabled set to TRUE to draw buffer
      * \see enabled()
      */
     void setEnabled( bool enabled );
@@ -137,7 +138,7 @@ class CORE_EXPORT QgsTextBufferSettings
     void setColor( const QColor &color );
 
     /**
-     * Returns whether the interior of the buffer will be filled in. If false, only the stroke
+     * Returns whether the interior of the buffer will be filled in. If FALSE, only the stroke
      * of the text will be drawn as the buffer. The effect of this setting is only visible for
      * semi-transparent text.
      * \see setFillBufferInterior()
@@ -146,7 +147,7 @@ class CORE_EXPORT QgsTextBufferSettings
 
     /**
      * Sets whether the interior of the buffer will be filled in.
-     * \param fill set to false to drawn only the stroke of the text as the buffer, or true to also
+     * \param fill set to FALSE to drawn only the stroke of the text as the buffer, or TRUE to also
      * shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
      * \see fillBufferInterior()
      */
@@ -225,6 +226,12 @@ class CORE_EXPORT QgsTextBufferSettings
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
   private:
 
     QSharedDataPointer<QgsTextBufferSettingsPrivate> d;
@@ -252,7 +259,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
       ShapeSquare, //!< Square - buffered sizes only
       ShapeEllipse, //!< Ellipse
       ShapeCircle, //!< Circle
-      ShapeSVG //!< SVG file
+      ShapeSVG, //!< SVG file
+      ShapeMarkerSymbol, //!< Marker symbol
     };
 
     /**
@@ -295,7 +303,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     /**
      * Sets whether the text background will be drawn.
-     * \param enabled set to true to draw background
+     * \param enabled set to TRUE to draw background
      * \see enabled()
      */
     void setEnabled( bool enabled );
@@ -326,6 +334,24 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see svgFile()
      */
     void setSvgFile( const QString &file );
+
+    /**
+     * Returns the marker symbol to be rendered in the background. Ownership remains with
+     * the background settings.
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeMarkerSymbol.
+     * \see setMarkerSymbol()
+     * \since QGIS 3.10
+     */
+    QgsMarkerSymbol *markerSymbol() const;
+
+    /**
+     * Sets the current marker \a symbol for the background shape. Ownership is transferred
+     * to the background settings.
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeMarkerSymbol.
+     * \see markerSymbol()
+     * \since QGIS 3.10
+     */
+    void setMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the method used to determine the size of the background shape (e.g., fixed size or buffer
@@ -680,6 +706,12 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
   private:
 
     QSharedDataPointer<QgsTextBackgroundSettingsPrivate> d;
@@ -729,7 +761,7 @@ class CORE_EXPORT QgsTextShadowSettings
 
     /**
      * Sets whether the text shadow will be drawn.
-     * \param enabled set to true to draw shadow
+     * \param enabled set to TRUE to draw shadow
      * \see enabled()
      */
     void setEnabled( bool enabled );
@@ -816,14 +848,14 @@ class CORE_EXPORT QgsTextShadowSettings
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 
     /**
-     * Returns true if the global shadow offset will be used.
+     * Returns TRUE if the global shadow offset will be used.
      * \see setOffsetGlobal()
      */
     bool offsetGlobal() const;
 
     /**
      * Sets whether the global shadow offset should be used.
-     * \param global set to true to use global shadow offset.
+     * \param global set to TRUE to use global shadow offset.
      */
     void setOffsetGlobal( bool global );
 
@@ -882,7 +914,7 @@ class CORE_EXPORT QgsTextShadowSettings
 
     /**
      * Sets whether only the alpha channel for the shadow should be blurred.
-     * \param alphaOnly set to true to blur only the alpha channel. If false, all channels (including
+     * \param alphaOnly set to TRUE to blur only the alpha channel. If FALSE, all channels (including
      * red, green and blue channel) will be blurred.
      * \see blurAlphaOnly()
      */
@@ -960,6 +992,12 @@ class CORE_EXPORT QgsTextShadowSettings
      */
     QDomElement writeXml( QDomDocument &doc ) const;
 
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
   private:
 
     QSharedDataPointer<QgsTextShadowSettingsPrivate> d;
@@ -978,6 +1016,14 @@ class CORE_EXPORT QgsTextShadowSettings
 class CORE_EXPORT QgsTextFormat
 {
   public:
+
+    //! Text orientation
+    enum TextOrientation
+    {
+      HorizontalOrientation, //!< Vertically oriented text
+      VerticalOrientation, //!< Horizontally oriented text
+      RotationBasedOrientation, //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
+    };
 
     QgsTextFormat();
 
@@ -1202,6 +1248,34 @@ class CORE_EXPORT QgsTextFormat
     void setLineHeight( double height );
 
     /**
+     * Returns the orientation of the text.
+     * \see setOrientation()
+     * \since QGIS 3.10
+     */
+    TextOrientation orientation() const;
+
+    /**
+     * Sets the \a orientation for the text.
+     * \see orientation()
+     * \since QGIS 3.10
+     */
+    void setOrientation( TextOrientation orientation );
+
+    /**
+     * Returns the background color for text previews.
+     * \see setPreviewBackgroundColor()
+     * \since QGIS 3.10
+     */
+    QColor previewBackgroundColor() const;
+
+    /**
+     * Sets the background \a color that text will be rendered on for previews.
+     * \see previewBackgroundColor()
+     * \since QGIS 3.10
+     */
+    void setPreviewBackgroundColor( const QColor &color );
+
+    /**
      * Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
      */
@@ -1246,19 +1320,19 @@ class CORE_EXPORT QgsTextFormat
 
     /**
      * Attempts to parse the provided mime \a data as a QgsTextFormat.
-     * If data can be parsed as a text format, \a ok will be set to true.
+     * If data can be parsed as a text format, \a ok will be set to TRUE.
      * \see toMimeData()
      */
     static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok SIP_OUT = nullptr );
 
     /**
-     * Returns true if any component of the font format requires advanced effects
+     * Returns TRUE if any component of the font format requires advanced effects
      * such as blend modes, which require output in raster formats to be fully respected.
      */
     bool containsAdvancedEffects() const;
 
     /**
-     * Returns true if the specified font was found on the system, or false
+     * Returns TRUE if the specified font was found on the system, or FALSE
      * if the font was not found and a replacement was used instead.
      * \see resolvedFontFamily()
      */
@@ -1271,6 +1345,45 @@ class CORE_EXPORT QgsTextFormat
      * \see fontFound()
      */
     QString resolvedFontFamily() const { return mTextFontFamily; }
+
+    /**
+     * Returns a reference to the format's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \since QGIS 3.10
+     */
+    QgsPropertyCollection &dataDefinedProperties();
+
+    /**
+     * Returns a reference to the format's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP;
+
+    /**
+     * Sets the format's property collection, used for data defined overrides.
+     * \param collection property collection. Existing properties will be replaced.
+     * \see dataDefinedProperties()
+     * \since QGIS 3.10
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     * \since QGIS 3.10
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context );
+
+    /**
+    * Returns a pixmap preview for a text \a format.
+    * \param format text format
+    * \param size target pixmap size
+    * \param previewText text to render in preview, or empty for default text
+    * \param padding space between icon edge and color ramp
+    * \since QGIS 3.10
+    */
+    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
 
   private:
 
@@ -1332,6 +1445,8 @@ class CORE_EXPORT QgsTextRenderer
      */
     static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
+    // TODO QGIS 4.0 -- remove drawAsOutlines from below methods!
+
     /**
      * Draws text within a rectangle using the specified settings.
      * \param rect destination rectangle for text
@@ -1340,9 +1455,10 @@ class CORE_EXPORT QgsTextRenderer
      * \param textLines list of lines of text to draw
      * \param context render context
      * \param format text format
-     * \param drawAsOutlines set to false to render text as text. This allows outputs to
+     * \param drawAsOutlines set to FALSE to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
-     * rendering and may result in side effects like misaligned text buffers.
+     * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+     * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
@@ -1356,9 +1472,10 @@ class CORE_EXPORT QgsTextRenderer
      * \param textLines list of lines of text to draw
      * \param context render context
      * \param format text format
-     * \param drawAsOutlines set to false to render text as text. This allows outputs to
+     * \param drawAsOutlines set to FALSE to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
-     * rendering and may result in side effects like misaligned text buffers.
+     * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+     * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
     static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
@@ -1375,9 +1492,10 @@ class CORE_EXPORT QgsTextRenderer
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
      * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
-     * \param drawAsOutlines set to false to render text as text. This allows outputs to
+     * \param drawAsOutlines set to FALSE to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
-     * rendering and may result in side effects like misaligned text buffers.
+     * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+     * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
     static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
@@ -1394,9 +1512,10 @@ class CORE_EXPORT QgsTextRenderer
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
      * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
-     * \param drawAsOutlines set to false to render text as text. This allows outputs to
+     * \param drawAsOutlines set to FALSE to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
-     * rendering and may result in side effects like misaligned text buffers.
+     * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+     * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
     static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
@@ -1467,7 +1586,8 @@ class CORE_EXPORT QgsTextRenderer
 
     static void drawBuffer( QgsRenderContext &context,
                             const Component &component,
-                            const QgsTextFormat &format );
+                            const QgsTextFormat &format,
+                            const QFontMetricsF *fontMetrics );
 
     static void drawBackground( QgsRenderContext &context,
                                 Component component,
@@ -1490,7 +1610,6 @@ class CORE_EXPORT QgsTextRenderer
                                   const QStringList &textLines,
                                   const QFontMetricsF *fontMetrics,
                                   HAlignment alignment,
-                                  bool drawAsOutlines,
                                   DrawMode mode = Rect );
 
     friend class QgsVectorLayerLabelProvider;
@@ -1500,5 +1619,53 @@ class CORE_EXPORT QgsTextRenderer
 
 
 };
+
+/**
+ * \class QgsTextRendererUtils
+  * \ingroup core
+  * Utility functions for text rendering.
+  * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsTextRendererUtils
+{
+  public:
+
+    /**
+     * Decodes a string representation of a background shape type to a type.
+     */
+    static QgsTextBackgroundSettings::ShapeType decodeShapeType( const QString &string );
+
+    /**
+     * Decodes a string representation of a background size type to a type.
+     */
+    static QgsTextBackgroundSettings::SizeType decodeBackgroundSizeType( const QString &string );
+
+    /**
+     * Decodes a string representation of a background rotation type to a type.
+     */
+    static QgsTextBackgroundSettings::RotationType decodeBackgroundRotationType( const QString &string );
+
+    /**
+     * Decodes a string representation of a shadow placement type to a type.
+     */
+    static QgsTextShadowSettings::ShadowPlacement decodeShadowPlacementType( const QString &string );
+
+    /**
+     * Encodes a text \a orientation.
+     * \returns encoded string
+     * \see decodeTextOrientation()
+     */
+    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+
+    /**
+     * Attempts to decode a string representation of a text orientation.
+     * \param name encoded text orientation name
+     * \param ok if specified, will be set to TRUE if the name was successfully decoded
+     * \returns decoded text orientation
+     * \see encodeTextOrientation()
+     */
+    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = nullptr );
+};
+
 
 #endif // QGSTEXTRENDERER_H

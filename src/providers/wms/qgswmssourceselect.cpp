@@ -37,6 +37,7 @@
 #include "qgswmscapabilities.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -58,6 +59,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnNew, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnNew_clicked );
   connect( btnEdit, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnEdit_clicked );
   connect( btnDelete, &QPushButton::clicked, this, &QgsWMSSourceSelect::btnDelete_clicked );
@@ -144,17 +147,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   // set up the WMS connections we already know about
   populateConnectionList();
 
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
-  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
-QgsWMSSourceSelect::~QgsWMSSourceSelect()
-{
-  QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
-  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
-}
 
 void QgsWMSSourceSelect::refresh()
 {
@@ -271,7 +265,8 @@ void QgsWMSSourceSelect::clear()
 
   mCRSs.clear();
 
-  Q_FOREACH ( QAbstractButton *b, mImageFormatGroup->buttons() )
+  const auto constButtons = mImageFormatGroup->buttons();
+  for ( QAbstractButton *b : constButtons )
   {
     b->setHidden( true );
   }
@@ -281,11 +276,12 @@ void QgsWMSSourceSelect::clear()
 
 bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabilities )
 {
-  QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
+  const QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
 
   bool first = true;
   QSet<QString> alreadyAddedLabels;
-  Q_FOREACH ( const QString &encoding, capabilities.supportedImageEncodings() )
+  const auto constSupportedImageEncodings = capabilities.supportedImageEncodings();
+  for ( const QString &encoding : constSupportedImageEncodings )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -320,32 +316,30 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
 
   int layerAndStyleCount = -1;
 
-  for ( QVector<QgsWmsLayerProperty>::iterator layer = layers.begin();
-        layer != layers.end();
-        ++layer )
+  for ( const QgsWmsLayerProperty &layer : layers )
   {
-    QgsTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
+    QgsTreeWidgetItem *lItem = createItem( layer.orderId, QStringList() << layer.name << layer.title << layer.abstract, items, layerAndStyleCount, layerParents, layerParentNames );
 
-    lItem->setData( 0, Qt::UserRole + 0, layer->name );
+    lItem->setData( 0, Qt::UserRole + 0, layer.name );
     lItem->setData( 0, Qt::UserRole + 1, "" );
-    lItem->setData( 0, Qt::UserRole + 2, layer->crs );
-    lItem->setData( 0, Qt::UserRole + 3, layer->title.isEmpty() ? layer->name : layer->title );
+    lItem->setData( 0, Qt::UserRole + 2, layer.crs );
+    lItem->setData( 0, Qt::UserRole + 3, layer.title.isEmpty() ? layer.name : layer.title );
 
     // Also insert the styles
     // Layer Styles
-    for ( int j = 0; j < layer->style.size(); j++ )
+    for ( const QgsWmsStyleProperty &property : layer.style )
     {
-      QgsDebugMsg( QStringLiteral( "got style name %1 and title '%2'." ).arg( layer->style.at( j ).name, layer->style.at( j ).title ) );
+      QgsDebugMsg( QStringLiteral( "got style name %1 and title '%2'." ).arg( property.name, property.title ) );
 
       QgsTreeWidgetItem *lItem2 = new QgsTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
-      lItem2->setText( 1, layer->style.at( j ).name.simplified() );
-      lItem2->setText( 2, layer->style.at( j ).title.simplified() );
-      lItem2->setText( 3, layer->style.at( j ).abstract.simplified() );
+      lItem2->setText( 1, property.name.simplified() );
+      lItem2->setText( 2, property.title.simplified() );
+      lItem2->setText( 3, property.abstract.simplified() );
 
-      lItem2->setData( 0, Qt::UserRole + 0, layer->name );
-      lItem2->setData( 0, Qt::UserRole + 1, layer->style.at( j ).name );
-      lItem2->setData( 0, Qt::UserRole + 3, layer->style.at( j ).title.isEmpty() ? layer->style.at( j ).name : layer->style.at( j ).title );
+      lItem2->setData( 0, Qt::UserRole + 0, layer.name );
+      lItem2->setData( 0, Qt::UserRole + 1, property.name );
+      lItem2->setData( 0, Qt::UserRole + 3, property.title.isEmpty() ? property.name : property.title );
     }
   }
 
@@ -362,7 +356,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets = capabilities.supportedTileMatrixSets();
 
     int rows = 0;
-    Q_FOREACH ( const QgsWmtsTileLayer &l, mTileLayers )
+    for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
     {
       rows += l.styles.size() * l.setLinks.size() * l.formats.size();
     }
@@ -372,13 +366,13 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     lstTilesets->setSortingEnabled( false );
 
     int row = 0;
-    Q_FOREACH ( const QgsWmtsTileLayer &l, mTileLayers )
+    for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
     {
-      Q_FOREACH ( const QgsWmtsStyle &style, l.styles )
+      for ( const QgsWmtsStyle &style : l.styles )
       {
-        Q_FOREACH ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
+        for ( const QgsWmtsTileMatrixSetLink &setLink : l.setLinks )
         {
-          Q_FOREACH ( const QString &format, l.formats )
+          for ( const QString &format : l.formats )
           {
             QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
             item->setData( Qt::UserRole + 0, l.identifier );
@@ -478,7 +472,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     return;
   }
 
-  QgsWmsCapabilities caps;
+  QgsWmsCapabilities caps { QgsProject::instance()->transformContext()  };
   if ( !caps.parseResponse( capDownload.response(), wmsSettings.parserSettings() ) )
   {
     QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ),
@@ -536,7 +530,8 @@ void QgsWMSSourceSelect::addButtonClicked()
 
     const QgsWmtsTileLayer *layer = nullptr;
 
-    Q_FOREACH ( const QgsWmtsTileLayer &l, mTileLayers )
+    const auto constMTileLayers = mTileLayers;
+    for ( const QgsWmtsTileLayer &l : constMTileLayers )
     {
       if ( l.identifier == layers.join( QStringLiteral( "," ) ) )
       {
@@ -595,6 +590,11 @@ void QgsWMSSourceSelect::addButtonClicked()
                        QStringLiteral( "wms" ) );
 }
 
+void QgsWMSSourceSelect::reset()
+{
+  lstLayers->clearSelection();
+}
+
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
 {
   QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
@@ -626,7 +626,8 @@ void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
 void QgsWMSSourceSelect::btnChangeSpatialRefSys_clicked()
 {
   QStringList layers;
-  Q_FOREACH ( QTreeWidgetItem *item, lstLayers->selectedItems() )
+  const auto constSelectedItems = lstLayers->selectedItems();
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     QString layer = item->data( 0, Qt::UserRole + 0 ).toString();
     if ( !layer.isEmpty() )
@@ -802,7 +803,8 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
   mCRSs.clear();
 
   // determine selected layers and styles and set of crses that are available for all layers
-  Q_FOREACH ( QTreeWidgetItem *item, lstLayers->selectedItems() )
+  const auto constSelectedItems = lstLayers->selectedItems();
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
     QString styleName = item->data( 0, Qt::UserRole + 1 ).toString();
@@ -881,7 +883,7 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
 
 void QgsWMSSourceSelect::lstTilesets_itemClicked( QTableWidgetItem *item )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( item )
 
   QTableWidgetItem *rowItem = lstTilesets->item( lstTilesets->currentRow(), 0 );
   bool wasSelected = mCurrentTileset == rowItem;
@@ -1177,7 +1179,9 @@ void QgsWMSSourceSelect::btnSearch_clicked()
   QUrl url( mySearchUrl.arg( leSearchTerm->text() ) );
   QgsDebugMsg( url.toString() );
 
-  QNetworkReply *r = QgsNetworkAccessManager::instance()->get( QNetworkRequest( url ) );
+  QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWMSSourceSelect" ) );
+  QNetworkReply *r = QgsNetworkAccessManager::instance()->get( request );
   connect( r, &QNetworkReply::finished, this, &QgsWMSSourceSelect::searchFinished );
 }
 

@@ -162,8 +162,6 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
     }
 
     double x = 0.0, y = 0.0, lastX = 0.0, lastY = 0.0;
-    QgsRectangle r;
-    r.setMinimal();
 
     if ( numPoints <= ( isaLinearRing ? 4 : 2 ) )
       isGeneralizable = false;
@@ -225,9 +223,13 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
             lastX = x;
             lastY = y;
           }
-
-          r.combineExtentWith( x, y );
         }
+        break;
+      }
+
+      case SnappedToGridGlobal:
+      {
+        output.reset( qgsgeometry_cast< QgsCurve * >( srcCurve.snappedToGrid( map2pixelTol, map2pixelTol ) ) );
         break;
       }
 
@@ -300,8 +302,6 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
             hasLongSegments |= isLongSegment;
           }
-
-          r.combineExtentWith( x, y );
         }
       }
     }
@@ -317,7 +317,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
       {
         // approximate the geometry's shape by its bounding box
         // (rect for linear ring / one segment for line string)
-        return generalizeWkbGeometryByBoundingBox( wkbType, geometry, r, isaLinearRing );
+        return generalizeWkbGeometryByBoundingBox( wkbType, geometry, envelope, isaLinearRing );
       }
       else
       {
@@ -358,6 +358,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
     const QgsGeometryCollection &srcCollection = dynamic_cast<const QgsGeometryCollection &>( geometry );
     std::unique_ptr<QgsGeometryCollection> collection( srcCollection.createEmptyWithSameType() );
     const int numGeoms = srcCollection.numGeometries();
+    collection->reserve( numGeoms );
     for ( int i = 0; i < numGeoms; ++i )
     {
       const QgsAbstractGeometry *sub = srcCollection.geometryN( i );

@@ -18,10 +18,13 @@ SET(DB2_MOC_HDRS
 
 IF (WITH_GUI)
   SET(DB2_SRCS ${DB2_SRCS}
+    qgsdb2providergui.cpp
+    qgsdb2dataitemguiprovider.cpp
     qgsdb2newconnection.cpp
     qgsdb2sourceselect.cpp
   )
   SET(DB2_MOC_HDRS ${DB2_MOC_HDRS}
+    qgsdb2dataitemguiprovider.h
     qgsdb2newconnection.h
     qgsdb2sourceselect.h
   )
@@ -41,6 +44,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/ui
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -68,6 +72,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (db2provider
     qgis_gui
   )
+  ADD_DEPENDENCIES(db2provider ui)
 ENDIF ()
 
 ########################################################

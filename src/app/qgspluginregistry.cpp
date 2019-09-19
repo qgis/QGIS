@@ -118,7 +118,7 @@ bool QgsPluginRegistry::isPythonPlugin( const QString &key ) const
       return true;
   }
 #else
-  Q_UNUSED( key );
+  Q_UNUSED( key )
 #endif
   return false;
 }
@@ -145,9 +145,10 @@ void QgsPluginRegistry::dump()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsDebugMsg( QStringLiteral( "PYTHON PLUGINS IN REGISTRY:" ) );
-    Q_FOREACH ( const QString &pluginName, mPythonUtils->listActivePlugins() )
+    const auto constListActivePlugins = mPythonUtils->listActivePlugins();
+    for ( const QString &pluginName : constListActivePlugins )
     {
-      Q_UNUSED( pluginName );
+      Q_UNUSED( pluginName )
       QgsDebugMsg( pluginName );
     }
   }
@@ -186,7 +187,8 @@ void QgsPluginRegistry::unloadAll()
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    Q_FOREACH ( const QString &pluginName, mPythonUtils->listActivePlugins() )
+    const auto constListActivePlugins = mPythonUtils->listActivePlugins();
+    for ( const QString &pluginName : constListActivePlugins )
     {
       mPythonUtils->unloadPlugin( pluginName );
     }
@@ -315,7 +317,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
     settings.remove( "/PythonPlugins/watchDog/" + packageName );
   }
 #else
-  Q_UNUSED( packageName );
+  Q_UNUSED( packageName )
 #endif
 }
 
@@ -442,7 +444,7 @@ void QgsPluginRegistry::unloadPythonPlugin( const QString &packageName )
   QgsSettings settings;
   settings.setValue( "/PythonPlugins/" + packageName, false );
 #else
-  Q_UNUSED( packageName );
+  Q_UNUSED( packageName )
 #endif
 }
 
@@ -527,7 +529,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     corePlugins << QStringLiteral( "MetaSearch" );
 
     // make the required core plugins enabled by default:
-    Q_FOREACH ( const QString &corePlugin, corePlugins )
+    const auto constCorePlugins = corePlugins;
+    for ( const QString &corePlugin : constCorePlugins )
     {
       if ( !mySettings.contains( "/PythonPlugins/" + corePlugin ) )
       {
@@ -535,7 +538,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
     }
 
-    Q_FOREACH ( const QString &packageName, pluginList )
+    const auto constPluginList = pluginList;
+    for ( const QString &packageName : constPluginList )
     {
       // TODO: apply better solution for #5879
       // start - temporary fix for issue #5879
@@ -628,7 +632,7 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString &packageName )
 
   return true;
 #else
-  Q_UNUSED( packageName );
+  Q_UNUSED( packageName )
   return false;
 #endif
 }
@@ -641,7 +645,7 @@ bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) c
   QString maxVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMaximumVersion" ) );
   return minVersion != QLatin1String( "__error__" ) && checkQgisVersion( minVersion, maxVersion );
 #else
-  Q_UNUSED( packageName );
+  Q_UNUSED( packageName )
   return false;
 #endif
 }

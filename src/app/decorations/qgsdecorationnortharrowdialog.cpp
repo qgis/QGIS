@@ -248,6 +248,6 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
 
 void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *resizeEvent )
 {
-  Q_UNUSED( resizeEvent );
+  Q_UNUSED( resizeEvent )
   drawNorthArrow();
 }

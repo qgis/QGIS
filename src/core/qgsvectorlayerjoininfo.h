@@ -41,7 +41,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     //! Sets weak reference to the joined layer
     void setJoinLayer( QgsVectorLayer *layer ) { mJoinLayerRef = QgsVectorLayerRef( layer ); }
-    //! Returns joined layer (may be null if the reference was set by layer ID and not resolved yet)
+    //! Returns joined layer (may be NULLPTR if the reference was set by layer ID and not resolved yet)
     QgsVectorLayer *joinLayer() const { return mJoinLayerRef.get(); }
 
     //! Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to a reference to real layer
@@ -59,9 +59,9 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! Returns name of the field of joined layer that will be used for join
     QString joinFieldName() const { return mJoinFieldName; }
 
-    //! Sets prefix of fields from the joined layer. If null, joined layer's name will be used.
+    //! Sets prefix of fields from the joined layer. If NULLPTR, joined layer's name will be used.
     void setPrefix( const QString &prefix ) { mPrefix = prefix; }
-    //! Returns prefix of fields from the joined layer. If null, joined layer's name will be used.
+    //! Returns prefix of fields from the joined layer. If NULLPTR, joined layer's name will be used.
     QString prefix() const { return mPrefix; }
 
     //! Sets whether values from the joined layer should be cached in memory to speed up lookups
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     QStringList joinFieldNamesBlackList() const { return mBlackList; }
 
     /**
-     * Returns true if blacklisted fields is not empty or if a subset of names
+     * Returns TRUE if blacklisted fields is not empty or if a subset of names
      * has been set.
      *
      * \since QGIS 3.0
@@ -182,13 +182,24 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     }
 
     /**
-     * Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
-      \since QGIS 2.6 */
+     * Sets the subset of fields to be used from joined layer.
+     *
+     * Ownership of \a fileNamesSubset is transferred. A \a fieldNameSubset of NULLPTR indicates that all fields should be used.
+     *
+     * \see joinFieldNamesSubset()
+     * \since QGIS 2.6
+    */
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset SIP_TRANSFER ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
 
     /**
-     * Gets subset of fields to be used from joined layer. All fields will be used if null is returned.
-      \since QGIS 2.6 */
+     * Returns the subset of fields to be used from joined layer.
+     *
+     * All fields will be used if NULLPTR is returned.
+     *
+     * \see setJoinFieldNamesSubset()
+     *
+     * \since QGIS 2.6
+    */
     QStringList *joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
 
   protected:
@@ -208,7 +219,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! True if the join is cached in virtual memory
     bool mMemoryCache = false;
 
-    //! Subset of fields to use from joined layer. null = use all fields
+    //! Subset of fields to use from joined layer. NULLPTR = use all fields
     std::shared_ptr<QStringList> mJoinFieldsSubset;
 
     // caching support

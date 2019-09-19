@@ -18,6 +18,7 @@
 #include "qgslegendstyle.h"
 #include "qgsfontutils.h"
 #include "qgssettings.h"
+#include "qgis.h"
 
 #include <QFont>
 #include <QMap>
@@ -28,13 +29,6 @@
 
 QgsLegendStyle::QgsLegendStyle()
 {
-  //get default composer font from settings
-  QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
-  if ( !defaultFontString.isEmpty() )
-  {
-    mFont.setFamily( defaultFontString );
-  }
 }
 
 void QgsLegendStyle::setMargin( double margin )
@@ -47,16 +41,22 @@ void QgsLegendStyle::setMargin( double margin )
 
 void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const
 {
-  if ( elem.isNull() ) return;
+  if ( elem.isNull() )
+    return;
 
   QDomElement styleElem = doc.createElement( QStringLiteral( "style" ) );
 
   styleElem.setAttribute( QStringLiteral( "name" ), name );
+  styleElem.setAttribute( QStringLiteral( "alignment" ), QString::number( mAlignment ) );
 
-  if ( !qgsDoubleNear( mMarginMap[Top], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginTop" ), QString::number( mMarginMap[Top] ) );
-  if ( !qgsDoubleNear( mMarginMap[Bottom], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginBottom" ), QString::number( mMarginMap[Bottom] ) );
-  if ( !qgsDoubleNear( mMarginMap[Left], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginLeft" ), QString::number( mMarginMap[Left] ) );
-  if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginRight" ), QString::number( mMarginMap[Right] ) );
+  if ( !qgsDoubleNear( mMarginMap[Top], 0.0 ) )
+    styleElem.setAttribute( QStringLiteral( "marginTop" ), QString::number( mMarginMap[Top] ) );
+  if ( !qgsDoubleNear( mMarginMap[Bottom], 0.0 ) )
+    styleElem.setAttribute( QStringLiteral( "marginBottom" ), QString::number( mMarginMap[Bottom] ) );
+  if ( !qgsDoubleNear( mMarginMap[Left], 0.0 ) )
+    styleElem.setAttribute( QStringLiteral( "marginLeft" ), QString::number( mMarginMap[Left] ) );
+  if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) )
+    styleElem.setAttribute( QStringLiteral( "marginRight" ), QString::number( mMarginMap[Right] ) );
 
   styleElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "styleFont" ) ) );
 
@@ -65,7 +65,7 @@ void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocum
 
 void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc )
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   if ( elem.isNull() ) return;
 
   if ( !QgsFontUtils::setFromXmlChildNode( mFont, elem, QStringLiteral( "styleFont" ) ) )
@@ -77,6 +77,8 @@ void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc )
   mMarginMap[Bottom] = elem.attribute( QStringLiteral( "marginBottom" ), QStringLiteral( "0" ) ).toDouble();
   mMarginMap[Left] = elem.attribute( QStringLiteral( "marginLeft" ), QStringLiteral( "0" ) ).toDouble();
   mMarginMap[Right] = elem.attribute( QStringLiteral( "marginRight" ), QStringLiteral( "0" ) ).toDouble();
+
+  mAlignment = static_cast< Qt::Alignment >( elem.attribute( QStringLiteral( "alignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
 }
 
 QString QgsLegendStyle::styleName( Style s )
@@ -103,12 +105,18 @@ QString QgsLegendStyle::styleName( Style s )
 
 QgsLegendStyle::Style QgsLegendStyle::styleFromName( const QString &styleName )
 {
-  if ( styleName == QLatin1String( "hidden" ) ) return Hidden;
-  else if ( styleName == QLatin1String( "title" ) ) return Title;
-  else if ( styleName == QLatin1String( "group" ) ) return Group;
-  else if ( styleName == QLatin1String( "subgroup" ) ) return Subgroup;
-  else if ( styleName == QLatin1String( "symbol" ) ) return Symbol;
-  else if ( styleName == QLatin1String( "symbolLabel" ) ) return SymbolLabel;
+  if ( styleName == QLatin1String( "hidden" ) )
+    return Hidden;
+  else if ( styleName == QLatin1String( "title" ) )
+    return Title;
+  else if ( styleName == QLatin1String( "group" ) )
+    return Group;
+  else if ( styleName == QLatin1String( "subgroup" ) )
+    return Subgroup;
+  else if ( styleName == QLatin1String( "symbol" ) )
+    return Symbol;
+  else if ( styleName == QLatin1String( "symbolLabel" ) )
+    return SymbolLabel;
   return Undefined;
 }
 

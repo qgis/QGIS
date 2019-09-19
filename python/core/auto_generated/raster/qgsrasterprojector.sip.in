@@ -46,10 +46,20 @@ which are used to calculate affine transformation matrices.
     virtual Qgis::DataType dataType( int bandNo ) const;
 
 
-    void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
-                 int srcDatumTransform = -1, int destDatumTransform = -1 );
+ void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
+                                   int srcDatumTransform = -1, int destDatumTransform = -1 ) /Deprecated/;
 %Docstring
 Sets the source and destination CRS
+
+.. deprecated:: since QGIS 3.8, use transformContext version instead
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
+                 QgsCoordinateTransformContext transformContext );
+%Docstring
+Sets source CRS to ``srcCRS`` and destination CRS to ``destCRS`` and the transformation context to ``transformContext``
+
+.. versionadded:: 3.8
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;

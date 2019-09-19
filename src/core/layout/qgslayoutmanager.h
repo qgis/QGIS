@@ -17,12 +17,15 @@
 #define QGSLAYOUTMANAGER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsmasterlayoutinterface.h"
 #include <QObject>
+#include <QAbstractListModel>
+#include <QSortFilterProxyModel>
 
 class QgsProject;
 class QgsPrintLayout;
+class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -38,7 +41,6 @@ class QgsPrintLayout;
  * in the manager.
  * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsLayoutManager : public QObject
 {
     Q_OBJECT
@@ -55,7 +57,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
 
     /**
      * Adds a \a layout to the manager. Ownership of the layout is transferred to the manager.
-     * Returns true if the addition was successful, or false if the layout could not be added (eg
+     * Returns TRUE if the addition was successful, or FALSE if the layout could not be added (eg
      * as a result of a duplicate layout name).
      * \see removeLayout()
      * \see layoutAdded()
@@ -64,7 +66,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
 
     /**
      * Removes a \a layout from the manager. The layout is deleted.
-     * Returns true if the removal was successful, or false if the removal failed (eg as a result
+     * Returns TRUE if the removal was successful, or FALSE if the removal failed (eg as a result
      * of removing a layout which is not contained in the manager).
      * \see addLayout()
      * \see layoutRemoved()
@@ -90,7 +92,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     QList< QgsPrintLayout * > printLayouts() const;
 
     /**
-     * Returns the layout with a matching name, or nullptr if no matching layouts
+     * Returns the layout with a matching name, or NULLPTR if no matching layouts
      * were found.
      */
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
@@ -121,6 +123,17 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      */
     QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
 
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * within the contained layouts.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
   signals:
 
     //! Emitted when a layout is about to be added to the manager
@@ -145,5 +158,124 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     QList< QgsMasterLayoutInterface * > mLayouts;
 
 };
+
+
+/**
+ * \ingroup core
+ * \class QgsLayoutManagerModel
+ *
+ * List model representing the print layouts and reports available in a
+ * layout manager.
+ *
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+  public:
+
+    //! Custom model roles
+    enum Role
+    {
+      LayoutRole = Qt::UserRole + 1, //!< Layout object
+    };
+
+    /**
+     * Constructor for QgsLayoutManagerModel, showing the layouts from the specified \a manager.
+     */
+    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    int rowCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * Returns the layout at the corresponding \a index.
+     * \see indexFromLayout()
+     */
+    QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns the model index corresponding to a \a layout.
+     * \see layoutFromIndex()
+     */
+    QModelIndex indexFromLayout( QgsMasterLayoutInterface *layout ) const;
+
+    /**
+     * Sets whether an optional empty layout ("not set") option is present in the model.
+     * \see allowEmptyLayout()
+     */
+    void setAllowEmptyLayout( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the model allows the empty layout ("not set") choice.
+     * \see setAllowEmptyLayout()
+     */
+    bool allowEmptyLayout() const { return mAllowEmpty; }
+
+  private slots:
+    void layoutAboutToBeAdded( const QString &name );
+    void layoutAboutToBeRemoved( const QString &name );
+    void layoutAdded( const QString &name );
+    void layoutRemoved( const QString &name );
+    void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
+  private:
+    QgsLayoutManager *mLayoutManager = nullptr;
+    bool mAllowEmpty = false;
+};
+
+
+/**
+ * \ingroup core
+ * \class QgsLayoutManagerProxyModel
+ *
+ * QSortFilterProxyModel subclass for QgsLayoutManagerModel
+ *
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsLayoutManagerProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    //! Available filter flags for filtering the model
+    enum Filter
+    {
+      FilterPrintLayouts = 1 << 1, //!< Includes print layouts
+      FilterReports = 1 << 2, //!< Includes reports
+    };
+    Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
+
+    /**
+     * Constructor for QgsLayoutManagerProxyModel.
+     */
+    explicit QgsLayoutManagerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    /**
+     * Returns the current filters used for filtering available layouts.
+     *
+     * \see setFilters()
+     */
+    QgsLayoutManagerProxyModel::Filters filters() const;
+
+    /**
+     * Sets the current \a filters used for filtering available layouts.
+     *
+     * \see filters()
+     */
+    void setFilters( QgsLayoutManagerProxyModel::Filters filters );
+
+  private:
+
+    Filters mFilters = Filters( FilterPrintLayouts | FilterReports );
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutManagerProxyModel::Filters )
 
 #endif // QGSLAYOUTMANAGER_H

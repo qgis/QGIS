@@ -21,7 +21,7 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #ifndef SIP_RUN
 /// \cond PRIVATE
@@ -127,7 +127,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     bool showFeatureActions() { return mShowFeatureActions;}
 
     /**
-     * \brief setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
+     * \brief setResultsIfExternalAction if set to FALSE (default) the menu will not return any results if an external action has been triggered
      * \note external action can be either custom actions or feature / map layer actions (\see setShowFeatureActions)
      */
     void setResultsIfExternalAction( bool resultsIfExternalAction ) {mResultsIfExternalAction = resultsIfExternalAction;}
@@ -160,6 +160,13 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 
+    /**
+     * Applies style from the settings to the highlight
+     *
+     * \since QGIS 3.8
+     */
+    static void styleHighlight( QgsHighlight *highlight );
+
   protected:
     void closeEvent( QCloseEvent *e ) override;
 
@@ -176,7 +183,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     /**
      * adds a vector layer and its results in the menu being built
-     * if singleLayer is true, results will be displayed on the top level item (not in QMenu with the layer name)
+     * if singleLayer is TRUE, results will be displayed on the top level item (not in QMenu with the layer name)
      */
     void addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapToolIdentify::IdentifyResult> &results, bool singleLayer = false );
 

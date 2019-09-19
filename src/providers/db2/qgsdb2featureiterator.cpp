@@ -93,7 +93,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     attrs = attributeIndexes.toList();
   }
 
-  Q_FOREACH ( int i, attrs )
+  const auto constAttrs = attrs;
+  for ( int i : constAttrs )
   {
     QString fieldname = mSource->mFields.at( i ).name();
     if ( mSource->mFidColName == fieldname )
@@ -161,7 +162,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   {
     QString delim;
     QString inClause = QStringLiteral( "%1 IN (" ).arg( mSource->mFidColName );
-    Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
+    const auto constFilterFids = mRequest.filterFids();
+    for ( QgsFeatureId featureId : constFilterFids )
     {
       inClause += delim + FID_TO_STRING( featureId );
       delim = ',';
@@ -225,7 +227,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   QgsDebugMsg( QStringLiteral( "compileExpressions: %1" ).arg( QgsSettings().value( "qgis/compileExpressions", true ).toString() ) );
   if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() && limitAtProvider )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+    const auto constOrderBy = request.orderBy();
+    for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
     {
       QgsDebugMsg( QStringLiteral( "processing a clause; ascending: %1; nullsFirst: %2" ).arg( clause.ascending() ).arg( clause.nullsFirst() ) );
 

@@ -105,7 +105,7 @@ void QgsSimplifyUserInputWidget::enableOkButton( bool enabled )
 
 bool QgsSimplifyUserInputWidget::eventFilter( QObject *object, QEvent *ev )
 {
-  Q_UNUSED( object );
+  Q_UNUSED( object )
   if ( ev->type() == QEvent::KeyPress )
   {
     QKeyEvent *event = static_cast<QKeyEvent *>( ev );
@@ -185,7 +185,8 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   mReducedVertexCount = 0;
   int i = 0;
 
-  Q_FOREACH ( const QgsFeature &fSel, mSelectedFeatures )
+  const auto constMSelectedFeatures = mSelectedFeatures;
+  for ( const QgsFeature &fSel : constMSelectedFeatures )
   {
     QgsGeometry g = processGeometry( fSel.geometry(), layerTolerance );
     if ( !g.isNull() )
@@ -298,7 +299,8 @@ void QgsMapToolSimplify::storeSimplified()
   double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vlayer, mCanvas->mapSettings(), mToleranceUnits );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
-  Q_FOREACH ( const QgsFeature &feat, mSelectedFeatures )
+  const auto constMSelectedFeatures = mSelectedFeatures;
+  for ( const QgsFeature &feat : constMSelectedFeatures )
   {
     QgsGeometry g = processGeometry( feat.geometry(), layerTolerance );
     if ( !g.isNull() )
@@ -394,7 +396,8 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   // count vertices, prepare rubber bands
   mOriginalVertexCount = 0;
-  Q_FOREACH ( const QgsFeature &f, mSelectedFeatures )
+  const auto constMSelectedFeatures = mSelectedFeatures;
+  for ( const QgsFeature &f : constMSelectedFeatures )
   {
     if ( f.hasGeometry() )
       mOriginalVertexCount += f.geometry().constGet()->nCoordinates();

@@ -70,6 +70,14 @@ Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
     void updateRule( const QModelIndex &index );
     void removeRule( const QModelIndex &index );
 
+    void setSymbol( const QModelIndex &index, QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` for the rule at the specified ``index``. Ownership of the symbols is
+transferred to the renderer.
+
+.. versionadded:: 3.10
+%End
+
     void willAddRules( const QModelIndex &parent, int count ); // call beginInsertRows
     void finishedAddingRules(); // call endInsertRows
 
@@ -148,6 +156,8 @@ Opens the dialog for refining a rule using ranges
 
     virtual void paste();
 
+    virtual void pasteSymbolToSelection();
+
 
 };
 
@@ -206,7 +216,7 @@ Apply any changes from the widget to the set rule.
 %Docstring
 Set the widget in dock mode.
 
-:param dockMode: True for dock mode.
+:param dockMode: ``True`` for dock mode.
 %End
 
   protected:
@@ -232,8 +242,6 @@ Constructor for QgsRendererRulePropsDialog
 :param parent: parent widget
 :param context: symbol widget context
 %End
-
-    ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRenderer::Rule *rule();
 

@@ -25,6 +25,8 @@
 #include "qgslayoutguidecollection.h"
 #include "qgsabstractlayoutiterator.h"
 #include "qgsfeedback.h"
+#include "qgslayoutgeopdfexporter.h"
+#include "qgslinestring.h"
 #include <QImageWriter>
 #include <QSize>
 #include <QSvgGenerator>
@@ -93,9 +95,16 @@ class LayoutItemHider
   public:
     explicit LayoutItemHider( const QList<QGraphicsItem *> &items )
     {
+      mItemsToIterate.reserve( items.count() );
       for ( QGraphicsItem *item : items )
       {
-        mPrevVisibility[item] = item->isVisible();
+        const bool isVisible = item->isVisible();
+        mPrevVisibility[item] = isVisible;
+        if ( isVisible )
+          mItemsToIterate.append( item );
+        if ( QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( item ) )
+          layoutItem->setProperty( "wasVisible", isVisible );
+
         item->hide();
       }
     }
@@ -113,14 +122,19 @@ class LayoutItemHider
       for ( auto it = mPrevVisibility.constBegin(); it != mPrevVisibility.constEnd(); ++it )
       {
         it.key()->setVisible( it.value() );
+        if ( QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( it.key() ) )
+          layoutItem->setProperty( "wasVisible", QVariant() );
       }
     }
+
+    QList< QGraphicsItem * > itemsToIterate() const { return mItemsToIterate; }
 
     LayoutItemHider( const LayoutItemHider &other ) = delete;
     LayoutItemHider &operator=( const LayoutItemHider &other ) = delete;
 
   private:
 
+    QList<QGraphicsItem * > mItemsToIterate;
     QHash<QGraphicsItem *, bool> mPrevVisibility;
 };
 
@@ -186,7 +200,7 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
   {
     // specified image size is wrong aspect ratio for paper rect - so ignore it and just use dpi
     // this can happen e.g. as a result of data defined page sizes
-    // see https://issues.qgis.org/issues/18534
+    // see https://github.com/qgis/QGIS/issues/26422
     imageSize = QSize();
   }
 
@@ -295,19 +309,31 @@ class LayoutContextSettingsRestorer
 {
   public:
 
+    Q_NOWARN_DEPRECATED_PUSH
     LayoutContextSettingsRestorer( QgsLayout *layout )
       : mLayout( layout )
       , mPreviousDpi( layout->renderContext().dpi() )
       , mPreviousFlags( layout->renderContext().flags() )
+      , mPreviousTextFormat( layout->renderContext().textRenderFormat() )
       , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
+      , mPreviousSimplifyMethod( layout->renderContext().simplifyMethod() )
+      , mExportThemes( layout->renderContext().exportThemes() )
+      , mPredefinedScales( layout->renderContext().predefinedScales() )
     {
     }
+    Q_NOWARN_DEPRECATED_POP
 
     ~LayoutContextSettingsRestorer()
     {
       mLayout->renderContext().setDpi( mPreviousDpi );
       mLayout->renderContext().setFlags( mPreviousFlags );
+      mLayout->renderContext().setTextRenderFormat( mPreviousTextFormat );
+      Q_NOWARN_DEPRECATED_PUSH
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
+      Q_NOWARN_DEPRECATED_POP
+      mLayout->renderContext().setSimplifyMethod( mPreviousSimplifyMethod );
+      mLayout->renderContext().setExportThemes( mExportThemes );
+      mLayout->renderContext().setPredefinedScales( mPredefinedScales );
     }
 
     LayoutContextSettingsRestorer( const LayoutContextSettingsRestorer &other ) = delete;
@@ -317,7 +343,12 @@ class LayoutContextSettingsRestorer
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
     QgsLayoutRenderContext::Flags mPreviousFlags = nullptr;
+    QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
     int mPreviousExportLayer = 0;
+    QgsVectorSimplifyMethod mPreviousSimplifyMethod;
+    QStringList mExportThemes;
+    QVector< double > mPredefinedScales;
+
 };
 ///@endcond PRIVATE
 
@@ -342,8 +373,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
   PageExportDetails pageDetails;
   pageDetails.directory = fi.path();
-  pageDetails.baseName = fi.baseName();
-  pageDetails.extension = fi.completeSuffix();
+  pageDetails.baseName = fi.completeBaseName();
+  pageDetails.extension = fi.suffix();
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
   ( void )restorer;
@@ -351,6 +382,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   ( void )dpiRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
   mLayout->renderContext().setFlags( settings.flags );
+  mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
   QList< int > pages;
   if ( settings.pages.empty() )
@@ -488,31 +520,153 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   LayoutContextSettingsRestorer contextRestorer( mLayout );
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
+  mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
+
+  if ( settings.simplifyGeometries )
+  {
+    mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+  }
+
+  std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
+  if ( settings.writeGeoPdf )
+    geoPdfExporter = qgis::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
+
+  mLayout->renderContext().setFlags( settings.flags );
 
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
-
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+  mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
+  mLayout->renderContext().setExportThemes( settings.exportThemes );
 
-  QPrinter printer;
-  preparePrintAsPdf( mLayout, printer, filePath );
-  preparePrint( mLayout, printer, false );
-  QPainter p;
-  if ( !p.begin( &printer ) )
+  ExportResult result = Success;
+  if ( settings.writeGeoPdf )
   {
-    //error beginning print
-    return FileError;
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
+
+    // here we need to export layers to individual PDFs
+    PdfExportSettings subSettings = settings;
+    subSettings.writeGeoPdf = false;
+
+    const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
+
+    QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > pdfComponents;
+
+    auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
+    {
+      ExportResult layerExportResult = Success;
+      QPrinter printer;
+      QgsLayoutGeoPdfExporter::ComponentLayerDetail component;
+      component.name = layerDetail.name;
+      component.mapLayerId = layerDetail.mapLayerId;
+      component.group = layerDetail.mapTheme;
+      component.sourcePdfPath = geoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) );
+      pdfComponents << component;
+      preparePrintAsPdf( mLayout, printer, component.sourcePdfPath );
+      preparePrint( mLayout, printer, false );
+      QPainter p;
+      if ( !p.begin( &printer ) )
+      {
+        //error beginning print
+        return FileError;
+      }
+
+      layerExportResult = printPrivate( printer, p, false, subSettings.dpi, subSettings.rasterizeWholeImage );
+      p.end();
+      return layerExportResult;
+    };
+    result = handleLayeredExport( items, exportFunc );
+    if ( result != Success )
+      return result;
+
+    QgsAbstractGeoPdfExporter::ExportDetails details;
+    details.dpi = settings.dpi;
+    // TODO - multipages
+    QgsLayoutSize pageSize = mLayout->pageCollection()->page( 0 )->sizeWithUnits();
+    QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+    details.pageSizeMm = pageSizeMM.toQSizeF();
+
+    if ( settings.exportMetadata )
+    {
+      // copy layout metadata to GeoPDF export settings
+      details.author = mLayout->project()->metadata().author();
+      details.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+      details.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+      details.creationDateTime = mLayout->project()->metadata().creationDateTime();
+      details.subject = mLayout->project()->metadata().abstract();
+      details.title = mLayout->project()->metadata().title();
+      details.keywords = mLayout->project()->metadata().keywords();
+    }
+
+    if ( settings.appendGeoreference )
+    {
+      // setup georeferencing
+      QList< QgsLayoutItemMap * > maps;
+      mLayout->layoutItems( maps );
+      for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+      {
+        QgsAbstractGeoPdfExporter::GeoReferencedSection georef;
+        georef.crs = map->crs();
+
+        const QPointF topLeft = map->mapToScene( QPointF( 0, 0 ) );
+        const QPointF topRight = map->mapToScene( QPointF( map->rect().width(), 0 ) );
+        const QPointF bottomLeft = map->mapToScene( QPointF( 0, map->rect().height() ) );
+        const QPointF bottomRight = map->mapToScene( QPointF( map->rect().width(), map->rect().height() ) );
+        const QgsLayoutPoint topLeftMm = mLayout->convertFromLayoutUnits( topLeft, QgsUnitTypes::LayoutMillimeters );
+        const QgsLayoutPoint topRightMm = mLayout->convertFromLayoutUnits( topRight, QgsUnitTypes::LayoutMillimeters );
+        const QgsLayoutPoint bottomLeftMm = mLayout->convertFromLayoutUnits( bottomLeft, QgsUnitTypes::LayoutMillimeters );
+        const QgsLayoutPoint bottomRightMm = mLayout->convertFromLayoutUnits( bottomRight, QgsUnitTypes::LayoutMillimeters );
+
+        georef.pageBoundsPolygon.setExteriorRing( new QgsLineString( QVector< QgsPointXY >() << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
+            << QgsPointXY( topRightMm.x(), topRightMm.y() )
+            << QgsPointXY( bottomRightMm.x(), bottomRightMm.y() )
+            << QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() )
+            << QgsPointXY( topLeftMm.x(), topLeftMm.y() ) ) );
+
+        georef.controlPoints.reserve( 4 );
+        const QTransform t = map->layoutToMapCoordsTransform();
+        const QgsPointXY topLeftMap = t.map( topLeft );
+        const QgsPointXY topRightMap = t.map( topRight );
+        const QgsPointXY bottomLeftMap = t.map( bottomLeft );
+        const QgsPointXY bottomRightMap = t.map( bottomRight );
+
+        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topLeftMm.x(), topLeftMm.y() ), topLeftMap );
+        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topRightMm.x(), topRightMm.y() ), topRightMap );
+        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() ), bottomLeftMap );
+        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomRightMm.x(), bottomRightMm.y() ), bottomRightMap );
+        details.georeferencedSections << georef;
+      }
+    }
+
+    details.customLayerTreeGroups = geoPdfExporter->customLayerTreeGroups();
+    details.includeFeatures = settings.includeGeoPdfFeatures;
+    details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
+    details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
+
+    geoPdfExporter->finalize( pdfComponents, filePath, details );
   }
-
-  ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
-  p.end();
-
-  const bool shouldGeoreference = mLayout->pageCollection()->pageCount() == 1;
-  if ( shouldGeoreference || settings.exportMetadata )
+  else
   {
-    georeferenceOutputPrivate( filePath, nullptr, QRectF(), settings.dpi, shouldGeoreference, settings.exportMetadata );
+    QPrinter printer;
+    preparePrintAsPdf( mLayout, printer, filePath );
+    preparePrint( mLayout, printer, false );
+    QPainter p;
+    if ( !p.begin( &printer ) )
+    {
+      //error beginning print
+      return FileError;
+    }
+
+    result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
+    p.end();
+
+    bool shouldAppendGeoreference = settings.appendGeoreference && mLayout && mLayout->referenceMap() && mLayout->referenceMap()->page() == 0;
+    if ( settings.appendGeoreference || settings.exportMetadata )
+    {
+      georeferenceOutputPrivate( filePath, nullptr, QRectF(), settings.dpi, shouldAppendGeoreference, settings.exportMetadata );
+    }
   }
   return result;
 }
@@ -540,7 +694,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
       if ( total > 0 )
         feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
       else
-        feedback->setProperty( "progress", QObject::tr( "Exporting section %1" ).arg( i + 1 ).arg( total ) );
+        feedback->setProperty( "progress", QObject::tr( "Exporting section %1" ).arg( i + 1 ) );
       feedback->setProgress( step * i );
     }
     if ( feedback && feedback->isCanceled() )
@@ -558,12 +712,22 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     ( void )contextRestorer;
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
+    iterator->layout()->renderContext().setFlags( settings.flags );
+    iterator->layout()->renderContext().setPredefinedScales( settings.predefinedMapScales );
+
+    if ( settings.simplifyGeometries )
+    {
+      iterator->layout()->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+    }
+
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
     // in items missing from the output
     iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
 
     iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+    iterator->layout()->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
     if ( first )
     {
@@ -666,6 +830,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  mLayout->renderContext().setFlags( settings.flags );
+  mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
@@ -725,6 +891,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
     ( void )contextRestorer;
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
+    iterator->layout()->renderContext().setFlags( settings.flags );
+    iterator->layout()->renderContext().setPredefinedScales( settings.predefinedMapScales );
+
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
     // in items missing from the output
@@ -779,7 +948,15 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  mLayout->renderContext().setFlags( settings.flags );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+  mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
+  mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
+
+  if ( settings.simplifyGeometries )
+  {
+    mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
+  }
 
   QFileInfo fi( filePath );
   PageExportDetails pageDetails;
@@ -835,6 +1012,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
 
     if ( settings.exportAsLayers )
     {
+      mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, settings.exportLabelsToSeparateLayers );
       const QRectF paperRect = QRectF( pageItem->pos().x(),
                                        pageItem->pos().y(),
                                        pageItem->rect().width(),
@@ -845,50 +1023,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
                                            Qt::IntersectsItemBoundingRect,
                                            Qt::AscendingOrder );
 
-      LayoutItemHider itemHider( items );
-      ( void )itemHider;
-
-      int layoutItemLayerIdx = 0;
-      auto it = items.constBegin();
-      for ( unsigned svgLayerId = 1; it != items.constEnd(); ++svgLayerId )
+      auto exportFunc = [this, &settings, width, height, i, bounds, fileName, &svg, &svgDocRoot]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
       {
-        itemHider.hideAll();
-        QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
-        QString layerName = QObject::tr( "Layer %1" ).arg( svgLayerId );
-        if ( layoutItem && layoutItem->numberExportLayers() > 0 )
-        {
-          layoutItem->show();
-          mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
-          ++layoutItemLayerIdx;
-        }
-        else
-        {
-          // show all items until the next item that renders on a separate layer
-          for ( ; it != items.constEnd(); ++it )
-          {
-            layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
-            if ( layoutItem && layoutItem->numberExportLayers() > 0 )
-            {
-              break;
-            }
-            else
-            {
-              ( *it )->show();
-            }
-          }
-        }
-
-        ExportResult result = renderToLayeredSvg( settings, width, height, i, bounds, fileName, svgLayerId, layerName, svg, svgDocRoot, settings.exportMetadata );
-        if ( result != Success )
-          return result;
-
-        if ( layoutItem && layoutItem->numberExportLayers() > 0 && layoutItem->numberExportLayers() == layoutItemLayerIdx ) // restore and pass to next item
-        {
-          mLayout->renderContext().setCurrentExportLayer( -1 );
-          layoutItemLayerIdx = 0;
-          ++it;
-        }
-      }
+        return renderToLayeredSvg( settings, width, height, i, bounds, fileName, layerId, layerDetail.name, svg, svgDocRoot, settings.exportMetadata );
+      };
+      ExportResult res = handleLayeredExport( items, exportFunc );
+      if ( res != Success )
+        return res;
 
       if ( settings.exportMetadata )
         appendMetadataToSvg( svg );
@@ -1018,12 +1159,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
 void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath )
 {
   printer.setOutputFileName( filePath );
-  // setOutputFormat should come after setOutputFileName, which auto-sets format to QPrinter::PdfFormat.
-  // [LS] This should be QPrinter::NativeFormat for Mac, otherwise fonts are not embed-able
-  // and text is not searchable; however, there are several bugs with <= Qt 4.8.5, 5.1.1, 5.2.0:
-  // https://bugreports.qt.io/browse/QTBUG-10094 - PDF font embedding fails
-  // https://bugreports.qt.io/browse/QTBUG-33583 - PDF output converts text to outline
-  // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
   printer.setOutputFormat( QPrinter::PdfFormat );
 
   updatePrinterPageSize( layout, printer, firstPageToBeExported( layout ) );
@@ -1135,7 +1270,7 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &prin
   printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 }
 
-QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
+QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, unsigned int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
 {
   QBuffer svgBuffer;
   {
@@ -1345,7 +1480,7 @@ std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayou
 void QgsLayoutExporter::writeWorldFile( const QString &worldFileName, double a, double b, double c, double d, double e, double f ) const
 {
   QFile worldFile( worldFileName );
-  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return;
   }
@@ -1435,6 +1570,199 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
 
   return true;
+}
+
+QString nameForLayerWithItems( const QList< QGraphicsItem * > items, unsigned int layerId )
+{
+  if ( items.count() == 1 )
+  {
+    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( items.at( 0 ) ) )
+    {
+      QString name = layoutItem->displayName();
+      // cleanup default item ID format
+      if ( name.startsWith( '<' ) && name.endsWith( '>' ) )
+        name = name.mid( 1, name.length() - 2 );
+      return name;
+    }
+  }
+  else if ( items.count() > 1 )
+  {
+    QStringList currentLayerItemTypes;
+    for ( QGraphicsItem *item : items )
+    {
+      if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+      {
+        const QString itemType = QgsApplication::layoutItemRegistry()->itemMetadata( layoutItem->type() )->visibleName();
+        const QString itemTypePlural = QgsApplication::layoutItemRegistry()->itemMetadata( layoutItem->type() )->visiblePluralName();
+        if ( !currentLayerItemTypes.contains( itemType ) && !currentLayerItemTypes.contains( itemTypePlural ) )
+          currentLayerItemTypes << itemType;
+        else if ( currentLayerItemTypes.contains( itemType ) )
+        {
+          currentLayerItemTypes.replace( currentLayerItemTypes.indexOf( itemType ), itemTypePlural );
+        }
+      }
+      else
+      {
+        if ( !currentLayerItemTypes.contains( QObject::tr( "Other" ) ) )
+          currentLayerItemTypes.append( QObject::tr( "Other" ) );
+      }
+    }
+    return currentLayerItemTypes.join( QStringLiteral( ", " ) );
+  }
+  return QObject::tr( "Layer %1" ).arg( layerId );
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QList<QGraphicsItem *> &items,
+    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc )
+{
+  LayoutItemHider itemHider( items );
+  ( void )itemHider;
+
+  int prevType = -1;
+  QgsLayoutItem::ExportLayerBehavior prevItemBehavior = QgsLayoutItem::CanGroupWithAnyOtherItem;
+  unsigned int layerId = 1;
+  QgsLayoutItem::ExportLayerDetail layerDetails;
+  itemHider.hideAll();
+  const QList< QGraphicsItem * > itemsToIterate = itemHider.itemsToIterate();
+  QList< QGraphicsItem * > currentLayerItems;
+  for ( QGraphicsItem *item : itemsToIterate )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+
+    bool canPlaceInExistingLayer = false;
+    if ( layoutItem )
+    {
+      switch ( layoutItem->exportLayerBehavior() )
+      {
+        case QgsLayoutItem::CanGroupWithAnyOtherItem:
+        {
+          switch ( prevItemBehavior )
+          {
+            case QgsLayoutItem::CanGroupWithAnyOtherItem:
+              canPlaceInExistingLayer = true;
+              break;
+
+            case QgsLayoutItem::CanGroupWithItemsOfSameType:
+              canPlaceInExistingLayer = prevType == -1 || prevType == layoutItem->type();
+              break;
+
+            case QgsLayoutItem::MustPlaceInOwnLayer:
+            case QgsLayoutItem::ItemContainsSubLayers:
+              canPlaceInExistingLayer = false;
+              break;
+          }
+          break;
+        }
+
+        case QgsLayoutItem::CanGroupWithItemsOfSameType:
+        {
+          switch ( prevItemBehavior )
+          {
+            case QgsLayoutItem::CanGroupWithAnyOtherItem:
+            case QgsLayoutItem::CanGroupWithItemsOfSameType:
+              canPlaceInExistingLayer = prevType == -1 || prevType == layoutItem->type();
+              break;
+
+            case QgsLayoutItem::MustPlaceInOwnLayer:
+            case QgsLayoutItem::ItemContainsSubLayers:
+              canPlaceInExistingLayer = false;
+              break;
+          }
+          break;
+        }
+
+        case QgsLayoutItem::MustPlaceInOwnLayer:
+        {
+          canPlaceInExistingLayer = false;
+          break;
+        }
+
+        case QgsLayoutItem::ItemContainsSubLayers:
+          canPlaceInExistingLayer = false;
+          break;
+      }
+      prevItemBehavior = layoutItem->exportLayerBehavior();
+      prevType = layoutItem->type();
+    }
+    else
+    {
+      prevItemBehavior = QgsLayoutItem::MustPlaceInOwnLayer;
+    }
+
+    if ( canPlaceInExistingLayer )
+    {
+      currentLayerItems << item;
+      item->show();
+    }
+    else
+    {
+      if ( !currentLayerItems.isEmpty() )
+      {
+        layerDetails.name = nameForLayerWithItems( currentLayerItems, layerId );
+
+        ExportResult result = exportFunc( layerId, layerDetails );
+        if ( result != Success )
+          return result;
+        layerId++;
+        currentLayerItems.clear();
+      }
+
+      itemHider.hideAll();
+      item->show();
+
+      if ( layoutItem && layoutItem->exportLayerBehavior() == QgsLayoutItem::ItemContainsSubLayers )
+      {
+        int layoutItemLayerIdx = 0;
+        Q_NOWARN_DEPRECATED_PUSH
+        mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
+        Q_NOWARN_DEPRECATED_POP
+        layoutItem->startLayeredExport();
+        while ( layoutItem->nextExportPart() )
+        {
+          Q_NOWARN_DEPRECATED_PUSH
+          mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
+          Q_NOWARN_DEPRECATED_POP
+
+          layerDetails = layoutItem->exportLayerDetails();
+          ExportResult result = exportFunc( layerId, layerDetails );
+          if ( result != Success )
+            return result;
+          layerId++;
+
+          layoutItemLayerIdx++;
+        }
+        layerDetails.mapLayerId.clear();
+        Q_NOWARN_DEPRECATED_PUSH
+        mLayout->renderContext().setCurrentExportLayer( -1 );
+        Q_NOWARN_DEPRECATED_POP
+        layoutItem->stopLayeredExport();
+        currentLayerItems.clear();
+      }
+      else
+      {
+        currentLayerItems << item;
+      }
+    }
+  }
+  if ( !currentLayerItems.isEmpty() )
+  {
+    layerDetails.name = nameForLayerWithItems( currentLayerItems, layerId );
+    ExportResult result = exportFunc( layerId, layerDetails );
+    if ( result != Success )
+      return result;
+  }
+  return Success;
+}
+
+QgsVectorSimplifyMethod QgsLayoutExporter::createExportSimplifyMethod()
+{
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  simplifyMethod.setForceLocalOptimization( true );
+  // we use SnappedToGridGlobal, because it avoids gaps and slivers between previously adjacent polygons
+  simplifyMethod.setSimplifyAlgorithm( QgsVectorSimplifyMethod::SnappedToGridGlobal );
+  simplifyMethod.setThreshold( 0.1f ); // (pixels). We are quite conservative here. This could possibly be bumped all the way up to 1. But let's play it safe.
+  return simplifyMethod;
 }
 
 void QgsLayoutExporter::computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi ) const

@@ -30,6 +30,9 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -42,6 +45,8 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   connect( mBackgroundUpdateTimer, &QTimer::timeout, this, &QgsLayoutItemMap::recreateCachedImageInBackground );
 
   assignFreeId();
+
+  setCacheMode( QGraphicsItem::NoCache );
 
   connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
   {
@@ -60,6 +65,7 @@ QgsLayoutItemMap::~QgsLayoutItemMap()
   if ( mPainterJob )
   {
     disconnect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
+    emit backgroundTaskCountChanged( 0 );
     mPainterJob->cancel(); // blocks
     mPainter->end();
   }
@@ -73,6 +79,11 @@ int QgsLayoutItemMap::type() const
 QIcon QgsLayoutItemMap::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemMap.svg" ) );
+}
+
+QgsLayoutItem::Flags QgsLayoutItemMap::itemFlags() const
+{
+  return QgsLayoutItem::FlagOverridesPaint;
 }
 
 void QgsLayoutItemMap::assignFreeId()
@@ -131,6 +142,9 @@ void QgsLayoutItemMap::refresh()
 
 double QgsLayoutItemMap::scale() const
 {
+  if ( rect().isEmpty() )
+    return 0;
+
   QgsScaleCalculator calculator;
   calculator.setMapUnits( crs().mapUnits() );
   calculator.setDpi( 25.4 );  //Using mm
@@ -376,7 +390,7 @@ bool QgsLayoutItemMap::containsWmsLayer() const
   const QList< QgsMapLayer * > layers = layersToRender();
   for ( QgsMapLayer *layer : layers )
   {
-    if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "wms" ) )
+    if ( layer->dataProvider() && layer->providerType() == QLatin1String( "wms" ) )
     {
       return true;
     }
@@ -600,6 +614,21 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   atlasElem.setAttribute( QStringLiteral( "margin" ), qgsDoubleToString( mAtlasMargin ) );
   mapElem.appendChild( atlasElem );
 
+  mapElem.setAttribute( QStringLiteral( "labelMargin" ), mLabelMargin.encodeMeasurement() );
+  mapElem.setAttribute( QStringLiteral( "mapFlags" ), static_cast< int>( mMapFlags ) );
+
+  QDomElement labelBlockingItemsElem = doc.createElement( QStringLiteral( "labelBlockingItems" ) );
+  for ( const auto &item : qgis::as_const( mBlockingLabelItems ) )
+  {
+    if ( !item )
+      continue;
+
+    QDomElement blockingItemElem = doc.createElement( QStringLiteral( "item" ) );
+    blockingItemElem.setAttribute( QStringLiteral( "uuid" ), item->uuid() );
+    labelBlockingItemsElem.appendChild( blockingItemElem );
+  }
+  mapElem.appendChild( labelBlockingItemsElem );
+
   return true;
 }
 
@@ -633,6 +662,7 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
 
   //map rotation
   mMapRotation = itemElem.attribute( QStringLiteral( "mapRotation" ), QStringLiteral( "0" ) ).toDouble();
+  mEvaluatedMapRotation = mMapRotation;
 
   // follow map theme
   mFollowVisibilityPreset = itemElem.attribute( QStringLiteral( "followPreset" ) ).compare( QLatin1String( "true" ) ) == 0;
@@ -733,6 +763,26 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
     mAtlasMargin = atlasElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.1" ) ).toDouble();
   }
 
+  setLabelMargin( QgsLayoutMeasurement::decodeMeasurement( itemElem.attribute( QStringLiteral( "labelMargin" ), QStringLiteral( "0" ) ) ) );
+
+  mMapFlags = static_cast< MapItemFlags>( itemElem.attribute( QStringLiteral( "mapFlags" ), nullptr ).toInt() );
+
+  // label blocking items
+  mBlockingLabelItems.clear();
+  mBlockingLabelItemUuids.clear();
+  QDomNodeList labelBlockingNodeList = itemElem.elementsByTagName( QStringLiteral( "labelBlockingItems" ) );
+  if ( !labelBlockingNodeList.isEmpty() )
+  {
+    QDomElement blockingItems = labelBlockingNodeList.at( 0 ).toElement();
+    QDomNodeList labelBlockingNodeList = blockingItems.childNodes();
+    for ( int i = 0; i < labelBlockingNodeList.size(); ++i )
+    {
+      const QDomElement &itemBlockingElement = labelBlockingNodeList.at( i ).toElement();
+      const QString itemUuid = itemBlockingElement.attribute( QStringLiteral( "uuid" ) );
+      mBlockingLabelItemUuids << itemUuid;
+    }
+  }
+
   updateBoundingRect();
 
   mUpdatesEnabled = true;
@@ -771,7 +821,13 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       painter->setFont( messageFont );
       painter->setPen( QColor( 255, 255, 255, 255 ) );
       painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering map" ) );
-      if ( !mPainterJob && !mDrawingPreview )
+      if ( mPainterJob && mCacheInvalidated && !mDrawingPreview )
+      {
+        // current job was invalidated - start a new one
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
+        mBackgroundUpdateTimer->start( 1 );
+      }
+      else if ( !mPainterJob && !mDrawingPreview )
       {
         // this is the map's very first paint - trigger a cache update
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
@@ -804,19 +860,10 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
     painter->setClipRect( thisPaintRect, Qt::NoClip );
 
-    if ( shouldDrawPart( OverviewMapExtent ) )
-    {
-      mOverviewStack->drawItems( painter );
-    }
-    if ( shouldDrawPart( Grid ) )
-    {
-      mGridStack->drawItems( painter );
-    }
+    mOverviewStack->drawItems( painter, false );
+    mGridStack->drawItems( painter );
     drawAnnotations( painter );
-    if ( shouldDrawPart( Frame ) )
-    {
-      drawMapFrame( painter );
-    }
+    drawMapFrame( painter );
     painter->restore();
   }
   else
@@ -874,7 +921,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
       if ( shouldDrawPart( OverviewMapExtent ) )
       {
-        mOverviewStack->drawItems( &p );
+        mOverviewStack->drawItems( &p, false );
       }
       if ( shouldDrawPart( Grid ) )
       {
@@ -898,21 +945,38 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
       painter->save();
       painter->setClipRect( thisPaintRect );
-      painter->save();
-      painter->translate( mXOffset, mYOffset );
 
-      double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-      size *= dotsPerMM; // output size will be in dots (pixels)
-      painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-      drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
+      if ( shouldDrawPart( Layer ) && !qgsDoubleNear( size.width(), 0.0 ) && !qgsDoubleNear( size.height(), 0.0 ) )
+      {
+        painter->save();
+        painter->translate( mXOffset, mYOffset );
 
-      painter->restore();
+        double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
+        size *= dotsPerMM; // output size will be in dots (pixels)
+        painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+
+        if ( mCurrentExportPart != NotLayered )
+        {
+          if ( !mStagedRendererJob )
+          {
+            createStagedRenderJob( cExtent, size, paintDevice->logicalDpiX() );
+          }
+
+          mStagedRendererJob->renderCurrentPart( painter );
+        }
+        else
+        {
+          drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
+        }
+
+        painter->restore();
+      }
 
       painter->setClipRect( thisPaintRect, Qt::NoClip );
 
       if ( shouldDrawPart( OverviewMapExtent ) )
       {
-        mOverviewStack->drawItems( painter );
+        mOverviewStack->drawItems( painter, false );
       }
       if ( shouldDrawPart( Grid ) )
       {
@@ -926,17 +990,208 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     {
       drawMapFrame( painter );
     }
+
     mDrawing = false;
   }
 }
 
 int QgsLayoutItemMap::numberExportLayers() const
 {
+  const int layerCount = layersToRender().length();
   return ( hasBackground() ? 1 : 0 )
-         + layersToRender().length()
-         + 1 // for grids, if they exist
-         + 1 // for overviews, if they exist
+         + ( layerCount + ( layerCount ? 1 : 0 ) ) // +1 for label layer, if labels present
+         + ( mGridStack->hasEnabledItems() ? 1 : 0 )
+         + ( mOverviewStack->hasEnabledItems() ? 1 : 0 )
          + ( frameEnabled() ? 1 : 0 );
+}
+
+void QgsLayoutItemMap::startLayeredExport()
+{
+  mCurrentExportPart = Start;
+  // only follow export themes if the map isn't set to follow a fixed theme
+  mExportThemes = !mFollowVisibilityPreset ? mLayout->renderContext().exportThemes() : QStringList();
+  mExportThemeIt = mExportThemes.begin();
+}
+
+void QgsLayoutItemMap::stopLayeredExport()
+{
+  mCurrentExportPart = NotLayered;
+  mExportThemes.clear();
+  mExportThemeIt = mExportThemes.begin();
+}
+
+bool QgsLayoutItemMap::nextExportPart()
+{
+  switch ( mCurrentExportPart )
+  {
+    case Start:
+      if ( hasBackground() )
+      {
+        mCurrentExportPart = Background;
+        return true;
+      }
+      FALLTHROUGH
+
+    case Background:
+      mCurrentExportPart = Layer;
+      return true;
+
+    case Layer:
+      if ( mStagedRendererJob )
+      {
+        if ( mStagedRendererJob->nextPart() )
+          return true;
+        else
+          mStagedRendererJob.reset(); // no more map layer parts
+      }
+
+      if ( mExportThemeIt != mExportThemes.end() && ++mExportThemeIt != mExportThemes.end() )
+      {
+        // move to next theme and continue exporting map layers
+        return true;
+      }
+
+      if ( mGridStack->hasEnabledItems() )
+      {
+        mCurrentExportPart = Grid;
+        return true;
+      }
+      FALLTHROUGH
+
+    case Grid:
+      if ( mOverviewStack->hasEnabledItems() )
+      {
+        mCurrentExportPart = OverviewMapExtent;
+        return true;
+      }
+      FALLTHROUGH
+
+    case OverviewMapExtent:
+      if ( frameEnabled() )
+      {
+        mCurrentExportPart = Frame;
+        return true;
+      }
+
+      FALLTHROUGH
+
+    case Frame:
+      if ( isSelected() && !mLayout->renderContext().isPreviewRender() )
+      {
+        mCurrentExportPart = SelectionBoxes;
+        return true;
+      }
+      FALLTHROUGH
+
+    case SelectionBoxes:
+      mCurrentExportPart = End;
+      return false;
+
+    case End:
+      return false;
+
+    case NotLayered:
+      return false;
+  }
+  return false;
+}
+
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemMap::exportLayerBehavior() const
+{
+  return ItemContainsSubLayers;
+}
+
+QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
+{
+  ExportLayerDetail detail;
+
+  switch ( mCurrentExportPart )
+  {
+    case Start:
+      break;
+
+    case Background:
+      detail.name = tr( "%1: Background" ).arg( displayName() );
+      return detail;
+
+    case Layer:
+      if ( !mExportThemes.empty() && mExportThemeIt != mExportThemes.end() )
+        detail.mapTheme = *mExportThemeIt;
+
+      if ( mStagedRendererJob )
+      {
+        switch ( mStagedRendererJob->currentStage() )
+        {
+          case QgsMapRendererStagedRenderJob::Symbology:
+          {
+            detail.mapLayerId  = mStagedRendererJob->currentLayerId();
+            if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
+            {
+              if ( !detail.mapTheme.isEmpty() )
+                detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, layer->name() );
+              else
+                detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
+            }
+            return detail;
+          }
+
+          case QgsMapRendererStagedRenderJob::Labels:
+            detail.mapLayerId  = mStagedRendererJob->currentLayerId();
+            if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
+            {
+              if ( !detail.mapTheme.isEmpty() )
+                detail.name = QStringLiteral( "%1 (%2): %3 (Labels)" ).arg( displayName(), detail.mapTheme, layer->name() );
+              else
+                detail.name = tr( "%1: %2 (Labels)" ).arg( displayName(), layer->name() );
+            }
+            else
+            {
+              if ( !detail.mapTheme.isEmpty() )
+                detail.name = tr( "%1 (%2): Labels" ).arg( displayName(), detail.mapTheme );
+              else
+                detail.name = tr( "%1: Labels" ).arg( displayName() );
+            }
+            return detail;
+
+          case QgsMapRendererStagedRenderJob::Finished:
+            break;
+        }
+      }
+      else
+      {
+        // we must be on the first layer, not having had a chance to create the render job yet
+        const QList< QgsMapLayer * > layers = layersToRender();
+        if ( !layers.isEmpty() )
+        {
+          const QgsMapLayer *layer = layers.constLast();
+          if ( !detail.mapTheme.isEmpty() )
+            detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, layer->name() );
+          else
+            detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
+          detail.mapLayerId = layer->id();
+        }
+      }
+      break;
+
+    case Grid:
+      detail.name = tr( "%1: Grids" ).arg( displayName() );
+      return detail;
+
+    case OverviewMapExtent:
+      detail.name =  tr( "%1: Overviews" ).arg( displayName() );
+      return detail;
+
+    case Frame:
+      detail.name = tr( "%1: Frame" ).arg( displayName() );
+      return detail;
+
+    case SelectionBoxes:
+    case End:
+    case NotLayered:
+      break;
+  }
+
+  return detail;
 }
 
 void QgsLayoutItemMap::setFrameStrokeWidth( const QgsLayoutMeasurement width )
@@ -958,11 +1213,19 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   }
 
   // render
-  QgsMapRendererCustomPainterJob job( mapSettings( extent, size, dpi, true ), painter );
+  QgsMapSettings ms( mapSettings( extent, size, dpi, true ) );
+  if ( shouldDrawPart( OverviewMapExtent ) )
+  {
+    ms.setLayers( mOverviewStack->modifyMapLayerList( ms.layers() ) );
+  }
+
+  QgsMapRendererCustomPainterJob job( ms, painter );
   // Render the map in this thread. This is done because of problems
   // with printing to printer on Windows (printing to PDF is fine though).
   // Raster images were not displayed - see #10599
   job.renderSynchronously();
+
+  mRenderingErrors = job.errors();
 }
 
 void QgsLayoutItemMap::recreateCachedImageInBackground()
@@ -984,6 +1247,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   else
   {
     mCacheRenderingImage.reset( nullptr );
+    emit backgroundTaskCountChanged( 1 );
   }
 
   Q_ASSERT( !mPainterJob );
@@ -1036,6 +1300,12 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   mCacheInvalidated = false;
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
   QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX(), true ) );
+
+  if ( shouldDrawPart( OverviewMapExtent ) )
+  {
+    settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
+  }
+
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
   connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
   mPainterJob->start();
@@ -1051,6 +1321,16 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   // with little surprise, both those providers are still badly behaved and causing
   // annoying bugs for us to deal with...
   mDrawingPreview = false;
+}
+
+QgsLayoutItemMap::MapItemFlags QgsLayoutItemMap::mapFlags() const
+{
+  return mMapFlags;
+}
+
+void QgsLayoutItemMap::setMapFlags( QgsLayoutItemMap::MapItemFlags mapFlags )
+{
+  mMapFlags = mapFlags;
 }
 
 QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const
@@ -1072,30 +1352,20 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   {
     //set layers to render
     QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
-    if ( mLayout && -1 != mLayout->renderContext().currentExportLayer() )
-    {
-      const int layerIdx = mLayout->renderContext().currentExportLayer() - ( hasBackground() ? 1 : 0 );
-      if ( layerIdx >= 0 && layerIdx < layers.length() )
-      {
-        // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
-        QgsMapLayer *ml = layers[ layers.length() - layerIdx - 1 ];
-        layers.clear();
-        layers << ml;
-      }
-      else
-      {
-        // exporting decorations such as map frame/grid/overview, so no map layers required
-        layers.clear();
-      }
-    }
     jobMapSettings.setLayers( layers );
     jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
   }
 
   if ( !mLayout->renderContext().isPreviewRender() )
   {
-    //if outputting layout, disable optimisations like layer simplification
-    jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
+    //if outputting layout, we disable optimisations like layer simplification by default, UNLESS the context specifically tells us to use them
+    jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, mLayout->renderContext().simplifyMethod().simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
+    jobMapSettings.setSimplifyMethod( mLayout->renderContext().simplifyMethod() );
+  }
+  else
+  {
+    // preview render - always use optimization
+    jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, true );
   }
 
   jobMapSettings.setExpressionContext( expressionContext );
@@ -1106,11 +1376,41 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setSelectionColor( mLayout->renderContext().selectionColor() );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDrawSelection );
+  jobMapSettings.setFlag( QgsMapSettings::RenderPartialOutput, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
   jobMapSettings.setPathResolver( mLayout->project()->pathResolver() );
 
-  jobMapSettings.setLabelingEngineSettings( mLayout->project()->labelingEngineSettings() );
+  QgsLabelingEngineSettings labelSettings = mLayout->project()->labelingEngineSettings();
+
+  // override project "show partial labels" setting with this map's setting
+  labelSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, mMapFlags & ShowPartialLabels );
+  labelSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, mMapFlags & ShowUnplacedLabels );
+  jobMapSettings.setLabelingEngineSettings( labelSettings );
+
+  // override the default text render format inherited from the labeling engine settings using the layout's render context setting
+  jobMapSettings.setTextRenderFormat( mLayout->renderContext().textRenderFormat() );
+
+  if ( mEvaluatedLabelMargin.length() > 0 )
+  {
+    QPolygonF visiblePoly = jobMapSettings.visiblePolygon();
+    visiblePoly.append( visiblePoly.at( 0 ) ); //close polygon
+    const double layoutLabelMargin = mLayout->convertToLayoutUnits( mEvaluatedLabelMargin );
+    const double layoutLabelMarginInMapUnits = layoutLabelMargin / rect().width() * jobMapSettings.extent().width();
+    QgsGeometry mapBoundaryGeom = QgsGeometry::fromQPolygonF( visiblePoly );
+    mapBoundaryGeom = mapBoundaryGeom.buffer( -layoutLabelMarginInMapUnits, 0 );
+    jobMapSettings.setLabelBoundaryGeometry( mapBoundaryGeom );
+  }
+
+  if ( !mBlockingLabelItems.isEmpty() )
+  {
+    jobMapSettings.setLabelBlockingRegions( createLabelBlockingRegions( jobMapSettings ) );
+  }
+
+  for ( QgsRenderedFeatureHandlerInterface *handler : qgis::as_const( mRenderedFeatureHandlers ) )
+  {
+    jobMapSettings.addRenderedFeatureHandler( handler );
+  }
 
   return jobMapSettings;
 }
@@ -1118,6 +1418,16 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
 void QgsLayoutItemMap::finalizeRestoreFromXml()
 {
   assignFreeId();
+
+  mBlockingLabelItems.clear();
+  for ( const QString &uuid : qgis::as_const( mBlockingLabelItemUuids ) )
+  {
+    QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
+    if ( item )
+    {
+      addLabelBlockingItem( item );
+    }
+  }
 
   mOverviewStack->finalizeRestoreFromXml();
   mGridStack->finalizeRestoreFromXml();
@@ -1157,7 +1467,12 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   QgsCoordinateReferenceSystem mapCrs = crs();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapCrs.authid(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapCrs.toProj4(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_description" ), mapCrs.description(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapCrs.mapUnits() ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_acronym" ), mapCrs.projectionAcronym(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_ellipsoid" ), mapCrs.ellipsoidAcronym(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_proj4" ), mapCrs.toProj4(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_wkt" ), mapCrs.toWkt(), true ) );
 
   QVariantList layersIds;
   QVariantList layers;
@@ -1204,6 +1519,66 @@ QPolygonF QgsLayoutItemMap::transformedMapPolygon() const
   QPolygonF poly = visibleExtentPolygon();
   poly.translate( -dx, -dy );
   return poly;
+}
+
+void QgsLayoutItemMap::addLabelBlockingItem( QgsLayoutItem *item )
+{
+  if ( !mBlockingLabelItems.contains( item ) )
+    mBlockingLabelItems.append( item );
+
+  connect( item, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemMap::invalidateCache, Qt::UniqueConnection );
+}
+
+void QgsLayoutItemMap::removeLabelBlockingItem( QgsLayoutItem *item )
+{
+  mBlockingLabelItems.removeAll( item );
+  if ( item )
+    disconnect( item, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemMap::invalidateCache );
+}
+
+bool QgsLayoutItemMap::isLabelBlockingItem( QgsLayoutItem *item ) const
+{
+  return mBlockingLabelItems.contains( item );
+}
+
+bool QgsLayoutItemMap::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  // NOTE: if visitEnter returns false it means "don't visit the item", not "abort all further visitations"
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::LayoutItem, uuid(), displayName() ) ) )
+    return true;
+
+  if ( mOverviewStack )
+  {
+    for ( int i = 0; i < mOverviewStack->size(); ++i )
+    {
+      if ( mOverviewStack->item( i )->accept( visitor ) )
+        return false;
+    }
+  }
+
+  if ( mGridStack )
+  {
+    for ( int i = 0; i < mGridStack->size(); ++i )
+    {
+      if ( mGridStack->item( i )->accept( visitor ) )
+        return false;
+    }
+  }
+
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::LayoutItem, uuid(), displayName() ) ) )
+    return false;
+
+  return true;
+}
+
+void QgsLayoutItemMap::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.append( handler );
+}
+
+void QgsLayoutItemMap::removeRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
+{
+  mRenderedFeatureHandlers.removeAll( handler );
 }
 
 QPointF QgsLayoutItemMap::mapToItemCoords( QPointF mapCoords ) const
@@ -1305,6 +1680,10 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
       emit extentChanged();
     }
   }
+  if ( property == QgsLayoutObject::MapLabelMargin || property == QgsLayoutObject::AllProperties )
+  {
+    refreshLabelMargin( false );
+  }
 
   //force redraw
   mCacheInvalidated = true;
@@ -1332,6 +1711,7 @@ void QgsLayoutItemMap::painterJobFinished()
   mCacheFinalImage = std::move( mCacheRenderingImage );
   mLastRenderedImageOffsetX = 0;
   mLastRenderedImageOffsetY = 0;
+  emit backgroundTaskCountChanged( 0 );
   update();
 }
 
@@ -1392,15 +1772,95 @@ void QgsLayoutItemMap::connectUpdateSlot()
       }
     } );
 
+    // If project colors change, we need to redraw the map, as layer symbols may rely on project colors
+    connect( project, &QgsProject::projectColorsChanged, this, [ = ]
+    {
+      invalidateCache();
+    } );
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
+  connect( &mLayout->renderContext(), &QgsLayoutRenderContext::predefinedScalesChanged, this, [ = ]
+  {
+    if ( mAtlasScalingMode == Predefined )
+      updateAtlasFeature();
+  } );
 
   connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
+}
+
+QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const
+{
+  QPolygonF thisExtent = visibleExtentPolygon();
+  QTransform mapTransform;
+  QPolygonF thisRectPoly = QPolygonF( QRectF( 0, 0, rect().width(), rect().height() ) );
+  //workaround QT Bug #21329
+  thisRectPoly.pop_back();
+  thisExtent.pop_back();
+
+  QPolygonF thisItemPolyInLayout = mapToScene( thisRectPoly );
+
+  //create transform from layout coordinates to map coordinates
+  QTransform::quadToQuad( thisItemPolyInLayout, thisExtent, mapTransform );
+  return mapTransform;
+}
+
+QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings & ) const
+{
+  const QTransform mapTransform = layoutToMapCoordsTransform();
+  QList< QgsLabelBlockingRegion > blockers;
+  blockers.reserve( mBlockingLabelItems.count() );
+  for ( const auto &item : qgis::as_const( mBlockingLabelItems ) )
+  {
+    // invisible items don't block labels!
+    if ( !item )
+      continue;
+
+    // layout items may be temporarily hidden during layered exports
+    if ( item->property( "wasVisible" ).isValid() )
+    {
+      if ( !item->property( "wasVisible" ).toBool() )
+        continue;
+    }
+    else if ( !item->isVisible() )
+      continue;
+
+    QPolygonF itemRectInMapCoordinates = mapTransform.map( item->mapToScene( item->rect() ) );
+    itemRectInMapCoordinates.append( itemRectInMapCoordinates.at( 0 ) ); //close polygon
+    QgsGeometry blockingRegion = QgsGeometry::fromQPolygonF( itemRectInMapCoordinates );
+    blockers << QgsLabelBlockingRegion( blockingRegion );
+  }
+  return blockers;
+}
+
+QgsLayoutMeasurement QgsLayoutItemMap::labelMargin() const
+{
+  return mLabelMargin;
+}
+
+void QgsLayoutItemMap::setLabelMargin( const QgsLayoutMeasurement &margin )
+{
+  mLabelMargin = margin;
+  refreshLabelMargin( false );
 }
 
 void QgsLayoutItemMap::updateToolTip()
 {
   setToolTip( displayName() );
+}
+
+QString QgsLayoutItemMap::themeToRender( const QgsExpressionContext &context ) const
+{
+  QString presetName;
+
+  if ( mFollowVisibilityPreset )
+  {
+    presetName = mFollowVisibilityPresetName;
+    // preset name can be overridden by data-defined one
+    presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
+  }
+  else if ( !mExportThemes.empty() && mExportThemeIt != mExportThemes.end() )
+    presetName = *mExportThemeIt;
+  return presetName;
 }
 
 QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContext *context ) const
@@ -1412,13 +1872,9 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
 
   QList<QgsMapLayer *> renderLayers;
 
-  if ( mFollowVisibilityPreset )
+  QString presetName = themeToRender( *evalContext );
+  if ( !presetName.isEmpty() )
   {
-    QString presetName = mFollowVisibilityPresetName;
-
-    // preset name can be overridden by data-defined one
-    presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, *evalContext, presetName );
-
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mLayout->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
@@ -1462,18 +1918,39 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
     }
   }
 
+  // remove any invalid layers
+  renderLayers.erase( std::remove_if( renderLayers.begin(), renderLayers.end(), []( QgsMapLayer * layer )
+  {
+    return !layer || !layer->isValid();
+  } ), renderLayers.end() );
+
   return renderLayers;
 }
 
 QMap<QString, QString> QgsLayoutItemMap::layerStyleOverridesToRender( const QgsExpressionContext &context ) const
 {
-  if ( mFollowVisibilityPreset )
+  QString presetName = themeToRender( context );
+  if ( !presetName.isEmpty() )
+  {
+    if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
+    {
+      if ( presetName != mCachedLayerStyleOverridesPresetName )
+      {
+        // have to regenerate cache of style overrides
+        mCachedPresetLayerStyleOverrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
+        mCachedLayerStyleOverridesPresetName = presetName;
+      }
+
+      return mCachedPresetLayerStyleOverrides;
+    }
+    else
+      return QMap<QString, QString>();
+  }
+  else if ( mFollowVisibilityPreset )
   {
     QString presetName = mFollowVisibilityPresetName;
-
     // data defined preset name?
     presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
-
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
     {
       if ( presetName.isEmpty() || presetName != mCachedLayerStyleOverridesPresetName )
@@ -1682,51 +2159,43 @@ void QgsLayoutItemMap::drawMapBackground( QPainter *p )
 
 bool QgsLayoutItemMap::shouldDrawPart( QgsLayoutItemMap::PartType part ) const
 {
-  int currentExportLayer = mLayout->renderContext().currentExportLayer();
-
-  if ( -1 == currentExportLayer )
+  if ( mCurrentExportPart == NotLayered )
   {
     //all parts of the map are visible
     return true;
   }
 
-  int idx = numberExportLayers();
-  if ( isSelected() )
+  switch ( part )
   {
-    --idx;
-    if ( SelectionBoxes == part )
-    {
-      return currentExportLayer == idx;
-    }
+    case NotLayered:
+      return true;
+
+    case Start:
+      return false;
+
+    case Background:
+      return mCurrentExportPart == Background && hasBackground();
+
+    case Layer:
+      return mCurrentExportPart == Layer;
+
+    case Grid:
+      return mCurrentExportPart == Grid && mGridStack->hasEnabledItems();
+
+    case OverviewMapExtent:
+      return mCurrentExportPart == OverviewMapExtent && mOverviewStack->hasEnabledItems();
+
+    case Frame:
+      return mCurrentExportPart == Frame && frameEnabled();
+
+    case SelectionBoxes:
+      return mCurrentExportPart == SelectionBoxes && isSelected();
+
+    case End:
+      return false;
   }
 
-  if ( frameEnabled() )
-  {
-    --idx;
-    if ( Frame == part )
-    {
-      return currentExportLayer == idx;
-    }
-  }
-  --idx;
-  if ( OverviewMapExtent == part )
-  {
-    return currentExportLayer == idx;
-  }
-  --idx;
-  if ( Grid == part )
-  {
-    return currentExportLayer == idx;
-  }
-  if ( hasBackground() )
-  {
-    if ( Background == part )
-    {
-      return currentExportLayer == 0;
-    }
-  }
-
-  return true; // for Layer
+  return false;
 }
 
 void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
@@ -1860,6 +2329,19 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   }
 }
 
+void QgsLayoutItemMap::refreshLabelMargin( bool updateItem )
+{
+  //data defined label margin set?
+  double labelMargin = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapLabelMargin, createExpressionContext(), mLabelMargin.length() );
+  mEvaluatedLabelMargin.setLength( labelMargin );
+  mEvaluatedLabelMargin.setUnits( mLabelMargin.units() );
+
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
 void QgsLayoutItemMap::updateAtlasFeature()
 {
   if ( !atlasDriven() || !mLayout->reportContext().layer() )
@@ -1887,8 +2369,14 @@ void QgsLayoutItemMap::updateAtlasFeature()
     double originalScale = calc.calculate( originalExtent, rect().width() );
     double geomCenterX = ( xa1 + xa2 ) / 2.0;
     double geomCenterY = ( ya1 + ya2 ) / 2.0;
-
-    if ( mAtlasScalingMode == Fixed || isPointLayer )
+    QVector<qreal> scales;
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( !mLayout->reportContext().predefinedScales().empty() ) // remove when deprecated method is removed
+      scales = mLayout->reportContext().predefinedScales();
+    else
+      scales = mLayout->renderContext().predefinedScales();
+    Q_NOWARN_DEPRECATED_POP
+    if ( mAtlasScalingMode == Fixed || isPointLayer || scales.isEmpty() )
     {
       // only translate, keep the original scale (i.e. width x height)
       double xMin = geomCenterX - originalExtent.width() / 2.0;
@@ -1908,7 +2396,6 @@ void QgsLayoutItemMap::updateAtlasFeature()
       // choose one of the predefined scales
       double newWidth = originalExtent.width();
       double newHeight = originalExtent.height();
-      QVector<qreal> scales = mLayout->reportContext().predefinedScales();
       for ( int i = 0; i < scales.size(); i++ )
       {
         double ratio = scales[i] / originalScale;
@@ -2003,3 +2490,14 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
     return g.boundingBox();
   }
 }
+
+void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi )
+{
+  // TODO - overview?
+  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings( extent, size, dpi, true ),
+                       mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagRenderLabelsByMapLayer
+                       ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
+                       : QgsMapRendererStagedRenderJob::Flags( nullptr ) );
+  mStagedRendererJob->start();
+}
+

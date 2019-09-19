@@ -19,21 +19,19 @@
 
 #include <QDialog>
 #include <QUrl>
-#include <QProgressDialog>
-#include <QTemporaryFile>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QStandardItem>
 
 #include "ui_qgsstyleexportimportdialogbase.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshelp.h"
 
+#include <memory>
+
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 class QgsTemporaryCursorOverride;
 class QgsStyleModel;
+class QTemporaryFile;
 
 /**
  * \ingroup gui
@@ -125,10 +123,6 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void importTypeChanged( int );
 
   private slots:
-    void httpFinished();
-    void fileReadyRead();
-    void updateProgress( qint64, qint64 );
-    void downloadCanceled();
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void showHelp();
 
@@ -148,11 +142,8 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     bool populateStyles();
     void moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst );
 
-    QProgressDialog *mProgressDlg = nullptr;
     QgsStyleGroupSelectionDialog *mGroupSelectionDlg = nullptr;
     QTemporaryFile *mTempFile = nullptr;
-    QNetworkAccessManager *mNetManager = nullptr;
-    QNetworkReply *mNetReply = nullptr;
 
     QString mFileName;
     Mode mDialogMode;

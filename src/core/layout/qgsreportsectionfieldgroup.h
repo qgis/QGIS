@@ -76,7 +76,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     void setBody( QgsLayout *body SIP_TRANSFER ) { mBody.reset( body ); }
 
     /**
-     * Returns true if the body for the section is enabled.
+     * Returns TRUE if the body for the section is enabled.
      * \see setBodyEnabled()
      * \see body()
      * \see setBody()
@@ -117,15 +117,15 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     void setField( const QString &field ) { mField = field; }
 
     /**
-     * Returns true if the field values should be sorted ascending,
-     * or false for descending sort.
+     * Returns TRUE if the field values should be sorted ascending,
+     * or FALSE for descending sort.
      * \see setSortAscending()
      */
     bool sortAscending() const;
 
     /**
-     * Sets whether the field values should be sorted ascending. Set to true to sort
-     * ascending, or false for descending sort.
+     * Sets whether the field values should be sorted ascending. Set to TRUE to sort
+     * ascending, or FALSE for descending sort.
      * \see sortAscending()
      */
     void setSortAscending( bool sortAscending );

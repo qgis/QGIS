@@ -27,6 +27,8 @@
 #include "qgsfields.h"
 #include "qgslayermetadata.h"
 
+#include "qgsprovidermetadata.h"
+
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
  */
@@ -36,7 +38,10 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   public:
 
-    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    static const QString AFS_PROVIDER_KEY;
+    static const QString AFS_PROVIDER_DESCRIPTION;
+
+    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
@@ -71,6 +76,8 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QString dataComment() const override;
     void reloadData() override;
     QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
+    QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
   private:
     bool mValid = false;
@@ -80,6 +87,18 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QString mLayerDescription;
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
+    QVariantList mLabelingDataList;
+    QgsStringMap mRequestHeaders;
+};
+
+class QgsAfsProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsAfsProviderMetadata();
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QVariantMap decodeUri( const QString &uri ) override;
+    QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+
 };
 
 #endif // QGSAFSPROVIDER_H

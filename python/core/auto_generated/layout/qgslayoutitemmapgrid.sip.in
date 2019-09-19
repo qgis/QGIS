@@ -141,7 +141,8 @@ An individual grid which is drawn above the map content in a
     {
       MapUnit,
       MM,
-      CM
+      CM,
+      DynamicPageSizeBased,
     };
 
     enum GridStyle
@@ -202,7 +203,9 @@ An individual grid which is drawn above the map content in a
       InteriorTicks,
       ExteriorTicks,
       InteriorExteriorTicks,
-      LineBorder
+      LineBorder,
+      LineBorderNautical,
+      ZebraNautical,
     };
 
     enum FrameSideFlag
@@ -281,6 +284,9 @@ map item separately.
 
 .. seealso:: :py:func:`maxExtension`
 %End
+
+    virtual void setEnabled( bool enabled );
+
 
 
     void setUnits( GridUnit unit );
@@ -377,6 +383,66 @@ are retrieved through the units() method.
 .. seealso:: :py:func:`setOffsetY`
 
 .. seealso:: :py:func:`offsetX`
+%End
+
+    double minimumIntervalWidth() const;
+%Docstring
+Returns the minimum width (in millimeters) for grid segments. This
+property is only effective if the units() is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`units`
+
+.. seealso:: :py:func:`setMinimumIntervalWidth`
+
+.. seealso:: :py:func:`maximumIntervalWidth`
+
+.. versionadded:: 3.10
+%End
+
+    void setMinimumIntervalWidth( double width );
+%Docstring
+Sets the minimum ``width`` (in millimeters) for grid segments. This
+property is only effective if the units() is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`minimumIntervalWidth`
+
+.. seealso:: :py:func:`setMaximumIntervalWidth`
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.10
+%End
+
+    double maximumIntervalWidth() const;
+%Docstring
+Returns the maximum width (in millimeters) for grid segments. This
+property is only effective if the units() is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`units`
+
+.. seealso:: :py:func:`setMaximumIntervalWidth`
+
+.. seealso:: :py:func:`minimumIntervalWidth`
+
+.. versionadded:: 3.10
+%End
+
+    void setMaximumIntervalWidth( double width );
+%Docstring
+Sets the maximum ``width`` (in millimeters) for grid segments. This
+property is only effective if the units() is set
+to DynamicPageSizeBased.
+
+.. seealso:: :py:func:`maximumIntervalWidth`
+
+.. seealso:: :py:func:`setMinimumIntervalWidth`
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.10
 %End
 
 
@@ -695,7 +761,7 @@ of the map item the grid frame is drawn on.
 Sets whether the grid frame is drawn for a certain side of the map item.
 
 :param flag: flag for grid frame side
-:param on: set to true to draw grid frame on that side of the map
+:param on: set to ``True`` to draw grid frame on that side of the map
 
 .. seealso:: :py:func:`setFrameSideFlags`
 
@@ -723,7 +789,7 @@ item.
 
 :param flag: flag for grid frame side
 
-:return: true if grid frame should be drawn for that side of the map
+:return: ``True`` if grid frame should be drawn for that side of the map
 
 .. seealso:: :py:func:`setFrameSideFlags`
 
@@ -748,6 +814,26 @@ The size of the line outlines drawn in the frame can be retrieved via the
 framePenSize method.
 
 .. seealso:: :py:func:`setFrameWidth`
+%End
+
+    void setFrameMargin( const double margin );
+%Docstring
+Sets the grid frame margin (in layout units).
+This property controls distance between the map frame and the grid frame.
+
+.. seealso:: :py:func:`frameMargin`
+
+.. versionadded:: 3.6
+%End
+
+    double frameMargin() const;
+%Docstring
+Sets the grid frame Margin (in layout units).
+This property controls distance between the map frame and the grid frame.
+
+.. seealso:: :py:func:`setFrameMargin`
+
+.. versionadded:: 3.6
 %End
 
     void setFramePenSize( const double width );
@@ -839,6 +925,10 @@ Retrieves the second fill color for the grid frame.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    virtual void refresh();
 
 
       public:

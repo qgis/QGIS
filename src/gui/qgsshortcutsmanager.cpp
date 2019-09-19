@@ -36,14 +36,16 @@ void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursi
   if ( recursive )
   {
     QList< QAction * > actions = object->findChildren< QAction * >();
-    Q_FOREACH ( QAction *a, actions )
+    const auto constActions = actions;
+    for ( QAction *a : constActions )
     {
       registerAction( a, a->shortcut().toString( QKeySequence::NativeText ) );
     }
   }
   else
   {
-    Q_FOREACH ( QObject *child, object->children() )
+    const auto constChildren = object->children();
+    for ( QObject *child : constChildren )
     {
       if ( QAction *a = qobject_cast<QAction *>( child ) )
       {
@@ -58,14 +60,16 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
   if ( recursive )
   {
     QList< QShortcut * > shortcuts = object->findChildren< QShortcut * >();
-    Q_FOREACH ( QShortcut *s, shortcuts )
+    const auto constShortcuts = shortcuts;
+    for ( QShortcut *s : constShortcuts )
     {
       registerShortcut( s, s->key().toString( QKeySequence::NativeText ) );
     }
   }
   else
   {
-    Q_FOREACH ( QObject *child, object->children() )
+    const auto constChildren = object->children();
+    for ( QObject *child : constChildren )
     {
       if ( QShortcut *s = qobject_cast<QShortcut *>( child ) )
       {
@@ -97,8 +101,19 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
   QString sequence = settings.value( mSettingsPath + actionText, defaultSequence ).toString();
 
   action->setShortcut( sequence );
-  action->setToolTip( "<b>" + action->toolTip() + "</b>" );
-  this->updateActionToolTip( action, sequence );
+  if ( !action->toolTip().isEmpty() )
+  {
+    const QStringList parts = action->toolTip().split( '\n' );
+    QString formatted = QStringLiteral( "<b>%1</b>" ).arg( parts.at( 0 ) );
+    if ( parts.count() > 1 )
+    {
+      for ( int i = 1; i < parts.count(); ++i )
+        formatted += QStringLiteral( "<p>%1</p>" ).arg( parts.at( i ) );
+    }
+
+    action->setToolTip( formatted );
+    updateActionToolTip( action, sequence );
+  }
 
   return true;
 }

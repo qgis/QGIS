@@ -160,7 +160,7 @@ QString QgsVariableWidthBufferByMAlgorithm::name() const
 
 QString QgsVariableWidthBufferByMAlgorithm::displayName() const
 {
-  return QObject::tr( "Variable width buffer (by m-value)" );
+  return QObject::tr( "Variable width buffer (by M value)" );
 }
 
 QStringList QgsVariableWidthBufferByMAlgorithm::tags() const
@@ -205,7 +205,7 @@ bool QgsVariableWidthBufferByMAlgorithm::prepareAlgorithm( const QVariantMap &pa
 
 QString QgsVariableWidthBufferByMAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates variable width buffers along lines, using the m-value of the line geometries "
+  return QObject::tr( "This algorithm creates variable width buffers along lines, using the M value of the line geometries "
                       "as the diameter of the buffer at each vertex." );
 }
 

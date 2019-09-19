@@ -486,3 +486,316 @@ tests:
         hash: 6f81c858fc7575eaff6258b6e75bf4427d0568d5134837523b730929
         type: rasterhash
 
+  - algorithm: saga:pointdistances
+    name: Point distances
+    params:
+      FORMAT: 1
+      ID_POINTS: fid
+      MAX_DIST: 0.0
+      POINTS:
+        name: custom/points.shp
+        type: vector
+    results:
+      DISTANCES:
+        name: expected/saga/point_distances.dbf
+        type: vector
+
+  - algorithm: saga:patching
+    name: Patching
+    params:
+      ADDITIONAL:
+        name: dem.tif
+        type: raster
+      ORIGINAL:
+        name: custom/dem_gaps.tif
+        type: raster
+      RESAMPLING: 0
+    results:
+      COMPLETED:
+        hash: e016ba480e7c9a7cfe7bbbec50f4f3df0e796be7641fe68744f541b5
+        type: rasterhash
+
+
+  - algorithm: saga:rgbcomposite
+    name: RGB Composite
+    params:
+      B_GRID:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      B_METHOD: 1
+      B_PERCTL_MAX: 6
+      B_PERCTL_MIN: 1
+      B_RANGE_MAX: 255
+      B_RANGE_MIN: 0
+      B_STDDEV: 2.0
+      G_GRID:
+        name: custom/grass7/raster_4class.tif
+        type: raster
+      G_METHOD: 1
+      G_PERCTL_MAX: 99
+      G_PERCTL_MIN: 1
+      G_RANGE_MAX: 4
+      G_RANGE_MIN: 0
+      G_STDDEV: 2.0
+      R_GRID:
+        name: custom/grass7/raster_1class.tif
+        type: raster
+      R_METHOD: 1
+      R_PERCTL_MAX: 99
+      R_PERCTL_MIN: 1
+      R_RANGE_MAX: 1
+      R_RANGE_MIN: 0
+      R_STDDEV: 2.0
+    results:
+      RGB:
+        hash:
+        - db2c282835706e4320e7c59d86c28d930b35433ec57af70e35a325d5
+        - 9caba3703fd59f99466c0bf37054826d328d1349cfe03f171655adf6
+        type: rasterhash
+
+  - algorithm: saga:zonalrasterstatistics
+    name: Zonal grid statistics
+    params:
+      ZONES:
+        name: custom/dem_boolean.tif
+        type: raster
+    results:
+      OUTTAB:
+        name: expected/saga/zonal_grid_stats.dbf
+        type: vector
+
+  - algorithm: saga:resampling
+    name: Resample down
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      KEEP_TYPE: true
+      SCALE_DOWN: 3
+      SCALE_UP: 5
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 0.0005
+    results:
+      OUTPUT:
+        hash: 1b3a17a724c489ea2eea60b39bc1b9c79778832bd41e982a4e9fb09f
+        type: rasterhash
+
+  - algorithm: saga:resampling
+    name: Resample up
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      KEEP_TYPE: true
+      SCALE_DOWN: 3
+      SCALE_UP: 5
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 5.0e-05
+    results:
+      OUTPUT:
+        hash: 32008adf7520fee2848d689fcb53d0f8ac862bcd162575b03fefc7f1
+        type: rasterhash
+
+  - algorithm: saga:resamplingfilter
+    name: Resampling filter
+    params:
+      GRID:
+        name: dem.tif
+        type: raster
+      SCALE: 10.0
+    results:
+      HIPASS:
+        hash: cf992e69d506924bb59a5fbabd86617e263cb951a61c1b3c0b10012b
+        type: rasterhash
+      LOPASS:
+        hash: f36069a8ceb7ffe839a34f66b82eebacb80143e9df4ed54485bf8293
+        type: rasterhash
+
+  - algorithm: saga:fillsinks
+    name: Fill sinks (Planchon/Darboux)
+    params:
+      DEM:
+        name: dem.tif
+        type: raster
+      MINSLOPE: 0.01
+    results:
+      RESULT:
+        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        type: rasterhash
+
+  - algorithm: saga:fillsinksqmofesp
+    name: Fill sinks (QM of ESP)
+    params:
+      DEM:
+        name: dem.tif
+        type: raster
+      DZFILL: 0.01
+    results:
+      FILLED:
+        hash: ebd24bb7d011f0c4d87d1e4748e89d90d5a78cfa820070ece87df4d0
+        type: rasterhash
+      SINKS:
+        hash: 83d1936c0421783372573c9dcd04e6415e9db911c5fa254e74c929b0
+        type: rasterhash
+
+  - algorithm: saga:fillsinkswangliu
+    name: Fill sinks Wang & Liu
+    params:
+      ELEV:
+        name: dem.tif
+        type: raster
+      MINSLOPE: 0.01
+    results:
+      FDIR:
+        hash: 24367e9ca83c757628f329029d82341fe9111138e019138c949c34c0
+        type: rasterhash
+      FILLED:
+        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        type: rasterhash
+      WSHED:
+        hash: d891f15de1c742986647d619788c7b16a21909bf9c06c70579a4797c
+        type: rasterhash
+
+  - algorithm: saga:fillsinksxxlwangliu
+    name: Fill Sinks Wang & Lui XXL
+    params:
+      ELEV:
+        name: dem.tif
+        type: raster
+      MINSLOPE: 0.1
+    results:
+      FILLED:
+        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        type: rasterhash
+
+  - algorithm: saga:svmclassification
+    name: SVM Classification
+    params:
+      CACHE_SIZE: 100.0
+      COEF0: 0.0
+      COST: 1.0
+      CROSSVAL: 1
+      DEGREE: 3
+      EPS: 0.001
+      EPS_SVR: 0.1
+      GAMMA: 0.0
+      GRIDS:
+        params:
+        - name: dem.tif
+          type: raster
+        type: multi
+      KERNEL_TYPE: 2
+      MESSAGE: false
+      MODEL_LOAD:
+        name: ''
+        type: file
+      MODEL_SAVE:
+        name: ''
+        type: file
+      MODEL_SRC: 0
+      NU: 0.5
+      PROBABILITY: false
+      ROI:
+        name: custom/saga/training_areas.shp
+        type: vector
+      ROI_ID: class
+      SCALING: 2
+      SHRINKING: false
+      SVM_TYPE: 0
+    results:
+      CLASSES:
+        hash: deeb8769979916ab544a824cd5400d4a4207e7df37fbeaaa6e4830af
+        type: rasterhash
+
+  - algorithm: saga:multipleregressionanalysispointsandpredictorgrids
+    name: Multi regression points predictor grids
+    params:
+      ATTRIBUTE: rvalue_1
+      COORD_X: false
+      COORD_Y: false
+      CROSSVAL: 0
+      CROSSVAL_K: 10
+      INTERCEPT: true
+      METHOD: 3
+      POINTS:
+        name: custom/saga/points_regression.shp
+        type: vector
+      PREDICTORS:
+        params:
+        - name: dem.tif
+          type: raster
+        type: multi
+      P_VALUE: 5.0
+      RESAMPLING: 3
+      RESIDUAL_COR: 0
+    results:
+      INFO_COEFF:
+        name: expected/saga/multiple_regression_points_grids_coef.dbf
+        type: vector
+        compare:
+          fields:
+            R:
+              precision: 2
+            R2:
+              precision: 2
+            R2_ADJ:
+              precision: 2
+            STD_ERROR:
+              precision: 2
+            T:
+              precision: 2
+            SIG:
+              precision: 6
+            P:
+              precision: 6
+      INFO_MODEL:
+        name: expected/saga/multiple_regression_points_grids_model.dbf
+        type: vector
+        compare:
+          fields:
+            VALUE:
+              precision: 2
+      INFO_STEPS:
+        name: expected/saga/multiple_regression_points_grids_steps.dbf
+        type: vector
+        compare:
+          fields:
+            R:
+              precision: 2
+            R2:
+              precision: 2
+            R2_ADJ:
+              precision: 2
+            STD_ERROR:
+              precision: 2
+            SSR:
+              precision: 2
+            SSE:
+              precision: 2
+            MSR:
+              precision: 2
+            MSE:
+              precision: 2
+            F:
+              precision: 2
+            SIG:
+              precision: 6
+            VAR_F:
+              precision: 2
+            VAR_SIG:
+              precision: 6
+      REGRESCORR:
+        hash: d70078f0151919949c1e55c1a677f1a7cda6f7514667270af6745c0d
+        type: rasterhash
+      REGRESSION:
+        hash: b3a725ae64eec2aab8de1197f2306a0905c7c38de0dc89d58aadb3cc
+        type: rasterhash
+      RESIDUALS:
+        name: expected/saga/multiple_regression_points_grids_res.shp
+        type: vector
+        compare:
+          fields:
+            TREND:
+              precision: 2
+            RESIDUAL:
+              precision: 2

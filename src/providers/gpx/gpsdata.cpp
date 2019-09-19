@@ -676,7 +676,7 @@ void QgsGPXHandler::characters( const XML_Char *chars, int len )
 
 bool QgsGPXHandler::endElement( const std::string &qName )
 {
-  Q_UNUSED( qName );
+  Q_UNUSED( qName )
 
   if ( parseModes.top() == ParsingWaypoint )
   {

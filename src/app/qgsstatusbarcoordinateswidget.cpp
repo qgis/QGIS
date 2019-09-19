@@ -212,8 +212,9 @@ void QgsStatusBarCoordinatesWidget::contributors()
   }
   QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
   QFileInfo fileInfo = QFileInfo( fileName );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "QGIS Contributors" ), QStringLiteral( "ogr" ) );
+      tr( "QGIS Contributors" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
   layer->setAutoRefreshInterval( 500 );
@@ -226,10 +227,11 @@ void QgsStatusBarCoordinatesWidget::world()
   {
     return;
   }
-  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   QFileInfo fileInfo = QFileInfo( fileName );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "World Map" ), QStringLiteral( "ogr" ) );
+      tr( "World Map" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
 }
@@ -242,8 +244,9 @@ void QgsStatusBarCoordinatesWidget::hackfests()
   }
   QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
   QFileInfo fileInfo = QFileInfo( fileName );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ) );
+      tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
   layer->setAutoRefreshInterval( 500 );
@@ -277,7 +280,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 
   //stop any current rendering
   mMapCanvas->stopRendering();
-  mMapCanvas->refreshAllLayers();
+  mMapCanvas->redrawAllLayers();
 }
 
 void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )

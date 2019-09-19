@@ -51,7 +51,7 @@ class TestQgsKeyValueWidget : public QObject
       QVariantMap initial;
       initial[QStringLiteral( "1" )] = "one";
       initial[QStringLiteral( "2" )] = "two";
-      wrapper->setValue( initial );
+      wrapper->setValues( initial, QVariantList() );
 
       const QVariant value = wrapper->value();
       QCOMPARE( int( value.type() ), int( QVariant::Map ) );

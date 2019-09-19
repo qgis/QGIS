@@ -132,6 +132,11 @@ QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, 
   return QgsFeatureList() << f;
 }
 
+QgsProcessingFeatureSource::Flag QgsSimplifyAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 ///@endcond
 
 

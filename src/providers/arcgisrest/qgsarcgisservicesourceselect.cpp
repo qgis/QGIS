@@ -28,6 +28,8 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
+#include "qgshelp.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QListWidgetItem>
@@ -35,7 +37,6 @@
 #include <QFileDialog>
 #include <QRadioButton>
 #include <QImageReader>
-#include "qgshelp.h"
 
 QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -43,6 +44,8 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   , mServiceType( serviceType )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsArcGisServiceSourceSelect::cmbConnections_activated );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::showHelp );
@@ -69,7 +72,6 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   treeView->setItemDelegate( new QgsAbstractDataSourceWidgetItemDelegate( treeView ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
 
   mModel = new QStandardItemModel();
@@ -100,7 +102,6 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
 QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
 
   delete mProjectionSelector;
@@ -208,7 +209,7 @@ void QgsArcGisServiceSourceSelect::refresh()
 
 void QgsArcGisServiceSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
   nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -220,7 +221,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
 
 void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
   nc.setWindowTitle( tr( "Modify %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -310,9 +311,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
   {
     try
     {
-      Q_NOWARN_DEPRECATED_PUSH
-      extent = QgsCoordinateTransform( canvasCrs, pCrs ).transform( extent );
-      Q_NOWARN_DEPRECATED_POP
+      extent = QgsCoordinateTransform( canvasCrs, pCrs, QgsProject::instance()->transformContext() ).transform( extent );
       QgsDebugMsg( QStringLiteral( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
                    .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }
@@ -340,6 +339,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString layerTitle = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->text();  //layer title/id
     QString layerName = mModel->itemFromIndex( mModel->index( row, 1, idx.parent() ) )->text(); //layer name
     const QString layerUri = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( UrlRole ).toString();
+    const QString layerId = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IdRole ).toString();
     QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
@@ -350,7 +350,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     {
       layerExtent = extent;
     }
-    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent );
+    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent, layerId );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
     addServiceLayer( uri, layerName );
@@ -404,7 +404,7 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
 
 void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 

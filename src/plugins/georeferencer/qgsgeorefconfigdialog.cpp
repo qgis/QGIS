@@ -18,16 +18,16 @@
 #include "qgssettings.h"
 #include "qgsgeorefconfigdialog.h"
 #include "qgis.h"
+#include "qgsgui.h"
 
 QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGeorefConfigDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGeorefConfigDialog::buttonBox_rejected );
-
-  QgsSettings s;
-  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/ConfigWindow/geometry" ) ).toByteArray() );
 
   mPaperSizeComboBox->addItem( tr( "A5 (148x210 mm)" ), QSizeF( 148, 210 ) );
   mPaperSizeComboBox->addItem( tr( "A4 (210x297 mm)" ), QSizeF( 210, 297 ) );
@@ -58,12 +58,6 @@ QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
   readSettings();
 }
 
-QgsGeorefConfigDialog::~QgsGeorefConfigDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/ConfigWindow/geometry" ), saveGeometry() );
-}
-
 void QgsGeorefConfigDialog::changeEvent( QEvent *e )
 {
   QDialog::changeEvent( e );
@@ -91,32 +85,9 @@ void QgsGeorefConfigDialog::buttonBox_rejected()
 void QgsGeorefConfigDialog::readSettings()
 {
   QgsSettings s;
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool() )
-  {
-    mShowIDsCheckBox->setChecked( true );
-  }
-  else
-  {
-    mShowIDsCheckBox->setChecked( false );
-  }
-
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool() )
-  {
-    mShowCoordsCheckBox->setChecked( true );
-  }
-  else
-  {
-    mShowCoordsCheckBox->setChecked( false );
-  }
-
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() )
-  {
-    mShowDockedCheckBox->setChecked( true );
-  }
-  else
-  {
-    mShowDockedCheckBox->setChecked( false );
-  }
+  mShowIDsCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool() );
+  mShowCoordsCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool() );
+  mShowDockedCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() );
 
   if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ).toString() == QLatin1String( "mapUnits" ) )
   {

@@ -18,6 +18,7 @@
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
+#include "qgsapplication.h"
 
 #include <QSettings>
 
@@ -132,7 +133,13 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       fle->setNullValue( defVal.toString() );
     }
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      emit valueChanged( value );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( value );
+    } );
     connect( mLineEdit, &QLineEdit::textChanged, this, &QgsTextEditWrapper::textChanged );
 
     mWritablePalette = mLineEdit->palette();
@@ -170,7 +177,7 @@ void QgsTextEditWrapper::showIndeterminateState()
     mLineEdit->blockSignals( false );
 }
 
-void QgsTextEditWrapper::setValue( const QVariant &val )
+void QgsTextEditWrapper::updateValues( const QVariant &val, const QVariantList & )
 {
   if ( mLineEdit )
   {
@@ -231,7 +238,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   // We are checking for editable layer because in the form field context we do not
   // want to strip the separator unless the layer is editable.
   // Also check that we have something like a number in the value to avoid
-  // stripping out dots from nextval when we have a schema: see https://issues.qgis.org/issues/20200
+  // stripping out dots from nextval when we have a schema: see https://github.com/qgis/QGIS/issues/28021
   // "Wrong sequence detection with Postgres"
   bool canConvertToDouble;
   QLocale().toDouble( v, &canConvertToDouble );

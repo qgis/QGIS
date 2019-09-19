@@ -45,6 +45,14 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
        */
     QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    /**
+     * Whether this config widget changes map layer properties in a way that triggerRepaint() should
+     * be called for the layer after applying changes. This is true by default, but some config widgets
+     * (for example 3D rendering config) do not need layer repaint as they do not modify 2D map rendering.
+     * \since QGIS 3.8
+     */
+    virtual bool shouldTriggerLayerRepaint() const { return true; }
+
   public slots:
 
     /**

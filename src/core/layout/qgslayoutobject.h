@@ -163,6 +163,17 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapAtlasMargin, //!< Map atlas margin
       MapLayers, //!< Map layer set
       MapStylePreset, //!< Layer and style map theme
+      MapLabelMargin, //!< Map label margin
+      MapGridEnabled, //!< Map grid enabled
+      MapGridIntervalX, //!< Map grid interval X
+      MapGridIntervalY, //!< Map grid interval Y
+      MapGridOffsetX, //!< Map grid offset X
+      MapGridOffsetY, //!< Map grid offset Y
+      MapGridFrameSize, //!< Map grid frame size
+      MapGridFrameMargin, //!< Map grid frame margin
+      MapGridLabelDistance, //!< Map grid label distance
+      MapGridCrossSize, //!< Map grid cross size
+      MapGridFrameLineThickness, //!< Map grid frame line thickness
       //composer picture
       PictureSource, //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color
@@ -225,6 +236,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     /**
      * Returns a reference to the object's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
+     * \see DataDefinedProperty
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
@@ -232,6 +244,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * Sets the objects's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
+     * \see DataDefinedProperty
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -301,7 +314,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * \param parentElement is the parent DOM element to store the object's properties in
      * \param document DOM document
      * \param context read write context
-     * \returns true if write was successful
+     * \returns TRUE if write was successful
      * \see readObjectPropertiesFromElement()
      */
     bool writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -311,7 +324,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * \param parentElement is the parent DOM element for the object
      * \param document DOM document
      * \param context read write context
-     * \returns true if read was successful
+     * \returns TRUE if read was successful
      * \see writeObjectPropertiesToElement()
      */
     bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );

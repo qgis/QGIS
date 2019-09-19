@@ -94,6 +94,9 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   // string types
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
 
+                  // boolean
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool )
+
                   // blob
                   << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
 
@@ -103,9 +106,9 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
-                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary)" // type
+                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary|bool|boolean)" // type
                         "(?:\\((\\-?\\d+)"                // length
-                        "(?:\\,(\\d+))?"                  // precision
+                        "(?:\\,(\\-?\\d+))?"                  // precision
                         "\\))?(\\[\\])?"                  // array
                         "$", Qt::CaseInsensitive );
     QStringList fields = url.allQueryItemValues( QStringLiteral( "field" ) );
@@ -158,6 +161,12 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
         {
           type = QVariant::DateTime;
           typeName = QStringLiteral( "datetime" );
+          length = -1;
+        }
+        else if ( typeName == QLatin1String( "bool" ) || typeName == QLatin1String( "boolean" ) )
+        {
+          type = QVariant::Bool;
+          typeName = QStringLiteral( "boolean" );
           length = -1;
         }
         else if ( typeName == QLatin1String( "binary" ) )
@@ -287,7 +296,8 @@ QgsRectangle QgsMemoryProvider::extent() const
     if ( mSubsetString.isEmpty() )
     {
       // fast way - iterate through all features
-      Q_FOREACH ( const QgsFeature &feat, mFeatures )
+      const auto constMFeatures = mFeatures;
+      for ( const QgsFeature &feat : constMFeatures )
       {
         if ( feat.hasGeometry() )
           mExtent.combineExtentWith( feat.geometry().boundingBox() );
@@ -347,6 +357,17 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 {
   // TODO: make provider projection-aware
   return mCrs; // return default CRS
+}
+
+void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
+{
+  if ( QgsMemoryProvider *other = qobject_cast< QgsMemoryProvider * >( source ) )
+  {
+    // these properties aren't copied when cloning a memory provider by uri, so we need to do it manually
+    mFeatures = other->mFeatures;
+    mNextFeatureId = other->mNextFeatureId;
+    mExtent = other->mExtent;
+  }
 }
 
 
@@ -453,6 +474,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::LongLong:
       case QVariant::StringList:
       case QVariant::List:
+      case QVariant::Bool:
       case QVariant::ByteArray:
         break;
       default:
@@ -567,7 +589,7 @@ QString QgsMemoryProvider::subsetString() const
 
 bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
-  Q_UNUSED( updateFeatureCount );
+  Q_UNUSED( updateFeatureCount )
 
   if ( !theSQL.isEmpty() )
   {
@@ -606,9 +628,16 @@ QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
          ChangeAttributeValues | AddAttributes | DeleteAttributes | RenameAttributes | CreateSpatialIndex |
-         SelectAtId | CircularGeometries;
+         SelectAtId | CircularGeometries | FastTruncate;
 }
 
+bool QgsMemoryProvider::truncate()
+{
+  mFeatures.clear();
+  clearMinMaxCache();
+  mExtent.setMinimal();
+  return true;
+}
 
 void QgsMemoryProvider::updateExtents()
 {
@@ -624,6 +653,5 @@ QString QgsMemoryProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
 }
-
 
 ///@endcond

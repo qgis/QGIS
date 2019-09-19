@@ -30,7 +30,6 @@
 #include "qgsstyle.h"
 
 #ifdef HAVE_GUI
-#include "qgsnewhttpconnection.h"
 #include "qgswfssourceselect.h"
 #endif
 
@@ -155,11 +154,10 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
   QVector<QgsDataItem *> layers;
   if ( capabilities.errorCode() == QgsWfsCapabilities::NoError )
   {
-    QgsWfsCapabilities::Capabilities caps = capabilities.capabilities();
-    Q_FOREACH ( const QgsWfsCapabilities::FeatureType &featureType, caps.featureTypes )
+    const auto featureTypes = capabilities.capabilities().featureTypes;
+    for ( const QgsWfsCapabilities::FeatureType &featureType : featureTypes )
     {
-      //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
-      QgsWfsLayerItem *layer = new QgsWfsLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
+      QgsWfsLayerItem *layer = new QgsWfsLayerItem( this, mName, uri, featureType.name, featureType.title, !featureType.crslist.isEmpty() ? featureType.crslist.first() : QString() );
       layers.append( layer );
     }
   }
@@ -171,42 +169,6 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 
   return layers;
 }
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsWfsConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsWfsConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsWfsConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsWfsConnectionItem::editConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, mName );
-  nc.setWindowTitle( tr( "Modify WFS Connection" ) );
-
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refreshConnections();
-  }
-}
-
-void QgsWfsConnectionItem::deleteConnection()
-{
-  QgsWfsConnection::deleteConnection( mName );
-  // the parent should be updated
-  mParent->refreshConnections();
-}
-#endif
 
 
 //
@@ -236,16 +198,6 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWfsRootItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsWfsRootItem::newConnection );
-  lst.append( actionNew );
-
-  return lst;
-}
 
 QWidget *QgsWfsRootItem::paramWidget()
 {
@@ -259,22 +211,22 @@ void QgsWfsRootItem::onConnectionsChanged()
   refresh();
 }
 
-void QgsWfsRootItem::newConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
-  nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
-
-  if ( nc.exec() )
-  {
-    refreshConnections();
-  }
-}
 #endif
 
 
 //
 // QgsWfsDataItemProvider
 //
+
+QString QgsWfsDataItemProvider::name()
+{
+  return QStringLiteral( "WFS" );
+}
+
+int QgsWfsDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Net;
+}
 
 QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -348,21 +300,4 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
   }
 
   return items;
-}
-
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsWFSSourceSelect( parent, fl, widgetMode );
-}
-#endif
-
-QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
-{
-  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
-
-  *providers << new QgsWfsDataItemProvider;
-
-  return providers;
 }

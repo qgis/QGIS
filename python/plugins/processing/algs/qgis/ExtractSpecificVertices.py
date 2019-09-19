@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'October 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive323
-
-__revision__ = '$Format:%H$'
-
 import math
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -97,7 +93,7 @@ class ExtractSpecificVertices(QgisAlgorithm):
             wkb_type = QgsWkbTypes.addZ(wkb_type)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, wkb_type, source.sourceCrs())
+                                               fields, wkb_type, source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 

@@ -707,7 +707,7 @@ Q_NOWARN_UNREACHABLE_PUSH
 
 static GEOSGeometry *LWGEOM_GEOS_makeValidLine( const GEOSGeometry *gin, QString &errorMessage )
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   return LWGEOM_GEOS_nodeLines( gin );
 }
 
@@ -758,7 +758,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry *gin, QS
   }
 
   GEOSGeometry *mpoint_out = nullptr;
-  if ( points.count() )
+  if ( !points.isEmpty() )
   {
     if ( points.count() > 1 )
     {
@@ -771,7 +771,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry *gin, QS
   }
 
   GEOSGeometry *mline_out = nullptr;
-  if ( lines.count() )
+  if ( !lines.isEmpty() )
   {
     if ( lines.count() > 1 )
     {

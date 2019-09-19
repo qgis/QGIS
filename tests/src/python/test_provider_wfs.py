@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-03-25'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import hashlib
 import os
@@ -33,7 +31,10 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsFeatureRequest,
     QgsApplication,
-    QgsSettings
+    QgsSettings,
+    QgsExpression,
+    QgsExpressionContextUtils,
+    QgsExpressionContext,
 )
 from qgis.testing import (start_app,
                           unittest
@@ -106,7 +107,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
@@ -114,7 +115,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     <xsd:complexContent>
       <xsd:extension base="gml:AbstractFeatureType">
         <xsd:sequence>
-          <!-- add a trailing space to the name to test https://issues.qgis.org/issues/3426 -->
+          <!-- add a trailing space to the name to test https://github.com/qgis/QGIS/issues/13486 -->
           <xsd:element maxOccurs="1" minOccurs="0" name="pk  " nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="cnt" nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
@@ -137,7 +138,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -198,7 +199,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&RESULTTYPE=hits'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&RESULTTYPE=hits'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -207,7 +208,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="5" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsGreaterThan>
    <fes:ValueReference>cnt</fes:ValueReference>
@@ -227,7 +228,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="3" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsGreaterThan>
    <fes:ValueReference>cnt</fes:ValueReference>
@@ -279,7 +280,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsGreaterThan>
    <fes:ValueReference>cnt</fes:ValueReference>
@@ -299,7 +300,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="2" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsGreaterThan>
    <fes:ValueReference>cnt</fes:ValueReference>
@@ -340,7 +341,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>Apple</fes:Literal>
@@ -354,7 +355,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="1" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>Apple</fes:Literal>
@@ -380,7 +381,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>AppleBearOrangePear</fes:Literal>
@@ -394,7 +395,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        numberMatched="0" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:PropertyIsEqualTo>
   <fes:ValueReference>name</fes:ValueReference>
   <fes:Literal>AppleBearOrangePear</fes:Literal>
@@ -541,6 +542,35 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(ret)
 
         self.assertFalse(vl.dataProvider().deleteFeatures([0]))
+
+        # Reload data and check for fid stability of features whose fid/gmlid
+        # has already been downloaded
+        vl.dataProvider().reloadData()
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my">
+  <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
+  <gml:featureMember>
+    <my:typename fid="typename.10">
+      <my:INTFIELD>20</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:INTFIELD>30</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(features[0].id(), 2)
+        self.assertEqual(features[0]['INTFIELD'], 20)
+        self.assertEqual(features[1].id(), 1)
+        self.assertEqual(features[1]['INTFIELD'], 30)
 
         # Test with restrictToRequestBBOX=1
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631&BBOX=400000,5400000,450000,5500000'), 'wb') as f:
@@ -791,11 +821,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertEqual(vl.dataProvider().capabilities(),
-                         QgsVectorDataProvider.AddFeatures |
-                         QgsVectorDataProvider.ChangeAttributeValues |
-                         QgsVectorDataProvider.ChangeGeometries |
-                         QgsVectorDataProvider.DeleteFeatures |
-                         QgsVectorDataProvider.SelectAtId)
+                         QgsVectorDataProvider.AddFeatures
+                         | QgsVectorDataProvider.ChangeAttributeValues
+                         | QgsVectorDataProvider.ChangeGeometries
+                         | QgsVectorDataProvider.DeleteFeatures
+                         | QgsVectorDataProvider.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -998,7 +1028,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
@@ -1016,7 +1046,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1035,7 +1065,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1049,7 +1079,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1061,9 +1091,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [1, 2])
 
         # Suppress GetFeature responses to demonstrate that the cache is used
-        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
-        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
-        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
 
         values = [f['id'] for f in vl.getFeatures()]
         self.assertEqual(values, [1, 2])
@@ -1079,7 +1109,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         vl.dataProvider().reloadData()
 
         # Hits working
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&RESULTTYPE=hits'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&RESULTTYPE=hits'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1122,7 +1152,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
@@ -1145,7 +1175,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1163,7 +1193,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1180,15 +1210,15 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         values = [f['id'] for f in vl.getFeatures()]
         self.assertEqual(values, [1, 2, 3])
 
-        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
-        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=2&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
 
         # user maxNumFeatures < user pageSize < server pagesize
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' maxNumFeatures='1' pageSize='2'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1205,14 +1235,14 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         values = [f['id'] for f in vl.getFeatures()]
         self.assertEqual(values, [1])
 
-        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
 
         # user user pageSize > server pagesize
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' pageSize='100'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1229,13 +1259,13 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         values = [f['id'] for f in vl.getFeatures()]
         self.assertEqual(values, [1])
 
-        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
+        os.unlink(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'))
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' pagingEnabled='false' maxNumFeatures='3'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&COUNT=3&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&COUNT=3&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1473,6 +1503,94 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
 
+    def testWFSGetOnlyFeaturesInViewExtentZoomOut(self):
+        """Test zoom out outside of declare extent in metadata (#20742) """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_20742'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://schemas.opengis.net/gml">
+  <OperationsMetadata>
+    <Operation name="GetFeature">
+      <Parameter name="resultType">
+        <Value>results</Value>
+        <Value>hits</Value>
+      </Parameter>
+    </Operation>
+  </OperationsMetadata>
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-80 60</LowerCorner>
+        <UpperCorner>-50 80</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="fid" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=60,-80,80,-50,urn:ogc:def:crs:EPSG::4326')
+        getfeature_response = """
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my"
+                       numberOfFeatures="2" timeStamp="2016-03-25T14:51:48.998Z">
+  <gml:featureMembers>
+    <my:typename gml:id="typename.200">
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
+      <my:fid>2</my:fid>
+    </my:typename>
+    <my:typename gml:id="typename.400">
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>71 -64</gml:pos></gml:Point></my:geometryProperty>
+      <my:fid>4</my:fid>
+    </my:typename>
+  </gml:featureMembers>
+</wfs:FeatureCollection>""".encode('UTF-8')
+        with open(last_url, 'wb') as f:
+            f.write(getfeature_response)
+
+        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=50,-90,90,-40,urn:ogc:def:crs:EPSG::4326')
+        with open(last_url, 'wb') as f:
+            f.write(getfeature_response)
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' restrictToRequestBBOX=1", 'test', 'WFS')
+        # First request with declared extent in metadata
+        extent = QgsRectangle(-80, 60, -50, 80)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        self.assertEqual(len([f for f in vl.getFeatures(request)]), 2)
+        reference = QgsGeometry.fromRect(QgsRectangle(-65, 70, -64, 71))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
+
+        # Second request: zoomed out
+        extent = QgsRectangle(-90, 50, -40, 90)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        self.assertEqual(len([f for f in vl.getFeatures(request)]), 2)
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
+
     def testWFS20TruncatedResponse(self):
         """Test WFS 2.0 truncatedResponse"""
 
@@ -1489,7 +1607,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
@@ -1506,7 +1624,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
                        xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -1768,10 +1886,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <xsd:element name="othertypename" substitutionGroup="gml:_Feature" type="my:othertypenameType"/>
 </xsd:schema>
 """
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename,my:othertypename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename,my:othertypename&TYPENAME=my:typename,my:othertypename'), 'wb') as f:
             f.write(schema.encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename,my:othertypename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename,my:othertypename&TYPENAME=my:typename,my:othertypename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:PropertyIsEqualTo>
    <fes:ValueReference>my:typename/id</fes:ValueReference>
@@ -1834,7 +1952,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # main table not appearing in first
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:othertypename,my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:othertypename,my:typename&TYPENAME=my:othertypename,my:typename'), 'wb') as f:
             f.write(schema.encode('UTF-8'))
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o, typename WHERE typename.id = o.main_id AND typename.id > 0 ORDER BY typename.id DESC", 'test', 'WFS')
@@ -1884,7 +2002,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(fields), 1, fields)
         self.assertEqual(fields[0].name(), 'id')
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write(schema.encode('UTF-8'))
 
         # Duplicate fields
@@ -2088,7 +2206,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
             f.write(schema.encode('UTF-8'))
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=my:typename'), 'wb') as f:
             f.write(schema.encode('UTF-8'))
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write(schema.encode('UTF-8'))
 
         # Existing function and validation enabled
@@ -2153,7 +2271,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml"/>
@@ -2173,7 +2291,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2270,7 +2388,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml"/>
@@ -2288,7 +2406,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2318,7 +2436,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         # First request that will be attempted
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=-0.125,-0.125,1.125,1.125,urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=-0.125,-0.125,1.125,1.125,urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2327,7 +2445,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         # And fallback
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&COUNT=1"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&COUNT=1"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2378,7 +2496,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml"/>
@@ -2396,7 +2514,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:32631"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:32631"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2411,7 +2529,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         # Simulate improper paging support by returning same result set whatever the STARTINDEX is
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=EPSG:32631"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=EPSG:32631"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2425,7 +2543,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=EPSG:32631"""), 'wb') as f:
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=EPSG:32631"""), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2674,7 +2792,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
@@ -2750,7 +2868,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".format(endpoint=endpoint).encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
@@ -2845,7 +2963,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual((got.x(), got.y()), (426858.0, 5427937.0))
 
     def testGetFeatureWithNamespaces(self):
-        ''' test https://issues.qgis.org/issues/14685 '''
+        ''' test https://github.com/qgis/QGIS/issues/22649 '''
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_getfeature_with_namespaces'
 
@@ -2866,7 +2984,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename&NAMESPACE=xmlns(my,http://my)'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml"/>
@@ -2887,7 +3005,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.fields()), 1)
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)'), 'wb') as f:
             f.write("""
 <wfs:FeatureCollection
                        xmlns:wfs="http://www.opengis.net/wfs/2.0"
@@ -2919,7 +3037,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS_DCP_1.0'
         endpoint_alternate = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS_DCP_1.0_alternate'
 
-        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.0.0'), 'wb') as f:
+        with open(sanitize(endpoint, '?FOO=BAR&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0'), 'wb') as f:
             f.write("""
 <WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
   <FeatureTypeList>
@@ -2951,7 +3069,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     </Operation>
   </OperationsMetadata></WFS_Capabilities>""".format(endpoint_alternate).encode('UTF-8'))
 
-        with open(sanitize(endpoint_alternate, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint_alternate, '?FOO=BAR&SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml"/>
@@ -2974,7 +3092,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "?FOO=BAR&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0" + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         self.assertEqual(len(vl.fields()), 5)
@@ -2983,7 +3101,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
 
-        with open(sanitize(endpoint_alternate, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
+        with open(sanitize(endpoint_alternate, '?FOO=BAR&SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
             f.write("""
   <wfs:FeatureCollection
                       xmlns:wfs="http://www.opengis.net/wfs"
@@ -3038,7 +3156,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(vl.dataProvider().deleteFeatures([0]))
 
         # Test with restrictToRequestBBOX=1
-        with open(sanitize(endpoint_alternate, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631&BBOX=400000,5400000,450000,5500000'), 'wb') as f:
+        with open(sanitize(endpoint_alternate, '?FOO=BAR&SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631&BBOX=400000,5400000,450000,5500000'), 'wb') as f:
             f.write("""
   <wfs:FeatureCollection
                       xmlns:wfs="http://www.opengis.net/wfs"
@@ -3055,7 +3173,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </gml:featureMember>
   </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' restrictToRequestBBOX=1", 'test', 'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "?FOO=BAR" + "' typename='my:typename' version='1.0.0' restrictToRequestBBOX=1", 'test', 'WFS')
 
         extent = QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0)
         request = QgsFeatureRequest().setFilterRect(extent)
@@ -3198,7 +3316,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=EC422'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=EC422&TYPENAME=EC422'), 'wb') as f:
             f.write("""<schema xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -3374,10 +3492,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>"""
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=EC422&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=EC422&TYPENAME=EC422&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write(feature_content.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=EC422&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=EC422&TYPENAME=EC422&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write(feature_content.encode('UTF-8'))
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' version='2.0.0' typename='EC422'", 'test', 'WFS')
@@ -3388,58 +3506,6 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         geom_string = geom.asWkt()
         geom_string = re.sub(r'\.\d+', '', geom_string)[:100]
         self.assertEqual(geom_string, "LineString (9540051 5997366, 9539934 5997127, 9539822 5996862, 9539504 5996097, 9539529 5996093, 953")
-
-    def testWfs20DescribeFeatureTypePluralForm(self):
-        """Specs are inconsistent and some 2.0 servers use the TYPENAMES plural form"""
-
-        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS_2.0_describe_typenames'
-
-        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0'), 'wb') as f:
-            f.write("""
-<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
-  <FeatureTypeList>
-    <FeatureType>
-      <Name>my:typename</Name>
-      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
-    </FeatureType>
-  </FeatureTypeList>
-</wfs:WFS_Capabilities>""".encode('UTF-8'))
-
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
-            f.write("""
-<?xml version="1.0"?>
-<ExceptionReport
-        version="2.0.0"
-        xmlns="http://www.opengis.net/ows/1.1"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.opengis.net/ows/1.1
-http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
-        <Exception exceptionCode="MissingParameterValue" locator="">
-            <ExceptionText><![CDATA[Missing typeNames parameter]]></ExceptionText>
-        </Exception>
-</ExceptionReport
-""".encode('UTF-8'))
-
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename'), 'wb') as f:
-            f.write("""
-<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
-  <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
-  <xsd:complexType name="typenameType">
-    <xsd:complexContent>
-      <xsd:extension base="gml:AbstractFeatureType">
-        <xsd:sequence>
-          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
-        </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
-</xsd:schema>
-""".encode('UTF-8'))
-
-        # Create test layer
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
-        self.assertTrue(vl.isValid())
 
     def testDescribeFeatureTypeWithSingleInclude(self):
         """Test DescribeFeatureType response which has a single <include> child node"""
@@ -3457,7 +3523,7 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
   </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write(("""
 <schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <include schemaLocation="%s"/>
@@ -3486,7 +3552,7 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
         self.assertTrue(vl.isValid())
 
     def testGeometryCollectionAsMultiLineString(self):
-        """Test https://issues.qgis.org/issues/19571 """
+        """Test https://github.com/qgis/QGIS/issues/27398 """
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_gc_as_mls'
 
@@ -3498,7 +3564,7 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
       <Name>my:typename</Name>
       <Title>Title</Title>
       <Abstract>Abstract</Abstract>
-      <DefaultCRS>urn:ogc:def:crs:OGC:1.3:CRS84</DefaultCRS>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
       <WGS84BoundingBox>
         <LowerCorner>2 49</LowerCorner>
         <UpperCorner>3 50</UpperCorner>
@@ -3541,18 +3607,18 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
    xmlns:wfs="http://www.opengis.net/wfs"
    xmlns:ogc="http://www.opengis.net/ogc">
       <gml:boundedBy>
-        <gml:Envelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
-            <gml:lowerCorner>2 49</gml:lowerCorner>
-            <gml:upperCorner>3 50</gml:upperCorner>
+        <gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326">
+            <gml:lowerCorner>49 2</gml:lowerCorner>
+            <gml:upperCorner>50 3</gml:upperCorner>
         </gml:Envelope>
       </gml:boundedBy>
     <gml:featureMember>
       <my:typename gml:id="typename.1">
         <my:geometryProperty>
-          <gml:MultiGeometry srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+          <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::4326">
             <gml:geometryMember>
               <gml:LineString>
-                <gml:coordinates>2,49 3,50</gml:coordinates>
+                <gml:coordinates>49,2 50,3</gml:coordinates>
               </gml:LineString>
             </gml:geometryMember>
           </gml:MultiGeometry>
@@ -3580,6 +3646,507 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
         reference = QgsGeometry.fromRect(QgsRectangle(2, 49, 3, 50))
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
+
+    def test_NullValues_regression_20961(self):
+        """Test that provider handles null values, regression #20961"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_null_values'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.1.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://schemas.opengis.net/gml">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>points</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::3857</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-98.6523 32.7233</LowerCorner>
+        <UpperCorner>23.2868 69.9882</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=points'), 'wb') as f:
+            f.write("""
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" version="1.0" xmlns:ogc="http://www.opengis.net/ogc" xmlns:qgs="http://www.qgis.org/gml" elementFormDefault="qualified" targetNamespace="http://www.qgis.org/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <import schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" namespace="http://www.opengis.net/gml"/>
+ <element type="qgs:pointsType" name="points" substitutionGroup="gml:_Feature"/>
+ <complexType name="pointsType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element type="gml:MultiPointPropertyType" name="geometry" minOccurs="0" maxOccurs="1"/>
+     <element type="int" name="id"/>
+     <element type="string" name="name"/>
+     <element type="int" name="type" nillable="true"/>
+     <element type="decimal" name="elevation" nillable="true"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+</schema>
+""".encode('UTF-8'))
+
+        get_feature_1 = """<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml http://localhost:8000/ows/bug_20961_server?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0&amp;SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=points&amp;OUTPUTFORMAT=text/xml; subtype%3Dgml/3.1.1">
+<gml:boundedBy>
+ <gml:Envelope srsName="EPSG:3857">
+  <gml:lowerCorner>-10981925.67093 3858635.0686243</gml:lowerCorner>
+  <gml:upperCorner>2592274.0488407 11064877.6393476</gml:upperCorner>
+ </gml:Envelope>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:points gml:id="points.177">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>1544231.80343599 5930698.04174612</gml:lowerCorner>
+    <gml:upperCorner>1544231.80343599 5930698.04174612</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">1544231.80343599 5930698.04174612</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>177</qgs:id>
+  <qgs:name>Xxx</qgs:name>
+  <qgs:elevation_source></qgs:elevation_source>
+ </qgs:points>
+</gml:featureMember>
+</wfs:FeatureCollection>
+"""
+        get_features = """<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml http://localhost:8000/ows/bug_20961_server?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0&amp;SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=points&amp;OUTPUTFORMAT=text/xml; subtype%3Dgml/3.1.1">
+<gml:boundedBy>
+ <gml:Envelope srsName="EPSG:3857">
+  <gml:lowerCorner>-10981925.67093 3858635.0686243</gml:lowerCorner>
+  <gml:upperCorner>2592274.0488407 11064877.6393476</gml:upperCorner>
+ </gml:Envelope>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:points gml:id="points.177">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>1544231.80343599 5930698.04174612</gml:lowerCorner>
+    <gml:upperCorner>1544231.80343599 5930698.04174612</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">1544231.80343599 5930698.04174612</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>177</qgs:id>
+  <qgs:name>Xxx</qgs:name>
+  <qgs:type xsi:nil="true"></qgs:type>
+  <qgs:elevation xsi:nil="true"></qgs:elevation>
+ </qgs:points>
+</gml:featureMember>
+<gml:featureMember>
+ <qgs:points gml:id="points.5">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>-10977033.701121 3897159.3308746</gml:lowerCorner>
+    <gml:upperCorner>-10977033.701121 3897159.3308746</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">-10977033.701121 3897159.3308746</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>5</qgs:id>
+  <qgs:name>sdf</qgs:name>
+  <qgs:type>0</qgs:type>
+  <qgs:elevation xsi:nil="true"></qgs:elevation>
+ </qgs:points>
+</gml:featureMember>
+</wfs:FeatureCollection>"""
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::3857"""), 'wb') as f:
+            f.write(get_feature_1.encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&SRSNAME=urn:ogc:def:crs:EPSG::3857"""), 'wb') as f:
+            f.write(get_features.encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='points' version='1.1.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+
+        got_f = [f for f in vl.getFeatures()]
+        self.assertEqual(str(got_f[0]['type']), 'NULL')
+        self.assertEqual(str(got_f[0]['elevation']), 'NULL')
+        self.assertEqual(str(got_f[0]['name']), 'Xxx')
+        self.assertEqual(str(got_f[1]['type']), '0')
+        self.assertEqual(str(got_f[1]['elevation']), 'NULL')
+        self.assertEqual(str(got_f[1]['name']), 'sdf')
+
+        # Now iterate ! Regression #20961
+        ids = [f.id() for f in got_f]
+        got_f2 = [vl.getFeature(id) for id in ids]
+        self.assertEqual(str(got_f2[0]['type']), 'NULL')
+        self.assertEqual(str(got_f2[0]['elevation']), 'NULL')
+        self.assertEqual(str(got_f2[0]['name']), 'Xxx')
+        self.assertEqual(str(got_f2[1]['type']), '0')
+        self.assertEqual(str(got_f2[1]['elevation']), 'NULL')
+        self.assertEqual(str(got_f2[1]['name']), 'sdf')
+
+    def testGeomAndAllAttributes(self):
+        pass # skip this feature source test -- provider is not affected
+
+    def testFilteredFeatureRequests(self):
+        """Test https://github.com/qgis/QGIS/issues/28895 """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_filtered_feature_requests'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.1.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://schemas.opengis.net/gml">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>points</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::3857</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-98.6523 32.7233</LowerCorner>
+        <UpperCorner>23.2868 69.9882</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=points'), 'wb') as f:
+            f.write("""
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" version="1.0" xmlns:ogc="http://www.opengis.net/ogc" xmlns:qgs="http://www.qgis.org/gml" elementFormDefault="qualified" targetNamespace="http://www.qgis.org/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <import schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" namespace="http://www.opengis.net/gml"/>
+ <element type="qgs:pointsType" name="points" substitutionGroup="gml:_Feature"/>
+ <complexType name="pointsType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element type="gml:MultiPointPropertyType" name="geometry" minOccurs="0" maxOccurs="1"/>
+     <element type="int" name="id"/>
+     <element type="string" name="name"/>
+     <element type="int" name="type" nillable="true"/>
+     <element type="decimal" name="elevation" nillable="true"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+</schema>
+""".encode('UTF-8'))
+
+        get_feature_1 = """<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml http://localhost:8000/ows/bug_20961_server?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0&amp;SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=points&amp;OUTPUTFORMAT=text/xml; subtype%3Dgml/3.1.1">
+<gml:boundedBy>
+ <gml:Envelope srsName="EPSG:3857">
+  <gml:lowerCorner>-10981925.67093 3858635.0686243</gml:lowerCorner>
+  <gml:upperCorner>2592274.0488407 11064877.6393476</gml:upperCorner>
+ </gml:Envelope>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:points gml:id="points.177">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>1544231.80343599 5930698.04174612</gml:lowerCorner>
+    <gml:upperCorner>1544231.80343599 5930698.04174612</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">1544231.80343599 5930698.04174612</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>177</qgs:id>
+  <qgs:name>Xxx</qgs:name>
+  <qgs:elevation_source></qgs:elevation_source>
+ </qgs:points>
+</gml:featureMember>
+</wfs:FeatureCollection>
+"""
+        get_features = """<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml http://localhost:8000/ows/bug_20961_server?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0&amp;SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=points&amp;OUTPUTFORMAT=text/xml; subtype%3Dgml/3.1.1">
+<gml:boundedBy>
+ <gml:Envelope srsName="EPSG:3857">
+  <gml:lowerCorner>-10981925.67093 3858635.0686243</gml:lowerCorner>
+  <gml:upperCorner>2592274.0488407 11064877.6393476</gml:upperCorner>
+ </gml:Envelope>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:points gml:id="points.177">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>1544231.80343599 5930698.04174612</gml:lowerCorner>
+    <gml:upperCorner>1544231.80343599 5930698.04174612</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">1544231.80343599 5930698.04174612</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>177</qgs:id>
+  <qgs:name>Xxx</qgs:name>
+  <qgs:type xsi:nil="true"></qgs:type>
+  <qgs:elevation xsi:nil="true"></qgs:elevation>
+ </qgs:points>
+</gml:featureMember>
+<gml:featureMember>
+ <qgs:points gml:id="points.5">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>-10977033.701121 3897159.3308746</gml:lowerCorner>
+    <gml:upperCorner>-10977033.701121 3897159.3308746</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">-10977033.701121 3897159.3308746</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>5</qgs:id>
+  <qgs:name>qgis</qgs:name>
+  <qgs:type>0</qgs:type>
+  <qgs:elevation xsi:nil="true"></qgs:elevation>
+ </qgs:points>
+</gml:featureMember>
+</wfs:FeatureCollection>"""
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::3857"""), 'wb') as f:
+            f.write(get_feature_1.encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&SRSNAME=urn:ogc:def:crs:EPSG::3857"""), 'wb') as f:
+            f.write(get_features.encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='points' version='1.1.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+
+        # Fill the cache
+        [f for f in vl.getFeatures()]
+
+        qgis_feat = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"name" = \'qgis\''))))
+        other_feat = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"name" != \'qgis\''))))
+        self.assertEqual(qgis_feat['name'], 'qgis')
+        self.assertEqual(other_feat['name'], 'Xxx')
+
+        form_scope = QgsExpressionContextUtils.formScope(qgis_feat)
+        form_exp = QgsExpression('current_value(\'name\') = "name"')
+        ctx = QgsExpressionContext()
+        ctx.appendScope(form_scope)
+        ctx.setFeature(qgis_feat)
+        self.assertEqual(form_exp.evaluate(ctx), 1)
+        ctx.setFeature(other_feat)
+        self.assertEqual(form_exp.evaluate(ctx), 0)
+
+        # For real now! (this failed in issue 21077)
+        req = QgsFeatureRequest(form_exp)
+        req.setExpressionContext(ctx)
+        qgis_feat = next(vl.getFeatures(req))
+
+    def testWFSFieldWithSameNameButDifferentCase(self):
+        """Test a layer with field foo and FOO """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_FieldWithSameNameButDifferentCase'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0'), 'wb') as f:
+            f.write("""
+<WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <SRS>EPSG:32631</SRS>
+      <!-- in WFS 1.0, LatLongBoundingBox is in SRS units, not necessarily lat/long... -->
+      <LatLongBoundingBox minx="400000" miny="5400000" maxx="450000" maxy="5500000"/>
+    </FeatureType>
+  </FeatureTypeList>
+</WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="foo" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FOO" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FOO2" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometry" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
+            f.write("""
+  <wfs:FeatureCollection
+                      xmlns:wfs="http://www.opengis.net/wfs"
+                      xmlns:gml="http://www.opengis.net/gml"
+                      xmlns:my="http://my">
+  <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
+  <gml:featureMember>
+  <my:typename fid="typename.0">
+    <my:foo>1</my:foo>
+    <my:FOO>2</my:FOO>
+    <my:FOO2>3</my:FOO2>
+  </my:typename>
+  </gml:featureMember>
+  </wfs:FeatureCollection>""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 3)
+
+        values = [f['foo'] for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        values = [f['FOO'] for f in vl.getFeatures()]
+        self.assertEqual(values, [2])
+
+        values = [f['FOO2'] for f in vl.getFeatures()]
+        self.assertEqual(values, [3])
+
+        # Also test that on file iterator works
+        os.environ['QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD'] = '0'
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        values = [f['foo'] for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        values = [f['FOO'] for f in vl.getFeatures()]
+        self.assertEqual(values, [2])
+
+        values = [f['FOO2'] for f in vl.getFeatures()]
+        self.assertEqual(values, [3])
+
+        del os.environ['QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD']
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        request = QgsFeatureRequest().setFilterExpression('FOO = 2')
+        values = [f['FOO'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [2])
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        request = QgsFeatureRequest().setSubsetOfAttributes(['FOO'], vl.fields())
+        values = [f['FOO'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [2])
+
+    def testRetryLogicOnExceptionLackOfPrimaryKey(self):
+        """Test retry logic on 'Cannot do natural order without a primary key' server exception (GeoServer) """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_retry'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=2.0.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <OperationsMetadata>
+    <Operation name="GetFeature">
+      <Constraint name="CountDefault">
+        <NoValues/>
+        <DefaultValue>1</DefaultValue>
+      </Constraint>
+    </Operation>
+    <Constraint name="ImplementsResultPaging">
+      <NoValues/>
+      <DefaultValue>TRUE</DefaultValue>
+    </Constraint>
+  </OperationsMetadata>
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-71.123 66.33</LowerCorner>
+        <UpperCorner>-65.32 78.3</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="INTFIELD" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(len(vl.fields()), 1)
+
+        # Initial request: exception
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
+            f.write("""<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0.0" xsi:schemaLocation="http://www.opengis.net/ows/1.1 http://localhost/geoserver/schemas/ows/1.1.0/owsAll.xsd">
+<ows:Exception exceptionCode="NoApplicableCode">
+<ows:ExceptionText>java.lang.RuntimeException: java.lang.RuntimeException: java.io.IOException
+java.lang.RuntimeException: java.io.IOException
+java.io.IOExceptionCannot do natural order without a primary key, please add it or specify a manual sort over existing attributes</ows:ExceptionText>
+</ows:Exception>
+</ows:ExceptionReport>""".encode('UTF-8'))
+
+        # Retry
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&RETRY=1'), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my">
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:INTFIELD>1</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+  <gml:featureMember>
+    <my:typename fid="typename.1">
+      <my:INTFIELD>2</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        values = [f['INTFIELD'] for f in vl.getFeatures()]
+        self.assertEqual(values, [1, 2])
 
 
 if __name__ == '__main__':

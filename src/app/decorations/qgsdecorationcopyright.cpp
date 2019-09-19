@@ -76,7 +76,7 @@ void QgsDecorationCopyright::projectRead()
     mTextFormat.readXml( elem, rwContext );
   }
 
-  // Migratation for pre QGIS 3.2 settings
+  // Migration for pre QGIS 3.2 settings
   QColor oldColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ) ) );
   if ( oldColor.isValid() )
   {
@@ -110,7 +110,7 @@ void QgsDecorationCopyright::run()
 
 void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
-  Q_UNUSED( mapSettings );
+  Q_UNUSED( mapSettings )
   if ( !enabled() )
     return;
 

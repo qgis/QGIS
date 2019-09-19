@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '11/11/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -64,7 +62,7 @@ class TestQgsBinaryWidget(unittest.TestCase):
         self.assertEqual(widget.value(), bin_val2)
 
         widget.setValue(NULL)
-        self.assertEqual(widget.value(), NULL)
+        self.assertEqual(widget.value(), QByteArray())
 
 
 if __name__ == '__main__':

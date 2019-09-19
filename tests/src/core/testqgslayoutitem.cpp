@@ -24,12 +24,14 @@
 #include "qgsreadwritecontext.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitemlabel.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayouteffect.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QObject>
 #include <QPainter>
@@ -261,7 +263,7 @@ void TestQgsLayoutItem::registry()
 
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::typeAdded );
 
-  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), create, resolve );
+  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), QStringLiteral( "my types" ), create, resolve );
   QVERIFY( registry.addLayoutItemType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), 2 );
@@ -273,6 +275,7 @@ void TestQgsLayoutItem::registry()
   //retrieve metadata
   QVERIFY( !registry.itemMetadata( -1 ) );
   QCOMPARE( registry.itemMetadata( 2 )->visibleName(), QStringLiteral( "my type" ) );
+  QCOMPARE( registry.itemMetadata( 2 )->visiblePluralName(), QStringLiteral( "my types" ) );
   QCOMPARE( registry.itemTypes().count(), 1 );
   QCOMPARE( registry.itemTypes().value( 2 ), QStringLiteral( "my type" ) );
   QgsLayoutItem *item = registry.createItem( 2, nullptr );
@@ -1419,6 +1422,7 @@ void TestQgsLayoutItem::itemVariablesFunction()
   map->setId( QStringLiteral( "Map_id" ) );
 
   c = l.createExpressionContext();
+  e.prepare( &c );
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 184764103, 100 );
 
@@ -1945,31 +1949,61 @@ void TestQgsLayoutItem::opacity()
 {
   QgsProject proj;
   QgsLayout l( &proj );
+  l.initializeDefaults();
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
 
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
+  item->setShapeType( QgsLayoutItemShape::Rectangle );
+  item->attemptSetSceneRect( QRectF( 50, 50, 150, 100 ) );
+  item->setSymbol( fillSymbol->clone() );
+
   l.addLayoutItem( item );
 
   item->setItemOpacity( 0.75 );
   QCOMPARE( item->itemOpacity(), 0.75 );
-  QCOMPARE( item->opacity(), 0.75 );
+
+  // we handle opacity ourselves, so QGraphicsItem opacity should never be set
+  QCOMPARE( item->opacity(), 1.0 );
+
+  QgsLayoutChecker checker( QStringLiteral( "composereffects_transparency75" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 
   item->dataDefinedProperties().setProperty( QgsLayoutObject::Opacity, QgsProperty::fromExpression( "35" ) );
   item->refreshDataDefinedProperty();
   QCOMPARE( item->itemOpacity(), 0.75 ); // should not change
-  QCOMPARE( item->opacity(), 0.35 );
+  QCOMPARE( item->opacity(), 1.0 );
 
+  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency35" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+
+  // with background and frame
+  l.removeLayoutItem( item );
+
+  QgsLayoutItemLabel *labelItem = new QgsLayoutItemLabel( &l );
+  l.addLayoutItem( labelItem );
+  labelItem->attemptSetSceneRect( QRectF( 50, 50, 150, 100 ) );
+  labelItem->setBackgroundEnabled( true );
+  labelItem->setBackgroundColor( QColor( 40, 140, 240 ) );
+  labelItem->setFrameEnabled( true );
+  labelItem->setFrameStrokeColor( QColor( 40, 30, 20 ) );
+  labelItem->setItemOpacity( 0.5 );
+  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency_bgframe" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 
   QgsLayout l2( QgsProject::instance() );
   l2.initializeDefaults();
   QgsLayoutItemShape *mComposerRect1 = new QgsLayoutItemShape( &l2 );
   mComposerRect1->attemptSetSceneRect( QRectF( 20, 20, 150, 100 ) );
   mComposerRect1->setShapeType( QgsLayoutItemShape::Rectangle );
-  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
-  fillSymbol->changeSymbolLayer( 0, simpleFill );
-  simpleFill->setColor( QColor( 255, 150, 0 ) );
-  simpleFill->setStrokeColor( Qt::black );
-  mComposerRect1->setSymbol( fillSymbol );
+  mComposerRect1->setSymbol( fillSymbol->clone() );
   delete fillSymbol;
 
   l2.addLayoutItem( mComposerRect1 );
@@ -1987,7 +2021,7 @@ void TestQgsLayoutItem::opacity()
 
   mComposerRect2->setItemOpacity( 0.5 );
 
-  QgsLayoutChecker checker( QStringLiteral( "composereffects_transparency" ), &l2 );
+  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency" ), &l2 );
   checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
   QVERIFY( checker.testLayout( mReport ) );
 }

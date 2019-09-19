@@ -20,6 +20,9 @@
 #include "qgis_core.h"
 #include "qgslayoutitemnodeitem.h"
 #include "qgssymbol.h"
+#include <QGraphicsPathItem>
+#include "qgslogger.h"
+#include "qgslayout.h"
 
 /**
  * \ingroup core
@@ -61,6 +64,7 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     int type() const override;
     QIcon icon() const override;
     QString displayName() const override;
+    QPainterPath shape() const override;
 
     /**
      * Returns the line symbol used to draw the shape.
@@ -184,6 +188,8 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
      * \see arrowHeadStrokeColor()
      */
     double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   protected:
 

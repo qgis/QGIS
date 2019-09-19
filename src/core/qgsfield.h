@@ -22,7 +22,7 @@
 #include <QSharedDataPointer>
 #include "qgsfield_p.h"
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 
@@ -50,6 +50,7 @@ class CORE_EXPORT QgsField
     Q_GADGET
 
     Q_PROPERTY( bool isNumeric READ isNumeric )
+    Q_PROPERTY( bool isDateOrTime READ isDateOrTime )
     Q_PROPERTY( int length READ length WRITE setLength )
     Q_PROPERTY( int precision READ precision WRITE setPrecision )
     Q_PROPERTY( QVariant::Type type READ type WRITE setType )
@@ -153,11 +154,18 @@ class CORE_EXPORT QgsField
 
     /**
      * Returns if this field is numeric. Any integer or floating point type
-     * will return true for this.
+     * will return TRUE for this.
      *
      * \since QGIS 2.18
      */
     bool isNumeric() const;
+
+    /**
+     * Returns if this field is a date and/or time type.
+     *
+     * \since QGIS 3.6
+     */
+    bool isDateOrTime() const;
 
     /**
      * Set the field name.
@@ -257,7 +265,7 @@ class CORE_EXPORT QgsField
      *
      * \param v  The value to convert
      *
-     * \returns   True if the conversion was successful
+     * \returns   TRUE if the conversion was successful
      */
     bool convertCompatible( QVariant &v ) const;
 #ifdef SIP_RUN

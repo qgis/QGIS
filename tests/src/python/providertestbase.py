@@ -13,8 +13,6 @@ from builtins import object
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-27'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.core import (
     QgsApplication,
@@ -277,6 +275,17 @@ class ProviderTestCase(FeatureSourceTestCase):
         # get the features
         pks = []
         for f in source.getFeatures():
+            pks.append(f['pk'])
+        self.assertEqual(set(pks), {1, 2, 3, 4, 5})
+
+    def testCloneLayer(self):
+        """
+        Test that cloning layer works and has all expected features
+        """
+        l = self.vl.clone()
+
+        pks = []
+        for f in l.getFeatures():
             pks.append(f['pk'])
         self.assertEqual(set(pks), {1, 2, 3, 4, 5})
 

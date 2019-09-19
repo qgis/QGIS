@@ -24,7 +24,7 @@
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
 
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
@@ -45,7 +45,7 @@
 
 #include <QDragEnterEvent>
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
   , mModel( browserModel )
   , mPropertiesWidgetEnabled( false )
@@ -156,7 +156,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     mPropertiesWidgetHeight = settings.value( settingsSection() + "/propertiesWidgetHeight" ).toFloat();
     QList<int> sizes = mSplitter->sizes();
     int total = sizes.value( 0 ) + sizes.value( 1 );
-    int height = static_cast<int>( total ) * mPropertiesWidgetHeight;
+    int height = static_cast<int>( total * mPropertiesWidgetHeight );
     sizes.clear();
     sizes << total - height << height;
     mSplitter->setSizes( sizes );
@@ -253,7 +253,7 @@ void QgsBrowserDockWidget::addFavorite()
   if ( !item )
     return;
 
-  QgsDirectoryItem *dirItem = dynamic_cast<QgsDirectoryItem *>( item );
+  QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item );
   if ( !dirItem )
     return;
 
@@ -281,6 +281,7 @@ void QgsBrowserDockWidget::addFavoriteDirectory( const QString &favDir, const QS
 void QgsBrowserDockWidget::setMessageBar( QgsMessageBar *bar )
 {
   mMessageBar = bar;
+  mModel->setMessageBar( bar );
 }
 
 QgsMessageBar *QgsBrowserDockWidget::messageBar()
@@ -305,11 +306,11 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
     QgsDataItem *item = mModel->dataItem( index );
     if ( item )
     {
-      QgsDebugMsg( "path = " + item->path() );
+      QgsDebugMsgLevel( "path = " + item->path(), 4 );
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "invalid item" ) );
+      QgsDebugMsgLevel( QStringLiteral( "invalid item" ), 4 );
     }
 
     if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
@@ -389,7 +390,8 @@ void QgsBrowserDockWidget::addSelectedLayers()
   std::sort( list.begin(), list.end() );
 
   // If any of the layer items are QGIS we just open and exit the loop
-  Q_FOREACH ( const QModelIndex &index, list )
+  const auto constList = list;
+  for ( const QModelIndex &index : constList )
   {
     QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
     if ( item && item->type() == QgsDataItem::Project )
@@ -442,7 +444,7 @@ void QgsBrowserDockWidget::showProperties()
   {
     QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( settingsSection(), this );
     dialog->setAttribute( Qt::WA_DeleteOnClose );
-    dialog->setItem( item );
+    dialog->setItem( item, createContext() );
     dialog->show();
   }
 }
@@ -533,8 +535,8 @@ QgsDataItemGuiContext QgsBrowserDockWidget::createContext()
 
 void QgsBrowserDockWidget::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   if ( mPropertiesWidgetEnabled )
   {
     setPropertiesWidget();
@@ -561,7 +563,8 @@ void QgsBrowserDockWidget::setPropertiesWidget()
     {
       QModelIndex index = mProxyModel->mapToSource( indexes.value( 0 ) );
       QgsDataItem *item = mModel->dataItem( index );
-      QgsBrowserPropertiesWidget *propertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, mPropertiesWidget );
+      QgsDataItemGuiContext context = createContext();
+      QgsBrowserPropertiesWidget *propertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, context, mPropertiesWidget );
       if ( propertiesWidget )
       {
         propertiesWidget->setCondensedMode( true );
@@ -582,6 +585,16 @@ void QgsBrowserDockWidget::enablePropertiesWidget( bool enable )
   else
   {
     clearPropertiesWidget();
+  }
+}
+
+void QgsBrowserDockWidget::setActiveIndex( const QModelIndex &index )
+{
+  if ( index.isValid() )
+  {
+    QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
+    mBrowserView->expand( proxyIndex );
+    mBrowserView->setCurrentIndex( proxyIndex );
   }
 }
 

@@ -94,6 +94,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * this value. The path can either be a local path or a remote (http) path.
      * \returns path for the source image
      * \see setPicturePath()
+     * \see evaluatedPath()
      */
     QString picturePath() const;
 
@@ -118,7 +119,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void setLinkedMap( QgsLayoutItemMap *map );
 
     /**
-     * Returns the linked rotation map, if set. An nullptr means map rotation is
+     * Returns the linked rotation map, if set. An NULLPTR means map rotation is
      * disabled.  If this is set then the picture is rotated by the same amount
      * as the specified map object.
      * \see setLinkedMap()
@@ -230,6 +231,23 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
+    /**
+     * Returns TRUE if the source image is missing and the picture
+     * cannot be rendered.
+     *
+     * \since QGIS 3.6
+     */
+    bool isMissingImage() const;
+
+    /**
+     * Returns the current evaluated picture path, which includes
+     * the result of data defined path overrides.
+     *
+     * \see picturePath()
+     * \since QGIS 3.6
+     */
+    QString evaluatedPath() const;
+
   public slots:
 
     /**
@@ -259,10 +277,9 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void recalculateSize();
 
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
-    bool containsAdvancedEffects() const override;
 
   signals:
-    //! Is emitted on picture rotation change
+    //! Emitted on picture rotation change
     void pictureRotationChanged( double newRotation );
 
   protected:
@@ -296,7 +313,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double mPictureRotation = 0;
 
     QString mRotationMapUuid;
-    //! Map that sets the rotation (or nullptr if this picture uses map independent rotation)
+    //! Map that sets the rotation (or NULLPTR if this picture uses map independent rotation)
     QPointer< QgsLayoutItemMap > mRotationMap;
 
     //! Mode used to align to North
@@ -319,9 +336,11 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     bool mHasExpressionError = false;
     bool mLoaded = false;
     bool mLoadingSvg = false;
+    bool mIsMissingImage = false;
+    QString mEvaluatedPath;
 
     //! Loads an image file into the picture item and redraws the item
-    void loadPicture( const QString &path );
+    void loadPicture( const QVariant &data );
 
     /**
      * Returns part of a raster image which will be shown, given current picture

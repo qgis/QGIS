@@ -38,15 +38,14 @@ layers from the WCS server to the map canvas.
 Constructor
 %End
 
-    ~QgsOWSSourceSelect();
-
-  public slots:
-
     virtual void refresh();
 
 %Docstring
 Triggered when the provider's connections need to be refreshed
 %End
+
+    virtual void reset();
+
 
   protected slots:
     void showError( const QString &title, const QString &format, const QString &error );
@@ -144,7 +143,7 @@ Add a few example servers to the list.
 %Docstring
 Populate the layer list.
 
-\retval false if the layers could not be retrieved or parsed
+:return: ``False`` if the layers could not be retrieved or parsed
 %End
 
 

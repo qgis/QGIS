@@ -1,0 +1,14 @@
+Content-Length: 366
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <Layer name="testlayer_thousands">
+  <Feature id="2">
+   <Attribute value="3" name="id"/>
+   <Attribute value="three" name="name"/>
+   <Attribute value="three èé↓" name="utf8nameè"/>
+   <Attribute value="123456" name="long_int"/>
+   <Attribute value="123456.8900" name="long_float"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

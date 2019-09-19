@@ -1,0 +1,235 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverogcapihandler.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsServerOgcApiHandler
+{
+%Docstring
+The QgsServerOgcApiHandler abstract class represents a OGC API handler to be registered
+in QgsServerOgcApi class.
+
+Subclasses must override operational and informative methods and define
+the core functionality in handleRequest() method.
+
+The following methods MUST be implemented:
+- path
+- operationId
+- summary  (shorter text)
+- description (longer text)
+- linkTitle
+- linkType
+- schema
+
+Optionally, override:
+- tags
+- parameters
+- contentTypes
+- defaultContentType
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverogcapihandler.h"
+%End
+  public:
+
+    virtual ~QgsServerOgcApiHandler();
+
+
+    virtual QRegularExpression path() const = 0;
+%Docstring
+URL pattern for this handler, named capture group are automatically
+extracted and returned by values()
+
+Example: "/handlername/(?P<code1>\d{2})/items" will capture "code1" as a
+named parameter.
+
+.. seealso:: :py:func:`values`
+%End
+
+    virtual std::string operationId() const = 0;
+%Docstring
+Returns the operation id for template file names and other internal references
+%End
+
+    virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const;
+%Docstring
+Returns a list of query string parameters.
+
+Depending on the handler, it may be dynamic (per-request) or static.
+
+:param context: the request context
+%End
+
+
+    virtual std::string summary() const = 0;
+%Docstring
+Summary
+%End
+
+    virtual std::string description() const = 0;
+%Docstring
+Description
+%End
+
+    virtual std::string linkTitle() const = 0;
+%Docstring
+Title for the handler link
+%End
+
+    virtual QgsServerOgcApi::Rel linkType() const = 0;
+%Docstring
+Main role for the resource link
+%End
+
+    virtual QStringList tags() const;
+%Docstring
+Tags
+%End
+
+    virtual QgsServerOgcApi::ContentType defaultContentType() const;
+%Docstring
+Returns the default response content type in case the client did not specifically
+ask for any particular content type.
+The default implementation returns the first content type returned by
+contentTypes() or JSON if that list is empty.
+%End
+
+
+    virtual void handleRequest( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException ) /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
+%Docstring
+Handles the request within its ``context``
+
+Subclasses must implement this methods, and call validate() to
+extract validated parameters from the request.
+
+:raises QgsServerApiBadRequestError: if the method encounters any error
+%End
+
+    virtual QVariantMap values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
+%Docstring
+Analyzes the incoming request ``context`` and returns the validated
+parameter map, throws QgsServerApiBadRequestError in case of errors.
+
+Path fragments from the named groups in the path() regular expression
+are also added to the map.
+
+Your handleRequest method should call this function to retrieve
+the parameters map.
+
+:return: the validated parameters map by extracting captured
+         named parameters from the path (no validation is performed on
+         the type because the regular expression can do it),
+         and the query string parameters.
+
+.. seealso:: :py:func:`path`
+
+.. seealso:: :py:func:`parameters`
+
+:raises QgsServerApiBadRequestError: if validation fails
+%End
+
+    QString contentTypeForAccept( const QString &accept ) const;
+%Docstring
+Looks for the first ContentType match in the accept header and returns its mime type,
+returns an empty string if there are not matches.
+%End
+
+
+
+    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const throw( QgsServerApiBadRequestException );
+%Docstring
+Writes ``data`` to the ``context`` response stream, content-type is calculated from the ``context`` request,
+optional ``htmlMetadata`` for the HTML templates can be specified and will be added as "metadata" to
+the HTML template variables.
+
+HTML output uses a template engine.
+
+Available template functions:
+See: https://github.com/pantor/inja#tutorial
+
+Available custom template functions:
+- path_append( path ): appends a directory path to the current url
+- path_chomp( n ): removes the specified number "n" of directory components from the current url path
+- json_dump(): prints current JSON data passed to the template
+- static( path): returns the full URL to the specified static path, for example:
+static("/style/black.css") will return something like "/wfs3/static/style/black.css".
+- links_filter( links, key, value ): returns filtered links from a link list
+- content_type_name( content_type ): returns a short name from a content type for example "text/html" will return "HTML"
+%End
+
+    std::string href( const QgsServerApiContext &context, const QString &extraPath = QString(), const QString &extension = QString() ) const;
+%Docstring
+Returns an URL to self, to be used for links to the current resources and as a base for constructing links to sub-resources
+
+:param context: the current request context
+:param extraPath: an optional extra path that will be appended to the calculated URL
+:param extension: optional file extension to add (the dot will be added automatically).
+%End
+
+    virtual const QString templatePath( const QgsServerApiContext &context ) const;
+%Docstring
+Returns the HTML template path for the handler in the given ``context``
+
+The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
+apiResourcesDirectory() + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
+e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
+will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
+%End
+
+    virtual const QString staticPath( const QgsServerApiContext &context ) const;
+%Docstring
+Returns the absolute path to the base directory where static resources for
+this handler are stored in the given ``context``.
+%End
+
+    QgsServerOgcApi::ContentType contentTypeFromRequest( const QgsServerRequest *request ) const;
+%Docstring
+Returns the content type from the ``request``.
+
+The path file extension is examined first and checked for known mime types,
+the "Accept" HTTP header is examined next.
+Fallback to the default content type of the handler if none of the above matches.
+
+:raises QgsServerApiBadRequestError: if the content type of the request is not compatible with the handler (:py:func:`contentTypes` member)
+%End
+
+    static QString parentLink( const QUrl &url, int levels = 1 );
+%Docstring
+Returns a link to the parent page up to ``levels`` in the HTML hierarchy from the given ``url``, MAP query argument is preserved
+%End
+
+    static QgsVectorLayer *layerFromCollectionId( const QgsServerApiContext &context, const QString &collectionId );
+%Docstring
+Returns a vector layer from the ``collectionId`` in the given ``context``.
+
+:raises QgsServerApiNotFoundError: if the layer could not be found.
+%End
+
+
+
+  protected:
+
+    void setContentTypesInt( const QList<int> &contentTypes ) /PyName=setContentTypes/;
+%Docstring
+Set the content types to ``contentTypes``
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverogcapihandler.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

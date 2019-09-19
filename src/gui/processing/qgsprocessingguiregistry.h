@@ -29,6 +29,7 @@ class QgsProcessingAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
 class QgsProcessingAlgorithmConfigurationWidgetFactory;
 class QgsProcessingModelerParameterWidget;
+class QgsProcessingParameterWidgetContext;
 
 /**
  * The QgsProcessingGuiRegistry is a home for widgets for processing
@@ -70,7 +71,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     /**
      * Gets the configuration widget for an \a algorithm. This widget will be shown
      * next to parameter widgets. Most algorithms do not have a configuration widget
-     * and in this case, nullptr will be returned.
+     * and in this case, NULLPTR will be returned.
      *
      * \since QGIS 3.2
      */
@@ -82,7 +83,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * Ownership of \a factory is transferred to the registry.
      *
-     * Returns true if the factory was successfully added, or false if the factory could not be added. Each
+     * Returns TRUE if the factory was successfully added, or FALSE if the factory could not be added. Each
      * factory must return a unique value for QgsProcessingParameterWidgetFactoryInterface::parameterType(),
      * and attempting to add a new factory with a duplicate type will result in failure.
      *
@@ -108,7 +109,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      * dictates the type of dialog the wrapper should be created for. The caller takes ownership
      * of the returned wrapper.
      *
-     * If no factory is registered which handles the given \a parameter, a nullptr will be returned.
+     * If no factory is registered which handles the given \a parameter, NULLPTR will be returned.
      *
      * \see createModelerParameterWidget()
      * \see addParameterWidgetFactory()
@@ -127,7 +128,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      * with inside the given \a model.
      *
      * The caller takes ownership of the returned widget. If no factory is registered which
-     * handles the given \a parameter, a nullptr will be returned.
+     * handles the given \a parameter, NULLPTR will be returned.
      *
      * \see createParameterWidgetWrapper()
      * \see addParameterWidgetFactory()
@@ -137,6 +138,33 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
         const QString &childId,
         const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) SIP_FACTORY;
+
+    /**
+     * Creates a new parameter definition widget allowing for configuration of an instance of
+     * a specific parameter \a type.
+     *
+     * The \a context argument must specify a Processing context, which will be used
+     * by the widget to evaluate existing \a definition properties such as default values. Similarly,
+     * the \a widgetContext argument specifies the wider GUI context in which the widget
+     * will be used.
+     *
+     * The optional \a definition argument may specify an existing parameter definition which
+     * will be reflected in the initial state of the returned widget. If \a definition is NULLPTR,
+     * then the returned widget will use default settings instead.
+     *
+     * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
+     * associated with the parameter.
+     *
+     * If NULLPTR is returned for a particular parameter \a type,
+     * it indicates that the parameter type cannot be configured via GUI.
+     *
+     * \since QGIS 3.10
+     */
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type,
+        QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
 
   private:
 

@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingException,
@@ -48,6 +44,7 @@ class ColorRelief(GdalAlgorithm):
     COLOR_TABLE = 'COLOR_TABLE'
     MATCH_MODE = 'MATCH_MODE'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -62,6 +59,7 @@ class ColorRelief(GdalAlgorithm):
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_EDGES,
                                                         self.tr('Compute edges'),
@@ -72,16 +70,23 @@ class ColorRelief(GdalAlgorithm):
                                                      self.tr('Matching mode'),
                                                      options=[i[0] for i in self.modes],
                                                      defaultValue=2))
+
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         options_param.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Color relief')))
 
@@ -110,6 +115,7 @@ class ColorRelief(GdalAlgorithm):
         arguments.append(self.parameterAsFile(parameters, self.COLOR_TABLE, context))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append(out)
 
         arguments.append('-of')
@@ -118,9 +124,19 @@ class ColorRelief(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        arguments.append(self.modes[self.parameterAsEnum(parameters, self.MATCH_MODE, context)][1])
+        mode = self.modes[self.parameterAsEnum(parameters, self.MATCH_MODE, context)][1]
+        if mode != '':
+            arguments.append(mode)
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

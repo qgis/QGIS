@@ -59,12 +59,12 @@ Returns the end point of the curve.
 
     virtual bool isClosed() const;
 %Docstring
-Returns true if the curve is closed.
+Returns ``True`` if the curve is closed.
 %End
 
     virtual bool isRing() const;
 %Docstring
-Returns true if the curve is a ring.
+Returns ``True`` if the curve is a ring.
 %End
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
@@ -101,6 +101,20 @@ Returns a list of points within the curve.
 Returns the number of points in the curve.
 %End
 
+    int __len__() const;
+%Docstring
+    Returns the number of points in the curve.
+%End
+%MethodCode
+    sipRes = sipCpp->numPoints();
+%End
+
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
+%End
+
     virtual void sumUpArea( double &sum /Out/ ) const = 0;
 %Docstring
 Sums up the area of the curve by iterating over the vertices (shoelace formula).
@@ -120,10 +134,10 @@ Sums up the area of the curve by iterating over the vertices (shoelace formula).
 Returns the point and vertex id of a point within the curve.
 
 :param node: node number, where the first node is 0
-:param point: will be set to point at corresponding node in the curve
 :param type: will be set to the vertex type of the node
 
-:return: true if node exists within the curve
+:return: - ``True`` if node exists within the curve
+         - point: will be set to point at corresponding node in the curve
 %End
 
     virtual QgsCurve *reversed() const = 0 /Factory/;
@@ -158,6 +172,8 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual QgsRectangle boundingBox() const;
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
 
     virtual double xAt( int index ) const = 0;
 %Docstring
@@ -189,7 +205,7 @@ Returns an interpolated point on the curve at the specified ``distance``.
 If z or m values are present, the output z and m will be interpolated using
 the existing vertices' z or m values.
 
-If distance is negative, or is greater than the length of the curve, a None
+If distance is negative, or is greater than the length of the curve, ``None``
 will be returned.
 
 .. versionadded:: 3.4

@@ -71,7 +71,7 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
     QgsFeatureRenderer *mRenderer = nullptr;
     QgsLegendSymbolList mList;
 
-    //! whether symbol layers always should be used (default false)
+    //! whether symbol layers always should be used (default FALSE)
     bool mForceOrderingEnabled;
 
   private:

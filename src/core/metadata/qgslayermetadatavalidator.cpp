@@ -94,7 +94,8 @@ bool QgsNativeMetadataBaseValidator::validate( const QgsAbstractMetadataBase *me
 
   // validate contacts
   index = 0;
-  Q_FOREACH ( const QgsAbstractMetadataBase::Contact &contact, metadata->contacts() )
+  const auto constContacts = metadata->contacts();
+  for ( const QgsAbstractMetadataBase::Contact &contact : constContacts )
   {
     if ( contact.name.isEmpty() )
     {
@@ -106,7 +107,8 @@ bool QgsNativeMetadataBaseValidator::validate( const QgsAbstractMetadataBase *me
 
   // validate links
   index = 0;
-  Q_FOREACH ( const QgsAbstractMetadataBase::Link &link, metadata->links() )
+  const auto constLinks = metadata->links();
+  for ( const QgsAbstractMetadataBase::Link &link : constLinks )
   {
     if ( link.name.isEmpty() )
     {
@@ -158,7 +160,8 @@ bool QgsNativeMetadataValidator::validate( const QgsAbstractMetadataBase *baseMe
   }
 
   int index = 0;
-  Q_FOREACH ( const QgsLayerMetadata::SpatialExtent &extent, metadata->extent().spatialExtents() )
+  const auto constSpatialExtents = metadata->extent().spatialExtents();
+  for ( const QgsLayerMetadata::SpatialExtent &extent : constSpatialExtents )
   {
     if ( !extent.extentCrs.isValid() )
     {

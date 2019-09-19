@@ -20,7 +20,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsMapLayerModel;
 class QgsMapLayer;
@@ -50,7 +50,8 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       VectorLayer = NoGeometry | HasGeometry,
       PluginLayer = 32,
       WritableLayer = 64,
-      All = RasterLayer | VectorLayer | PluginLayer
+      MeshLayer = 128, //!< QgsMeshLayer \since QGIS 3.6
+      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
@@ -160,6 +161,13 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \since QGIS 3.4
      */
     QString filterString() const { return mFilterString; }
+
+    /**
+     * Returns TRUE if the proxy model accepts the specified map \a layer.
+     *
+     * \since QGIS 3.8
+     */
+    bool acceptsLayer( QgsMapLayer *layer ) const;
 
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;

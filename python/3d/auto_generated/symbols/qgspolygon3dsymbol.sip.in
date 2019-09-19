@@ -118,6 +118,48 @@ Sets whether also triangles facing the other side will be created. Useful if inp
 .. versionadded:: 3.2
 %End
 
+    bool edgesEnabled() const;
+%Docstring
+Returns whether edge highlighting is enabled
+
+.. versionadded:: 3.8
+%End
+
+    void setEdgesEnabled( bool enabled );
+%Docstring
+Sets whether edge highlighting is enabled
+
+.. versionadded:: 3.8
+%End
+
+    float edgeWidth() const;
+%Docstring
+Returns width of edge lines (in pixels)
+
+.. versionadded:: 3.8
+%End
+
+    void setEdgeWidth( float width );
+%Docstring
+Sets width of edge lines (in pixels)
+
+.. versionadded:: 3.8
+%End
+
+    QColor edgeColor() const;
+%Docstring
+Returns edge lines color
+
+.. versionadded:: 3.8
+%End
+
+    void setEdgeColor( const QColor &color );
+%Docstring
+Sets edge lines color
+
+.. versionadded:: 3.8
+%End
+
 };
 
 

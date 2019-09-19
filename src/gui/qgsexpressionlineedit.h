@@ -17,9 +17,8 @@
 #define QGSEXPRESSIONLINEEDIT_H
 
 #include <QWidget>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
-#include "qgsdistancearea.h"
 #include "qgis_gui.h"
 #include <memory>
 
@@ -57,6 +56,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * \param parent parent widget
      */
     explicit QgsExpressionLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsExpressionLineEdit() override;
 
     /**
      * Sets the title used in the expression builder dialog
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
     /**
      * Sets whether the widget should show a multiline text editor.
-     * \param multiLine set to true to show multiline editor, or false
+     * \param multiLine set to TRUE to show multiline editor, or FALSE
      * to show single line editor (the default).
      */
     void setMultiLine( bool multiLine );
@@ -118,8 +118,9 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     QString expression() const;
 
     /**
-      * Returns true if the current expression is valid.
+      * Determines if the current expression is valid.
       * \param expressionError will be set to any generated error message if specified
+      * \returns TRUE if the current expression is valid.
       */
     bool isValidExpression( QString *expressionError SIP_OUT = nullptr ) const;
 

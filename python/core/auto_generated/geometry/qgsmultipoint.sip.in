@@ -36,8 +36,6 @@ Multi point geometry collection.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
-
     virtual int nCoordinates() const;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
@@ -50,6 +48,8 @@ Multi point geometry collection.
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
 
 
     virtual QgsMultiPoint *createEmptyWithSameType() const /Factory/;
@@ -57,7 +57,10 @@ Multi point geometry collection.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsMultiPoint: %1>" ).arg( sipCpp->asWkt() );
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsMultiPoint: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

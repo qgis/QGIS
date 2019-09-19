@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsmeshlayer.h"
 #include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgssettings.h"
@@ -54,6 +55,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void areaCalculation(); //test calculation of derived area attribute
     void identifyRasterFloat32(); // test pixel identification and decimal precision
     void identifyRasterFloat64(); // test pixel identification and decimal precision
+    void identifyMesh(); // test identification for mesh layer
     void identifyInvalidPolygons(); // test selecting invalid polygons
     void clickxy(); // test if clicked_x and clicked_y variables are propagated
     void closestPoint();
@@ -67,6 +69,7 @@ class TestQgsMapToolIdentifyAction : public QObject
 
     QString testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
+    QList<QgsMapToolIdentify::IdentifyResult> testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref );
 
     // Release return with delete []
     unsigned char *
@@ -89,7 +92,6 @@ class TestQgsMapToolIdentifyAction : public QObject
       geom.fromWkb( wkb, wkbsize );
       return geom;
     }
-
 };
 
 void TestQgsMapToolIdentifyAction::initTestCase()
@@ -299,7 +301,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  QString derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal, WGS84)" )];
+  QString derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
   double length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( length, 26932.2, 0.1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Cartesian)" )];
@@ -310,7 +312,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal, WGS84)" )];
+  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( length, 88360.1, 0.1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Cartesian)" )];
@@ -321,7 +323,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal, WGS84)" )];
+  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( length, 16.735, 0.001 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Cartesian)" )];
@@ -333,12 +335,29 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal, WGS84)" )];
+  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( length, 0.242000, 0.001 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Cartesian)" )];
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( length, 26930.6, 0.1 );
+
+  // LineString with Z
+  tempLayer = qgis::make_unique< QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( tempLayer->isValid() );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ(2484588 2425722 10, 2482767 2398853 1000)" ) ) );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
+  QCOMPARE( result.length(), 1 );
+  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
+  length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
+  QGSCOMPARENEAR( length, 0.242000, 0.001 );
+  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Cartesian — 2D)" )];
+  length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
+  QGSCOMPARENEAR( length, 26930.6, 0.1 );
+  derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Cartesian — 3D)" )];
+  length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
+  QGSCOMPARENEAR( length, 26948.827000, 0.1 );
 }
 
 void TestQgsMapToolIdentifyAction::perimeterCalculation()
@@ -373,7 +392,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  QString derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal, WGS84)" )];
+  QString derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal — WGS84)" )];
   double perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QCOMPARE( perimeter, 128289.074 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Cartesian)" )];
@@ -384,7 +403,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal, WGS84)" )];
+  derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal — WGS84)" )];
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( perimeter, 420896.0, 0.1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Cartesian)" )];
@@ -395,7 +414,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal, WGS84)" )];
+  derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal — WGS84)" )];
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( perimeter, 79.715, 0.001 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Cartesian)" )];
@@ -407,7 +426,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal, WGS84)" )];
+  derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal — WGS84)" )];
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( perimeter, 1.152000, 0.001 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Cartesian)" )];
@@ -448,7 +467,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  QString derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal, WGS84)" )];
+  QString derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
   double area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 1005721496.780000, 1.0 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
@@ -459,7 +478,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal, WGS84)" )];
+  derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 388.311000, 0.001 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
@@ -471,7 +490,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal, WGS84)" )];
+  derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 388.311000, 0.001 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
@@ -483,7 +502,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal, WGS84)" )];
+  derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 0.081000, 0.001 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
@@ -500,6 +519,15 @@ QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer,
   if ( result.length() != 1 )
     return QString();
   return result[0].mAttributes[QStringLiteral( "Band 1" )];
+}
+
+// private
+QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref )
+{
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
+  return result;
 }
 
 // private
@@ -569,6 +597,74 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
   QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 ), QString( "-999.9876" ) );
 
   QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 ), QString( "1.2345678901234" ) );
+}
+
+void TestQgsMapToolIdentifyAction::identifyMesh()
+{
+  //create a temporary layer
+  const QString mesh = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle.2dm";
+  QgsMeshLayer *tempLayer = new QgsMeshLayer( mesh, "testlayer", "mdal" );
+  QVERIFY( tempLayer->isValid() );
+  const QString vectorDs = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle_vertex_vector.dat";
+  tempLayer->dataProvider()->addDataset( vectorDs );
+
+  // we need to setup renderer otherwise triangular mesh
+  // will not be populated and identify will not work
+  QgsMapSettings mapSettings;
+  mapSettings.setExtent( tempLayer->extent() );
+  mapSettings.setDestinationCrs( tempLayer->crs() );
+  mapSettings.setOutputDpi( 96 );
+
+  // here we check that datasets automatically get our default color ramp applied ("Plasma")
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  tempLayer->createMapRenderer( context );
+
+  // only scalar dataset
+  QgsMeshRendererSettings settings = tempLayer->rendererSettings();
+  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+  tempLayer->setRendererSettings( settings );
+  QList<QgsMapToolIdentify::IdentifyResult> results;
+
+  results = testIdentifyMesh( tempLayer, 500, 500 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "no data" ) );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
+
+  // scalar + vector same
+  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 1, 0 ) );
+  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
+  tempLayer->setRendererSettings( settings );
+  results = testIdentifyMesh( tempLayer, 500, 500 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Value" )], QStringLiteral( "no data" ) );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+
+  // scalar + vector different
+  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
+  tempLayer->setRendererSettings( settings );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 2 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
+  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
+  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+
+  // only vector
+  settings.setActiveScalarDataset( QgsMeshDatasetIndex() );
+  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
+  tempLayer->setRendererSettings( settings );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyInvalidPolygons()

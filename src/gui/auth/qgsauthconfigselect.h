@@ -19,7 +19,7 @@
 
 #include <QWidget>
 #include <QLabel>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "ui_qgsauthconfigselect.h"
 #include "qgsauthconfig.h"
@@ -93,6 +93,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
+    bool mTemporarilyBlockLoad = false;
 };
 
 

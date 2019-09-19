@@ -58,6 +58,8 @@ my $COMMENT_PARAM_LIST = 0;
 my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
 my $COMMENT_CODE_SNIPPET = 0;
 my $COMMENT_TEMPLATE_DOCSTRING = 0;
+my @SKIPPED_PARAMS_OUT = ();
+my @SKIPPED_PARAMS_REMOVE = ();
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
@@ -87,7 +89,8 @@ sub read_line {
                                   $IS_OVERRIDE,
                                   $ACTUAL_CLASS,
                                   $#CLASSNAME)." :: ".$new_line."\n";
-    return $new_line;
+   $new_line = replace_macros($new_line);
+   return $new_line;
 }
 
 sub write_output {
@@ -187,7 +190,7 @@ sub processDoxygenLine {
 
     # if inside multi-line parameter, ensure additional lines are indented
     if ($line ne '') {
-        if ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning)/ ) {
+        if ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning|throws)/ ) {
             $line = "$INDENT$line";
         }
     }
@@ -296,6 +299,11 @@ sub processDoxygenLine {
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
         return "\n.. warning::\n\n   $1\n";
     }
+    if ( $line =~ m/[\\@]throws (.+?)\b\s*(.*)/ ) {
+        $INDENT = '';
+        $COMMENT_LAST_LINE_NOTE_WARNING = 1;
+        return "\n:raises $1: $2\n";
+    }
 
     if ( $line !~ m/^\s*$/ ){
         if ( $COMMENT_LAST_LINE_NOTE_WARNING == 1 ){
@@ -372,6 +380,17 @@ sub remove_following_body_or_initializerlist {
 
 sub fix_annotations {
     my $line = $_[0];
+
+    # get removed params to be able to drop them out of the API doc
+    if ( $line =~ m/(\w+)\s+SIP_PYARGREMOVE/ ){
+      push @SKIPPED_PARAMS_REMOVE, $1;
+      dbg_info("caught removed param: $SKIPPED_PARAMS_REMOVE[$#SKIPPED_PARAMS_REMOVE]");
+    }
+    if ( $line =~ m/(\w+)\s+SIP_OUT/ ){
+      push @SKIPPED_PARAMS_OUT, $1;
+      dbg_info("caught removed param: $SKIPPED_PARAMS_OUT[$#SKIPPED_PARAMS_OUT]");
+    }
+
     # printed annotations
     $line =~ s/\/\/\s*SIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
@@ -391,8 +410,10 @@ sub fix_annotations {
     $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
+    $line =~ s/\bSIP_GETWRAPPER\b/\/GetWrapper\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
+    $line =~ s/SIP_TYPEHINT\(\s*(\w+)\s*\)/\/TypeHint="$1"\//;
     $line =~ s/SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)/\/VirtualErrorHandler=$1\//;
     $line =~ s/SIP_THROW\(\s*(\w+)\s*\)/throw\( $1 \)/;
 
@@ -442,6 +463,14 @@ sub fix_constants {
     return $line;
 }
 
+sub replace_macros {
+    my $line = $_[0];
+    $line =~ s/\bTRUE\b/``True``/g;
+    $line =~ s/\bFALSE\b/``False``/g;
+    $line =~ s/\bNULLPTR\b/``None``/g;
+    return $line;
+}
+
 # detect a comment block, return 1 if found
 # if STRICT comment block shall begin at beginning of line (no code in front)
 sub detect_comment_block{
@@ -452,6 +481,8 @@ sub detect_comment_block{
     $COMMENT_CODE_SNIPPET = 0;
     $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     $FOUND_SINCE = 0;
+    @SKIPPED_PARAMS_OUT = ();
+    @SKIPPED_PARAMS_REMOVE = ();
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
         dbg_info("found comment block");
         do {no warnings 'uninitialized';
@@ -520,14 +551,14 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # do not process SIP code %XXXCode
-    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode)(.*)?$/ ){
+    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/ ){
         $LINE = "%$1$2";
         $COMMENT = '';
         dbg_info("do not process SIP code");
         while ( $LINE !~ m/^ *% *End/ ){
             write_output("COD", $LINE."\n");
             $LINE = read_line();
-            $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode)(.*)?$/%$1$2/;
+            $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/%$1$2/;
             $LINE =~ s/^\s*SIP_END(.*)$/%End$1/;
         }
         $LINE =~ s/^\s*% End/%End/;
@@ -650,7 +681,7 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # Skip forward declarations
-    if ($LINE =~ m/^\s*(class|struct) \w+(?<external> *SIP_EXTERNAL)?;\s*(\/\/.*)?$/){
+    if ($LINE =~ m/^\s*(enum\s+)?(class|struct) \w+(?<external> *SIP_EXTERNAL)?;\s*(\/\/.*)?$/){
         if ($+{external}){
             dbg_info('do not skip external forward declaration');
             $COMMENT = '';
@@ -753,8 +784,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/10
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z0-9_]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    # https://regex101.com/r/6FWntP/16
+    if ( $LINE =~ m/^(\s*(class))(\s+Q_DECL_DEPRECATED)?\s+([A-Z0-9_]+_EXPORT\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -762,7 +793,7 @@ while ($LINE_IDX < $LINE_COUNT){
         my @template_inheritance_template = ();
         my @template_inheritance_class = ();
         do {no warnings 'uninitialized';
-            push @CLASSNAME, $3;
+            push @CLASSNAME, $+{classname};
             if ($#CLASSNAME == 0){
                 # might be worth to add in-class classes later on
                 # in case of a tamplate based class declaration
@@ -776,10 +807,10 @@ while ($LINE_IDX < $LINE_COUNT){
                 $EXPORTED[-1]++;
             }
         };
-        $LINE = "$1 $3";
+        $LINE = "$1 $+{classname}";
         # Inheritance
-        if ($4){
-            my $m = $4;
+        if (defined $+{domain}){
+            my $m = $+{domain};
             $m =~ s/public +(\w+, *)*(Ui::\w+,? *)+//g; # remove Ui::xxx public inheritance as the namespace is causing troubles
             $m =~ s/public +//g;
             $m =~ s/[,:]?\s*private +\w+(::\w+)?//g;
@@ -925,11 +956,26 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # Enum declaration
-    if ( $LINE =~ m/^\s*enum\s+\w+.*?$/ ){
-        write_output("ENU1", "$LINE\n");
+    # For scoped and type based enum, the type has to be removed
+    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+        my $enum_decl = $1;
+        $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
+        write_output("ENU1", "$enum_decl");
+        write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
+        write_output("ENU1", "\n");
+        my $enum_qualname = $+{enum_qualname};
+        my $is_scope_based = "0";
+        $is_scope_based = "1" if defined $+{isclass};
+        my $monkeypatch = "0";
+        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\))?/;
+        my $enum_mk_base = "";
+        $enum_mk_base = $+{emkb} if defined $+{emkb};
+        if (defined $+{emkf} and $monkeypatch eq "1"){
+            push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $enum_qualname\n";
+        }
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
-          $LINE !~ m/=/ or exit_with_error("spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.");
+          $LINE !~ m/=/ or exit_with_error("Sipify does not handle enum one liners with value assignment. Use multiple lines instead. Or jusr write a new parser.");
           next;
         }
         else
@@ -937,6 +983,8 @@ while ($LINE_IDX < $LINE_COUNT){
             $LINE = read_line();
             $LINE =~ m/^\s*\{\s*$/ or exit_with_error('Unexpected content: enum should be followed by {');
             write_output("ENU2", "$LINE\n");
+            push @OUTPUT_PYTHON, "# monkey patching scoped based enum\n" if $is_scope_based eq "1";
+            my @enum_members_doc = ();
             while ($LINE_IDX < $LINE_COUNT){
                 $LINE = read_line();
                 if (detect_comment_block()){
@@ -946,13 +994,38 @@ while ($LINE_IDX < $LINE_COUNT){
                 next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
 
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/^(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?).*$/$1$2$3/r;
+                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$4/r;
+                    my $enum_member = $+{em};
+                    my $comment = $+{co};
+                    dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
+                    if ($is_scope_based eq "1" and $enum_member ne "") {
+                        if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
+		                    push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
+		                    push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;
+		                    push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
+                        } else {
+                            if ( $monkeypatch eq 1 )
+                            {
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            }
+                            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
+                            push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                        }
+                    }
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");
                 };
                 detect_comment_block(strict_mode => UNSTRICT);
             }
             write_output("ENU4", "$LINE\n");
+            if ($is_scope_based eq "1") {
+                $COMMENT =~ s/\n/\\n/g;
+                if ( $ACTUAL_CLASS ne "" ){
+                    push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.__doc__ = '$COMMENT\\n\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n";
+                } else {
+                    push @OUTPUT_PYTHON, "$enum_qualname.__doc__ = '$COMMENT\\n\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n";
+                }
+            }
             # enums don't have Docstring apparently
             $COMMENT = '';
             next;
@@ -1006,7 +1079,8 @@ while ($LINE_IDX < $LINE_COUNT){
     };
 
     # remove struct member assignment
-    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(\([^()]*\))?\s*;/ ){
+    # https://regex101.com/r/tWRGkY/2
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(<\w+( \*)?>)?(\([^()]*\))?\s*;/ ){
         dbg_info("remove struct member assignment");
         $LINE = "$1;";
     }
@@ -1181,20 +1255,72 @@ while ($LINE_IDX < $LINE_COUNT){
                 $doc_prepend = "\@DOCSTRINGSTEMPLATE\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
                 write_output("CM1", "$doc_prepend%Docstring\n");
                 my @comment_lines = split /\n/, $COMMENT;
+                my $skipping_param = 0;
+                my @out_params = ();
+                my $waiting_for_return_to_end = 0;
                 foreach my $comment_line (@comment_lines) {
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
                   #     # return type must be added before any other paragraph-level markup
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                   #     $RETURN_TYPE = '';
                   # }
-                  write_output("CM2", "$doc_prepend$comment_line\n");
+                  if ( $comment_line =~ m/^:param\s+(\w+)/) {
+                    if ( $1 ~~ @SKIPPED_PARAMS_OUT || $1 ~~ @SKIPPED_PARAMS_REMOVE ) {
+                      if ( $1 ~~ @SKIPPED_PARAMS_OUT ) {
+                        $comment_line =~ s/^:param\s+(\w+):\s*(.*?)$/$1: $2/;
+                        $comment_line =~ s/(?:optional|if specified|if given)[,]?\s*//g;
+                        push @out_params, $comment_line ;
+                        $skipping_param = 2;
+                      }
+                      else {
+                        $skipping_param = 1;
+                      }
+                      next;
+                    }
+                  }
+                  if ( $skipping_param > 0 ) {
+                    if ( $comment_line =~ m/^(:.*|\.\..*|\s*)$/ ){
+                      $skipping_param = 0;
+                    }
+                    elsif ( $skipping_param == 2 ) {
+                      $comment_line =~ s/^\s+/ /;
+                      $out_params[$#out_params] .= $comment_line;
+                      # exit_with_error('Skipped param (SIP_OUT) should have their doc on a single line');
+                      next;
+                    }
+                    else
+                    {
+                      next;
+                    }
+                  }
+                  if ( $comment_line =~ m/:return:/ && $#out_params >= 0 ){
+                    $waiting_for_return_to_end = 1;
+                    $comment_line =~ s/:return:/:return: -/;
+                    write_output("CM2", "$doc_prepend$comment_line\n");
+                    foreach my $out_param (@out_params) {
+                      write_output("CM7", "$doc_prepend         - $out_param\n");
+                    }
+                    @out_params = ();
+                  }
+                  else {
+                    write_output("CM2", "$doc_prepend$comment_line\n");
+                  }
+                  if ( $waiting_for_return_to_end == 1 ) {
+                    if ($comment_line =~ m/^(:.*|\.\..*|\s*)$/) {
+                      $waiting_for_return_to_end = 0;
+                    }
+                    else {
+                      # exit_with_error('Return docstring should be single line with SIP_OUT params');
+                    }
+                  }
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
                   #     # return type must be added before any other paragraph-level markup
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                   #     $RETURN_TYPE = '';
                   # }
                 }
-            write_output("CM4", "$doc_prepend%End\n");
+                exit_with_error("A method with output parameters must contain a return directive (method returns ${RETURN_TYPE})") if $#out_params >= 0 and $RETURN_TYPE ne '';
+                write_output("CM4", "$doc_prepend%End\n");
             }
             # if ( $RETURN_TYPE ne '' ){
             #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");

@@ -42,14 +42,14 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void mOffsetYSpinBox_valueChanged( double value );
     void mCrossWidthSpinBox_valueChanged( double val );
     void mFrameWidthSpinBox_valueChanged( double val );
-    void mFrameStyleComboBox_currentIndexChanged( const QString &text );
+    void mGridFrameMarginSpinBox_valueChanged( double val );
+    void mFrameStyleComboBox_currentIndexChanged( int );
     void mGridFramePenSizeSpinBox_valueChanged( double d );
     void mGridFramePenColorButton_colorChanged( const QColor &newColor );
     void mGridFrameFill1ColorButton_colorChanged( const QColor &newColor );
     void mGridFrameFill2ColorButton_colorChanged( const QColor &newColor );
     void mGridTypeComboBox_currentIndexChanged( const QString &text );
     void mMapGridCRSButton_clicked();
-    void mMapGridUnitComboBox_currentIndexChanged( const QString &text );
     void mGridBlendComboBox_currentIndexChanged( int index );
     void mCheckGridLeftSide_toggled( bool checked );
     void mCheckGridRightSide_toggled( bool checked );
@@ -104,6 +104,10 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void annotationFontChanged();
     void lineSymbolChanged();
     void markerSymbolChanged();
+    void gridEnabledToggled( bool active );
+    void intervalUnitChanged( int index );
+    void minIntervalChanged( double interval );
+    void maxIntervalChanged( double interval );
 
   private:
     QPointer< QgsLayoutItemMap > mMap;

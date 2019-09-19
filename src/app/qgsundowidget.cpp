@@ -198,6 +198,6 @@ void QgsUndoWidget::retranslateUi( QWidget *UndoWidget )
   UndoWidget->setWindowTitle( QApplication::translate( "UndoWidget", "Undo/Redo", nullptr, QApplication::UnicodeUTF8 ) );
   undoButton->setText( QApplication::translate( "UndoWidget", "Undo", nullptr, QApplication::UnicodeUTF8 ) );
   redoButton->setText( QApplication::translate( "UndoWidget", "Redo", nullptr, QApplication::UnicodeUTF8 ) );
-  Q_UNUSED( UndoWidget );
+  Q_UNUSED( UndoWidget )
 }
 

@@ -36,6 +36,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerblob.h"
 #include "qgsslottofunction.h"
 #include "qgsfeatureiterator.h"
+#include "qgsexpressioncontextutils.h"
 
 /**
  * Create metadata tables if needed
@@ -197,7 +198,8 @@ struct VTable
       // add a hidden field for rtree filtering
       sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
 
-      Q_FOREACH ( const QgsField &field, mFields )
+      const auto constMFields = mFields;
+      for ( const QgsField &field : constMFields )
       {
         QString typeName = QStringLiteral( "text" );
         switch ( field.type() )
@@ -324,8 +326,8 @@ void getGeometryType( const QgsVectorDataProvider *provider, QString &geometryTy
 
 int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **outVtab, char **outErr, bool isCreated )
 {
-  Q_UNUSED( aux );
-  Q_UNUSED( isCreated );
+  Q_UNUSED( aux )
+  Q_UNUSED( isCreated )
 
 #define RETURN_CSTR_ERROR(err) if (outErr) {size_t s = strlen(err); *outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( s ) +1)); strncpy(*outErr, err, s);}
 #define RETURN_CPPSTR_ERROR(err) if (outErr) {*outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.toUtf8().size() )+1)); strncpy(*outErr, err.toUtf8().constData(), err.toUtf8().size());}
@@ -351,7 +353,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
       layerid = layerid.mid( 1, layerid.size() - 2 );
     }
     QgsMapLayer *l = QgsProject::instance()->mapLayer( layerid );
-    if ( !l || l->type() != QgsMapLayer::VectorLayer )
+    if ( !l || l->type() != QgsMapLayerType::VectorLayer )
     {
       if ( outErr )
       {
@@ -462,8 +464,8 @@ int vtableDisconnect( sqlite3_vtab *vtab )
 
 int vtableRename( sqlite3_vtab *vtab, const char *newName )
 {
-  Q_UNUSED( vtab );
-  Q_UNUSED( newName );
+  Q_UNUSED( vtab )
+  Q_UNUSED( newName )
 
   return SQLITE_OK;
 }
@@ -582,7 +584,7 @@ int vtableClose( sqlite3_vtab_cursor *cursor )
 
 int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv )
 {
-  Q_UNUSED( argc );
+  Q_UNUSED( argc )
 
   QgsFeatureRequest request;
   if ( idxNum == 1 )
@@ -771,6 +773,11 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     };
   }
 
+  // add default value for any omitted optional parameters
+  QList< QgsExpressionFunction::Parameter > params = foo->parameters();
+  for ( int i = variants.count(); i < params.count(); i++ )
+    variants << QVariant( params[i - 1].defaultValue() );
+
   QgsExpression parentExpr = QgsExpression( QString() );
   QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr, nullptr );
   if ( parentExpr.hasEvalError() )
@@ -856,6 +863,13 @@ void registerQgisFunctions( sqlite3 *db )
     names << foo->name();
     names << foo->aliases();
 
+    int params = foo->params();
+    if ( foo->minParams() != params )
+    {
+      // the function has a number of optional parameters, don't set a fixed number of parameters
+      params = -1;
+    }
+
     Q_FOREACH ( QString name, names ) // for each alias
     {
       if ( reservedFunctions.contains( name ) ) // reserved keyword
@@ -864,13 +878,13 @@ void registerQgisFunctions( sqlite3 *db )
         continue;
 
       // register the function and pass the pointer to the Function* as user data
-      int r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+      int r = sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       if ( r != SQLITE_OK )
       {
         // is it because a function of the same name already exist (in SpatiaLite for instance ?)
         // we then try to recreate it with a prefix
         name = "qgis_" + name;
-        sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+        sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       }
     }
   }
@@ -882,8 +896,8 @@ void registerQgisFunctions( sqlite3 *db )
 
 int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ )
 {
-  Q_UNUSED( pzErrMsg );
-  Q_UNUSED( unused );
+  Q_UNUSED( pzErrMsg )
+  Q_UNUSED( unused )
 
   int rc = SQLITE_OK;
 

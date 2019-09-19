@@ -17,6 +17,6 @@
 
 QVariant QgsNetworkDistanceStrategy::cost( double distance, const QgsFeature &f ) const
 {
-  Q_UNUSED( f );
+  Q_UNUSED( f )
   return QVariant( distance );
 }

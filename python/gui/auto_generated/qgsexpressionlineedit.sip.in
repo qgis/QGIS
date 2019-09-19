@@ -38,6 +38,7 @@ Constructor for QgsExpressionLineEdit.
 
 :param parent: parent widget
 %End
+    ~QgsExpressionLineEdit();
 
     void setExpressionDialogTitle( const QString &title );
 %Docstring
@@ -59,7 +60,7 @@ Returns the title used for the expression dialog.
 %Docstring
 Sets whether the widget should show a multiline text editor.
 
-:param multiLine: set to true to show multiline editor, or false
+:param multiLine: set to ``True`` to show multiline editor, or ``False``
                   to show single line editor (the default).
 %End
 
@@ -110,9 +111,11 @@ Returns the current expression shown in the widget.
 
     bool isValidExpression( QString *expressionError /Out/ = 0 ) const;
 %Docstring
-Returns true if the current expression is valid.
+Determines if the current expression is valid.
 
-:param expressionError: will be set to any generated error message if specified
+
+:return: - ``True`` if the current expression is valid.
+         - expressionError: will be set to any generated error message 
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );

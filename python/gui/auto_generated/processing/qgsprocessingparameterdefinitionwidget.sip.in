@@ -1,0 +1,158 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingparameterdefinitionwidget.h          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsProcessingAbstractParameterDefinitionWidget : QWidget
+{
+%Docstring
+Abstract base class for widgets which allow users to specify the properties of a
+Processing parameter.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameterdefinitionwidget.h"
+%End
+  public:
+
+    QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = 0,
+        const QgsProcessingAlgorithm *algorithm = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Creates a new QgsProcessingAbstractParameterDefinitionWidget, with the specified ``parent`` widget.
+
+The ``context`` argument must specify a Processing context, which will be used
+by the widget to evaluate existing ``definition`` properties such as default values. Similarly,
+the ``widgetContext`` argument specifies the wider GUI context in which the widget
+will be used.
+
+The optional ``definition`` argument may be used to provide a parameter definition to use
+to initially populate the widget's state.
+
+Additionally, the optional ``algorithm`` parameter may be used to specify the algorithm or model
+associated with the parameter.
+%End
+
+    virtual QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const = 0 /Factory/;
+%Docstring
+Returns a new instance of a parameter definition, using the current settings defined in the dialog.
+
+Common properties for parameters, including the ``name``, ``description``, and parameter ``flags`` are passed to the
+method. Subclass implementations must use these properties when crafting a parameter definition which
+also respects the additional properties specific to the parameter type handled by the widget subclass.
+%End
+};
+
+
+class QgsProcessingParameterDefinitionWidget: QWidget
+{
+%Docstring
+A widget which allow users to specify the properties of a Processing parameter.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameterdefinitionwidget.h"
+%End
+  public:
+
+    QgsProcessingParameterDefinitionWidget( const QString &type,
+                                            QgsProcessingContext &context,
+                                            const QgsProcessingParameterWidgetContext &widgetContext,
+                                            const QgsProcessingParameterDefinition *definition = 0,
+                                            const QgsProcessingAlgorithm *algorithm = 0,
+                                            QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingParameterDefinitionWidget, for a parameter of the
+specified ``type``.
+
+The ``context`` argument must specify a Processing context, which will be used
+by the widget to evaluate existing ``definition`` properties such as default values. Similarly,
+the ``widgetContext`` argument specifies the wider GUI context in which the widget
+will be used.
+
+The optional ``definition`` argument may be used to provide a parameter definition to use
+to initially populate the widget's state.
+
+Additionally, the optional ``algorithm`` parameter may be used to specify the algorithm or model
+associated with the parameter.
+%End
+
+    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const /Factory/;
+%Docstring
+Returns a new instance of a parameter definition, using the current settings defined in the dialog.
+
+The ``name`` parameter specifies the name for the newly created parameter.
+%End
+
+};
+
+class QgsProcessingParameterDefinitionDialog: QDialog
+{
+%Docstring
+A dialog which allow users to specify the properties of a Processing parameter.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameterdefinitionwidget.h"
+%End
+  public:
+
+    QgsProcessingParameterDefinitionDialog( const QString &type,
+                                            QgsProcessingContext &context,
+                                            const QgsProcessingParameterWidgetContext &widgetContext,
+                                            const QgsProcessingParameterDefinition *definition = 0,
+                                            const QgsProcessingAlgorithm *algorithm = 0,
+                                            QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingParameterDefinitionDialog, for a parameter of the
+specified ``type``.
+
+The ``context`` argument must specify a Processing context, which will be used
+by the widget to evaluate existing ``definition`` properties such as default values. Similarly,
+the ``widgetContext`` argument specifies the wider GUI context in which the widget
+will be used.
+
+The optional ``definition`` argument may be used to provide a parameter definition to use
+to initially populate the dialog's state.
+
+Additionally, the optional ``algorithm`` parameter may be used to specify the algorithm or model
+associated with the parameter.
+%End
+
+    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const /Factory/;
+%Docstring
+Returns a new instance of a parameter definition, using the current settings defined in the dialog.
+
+The ``name`` parameter specifies the name for the newly created parameter.
+%End
+
+  public slots:
+    virtual void accept();
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingparameterdefinitionwidget.h          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

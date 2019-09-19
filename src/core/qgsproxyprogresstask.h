@@ -64,6 +64,7 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
 
     QWaitCondition mNotFinishedWaitCondition;
     QMutex mNotFinishedMutex;
+    bool mAlreadyFinished = false;
     bool mResult = true;
 
 };

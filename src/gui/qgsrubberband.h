@@ -16,7 +16,7 @@
 #define QGSRUBBERBAND_H
 
 #include "qgsmapcanvasitem.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometry.h"
 
 #include <QBrush>
@@ -24,11 +24,19 @@
 #include <QPen>
 #include <QPolygon>
 #include <QObject>
+#include <QSvgRenderer>
 
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QPaintEvent;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsrubberband.h>
+% End
+#endif
 
 /**
  * \ingroup gui
@@ -40,6 +48,15 @@ class QPaintEvent;
 class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 {
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsRubberBand;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
   public:
 
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
@@ -93,6 +110,12 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
        * \since QGIS 3.0
        */
       ICON_FULL_DIAMOND,
+
+      /**
+       * An svg image is used to highlight points
+       * \since QGIS 3.10
+       */
+      ICON_SVG
     };
 
     /**
@@ -166,6 +189,15 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      */
     void setIcon( IconType icon );
 
+    /**
+     * Set the path to the svg file to use to draw points.
+     * Calling this function automatically calls setIcon(ICON_SVG)
+     * \param path The path to the svg
+     * \param drawOffset The offset where to draw the image origin
+     * \since QGIS 3.10
+     */
+    void setSvgIcon( const QString &path, QPoint drawOffset );
+
 
     /**
      * Returns the current icon type to highlight point geometries.
@@ -202,7 +234,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
     /**
      * Adds a vertex to the rubberband and update canvas.
      * The rendering of the vertex depends on the current GeometryType and icon.
-     * If adding more points consider using update=false for better performance
+     * If adding more points consider using update=FALSE for better performance
      *  \param p             The vertex/point to add
      *  \param doUpdate      Should the map canvas be updated immediately?
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
@@ -212,7 +244,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
     /**
      * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
-     * \param doUpdate set to true to update the map canvas immediately
+     * \param doUpdate set to TRUE to update the map canvas immediately
      * \param geometryIndex index of the feature part (in case of multipart geometries)
      * \since QGIS 2.16
      */
@@ -256,7 +288,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
      *  \param geom the geometry object
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
      */
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
@@ -286,7 +318,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      *
      *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
      */
     void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
 
@@ -362,6 +394,8 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 
     //! Icon to be shown.
     IconType mIconType = ICON_CIRCLE;
+    std::unique_ptr<QSvgRenderer> mSvgRenderer;
+    QPoint mSvgOffset;
 
     /**
      * Nested lists used for multitypes

@@ -49,7 +49,7 @@ Create a new empty layer tree
     QList<QgsMapLayer *> customLayerOrder() const;
 %Docstring
 The order in which layers will be rendered on the canvas.
-Will only be used if the property hasCustomLayerOrder is true.
+Will only be used if the property hasCustomLayerOrder is ``True``.
 If you need the current layer order that is active, prefer using layerOrder().
 
 .. seealso:: :py:func:`setCustomLayerOrder`
@@ -64,7 +64,7 @@ If you need the current layer order that is active, prefer using layerOrder().
     void setCustomLayerOrder( const QList<QgsMapLayer *> &customLayerOrder );
 %Docstring
 The order in which layers will be rendered on the canvas.
-Will only be used if the property hasCustomLayerOrder is true.
+Will only be used if the property hasCustomLayerOrder is ``True``.
 If you need the current layer order that is active, prefer using layerOrder().
 
 .. seealso:: :py:func:`customLayerOrder`
@@ -79,7 +79,7 @@ If you need the current layer order that is active, prefer using layerOrder().
     void setCustomLayerOrder( const QStringList &customLayerOrder ) /PyName=setCustomLayerOrderByIds/;
 %Docstring
 The order in which layers will be rendered on the canvas.
-Will only be used if the property hasCustomLayerOrder is true.
+Will only be used if the property hasCustomLayerOrder is ``True``.
 If you need the current layer order that is active, prefer using layerOrder().
 
 .. seealso:: :py:func:`customLayerOrder`

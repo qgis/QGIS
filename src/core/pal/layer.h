@@ -70,7 +70,6 @@ namespace pal
       friend class LabelPosition;
 
     public:
-      enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
       enum UpsideDownLabels
       {
         Upright, // upside-down labels (90 <= angle < 270) are shown upright
@@ -102,7 +101,7 @@ namespace pal
       QgsPalLayerSettings::Placement arrangement() const { return mArrangement; }
 
       /**
-       * Returns true if the layer has curved labels
+       * Returns TRUE if the layer has curved labels
        */
       bool isCurved() const { return mArrangement == QgsPalLayerSettings::Curved || mArrangement == QgsPalLayerSettings::PerimeterCurved; }
 
@@ -114,26 +113,13 @@ namespace pal
       void setArrangement( QgsPalLayerSettings::Placement arrangement ) { mArrangement = arrangement; }
 
       /**
-       * Returns the layer's arrangement flags.
-       * \see setArrangementFlags
-       */
-      LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
-
-      /**
-       * Sets the layer's arrangement flags.
-       * \param flags arrangement flags
-       * \see arrangementFlags
-       */
-      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
-
-      /**
        * \brief Sets whether the layer is currently active.
        *
        * Active means "is currently displayed or used as obstacles". When a layer is
        * deactivated then feature of this layer will not be used for either
        * labeling or as obstacles.
        *
-       * \param active set to true to make the layer active, or false to deactivate the layer
+       * \param active set to TRUE to make the layer active, or FALSE to deactivate the layer
        * \see active
        */
       void setActive( bool active ) { mActive = active; }
@@ -146,8 +132,8 @@ namespace pal
 
       /**
        * Sets whether the layer will be labeled.
-       * \note Layers are labelled if and only if labelLayer and active are true
-       * \param toLabel set to false disable labeling this layer
+       * \note Layers are labelled if and only if labelLayer and active are TRUE
+       * \param toLabel set to FALSE disable labeling this layer
        * \see labelLayer
        * \see setActive
        */
@@ -190,21 +176,8 @@ namespace pal
       double priority() const { return mDefaultPriority; }
 
       /**
-       * Sets the layer's labeling mode.
-       * \param mode label mode
-       * \see labelMode
-       */
-      void setLabelMode( LabelMode mode ) { mMode = mode; }
-
-      /**
-       * Returns the layer's labeling mode.
-       * \see setLabelMode
-       */
-      LabelMode labelMode() const { return mMode; }
-
-      /**
        * Sets whether connected lines should be merged before labeling
-       * \param merge set to true to merge connected lines
+       * \param merge set to TRUE to merge connected lines
        * \see mergeConnectedLines
        */
       void setMergeConnectedLines( bool merge ) { mMergeLines = merge; }
@@ -231,8 +204,8 @@ namespace pal
       /**
        * Sets whether labels placed at the centroid of features within the layer
        * are forced to be placed inside the feature's geometry.
-       * \param forceInside set to true to force centroid labels to be within the
-       * feature. If set to false then the centroid may fall outside the feature.
+       * \param forceInside set to TRUE to force centroid labels to be within the
+       * feature. If set to FALSE then the centroid may fall outside the feature.
        * \see centroidInside
        */
       void setCentroidInside( bool forceInside ) { mCentroidInside = forceInside; }
@@ -251,7 +224,7 @@ namespace pal
        *
        * \throws PalException::FeatureExists
        *
-       * \returns true on success (i.e. valid geometry)
+       * \returns TRUE on success (i.e. valid geometry)
        */
       bool registerFeature( QgsLabelFeature *label );
 
@@ -290,8 +263,7 @@ namespace pal
 
       //! Optional flags used for some placement methods
       QgsPalLayerSettings::Placement mArrangement;
-      LineArrangementFlags mArrangementFlags;
-      LabelMode mMode;
+
       bool mMergeLines;
 
       UpsideDownLabels mUpsidedownLabels;
@@ -304,8 +276,7 @@ namespace pal
       //obstacle r-tree
       RTree<FeaturePart *, double, 2, double, 8, 4> *mObstacleIndex;
 
-      QHash< QString, QLinkedList<FeaturePart *>* > mConnectedHashtable;
-      QStringList mConnectedTexts;
+      QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
       QMutex mMutex;
@@ -318,9 +289,9 @@ namespace pal
        * \param arrangement Arrangement mode : how to place candidates
        * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * \param active is the layer is active (currently displayed)
-       * \param toLabel the layer will be labeled whether toLablel is true
+       * \param toLabel the layer will be labeled whether toLablel is TRUE
        * \param pal pointer to the pal object
-       * \param displayAll if true, all features will be labelled even though overlaps occur
+       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
        *
        */
       Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );

@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from osgeo import gdal
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFeature,
@@ -107,6 +103,10 @@ class PointsFromLines(QgisAlgorithm):
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
+
+            if not f.hasGeometry():
+                continue
+
             geom = f.geometry()
             if geom.isMultipart():
                 lines = geom.asMultiPolyline()

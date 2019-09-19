@@ -22,6 +22,7 @@
 #include "qgisapp.h"
 #include "qgsactionmanager.h"
 #include "qgsjoindialog.h"
+#include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsapplydialog.h"
@@ -68,6 +69,8 @@
 #include "qgsgeometrycheckregistry.h"
 #include "qgsgeometrycheck.h"
 #include "qgsanalysis.h"
+#include "qgssymbolwidgetcontext.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -112,6 +115,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mButtonEditJoin, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonEditJoin_clicked );
   connect( mJoinTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked );
   connect( mButtonRemoveJoin, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonRemoveJoin_clicked );
+  connect( mButtonAddWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonAddWmsDimension_clicked );
+  connect( mButtonEditWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonEditWmsDimension_clicked );
+  connect( mWmsDimensionsTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked );
+  connect( mButtonRemoveWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked );
   connect( mSimplifyDrawingGroupBox, &QGroupBox::toggled, this, &QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
 
@@ -231,7 +238,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   if ( mLayer->dataProvider() )//enable spatial index button group if supported by provider
   {
-    int capabilities = mLayer->dataProvider()->capabilities();
+    QgsVectorDataProvider::Capabilities capabilities = mLayer->dataProvider()->capabilities();
     if ( !( capabilities & QgsVectorDataProvider::CreateSpatialIndex ) )
     {
       pbnIndex->setEnabled( false );
@@ -249,7 +256,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       }
       cboProviderEncoding->setCurrentIndex( encindex );
     }
-    else if ( mLayer->dataProvider()->name() == QLatin1String( "ogr" ) )
+    else if ( mLayer->providerType() == QLatin1String( "ogr" ) )
     {
       // if OGR_L_TestCapability(OLCStringsAsUTF8) returns true, OGR provider encoding can be set to only UTF-8
       // so make encoding box grayed out
@@ -324,6 +331,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     )
   );
 
+  //insert existing dimension info
+  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &wmsDims = mLayer->serverProperties()->wmsDimensions();
+  for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
+  {
+    addWmsDimensionInfoToTreeWidget( dim );
+  }
+
   QString myStyle = QgsApplication::reportStyleSheet();
   myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   teMetadataViewer->clear();
@@ -348,11 +362,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   restoreOptionsBaseUi( title );
 
   mLayersDependenciesTreeGroup.reset( QgsProject::instance()->layerTreeRoot()->clone() );
-  QgsLayerTreeLayer *layer = mLayersDependenciesTreeGroup->findLayer( mLayer->id() );
-  if ( layer )
-  {
-    layer->parent()->takeChild( layer );
-  }
   mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.get() ) );
   // use visibility as selection
   mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
@@ -360,11 +369,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLayersDependenciesTreeGroup->setItemVisibilityChecked( false );
 
   QSet<QString> dependencySources;
-  Q_FOREACH ( const QgsMapLayerDependency &dep, mLayer->dependencies() )
+  const auto constDependencies = mLayer->dependencies();
+  for ( const QgsMapLayerDependency &dep : constDependencies )
   {
     dependencySources << dep.layerId();
   }
-  Q_FOREACH ( QgsLayerTreeLayer *layer, mLayersDependenciesTreeGroup->findLayers() )
+  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
+  for ( QgsLayerTreeLayer *layer : constFindLayers )
   {
     layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
   }
@@ -407,13 +418,32 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setEnabled( true );
     mGeometryPrecisionLineEdit->setValidator( new QDoubleValidator( mGeometryPrecisionLineEdit ) );
 
-    mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryOptions()->removeDuplicateNodes() );
     double precision( mLayer->geometryOptions()->geometryPrecision() );
     bool ok = true;
     QString precisionStr( QLocale().toString( precision, ok ) );
     if ( precision == 0.0 || ! ok )
       precisionStr = QString();
     mGeometryPrecisionLineEdit->setText( precisionStr );
+
+    mRemoveDuplicateNodesManuallyActivated = mLayer->geometryOptions()->removeDuplicateNodes();
+    mRemoveDuplicateNodesCheckbox->setChecked( mRemoveDuplicateNodesManuallyActivated );
+    if ( !precisionStr.isNull() )
+      mRemoveDuplicateNodesCheckbox->setEnabled( false );
+    connect( mGeometryPrecisionLineEdit, &QLineEdit::textChanged, this, [this]
+    {
+      if ( !mGeometryPrecisionLineEdit->text().isEmpty() )
+      {
+        if ( mRemoveDuplicateNodesCheckbox->isEnabled() )
+          mRemoveDuplicateNodesManuallyActivated  = mRemoveDuplicateNodesCheckbox->isChecked();
+        mRemoveDuplicateNodesCheckbox->setEnabled( false );
+        mRemoveDuplicateNodesCheckbox->setChecked( true );
+      }
+      else
+      {
+        mRemoveDuplicateNodesCheckbox->setEnabled( true );
+        mRemoveDuplicateNodesCheckbox->setChecked( mRemoveDuplicateNodesManuallyActivated );
+      }
+    } );
 
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
 
@@ -428,6 +458,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       geometryCheckLayout->addWidget( cb );
     }
     mGeometryValidationGroupBox->setLayout( geometryCheckLayout );
+    mGeometryValidationGroupBox->setVisible( !geometryCheckFactories.isEmpty() );
 
     QLayout *topologyCheckLayout = new QVBoxLayout();
     const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
@@ -438,8 +469,31 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       cb->setChecked( activeChecks.contains( factory->id() ) );
       mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
       topologyCheckLayout->addWidget( cb );
+      QString id = factory->id();
+      if ( factory->id() == QStringLiteral( "QgsGeometryGapCheck" ) )
+      {
+        const QVariantMap gapCheckConfig = mLayer->geometryOptions()->checkConfiguration( QStringLiteral( "QgsGeometryGapCheck" ) );
+
+        mGapCheckAllowExceptionsActivatedCheckBox = new QgsCollapsibleGroupBox( tr( "Allowed Gaps" ) );
+        mGapCheckAllowExceptionsActivatedCheckBox->setCheckable( true );
+        mGapCheckAllowExceptionsActivatedCheckBox->setChecked( gapCheckConfig.value( QStringLiteral( "allowedGapsEnabled" ), false ).toBool() );
+        QFormLayout *layout = new QFormLayout();
+        mGapCheckAllowExceptionsActivatedCheckBox->setLayout( layout );
+        topologyCheckLayout->addWidget( mGapCheckAllowExceptionsActivatedCheckBox );
+        mGapCheckAllowExceptionsLayerComboBox = new QgsMapLayerComboBox();
+        mGapCheckAllowExceptionsLayerComboBox->setFilters( QgsMapLayerProxyModel::PolygonLayer );
+        mGapCheckAllowExceptionsLayerComboBox->setExceptedLayerList( QList<QgsMapLayer *> { mLayer } );
+        mGapCheckAllowExceptionsLayerComboBox->setLayer( QgsProject::instance()->mapLayer( gapCheckConfig.value( QStringLiteral( "allowedGapsLayer" ) ).toString() ) );
+        layout->addRow( new QLabel( tr( "Layer" ) ), mGapCheckAllowExceptionsLayerComboBox );
+        mGapCheckAllowExceptionsBufferSpinBox = new QgsDoubleSpinBox();
+        mGapCheckAllowExceptionsBufferSpinBox->setInputMethodHints( Qt::ImhFormattedNumbersOnly );
+        mGapCheckAllowExceptionsBufferSpinBox->setSuffix( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) );
+        mGapCheckAllowExceptionsBufferSpinBox->setValue( gapCheckConfig.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble() );
+        layout->addRow( new QLabel( tr( "Buffer" ) ), mGapCheckAllowExceptionsBufferSpinBox );
+      }
     }
     mTopologyChecksGroupBox->setLayout( topologyCheckLayout );
+    mTopologyChecksGroupBox->setVisible( !topologyCheckFactories.isEmpty() );
   }
   else
   {
@@ -447,6 +501,26 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setEnabled( false );
     mGeometryAutoFixesGroupBox->setEnabled( false );
   }
+
+  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#information-properties" ) );
+  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-properties" ) );
+  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#symbology-properties" ) );
+  mOptsPage_Labels->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#labels-properties" ) );
+  mOptsPage_Diagrams->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
+  mOptsPage_SourceFields->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-fields-properties" ) );
+  mOptsPage_AttributesForm->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#attributes-form-properties" ) );
+  mOptsPage_Joins->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
+  mOptsPage_AuxiliaryStorage->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#auxiliary-storage-properties" ) );
+  mOptsPage_Actions->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#actions-properties" ) );
+  mOptsPage_Display->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#display-properties" ) );
+  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#rendering-properties" ) );
+  mOptsPage_Variables->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#variables-properties" ) );
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#metadata-properties" ) );
+  mOptsPage_DataDependencies->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#dependencies-properties" ) ) ;
+  mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#legend-properties" ) );
+  mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#qgis-server-properties" ) );
+  mOptsPage_Digitizing->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#digitizing-properties" ) );
+
 
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
 }
@@ -639,7 +713,8 @@ void QgsVectorLayerProperties::apply()
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();
-  Q_FOREACH ( const QgsAction &action, mActionDialog->actions() )
+  const auto constActions = mActionDialog->actions();
+  for ( const QgsAction &action : constActions )
   {
     mLayer->actions()->addAction( action );
   }
@@ -675,7 +750,8 @@ void QgsVectorLayerProperties::apply()
   diagramPropertiesDialog->apply();
 
   // apply all plugin dialogs
-  Q_FOREACH ( QgsMapLayerConfigWidget *page, mLayerPropertiesPages )
+  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
+  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
   {
     page->apply();
   }
@@ -767,7 +843,8 @@ void QgsVectorLayerProperties::apply()
 
   // save dependencies
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsLayerTreeLayer *layer, mLayersDependenciesTreeGroup->findLayers() )
+  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
+  for ( const QgsLayerTreeLayer *layer : constFindLayers )
   {
     if ( layer->isVisible() )
       deps << QgsMapLayerDependency( layer->layerId() );
@@ -797,6 +874,16 @@ void QgsVectorLayerProperties::apply()
   }
   mLayer->geometryOptions()->setGeometryChecks( activeChecks );
 
+  if ( mGapCheckAllowExceptionsActivatedCheckBox )
+  {
+    QVariantMap gapCheckConfig;
+    gapCheckConfig.insert( QStringLiteral( "allowedGapsEnabled" ), mGapCheckAllowExceptionsActivatedCheckBox->isChecked() );
+    QgsMapLayer *currentLayer = mGapCheckAllowExceptionsLayerComboBox->currentLayer();
+    gapCheckConfig.insert( QStringLiteral( "allowedGapsLayer" ), currentLayer ? currentLayer->id() : QString() );
+    gapCheckConfig.insert( QStringLiteral( "allowedGapsBuffer" ), mGapCheckAllowExceptionsBufferSpinBox->value() );
+
+    mLayer->geometryOptions()->setCheckConfiguration( QStringLiteral( "QgsGeometryGapCheck" ), gapCheckConfig );
+  }
   mLayer->triggerRepaint();
   // notify the project we've made a change
   QgsProject::instance()->setDirty( true );
@@ -809,10 +896,11 @@ void QgsVectorLayerProperties::onCancel()
     // need to undo changes in vector layer joins - they are applied directly to the layer (not in apply())
     // so other parts of the properties dialog can use the fields from the joined layers
 
-    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mLayer->vectorJoins() )
+    const auto constVectorJoins = mLayer->vectorJoins();
+    for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
       mLayer->removeJoin( info.joinLayerId() );
 
-    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mOldJoins )
+    for ( const QgsVectorLayerJoinInfo &info : qgis::as_const( mOldJoins ) )
       mLayer->addJoin( info );
   }
 
@@ -900,7 +988,7 @@ void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString 
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs(), mLayer );
   mLayer->setCrs( crs );
   mMetadataFilled = false;
   mMetadataWidget->crsChanged();
@@ -1196,9 +1284,7 @@ void QgsVectorLayerProperties::aboutToShowStyleMenu()
 
 void QgsVectorLayerProperties::loadStyle()
 {
-
   QgsSettings settings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString errorMsg;
   QStringList ids, names, descriptions;
@@ -1345,6 +1431,7 @@ void QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked( QTreeWidgetIte
   }
 
   QgsJoinDialog d( mLayer, joinedLayers );
+  d.setWindowTitle( tr( "Edit Vector Join" ) );
   d.setJoinInfo( joins[j] );
 
   if ( d.exec() == QDialog::Accepted )
@@ -1504,6 +1591,155 @@ void QgsVectorLayerProperties::mButtonRemoveJoin_clicked()
 }
 
 
+void QgsVectorLayerProperties::mButtonAddWmsDimension_clicked()
+{
+  if ( !mLayer )
+    return;
+
+  // get wms dimensions name
+  QStringList alreadyDefinedDimensions;
+  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &dims = mLayer->serverProperties()->wmsDimensions();
+  for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : dims )
+  {
+    alreadyDefinedDimensions << dim.name;
+  }
+
+  QgsWmsDimensionDialog d( mLayer, alreadyDefinedDimensions );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsVectorLayerServerProperties::WmsDimensionInfo info = d.info();
+    // save dimension
+    mLayer->serverProperties()->addWmsDimension( info );
+    addWmsDimensionInfoToTreeWidget( info );
+  }
+}
+
+void QgsVectorLayerProperties::mButtonEditWmsDimension_clicked()
+{
+  QTreeWidgetItem *currentWmsDimensionItem = mWmsDimensionsTreeWidget->currentItem();
+  mWmsDimensionsTreeWidget_itemDoubleClicked( currentWmsDimensionItem, 0 );
+}
+
+void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int )
+{
+  if ( !mLayer || !item )
+  {
+    return;
+  }
+
+  QString wmsDimName = item->data( 0, Qt::UserRole ).toString();
+  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &dims = mLayer->serverProperties()->wmsDimensions();
+  QStringList alreadyDefinedDimensions;
+  int j = -1;
+  for ( int i = 0; i < dims.size(); ++i )
+  {
+    QString dimName = dims[i].name;
+    if ( dimName == wmsDimName )
+    {
+      j = i;
+    }
+    else
+    {
+      alreadyDefinedDimensions << dimName;
+    }
+  }
+  if ( j == -1 )
+  {
+    return;
+  }
+
+  QgsWmsDimensionDialog d( mLayer, alreadyDefinedDimensions );
+  d.setWindowTitle( tr( "Edit WMS Dimension" ) );
+  d.setInfo( dims[j] );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsVectorLayerServerProperties::WmsDimensionInfo info = d.info();
+
+    // remove old
+    mLayer->serverProperties()->removeWmsDimension( wmsDimName );
+    int idx = mWmsDimensionsTreeWidget->indexOfTopLevelItem( item );
+    mWmsDimensionsTreeWidget->takeTopLevelItem( idx );
+
+    // save new
+    mLayer->serverProperties()->addWmsDimension( info );
+    addWmsDimensionInfoToTreeWidget( info, idx );
+  }
+}
+
+void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsVectorLayerServerProperties::WmsDimensionInfo &wmsDim, const int insertIndex )
+{
+  QTreeWidgetItem *wmsDimensionItem = new QTreeWidgetItem();
+  wmsDimensionItem->setFlags( Qt::ItemIsEnabled );
+
+  wmsDimensionItem->setText( 0, tr( "Dimension" ) );
+  wmsDimensionItem->setText( 1, wmsDim.name );
+
+  QFont f = wmsDimensionItem->font( 0 );
+  f.setBold( true );
+  wmsDimensionItem->setFont( 0, f );
+  wmsDimensionItem->setFont( 1, f );
+
+  wmsDimensionItem->setData( 0, Qt::UserRole, wmsDim.name );
+
+  QTreeWidgetItem *childWmsDimensionField = new QTreeWidgetItem();
+  childWmsDimensionField->setText( 0, tr( "Field" ) );
+  childWmsDimensionField->setText( 1, wmsDim.fieldName );
+  childWmsDimensionField->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionField );
+
+  QTreeWidgetItem *childWmsDimensionEndField = new QTreeWidgetItem();
+  childWmsDimensionEndField->setText( 0, tr( "End field" ) );
+  childWmsDimensionEndField->setText( 1, wmsDim.endFieldName );
+  childWmsDimensionEndField->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionEndField );
+
+  QTreeWidgetItem *childWmsDimensionUnits = new QTreeWidgetItem();
+  childWmsDimensionUnits->setText( 0, tr( "Units" ) );
+  childWmsDimensionUnits->setText( 1, wmsDim.units );
+  childWmsDimensionUnits->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionUnits );
+
+  QTreeWidgetItem *childWmsDimensionUnitSymbol = new QTreeWidgetItem();
+  childWmsDimensionUnitSymbol->setText( 0, tr( "Unit symbol" ) );
+  childWmsDimensionUnitSymbol->setText( 1, wmsDim.unitSymbol );
+  childWmsDimensionUnitSymbol->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionUnitSymbol );
+
+  QTreeWidgetItem *childWmsDimensionDefaultValue = new QTreeWidgetItem();
+  childWmsDimensionDefaultValue->setText( 0, tr( "Default display" ) );
+  childWmsDimensionDefaultValue->setText( 1, QgsVectorLayerServerProperties::wmsDimensionDefaultDisplayLabels()[wmsDim.defaultDisplayType] );
+  childWmsDimensionDefaultValue->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionDefaultValue );
+
+  QTreeWidgetItem *childWmsDimensionRefValue = new QTreeWidgetItem();
+  childWmsDimensionRefValue->setText( 0, tr( "Reference value" ) );
+  childWmsDimensionRefValue->setText( 1, wmsDim.referenceValue.toString() );
+  childWmsDimensionRefValue->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionRefValue );
+
+  if ( insertIndex >= 0 )
+    mWmsDimensionsTreeWidget->insertTopLevelItem( insertIndex, wmsDimensionItem );
+  else
+    mWmsDimensionsTreeWidget->addTopLevelItem( wmsDimensionItem );
+
+  mWmsDimensionsTreeWidget->setCurrentItem( wmsDimensionItem );
+  mWmsDimensionsTreeWidget->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+}
+
+void QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked()
+{
+  QTreeWidgetItem *currentWmsDimensionItem = mWmsDimensionsTreeWidget->currentItem();
+  if ( !mLayer || !currentWmsDimensionItem )
+  {
+    return;
+  }
+
+  mLayer->serverProperties()->removeWmsDimension( currentWmsDimensionItem->data( 0, Qt::UserRole ).toString() );
+  mWmsDimensionsTreeWidget->takeTopLevelItem( mWmsDimensionsTreeWidget->indexOfTopLevelItem( currentWmsDimensionItem ) );
+}
+
+
 void QgsVectorLayerProperties::updateSymbologyPage()
 {
 
@@ -1515,7 +1751,10 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   {
     mRendererDialog = new QgsRendererPropertiesDialog( mLayer, QgsStyle::defaultStyle(), true, this );
     mRendererDialog->setDockMode( false );
-    mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
+    QgsSymbolWidgetContext context;
+    context.setMapCanvas( QgisApp::instance()->mapCanvas() );
+    context.setMessageBar( QgisApp::instance()->messageBar() );
+    mRendererDialog->setContext( context );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::showPanel, this, &QgsVectorLayerProperties::openPanel );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::layerVariablesChanged, this, &QgsVectorLayerProperties::updateVariableEditor );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::widgetChanged, this,  [ = ] { updateAuxiliaryStoragePage(); } );
@@ -1562,13 +1801,15 @@ void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
   mBtnStyle->setVisible( ! isMetadataPanel );
   mBtnMetadata->setVisible( isMetadataPanel );
 
-  if ( index != mOptStackedWidget->indexOf( mOptsPage_Information ) || mMetadataFilled )
-    return;
+  if ( index == mOptStackedWidget->indexOf( mOptsPage_Information ) && ! mMetadataFilled )
+  {
+    //set the metadata contents (which can be expensive)
+    teMetadataViewer->clear();
+    teMetadataViewer->setHtml( htmlMetadata() );
+    mMetadataFilled = true;
+  }
 
-  //set the metadata contents (which can be expensive)
-  teMetadataViewer->clear();
-  teMetadataViewer->setHtml( htmlMetadata() );
-  mMetadataFilled = true;
+  resizeAlltabs( index );
 }
 
 void QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled( bool checked )
@@ -1596,9 +1837,11 @@ void QgsVectorLayerProperties::updateVariableEditor()
 
 void QgsVectorLayerProperties::showHelp()
 {
-  if ( mOptionsListWidget->currentIndex().data().toString() == "Form" )
+  const QVariant helpPage = mOptionsStackedWidget->currentWidget()->property( "helpPage" );
+
+  if ( helpPage.isValid() )
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
+    QgsHelp::openHelp( helpPage.toString() );
   }
   else
   {
@@ -1620,7 +1863,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
     mAuxiliaryStorageKeyLineEdit->setText( alayer->joinInfo().targetFieldName() );
 
     // update feature count
-    int features = alayer->featureCount();
+    long features = alayer->featureCount();
     mAuxiliaryStorageFeaturesLineEdit->setText( QString::number( features ) );
 
     // update actions

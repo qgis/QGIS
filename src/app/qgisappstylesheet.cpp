@@ -56,7 +56,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   {
     fontSize = oldFontPointSize.toInt();
   }
-  QgsDebugMsg( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
   opts.insert( QStringLiteral( "fontPointSize" ), settings.value( QStringLiteral( "fontPointSize" ), QVariant( fontSize ) ) );
 
   QString fontFamily = mDefaultFont.family();
@@ -75,11 +75,8 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
       fontFamily = mDefaultFont.family();
     }
   }
-  QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
-
-  bool gbxCustom = ( mMacStyle );
-  opts.insert( QStringLiteral( "groupBoxCustom" ), settings.value( QStringLiteral( "groupBoxCustom" ), QVariant( gbxCustom ) ) );
 
   opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "toolbarSpacing" ), QString() ) );
 
@@ -92,15 +89,16 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 
 void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 {
+  QgsSettings settings;
   QString ss;
 
   // QgisApp-wide font
   QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
-  QgsDebugMsg( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
   if ( fontSize.isEmpty() ) { return; }
 
   QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
-  QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
+  QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
   if ( fontFamily.isEmpty() ) { return; }
 
   const QString defaultSize = QString::number( mDefaultFont.pointSize() );
@@ -121,84 +119,58 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
     ss += QLatin1String( "QTabBar::close-button:hover{ image: url(:/images/themes/default/mIconCloseTabHover.svg); }" );
   }
 
-  // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
-  bool gbxCustom = opts.value( QStringLiteral( "groupBoxCustom" ) ).toBool();
-  QgsDebugMsg( QStringLiteral( "groupBoxCustom: %1" ).arg( gbxCustom ) );
+  ss += QLatin1String( "QGroupBox{ font-weight: 600; }" );
 
-  ss += QLatin1String( "QGroupBox{" );
-  // doesn't work for QGroupBox::title
-  ss += QStringLiteral( "color: rgb(%1,%1,%1);" ).arg( mMacStyle ? 25 : 60 );
-  ss += QLatin1String( "font-weight: bold;" );
-
-  if ( gbxCustom )
+  QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
+  if ( themeName == QStringLiteral( "default" ) || !QgsApplication::uiThemes().contains( themeName ) )
   {
-    ss += QStringLiteral( "background-color: rgba(0,0,0,%1%);" )
-          .arg( mWinOS && mStyle.startsWith( QLatin1String( "windows" ) ) ? 0 : 3 );
-    ss += QLatin1String( "border: 1px solid rgba(0,0,0,20%);" );
-    ss += QLatin1String( "border-radius: 5px;" );
-    ss += QLatin1String( "margin-top: 2.5ex;" );
-    ss += QStringLiteral( "margin-bottom: %1ex;" ).arg( mMacStyle ? 1.5 : 1 );
-  }
-  ss += QLatin1String( "} " );
-  if ( gbxCustom )
-  {
-    ss += QLatin1String( "QGroupBox:flat{" );
-    ss += QLatin1String( "background-color: rgba(0,0,0,0);" );
-    ss += QLatin1String( "border: rgba(0,0,0,0);" );
-    ss += QLatin1String( "} " );
+    //sidebar style
+    QString style = "QListWidget#mOptionsListWidget {"
+                    "    background-color: rgb(69, 69, 69, 0);"
+                    "    outline: 0;"
+                    "}"
+                    "QFrame#mOptionsListFrame {"
+                    "    background-color: rgb(69, 69, 69, 220);"
+                    "}"
+                    "QListWidget#mOptionsListWidget::item {"
+                    "    color: white;"
+                    "    padding: 3px;"
+                    "}"
+                    "QListWidget#mOptionsListWidget::item::selected {"
+                    "    color: black;"
+                    "    background-color:palette(Window);"
+                    "    padding-right: 0px;"
+                    "}";
 
-    ss += QLatin1String( "QGroupBox::title{" );
-    ss += QLatin1String( "subcontrol-origin: margin;" );
-    ss += QLatin1String( "subcontrol-position: top left;" );
-    ss += QLatin1String( "margin-left: 6px;" );
-    if ( !( mWinOS && mStyle.startsWith( QLatin1String( "windows" ) ) ) && !mOxyStyle )
+    QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
+    if ( !toolbarSpacing.isEmpty() )
     {
-      ss += QLatin1String( "background-color: rgba(0,0,0,0);" );
+      bool ok = false;
+      int toolbarSpacingInt = toolbarSpacing.toInt( &ok );
+      if ( ok )
+      {
+        style += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );
+      }
     }
-    ss += QLatin1String( "} " );
+    ss += style;
+
+    // Fix selection color on losing focus (Windows)
+    const QPalette palette = qApp->palette();
+
+    ss += QString( "QTableView {"
+                   "selection-background-color: %1;"
+                   "selection-color: %2;"
+                   "}" )
+          .arg( palette.highlight().color().name(),
+                palette.highlightedText().color().name() );
+
+    ss += QStringLiteral( "QgsPropertyOverrideButton { background: none; border: 1px solid rgba(0, 0, 0, 0%); } QgsPropertyOverrideButton:focus { border: 1px solid palette(highlight); }" );
+#ifdef Q_OS_MACX
+    ss += QStringLiteral( "QgsPropertyOverrideButton::menu-indicator { width: 5px; }" );
+#endif
   }
 
-  //sidebar style
-  QString style = "QListWidget#mOptionsListWidget {"
-                  "    background-color: rgb(69, 69, 69, 0);"
-                  "    outline: 0;"
-                  "}"
-                  "QFrame#mOptionsListFrame {"
-                  "    background-color: rgb(69, 69, 69, 220);"
-                  "}"
-                  "QListWidget#mOptionsListWidget::item {"
-                  "    color: white;"
-                  "    padding: 3px;"
-                  "}"
-                  "QListWidget#mOptionsListWidget::item::selected {"
-                  "    color: black;"
-                  "    background-color:palette(Window);"
-                  "    padding-right: 0px;"
-                  "}";
-  ss += style;
-
-  // Fix selection color on losing focus (Windows)
-  const QPalette palette = qApp->palette();
-
-  ss += QString( "QTableView {"
-                 "selection-background-color: %1;"
-                 "selection-color: %2;"
-                 "}" )
-        .arg( palette.highlight().color().name(),
-              palette.highlightedText().color().name() );
-
-  QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
-  if ( !toolbarSpacing.isEmpty() )
-  {
-    bool ok = false;
-    int toolbarSpacingInt = toolbarSpacing.toInt( &ok );
-    if ( ok )
-    {
-      ss += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );
-    }
-  }
-
-  QgsDebugMsg( QStringLiteral( "Stylesheet built: %1" ).arg( ss ) );
+  QgsDebugMsgLevel( QStringLiteral( "Stylesheet built: %1" ).arg( ss ), 2 );
 
   emit appStyleSheetChanged( ss );
 }
@@ -220,7 +192,7 @@ void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 void QgisAppStyleSheet::setActiveValues()
 {
   mStyle = qApp->style()->objectName(); // active style name (lowercase)
-  QgsDebugMsg( QStringLiteral( "Style name: %1" ).arg( mStyle ) );
+  QgsDebugMsgLevel( QStringLiteral( "Style name: %1" ).arg( mStyle ), 2 );
 
   mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
   mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen

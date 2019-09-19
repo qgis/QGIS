@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFILLSYMBOLLAYERV2_H
-#define QGSFILLSYMBOLLAYERV2_H
+#ifndef QGSFILLSYMBOLLAYER_H
+#define QGSFILLSYMBOLLAYER_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      * \see colorRamp()
      * \see setGradientColorType()
      */
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     //! Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor
     QColor color2() const { return mColor2; }
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets whether the shapeburst fill should be drawn using the entire shape.
-     * \param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
+     * \param useWholeShape Set to TRUE if shapeburst should cover entire shape. If FALSE, setMaxDistance is used to calculate how far from the boundary of the shape should
      * be shaded
      * \see useWholeShape
      * \see setMaxDistance
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Returns whether the shapeburst fill is set to cover the entire shape.
-     * \returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+     * \returns TRUE if shapeburst fill will cover the entire shape. If FALSE, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
      * \see setUseWholeShape
      * \see maxDistance
      * \since QGIS 2.3
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets the maximum distance to shape inside of the shape from the polygon's boundary.
-     * \param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+     * \param maxDistance distance from boundary to shade. setUseWholeShape must be set to FALSE for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
      * \see maxDistance
      * \see setUseWholeShape
      * \see setDistanceUnit
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setMaxDistance( double maxDistance ) { mMaxDistance = maxDistance; }
 
     /**
-     * Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
+     * Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is FALSE.
      * \returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
      * \see useWholeShape
      * \see setMaxDistance
@@ -485,13 +485,15 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     ShapeburstColorType colorType() const { return mColorType; }
 
     /**
-     * Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
-     * \param ramp color ramp to use for shapeburst fill
+     * Sets the color \a ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
+     *
+     * Ownership of \a ramp is transferred to the fill.
+     *
      * \see setColorType
      * \see colorRamp
      * \since QGIS 2.3
      */
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /**
      * Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
@@ -523,7 +525,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Sets whether the shapeburst fill should ignore polygon rings when calculating
      * the buffered shading.
-     * \param ignoreRings Set to true if buffers should ignore interior rings for polygons.
+     * \param ignoreRings Set to TRUE if buffers should ignore interior rings for polygons.
      * \see ignoreRings
      * \since QGIS 2.3
      */
@@ -531,7 +533,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Returns whether the shapeburst fill is set to ignore polygon interior rings.
-     * \returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+     * \returns TRUE if the shapeburst fill will ignore interior rings when calculating buffered shading.
      * \see setIgnoreRings
      * \since QGIS 2.3
      */
@@ -611,12 +613,12 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     /* distance transform of a 1d function using squared distance */
     void distanceTransform1d( double *f, int n, int *v, double *z, double *d );
     /* distance transform of 2d function using squared distance */
-    void distanceTransform2d( double *im, int width, int height );
+    void distanceTransform2d( double *im, int width, int height, QgsRenderContext &context );
     /* distance transform of a binary QImage */
-    double *distanceTransform( QImage *im );
+    double *distanceTransform( QImage *im, QgsRenderContext &context );
 
     /* fills a QImage with values from an array of doubles containing squared distance transform values */
-    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
+    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, bool useWholeShape = true, int maxPixelDistance = 0 );
 
 #ifdef SIP_RUN
     QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );
@@ -677,6 +679,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QColor dxfColor( QgsSymbolRenderContext &context ) const override;
     Qt::PenStyle dxfPenStyle() const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
   protected:
     QBrush mBrush;
@@ -690,7 +693,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     //! Custom stroke
     std::unique_ptr< QgsLineSymbol > mStroke;
 
-    virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ); }
+    virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
 
   private:
 #ifdef SIP_RUN
@@ -1406,6 +1409,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
   protected:
 
@@ -1477,6 +1481,40 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     double displacementY() const { return mDisplacementY; }
     void setDisplacementY( double d ) { mDisplacementY = d; }
+
+    /**
+     * Sets the horizontal offset values for points in the pattern.
+     * \param offset offset value
+     * \see offsetX()
+     * \see setOffsetY()
+     * \since QGIS 3.8
+    */
+    void setOffsetX( double offset ) { mOffsetX = offset; }
+
+    /**
+     * Returns the horizontal offset values for points in the pattern.
+     * \see setOffsetX()
+     * \see offsetY()
+     * \since QGIS 3.8
+    */
+    double offsetX() const { return mOffsetX; }
+
+    /**
+     * Sets the vertical offset values for points in the pattern.
+     * \param offset offset value
+     * \see offsetY()
+     * \see setOffsetX()
+     * \since QGIS 3.8
+    */
+    void setOffsetY( double offset ) { mOffsetY = offset; }
+
+    /**
+     * Returns the vertical offset values for points in the pattern.
+     * \see setOffsetY()
+     * \see offsetX()
+     * \since QGIS 3.8
+    */
+    double offsetY() const { return mOffsetY; }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override { return mMarkerSymbol; }
@@ -1553,6 +1591,74 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale ) { mDisplacementYMapUnitScale = scale; }
     const QgsMapUnitScale &displacementYMapUnitScale() const { return mDisplacementYMapUnitScale; }
 
+    /**
+     * Sets the units for the horizontal offset between rows in the pattern.
+     * \param unit offset units
+     * \see offsetXUnit()
+     * \see setOffsetYUnit()
+     * \since QGIS 3.8
+    */
+    void setOffsetXUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetXUnit = unit; }
+
+    /**
+     * Returns the units for the horizontal offset for rows in the pattern.
+     * \see setOffsetXUnit()
+     * \see offsetYUnit()
+     * \since QGIS 3.8
+    */
+    QgsUnitTypes::RenderUnit offsetXUnit() const { return mOffsetXUnit; }
+
+    /**
+     * Sets the unit scale for the horizontal offset for rows in the pattern.
+     * \param scale offset unit scale
+     * \see offsetXMapUnitScale()
+     * \see setOffsetYMapUnitScale()
+     * \since QGIS 3.8
+    */
+    void setOffsetXMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetXMapUnitScale = scale; }
+
+    /**
+     * Returns the unit scale for the horizontal offset for rows in the pattern.
+     * \see setOffsetXMapUnitScale()
+     * \see offsetYMapUnitScale()
+     * \since QGIS 3.8
+    */
+    const QgsMapUnitScale &offsetXMapUnitScale() const { return mOffsetXMapUnitScale; }
+
+    /**
+     * Sets the units for the vertical offset for rows in the pattern.
+     * \param unit offset units
+     * \see offsetYUnit()
+     * \see setOffsetXUnit()
+     * \since QGIS 3.8
+    */
+    void setOffsetYUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetYUnit = unit; }
+
+    /**
+     * Returns the units for the vertical offset for rows in the pattern.
+     * \see setOffsetYUnit()
+     * \see offsetXUnit()
+     * \since QGIS 3.8
+    */
+    QgsUnitTypes::RenderUnit offsetYUnit() const { return mOffsetYUnit; }
+
+    /**
+     * Sets the unit scale for the vertical offset for rows in the pattern.
+     * \param scale offset unit scale
+     * \see offsetYMapUnitScale()
+     * \see setOffsetXMapUnitScale()
+     * \since QGIS 3.8
+    */
+    void setOffsetYMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetYMapUnitScale = scale; }
+
+    /**
+     * Returns the unit scale for the vertical offset between rows in the pattern.
+     * \see setOffsetYMapUnitScale()
+     * \see offsetXMapUnitScale()
+     * \since QGIS 3.8
+    */
+    const QgsMapUnitScale &offsetYMapUnitScale() const { return mOffsetYMapUnitScale; }
+
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
 
@@ -1560,6 +1666,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
     void setColor( const QColor &c ) override;
     QColor color() const override;
 
@@ -1577,6 +1684,12 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mDisplacementY = 0;
     QgsUnitTypes::RenderUnit mDisplacementYUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDisplacementYMapUnitScale;
+    double mOffsetX = 0;
+    QgsUnitTypes::RenderUnit mOffsetXUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetXMapUnitScale;
+    double mOffsetY = 0;
+    QgsUnitTypes::RenderUnit mOffsetYUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetYMapUnitScale;
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
@@ -1586,7 +1699,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 #endif
 
     void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
-                       double displacementX, double displacementY );
+                       double displacementX, double displacementY, double offsetX, double offsetY );
 };
 
 /**
@@ -1632,6 +1745,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
     void setPointOnSurface( bool pointOnSurface ) { mPointOnSurface = pointOnSurface; }
     bool pointOnSurface() const { return mPointOnSurface; }

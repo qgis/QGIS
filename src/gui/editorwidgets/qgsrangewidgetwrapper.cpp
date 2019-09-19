@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsdial.h"
 #include "qgsslider.h"
+#include "qgsapplication.h"
 
 
 
@@ -144,8 +145,13 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     int minval = min.toInt();
     if ( allowNull )
     {
-      int stepval = step.isValid() ? step.toInt() : 1;
-      minval -= stepval;
+      uint stepval = step.isValid() ? step.toUInt() : 1;
+      // make sure there is room for a new value (i.e. signed integer does not overflow)
+      int minvalOverflow = uint( minval ) - stepval;
+      if ( minvalOverflow < minval )
+      {
+        minval = minvalOverflow;
+      }
       mIntSpinBox->setValue( minval );
       QgsSpinBox *intSpinBox( qobject_cast<QgsSpinBox *>( mIntSpinBox ) );
       if ( intSpinBox )
@@ -181,9 +187,19 @@ bool QgsRangeWidgetWrapper::valid() const
 void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant &v )
 {
   if ( v.type() == QVariant::Int )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( v.toInt() );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( v.toInt() );
+  }
   if ( v.type() == QVariant::Double )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( v.toDouble() );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( v.toDouble() );
+  }
 }
 
 QVariant QgsRangeWidgetWrapper::value() const
@@ -226,7 +242,7 @@ QVariant QgsRangeWidgetWrapper::value() const
   return value;
 }
 
-void QgsRangeWidgetWrapper::setValue( const QVariant &value )
+void QgsRangeWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mDoubleSpinBox )
   {

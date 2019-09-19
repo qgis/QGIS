@@ -76,7 +76,7 @@ Set pal settings for a specific provider (takes ownership).
 
     virtual bool requiresAdvancedEffects() const = 0;
 %Docstring
-Returns true if drawing labels requires advanced effects like composition
+Returns ``True`` if drawing labels requires advanced effects like composition
 modes, which could prevent it being used as an isolated cached image
 or exported to a vector format.
 
@@ -92,6 +92,17 @@ Try to create instance of an implementation based on the XML data
     virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
 %Docstring
 Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+%End
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the labeling.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
 %End
 
   protected:
@@ -135,6 +146,8 @@ Constructs simple labeling configuration with given initial settings
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
     virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() );

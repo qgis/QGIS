@@ -16,7 +16,7 @@
 #define QGSSYMBOLBUTTON_H
 
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgssymbol.h"
 #include <QToolButton>
 #include <QPointer>
@@ -26,6 +26,7 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsExpressionContextGenerator;
 class QgsPanelWidget;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -121,6 +122,21 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * \see mapCanvas()
      */
     void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the appropriate message bar.
+     * \see messageBar()
+     * \since QGIS 3.6
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the widget.
+     * \see setMessageBar()
+     * \since QGIS 3.6
+     */
+    QgsMessageBar *messageBar() const;
 
     /**
      * Returns the layer associated with the widget.
@@ -234,6 +250,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     QgsSymbol::SymbolType mType = QgsSymbol::Fill;
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QPoint mDragStartPosition;
 
@@ -256,10 +273,10 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     /**
      * Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
-     * \returns true if mime data could be intrepreted as a color
+     * \returns TRUE if mime data could be intrepreted as a color
      * \param mimeData mime data
      * \param resultColor QColor to store evaluated color
-     * \param hasAlpha will be set to true if mime data also included an alpha component
+     * \param hasAlpha will be set to TRUE if mime data also included an alpha component
      * \see formatFromMimeData
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor, bool &hasAlpha );

@@ -16,6 +16,10 @@ class QgsStyleModel: QAbstractItemModel
 A QAbstractItemModel subclass for showing symbol and color ramp entities contained
 within a QgsStyle database.
 
+If you are creating a style model for the default application style (see QgsStyle.defaultStyle()),
+consider using the shared style model available at QgsApplication.defaultStyleModel() for performance
+instead.
+
 .. seealso:: :py:class:`QgsStyleProxyModel`
 
 .. versionadded:: 3.4
@@ -37,6 +41,8 @@ within a QgsStyle database.
       TypeRole,
       TagRole,
       SymbolTypeRole,
+      IsFavoriteRole,
+      LayerTypeRole,
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
@@ -44,6 +50,13 @@ within a QgsStyle database.
 Constructor for QgsStyleModel, for the specified ``style`` and ``parent`` object.
 
 The ``style`` object must exist for the lifetime of this model.
+%End
+
+    QgsStyle *style();
+%Docstring
+Returns the style managed by the model.
+
+.. versionadded:: 3.10
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
@@ -96,6 +109,13 @@ Constructor for QgsStyleProxyModel, for the specified ``style`` and ``parent`` o
 The ``style`` object must exist for the lifetime of this model.
 %End
 
+    explicit QgsStyleProxyModel( QgsStyleModel *model, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsStyleProxyModel, using the specified source ``model`` and ``parent`` object.
+
+The source ``model`` object must exist for the lifetime of this model.
+%End
+
     QString filterString() const;
 %Docstring
 Returns the current filter string, if set.
@@ -109,7 +129,7 @@ Returns the style entity type filter.
 
 .. note::
 
-   This filter is only active if entityFilterEnabled() is true.
+   This filter is only active if entityFilterEnabled() is ``True``.
 
 .. seealso:: :py:func:`setEntityFilter`
 %End
@@ -120,14 +140,15 @@ Sets the style entity type ``filter``.
 
 .. note::
 
-   This filter is only active if entityFilterEnabled() is true.
+   This filter is only active if entityFilterEnabled() is ``True``.
 
 .. seealso:: :py:func:`entityFilter`
 %End
 
+
     bool entityFilterEnabled() const;
 %Docstring
-Returns true if filtering by entity type is enabled.
+Returns ``True`` if filtering by entity type is enabled.
 
 .. seealso:: :py:func:`setEntityFilterEnabled`
 
@@ -138,7 +159,7 @@ Returns true if filtering by entity type is enabled.
 %Docstring
 Sets whether filtering by entity type is ``enabled``.
 
-If ``enabled`` is false, then the value of entityFilter() will have no
+If ``enabled`` is ``False``, then the value of entityFilter() will have no
 effect on the model filtering.
 
 .. seealso:: :py:func:`entityFilterEnabled`
@@ -152,7 +173,7 @@ Returns the symbol type filter.
 
 .. note::
 
-   This filter is only active if symbolTypeFilterEnabled() is true, and has
+   This filter is only active if symbolTypeFilterEnabled() is ``True``, and has
    no effect on non-symbol entities (i.e. color ramps).
 
 .. seealso:: :py:func:`setSymbolType`
@@ -164,14 +185,14 @@ Sets the symbol ``type`` filter.
 
 .. note::
 
-   This filter is only active if symbolTypeFilterEnabled() is true.
+   This filter is only active if symbolTypeFilterEnabled() is ``True``.
 
 .. seealso:: :py:func:`symbolType`
 %End
 
     bool symbolTypeFilterEnabled() const;
 %Docstring
-Returns true if filtering by symbol type is enabled.
+Returns ``True`` if filtering by symbol type is enabled.
 
 .. seealso:: :py:func:`setSymbolTypeFilterEnabled`
 
@@ -182,13 +203,31 @@ Returns true if filtering by symbol type is enabled.
 %Docstring
 Sets whether filtering by symbol type is ``enabled``.
 
-If ``enabled`` is false, then the value of symbolType() will have no
+If ``enabled`` is ``False``, then the value of symbolType() will have no
 effect on the model filtering. This has
 no effect on non-symbol entities (i.e. color ramps).
 
 .. seealso:: :py:func:`symbolTypeFilterEnabled`
 
 .. seealso:: :py:func:`setSymbolType`
+%End
+
+    QgsWkbTypes::GeometryType layerType() const;
+%Docstring
+Returns the layer type filter, or QgsWkbTypes.UnknownGeometry if no
+layer type filter is present.
+
+This setting has no effect on non-label settings entities (i.e. color ramps).
+
+.. seealso:: :py:func:`setLayerType`
+%End
+
+    void setLayerType( QgsWkbTypes::GeometryType type );
+%Docstring
+Sets the layer ``type`` filter. Set ``type`` to QgsWkbTypes.UnknownGeometry if no
+layer type filter is desired.
+
+.. seealso:: :py:func:`layerType`
 %End
 
     void setTagId( int id );
@@ -234,7 +273,7 @@ If returned value is -1, then no smart group filtering is being conducted.
 
     bool favoritesOnly() const;
 %Docstring
-Returns true if the model is showing only favorited entities.
+Returns ``True`` if the model is showing only favorited entities.
 
 .. seealso:: :py:func:`setFavoritesOnly`
 %End

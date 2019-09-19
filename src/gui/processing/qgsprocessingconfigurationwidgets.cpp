@@ -100,6 +100,7 @@ void QgsFilterAlgorithmConfigurationWidget::setConfiguration( const QVariantMap 
     mOutputExpressionWidget->insertRow( currentRow );
     mOutputExpressionWidget->setItem( currentRow, 0, new QTableWidgetItem( output.value( "name" ).toString() ) );
     QgsExpressionLineEdit *expressionBuilder = new QgsExpressionLineEdit();
+    expressionBuilder->registerExpressionContextGenerator( this );
     expressionBuilder->setExpression( output.value( "expression" ).toString() );
     mOutputExpressionWidget->setCellWidget( currentRow, 1, expressionBuilder );
     QCheckBox *isModelOutput = new QCheckBox();
@@ -143,6 +144,7 @@ void QgsFilterAlgorithmConfigurationWidget::addOutput()
   int rowIndex = mOutputExpressionWidget->rowCount();
   mOutputExpressionWidget->setRowCount( rowIndex + 1 );
   QgsExpressionLineEdit *expressionBuilder = new QgsExpressionLineEdit();
+  expressionBuilder->registerExpressionContextGenerator( this );
   mOutputExpressionWidget->setItem( rowIndex, 0, new QTableWidgetItem( QString() ) );
   mOutputExpressionWidget->setCellWidget( rowIndex, 1, expressionBuilder );
   mOutputExpressionWidget->setCellWidget( rowIndex, 2, new QCheckBox() );

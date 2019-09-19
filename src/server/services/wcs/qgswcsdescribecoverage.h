@@ -19,7 +19,6 @@
 #ifndef QGSWCSDESCRIBECOVERAGE_H
 #define QGSWCSDESCRIBECOVERAGE_H
 
-#include "qgsrasterlayer.h"
 
 #include <QDomDocument>
 

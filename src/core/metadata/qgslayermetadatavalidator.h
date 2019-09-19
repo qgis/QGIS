@@ -18,8 +18,10 @@
 #ifndef QGSLAYERMETADATAVALIDATOR_H
 #define QGSLAYERMETADATAVALIDATOR_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
+#include <QString>
+#include <QVariant>
 
 class QgsAbstractMetadataBase;
 class QgsLayerMetadata;
@@ -70,7 +72,7 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
     virtual ~QgsAbstractMetadataBaseValidator() = default;
 
     /**
-     * Validates a \a metadata object, and returns true if the
+     * Validates a \a metadata object, and returns TRUE if the
      * metadata is considered valid.
      * If validation fails, the \a results list will be filled with a list of
      * items describing why the validation failed and what needs to be rectified

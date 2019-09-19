@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import warnings
 
@@ -52,6 +48,7 @@ from .Aggregate import Aggregate
 from .Aspect import Aspect
 from .BasicStatistics import BasicStatisticsForField
 from .CheckValidity import CheckValidity
+from .Climb import Climb
 from .ConcaveHull import ConcaveHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
@@ -61,7 +58,6 @@ from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .DensifyGeometries import DensifyGeometries
-from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -89,7 +85,6 @@ from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
-from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PointsFromPolygons import PointsFromPolygons
@@ -98,7 +93,6 @@ from .PointsLayerFromTable import PointsLayerFromTable
 from .PointsToPaths import PointsToPaths
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
-from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtract import RandomExtract
@@ -136,6 +130,7 @@ from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .TextToFloat import TextToFloat
+from .TilesXYZ import TilesXYZAlgorithmDirectory, TilesXYZAlgorithmMBTiles
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
@@ -164,6 +159,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Aspect(),
                 BasicStatisticsForField(),
                 CheckValidity(),
+                Climb(),
                 ConcaveHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
@@ -173,7 +169,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
                 DensifyGeometries(),
-                DensifyGeometriesInterval(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
@@ -201,7 +196,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 NearestNeighbourAnalysis(),
                 Orthogonalize(),
                 PointDistance(),
-                PointsAlongGeometry(),
                 PointsDisplacement(),
                 PointsFromLines(),
                 PointsFromPolygons(),
@@ -210,7 +204,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsToPaths(),
                 PoleOfInaccessibility(),
                 Polygonize(),
-                PolygonsToLines(),
                 PostGISExecuteSQL(),
                 PostGISExecuteAndLoadSQL(),
                 RandomExtract(),
@@ -248,6 +241,8 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 StatisticsByCategories(),
                 SumLines(),
                 TextToFloat(),
+                TilesXYZAlgorithmDirectory(),
+                TilesXYZAlgorithmMBTiles(),
                 TinInterpolation(),
                 TopoColor(),
                 TruncateTable(),

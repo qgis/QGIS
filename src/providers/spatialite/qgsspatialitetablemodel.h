@@ -17,7 +17,7 @@
 
 #include <QStandardItemModel>
 class QIcon;
-#include "qgis.h"
+#include "qgswkbtypes.h"
 
 /**
  * A model that holds the tables of a database in a hierarchy where the

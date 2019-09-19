@@ -37,11 +37,13 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
     ~Qgs3DMapToolIdentify() override;
 
     void mousePressEvent( QMouseEvent *event ) override;
-    void mouseReleaseEvent( QMouseEvent *event ) override { Q_UNUSED( event );}
-    void mouseMoveEvent( QMouseEvent *event ) override {Q_UNUSED( event );}
+    void mouseReleaseEvent( QMouseEvent *event ) override { Q_UNUSED( event )}
+    void mouseMoveEvent( QMouseEvent *event ) override {Q_UNUSED( event )}
 
     void activate() override;
     void deactivate() override;
+
+    QCursor cursor() const override;
 
   private slots:
     void onTerrainPicked( Qt3DRender::QPickEvent *event );

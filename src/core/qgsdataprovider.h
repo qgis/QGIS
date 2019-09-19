@@ -21,13 +21,13 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QMutex>
 
 //#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgslayermetadata.h"
 #include "qgserror.h"
-
-typedef int dataCapabilities_t(); // SIP_SKIP
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -36,16 +36,7 @@ class QgsCoordinateReferenceSystem;
 /**
  * \ingroup core
  * Abstract base class for spatial data provider implementations.
- *
- * This object needs to inherit from QObject to enable event
- * processing in the Postgres/PostGIS provider (QgsPostgresProvider).
- * It is called *here* so that this vtable and the vtable for
- * QgsPostgresProvider don't get misaligned -
- * the QgsVectorLayer class factory (which refers
- * to generic QgsVectorDataProvider's) depends on it.
  */
-
-
 class CORE_EXPORT QgsDataProvider : public QObject
 {
 
@@ -73,6 +64,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
   public:
 
+    // TODO QGIS 4: (re)move DataCapability as this enum is really meant for data items rather than data providers
+
+    /**
+     * Used in browser model to understand which items for which providers should be populated
+     */
     enum DataCapability
     {
       NoDataCapabilities  = 0,
@@ -81,7 +77,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       Database            = 1 << 2,
       Net                 = 1 << 3  // Internet source
     };
-    Q_ENUM( DataCapability )
+    Q_DECLARE_FLAGS( DataCapabilities, DataCapability )
 
     /**
      * Properties are used to pass custom configuration options into data providers.
@@ -99,11 +95,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /**
      * Setting options for creating vector data providers.
+     *
+     * \note coordinateTransformContext was added in QGIS 3.8
+     *
      * \since QGIS 3.2
      */
     struct ProviderOptions
     {
-      int unused; //! @todo remove me once there are actual members here (breaks SIP <4.19)
+      QgsCoordinateTransformContext transformContext;
     };
 
     /**
@@ -111,11 +110,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Additional creation options are specified within the \a options value.
      */
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() )
-      : mDataSourceURI( uri )
-    {
-      Q_UNUSED( options );
-    }
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
 
     /**
      * Returns the coordinate system for the data source.
@@ -123,7 +118,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * QgsCoordinateReferenceSystem will be returned.
      */
     virtual QgsCoordinateReferenceSystem crs() const = 0;
-
 
     /**
      * Set the data source specification. This may be a path or database
@@ -185,7 +179,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Returns true if this is a valid layer. It is up to individual providers
+     * Returns TRUE if this is a valid layer. It is up to individual providers
      * to determine what constitutes a valid layer.
      */
     virtual bool isValid() const = 0;
@@ -209,14 +203,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true )
     {
       // NOP by default
-      Q_UNUSED( subset );
-      Q_UNUSED( updateFeatureCount );
+      Q_UNUSED( subset )
+      Q_UNUSED( updateFeatureCount )
       return false;
     }
 
 
     /**
-     * Returns true if the provider supports setting of subset strings.
+     * Returns TRUE if the provider supports setting of subset strings.
     */
     virtual bool supportsSubsetString() const { return false; }
 
@@ -391,7 +385,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Invalidate connections corresponding to specified name
      * \since QGIS 2.16
      */
-    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ); }
+    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ) }
 
     /**
      * Enter update mode.
@@ -399,7 +393,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * This is aimed at providers that can open differently the connection to
      * the datasource, according it to be in update mode or in read-only mode.
      * A call to this method shall be balanced with a call to leaveUpdateMode(),
-     * if this method returns true.
+     * if this method returns TRUE.
      *
      * Most providers will have an empty implementation for that method.
      *
@@ -411,7 +405,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * a concept of stack of calls that must be handled by the provider. Only the first
      * call to enterUpdateMode() will really turn update mode on.
      *
-     * \returns true in case of success (or no-op implementation), false in case of failure.
+     * \returns TRUE in case of success (or no-op implementation), FALSE in case of failure.
      *
      * \since QGIS 2.16
      */
@@ -430,7 +424,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * a concept of stack of calls that must be handled by the provider. Only the last
      * call to leaveUpdateMode() will really turn update mode off.
      *
-     * \returns true in case of success (or no-op implementation), false in case of failure.
+     * \returns TRUE in case of success (or no-op implementation), FALSE in case of failure.
      *
      * \since QGIS 2.16
      */
@@ -503,7 +497,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * The \a context argument gives useful information which can be used
      * to determine whether the layer should be rendered or not.
      *
-     * The base implementation returns true if lastRenderingTimeMs <= maxRenderingTimeMs.
+     * The base implementation returns TRUE if lastRenderingTimeMs <= maxRenderingTimeMs.
      *
      *
      * \note not available in Python bindings
@@ -525,32 +519,59 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Writes layer \a metadata to the underlying provider source. Support depends
      * on individual provider capabilities.
      *
-     * Returns true if metadata was successfully written to the data provider.
+     * Returns TRUE if metadata was successfully written to the data provider.
      * \see layerMetadata()
      * \since QGIS 3.0
     */
-    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ); return false; }
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ) return false; }
+
+    /**
+     * Returns data provider coordinate transform context
+     *
+     * \see setTransformContext()
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    QgsCoordinateTransformContext transformContext() const SIP_SKIP;
+
+    /**
+     * Sets data coordinate transform context to \a transformContext
+     *
+     * The default implementation is a simple setter, subclasses may override to perform
+     * additional actions required by a change of coordinate transform context.
+     *
+     * \see transformContext()
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
 
   signals:
 
     /**
-     *   This is emitted whenever the worker thread has fully calculated the
-     *   PostGIS extents for this layer, and its event has been received by this
-     *   provider.
+     * Emitted whenever a deferred extent calculation is completed by the provider.
+     *
+     * Layers should connect to this signal and update their cached extents whenever
+     * it is emitted.
      */
     void fullExtentCalculated();
 
     /**
-     *   This is emitted whenever an asynchronous operation has finished
-     *   and the data should be redrawn
+     * Emitted whenever a change is made to the data provider which may have
+     * caused changes in the provider's data OUTSIDE of QGIS.
      *
-     *   When emitted from a QgsVectorDataProvider, any cached information such as
-     *   feature ids should be invalidated.
+     * When emitted from a QgsVectorDataProvider, any cached information such as
+     * feature ids should be invalidated.
+     *
+     * \warning This signal is NOT emitted when changes are made to a provider
+     * from INSIDE QGIS -- e.g. when adding features to a vector layer, deleting features
+     * or modifying existing features. Instead, the specific QgsVectorLayer signals
+     * should be used to detect these operations.
      */
     void dataChanged();
 
     /**
-     * Emitted when datasource issues a notification
+     * Emitted when the datasource issues a notification.
      *
      * \see setListening
      *
@@ -584,6 +605,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QString mDataSourceURI;
 
     QMap< int, QVariant > mProviderProperties;
+
+    QgsDataProvider::ProviderOptions mOptions;
+
+    /**
+     * Protects options from being accessed concurrently
+     */
+    mutable QMutex mOptionsMutex;
+
 };
 
 

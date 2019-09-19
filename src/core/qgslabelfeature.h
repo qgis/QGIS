@@ -22,6 +22,7 @@
 #include "geos_c.h"
 #include "qgsgeos.h"
 #include "qgsmargins.h"
+#include "pal.h"
 
 namespace pal
 {
@@ -113,7 +114,7 @@ class CORE_EXPORT QgsLabelFeature
     const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared.get(); }
 
     //! Size of the label (in map units)
-    QSizeF size() const { return mSize; }
+    QSizeF size( double angle = 0.0 ) const;
 
     /**
      * Sets the visual margin for the label feature. The visual margin represents a margin
@@ -188,18 +189,18 @@ class CORE_EXPORT QgsLabelFeature
     bool hasFixedPosition() const { return mHasFixedPosition; }
     //! Sets whether the label should use a fixed position instead of being automatically placed
     void setHasFixedPosition( bool enabled ) { mHasFixedPosition = enabled; }
-    //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
+    //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns TRUE)
     QgsPointXY fixedPosition() const { return mFixedPosition; }
-    //! Sets coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
+    //! Sets coordinates of the fixed position (relevant only if hasFixedPosition() returns TRUE)
     void setFixedPosition( const QgsPointXY &point ) { mFixedPosition = point; }
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
     bool hasFixedAngle() const { return mHasFixedAngle; }
     //! Sets whether the label should use a fixed angle instead of using angle from automatic placement
     void setHasFixedAngle( bool enabled ) { mHasFixedAngle = enabled; }
-    //! Angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
+    //! Angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns TRUE)
     double fixedAngle() const { return mFixedAngle; }
-    //! Sets angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
+    //! Sets angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns TRUE)
     void setFixedAngle( double angle ) { mFixedAngle = angle; }
 
     /**
@@ -219,7 +220,7 @@ class CORE_EXPORT QgsLabelFeature
     void setHasFixedQuadrant( bool enabled ) { mHasFixedQuadrant = enabled; }
 
     /**
-     * Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns true).
+     * Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns TRUE).
      * Determines which side of the point to use.
      * For X coordinate, values -1, 0, 1 mean left, center, right.
      * For Y coordinate, values -1, 0, 1 mean above, center, below.
@@ -305,7 +306,7 @@ class CORE_EXPORT QgsLabelFeature
 
     /**
      * Returns whether the feature will act as an obstacle for labels.
-     * \returns true if feature is an obstacle
+     * \returns TRUE if feature is an obstacle
      * \see setIsObstacle
      */
     bool isObstacle() const { return mIsObstacle; }
@@ -335,6 +336,20 @@ class CORE_EXPORT QgsLabelFeature
     void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
 
     /**
+     * Returns the feature's arrangement flags.
+     * \see setArrangementFlags
+     */
+    pal::LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
+
+    /**
+     * Sets the feature's arrangement flags.
+     * \param flags arrangement flags
+     * \see arrangementFlags
+     */
+    void setArrangementFlags( pal::LineArrangementFlags flags ) { mArrangementFlags = flags; }
+
+
+    /**
      * Text of the label
      *
      * Used also if "merge connected lines to avoid duplicate labels" is enabled
@@ -344,7 +359,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Sets text of the label
     void setLabelText( const QString &text ) { mLabelText = text; }
 
-    //! Gets additional infor required for curved label placement. Returns null if not set
+    //! Gets additional infor required for curved label placement. Returns NULLPTR if not set
     pal::LabelInfo *curvedLabelInfo() const { return mInfo; }
     //! takes ownership of the instance
     void setCurvedLabelInfo( pal::LabelInfo *info ) { mInfo = info; }
@@ -356,6 +371,100 @@ class CORE_EXPORT QgsLabelFeature
 
     //! Returns provider of this instance
     QgsAbstractLabelProvider *provider() const;
+
+    /**
+     * Returns the original feature associated with this label.
+     * \see setFeature()
+     *
+     * \since QGIS 3.10
+     */
+    QgsFeature feature() const;
+
+    /**
+     * Sets the original \a feature associated with this label.
+     * \see feature()
+     *
+     * \since QGIS 3.10
+     */
+    void setFeature( const QgsFeature &feature );
+
+    /**
+     * Returns the feature symbol associated with this label.
+     * \see setSymbol()
+     *
+     * \since QGIS 3.10
+     */
+    const QgsSymbol *symbol() { return mSymbol; }
+
+    /**
+     * Sets the feature \a symbol associated with this label.
+     * Ownership of \a symbol is not transferred to the label feature, .
+     * \see symbol()
+     *
+     * \since QGIS 3.10
+     */
+    void setSymbol( const QgsSymbol *symbol ) { mSymbol = symbol; }
+
+    /**
+     * Returns the permissible distance (in map units) which labels are allowed to overrun the start
+     * or end of linear features.
+     *
+     * \see setOverrunDistance()
+     * \see overrunSmoothDistance()
+     * \since QGIS 3.10
+     */
+    double overrunDistance() const;
+
+    /**
+     * Sets the permissible \a distance (in map units) which labels are allowed to overrun the start
+     * or end of linear features.
+     *
+     * \see overrunDistance()
+     * \see setOverrunSmoothDistance()
+     * \since QGIS 3.10
+     */
+    void setOverrunDistance( double distance );
+
+    /**
+     * Returns the distance (in map units) with which the ends of linear features are averaged over when
+     * calculating the direction at which to overrun labels.
+     *
+     * \see setOverrunSmoothDistance()
+     * \see overrunDistance()
+     * \since QGIS 3.10
+     */
+    double overrunSmoothDistance() const;
+
+    /**
+     * Sets the \a distance (in map units) with which the ends of linear features are averaged over when
+     * calculating the direction at which to overrun labels.
+     *
+     * \see overrunSmoothDistance()
+     * \see setOverrunDistance()
+     * \since QGIS 3.10
+     */
+    void setOverrunSmoothDistance( double distance );
+
+    /**
+     * Returns TRUE if all parts of the feature should be labeled.
+     * \see setLabelAllParts()
+     * \since QGIS 3.10
+     */
+    bool labelAllParts() const { return mLabelAllParts; }
+
+    /**
+     * Sets whether all parts of the feature should be labeled.
+     * \see labelAllParts()
+     * \since QGIS 3.10
+     */
+    void setLabelAllParts( bool labelAllParts ) { mLabelAllParts = labelAllParts; }
+
+    /**
+     * Sets an alternate label \a size to be used when a label rotation angle is between 45 to 135
+     * and 235 to 313 degrees and the text rotation mode is set to rotation-based.
+     * \since QGIS 3.10
+     */
+    void setRotatedSize( QSizeF size ) { mRotatedSize = size; }
 
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
@@ -371,6 +480,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsGeometry mPermissibleZone;
     //! Width and height of the label
     QSizeF mSize;
+    //! Width and height of the label when rotated between 45 to 135 and 235 to 315 degrees;
+    QSizeF mRotatedSize;
     //! Visual margin of label contents
     QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable
@@ -409,8 +520,15 @@ class CORE_EXPORT QgsLabelFeature
     double mObstacleFactor;
     //! text of the label
     QString mLabelText;
-    //! extra information for curved labels (may be null)
+    //! extra information for curved labels (may be NULLPTR)
     pal::LabelInfo *mInfo = nullptr;
+
+    //! Distance to allow label to overrun linear features
+    double mOverrunDistance = 0;
+    //! Distance to smooth angle of line start and end when calculating overruns
+    double mOverrunSmoothDistance = 0;
+
+    pal::LineArrangementFlags mArrangementFlags = nullptr;
 
   private:
 
@@ -419,6 +537,12 @@ class CORE_EXPORT QgsLabelFeature
 
     // TODO - not required when QgsGeometry caches geos preparedness
     geos::prepared_unique_ptr mPermissibleZoneGeosPrepared;
+
+    QgsFeature mFeature;
+
+    const QgsSymbol *mSymbol = nullptr;
+
+    bool mLabelAllParts = false;
 
 };
 

@@ -21,6 +21,7 @@
 
 #include <functional>
 #include <memory>
+#include <vector>
 
 #define SIP_NO_FILE
 
@@ -30,6 +31,10 @@ class QgsRasterInterface;
 class QgsGeometry;
 class QgsRectangle;
 class QgsProcessingParameterDefinition;
+class QgsRasterProjector;
+class QgsRasterDataProvider;
+class QgsFeedback;
+class QgsRasterBlock;
 
 namespace QgsRasterAnalysisUtils
 {
@@ -65,6 +70,21 @@ namespace QgsRasterAnalysisUtils
    * \see createRasterTypeParameter()
    */
   Qgis::DataType rasterTypeChoiceToDataType( int choice );
+
+  struct RasterLogicInput
+  {
+    std::unique_ptr< QgsRasterInterface > sourceDataProvider;
+    std::unique_ptr< QgsRasterProjector> projector;
+    QgsRasterInterface *interface = nullptr;
+    bool hasNoDataValue = false;
+    std::vector< int > bands { 1 };
+  };
+
+  ANALYSIS_EXPORT void applyRasterLogicOperator( const std::vector< QgsRasterAnalysisUtils::RasterLogicInput > &inputs, QgsRasterDataProvider *destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse,
+      int width, int height, const QgsRectangle &extent, QgsFeedback *feedback,
+      std::function<void( const std::vector< std::unique_ptr< QgsRasterBlock > > &, bool &, bool &, int, int, bool )> &applyLogicFunc,
+      qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
+
 }
 
 

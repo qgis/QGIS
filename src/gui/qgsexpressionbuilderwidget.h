@@ -17,10 +17,11 @@
 #define QGSEXPRESSIONBUILDER_H
 
 #include <QWidget>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsdistancearea.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpression.h"
 
 #include "QStandardItemModel"
 #include "QStandardItem"
@@ -211,7 +212,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param expressionText The text that is inserted into the expression area when the user double clicks on the item.
       * \param helpText The help text that the user will see when item is selected.
       * \param type The type of the expression item.
-      * \param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * \param highlightedItem set to TRUE to make the item highlighted, which inserts a bold copy of the item at the top level
       * \param sortOrder sort ranking for item
       * \param icon custom icon to show for item
       */
@@ -283,7 +284,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setProject( QgsProject *project );
 
     /**
-     * Will be set to true if the current expression text reported an eval error
+     * Will be set to TRUE if the current expression text reported an eval error
      * with the context.
      *
      * \since QGIS 3.0
@@ -291,7 +292,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     bool evalError() const;
 
     /**
-     * Will be set to true if the current expression text reports a parser error
+     * Will be set to TRUE if the current expression text reports a parser error
      * with the context.
      *
      * \since QGIS 3.0
@@ -318,7 +319,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /**
      * Enabled or disable auto saving. When enabled Python scripts will be auto saved
      * when text changes.
-     * \param enabled True to enable auto saving.
+     * \param enabled TRUE to enable auto saving.
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
@@ -345,12 +346,12 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Emitted when the user changes the expression in the widget.
      * Users of this widget should connect to this signal to decide if to let the user
      * continue.
-     * \param isValid Is true if the expression the user has typed is valid.
+     * \param isValid Is TRUE if the expression the user has typed is valid.
      */
     void expressionParsed( bool isValid );
 
     /**
-     * Will be set to true if the current expression text reported an eval error
+     * Will be set to TRUE if the current expression text reported an eval error
      * with the context.
      *
      * \since QGIS 3.0
@@ -358,7 +359,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void evalErrorChanged();
 
     /**
-     * Will be set to true if the current expression text reported a parser error
+     * Will be set to TRUE if the current expression text reported a parser error
      * with the context.
      *
      * \since QGIS 3.0
@@ -396,7 +397,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param expressionText The text that is inserted into the expression area when the user double clicks on the item.
       * \param helpText The help text that the user will see when item is selected.
       * \param type The type of the expression item.
-      * \param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * \param highlightedItem set to TRUE to make the item highlighted, which inserts a bold copy of the item at the top level
       * \param sortOrder sort ranking for item
       */
     void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText,
@@ -415,7 +416,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString formatLayerHelp( const QgsMapLayer *layer ) const;
 
     /**
-     * Will be set to true if the current expression text reported an eval error
+     * Will be set to TRUE if the current expression text reported an eval error
      * with the context.
      *
      * \since QGIS 3.0
@@ -423,26 +424,33 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setEvalError( bool evalError );
 
     /**
-     * Will be set to true if the current expression text reports a parser error
+     * Will be set to TRUE if the current expression text reports a parser error
      * with the context.
      *
      * \since QGIS 3.0
      */
     void setParserError( bool parserError );
 
+    void loadFieldValues( const QVariantMap &values );
+
+    void loadFieldsAndValues( const QMap<QString, QVariantMap> &fieldValues );
+
     bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
-    QStandardItemModel *mModel = nullptr;
-    QStringListModel *mValuesModel = nullptr;
-    QSortFilterProxyModel *mProxyValues = nullptr;
-    QgsExpressionItemSearchProxy *mProxyModel = nullptr;
+    std::unique_ptr<QStandardItemModel> mModel;
+    // Will hold items with
+    // * a display string that matches the represented field values
+    // * custom data in Qt::UserRole + 1 that contains a ready to use expression literal ('quoted string' or NULL or a plain number )
+    std::unique_ptr<QStandardItemModel> mValuesModel;
+    std::unique_ptr<QSortFilterProxyModel> mProxyValues;
+    std::unique_ptr<QgsExpressionItemSearchProxy> mProxyModel;
     QMap<QString, QgsExpressionItem *> mExpressionGroups;
     QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
     QgsDistanceArea mDa;
     QString mRecentKey;
-    QMap<QString, QStringList> mFieldValues;
+    QMap<QString, QVariantMap>  mFieldValues;
     QgsExpressionContext mExpressionContext;
     QPointer< QgsProject > mProject;
     bool mEvalError = true;

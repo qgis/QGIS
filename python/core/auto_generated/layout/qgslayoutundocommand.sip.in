@@ -75,7 +75,7 @@ Returns the after state for the layout.
 
     virtual bool containsChange() const;
 %Docstring
-Returns true if both the before and after states are valid and different.
+Returns ``True`` if both the before and after states are valid and different.
 %End
 
   protected:

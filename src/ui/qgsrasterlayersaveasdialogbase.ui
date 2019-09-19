@@ -169,8 +169,8 @@ datasets with maximum width and height specified below.</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>543</width>
-        <height>675</height>
+        <width>541</width>
+        <height>597</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -760,38 +760,5 @@ datasets with maximum width and height specified below.</string>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsRasterLayerSaveAsDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>254</x>
-     <y>575</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsRasterLayerSaveAsDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>322</x>
-     <y>575</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

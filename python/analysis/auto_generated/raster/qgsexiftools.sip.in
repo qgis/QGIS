@@ -26,7 +26,7 @@ Contains utilities for working with EXIF tags in images.
 %Docstring
 Returns the geotagged coordinate stored in the image at ``imagePath``.
 
-If a geotag was found, ``ok`` will be set to true.
+If a geotag was found, ``ok`` will be set to ``True``.
 
 If the image contains an elevation tag then the returned point will contain
 the elevation as a z value.
@@ -60,7 +60,7 @@ The ``location`` argument indicates the GPS location to write to the image, as a
 
 If desired, extended GPS tags (such as elevation) can be specified via the ``details`` argument.
 
-Returns true if writing was successful.
+Returns ``True`` if writing was successful.
 
 .. seealso:: :py:func:`getGeoTag`
 %End

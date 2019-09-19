@@ -78,6 +78,29 @@ class TestQgsPostgresProvider: public QObject
       qDebug() << "actual: " << decoded;
       QCOMPARE( decoded.toList(), expected );
     }
+
+    void decode2DimensionArray()
+    {
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}" ), QStringLiteral( "_text" ) );
+      QCOMPARE( decoded.type(), QVariant::StringList );
+
+      QVariantList expected;
+      expected << QVariant( "{foo,\"escape bracket \\}\"}" ) << QVariant( "{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}" );
+      qDebug() << "actual: " << decoded;
+      QCOMPARE( decoded.toList(), expected );
+    }
+
+    void decode3DimensionArray()
+    {
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{{{0,1},{1,2}},{{3,4},{5,6}}}" ), QStringLiteral( "_integer" ) );
+      QCOMPARE( decoded.type(), QVariant::StringList );
+
+      QVariantList expected;
+      expected << QVariant( "{{0,1},{1,2}}" ) << QVariant( "{{3,4},{5,6}}" );
+      qDebug() << "actual: " << decoded;
+      QCOMPARE( decoded.toList(), expected );
+    }
+
     void decodeJsonList()
     {
       const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "[1,2,3]" ), QStringLiteral( "json" ) );

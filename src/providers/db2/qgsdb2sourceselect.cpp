@@ -30,6 +30,8 @@
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
+#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -39,7 +41,7 @@
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( index.column() == QgsDb2TableModel::DbtmSql )
   {
     QLineEdit *le = new QLineEdit( parent );
@@ -119,6 +121,8 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnConnect_clicked );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsDb2SourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( btnNew, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnNew_clicked );
@@ -128,8 +132,8 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( btnLoad, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnLoad_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsDb2SourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsDb2SourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsDb2SourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsDb2SourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsDb2SourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsDb2SourceSelect::mSearchModeComboBox_currentIndexChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsDb2SourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsDb2SourceSelect::mTablesTreeView_clicked );
   connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsDb2SourceSelect::mTablesTreeView_doubleClicked );
@@ -180,16 +184,13 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDb2SourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection :
-                                     QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( QStringLiteral( "Windows/Db2SourceSelect/geometry" ) ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/Db2SourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
@@ -313,17 +314,9 @@ void QgsDb2SourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() )
-  {
-    addButtonClicked();
-  }
-  else
-  {
-    setSql( index );
-  }
+  addButtonClicked();
 }
 
 void QgsDb2SourceSelect::mSearchGroupBox_toggled( bool checked )
@@ -384,7 +377,7 @@ void QgsDb2SourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStrin
 
 void QgsDb2SourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -402,7 +395,6 @@ QgsDb2SourceSelect::~QgsDb2SourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/Db2SourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/Db2SourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
@@ -593,7 +585,8 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDb2TableModel::DbtmTable ) )->text();
 
-  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer >( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer >( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ), options );
 
   if ( !vlayer->isValid() )
   {
@@ -654,7 +647,7 @@ void QgsDb2SourceSelect::setConnectionListPosition()
 
 void QgsDb2SourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )

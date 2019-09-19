@@ -31,6 +31,7 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgssqlstatement.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -50,6 +51,8 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsWFSSourceSelect::cmbConnections_activated );
   connect( btnSave, &QPushButton::clicked, this, &QgsWFSSourceSelect::btnSave_clicked );
   connect( btnLoad, &QPushButton::clicked, this, &QgsWFSSourceSelect::btnLoad_clicked );
@@ -86,7 +89,6 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   QgsSettings settings;
   QgsDebugMsg( QStringLiteral( "restoring settings" ) );
-  restoreGeometry( settings.value( QStringLiteral( "Windows/WFSSourceSelect/geometry" ) ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
   cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), false ).toBool() );
@@ -112,7 +114,6 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
 
   QgsSettings settings;
   QgsDebugMsg( QStringLiteral( "saving settings" ) );
-  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
@@ -123,6 +124,11 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   delete mModel;
   delete mModelProxy;
   delete mBuildQueryButton;
+}
+
+void QgsWFSSourceSelect::reset()
+{
+  treeView->clearSelection();
 }
 
 void QgsWFSSourceSelect::populateConnectionList()
@@ -470,7 +476,8 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
 
   QList< QgsSQLComposerDialog::PairNameType> fieldList;
   QString fieldNamePrefix( QgsSQLStatement::quotedIdentifierIfNeeded( typeName ) + "." );
-  Q_FOREACH ( const QgsField &field, p.fields().toList() )
+  const auto constToList = p.fields().toList();
+  for ( const QgsField &field : constToList )
   {
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( field.name() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, field.typeName() );
@@ -599,7 +606,8 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
   {
     fieldNamePrefix = QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) + ".";
   }
-  Q_FOREACH ( const QgsField &field, p.fields().toList() )
+  const auto constToList = p.fields().toList();
+  for ( const QgsField &field : constToList )
   {
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( field.name() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, field.typeName() );
@@ -700,7 +708,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
 
 void QgsWFSSourceSelect::cmbConnections_activated( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsWfsConnection::setSelectedConnection( cmbConnections->currentText() );
 
   QgsWfsConnection connection( cmbConnections->currentText() );

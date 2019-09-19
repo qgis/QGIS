@@ -13,6 +13,7 @@ SET(PG_SRCS
   qgscolumntypethread.cpp
   qgspostgresexpressioncompiler.cpp
   qgspostgreslistener.cpp
+  qgspostgresproviderconnection.cpp
 )
 
 SET(PG_MOC_HDRS
@@ -28,11 +29,14 @@ SET(PG_MOC_HDRS
 
 IF (WITH_GUI)
   SET(PG_SRCS ${PG_SRCS}
+    qgspostgresprovidergui.cpp
+    qgspostgresdataitemguiprovider.cpp
     qgspgsourceselect.cpp
     qgspgnewconnection.cpp
     qgspostgresprojectstoragedialog.cpp
   )
   SET(PG_MOC_HDRS ${PG_MOC_HDRS}
+    qgspostgresdataitemguiprovider.h
     qgspgnewconnection.h
     qgspgsourceselect.h
     qgspostgresprojectstoragedialog.h
@@ -41,6 +45,7 @@ ENDIF ()
 
 SET(PG_HDRS
   qgspostgresexpressioncompiler.h
+  qgspostgresproviderconnection.h
 )
 
 ########################################################
@@ -56,6 +61,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -93,6 +99,8 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (postgresprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(postgresprovider_a ui)
+  ADD_DEPENDENCIES(postgresprovider ui)
 ENDIF ()
 
 

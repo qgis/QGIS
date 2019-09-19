@@ -9,21 +9,37 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+import re
+import os
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QTemporaryDir
 from qgis.core import (
-    QgsFeature, QgsGeometry, QgsSettings, QgsApplication, QgsMemoryProviderUtils, QgsWkbTypes, QgsField, QgsFields, QgsProcessingFeatureSourceDefinition, QgsProcessingContext, QgsProcessingFeedback, QgsCoordinateReferenceSystem, QgsProject, QgsProcessingException
+    QgsFeature,
+    QgsGeometry,
+    QgsSettings,
+    QgsApplication,
+    QgsMemoryProviderUtils,
+    QgsWkbTypes,
+    QgsField,
+    QgsFields,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsCoordinateReferenceSystem,
+    QgsProject,
+    QgsProcessingException,
+    QgsVectorLayer
 )
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 from processing.gui.AlgorithmExecutor import execute_in_place_run
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsVectorLayerUtils
+from qgis.core import QgsVectorLayerUtils, QgsFeatureRequest
+import shutil
 
 start_app()
 
@@ -175,7 +191,9 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:difference', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('native:dropgeometries', ALL)
         self._support_inplace_edit_tester('native:splitwithlines', LINESTRING_AND_POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:splitlinesbylength', LINESTRING_ONLY)
         self._support_inplace_edit_tester('native:buffer', POLYGON_ONLY_NOT_M_NOT_Z)
+        self._support_inplace_edit_tester('native:antimeridiansplit', LINESTRING_ONLY)
 
     def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
         layer = self._make_layer(layer_wkb_name)
@@ -201,8 +219,11 @@ class TestQgsProcessingInPlace(unittest.TestCase):
     def test_QgsVectorLayerUtilsmakeFeaturesCompatible(self):
         """Test fixer function"""
         # Test failure
-        with self.assertRaises(AssertionError):
-            self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Point')
+        self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Point')
+        self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Polygon')
+        self._make_compatible_tester('Polygon((1 1, 2 2, 1 2, 1 1))', 'Point')
+        self._make_compatible_tester('Polygon((1 1, 2 2, 1 2, 1 1))', 'LineString')
+
         self._make_compatible_tester('Point(1 1)', 'Point')
         self._make_compatible_tester('Point(1 1)', 'Point', [1, 'nope'])
         self._make_compatible_tester('Point z (1 1 3)', 'Point')
@@ -274,6 +295,96 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(f[0].geometry().asWkt(), 'LineString (1 1, 2 2, 3 3, 1 1)')
         self.assertEqual(f[1].geometry().asWkt(), 'LineString (10 1, 20 2, 30 3, 10 1)')
 
+        # line -> points
+        l, f = self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Point')
+        self.assertEqual(len(f), 3)
+        self.assertEqual(f[0].geometry().asWkt(), 'Point (1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'Point (2 2)')
+        self.assertEqual(f[2].geometry().asWkt(), 'Point (3 3)')
+
+        l, f = self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'MultiPoint')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(2 2),(3 3))')
+
+        l, f = self._make_compatible_tester('MultiLineString ((1 1, 2 2),(4 4, 3 3))', 'Point')
+        self.assertEqual(len(f), 4)
+        self.assertEqual(f[0].geometry().asWkt(), 'Point (1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'Point (2 2)')
+        self.assertEqual(f[2].geometry().asWkt(), 'Point (4 4)')
+        self.assertEqual(f[3].geometry().asWkt(), 'Point (3 3)')
+
+        l, f = self._make_compatible_tester('MultiLineString ((1 1, 2 2),(4 4, 3 3))', 'MultiPoint')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(2 2),(4 4),(3 3))')
+
+        # line -> polygon
+        l, f = self._make_compatible_tester('LineString (1 1, 1 2, 2 2)', 'Polygon')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'Polygon ((1 1, 1 2, 2 2, 1 1))')
+
+        l, f = self._make_compatible_tester('LineString (1 1, 1 2, 2 2)', 'MultiPolygon')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPolygon (((1 1, 1 2, 2 2, 1 1)))')
+
+        l, f = self._make_compatible_tester('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))', 'Polygon')
+        self.assertEqual(len(f), 2)
+        self.assertEqual(f[0].geometry().asWkt(), 'Polygon ((1 1, 1 2, 2 2, 1 1))')
+        self.assertEqual(f[1].geometry().asWkt(), 'Polygon ((3 3, 4 3, 4 4, 3 3))')
+
+        l, f = self._make_compatible_tester('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))', 'MultiPolygon')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))')
+
+        l, f = self._make_compatible_tester('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', 'CurvePolygon')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'CurvePolygon (CircularString (1 1, 1 2, 2 2, 2 0, 1 1))')
+
+        l, f = self._make_compatible_tester('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', 'Polygon')
+        self.assertEqual(len(f), 1)
+        self.assertTrue(f[0].geometry().asWkt(2).startswith('Polygon ((1 1, 0.99 1.01, 0.98 1.02'))
+
+        # polygon -> points
+        l, f = self._make_compatible_tester('Polygon ((1 1, 1 2, 2 2, 1 1))', 'Point')
+        self.assertEqual(len(f), 3)
+        self.assertEqual(f[0].geometry().asWkt(), 'Point (1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'Point (1 2)')
+        self.assertEqual(f[2].geometry().asWkt(), 'Point (2 2)')
+
+        l, f = self._make_compatible_tester('Polygon ((1 1, 1 2, 2 2, 1 1))', 'MultiPoint')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(1 2),(2 2))')
+
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'Point')
+        self.assertEqual(len(f), 6)
+        self.assertEqual(f[0].geometry().asWkt(), 'Point (1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'Point (1 2)')
+        self.assertEqual(f[2].geometry().asWkt(), 'Point (2 2)')
+        self.assertEqual(f[3].geometry().asWkt(), 'Point (3 3)')
+        self.assertEqual(f[4].geometry().asWkt(), 'Point (4 3)')
+        self.assertEqual(f[5].geometry().asWkt(), 'Point (4 4)')
+
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'MultiPoint')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(1 2),(2 2),(3 3),(4 3),(4 4))')
+
+        # polygon -> lines
+        l, f = self._make_compatible_tester('Polygon ((1 1, 1 2, 2 2, 1 1))', 'LineString')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'LineString (1 1, 1 2, 2 2, 1 1)')
+
+        l, f = self._make_compatible_tester('Polygon ((1 1, 1 2, 2 2, 1 1))', 'MultiLineString')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiLineString ((1 1, 1 2, 2 2, 1 1))')
+
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'LineString')
+        self.assertEqual(len(f), 2)
+        self.assertEqual(f[0].geometry().asWkt(), 'LineString (1 1, 1 2, 2 2, 1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'LineString (3 3, 4 3, 4 4, 3 3)')
+
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'MultiLineString')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))')
+
     def test_make_features_compatible_attributes(self):
         """Test corner cases for attributes"""
 
@@ -316,6 +427,26 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(new_features[0].attributes()[0], 1)
         self.assertEqual(new_features[0].attributes()[1], 'foo')
 
+    def test_make_features_compatible_different_field_length(self):
+        """Test regression #21497"""
+        fields = QgsFields()
+        fields.append(QgsField('int_f1', QVariant.Int))
+        f1 = QgsFeature(fields)
+        f1.setAttributes([12345])
+        f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
+
+        fields = QgsFields()
+        fields.append(QgsField('int_f2', QVariant.Int))
+        fields.append(QgsField('int_f1', QVariant.Int))
+        vl2 = QgsMemoryProviderUtils.createMemoryLayer(
+            'mymultiplayer', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326))
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], vl2)
+        self.assertEqual(new_features[0].attributes(), [None, 12345])
+
+        f1.setGeometry(QgsGeometry.fromWkt('MultiPoint((9 45))'))
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], vl2)
+        self.assertEqual(new_features[0].attributes(), [None, 12345])
+
     def test_make_features_compatible_geometry(self):
         """Test corner cases for geometries"""
 
@@ -348,7 +479,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(new_features), 1)
         self.assertEqual(new_features[0].geometry().asWkt(), '')
 
-    def _alg_tester(self, alg_name, input_layer, parameters):
+    def _alg_tester(self, alg_name, input_layer, parameters, invalid_geometry_policy=QgsFeatureRequest.GeometryNoCheck):
 
         alg = self.registry.createAlgorithmById(alg_name)
 
@@ -362,6 +493,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(input_layer.selectedFeatureIds(), [old_features[0].id()], alg_name)
 
         context = QgsProcessingContext()
+        context.setInvalidGeometryCheck(invalid_geometry_policy)
         context.setProject(QgsProject.instance())
         feedback = ConsoleFeedBack()
 
@@ -610,16 +742,16 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         polygon_layer = self._make_layer('Polygon')
         self.assertTrue(polygon_layer.startEditing())
-        f = QgsFeature(polygon_layer.fields())
-        f.setAttributes([1])
+        f1 = QgsFeature(polygon_layer.fields())
+        f1.setAttributes([1])
         # Flake!
-        f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))'))
-        self.assertTrue(f.isValid())
+        f1.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))'))
+        self.assertTrue(f1.isValid())
         f2 = QgsFeature(polygon_layer.fields())
         f2.setAttributes([1])
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))'))
         self.assertTrue(f2.isValid())
-        self.assertTrue(polygon_layer.addFeatures([f, f2]))
+        self.assertTrue(polygon_layer.addFeatures([f1, f2]))
         polygon_layer.commitChanges()
         polygon_layer.rollBack()
         self.assertEqual(polygon_layer.featureCount(), 2)
@@ -630,12 +762,14 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             'native:fixgeometries',
             polygon_layer,
             {
-            }
+            },
+            QgsFeatureRequest.GeometrySkipInvalid
         )
         self.assertEqual(polygon_layer.featureCount(), 3)
-        wkt1, wkt2, _ = [f.geometry().asWkt() for f in new_features]
+        wkt1, wkt2, wkt3 = [f.geometry().asWkt() for f in new_features]
         self.assertEqual(wkt1, 'Polygon ((0 0, 1 1, 2 0, 0 0))')
         self.assertEqual(wkt2, 'Polygon ((1 1, 0 2, 2 2, 1 1))')
+        self.assertEqual(re.sub(r'0000\d+', '', wkt3), 'Polygon ((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))')
 
         # Test with Z (interpolated)
         polygonz_layer = self._make_layer('PolygonZ')
@@ -727,6 +861,42 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(new_features), 1)
         old_features, new_features = self._test_difference_on_invalid_geometries(2)
         self.assertEqual(len(new_features), 1)
+
+    def test_unique_constraints(self):
+        """Test issue #31634"""
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        gpkg_name = 'bug_31634_Multi_to_Singleparts_FID.gpkg'
+        gpkg_path = os.path.join(temp_path, gpkg_name)
+        shutil.copyfile(os.path.join(unitTestDataPath(), gpkg_name), gpkg_path)
+
+        gpkg_layer = QgsVectorLayer(gpkg_path + '|layername=Multi_to_Singleparts_FID_bug', 'lyr', 'ogr')
+        self.assertTrue(gpkg_layer.isValid())
+        QgsProject.instance().addMapLayers([gpkg_layer])
+
+        # Test that makeFeaturesCompatible set to NULL unique constraint fields
+        feature = next(gpkg_layer.getFeatures())
+
+        feedback = ConsoleFeedBack()
+        context = dataobjects.createContext(feedback)
+        context.setProject(QgsProject.instance())
+
+        alg = self.registry.createAlgorithmById('native:multiparttosingleparts')
+        self.assertIsNotNone(alg)
+
+        parameters = {
+            'INPUT': gpkg_layer,
+            'OUTPUT': ':memory',
+        }
+
+        ok, _ = execute_in_place_run(
+            alg, parameters, context=context, feedback=feedback, raise_exceptions=True)
+
+        pks = set()
+        for f in gpkg_layer.getFeatures():
+            pks.add(f.attribute(0))
+
+        self.assertTrue(gpkg_layer.commitChanges())
 
 
 if __name__ == '__main__':

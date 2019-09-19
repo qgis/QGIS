@@ -37,10 +37,12 @@ class QgsLayerTreeView;
 #include <QStyledItemDelegate>
 
 /**
- * Proxy style to make the item text rect shorter so that indicators fit in without colliding with text
+ * Proxy style for layer items with indicators
  */
 class QgsLayerTreeViewProxyStyle : public QgsProxyStyle
 {
+    Q_OBJECT
+
   public:
     explicit QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeView );
 

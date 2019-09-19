@@ -33,6 +33,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QEventLoop>
+#include <QPointer>
 #include <QString>
 #include <QMutexLocker>
 
@@ -54,11 +55,11 @@ QgsAuthOAuth2Method::QgsAuthOAuth2Method()
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" ) );
 
-  QStringList cachedirpaths;
-  cachedirpaths << QgsAuthOAuth2Config::tokenCacheDirectory()
-                << QgsAuthOAuth2Config::tokenCacheDirectory( true );
+  const QStringList cachedirpaths = QStringList()
+                                    << QgsAuthOAuth2Config::tokenCacheDirectory()
+                                    << QgsAuthOAuth2Config::tokenCacheDirectory( true );
 
-  Q_FOREACH ( const QString &cachedirpath, cachedirpaths )
+  for ( const QString &cachedirpath : cachedirpaths )
   {
     QDir cachedir( cachedirpath );
     if ( !cachedir.mkpath( cachedirpath ) )
@@ -71,10 +72,10 @@ QgsAuthOAuth2Method::QgsAuthOAuth2Method()
 QgsAuthOAuth2Method::~QgsAuthOAuth2Method()
 {
   QDir tempdir( QgsAuthOAuth2Config::tokenCacheDirectory( true ) );
-  QStringList dirlist = tempdir.entryList( QDir::Files | QDir::NoDotAndDotDot );
-  Q_FOREACH ( const QString &f, dirlist )
+  const QStringList dirlist = tempdir.entryList( QDir::Files | QDir::NoDotAndDotDot );
+  for ( const QString &f : dirlist )
   {
-    QString tempfile( tempdir.path() + QStringLiteral( "/" ) + f );
+    QString tempfile( tempdir.path() + '/' + f );
     if ( !QFile::remove( tempfile ) )
     {
       QgsDebugMsg( QStringLiteral( "FAILED to delete temp token cache file: %1" ).arg( tempfile ) );
@@ -142,23 +143,46 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
 
     if ( expired )
     {
-      msg = QStringLiteral( "Token expired, attempting refresh for authcfg %1" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+      if ( o2->refreshToken().isEmpty() || o2->refreshTokenUrl().isEmpty() )
+      {
+        msg = QStringLiteral( "Token expired, but no refresh token or URL defined for authcfg %1" ).arg( authcfg );
+        QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+        // clear any previous token session properties
+        o2->unlink();
+      }
+      else
+      {
+        msg = QStringLiteral( "Token expired, attempting refresh for authcfg %1" ).arg( authcfg );
+        QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
-      // Try to get a refresh token first
-      // go into local event loop and wait for a fired refresh-related slot
-      QEventLoop rloop( nullptr );
-      connect( o2, &QgsO2::refreshFinished, &rloop, &QEventLoop::quit );
+        // Try to get a refresh token first
+        // go into local event loop and wait for a fired refresh-related slot
+        QEventLoop rloop( nullptr );
+        connect( o2, &QgsO2::refreshFinished, &rloop, &QEventLoop::quit );
 
-      // Asynchronously attempt the refresh
-      // TODO: This already has a timed reply setup in O2 base class (and in QgsNetworkAccessManager!)
-      //       May need to address this or app crashes will occur!
-      o2->refresh();
+        // add singlshot timer to quit refresh after an alloted timeout
+        // this should keep the local event loop from blocking forever
+        QTimer r_timer( nullptr );
+        int r_reqtimeout = o2->oauth2config()->requestTimeout() * 1000;
+        r_timer.setInterval( r_reqtimeout );
+        r_timer.setSingleShot( true );
+        connect( &r_timer, &QTimer::timeout, &rloop, &QEventLoop::quit );
+        r_timer.start();
 
-      // block request update until asynchronous linking loop is quit
-      rloop.exec();
+        // Asynchronously attempt the refresh
+        // TODO: This already has a timed reply setup in O2 base class (and in QgsNetworkAccessManager!)
+        //       May need to address this or app crashes will occur!
+        o2->refresh();
 
-      // refresh result should set o2 to (un)linked
+        // block request update until asynchronous linking loop is quit
+        rloop.exec();
+        if ( r_timer.isActive() )
+        {
+          r_timer.stop();
+        }
+
+        // refresh result should set o2 to (un)linked
+      }
     }
   }
 
@@ -243,8 +267,10 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
   {
     case QgsAuthOAuth2Config::Header:
       request.setRawHeader( O2_HTTP_AUTHORIZATION_HEADER, QStringLiteral( "Bearer %1" ).arg( o2->token() ).toAscii() );
+#ifdef QGISDEBUG
       msg = QStringLiteral( "Updated request HEADER with access token for authcfg: %1" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+      QgsDebugMsgLevel( msg, 2 );
+#endif
       break;
     case QgsAuthOAuth2Config::Form:
       // FIXME: what to do here if the parent request is not POST?
@@ -258,13 +284,17 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         query.addQueryItem( O2_OAUTH2_ACCESS_TOKEN, o2->token() );
         url.setQuery( query );
         request.setUrl( url );
+#ifdef QGISDEBUG
         msg = QStringLiteral( "Updated request QUERY with access token for authcfg: %1" ).arg( authcfg );
+#endif
       }
       else
       {
+#ifdef QGISDEBUG
         msg = QStringLiteral( "Updated request QUERY with access token SKIPPED (existing token) for authcfg: %1" ).arg( authcfg );
+#endif
       }
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+      QgsDebugMsgLevel( msg, 2 );
       break;
   }
 
@@ -296,8 +326,10 @@ bool QgsAuthOAuth2Method::updateNetworkReply( QNetworkReply *reply, const QStrin
   //connect( reply, static_cast<void ( QNetworkReply::* )( QNetworkReply::NetworkError )>( &QNetworkReply::error ),
   //         this, &QgsAuthOAuth2Method::onNetworkError, Qt::QueuedConnection );
 
+#ifdef QGISDEBUG
   QString msg = QStringLiteral( "Updated reply with token refresh connection for authcfg: %1" ).arg( authcfg );
-  QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+  QgsDebugMsgLevel( msg, 2 );
+#endif
 
   return true;
 }
@@ -343,7 +375,8 @@ void QgsAuthOAuth2Method::onLinkingSucceeded()
   if ( !extraTokens.isEmpty() )
   {
     QString msg = QStringLiteral( "Extra tokens in response:\n" );
-    Q_FOREACH ( const QString &key, extraTokens.keys() )
+    const QStringList extraTokenKeys = extraTokens.keys();
+    for ( const QString &key : extraTokenKeys )
     {
       // don't expose the values in a log (unless they are only 3 chars long, of course)
       msg += QStringLiteral( "    %1:%2…\n" ).arg( key, extraTokens.value( key ).toString().left( 3 ) );
@@ -369,9 +402,10 @@ void QgsAuthOAuth2Method::onCloseBrowser()
   QgsMessageLog::logMessage( tr( "Close browser requested" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
   // Bring focus back to QGIS app
-  if ( qobject_cast<QApplication *>( qApp ) )
+  if ( qApp )
   {
-    Q_FOREACH ( QWidget *topwdgt, QgsApplication::topLevelWidgets() )
+    const QList<QWidget *> widgets = QgsApplication::topLevelWidgets();
+    for ( QWidget *topwdgt : widgets )
     {
       if ( topwdgt->objectName() == QStringLiteral( "MainWindow" ) )
       {
@@ -388,6 +422,12 @@ void QgsAuthOAuth2Method::onReplyFinished()
 {
   QgsMessageLog::logMessage( tr( "Network reply finished" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  if ( !reply )
+  {
+    QString msg = tr( "Network reply finished but no reply object accessible" );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    return;
+  }
   QgsMessageLog::logMessage( tr( "Results: %1" ).arg( QString( reply->readAll() ) ),
                              AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 }
@@ -396,32 +436,50 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
 {
   QMutexLocker locker( &mNetworkRequestMutex );
   QString msg;
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
-  if ( !reply )
+  QPointer<QNetworkReply> reply = qobject_cast<QNetworkReply *>( sender() );
+  if ( reply.isNull() )
   {
+#ifdef QGISDEBUG
     msg = tr( "Network error but no reply object accessible" );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    QgsDebugMsg( msg );
+#endif
     return;
   }
-  if ( err != QNetworkReply::NoError )
+
+  // Grab some reply properties before object is deleted elsewhere
+  QVariant replyStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  QVariant replyAuthProp = reply->property( "authcfg" );
+  const QString replyErrString = reply->errorString();
+
+  if ( err != QNetworkReply::NoError && err != QNetworkReply::OperationCanceledError )
   {
-    msg = tr( "Network error: %1" ).arg( reply->errorString() );
+    msg = tr( "Network error: %1" ).arg( replyErrString );
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
   }
 
-  // TODO: update debug messages to output to QGIS
+  if ( !replyStatus.isValid() )
+  {
+    if ( err != QNetworkReply::OperationCanceledError )
+    {
+      msg = tr( "Network error but no reply object attributes found" );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    }
+    return;
+  }
 
-  int status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
-  msg = tr( "Network error, HTTP status: %1" ).arg(
-          reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString() );
-  QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
-
-  if ( status == 401 )
+  if ( replyStatus.toInt() == 401 )
   {
     msg = tr( "Attempting token refresh…" );
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
-    QString authcfg = reply->property( "authcfg" ).toString();
+
+    if ( !replyAuthProp.isValid() )
+    {
+      msg = tr( "Token refresh FAILED: authcfg property invalid" );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+      return;
+    }
+    QString authcfg = replyAuthProp.toString();
     if ( authcfg.isEmpty() )
     {
       msg = tr( "Token refresh FAILED: authcfg empty" );
@@ -452,6 +510,12 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
 void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  if ( !reply )
+  {
+    QString msg = tr( "Token refresh finished but no reply object accessible" );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    return;
+  }
   if ( err != QNetworkReply::NoError )
   {
     QgsMessageLog::logMessage( tr( "Token refresh error: %1" ).arg( reply->errorString() ),
@@ -462,7 +526,7 @@ void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
 void QgsAuthOAuth2Method::onAuthCode()
 {
   bool ok = false;
-  QString code = QInputDialog::getText( QApplication::activeWindow(), QStringLiteral( "Enter the authorization code" ), QStringLiteral( "Authoriation code" ), QLineEdit::Normal, QStringLiteral( "Required" ), &ok, Qt::Dialog, Qt::InputMethodHint::ImhNone );
+  QString code = QInputDialog::getText( QApplication::activeWindow(), QStringLiteral( "Authoriation Code" ), QStringLiteral( "Enter the authorization code" ), QLineEdit::Normal, QStringLiteral( "Required" ), &ok, Qt::Dialog, Qt::InputMethodHint::ImhNone );
   if ( ok && !code.isEmpty() )
   {
     emit setAuthCode( code );

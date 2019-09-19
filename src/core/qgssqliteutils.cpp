@@ -19,6 +19,7 @@
 
 #include <sqlite3.h>
 #include <cstdarg>
+#include <QVariant>
 
 void QgsSqlite3Closer::operator()( sqlite3 *database )
 {
@@ -91,6 +92,21 @@ sqlite3_statement_unique_ptr sqlite3_database_unique_ptr::prepare( const QString
   return s;
 }
 
+int sqlite3_database_unique_ptr::exec( const QString &sql, QString &errorMessage ) const
+{
+  char *errMsg;
+
+  int ret = sqlite3_exec( get(), sql.toUtf8(), nullptr, nullptr, &errMsg );
+
+  if ( errMsg )
+  {
+    errorMessage = QString::fromUtf8( errMsg );
+    sqlite3_free( errMsg );
+  }
+
+  return ret;
+}
+
 QString QgsSqliteUtils::quotedString( const QString &value )
 {
   if ( value.isNull() )
@@ -99,6 +115,59 @@ QString QgsSqliteUtils::quotedString( const QString &value )
   QString v = value;
   v.replace( '\'', QLatin1String( "''" ) );
   return v.prepend( '\'' ).append( '\'' );
+}
+
+QString QgsSqliteUtils::quotedIdentifier( const QString &identifier )
+{
+  QString id( identifier );
+  id.replace( '\"', QLatin1String( "\"\"" ) );
+  return id.prepend( '\"' ).append( '\"' );
+}
+
+QString QgsSqliteUtils::quotedValue( const QVariant &value )
+{
+  if ( value.isNull() )
+    return QStringLiteral( "NULL" );
+
+  switch ( value.type() )
+  {
+    case QVariant::Int:
+    case QVariant::LongLong:
+    case QVariant::Double:
+      return value.toString();
+
+    case QVariant::Bool:
+      //SQLite has no boolean literals
+      return value.toBool() ? QStringLiteral( "1" ) : QStringLiteral( "0" );
+
+    default:
+    case QVariant::String:
+      QString v = value.toString();
+      // https://www.sqlite.org/lang_expr.html :
+      // """A string constant is formed by enclosing the string in single quotes (').
+      // A single quote within the string can be encoded by putting two single quotes
+      // in a row - as in Pascal. C-style escapes using the backslash character are not supported because they are not standard SQL. """
+      return v.replace( '\'', QLatin1String( "''" ) ).prepend( '\'' ).append( '\'' );
+  }
+}
+
+QStringList QgsSqliteUtils::systemTables()
+{
+  return QStringList() << QStringLiteral( "SpatialIndex" ) << QStringLiteral( "geom_cols_ref_sys" ) << QStringLiteral( "geometry_columns" )
+         << QStringLiteral( "geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns" ) << QStringLiteral( "virts_geometry_columns" )
+         << QStringLiteral( "spatial_ref_sys" ) << QStringLiteral( "spatial_ref_sys_all" ) << QStringLiteral( "spatial_ref_sys_aux" )
+         << QStringLiteral( "sqlite_sequence" ) << QStringLiteral( "tableprefix_metadata" ) << QStringLiteral( "tableprefix_rasters" )
+         << QStringLiteral( "layer_params" ) << QStringLiteral( "layer_statistics" ) << QStringLiteral( "layer_sub_classes" )
+         << QStringLiteral( "layer_table_layout" ) << QStringLiteral( "pattern_bitmaps" ) << QStringLiteral( "symbol_bitmaps" )
+         << QStringLiteral( "project_defs" ) << QStringLiteral( "raster_pyramids" ) << QStringLiteral( "sqlite_stat1" ) << QStringLiteral( "sqlite_stat2" )
+         << QStringLiteral( "spatialite_history" ) << QStringLiteral( "geometry_columns_field_infos" ) << QStringLiteral( "geometry_columns_statistics" )
+         << QStringLiteral( "geometry_columns_time" ) << QStringLiteral( "sql_statements_log" ) << QStringLiteral( "vector_layers" )
+         << QStringLiteral( "vector_layers_auth" ) << QStringLiteral( "vector_layers_field_infos" ) << QStringLiteral( "vector_layers_statistics" )
+         << QStringLiteral( "views_geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns_field_infos" )
+         << QStringLiteral( "views_geometry_columns_statistics" ) << QStringLiteral( "virts_geometry_columns_auth" )
+         << QStringLiteral( "virts_geometry_columns_field_infos" ) << QStringLiteral( "virts_geometry_columns_statistics" )
+         << QStringLiteral( "virts_layer_statistics" ) << QStringLiteral( "views_layer_statistics" )
+         << QStringLiteral( "ElementaryGeometries" );
 }
 
 QString QgsSqlite3Mprintf( const char *format, ... )

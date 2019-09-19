@@ -101,9 +101,9 @@ Whether the color ramp contains any items
 .. versionadded:: 3.4
 %End
 
-    QgsColorRamp *sourceColorRamp() const /Factory/;
+    QgsColorRamp *sourceColorRamp() const;
 %Docstring
-Gets the source color ramp
+Returns the source color ramp.
 
 .. seealso:: :py:func:`setSourceColorRamp`
 
@@ -188,7 +188,7 @@ Returns the classification mode
 %Docstring
 Sets whether the shader should not render values out of range.
 
-:param clip: set to true to clip values which are out of range.
+:param clip: set to ``True`` to clip values which are out of range.
 
 .. seealso:: :py:func:`clip`
 %End

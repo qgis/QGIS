@@ -74,7 +74,9 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsDecorationGridDialog::annotationFontChanged );
 
   mMarkerSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mMarkerSymbolButton->setMessageBar( QgisApp::instance()->messageBar() );
   mLineSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mLineSymbolButton->setMessageBar( QgisApp::instance()->messageBar() );
 }
 
 void QgsDecorationGridDialog::updateGuiElements()

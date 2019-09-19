@@ -56,6 +56,7 @@
 #include "qgshillshaderendererwidget.h"
 #include "qgssettings.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsfileutils.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -205,8 +206,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     // initialize resampling methods
     cboResamplingMethod->clear();
-    QPair<QString, QString> method;
-    Q_FOREACH ( method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
+
+    const auto constProviderType = QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() );
+    for ( QPair<QString, QString> method : constProviderType )
     {
       cboResamplingMethod->addItem( method.second, method.first );
     }
@@ -391,7 +393,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;
   mDisableRenderTypeComboBoxCurrentIndexChanged = true;
-  Q_FOREACH ( const QString &name, QgsApplication::rasterRendererRegistry()->renderersList() )
+  const auto constRenderersList = QgsApplication::rasterRendererRegistry()->renderersList();
+  for ( const QString &name : constRenderersList )
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {
@@ -832,6 +835,11 @@ void QgsRasterLayerProperties::sync()
  */
 void QgsRasterLayerProperties::apply()
 {
+
+  // Do nothing on "bad" layers
+  if ( !mRasterLayer->isValid() )
+    return;
+
   /*
    * Legend Tab
    */
@@ -1192,7 +1200,7 @@ void QgsRasterLayerProperties::urlClicked( const QUrl &url )
 
 void QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged( int index )
 {
-  if ( index < 0 || mDisableRenderTypeComboBoxCurrentIndexChanged )
+  if ( index < 0 || mDisableRenderTypeComboBoxCurrentIndexChanged || ! mRasterLayer->renderer() )
   {
     return;
   }
@@ -1246,7 +1254,7 @@ void QgsRasterLayerProperties::pbnAddValuesManually_clicked()
 
 void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs(), mRasterLayer );
   mRasterLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
@@ -1409,7 +1417,7 @@ void QgsRasterLayerProperties::pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::transparencyCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   QgsDebugMsg( QStringLiteral( "text = %1" ).arg( text ) );
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
@@ -1419,7 +1427,7 @@ void QgsRasterLayerProperties::transparencyCellTextEdited( const QString &text )
   int nBands = renderer->usesBands().size();
   if ( nBands == 1 )
   {
-    QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+    QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
     if ( !lineEdit ) return;
     int row = -1;
     int column = -1;
@@ -1642,7 +1650,7 @@ void QgsRasterLayerProperties::pbnRemoveSelectedRow_clicked()
 
 void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint, const Qt::MouseButton &btn )
 {
-  Q_UNUSED( btn );
+  Q_UNUSED( btn )
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
   {
@@ -1863,20 +1871,41 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
                              this,
                              tr( "Save layer properties as style file" ),
                              lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" );
+                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)" );
   if ( outputFileName.isEmpty() )
     return;
 
-  // ensure the user never omits the extension from the file name
-  if ( !outputFileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    outputFileName += QLatin1String( ".qml" );
+  // set style type depending on extension
+  StyleType type = StyleType::QML;
+  if ( outputFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
+    type = StyleType::SLD;
+  else
+    // ensure the user never omits the extension from the file name
+    outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
 
   apply(); // make sure the style to save is uptodate
 
+  // then export style
   bool defaultLoadedFlag = false;
-  QString message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
+  QString message;
+  switch ( type )
+  {
+    case QML:
+    {
+      message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
+      break;
+    }
+    case SLD:
+    {
+      message = mRasterLayer->saveSldStyle( outputFileName, defaultLoadedFlag );
+      break;
+    }
+  }
   if ( defaultLoadedFlag )
+  {
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
+    sync();
+  }
   else
     QMessageBox::information( this, tr( "Save Style" ), message );
 }

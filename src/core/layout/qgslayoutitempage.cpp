@@ -56,6 +56,11 @@ int QgsLayoutItemPage::type() const
   return QgsLayoutItemRegistry::LayoutPage;
 }
 
+QString QgsLayoutItemPage::displayName() const
+{
+  return QObject::tr( "Page" );
+}
+
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
 {
   attemptResize( size );
@@ -175,6 +180,11 @@ QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &t
   return new QgsLayoutItemPageUndoCommand( this, text, id, parent );
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}
+
 void QgsLayoutItemPage::redraw()
 {
   QgsLayoutItem::redraw();
@@ -270,7 +280,7 @@ QgsLayoutItemPageGrid::QgsLayoutItemPageGrid( double x, double y, double width, 
 
 void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
-  Q_UNUSED( pWidget );
+  Q_UNUSED( pWidget )
 
   //draw grid
   if ( !mLayout )

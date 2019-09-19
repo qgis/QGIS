@@ -20,8 +20,9 @@
 
 #define SIP_NO_FILE
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
@@ -46,7 +47,6 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingAlgorithm
     QgsExtractVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

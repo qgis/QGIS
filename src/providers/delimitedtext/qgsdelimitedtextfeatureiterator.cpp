@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
 #include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QtAlgorithms>
 #include <QTextStream>
@@ -160,9 +161,9 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
   {
     QgsAttributeList attrs = request.subsetOfAttributes();
-    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIndex : usedAttributeIndices )
     {
-      int attrIndex = mSource->mFields.lookupField( attr );
       if ( !attrs.contains( attrIndex ) )
         attrs << attrIndex;
     }
@@ -430,13 +431,25 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList &
     isNull = true;
     return QgsGeometry();
   }
-  isNull = false;
-  QgsPointXY pt;
-  bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, pt, mSource->mDecimalPoint, mSource->mXyDms );
 
-  if ( ok && wantGeometry( pt ) )
+  isNull = false;
+  QgsPoint *pt = new QgsPoint();
+  bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, *pt, mSource->mDecimalPoint, mSource->mXyDms );
+
+  QString sZ, sM;
+  if ( mSource->mZFieldIndex > -1 )
+    sZ = tokens[mSource->mZFieldIndex];
+  if ( mSource->mMFieldIndex > -1 )
+    sM = tokens[mSource->mMFieldIndex];
+
+  if ( !sZ.isEmpty() || !sM.isEmpty() )
   {
-    return QgsGeometry::fromPointXY( pt );
+    QgsDelimitedTextProvider::appendZM( sZ, sM, *pt, mSource->mDecimalPoint );
+  }
+
+  if ( ok && wantGeometry( *pt ) )
+  {
+    return QgsGeometry( pt );
   }
   return QgsGeometry();
 }
@@ -510,6 +523,8 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   , mFieldCount( p->mFieldCount )
   , mXFieldIndex( p->mXFieldIndex )
   , mYFieldIndex( p->mYFieldIndex )
+  , mZFieldIndex( p->mZFieldIndex )
+  , mMFieldIndex( p->mMFieldIndex )
   , mWktFieldIndex( p->mWktFieldIndex )
   , mWktHasPrefix( p->mWktHasPrefix )
   , mGeometryType( p->mGeometryType )

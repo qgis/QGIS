@@ -21,10 +21,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthias Kuhn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
 import AlgorithmsTestBase
 
 import nose2
@@ -99,6 +95,14 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         feedback = QgsProcessingFeedback()
         results, ok = alg.run({}, context, feedback)
         self.assertFalse(ok)
+
+    def testParameterPythonImport(self):
+        for t in QgsApplication.processingRegistry().parameterTypes():
+            import_string = t.pythonImportString()
+            # check that pythonImportString correctly imports
+            exec(import_string)
+            # and now we should be able to instantiate an object!
+            exec('test = {}(\'id\',\'name\')\nself.assertIsNotNone(test)'.format(t.className()))
 
 
 if __name__ == '__main__':

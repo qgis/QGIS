@@ -27,8 +27,6 @@
 #include <QFuture>
 #include <QtConcurrent>
 
-const qint64 READ_BUFFER_SIZE_HINT = 1024 * 1024;
-
 QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : mUri( uri )
   , mErrorCode( QgsWfsRequest::NoError )
@@ -38,7 +36,7 @@ QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   , mGotNonEmptyResponse( false )
 {
   QgsDebugMsgLevel( QStringLiteral( "theUri = " ) + uri.uri( ), 4 );
-  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestTimedOut, this, &QgsWfsRequest::requestTimedOut );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsWfsRequest::requestTimedOut );
 }
 
 QgsWfsRequest::~QgsWfsRequest()
@@ -114,6 +112,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
   QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( modifiedUrl.toDisplayString( ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWfsRequest" ) );
   if ( !mUri.auth().setAuthorization( request ) )
   {
     mErrorCode = QgsWfsRequest::NetworkError;
@@ -130,6 +129,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
 
   QWaitCondition waitCondition;
   QMutex waitConditionMutex;
+
   bool threadFinished = false;
   bool success = false;
 
@@ -141,7 +141,6 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     success = true;
     mReply = QgsNetworkAccessManager::instance()->get( request );
 
-    mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
     if ( !mUri.auth().setAuthorizationReply( mReply ) )
     {
       mErrorCode = QgsWfsRequest::NetworkError;
@@ -162,20 +161,20 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       {
         auto resumeMainThread = [&waitConditionMutex, &waitCondition]()
         {
+          // when this method is called we have "produced" a single authentication request -- so the buffer is now full
+          // and it's time for the "consumer" (main thread) to do its part
           waitConditionMutex.lock();
           waitCondition.wakeAll();
           waitConditionMutex.unlock();
 
-          waitConditionMutex.lock();
-          waitCondition.wait( &waitConditionMutex );
-          waitConditionMutex.unlock();
+          // note that we don't need to handle waking this thread back up - that's done automatically by QgsNetworkAccessManager
         };
 
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, resumeMainThread, Qt::DirectConnection );
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred, this, resumeMainThread, Qt::DirectConnection );
         connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection );
 
 #ifndef QT_NO_SSL
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrors, this, resumeMainThread, Qt::DirectConnection );
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred, this, resumeMainThread, Qt::DirectConnection );
 #endif
         QEventLoop loop;
         connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
@@ -204,7 +203,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       waitCondition.wait( &waitConditionMutex );
 
       // If the downloader thread wakes us (the main thread) up and is not yet finished
-      // he needs the authentication to run.
+      // then it has "produced" an authentication request which we need to now "consume".
       // The processEvents() call gives the auth manager the chance to show a dialog and
       // once done with that, we can wake the downloaderThread again and continue the download.
       if ( !threadFinished )
@@ -212,9 +211,8 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
         waitConditionMutex.unlock();
 
         QgsApplication::instance()->processEvents();
-        waitConditionMutex.lock();
-        waitCondition.wakeAll();
-        waitConditionMutex.unlock();
+        // we don't need to wake up the worker thread - it will automatically be woken when
+        // the auth request has been dealt with by QgsNetworkAccessManager
       }
       else
       {
@@ -252,6 +250,7 @@ bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader,
   }
 
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWfsRequest" ) );
   if ( !mUri.auth().setAuthorization( request ) )
   {
     mErrorCode = QgsWfsRequest::NetworkError;
@@ -262,7 +261,6 @@ bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader,
   request.setHeader( QNetworkRequest::ContentTypeHeader, contentTypeHeader );
 
   mReply = QgsNetworkAccessManager::instance()->post( request, data );
-  mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
   if ( !mUri.auth().setAuthorizationReply( mReply ) )
   {
     mErrorCode = QgsWfsRequest::NetworkError;
@@ -336,6 +334,7 @@ void QgsWfsRequest::replyFinished()
         else
         {
           QNetworkRequest request( toUrl );
+          QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWfsRequest" ) );
           if ( !mUri.auth().setAuthorization( request ) )
           {
             mResponse.clear();
@@ -353,7 +352,6 @@ void QgsWfsRequest::replyFinished()
 
           QgsDebugMsgLevel( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 4 );
           mReply = QgsNetworkAccessManager::instance()->get( request );
-          mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
           if ( !mUri.auth().setAuthorizationReply( mReply ) )
           {
             mResponse.clear();
@@ -377,7 +375,8 @@ void QgsWfsRequest::replyFinished()
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
-          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+          const auto constRawHeaders = cmd.rawHeaders();
+          for ( const QNetworkCacheMetaData::RawHeader &h : constRawHeaders )
           {
             if ( h.first != "Cache-Control" )
               hl.append( h );

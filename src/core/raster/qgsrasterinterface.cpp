@@ -101,7 +101,8 @@ bool QgsRasterInterface::hasStatistics( int bandNo,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, bandNo, stats, extent, sampleSize );
 
-  Q_FOREACH ( const QgsRasterBandStats &stats, mStatistics )
+  const auto constMStatistics = mStatistics;
+  for ( const QgsRasterBandStats &stats : constMStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -124,7 +125,8 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, bandNo, stats, extent, sampleSize );
 
-  Q_FOREACH ( const QgsRasterBandStats &stats, mStatistics )
+  const auto constMStatistics = mStatistics;
+  for ( const QgsRasterBandStats &stats : constMStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -162,6 +164,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   double mySumOfSquares = 0;
 
   bool myFirstIterationFlag = true;
+  bool isNoData = false;
   for ( int myYBlock = 0; myYBlock < myNYBlocks; myYBlock++ )
   {
     for ( int myXBlock = 0; myXBlock < myNXBlocks; myXBlock++ )
@@ -185,9 +188,10 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
       // Collect the histogram counts.
       for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
       {
-        if ( blk->isNoData( i ) ) continue; // NULL
+        double myValue = blk->valueAndNoData( i, isNoData );
+        if ( isNoData )
+          continue; // NULL
 
-        double myValue = blk->value( i );
         myRasterBandStats.sum += myValue;
         myRasterBandStats.elementCount++;
 
@@ -378,7 +382,8 @@ bool QgsRasterInterface::hasHistogram( int bandNo,
   QgsRasterHistogram myHistogram;
   initHistogram( myHistogram, bandNo, binCount, minimum, maximum, extent, sampleSize, includeOutOfRange );
 
-  Q_FOREACH ( const QgsRasterHistogram &histogram, mHistograms )
+  const auto constMHistograms = mHistograms;
+  for ( const QgsRasterHistogram &histogram : constMHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -402,7 +407,8 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
   initHistogram( myHistogram, bandNo, binCount, minimum, maximum, extent, sampleSize, includeOutOfRange );
 
   // Find cached
-  Q_FOREACH ( const QgsRasterHistogram &histogram, mHistograms )
+  const auto constMHistograms = mHistograms;
+  for ( const QgsRasterHistogram &histogram : constMHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -448,6 +454,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
   double myBinSize = ( myMaximum - myMinimum ) / myBinCount;
 
   // TODO: progress signals
+  bool isNoData = false;
   for ( int myYBlock = 0; myYBlock < myNYBlocks; myYBlock++ )
   {
     for ( int myXBlock = 0; myXBlock < myNXBlocks; myXBlock++ )
@@ -470,11 +477,11 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
       // Collect the histogram counts.
       for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
       {
-        if ( blk->isNoData( i ) )
+        double myValue = blk->valueAndNoData( i, isNoData );
+        if ( isNoData )
         {
           continue; // NULL
         }
-        double myValue = blk->value( i );
 
         int myBinIndex = static_cast <int>( std::floor( ( myValue - myMinimum ) /  myBinSize ) );
 

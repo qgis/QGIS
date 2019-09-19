@@ -1,8 +1,0 @@
-usr/lib/python*/*-packages/qgis/*.py
-usr/lib/python*/*-packages/qgis/*.so
-usr/lib/python*/*-packages/qgis/core/*
-usr/lib/python*/*-packages/qgis/gui/*
-usr/lib/python*/*-packages/qgis/analysis/*
-usr/lib/python*/*-packages/qgis/PyQt/*
-usr/lib/python*/*-packages/qgis/testing/*
-usr/lib/python*/*-packages/qgis/server/*

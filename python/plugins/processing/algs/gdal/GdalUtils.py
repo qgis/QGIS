@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import subprocess
 import platform
@@ -157,10 +153,10 @@ class GdalUtils:
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
                     # Only creatable rasters can be referenced in output rasters
-                    if ((gdal.DCAP_CREATE in metadata
-                         and metadata[gdal.DCAP_CREATE] == 'YES')
-                        or (gdal.DCAP_CREATECOPY in metadata
-                            and metadata[gdal.DCAP_CREATECOPY] == 'YES')):
+                    if ((gdal.DCAP_CREATE in metadata and
+                         metadata[gdal.DCAP_CREATE] == 'YES') or
+                        (gdal.DCAP_CREATECOPY in metadata and
+                            metadata[gdal.DCAP_CREATECOPY] == 'YES')):
                         GdalUtils.supportedOutputRasters[shortName] = extensions
 
         return GdalUtils.supportedRasters
@@ -239,24 +235,6 @@ class GdalUtils:
     @staticmethod
     def readableVersion():
         return gdal.VersionInfo('RELEASE_NAME')
-
-    @staticmethod
-    def gdalHelpPath():
-        helpPath = ProcessingConfig.getSetting(GdalUtils.GDAL_HELP_PATH)
-
-        if helpPath is None:
-            if isWindows():
-                pass
-            elif isMac():
-                pass
-            else:
-                searchPaths = ['/usr/share/doc/libgdal-doc/gdal']
-                for path in searchPaths:
-                    if os.path.exists(path):
-                        helpPath = os.path.abspath(path)
-                        break
-
-        return helpPath if helpPath is not None else 'http://www.gdal.org/'
 
     @staticmethod
     def ogrConnectionStringFromLayer(layer):
@@ -363,6 +341,11 @@ class GdalUtils:
 
             ogrstr += dsUri.table()
             format = 'OCI'
+        elif provider.lower() == "wfs":
+            uri = QgsDataSourceUri(layer.source())
+            baseUrl = uri.param('url').split('?')[0]
+            ogrstr = "WFS:{}".format(baseUrl)
+            format = 'WFS'
         else:
             ogrstr = str(layer.source()).split("|")[0]
             path, ext = os.path.splitext(ogrstr)
@@ -371,11 +354,13 @@ class GdalUtils:
         return ogrstr, '"' + format + '"'
 
     @staticmethod
+    def ogrOutputLayerName(uri):
+        uri = uri.strip('"')
+        return os.path.basename(os.path.splitext(uri)[0])
+
+    @staticmethod
     def ogrLayerName(uri):
         uri = uri.strip('"')
-        #if os.path.isfile(uri):
-        #    return os.path.basename(os.path.splitext(uri)[0])
-
         if ' table=' in uri:
             # table="schema"."table"
             re_table_schema = re.compile(' table="([^"]*)"\\."([^"]*)"')
@@ -424,16 +409,19 @@ class GdalUtils:
 
     @staticmethod
     def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
-        listFile = os.path.join(QgsProcessingUtils.tempFolder(), filename)
-        with open(listFile, 'w') as f:
-            if executing:
-                layers = []
-                for l in alg.parameterAsLayerList(parameters, parameter_name, context):
-                    if quote:
-                        layers.append('"' + l.source() + '"')
-                    else:
-                        layers.append(l.source())
+        listFile = QgsProcessingUtils.generateTempFilename(filename)
+
+        if executing:
+            layers = []
+            for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                if quote:
+                    layers.append('"' + l.source() + '"')
+                else:
+                    layers.append(l.source())
+
+            with open(listFile, 'w') as f:
                 f.write('\n'.join(layers))
+
         return listFile
 
     @staticmethod

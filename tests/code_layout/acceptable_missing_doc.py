@@ -20,8 +20,6 @@
 __author__ = 'Stéphane Brunner'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Stéphane Brunner'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 # -*- coding: utf-8 -*-
 """
@@ -30,8 +28,6 @@ The list of acceptable documentation missing
 __author__ = 'Stéphane Brunner'
 __date__ = '18/03/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 ACCEPTABLE_MISSING_DOCS = {
     "CharacterWidget": ['updateFontMerging(bool enable)'],
@@ -213,7 +209,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsInterpolator": ['QgsInterpolator(const QList< QgsInterpolator::LayerData > &layerData)'],
     "QgsLUDialog": ['QgsLUDialog(QWidget *parent=nullptr, Qt::WindowFlags fl=QgsGuiUtils::ModalDialogFlags)', 'lowerValue() const', 'setLowerValue(const QString &val)', 'setUpperValue(const QString &val)', 'upperValue() const'],
     "QgsLabelCandidate": ['QgsLabelCandidate(const QRectF &r, double c)'],
-    "QgsLabelPosition": ['QgsLabelPosition(int id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram=false, bool pinned=false, const QString &providerId=QString())'],
+    "QgsLabelPosition": ['QgsLabelPosition(QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram=false, bool pinned=false, const QString &providerId=QString())'],
     "QgsLabelSorter": ['QgsLabelSorter(const QgsMapSettings &mapSettings)', 'operator()(pal::LabelPosition *lp1, pal::LabelPosition *lp2) const'],
     "QgsLabelingEngine": ['processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)'],
     "QgsLayerItem": ['LayerType', 'QgsLayerItem(QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey)', 'iconDefault()', 'iconLine()', 'iconPoint()', 'iconPolygon()', 'iconRaster()', 'iconTable()'],
@@ -463,7 +459,34 @@ ACCEPTABLE_MISSING_DOCS = {
     "pal::PolygonCostCalculator": ['PolygonCostCalculator(LabelPosition *lp)', 'getCost()', 'getLabel()', 'update(pal::PointSet *pset)'],
     "pal::PriorityQueue": ['decreaseKey(int key)', 'downheap(int id)', 'getBest()', 'getId(int key)', 'getSize()', 'getSizeByPos()', 'insert(int key, double p)', 'isIn(int key)', 'print()', 'remove(int key)', 'setPriority(int key, double new_p)', 'sort()', 'upheap(int key)'],
     "pal::Problem": ['compareLabelArea(pal::LabelPosition *l1, pal::LabelPosition *l2)', 'compute_feature_cost(SubPart *part, int feat_id, int label_id, int *nbOverlap)', 'compute_subsolution_cost(SubPart *part, int *s, int *nbOverlap)', 'getFeatureCandidate(int fi, int ci)', 'getFeatureCandidateCount(int i)', 'getNumFeatures()', 'getSolution(bool returnInactive)', 'getStats()', 'init_sol_falp()', 'initialization()', 'popmusic_tabu(SubPart *part)', 'reduce()', 'subPart(int r, int featseed, int *isIn)'],
-    "pal::Util": ['unmulti(const GEOSGeometry *the_geom)']
+    "pal::Util": ['unmulti(const GEOSGeometry *the_geom)'],
+    "QgsGeometryLineIntersectionCheck": ["QgsGeometryLineIntersectionCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)", "factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()"],
+    "QgsGeometryDangleCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryDangleCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryDegeneratePolygonCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryDegeneratePolygonCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryCheckerUtils": ["lineIntersections(const QgsLineString *line1, const QgsLineString *line2, double tol)", "filter1DTypes(QgsAbstractGeometry *geom)", "canDeleteVertex(const QgsAbstractGeometry *geom, int iPart, int iRing)", "polygonRings(const QgsPolygon *polygon)", "sharedEdgeLength(const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol)", "pointOnLine(const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities=false)", "getGeomPart(QgsAbstractGeometry *geom, int partIdx)", "getGeomPart(const QgsAbstractGeometry *geom, int partIdx)", "createGeomEngine(const QgsAbstractGeometry *geometry, double tolerance)"],
+    "QgsGeometryContainedCheckError": ["QgsGeometryContainedCheckError(const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, const QgsGeometryCheckerUtils::LayerFeature &containingFeature)", "containingFeature() const"],
+    "QgsGeometryHoleCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryHoleCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryDuplicateCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryDuplicateCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometrySelfContactCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometrySelfContactCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryTypeCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryTypeCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration, int allowedTypes)"],
+    "QgsGeometryDuplicateCheckError": ["QgsGeometryDuplicateCheckError(const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, const QMap< QString, QgsFeaturePool * > &featurePools, const QMap< QString, QList< QgsFeatureId >> &duplicates)", "duplicates() const"],
+    "QgsGeometryLineLayerIntersectionCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryLineLayerIntersectionCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometrySegmentLengthCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometrySegmentLengthCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryTypeCheckError": ["QgsGeometryTypeCheckError(const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, QgsWkbTypes::Type flatType)"],
+    "QgsGeometryAngleCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryAngleCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometrySliverPolygonCheck": ["factoryDescription()", "factoryId()", "QgsGeometrySliverPolygonCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryAreaCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryAreaCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryChecker": [],
+    "QgsGeometryFollowBoundariesCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryFollowBoundariesCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration, QgsVectorLayer *checkLayer)"],
+    "QgsGeometryMultipartCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryMultipartCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometrySelfIntersectionCheckError": ["QgsGeometrySelfIntersectionCheckError(const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, QgsVertexId vertexId, const QgsGeometryUtils::SelfIntersection &intersection)", "intersection() const"],
+    "QgsGeometryGapCheckError": ["QgsGeometrySelfIntersectionCheckError(const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, QgsVertexId vertexId, const QgsGeometryUtils::SelfIntersection &intersection)", "intersection() const"],
+    "QgsGeometryPointCoveredByLineCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryPointCoveredByLineCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometrySelfIntersectionCheck": ["QgsGeometrySelfIntersectionCheck(const QgsGeometryCheckContext *context, const QVariantMap &configuration=QVariantMap())", "ResolutionMethod"],
+    "QgsGeometryContainedCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryContainedCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryPointInPolygonCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryPointInPolygonCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryDuplicateNodesCheck": ["factoryDescription()", "factoryId()", "factoryCompatibleGeometryTypes()", "factoryIsCompatible(QgsVectorLayer *layer)", "ResolutionMethod", "factoryCheckType()", "QgsGeometryDuplicateNodesCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"],
+    "QgsGeometryChecker": ["getContext() const", "featurePools() const", "setMergeAttributeIndices(const QMap< QString, int > &mergeAttributeIndices)", "progressValue(int value)", "getChecks() const", "errorAdded(QgsGeometryCheckError *error)", "QgsGeometryChecker(const QList< QgsGeometryCheck * > &checks, QgsGeometryCheckContext *context, const QMap< QString, QgsFeaturePool * > &featurePools)", "fixError(QgsGeometryCheckError *error, int method, bool triggerRepaint=false)", "errorUpdated(QgsGeometryCheckError *error, bool statusChanged)", "execute(int *totalSteps=nullptr)", "getMessages() const"]
 }
 
 ACCEPTABLE_MISSING_ADDED_NOTE = [
@@ -1333,7 +1356,40 @@ ACCEPTABLE_MISSING_ADDED_NOTE = [
     "QgsExpressionNodeLiteral",
     "QgsExpressionNodeUnaryOperator",
     "QgsStaticExpressionFunction",
-    "QgsExpressionNodeCondition::WhenThen"
+    "QgsExpressionNodeCondition::WhenThen",
+    "QgsGeometryChecker",
+    "QgsGeometryGapCheckError",
+    "QgsGeometrySelfIntersectionCheckError",
+    "QgsGeometryDangleCheck",
+    "QgsGeometryCheckerUtils::LayerFeatures::iterator",
+    "QgsGeometrySelfIntersectionCheck",
+    "QgsGeometryDegeneratePolygonCheck",
+    "QgsGeometryIsValidCheckError",
+    "QgsGeometryPointInPolygonCheck",
+    "QgsGeometryDuplicateCheckError",
+    "QgsGeometryOverlapCheckError",
+    "QgsGeometryFollowBoundariesCheck",
+    "QgsGeometryContainedCheck",
+    "QgsGeometryDuplicateNodesCheck",
+    "QgsGeometrySegmentLengthCheck",
+    "QgsGeometryGapCheck",
+    "QgsGeometryCheckFactoryT",
+    "QgsGeometryHoleCheck",
+    "QgsGeometryDuplicateCheck",
+    "QgsGeometryCheckerUtils::LayerFeature",
+    "QgsGeometryCheckerUtils::LayerFeatures",
+    "QgsGeometrySelfContactCheck",
+    "QgsGeometryOverlapCheck",
+    "QgsGeometryAngleCheck",
+    "QgsGeometryPointCoveredByLineCheck",
+    "QgsGeometryLineIntersectionCheck",
+    "QgsGeometryTypeCheckError",
+    "QgsGeometryLineLayerIntersectionCheck",
+    "QgsGeometrySliverPolygonCheck",
+    "QgsGeometryContainedCheckError",
+    "QgsGeometryAreaCheck",
+    "QgsGeometryTypeCheck",
+    "QgsGeometryMultipartCheck"
 ]
 
 ACCEPTABLE_MISSING_BRIEF = ['QgsBrushStyleComboBox',
@@ -1609,7 +1665,30 @@ ACCEPTABLE_MISSING_BRIEF = ['QgsBrushStyleComboBox',
                             'QgsCptCityBrowserModel',
                             'QgsSmartGroupEditorDialog',
                             'QgsHeatmapRendererWidget',
-                            'QgsStyleManagerDialog']
+                            'QgsStyleManagerDialog',
+                            'QgsGeometrySelfIntersectionCheckError',
+                            'QgsGeometryDangleCheck',
+                            'QgsGeometrySelfIntersectionCheck',
+                            'QgsGeometryDegeneratePolygonCheck',
+                            'QgsGeometryPointInPolygonCheck',
+                            'QgsGeometryDuplicateCheckError',
+                            'QgsGeometryFollowBoundariesCheck',
+                            'QgsGeometryContainedCheck',
+                            'QgsGeometryDuplicateNodesCheck',
+                            'QgsGeometrySegmentLengthCheck',
+                            'QgsGeometryHoleCheck',
+                            'QgsGeometryDuplicateCheck',
+                            'QgsGeometrySelfContactCheck',
+                            'QgsGeometryAngleCheck',
+                            'QgsGeometryPointCoveredByLineCheck',
+                            'QgsGeometryLineIntersectionCheck',
+                            'QgsGeometryTypeCheckError',
+                            'QgsGeometryLineLayerIntersectionCheck',
+                            'QgsGeometrySliverPolygonCheck',
+                            'QgsGeometryContainedCheckError',
+                            'QgsGeometryAreaCheck',
+                            'QgsGeometryTypeCheck',
+                            'QgsGeometryMultipartCheck']
 
 
 if __name__ == '__main__':

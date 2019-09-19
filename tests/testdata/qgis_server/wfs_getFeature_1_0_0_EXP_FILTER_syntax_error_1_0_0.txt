@@ -1,0 +1,8 @@
+Content-Length: 320
+Content-Type: text/xml; charset=utf-8
+
+<ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.2.0">
+ <ServiceException code="RequestNotWellFormed">The EXP_FILTER expression has errors: 
+syntax error, unexpected NAME, expecting COMMA or ')'
+syntax error, unexpected Unknown_CHARACTER, expecting $end</ServiceException>
+</ServiceExceptionReport>

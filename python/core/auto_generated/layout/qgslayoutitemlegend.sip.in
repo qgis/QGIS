@@ -24,15 +24,30 @@ Overrides some functionality of QgsLayerTreeModel to better fit the needs of lay
 #include "qgslayoutitemlegend.h"
 %End
   public:
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0 );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0, QgsLayoutItemLegend *layout = 0 );
 %Docstring
 Construct the model based on the given layer tree
+%End
+
+    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
+%Docstring
+Alternative constructor.
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+  signals:
+
+    void refreshLegend();
+%Docstring
+Emitted to refresh the legend.
+
+.. versionadded:: 3.10
+%End
 
 };
 
@@ -67,6 +82,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QIcon icon() const;
 
+    virtual QgsLayoutItem::Flags itemFlags() const;
+
     virtual QString displayName() const;
 
 
@@ -79,7 +96,7 @@ Sets the legend's item bounds to fit the whole legend content.
 %Docstring
 Sets whether the legend should automatically resize to fit its contents.
 
-:param enabled: set to false to disable automatic resizing. The legend frame will not
+:param enabled: set to ``False`` to disable automatic resizing. The legend frame will not
                 be expanded to fit legend items, and items may be cropped from display.
 
 .. seealso:: :py:func:`resizeToContents`
@@ -129,7 +146,7 @@ Find out whether legend items are filtered to show just the ones visible in the 
 
     void setLegendFilterOutAtlas( bool doFilter );
 %Docstring
-When set to true, during an atlas rendering, it will filter out legend elements
+When set to ``True``, during an atlas rendering, it will filter out legend elements
 where features are outside the current atlas feature.
 
 .. seealso:: :py:func:`legendFilterOutAtlas`
@@ -279,6 +296,28 @@ Sets the legend symbol ``width``.
 .. seealso:: :py:func:`symbolWidth`
 %End
 
+    void setSymbolAlignment( Qt::AlignmentFlag alignment );
+%Docstring
+Sets the ``alignment`` for placement of legend symbols.
+
+Only Qt.AlignLeft or Qt.AlignRight are supported values.
+
+.. seealso:: :py:func:`symbolAlignment`
+
+.. versionadded:: 3.10
+%End
+
+    Qt::AlignmentFlag symbolAlignment() const;
+%Docstring
+Returns the alignment for placement of legend symbols.
+
+Only Qt.AlignLeft or Qt.AlignRight are supported values.
+
+.. seealso:: :py:func:`setSymbolAlignment`
+
+.. versionadded:: 3.10
+%End
+
     double symbolHeight() const;
 %Docstring
 Returns the legend symbol height.
@@ -394,7 +433,7 @@ Returns whether a stroke will be drawn around raster symbol items.
 %Docstring
 Sets whether a stroke will be drawn around raster symbol items.
 
-:param enabled: set to true to draw borders
+:param enabled: set to ``True`` to draw borders
 
 .. seealso:: :py:func:`drawRasterStroke`
 
@@ -406,7 +445,7 @@ Sets whether a stroke will be drawn around raster symbol items.
     QColor rasterStrokeColor() const;
 %Docstring
 Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeColor`
 
@@ -418,7 +457,7 @@ only drawn if drawRasterStroke() is true.
     void setRasterStrokeColor( const QColor &color );
 %Docstring
 Sets the stroke ``color`` for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`rasterStrokeColor`
 
@@ -430,7 +469,7 @@ only drawn if drawRasterStroke() is true.
     double rasterStrokeWidth() const;
 %Docstring
 Returns the stroke width (in layout units) for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
 
@@ -442,7 +481,7 @@ only drawn if drawRasterStroke() is true.
     void setRasterStrokeWidth( double width );
 %Docstring
 Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`rasterStrokeWidth`
 
@@ -485,6 +524,10 @@ Returns the legend's renderer settings object.
 
     virtual void finalizeRestoreFromXml();
 
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+    virtual ExportLayerBehavior exportLayerBehavior() const;
 
 
   public slots:

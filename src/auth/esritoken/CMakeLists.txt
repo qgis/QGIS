@@ -43,6 +43,7 @@ TARGET_LINK_LIBRARIES (esritokenauthmethod
   qgis_core
   qgis_gui
 )
+TARGET_COMPILE_DEFINITIONS(esritokenauthmethod PRIVATE "-DQT_NO_FOREACH")
 
 INSTALL(TARGETS esritokenauthmethod
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

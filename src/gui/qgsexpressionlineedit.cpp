@@ -22,6 +22,8 @@
 #include "qgscodeeditorsql.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -43,6 +45,8 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   mExpressionContext << QgsExpressionContextUtils::globalScope()
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
+
+QgsExpressionLineEdit::~QgsExpressionLineEdit() = default;
 
 void QgsExpressionLineEdit::setExpressionDialogTitle( const QString &title )
 {
@@ -199,7 +203,7 @@ void QgsExpressionLineEdit::updateLineEditStyle( const QString &expression )
   if ( !mLineEdit )
     return;
 
-  QPalette palette;
+  QPalette palette = mLineEdit->palette();
   if ( !isEnabled() )
   {
     palette.setColor( QPalette::Text, Qt::gray );

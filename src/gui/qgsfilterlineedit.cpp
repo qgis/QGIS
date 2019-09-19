@@ -18,6 +18,7 @@
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
 #include "qgsanimatedicon.h"
+#include "qgis.h"
 
 #include <QAction>
 #include <QToolButton>
@@ -216,7 +217,7 @@ bool QgsFilterLineEdit::event( QEvent *event )
 /// @cond PRIVATE
 void QgsSpinBoxLineEdit::focusInEvent( QFocusEvent *e )
 {
-  QLineEdit::focusInEvent( e );
+  QgsFilterLineEdit::focusInEvent( e );
   if ( isNull() )
   {
     clear();

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCategorizedSymbolRenderer
 
+From build dir, run: ctest -R PyQgsCategorizedSymbolRenderer -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -9,10 +11,10 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '2/12/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
+
+import os
 
 from qgis.testing import unittest, start_app
 from qgis.core import (QgsCategorizedSymbolRenderer,
@@ -25,12 +27,27 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsFeature,
                        QgsRenderContext,
                        QgsSymbol,
-                       QgsStyle
+                       QgsStyle,
+                       QgsVectorLayer,
+                       QgsEditorWidgetSetup,
+                       QgsReadWriteContext,
+                       QgsProject,
+                       QgsSimpleMarkerSymbolLayer,
+                       QgsSymbolLayer,
+                       QgsProperty,
+                       QgsMapSettings,
+                       QgsRectangle,
+                       QgsRenderContext
                        )
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import Qt, QVariant, QSize
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+
+from utilities import unitTestDataPath
 
 start_app()
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 def createMarkerSymbol():
@@ -126,6 +143,40 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         assert renderer.updateCategoryRenderState(1, False)
         self.assertEqual(renderer.filter(fields), "FALSE")
 
+        # with value lists
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('field')
+
+        renderer.addCategory(QgsRendererCategory(['a', 'b'], createMarkerSymbol(), 'ab'))
+        renderer.addCategory(QgsRendererCategory('c', createMarkerSymbol(), 'c'))
+        renderer.addCategory(QgsRendererCategory('', createMarkerSymbol(), 'default'))
+        self.assertEqual(renderer.filter(fields), '')
+        # remove categories, leaving default
+        assert renderer.updateCategoryRenderState(0, False)
+        self.assertEqual(renderer.filter(fields), "(\"field\") NOT IN ('a','b') OR (\"field\") IS NULL")
+        assert renderer.updateCategoryRenderState(1, False)
+        self.assertEqual(renderer.filter(fields), "(\"field\") NOT IN ('a','b','c') OR (\"field\") IS NULL")
+        assert renderer.updateCategoryRenderState(2, False)
+        self.assertEqual(renderer.filter(fields), "FALSE")
+        assert renderer.updateCategoryRenderState(0, True)
+        self.assertEqual(renderer.filter(fields), "(\"field\") IN ('a','b')")
+        assert renderer.updateCategoryRenderState(1, True)
+        self.assertEqual(renderer.filter(fields), "(\"field\") IN ('a','b','c')")
+        assert renderer.updateCategoryRenderState(1, False)
+        assert renderer.updateCategoryRenderState(2, True)
+        self.assertEqual(renderer.filter(fields), "(\"field\") NOT IN ('c') OR (\"field\") IS NULL")
+        renderer.deleteAllCategories()
+        renderer.setClassAttribute('num')
+        renderer.addCategory(QgsRendererCategory([1, 2], createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategory(3, createMarkerSymbol(), 'b'))
+        self.assertEqual(renderer.filter(fields), '(\"num\") IN (1,2,3)')
+        assert renderer.updateCategoryRenderState(0, False)
+        self.assertEqual(renderer.filter(fields), "(\"num\") IN (3)")
+        assert renderer.updateCategoryRenderState(1, False)
+        self.assertEqual(renderer.filter(fields), "FALSE")
+        assert renderer.updateCategoryRenderState(0, True)
+        self.assertEqual(renderer.filter(fields), "(\"num\") IN (1,2)")
+
     def testFilterExpression(self):
         """Test filter creation with expression"""
         renderer = QgsCategorizedSymbolRenderer()
@@ -192,6 +243,37 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         assert renderer.updateCategoryRenderState(1, False)
         self.assertEqual(renderer.filter(fields), "FALSE")
 
+        # with value lists
+        renderer.deleteAllCategories()
+        renderer.addCategory(QgsRendererCategory(['a', 'b'], createMarkerSymbol(), 'ab'))
+        renderer.addCategory(QgsRendererCategory('c', createMarkerSymbol(), 'c'))
+        renderer.addCategory(QgsRendererCategory('', createMarkerSymbol(), 'default'))
+        self.assertEqual(renderer.filter(fields), '')
+        # remove categories, leaving default
+        assert renderer.updateCategoryRenderState(0, False)
+        self.assertEqual(renderer.filter(fields), "(field + field2) NOT IN ('a','b') OR (field + field2) IS NULL")
+        assert renderer.updateCategoryRenderState(1, False)
+        self.assertEqual(renderer.filter(fields), "(field + field2) NOT IN ('a','b','c') OR (field + field2) IS NULL")
+        # remove default category
+        assert renderer.updateCategoryRenderState(2, False)
+        self.assertEqual(renderer.filter(fields), "FALSE")
+        # add back other categories, leaving default disabled
+        assert renderer.updateCategoryRenderState(0, True)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN ('a','b')")
+        assert renderer.updateCategoryRenderState(1, True)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN ('a','b','c')")
+        renderer.deleteAllCategories()
+        # numeric categories
+        renderer.addCategory(QgsRendererCategory([1, 2], createMarkerSymbol(), 'a'))
+        renderer.addCategory(QgsRendererCategory(3, createMarkerSymbol(), 'b'))
+        self.assertEqual(renderer.filter(fields), '(field + field2) IN (1,2,3)')
+        assert renderer.updateCategoryRenderState(0, False)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN (3)")
+        assert renderer.updateCategoryRenderState(1, False)
+        self.assertEqual(renderer.filter(fields), "FALSE")
+        assert renderer.updateCategoryRenderState(0, True)
+        self.assertEqual(renderer.filter(fields), "(field + field2) IN (1,2)")
+
     def testSymbolForValue(self):
         """Test symbolForValue"""
         renderer = QgsCategorizedSymbolRenderer()
@@ -206,6 +288,10 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         symbol_c = createMarkerSymbol()
         symbol_c.setColor(QColor(0, 0, 255))
         renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False))
+        symbol_d = createMarkerSymbol()
+        symbol_d.setColor(QColor(255, 0, 255))
+        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de'))
+
         # add default category
         default_symbol = createMarkerSymbol()
         default_symbol.setColor(QColor(255, 255, 255))
@@ -224,6 +310,14 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         # hidden category
         symbol, ok = renderer.symbolForValue2('c')
         self.assertIsNone(symbol)
+        self.assertTrue(ok)
+
+        # list
+        symbol, ok = renderer.symbolForValue2('d')
+        self.assertEqual(symbol.color(), QColor(255, 0, 255))
+        self.assertTrue(ok)
+        symbol, ok = renderer.symbolForValue2('e')
+        self.assertEqual(symbol.color(), QColor(255, 0, 255))
         self.assertTrue(ok)
 
         # no matching category
@@ -251,6 +345,9 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         symbol_c = createMarkerSymbol()
         symbol_c.setColor(QColor(0, 0, 255))
         renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False))
+        symbol_d = createMarkerSymbol()
+        symbol_d.setColor(QColor(255, 0, 255))
+        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de'))
         # add default category
         default_symbol = createMarkerSymbol()
         default_symbol.setColor(QColor(255, 255, 255))
@@ -268,6 +365,14 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         f.setAttributes(['b'])
         symbol = renderer.originalSymbolForFeature(f, context)
         self.assertEqual(symbol.color(), QColor(0, 255, 0))
+
+        # list
+        f.setAttributes(['d'])
+        symbol = renderer.originalSymbolForFeature(f, context)
+        self.assertEqual(symbol.color(), QColor(255, 0, 255))
+        f.setAttributes(['e'])
+        symbol = renderer.originalSymbolForFeature(f, context)
+        self.assertEqual(symbol.color(), QColor(255, 0, 255))
 
         # hidden category
         f.setAttributes(['c'])
@@ -299,6 +404,9 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         symbol_c = createMarkerSymbol()
         symbol_c.setColor(QColor(0, 0, 255))
         renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False))
+        symbol_d = createMarkerSymbol()
+        symbol_d.setColor(QColor(255, 0, 255))
+        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de'))
         # add default category
         default_symbol = createMarkerSymbol()
         default_symbol.setColor(QColor(255, 255, 255))
@@ -322,6 +430,14 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         f.setAttributes(['c'])
         keys = renderer.legendKeysForFeature(f, context)
         self.assertEqual(keys, {'2'})
+
+        # list
+        f.setAttributes(['d'])
+        keys = renderer.legendKeysForFeature(f, context)
+        self.assertEqual(keys, {'3'})
+        f.setAttributes(['e'])
+        keys = renderer.legendKeysForFeature(f, context)
+        self.assertEqual(keys, {'3'})
 
         # no matching category
         f.setAttributes(['xxx'])
@@ -473,6 +589,56 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         renderer.setClassAttribute("valuea - valueb")
         self.assertEqual(renderer.usedAttributes(ctx), {"valuea", "valuea - valueb", "valueb"})
 
+    def testPointsUsedAttributes(self):
+        points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
+        points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
+        QgsProject.instance().addMapLayer(points_layer)
+
+        cats = []
+        sym1 = QgsMarkerSymbol()
+        l1 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l1.setColor(QColor(255, 0, 0))
+        l1.setStrokeStyle(Qt.NoPen)
+        l1.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym1.changeSymbolLayer(0, l1)
+        cats.append(QgsRendererCategory("B52", sym1, "B52"))
+        sym2 = QgsMarkerSymbol()
+        l2 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l2.setColor(QColor(0, 255, 0))
+        l2.setStrokeStyle(Qt.NoPen)
+        l2.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym2.changeSymbolLayer(0, l2)
+        cats.append(QgsRendererCategory("Biplane", sym2, "Biplane"))
+        sym3 = QgsMarkerSymbol()
+        l3 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l3.setColor(QColor(0, 0, 255))
+        l3.setStrokeStyle(Qt.NoPen)
+        l3.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym3.changeSymbolLayer(0, l3)
+        cats.append(QgsRendererCategory("Jet", sym3, "Jet"))
+
+        renderer = QgsCategorizedSymbolRenderer("Class", cats)
+
+        points_layer.setRenderer(renderer)
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([points_layer])
+
+        ctx = QgsRenderContext.fromMapSettings(ms)
+        ctx.expressionContext().appendScope(points_layer.createExpressionContextScope())
+
+        # for symbol layer
+        self.assertCountEqual(l1.usedAttributes(ctx), {'Heading'})
+        # for symbol
+        self.assertCountEqual(sym1.usedAttributes(ctx), {'Heading'})
+        # for symbol renderer
+        self.assertCountEqual(renderer.usedAttributes(ctx), {'Class', 'Heading'})
+
+        QgsProject.instance().removeMapLayer(points_layer)
+
     def testFilterNeedsGeometry(self):
         renderer = QgsCategorizedSymbolRenderer()
 
@@ -482,6 +648,48 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertTrue(renderer.filterNeedsGeometry())
         renderer.setClassAttribute("value - $area")
         self.assertTrue(renderer.filterNeedsGeometry())
+
+    def testCategories(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory")
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup("ValueMap", {'map': [{'One': '1'}, {'Two': '2'}]}))
+
+        result = QgsCategorizedSymbolRenderer.createCategories([1, 2, 3], QgsMarkerSymbol(), layer, 'fldint')
+
+        self.assertEqual(result[0].label(), 'One')
+        self.assertEqual(result[1].label(), 'Two')
+        self.assertEqual(result[2].label(), '(3)')
+
+    def testWriteReadXml(self):
+        # test writing renderer to xml and restoring
+
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('x')
+
+        symbol_a = createMarkerSymbol()
+        symbol_a.setColor(QColor(255, 0, 0))
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a'))
+        symbol_b = createMarkerSymbol()
+        symbol_b.setColor(QColor(0, 255, 0))
+        renderer.addCategory(QgsRendererCategory('b', symbol_b, 'b'))
+        symbol_c = createMarkerSymbol()
+        symbol_c.setColor(QColor(0, 0, 255))
+        renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False))
+        symbol_d = createMarkerSymbol()
+        symbol_d.setColor(QColor(255, 0, 255))
+        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de'))
+        # add default category
+        default_symbol = createMarkerSymbol()
+        default_symbol.setColor(QColor(255, 255, 255))
+        renderer.addCategory(QgsRendererCategory('', default_symbol, 'default'))
+
+        doc = QDomDocument("testdoc")
+        elem = renderer.save(doc, QgsReadWriteContext())
+
+        renderer2 = QgsCategorizedSymbolRenderer.create(elem, QgsReadWriteContext())
+        self.assertEqual(renderer2.classAttribute(), 'x')
+        self.assertEqual([l.label() for l in renderer2.categories()], ['a', 'b', 'c', 'de', 'default'])
+        self.assertEqual([l.value() for l in renderer2.categories()], ['a', 'b', 'c', ['d', 'e'], ''])
+        self.assertEqual([l.symbol().color().name() for l in renderer2.categories()], ['#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#ffffff'])
 
 
 if __name__ == "__main__":

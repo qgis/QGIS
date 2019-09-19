@@ -12,7 +12,7 @@
 
 
 
-class QgsTextFormatWidget : QWidget, protected Ui::QgsTextFormatWidgetBase
+class QgsTextFormatWidget : QWidget, QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
 %Docstring
 A widget for customizing text formatting settings.
@@ -34,20 +34,25 @@ of Labeling.
 %End
   public:
 
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0,
+                         QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
 :param format: initial formatting settings to show in widget
 :param mapCanvas: associated map canvas
 :param parent: parent widget
+:param layer: associated vector layer
 %End
 
     ~QgsTextFormatWidget();
 
-    QgsTextFormat format() const;
+    QgsTextFormat format( bool includeDataDefinedProperties = true ) const;
 %Docstring
 Returns the current formatting settings defined by the widget.
+
+If ``includateDataDefinedProperties`` is ``True``, then data defined properties
+specified in the widget will be included in the format definition.
 %End
 
     void setFormat( const QgsTextFormat &format );
@@ -57,13 +62,41 @@ Sets the current formatting settings
 .. versionadded:: 3.2
 %End
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+
+.. versionadded:: 3.10
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+
+.. versionadded:: 3.10
+%End
+
+    void deactivateField( QgsPalLayerSettings::Property key );
+%Docstring
+Deactivate a field from data defined properties and update the
+corresponding button.
+
+:param key: The property key to deactivate
+
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void setDockMode( bool enabled );
 %Docstring
 Sets whether the widget should be shown in a compact dock mode.
 
-:param enabled: set to true to show in dock mode.
+:param enabled: set to ``True`` to show in dock mode.
 %End
 
   signals:
@@ -71,6 +104,13 @@ Sets whether the widget should be shown in a compact dock mode.
     void widgetChanged();
 %Docstring
 Emitted when the text format defined by the widget changes
+%End
+
+    void auxiliaryFieldCreated();
+%Docstring
+Emitted when an auxiliary field is creatd in the widget.
+
+.. versionadded:: 3.10
 %End
 
   protected:
@@ -81,13 +121,14 @@ Emitted when the text format defined by the widget changes
       Labeling,
     };
 
-    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode );
+    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
 :param mapCanvas: associated map canvas
 :param parent: parent widget
 :param mode: widget mode
+:param layer: associated vector layer
 %End
 
     void updateWidgetForFormat( const QgsTextFormat &format );
@@ -108,8 +149,14 @@ Sets the background color for the text preview widget.
 %Docstring
 Controls whether data defined alignment buttons are enabled.
 
-:param enable: set to true to enable alignment controls
+:param enable: set to ``True`` to enable alignment controls
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+
+
 
 
   protected slots:
@@ -123,6 +170,26 @@ Updates line placement options to reflect current state of widget
 %Docstring
 Updates label placement options to reflect current state of widget
 %End
+
+    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+%Docstring
+Sets the current text settings from a style entry.
+
+.. versionadded:: 3.10
+%End
+
+    virtual void saveFormat();
+%Docstring
+Saves the current text settings to a style entry.
+%End
+
+    void updatePreview();
+%Docstring
+Updates the text preview.
+
+.. versionadded:: 3.10
+%End
+
 
 };
 
@@ -145,7 +212,7 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 %End
   public:
 
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatDialog.
 
@@ -153,13 +220,26 @@ Constructor for QgsTextFormatDialog.
 :param mapCanvas: optional associated map canvas
 :param parent: parent widget
 :param fl: window flags for dialog
+:param layer: associated vector layer
 %End
-
-    ~QgsTextFormatDialog();
 
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.
+%End
+
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. versionadded:: 3.10
+%End
+
+    QDialogButtonBox *buttonBox() const;
+%Docstring
+Returns a reference to the dialog's button box.
+
+.. versionadded:: 3.10
 %End
 
 };
@@ -182,18 +262,26 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 %End
   public:
 
-    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatPanelWidget.
 
 :param format: initial format settings to show in dialog
 :param mapCanvas: optional associated map canvas
 :param parent: parent widget
+:param layer: associated layer
 %End
 
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.
+%End
+
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. versionadded:: 3.10
 %End
 
     virtual void setDockMode( bool dockMode );

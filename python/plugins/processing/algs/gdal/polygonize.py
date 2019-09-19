@@ -21,17 +21,13 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QFileInfo
 
 from qgis.core import (QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterString,
@@ -50,6 +46,7 @@ class polygonize(GdalAlgorithm):
     BAND = 'BAND'
     FIELD = 'FIELD'
     EIGHT_CONNECTEDNESS = 'EIGHT_CONNECTEDNESS'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -59,6 +56,7 @@ class polygonize(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterString(self.FIELD,
                                                        self.tr('Name of the field to create'),
@@ -66,6 +64,13 @@ class polygonize(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.EIGHT_CONNECTEDNESS,
                                                         self.tr('Use 8-connectedness'),
                                                         defaultValue=False))
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
                                                                   self.tr('Vectorized'),
@@ -98,10 +103,11 @@ class polygonize(GdalAlgorithm):
         arguments.append(inLayer.source())
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
         arguments.append(output)
 
-        if self.parameterAsBool(parameters, self.EIGHT_CONNECTEDNESS, context):
+        if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):
             arguments.append('-8')
 
         arguments.append('-b')
@@ -110,15 +116,20 @@ class polygonize(GdalAlgorithm):
         if outFormat:
             arguments.append('-f {}'.format(outFormat))
 
-        arguments.append(GdalUtils.ogrLayerName(output))
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        layerName = GdalUtils.ogrOutputLayerName(output)
+        if layerName:
+            arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
-        commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = ["python3", "-m", self.commandName()]
         else:
-            commands = [self.commandName() + '.py',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

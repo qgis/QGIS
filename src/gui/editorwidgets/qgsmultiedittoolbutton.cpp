@@ -15,6 +15,8 @@
 
 #include "qgsmultiedittoolbutton.h"
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
+
 #include <QMenu>
 QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
   : QToolButton( parent )
@@ -22,9 +24,13 @@ QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
   setFocusPolicy( Qt::StrongFocus );
 
   // set default tool button icon properties
-  setFixedSize( 22, 22 );
   setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
-  setIconSize( QSize( 16, 16 ) );
+
+  int iconSize = QgsGuiUtils::scaleIconSize( 24 );
+  setIconSize( QSize( iconSize, iconSize ) );
+  // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
+  setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+
   setPopupMode( QToolButton::InstantPopup );
 
   mMenu = new QMenu( this );

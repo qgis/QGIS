@@ -17,7 +17,7 @@
 #define QGSGRADIENTCOLORRAMPDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "ui_qgsgradientcolorrampdialogbase.h"
 #include "qgshelp.h"
@@ -62,6 +62,12 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
      * \see ramp()
      */
     void setRamp( const QgsGradientColorRamp &ramp );
+
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
 
   signals:
 

@@ -250,7 +250,7 @@ namespace QgsWcs
     // Build default url
     if ( href.isEmpty() )
     {
-      QUrl url = request.url();
+      QUrl url = request.originalUrl();
       QUrlQuery q( url );
 
       for ( auto param : q.queryItems() )

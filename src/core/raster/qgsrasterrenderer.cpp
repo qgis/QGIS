@@ -72,7 +72,10 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 
   for ( int i = 1; i <= input->bandCount(); i++ )
   {
-    if ( !QgsRasterBlock::typeIsNumeric( input->dataType( i ) ) )
+    const Qgis::DataType bandType = input->dataType( i );
+    // we always allow unknown data types to connect - overwise invalid layers cannot setup
+    // their original rendering pipe and this information is lost
+    if ( bandType != Qgis::UnknownDataType && !QgsRasterBlock::typeIsNumeric( bandType ) )
     {
       return false;
     }
@@ -153,4 +156,23 @@ void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer *other, bo
   setRasterTransparency( other->rasterTransparency() ? new QgsRasterTransparency( *other->rasterTransparency() ) : nullptr );
   if ( copyMinMaxOrigin )
     setMinMaxOrigin( other->minMaxOrigin() );
+}
+
+void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap & ) const
+{
+  QDomElement rasterSymbolizerElem = doc.createElement( QStringLiteral( "sld:RasterSymbolizer" ) );
+  element.appendChild( rasterSymbolizerElem );
+
+  // add opacity only is different from default
+  if ( !qgsDoubleNear( opacity(), 1.0 ) )
+  {
+    QDomElement opacityElem = doc.createElement( QStringLiteral( "sld:Opacity" ) );
+    opacityElem.appendChild( doc.createTextNode( QString::number( opacity() ) ) );
+    rasterSymbolizerElem.appendChild( opacityElem );
+  }
+}
+
+bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
 }

@@ -22,6 +22,9 @@
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
 
+/**
+ * \ingroup analysis
+ */
 class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
 {
   public:
@@ -50,6 +53,9 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
     static QString duplicatesString( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates );
 };
 
+/**
+ * \ingroup analysis
+ */
 class ANALYSIS_EXPORT QgsGeometryDuplicateCheck : public QgsGeometryCheck
 {
   public:

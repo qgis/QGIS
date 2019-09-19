@@ -22,18 +22,11 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLineEdit" name="mImageLineEdit"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mBrowseToolButton">
-       <property name="text">
-        <string>…</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QgsImageSourceLineEdit" name="mImageSourceLineEdit" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>    
    </item>
    <item row="2" column="3">
     <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
@@ -352,10 +345,15 @@
    <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsImageSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mImageLineEdit</tabstop>
-  <tabstop>mBrowseToolButton</tabstop>
+  <tabstop>mImageSourceLineEdit</tabstop>
   <tabstop>mFilenameDDBtn</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mWidthUnitWidget</tabstop>

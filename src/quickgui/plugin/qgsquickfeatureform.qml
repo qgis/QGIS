@@ -36,6 +36,45 @@ Item {
    */
   signal canceled
 
+   /**
+    * A handler for extra events in externalSourceWidget.
+    */
+  property var externalResourceHandler: QtObject {
+
+        /**
+         * Called when clicked on the gallery icon to choose a file in a gallery.
+         * \param itemWidget editorWidget for modified field to send valueChanged signal.
+         */
+        property var chooseImage: function chooseImage(itemWidget) {
+        }
+
+        /**
+          * Called when clicked on the photo image. Suppose to be used to bring a bigger preview.
+          * \param imagePath Absolute path to the image.
+          */
+        property var previewImage: function previewImage(imagePath) {
+        }
+
+        /**
+          * Called when clicked on the trash icon. Suppose to delete the value and optionally also the image.
+          * \param itemWidget editorWidget for modified field to send valueChanged signal.
+          * \param imagePath Absolute path to the image.
+          */
+        property var removeImage: function removeImage(itemWidget, imagePath) {
+        }
+
+        /**
+          * Called when clicked on the OK icon after taking a photo with the Photo panel.
+          * \param itemWidget editorWidget for modified field to send valueChanged signal.
+          * \param prefixToRelativePath Together with the value creates absolute path
+          * \param value Relative path of taken photo.
+          */
+        property var confirmImage: function confirmImage(itemWidget, prefixToRelativePath, value) {
+          itemWidget.image.source = prefixToRelativePath + "/" + value
+          itemWidget.valueChanged(value, value === "" || value === null)
+        }
+    }
+
   /**
    * AttributeFormModel binded on a feature supporting auto-generated editor layouts and "tab" layout.
    */
@@ -57,7 +96,7 @@ Item {
   property QgsQuick.Project project
 
   /**
-   * The function used for a component loader to find qml edit widget componets used in form.
+   * The function used for a component loader to find qml edit widget components used in form.
    */
   property var loadWidgetFn: QgsQuick.Utils.getEditorComponentSource
 
@@ -124,10 +163,11 @@ Item {
     signal reset
   }
 
-  Item {
+  Rectangle {
     id: container
 
     clip: true
+    color: form.style.tabs.backgroundColor
 
     anchors {
       top: toolbar.bottom
@@ -142,7 +182,7 @@ Item {
         left: parent.left
         right: parent.right
       }
-      height: tabRow.height
+      height: form.model.hasTabs ? tabRow.height : 0
 
       flickableDirection: Flickable.HorizontalFlick
       contentWidth: tabRow.width
@@ -152,6 +192,12 @@ Item {
         id: tabRow
         visible: model.hasTabs
         height: form.style.tabs.height
+        spacing: form.style.tabs.spacing
+
+        background: Rectangle {
+          anchors.fill: parent
+          color: form.style.tabs.backgroundColor
+        }
 
         Connections {
           target: master
@@ -171,9 +217,10 @@ Item {
             text: Name
             leftPadding: 8 * QgsQuick.Utils.dp
             rightPadding: 8 * QgsQuick.Utils.dp
+            anchors.bottom: parent.bottom
 
             width: contentItem.width + leftPadding + rightPadding
-            height: form.style.tabs.height
+            height: form.style.tabs.buttonHeight
 
             contentItem: Text {
               // Make sure the width is derived from the text so we can get wider
@@ -186,6 +233,11 @@ Item {
 
               horizontalAlignment: Text.AlignHCenter
               verticalAlignment: Text.AlignVCenter
+            }
+
+            background: Rectangle {
+              color: !tabButton.enabled ? form.style.tabs.disabledBackgroundColor : tabButton.down ||
+                                                 tabButton.checked ? form.style.tabs.activeBackgroundColor : form.style.tabs.normalBackgroundColor
             }
           }
         }
@@ -225,19 +277,34 @@ Item {
             id: content
             anchors.fill: parent
             clip: true
+            spacing: form.style.group.spacing
             section.property: "Group"
             section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
             section.delegate: Component {
-              // section header: group box name
-              Rectangle {
+
+            // section header: group box name
+            Rectangle {
                 width: parent.width
                 height: section === "" ? 0 : form.style.group.height
-                color: form.style.group.backgroundColor
+                color: form.style.group.marginColor
 
-                Text {
-                  anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
-                  font.bold: true
-                  text: section
+                Rectangle {
+                  anchors.fill: parent
+                  anchors {
+                    leftMargin: form.style.group.leftMargin
+                    rightMargin: form.style.group.rightMargin
+                    topMargin: form.style.group.topMargin
+                    bottomMargin: form.style.group.bottomMargin
+                  }
+                  color: form.style.group.backgroundColor
+
+                  Text {
+                    anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
+                    font.bold: true
+                    font.pixelSize: form.style.group.fontPixelSize
+                    text: section
+                    color: form.style.group.fontColor
+                  }
                 }
               }
             }
@@ -311,14 +378,17 @@ Item {
           height: childrenRect.height
           anchors { left: parent.left; right: parent.right }
 
-          enabled: form.state !== "ReadOnly" && !!AttributeEditable
-
           property var value: AttributeValue
           property var config: EditorWidgetConfig
           property var widget: EditorWidget
           property var field: Field
           property var constraintValid: ConstraintValid
           property var homePath: form.project ? form.project.homePath : ""
+          property var customStyle: form.style
+          property var externalResourceHandler: form.externalResourceHandler
+          property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
+          property var featurePair: form.model.attributeModel.featureLayerPair
+          property var activeProject: form.project
 
           active: widget !== 'Hidden'
 
@@ -329,6 +399,26 @@ Item {
           target: attributeEditorLoader.item
           onValueChanged: {
             AttributeValue = isNull ? undefined : value
+          }
+        }
+
+        Connections {
+          target: form
+          ignoreUnknownSignals: true
+          onSaved: {
+            if (typeof attributeEditorLoader.item.callbackOnSave === "function") {
+              attributeEditorLoader.item.callbackOnSave()
+            }
+          }
+        }
+
+        Connections {
+          target: form
+          ignoreUnknownSignals: true
+          onCanceled: {
+            if (typeof attributeEditorLoader.item.callbackOnCancel === "function") {
+              attributeEditorLoader.item.callbackOnCancel()
+            }
           }
         }
       }

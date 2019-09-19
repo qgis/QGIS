@@ -17,7 +17,7 @@
 #define QGSMULTIEDITTOOLBUTTON_H
 
 #include "qgsfields.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QToolButton>
 #include "qgis_gui.h"
 

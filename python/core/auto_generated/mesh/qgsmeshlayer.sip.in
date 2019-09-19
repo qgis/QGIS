@@ -77,10 +77,20 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
 
     struct LayerOptions
     {
-      int unused;  //! @todo remove me once there are actual members here (breaks SIP <4.19)
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+%Docstring
+Constructor for LayerOptions with optional ``transformContext``.
+
+.. note::
+
+   transformContext argument was added in QGIS 3.8
+%End
+
+      QgsCoordinateTransformContext transformContext;
     };
 
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ),
                            const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
 %Docstring
 Constructor - creates a mesh layer
@@ -95,6 +105,7 @@ data.
 :param providerLib: The name of the data provider, e.g., "mesh_memory", "mdal"
 :param options: general mesh layer options
 %End
+
     ~QgsMeshLayer();
 
 
@@ -122,10 +133,15 @@ QgsMeshLayer cannot be copied.
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
 
+    virtual void reload();
+
+
     QString providerType() const;
 %Docstring
 Returns the provider type for this layer
 %End
+
+
 
 
 
@@ -137,6 +153,31 @@ Returns renderer settings
     void setRendererSettings( const QgsMeshRendererSettings &settings );
 %Docstring
 Sets new renderer settings
+%End
+
+    QgsMeshTimeSettings timeSettings() const;
+%Docstring
+Returns time format settings
+
+.. versionadded:: 3.8
+%End
+
+    void setTimeSettings( const QgsMeshTimeSettings &settings );
+%Docstring
+Sets time format settings
+
+.. versionadded:: 3.8
+%End
+
+    QString formatTime( double hours );
+%Docstring
+Returns (date) time in hours formatted to human readable form
+
+:param hours: time in double in hours
+
+:return: formatted time string
+
+.. versionadded:: 3.8
 %End
 
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
@@ -160,6 +201,17 @@ Interpolates the value on the given point from given dataset.
 .. versionadded:: 3.4
 %End
 
+  public slots:
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
+%Docstring
+Sets the coordinate transform context to ``transformContext``.
+
+.. versionadded:: 3.8
+%End
+
+
   signals:
 
     void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
@@ -174,6 +226,13 @@ Emitted when active scalar dataset is changed
 Emitted when active vector dataset is changed
 
 .. versionadded:: 3.4
+%End
+
+    void timeSettingsChanged( );
+%Docstring
+Emitted when time format is changed
+
+.. versionadded:: 3.8
 %End
 
   private: // Private methods

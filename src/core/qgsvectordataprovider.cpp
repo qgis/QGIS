@@ -85,14 +85,14 @@ QString QgsVectorDataProvider::dataComment() const
 
 bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
-  Q_UNUSED( flist );
-  Q_UNUSED( flags );
+  Q_UNUSED( flist )
+  Q_UNUSED( flags )
   return false;
 }
 
 bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
-  Q_UNUSED( ids );
+  Q_UNUSED( ids )
   return false;
 }
 
@@ -112,37 +112,37 @@ bool QgsVectorDataProvider::truncate()
 
 bool QgsVectorDataProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  Q_UNUSED( attributes );
+  Q_UNUSED( attributes )
   return false;
 }
 
 bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
-  Q_UNUSED( attributes );
+  Q_UNUSED( attributes )
   return false;
 }
 
 bool QgsVectorDataProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
 {
-  Q_UNUSED( renamedAttributes );
+  Q_UNUSED( renamedAttributes )
   return false;
 }
 
 bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  Q_UNUSED( attr_map );
+  Q_UNUSED( attr_map )
   return false;
 }
 
 QVariant QgsVectorDataProvider::defaultValue( int fieldId ) const
 {
-  Q_UNUSED( fieldId );
+  Q_UNUSED( fieldId )
   return QVariant();
 }
 
 QString QgsVectorDataProvider::defaultValueClause( int fieldIndex ) const
 {
-  Q_UNUSED( fieldIndex );
+  Q_UNUSED( fieldIndex )
   return QString();
 }
 
@@ -162,7 +162,7 @@ bool QgsVectorDataProvider::skipConstraintCheck( int, QgsFieldConstraints::Const
 
 bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  Q_UNUSED( geometry_map );
+  Q_UNUSED( geometry_map )
   return false;
 }
 
@@ -185,7 +185,7 @@ bool QgsVectorDataProvider::createSpatialIndex()
 
 bool QgsVectorDataProvider::createAttributeIndex( int field )
 {
-  Q_UNUSED( field );
+  Q_UNUSED( field )
   return true;
 }
 
@@ -353,7 +353,8 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
 
-  Q_FOREACH ( const NativeType &nativeType, mNativeTypes )
+  const auto constMNativeTypes = mNativeTypes;
+  for ( const NativeType &nativeType : constMNativeTypes )
   {
     QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
                       .arg( QVariant::typeToName( nativeType.mType ) )
@@ -465,13 +466,14 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
 }
 
 QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,
-    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok ) const
+    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, QgsFeatureIds *fids ) const
 {
   //base implementation does nothing
-  Q_UNUSED( aggregate );
-  Q_UNUSED( index );
-  Q_UNUSED( parameters );
-  Q_UNUSED( context );
+  Q_UNUSED( aggregate )
+  Q_UNUSED( index )
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( fids )
 
   ok = false;
   return QVariant();
@@ -609,7 +611,8 @@ QStringList QgsVectorDataProvider::availableEncodings()
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]
   {
-    Q_FOREACH ( const QString &codec, QTextCodec::availableCodecs() )
+    const auto codecs { QTextCodec::availableCodecs() };
+    for ( const QString &codec : codecs )
     {
       sEncodings << codec;
     }
@@ -695,6 +698,11 @@ bool QgsVectorDataProvider::isDeleteStyleFromDatabaseSupported() const
 }
 
 QgsFeatureRenderer *QgsVectorDataProvider::createRenderer( const QVariantMap & ) const
+{
+  return nullptr;
+}
+
+QgsAbstractVectorLayerLabeling *QgsVectorDataProvider::createLabeling( const QVariantMap & ) const
 {
   return nullptr;
 }
@@ -832,4 +840,9 @@ QStringList QgsVectorDataProvider::sEncodings;
 QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLayer *, const QList<QgsVectorLayer *> & ) const
 {
   return QList<QgsRelation>();
+}
+
+void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * )
+{
+
 }

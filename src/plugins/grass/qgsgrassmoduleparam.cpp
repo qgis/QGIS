@@ -52,7 +52,7 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key,
   , mRequired( false )
   , mDirect( direct )
 {
-  Q_UNUSED( gdesc );
+  Q_UNUSED( gdesc )
   //mAnswer = qdesc.attribute("answer", "");
 
   if ( !qdesc.attribute( QStringLiteral( "answer" ) ).isNull() )
@@ -208,7 +208,7 @@ QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, 
 
 void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   adjustTitle();
   setToolTip( mToolTip );
 }
@@ -573,7 +573,7 @@ void QgsGrassModuleOption::removeRow()
 
 void QgsGrassModuleOption::browse( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
 
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "GRASS/lastDirectOutputDir" ), QString() ).toString();
@@ -871,7 +871,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   {
     if ( !layer ) continue;
 
-    if ( mType == Ogr && layer->type() == QgsMapLayer::VectorLayer )
+    if ( mType == Ogr && layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vector ||
@@ -952,7 +952,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       mOgrLayers.push_back( ogrLayer );
       mOgrWheres.push_back( ogrWhere );
     }
-    else if ( mType == Gdal && layer->type() == QgsMapLayer::RasterLayer )
+    else if ( mType == Gdal && layer->type() == QgsMapLayerType::RasterLayer )
     {
       QString uri = layer->source();
       mLayerComboBox->addItem( layer->name() );
@@ -1531,7 +1531,7 @@ QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString &text, QWidget *pa
 
 void QgsGrassModuleCheckBox::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   adjustText();
 }
 void QgsGrassModuleCheckBox::setText( const QString &text )

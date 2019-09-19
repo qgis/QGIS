@@ -74,7 +74,8 @@ void QgsLayoutGuideWidget::addVerticalGuide()
 void QgsLayoutGuideWidget::deleteHorizontalGuide()
 {
   mLayout->undoStack()->beginMacro( tr( "Remove Horizontal Guides" ) );
-  Q_FOREACH ( const QModelIndex &index, mHozGuidesTableView->selectionModel()->selectedIndexes() )
+  const auto constSelectedIndexes = mHozGuidesTableView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     mHozGuidesTableView->closePersistentEditor( index );
     if ( index.column() == 0 )
@@ -86,7 +87,8 @@ void QgsLayoutGuideWidget::deleteHorizontalGuide()
 void QgsLayoutGuideWidget::deleteVerticalGuide()
 {
   mLayout->undoStack()->beginMacro( tr( "Remove Vertical Guides" ) );
-  Q_FOREACH ( const QModelIndex &index, mVertGuidesTableView->selectionModel()->selectedIndexes() )
+  const auto constSelectedIndexes = mVertGuidesTableView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     mVertGuidesTableView->closePersistentEditor( index );
     if ( index.column() == 0 )
@@ -102,11 +104,13 @@ void QgsLayoutGuideWidget::pageChanged( int page )
   // have to close any open editors - or we'll get a crash
 
   // qt - y u no do this for me?
-  Q_FOREACH ( const QModelIndex &index, mHozGuidesTableView->selectionModel()->selectedIndexes() )
+  const auto horizontalSelectedIndexes = mHozGuidesTableView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : horizontalSelectedIndexes )
   {
     mHozGuidesTableView->closePersistentEditor( index );
   }
-  Q_FOREACH ( const QModelIndex &index, mVertGuidesTableView->selectionModel()->selectedIndexes() )
+  const auto verticalSelectedIndexes = mVertGuidesTableView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : verticalSelectedIndexes )
   {
     mVertGuidesTableView->closePersistentEditor( index );
   }
@@ -119,11 +123,13 @@ void QgsLayoutGuideWidget::pageChanged( int page )
 void QgsLayoutGuideWidget::clearAll()
 {
   // qt - y u no do this for me?
-  Q_FOREACH ( const QModelIndex &index, mHozGuidesTableView->selectionModel()->selectedIndexes() )
+  const auto horizontalSelectedIndexes = mHozGuidesTableView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : horizontalSelectedIndexes )
   {
     mHozGuidesTableView->closePersistentEditor( index );
   }
-  Q_FOREACH ( const QModelIndex &index, mVertGuidesTableView->selectionModel()->selectedIndexes() )
+  const auto verticalSelectedIndexes = mVertGuidesTableView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : verticalSelectedIndexes )
   {
     mVertGuidesTableView->closePersistentEditor( index );
   }

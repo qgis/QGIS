@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
 
   public:
 
-    //! Page orientiation
+    //! Page orientation
     enum Orientation
     {
       Portrait, //!< Portrait orientation
@@ -84,6 +84,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     static QgsLayoutItemPage *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
+    QString displayName() const override;
 
     /**
      * Sets the \a size of the page.
@@ -95,8 +96,8 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
      * Sets the page size to a known page \a size, e.g. "A4" and \a orientation.
      * The known page sizes are managed by QgsPageSizeRegistry. Valid page sizes
      * can be retrieved via QgsPageSizeRegistry::entries().
-     * The function returns true if \a size was a valid page size and the page
-     * size was changed. If false is returned then \a size could not be matched
+     * The function returns TRUE if \a size was a valid page size and the page
+     * size was changed. If FALSE is returned then \a size could not be matched
      * to a known page size.
      * \see pageSize()
      */
@@ -109,14 +110,14 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     QgsLayoutSize pageSize() const;
 
     /**
-     * Returns the page orientiation.
+     * Returns the page orientation.
      * \note There is no direct setter for page orientation - use setPageSize() instead.
      */
     Orientation orientation() const;
 
     /**
      * Decodes a \a string representing a page orientation. If specified, \a ok
-     * will be set to true if string could be successfully interpreted as a
+     * will be set to TRUE if string could be successfully interpreted as a
      * page orientation.
     */
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok SIP_OUT = nullptr );
@@ -124,6 +125,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     QRectF boundingRect() const override;
     void attemptResize( const QgsLayoutSize &size, bool includesFrame = false ) override;
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
+    ExportLayerBehavior exportLayerBehavior() const override;
 
   public slots:
 

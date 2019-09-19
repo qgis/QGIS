@@ -398,6 +398,42 @@ Sets the ``space`` (margin) between the scalebar box and content in millimeters.
 .. seealso:: :py:func:`boxContentSpace`
 %End
 
+    QgsScaleBarSettings::LabelVerticalPlacement labelVerticalPlacement() const;
+%Docstring
+Returns the vertical placement of text labels.
+
+.. seealso:: :py:func:`setLabelVerticalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement placement );
+%Docstring
+Sets the vertical ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelVerticalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    QgsScaleBarSettings::LabelHorizontalPlacement labelHorizontalPlacement() const;
+%Docstring
+Returns the horizontal placement of text labels.
+
+.. seealso:: :py:func:`setLabelHorizontalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement placement );
+%Docstring
+Sets the horizontal ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelHorizontalPlacement`
+
+.. versionadded:: 3.10
+%End
+
     QgsScaleBarSettings::Alignment alignment() const;
 %Docstring
 Returns the scalebar alignment.
@@ -508,6 +544,11 @@ Adjusts the scale bar box size and updates the item.
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     virtual void finalizeRestoreFromXml();
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
 
   protected:
 

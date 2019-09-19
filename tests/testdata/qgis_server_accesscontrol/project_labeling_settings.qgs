@@ -2929,7 +2929,7 @@ def my_form_open(dialog, layer, feature):
         <LabelFont description="DejaVu Sans,10,-1,5,50,0,0,0,0,0" style=""/>
         <FontColor blue="0" red="0" green="0"/>
       </LayoutItem>
-      <LayoutItem groupUuid="" outlineWidthM="0.3,mm" opacity="1" type="65639" frame="false" keepLayerSet="false" referencePoint="0" drawCanvasItems="true" followPresetName="" id="" itemRotation="0" zValue="3" followPreset="false" excludeFromExports="0" background="true" positionOnPage="21.3911,46,mm" blendMode="0" size="242,104,mm" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" templateUuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" frameJoinStyle="miter" visibility="1" position="21.3911,46,mm" positionLock="false" mapRotation="0">
+      <LayoutItem groupUuid="" outlineWidthM="0.3,mm" opacity="1" type="65639" mapFlags="1" frame="false" keepLayerSet="false" referencePoint="0" drawCanvasItems="true" followPresetName="" id="" itemRotation="0" zValue="3" followPreset="false" excludeFromExports="0" background="true" positionOnPage="21.3911,46,mm" blendMode="0" size="242,104,mm" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" templateUuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" frameJoinStyle="miter" visibility="1" position="21.3911,46,mm" positionLock="false" mapRotation="0">
         <FrameColor blue="0" alpha="255" red="0" green="0"/>
         <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
         <LayoutObject>
@@ -3142,7 +3142,7 @@ def my_form_open(dialog, layer, feature):
         <LabelFont description="DejaVu Sans,10,-1,5,50,0,0,0,0,0" style=""/>
         <FontColor blue="0" red="0" green="0"/>
       </LayoutItem>
-      <LayoutItem groupUuid="" outlineWidthM="0.3,mm" opacity="1" type="65639" frame="false" keepLayerSet="false" referencePoint="0" drawCanvasItems="true" followPresetName="" id="" itemRotation="0" zValue="3" followPreset="false" excludeFromExports="0" background="true" positionOnPage="21.3911,46,mm" blendMode="0" size="242,104,mm" uuid="{98195e4d-0084-4747-b15b-507220be6d8a}" templateUuid="{98195e4d-0084-4747-b15b-507220be6d8a}" frameJoinStyle="miter" visibility="1" position="21.3911,46,mm" positionLock="false" mapRotation="0">
+      <LayoutItem groupUuid="" outlineWidthM="0.3,mm" opacity="1" type="65639" mapFlags="1" frame="false" keepLayerSet="false" referencePoint="0" drawCanvasItems="true" followPresetName="" id="" itemRotation="0" zValue="3" followPreset="false" excludeFromExports="0" background="true" positionOnPage="21.3911,46,mm" blendMode="0" size="242,104,mm" uuid="{98195e4d-0084-4747-b15b-507220be6d8a}" templateUuid="{98195e4d-0084-4747-b15b-507220be6d8a}" frameJoinStyle="miter" visibility="1" position="21.3911,46,mm" positionLock="false" mapRotation="0">
         <FrameColor blue="0" alpha="255" red="0" green="0"/>
         <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
         <LayoutObject>
@@ -3308,7 +3308,7 @@ def my_form_open(dialog, layer, feature):
         </LayoutItem>
         <GuideCollection visible="1"/>
       </PageCollection>
-      <LayoutItem groupUuid="" outlineWidthM="1,mm" opacity="1" type="65639" frame="true" keepLayerSet="false" referencePoint="0" drawCanvasItems="true" followPresetName="" id="" itemRotation="0" zValue="2" followPreset="false" excludeFromExports="0" background="true" positionOnPage="158.959,111.439,mm" blendMode="0" size="88.1003,70.2279,mm" uuid="{330623aa-9cad-41c0-aeb0-167bb9ffb602}" templateUuid="{330623aa-9cad-41c0-aeb0-167bb9ffb602}" frameJoinStyle="miter" visibility="1" position="158.959,111.439,mm" positionLock="false" mapRotation="0">
+      <LayoutItem groupUuid="" outlineWidthM="1,mm" opacity="1" type="65639" mapFlags="1" frame="true" keepLayerSet="false" referencePoint="0" drawCanvasItems="true" followPresetName="" id="" itemRotation="0" zValue="2" followPreset="false" excludeFromExports="0" background="true" positionOnPage="158.959,111.439,mm" blendMode="0" size="88.1003,70.2279,mm" uuid="{330623aa-9cad-41c0-aeb0-167bb9ffb602}" templateUuid="{330623aa-9cad-41c0-aeb0-167bb9ffb602}" frameJoinStyle="miter" visibility="1" position="158.959,111.439,mm" positionLock="false" mapRotation="0">
         <FrameColor blue="28" alpha="255" red="227" green="26"/>
         <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
         <LayoutObject>
@@ -3325,7 +3325,7 @@ def my_form_open(dialog, layer, feature):
         <LayerSet/>
         <AtlasMap margin="0.10000000000000001" atlasDriven="0" scalingMode="2"/>
       </LayoutItem>
-      <LayoutItem groupUuid="" outlineWidthM="1,mm" opacity="1" type="65639" frame="true" keepLayerSet="false" referencePoint="0" drawCanvasItems="true" followPresetName="" id="" itemRotation="0" zValue="1" followPreset="false" excludeFromExports="0" background="true" positionOnPage="21.4468,19.5545,mm" blendMode="0" size="122.583,77.1666,mm" uuid="{f254751a-896d-48e8-8eb3-795d74b397c7}" templateUuid="{f254751a-896d-48e8-8eb3-795d74b397c7}" frameJoinStyle="miter" visibility="1" position="21.4468,19.5545,mm" positionLock="false" mapRotation="0">
+      <LayoutItem groupUuid="" outlineWidthM="1,mm" opacity="1" type="65639" mapFlags="1" frame="true" keepLayerSet="false" referencePoint="0" drawCanvasItems="true" followPresetName="" id="" itemRotation="0" zValue="1" followPreset="false" excludeFromExports="0" background="true" positionOnPage="21.4468,19.5545,mm" blendMode="0" size="122.583,77.1666,mm" uuid="{f254751a-896d-48e8-8eb3-795d74b397c7}" templateUuid="{f254751a-896d-48e8-8eb3-795d74b397c7}" frameJoinStyle="miter" visibility="1" position="21.4468,19.5545,mm" positionLock="false" mapRotation="0">
         <FrameColor blue="0" alpha="255" red="0" green="0"/>
         <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
         <LayoutObject>

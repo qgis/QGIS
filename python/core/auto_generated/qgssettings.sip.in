@@ -142,6 +142,18 @@ are based on the group. By default, no group is set.
 %Docstring
 Resets the group to what it was before the corresponding beginGroup() call.
 %End
+
+    QString group() const;
+%Docstring
+Returns the current group.
+
+.. seealso:: :py:func:`beginGroup`
+
+.. seealso:: :py:func:`endGroup`
+
+.. versionadded:: 3.6
+%End
+
     QStringList allKeys() const;
 %Docstring
 Returns a list of all keys, including subkeys, that can be read using the QSettings object.
@@ -224,7 +236,7 @@ An optional Section argument can be used to get a value from a specific Section.
 
     bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;
 %Docstring
-Returns true if there exists a setting called key; returns false otherwise.
+Returns ``True`` if there exists a setting called key; returns ``False`` otherwise.
 If a group is set using beginGroup(), key is taken to be relative to that group.
 %End
     QString fileName() const;

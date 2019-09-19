@@ -23,24 +23,34 @@
 #include "qgsvectorlayer.h"
 
 QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-  : QgsTask( tr( "Executing “%1”" ).arg( algorithm->displayName() ), QgsTask::CanCancel )
+  : QgsTask( tr( "Executing “%1”" ).arg( algorithm->displayName() ), algorithm->flags() & QgsProcessingAlgorithm::FlagCanCancel ? QgsTask::CanCancel : QgsTask::Flag() )
   , mParameters( parameters )
   , mContext( context )
   , mFeedback( feedback )
-  , mAlgorithm( algorithm->create() )
 {
   if ( !mFeedback )
   {
     mOwnedFeedback.reset( new QgsProcessingFeedback() );
     mFeedback = mOwnedFeedback.get();
   }
-  if ( !mAlgorithm->prepare( mParameters, context, mFeedback ) )
+  try
+  {
+    mAlgorithm.reset( algorithm->create() );
+    if ( !( mAlgorithm && mAlgorithm->prepare( mParameters, context, mFeedback ) ) )
+      cancel();
+  }
+  catch ( QgsProcessingException &e )
+  {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
+    mFeedback->reportError( e.what() );
     cancel();
+  }
 }
 
 void QgsProcessingAlgRunnerTask::cancel()
 {
-  mFeedback->cancel();
+  if ( mFeedback )
+    mFeedback->cancel();
   QgsTask::cancel();
 }
 
@@ -67,7 +77,7 @@ bool QgsProcessingAlgRunnerTask::run()
 
 void QgsProcessingAlgRunnerTask::finished( bool result )
 {
-  Q_UNUSED( result );
+  Q_UNUSED( result )
   QVariantMap ppResults;
   if ( result )
   {

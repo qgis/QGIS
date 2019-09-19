@@ -45,15 +45,22 @@ class TestQgsLayoutMapGrid : public QObject
     void frameOnly(); //test if grid "frame/annotation" mode works
     void zebraStyle(); //test zebra map border style
     void zebraStyleSides(); //test zebra border on certain sides
+    void zebraStyleMargin(); //test zebra map border style
+    void zebraStyleNautical(); //test zebra map border style
     void frameDivisions(); //test filtering frame divisions
     void annotationFilter(); //test filtering annotations
     void interiorTicks(); //test interior tick mode
+    void interiorTicksMargin(); //test interior tick mode
     void interiorTicksAnnotated(); //test interior tick mode with annotations
     void exteriorTicks(); //test exterior tick mode
+    void exteriorTicksMargin(); //test exterior tick mode
     void exteriorTicksAnnotated(); //test exterior tick mode with annotations
     void interiorExteriorTicks(); //test interior & exterior tick mode
+    void interiorExteriorTicksMargin(); //test interior & exterior tick mode
     void interiorExteriorTicksAnnotated(); //test interior & exterior tick mode with annotations
     void lineBorder(); //test line border frame mode
+    void lineBorderMargin(); //test line border frame mode
+    void lineBorderNautical(); //test line border frame mode
     void lineBorderAnnotated(); //test line border frame with annotations
     void annotationFormats(); //various tests for annotation formats
     void descendingAnnotations(); //test descending annotation direction
@@ -397,6 +404,88 @@ void TestQgsLayoutMapGrid::zebraStyleSides()
 
 }
 
+void TestQgsLayoutMapGrid::zebraStyleMargin()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
+  map->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
+  map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::Zebra );
+  map->grid()->setFrameWidth( 10 );
+  map->grid()->setFramePenSize( 1 );
+  map->grid()->setFrameMargin( 5 );
+  map->grid()->setFramePenColor( QColor( 255, 100, 0, 200 ) );
+  map->grid()->setFrameFillColor1( QColor( 50, 90, 50, 100 ) );
+  map->grid()->setFrameFillColor2( QColor( 200, 220, 100, 60 ) );
+  map->grid()->setEnabled( true );
+  map->updateBoundingRect();
+
+  QgsLayoutChecker checker( QStringLiteral( "composermap_marginzebrastyle" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
+
+  bool testResult = checker.testLayout( mReport, 0, 0 );
+  QVERIFY( testResult );
+}
+
+void TestQgsLayoutMapGrid::zebraStyleNautical()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
+  map->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
+  map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::ZebraNautical );
+  map->grid()->setFrameWidth( 10 );
+  map->grid()->setFramePenSize( 1 );
+  map->grid()->setFrameMargin( 5 );
+  map->grid()->setFramePenColor( QColor( 255, 100, 0, 200 ) );
+  map->grid()->setFrameFillColor1( QColor( 50, 90, 50, 100 ) );
+  map->grid()->setFrameFillColor2( QColor( 200, 220, 100, 60 ) );
+  map->grid()->setEnabled( true );
+  map->updateBoundingRect();
+
+  QgsLayoutChecker checker( QStringLiteral( "composermap_zebranauticalstyle" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
+
+  bool testResult = checker.testLayout( mReport, 0, 0 );
+  QVERIFY( testResult );
+}
+
 void TestQgsLayoutMapGrid::frameDivisions()
 {
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
@@ -560,6 +649,45 @@ void TestQgsLayoutMapGrid::interiorTicks()
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
 
+void TestQgsLayoutMapGrid::interiorTicksMargin()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::InteriorTicks );
+  map->grid()->setFrameWidth( 10 );
+  map->grid()->setFramePenSize( 1 );
+  map->grid()->setFrameMargin( 5 );
+  map->grid()->setFramePenColor( Qt::black );
+  map->grid()->setEnabled( true );
+  map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  map->updateBoundingRect();
+
+  QgsLayoutChecker checker( QStringLiteral( "composermap_margininteriorticks" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
+  bool testResult = checker.testLayout( mReport, 0, 0 );
+  QVERIFY( testResult );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+}
+
 void TestQgsLayoutMapGrid::interiorTicksAnnotated()
 {
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
@@ -647,6 +775,45 @@ void TestQgsLayoutMapGrid::exteriorTicks()
   map->updateBoundingRect();
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_exteriorticks" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
+  bool testResult = checker.testLayout( mReport, 0, 0 );
+  QVERIFY( testResult );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+}
+
+void TestQgsLayoutMapGrid::exteriorTicksMargin()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::ExteriorTicks );
+  map->grid()->setFrameWidth( 10 );
+  map->grid()->setFramePenSize( 1 );
+  map->grid()->setFrameMargin( 5 );
+  map->grid()->setFramePenColor( Qt::black );
+  map->grid()->setEnabled( true );
+  map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  map->updateBoundingRect();
+
+  QgsLayoutChecker checker( QStringLiteral( "composermap_marginexteriorticks" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
   bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
@@ -748,6 +915,45 @@ void TestQgsLayoutMapGrid::interiorExteriorTicks()
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
 
+void TestQgsLayoutMapGrid::interiorExteriorTicksMargin()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::InteriorExteriorTicks );
+  map->grid()->setFrameWidth( 10 );
+  map->grid()->setFramePenSize( 1 );
+  map->grid()->setFrameMargin( 5 );
+  map->grid()->setFramePenColor( Qt::black );
+  map->grid()->setEnabled( true );
+  map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  map->updateBoundingRect();
+
+  QgsLayoutChecker checker( QStringLiteral( "composermap_margininteriorexteriorticks" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
+  bool testResult = checker.testLayout( mReport, 0, 0 );
+  QVERIFY( testResult );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+}
+
 void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
 {
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
@@ -835,6 +1041,84 @@ void TestQgsLayoutMapGrid::lineBorder()
   map->updateBoundingRect();
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_lineborder" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
+  bool testResult = checker.testLayout( mReport, 0, 0 );
+  QVERIFY( testResult );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+}
+
+void TestQgsLayoutMapGrid::lineBorderMargin()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::LineBorder );
+  map->grid()->setFrameWidth( 10 );
+  map->grid()->setFramePenSize( 1 );
+  map->grid()->setFrameMargin( 5 );
+  map->grid()->setFramePenColor( Qt::black );
+  map->grid()->setEnabled( true );
+  map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  map->updateBoundingRect();
+
+  QgsLayoutChecker checker( QStringLiteral( "composermap_marginlineborder" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
+  bool testResult = checker.testLayout( mReport, 0, 0 );
+  QVERIFY( testResult );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+}
+
+void TestQgsLayoutMapGrid::lineBorderNautical()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::LineBorderNautical );
+  map->grid()->setFrameWidth( 10 );
+  map->grid()->setFramePenSize( 1 );
+  map->grid()->setFrameMargin( 5 );
+  map->grid()->setFramePenColor( Qt::black );
+  map->grid()->setEnabled( true );
+  map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  map->updateBoundingRect();
+
+  QgsLayoutChecker checker( QStringLiteral( "composermap_linebordernautical" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
   bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );

@@ -68,8 +68,8 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QString hintString() const;
 
     /**
-     * Sets whether users are permitted to overwrite existing names. If true, then
-     * the dialog will reflect that the new name will overwrite an existing name. If false,
+     * Sets whether users are permitted to overwrite existing names. If TRUE, then
+     * the dialog will reflect that the new name will overwrite an existing name. If FALSE,
      * then the dialog will not accept names which already exist.
      * \see overwriteEnabled()
      * \since QGIS 2.12
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \param extensions base name extensions
      * \param existing existing names
      * \param cs case sensitivity for new name to existing names comparison
-     * \returns true if name exists
+     * \returns TRUE if name exists
      */
     static bool exists( const QString &name, const QStringList &extensions,
                         const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );

@@ -86,6 +86,12 @@
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
            <widget class="QPlainTextEdit" name="mTextEdit">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
+            </property>
             <property name="tabStopWidth">
              <number>10</number>
             </property>
@@ -224,50 +230,6 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0">
-             <widget class="QRadioButton" name="mLeftRadioButton">
-              <property name="text">
-               <string>Left</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup_2</string>
-              </attribute>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QRadioButton" name="mJustifyRadioButton">
-              <property name="text">
-               <string>Justify</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup_2</string>
-              </attribute>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QRadioButton" name="mRightRadioButton">
-              <property name="text">
-               <string>Right</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup_2</string>
-              </attribute>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QRadioButton" name="mCenterRadioButton">
-              <property name="text">
-               <string>Center</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup_2</string>
-              </attribute>
-             </widget>
-            </item>
-           </layout>
-          </item>
           <item row="7" column="0" colspan="2">
            <widget class="QLabel" name="mVerticalAlignementLabel">
             <property name="text">
@@ -311,6 +273,63 @@
             </item>
             <item>
              <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="0" column="0">
+             <widget class="QRadioButton" name="mLeftRadioButton">
+              <property name="text">
+               <string>Left</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QRadioButton" name="mJustifyRadioButton">
+              <property name="text">
+               <string>Justify</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QRadioButton" name="mRightRadioButton">
+              <property name="text">
+               <string>Right</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QRadioButton" name="mCenterRadioButton">
+              <property name="text">
+               <string>Center</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <spacer name="horizontalSpacer">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>

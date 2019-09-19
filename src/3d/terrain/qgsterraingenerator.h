@@ -48,7 +48,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
     {
       Flat,           //!< The whole terrain is flat area
       Dem,            //!< Terrain is built from raster layer with digital elevation model
-      QuantizedMesh,  //!< Terrain is built from downloaded tiles in quantized mesh format
+      Online,         //!< Terrain is built from downloaded tiles with digital elevation model
     };
 
     //! Sets terrain entity for the generator (does not transfer ownership)
@@ -82,7 +82,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
     virtual void readXml( const QDomElement &elem ) = 0;
 
     //! After read of XML, resolve references to any layers that have been read as layer IDs
-    virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ); }
+    virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
 
     //! Converts terrain generator type enumeration into a string
     static QString typeToString( Type type );

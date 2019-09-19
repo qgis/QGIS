@@ -17,11 +17,9 @@
 
 
 #include "qgsserverplugins.h"
-#include "qgsmapserviceexception.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgspythonutils.h"
-#include "qgsserverlogger.h"
 
 #include <QLibrary>
 
@@ -41,7 +39,7 @@ QStringList &QgsServerPlugins::serverPlugins()
 bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 {
   QString pythonlibName( QStringLiteral( "qgispython" ) );
-#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_UNIX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__

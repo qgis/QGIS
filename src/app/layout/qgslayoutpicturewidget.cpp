@@ -61,6 +61,9 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
 
+  mFillColorDDBtn->registerLinkedWidget( mFillColorButton );
+  mStrokeColorDDBtn->registerLinkedWidget( mStrokeColorButton );
+
   mNorthTypeComboBox->blockSignals( true );
   mNorthTypeComboBox->addItem( tr( "Grid north" ), QgsLayoutItemPicture::GridNorth );
   mNorthTypeComboBox->addItem( tr( "True north" ), QgsLayoutItemPicture::TrueNorth );
@@ -127,7 +130,7 @@ void QgsLayoutPictureWidget::mPictureBrowseButton_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( nullptr, QStringLiteral( "Select File" ), QStringLiteral( "Error, file does not exist or is not readable." ) );
+    QMessageBox::critical( nullptr, tr( "Select File" ), tr( "Error, file does not exist or is not readable." ) );
     return;
   }
 
@@ -174,7 +177,7 @@ void QgsLayoutPictureWidget::mPictureRotationSpinBox_valueChanged( double d )
 
 void QgsLayoutPictureWidget::mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   if ( !mPicture || !current )
   {
     return;
@@ -729,7 +732,7 @@ void QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged( int index )
 
 void QgsLayoutPictureWidget::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );
 }
 

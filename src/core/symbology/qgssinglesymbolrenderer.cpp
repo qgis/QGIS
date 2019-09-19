@@ -29,6 +29,7 @@
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -47,8 +48,8 @@ QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRen
 
 QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( feature );
+  Q_UNUSED( context )
+  Q_UNUSED( feature )
   return mSymbol.get();
 }
 
@@ -78,6 +79,16 @@ QSet<QString> QgsSingleSymbolRenderer::usedAttributes( const QgsRenderContext &c
   if ( mSymbol )
     attributes.unite( mSymbol->usedAttributes( context ) );
   return attributes;
+}
+
+bool QgsSingleSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mSymbol )
+  {
+    QgsStyleSymbolEntity entity( mSymbol.get() );
+    return visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) );
+  }
+  return true;
 }
 
 QgsSymbol *QgsSingleSymbolRenderer::symbol() const
@@ -123,7 +134,7 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, co
 
 QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QgsSymbolList lst;
   lst.append( mSymbol.get() );
   return lst;
@@ -318,14 +329,14 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
 
 QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  Q_UNUSED( feature );
-  Q_UNUSED( context );
+  Q_UNUSED( feature )
+  Q_UNUSED( context )
   return QSet< QString >() << QStringLiteral( "0" );
 }
 
 void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
-  Q_UNUSED( key );
+  Q_UNUSED( key )
   setSymbol( symbol );
 }
 

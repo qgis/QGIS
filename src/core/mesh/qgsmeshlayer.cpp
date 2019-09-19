@@ -27,6 +27,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsmeshtimesettings.h"
 #include "qgspainting.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
@@ -34,30 +35,41 @@
 #include "qgstriangularmesh.h"
 
 
+
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
-                            const LayerOptions & )
-  : QgsMapLayer( MeshLayer, baseName, meshLayerPath )
-  , mProviderKey( providerKey )
+                            const QgsMeshLayer::LayerOptions &options )
+  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
 {
+  setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions;
+    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataProvider( providerKey, providerOptions );
   }
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
-
-  // show at least the mesh by default so we render something
-  QgsMeshRendererMeshSettings meshSettings;
-  meshSettings.setEnabled( true );
-  mRendererSettings.setNativeMeshSettings( meshSettings );
-
+  setDefaultRendererSettings();
 } // QgsMeshLayer ctor
 
 
+void QgsMeshLayer::setDefaultRendererSettings()
+{
+  if ( mDataProvider && mDataProvider->datasetGroupCount() > 0 )
+  {
+    // show data from the first dataset group
+    mRendererSettings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+  }
+  else
+  {
+    // show at least the mesh by default
+    QgsMeshRendererMeshSettings meshSettings;
+    meshSettings.setEnabled( true );
+    mRendererSettings.setNativeMeshSettings( meshSettings );
+  }
+}
 
 QgsMeshLayer::~QgsMeshLayer()
 {
@@ -76,7 +88,12 @@ const QgsMeshDataProvider *QgsMeshLayer::dataProvider() const
 
 QgsMeshLayer *QgsMeshLayer::clone() const
 {
-  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey );
+  QgsMeshLayer::LayerOptions options;
+  if ( mDataProvider )
+  {
+    options.transformContext = mDataProvider->transformContext();
+  }
+  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey,  options );
   QgsMapLayer::clone( layer );
   return layer;
 }
@@ -98,13 +115,22 @@ QString QgsMeshLayer::providerType() const
   return mProviderKey;
 }
 
-QgsMesh *QgsMeshLayer::nativeMesh() SIP_SKIP
+QgsMesh *QgsMeshLayer::nativeMesh()
 {
   return mNativeMesh.get();
 }
 
+const QgsMesh *QgsMeshLayer::nativeMesh() const
+{
+  return mNativeMesh.get();
+}
 
-QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP
+QgsTriangularMesh *QgsMeshLayer::triangularMesh()
+{
+  return mTriangularMesh.get();
+}
+
+const QgsTriangularMesh *QgsMeshLayer::triangularMesh() const
 {
   return mTriangularMesh.get();
 }
@@ -124,6 +150,22 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings 
   mRendererSettings = settings;
   emit rendererChanged();
   triggerRepaint();
+}
+
+QgsMeshTimeSettings QgsMeshLayer::timeSettings() const
+{
+  return mTimeSettings;
+}
+
+void QgsMeshLayer::setTimeSettings( const QgsMeshTimeSettings &settings )
+{
+  mTimeSettings = settings;
+  emit timeSettingsChanged();
+}
+
+QString QgsMeshLayer::formatTime( double hours )
+{
+  return QgsMeshLayerUtils::formatTime( hours, mTimeSettings );
 }
 
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
@@ -168,6 +210,12 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
   return value;
 }
 
+void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
+}
+
 void QgsMeshLayer::fillNativeMesh()
 {
   Q_ASSERT( !mNativeMesh );
@@ -177,17 +225,7 @@ void QgsMeshLayer::fillNativeMesh()
   if ( !( dataProvider() && dataProvider()->isValid() ) )
     return;
 
-  mNativeMesh->vertices.resize( dataProvider()->vertexCount() );
-  for ( int i = 0; i < dataProvider()->vertexCount(); ++i )
-  {
-    mNativeMesh->vertices[i] = dataProvider()->vertex( i );
-  }
-
-  mNativeMesh->faces.resize( dataProvider()->faceCount() );
-  for ( int i = 0; i < dataProvider()->faceCount(); ++i )
-  {
-    mNativeMesh->faces[i] = dataProvider()->face( i );
-  }
+  dataProvider()->populateMesh( mNativeMesh.get() );
 }
 
 void QgsMeshLayer::onDatasetGroupsAdded( int count )
@@ -224,8 +262,9 @@ static QgsColorRamp *_createDefaultColorRamp()
 
 void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 {
-  double groupMin, groupMax;
-  QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( groupMin, groupMax, mDataProvider, groupIndex );
+  const QgsMeshDatasetGroupMetadata metadata = mDataProvider->datasetGroupMetadata( groupIndex );
+  double groupMin = metadata.minimum();
+  double groupMax = metadata.maximum();
 
   QgsColorRampShader fcn( groupMin, groupMax, _createDefaultColorRamp() );
   fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
@@ -261,7 +300,7 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
 bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
                                   QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement elem = node.toElement();
@@ -271,6 +310,10 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings );
+
+  QDomElement elemTimeSettings = elem.firstChildElement( "mesh-time-settings" );
+  if ( !elemTimeSettings.isNull() )
+    mTimeSettings.readXml( elemTimeSettings, context );
 
   // get and set the blend mode if it exists
   QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
@@ -286,7 +329,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
 bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                                    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement elem = node.toElement();
@@ -295,6 +338,9 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
 
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
   elem.appendChild( elemRendererSettings );
+
+  QDomElement elemTimeSettings = mTimeSettings.writeXml( doc, context );
+  elem.appendChild( elemTimeSettings );
 
   // add blend mode node
   QDomElement blendModeElement  = doc.createElement( QStringLiteral( "blendMode" ) );
@@ -340,6 +386,11 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   {
     QDomElement pkeyElt = pkeyNode.toElement();
     mProviderKey = pkeyElt.text();
+  }
+
+  if ( mReadFlags & QgsMapLayer::FlagDontResolveLayers )
+  {
+    return false;
   }
 
   QgsDataProvider::ProviderOptions providerOptions;
@@ -409,6 +460,27 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   // renderer specific settings
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg, context );
+}
+
+void QgsMeshLayer::reload()
+{
+  if ( mDataProvider && mDataProvider->isValid() )
+  {
+
+    mDataProvider->reloadData();
+
+    //reload the mesh structure
+    if ( !mNativeMesh )
+      mNativeMesh.reset( new QgsMesh );
+
+    dataProvider()->populateMesh( mNativeMesh.get() );
+
+    //clear the TriangularMesh
+    mTriangularMesh.reset( new QgsTriangularMesh() );
+
+    //clear the rendererCache
+    mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  }
 }
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )

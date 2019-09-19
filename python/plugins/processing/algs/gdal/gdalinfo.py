@@ -21,14 +21,12 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFileDestination)
@@ -45,6 +43,7 @@ class gdalinfo(GdalAlgorithm):
     STATS = 'STATS'
     NO_GCP = 'NOGCP'
     NO_METADATA = 'NO_METADATA'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -65,6 +64,13 @@ class gdalinfo(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.NO_METADATA,
                                                         self.tr('Suppress metadata info'),
                                                         defaultValue=False))
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
                                                                 self.tr('Layer information'),
@@ -90,18 +96,22 @@ class gdalinfo(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
-        if self.parameterAsBool(parameters, self.MIN_MAX, context):
+        if self.parameterAsBoolean(parameters, self.MIN_MAX, context):
             arguments.append('-mm')
-        if self.parameterAsBool(parameters, self.STATS, context):
+        if self.parameterAsBoolean(parameters, self.STATS, context):
             arguments.append('-stats')
-        if self.parameterAsBool(parameters, self.NO_GCP, context):
+        if self.parameterAsBoolean(parameters, self.NO_GCP, context):
             arguments.append('-nogcp')
-        if self.parameterAsBool(parameters, self.NO_METADATA, context):
+        if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
             arguments.append('-nomd')
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
-
         arguments.append(raster.source())
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 

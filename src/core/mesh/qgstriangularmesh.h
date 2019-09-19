@@ -22,55 +22,15 @@
 #define SIP_NO_FILE
 
 #include <QVector>
+#include <memory>
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsfeatureid.h"
-#include "qgsspatialindex.h"
-#include "qgsfeatureiterator.h"
+#include "qgsmeshspatialindex.h"
 
 class QgsRenderContext;
 class QgsCoordinateTransform;
 class QgsRectangle;
-
-//! Mesh - vertices and faces
-struct CORE_EXPORT QgsMesh
-{
-  //! vertices
-  QVector<QgsMeshVertex> vertices;
-  //! faces
-  QVector<QgsMeshFace> faces;
-};
-
-///@cond PRIVATE
-
-/**
- * Delivers mesh faces as features
- */
-class CORE_NO_EXPORT QgsMeshFeatureIterator : public QgsAbstractFeatureIterator
-{
-  public:
-
-    /**
-     * This constructor creates a feature iterator, that delivers all features
-     *
-     * \param mesh The mesh to use
-     */
-    QgsMeshFeatureIterator( QgsMesh *mesh );
-    ~QgsMeshFeatureIterator() override;
-
-    bool rewind() override;
-    bool close() override;
-
-  protected:
-    bool fetchFeature( QgsFeature &f ) override;
-
-  private:
-    QgsMesh *mMesh = nullptr;
-    int it = 0;
-};
-
-///@endcond
 
 /**
  * \ingroup core
@@ -87,9 +47,9 @@ class CORE_EXPORT QgsTriangularMesh
 {
   public:
     //! Ctor
-    QgsTriangularMesh() = default;
+    QgsTriangularMesh();
     //! Dtor
-    ~QgsTriangularMesh() = default;
+    ~QgsTriangularMesh();
 
     /**
      * Constructs triangular mesh from layer's native mesh and context. Populates spatial index.
@@ -137,6 +97,19 @@ class CORE_EXPORT QgsTriangularMesh
     QList<int> faceIndexesForRectangle( const QgsRectangle &rectangle ) const ;
 
   private:
+
+    /**
+     * Triangulates native face to triangles
+     *
+     * Triangulation does not create any new vertices and uses
+     * "Ear clipping method". Number of vertices in face is usually
+     * less than 10 and the faces are usually convex and without holes
+     *
+     * Skips the input face if it is not possible to triangulate
+     * with the given algorithm (e.g. only 2 vertices, polygon with holes)
+     */
+    void triangulate( const QgsMeshFace &face, int nativeIndex );
+
     // vertices: map CRS; 0-N ... native vertices, N+1 - len ... extra vertices
     // faces are derived triangles
     QgsMesh mTriangularMesh;
@@ -145,20 +118,25 @@ class CORE_EXPORT QgsTriangularMesh
     // centroids of the native faces in map CRS
     QVector<QgsMeshVertex> mNativeMeshFaceCentroids;
 
-    QgsSpatialIndex mSpatialIndex;
+    QgsMeshSpatialIndex mSpatialIndex;
     QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
+
+    friend class TestQgsTriangularMesh;
 };
 
 namespace QgsMeshUtils
 {
   //! Returns face as polygon geometry
-  QgsGeometry toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
+  CORE_EXPORT QgsGeometry toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
+
+  //! Returns face as polygon geometry, caller is responsible for delete
+  CORE_EXPORT std::unique_ptr< QgsPolygon > toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
 
   /**
    * Returns unique native faces indexes from list of triangle indexes
    * \since QGIS 3.4
    */
-  QList<int> nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces );
+  CORE_EXPORT QList<int> nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces );
 };
 
 #endif // QGSTRIANGULARMESH_H

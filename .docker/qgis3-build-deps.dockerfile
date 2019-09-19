@@ -49,7 +49,6 @@ RUN  apt-get update \
     libqt5svg5-dev \
     libqt5webkit5-dev \
     libqt5xml5 \
-    libqt5xmlpatterns5-dev \
     libqt5serialport5-dev \
     libqwt-qt5-dev \
     libspatialindex-dev \
@@ -141,13 +140,13 @@ RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
 RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 RUN locale-gen
 
-
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
-ENV CC=/usr/lib/ccache/clang
-ENV CXX=/usr/lib/ccache/clang++
+# OTB: download and install otb packages for QGIS tests
+RUN curl -k https://orfeo-toolbox.org/qgis/OTB-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
+ENV OTB_INSTALL_DIR=/opt/otb
+
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"
 
-CMD /root/QGIS/.ci/travis/linux/docker-build-test.sh

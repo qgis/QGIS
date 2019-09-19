@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfields.h"
+#include "qgsapplication.h"
 
 #include <QWidget>
 
@@ -127,5 +128,10 @@ QString QgsSearchWidgetWrapper::aggregate() const
 void QgsSearchWidgetWrapper::setAggregate( const QString &aggregate )
 {
   mAggregate = aggregate;
+}
+
+int QgsSearchWidgetWrapper::fieldIndex() const
+{
+  return mFieldIdx;
 }
 

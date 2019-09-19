@@ -122,7 +122,7 @@ void QgsOffscreen3DEngine::setClearColor( const QColor &color )
 void QgsOffscreen3DEngine::setFrustumCullingEnabled( bool enabled )
 {
   // TODO
-  Q_UNUSED( enabled );
+  Q_UNUSED( enabled )
 }
 
 void QgsOffscreen3DEngine::createRenderTarget()

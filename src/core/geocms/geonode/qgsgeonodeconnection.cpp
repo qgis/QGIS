@@ -48,7 +48,7 @@ QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &name )
     mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
   }
 
-  QgsDebugMsg( QStringLiteral( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ), 4 );
 }
 
 QgsDataSourceUri QgsGeoNodeConnection::uri() const

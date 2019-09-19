@@ -21,10 +21,6 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Arnaud Morvan'
 
-# This will get replaced with a git SHA1 when you do a git archive323
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -45,7 +41,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputNumber)
+                       QgsProcessingOutputNumber,
+                       QgsProcessingParameterBoolean)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 settings_method_key = "/qgis/digitizing/validate_geometries"
@@ -62,6 +59,7 @@ class CheckValidity(QgisAlgorithm):
     INVALID_COUNT = 'INVALID_COUNT'
     ERROR_OUTPUT = 'ERROR_OUTPUT'
     ERROR_COUNT = 'ERROR_COUNT'
+    IGNORE_RING_SELF_INTERSECTION = 'IGNORE_RING_SELF_INTERSECTION'
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmCheckGeometry.svg")
@@ -92,9 +90,11 @@ class CheckValidity(QgisAlgorithm):
                                                      self.tr('Method'), self.methods, defaultValue=2))
         self.parameterDefinition(self.METHOD).setMetadata({
             'widget_wrapper': {
-                'class': 'processing.gui.wrappers.EnumWidgetWrapper',
                 'useCheckBoxes': True,
                 'columns': 3}})
+
+        self.addParameter(QgsProcessingParameterBoolean(self.IGNORE_RING_SELF_INTERSECTION,
+                                                        self.tr('Ignore ring self intersections'), defaultValue=False))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.TypeVectorAnyGeometry, '', True))
         self.addOutput(QgsProcessingOutputNumber(self.VALID_COUNT, self.tr('Count of valid features')))
@@ -112,6 +112,7 @@ class CheckValidity(QgisAlgorithm):
         return self.tr('Check validity')
 
     def processAlgorithm(self, parameters, context, feedback):
+        ignore_ring_self_intersection = self.parameterAsBoolean(parameters, self.IGNORE_RING_SELF_INTERSECTION, context)
         method_param = self.parameterAsEnum(parameters, self.METHOD, context)
         if method_param == 0:
             settings = QgsSettings()
@@ -121,10 +122,11 @@ class CheckValidity(QgisAlgorithm):
         else:
             method = method_param - 1
 
-        results = self.doCheck(method, parameters, context, feedback)
+        results = self.doCheck(method, parameters, context, feedback, ignore_ring_self_intersection)
         return results
 
-    def doCheck(self, method, parameters, context, feedback):
+    def doCheck(self, method, parameters, context, feedback, ignore_ring_self_intersection):
+        flags = QgsGeometry.FlagAllowSelfTouchingHoles if ignore_ring_self_intersection else QgsGeometry.ValidityFlags()
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_LAYER))
@@ -155,7 +157,7 @@ class CheckValidity(QgisAlgorithm):
 
             valid = True
             if not geom.isNull() and not geom.isEmpty():
-                errors = list(geom.validateGeometry(method))
+                errors = list(geom.validateGeometry(method, flags))
                 if errors:
                     valid = False
                     reasons = []

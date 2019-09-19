@@ -19,23 +19,18 @@
 
 #include "qgis.h"
 #include "qgsfcgiserverrequest.h"
-#include "qgslogger.h"
 #include "qgsserverlogger.h"
 #include "qgsmessagelog.h"
 #include <fcgi_stdio.h>
-
 #include <QDebug>
-
 
 QgsFcgiServerRequest::QgsFcgiServerRequest()
 {
-  mHasError  = false;
-
-  // Rebuild the full URL
 
   // Get the REQUEST_URI from the environment
   QUrl url;
   QString uri = getenv( "REQUEST_URI" );
+
   if ( uri.isEmpty() )
   {
     uri = getenv( "SCRIPT_NAME" );
@@ -72,9 +67,12 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
     : url.setScheme( QStringLiteral( "http" ) );
   }
 
-  // XXX OGC paremetrs are passed with the query string
-  // we override the query string url in case it is
-  // defined independently of REQUEST_URI
+  // Store the URL before the server rewrite that could have been set in QUERY_STRING
+  setOriginalUrl( url );
+
+  // OGC parameters are passed with the query string, which is normally part of
+  // the REQUEST_URI, we override the query string url in case it is defined
+  // independently of REQUEST_URI
   const char *qs = getenv( "QUERY_STRING" );
   if ( qs )
   {
@@ -119,11 +117,18 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   setUrl( url );
   setMethod( method );
 
+  // Get accept header for content-type negotiation
+  const char *accept = getenv( "HTTP_ACCEPT" );
+  if ( accept )
+  {
+    setHeader( QStringLiteral( "Accept" ), accept );
+  }
+
   // Output debug infos
   Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   if ( logLevel <= Qgis::Info )
   {
-    printRequestInfos();
+    printRequestInfos( url );
   }
 }
 
@@ -139,14 +144,26 @@ void QgsFcgiServerRequest::readData()
   const char *lengthstr = getenv( "CONTENT_LENGTH" );
   if ( lengthstr )
   {
-#ifdef QGISDEBUG
-    qDebug() << "fcgi: reading " << lengthstr << " bytes from stdin";
-#endif
     bool success = false;
     int length = QString( lengthstr ).toInt( &success );
+    // Note: REQUEST_BODY is not part of CGI standard, and it is not
+    // normally passed by any CGI web server and it is implemented only
+    // to allow unit tests to inject a request body and simulate a POST
+    // request
+    const char *request_body  = getenv( "REQUEST_BODY" );
+    if ( success && request_body )
+    {
+      QString body( request_body );
+      body.truncate( length );
+      mData.append( body.toUtf8() );
+      length = 0;
+    }
+#ifdef QGISDEBUG
+    qDebug() << "fcgi: reading " << lengthstr << " bytes from " << ( request_body ? "REQUEST_BODY" : "stdin" );
+#endif
     if ( success )
     {
-      // XXX This not efficiont at all  !!
+      // XXX This not efficient at all  !!
       for ( int i = 0; i < length; ++i )
       {
         mData.append( getchar() );
@@ -165,51 +182,42 @@ void QgsFcgiServerRequest::readData()
   }
 }
 
-void QgsFcgiServerRequest::printRequestInfos()
+void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
 {
   QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), Qgis::Info );
-  if ( getenv( "REMOTE_ADDR" ) )
+
+  const QStringList envVars
   {
-    QgsMessageLog::logMessage( "REMOTE_ADDR: " + QString( getenv( "REMOTE_ADDR" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "REMOTE_HOST" ) )
+    QStringLiteral( "SERVER_NAME" ),
+    QStringLiteral( "REQUEST_URI" ),
+    QStringLiteral( "SCRIPT_NAME" ),
+    QStringLiteral( "HTTPS" ),
+    QStringLiteral( "REMOTE_ADDR" ),
+    QStringLiteral( "REMOTE_HOST" ),
+    QStringLiteral( "SERVER_PORT" ),
+    QStringLiteral( "QUERY_STRING" ),
+    QStringLiteral( "REMOTE_USER" ),
+    QStringLiteral( "REMOTE_IDENT" ),
+    QStringLiteral( "CONTENT_TYPE" ),
+    QStringLiteral( "REQUEST_METHOD" ),
+    QStringLiteral( "AUTH_TYPE" ),
+    QStringLiteral( "HTTP_ACCEPT" ),
+    QStringLiteral( "HTTP_USER_AGENT" ),
+    QStringLiteral( "HTTP_PROXY" ),
+    QStringLiteral( "NO_PROXY" ),
+    QStringLiteral( "HTTP_AUTHORIZATION" ),
+    QStringLiteral( "QGIS_PROJECT_FILE" )
+  };
+
+  QgsMessageLog::logMessage( QStringLiteral( "Request URL: %2" ).arg( url.url() ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "Environment:" ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::Info );
+
+  for ( const auto &envVar : envVars )
   {
-    QgsMessageLog::logMessage( "REMOTE_HOST: " + QString( getenv( "REMOTE_HOST" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "REMOTE_USER" ) )
-  {
-    QgsMessageLog::logMessage( "REMOTE_USER: " + QString( getenv( "REMOTE_USER" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "REMOTE_IDENT" ) )
-  {
-    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "CONTENT_TYPE" ) )
-  {
-    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "AUTH_TYPE" ) )
-  {
-    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "HTTP_USER_AGENT" ) )
-  {
-    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "HTTP_PROXY" ) )
-  {
-    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "HTTPS_PROXY" ) )
-  {
-    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "NO_PROXY" ) )
-  {
-    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), QStringLiteral( "Server" ), Qgis::Info );
-  }
-  if ( getenv( "HTTP_AUTHORIZATION" ) )
-  {
-    QgsMessageLog::logMessage( "HTTP_AUTHORIZATION: " + QString( getenv( "HTTP_AUTHORIZATION" ) ), QStringLiteral( "Server" ), Qgis::Info );
+    if ( getenv( envVar.toStdString().c_str() ) )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( envVar ).arg( QString( getenv( envVar.toStdString().c_str() ) ) ), QStringLiteral( "Server" ), Qgis::Info );
+    }
   }
 }

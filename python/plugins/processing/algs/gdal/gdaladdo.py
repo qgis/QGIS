@@ -21,15 +21,12 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
@@ -48,20 +45,21 @@ class gdaladdo(GdalAlgorithm):
     CLEAN = 'CLEAN'
     RESAMPLING = 'RESAMPLING'
     FORMAT = 'FORMAT'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'nearest'),
+        self.methods = ((self.tr('Nearest Neighbour'), 'nearest'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Gaussian'), 'gauss'),
-                        (self.tr('Cubic convolution.'), 'cubic'),
-                        (self.tr('B-Spline convolution'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Cubic Convolution'), 'cubic'),
+                        (self.tr('B-Spline Convolution'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
                         (self.tr('Average MP'), 'average_mp'),
-                        (self.tr('Average in mag/phase space'), 'average_magphase'),
+                        (self.tr('Average in Mag/Phase Space'), 'average_magphase'),
                         (self.tr('Mode'), 'mode'))
 
         self.formats = (self.tr('Internal (if possible)'),
@@ -82,12 +80,21 @@ class gdaladdo(GdalAlgorithm):
                                                  self.tr('Resampling method'),
                                                  options=[i[0] for i in self.methods],
                                                  allowMultiple=False,
-                                                 defaultValue=0))
+                                                 defaultValue=0,
+                                                 optional=True))
         params.append(QgsProcessingParameterEnum(self.FORMAT,
                                                  self.tr('Overviews format'),
                                                  options=self.formats,
                                                  allowMultiple=False,
-                                                 defaultValue=0))
+                                                 defaultValue=0,
+                                                 optional=True))
+        params.append(QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True))
+        for p in params:
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.addParameter(p)
 
         self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Pyramidized')))
 
@@ -128,8 +135,12 @@ class gdaladdo(GdalAlgorithm):
         elif ovrFormat == 2:
             arguments.extend('--config USE_RRD YES'.split(' '))
 
-        if self.parameterAsBool(parameters, self.CLEAN, context):
+        if self.parameterAsBoolean(parameters, self.CLEAN, context):
             arguments.append('-clean')
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.extend(self.parameterAsString(parameters, self.LEVELS, context).split(' '))
 

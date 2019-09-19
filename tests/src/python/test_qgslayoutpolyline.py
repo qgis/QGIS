@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2016 by Paul Blottiere'
 __date__ = '14/03/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -145,6 +143,17 @@ class TestQgsLayoutPolyline(unittest.TestCase, LayoutItemTestCase):
         checker.setControlPathPrefix("composer_polyline")
         myTestResult, myMessage = checker.testLayout()
         assert myTestResult, myMessage
+
+    def testEndArrow(self):
+        self.polyline.setEndMarker(QgsLayoutItemPolyline.ArrowHead)
+        self.polyline.setArrowHeadWidth(30.0)
+
+        checker = QgsLayoutChecker('composerpolyline_endArrow', self.layout)
+        checker.setControlPathPrefix("composer_polyline")
+        myTestResult, myMessage = checker.testLayout()
+        assert myTestResult, myMessage
+
+        self.polyline.setEndMarker(QgsLayoutItemPolyline.NoMarker)
 
     def testRemoveNode(self):
         """Test removeNode method"""

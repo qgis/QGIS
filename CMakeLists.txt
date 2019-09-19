@@ -8,10 +8,13 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 CMAKE_POLICY (SET CMP0048 NEW)
 CMAKE_POLICY (SET CMP0053 NEW)
 
+# don't relink it only the shared object changes
+SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
+
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "5")
+SET(CPACK_PACKAGE_VERSION_MINOR "9")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -71,17 +74,26 @@ endif(NOT MSVC)
 
 IF (IOS)
     SET (DEFAULT_FORCE_STATIC_LIBS TRUE)
+    SET (DEFAULT_FORCE_STATIC_PROVIDERS TRUE)
 ELSE (IOS)
     SET (DEFAULT_FORCE_STATIC_LIBS FALSE)
+    SET (DEFAULT_FORCE_STATIC_PROVIDERS FALSE)
 ENDIF (IOS)
+
 SET (FORCE_STATIC_LIBS ${DEFAULT_FORCE_STATIC_LIBS} CACHE BOOL "Determines whether libraries should be static only")
 MARK_AS_ADVANCED(FORCE_STATIC_LIBS)
-
-IF(FORCE_STATIC_LIBS)
-  SET(LIBRARY_TYPE STATIC)
+IF (FORCE_STATIC_LIBS)
+  SET (LIBRARY_TYPE STATIC)
 ELSE (FORCE_STATIC_LIBS)
-  SET(LIBRARY_TYPE SHARED)
+  SET (LIBRARY_TYPE SHARED)
 ENDIF (FORCE_STATIC_LIBS)
+
+SET (FORCE_STATIC_PROVIDERS ${DEFAULT_FORCE_STATIC_PROVIDERS} CACHE BOOL "Determines whether data providers should be static only")
+MARK_AS_ADVANCED(FORCE_STATIC_PROVIDERS)
+IF (FORCE_STATIC_PROVIDERS)
+  # following variable is used in qgsconfig.h
+  SET (HAVE_STATIC_PROVIDERS TRUE)
+ENDIF (FORCE_STATIC_PROVIDERS)
 
 # in generated makefiles use relative paths so the project dir is moveable
 # Note commented out since it cause problems but it would be nice to resolve these and enable
@@ -112,18 +124,42 @@ IF(WITH_CORE)
 
   SET (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
+  SET (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
+
   SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
   SET (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
   SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
+  # try to configure and build python bindings by default
+  SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+  IF (WITH_BINDINGS)
+    # By default bindings will be installed only to QGIS directory
+    # Someone might want to install it to python site-packages directory
+    # as otherwise user has to use PYTHONPATH environment variable to add
+    # QGIS bindings to package search path
+    SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+    SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
+    SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
+    # concatenate QScintilla2 API files
+    IF (WITH_GUI)
+      SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
+      # keep casual users from updating their source tree via WITH_QSCIAPI
+      MARK_AS_ADVANCED (WITH_QSCIAPI)
+    ENDIF (WITH_GUI)
+    ADD_DEFINITIONS(-DWITH_BINDINGS)
+  ENDIF (WITH_BINDINGS)
+
   # server disabled default because it needs FastCGI (which is optional dependency)
   SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
   IF(WITH_SERVER)
     SET (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
 
-    SET (WITH_SERVER_PLUGINS TRUE CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    SET (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    IF(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
+      MESSAGE(FATAL_ERROR "Server plugins are not supported without python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
+    ENDIF(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
     IF(WITH_SERVER_PLUGINS)
       SET(HAVE_SERVER_PYTHON_PLUGINS TRUE)
     ENDIF(WITH_SERVER_PLUGINS)
@@ -145,6 +181,18 @@ IF(WITH_CORE)
     SET (HAVE_GUI TRUE)     # used in qgsconfig.h
   ENDIF()
 
+  IF ( WITH_DESKTOP AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
+  ENDIF()
+
+  IF ( WITH_DESKTOP )
+    # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
+    # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
+    ADD_CUSTOM_TARGET(qgis_desktop
+    	DEPENDS qgis qgispython pycore pygui pyanalysis postgresprovider staged-plugins pyplugin-installer
+    )
+  ENDIF ()
+
   # try to configure and build MDAL support
   SET (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL support should be built")
   IF (NOT WITH_INTERNAL_MDAL)
@@ -165,26 +213,6 @@ IF(WITH_CORE)
     SET(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
     SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
   ENDIF(WITH_ORACLE)
-
-
-  # try to configure and build python bindings by default
-  SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
-  IF (WITH_BINDINGS)
-    # By default bindings will be installed only to QGIS directory
-    # Someone might want to install it to python site-packages directory
-    # as otherwise user has to use PYTHONPATH environment variable to add
-    # QGIS bindings to package search path
-    SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
-    SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
-    SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
-    # concatenate QScintilla2 API files
-    IF (WITH_GUI)
-      SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
-      # keep casual users from updating their source tree via WITH_QSCIAPI
-      MARK_AS_ADVANCED (WITH_QSCIAPI)
-    ENDIF (WITH_GUI)
-    ADD_DEFINITIONS(-DWITH_BINDINGS)
-  ENDIF (WITH_BINDINGS)
 
   #BUILD WITH QtMobility by default on android only. Other platform can force it
   IF (ANDROID)
@@ -216,7 +244,7 @@ IF(WITH_CORE)
     # https://sourceforge.net/p/mingw-w64/bugs/527/
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80816
 
-    # also OpenBSD has no thread_local support, see https://issues.qgis.org/issues/17351
+    # also OpenBSD has no thread_local support, see https://github.com/qgis/QGIS/issues/25248
 
   ELSE (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
     IF (WITH_THREAD_LOCAL)
@@ -347,7 +375,11 @@ IF(WITH_CORE)
   FIND_PACKAGE(Qt5Xml REQUIRED)
   FIND_PACKAGE(Qt5Svg REQUIRED)
   FIND_PACKAGE(Qt5Concurrent REQUIRED)
-  FIND_PACKAGE(Qt5PrintSupport REQUIRED)
+  IF (NOT IOS)
+    FIND_PACKAGE(Qt5PrintSupport REQUIRED)
+  ELSE(NOT IOS)
+    ADD_DEFINITIONS(-DQT_NO_PRINTER)
+  ENDIF(NOT IOS)
   FIND_PACKAGE(Qt5Positioning)
   IF (WITH_QTWEBKIT)
     FIND_PACKAGE(Qt5WebKit REQUIRED)
@@ -443,9 +475,9 @@ CONFIGURE_FILE(
   "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
   "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
   IMMEDIATE @ONLY)
-# For server side testing we have no X, we can use xfvb as a fake x
-# sudo apt-get install xfvb
-add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest --output-on-failure)
+# For server side testing we have no X, we can use xvfb as a fake x
+# sudo apt-get install xvfb
+add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
 ENDIF(ENABLE_TESTS)
 
 IF (WITH_CORE)
@@ -474,13 +506,16 @@ IF (PEDANTIC)
     ENDIF (NOT USING_NMAKE AND NOT USING_NINJA)
 
     # disable warnings
+    SET(_warnings "${_warnings} /wd4091 ")  # 'typedef': ignored on left of '' when no variable is declared (occurs in MS DbgHelp.h header)
     SET(_warnings "${_warnings} /wd4100 ")  # unused formal parameters
     SET(_warnings "${_warnings} /wd4127 ")  # constant conditional expressions (used in Qt template classes)
     SET(_warnings "${_warnings} /wd4190 ")  # 'identifier' has C-linkage specified, but returns UDT 'identifier2' which is incompatible with C
     SET(_warnings "${_warnings} /wd4231 ")  # nonstandard extension used : 'identifier' before template explicit instantiation (used in Qt template classes)
     SET(_warnings "${_warnings} /wd4244 ")  # conversion from '...' to '...' possible loss of data
     SET(_warnings "${_warnings} /wd4251 ")  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
+    SET(_warnings "${_warnings} /wd4267 ")  # 'argument': conversion from 'size_t' to 'int', possible loss of data
     SET(_warnings "${_warnings} /wd4275 ")  # non dll-interface class '...' used as base for dll-interface class '...'
+    SET(_warnings "${_warnings} /wd4290 ")  # c++ exception specification ignored except to indicate a function is not __declspec(nothrow) (occurs in sip generated bindings)
     SET(_warnings "${_warnings} /wd4456 ")  # declaration of '...' hides previous local declaration
     SET(_warnings "${_warnings} /wd4457 ")  # declaration of '...' hides a function parameter
     SET(_warnings "${_warnings} /wd4458 ")  # declaration of '...' hides class member

@@ -60,6 +60,8 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
   connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
   createTableWidgetContents();
@@ -75,9 +77,6 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mFromSelectedPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromSelectedFeature.svg" ) ) );
   mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRemoveSelectedFeature.svg" ) ) );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/MergeAttributes/geometry" ) ).toByteArray() );
-
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
 }
@@ -85,18 +84,14 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
   connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/MergeAttributes/geometry" ) ).toByteArray() );
 }
 
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/MergeAttributes/geometry" ), saveGeometry() );
-
   delete mSelectionRubberBand;
 }
 
@@ -229,7 +224,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     case QVariant::Int:
     case QVariant::LongLong:
     {
-      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, DISPLAY_STATS )
+      for ( QgsStatisticalSummary::Statistic stat : qgis::as_const( DISPLAY_STATS ) )
       {
         newComboBox->addItem( QgsStatisticalSummary::displayName( stat ), stat );
       }
@@ -247,7 +242,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   newComboBox->addItem( tr( "Skip attribute" ), "skip" );
   newComboBox->addItem( tr( "Manual value" ), "manual" );
 
-  connect( newComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
+  connect( newComboBox, &QComboBox::currentTextChanged,
            this, &QgsMergeAttributesDialog::comboValueChanged );
   return newComboBox;
 }
@@ -266,7 +261,7 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox *c ) const
 
 void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   QComboBox *senderComboBox = qobject_cast<QComboBox *>( sender() );
   if ( !senderComboBox )
   {

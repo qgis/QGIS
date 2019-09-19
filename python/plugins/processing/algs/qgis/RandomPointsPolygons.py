@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import random
 
@@ -129,7 +125,7 @@ class RandomPointsPolygons(QgisAlgorithm):
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Point, source.sourceCrs())
+                                               fields, QgsWkbTypes.Point, source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -139,6 +135,7 @@ class RandomPointsPolygons(QgisAlgorithm):
 
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         current_progress = 0
+        pointId = 0
         for current, f in enumerate(source.getFeatures()):
             if feedback.isCanceled():
                 break
@@ -194,12 +191,13 @@ class RandomPointsPolygons(QgisAlgorithm):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)
                     f.setFields(fields)
-                    f.setAttribute('id', nPoints)
+                    f.setAttribute('id', pointId)
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                     index.addFeature(f)
                     points[nPoints] = p
                     nPoints += 1
+                    pointId += 1
                     feedback.setProgress(current_progress + int(nPoints * feature_total))
                 nIterations += 1
 

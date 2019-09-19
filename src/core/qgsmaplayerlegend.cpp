@@ -33,14 +33,14 @@ QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
 
 void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( elem );
-  Q_UNUSED( context );
+  Q_UNUSED( elem )
+  Q_UNUSED( context )
 }
 
 QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( doc );
-  Q_UNUSED( context );
+  Q_UNUSED( doc )
+  Q_UNUSED( context )
   return QDomElement();
 }
 
@@ -65,7 +65,8 @@ QgsMapLayerLegend *QgsMapLayerLegend::defaultMeshLegend( QgsMeshLayer *ml )
 void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, const QList<int> &order )
 {
   QStringList orderStr;
-  Q_FOREACH ( int id, order )
+  const auto constOrder = order;
+  for ( int id : constOrder )
     orderStr << QString::number( id );
   QString str = orderStr.isEmpty() ? QStringLiteral( "empty" ) : orderStr.join( QStringLiteral( "," ) );
 
@@ -111,7 +112,8 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer *nodeLayer
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> lst;
-  Q_FOREACH ( const QString &item, orderStr.split( ',' ) )
+  const auto constSplit = orderStr.split( ',' );
+  for ( const QString &item : constSplit )
   {
     bool ok;
     int id = item.toInt( &ok );
@@ -149,7 +151,8 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
 {
   // handle user labels
   int i = 0;
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, nodes )
+  const auto constNodes = nodes;
+  for ( QgsLayerTreeModelLegendNode *legendNode : constNodes )
   {
     QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i++ );
     if ( !userLabel.isNull() )
@@ -163,7 +166,8 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
 
     QList<QgsLayerTreeModelLegendNode *> newOrder;
     QSet<int> usedIndices;
-    Q_FOREACH ( int idx, order )
+    const auto constOrder = order;
+    for ( int idx : constOrder )
     {
       if ( usedIndices.contains( idx ) )
       {
@@ -213,7 +217,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  Q_FOREACH ( const QgsLegendSymbolItem &i, r->legendSymbolItems() )
+  const auto constLegendSymbolItems = r->legendSymbolItems();
+  for ( const QgsLegendSymbolItem &i : constLegendSymbolItems )
   {
     if ( i.dataDefinedSizeLegendSettings() )
       nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *i.dataDefinedSizeLegendSettings() );
@@ -235,7 +240,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
 
   if ( mLayer->diagramsEnabled() )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
+    const auto constLegendItems = mLayer->diagramRenderer()->legendItems( nodeLayer );
+    for ( QgsLayerTreeModelLegendNode *i : constLegendItems )
     {
       nodes.append( i );
     }

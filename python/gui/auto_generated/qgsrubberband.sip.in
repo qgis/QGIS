@@ -10,6 +10,11 @@
 
 
 
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsrubberband.h>
+%End
+
 class QgsRubberBand : QObject, QgsMapCanvasItem
 {
 %Docstring
@@ -21,6 +26,12 @@ for tracking the mouse while drawing polylines or polygons.
 
 %TypeHeaderCode
 #include "qgsrubberband.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsRubberBand;
+    else
+      sipType = nullptr;
 %End
   public:
 
@@ -43,6 +54,8 @@ for tracking the mouse while drawing polylines or polygons.
       ICON_DIAMOND,
 
       ICON_FULL_DIAMOND,
+
+      ICON_SVG
     };
 
     QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
@@ -126,6 +139,17 @@ Sets the icon type to highlight point geometries.
 :param icon: The icon to visualize point geometries
 %End
 
+    void setSvgIcon( const QString &path, QPoint drawOffset );
+%Docstring
+Set the path to the svg file to use to draw points.
+Calling this function automatically calls setIcon(ICON_SVG)
+
+:param path: The path to the svg
+:param drawOffset: The offset where to draw the image origin
+
+.. versionadded:: 3.10
+%End
+
 
     IconType icon() const;
 %Docstring
@@ -164,7 +188,7 @@ Sets the representation type according to geometryType.
 %Docstring
 Adds a vertex to the rubberband and update canvas.
 The rendering of the vertex depends on the current GeometryType and icon.
-If adding more points consider using update=false for better performance
+If adding more points consider using update=``False`` for better performance
 
 :param p: The vertex/point to add
 :param doUpdate: Should the map canvas be updated immediately?
@@ -176,7 +200,7 @@ If adding more points consider using update=false for better performance
 Ensures that a polygon geometry is closed and that the last vertex equals the
 first vertex.
 
-:param doUpdate: set to true to update the map canvas immediately
+:param doUpdate: set to ``True`` to update the map canvas immediately
 :param geometryIndex: index of the feature part (in case of multipart geometries)
 
 .. versionadded:: 2.16
@@ -225,7 +249,7 @@ In contrast to addGeometry(), this method does also change the geometry type of 
 
 :param geom: the geometry object
 :param layer: the layer containing the feature, used for coord transformation to map
-              crs. In case of 0 pointer, the coordinates are not going to be transformed.
+              crs. If ``layer`` is ``None``, the coordinates are not going to be transformed.
 %End
 
     void setToGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
@@ -256,7 +280,7 @@ setToGeometry() is also to be preferred for backwards-compatibility.
 
 :param geometry: the geometry object. Will be treated as a collection of vertices.
 :param layer: the layer containing the feature, used for coord transformation to map
-              crs. In case of 0 pointer, the coordinates are not going to be transformed.
+              crs. If ``layer`` is ``None``, the coordinates are not going to be transformed.
 %End
 
     void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );

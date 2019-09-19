@@ -51,9 +51,9 @@ Returns the map layer associated with this node.
 
 .. warning::
 
-   This can be (and often is!) a None, e.g. in the case of a layer node representing a layer
+   This can be (and often is!) ``None``, e.g. in the case of a layer node representing a layer
    which has not yet been fully loaded into a project, or a layer node representing a layer
-   with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing a None.
+   with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing ``None``.
 
 .. seealso:: :py:func:`layerId`
 %End
@@ -76,6 +76,21 @@ Sets the layer's name.
 .. seealso:: :py:func:`name`
 
 .. versionadded:: 3.0
+%End
+
+    void setUseLayerName( bool use = true );
+%Docstring
+Uses the layer's name if ``use`` is true, or the name manually set if
+false.
+
+.. versionadded:: 3.8
+%End
+
+    bool useLayerName() const;
+%Docstring
+Returns whether the layer's name is used, or the name manually set.
+
+.. versionadded:: 3.8
 %End
 
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
@@ -109,6 +124,20 @@ Resolves reference to layer from stored layer ID (if it has not been resolved al
 .. versionadded:: 3.0
 %End
 
+    void setLabelExpression( const QString &expression );
+%Docstring
+set the expression to evaluate
+
+.. versionadded:: 3.10
+%End
+
+    QString labelExpression() const;
+%Docstring
+Returns the expression member of the LayerTreeNode
+
+.. versionadded:: 3.10
+%End
+
   signals:
 
     void layerLoaded();
@@ -125,6 +154,7 @@ Emitted when a previously available layer got unloaded (from layer registry).
 
   protected:
     void attachToLayer();
+
 
 
   private:

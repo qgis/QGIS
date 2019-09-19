@@ -18,19 +18,26 @@
 
 #include "qgsinbuiltdataitemproviders.h"
 #include "qgsdataitem.h"
+#include "qgsdataitemguiproviderregistry.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
 #include "qgsnewnamedialog.h"
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsbrowserdockwidget_p.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewgeopackagelayerdialog.h"
 #include "qgsfileutils.h"
+#include "qgsapplication.h"
+#include "processing/qgsprojectstylealgorithms.h"
+#include "qgsstylemanagerdialog.h"
+
+#include <QFileInfo>
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -104,12 +111,17 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   {
     QString enc;
     QDir dir( directoryItem->dirPath() );
-    const QString newFile = QgsNewVectorLayerDialog::runAndCreateLayer( QgisApp::instance(), &enc, QgsProject::instance()->defaultCrsForNewLayers(), dir.filePath( QStringLiteral( "new_layer.shp" ) ) );
+    QString error;
+    const QString newFile = QgsNewVectorLayerDialog::execAndCreateLayer( error, QgisApp::instance(), dir.filePath( QStringLiteral( "new_layer.shp" ) ), &enc, QgsProject::instance()->defaultCrsForNewLayers() );
     if ( !newFile.isEmpty() )
     {
       context.messageBar()->pushSuccess( tr( "New ShapeFile" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
                                            QUrl::fromLocalFile( newFile ).toString(), QDir::toNativeSeparators( newFile ) ) );
       item->refresh();
+    }
+    else if ( !error.isEmpty() )
+    {
+      context.messageBar()->pushCritical( tr( "New ShapeFile" ), tr( "Layer creation failed: %1" ).arg( error ) );
     }
   } );
   newMenu->addAction( createShp );
@@ -189,7 +201,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
-    showProperties( directoryItem );
+    showProperties( directoryItem, context );
   } );
   menu->addAction( propertiesAction );
 
@@ -254,7 +266,7 @@ void QgsAppDirectoryItemGuiProvider::toggleFastScan( QgsDirectoryItem *item )
   settings.setValue( QStringLiteral( "qgis/scanItemsFastScanUris" ), fastScanDirs );
 }
 
-void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item )
+void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context )
 {
   if ( ! item )
     return;
@@ -262,7 +274,7 @@ void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item )
   QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( QStringLiteral( "browser" ), QgisApp::instance() );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
 
-  dialog->setItem( item );
+  dialog->setItem( item, context );
   dialog->show();
 }
 
@@ -337,14 +349,14 @@ QString QgsLayerItemGuiProvider::name()
   return QStringLiteral( "layer_item" );
 }
 
-void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext )
+void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
   if ( item->type() != QgsDataItem::Layer )
     return;
 
   QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
-  if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayer::VectorLayer ||
-                      layerItem->mapLayerType() == QgsMapLayer::RasterLayer ) )
+  if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayerType::VectorLayer ||
+                      layerItem->mapLayerType() == QgsMapLayerType::RasterLayer ) )
   {
     QMenu *exportMenu = new QMenu( tr( "Export Layer" ), menu );
     menu->addMenu( exportMenu );
@@ -354,9 +366,10 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     {
       switch ( layerItem->mapLayerType() )
       {
-        case QgsMapLayer::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
         {
-          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
+          const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options ) );
           if ( layer && layer->isValid() )
           {
             QgisApp::instance()->saveAsFile( layer.get(), false, false );
@@ -364,7 +377,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           break;
         }
 
-        case QgsMapLayer::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
         {
           std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
           if ( layer && layer->isValid() )
@@ -374,8 +387,8 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           break;
         }
 
-        case QgsMapLayer::PluginLayer:
-        case QgsMapLayer::MeshLayer:
+        case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
           break;
       }
     } );
@@ -390,20 +403,51 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   } );
   menu->addAction( addAction );
 
+  if ( item->capabilities2() & QgsDataItem::Delete )
+  {
+    QStringList selectedDeletableItemPaths;
+    for ( QgsDataItem *selectedItem : selectedItems )
+    {
+      if ( qobject_cast<QgsLayerItem *>( selectedItem ) && ( selectedItem->capabilities2() & QgsDataItem::Delete ) )
+        selectedDeletableItemPaths.append( qobject_cast<QgsLayerItem *>( selectedItem )->uri() );
+    }
+
+    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer" )
+                               : tr( "Delete Selected Layers" );
+    QAction *deleteAction = new QAction( deleteText, menu );
+    connect( deleteAction, &QAction::triggered, this, [ = ]
+    {
+      deleteLayers( selectedDeletableItemPaths, context );
+    } );
+    menu->addAction( deleteAction );
+  }
+
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
-    showPropertiesForItem( layerItem );
+    showPropertiesForItem( layerItem, context );
   } );
   menu->addAction( propertiesAction );
 
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
   {
-    QAction *action = menu->addAction( tr( "File Properties…" ) );
-    connect( action, &QAction::triggered, this, [ = ]
+    bool isFile = false;
+    if ( layerItem )
     {
-      QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
-    } );
+      isFile = layerItem->providerKey() == QStringLiteral( "ogr" ) || layerItem->providerKey() == QStringLiteral( "gdal" );
+    }
+    else
+    {
+      isFile = QFileInfo::exists( item->path() );
+    }
+    if ( isFile )
+    {
+      QAction *action = menu->addAction( tr( "File Properties…" ) );
+      connect( action, &QAction::triggered, this, [ = ]
+      {
+        QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
+      } );
+    }
   }
 }
 
@@ -457,14 +501,50 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
     QgisApp::instance()->handleDropUriList( layerUriList );
 }
 
-void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item )
+void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths, QgsDataItemGuiContext context )
+{
+  for ( const QString &itemPath : itemPaths )
+  {
+    //get the item from browserModel by its path
+    QgsLayerItem *item = qobject_cast<QgsLayerItem *>( QgisApp::instance()->browserModel()->dataItem( QgisApp::instance()->browserModel()->findUri( itemPath ) ) );
+    if ( !item )
+    {
+      QgsMessageLog::logMessage( tr( "Item with path %1 no longer exists." ).arg( itemPath ) );
+      return;
+    }
+
+    // first try to use the new API - through QgsDataItemGuiProvider. If that fails, try to use the legacy API...
+    bool usedNewApi = false;
+    const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
+    for ( QgsDataItemGuiProvider *provider : providers )
+    {
+      if ( provider->deleteLayer( item, context ) )
+      {
+        usedNewApi = true;
+        break;
+      }
+    }
+
+    if ( !usedNewApi )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      bool res = item->deleteLayer();
+      Q_NOWARN_DEPRECATED_POP
+
+      if ( !res )
+        QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
+    }
+  }
+}
+
+void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( ! item )
     return;
 
   QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( QStringLiteral( "browser" ), QgisApp::instance() );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
-  dialog->setItem( item );
+  dialog->setItem( item, context );
   dialog->show();
 }
 
@@ -477,7 +557,7 @@ QString QgsProjectItemGuiProvider::name()
   return QStringLiteral( "project_items" );
 }
 
-void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
   if ( !item || item->type() != QgsDataItem::Project )
     return;
@@ -491,6 +571,34 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       QgisApp::instance()->openProject( projectPath );
     } );
     menu->addAction( openAction );
+
+    QAction *extractAction = new QAction( tr( "Extract Symbols…" ), menu );
+    connect( extractAction, &QAction::triggered, this, [projectPath, context]
+    {
+      QgsStyle style;
+      style.createMemoryDatabase();
+
+      QgsSaveToStyleVisitor visitor( &style );
+
+      QgsProject p;
+      QgsTemporaryCursorOverride override( Qt::WaitCursor );
+      if ( p.read( projectPath, QgsProject::FlagDontResolveLayers ) )
+      {
+        p.accept( &visitor );
+        override.release();
+        QgsStyleManagerDialog dlg( &style, QgisApp::instance(), nullptr, true );
+        dlg.setFavoritesGroupVisible( false );
+        dlg.setSmartGroupsVisible( false );
+        QFileInfo fi( projectPath );
+        dlg.setBaseStyleName( fi.baseName() );
+        dlg.exec();
+      }
+      else if ( context.messageBar() )
+      {
+        context.messageBar()->pushWarning( tr( "Extract Symbols" ), tr( "Could not read project file" ) );
+      }
+    } );
+    menu->addAction( extractAction );
 
     if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
     {

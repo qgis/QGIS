@@ -22,10 +22,6 @@
 #include "qgis_server.h"
 #include "qgsserverrequest.h"
 
-#include <QBuffer>
-#include <QByteArray>
-#include <QMap>
-
 /**
  * \ingroup server
  * \class QgsBufferServerRequest

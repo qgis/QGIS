@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbrowserguimodel.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsBrowserGuiModel : QgsBrowserModel
+{
+%Docstring
+
+A model for showing available data sources and other items in a structured
+tree.
+
+QgsBrowserGuiModel is the foundation for the QGIS browser panel, and includes
+items for the different data providers and folders accessible to users.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsbrowserguimodel.h"
+%End
+  public:
+
+    explicit QgsBrowserGuiModel( QObject *parent = 0 );
+%Docstring
+Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
+
+.. note::
+
+   QgsBrowserModel models are not initially populated and use a deferred initialization
+   approach. After constructing a :py:class:`QgsBrowserModel`, a call must be made
+   to initialize() in order to populate the model.
+%End
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+     virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action,
+                       int row, int column, const QModelIndex &parent );
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets message bar that will be passed in QgsDataItemGuiContext to data items
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbrowserguimodel.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

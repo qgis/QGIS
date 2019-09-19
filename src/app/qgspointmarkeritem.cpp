@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 #include <QPainter>
 #include <cmath>
 

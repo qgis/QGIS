@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLocatorResult
 {
 %Docstring
@@ -47,7 +48,30 @@ Constructor for QgsLocatorResult.
 
     QString group;
 
+    struct ResultAction
+    {
+      public:
+        ResultAction();
+%Docstring
+Constructor for ResultAction
+%End
+
+        ResultAction( int id, QString text, QString iconPath = QString() );
+%Docstring
+Constructor for ResultAction
+The ``id`` used to recognized the action when the result is triggered.
+It should be 0 or greater as otherwise, the result will be triggered
+normally.
+%End
+        int id;
+        QString text;
+        QString iconPath;
+    };
+
+    QList<QgsLocatorResult::ResultAction> actions;
 };
+
+
 
 class QgsLocatorFilter : QObject
 {
@@ -174,6 +198,16 @@ E.g. a file search filter would open file associated with the triggered
 result.
 %End
 
+    virtual void triggerResultFromAction( const QgsLocatorResult &result, const int actionId );
+%Docstring
+Triggers a filter ``result`` from this filter for an entry in the context menu.
+The entry is identified by its ``actionId`` as specified in the result of this filter.
+
+.. seealso:: :py:func:`triggerResult`
+
+.. versionadded:: 3.6
+%End
+
     virtual void clearPreviousResults();
 %Docstring
 This method will be called on main thread on the original filter (not a clone)
@@ -187,7 +221,7 @@ when a previous search result was triggered.
 
     bool useWithoutPrefix() const;
 %Docstring
-Returns true if the filter should be used when no prefix
+Returns ``True`` if the filter should be used when no prefix
 is entered.
 
 .. seealso:: :py:func:`setUseWithoutPrefix`
@@ -222,7 +256,7 @@ of directly using QString.contains() or Python 'in' checks.
 
     bool enabled() const;
 %Docstring
-Returns true if the filter is enabled.
+Returns ``True`` if the filter is enabled.
 
 .. seealso:: :py:func:`setEnabled`
 %End
@@ -236,7 +270,7 @@ Sets whether the filter is ``enabled``.
 
     virtual bool hasConfigWidget() const;
 %Docstring
-Should return true if the filter has a configuration widget.
+Should return ``True`` if the filter has a configuration widget.
 
 .. seealso:: :py:func:`openConfigWidget`
 %End
@@ -249,7 +283,7 @@ custom configuration widget.
 
 .. note::
 
-   hasConfigWidget() must return true to indicate that the filter supports configuration.
+   hasConfigWidget() must return ``True`` to indicate that the filter supports configuration.
 %End
 
     void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );

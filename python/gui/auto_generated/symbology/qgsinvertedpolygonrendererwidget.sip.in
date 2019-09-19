@@ -45,6 +45,9 @@ Constructor
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
+    virtual void setDockMode( bool dockMode );
+
+
   protected:
 
 };

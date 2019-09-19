@@ -17,7 +17,7 @@
 #define QGSRELATIONREFERENCEWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QgsRelationReferenceWidget;
@@ -30,9 +30,9 @@ class QgsMessageBar;
  *
  * Options:
  * <ul>
- * <li><b>ShowForm</b> <i>If True, an embedded form with the referenced feature will be shown.</i></li>
+ * <li><b>ShowForm</b> <i>If TRUE, an embedded form with the referenced feature will be shown.</i></li>
  * <li><b>MapIdentification</b> <i>Will offer a map tool to pick a referenced feature on the map canvas. Only use for layers with geometry.</i></li>
- * <li><b>ReadOnly</b> <i>If True, will represent the referenced widget in a read-only line edit. Can speed up loading.</i></li>
+ * <li><b>ReadOnly</b> <i>If TRUE, will represent the referenced widget in a read-only line edit. Can speed up loading.</i></li>
  * <li><b>AllowNULL</b> <i>Will offer NULL as a value.</i></li>
  * <li><b>Relation</b> <i>The ID of the relation that will be used to define this widget.</i></li>
  * ReadOnly
@@ -58,19 +58,21 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QVariant value() const override;
     bool valid() const override;
     void showIndeterminateState() override;
+    QVariantList additionalFieldValues() const override;
+    QStringList additionalFields() const override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
   private slots:
-    void foreignKeyChanged( QVariant value );
+    void foreignKeysChanged( const QVariantList &values );
 
   protected:
-
     void updateConstraintWidgetStatus() override;
 
   private:
+    void updateValues( const QVariant &val, const QVariantList &additionalValues = QVariantList() ) override;
+
     QgsRelationReferenceWidget *mWidget = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;

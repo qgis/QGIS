@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import random
 
 from qgis.PyQt.QtCore import QVariant
@@ -100,7 +96,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Point, source.sourceCrs())
+                                               fields, QgsWkbTypes.Point, source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 

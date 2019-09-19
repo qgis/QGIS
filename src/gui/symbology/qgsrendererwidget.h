@@ -88,12 +88,29 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      */
     void layerVariablesChanged();
 
+    /**
+     * Emitted when the symbol levels settings have been changed.
+     */
+    void symbolLevelsChanged();
+
   protected:
     QgsVectorLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;
     QMenu *contextMenu = nullptr;
     QAction *mCopyAction = nullptr;
     QAction *mPasteAction = nullptr;
+
+    /**
+     * Copy symbol action.
+     * \since QGIS 3.10
+     */
+    QAction *mCopySymbolAction = nullptr;
+
+    /**
+     * Paste symbol action.
+     * \since QGIS 3.10
+     */
+    QAction *mPasteSymbolAction = nullptr;
 
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
@@ -106,7 +123,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
     /**
      * Creates widget to setup data-defined size legend.
-     * Returns newly created panel - may be null if it could not be opened. Ownership is transferred to the caller.
+     * Returns newly created panel - may be NULLPTR if it could not be opened. Ownership is transferred to the caller.
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) SIP_FACTORY;
@@ -126,8 +143,20 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     //! Change marker angles of selected symbols
     void changeSymbolAngle();
 
+
     virtual void copy() {}
     virtual void paste() {}
+
+    /**
+      * Pastes the clipboard symbol over selected items.
+      *
+      * \since QGIS 3.10
+     */
+    virtual void pasteSymbolToSelection();
+
+  private slots:
+
+    void copySymbol();
 
   private:
 
@@ -167,7 +196,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     /**
      * Constructor
      * \param symbolList must not be empty
-     * \param layer must not be null
+     * \param layer must not be NULLPTR
      * \param label value label
      */
     QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label );

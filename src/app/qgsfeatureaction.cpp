@@ -78,7 +78,8 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
     a->setEnabled( false );
     dialog->addAction( a );
 
-    Q_FOREACH ( const QgsAction &action, actions )
+    const auto constActions = actions;
+    for ( const QgsAction &action : constActions )
     {
       if ( !action.runable() )
         continue;
@@ -245,6 +246,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     {
       mLayer->destroyEditCommand();
     }
+    emit addFeatureFinished();
   }
   else
   {
@@ -259,12 +261,14 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     if ( !showModal )
     {
       setParent( dialog ); // keep dialog until the dialog is closed and destructed
+      connect( dialog, &QgsAttributeDialog::finished, this, &QgsFeatureAction::addFeatureFinished );
       dialog->show();
       mFeature = nullptr;
       return true;
     }
 
     dialog->exec();
+    emit addFeatureFinished();
   }
 
   // Will be set in the onFeatureSaved SLOT

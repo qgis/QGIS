@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "qgswmsutils.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsdescribelayer.h"
 #include "qgsserverprojectutils.h"
 #include "qgsproject.h"
@@ -39,7 +40,7 @@ namespace QgsWms
   QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                               const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -107,6 +108,8 @@ namespace QgsWms
     // access control
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
 #endif
     // Use layer ids
     bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
@@ -154,33 +157,42 @@ namespace QgsWms
       oResNode.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
       // store the TypeName element
       QDomElement nameNode = myDocument.createElement( QStringLiteral( "TypeName" ) );
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      switch ( layer->type() )
       {
-        typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wfs" ) ) );
-
-        if ( wfsLayerIds.indexOf( layer->id() ) != -1 )
+        case QgsMapLayerType::VectorLayer:
         {
-          oResNode.setAttribute( QStringLiteral( "xlink:href" ), wfsHrefString );
+          typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wfs" ) ) );
+
+          if ( wfsLayerIds.indexOf( layer->id() ) != -1 )
+          {
+            oResNode.setAttribute( QStringLiteral( "xlink:href" ), wfsHrefString );
+          }
+
+          // store the se:FeatureTypeName element
+          QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:FeatureTypeName" ) );
+          typeNameNode.appendChild( myDocument.createTextNode( name ) );
+          nameNode.appendChild( typeNameNode );
+          break;
+        }
+        case QgsMapLayerType::RasterLayer:
+        {
+          typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wcs" ) ) );
+
+          if ( wcsLayerIds.indexOf( layer->id() ) != -1 )
+          {
+            oResNode.setAttribute( QStringLiteral( "xlink:href" ), wcsHrefString );
+          }
+
+          // store the se:CoverageTypeName element
+          QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:CoverageTypeName" ) );
+          typeNameNode.appendChild( myDocument.createTextNode( name ) );
+          nameNode.appendChild( typeNameNode );
+          break;
         }
 
-        // store the se:FeatureTypeName element
-        QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:FeatureTypeName" ) );
-        typeNameNode.appendChild( myDocument.createTextNode( name ) );
-        nameNode.appendChild( typeNameNode );
-      }
-      else if ( layer->type() == QgsMapLayer::RasterLayer )
-      {
-        typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wcs" ) ) );
-
-        if ( wcsLayerIds.indexOf( layer->id() ) != -1 )
-        {
-          oResNode.setAttribute( QStringLiteral( "xlink:href" ), wcsHrefString );
-        }
-
-        // store the se:CoverageTypeName element
-        QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:CoverageTypeName" ) );
-        typeNameNode.appendChild( myDocument.createTextNode( name ) );
-        nameNode.appendChild( typeNameNode );
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::PluginLayer:
+          break;
       }
       layerNode.appendChild( typeNode );
       layerNode.appendChild( oResNode );

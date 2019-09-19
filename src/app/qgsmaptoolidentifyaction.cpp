@@ -38,7 +38,6 @@
 #include "qgsunittypes.h"
 #include "qgsstatusbar.h"
 #include "qgsactionscoperegistry.h"
-#include "qgsproxyprogresstask.h"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
 
@@ -54,7 +53,7 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
   connect( this, &QgsMapToolIdentify::changedRasterResults, this, &QgsMapToolIdentifyAction::handleChangedRasterResults );
   mIdentifyMenu->setAllowMultipleReturn( true );
-  QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show Attribute Table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
+  QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show Attribute Table" ), mIdentifyMenu, QgsMapLayerType::VectorLayer, QgsMapLayerAction::MultipleFeatures );
   connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectSimple );
@@ -97,7 +96,8 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
     return;
 
   QString filter = QStringLiteral( "$id IN (" );
-  Q_FOREACH ( const QgsFeature &feature, featureList )
+  const auto constFeatureList = featureList;
+  for ( const QgsFeature &feature : constFeatureList )
   {
     filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
   }
@@ -112,14 +112,6 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
   resultsDialog()->clear();
-
-  QgsProxyProgressTask *task = new QgsProxyProgressTask( tr( "Identifying features" ) );
-  QgsApplication::taskManager()->addTask( task );
-
-  connect( this, &QgsMapToolIdentifyAction::identifyProgress, task, [ = ]( int i, int n )
-  {
-    task->setProxyProgress( static_cast<double>( i ) * 100.0 / n );
-  } );
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   QgsGeometry geometry = mSelectionHandler->selectedGeometry();
@@ -139,7 +131,6 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
 
   QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, AllLayers );
 
-  task->finalize( true );
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   if ( results.isEmpty() )
@@ -192,7 +183,7 @@ void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult>
   QList<IdentifyResult>::const_iterator rresult;
   for ( rresult = results.constBegin(); rresult != results.constEnd(); ++rresult )
   {
-    if ( rresult->mLayer->type() == QgsMapLayer::RasterLayer )
+    if ( rresult->mLayer->type() == QgsMapLayerType::RasterLayer )
     {
       resultsDialog()->addFeature( *rresult );
     }

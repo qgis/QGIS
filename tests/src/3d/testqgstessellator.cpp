@@ -134,6 +134,7 @@ class TestQgsTessellator : public QObject
     void testBadCoordinates();
     void testIssue17745();
     void testCrashSelfIntersection();
+    void testCrashEmptyPolygon();
 
   private:
 };
@@ -333,6 +334,18 @@ void TestQgsTessellator::testCrashSelfIntersection()
   QVERIFY( resWktRead );
 
   t.addPolygon( p, 0 );   // must not crash - that's all we test here
+}
+
+void TestQgsTessellator::testCrashEmptyPolygon()
+{
+  // this is a polygon that goes through GEOS simplification which throws an exception (and produces null geometry)
+
+  QgsTessellator t( 0, 0, true );
+  QgsPolygon p;
+  bool resWktRead = p.fromWkt( "PolygonZ ((0 0 0, 0 0 0, 0 0 0))" );
+  QVERIFY( resWktRead );
+
+  t.addPolygon( p, 0 );  // must not crash - that's all we test here
 }
 
 

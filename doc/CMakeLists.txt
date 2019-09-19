@@ -57,6 +57,8 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/3d
       ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth
+      ${CMAKE_SOURCE_DIR}/src/core/callouts
+      ${CMAKE_SOURCE_DIR}/src/core/classification
       ${CMAKE_SOURCE_DIR}/src/core/diagram
       ${CMAKE_SOURCE_DIR}/src/core/dxf
       ${CMAKE_SOURCE_DIR}/src/core/effects
@@ -78,24 +80,29 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/symbology
+      ${CMAKE_SOURCE_DIR}/src/core/validity
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+      ${CMAKE_SOURCE_DIR}/src/gui/callouts
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
       ${CMAKE_SOURCE_DIR}/src/gui/effects
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/layout
       ${CMAKE_SOURCE_DIR}/src/gui/locator
+      ${CMAKE_SOURCE_DIR}/src/gui/ogr
       ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/raster
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
       ${CMAKE_SOURCE_DIR}/src/analysis
+      ${CMAKE_SOURCE_DIR}/src/analysis/mesh
       ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
       ${CMAKE_SOURCE_DIR}/src/analysis/network
       ${CMAKE_SOURCE_DIR}/src/analysis/processing
       ${CMAKE_SOURCE_DIR}/src/analysis/raster
       ${CMAKE_SOURCE_DIR}/src/analysis/vector
+      ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
       ${CMAKE_SOURCE_DIR}/src/3d
       ${CMAKE_SOURCE_DIR}/src/3d/chunks
       ${CMAKE_SOURCE_DIR}/src/3d/symbols
@@ -134,7 +141,9 @@ IF(WITH_APIDOC)
 
     IF(DOXYGEN_ON_DEMAND)
       ADD_CUSTOM_TARGET(apidoc DEPENDS ${QHP_FILES})
+      INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api OPTIONAL)
     ELSE(DOXYGEN_ON_DEMAND)
+      INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
       ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${QHP_FILES})
     ENDIF(DOXYGEN_ON_DEMAND)
     ADD_CUSTOM_COMMAND(
@@ -143,7 +152,6 @@ IF(WITH_APIDOC)
       COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Generating API documentation" VERBATIM)
-    INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
     INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/api)
     IF(GENERATE_QHP)
       INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/qch/qgis.qch DESTINATION ${QGIS_DATA_DIR}/doc/api)

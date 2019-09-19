@@ -25,6 +25,7 @@
 #include <QVector>
 #include "qgspallabeling.h"
 #include "rtree.hpp"
+#include "qgsmapsettings.h"
 
 class QgsPointXY;
 
@@ -34,6 +35,8 @@ namespace pal
   class LabelPosition;
 }
 #endif
+
+// TODO QGIS 4.0 - this should be private, not exposed to SIP
 
 /**
  * \ingroup core
@@ -73,15 +76,23 @@ class CORE_EXPORT QgsLabelSearchTree
 
     /**
      * Inserts label position. Does not take ownership of labelPos
-     * \returns true in case of success
+     * \returns TRUE in case of success
      * \note not available in Python bindings
      */
-    bool insertLabel( pal::LabelPosition *labelPos, int featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString() ) SIP_SKIP;
+    bool insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString(), bool isUnplaced = false ) SIP_SKIP;
+
+    /**
+     * Sets the map \a settings associated with the labeling run.
+     * \since QGIS 3.4.8
+     */
+    void setMapSettings( const QgsMapSettings &settings );
 
   private:
     // set as mutable because RTree template is not const-correct
     mutable pal::RTree<QgsLabelPosition *, double, 2, double> mSpatialIndex;
-    QList< QgsLabelPosition * > mOwnedPositions;
+    std::vector< std::unique_ptr< QgsLabelPosition > > mOwnedPositions;
+    QgsMapSettings mMapSettings;
+    QTransform mTransform;
 
 #ifdef SIP_RUN
     //! QgsLabelSearchTree cannot be copied.

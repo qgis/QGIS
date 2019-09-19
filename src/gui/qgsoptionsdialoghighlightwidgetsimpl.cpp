@@ -25,6 +25,7 @@
 
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsmessagebaritem.h"
+#include "qgslogger.h"
 
 #include "qgsoptionsdialoghighlightwidgetsimpl.h"
 
@@ -62,7 +63,7 @@ bool QgsOptionsDialogHighlightLabel::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -103,7 +104,7 @@ bool QgsOptionsDialogHighlightCheckBox::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -144,7 +145,7 @@ bool QgsOptionsDialogHighlightButton::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -182,7 +183,7 @@ bool QgsOptionsDialogHighlightGroupBox::searchText( const QString &text )
 
 bool QgsOptionsDialogHighlightGroupBox::highlightText( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   if ( !mWidget )
     return false;
 
@@ -209,7 +210,7 @@ QgsOptionsDialogHighlightTree::QgsOptionsDialogHighlightTree( QTreeView *treeVie
 
 bool QgsOptionsDialogHighlightTree::searchText( const QString &text )
 {
-  if ( !mTreeView )
+  if ( !mTreeView || !mTreeView->model() )
     return false;
   QModelIndexList hits = mTreeView->model()->match( mTreeView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
   return !hits.isEmpty();
@@ -235,13 +236,11 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
 
     QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
     success = !items.empty();
-    mTreeInitialStyle.clear();
     mTreeInitialExpand.clear();
+    QBrush highlightBackground( QColor( HIGHLIGHT_BACKGROUND_RED, HIGHLIGHT_BACKGROUND_GREEN, HIGHLIGHT_BACKGROUND_BLUE ) );
+    QBrush highlightText( QColor( HIGHLIGHT_TEXT_RED, HIGHLIGHT_TEXT_GREEN, HIGHLIGHT_TEXT_BLUE ) );
     for ( QTreeWidgetItem *item : items )
     {
-      mTreeInitialStyle.insert( item, qMakePair( item->background( 0 ), item->foreground( 0 ) ) );
-      item->setBackground( 0, QBrush( QColor( HIGHLIGHT_BACKGROUND_RED, HIGHLIGHT_BACKGROUND_GREEN, HIGHLIGHT_BACKGROUND_BLUE ) ) );
-      item->setForeground( 0, QBrush( QColor( HIGHLIGHT_TEXT_RED, HIGHLIGHT_TEXT_GREEN, HIGHLIGHT_TEXT_BLUE ) ) );
       setChildrenVisible( item, true );
 
       QTreeWidgetItem *parent = item;
@@ -284,15 +283,6 @@ void QgsOptionsDialogHighlightTree::reset()
         item->setExpanded( mTreeInitialExpand.value( item ) );
       }
     }
-    for ( QTreeWidgetItem *item : mTreeInitialStyle.keys() )
-    {
-      if ( item )
-      {
-        item->setBackground( 0, mTreeInitialStyle.value( item ).first );
-        item->setForeground( 0, mTreeInitialStyle.value( item ).second );
-      }
-    }
-    mTreeInitialStyle.clear();
     mTreeInitialExpand.clear();
   }
 }

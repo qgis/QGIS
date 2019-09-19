@@ -22,6 +22,8 @@
 #include "qgslocatorfilter.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeatureiterator.h"
+#include "qgsvectorlayerfeatureiterator.h"
+
 
 class QAction;
 
@@ -119,16 +121,23 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
+    enum ContextMenuEntry
+    {
+      NoEntry,
+      OpenForm
+    };
+
     struct PreparedLayer
     {
       public:
         QgsExpression expression;
         QgsExpressionContext context;
-        QgsFeatureIterator iterator;
+        std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
+        QgsFeatureRequest request;
         QString layerName;
         QString layerId;
         QIcon layerIcon;
-    } ;
+    };
 
     QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsAllLayersFeaturesLocatorFilter *clone() const override;
@@ -140,11 +149,12 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+    void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
 
   private:
     int mMaxResultsPerLayer = 6;
     int mMaxTotalResults = 12;
-    QList<PreparedLayer> mPreparedLayers;
+    QList<std::shared_ptr<PreparedLayer>> mPreparedLayers;
 
 
 };

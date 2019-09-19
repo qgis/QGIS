@@ -431,19 +431,19 @@ QgsGrassModuleInputCompleterProxy::QgsGrassModuleInputCompleterProxy( QObject *p
 
 int QgsGrassModuleInputCompleterProxy::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mRows.size();
 }
 
 QModelIndex QgsGrassModuleInputCompleterProxy::index( int row, int column, const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return createIndex( row, column );
 }
 
 QModelIndex QgsGrassModuleInputCompleterProxy::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return QModelIndex();
 }
 

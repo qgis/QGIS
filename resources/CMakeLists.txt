@@ -1,4 +1,14 @@
-INSTALL(FILES srs.db
+IF (PROJ_VERSION_MAJOR GREATER 5)
+  MESSAGE(STATUS "Using PROJ 6 srs database.")
+  SET(SRSDB srs6.db)
+ELSE (PROJ_VERSION_MAJOR GREATER 5)
+  MESSAGE(STATUS "Using PROJ <6 srs database.")
+  SET(SRSDB srs.db)
+ENDIF (PROJ_VERSION_MAJOR GREATER 5)
+
+INSTALL(FILES ${SRSDB} DESTINATION ${QGIS_DATA_DIR}/resources RENAME srs.db)
+
+INSTALL(FILES
               qgis.db
               symbology-style.xml
               spatialite.db

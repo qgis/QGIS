@@ -102,25 +102,25 @@ class QgsChunkNode
     int tileY() const { return mTileY; }
     //! Returns chunk tile Z coordinate of the tiling scheme
     int tileZ() const { return mTileZ; }
-    //! Returns pointer to the parent node. Parent is a null pointer in the root node
+    //! Returns pointer to the parent node. Parent is NULLPTR in the root node
     QgsChunkNode *parent() const { return mParent; }
-    //! Returns array of the four children. Children may be null pointers if they were not created yet
+    //! Returns array of the four children. Children may be NULLPTR if they were not created yet
     QgsChunkNode *const *children() const { return mChildren; }
     //! Returns current state of the node
     State state() const { return mState; }
 
-    //! Returns node's entry in the loader queue. Not null only when in QueuedForLoad / QueuedForUpdate state
+    //! Returns node's entry in the loader queue. Not NULLPTR only when in QueuedForLoad / QueuedForUpdate state
     QgsChunkListEntry *loaderQueueEntry() const { return mLoaderQueueEntry; }
-    //! Returns node's entry in the replacement queue. Not null only when in Loaded / QueuedForUpdate / Updating state
+    //! Returns node's entry in the replacement queue. Not NULLPTR only when in Loaded / QueuedForUpdate / Updating state
     QgsChunkListEntry *replacementQueueEntry() const { return mReplacementQueueEntry; }
-    //! Returns loader of the node. Not null only when in Loading state
+    //! Returns loader of the node. Not NULLPTR only when in Loading state
     QgsChunkLoader *loader() const { return mLoader; }
-    //! Returns associated entity (3D object). Not null only when Loaded / QueuedForUpdate / Updating state
+    //! Returns associated entity (3D object). Not NULLPTR only when Loaded / QueuedForUpdate / Updating state
     Qt3DCore::QEntity *entity() const { return mEntity; }
-    //! Returns updater job. Not null only when in Updating state
+    //! Returns updater job. Not NULLPTR only when in Updating state
     QgsChunkQueueJob *updater() const { return mUpdater; }
 
-    //! Returns true if all child chunks are available and thus this node could be swapped to the child nodes
+    //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( QTime currentTime ) const;
 
     //! make sure that all child nodes are at least skeleton nodes
@@ -172,7 +172,7 @@ class QgsChunkNode
     //! called when bounding box
     void setExactBbox( const QgsAABB &box );
 
-    //! Sets whether the node has any data to be displayed. Can be used to set to false after load returned no data
+    //! Sets whether the node has any data to be displayed. Can be used to set to FALSE after load returned no data
     void setHasData( bool hasData ) { mHasData = hasData; }
     //! Returns whether the node has any data to be displayed. If not, it will be kept as a skeleton node and will not get loaded anymore
     bool hasData() const { return mHasData; }
@@ -184,7 +184,7 @@ class QgsChunkNode
     int mTileX, mTileY, mTileZ;  //!< Chunk coordinates (for use with a tiling scheme)
 
     QgsChunkNode *mParent;        //!< TODO: should be shared pointer
-    QgsChunkNode *mChildren[4];   //!< TODO: should be weak pointers. May be null if not created yet or removed already
+    QgsChunkNode *mChildren[4];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
 
     State mState;  //!< State of the node
 

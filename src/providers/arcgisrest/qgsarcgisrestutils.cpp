@@ -18,32 +18,28 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrectangle.h"
-#include "geometry/qgsabstractgeometry.h"
-#include "geometry/qgscircularstring.h"
-#include "geometry/qgscompoundcurve.h"
-#include "geometry/qgscurvepolygon.h"
-#include "geometry/qgslinestring.h"
-#include "geometry/qgsmultipoint.h"
-#include "geometry/qgsmulticurve.h"
-#include "geometry/qgspolygon.h"
-#include "geometry/qgspoint.h"
 #include "qgsfeedback.h"
+#include "qgspallabeling.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgsauthmanager.h"
 #include "qgssettings.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
-#include "qgsmarkersymbollayer.h"
 #include "qgsrenderer.h"
+#include "qgsrulebasedlabeling.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
+
 #include <QEventLoop>
 #include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QThread>
+#include "qgsblockingnetworkrequest.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QImageReader>
 
 QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldType )
 {
@@ -88,7 +84,7 @@ QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString &esriGe
   else if ( esriGeometryType == QLatin1String( "esriGeometryPolyline" ) )
     return QgsWkbTypes::MultiCurve;
   else if ( esriGeometryType == QLatin1String( "esriGeometryPolygon" ) )
-    return QgsWkbTypes::Polygon;
+    return QgsWkbTypes::MultiPolygon;
   else if ( esriGeometryType == QLatin1String( "esriGeometryEnvelope" ) )
     return QgsWkbTypes::Polygon;
   // Unsupported (either by qgis, or format unspecified by the specification)
@@ -109,7 +105,7 @@ QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString &esriGe
   return QgsWkbTypes::Unknown;
 }
 
-static std::unique_ptr< QgsPoint > parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsPoint > QgsArcGisRestUtils::parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType )
 {
   int nCoords = coordList.size();
   if ( nCoords < 2 )
@@ -124,7 +120,7 @@ static std::unique_ptr< QgsPoint > parsePoint( const QVariantList &coordList, Qg
   return qgis::make_unique< QgsPoint >( pointType, x, y, z, m );
 }
 
-static std::unique_ptr< QgsCircularString > parseCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPoint &startPoint )
+std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::parseCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPoint &startPoint )
 {
   const QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
   if ( coordsList.isEmpty() )
@@ -145,7 +141,7 @@ static std::unique_ptr< QgsCircularString > parseCircularString( const QVariantM
   return curve;
 }
 
-static std::unique_ptr< QgsCompoundCurve > parseCompoundCurve( const QVariantList &curvesList, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::parseCompoundCurve( const QVariantList &curvesList, QgsWkbTypes::Type pointType )
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
   std::unique_ptr< QgsCompoundCurve > compoundCurve = qgis::make_unique< QgsCompoundCurve >();
@@ -186,7 +182,7 @@ static std::unique_ptr< QgsCompoundCurve > parseCompoundCurve( const QVariantLis
   return compoundCurve;
 }
 
-static std::unique_ptr< QgsPoint > parseEsriGeometryPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsPoint > QgsArcGisRestUtils::parseEsriGeometryPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"x" : <x>, "y" : <y>, "z" : <z>, "m" : <m>}
   bool xok = false, yok = false;
@@ -199,12 +195,13 @@ static std::unique_ptr< QgsPoint > parseEsriGeometryPoint( const QVariantMap &ge
   return qgis::make_unique< QgsPoint >( pointType, x, y, z, m );
 }
 
-static std::unique_ptr< QgsMultiPoint > parseEsriGeometryMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::parseEsriGeometryMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
   const QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
 
   std::unique_ptr< QgsMultiPoint > multiPoint = qgis::make_unique< QgsMultiPoint >();
+  multiPoint->reserve( coordsList.size() );
   for ( const QVariant &coordData : coordsList )
   {
     const QVariantList coordList = coordData.toList();
@@ -230,7 +227,7 @@ static std::unique_ptr< QgsMultiPoint > parseEsriGeometryMultiPoint( const QVari
   return multiPoint;
 }
 
-static std::unique_ptr< QgsMultiCurve > parseEsriGeometryPolyline( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::parseEsriGeometryPolyline( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curvePaths": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList pathsList;
@@ -241,6 +238,7 @@ static std::unique_ptr< QgsMultiCurve > parseEsriGeometryPolyline( const QVarian
   if ( pathsList.isEmpty() )
     return nullptr;
   std::unique_ptr< QgsMultiCurve > multiCurve = qgis::make_unique< QgsMultiCurve >();
+  multiCurve->reserve( pathsList.size() );
   for ( const QVariant &pathData : qgis::as_const( pathsList ) )
   {
     std::unique_ptr< QgsCompoundCurve > curve = parseCompoundCurve( pathData.toList(), pointType );
@@ -253,7 +251,7 @@ static std::unique_ptr< QgsMultiCurve > parseEsriGeometryPolyline( const QVarian
   return multiCurve;
 }
 
-static std::unique_ptr< QgsCurvePolygon > parseEsriGeometryPolygon( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::parseEsriGeometryPolygon( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curveRings": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList ringsList;
@@ -263,26 +261,57 @@ static std::unique_ptr< QgsCurvePolygon > parseEsriGeometryPolygon( const QVaria
     ringsList = geometryData[QStringLiteral( "ringPaths" )].toList();
   if ( ringsList.isEmpty() )
     return nullptr;
-  std::unique_ptr< QgsCurvePolygon > polygon = qgis::make_unique< QgsCurvePolygon >();
-  std::unique_ptr< QgsCompoundCurve > ext = parseCompoundCurve( ringsList.front().toList(), pointType );
-  if ( !ext )
-  {
-    return nullptr;
-  }
-  polygon->setExteriorRing( ext.release() );
-  for ( int i = 1, n = ringsList.size(); i < n; ++i )
+
+  QList< QgsCompoundCurve * > curves;
+  for ( int i = 0, n = ringsList.size(); i < n; ++i )
   {
     std::unique_ptr< QgsCompoundCurve > curve = parseCompoundCurve( ringsList[i].toList(), pointType );
     if ( !curve )
     {
-      return nullptr;
+      continue;
     }
-    polygon->addInteriorRing( curve.release() );
+    curves.append( curve.release() );
   }
-  return polygon;
+  if ( curves.count() == 0 )
+    return nullptr;
+
+  std::sort( curves.begin(), curves.end(), []( const QgsCompoundCurve * a, const QgsCompoundCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
+  std::unique_ptr< QgsMultiSurface > result = qgis::make_unique< QgsMultiSurface >();
+  result->reserve( curves.size() );
+  while ( !curves.isEmpty() )
+  {
+    QgsCompoundCurve *exterior = curves.takeFirst();
+    QgsCurvePolygon *newPolygon = new QgsCurvePolygon();
+    newPolygon->setExteriorRing( exterior );
+    std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( newPolygon ) );
+    engine->prepareGeometry();
+
+    QMutableListIterator< QgsCompoundCurve * > it( curves );
+    while ( it.hasNext() )
+    {
+      QgsCompoundCurve *curve = it.next();
+      QgsRectangle boundingBox = newPolygon->boundingBox();
+      if ( boundingBox.intersects( curve->boundingBox() ) )
+      {
+        QgsPoint point = curve->startPoint();
+        if ( engine->contains( &point ) )
+        {
+          newPolygon->addInteriorRing( curve );
+          it.remove();
+          engine.reset( QgsGeometry::createGeometryEngine( newPolygon ) );
+          engine->prepareGeometry();
+        }
+      }
+    }
+    result->addGeometry( newPolygon );
+  }
+  if ( result->numGeometries() == 0 )
+    return nullptr;
+
+  return result;
 }
 
-static std::unique_ptr< QgsPolygon > parseEsriEnvelope( const QVariantMap &geometryData )
+std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::parseEsriEnvelope( const QVariantMap &geometryData )
 {
   // {"xmin" : -109.55, "ymin" : 25.76, "xmax" : -86.39, "ymax" : 49.94}
   bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
@@ -362,28 +391,28 @@ QgsCoordinateReferenceSystem QgsArcGisRestUtils::parseSpatialReference( const QV
 }
 
 
-QVariantMap QgsArcGisRestUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText )
+QVariantMap QgsArcGisRestUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer?f=json
   QUrl queryUrl( baseurl );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText );
+  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
 }
 
-QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText )
+QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1?f=json
   QUrl queryUrl( layerurl );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText );
+  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
 }
 
-QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QString &authcfg, const QString &objectIdFieldName, QString &errorTitle, QString &errorText, const QgsRectangle &bbox )
+QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, const QgsRectangle &bbox )
 {
-  // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=objectid%3Dobjectid&returnIdsOnly=true&f=json
+  // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "%1=%1" ).arg( objectIdFieldName ) );
+  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
   queryUrl.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   if ( !bbox.isNull() )
   {
@@ -393,14 +422,14 @@ QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QSt
     queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
     queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   }
-  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText );
+  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
 }
 
 QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
     bool fetchGeometry, const QStringList &fetchAttributes,
     bool fetchM, bool fetchZ,
     const QgsRectangle &filterRect,
-    QString &errorTitle, QString &errorText, QgsFeedback *feedback )
+    QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
 {
   QStringList ids;
   for ( int id : objectIds )
@@ -413,17 +442,16 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QStri
   QString wkid = crs.indexOf( QLatin1String( ":" ) ) >= 0 ? crs.split( ':' )[1] : QString();
   queryUrl.addQueryItem( QStringLiteral( "inSR" ), wkid );
   queryUrl.addQueryItem( QStringLiteral( "outSR" ), wkid );
-  QString outFields = fetchAttributes.join( QStringLiteral( "," ) );
-  if ( fetchGeometry )
-  {
-    queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "true" ) );
-    queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
-  }
+
+  queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), fetchGeometry ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+
+  QString outFields;
+  if ( fetchAttributes.isEmpty() )
+    outFields = QStringLiteral( "*" );
   else
-  {
-    queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "false" ) );
-    queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
-  }
+    outFields = fetchAttributes.join( ',' );
+  queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
+
   queryUrl.addQueryItem( QStringLiteral( "returnM" ), fetchM ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   queryUrl.addQueryItem( QStringLiteral( "returnZ" ), fetchZ ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   if ( !filterRect.isNull() )
@@ -434,21 +462,21 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QStri
     queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
     queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   }
-  return queryServiceJSON( queryUrl,  authcfg, errorTitle, errorText, feedback );
+  return queryServiceJSON( queryUrl,  authcfg, errorTitle, errorText, requestHeaders, feedback );
 }
 
-QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, QgsFeedback *feedback )
+QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
 {
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "%1=%1" ).arg( objectIdField ) );
+  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
   queryUrl.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   queryUrl.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
                          .arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 )
                          .arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
   queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
   queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
-  const QVariantMap objectIdData = queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, feedback );
+  const QVariantMap objectIdData = queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback );
 
   if ( objectIdData.isEmpty() )
   {
@@ -465,64 +493,42 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
   return ids;
 }
 
-QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
+QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback, QString *contentType )
 {
-  QEventLoop loop;
   QUrl url = parseUrl( u );
 
   QNetworkRequest request( url );
-
-  if ( !authcfg.isEmpty() )
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
+  for ( auto it = requestHeaders.constBegin(); it != requestHeaders.constEnd(); ++it )
   {
-    QgsApplication::authManager()->updateNetworkRequest( request, authcfg );
+    request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
   }
 
-  QNetworkReply *reply = nullptr;
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( authcfg );
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
 
-  // Request data, handling redirects
-  while ( true )
+  if ( feedback && feedback->isCanceled() )
+    return QByteArray();
+
+  // Handle network errors
+  if ( error != QgsBlockingNetworkRequest::NoError )
   {
-    reply = nam->get( request );
-    QObject::connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
-    if ( feedback )
-    {
-      QObject::connect( feedback, &QgsFeedback::canceled, reply, &QNetworkReply::abort );
-    }
-
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-    reply->deleteLater();
-
-    if ( feedback && feedback->isCanceled() )
-      return QByteArray();
-
-    // Handle network errors
-    if ( reply->error() != QNetworkReply::NoError )
-    {
-      QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( reply->errorString() ) );
-      errorTitle = QStringLiteral( "Network error" );
-      errorText = reply->errorString();
-      return QByteArray();
-    }
-
-    // Handle HTTP redirects
-    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( redirect.isNull() )
-    {
-      break;
-    }
-
-    QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
-    request.setUrl( redirect.toUrl() );
+    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    errorTitle = QStringLiteral( "Network error" );
+    errorText = networkRequest.errorMessage();
+    return QByteArray();
   }
-  QByteArray result = reply->readAll();
-  return result;
+
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  if ( contentType )
+    *contentType = content.rawHeader( "Content-Type" );
+  return content.content();
 }
 
-QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
+QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
 {
-  QByteArray reply = queryService( url, authcfg, errorTitle, errorText, feedback );
+  QByteArray reply = queryService( url, authcfg, errorTitle, errorText, requestHeaders, feedback );
   if ( !errorTitle.isEmpty() )
   {
     return QVariantMap();
@@ -571,13 +577,12 @@ std::unique_ptr<QgsSymbol> QgsArcGisRestUtils::parseEsriSymbolJson( const QVaria
   }
   else if ( type == QLatin1String( "esriPFS" ) )
   {
-    // picture fill - not supported
-    return nullptr;
+    return parseEsriPictureFillSymbolJson( symbolData );
   }
   else if ( type == QLatin1String( "esriPMS" ) )
   {
-    // picture marker - not supported
-    return nullptr;
+    // picture marker
+    return parseEsriPictureMarkerSymbolJson( symbolData );
   }
   else if ( type == QLatin1String( "esriTS" ) )
   {
@@ -628,7 +633,52 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriFillSymbolJson( cons
   return symbol;
 }
 
-QgsSimpleMarkerSymbolLayerBase::Shape parseEsriMarkerShape( const QString &style )
+std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJson( const QVariantMap &symbolData )
+{
+  bool ok = false;
+
+  double widthInPixels = symbolData.value( QStringLiteral( "width" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+
+  const double xScale = symbolData.value( QStringLiteral( "xscale" ) ).toDouble( &ok );
+  if ( !qgsDoubleNear( xScale, 0.0 ) )
+    widthInPixels *= xScale;
+
+  const double angleCCW = symbolData.value( QStringLiteral( "angle" ) ).toDouble( &ok );
+  double angleCW = 0;
+  if ( ok )
+    angleCW = -angleCCW;
+
+  const double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  const double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  QString symbolPath( symbolData.value( QStringLiteral( "imageData" ) ).toString() );
+  symbolPath.prepend( QLatin1String( "base64:" ) );
+
+  QgsSymbolLayerList layers;
+  std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = qgis::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
+  fillLayer->setWidth( widthInPixels );
+  fillLayer->setAngle( angleCW );
+  fillLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  fillLayer->setOffset( QPointF( xOffset, yOffset ) );
+  fillLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  layers.append( fillLayer.release() );
+
+  const QVariantMap outlineData = symbolData.value( QStringLiteral( "outline" ) ).toMap();
+  QColor lineColor = parseEsriColorJson( outlineData.value( QStringLiteral( "color" ) ) );
+  Qt::PenStyle penStyle = parseEsriLineStyle( outlineData.value( QStringLiteral( "style" ) ).toString() );
+  double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
+
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
+  lineLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  layers.append( lineLayer.release() );
+
+  std::unique_ptr< QgsFillSymbol > symbol = qgis::make_unique< QgsFillSymbol >( layers );
+  return symbol;
+}
+
+QgsSimpleMarkerSymbolLayerBase::Shape QgsArcGisRestUtils::parseEsriMarkerShape( const QString &style )
 {
   if ( style == QLatin1String( "esriSMSCircle" ) )
     return QgsSimpleMarkerSymbolLayerBase::Circle;
@@ -682,6 +732,180 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   return symbol;
 }
 
+std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData )
+{
+  bool ok = false;
+  const double widthInPixels = symbolData.value( QStringLiteral( "width" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+  const double heightInPixels = symbolData.value( QStringLiteral( "height" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+
+  const double angleCCW = symbolData.value( QStringLiteral( "angle" ) ).toDouble( &ok );
+  double angleCW = 0;
+  if ( ok )
+    angleCW = -angleCCW;
+
+  const double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  const double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  //const QString contentType = symbolData.value( QStringLiteral( "contentType" ) ).toString();
+
+  QString symbolPath( symbolData.value( QStringLiteral( "imageData" ) ).toString() );
+  symbolPath.prepend( QLatin1String( "base64:" ) );
+
+  QgsSymbolLayerList layers;
+  std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = qgis::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, QgsSymbol::ScaleArea );
+  markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
+
+  // only change the default aspect ratio if the server height setting requires this
+  if ( !qgsDoubleNear( static_cast< double >( heightInPixels ) / widthInPixels, markerLayer->defaultAspectRatio() ) )
+    markerLayer->setFixedAspectRatio( static_cast< double >( heightInPixels ) / widthInPixels );
+
+  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  layers.append( markerLayer.release() );
+
+  std::unique_ptr< QgsMarkerSymbol > symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
+  return symbol;
+}
+
+QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::parseEsriLabeling( const QVariantList &labelingData )
+{
+  if ( labelingData.empty() )
+    return nullptr;
+
+  QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings(), 0, 0, QString(), QString(), false );
+  root->setActive( true );
+
+  int i = 1;
+  for ( const QVariant &lbl : labelingData )
+  {
+    const QVariantMap labeling = lbl.toMap();
+
+    QgsPalLayerSettings *settings = new QgsPalLayerSettings();
+    QgsTextFormat format;
+
+    const QString placement = labeling.value( QStringLiteral( "labelPlacement" ) ).toString();
+    if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAbove;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelow;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantOver;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelowLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantRight;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementAboveAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementAboveStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementAboveAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::AboveLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementBelowAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementBelowStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementBelowAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::BelowLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementCenterAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementCenterStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementCenterAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::OnLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerPolygonPlacementAlwaysHorizontal" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Horizontal;
+    }
+
+    const double minScale = labeling.value( QStringLiteral( "minScale" ) ).toDouble();
+    const double maxScale = labeling.value( QStringLiteral( "maxScale" ) ).toDouble();
+
+    QVariantMap symbol = labeling.value( QStringLiteral( "symbol" ) ).toMap();
+    format.setColor( parseEsriColorJson( symbol.value( QStringLiteral( "color" ) ) ) );
+    const double haloSize = symbol.value( QStringLiteral( "haloSize" ) ).toDouble();
+    if ( !qgsDoubleNear( haloSize, 0.0 ) )
+    {
+      QgsTextBufferSettings buffer;
+      buffer.setEnabled( true );
+      buffer.setSize( haloSize );
+      buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
+      buffer.setColor( parseEsriColorJson( symbol.value( QStringLiteral( "haloColor" ) ) ) );
+      format.setBuffer( buffer );
+    }
+
+    const QString fontFamily = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
+    const QString fontStyle = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "style" ) ).toString();
+    const QString fontWeight = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "weight" ) ).toString();
+    const int fontSize = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "size" ) ).toInt();
+    QFont font( fontFamily, fontSize );
+    font.setStyleName( fontStyle );
+    font.setWeight( fontWeight == QLatin1String( "bold" ) ? QFont::Bold : QFont::Normal );
+
+    format.setFont( font );
+    format.setSize( fontSize );
+    format.setSizeUnit( QgsUnitTypes::RenderPoints );
+
+    settings->setFormat( format );
+
+    QString where = labeling.value( QStringLiteral( "where" ) ).toString();
+    QgsExpression exp( where );
+    // If the where clause isn't parsed as valid, don't use its
+    if ( !exp.isValid() )
+      where.clear();
+
+    settings->fieldName = parseEsriLabelingExpression( labeling.value( QStringLiteral( "labelExpression" ) ).toString() );
+    settings->isExpression = true;
+
+    QgsRuleBasedLabeling::Rule *child = new QgsRuleBasedLabeling::Rule( settings, maxScale, minScale, where, QObject::tr( "ASF label %1" ).arg( i++ ), false );
+    child->setActive( true );
+    root->appendChild( child );
+  }
+
+  return new QgsRuleBasedLabeling( root );
+}
+
 QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &rendererData )
 {
   const QString type = rendererData.value( QStringLiteral( "type" ) ).toString();
@@ -696,8 +920,27 @@ QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &re
   }
   else if ( type == QLatin1String( "uniqueValue" ) )
   {
-    const QString attribute = rendererData.value( QStringLiteral( "field1" ) ).toString();
-    // TODO - handle field2, field3
+    const QString field1 = rendererData.value( QStringLiteral( "field1" ) ).toString();
+    const QString field2 = rendererData.value( QStringLiteral( "field2" ) ).toString();
+    const QString field3 = rendererData.value( QStringLiteral( "field3" ) ).toString();
+    QString attribute;
+    if ( !field2.isEmpty() || !field3.isEmpty() )
+    {
+      const QString delimiter = rendererData.value( QStringLiteral( "fieldDelimiter" ) ).toString();
+      if ( !field3.isEmpty() )
+      {
+        attribute = QStringLiteral( "concat(\"%1\",'%2',\"%3\",'%4',\"%5\")" ).arg( field1, delimiter, field2, delimiter, field3 );
+      }
+      else
+      {
+        attribute = QStringLiteral( "concat(\"%1\",'%2',\"%3\")" ).arg( field1, delimiter, field2 );
+      }
+    }
+    else
+    {
+      attribute = field1;
+    }
+
     const QVariantList categories = rendererData.value( QStringLiteral( "uniqueValueInfos" ) ).toList();
     QgsCategoryList categoryList;
     for ( const QVariant &category : categories )
@@ -739,6 +982,24 @@ QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &re
     return nullptr;
   }
   return nullptr;
+}
+
+QString QgsArcGisRestUtils::parseEsriLabelingExpression( const QString &string )
+{
+  QString expression = string;
+
+  // Replace a few ArcGIS token to QGIS equivalents
+  expression = expression.replace( QRegularExpression( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)CONCAT(\\s|$)" ), QStringLiteral( "\\4||\\5" ) );
+  expression = expression.replace( QRegularExpression( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)NEWLINE(\\s|$)" ), QStringLiteral( "\\4'\\n'\\5" ) );
+
+  // ArcGIS's double quotes are single quotes in QGIS
+  expression = expression.replace( QRegularExpression( "\"(.*?(?<!\\\\))\"" ), QStringLiteral( "'\\1'" ) );
+  expression = expression.replace( QRegularExpression( "\\\\\"" ), QStringLiteral( "\"" ) );
+
+  // ArcGIS's square brakets are double quotes in QGIS
+  expression = expression.replace( QRegularExpression( "\\[([^]]*)\\]" ), QStringLiteral( "\"\\1\"" ) );
+
+  return expression;
 }
 
 QColor QgsArcGisRestUtils::parseEsriColorJson( const QVariant &colorData )
@@ -868,10 +1129,24 @@ QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
     mReply->deleteLater();
 }
 
-void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allowCache )
+void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache, const QgsStringMap &headers )
 {
   mResult = result;
   QNetworkRequest request( url );
+
+  for ( auto it = headers.constBegin(); it != headers.constEnd(); ++it )
+  {
+    request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+  }
+
+  if ( !authCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, authCfg ) )
+  {
+    const QString error = tr( "network request update failed for authentication config" );
+    emit failed( QStringLiteral( "Network" ), error );
+    return;
+  }
+
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
   if ( allowCache )
   {
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
@@ -897,6 +1172,7 @@ void QgsArcGisAsyncQuery::handleReply()
   if ( !redirect.isNull() )
   {
     QNetworkRequest request = mReply->request();
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     request.setUrl( redirect.toUrl() );
     mReply = QgsNetworkAccessManager::instance()->get( request );
@@ -911,8 +1187,10 @@ void QgsArcGisAsyncQuery::handleReply()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject *parent )
+QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsStringMap &requestHeaders, QObject *parent )
   : QObject( parent )
+  , mAuthCfg( authcfg )
+  , mRequestHeaders( requestHeaders )
 {
 }
 
@@ -924,6 +1202,21 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
   for ( int i = 0, n = urls.size(); i < n; ++i )
   {
     QNetworkRequest request( urls[i] );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
+    QgsSetRequestInitiatorId( request, QString::number( i ) );
+
+    for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
+    {
+      request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+    }
+    if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+    {
+      const QString error = tr( "network request update failed for authentication config" );
+      mErrors.append( error );
+      QgsMessageLog::logMessage( error, tr( "Network" ) );
+      continue;
+    }
+
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
     if ( allowCache )
     {
@@ -953,6 +1246,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   {
     // Handle HTTP redirects
     QNetworkRequest request = reply->request();
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     request.setUrl( redirect.toUrl() );
     reply = QgsNetworkAccessManager::instance()->get( request );
@@ -973,38 +1267,103 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   }
 }
 
-void QgsArcGisRestUtils::visitFolderItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+void QgsArcGisRestUtils::adjustBaseUrl( QString &baseUrl, const QString name )
 {
-  const QStringList folderList = serviceData.value( QStringLiteral( "folders" ) ).toStringList();
-  for ( const QString &folder : folderList )
+  QStringList parts = name.split( '/' );
+  QString checkString;
+  for ( const QString &part : parts )
   {
-    visitor( folder, baseUrl + ( baseUrl.endsWith( '/' ) ? QString() : QString( '/' ) ) + folder );
+    if ( !checkString.isEmpty() )
+      checkString += QString( '/' );
+
+    checkString += part;
+    if ( baseUrl.indexOf( QRegularExpression( checkString.replace( '/', QStringLiteral( "\\/" ) ) + QStringLiteral( "\\/?$" ) ) ) > -1 )
+    {
+      baseUrl = baseUrl.left( baseUrl.length() - checkString.length() - 1 );
+      break;
+    }
   }
 }
 
-void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl,
-    const QString &parentName )
+void QgsArcGisRestUtils::visitFolderItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
 {
+  QString base( baseUrl );
+  bool baseChecked = false;
+  if ( !base.endsWith( '/' ) )
+    base += QStringLiteral( "/" );
+
+  const QStringList folderList = serviceData.value( QStringLiteral( "folders" ) ).toStringList();
+  for ( const QString &folder : folderList )
+  {
+    if ( !baseChecked )
+    {
+      adjustBaseUrl( base, folder );
+      baseChecked = true;
+    }
+    visitor( folder, base + folder );
+  }
+}
+
+void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter )
+{
+  QString base( baseUrl );
+  bool baseChecked = false;
+  if ( !base.endsWith( '/' ) )
+    base += QStringLiteral( "/" );
+
   const QVariantList serviceList = serviceData.value( QStringLiteral( "services" ) ).toList();
   for ( const QVariant &service : serviceList )
   {
     const QVariantMap serviceMap = service.toMap();
     const QString serviceType = serviceMap.value( QStringLiteral( "type" ) ).toString();
-    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
+    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "ImageServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
+      continue;
+
+    // If the requested service type is raster, do not show vector-only services
+    if ( serviceType == QLatin1String( "FeatureServer" ) && filter == QgsArcGisRestUtils::Raster )
       continue;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
-    QString displayName = serviceName;
-    if ( displayName.startsWith( parentName + '/' ) )
-      displayName = displayName.mid( parentName.length() + 1 );
+    QString displayName = serviceName.split( '/' ).last();
+    if ( !baseChecked )
+    {
+      adjustBaseUrl( base, serviceName );
+      baseChecked = true;
+    }
 
-    visitor( displayName, baseUrl + ( baseUrl.endsWith( '/' ) ? QString() : QString( '/' ) ) + serviceName + '/' + serviceType );
+    visitor( displayName, base + serviceName + '/' + serviceType );
   }
 }
 
-void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl )
+void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter )
 {
   const QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
+
+  QString format = QStringLiteral( "jpg" );
+  bool found = false;
+  const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
+  for ( const QString &encoding : supportedImageFormatTypes )
+  {
+    for ( const QByteArray &fmt : supportedFormats )
+    {
+      if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
+      {
+        format = encoding;
+        found = true;
+        break;
+      }
+    }
+    if ( found )
+      break;
+  }
+  const QStringList capabilities = serviceData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
+
+  // If the requested layer type is vector, do not show raster-only layers (i.e. non query-able layers)
+  const bool serviceMayHaveQueryCapability = capabilities.contains( QStringLiteral( "Query" ) ) ||
+      serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
+  if ( filter == QgsArcGisRestUtils::Vector && !serviceMayHaveQueryCapability )
+    return;
 
   const QVariantList layerInfoList = serviceData.value( QStringLiteral( "layers" ) ).toList();
   for ( const QVariant &layerInfo : layerInfoList )
@@ -1017,11 +1376,27 @@ void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString
 
     if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
     {
-      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString() );
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString(), format );
     }
     else
     {
-      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid );
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid, format );
     }
+  }
+
+  // Add root MapServer as raster layer when multiple layers are listed
+  if ( filter != QgsArcGisRestUtils::Vector && layerInfoList.count() > 1 && serviceData.contains( QStringLiteral( "supportedImageFormatTypes" ) ) )
+  {
+    const QString name = QStringLiteral( "(%1)" ).arg( QObject::tr( "All layers" ) );
+    const QString description = serviceData.value( QStringLiteral( "Comments" ) ).toString();
+    visitor( 0, 0, name, description, parentUrl, false, authid, format );
+  }
+
+  // Add root ImageServer as layer
+  if ( serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+  {
+    const QString name = serviceData.value( QStringLiteral( "name" ) ).toString();
+    const QString description = serviceData.value( QStringLiteral( "description" ) ).toString();
+    visitor( 0, 0, name, description, parentUrl, false, authid, format );
   }
 }

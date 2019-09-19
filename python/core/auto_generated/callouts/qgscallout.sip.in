@@ -1,0 +1,599 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/callouts/qgscallout.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsCallout
+{
+%Docstring
+Abstract base class for callout renderers.
+
+Implementations of QgsCallout are responsible for performing the actual render of
+callouts, including determining the desired shape of the callout and using any
+relevant symbology elements to render them.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscallout.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == "simple" && dynamic_cast<QgsSimpleLineCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsSimpleLineCallout;
+    }
+    else if ( sipCpp->type() == "manhattan" && dynamic_cast<QgsManhattanLineCallout *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsManhattanLineCallout;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    enum Property
+    {
+      MinimumCalloutLength,
+      OffsetFromAnchor,
+      OffsetFromLabel,
+      DrawCalloutToAllParts,
+      AnchorPointPosition,
+    };
+
+    enum DrawOrder
+    {
+      OrderBelowAllLabels,
+      OrderBelowIndividualLabels,
+    };
+
+    enum AnchorPoint
+    {
+      PoleOfInaccessibility,
+      PointOnExterior,
+      PointOnSurface,
+      Centroid,
+    };
+
+    QgsCallout();
+%Docstring
+Constructor for QgsCallout.
+%End
+    virtual ~QgsCallout();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns a unique string representing the callout type.
+%End
+
+    virtual QgsCallout *clone() const = 0 /Factory/;
+%Docstring
+Duplicates a callout by creating a deep copy of the callout.
+
+Caller takes ownership of the returned object.
+%End
+
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
+%Docstring
+Returns the properties describing the callout encoded in a
+string format.
+
+Subclasses must ensure that they include the base class' properties()
+in their returned value.
+
+.. seealso:: :py:func:`readProperties`
+
+.. seealso:: :py:func:`saveProperties`
+%End
+
+    virtual void readProperties( const QVariantMap &props, const QgsReadWriteContext &context );
+%Docstring
+Reads a string map of an callout's properties and restores the callout
+to the state described by the properties map.
+
+Subclasses must ensure that they call the base class' readProperties()
+method.
+
+.. seealso:: :py:func:`properties`
+%End
+
+    virtual bool saveProperties( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Saves the current state of the callout to a DOM ``element``. The default
+behavior is to save the properties string map returned by
+properties().
+
+:return: ``True`` if save was successful
+
+.. seealso:: :py:func:`readProperties`
+%End
+
+    virtual void restoreProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Restores the callout's properties from a DOM element.
+
+The default behavior is the read the DOM contents and call readProperties() on the subclass.
+
+.. seealso:: :py:func:`readProperties`
+%End
+
+    virtual void startRender( QgsRenderContext &context );
+%Docstring
+Prepares the callout for rendering on the specified render ``context``.
+
+.. warning::
+
+   This MUST be called prior to calling render() on the callout, and must always
+   be accompanied by a corresponding call to stopRender().
+
+.. seealso:: :py:func:`stopRender`
+%End
+
+    virtual void stopRender( QgsRenderContext &context );
+%Docstring
+Finalises the callout after a set of rendering operations on the specified render ``context``.
+
+.. warning::
+
+   This MUST be called after to after render() operations on the callout, and must always
+   be accompanied by a corresponding prior call to startRender().
+
+.. seealso:: :py:func:`startRender`
+%End
+
+    virtual QSet< QString > referencedFields( const QgsRenderContext &context ) const;
+%Docstring
+Returns the set of attributes referenced by the callout. This includes attributes
+required by any data defined properties associated with the callout.
+
+.. warning::
+
+   This must only be called after a corresponding call to startRender() with
+   the same render ``context``.
+%End
+
+    virtual DrawOrder drawOrder() const;
+%Docstring
+Returns the desired drawing order (stacking) to use while rendering this callout.
+
+The default order is QgsCallout.OrderBelowIndividualLabels.
+%End
+
+    struct QgsCalloutContext
+    {
+      bool allFeaturePartsLabeled;
+    };
+
+    void render( QgsRenderContext &context, QRectF rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
+%Docstring
+Renders the callout onto the specified render ``context``.
+
+The ``rect`` argument gives the desired size and position of the body of the callout (e.g. the
+actual label geometry). The ``angle`` argument specifies the rotation of the callout body
+(in degrees clockwise from horizontal). It is assumed that angle rotation specified via ``angle``
+is applied around the center of ``rect``.
+
+The ``anchor`` argument dictates the geometry which the callout should connect to. Depending on the
+callout subclass and anchor geometry type, the actual shape of the rendered callout may vary.
+E.g. a subclass may prefer to attach to the centroid of the ``anchor``, while another subclass may
+prefer to attach to the closest point on ``anchor`` instead.
+
+Both ``rect`` and ``anchor`` must be specified in painter coordinates (i.e. pixels).
+
+The ``calloutContext`` argument is used to specify additional contextual information about
+how a callout is being rendered.
+
+.. warning::
+
+   A prior call to startRender() must have been made before calling this method, and
+   after all render() operations are complete a call to stopRender() must be made.
+%End
+
+    bool enabled() const;
+%Docstring
+Returns ``True`` if the the callout is enabled.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the callout is ``enabled``.
+
+.. seealso:: :py:func:`enabled`
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the callout's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the callout's property ``collection``, used for data defined overrides.
+
+Any existing properties will be discarded.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
+%End
+
+    static QgsPropertiesDefinition propertyDefinitions();
+%Docstring
+Returns the definitions for data defined properties available for use in callouts.
+%End
+
+    AnchorPoint anchorPoint() const;
+%Docstring
+Returns the feature's anchor point position.
+
+.. seealso:: :py:func:`setAnchorPoint`
+%End
+
+    void setAnchorPoint( AnchorPoint anchor );
+%Docstring
+Sets the feature's ``anchor`` point position.
+
+.. seealso:: :py:func:`anchorPoint`
+%End
+
+    static QString encodeAnchorPoint( AnchorPoint anchor );
+%Docstring
+Encodes an ``anchor`` point to its string representation.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeAnchorPoint`
+%End
+
+    static QgsCallout::AnchorPoint decodeAnchorPoint( const QString &name, bool *ok = 0 );
+%Docstring
+Attempts to decode a string representation of an anchor point name to the corresponding
+anchor point.
+
+:param name: encoded anchor point name
+:param ok: if specified, will be set to ``True`` if the anchor point was successfully decoded
+
+:return: decoded name
+
+.. seealso:: :py:func:`encodeAnchorPoint`
+%End
+
+  protected:
+
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
+%Docstring
+Performs the actual rendering of the callout implementation onto the specified render ``context``.
+
+The ``bodyBoundingBox`` argument gives the desired size and position of the body of the callout (e.g. the
+actual label geometry). The ``angle`` argument specifies the rotation of the callout body
+(in degrees clockwise from horizontal). It is assumed that angle rotation specified via ``angle``
+is applied around the center of ``rect``.
+
+The ``anchor`` argument dictates the geometry which the callout should connect to. Depending on the
+callout subclass and anchor geometry type, the actual shape of the rendered callout may vary.
+E.g. a subclass may prefer to attach to the centroid of the ``anchor``, while another subclass may
+prefer to attach to the closest point on ``anchor`` instead.
+
+Both ``rect`` and ``anchor`` are specified in painter coordinates (i.e. pixels).
+
+The ``calloutContext`` argument is used to specify additional contextual information about
+how a callout is being rendered.
+%End
+
+};
+
+class QgsSimpleLineCallout : QgsCallout
+{
+%Docstring
+A simple direct line callout style.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscallout.h"
+%End
+  public:
+
+    QgsSimpleLineCallout();
+    ~QgsSimpleLineCallout();
+
+
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+%Docstring
+Creates a new QgsSimpleLineCallout, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+QgsSimpleLineCallout.properties() ).
+%End
+
+    virtual QString type() const;
+
+    virtual QgsSimpleLineCallout *clone() const;
+
+    virtual QVariantMap properties( const QgsReadWriteContext &context ) const;
+
+    virtual void readProperties( const QVariantMap &props, const QgsReadWriteContext &context );
+
+    virtual void startRender( QgsRenderContext &context );
+
+    virtual void stopRender( QgsRenderContext &context );
+
+    virtual QSet< QString > referencedFields( const QgsRenderContext &context ) const;
+
+
+    QgsLineSymbol *lineSymbol();
+%Docstring
+Returns the line symbol used to render the callout line.
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setLineSymbol`
+%End
+
+    void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the callout line. Ownership of ``symbol`` is
+transferred to the callout.
+
+.. seealso:: :py:func:`lineSymbol`
+%End
+
+    double minimumLength() const;
+%Docstring
+Returns the minimum length of callout lines. Units are specified through minimumLengthUnits().
+
+.. seealso:: :py:func:`setMinimumLength`
+
+.. seealso:: :py:func:`minimumLengthUnit`
+%End
+
+    void setMinimumLength( double length );
+%Docstring
+Sets the minimum ``length`` of callout lines. Units are specified through setMinimumLengthUnit().
+
+.. seealso:: :py:func:`minimumLength`
+
+.. seealso:: :py:func:`setMinimumLengthUnit`
+%End
+
+    void setMinimumLengthUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the minimum length of callout lines.
+
+.. seealso:: :py:func:`minimumLengthUnit`
+
+.. seealso:: :py:func:`setMinimumLength`
+%End
+
+    QgsUnitTypes::RenderUnit minimumLengthUnit() const;
+%Docstring
+Returns the units for the minimum length of callout lines.
+
+.. seealso:: :py:func:`setMinimumLengthUnit`
+
+.. seealso:: :py:func:`minimumLength`
+%End
+
+    void setMinimumLengthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the minimum callout length.
+
+.. seealso:: :py:func:`minimumLengthMapUnitScale`
+
+.. seealso:: :py:func:`setMinimumLengthUnit`
+
+.. seealso:: :py:func:`setMinimumLength`
+%End
+
+    const QgsMapUnitScale &minimumLengthMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum callout length.
+
+.. seealso:: :py:func:`setMinimumLengthMapUnitScale`
+
+.. seealso:: :py:func:`minimumLengthUnit`
+
+.. seealso:: :py:func:`minimumLength`
+%End
+
+
+    double offsetFromAnchor() const;
+%Docstring
+Returns the offset distance from the anchor point at which to start the line. Units are specified through offsetFromAnchorUnit().
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+
+.. seealso:: :py:func:`offsetFromAnchorUnit`
+%End
+
+    void setOffsetFromAnchor( double distance );
+%Docstring
+Sets the offset ``distance`` from the anchor point at which to start the line. Units are specified through setOffsetFromAnchorUnit().
+
+.. seealso:: :py:func:`offsetFromAnchor`
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+%End
+
+    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the offset from anchor distance.
+
+.. seealso:: :py:func:`offsetFromAnchor`
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+%End
+
+    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const;
+%Docstring
+Returns the units for the offset from anchor point.
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+
+.. seealso:: :py:func:`offsetFromAnchor`
+%End
+
+    void setOffsetFromAnchorMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the offset from anchor.
+
+.. seealso:: :py:func:`offsetFromAnchorMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetFromAnchorUnit`
+
+.. seealso:: :py:func:`setOffsetFromAnchor`
+%End
+
+    const QgsMapUnitScale &offsetFromAnchorMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the offset from anchor.
+
+.. seealso:: :py:func:`setOffsetFromAnchorMapUnitScale`
+
+.. seealso:: :py:func:`offsetFromAnchorUnit`
+
+.. seealso:: :py:func:`offsetFromAnchor`
+%End
+
+    double offsetFromLabel() const;
+%Docstring
+Returns the offset distance from label area at which to end the line. Units are specified through offsetFromLabelUnit().
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+
+.. seealso:: :py:func:`offsetFromLabelUnit`
+%End
+
+    void setOffsetFromLabel( double distance );
+%Docstring
+Sets the offset ``distance`` from label area at which to end the line. Units are specified through setOffsetFromLabelUnit().
+
+.. seealso:: :py:func:`offsetFromLabel`
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+%End
+
+    void setOffsetFromLabelUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the offset from label area distance.
+
+.. seealso:: :py:func:`offsetFromLabel`
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+%End
+
+    QgsUnitTypes::RenderUnit offsetFromLabelUnit() const;
+%Docstring
+Returns the units for the offset from label area.
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+
+.. seealso:: :py:func:`offsetFromLabel`
+%End
+
+    void setOffsetFromLabelMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the offset from label area.
+
+.. seealso:: :py:func:`offsetFromLabelMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetFromLabelUnit`
+
+.. seealso:: :py:func:`setOffsetFromLabel`
+%End
+
+    const QgsMapUnitScale &offsetFromLabelMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum callout length.
+
+.. seealso:: :py:func:`setOffsetFromLabelMapUnitScale`
+
+.. seealso:: :py:func:`offsetFromLabelUnit`
+
+.. seealso:: :py:func:`offsetFromLabel`
+%End
+
+    bool drawCalloutToAllParts() const;
+%Docstring
+Returns ``True`` if callout lines should be drawn to all feature parts.
+
+.. seealso:: :py:func:`setDrawCalloutToAllParts`
+%End
+
+    void setDrawCalloutToAllParts( bool drawToAllParts );
+%Docstring
+Sets whether callout lines should be drawn to all feature parts.
+
+.. seealso:: :py:func:`drawCalloutToAllParts`
+%End
+
+  protected:
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
+
+
+  private:
+    QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
+    QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & );
+};
+
+
+class QgsManhattanLineCallout : QgsSimpleLineCallout
+{
+%Docstring
+Draws straight (right angled) lines as callouts.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscallout.h"
+%End
+  public:
+
+    QgsManhattanLineCallout();
+
+
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+%Docstring
+Creates a new QgsManhattanLineCallout, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+QgsManhattanLineCallout.properties() ).
+%End
+
+    virtual QString type() const;
+
+    virtual QgsManhattanLineCallout *clone() const;
+
+
+  protected:
+    virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
+
+
+  private:
+    QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
+    QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & );
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/callouts/qgscallout.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

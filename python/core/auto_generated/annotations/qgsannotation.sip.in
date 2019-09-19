@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAnnotation : QObject
 {
 %Docstring
@@ -56,7 +57,7 @@ reflecting the annotation's current state.
 
     bool isVisible() const;
 %Docstring
-Returns true if the annotation is visible and should be rendered.
+Returns ``True`` if the annotation is visible and should be rendered.
 
 .. seealso:: :py:func:`setVisible`
 %End
@@ -70,8 +71,8 @@ Sets whether the annotation is visible and should be rendered.
 
     bool hasFixedMapPosition() const;
 %Docstring
-Returns true if the annotation is attached to a fixed map position, or
-false if the annotation uses a position relative to the current map
+Returns ``True`` if the annotation is attached to a fixed map position, or
+``False`` if the annotation uses a position relative to the current map
 extent.
 
 .. seealso:: :py:func:`setHasFixedMapPosition`
@@ -142,34 +143,80 @@ the relative percentage for the position compared to the map width and height.
 .. seealso:: :py:func:`relativePosition`
 %End
 
-    void setFrameOffsetFromReferencePoint( QPointF offset );
+ void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated/;
 %Docstring
-Sets the annotation's frame's offset from the mapPosition() reference point.
+Sets the annotation's frame's offset (in pixels) from the mapPosition() reference point.
 
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
+
+.. deprecated:: use setFrameOffsetFromReferencePointMm() instead
 %End
 
-    QPointF frameOffsetFromReferencePoint() const;
+ QPointF frameOffsetFromReferencePoint() const /Deprecated/;
 %Docstring
-Returns the annotation's frame's offset from the mapPosition() reference point.
+Returns the annotation's frame's offset (in pixels) from the mapPosition() reference point.
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
+
+.. deprecated:: use frameOffsetFromReferencePointMm() instead
 %End
 
-    void setFrameSize( QSizeF size );
+    void setFrameOffsetFromReferencePointMm( QPointF offset );
 %Docstring
-Sets the size of the annotation's frame (the main area in which
+Sets the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+
+.. seealso:: :py:func:`frameOffsetFromReferencePointMm`
+
+.. versionadded:: 3.4.8
+%End
+
+    QPointF frameOffsetFromReferencePointMm() const;
+%Docstring
+Returns the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+
+.. seealso:: :py:func:`setFrameOffsetFromReferencePointMm`
+
+.. versionadded:: 3.4.8
+%End
+
+ void setFrameSize( QSizeF size ) /Deprecated/;
+%Docstring
+Sets the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
 
 .. seealso:: :py:func:`frameSize`
+
+.. deprecated:: use setFrameSizeMm() instead
 %End
 
-    QSizeF frameSize() const;
+ QSizeF frameSize() const /Deprecated/;
 %Docstring
-Returns the size of the annotation's frame (the main area in which
+Returns the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
 
 .. seealso:: :py:func:`setFrameSize`
+
+.. deprecated:: use frameSizeMm() instead
+%End
+
+    void setFrameSizeMm( QSizeF size );
+%Docstring
+Sets the size (in millimeters) of the annotation's frame (the main area in which
+the annotation's content is drawn).
+
+.. seealso:: :py:func:`frameSizeMm`
+
+.. versionadded:: 3.4.8
+%End
+
+    QSizeF frameSizeMm() const;
+%Docstring
+Returns the size (in millimeters) of the annotation's frame (the main area in which
+the annotation's content is drawn).
+
+.. seealso:: :py:func:`setFrameSizeMm`
+
+.. versionadded:: 3.4.8
 %End
 
     void setContentsMargin( const QgsMargins &margins );
@@ -274,6 +321,17 @@ feature if none has been set.
 Sets the feature associated with the annotation.
 
 .. seealso:: :py:func:`associatedFeature`
+%End
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+within the annotation.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
 %End
 
   signals:

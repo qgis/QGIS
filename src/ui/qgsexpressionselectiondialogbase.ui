@@ -85,22 +85,22 @@
   </layout>
   <action name="mActionSelect">
    <property name="text">
-    <string>Select features</string>
+    <string>Select Features</string>
    </property>
   </action>
   <action name="mActionAddToSelection">
    <property name="text">
-    <string>Add to current selection</string>
+    <string>Add to Current Selection</string>
    </property>
   </action>
   <action name="mActionRemoveFromSelection">
    <property name="text">
-    <string>Remove from current selection</string>
+    <string>Remove from Current Selection</string>
    </property>
   </action>
   <action name="mActionSelectIntersect">
    <property name="text">
-    <string>Filter current selection</string>
+    <string>Filter Current Selection</string>
    </property>
   </action>
  </widget>

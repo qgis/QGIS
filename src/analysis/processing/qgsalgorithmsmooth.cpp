@@ -156,6 +156,11 @@ QgsFeatureList QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, Qg
   return QgsFeatureList() << f;
 }
 
+QgsProcessingFeatureSource::Flag QgsSmoothAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 ///@endcond
 
 

@@ -9,18 +9,25 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/providers/wms
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
   ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
+  ${CMAKE_SOURCE_DIR}/src/providers/mdal
+  ${CMAKE_SOURCE_DIR}/src/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/external
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${MDAL_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
@@ -64,26 +71,36 @@ SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
   COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
 )
 
-ADD_QGIS_TEST(arcgisrestutilstest testqgsarcgisrestutils.cpp)
-TARGET_LINK_LIBRARIES(qgis_arcgisrestutilstest arcgisfeatureserverprovider_a)
+IF (NOT FORCE_STATIC_PROVIDERS)
+  ADD_QGIS_TEST(arcgisrestutilstest testqgsarcgisrestutils.cpp)
+  TARGET_LINK_LIBRARIES(qgis_arcgisrestutilstest arcgisfeatureserverprovider_a)
+ENDIF (NOT FORCE_STATIC_PROVIDERS)
 
-ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
-
-ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
+IF(NOT MSVC)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+ENDIF(NOT MSVC)
 
 ADD_QGIS_TEST(wmscapabilitiestest
               testqgswmscapabilities.cpp)
-TARGET_LINK_LIBRARIES(qgis_wmscapabilitiestest wmsprovider_a)
+TARGET_LINK_LIBRARIES(qgis_wmscapabilitiestest wmsprovider_a qgis_core)
+
+ADD_QGIS_TEST(wmsccapabilitiestest
+              testqgswmsccapabilities.cpp)
+TARGET_LINK_LIBRARIES(qgis_wmsccapabilitiestest wmsprovider_a qgis_core)
 
 ADD_QGIS_TEST(wmsprovidertest
               testqgswmsprovider.cpp)
-TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a)
+TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a qgis_core)
 
-ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
-TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a)
+IF (NOT FORCE_STATIC_PROVIDERS)
+  ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
+  TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a)
 
-ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
-TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a)
+  ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
+  TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a)
+
+  ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
+ENDIF (NOT FORCE_STATIC_PROVIDERS)
 
 #############################################################
 # WCS public servers test:

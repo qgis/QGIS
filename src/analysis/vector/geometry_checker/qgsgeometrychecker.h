@@ -29,7 +29,7 @@
 #include "qgsfeatureid.h"
 
 typedef qint64 QgsFeatureId;
-struct QgsGeometryCheckContext;
+class QgsGeometryCheckContext;
 class QgsGeometryCheck;
 class QgsGeometryCheckError;
 class QgsMapLayer;
@@ -37,6 +37,13 @@ class QgsVectorLayer;
 class QgsFeaturePool;
 class QMutex;
 
+/**
+ * \ingroup analysis
+ *
+ * Manages and runs a set of geometry checks.
+ *
+ * \since QGIS 3.4
+ */
 class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
 {
     Q_OBJECT

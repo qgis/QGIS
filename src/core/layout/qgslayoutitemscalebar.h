@@ -17,7 +17,7 @@
 #define QGSLAYOUTITEMSCALEBAR_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "scalebar/qgsscalebarsettings.h"
 #include "scalebar/qgsscalebarrenderer.h"
@@ -341,6 +341,34 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void setBoxContentSpace( double space );
 
     /**
+     * Returns the vertical placement of text labels.
+     * \see setLabelVerticalPlacement()
+     * \since QGIS 3.10
+     */
+    QgsScaleBarSettings::LabelVerticalPlacement labelVerticalPlacement() const { return mSettings.labelVerticalPlacement(); }
+
+    /**
+     * Sets the vertical \a placement of text labels.
+     * \see labelVerticalPlacement()
+     * \since QGIS 3.10
+     */
+    void setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement placement );
+
+    /**
+     * Returns the horizontal placement of text labels.
+     * \see setLabelHorizontalPlacement()
+     * \since QGIS 3.10
+     */
+    QgsScaleBarSettings::LabelHorizontalPlacement labelHorizontalPlacement() const { return mSettings.labelHorizontalPlacement(); }
+
+    /**
+     * Sets the horizontal \a placement of text labels.
+     * \see labelHorizontalPlacement()
+     * \since QGIS 3.10
+     */
+    void setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement placement );
+
+    /**
      * Returns the scalebar alignment.
      * \see setAlignment()
      */
@@ -438,6 +466,9 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
     void finalizeRestoreFromXml() override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+    ExportLayerBehavior exportLayerBehavior() const override;
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;

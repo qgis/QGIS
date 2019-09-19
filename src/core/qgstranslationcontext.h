@@ -18,7 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+#include <QList>
+#include <QString>
+
 
 class QgsProject;
 

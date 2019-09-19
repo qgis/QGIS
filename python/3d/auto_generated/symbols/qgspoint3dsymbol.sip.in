@@ -29,7 +29,12 @@ class QgsPoint3DSymbol : QgsAbstract3DSymbol
   public:
     QgsPoint3DSymbol();
 %Docstring
-Constructor for QgsPoint3DSymbol.
+Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
+%End
+
+    QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
+%Docstring
+Copy Constructor for QgsPoint3DSymbol
 %End
 
     virtual QString type() const;
@@ -69,6 +74,7 @@ Sets material used for shading of the symbol
       Plane,
       ExtrudedText,
       Model,
+      Billboard,
     };
 
     static Shape shapeFromString( const QString &shape );
@@ -98,6 +104,15 @@ Returns a key-value dictionary of point shape properties
 Sets a key-value dictionary of point shape properties
 %End
 
+    QgsMarkerSymbol *billboardSymbol() const;
+%Docstring
+Returns a symbol for billboard
+%End
+    void setBillboardSymbol( QgsMarkerSymbol *symbol );
+%Docstring
+Set symbol for billboard and the ownership is transferred
+%End
+
     QMatrix4x4 transform() const;
 %Docstring
 Returns transform for individual objects represented by the symbol
@@ -107,6 +122,13 @@ Returns transform for individual objects represented by the symbol
 Sets transform for individual objects represented by the symbol
 %End
 
+    QMatrix4x4 billboardTransform() const;
+%Docstring
+Returns transform for billboards
+%End
+
+  private:
+    QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
 };
 
 

@@ -104,7 +104,7 @@ class QgsLocator : QObject
 
     void cancelWithoutBlocking();
 %Docstring
- Triggers cancelation of any current running query without blocking. The query may
+ Triggers cancellation of any current running query without blocking. The query may
  take some time to cancel after calling this.
 .. seealso:: cancel()
 %End
@@ -126,7 +126,7 @@ class QgsLocator : QObject
     void finished();
 %Docstring
  Emitted when locator has finished a query, either as a result
- of successful completion or early cancelation.
+ of successful completion or early cancellation.
 %End
 
 };

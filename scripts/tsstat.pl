@@ -45,7 +45,7 @@ my $translators= {
 	'cs' => 'Jan Helebrant, Martin Landa, Peter Antolik, Martin Dzurov, Stanislav Horáček',
 	'da' => 'Jacob Overgaard Madsen, Bo Victor Thomsen',
 	'de' => 'Jürgen E. Fischer, Stephan Holl, Otto Dassau, Werner Macho',
-	'es' => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo',
+	'es' => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo, Fran Raga',
 	'el' => 'Theodoros Vakkas, Ioannis Tsimpiris, Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
 	'eo' => 'Augustin Roche, Nikolay Korotkiy',
 	'et' => 'Veiko Viil',
@@ -90,7 +90,7 @@ my $translators= {
 	'th' => 'Man Chao',
 	'tl' => 'Kathrina Gregana',
 	'tr' => 'Osman Yalçın YILMAZ, Omur Saygin',
-	'uk' => 'Alexander Bruy, Svitlana Shulik (IT-Transit LLC), Alesya Shushova (IT-Transit LLC)',
+	'uk' => 'Alexander Bruy, Daria Svidzinska, Svitlana Shulik, Alesya Shushova',
 	'vi' => 'Phùng Văn Doanh, Bùi Hữu Mạnh, Nguyễn Văn Thanh, Nguyễn Hữu Phúc, Cao Minh Tu',
 	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie, Dennis Raylin Chen',
 	'zh-Hans' => 'Calvin Ngei, Lisashen',
@@ -106,9 +106,11 @@ for my $i (<i18n/qgis_*.ts>) {
 
 	my $charset = "";
 	my $lc = $langcode;
+	my $svg = $langcode;
 	if( $langcode =~ /(.*)\@latin/ ) {
 		$charset = " (latin)";
 		$langcode = $1;
+		$svg = $1;
 	}
 	if( $langcode =~ /(.*)\-Hans/ ) {
                 $charset = " simplified";
@@ -156,6 +158,7 @@ for my $i (<i18n/qgis_*.ts>) {
 
 	push @lang, {
 		code=>$langcode,
+		svg=>$svg,
 		origcode=>$lc,
 		name=>$name, n=>$n,
 		translations=>$translations,
@@ -188,7 +191,7 @@ for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
 		. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
 		. '<td>%s</td>'
 		. '</tr>',
-		$l->{code}, $l->{name},
+		$l->{svg}, $l->{name},
 		$l->{finished}, $l->{unfinished}, $l->{untranslated},
 		$l->{percentage}, $l->{percentage},
 		$l->{translator};

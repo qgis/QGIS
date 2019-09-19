@@ -23,7 +23,6 @@ class QString;
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <list>
 #include <QVector>
 
@@ -396,7 +395,7 @@ class QgsOgcUtilsExpressionFromFilter
 
     /**
      * Returns an expression node from a WFS filter embedded in a document
-     * element. A null pointer is returned when an error happened.
+     * element. NULLPTR is returned when an error happened.
      * \param element The WFS filter
      */
     QgsExpressionNode *nodeFromOgcFilter( const QDomElement &element );

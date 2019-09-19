@@ -61,7 +61,7 @@ QgsDropMZValuesAlgorithm *QgsDropMZValuesAlgorithm::createInstance() const
 
 bool QgsDropMZValuesAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 
@@ -88,8 +88,8 @@ QgsProcessingFeatureSource::Flag QgsDropMZValuesAlgorithm::sourceFlags() const
 
 bool QgsDropMZValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mDropM = parameterAsBool( parameters, QStringLiteral( "DROP_M_VALUES" ), context );
-  mDropZ = parameterAsBool( parameters, QStringLiteral( "DROP_Z_VALUES" ), context );
+  mDropM = parameterAsBoolean( parameters, QStringLiteral( "DROP_M_VALUES" ), context );
+  mDropZ = parameterAsBoolean( parameters, QStringLiteral( "DROP_Z_VALUES" ), context );
   return true;
 }
 

@@ -33,6 +33,7 @@
 #include "qgssettings.h"
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 
 #include "qgslayout.h"
 #include "qgslayoutitemlabel.h"
@@ -84,9 +85,7 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *p
   , mLoadInQgis( false )
 {
   setupUi( this );
-
-  QgsSettings s;
-  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/Window/geometry" ) ).toByteArray() );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   QWidget *centralWidget = this->centralWidget();
   mCentralLayout = new QGridLayout( centralWidget );
@@ -116,7 +115,8 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *p
 
   connect( mIface, &QgisInterface::currentThemeChanged, this, &QgsGeorefPluginGui::updateIconTheme );
 
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() )
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() )
   {
     dockThisWindow( true );
   }
@@ -145,9 +145,6 @@ void QgsGeorefPluginGui::dockThisWindow( bool dock )
 
 QgsGeorefPluginGui::~QgsGeorefPluginGui()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Plugin-GeoReferencer/Window/geometry" ), saveGeometry() );
-
   clearGCPData();
 
   removeOldLayer();
@@ -341,7 +338,7 @@ bool QgsGeorefPluginGui::getTransformSettings()
   }
 
   d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
-                          mModifiedRasterFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
+                          mModifiedRasterFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
   mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
@@ -567,7 +564,7 @@ void QgsGeorefPluginGui::movePoint( QPoint p )
 
 void QgsGeorefPluginGui::releasePoint( QPoint p )
 {
-  Q_UNUSED( p );
+  Q_UNUSED( p )
   // Get Map Sender
   if ( sender() == mToolMovePoint )
   {
@@ -690,7 +687,7 @@ void QgsGeorefPluginGui::localHistogramStretch()
 // Info slots
 void QgsGeorefPluginGui::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
 }
 
 // Comfort slots
@@ -1121,7 +1118,7 @@ void QgsGeorefPluginGui::removeOldLayer()
 
 void QgsGeorefPluginGui::updateIconTheme( const QString &theme )
 {
-  Q_UNUSED( theme );
+  Q_UNUSED( theme )
   // File actions
   mActionOpenRaster->setIcon( getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
   mActionStartGeoref->setIcon( getThemeIcon( QStringLiteral( "/mActionStartGeoref.png" ) ) );
@@ -1250,7 +1247,7 @@ bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
 
     QgsPointXY mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
     QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-    if ( ls.count() == 5 )
+    if ( ls.count() == 5 || ls.count() == 8 )
     {
       bool enable = ls.at( 4 ).toInt();
       addPoint( pixelCoords, mapCoords, enable, false );
@@ -1280,15 +1277,19 @@ void QgsGeorefPluginGui::saveGCPs()
   if ( pointFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream points( &pointFile );
-    points << "mapX,mapY,pixelX,pixelY,enable" << endl;
+    points << "mapX,mapY,pixelX,pixelY,enable,dX,dY,residual" << endl;
     Q_FOREACH ( QgsGeorefDataPoint *pt, mPoints )
     {
-      points << QStringLiteral( "%1,%2,%3,%4,%5" )
+      points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
              .arg( qgsDoubleToString( pt->mapCoords().x() ),
                    qgsDoubleToString( pt->mapCoords().y() ),
                    qgsDoubleToString( pt->pixelCoords().x() ),
                    qgsDoubleToString( pt->pixelCoords().y() ) )
-             .arg( pt->isEnabled() ) << endl;
+             .arg( pt->isEnabled() )
+             .arg( qgsDoubleToString( pt->residual().x() ),
+                   qgsDoubleToString( pt->residual().y() ),
+                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) )
+             << endl;
     }
 
     mInitialPoints = mPoints;
@@ -1410,6 +1411,11 @@ bool QgsGeorefPluginGui::georeference()
       {
         writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
       }
+      if ( !mSaveGcp.isEmpty() )
+      {
+        mGCPpointsFileName = mModifiedRasterFileName + QLatin1String( ".points" );
+        saveGCPs();
+      }
       return true;
     }
   }
@@ -1494,7 +1500,7 @@ bool QgsGeorefPluginGui::calculateMeanError( double &error ) const
 
 bool QgsGeorefPluginGui::writePDFMapFile( const QString &fileName, const QgsGeorefTransform &transform )
 {
-  Q_UNUSED( transform );
+  Q_UNUSED( transform )
   if ( !mCanvas )
   {
     return false;

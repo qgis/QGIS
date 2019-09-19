@@ -182,6 +182,14 @@ QSet<QString> QgsGeometryGeneratorSymbolLayer::usedAttributes( const QgsRenderCo
          + mExpression->referencedColumns();
 }
 
+bool QgsGeometryGeneratorSymbolLayer::hasDataDefinedProperties() const
+{
+  // we treat geometry generator layers like they have data defined properties,
+  // since the WHOLE layer is based on expressions and requires the full expression
+  // context
+  return true;
+}
+
 bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
 {
   Q_UNUSED( symbol )

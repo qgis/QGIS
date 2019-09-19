@@ -31,6 +31,9 @@ extern "C"
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
+#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <grass/gprojects.h>
 #include <grass/vector.h>
 #include <grass/raster.h>
@@ -199,7 +202,8 @@ QgsGrassVector::QgsGrassVector( const QgsGrassObject &grassObject, QObject *pare
 
 bool QgsGrassVector::openHead()
 {
-  Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorLayer *layer : constMLayers )
   {
     layer->deleteLater();
   }
@@ -347,7 +351,8 @@ int QgsGrassVector::typeCount( int type ) const
 int QgsGrassVector::maxLayerNumber() const
 {
   int max = 0;
-  Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorLayer *layer : constMLayers )
   {
     max = std::max( max, layer->number() );
   }

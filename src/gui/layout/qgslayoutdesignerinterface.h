@@ -66,6 +66,13 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
   public:
 
+    //! Standard designer tools which are always available for use
+    enum StandardTool
+    {
+      ToolMoveItemContent, //!< Move item content tool
+      ToolMoveItemNodes, //!< Move item nodes tool
+    };
+
     /**
      * Constructor for QgsLayoutDesignerInterface.
      */
@@ -127,7 +134,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Shows the configuration widget for the specified layout \a item.
      *
-     * If \a bringPanelToFront is true, then the item properties panel will be automatically
+     * If \a bringPanelToFront is TRUE, then the item properties panel will be automatically
      * shown and raised to the top of the interface.
      *
      * \since QGIS 3.4
@@ -328,6 +335,13 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      * \since QGIS 3.4
      */
     virtual void removeDockWidget( QDockWidget *dock ) = 0;
+
+    /**
+     * Activates a standard layout designer \a tool.
+     *
+     * \since QGIS 3.6
+     */
+    virtual void activateTool( StandardTool tool ) = 0;
 
   public slots:
 

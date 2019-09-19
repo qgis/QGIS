@@ -102,7 +102,7 @@ class CORE_EXPORT QgsRasterTransparency
      * by the stored transparency value.
      *
      * \param value the needle to search for in the transparency hay stack
-     * \param globalTransparency the overal transparency level for the layer
+     * \param globalTransparency the overall transparency level for the layer
     */
     int alphaValue( double value, int globalTransparency = 255 ) const;
 
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsRasterTransparency
      * \param redValue the red portion of the needle to search for in the transparency hay stack
      * \param greenValue  the green portion of the needle to search for in the transparency hay stack
      * \param blueValue the green portion of the needle to search for in the transparency hay stack
-     * \param globalTransparency the overal transparency level for the layer
+     * \param globalTransparency the overall transparency level for the layer
     */
     int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const;
 

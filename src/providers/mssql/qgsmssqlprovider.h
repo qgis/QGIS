@@ -29,6 +29,8 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
+#include "qgsprovidermetadata.h"
+
 class QgsFeature;
 class QgsField;
 class QFile;
@@ -50,7 +52,11 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsMssqlProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+
+    static const QString MSSQL_PROVIDER_KEY;
+    static const QString MSSQL_PROVIDER_DESCRIPTION;
+
+    explicit QgsMssqlProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsMssqlProvider() override;
 
@@ -134,7 +140,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
 
     QgsCoordinateReferenceSystem crs() const override;
@@ -219,6 +225,30 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     friend class QgsMssqlFeatureSource;
 
     static int sConnectionId;
+};
+
+class QgsMssqlProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsMssqlProviderMetadata();
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                    const QString &styleName, const QString &styleDescription,
+                    const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+
+    QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options ) override;
+    QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    virtual QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
 
 #endif // QGSMSSQLPROVIDER_H

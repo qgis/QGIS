@@ -23,6 +23,7 @@
 #include "qgstaskmanager.h"
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "qgsstringutils.h"
+#include "qgsapplication.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -95,7 +96,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   splitterChanged( 0, 0 );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingAlgorithmDialogBase::accept );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
 
   // Rename OK button to Run
   mButtonRun = mButtonBox->button( QDialogButtonBox::Ok );
@@ -119,9 +120,11 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskTriggered, this, &QgsProcessingAlgorithmDialogBase::taskTriggered );
 }
 
+QgsProcessingAlgorithmDialogBase::~QgsProcessingAlgorithmDialogBase() = default;
+
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
-  mAlgorithm = algorithm;
+  mAlgorithm.reset( algorithm );
   QString title;
   if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
   {
@@ -156,7 +159,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
 
 QgsProcessingAlgorithm *QgsProcessingAlgorithmDialogBase::algorithm()
 {
-  return mAlgorithm;
+  return mAlgorithm.get();
 }
 
 void QgsProcessingAlgorithmDialogBase::setMainWidget( QWidget *widget )
@@ -258,10 +261,6 @@ void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
 void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
 
-}
-
-void QgsProcessingAlgorithmDialogBase::accept()
-{
 }
 
 void QgsProcessingAlgorithmDialogBase::openHelp()
@@ -376,7 +375,7 @@ void QgsProcessingAlgorithmDialogBase::pushCommandInfo( const QString &command )
 
 void QgsProcessingAlgorithmDialogBase::pushDebugInfo( const QString &message )
 {
-  txtLog->append( QStringLiteral( "<span style=\"color:blue\">%1</span>" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
+  txtLog->append( QStringLiteral( "<span style=\"color:#777\">%1</span>" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
@@ -451,6 +450,12 @@ void QgsProcessingAlgorithmDialogBase::copyLogToClipboard()
 
 void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
 {
+  if ( !mHelpCollapsed )
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "/Processing/dialogBaseSplitter" ), splitter->saveState() );
+  }
+
   QDialog::closeEvent( e );
 
   if ( !mAlgorithmTask )
@@ -460,6 +465,11 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
     // to retrieve results and execution status).
     deleteLater();
   }
+}
+
+void QgsProcessingAlgorithmDialogBase::runAlgorithm()
+{
+
 }
 
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )

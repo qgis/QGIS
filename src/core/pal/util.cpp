@@ -106,6 +106,7 @@ QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_g
       case GEOS_MULTIPOINT:
       case GEOS_MULTILINESTRING:
       case GEOS_MULTIPOLYGON:
+      case GEOS_GEOMETRYCOLLECTION:
         nGeom = GEOSGetNumGeometries_r( geosctxt, geom );
         for ( i = 0; i < nGeom; i++ )
         {

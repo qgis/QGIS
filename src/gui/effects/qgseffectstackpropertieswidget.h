@@ -195,6 +195,10 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
 
     QgsEffectStackPropertiesWidget *mPropertiesWidget = nullptr;
 
+  private slots:
+
+    void showHelp();
+
 };
 
 

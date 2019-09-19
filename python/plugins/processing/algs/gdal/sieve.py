@@ -21,19 +21,17 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools.system import isWindows
@@ -49,6 +47,7 @@ class sieve(GdalAlgorithm):
     EIGHT_CONNECTEDNESS = 'EIGHT_CONNECTEDNESS'
     NO_MASK = 'NO_MASK'
     MASK_LAYER = 'MASK_LAYER'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -70,6 +69,13 @@ class sieve(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,
                                                             self.tr('Validity mask'),
                                                             optional=True))
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Sieved')))
 
@@ -96,21 +102,26 @@ class sieve(GdalAlgorithm):
         arguments.append('-st')
         arguments.append(str(self.parameterAsInt(parameters, self.THRESHOLD, context)))
 
-        if self.parameterAsBool(parameters, self.EIGHT_CONNECTEDNESS, context):
+        if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):
             arguments.append('-8')
         else:
             arguments.append('-4')
 
-        if self.parameterAsBool(parameters, self.NO_MASK, context):
+        if self.parameterAsBoolean(parameters, self.NO_MASK, context):
             arguments.append('-nomask')
 
-        mask = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
         if mask:
             arguments.append('-mask {}'.format(mask.source()))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:
@@ -119,11 +130,11 @@ class sieve(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(out)
 
-        commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = ["python3", "-m", self.commandName()]
         else:
-            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

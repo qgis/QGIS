@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 
 class QgsMapCanvas;
+class QgsAdvancedDigitizingDockWidget;
 
 /**
  * \ingroup gui
@@ -133,6 +134,22 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
 
     /**
+     * Sets the associated CAD dock widget, \a cadDockWidget, (e.g. to be used in map tools).
+     * \note Unstable API. This method is unstable API and may be modified or removed at any time.
+     * \see cadDockWidget()
+     * \since QGIS 3.10
+     */
+    void setCadDockWidget( QgsAdvancedDigitizingDockWidget *cadDockWidget );
+
+    /**
+     * Returns the associated CAD dock widget (e.g. to be used in map tools).
+     * \note Unstable API. This method is unstable API and may be modified or removed at any time.
+     * \see setCadDockWidget()
+     * \since QGIS 3.10
+     */
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget; }
+
+    /**
      * Sets the associated vector layer tools.
      * \param vlTools vector layer tools
      * \see vectorLayerTools()
@@ -189,7 +206,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline void setFormMode( FormMode mode ) { mFormMode = mode; }
 
     /**
-     * Returns true if the attribute editor should permit use of custom UI forms.
+     * Returns TRUE if the attribute editor should permit use of custom UI forms.
      * \see setAllowCustomUi()
      * \since QGIS 2.16
      */
@@ -197,7 +214,7 @@ class GUI_EXPORT QgsAttributeEditorContext
 
     /**
      * Sets whether the attribute editor should permit use of custom UI forms.
-     * \param allow set to true to allow custom UI forms, or false to disable them and use default generated
+     * \param allow set to TRUE to allow custom UI forms, or FALSE to disable them and use default generated
      * QGIS forms
      * \see allowCustomUi()
      * \since QGIS 2.16
@@ -247,6 +264,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode = Undefined;
@@ -258,4 +276,3 @@ class GUI_EXPORT QgsAttributeEditorContext
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H
-

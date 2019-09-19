@@ -49,10 +49,13 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
     /**
      * Constructor for QgsLayoutItemAbstractMetadata with the specified class \a type
      * and \a visibleName.
+     *
+     * The optional \a visiblePluralName argument can be used to specify a plural variant of the item type.
      */
-    QgsLayoutItemAbstractMetadata( int type, const QString &visibleName )
+    QgsLayoutItemAbstractMetadata( int type, const QString &visibleName, const QString &visiblePluralName = QString() )
       : mType( type )
       , mVisibleName( visibleName )
+      , mVisibleNamePlural( visiblePluralName.isEmpty() ? visibleName : visiblePluralName )
     {}
 
     virtual ~QgsLayoutItemAbstractMetadata() = default;
@@ -64,8 +67,15 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
 
     /**
      * Returns a translated, user visible name for the layout item class.
+     * \see visiblePluralName()
      */
     QString visibleName() const { return mVisibleName; }
+
+    /**
+     * Returns a translated, user visible name for plurals of the layout item class (e.g. "Labels" for a "Label" item).
+     * \since QGIS 3.10
+     */
+    QString visiblePluralName() const { return mVisibleNamePlural; }
 
     /**
      * Creates a layout item of this class for a specified \a layout.
@@ -74,22 +84,23 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
 
     /**
      * Resolve paths in the item's \a properties (if there are any paths).
-     * When \a saving is true, paths are converted from absolute to relative,
-     * when \a saving is false, paths are converted from relative to absolute.
+     * When \a saving is TRUE, paths are converted from absolute to relative,
+     * when \a saving is FALSE, paths are converted from relative to absolute.
      * This ensures that paths in project files can be relative, but in item
      * instances the paths are always absolute.
      */
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
     {
-      Q_UNUSED( properties );
-      Q_UNUSED( pathResolver );
-      Q_UNUSED( saving );
+      Q_UNUSED( properties )
+      Q_UNUSED( pathResolver )
+      Q_UNUSED( saving )
     }
 
   private:
 
     int mType = -1;
     QString mVisibleName;
+    QString mVisibleNamePlural;
 };
 
 //! Layout item creation function
@@ -113,11 +124,13 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
     /**
      * Constructor for QgsLayoutItemMetadata with the specified class \a type
      * and \a visibleName, and function pointers for the various item creation functions.
+     *
+     * The \a visiblePluralName argument is used to specify a plural variant of the item type.
      */
-    QgsLayoutItemMetadata( int type, const QString &visibleName,
+    QgsLayoutItemMetadata( int type, const QString &visibleName, const QString &visiblePluralName,
                            const QgsLayoutItemCreateFunc &pfCreate,
                            const QgsLayoutItemPathResolverFunc &pfPathResolver = nullptr )
-      : QgsLayoutItemAbstractMetadata( type, visibleName )
+      : QgsLayoutItemAbstractMetadata( type, visibleName, visiblePluralName )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
     {}
@@ -195,16 +208,16 @@ class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
 
     /**
      * Resolve paths in the item's \a properties (if there are any paths).
-     * When \a saving is true, paths are converted from absolute to relative,
-     * when \a saving is false, paths are converted from relative to absolute.
+     * When \a saving is TRUE, paths are converted from absolute to relative,
+     * when \a saving is FALSE, paths are converted from relative to absolute.
      * This ensures that paths in project files can be relative, but in item
      * instances the paths are always absolute.
      */
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
     {
-      Q_UNUSED( properties );
-      Q_UNUSED( pathResolver );
-      Q_UNUSED( saving );
+      Q_UNUSED( properties )
+      Q_UNUSED( pathResolver )
+      Q_UNUSED( saving )
     }
 
   private:
@@ -340,7 +353,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
     /**
      * Populates the registry with standard item types. If called on a non-empty registry
-     * then this will have no effect and will return false.
+     * then this will have no effect and will return FALSE.
      */
     bool populate();
 
@@ -350,14 +363,14 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     QgsLayoutItemRegistry &operator=( const QgsLayoutItemRegistry &rh ) = delete;
 
     /**
-     * Returns the metadata for the specified item \a type. Returns nullptr if
+     * Returns the metadata for the specified item \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      * \see multiFrameMetadata()
      */
     QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;
 
     /**
-     * Returns the metadata for the specified multiframe \a type. Returns nullptr if
+     * Returns the metadata for the specified multiframe \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      * \see itemMetadata()
      */

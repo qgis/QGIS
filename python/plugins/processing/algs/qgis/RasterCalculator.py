@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import math
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -127,7 +123,7 @@ class RasterCalculator(QgisAlgorithm):
                 bbox = transform.transformBoundingBox(bbox)
 
         if bbox.isNull() and layers:
-            bbox = QgsProcessingUtils.combineLayerExtents(layers, crs)
+            bbox = QgsProcessingUtils.combineLayerExtents(layers, crs, context)
 
         cellsize = self.parameterAsDouble(parameters, self.CELLSIZE, context)
         if cellsize == 0 and not layers:
@@ -166,10 +162,15 @@ class RasterCalculator(QgisAlgorithm):
                     entry.bandNumber = n + 1
                     entries.append(entry)
 
+        # Append any missing entry from the current project
+        for entry in QgsRasterCalculatorEntry.rasterEntries():
+            if not [e for e in entries if e.ref == entry.ref]:
+                entries.append(entry)
+
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        width = math.floor((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
-        height = math.floor((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
+        width = round((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
+        height = round((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
         driverName = GdalUtils.getFormatShortNameFromFilename(output)
 
         calc = QgsRasterCalculator(expression,
@@ -179,7 +180,8 @@ class RasterCalculator(QgisAlgorithm):
                                    crs,
                                    width,
                                    height,
-                                   entries)
+                                   entries,
+                                   context.transformContext())
 
         res = calc.processCalculation(feedback)
         if res == QgsRasterCalculator.ParserError:
@@ -230,8 +232,8 @@ class RasterCalculator(QgisAlgorithm):
             expContextAlgInputsScope = context.expressionContext().scope(indexOfScope)
 
             # check for the layers that are mapped as input in a model
-            #  to do this check in the latest scope all passed variables
-            # to look for a variable that is a layer or a string filename ç
+            # to do this check in the latest scope all passed variables
+            # to look for a variable that is a layer or a string filename
             # to a layer
             varDescription = None
             for varName in expContextAlgInputsScope.variableNames():
@@ -257,7 +259,7 @@ class RasterCalculator(QgisAlgorithm):
                 # but var in expression is called simply
                 #    'Output' from algorithm 'calc1'
 
-                # get the translatin string to use to parse the description
+                # get the translation string to use to parse the description
                 # HAVE to use the same translated string as in
                 # https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
                 translatedDesc = self.tr("Output '%1' from algorithm '%2'")

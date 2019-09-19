@@ -67,6 +67,8 @@ class TestQgsLayoutAtlas : public QObject
     // test removing coverage layer while atlas is enabled
     void test_remove_layer();
 
+    void context();
+
   private:
     QgsPrintLayout *mLayout = nullptr;
     QgsLayoutItemLabel *mLabel1 = nullptr;
@@ -262,9 +264,9 @@ void TestQgsLayoutAtlas::predefinedscales_render()
   QVector<qreal> scales;
   scales << 1800000.0;
   scales << 5000000.0;
-  mLayout->reportContext().setPredefinedScales( scales );
+  mLayout->renderContext().setPredefinedScales( scales );
   {
-    const QVector<qreal> &setScales = mLayout->reportContext().predefinedScales();
+    const QVector<qreal> &setScales = mLayout->renderContext().predefinedScales();
     for ( int i = 0; i < setScales.size(); i++ )
     {
       QVERIFY( setScales[i] == scales[i] );
@@ -424,6 +426,28 @@ void TestQgsLayoutAtlas::test_remove_layer()
 
   QVERIFY( !mAtlas->enabled() );
   QVERIFY( spyToggled.count() == 1 );
+}
+
+void TestQgsLayoutAtlas::context()
+{
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer&field=labelx:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFeature f;
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  QgsFeature f2;
+  QVERIFY( vl2->dataProvider()->addFeature( f2 ) );
+
+  mAtlas->setCoverageLayer( vl2.get() );
+  mAtlas->setEnabled( true );
+
+  QgsExpressionContext context = mAtlas->createExpressionContext();
+  QVERIFY( context.hasVariable( QStringLiteral( "project_title" ) ) );
+  QVERIFY( context.hasVariable( QStringLiteral( "layout_name" ) ) );
+  QVERIFY( context.hasVariable( QStringLiteral( "atlas_totalfeatures" ) ) );
+  QVERIFY( context.hasVariable( QStringLiteral( "layer_id" ) ) );
+  QCOMPARE( context.fields().at( 1 ).name(), QStringLiteral( "labelx" ) );
+  QVERIFY( context.hasFeature() );
+
+  mAtlas->setCoverageLayer( nullptr );
 }
 
 QGSTEST_MAIN( TestQgsLayoutAtlas )

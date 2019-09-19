@@ -43,6 +43,7 @@ trans.sr = i18n/qgis_sr.ts
 trans.sr@latin = i18n/qgis_sr@latin.ts
 trans.sv = i18n/qgis_sv.ts
 trans.tr = i18n/qgis_tr.ts
+trans.uk = i18n/qgis_uk.ts
 trans.vi = i18n/qgis_vi.ts
 trans.zh-Hans = i18n/qgis_zh-Hans.ts
 trans.zh-Hant = i18n/qgis_zh-Hant.ts

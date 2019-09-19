@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -55,6 +51,7 @@ class contour(GdalAlgorithm):
     IGNORE_NODATA = 'IGNORE_NODATA'
     NODATA = 'NODATA'
     OFFSET = 'OFFSET'
+    EXTRA = 'EXTRA'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -66,6 +63,7 @@ class contour(GdalAlgorithm):
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
                                                        self.tr('Interval between contour lines'),
@@ -105,11 +103,19 @@ class contour(GdalAlgorithm):
         nodata_param.setFlags(offset_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(offset_param)
 
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
+
+        # TODO: remove in QGIS 4
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(
@@ -146,6 +152,7 @@ class contour(GdalAlgorithm):
         offset = self.parameterAsDouble(parameters, self.OFFSET, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         arguments = []
@@ -159,10 +166,10 @@ class contour(GdalAlgorithm):
         arguments.append('-i')
         arguments.append(str(self.parameterAsDouble(parameters, self.INTERVAL, context)))
 
-        if self.parameterAsBool(parameters, self.CREATE_3D, context):
+        if self.parameterAsBoolean(parameters, self.CREATE_3D, context):
             arguments.append('-3d')
 
-        if self.parameterAsBool(parameters, self.IGNORE_NODATA, context):
+        if self.parameterAsBoolean(parameters, self.IGNORE_NODATA, context):
             arguments.append('-inodata')
 
         if nodata is not None:
@@ -171,12 +178,17 @@ class contour(GdalAlgorithm):
         if offset:
             arguments.append('-off {}'.format(offset))
 
+        if outFormat:
+            arguments.append('-f {}'.format(outFormat))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        # TODO: remove in QGIS 4
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.append(options)
-
-        if outFormat:
-            arguments.append('-f {}'.format(outFormat))
 
         arguments.append(inLayer.source())
         arguments.append(output)

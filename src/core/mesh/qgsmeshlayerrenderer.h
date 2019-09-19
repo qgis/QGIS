@@ -29,11 +29,12 @@ class QgsMeshLayer;
 
 #include "qgsmaplayerrenderer.h"
 #include "qgsrasterinterface.h"
-#include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
 #include "qgssymbol.h"
 #include "qgsmeshdataprovider.h"
+
+class QgsRenderContext;
 
 ///@cond PRIVATE
 
@@ -56,18 +57,19 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   // scalar dataset
   QgsMeshDatasetIndex mActiveScalarDatasetIndex;
   QVector<double> mScalarDatasetValues;
-  QVector<bool> mScalarActiveFaceFlagValues;
+  QgsMeshDataBlock mScalarActiveFaceFlagValues;
   bool mScalarDataOnVertices = true;
   double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
   double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
 
   // vector dataset
   QgsMeshDatasetIndex mActiveVectorDatasetIndex;
-  QVector<double> mVectorDatasetValuesX;
-  QVector<double> mVectorDatasetValuesY;
+  QgsMeshDataBlock mVectorDatasetValues;
   QVector<double> mVectorDatasetValuesMag;
   double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
   double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
+  double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
+  double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
   bool mVectorDataOnVertices = true;
 };
 
@@ -99,7 +101,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     void calculateOutputSize();
 
   protected:
-    //! feedback class for cancelation
+    //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;
 
     // copy from mesh layer
@@ -110,17 +112,18 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // copy of the scalar dataset
     QVector<double> mScalarDatasetValues;
-    QVector<bool> mScalarActiveFaceFlagValues;
+    QgsMeshDataBlock mScalarActiveFaceFlagValues;
     bool mScalarDataOnVertices = true;
     double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
     double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
 
     // copy of the vector dataset
-    QVector<double> mVectorDatasetValuesX;
-    QVector<double> mVectorDatasetValuesY;
+    QgsMeshDataBlock mVectorDatasetValues;
     QVector<double> mVectorDatasetValuesMag;
     double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
     double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
+    double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
     bool mVectorDataOnVertices = true;
 
     // rendering context

@@ -1,0 +1,9 @@
+{
+  "name": "is_directory",
+  "type": "function",
+  "description": "Returns true if a path corresponds to a directory.",
+  "arguments": [ {"arg":"path","description":"a file path"}],
+  "examples": [ { "expression":"is_directory('/home/qgis/data/country_boundaries.shp')", "returns":"false"},
+{ "expression":"is_directory('/home/qgis/data/')", "returns":"true"}]
+}
+

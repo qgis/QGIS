@@ -16,9 +16,11 @@
 #define QGSAPPBROWSERPROVIDERS_H
 
 #include "qgis_app.h"
+#include "qgsbookmarkmanager.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgscustomdrophandler.h"
+#include "qgsdataitemguiprovider.h"
 
 /**
  * Custom data item for QLR files.
@@ -42,7 +44,7 @@ class QgsQlrDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -84,7 +86,7 @@ class QgsQptDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -129,7 +131,7 @@ class QgsPyDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -163,6 +165,10 @@ class QgsStyleXmlDataItem : public QgsDataItem
     bool handleDoubleClick() override;
     QList< QAction * > actions( QWidget *parent ) override;
 
+  private:
+
+    static void browseStyle( const QString &xmlPath );
+
 };
 
 /**
@@ -172,7 +178,7 @@ class QgsStyleXmlDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -196,6 +202,7 @@ class QgsStyleXmlDropHandler : public QgsCustomDropHandler
  */
 class APP_EXPORT QgsProjectRootDataItem : public QgsProjectItem
 {
+    Q_OBJECT
   public:
 
     /**
@@ -211,6 +218,7 @@ class APP_EXPORT QgsProjectRootDataItem : public QgsProjectItem
  */
 class APP_EXPORT QgsProjectLayerTreeGroupItem : public QgsDataCollectionItem
 {
+    Q_OBJECT
   public:
 
     /**
@@ -229,8 +237,173 @@ class APP_EXPORT QgsProjectDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    int capabilities() override;
+    int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+/**
+ * Custom data item provider for showing bookmarks within the browser.
+ */
+class APP_EXPORT QgsBookmarksDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    int capabilities() const override;
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+};
+
+class QgsBookmarksItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBookmarksItemGuiProvider() = default;
+
+    QString name() override;
+    bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+    bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+    bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context ) override;
+
+  private:
+
+    void exportBookmarksFromManagers( const QList< const QgsBookmarkManager * > &managers, QgsMessageBar *messageBar, const QString &group = QString() );
+    void importBookmarksToManager( QgsBookmarkManager *manager, QgsMessageBar *messageBar );
+};
+
+
+/**
+ * Contains content of user and project bookmark managers
+*/
+class APP_EXPORT QgsBookmarksItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsBookmarksItem.
+     */
+    QgsBookmarksItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *applicationManager = nullptr, QgsBookmarkManager *projectManager = nullptr );
+
+    QVector<QgsDataItem *> createChildren() override;
+
+    //! Icon for boomark manager container
+    static QIcon iconBookmarks();
+
+    QVariant sortKey() const override;
+
+  private:
+
+    QgsBookmarkManager *mApplicationManager = nullptr;
+    QgsBookmarkManager *mProjectManager = nullptr;
+};
+
+class QgsBookmarkGroupItem;
+class QgsBookmarkItem;
+
+/**
+ * Contains bookmarks content
+*/
+class APP_EXPORT QgsBookmarkManagerItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsBookmarkManagerItem.
+     */
+    QgsBookmarkManagerItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *manager );
+
+    QVector<QgsDataItem *> createChildren() override;
+
+    QgsBookmarkManager *manager() { return mManager; }
+    QgsBookmarkGroupItem *groupItem( const QString &group );
+    QgsBookmarkItem *childItemById( const QString &id );
+
+    //! Icon for bookmark manager
+    static QIcon iconBookmarkManager();
+
+  private:
+
+    QgsBookmarkManager *mManager = nullptr;
+};
+
+
+/**
+ * Contains bookmarks
+*/
+class APP_EXPORT QgsBookmarkGroupItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsBookmarkGroupItem.
+     */
+    QgsBookmarkGroupItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *manager );
+
+    QVector<QgsDataItem *> createChildren() override;
+
+    void addBookmark( const QgsBookmark &bookmark );
+
+    QString group() const { return mGroup; }
+    QgsBookmarkManager *manager() { return mManager; }
+
+    QgsBookmarkItem *childItemById( const QString &id );
+    void removeBookmarkChildById( const QString &id );
+
+    //! Icon for bookmark group
+    static QIcon iconBookmarkGroup();
+
+  private:
+
+    QgsBookmarkManager *mManager = nullptr;
+    QString mGroup;
+};
+
+/**
+ * Bookmark data item
+*/
+class APP_EXPORT QgsBookmarkItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsBookmarkGroupItem.
+     */
+    QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager );
+    QgsBookmarkManager *manager() { return mManager; }
+    QgsBookmark bookmark() const { return mBookmark; }
+    void setBookmark( const QgsBookmark &bookmark );
+
+    //! Icon for bookmark item
+    static QIcon iconBookmark();
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
+
+  private:
+
+    QgsBookmarkManager *mManager = nullptr;
+
+    QgsBookmark mBookmark;
+};
+
+/**
+ * Handles drag and drop of bookmarks files to canvases.
+ */
+class QgsBookmarkDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+
+  public:
+
+    QString customUriProviderKey() const override;
+    bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) override;
+    bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const override;
 };
 
 #endif // QGSAPPBROWSERPROVIDERS_H

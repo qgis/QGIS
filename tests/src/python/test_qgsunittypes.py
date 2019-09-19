@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '03.02.2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -24,6 +22,28 @@ QLocale.setDefault(QLocale.c())
 
 
 class TestQgsUnitTypes(unittest.TestCase):
+
+    def testEncodeDecodeUnitType(self):
+        """Test encoding and decoding unit type"""
+        units = [QgsUnitTypes.TypeDistance,
+                 QgsUnitTypes.TypeArea,
+                 QgsUnitTypes.TypeVolume,
+                 QgsUnitTypes.TypeUnknown]
+
+        for u in units:
+            res, ok = QgsUnitTypes.decodeUnitType(QgsUnitTypes.encodeUnitType(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test decoding bad units
+        res, ok = QgsUnitTypes.decodeUnitType('bad')
+        self.assertFalse(ok)
+        self.assertEqual(res, QgsUnitTypes.TypeUnknown)
+
+        # Test that string is cleaned before decoding
+        res, ok = QgsUnitTypes.decodeUnitType(' volUme  ')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.TypeVolume)
 
     def testDistanceUnitType(self):
         """Test QgsUnitTypes::unitType() """
@@ -177,6 +197,82 @@ class TestQgsUnitTypes(unittest.TestCase):
         res, ok = QgsUnitTypes.stringToAreaUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.AreaSquareMiles).upper()))
         assert ok
         self.assertEqual(res, QgsUnitTypes.AreaSquareMiles)
+
+    def testVolumeUnitType(self):
+        """Test QgsUnitTypes::unitType() for volume units """
+        expected = {QgsUnitTypes.VolumeCubicMeters: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeCubicFeet: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeCubicYards: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeBarrel: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeCubicDecimeter: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeLiters: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeGallonUS: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeCubicInch: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeCubicCentimeter: QgsUnitTypes.Standard,
+                    QgsUnitTypes.VolumeCubicDegrees: QgsUnitTypes.Geographic,
+                    QgsUnitTypes.VolumeUnknownUnit: QgsUnitTypes.UnknownType,
+                    }
+
+        for t in list(expected.keys()):
+            self.assertEqual(QgsUnitTypes.unitType(t), expected[t])
+
+    def testEncodeDecodeVolumeUnits(self):
+        """Test encoding and decoding volume units"""
+        units = [QgsUnitTypes.VolumeCubicMeters,
+                 QgsUnitTypes.VolumeCubicFeet,
+                 QgsUnitTypes.VolumeCubicYards,
+                 QgsUnitTypes.VolumeBarrel,
+                 QgsUnitTypes.VolumeCubicDecimeter,
+                 QgsUnitTypes.VolumeLiters,
+                 QgsUnitTypes.VolumeGallonUS,
+                 QgsUnitTypes.VolumeCubicInch,
+                 QgsUnitTypes.VolumeCubicCentimeter,
+                 QgsUnitTypes.VolumeCubicDegrees,
+                 QgsUnitTypes.VolumeUnknownUnit]
+
+        for u in units:
+            res, ok = QgsUnitTypes.decodeVolumeUnit(QgsUnitTypes.encodeUnit(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test decoding bad units
+        res, ok = QgsUnitTypes.decodeVolumeUnit('bad')
+        self.assertFalse(ok)
+        self.assertEqual(res, QgsUnitTypes.VolumeUnknownUnit)
+
+        # Test that string is cleaned before decoding
+        res, ok = QgsUnitTypes.decodeVolumeUnit(' bbl  ')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.VolumeBarrel)
+
+    def testVolumeUnitsToFromString(self):
+        """Test converting volume units to and from translated strings"""
+        units = [QgsUnitTypes.VolumeCubicMeters,
+                 QgsUnitTypes.VolumeCubicFeet,
+                 QgsUnitTypes.VolumeCubicYards,
+                 QgsUnitTypes.VolumeBarrel,
+                 QgsUnitTypes.VolumeCubicDecimeter,
+                 QgsUnitTypes.VolumeLiters,
+                 QgsUnitTypes.VolumeGallonUS,
+                 QgsUnitTypes.VolumeCubicInch,
+                 QgsUnitTypes.VolumeCubicCentimeter,
+                 QgsUnitTypes.VolumeCubicDegrees,
+                 QgsUnitTypes.VolumeUnknownUnit]
+
+        for u in units:
+            res, ok = QgsUnitTypes.stringToVolumeUnit(QgsUnitTypes.toString(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test converting bad strings
+        res, ok = QgsUnitTypes.stringToVolumeUnit('bad')
+        self.assertFalse(ok)
+        self.assertEqual(res, QgsUnitTypes.VolumeUnknownUnit)
+
+        # Test that string is cleaned before conversion
+        res, ok = QgsUnitTypes.stringToVolumeUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.VolumeBarrel).upper()))
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.VolumeBarrel)
 
     def testEncodeDecodeRenderUnits(self):
         """Test encoding and decoding render units"""
@@ -545,12 +641,218 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceYards: QgsUnitTypes.AreaSquareYards,
                     QgsUnitTypes.DistanceMiles: QgsUnitTypes.AreaSquareMiles,
                     QgsUnitTypes.DistanceDegrees: QgsUnitTypes.AreaSquareDegrees,
+                    QgsUnitTypes.DistanceCentimeters: QgsUnitTypes.AreaSquareCentimeters,
+                    QgsUnitTypes.DistanceMillimeters: QgsUnitTypes.AreaSquareMillimeters,
                     QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.AreaUnknownUnit,
                     QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.AreaSquareNauticalMiles
                     }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.distanceToAreaUnit(t), expected[t])
+
+    def testAreaToDistanceUnit(self):
+        """Test areaToDistanceUnit conversion"""
+        expected = {QgsUnitTypes.AreaSquareMeters: QgsUnitTypes.DistanceMeters,
+                    QgsUnitTypes.AreaSquareKilometers: QgsUnitTypes.DistanceKilometers,
+                    QgsUnitTypes.AreaSquareFeet: QgsUnitTypes.DistanceFeet,
+                    QgsUnitTypes.AreaSquareYards: QgsUnitTypes.DistanceYards,
+                    QgsUnitTypes.AreaSquareMiles: QgsUnitTypes.DistanceMiles,
+                    QgsUnitTypes.AreaHectares: QgsUnitTypes.DistanceMeters,
+                    QgsUnitTypes.AreaAcres: QgsUnitTypes.DistanceYards,
+                    QgsUnitTypes.AreaSquareDegrees: QgsUnitTypes.DistanceDegrees,
+                    QgsUnitTypes.AreaSquareCentimeters: QgsUnitTypes.DistanceCentimeters,
+                    QgsUnitTypes.AreaSquareMillimeters: QgsUnitTypes.DistanceMillimeters,
+                    QgsUnitTypes.AreaUnknownUnit: QgsUnitTypes.DistanceUnknownUnit,
+                    QgsUnitTypes.AreaSquareNauticalMiles: QgsUnitTypes.DistanceNauticalMiles
+                    }
+
+        for t in list(expected.keys()):
+            self.assertEqual(QgsUnitTypes.areaToDistanceUnit(t), expected[t])
+
+    def testVolumeFromUnitToUnitFactor(self):
+        """Test calculation of conversion factor between volume units"""
+
+        expected = {
+            QgsUnitTypes.VolumeCubicMeters: {
+                QgsUnitTypes.VolumeCubicMeters: 1.0,
+                QgsUnitTypes.VolumeCubicFeet: 35.314666572222,
+                QgsUnitTypes.VolumeCubicYards: 1.307950613786,
+                QgsUnitTypes.VolumeBarrel: 6.2898107438466,
+                QgsUnitTypes.VolumeCubicDecimeter: 1000,
+                QgsUnitTypes.VolumeLiters: 1000,
+                QgsUnitTypes.VolumeGallonUS: 264.17205124156,
+                QgsUnitTypes.VolumeCubicInch: 61023.7438368,
+                QgsUnitTypes.VolumeCubicCentimeter: 1000000,
+                QgsUnitTypes.VolumeCubicDegrees: 7.24913798948971e-16,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeCubicFeet: {
+                QgsUnitTypes.VolumeCubicMeters: 0.0283168,
+                QgsUnitTypes.VolumeCubicFeet: 1.0,
+                QgsUnitTypes.VolumeCubicYards: 0.037037,
+                QgsUnitTypes.VolumeBarrel: 0.178107622,
+                QgsUnitTypes.VolumeCubicDecimeter: 28.31685,
+                QgsUnitTypes.VolumeLiters: 28.31685,
+                QgsUnitTypes.VolumeGallonUS: 7.48052,
+                QgsUnitTypes.VolumeCubicInch: 1728.000629765,
+                QgsUnitTypes.VolumeCubicCentimeter: 28316.85,
+                QgsUnitTypes.VolumeCubicDegrees: 2.0527272837261945e-17,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeCubicYards: {
+                QgsUnitTypes.VolumeCubicMeters: 0.7645549,
+                QgsUnitTypes.VolumeCubicFeet: 26.999998234,
+                QgsUnitTypes.VolumeCubicYards: 1.0,
+                QgsUnitTypes.VolumeBarrel: 4.808905491,
+                QgsUnitTypes.VolumeCubicDecimeter: 764.5549,
+                QgsUnitTypes.VolumeLiters: 764.5549,
+                QgsUnitTypes.VolumeGallonUS: 201.974025549,
+                QgsUnitTypes.VolumeCubicInch: 46656.013952472,
+                QgsUnitTypes.VolumeCubicCentimeter: 764554.9,
+                QgsUnitTypes.VolumeCubicDegrees: 5.542363970640507e-16,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeBarrel: {
+                QgsUnitTypes.VolumeCubicMeters: 0.158987294928,
+                QgsUnitTypes.VolumeCubicFeet: 5.614582837,
+                QgsUnitTypes.VolumeCubicYards: 0.207947526,
+                QgsUnitTypes.VolumeBarrel: 1.0,
+                QgsUnitTypes.VolumeCubicDecimeter: 158.9873,
+                QgsUnitTypes.VolumeLiters: 158.9873,
+                QgsUnitTypes.VolumeGallonUS: 41.999998943,
+                QgsUnitTypes.VolumeCubicInch: 9702.002677722,
+                QgsUnitTypes.VolumeCubicCentimeter: 158987.3,
+                QgsUnitTypes.VolumeCubicDegrees: 1.1525208762763973e-16,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeCubicDecimeter: {
+                QgsUnitTypes.VolumeCubicMeters: 0.001,
+                QgsUnitTypes.VolumeCubicFeet: 0.0353147,
+                QgsUnitTypes.VolumeCubicYards: 0.00130795,
+                QgsUnitTypes.VolumeBarrel: 0.00628981,
+                QgsUnitTypes.VolumeCubicDecimeter: 1.0,
+                QgsUnitTypes.VolumeLiters: 1.0,
+                QgsUnitTypes.VolumeGallonUS: 0.264172,
+                QgsUnitTypes.VolumeCubicInch: 61.02375899,
+                QgsUnitTypes.VolumeCubicCentimeter: 1000,
+                QgsUnitTypes.VolumeCubicDegrees: 7.24913798948971e-19,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeLiters: {
+                QgsUnitTypes.VolumeCubicMeters: 0.001,
+                QgsUnitTypes.VolumeCubicFeet: 0.0353147,
+                QgsUnitTypes.VolumeCubicYards: 0.00130795,
+                QgsUnitTypes.VolumeBarrel: 0.00628981,
+                QgsUnitTypes.VolumeCubicDecimeter: 1.0,
+                QgsUnitTypes.VolumeLiters: 1.0,
+                QgsUnitTypes.VolumeGallonUS: 0.264172,
+                QgsUnitTypes.VolumeCubicInch: 61.02375899,
+                QgsUnitTypes.VolumeCubicCentimeter: 1000,
+                QgsUnitTypes.VolumeCubicDegrees: 7.24913798948971e-19,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeGallonUS: {
+                QgsUnitTypes.VolumeCubicMeters: 0.00378541,
+                QgsUnitTypes.VolumeCubicFeet: 0.133680547,
+                QgsUnitTypes.VolumeCubicYards: 0.00495113,
+                QgsUnitTypes.VolumeBarrel: 0.023809524,
+                QgsUnitTypes.VolumeCubicDecimeter: 3.785412,
+                QgsUnitTypes.VolumeLiters: 3.785412,
+                QgsUnitTypes.VolumeGallonUS: 1.0,
+                QgsUnitTypes.VolumeCubicInch: 231.000069567,
+                QgsUnitTypes.VolumeCubicCentimeter: 3785.412,
+                QgsUnitTypes.VolumeCubicDegrees: 2.7440973935070226e-18,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeCubicInch: {
+                QgsUnitTypes.VolumeCubicMeters: 1.63871e-5,
+                QgsUnitTypes.VolumeCubicFeet: 0.000578704,
+                QgsUnitTypes.VolumeCubicYards: 2.14335e-5,
+                QgsUnitTypes.VolumeBarrel: 0.000103072,
+                QgsUnitTypes.VolumeCubicDecimeter: 0.0163871,
+                QgsUnitTypes.VolumeLiters: 0.0163871,
+                QgsUnitTypes.VolumeGallonUS: 0.004329,
+                QgsUnitTypes.VolumeCubicInch: 1.0,
+                QgsUnitTypes.VolumeCubicCentimeter: 16.38706,
+                QgsUnitTypes.VolumeCubicDegrees: 1.187916242337679e-20,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeCubicCentimeter: {
+                QgsUnitTypes.VolumeCubicMeters: 1e-6,
+                QgsUnitTypes.VolumeCubicFeet: 3.53147e-5,
+                QgsUnitTypes.VolumeCubicYards: 1.30795e-6,
+                QgsUnitTypes.VolumeBarrel: 6.28981e-6,
+                QgsUnitTypes.VolumeCubicDecimeter: 0.001,
+                QgsUnitTypes.VolumeLiters: 0.001,
+                QgsUnitTypes.VolumeGallonUS: 0.000264172,
+                QgsUnitTypes.VolumeCubicInch: 0.061023759,
+                QgsUnitTypes.VolumeCubicCentimeter: 1.0,
+                QgsUnitTypes.VolumeCubicDegrees: 7.24913798948971e-22,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            },
+            QgsUnitTypes.VolumeCubicDegrees: {
+                QgsUnitTypes.VolumeCubicMeters: 1379474361572186.2500000,
+                QgsUnitTypes.VolumeCubicFeet: 39062363874236.74,
+                QgsUnitTypes.VolumeCubicYards: 1054683882564386.8,
+                QgsUnitTypes.VolumeBarrel: 219318904165585.66,
+                QgsUnitTypes.VolumeCubicDecimeter: 1379474361572.1863,
+                QgsUnitTypes.VolumeLiters: 1379474361572.1863,
+                QgsUnitTypes.VolumeGallonUS: 5221878801987.693,
+                QgsUnitTypes.VolumeCubicInch: 22605446363.083416,
+                QgsUnitTypes.VolumeCubicCentimeter: 1379474361.5721862,
+                QgsUnitTypes.VolumeCubicDegrees: 1.0,
+                QgsUnitTypes.VolumeUnknownUnit: 1.0
+            }
+        }
+
+        for from_unit in list(expected.keys()):
+            for to_unit in list(expected[from_unit].keys()):
+                expected_factor = expected[from_unit][to_unit]
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
+                self.assertAlmostEqual(res,
+                                       expected_factor,
+                                       msg='got {:.15f}, expected {:.15f} when converting from {} to {}'.format(res, expected_factor,
+                                                                                                                QgsUnitTypes.toString(from_unit),
+                                                                                                                QgsUnitTypes.toString(to_unit)))
+                # test conversion to unknown units
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.VolumeUnknownUnit)
+                self.assertAlmostEqual(res,
+                                       1.0,
+                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+
+    def testDistanceToVolumeUnit(self):
+        """Test distanceToVolumeUnit conversion"""
+        expected = {QgsUnitTypes.DistanceMeters: QgsUnitTypes.VolumeCubicMeters,
+                    QgsUnitTypes.DistanceKilometers: QgsUnitTypes.VolumeCubicMeters,
+                    QgsUnitTypes.DistanceFeet: QgsUnitTypes.VolumeCubicFeet,
+                    QgsUnitTypes.DistanceYards: QgsUnitTypes.VolumeCubicYards,
+                    QgsUnitTypes.DistanceMiles: QgsUnitTypes.VolumeCubicFeet,
+                    QgsUnitTypes.DistanceDegrees: QgsUnitTypes.VolumeCubicDegrees,
+                    QgsUnitTypes.DistanceCentimeters: QgsUnitTypes.VolumeCubicCentimeter,
+                    QgsUnitTypes.DistanceMillimeters: QgsUnitTypes.VolumeCubicCentimeter,
+                    QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.VolumeUnknownUnit,
+                    QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.VolumeCubicFeet
+                    }
+
+        for t in list(expected.keys()):
+            self.assertEqual(QgsUnitTypes.distanceToVolumeUnit(t), expected[t])
+
+    def testVolumeToDistanceUnit(self):
+        """Test volumeToDistanceUnit conversion"""
+        expected = {QgsUnitTypes.VolumeCubicMeters: QgsUnitTypes.DistanceMeters,
+                    QgsUnitTypes.VolumeCubicFeet: QgsUnitTypes.DistanceFeet,
+                    QgsUnitTypes.VolumeCubicYards: QgsUnitTypes.DistanceYards,
+                    QgsUnitTypes.VolumeBarrel: QgsUnitTypes.DistanceFeet,
+                    QgsUnitTypes.VolumeCubicDecimeter: QgsUnitTypes.DistanceCentimeters,
+                    QgsUnitTypes.VolumeLiters: QgsUnitTypes.DistanceMeters,
+                    QgsUnitTypes.VolumeGallonUS: QgsUnitTypes.DistanceFeet,
+                    QgsUnitTypes.VolumeCubicInch: QgsUnitTypes.DistanceFeet,
+                    QgsUnitTypes.VolumeCubicCentimeter: QgsUnitTypes.DistanceCentimeters,
+                    QgsUnitTypes.VolumeCubicDegrees: QgsUnitTypes.DistanceDegrees
+                    }
+
+        for t in list(expected.keys()):
+            self.assertEqual(QgsUnitTypes.volumeToDistanceUnit(t), expected[t])
 
     def testEncodeDecodeAngleUnits(self):
         """Test encoding and decoding angle units"""
@@ -560,6 +862,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AngleMinutesOfArc,
                  QgsUnitTypes.AngleSecondsOfArc,
                  QgsUnitTypes.AngleTurn,
+                 QgsUnitTypes.AngleMilliradiansSI,
+                 QgsUnitTypes.AngleMilNATO,
                  QgsUnitTypes.AngleUnknownUnit]
 
         for u in units:
@@ -585,6 +889,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AngleMinutesOfArc,
                  QgsUnitTypes.AngleSecondsOfArc,
                  QgsUnitTypes.AngleTurn,
+                 QgsUnitTypes.AngleMilliradiansSI,
+                 QgsUnitTypes.AngleMilNATO,
                  QgsUnitTypes.AngleUnknownUnit]
 
         dupes = set()
@@ -599,12 +905,21 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testAngleFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between angular units"""
 
-        expected = {QgsUnitTypes.AngleDegrees: {QgsUnitTypes.AngleDegrees: 1.0, QgsUnitTypes.AngleRadians: 0.0174533, QgsUnitTypes.AngleGon: 1.1111111, QgsUnitTypes.AngleMinutesOfArc: 60, QgsUnitTypes.AngleSecondsOfArc: 3600, QgsUnitTypes.AngleTurn: 0.00277777777778},
-                    QgsUnitTypes.AngleRadians: {QgsUnitTypes.AngleDegrees: 57.2957795, QgsUnitTypes.AngleRadians: 1.0, QgsUnitTypes.AngleGon: 63.6619772, QgsUnitTypes.AngleMinutesOfArc: 3437.7467708, QgsUnitTypes.AngleSecondsOfArc: 206264.8062471, QgsUnitTypes.AngleTurn: 0.159154943092},
-                    QgsUnitTypes.AngleGon: {QgsUnitTypes.AngleDegrees: 0.9000000, QgsUnitTypes.AngleRadians: 0.015707968623450838802, QgsUnitTypes.AngleGon: 1.0, QgsUnitTypes.AngleMinutesOfArc: 54.0000000, QgsUnitTypes.AngleSecondsOfArc: 3240.0000000, QgsUnitTypes.AngleTurn: 0.0025},
-                    QgsUnitTypes.AngleMinutesOfArc: {QgsUnitTypes.AngleDegrees: 0.016666672633390722247, QgsUnitTypes.AngleRadians: 0.00029088831280398030638, QgsUnitTypes.AngleGon: 0.018518525464057963154, QgsUnitTypes.AngleMinutesOfArc: 1.0, QgsUnitTypes.AngleSecondsOfArc: 60.0, QgsUnitTypes.AngleTurn: 4.62962962962963e-05},
-                    QgsUnitTypes.AngleSecondsOfArc: {QgsUnitTypes.AngleDegrees: 0.00027777787722304257169, QgsUnitTypes.AngleRadians: 4.848138546730629518e-6, QgsUnitTypes.AngleGon: 0.0003086420910674814405, QgsUnitTypes.AngleMinutesOfArc: 0.016666672633325253783, QgsUnitTypes.AngleSecondsOfArc: 1.0, QgsUnitTypes.AngleTurn: 7.71604938271605e-07},
-                    QgsUnitTypes.AngleTurn: {QgsUnitTypes.AngleDegrees: 360.0, QgsUnitTypes.AngleRadians: 6.2831853071795, QgsUnitTypes.AngleGon: 400.0, QgsUnitTypes.AngleMinutesOfArc: 21600, QgsUnitTypes.AngleSecondsOfArc: 1296000, QgsUnitTypes.AngleTurn: 1}
+        expected = {QgsUnitTypes.AngleDegrees: {QgsUnitTypes.AngleDegrees: 1.0, QgsUnitTypes.AngleRadians: 0.0174533, QgsUnitTypes.AngleGon: 1.1111111, QgsUnitTypes.AngleMinutesOfArc: 60, QgsUnitTypes.AngleSecondsOfArc: 3600, QgsUnitTypes.AngleTurn: 0.00277777777778, QgsUnitTypes.AngleMilliradiansSI: 17.453292519943297, QgsUnitTypes.AngleMilNATO: 17.77777777777778},
+                    QgsUnitTypes.AngleRadians: {QgsUnitTypes.AngleDegrees: 57.2957795, QgsUnitTypes.AngleRadians: 1.0, QgsUnitTypes.AngleGon: 63.6619772, QgsUnitTypes.AngleMinutesOfArc: 3437.7467708, QgsUnitTypes.AngleSecondsOfArc: 206264.8062471, QgsUnitTypes.AngleTurn: 0.159154943092, QgsUnitTypes.AngleMilliradiansSI: 1000.0, QgsUnitTypes.AngleMilNATO: 1018.5916357881301},
+                    QgsUnitTypes.AngleGon: {QgsUnitTypes.AngleDegrees: 0.9000000, QgsUnitTypes.AngleRadians: 0.015707968623450838802, QgsUnitTypes.AngleGon: 1.0, QgsUnitTypes.AngleMinutesOfArc: 54.0000000, QgsUnitTypes.AngleSecondsOfArc: 3240.0000000, QgsUnitTypes.AngleTurn: 0.0025, QgsUnitTypes.AngleMilliradiansSI: 15.707963267948967, QgsUnitTypes.AngleMilNATO: 16},
+                    QgsUnitTypes.AngleMinutesOfArc: {QgsUnitTypes.AngleDegrees: 0.016666672633390722247, QgsUnitTypes.AngleRadians: 0.00029088831280398030638, QgsUnitTypes.AngleGon: 0.018518525464057963154, QgsUnitTypes.AngleMinutesOfArc: 1.0, QgsUnitTypes.AngleSecondsOfArc: 60.0, QgsUnitTypes.AngleTurn: 4.62962962962963e-05, QgsUnitTypes.AngleMilliradiansSI: 0.29088820866572157, QgsUnitTypes.AngleMilNATO: 0.29629629629629634},
+                    QgsUnitTypes.AngleSecondsOfArc: {QgsUnitTypes.AngleDegrees: 0.00027777787722304257169, QgsUnitTypes.AngleRadians: 4.848138546730629518e-6, QgsUnitTypes.AngleGon: 0.0003086420910674814405, QgsUnitTypes.AngleMinutesOfArc: 0.016666672633325253783, QgsUnitTypes.AngleSecondsOfArc: 1.0, QgsUnitTypes.AngleTurn: 7.71604938271605e-07, QgsUnitTypes.AngleMilliradiansSI: 0.0048481482527009582897, QgsUnitTypes.AngleMilNATO: 0.0049382716049382715},
+                    QgsUnitTypes.AngleTurn: {QgsUnitTypes.AngleDegrees: 360.0, QgsUnitTypes.AngleRadians: 6.2831853071795, QgsUnitTypes.AngleGon: 400.0, QgsUnitTypes.AngleMinutesOfArc: 21600, QgsUnitTypes.AngleSecondsOfArc: 1296000, QgsUnitTypes.AngleTurn: 1, QgsUnitTypes.AngleMilliradiansSI: 6283.185307179586, QgsUnitTypes.AngleMilNATO: 6400},
+                    QgsUnitTypes.AngleMilliradiansSI: {QgsUnitTypes.AngleDegrees: 0.057295779513082325, QgsUnitTypes.AngleRadians: 0.001, QgsUnitTypes.AngleGon: 0.06366197723675814, QgsUnitTypes.AngleMinutesOfArc: 3.4377467707849396, QgsUnitTypes.AngleSecondsOfArc: 206.26480624709637, QgsUnitTypes.AngleTurn: 0.0015707963267948967, QgsUnitTypes.AngleMilliradiansSI: 1.0, QgsUnitTypes.AngleMilNATO: 1.0185916357881302},
+                    QgsUnitTypes.AngleMilNATO: {QgsUnitTypes.AngleDegrees: 0.05625,
+                                                QgsUnitTypes.AngleRadians: 0.0009817477042468104,
+                                                QgsUnitTypes.AngleGon: 0.0625,
+                                                QgsUnitTypes.AngleMinutesOfArc: 3.375,
+                                                QgsUnitTypes.AngleSecondsOfArc: 202.5,
+                                                QgsUnitTypes.AngleTurn: 0.000015625,
+                                                QgsUnitTypes.AngleMilliradiansSI: 0.9817477042468102,
+                                                QgsUnitTypes.AngleMilNATO: 1.0}
                     }
 
         for from_unit in list(expected.keys()):
@@ -631,6 +946,8 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, 4, QgsUnitTypes.AngleMinutesOfArc), '1.1111′')
         self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.AngleSecondsOfArc), '2.00″')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleTurn), '1.00 tr')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleMilliradiansSI), '1.00 millirad')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleMilNATO), '1.00 mil')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnknownUnit), '1.00')
 
     def testEncodeDecodeLayoutUnits(self):
@@ -659,6 +976,24 @@ class TestQgsUnitTypes(unittest.TestCase):
         res, ok = QgsUnitTypes.decodeLayoutUnit(' px  ')
         assert ok
         self.assertEqual(res, QgsUnitTypes.LayoutPixels)
+
+    def testAbbreviateRenderUnits(self):
+        """Test abbreviating render units"""
+        units = [QgsUnitTypes.RenderMillimeters,
+                 QgsUnitTypes.RenderMapUnits,
+                 QgsUnitTypes.RenderPixels,
+                 QgsUnitTypes.RenderPercentage,
+                 QgsUnitTypes.RenderPoints,
+                 QgsUnitTypes.RenderInches,
+                 QgsUnitTypes.RenderUnknownUnit,
+                 QgsUnitTypes.RenderMetersInMapUnits]
+
+        used = set()
+        for u in units:
+            self.assertTrue(QgsUnitTypes.toString(u))
+            self.assertTrue(QgsUnitTypes.toAbbreviatedString(u))
+            self.assertFalse(QgsUnitTypes.toAbbreviatedString(u) in used)
+            used.add(QgsUnitTypes.toAbbreviatedString(u))
 
     def testAbbreviateLayoutUnits(self):
         """Test abbreviating layout units"""

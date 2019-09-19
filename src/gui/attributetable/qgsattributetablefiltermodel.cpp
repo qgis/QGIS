@@ -25,6 +25,8 @@
 #include "qgslogger.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsexpressioncontextutils.h"
+
 //////////////////
 // Filter Model //
 //////////////////
@@ -123,7 +125,7 @@ int QgsAttributeTableFilterModel::actionColumnIndex() const
 
 int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mColumnMapping.count();
 }
 
@@ -139,7 +141,8 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   }
 
   QVector<int> newColumnMapping;
-  Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
+  const auto constColumns = mConfig.columns();
+  for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
   {
     // Hidden? Forget about this column
     if ( columnConfig.hidden )
@@ -247,14 +250,11 @@ void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
     Qt::SortOrder order = sortOrder();
 
     // set default sort values if they are not correctly set
-    if ( column < 0 )
-      column = 0;
-
-    if ( order != Qt::AscendingOrder && order != Qt::DescendingOrder )
-      order = Qt::AscendingOrder;
-
-    sort( column, order );
-    invalidate();
+    if ( column < 0 || ( order != Qt::AscendingOrder && order != Qt::DescendingOrder ) )
+    {
+      sort( 0, Qt::AscendingOrder );
+      invalidate();
+    }
   }
 }
 
@@ -325,7 +325,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
 
 bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  Q_UNUSED( sourceParent );
+  Q_UNUSED( sourceParent )
   switch ( mFilterMode )
   {
     case ShowAll:
@@ -382,7 +382,6 @@ void QgsAttributeTableFilterModel::selectionChanged()
   }
   else if ( mSelectedOnTop )
   {
-    sort( sortColumn(), sortOrder() );
     invalidate();
   }
 }
@@ -400,6 +399,14 @@ int QgsAttributeTableFilterModel::mapColumnToSource( int column ) const
     return -1;
   else
     return mColumnMapping.at( column );
+}
+
+int QgsAttributeTableFilterModel::mapColumnFromSource( int column ) const
+{
+  if ( mColumnMapping.isEmpty() )
+    return column;
+  else
+    return mColumnMapping.indexOf( column );
 }
 
 void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
@@ -498,7 +505,8 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  Q_FOREACH ( const QModelIndex &idx, masterModel()->idToIndexList( fid ) )
+  const auto constIdToIndexList = masterModel()->idToIndexList( fid );
+  for ( const QModelIndex &idx : constIdToIndexList )
   {
     indexes.append( mapFromMaster( idx ) );
   }
@@ -528,7 +536,8 @@ QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex &sour
   if ( proxyIndex.column() < 0 )
     return QModelIndex();
 
-  int col = mapColumnToSource( proxyIndex.column() );
+  int col = mapColumnFromSource( proxyIndex.column() );
+
   if ( col == -1 )
     col = 0;
 
@@ -544,4 +553,3 @@ Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex &index ) co
   QModelIndex source_index = mapToSource( index );
   return masterModel()->flags( source_index );
 }
-

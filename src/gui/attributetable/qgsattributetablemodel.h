@@ -57,7 +57,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
       FieldIndexRole,               //!< Get the field index of this column
       UserRole,                     //!< Start further roles starting from this role
       // Insert new values here, SortRole needs to be the last one
-      SortRole,                     //!< Roles used for sorting start here
+      SortRole,                     //!< Role used for sorting start here
     };
 
   public:
@@ -221,10 +221,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void setRequest( const QgsFeatureRequest &request );
 
+    // TODO QGIS 4: return copy instead of reference
+
     /**
      * Gets the the feature request
      */
-    // TODO QGIS 3: return copy instead of reference
     const QgsFeatureRequest &request() const;
 
     /**
@@ -317,7 +318,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Launched when a feature has been added
      * \param fid feature id
-     * \param resettingModel set to true if model is in the process of being reset
+     * \param resettingModel set to TRUE if model is in the process of being reset
      * and the normal begin/EndInsertRows calls should not be made
      */
     virtual void featureAdded( QgsFeatureId fid, bool resettingModel = false );

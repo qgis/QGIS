@@ -56,8 +56,8 @@ class CORE_EXPORT QgsHistogram
      * result of an expression.
      * \param layer vector layer
      * \param fieldOrExpression field name or expression to be evaluated
-     * \param feedback optional feedback object to allow cancelation of calculation
-     * \returns true if values were successfully set
+     * \param feedback optional feedback object to allow cancellation of calculation
+     * \returns TRUE if values were successfully set
      */
     bool setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback *feedback = nullptr );
 

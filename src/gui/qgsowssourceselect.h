@@ -21,7 +21,6 @@
 #define QGSOWSSOURCESELECT_H
 #include "ui_qgsowssourceselectbase.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
@@ -64,12 +63,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Constructor
     QgsOWSSourceSelect( const QString &service, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsOWSSourceSelect() override;
-
-  public slots:
-
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
+
+    void reset() override;
 
   protected slots:
     //! show whatever error is exposed.
@@ -136,7 +133,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     /**
      * \brief Populate the layer list.
      *
-     * \retval false if the layers could not be retrieved or parsed
+     * \returns FALSE if the layers could not be retrieved or parsed
      */
     virtual void populateLayerList();
 

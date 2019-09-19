@@ -89,7 +89,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
   else
   {
     QList< int > fieldIndexes;
-    Q_FOREACH ( const QString &field, fields )
+    const auto constFields = fields;
+    for ( const QString &field : constFields )
     {
       int index = source->fields().lookupField( field );
       if ( index >= 0 )
@@ -107,7 +108,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
       }
 
       QVariantList indexAttributes;
-      Q_FOREACH ( int index, fieldIndexes )
+      const auto constFieldIndexes = fieldIndexes;
+      for ( int index : constFieldIndexes )
       {
         indexAttributes << f.attribute( index );
       }
@@ -212,9 +214,36 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
 
 QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  return processCollection( parameters, context, feedback, []( const QVector< QgsGeometry > &parts )->QgsGeometry
+  return processCollection( parameters, context, feedback, [ & ]( const QVector< QgsGeometry > &parts )->QgsGeometry
   {
-    return QgsGeometry::unaryUnion( parts );
+    QgsGeometry result( QgsGeometry::unaryUnion( parts ) );
+    if ( QgsWkbTypes::geometryType( result.wkbType() ) == QgsWkbTypes::LineGeometry )
+      result = result.mergeLines();
+    // Geos may fail in some cases, let's try a slower but safer approach
+    // See: https://github.com/qgis/QGIS/issues/28411 - Dissolve tool failing to produce outputs
+    if ( ! result.lastError().isEmpty() && parts.count() >  2 )
+    {
+      if ( feedback->isCanceled() )
+        return result;
+
+      feedback->pushDebugInfo( QObject::tr( "GEOS exception: taking the slower route ..." ) );
+      result = QgsGeometry();
+      for ( const auto &p : parts )
+      {
+        result = QgsGeometry::unaryUnion( QVector< QgsGeometry >() << result << p );
+        if ( QgsWkbTypes::geometryType( result.wkbType() ) == QgsWkbTypes::LineGeometry )
+          result = result.mergeLines();
+        if ( feedback->isCanceled() )
+          return result;
+      }
+    }
+    if ( ! result.lastError().isEmpty() )
+    {
+      feedback->reportError( result.lastError(), true );
+      if ( result.isEmpty() )
+        throw QgsProcessingException( QObject::tr( "The algorithm returned no output." ) );
+    }
+    return result;
   }, 10000 );
 }
 

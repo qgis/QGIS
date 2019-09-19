@@ -20,6 +20,7 @@
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
+#include "qgsdataitemprovider.h"
 
 
 class QgsAmsRootItem : public QgsDataCollectionItem
@@ -33,14 +34,12 @@ class QgsAmsRootItem : public QgsDataCollectionItem
     QVariant sortKey() const override { return 12; }
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
     void onConnectionsChanged();
-    void newConnection();
 #endif
 };
 
@@ -52,18 +51,42 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
     QgsAmsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &url );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-#ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
-#endif
-
-  public slots:
-#ifdef HAVE_GUI
-    void editConnection();
-    void deleteConnection();
-#endif
+    QString url() const;
 
   private:
-    QString mUrl;
+    QString mConnName;
+};
+
+
+class QgsAmsFolderItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAmsFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mFolder;
+    QString mBaseUrl;
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
+};
+
+
+class QgsAmsServiceItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAmsServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mFolder;
+    QString mBaseUrl;
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
 };
 
 class QgsAmsLayerItem : public QgsLayerItem
@@ -71,7 +94,19 @@ class QgsAmsLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg );
+    QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsStringMap &headers );
+};
+
+
+//! Provider for ams root data item
+class QgsAmsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+
+    int capabilities() const override;
+
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSAMSDATAITEMS_H

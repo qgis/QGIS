@@ -23,10 +23,6 @@ __author__ = 'Anita Graser'
 __date__ = 'May 2018'
 __copyright__ = '(C) 2018, Anita Graser'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (Qgis,
                        QgsProcessingException,
                        QgsProcessingParameterString,
@@ -105,7 +101,7 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         uri = postgis.uri_from_name(connection)
         sql = self.parameterAsString(parameters, self.SQL, context)
         sql = sql.replace('\n', ' ')
-        uri.setDataSource("", "(" + sql + ")", geom_field, "", id_field)
+        uri.setDataSource("", "(" + sql.rstrip(';') + ")", geom_field, "", id_field)
 
         vlayer = QgsVectorLayer(uri.uri(), "layername", "postgres")
 

@@ -160,6 +160,9 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return 1;
       else
         return 0;
+
+    case ResultActionsRole:
+      return QVariant::fromValue( mResults.at( index.row() ).result.actions );
   }
 
   return QVariant();
@@ -188,6 +191,7 @@ QHash<int, QByteArray> QgsLocatorModel::roleNames() const
   roles[ResultScoreRole] = "ResultScore";
   roles[ResultFilterNameRole] = "ResultFilterName";
   roles[ResultFilterGroupSortingRole] = "ResultFilterGroupSorting";
+  roles[ResultActionsRole] = "ResultContextMenuActions";
   roles[Qt::DisplayRole] = "Text";
   return roles;
 }
@@ -243,7 +247,7 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   Entry entry;
   entry.result = result;
   // keep the group title empty to allow differecing group title from results
-  entry.groupSorting = result.group.isEmpty() ? NoGroup : mFoundResultsFilterGroups[result.filter].count();
+  entry.groupSorting = result.group.isEmpty() ? NoGroup : mFoundResultsFilterGroups[result.filter].indexOf( result.group ) + 1;
   mResults << entry;
 
   if ( mDeferredClear )

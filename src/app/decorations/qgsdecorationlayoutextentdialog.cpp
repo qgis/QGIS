@@ -48,6 +48,7 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationLayoutExtentDialog::showHelp );
 
   mSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mSymbolButton->setMessageBar( QgisApp::instance()->messageBar() );
 }
 
 void QgsDecorationLayoutExtentDialog::updateGuiElements()
@@ -85,5 +86,5 @@ void QgsDecorationLayoutExtentDialog::buttonBox_rejected()
 
 void QgsDecorationLayoutExtentDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#decorations" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#layout-extents" ) );
 }

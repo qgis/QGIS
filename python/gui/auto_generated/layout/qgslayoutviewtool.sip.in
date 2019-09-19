@@ -105,7 +105,7 @@ the previously used toolbutton to pop out.
 
     QAction *action();
 %Docstring
-Returns the action associated with the tool or None if no action is associated.
+Returns the action associated with the tool or ``None`` if no action is associated.
 
 .. seealso:: :py:func:`setAction`
 %End
@@ -187,9 +187,9 @@ tool ``name`` as parameters.
 
     bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
 %Docstring
-Returns true if a mouse press/release operation which started at
+Returns ``True`` if a mouse press/release operation which started at
 ``startViewPoint`` and ended at ``endViewPoint`` should be considered
-a "click and drag". If false is returned, the operation should be
+a "click and drag". If ``False`` is returned, the operation should be
 instead treated as just a click on ``startViewPoint``.
 %End
 

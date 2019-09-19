@@ -100,7 +100,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
     //! Returns list of available auth methods by their keys
     QStringList authMethodList() const;
 
-    //! Returns metadata of the auth method or nullptr if not found
+    //! Returns metadata of the auth method or NULLPTR if not found
     const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey ) const;
 
 //    void registerGuis( QWidget *widget );

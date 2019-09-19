@@ -28,7 +28,7 @@ QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   setupButtons( buttonBox );
 
   mFileWidget->setDialogTitle( tr( "Open MDAL Supported Mesh Dataset(s)" ) );
-  mFileWidget->setFilter( tr( "All Files (*);;GRIB File (*.grb *.grb2 *.bin *.grib *.grib1 *.grib2);;NetCDF File (*.nc);;2DM Mesh File (*.2dm);;3Di Results (results_3di.nc)" ) );
+  mFileWidget->setFilter( QgsProviderRegistry::instance()->fileMeshFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
@@ -51,9 +51,4 @@ void QgsMdalSourceSelect::addButtonClicked()
   {
     emit addMeshLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "mdal" ) );
   }
-}
-
-QGISEXTERN QgsMdalSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsMdalSourceSelect( parent, fl, widgetMode );
 }

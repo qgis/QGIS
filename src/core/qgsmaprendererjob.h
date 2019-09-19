@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <QFutureWatcher>
 #include <QImage>
 #include <QPainter>
@@ -46,15 +45,33 @@ class QgsFeatureFilterProvider;
 struct LayerRenderJob
 {
   QgsRenderContext context;
-  QImage *img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
-  //! True when img has been initialized (filled with transparent pixels) and is safe to compose
+
+  /**
+   * Pointer to destination image.
+   *
+   * May be NULLPTR if it is not necessary to draw to separate image (e.g. sequential rendering).
+   */
+  QImage *img;
+  //! TRUE when img has been initialized (filled with transparent pixels) and is safe to compose
   bool imageInitialized = false;
   QgsMapLayerRenderer *renderer; // must be deleted
   QPainter::CompositionMode blendMode;
   double opacity;
-  bool cached; // if true, img already contains cached image from previous rendering
+  //! If TRUE, img already contains cached image from previous rendering
+  bool cached;
   QgsWeakMapLayerPointer layer;
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+  QStringList errors; //!< Rendering errors
+
+  /**
+   * Identifies the associated layer by ID.
+   *
+   * \warning This should NEVER be used to retrieve map layers during a render job, and instead
+   * is intended for use as a string identifier only.
+   *
+   * \since QGIS 3.10
+   */
+  QString layerId;
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
@@ -68,15 +85,15 @@ struct LabelRenderJob
   QgsRenderContext context;
 
   /**
-   * May be null if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
-   * Note that if complete is false then img will be uninitialized and contain random data!.
+   * May be NULLPTR if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
+   * Note that if complete is FALSE then img will be uninitialized and contain random data!.
    */
   QImage *img = nullptr;
-  //! If true, img already contains cached image from previous rendering
+  //! If TRUE, img already contains cached image from previous rendering
   bool cached = false;
-  //! Will be true if labeling is eligible for caching
+  //! Will be TRUE if labeling is eligible for caching
   bool canUseCache = false;
-  //! If true then label render is complete
+  //! If TRUE then label render is complete
   bool complete = false;
   //! Time it took to render the labels in ms (it is -1 if not rendered or still rendering)
   int renderingTime = -1;
@@ -97,6 +114,7 @@ struct LabelRenderJob
  * amount of time.
  *
  * Common use case:
+ *
  * 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
  * 1. create QgsMapRendererJob subclass with QgsMapSettings instance
  * 2. connect to job's finished() signal
@@ -106,6 +124,7 @@ struct LabelRenderJob
  * It is possible to cancel the rendering job while it is active by calling cancel() function.
  *
  * The following subclasses are available:
+ *
  * - QgsMapRendererSequentialJob - renders map in one background thread to an image
  * - QgsMapRendererParallelJob - renders map in multiple background threads to an image
  * - QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
@@ -132,7 +151,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     virtual void cancel() = 0;
 
     /**
-     * Triggers cancelation of the rendering job without blocking. The render job will continue
+     * Triggers cancellation of the rendering job without blocking. The render job will continue
      * to operate until it is able to cancel, at which stage the finished() signal will be emitted.
      * Does nothing if the rendering is not active.
      */
@@ -145,7 +164,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     virtual bool isActive() const = 0;
 
     /**
-     * Returns true if the render job was able to use a cached labeling solution.
+     * Returns TRUE if the render job was able to use a cached labeling solution.
      * If so, any previously stored labeling results (see takeLabelingResults())
      * should be retained.
      * \see takeLabelingResults()
@@ -253,14 +272,29 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QHash< QgsWeakMapLayerPointer, int > mPerLayerRenderingTime;
 
     /**
-     * Prepares the cache for storing the result of labeling. Returns false if
+     * TRUE if layer rendering time should be recorded.
+     */
+    bool mRecordRenderingTime = true;
+
+    /**
+     * Prepares the cache for storing the result of labeling. Returns FALSE if
      * the render cannot use cached labels and should not cache the result.
      * \note not available in Python bindings
      */
     bool prepareLabelCache() const SIP_SKIP;
 
-    //! \note not available in Python bindings
-    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 ) SIP_SKIP;
+    /**
+     * Creates a list of layer rendering jobs and prepares them for later render.
+     *
+     * The \a painter argument specifies the destination painter. If not set, the jobs will
+     * be rendered to temporary images. Alternatively, if the \a deferredPainterSet flag is TRUE,
+     * then a \a painter value of NULLPTR skips this default temporary image creation. In this case,
+     * it is the caller's responsibility to correctly set a painter for all rendered jobs prior
+     * to rendering them.
+     *
+     * \note not available in Python bindings
+     */
+    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool deferredPainterSet = false ) SIP_SKIP;
 
     /**
      * Prepares a labeling job.
@@ -286,8 +320,14 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     void cleanupLabelJob( LabelRenderJob &job ) SIP_SKIP;
 
+    /**
+     * \note not available in Python bindings
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED static void drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
+
     //! \note not available in Python bindings
-    static void drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
+    static void drawLabeling( QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
 
   private:
 
@@ -295,7 +335,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * Convenience function to project an extent into the layer source
      * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
-     * source CRS coordinates, and if it was split, returns true, and
+     * source CRS coordinates, and if it was split, returns TRUE, and
      * also sets the contents of the r2 parameter
      */
     static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );

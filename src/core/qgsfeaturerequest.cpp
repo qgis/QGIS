@@ -206,7 +206,8 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  Q_FOREACH ( const QString &attrName, attrNames )
+  const auto constAttrNames = attrNames;
+  for ( const QString &attrName : constAttrNames )
   {
     int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -227,7 +228,8 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  Q_FOREACH ( const QString &attrName, attrNames )
+  const auto constAttrNames = attrNames;
+  for ( const QString &attrName : constAttrNames )
   {
     int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -271,7 +273,13 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 {
   if ( !mFilterRect.isNull() )
   {
-    if ( !feature.hasGeometry() || !feature.geometry().intersects( mFilterRect ) )
+    if ( !feature.hasGeometry() ||
+         (
+           ( mFlags & ExactIntersect && !feature.geometry().intersects( mFilterRect ) )
+           ||
+           ( !( mFlags & ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
+         )
+       )
       return false;
   }
 
@@ -426,7 +434,8 @@ QgsFeatureRequest::OrderBy::OrderBy() = default;
 
 QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other )
 {
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, other )
+  const auto constOther = other;
+  for ( const QgsFeatureRequest::OrderByClause &clause : constOther )
   {
     append( clause );
   }
@@ -483,6 +492,24 @@ QSet<QString> QgsFeatureRequest::OrderBy::usedAttributes() const
   }
 
   return usedAttributes;
+}
+
+QSet<int> QgsFeatureRequest::OrderBy::usedAttributeIndices( const QgsFields &fields ) const
+{
+  QSet<int> usedAttributeIdx;
+  for ( const OrderByClause &clause : *this )
+  {
+    const auto referencedColumns = clause.expression().referencedColumns();
+    for ( const QString &fieldName : referencedColumns )
+    {
+      int idx = fields.lookupField( fieldName );
+      if ( idx >= 0 )
+      {
+        usedAttributeIdx.insert( idx );
+      }
+    }
+  }
+  return usedAttributeIdx;
 }
 
 QString QgsFeatureRequest::OrderBy::dump() const

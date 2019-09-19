@@ -19,6 +19,8 @@
 #include "qgslayouttable.h"
 #include "qgslayout.h"
 #include "qgssettings.h"
+#include "qgshelp.h"
+#include "qgsgui.h"
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -28,8 +30,11 @@ QgsLayoutTableBackgroundColorsDialog::QgsLayoutTableBackgroundColorsDialog( QgsL
   , mTable( table )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLayoutTableBackgroundColorsDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsLayoutTableBackgroundColorsDialog::buttonBox_rejected );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutTableBackgroundColorsDialog::showHelp );
 
   mCheckBoxMap.insert( QgsLayoutTable::OddColumns, mOddColumnsCheckBox );
   mCheckBoxMap.insert( QgsLayoutTable::EvenColumns, mEvenColumnsCheckBox );
@@ -53,16 +58,7 @@ QgsLayoutTableBackgroundColorsDialog::QgsLayoutTableBackgroundColorsDialog( QgsL
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsLayoutTableBackgroundColorsDialog::apply );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
-
   setGuiElementValues();
-}
-
-QgsLayoutTableBackgroundColorsDialog::~QgsLayoutTableBackgroundColorsDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsLayoutTableBackgroundColorsDialog::apply()
@@ -95,6 +91,11 @@ void QgsLayoutTableBackgroundColorsDialog::buttonBox_accepted()
 void QgsLayoutTableBackgroundColorsDialog::buttonBox_rejected()
 {
   reject();
+}
+
+void QgsLayoutTableBackgroundColorsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_attribute_table.html#appearance" ) );
 }
 
 void QgsLayoutTableBackgroundColorsDialog::setGuiElementValues()

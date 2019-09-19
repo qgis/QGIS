@@ -30,8 +30,6 @@ class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::Qgs
   public:
     explicit QgsVectorLayerLoadStyleDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    ~QgsVectorLayerLoadStyleDialog() override;
-
     QgsMapLayer::StyleCategories styleCategories() const;
 
     QgsVectorLayerProperties::StyleType currentStyleType() const;
@@ -50,6 +48,7 @@ class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::Qgs
     void onRelatedTableSelectionChanged();
     void onOthersTableSelectionChanged();
     void deleteStyleFromDB();
+    void showHelp();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
@@ -57,6 +56,9 @@ class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::Qgs
     QString mSelectedStyleId;
     QString mSelectedStyleName;
     int mSectionLimit = 0;
+    QPushButton *mDeleteButton = nullptr;
+    QPushButton *mLoadButton = nullptr;
+    QPushButton *mCancelButton = nullptr;
 };
 
 #endif //QGSLOADFILEFROMDBDIALOG_H

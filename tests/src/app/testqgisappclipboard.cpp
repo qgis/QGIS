@@ -141,12 +141,13 @@ void TestQgisAppClipboard::copyToText()
   // attributes only
   QgsSettings settings;
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
-  QString result = mQgisApp->clipboard()->generateClipboardText();
+  QString result, resultHtml;
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "int_field\tstring_field\n9\tval\n19\tval2" ) );
 
   // attributes with WKT
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
-  result = mQgisApp->clipboard()->generateClipboardText();
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t9\tval\nPoint (7 8)\t19\tval2" ) );
 
   // HTML test
@@ -156,25 +157,12 @@ void TestQgisAppClipboard::copyToText()
 
   // GeoJSON
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
-  result = mQgisApp->clipboard()->generateClipboardText();
-  QString expected = "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n"
-                     "{\n   \"type\":\"Feature\",\n"
-                     "   \"id\":5,\n"
-                     "   \"geometry\":\n"
-                     "   {\"type\": \"Point\", \"coordinates\": [5, 6]},\n"
-                     "   \"properties\":{\n"
-                     "      \"int_field\":9,\n"
-                     "      \"string_field\":\"val\"\n"
-                     "   }\n"
-                     "},\n"
-                     "{\n   \"type\":\"Feature\",\n"
-                     "   \"id\":6,\n"
-                     "   \"geometry\":\n"
-                     "   {\"type\": \"Point\", \"coordinates\": [7, 8]},\n"
-                     "   \"properties\":{\n"
-                     "      \"int_field\":19,\n"
-                     "      \"string_field\":\"val2\"\n"
-                     "   }\n}\n]}";
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,"
+                      "\"properties\":{\"int_field\":9,\"string_field\":\"val\"},\"type\":\"Feature\"},"
+                      "{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,"
+                      "\"properties\":{\"int_field\":19,\"string_field\":\"val2\"},\"type\":\"Feature\"}],"
+                      "\"type\":\"FeatureCollection\"}";
   QCOMPARE( result, expected );
 
   // test CRS is transformed correctly for GeoJSON
@@ -187,11 +175,11 @@ void TestQgisAppClipboard::copyToText()
   feats.setFields( fields );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 
-  result = mQgisApp->clipboard()->generateClipboardText();
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
 
   // just test coordinates as integers - that's enough to verify that reprojection has occurred
   // and helps avoid rounding issues
-  QRegExp regex( "\\[([-\\d.]+), ([-\\d.]+)\\]" );
+  QRegExp regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
   ( void )regex.indexIn( result );
   QStringList list = regex.capturedTexts();
   QCOMPARE( list.count(), 3 );
@@ -201,6 +189,37 @@ void TestQgisAppClipboard::copyToText()
 
   QCOMPARE( x, 145 );
   QCOMPARE( y, -38 );
+
+  // test that multiline text fields are quoted to render correctly as csv files in WKT mode
+  QgsFeature feat3( fields, 7 );
+  feat3.setAttribute( QStringLiteral( "string_field" ), "Single line text" );
+  feat3.setAttribute( QStringLiteral( "int_field" ), 1 );
+  feat3.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
+  QgsFeature feat4( fields, 8 );
+  feat4.setAttribute( QStringLiteral( "string_field" ), "Unix Multiline \nText" );
+  feat4.setAttribute( QStringLiteral( "int_field" ), 2 );
+  feat4.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
+  QgsFeature feat5( fields, 9 );
+  feat5.setAttribute( QStringLiteral( "string_field" ), "Windows Multiline \r\nText" );
+  feat5.setAttribute( QStringLiteral( "int_field" ), 3 );
+  feat5.setGeometry( QgsGeometry( new QgsPoint( 9, 10 ) ) );
+  QgsFeatureStore featsML;
+  featsML.addFeature( feat3 );
+  featsML.addFeature( feat4 );
+  featsML.addFeature( feat5 );
+  featsML.setFields( fields );
+  mQgisApp->clipboard()->replaceWithCopyOf( featsML );
+
+  // attributes only
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  qDebug() << result;
+  QCOMPARE( result, QString( "int_field\tstring_field\n1\tSingle line text\n2\t\"Unix Multiline \nText\"\n3\t\"Windows Multiline \r\nText\"" ) );
+
+  // attributes with WKT
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ) );
 }
 
 void TestQgisAppClipboard::pasteWkt()
@@ -222,7 +241,7 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( point->y(), 30.0 );
 
   // be sure parsing does not consider attached parameters that
-  // can change geometryType as in https://issues.qgis.org/issues/16870
+  // can change geometryType as in https://github.com/qgis/QGIS/issues/24769
   mQgisApp->clipboard()->setText( QStringLiteral( "POINT (111 30)\t GoodFieldValue\nPOINT (125 10)\t(WrongFieldValue)" ) );
 
   features = mQgisApp->clipboard()->copyOf();

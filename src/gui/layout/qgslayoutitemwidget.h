@@ -23,8 +23,9 @@
 #include <QObject>
 #include <QPointer>
 
-
+class QgsLayoutDesignerInterface;
 class QgsPropertyOverrideButton;
+class QgsLayoutAtlas;
 
 // NOTE - the inheritance here is tricky, as we need to avoid the multiple inheritance
 // diamond problem and the ideal base object (QgsLayoutConfigObject) MUST be a QObject
@@ -134,11 +135,11 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
     QgsLayoutObject *layoutObject();
 
     /**
-     * Sets the current \a item to show in the widget. If true is returned, \a item
+     * Sets the current \a item to show in the widget. If TRUE is returned, \a item
      * was an acceptable type for display in this widget and the widget has been
      * updated to match \a item's properties.
      *
-     * If false is returned, then the widget could not be successfully updated
+     * If FALSE is returned, then the widget could not be successfully updated
      * to show the properties of \a item.
      */
     bool setItem( QgsLayoutItem *item );
@@ -150,6 +151,14 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      * and update their widget labels accordingly.
      */
     virtual void setReportTypeString( const QString &string );
+
+    /**
+     * Sets the the layout designer interface in which the widget is
+     * being shown.
+     *
+     * \since QGIS 3.6
+     */
+    virtual void setDesignerInterface( QgsLayoutDesignerInterface *iface );
 
   protected:
 
@@ -175,7 +184,7 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      *
      * Subclasses can override this if they support changing items in place.
      *
-     * Implementations must return true if the item was accepted and
+     * Implementations must return TRUE if the item was accepted and
      * the widget was updated.
      */
     virtual bool setNewItem( QgsLayoutItem *item );
@@ -290,7 +299,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
     bool mFreezeWidthSpin = false;
     bool mFreezeHeightSpin = false;
     bool mFreezePageSpin = false;
-
+    bool mBlockVariableUpdates = false;
 //    void changeItemTransparency( int value );
     void changeItemPosition();
     void changeItemReference( QgsLayoutItem::ReferencePoint point );

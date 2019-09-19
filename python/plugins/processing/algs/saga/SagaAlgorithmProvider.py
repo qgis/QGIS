@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
@@ -128,9 +124,6 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def id(self):
         return 'saga'
 
-    def helpId(self):
-        return 'saga'
-
     def defaultVectorFileExtension(self, hasGeometry=True):
         return 'shp' if hasGeometry else 'dbf'
 
@@ -142,6 +135,9 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def supportedOutputVectorLayerExtensions(self):
         return ['shp', 'dbf']
+
+    def supportedOutputTableExtensions(self):
+        return ['dbf']
 
     def supportsNonFileBasedOutput(self):
         """

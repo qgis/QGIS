@@ -25,8 +25,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -38,6 +36,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import email
+import difflib
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
@@ -70,7 +69,12 @@ class QgsServerTestBase(unittest.TestCase):
         response_lines = response.splitlines()
         expected_lines = expected.splitlines()
         line_no = 1
-        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!\n{}".format(msg))
+
+        diffs = []
+        for diff in difflib.unified_diff([l.decode('utf8') for l in expected_lines], [l.decode('utf8') for l in response_lines]):
+            diffs.append(diff)
+
+        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!\n{}\n{}".format(msg, '\n'.join(diffs)))
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
@@ -170,11 +174,19 @@ class QgsServerTestBase(unittest.TestCase):
 
         return data[1], headers
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
-        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputJpg=False):
+
+        extFile = 'png'
+        if outputJpg:
+            extFile = 'jpg'
+
+        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
 
         with open(temp_image, "wb") as f:
             f.write(image)
+
+        if outputJpg:
+            return (True, "QgsRenderChecker can't be used for JPG images")
 
         control = QgsRenderChecker()
         control.setControlPathPrefix("qgis_server")
@@ -184,31 +196,41 @@ class QgsServerTestBase(unittest.TestCase):
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
         return control.compareImages(control_image, max_diff), control.report()
 
-    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize()):
+    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputJpg=False):
+
+        extFile = 'png'
+        contentType = 'image/png'
+        if outputJpg:
+            extFile = 'jpg'
+            contentType = 'image/jpeg'
+
+        reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.' + extFile
+        self.store_reference(reference_path, response)
+
         self.assertEqual(
-            headers.get("Content-Type"), "image/png",
-            "Content type is wrong: %s\n%s" % (headers.get("Content-Type"), response))
+            headers.get("Content-Type"), contentType,
+            "Content type is wrong: %s instead of %s\n%s" % (headers.get("Content-Type"), contentType, response))
 
-        test, report = self._img_diff(response, image, max_diff, max_size_diff)
+        test, report = self._img_diff(response, image, max_diff, max_size_diff, outputJpg)
 
-        with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
+        with open(os.path.join(tempfile.gettempdir(), image + "_result." + extFile), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong\: rendered file %s/%s_result.png" % (tempfile.gettempdir(), image)
+                message = "Image is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, extFile)
             else:
-                message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
-                    report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image
+                message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
+                    report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
                 )
 
         # If the failure is in image sizes the diff file will not exists.
-        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
-            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
+        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile)):
+            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong\: diff file %s/%s_result_diff.png" % (tempfile.gettempdir(), image)
+                    message = "Image is wrong\: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, extFile)
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
-                    message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
-                        encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image
+                    message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (
+                        encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
                     )
 
         self.assertTrue(test, message)
@@ -234,6 +256,12 @@ class QgsServerTestBase(unittest.TestCase):
         for k in rk:
             headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
+
+    def _assert_status_code(self, status_code, qs, requestMethod=QgsServerRequest.GetMethod, data=None, project=None):
+        request = QgsBufferServerRequest(qs, requestMethod, {}, data)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        assert response.statusCode() == status_code, "%s != %s" % (response.statusCode(), status_code)
 
 
 class TestQgsServerTestBase(unittest.TestCase):

@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
   : QAbstractItemModel( parent )
@@ -246,7 +247,7 @@ QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent
 
 QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
 {
-  Q_UNUSED( child );
+  Q_UNUSED( child )
   return QModelIndex();
 }
 
@@ -262,7 +263,7 @@ int QgsFieldModel::rowCount( const QModelIndex &parent ) const
 
 int QgsFieldModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 
@@ -357,6 +358,33 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     case IsEmptyRole:
     {
       return isEmpty;
+    }
+
+    case EditorWidgetType:
+    {
+      if ( exprIdx < 0 && !isEmpty )
+      {
+        return mFields.at( index.row() - fieldOffset ).editorWidgetSetup().type();
+      }
+      return QVariant();
+    }
+
+    case JoinedFieldIsEditable:
+    {
+      if ( exprIdx < 0 && !isEmpty )
+      {
+        if ( mLayer && mFields.fieldOrigin( index.row() - fieldOffset ) == QgsFields::OriginJoin )
+        {
+          int srcFieldIndex;
+          const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( index.row() - fieldOffset, mLayer->fields(), srcFieldIndex );
+
+          if ( !info || !info->isEditable() )
+            return false;
+
+          return true;
+        }
+      }
+      return QVariant();
     }
 
     case Qt::DisplayRole:

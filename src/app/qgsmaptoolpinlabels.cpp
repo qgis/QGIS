@@ -48,7 +48,7 @@ QgsMapToolPinLabels::~QgsMapToolPinLabels()
 
 void QgsMapToolPinLabels::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
@@ -140,13 +140,12 @@ void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition &labelpos,
     const QString &id,
     const QColor &color )
 {
-  QgsRectangle rect = labelpos.labelRect;
   QgsRubberBand *rb = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
-  rb->addPoint( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
-  rb->addPoint( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
-  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
+  rb->addPoint( labelpos.cornerPoints.at( 0 ) );
+  rb->addPoint( labelpos.cornerPoints.at( 1 ) );
+  rb->addPoint( labelpos.cornerPoints.at( 2 ) );
+  rb->addPoint( labelpos.cornerPoints.at( 3 ) );
+  rb->addPoint( labelpos.cornerPoints.at( 0 ) );
   rb->setColor( color );
   rb->setWidth( 0 );
   rb->show();
@@ -203,7 +202,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       {
         continue;
       }
-      QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
       {
         QgsDebugMsg( QStringLiteral( "Failed to cast to vector layer" ) );
@@ -223,7 +222,8 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
 void QgsMapToolPinLabels::removePinnedHighlights()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
-  Q_FOREACH ( QgsRubberBand *rb, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsRubberBand *rb : constMHighlights )
   {
     delete rb;
   }

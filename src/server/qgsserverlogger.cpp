@@ -16,13 +16,6 @@
  ***************************************************************************/
 
 #include "qgsserverlogger.h"
-#include "qgsapplication.h"
-#include <QCoreApplication>
-#include <QFile>
-#include <QTextStream>
-#include <QTime>
-
-#include <cstdlib>
 
 QgsServerLogger *QgsServerLogger::sInstance = nullptr;
 

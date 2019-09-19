@@ -90,8 +90,6 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %lex-param {void * scanner}
 %parse-param {expression_parser_context* parser_ctx}
 
-%name-prefix "exp_"
-
 %union
 {
   QgsExpressionNode* node;
@@ -145,7 +143,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %type <namednode> named_node
 
 // debugging
-%error-verbose
+%define parse.error verbose
 
 //
 // operator precedence
@@ -166,6 +164,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 %right UMINUS  // fictitious symbol (for unary minus)
 
 %left COMMA
+%left '['
 
 %destructor { delete $$; } <node>
 %destructor { delete $$; } <nodelist>
@@ -217,7 +216,7 @@ expression:
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
             parser_ctx->currentErrorType = errorType;
-            exp_error(&yyloc, parser_ctx, "Function is not known");
+            exp_error(&yyloc, parser_ctx, QObject::tr( "Function is not known" ).toUtf8().constData() );
             delete $3;
             YYERROR;
           }
@@ -238,21 +237,19 @@ expression:
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionWrongArgs;
             parser_ctx->currentErrorType = errorType;
             QString expectedMessage;
-            if (func->params() == func->minParams())
+            if ( func->params() == func->minParams() )
             {
-               expectedMessage = QString("Expected %2" ).arg( func->params());
+               expectedMessage = QObject::tr( "Expected %1 but got %2." ).arg( QString::number( func->params() ), QString::number( $3->count() ) );
             }
             else
             {
-               expectedMessage = QString("Expected between %2 and %4 max but got %3" ).arg( func->minParams(), func->params() );
+               expectedMessage = QObject::tr( "Expected between %1 and %2 parameters but %3 were provided." ).arg( QString::number( func->minParams() ), QString::number( func->params() ), QString::number( $3->count() ) );
             }
-            exp_error(&yyloc, parser_ctx, QString( "%1 function is called with wrong number of arguments."
-                                                   "%2 but got %3" ).arg( QgsExpression::Functions()[fnIndex]->name() )
-                                                                             .arg( expectedMessage )
-                                                                             .arg( $3->count() ).toLocal8Bit().constData() );
+            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments. %2" ).arg( QgsExpression::Functions()[fnIndex]->name(), expectedMessage ).toUtf8().constData() );
             delete $3;
             YYERROR;
           }
+
           $$ = new QgsExpressionNodeFunction(fnIndex, $3);
           addParserLocation(&@1, $$);
         }
@@ -265,16 +262,17 @@ expression:
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
             parser_ctx->currentErrorType = errorType;
-            exp_error(&yyloc, parser_ctx, "Function is not known");
+            exp_error(&yyloc, parser_ctx, QObject::tr( "Function is not known" ).toUtf8().constData() );
             YYERROR;
           }
           // 0 parameters is expected, -1 parameters means leave it to the
           // implementation
-          if ( QgsExpression::Functions()[fnIndex]->params() > 0 )
+          if ( QgsExpression::Functions()[fnIndex]->minParams() > 0 )
           {
+
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionWrongArgs;
             parser_ctx->currentErrorType = errorType;
-            exp_error(&yyloc, parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
+            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
             YYERROR;
           }
           $$ = new QgsExpressionNodeFunction(fnIndex, new QgsExpressionNode::NodeList());
@@ -283,6 +281,8 @@ expression:
 
     | expression IN '(' exp_list ')'     { $$ = new QgsExpressionNodeInOperator($1, $4, false);  }
     | expression NOT IN '(' exp_list ')' { $$ = new QgsExpressionNodeInOperator($1, $5, true); }
+
+    | expression '[' expression ']' { $$ = new QgsExpressionNodeIndexOperator( $1, $3 ); }
 
     | PLUS expression %prec UMINUS { $$ = $2; }
     | MINUS expression %prec UMINUS { $$ = new QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::uoMinus, $2); }
@@ -306,7 +306,7 @@ expression:
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
             parser_ctx->currentErrorType = errorType;
-            exp_error(&yyloc, parser_ctx, QString("%1 function is not known").arg(*$1).toLocal8Bit().constData());
+            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is not known" ).arg( *$1 ).toLocal8Bit().constData());
             YYERROR;
           }
           delete $1;
@@ -317,7 +317,7 @@ expression:
         {
           // @var is equivalent to var( "var" )
           QgsExpressionNode::NodeList* args = new QgsExpressionNode::NodeList();
-          QgsExpressionNodeLiteral* literal = new QgsExpressionNodeLiteral( QString(*$1).mid(1) );
+          QgsExpressionNodeLiteral* literal = new QgsExpressionNodeLiteral( QString( *$1 ).mid( 1 ) );
           args->append( literal );
           $$ = new QgsExpressionNodeFunction( QgsExpression::functionIndex( "var" ), args );
           delete $1;
@@ -342,7 +342,7 @@ exp_list:
          {
            QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionNamedArgsError;
            parser_ctx->currentErrorType = errorType;
-           exp_error(&yyloc, parser_ctx, "All parameters following a named parameter must also be named.");
+           exp_error(&yyloc, parser_ctx, QObject::tr( "All parameters following a named parameter must also be named." ).toUtf8().constData() );
            delete $1;
            YYERROR;
          }

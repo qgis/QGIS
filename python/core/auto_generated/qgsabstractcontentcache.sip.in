@@ -1,0 +1,129 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsabstractcontentcache.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAbstractContentCacheEntry
+{
+%Docstring
+Base class for entries in a QgsAbstractContentCache.
+
+Subclasses must take care to correctly implement the isEqual() method, applying their
+own logic for testing extra cache properties (e.g. image size for an image-based cache).
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsabstractcontentcache.h"
+%End
+  public:
+
+    QgsAbstractContentCacheEntry( const QString &path );
+%Docstring
+Constructor for QgsAbstractContentCacheEntry for an entry relating to the specified ``path``.
+%End
+
+    virtual ~QgsAbstractContentCacheEntry();
+
+
+    QString path;
+
+    QDateTime fileModified;
+
+    QElapsedTimer fileModifiedLastCheckTimer;
+
+    int mFileModifiedCheckTimeout;
+
+    QgsAbstractContentCacheEntry *nextEntry;
+
+    QgsAbstractContentCacheEntry *previousEntry;
+
+    bool operator==( const QgsAbstractContentCacheEntry &other ) const;
+
+    virtual int dataSize() const = 0;
+%Docstring
+Returns the memory usage in bytes for the entry.
+%End
+
+    virtual void dump() const = 0;
+%Docstring
+Dumps debugging strings containing the item's properties. For testing purposes only.
+%End
+
+  protected:
+
+    virtual bool isEqual( const QgsAbstractContentCacheEntry *other ) const = 0;
+%Docstring
+Tests whether this entry matches another entry. Subclasses must take care to check
+that the type of ``other`` is of a matching class, and then test extra cache-specific
+properties, such as image size.
+%End
+
+  private:
+    QgsAbstractContentCacheEntry( const QgsAbstractContentCacheEntry &rh );
+};
+
+class QgsAbstractContentCacheBase: QObject
+{
+%Docstring
+
+A QObject derived base class for :py:class:`QgsAbstractContentCache`.
+
+Required because template based class (such as :py:class:`QgsAbstractContentCache`) cannot use the Q_OBJECT macro.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsabstractcontentcache.h"
+%End
+  public:
+
+    QgsAbstractContentCacheBase( QObject *parent );
+%Docstring
+Constructor for QgsAbstractContentCacheBase, with the specified ``parent`` object.
+%End
+
+  signals:
+
+    void remoteContentFetched( const QString &url );
+%Docstring
+Emitted when the cache has finished retrieving content from a remote ``url``.
+%End
+
+  protected:
+
+    virtual bool checkReply( QNetworkReply *reply, const QString &path ) const;
+%Docstring
+Runs additional checks on a network ``reply`` to ensure that the reply content is
+consistent with that required by the cache.
+%End
+
+  protected slots:
+
+    virtual void onRemoteContentFetched( const QString &url, bool success );
+%Docstring
+Triggered after remote content (i.e. HTTP linked content at the given ``url``) has been fetched.
+
+The ``success`` argument will be ``True`` if the content was successfully fetched, or ``False`` if
+it was not fetched successfully.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsabstractcontentcache.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

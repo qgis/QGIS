@@ -160,7 +160,8 @@ void QgsAuthAuthoritiesEditor::refreshCaCertsView()
 
 static void removeChildren_( QTreeWidgetItem *item )
 {
-  Q_FOREACH ( QTreeWidgetItem *child, item->takeChildren() )
+  const auto constTakeChildren = item->takeChildren();
+  for ( QTreeWidgetItem *child : constTakeChildren )
   {
     delete child;
   }
@@ -270,7 +271,8 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
   QStringList untrustedids = mCertTrustCache.value( QgsAuthCertUtils::Untrusted );
 
   // Columns: Common Name, Serial #, Expiry Date
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  const auto constCerts = certs;
+  for ( const QSslCertificate &cert : constCerts )
   {
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
@@ -377,8 +379,8 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
 void QgsAuthAuthoritiesEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   checkSelection();
 }
 
@@ -413,7 +415,7 @@ void QgsAuthAuthoritiesEditor::checkSelection()
 
 void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
 {
-  Q_UNUSED( col );
+  Q_UNUSED( col )
   bool iscert = true;
 
   switch ( ( QgsAuthAuthoritiesEditor::CaType )item->type() )
@@ -452,7 +454,8 @@ void QgsAuthAuthoritiesEditor::btnAddCa_clicked()
 
     if ( dlg->certTrustPolicy() != QgsAuthCertUtils::DefaultTrust )
     {
-      Q_FOREACH ( const QSslCertificate &cert, certs )
+      const auto constCerts = certs;
+      for ( const QSslCertificate &cert : constCerts )
       {
         if ( !QgsApplication::authManager()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {
@@ -688,7 +691,8 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
     if ( dlg->certTrustPolicy() != QgsAuthCertUtils::DefaultTrust )
     {
       QList<QSslCertificate> certs( QgsApplication::authManager()->extraFileCAs() );
-      Q_FOREACH ( const QSslCertificate &cert, certs )
+      const auto constCerts = certs;
+      for ( const QSslCertificate &cert : constCerts )
       {
         if ( !QgsApplication::authManager()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {

@@ -21,8 +21,6 @@
 __author__ = 'Nyall Dawson'
 __date__ = 'February 2015'
 __copyright__ = '(C) 2015, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 # Generates (or updates) a unit test image mask, which is used to specify whether

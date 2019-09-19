@@ -32,6 +32,7 @@
 // version without notice, or even be removed.
 //
 
+#include <QSortFilterProxyModel>
 
 #include "ui_qgsbrowserdockwidgetbase.h"
 #include "ui_qgsbrowserlayerpropertiesbase.h"
@@ -41,13 +42,14 @@
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
-#include <QSortFilterProxyModel>
+#include "qgsdataitemguiprovider.h"
 
-class QgsBrowserModel;
+class QgsBrowserGuiModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
+class QgsDirectoryParamWidget;
 
 #define SIP_NO_FILE
 
@@ -84,19 +86,19 @@ class QgsBrowserPropertiesWidget : public QWidget
       */
     explicit QgsBrowserPropertiesWidget( QWidget *parent = nullptr );
     //! Factory method to create a new browser properties widget
-    static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, QWidget *parent = nullptr );
+    static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, const QgsDataItemGuiContext &context, QWidget *parent = nullptr );
     //! Stub
-    virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ) }
+    virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ); }
     //! Sets content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget *widget );
 
     /**
      * Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
-     * \param condensedMode set to true to enable condensed mode
+     * \param condensedMode set to TRUE to enable condensed mode
      * \since QGIS 2.10
      */
-    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ); }
+    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ) }
 };
 
 /**
@@ -118,7 +120,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
     /**
      * Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
-     * \param condensedMode set to true to enable condensed mode
+     * \param condensedMode set to TRUE to enable condensed mode
      * \since QGIS 2.10
      */
     void setCondensedMode( bool condensedMode ) override;
@@ -171,10 +173,9 @@ class GUI_EXPORT QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBro
       * \param parent parent widget
       */
     QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent = nullptr );
-    ~QgsBrowserPropertiesDialog() override;
 
     //! Create dialog from the given item and add it
-    void setItem( QgsDataItem *item );
+    void setItem( QgsDataItem *item, const QgsDataItemGuiContext &context );
 
   private:
     QgsBrowserPropertiesWidget *mPropertiesWidget = nullptr;

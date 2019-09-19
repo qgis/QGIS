@@ -1,21 +1,24 @@
 
 SET (GEONODE_SRCS
   qgsgeonodeprovider.cpp
+  qgsgeonodedataitems.cpp
 )
 
 SET(GEONODE_MOC_HDRS
+    qgsgeonodedataitems.h
 )
 
 IF (WITH_GUI)
   SET(GEONODE_SRCS ${GEONODE_SRCS}
-    qgsgeonodedataitems.cpp
+    qgsgeonodeprovidergui.cpp
+    qgsgeonodedataitemguiprovider.cpp
     qgsgeonodenewconnection.cpp
     qgsgeonodesourceselect.cpp
   )
   SET(GEONODE_MOC_HDRS ${GEONODE_MOC_HDRS}
+    qgsgeonodedataitemguiprovider.h
     qgsgeonodesourceselect.h
     qgsgeonodenewconnection.h
-    qgsgeonodedataitems.h
   )
 ENDIF ()
 
@@ -35,6 +38,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -53,7 +57,10 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (geonodeprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(geonodeprovider ui)
 ENDIF ()
+
+TARGET_COMPILE_DEFINITIONS(geonodeprovider PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

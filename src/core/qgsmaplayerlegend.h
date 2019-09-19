@@ -17,7 +17,7 @@
 #define QGSMAPLAYERLEGEND_H
 
 #include <QObject>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QDomDocument;
 class QDomElement;

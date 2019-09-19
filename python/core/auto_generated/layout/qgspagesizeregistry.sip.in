@@ -96,7 +96,7 @@ match to the portrait A4 size in the registry.
 Decodes a ``string`` representing a preset page size.
 The decoded page size will be stored in the ``size`` argument.
 
-:return: true if string was successfully decoded
+:return: ``True`` if string was successfully decoded
 %End
 
 };

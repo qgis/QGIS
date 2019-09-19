@@ -111,6 +111,7 @@ void QgsAddAttrDialog::accept()
 
 QgsField QgsAddAttrDialog::field() const
 {
+
   QgsDebugMsg( QStringLiteral( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
                .arg( mTypeBox->currentIndex() )
                .arg( mNameEdit->text() )
@@ -126,5 +127,7 @@ QgsField QgsAddAttrDialog::field() const
            mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
            mLength->value(),
            mPrec->value(),
-           mCommentEdit->text() );
+           mCommentEdit->text(),
+           static_cast<QVariant::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QVariant::Map ? QVariant::String : QVariant::Invalid
+         );
 }

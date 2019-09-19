@@ -36,6 +36,7 @@ class QgsLayoutRuler;
 class QComboBox;
 class QSlider;
 class QLabel;
+class QProgressBar;
 class QgsLayoutAppMenuProvider;
 class QgsLayoutItem;
 class QgsPanelWidgetStack;
@@ -77,6 +78,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QToolBar *atlasToolbar() override;
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) override;
     void removeDockWidget( QDockWidget *dock ) override;
+    void activateTool( StandardTool tool ) override;
 
   public slots:
 
@@ -381,6 +383,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     void updateWindowTitle();
 
+    void backgroundTaskCountChanged( int total );
+
   private:
 
     static bool sInitializedRegistry;
@@ -448,6 +452,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QAction *mActionCut = nullptr;
     QAction *mActionCopy = nullptr;
     QAction *mActionPaste = nullptr;
+    QProgressBar *mStatusProgressBar = nullptr;
 
     struct PanelStatus
     {
@@ -504,7 +509,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     bool showFileSizeWarning();
     bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
-    bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings, bool &exportAsText );
+    bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings );
+    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings );
 
     void toggleAtlasActions( bool enabled );
 
@@ -522,7 +528,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void atlasFeatureChanged( const QgsFeature &feature );
 
     //! Load predefined scales from the project's properties
-    void loadAtlasPredefinedScalesFromProject();
+    void loadPredefinedScalesFromProject();
+    QVector< double > predefinedScales() const;
 
     QgsLayoutAtlas *atlas();
 
@@ -536,6 +543,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QString defaultExportPath() const;
     void setLastExportPath( const QString &path ) const;
 
+    bool checkBeforeExport();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

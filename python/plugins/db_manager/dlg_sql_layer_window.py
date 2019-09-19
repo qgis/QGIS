@@ -32,7 +32,12 @@ from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardI
 from qgis.PyQt.Qsci import QsciAPIs
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import QgsProject, QgsDataSourceUri, QgsReadWriteContext
+from qgis.core import (
+    QgsProject,
+    QgsDataSourceUri,
+    QgsReadWriteContext,
+    QgsMapLayerType
+)
 from qgis.utils import OverrideCursor
 
 from .db_plugins import createDbPlugin
@@ -88,7 +93,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.setWindowTitle(
             u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
 
-        self.defaultLayerName = 'QueryLayer'
+        self.defaultLayerName = self.tr('QueryLayer')
 
         if self.allowMultiColumnPk:
             self.uniqueColumnCheck.setText(self.tr("Column(s) with unique values"))
@@ -147,13 +152,13 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
         # Update from layer
         # First the SQL from QgsDataSourceUri table
-        sql = uri.table()
+        sql = uri.table().replace('\n', ' ').strip()
         if uri.keyColumn() == '_uid_':
-            match = re.search(r'^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S | re.X)
+            match = re.search(r'^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S | re.X | re.IGNORECASE)
             if match:
                 sql = match.group(1)
         else:
-            match = re.search(r'^\((SELECT .+ FROM .+)\)$', sql, re.S | re.X)
+            match = re.search(r'^\((SELECT .+ FROM .+)\)$', sql, re.S | re.X | re.IGNORECASE)
             if match:
                 sql = match.group(1)
         # Need to check on table() since the parentheses were removed by the regexp
@@ -171,14 +176,20 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if uri.keyColumn() != '_uid_':
             self.uniqueColumnCheck.setCheckState(Qt.Checked)
             if self.allowMultiColumnPk:
-                itemsData = uri.keyColumn().split(',')
+                # Unchecked default values
                 for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-                    if item.data() in itemsData:
+                    if item.checkState() == Qt.Checked:
+                        item.setCheckState(Qt.Unchecked)
+                # Get key columns
+                itemsData = uri.keyColumn().split(',')
+                # Checked key columns
+                for keyColumn in itemsData:
+                    for item in self.uniqueModel.findItems(keyColumn):
                         item.setCheckState(Qt.Checked)
             else:
                 keyColumn = uri.keyColumn()
                 if self.uniqueModel.findItems(keyColumn):
-                    self.uniqueCombo.setEditText(keyColumn)
+                    self.uniqueCombo.setCurrentIndex(self.uniqueCombo.findText(keyColumn, Qt.MatchExactly))
 
         # Finally layer name, filter and selectAtId
         self.layerNameEdit.setText(layer.name())
@@ -230,7 +241,6 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def loadPreset(self, name):
         query = QgsProject.instance().readEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/query')[0]
-        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/name')[0]
         self.editSql.setText(query)
 
     def clearSql(self):
@@ -252,7 +262,6 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             if old_model:
                 old_model.deleteLater()
 
-            cols = []
             quotedCols = []
 
             try:
@@ -303,9 +312,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
 
-        from qgis.core import QgsMapLayer
-
-        layerType = QgsMapLayer.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayer.RasterLayer
+        layerType = QgsMapLayerType.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayerType.RasterLayer
 
         # get a new layer name
         names = []
@@ -368,7 +375,6 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                 query = query.strip()[:-1]
 
             # get all the columns
-            cols = []
             quotedCols = []
             connector = self.db.connector
             if self.aliasSubQuery:
@@ -462,10 +468,6 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                 items[0].setCheckState(Qt.Checked)
             else:
                 self.uniqueCombo.setEditText(defaultUniqueCol)
-        try:
-            pass
-        except:
-            pass
 
     def copySelectedResults(self):
         if len(self.viewResult.selectedIndexes()) <= 0:

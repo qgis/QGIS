@@ -36,6 +36,7 @@
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
+#include "qgsgui.h"
 
 #include <QMessageBox>
 #include <QTreeWidgetItem>
@@ -56,6 +57,8 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
   , mInterface( interface )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( buttonboxOptions, &QDialogButtonBox::clicked, this, &eVisGenericEventBrowserGui::buttonboxOptions_clicked );
   connect( chkboxApplyPathRulesToDocs, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged );
   connect( cboxEventImagePathField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged );
@@ -79,9 +82,6 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
   connect( pbtnResetUseOnlyFilenameData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetUseOnlyFilenameData_clicked );
   connect( rbtnManualCompassOffset, &QRadioButton::toggled, this, &eVisGenericEventBrowserGui::rbtnManualCompassOffset_toggled );
   connect( tableFileTypeAssociations, &QTableWidget::cellDoubleClicked, this, &eVisGenericEventBrowserGui::tableFileTypeAssociations_cellDoubleClicked );
-
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "eVis/browser-geometry" ) ).toByteArray() );
 
   if ( initBrowser() )
   {
@@ -146,9 +146,6 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapC
  */
 eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "eVis/browser-geometry" ), saveGeometry() );
-
   //Clean up, disconnect the highlighting routine and refresh the canvas to clear highlighting symbol
   if ( mCanvas )
   {
@@ -228,7 +225,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     if ( mInterface->activeLayer() )
     {
       //verify that the active layer is a vector layer
-      if ( QgsMapLayer::VectorLayer == mInterface->activeLayer()->type() )
+      if ( QgsMapLayerType::VectorLayer == mInterface->activeLayer()->type() )
       {
         mVectorLayer = qobject_cast< QgsVectorLayer * >( mInterface->activeLayer() );
         mCanvas = mInterface->mapCanvas();
@@ -252,7 +249,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     if ( mCanvas->currentLayer() )
     {
       //verify that the active layer is a vector layer
-      if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer()->type() )
+      if ( QgsMapLayerType::VectorLayer == mCanvas->currentLayer()->type() )
       {
         mVectorLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() );
       }
@@ -844,7 +841,7 @@ void eVisGenericEventBrowserGui::buttonboxOptions_clicked( QAbstractButton *butt
  */
 void eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   mConfiguration.setApplyPathRulesToDocs( chkboxApplyPathRulesToDocs->isChecked() );
 }
 
@@ -854,7 +851,7 @@ void eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged( int st
  */
 void eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mIgnoreEvent )
   {
     mConfiguration.setEventImagePathField( cboxEventImagePathField->currentText() );
@@ -882,7 +879,7 @@ void eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged( in
  */
 void eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mIgnoreEvent )
   {
     mConfiguration.setCompassBearingField( cboxCompassBearingField->currentText() );
@@ -910,7 +907,7 @@ void eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged( in
  */
 void eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mIgnoreEvent )
   {
     mConfiguration.setCompassOffsetField( cboxCompassOffsetField->currentText() );
@@ -938,7 +935,7 @@ void eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged( int
  */
 void eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   mConfiguration.setDisplayCompassBearing( chkboxDisplayCompassBearing->isChecked() );
   cboxCompassBearingField->setEnabled( chkboxDisplayCompassBearing->isChecked() );
 }
@@ -949,7 +946,7 @@ void eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged( int s
  */
 void eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   mConfiguration.setEventImagePathRelative( chkboxEventImagePathRelative->isChecked() );
 
   if ( chkboxEventImagePathRelative->isChecked() && "" == leBasePath->text() )
@@ -965,7 +962,7 @@ void eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged( int 
  */
 void eVisGenericEventBrowserGui::chkboxUseOnlyFilename_stateChanged( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   mConfiguration.setUseOnlyFilename( chkboxUseOnlyFilename->isChecked() );
 }
 

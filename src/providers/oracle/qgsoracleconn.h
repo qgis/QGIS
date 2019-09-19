@@ -33,6 +33,7 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QMutex>
 
 class QgsField;
 
@@ -81,14 +82,16 @@ struct QgsOracleLayerProperty
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( QgsWkbTypes::Type type, types )
+    const auto constTypes = types;
+    for ( QgsWkbTypes::Type type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += "|";
       typeString += QString::number( type );
     }
     QString sridString;
-    Q_FOREACH ( int srid, srids )
+    const auto constSrids = srids;
+    for ( int srid : constSrids )
     {
       if ( !sridString.isEmpty() )
         sridString += "|";
@@ -112,8 +115,20 @@ class QgsOracleConn : public QObject
 {
     Q_OBJECT
   public:
-    static QgsOracleConn *connectDb( const QgsDataSourceUri &uri );
+    static QgsOracleConn *connectDb( const QgsDataSourceUri &uri, bool transaction );
     void disconnect();
+
+    /**
+     * Try to reconnect to database after timeout
+     */
+    void reconnect();
+
+    void ref() { ++mRef; }
+    void unref();
+
+    //! A connection needs to be locked when it uses transactions, see QgsOracleConn::{begin,commit,rollback}
+    void lock() { mLock.lock(); }
+    void unlock() { mLock.unlock(); }
 
     /**
      * Double quote a Oracle identifier for placement in a SQL string.
@@ -124,6 +139,12 @@ class QgsOracleConn : public QObject
      * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
+
+    bool exec( const QString &query, bool logError = true, QString *errorMessage = nullptr );
+
+    bool begin( QSqlDatabase &db );
+    bool commit( QSqlDatabase &db );
+    bool rollback( QSqlDatabase &db );
 
     /**
      * Gets the list of supported layers.
@@ -184,7 +205,7 @@ class QgsOracleConn : public QObject
     operator QSqlDatabase() { return mDatabase; }
 
   private:
-    explicit QgsOracleConn( QgsDataSourceUri uri );
+    explicit QgsOracleConn( QgsDataSourceUri uri, bool transaction );
     ~QgsOracleConn() override;
 
     bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );
@@ -202,6 +223,10 @@ class QgsOracleConn : public QObject
 
     //! List of the supported layers
     QVector<QgsOracleLayerProperty> mLayersSupported;
+
+    mutable QMutex mLock;
+    bool mTransaction = false;
+    int mSavePointId = 1;
 
     static QMap<QString, QgsOracleConn *> sConnections;
     static int snConnections;

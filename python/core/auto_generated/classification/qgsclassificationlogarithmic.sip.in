@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationlogarithmic.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsClassificationLogarithmic : QgsClassificationMethod
+{
+%Docstring
+Implementation of a logarithmic scale method
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationlogarithmic.h"
+%End
+  public:
+    QgsClassificationLogarithmic();
+    virtual QgsClassificationMethod *clone() const;
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+    virtual QIcon icon() const;
+
+    virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationlogarithmic.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

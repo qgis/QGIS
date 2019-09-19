@@ -37,6 +37,8 @@
 #include <cmath>
 #include <QLinkedList>
 #include <geos_c.h>
+#include <memory>
+#include <vector>
 
 #include "qgis_core.h"
 
@@ -81,10 +83,15 @@ namespace pal
       PointSet *extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
       /**
+       * Returns a copy of the point set.
+       */
+      std::unique_ptr< PointSet > clone() const;
+
+      /**
        * Tests whether point set contains a specified point.
        * \param x x-coordinate of point
        * \param y y-coordinate of point
-       * \returns true if point set contains a specified point
+       * \returns TRUE if point set contains a specified point
        */
       bool containsPoint( double x, double y ) const;
 
@@ -95,7 +102,7 @@ namespace pal
        * \param width label width
        * \param height label height
        * \param alpha label angle
-       * \returns true if point set completely contains candidate label
+       * \returns TRUE if point set completely contains candidate label
        */
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
@@ -107,6 +114,16 @@ namespace pal
       static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
                                  QLinkedList<PointSet *> &shapes_final,
                                  double xrm, double yrm );
+
+      /**
+       * Extends linestrings by the specified amount at the start and end of the line,
+       * by extending the existing lines following the same direction as the original line
+       * start or end.
+       *
+       * The \a smoothDistance argument specifies the distance over which to smooth the direction
+       * of the line at its start and end points.
+       */
+      void extendLineByDistance( double startDistance, double endDistance, double smoothDistance );
 
       /**
        * Returns the squared minimum distance between the point set geometry and the point (px,py)
@@ -131,7 +148,7 @@ namespace pal
         max[1] = ymax;
       }
 
-      //! Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset.
+      //! Returns NULLPTR if this isn't a hole. Otherwise returns pointer to parent pointset.
       PointSet *getHoleOf() { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }
@@ -157,20 +174,20 @@ namespace pal
       double length() const;
 
       /**
-       * Returns true if pointset is closed.
+       * Returns TRUE if pointset is closed.
        */
       bool isClosed() const;
+
+      int nbPoints;
+      std::vector< double > x;
+      std::vector< double > y;   // points order is counterclockwise
 
     protected:
       mutable GEOSGeometry *mGeos = nullptr;
       mutable bool mOwnsGeom = false;
 
-      int nbPoints;
-      double *x = nullptr;
-      double *y = nullptr;   // points order is counterclockwise
-
       int *cHull = nullptr;
-      int cHullSize;
+      int cHullSize = 0;
 
       int type;
 

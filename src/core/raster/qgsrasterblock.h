@@ -53,7 +53,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \param dataType raster data type
      *  \param width width of data matrix
      *  \param height height of data matrix
-     *  \returns true on success
+     *  \returns TRUE on success
      */
     bool reset( Qgis::DataType dataType, int width, int height );
 
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsRasterBlock
     // and works also if block is valid but empty - difference between valid and empty?
 
     /**
-     * \brief Returns true if the block is valid (correctly filled with data).
+     * \brief Returns TRUE if the block is valid (correctly filled with data).
      *  An empty block may still be valid (if zero size block was requested).
      *  If the block is not valid, error may be retrieved by error() method.
      */
@@ -71,8 +71,8 @@ class CORE_EXPORT QgsRasterBlock
     void setValid( bool valid ) { mValid = valid; }
 
     /**
-     * Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
-     *  This method does not return true if size is not zero and all values are
+     * Returns TRUE if block is empty, i.e. its size is 0 (zero rows or cols).
+     *  This method does not return TRUE if size is not zero and all values are
      *  'no data' (null).
      */
     bool isEmpty() const;
@@ -119,10 +119,10 @@ class CORE_EXPORT QgsRasterBlock
       return typeSize( mDataType );
     }
 
-    //! Returns true if data type is numeric
+    //! Returns TRUE if data type is numeric
     static bool typeIsNumeric( Qgis::DataType type );
 
-    //! Returns true if data type is color
+    //! Returns TRUE if data type is color
     static bool typeIsColor( Qgis::DataType type );
 
     //! Returns data type
@@ -132,17 +132,18 @@ class CORE_EXPORT QgsRasterBlock
     static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
 
     /**
-     * True if the block has no data value.
-     * \returns true if the block has no data value
+     * TRUE if the block has no data value.
+     * \returns TRUE if the block has no data value
      * \see noDataValue(), setNoDataValue(), resetNoDataValue()
      */
     bool hasNoDataValue() const { return mHasNoDataValue; }
 
     /**
-     * Returns true if the block may contain no data. It does not guarantee
+     * Returns TRUE if the block may contain no data. It does not guarantee
      * that it really contains any no data. It can be used to speed up processing.
      * Not the difference between this method and hasNoDataValue().
-     * \returns true if the block may contain no data */
+     * \returns TRUE if the block may contain no data
+    */
     bool hasNoData() const
     {
       return mHasNoDataValue || mNoDataBitmap;
@@ -175,30 +176,66 @@ class CORE_EXPORT QgsRasterBlock
      * Gets byte array representing a value.
      * \param dataType data type
      * \param value value
-     * \returns byte array representing the value */
+     * \returns byte array representing the value
+    */
     static QByteArray valueBytes( Qgis::DataType dataType, double value );
 
     /**
-     * \brief Read a single value if type of block is numeric. If type is color,
-     *  returned value is undefined.
-     *  \param row row index
-     *  \param column column index
-     *  \returns value */
+     * Read a single value if type of block is numeric. If type is color,
+     * returned value is undefined.
+     * \param row row index
+     * \param column column index
+     * \returns value
+     * \see valueAndNoData()
+    */
     double value( int row, int column ) const
     {
       return value( static_cast< qgssize >( row ) * mWidth + column );
     }
 
     /**
-     * \brief Read a single value if type of block is numeric. If type is color,
-     *  returned value is undefined.
-     *  \param index data matrix index (long type in Python)
-     *  \returns value */
+     * Reads a single value from the pixel at \a row and \a column, if type of block is numeric. If type is color,
+     * returned value is undefined.
+     *
+     * Additionally, the \a isNoData argument will be set to TRUE if the pixel represents a nodata value. This method
+     * is more efficient then calling isNoData() and value() separately.
+     *
+     * \note Not available in Python bindings
+     * \see value()
+     * \see isNoData()
+     * \since QGIS 3.6
+     */
+    double valueAndNoData( int row, int column, bool &isNoData ) const SIP_SKIP
+    {
+      return valueAndNoData( static_cast< qgssize >( row ) * mWidth + column, isNoData );
+    }
+
+    /**
+     * Reads a single value if type of block is numeric. If type is color,
+     * returned value is undefined.
+     * \param index data matrix index (long type in Python)
+     * \returns value
+     * \see valueAndNoData()
+    */
     double value( qgssize index ) const;
 
     /**
+     * Reads a single value from the pixel at the specified data matrix \a index, if type of block is numeric. If type is color,
+     * returned value is undefined.
+     *
+     * Additionally, the \a isNoData argument will be set to TRUE if the pixel represents a nodata value. This method
+     * is more efficient then calling isNoData() and value() separately.
+     *
+     * \note Not available in Python bindings
+     * \see value()
+     * \see isNoData()
+     * \since QGIS 3.6
+     */
+    double valueAndNoData( qgssize index, bool &isNoData ) const SIP_SKIP;
+
+    /**
      * Gives direct access to the raster block data.
-     * The data type of the block must be Qgis::Byte otherwise it returns null pointer.
+     * The data type of the block must be Qgis::Byte otherwise it returns NULLPTR.
      * Useful for most efficient read access.
      * \note not available in Python bindings
      * \since QGIS 3.4
@@ -214,7 +251,8 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Read a single color
      *  \param row row index
      *  \param column column index
-     *  \returns color */
+     *  \returns color
+    */
     QRgb color( int row, int column ) const
     {
       if ( !mImage ) return NO_DATA_COLOR;
@@ -225,7 +263,8 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * \brief Read a single value
      *  \param index data matrix index (long type in Python)
-     *  \returns color */
+     *  \returns color
+    */
     QRgb color( qgssize index ) const
     {
       int row = static_cast< int >( std::floor( static_cast< double >( index ) / mWidth ) );
@@ -234,29 +273,35 @@ class CORE_EXPORT QgsRasterBlock
     }
 
     /**
-     * \brief Check if value at position is no data
-     *  \param row row index
-     *  \param column column index
-     *  \returns true if value is no data */
+     * Checks if value at position is no data
+     * \param row row index
+     * \param column column index
+     * \returns TRUE if value is no data
+     * \see valueAndNoData()
+    */
     bool isNoData( int row, int column ) const
     {
       return isNoData( static_cast< qgssize >( row ) * mWidth + column );
     }
 
     /**
-     * \brief Check if value at position is no data
-     *  \param row row index
-     *  \param column column index
-     *  \returns true if value is no data */
+     * Check if value at position is no data
+     * \param row row index
+     * \param column column index
+     * \returns TRUE if value is no data
+     * \see valueAndNoData()
+    */
     bool isNoData( qgssize row, qgssize column ) const
     {
       return isNoData( row * static_cast< qgssize >( mWidth ) + column );
     }
 
     /**
-     * \brief Check if value at position is no data
-     *  \param index data matrix index (long type in Python)
-     *  \returns true if value is no data */
+     * Check if value at position is no data
+     * \param index data matrix index (long type in Python)
+     * \returns TRUE if value is no data
+     * \see valueAndNoData()
+    */
     bool isNoData( qgssize index ) const
     {
       if ( !mHasNoDataValue && !mNoDataBitmap )
@@ -293,7 +338,8 @@ class CORE_EXPORT QgsRasterBlock
      *  \param row row index
      *  \param column column index
      *  \param value the value to be set
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool setValue( int row, int column, double value )
     {
       return setValue( static_cast< qgssize >( row ) * mWidth + column, value );
@@ -303,7 +349,8 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Set value on index (indexed line by line)
      *  \param index data matrix index (long type in Python)
      *  \param value the value to be set
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool setValue( qgssize index, double value )
     {
       if ( !mData )
@@ -325,7 +372,8 @@ class CORE_EXPORT QgsRasterBlock
      *  \param row row index
      *  \param column column index
      *  \param color the color to be set, QRgb value
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool setColor( int row, int column, QRgb color )
     {
       return setColor( static_cast< qgssize >( row ) * mWidth + column, color );
@@ -335,7 +383,8 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Set color on index (indexed line by line)
      *  \param index data matrix index (long type in Python)
      *  \param color the color to be set, QRgb value
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool setColor( qgssize index, QRgb color )
     {
       if ( !mImage )
@@ -358,7 +407,7 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * Gives direct read/write access to the raster RGB data.
-     * The data type of the block must be Qgis::ARGB32 or Qgis::ARGB32_Premultiplied otherwise it returns null pointer.
+     * The data type of the block must be Qgis::ARGB32 or Qgis::ARGB32_Premultiplied otherwise it returns NULLPTR.
      * Useful for most efficient read/write access to RGB blocks.
      * \note not available in Python bindings
      * \since QGIS 3.4
@@ -374,7 +423,8 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Set no data on pixel
      *  \param row row index
      *  \param column column index
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool setIsNoData( int row, int column )
     {
       return setIsNoData( static_cast< qgssize >( row ) * mWidth + column );
@@ -383,7 +433,8 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * \brief Set no data on pixel
      *  \param index data matrix index (long type in Python)
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool setIsNoData( qgssize index )
     {
       if ( mHasNoDataValue )
@@ -413,12 +464,14 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * \brief Set the whole block to no data
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool setIsNoData();
 
     /**
      * \brief Set the whole block to no data except specified rectangle
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool setIsNoDataExcept( QRect exceptRect );
 
     /**
@@ -428,7 +481,8 @@ class CORE_EXPORT QgsRasterBlock
      * method. This method has no effect for raster blocks with an explicit no data value set.
      *  \param row row index
      *  \param column column index
-     *  \since QGIS 2.10 */
+     *  \since QGIS 2.10
+    */
     void setIsData( int row, int column )
     {
       setIsData( static_cast< qgssize >( row )*mWidth + column );
@@ -440,7 +494,8 @@ class CORE_EXPORT QgsRasterBlock
      * In this case it is possible to reset a pixel to flag it as having valid data using this
      * method. This method has no effect for raster blocks with an explicit no data value set.
      *  \param index data matrix index (long type in Python)
-     *  \since QGIS 2.10 */
+     *  \since QGIS 2.10
+    */
     void setIsData( qgssize index )
     {
       if ( mHasNoDataValue )
@@ -526,7 +581,8 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * \brief Convert data to different type.
      *  \param destDataType dest data type
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool convert( Qgis::DataType destDataType );
 
     /**
@@ -536,7 +592,7 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * Sets the block data via an \a image.
-     * \returns true on success
+     * \returns TRUE on success
     */
     bool setImage( const QImage *image );
 
@@ -596,7 +652,8 @@ class CORE_EXPORT QgsRasterBlock
      * Test if value is nodata comparing to noDataValue
      * \param value tested value
      * \param noDataValue no data value
-     * \returns true if value is nodata */
+     * \returns TRUE if value is nodata
+    */
     static bool isNoDataValue( double value, double noDataValue )
     {
       // TODO: optimize no data value test by memcmp()
@@ -609,12 +666,14 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * Test if value is nodata for specific band
      * \param value tested value
-     * \returns true if value is nodata */
+     * \returns TRUE if value is nodata
+    */
     bool isNoDataValue( double value ) const;
 
     /**
      * Allocate no data bitmap
-     *  \returns true on success */
+     *  \returns TRUE on success
+    */
     bool createNoDataBitmap();
 
     /**
@@ -624,7 +683,8 @@ class CORE_EXPORT QgsRasterBlock
      *  \param srcDataType source data type
      *  \param destDataType dest data type
      *  \param size block size (width * height)
-     *  \returns block of data in destDataType */
+     *  \returns block of data in destDataType
+    */
     static void *convert( void *srcData, Qgis::DataType srcDataType, Qgis::DataType destDataType, qgssize size );
 
     // Valid
@@ -683,25 +743,18 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
   {
     case Qgis::Byte:
       return static_cast< double >( ( static_cast< quint8 * >( data ) )[index] );
-      break;
     case Qgis::UInt16:
       return static_cast< double >( ( static_cast< quint16 * >( data ) )[index] );
-      break;
     case Qgis::Int16:
       return static_cast< double >( ( static_cast< qint16 * >( data ) )[index] );
-      break;
     case Qgis::UInt32:
       return static_cast< double >( ( static_cast< quint32 * >( data ) )[index] );
-      break;
     case Qgis::Int32:
       return static_cast< double >( ( static_cast< qint32 * >( data ) )[index] );
-      break;
     case Qgis::Float32:
       return static_cast< double >( ( static_cast< float * >( data ) )[index] );
-      break;
     case Qgis::Float64:
       return static_cast< double >( ( static_cast< double * >( data ) )[index] );
-      break;
     default:
       QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( type ) );
       break;
@@ -751,6 +804,47 @@ inline double QgsRasterBlock::value( qgssize index ) const SIP_SKIP
     return std::numeric_limits<double>::quiet_NaN();
   }
   return readValue( mData, mDataType, index );
+}
+
+inline double QgsRasterBlock::valueAndNoData( qgssize index, bool &isNoData ) const SIP_SKIP
+{
+  if ( !mData )
+  {
+    QgsDebugMsg( QStringLiteral( "Data block not allocated" ) );
+    isNoData = true;
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  if ( index >= static_cast< qgssize >( mWidth )*mHeight )
+  {
+    QgsDebugMsg( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+    isNoData = true; // we consider no data if outside
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+
+  const double val = readValue( mData, mDataType, index );
+
+  if ( !mHasNoDataValue && !mNoDataBitmap )
+  {
+    isNoData = false;
+    return val;
+  }
+
+  if ( mHasNoDataValue )
+  {
+    isNoData = isNoDataValue( val );
+    return val;
+  }
+  // use no data bitmap
+  if ( !mNoDataBitmap )
+  {
+    // no data are not defined
+    isNoData = false;
+    return val;
+  }
+
+  // no data is a bitmap
+  isNoData = QgsRasterBlock::isNoData( index );
+  return val;
 }
 
 inline bool QgsRasterBlock::isNoDataValue( double value ) const SIP_SKIP

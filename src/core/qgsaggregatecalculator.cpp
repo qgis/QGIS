@@ -39,14 +39,22 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
 {
   mFilterExpression = parameters.filter;
   mDelimiter = parameters.delimiter;
+  mOrderBy = parameters.orderBy;
+}
+
+void QgsAggregateCalculator::setFidsFilter( const QgsFeatureIds &fids )
+{
+  mFidsSet = true;
+  mFidsFilter = fids;
 }
 
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
-    const QString &fieldOrExpression,
-    QgsExpressionContext *context, bool *ok ) const
+    const QString &fieldOrExpression, QgsExpressionContext *context, bool *ok ) const
 {
   if ( ok )
     *ok = false;
+
+  QgsFeatureRequest request = QgsFeatureRequest();
 
   if ( !mLayer )
     return QVariant();
@@ -66,9 +74,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     expression.reset( new QgsExpression( fieldOrExpression ) );
 
     if ( expression->hasParserError() || !expression->prepare( context ) )
-    {
       return QVariant();
-    }
   }
 
   QSet<QString> lst;
@@ -77,16 +83,21 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   else
     lst = expression->referencedColumns();
 
-  QgsFeatureRequest request = QgsFeatureRequest()
-                              .setFlags( ( expression && expression->needsGeometry() ) ?
-                                         QgsFeatureRequest::NoFlags :
-                                         QgsFeatureRequest::NoGeometry )
-                              .setSubsetOfAttributes( lst, mLayer->fields() );
+  request.setFlags( ( expression && expression->needsGeometry() ) ?
+                    QgsFeatureRequest::NoFlags :
+                    QgsFeatureRequest::NoGeometry )
+  .setSubsetOfAttributes( lst, mLayer->fields() );
+
+  if ( mFidsSet )
+    request.setFilterFids( mFidsFilter );
+
+  if ( !mOrderBy.empty() )
+    request.setOrderBy( mOrderBy );
+
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
   if ( context )
     request.setExpressionContext( *context );
-
   //determine result type
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )
@@ -110,9 +121,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     resultType = v.type();
   }
   else
-  {
     resultType = mLayer->fields().at( attrNum ).type();
-  }
 
   QgsFeatureIterator fit = mLayer->getFeatures( request );
   return calculate( aggregate, fit, resultType, attrNum, expression.get(), mDelimiter, context, ok );
@@ -163,6 +172,8 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     return StringMaximumLength;
   else if ( normalized == QLatin1String( "concatenate" ) )
     return StringConcatenate;
+  else if ( normalized == QLatin1String( "concatenate_unique" ) )
+    return StringConcatenateUnique;
   else if ( normalized == QLatin1String( "collect" ) )
     return GeometryCollect;
   else if ( normalized == QLatin1String( "array_agg" ) )
@@ -470,6 +481,13 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
           *ok = true;
         return concatenateStrings( fit, attr, expression, context, delimiter );
       }
+      else if ( aggregate == StringConcatenateUnique )
+      {
+        //special case
+        if ( ok )
+          *ok = true;
+        return concatenateStrings( fit, attr, expression, context, delimiter, true );
+      }
 
       bool statOk = false;
       QgsStringStatisticalSummary::Statistic stat = stringStatFromAggregate( aggregate, &statOk );
@@ -529,6 +547,7 @@ QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregat
     case StringMinimumLength:
     case StringMaximumLength:
     case StringConcatenate:
+    case StringConcatenateUnique:
     case GeometryCollect:
     case ArrayAggregate:
     {
@@ -577,6 +596,7 @@ QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAgg
     case ThirdQuartile:
     case InterQuartileRange:
     case StringConcatenate:
+    case StringConcatenateUnique:
     case GeometryCollect:
     case ArrayAggregate:
     {
@@ -624,6 +644,7 @@ QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFro
     case StringMinimumLength:
     case StringMaximumLength:
     case StringConcatenate:
+    case StringConcatenateUnique:
     case GeometryCollect:
     case ArrayAggregate:
     {
@@ -712,30 +733,32 @@ QVariant QgsAggregateCalculator::calculateGeometryAggregate( QgsFeatureIterator 
 }
 
 QVariant QgsAggregateCalculator::concatenateStrings( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
-    QgsExpressionContext *context, const QString &delimiter )
+    QgsExpressionContext *context, const QString &delimiter, bool unique )
 {
   Q_ASSERT( expression || attr >= 0 );
 
   QgsFeature f;
-  QString result;
+  QStringList results;
   while ( fit.nextFeature( f ) )
   {
-    if ( !result.isEmpty() )
-      result += delimiter;
-
+    QString result;
     if ( expression )
     {
       Q_ASSERT( context );
       context->setFeature( f );
       QVariant v = expression->evaluate( context );
-      result += v.toString();
+      result = v.toString();
     }
     else
     {
-      result += f.attribute( attr ).toString();
+      result = f.attribute( attr ).toString();
     }
+
+    if ( !unique || !results.contains( result ) )
+      results << result;
   }
-  return result;
+
+  return results.join( delimiter );
 }
 
 QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate aggregate ) const
@@ -750,6 +773,7 @@ QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate
       return 0;
 
     case StringConcatenate:
+    case StringConcatenateUnique:
       return ""; // zero length string - not null!
 
     case ArrayAggregate:
@@ -828,3 +852,4 @@ QVariant QgsAggregateCalculator::calculateArrayAggregate( QgsFeatureIterator &fi
   }
   return array;
 }
+

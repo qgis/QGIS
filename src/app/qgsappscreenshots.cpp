@@ -42,9 +42,10 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   : mSaveDirectory( saveDirectory )
 {
   QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=fk_polygon:integer&field=my_double:double&key=pk" );
-  mLineLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  mLineLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ), options );
   layerDef = QStringLiteral( "Polygon?crs=epsg:2056&field=pk:integer&field=my_text:string&field=my_integer:integer&field=height:double&key=pk" );
-  mPolygonLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Polygon Layer" ), QStringLiteral( "memory" ) );
+  mPolygonLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Polygon Layer" ), QStringLiteral( "memory" ), options );
 
   QString dataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mRasterLayer = new QgsRasterLayer( dataPath + "/raster/with_color_table.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
@@ -128,7 +129,6 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
     linearGrad.setColorAt( 1, Qt::white );
 
     // create image and fill it with gradient
-    QImage image( pixmap.width(), pixmap.height(), QImage::Format_ARGB32 );
     QPainter painter( &img );
     painter.fillRect( img.rect(), linearGrad );
     pixmap = QPixmap::fromImage( img );
@@ -282,7 +282,7 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
   Q_ASSERT( idx >= 0 );
   dlg->mRendererDialog->cboRenderers->setCurrentIndex( idx );
   QCoreApplication::processEvents();
-  Qgs25DRendererWidget *w = dynamic_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
+  Qgs25DRendererWidget *w = qobject_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
   w->mHeightWidget->setField( QStringLiteral( "height" ) );
   Q_ASSERT( w->mHeightWidget->expression() == QLatin1String( "\"height\"" ) );
   QCoreApplication::processEvents();

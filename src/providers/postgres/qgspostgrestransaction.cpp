@@ -71,9 +71,7 @@ bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, 
   }
 
   QgsDebugMsg( QStringLiteral( "Transaction sql: %1" ).arg( sql ) );
-  mConn->lock();
   QgsPostgresResult r( mConn->PQexec( sql, true ) );
-  mConn->unlock();
   if ( r.PQresultStatus() == PGRES_BAD_RESPONSE ||
        r.PQresultStatus() == PGRES_FATAL_ERROR )
   {

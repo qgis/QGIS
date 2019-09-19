@@ -96,8 +96,7 @@ class CORE_EXPORT QgsFieldConstraints
     ConstraintStrength constraintStrength( Constraint constraint ) const;
 
     /**
-     * Sets the strength of a constraint. Note that the strength of constraints which originate
-     * from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
+     * Sets the strength of a constraint. Constraints default to ConstraintStrengthHard unless
      * explicitly changed.
      * \see constraintStrength()
      */

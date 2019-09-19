@@ -89,7 +89,7 @@ void QgsColorSwatchGrid::refreshColors()
 
 void QgsColorSwatchGrid::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
   draw( painter );
   painter.end();
@@ -265,14 +265,14 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
 
 void QgsColorSwatchGrid::focusInEvent( QFocusEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mFocused = true;
   repaint();
 }
 
 void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mFocused = false;
   repaint();
 }

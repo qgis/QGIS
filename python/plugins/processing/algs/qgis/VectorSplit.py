@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.core import (QgsApplication,
@@ -108,7 +104,7 @@ class VectorSplit(QgisAlgorithm):
         for current, i in enumerate(uniqueValues):
             if feedback.isCanceled():
                 break
-            fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
+            fName = '{0}_{1}.gpkg'.format(baseName, str(i).strip())
             feedback.pushInfo(self.tr('Creating layer: {}').format(fName))
 
             sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)

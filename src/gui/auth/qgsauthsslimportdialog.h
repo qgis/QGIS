@@ -63,7 +63,7 @@
 #define QGSAUTHSSLIMPORTDIALOG_H
 
 #include "ui_qgsauthsslimportdialog.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include <QDialog>
 #include <QAbstractSocket>

@@ -633,11 +633,11 @@ void QgsAuthOAuth2Edit::removeTokenCacheFile()
     return;
   }
 
-  QStringList cachefiles;
-  cachefiles << QgsAuthOAuth2Config::tokenCachePath( authcfg, false )
-             << QgsAuthOAuth2Config::tokenCachePath( authcfg, true );
+  const QStringList cachefiles = QStringList()
+                                 << QgsAuthOAuth2Config::tokenCachePath( authcfg, false )
+                                 << QgsAuthOAuth2Config::tokenCachePath( authcfg, true );
 
-  Q_FOREACH ( const QString &cachefile, cachefiles )
+  for ( const QString &cachefile : cachefiles )
   {
     if ( QFile::exists( cachefile ) && !QFile::remove( cachefile ) )
     {
@@ -990,7 +990,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
   if ( jsonData.contains( QStringLiteral( "grant_types" ) ) && jsonData.contains( QStringLiteral( "redirect_uris" ) ) )
   {
     const QStringList grantTypes( jsonData[QStringLiteral( "grant_types" ) ].toStringList() );
-    if ( grantTypes.count( ) )
+    if ( !grantTypes.isEmpty( ) )
     {
       QString grantType = grantTypes[0];
       if ( grantType == QLatin1Literal( "authorization_code" ) )
@@ -1004,7 +1004,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     }
     //Set redirect_uri
     const QStringList  redirectUris( jsonData[QStringLiteral( "redirect_uris" ) ].toStringList() );
-    if ( redirectUris.count( ) )
+    if ( !redirectUris.isEmpty( ) )
     {
       QString redirectUri = redirectUris[0];
       leRedirectUrl->setText( redirectUri );
@@ -1119,6 +1119,7 @@ void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
   bool res = false;
   QByteArray json = QJsonWrapper::toJson( QVariant( mSoftwareStatement ), &res, &errStr );
   QNetworkRequest registerRequest( regUrl );
+  QgsSetRequestInitiatorClass( registerRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
   registerRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/json" ) );
   QNetworkReply *registerReply;
   // For testability: use GET if protocol is file://
@@ -1142,6 +1143,7 @@ void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
     QString config = leSoftwareStatementConfigUrl->text();
     QUrl configUrl( config );
     QNetworkRequest configRequest( configUrl );
+    QgsSetRequestInitiatorClass( configRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
     QNetworkReply *configReply = QgsNetworkAccessManager::instance()->get( configRequest );
     mDownloading = true;
     connect( configReply, &QNetworkReply::finished, this, &QgsAuthOAuth2Edit::configReplyFinished, Qt::QueuedConnection );

@@ -9,12 +9,23 @@
 #include <string>
 #include <limits>
 
-MDAL::LoaderGdalGrib::LoaderGdalGrib( const std::string &gribFile )
-  : MDAL::LoaderGdal( gribFile, "GRIB" ),
+MDAL::DriverGdalGrib::DriverGdalGrib( )
+  : MDAL::DriverGdal(
+      "GRIB",
+      "GDAL Grib",
+      "*.grb;;*.grb2;;*.bin;;*.grib;;*.grib1;;*.grib2"
+  , "GRIB" ),
     mRefTime( std::numeric_limits<double>::min() )
 {}
 
-bool MDAL::LoaderGdalGrib::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,
+MDAL::DriverGdalGrib *MDAL::DriverGdalGrib::create()
+{
+  return new DriverGdalGrib();
+}
+
+MDAL::DriverGdalGrib::~DriverGdalGrib() = default;
+
+bool MDAL::DriverGdalGrib::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,
     const metadata_hash &metadata, std::string &band_name,
     double *time, bool *is_vector, bool *is_x
                                         )

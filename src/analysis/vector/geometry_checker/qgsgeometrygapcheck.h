@@ -22,58 +22,70 @@
 #include "qgsgeometrycheckerror.h"
 #include "qgsfeatureid.h"
 
+/**
+ * \ingroup analysis
+ * An error produced by a QgsGeometryGapCheck.
+ *
+ * \since QGIS 3.4
+ */
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
   public:
+
+    /**
+     * Create a new gap check error produced by \a check on the layer \a layerId.
+     * The \a geometry of the gap needs to be in map coordinates.
+     * The \a neighbors are a map of layer ids and feature ids.
+     * The \a area of the gap in map units and the bounding box of the gap in map units too.
+     */
     QgsGeometryGapCheckError( const QgsGeometryCheck *check,
                               const QString &layerId,
                               const QgsGeometry &geometry,
                               const QMap<QString, QgsFeatureIds> &neighbors,
                               double area,
-                              const QgsRectangle &gapAreaBBox )
+                              const QgsRectangle &gapAreaBBox,
+                              const QgsRectangle &contextArea )
       : QgsGeometryCheckError( check, layerId, FID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
+      , mContextBoundingBox( contextArea )
     {
     }
+
+    QgsRectangle contextBoundingBox() const override;
+
+    /**
+     * A map of layers and feature ids of the neighbors of the gap.
+     */
     const QMap<QString, QgsFeatureIds> &neighbors() const { return mNeighbors; }
 
-    bool isEqual( QgsGeometryCheckError *other ) const override
-    {
-      QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
-      return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), mCheck->context()->reducedTolerance ) && err->neighbors() == neighbors();
-    }
+    bool isEqual( QgsGeometryCheckError *other ) const override;
 
-    bool closeMatch( QgsGeometryCheckError *other ) const override
-    {
-      QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
-      return err && err->layerId() == layerId() && err->neighbors() == neighbors();
-    }
+    bool closeMatch( QgsGeometryCheckError *other ) const override;
 
-    void update( const QgsGeometryCheckError *other ) override
-    {
-      QgsGeometryCheckError::update( other );
-      // Static cast since this should only get called if isEqual == true
-      const QgsGeometryGapCheckError *err = static_cast<const QgsGeometryGapCheckError *>( other );
-      mNeighbors = err->mNeighbors;
-      mGapAreaBBox = err->mGapAreaBBox;
-    }
+    void update( const QgsGeometryCheckError *other ) override;
 
-    bool handleChanges( const QgsGeometryCheck::Changes & /*changes*/ ) override
-    {
-      return true;
-    }
+    bool handleChanges( const QgsGeometryCheck::Changes & /*changes*/ ) override;
 
-    QgsRectangle affectedAreaBBox() const override
-    {
-      return mGapAreaBBox;
-    }
+    QgsRectangle affectedAreaBBox() const override;
+
+    QMap<QString, QgsFeatureIds > involvedFeatures() const override;
+
+    QIcon icon() const override;
 
   private:
     QMap<QString, QgsFeatureIds> mNeighbors;
     QgsRectangle mGapAreaBBox;
+    QgsRectangle mContextBoundingBox;
 };
 
+
+/**
+ * \ingroup analysis
+ * Checks for gaps between neighbouring polygons.
+ *
+ * \since QGIS 3.4
+ */
 class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
 {
     Q_GADGET
@@ -81,8 +93,9 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     //! Resolution methods for geometry gap checks
     enum ResolutionMethod
     {
-      MergeLongestEdge,
-      NoChange
+      MergeLongestEdge, //!< Merge the gap with the polygon with the longest shared edge.
+      NoChange, //!< Do not handle the error.
+      AddToAllowedGaps
     };
     Q_ENUM( ResolutionMethod )
 
@@ -93,6 +106,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
      * is disabled.
      */
     explicit QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+
+    void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) override;
 
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
@@ -118,6 +133,10 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
                             QgsGeometryGapCheckError *err, Changes &changes, QString &errMsg ) const;
 
     const double mGapThresholdMapUnits;
+    QgsWeakMapLayerPointer mAllowedGapsLayer;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mAllowedGapsSource;
+    double mAllowedGapsBuffer;
+
 };
 
 #endif // QGS_GEOMETRY_GAP_CHECK_H

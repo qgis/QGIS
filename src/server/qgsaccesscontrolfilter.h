@@ -21,7 +21,6 @@
 #define QGSACCESSCONTROLPLUGIN_H
 
 #include <QMultiMap>
-#include <QList>
 #include <QString>
 #include "qgis_server.h"
 #include "qgis_sip.h"
@@ -31,7 +30,6 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 class QgsServerInterface;
 class QgsMapLayer;
 class QgsVectorLayer;
-class QgsExpression;
 class QgsFeature;
 
 
@@ -107,7 +105,7 @@ class SERVER_EXPORT QgsAccessControlFilter
      * Are we authorized to modify the following geometry
      * \param layer the layer to control
      * \param feature the concerned feature
-     * \returns true if we are allowed to edit
+     * \returns TRUE if we are allowed to edit
      */
     virtual bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 

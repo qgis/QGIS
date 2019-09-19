@@ -53,10 +53,7 @@ static bool _initRenderer( const QString &name, QgsRendererWidgetFunc f, const Q
 
   if ( !iconName.isEmpty() )
   {
-    QString iconPath = QgsApplication::defaultThemePath() + iconName;
-    QPixmap pix;
-    if ( pix.load( iconPath ) )
-      m->setIcon( pix );
+    m->setIcon( QgsApplication::getThemeIcon( iconName ) );
   }
 
   QgsDebugMsg( "Set for " + name );
@@ -89,6 +86,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
 
   // can be embedded in vector layer properties
@@ -103,7 +101,8 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
   QgsRendererRegistry *reg = QgsApplication::rendererRegistry();
   QStringList renderers = reg->renderersList( mLayer );
-  Q_FOREACH ( const QString &name, renderers )
+  const auto constRenderers = renderers;
+  for ( const QString &name : constRenderers )
   {
     QgsRendererAbstractMetadata *m = reg->rendererMetadata( name );
     cboRenderers->addItem( m->icon(), m->visibleName(), name );
@@ -134,7 +133,8 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
 void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &widgets, const char *slot )
 {
-  Q_FOREACH ( QWidget *widget, widgets )
+  const auto constWidgets = widgets;
+  for ( QWidget *widget : constWidgets )
   {
     if ( QgsPropertyOverrideButton *w = qobject_cast<QgsPropertyOverrideButton *>( widget ) )
     {
@@ -196,6 +196,16 @@ void QgsRendererPropertiesDialog::setMapCanvas( QgsMapCanvas *canvas )
   }
 }
 
+void QgsRendererPropertiesDialog::setContext( const QgsSymbolWidgetContext &context )
+{
+  mMapCanvas = context.mapCanvas();
+  mMessageBar = context.messageBar();
+  if ( mActiveWidget )
+  {
+    mActiveWidget->setContext( context );
+  }
+}
+
 void QgsRendererPropertiesDialog::setDockMode( bool dockMode )
 {
   mDockMode = dockMode;
@@ -249,10 +259,11 @@ void QgsRendererPropertiesDialog::rendererChanged()
     stackedWidget->setCurrentWidget( mActiveWidget );
     if ( mActiveWidget->renderer() )
     {
-      if ( mMapCanvas )
+      if ( mMapCanvas || mMessageBar )
       {
         QgsSymbolWidgetContext context;
         context.setMapCanvas( mMapCanvas );
+        context.setMessageBar( mMessageBar );
         mActiveWidget->setContext( context );
       }
       changeOrderBy( mActiveWidget->renderer()->orderBy(), mActiveWidget->renderer()->orderByEnabled() );

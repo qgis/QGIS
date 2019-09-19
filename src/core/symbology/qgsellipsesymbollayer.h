@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSELLIPSESYMBOLLAYERV2_H
-#define QGSELLIPSESYMBOLLAYERV2_H
+#ifndef QGSELLIPSESYMBOLLAYER_H
+#define QGSELLIPSESYMBOLLAYER_H
 
 #define DEFAULT_ELLIPSE_JOINSTYLE    Qt::MiterJoin
 
@@ -50,10 +50,12 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setSymbolName( const QString &name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }
 
-    void setSymbolWidth( double w ) { mSymbolWidth = w; }
+    void setSize( double size ) override;
+
+    void setSymbolWidth( double w );
     double symbolWidth() const { return mSymbolWidth; }
 
-    void setSymbolHeight( double h ) { mSymbolHeight = h; }
+    void setSymbolHeight( double h );
     double symbolHeight() const { return mSymbolHeight; }
 
     Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
@@ -173,6 +175,6 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSELLIPSESYMBOLLAYERV2_H
+#endif // QGSELLIPSESYMBOLLAYER_H
 
 

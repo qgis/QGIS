@@ -155,6 +155,19 @@
         <item row="0" column="0">
          <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
         </item>
+        <item row="0" column="1">
+         <widget class="QToolButton" name="mStoreFilterExpressionButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::MenuButtonPopup</enum>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -191,6 +204,9 @@
          <property name="checkable">
           <bool>true</bool>
          </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
          <attribute name="buttonGroup">
           <string notr="true">mMainViewButtonGroup</string>
          </attribute>
@@ -212,6 +228,9 @@
           <bool>true</bool>
          </property>
          <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
           <bool>true</bool>
          </property>
          <attribute name="buttonGroup">
@@ -387,9 +406,6 @@
    <property name="toolTip">
     <string>Save edits (Ctrl+S)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
   </action>
   <action name="mActionReload">
    <property name="icon">
@@ -415,7 +431,7 @@
   <action name="mActionDeleteSelected">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDeleteSelectedFeatures.svg</normaloff>:/images/themes/default/mActionDeleteSelectedFeatures.svg</iconset>
    </property>
    <property name="text">
     <string>Delete selected features</string>
@@ -585,9 +601,6 @@
    <property name="toolTip">
     <string>Delete field (Ctrl+L)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+L</string>
-   </property>
   </action>
   <action name="mActionAddAttribute">
    <property name="icon">
@@ -649,6 +662,57 @@
     <string>Dock Attribute Table</string>
    </property>
   </action>
+  <action name="mActionStoredFilterExpressions">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stored Filter Expressions</string>
+   </property>
+   <property name="toolTip">
+    <string>Stored expressions to filter features</string>
+   </property>
+  </action>
+  <action name="mActionHandleStoreFilterExpression">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="toolTip">
+    <string>Handle expression (save or delete)</string>
+   </property>
+  </action>
+  <action name="mActionSaveAsStoredFilterExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionUnchecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Expression as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save expression under defined name</string>
+   </property>
+  </action>
+  <action name="mActionEditStoredFilterExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</normaloff>:/images/themes/default/mActionHandleStoreFilterExpressionChecked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit the stored expression (change name or content)</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -686,35 +750,6 @@
   <tabstop>mTableViewButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

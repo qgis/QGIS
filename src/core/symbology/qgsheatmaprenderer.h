@@ -16,7 +16,7 @@
 #define QGSHEATMAPRENDERER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgsexpression.h"
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     //reimplemented methods
     QgsHeatmapRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
-    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
     void stopRender( QgsRenderContext &context ) override;
     //! \note symbolForFeature2 in Python bindings
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
@@ -57,6 +57,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included

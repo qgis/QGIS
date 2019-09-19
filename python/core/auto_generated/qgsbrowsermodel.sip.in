@@ -22,6 +22,14 @@ items for the different data providers and folders accessible to users.
 QgsBrowserModel models are not initially populated and use a deferred initialization
 approach. After constructing a QgsBrowserModel, a call must be made
 to initialize() in order to populate the model.
+
+.. note::
+
+   Since QGIS 3.10 it is recommended to use QgsBrowserGuiModel from GUI library.
+   Implementation of data items used from QgsBrowserModel should not trigger any GUI
+   operations such as opening of widgets/dialogs or showing message boxes. Such actions
+   should be implemented in a new QgsDataItemGuiProvider subclass which is used
+   by QgsBrowserGuiModel (but not by QgsBrowserModel).
 %End
 
 %TypeHeaderCode
@@ -90,7 +98,7 @@ the model are searched.
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 %Docstring
-Returns the data item at the specified index, or a None if no item
+Returns the data item at the specified index, or ``None`` if no item
 exists at the index.
 %End
 
@@ -113,9 +121,22 @@ items, i.e. it does not fetch children.
 :param matchFlag: supported is Qt.MatchExactly and Qt.MatchStartsWith which has reverse meaning, i.e. find
                   item with the longest match from start with path (to get as close/deep as possible to deleted item).
 
-:return: model index, invalid if item not found *
+:return: model index, invalid if item not found
 %End
 
+
+    QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
+%Docstring
+Returns index of layer item with given uri. It only searches in currently fetched
+items, i.e. it does not fetch children.
+
+:param uri: item uri
+:param index: the current index of the parent (to search for children)
+
+:return: model index, invalid if item not found
+
+.. versionadded:: 3.6
+%End
 
  void connectItem( QgsDataItem *item ) /Deprecated/;
 %Docstring
@@ -125,12 +146,23 @@ items, i.e. it does not fetch children.
 
     bool initialized() const;
 %Docstring
-Returns true if the model has been initialized.
+Returns ``True`` if the model has been initialized.
 
 .. seealso:: :py:func:`initialize`
 %End
 
+    QMap<QString, QgsDirectoryItem *> driveItems() const;
+%Docstring
+Returns a map of the root drive items shown in the browser.
+
+These correspond to the top-level directory items shown, e.g. on Windows the C:\, D:\, etc,
+and on Linux the "/" root directory.
+
+.. versionadded:: 3.6
+%End
+
   signals:
+
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 %Docstring
 Emitted when item children fetch was finished
@@ -198,6 +230,7 @@ Delayed initialization, needed because the provider registry must be already pop
 
 .. seealso:: :py:func:`initialized`
 %End
+
 
   protected:
     void addRootItems();

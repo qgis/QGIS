@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 import os
 from .v_net import variableOutput
@@ -48,20 +44,20 @@ def processCommand(alg, parameters, context, feedback):
     threshold = alg.parameterAsDouble(parameters, 'threshold', context)
 
     # Create the v.net connect command for from_layer integration
-    command = u"v.net input={} points={} output={} operation=connect threshold={} arc_layer=1 node_layer=2".format(
+    command = 'v.net -s input={} points={} output={} operation=connect threshold={} arc_layer=1 node_layer=2'.format(
         lineLayer, fromLayer, intLayer, threshold)
     alg.commands.append(command)
 
     # Do it again with to_layer
-    command = u"v.net input={} points={} output={} operation=connect threshold={} arc_layer=1 node_layer=3".format(
+    command = 'v.net -s input={} points={} output={} operation=connect threshold={} arc_layer=1 node_layer=3'.format(
         intLayer, toLayer, netLayer, threshold)
     alg.commands.append(command)
 
     # Connect the point layer database to the layer 2 of the network
-    command = u"v.db.connect -o map={} table={} layer=2".format(netLayer, fromLayer)
+    command = 'v.db.connect -o map={} table={} layer=2'.format(netLayer, fromLayer)
     alg.commands.append(command)
 
-    command = u"v.db.connect -o map={} table={} layer=3".format(netLayer, toLayer)
+    command = 'v.db.connect -o map={} table={} layer=3'.format(netLayer, toLayer)
     alg.commands.append(command)
 
     # remove undesired parameters

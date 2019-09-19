@@ -21,8 +21,8 @@ void main()
     // which all keep "w" set to 1. correctly we should use translation matrix...
     vec4 offsetPos = inst * vec4(vertexPosition, 1.0) + vec4(pos, 0.0);
 
-    worldNormal = normalize(modelViewNormal * mat3(instNormal) * vertexNormal);
-    worldPosition = vec3(modelView * offsetPos);
+    worldNormal = normalize(mat3(instNormal) * vertexNormal);
+    worldPosition = vec3(offsetPos);
 
     gl_Position = modelViewProjection * offsetPos;
 }

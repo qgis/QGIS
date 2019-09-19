@@ -43,6 +43,7 @@
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsogrprovider.h"
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
@@ -256,22 +257,15 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   QString ext = fi.suffix();
   QString driver = QgsVectorFileWriter::driverForExtension( ext );
 
-  QLibrary ogrLib( QgsProviderRegistry::instance()->library( QStringLiteral( "ogr" ) ) );
-  if ( !ogrLib.load() )
+  QString createError;
+  bool success = QgsOgrProviderUtils::createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs(), createError );
+  if ( !success )
   {
     return false;
   }
-  typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type, const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem & );
-  createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( ogrLib.resolve( "createEmptyDataSource" ) );
-  if ( !createEmptyDataSource )
-  {
-    return false;
-  }
-  if ( !createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs() ) )
-  {
-    return false;
-  }
-  QgsVectorLayer *layer = new QgsVectorLayer( file, QFileInfo( file ).baseName(), QStringLiteral( "ogr" ) );
+
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( file, QFileInfo( file ).baseName(), QStringLiteral( "ogr" ), options );
   if ( !layer->isValid() )
   {
     delete layer;
@@ -298,7 +292,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   QStringList toRemove;
   for ( QgsMapLayer *maplayer : QgsProject::instance()->mapLayers() )
   {
-    if ( dynamic_cast<QgsVectorLayer *>( maplayer ) &&
+    if ( qobject_cast<QgsVectorLayer *>( maplayer ) &&
          static_cast<QgsVectorLayer *>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
     {
       toRemove.append( maplayer->id() );

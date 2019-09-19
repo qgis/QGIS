@@ -31,6 +31,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
+#include "qgsapplication.h"
 
 #include <QAction>
 #include <QEventLoop>
@@ -162,7 +163,7 @@ QList<QgsVectorLayer *> QgsGeometryCheckerSetupTab::getSelectedLayers()
     if ( item->checkState() == Qt::Checked )
     {
       QString layerId = item->data( LayerIdRole ).toString();
-      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+      QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
       if ( layer )
       {
         layers.append( layer );
@@ -253,8 +254,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
       }
     }
   }
-  QgsVectorLayer *lineLayerCheckLayer = ui.comboLineLayerIntersection->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) ) : nullptr;
-  QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) ) : nullptr;
+  QgsVectorLayer *lineLayerCheckLayer = ui.comboLineLayerIntersection->isEnabled() ? QgsProject::instance()->mapLayer<QgsVectorLayer *>( ui.comboLineLayerIntersection->currentData().toString() ) : nullptr;
+  QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? QgsProject::instance()->mapLayer<QgsVectorLayer *>( ui.comboBoxFollowBoundaries->currentData().toString() ) : nullptr;
   if ( layers.contains( lineLayerCheckLayer ) || layers.contains( followBoundaryCheckLayer ) )
   {
     QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The selected input layers cannot contain a layer also selected for a topology check." ) );
@@ -321,8 +322,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
         createErrors.append( errMsg );
         continue;
       }
-
-      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ) );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ), options );
       if ( selectedOnly )
       {
         QgsFeature feature;
@@ -421,12 +422,12 @@ void QgsGeometryCheckerSetupTab::runChecks()
   // LineLayerIntersection check is enabled, make sure there is also a feature pool for that layer
   if ( ui.checkLineLayerIntersection->isChecked() && !featurePools.keys().contains( ui.comboLineLayerIntersection->currentData().toString() ) )
   {
-    QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) );
+    QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( ui.comboLineLayerIntersection->currentData().toString() );
     Q_ASSERT( layer );
     featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
   }
 
-  QgsGeometryCheckContext *context = new QgsGeometryCheckContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext() );
+  QgsGeometryCheckContext *context = new QgsGeometryCheckContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext(), QgsProject::instance() );
 
   QList<QgsGeometryCheck *> checks;
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )

@@ -195,8 +195,8 @@ void QgsImageOperation::convertToGrayscale( QImage &image, const GrayscaleMode m
 
 void QgsImageOperation::GrayscalePixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
   switch ( mMode )
   {
     case GrayscaleOff:
@@ -250,8 +250,8 @@ void QgsImageOperation::adjustBrightnessContrast( QImage &image, const int brigh
 
 void QgsImageOperation::BrightnessContrastPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
   int red = adjustColorComponent( qRed( rgb ), mBrightness, mContrast );
   int blue = adjustColorComponent( qBlue( rgb ), mBrightness, mContrast );
   int green = adjustColorComponent( qGreen( rgb ), mBrightness, mContrast );
@@ -274,8 +274,8 @@ void QgsImageOperation::adjustHueSaturation( QImage &image, const double saturat
 
 void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
   QColor tmpColor( rgb );
   int h, s, l;
   tmpColor.getHsl( &h, &s, &l );
@@ -346,8 +346,8 @@ void QgsImageOperation::multiplyOpacity( QImage &image, const double factor )
 
 void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
   rgb = qRgba( qRed( rgb ), qGreen( rgb ), qBlue( rgb ), qBound( 0.0, std::round( mFactor * qAlpha( rgb ) ), 255.0 ) );
 }
 
@@ -595,32 +595,6 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
   {
     image = pImage->convertToFormat( originalFormat );
     delete pImage;
-  }
-}
-
-void QgsImageOperation::StackBlurLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine )
-{
-  unsigned char *p = reinterpret_cast< unsigned char * >( startRef );
-  int rgba[4];
-  int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
-  if ( !mForwardDirection )
-  {
-    p += ( lineLength - 1 ) * increment;
-    increment = -increment;
-  }
-
-  for ( int i = mi1; i <= mi2; ++i )
-  {
-    rgba[i] = p[i] << 4;
-  }
-
-  p += increment;
-  for ( int j = 1; j < lineLength; ++j, p += increment )
-  {
-    for ( int i = mi1; i <= mi2; ++i )
-    {
-      p[i] = ( rgba[i] += ( ( p[i] << 4 ) - rgba[i] ) * mAlpha / 16 ) >> 4;
-    }
   }
 }
 

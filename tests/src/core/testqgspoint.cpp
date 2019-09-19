@@ -41,6 +41,7 @@ class TestQgsPointXY: public QObject
     void toQPointF();
     void operators();
     void toString();
+    void asWkt();
     void sqrDist();
     void distance();
     void compare();
@@ -48,6 +49,7 @@ class TestQgsPointXY: public QObject
     void vector(); //tests for QgsVector
     void asVariant();
     void referenced();
+    void isEmpty();
 
   private:
     QgsPointXY mPoint1;
@@ -86,6 +88,11 @@ void TestQgsPointXY::equality()
   QVERIFY( point4 != point1 );
   QVERIFY( !( point4 == point3 ) );
   QVERIFY( point4 != point3 );
+
+  QVERIFY( QgsPointXY() != point1 );
+  QVERIFY( QgsPointXY() != QgsPointXY( 0, 0 ) );
+  QVERIFY( point1 != QgsPointXY() );
+  QVERIFY( QgsPointXY( 0, 0 ) != QgsPointXY() );
 }
 
 void TestQgsPointXY::gettersSetters()
@@ -186,6 +193,13 @@ void TestQgsPointXY::toString()
   mReport += "<p>" + mPoint3.toString( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toString( 2 )  +  "</p>";
   QCOMPARE( mPoint1.toString( 2 ), QString( "20.00,-20.00" ) );
+  QCOMPARE( QgsPointXY().toString( 2 ), QString( "0.00,0.00" ) );
+}
+
+void TestQgsPointXY::asWkt()
+{
+  QCOMPARE( QgsPointXY().asWkt(), QString( "POINT EMPTY" ) );
+  QCOMPARE( mPoint1.asWkt(), QString( "POINT(20 -20)" ) );
 }
 
 void TestQgsPointXY::sqrDist()
@@ -361,6 +375,31 @@ void TestQgsPointXY::referenced()
   QCOMPARE( p2.x(), p1.x() );
   QCOMPARE( p2.y(), p1.y() );
   QCOMPARE( p2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+}
+
+void TestQgsPointXY::isEmpty()
+{
+  QgsPointXY pointEmpty;
+  QVERIFY( pointEmpty.isEmpty() );
+  QCOMPARE( pointEmpty.x(), 0.0 );
+  QCOMPARE( pointEmpty.y(), 0.0 );
+  pointEmpty.setX( 7 );
+  QVERIFY( ! pointEmpty.isEmpty() );
+  QCOMPARE( pointEmpty.x(), 7.0 );
+  QCOMPARE( pointEmpty.y(), 0.0 );
+  pointEmpty = QgsPointXY();
+  QVERIFY( pointEmpty.isEmpty() );
+  QCOMPARE( pointEmpty.x(), 0.0 );
+  QCOMPARE( pointEmpty.y(), 0.0 );
+  pointEmpty.setY( 4 );
+  QVERIFY( ! pointEmpty.isEmpty() );
+  QCOMPARE( pointEmpty.x(), 0.0 );
+  QCOMPARE( pointEmpty.y(), 4.0 );
+
+  QVERIFY( QgsPointXY( QgsPoint() ).isEmpty() );
+  // "can't" be empty
+  QVERIFY( ! QgsPointXY( QPoint() ).isEmpty() );
+  QVERIFY( ! QgsPointXY( QPointF() ).isEmpty() );
 }
 
 QGSTEST_MAIN( TestQgsPointXY )

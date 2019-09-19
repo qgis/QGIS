@@ -17,6 +17,8 @@
 #include "qgsoracletablemodel.h"
 #include "qgsoraclenewconnection.h"
 #include "qgsoraclecolumntypethread.h"
+#include "qgsoracleprovider.h"
+
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
@@ -26,8 +28,96 @@
 
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QSqlError>
 
-QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause );
+bool deleteLayer( const QString &uri, QString &errCause )
+{
+  QgsDebugMsg( "deleting layer " + uri );
+
+  QgsDataSourceUri dsUri( uri );
+  QString ownerName = dsUri.schema();
+  QString tableName = dsUri.table();
+  QString geometryCol = dsUri.geometryColumn();
+
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri, false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  if ( ownerName != conn->currentUser() )
+  {
+    errCause = QObject::tr( "%1 not owner of the table %2." )
+               .arg( ownerName )
+               .arg( tableName );
+    conn->disconnect();
+    return false;
+  }
+
+  QSqlQuery qry( *conn );
+
+  // check the geometry column count
+  if ( !QgsOracleProvider::exec( qry, QString( "SELECT count(*)"
+                                 " FROM user_tab_columns"
+                                 " WHERE table_name=? AND data_type='SDO_GEOMETRY' AND data_type_owner='MDSYS'" ),
+                                 QVariantList() << tableName )
+       || !qry.next() )
+  {
+    errCause = QObject::tr( "Unable to determine number of geometry columns of layer %1.%2: \n%3" )
+               .arg( ownerName )
+               .arg( tableName )
+               .arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+
+  int count = qry.value( 0 ).toInt();
+
+  QString dropTable;
+  QString cleanView;
+  QVariantList args;
+  if ( !geometryCol.isEmpty() && count > 1 )
+  {
+    // the table has more geometry columns, drop just the geometry column
+    dropTable = QString( "ALTER TABLE %1 DROP COLUMN %2" )
+                .arg( QgsOracleConn::quotedIdentifier( tableName ) )
+                .arg( QgsOracleConn::quotedIdentifier( geometryCol ) );
+    cleanView = QString( "DELETE FROM mdsys.user_sdo_geom_metadata WHERE table_name=? AND column_name=?" );
+    args << tableName << geometryCol;
+  }
+  else
+  {
+    // drop the table
+    dropTable = QString( "DROP TABLE %1" )
+                .arg( QgsOracleConn::quotedIdentifier( tableName ) );
+    cleanView = QString( "DELETE FROM mdsys.user_sdo_geom_metadata WHERE table_name=%1" );
+    args << tableName;
+  }
+
+  if ( !QgsOracleProvider::exec( qry, dropTable, QVariantList() ) )
+  {
+    errCause = QObject::tr( "Unable to delete layer %1.%2: \n%3" )
+               .arg( ownerName )
+               .arg( tableName )
+               .arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+
+  if ( !QgsOracleProvider::exec( qry, cleanView, args ) )
+  {
+    errCause = QObject::tr( "Unable to clean metadata %1.%2: \n%3" )
+               .arg( ownerName )
+               .arg( tableName )
+               .arg( qry.lastError().text() );
+    conn->disconnect();
+    return false;
+  }
+
+  conn->disconnect();
+  return true;
+}
 
 // ---------------------------------------------------------------------------
 QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -57,12 +147,14 @@ void QgsOracleConnectionItem::refresh()
 {
   stop();
 
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     deleteChildItem( child );
   }
 
-  Q_FOREACH ( QgsDataItem *item, createChildren() )
+  const auto constCreateChildren = createChildren();
+  for ( QgsDataItem *item : constCreateChildren )
   {
     addChildItem( item, true );
   }
@@ -70,7 +162,8 @@ void QgsOracleConnectionItem::refresh()
 
 void QgsOracleConnectionItem::setAllAsPopulated()
 {
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     child->setState( Populated );
   }
@@ -244,7 +337,8 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     if ( u.layerType != QLatin1String( "vector" ) )
     {
@@ -265,9 +359,9 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
       {
         uri.setSrid( authid.mid( 5 ) );
       }
-      QgsDebugMsgLevel( "URI " + uri.uri(), 3 );
+      QgsDebugMsgLevel( "URI " + uri.uri( false ), 3 );
 
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri(), QStringLiteral( "oracle" ), srcLayer->crs() ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ), QStringLiteral( "oracle" ), srcLayer->crs() ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
@@ -336,12 +430,12 @@ QList<QAction *> QgsOracleLayerItem::actions( QWidget *parent )
   return lst;
 }
 
-void QgsOracleLayerItem::deleteLayer()
+bool QgsOracleLayerItem::deleteLayer()
 {
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
                               QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.ownerName, mLayerProperty.tableName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+    return true;
 
   QString errCause;
   bool res = ::deleteLayer( mUri, errCause );
@@ -354,6 +448,8 @@ void QgsOracleLayerItem::deleteLayer()
     QMessageBox::information( nullptr, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
     deleteLater();
   }
+
+  return res;
 }
 
 QString QgsOracleLayerItem::createUri()
@@ -373,8 +469,8 @@ QString QgsOracleLayerItem::createUri()
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )
     uri.setKeyColumn( mLayerProperty.pkCols[0] );
-  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ), 3 );
-  return uri.uri();
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 3 );
+  return uri.uri( false );
 }
 
 // ---------------------------------------------------------------------------
@@ -490,7 +586,18 @@ void QgsOracleRootItem::newConnection()
 
 QMainWindow *QgsOracleRootItem::sMainWindow = nullptr;
 
-QGISEXTERN void registerGui( QMainWindow *mainWindow )
+QgsDataItem *QgsOracleDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
-  QgsOracleRootItem::sMainWindow = mainWindow;
+  Q_UNUSED( pathIn )
+  return new QgsOracleRootItem( parentItem, "Oracle", "oracle:" );
+}
+
+QString QgsOracleDataItemProvider::name()
+{
+  return QStringLiteral( "ORACLE" );
+}
+
+int QgsOracleDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
 }

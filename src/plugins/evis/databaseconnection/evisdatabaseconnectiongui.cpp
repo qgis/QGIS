@@ -27,6 +27,7 @@
 #include "evisdatabaseconnectiongui.h"
 
 #include "qgsapplication.h"
+#include "qgsgui.h"
 
 #include <QMessageBox>
 #include <QTextStream>
@@ -49,6 +50,8 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
   : QDialog( parent, fl )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &eVisDatabaseConnectionGui::buttonBox_accepted );
   connect( cboxDatabaseType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged );
   connect( cboxPredefinedQueryList, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisDatabaseConnectionGui::cboxPredefinedQueryList_currentIndexChanged );
@@ -57,9 +60,6 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
   connect( pbtnOpenFile, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnOpenFile_clicked );
   connect( pbtnRunQuery, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnRunQuery_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &eVisDatabaseConnectionGui::showHelp );
-
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "eVis/db-geometry" ) ).toByteArray() );
 
   mTempOutputFileList = temporaryFileList;
 
@@ -89,12 +89,6 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
   pbtnOpenFile->setToolTip( tr( "Open File" ) );
   pbtnLoadPredefinedQueries->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.svg" ) ) );
   pbtnLoadPredefinedQueries->setToolTip( tr( "Open File" ) );
-}
-
-eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
-{
-  QSettings settings;
-  settings.setValue( QStringLiteral( "eVis/db-geometry" ), saveGeometry() );
 }
 
 /*
@@ -159,7 +153,7 @@ void eVisDatabaseConnectionGui::buttonBox_accepted()
 */
 void eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged( int currentIndex )
 {
-  Q_UNUSED( currentIndex );
+  Q_UNUSED( currentIndex )
   if ( cboxDatabaseType->currentText() == QLatin1String( "MYSQL" ) )
   {
     lblDatabaseHost->setEnabled( true );
@@ -545,5 +539,5 @@ void eVisDatabaseConnectionGui::pbtnRunQuery_clicked()
 
 void eVisDatabaseConnectionGui::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#database-connection" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_evis.html#database-connection" ) );
 }

@@ -82,7 +82,7 @@ Sets the layout's name.
     virtual QgsProject *layoutProject() const = 0;
 %Docstring
 The project associated with the layout. Used to get access to layers, map themes,
-relations and various other bits. It is never null.
+relations and various other bits. It is never ``None``.
 %End
 
     virtual QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
@@ -103,6 +103,18 @@ Sets the layout's state from a DOM element. ``layoutElement`` is the DOM node co
 %Docstring
 Refreshes the layout when global layout related options change.
 %End
+
+    virtual bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+with the layout.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 

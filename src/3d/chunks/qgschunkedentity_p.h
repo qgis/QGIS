@@ -133,7 +133,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! max. length for replacement queue
     int mMaxLoadedChunks = 512;
 
-    //! Entity that shows bounding boxes of active chunks (null if not enabled)
+    //! Entity that shows bounding boxes of active chunks (NULLPTR if not enabled)
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
 
     //! job that is currently being processed (asynchronously in a worker thread)

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 print('CTEST_FULL_OUTPUT')
 
@@ -213,7 +211,7 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
-            "LAYERS": "Hello_grp,Country_grp",
+            "LAYERS": "Country_grp,Hello_grp",
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "-16817707,-6318936.5,5696513,16195283.5",

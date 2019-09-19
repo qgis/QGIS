@@ -31,6 +31,10 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgssettings.h"
+#include "qgsproviderregistry.h"
+#ifdef HAVE_3D
+#include "qgsmeshlayer3drendererwidget.h"
+#endif
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -60,6 +64,15 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsMeshLayerProperties::apply );
 
   connect( mMeshLayer, &QgsMeshLayer::dataChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
+
+#ifdef HAVE_3D
+  mVector3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, canvas, mOptsPage_3DView );
+
+  mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
+  mOptsPage_3DView->layout()->addWidget( mVector3DWidget );
+#else
+  delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
+#endif
 
   // update based on lyr's current state
   syncToLayer();
@@ -110,6 +123,7 @@ void QgsMeshLayerProperties::syncToLayer()
    */
   mLayerOrigNameLineEd->setText( mMeshLayer->name() );
   leDisplayName->setText( mMeshLayer->name() );
+  whileBlocking( mCrsSelector )->setCrs( mMeshLayer->crs() );
 
   if ( mMeshLayer && mMeshLayer->dataProvider() )
   {
@@ -125,6 +139,13 @@ void QgsMeshLayerProperties::syncToLayer()
    * Styling Tab
    */
   mRendererMeshPropertiesWidget->syncToLayer();
+
+  /*
+   * 3D View Tab
+   */
+#ifdef HAVE_3D
+  mVector3DWidget->setLayer( mMeshLayer );
+#endif
 }
 
 void QgsMeshLayerProperties::addDataset()
@@ -137,7 +158,7 @@ void QgsMeshLayerProperties::addDataset()
   QString openFileString = QFileDialog::getOpenFileName( nullptr,
                            tr( "Load mesh datasets" ),
                            openFileDir,
-                           QStringLiteral( "All files(*.*);;Results Files XMDF(*.xmdf);;Results Files DAT(*.dat)" ) );
+                           QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
 
   if ( openFileString.isEmpty() )
   {
@@ -176,6 +197,13 @@ void QgsMeshLayerProperties::apply()
    */
   mRendererMeshPropertiesWidget->apply();
 
+  /*
+   * 3D View Tab
+   */
+#ifdef HAVE_3D
+  mVector3DWidget->apply();
+#endif
+
   //make sure the layer is redrawn
   mMeshLayer->triggerRepaint();
 
@@ -185,6 +213,7 @@ void QgsMeshLayerProperties::apply()
 
 void QgsMeshLayerProperties::changeCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
   mMeshLayer->setCrs( crs );
 }
 

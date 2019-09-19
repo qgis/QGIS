@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '02.04.2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -212,6 +210,22 @@ class TestQgsLayerTreeView(unittest.TestCase):
             groupname + '-' + self.layer5.name(),
             groupname + '-' + self.layer4.name(),
         ])
+
+    def testSetLayerVisible(self):
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        self.project.layerTreeRoot().findLayer(self.layer).setItemVisibilityChecked(True)
+        self.project.layerTreeRoot().findLayer(self.layer2).setItemVisibilityChecked(True)
+        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer).itemVisibilityChecked())
+        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
+
+        view.setLayerVisible(None, True)
+        view.setLayerVisible(self.layer, True)
+        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer).itemVisibilityChecked())
+        view.setLayerVisible(self.layer2, False)
+        self.assertFalse(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
+        view.setLayerVisible(self.layer2, True)
+        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
 
 
 if __name__ == '__main__':

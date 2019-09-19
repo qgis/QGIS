@@ -34,6 +34,9 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 {
   setupUi( this );
 
+  if ( !( flags & FlagShowHttpSettings ) )
+    mHttpGroupBox->hide();
+
   QgsGui::enableAutoGeometryRestore( this );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );
@@ -88,6 +91,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
     txtName->setText( connectionName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
+    mRefererLineEdit->setText( settings.value( key + "/referer" ).toString() );
 
     updateServiceSpecificSettings();
 
@@ -161,9 +165,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
 void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
 {
-  cbxWfsFeaturePaging->setEnabled( index == 0 || index == 3 );
-  lblPageSize->setEnabled( index == 0 || index == 3 );
-  txtPageSize->setEnabled( index == 0 || index == 3 );
+  // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
+  cbxWfsFeaturePaging->setEnabled( index == 0 || index >= 2 );
+  lblPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == 0 || index >= 2 ) );
+  txtPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == 0 || index >= 2 ) );
   cbxWfsIgnoreAxisOrientation->setEnabled( index != 1 );
 }
 
@@ -185,13 +190,13 @@ QString QgsNewHttpConnection::url() const
 
 void QgsNewHttpConnection::nameChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
 }
 
 void QgsNewHttpConnection::urlChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 }
@@ -235,6 +240,11 @@ QPushButton *QgsNewHttpConnection::testConnectButton()
   return mTestConnectionButton;
 }
 
+QgsAuthSettingsWidget *QgsNewHttpConnection::authSettingsWidget()
+{
+  return mAuthSettings;
+}
+
 QPushButton *QgsNewHttpConnection::wfsVersionDetectButton()
 {
   return mWfsVersionDetectButton;
@@ -272,6 +282,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   QString wmsKey = wmsSettingsKey( mBaseKey, mOriginalConnName );
 
   cbxIgnoreGetMapURI->setChecked( settings.value( wmsKey + "/ignoreGetMapURI", false ).toBool() );
+  cbxWmsIgnoreReportedLayerExtents->setChecked( settings.value( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() );
   cbxWfsIgnoreAxisOrientation->setChecked( settings.value( wfsKey + "/ignoreAxisOrientation", false ).toBool() );
   cbxWfsInvertAxisOrientation->setChecked( settings.value( wfsKey + "/invertAxisOrientation", false ).toBool() );
   cbxWmsIgnoreAxisOrientation->setChecked( settings.value( wmsKey + "/ignoreAxisOrientation", false ).toBool() );
@@ -313,13 +324,17 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   txtReferer->setText( settings.value( wmsKey + "/referer" ).toString() );
   txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
 
-  bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", true ).toBool();
+  // Only default to paging enabled if WFS 2.0.0 or higher
+  bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", ( versionIdx == 0 || versionIdx >= 3 ) ).toBool();
   txtPageSize->setText( settings.value( wfsKey + "/pagesize" ).toString() );
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
 
-  txtPageSize->setEnabled( pagingEnabled );
-  lblPageSize->setEnabled( pagingEnabled );
-  cbxWfsFeaturePaging->setEnabled( pagingEnabled );
+  // Enable/disable these items per WFS versions
+  // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
+  txtPageSize->setEnabled( pagingEnabled && ( versionIdx == 0 || versionIdx >= 2 ) );
+  lblPageSize->setEnabled( pagingEnabled && ( versionIdx == 0 || versionIdx >= 2 ) );
+  cbxWfsFeaturePaging->setEnabled( versionIdx == 0 || versionIdx >= 2 );
+  cbxWfsIgnoreAxisOrientation->setEnabled( versionIdx != 1 );
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const
@@ -382,6 +397,7 @@ void QgsNewHttpConnection::accept()
     settings.setValue( wmsKey + "/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
     settings.setValue( wmsKey + "/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
 
+    settings.setValue( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), cbxWmsIgnoreReportedLayerExtents->isChecked() );
     settings.setValue( wmsKey + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
     settings.setValue( wmsKey + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
 
@@ -443,6 +459,9 @@ void QgsNewHttpConnection::accept()
   settings.setValue( credentialsKey + "/password", mAuthSettings->password() );
 
   settings.setValue( credentialsKey + "/authcfg", mAuthSettings->configId() );
+
+  if ( mHttpGroupBox->isVisible() )
+    settings.setValue( key + "/referer", mRefererLineEdit->text() );
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 

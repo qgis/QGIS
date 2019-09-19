@@ -43,7 +43,7 @@ QgsMapToolDeleteRing::~QgsMapToolDeleteRing()
 
 void QgsMapToolDeleteRing::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //nothing to do
 }
 
@@ -95,7 +95,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolDeleteRing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   delete mRubberBand;
   mRubberBand = nullptr;

@@ -9,14 +9,12 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Paul Blottiere'
 __date__ = '06/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QTemporaryFile
+from qgis.PyQt.QtCore import QTemporaryFile, QVariant
 from qgis.core import (QgsAuxiliaryStorage,
                        QgsAuxiliaryLayer,
                        QgsVectorLayer,
@@ -404,6 +402,39 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
         afIndex = vl.fields().indexOf(afName)
         self.assertEqual(index, afIndex)
+
+    def testCreateField(self):
+        s = QgsAuxiliaryStorage()
+        self.assertTrue(s.isValid())
+
+        # Create a new auxiliary layer with 'pk' as key
+        vl = createLayer()
+        pkf = vl.fields().field(vl.fields().indexOf('pk'))
+        al = s.createAuxiliaryLayer(pkf, vl)
+        self.assertTrue(al.isValid())
+        vl.setAuxiliaryLayer(al)
+
+        prop = QgsPropertyDefinition()
+        prop.setComment('test_field')
+        prop.setDataType(QgsPropertyDefinition.DataTypeNumeric)
+        prop.setOrigin('user')
+        prop.setName('custom')
+        self.assertTrue(al.addAuxiliaryField(prop))
+
+        prop = QgsPropertyDefinition()
+        prop.setComment('test_field_string')
+        prop.setDataType(QgsPropertyDefinition.DataTypeString)
+        prop.setOrigin('user')
+        prop.setName('custom')
+        self.assertTrue(al.addAuxiliaryField(prop))
+
+        self.assertEqual(len(al.auxiliaryFields()), 2)
+        self.assertEqual(al.auxiliaryFields()[0].name(), 'user_custom_test_field')
+        self.assertEqual(al.auxiliaryFields()[0].type(), QVariant.Double)
+        self.assertEqual(al.auxiliaryFields()[0].typeName(), 'Real')
+        self.assertEqual(al.auxiliaryFields()[1].name(), 'user_custom_test_field_string')
+        self.assertEqual(al.auxiliaryFields()[1].type(), QVariant.String)
+        self.assertEqual(al.auxiliaryFields()[1].typeName(), 'String')
 
     def testQgdCreation(self):
         # New project

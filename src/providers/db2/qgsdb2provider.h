@@ -26,6 +26,8 @@
 #include <QtSql>
 #include <QMutex>
 
+#include "qgsprovidermetadata.h"
+
 /**
  * \class QgsDb2Provider
  * \brief Data provider for DB2 server.
@@ -35,7 +37,11 @@ class QgsDb2Provider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+
+    static const QString DB2_PROVIDER_KEY;
+    static const QString DB2_PROVIDER_DESCRIPTION;
+
+    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsDb2Provider() override;
 
@@ -100,8 +106,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      QString *errorMessage = nullptr
     );
 
     //! Convert a QgsField to work with DB2
@@ -158,6 +163,23 @@ class QgsDb2Provider : public QgsVectorDataProvider
     }
 
     friend class QgsDb2FeatureSource;
+};
+
+class QgsDb2ProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsDb2ProviderMetadata();
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options ) override;
+    QgsDb2Provider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
 
 #endif

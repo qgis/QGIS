@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsunittypes.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QCloseEvent>
 #include <QLocale>
@@ -38,6 +39,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   , mCanvas( tool->canvas() )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeasureDialog::showHelp );
 
   QPushButton *nb = new QPushButton( tr( "&New" ) );
@@ -51,9 +53,19 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   repopulateComboBoxUnits( mMeasureArea );
   if ( mMeasureArea )
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
+  {
+    if ( mUseMapUnits )
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit ) );
+    else
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
+  }
   else
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
+  {
+    if ( mUseMapUnits )
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
+    else
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
+  }
 
   if ( !mCanvas->mapSettings().destinationCrs().isValid() )
   {
@@ -69,8 +81,25 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMeasureDialog::unitsChanged );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsMeasureDialog::reject );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureDialog::crsChanged );
+  connect( mCartesian, &QRadioButton::toggled, this, &QgsMeasureDialog::projChanged );
 
   groupBox->setCollapsed( true );
+}
+
+void QgsMeasureDialog::projChanged()
+{
+  if ( mCartesian->isChecked() )
+  {
+    mDa.setEllipsoid( GEO_NONE );
+  }
+  else
+  {
+    mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  }
+
+  mTable->clear();
+  mTotal = 0.;
+  updateUi();
 }
 
 void QgsMeasureDialog::openConfigTab()
@@ -92,6 +121,9 @@ void QgsMeasureDialog::crsChanged()
   {
     mUnitsCombo->setEnabled( true );
   }
+
+  mTable->clear();
+  mTotal = 0.;
   updateUi();
 }
 
@@ -103,21 +135,53 @@ void QgsMeasureDialog::updateSettings()
   mCanvasUnits = mCanvas->mapUnits();
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
+  mMapDistanceUnits = QgsProject::instance()->crs().mapUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  projChanged();
 
-  mTable->clear();
-  mTotal = 0;
-  updateUi();
+
+  if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() ||
+       ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+         && mDistanceUnits == QgsUnitTypes::DistanceDegrees ) )
+  {
+    mDa.setEllipsoid( GEO_NONE );
+  }
+  else
+  {
+    mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  }
 }
 
 void QgsMeasureDialog::unitsChanged( int index )
 {
   if ( mMeasureArea )
+  {
     mAreaUnits = static_cast< QgsUnitTypes::AreaUnit >( mUnitsCombo->itemData( index ).toInt() );
+    if ( mAreaUnits == QgsUnitTypes::AreaUnknownUnit )
+    {
+      mUseMapUnits = true;
+      mAreaUnits = QgsUnitTypes::distanceToAreaUnit( mMapDistanceUnits );
+    }
+    else
+    {
+      mUseMapUnits = false;
+    }
+  }
   else
+  {
     mDistanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
+    if ( mDistanceUnits == QgsUnitTypes::DistanceUnknownUnit )
+    {
+      mUseMapUnits = true;
+      mDistanceUnits = mMapDistanceUnits;
+    }
+    else
+    {
+      mUseMapUnits = false;
+    }
+  }
+
   mTable->clear();
   mTotal = 0.;
   updateUi();
@@ -158,9 +222,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     QVector< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
     double d = mDa.measureLine( p1, p2 );
-
-    editTotal->setText( formatDistance( mTotal + d ) );
-
+    editTotal->setText( formatDistance( mTotal + d, mConvertToDisplayUnits ) );
     d = convertLength( d, mDistanceUnits );
 
     // Set moving
@@ -192,7 +254,7 @@ void QgsMeasureDialog::addPoint()
     if ( numPoints > 1 )
     {
       mTotal = mDa.measureLine( mTool->points() );
-      editTotal->setText( formatDistance( mTotal ) );
+      editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
     }
   }
 }
@@ -205,7 +267,8 @@ void QgsMeasureDialog::removeLastPoint()
     if ( numPoints > 1 )
     {
       QVector<QgsPointXY> tmpPoints = mTool->points();
-      tmpPoints.append( mLastMousePoint );
+      if ( !mTool->done() )
+        tmpPoints.append( mLastMousePoint );
       double area = mDa.measurePolygon( tmpPoints );
       editTotal->setText( formatArea( area ) );
     }
@@ -236,7 +299,7 @@ void QgsMeasureDialog::removeLastPoint()
     }
     else
     {
-      editTotal->setText( formatDistance( mTotal ) );
+      editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
     }
   }
 }
@@ -250,7 +313,6 @@ void QgsMeasureDialog::closeEvent( QCloseEvent *e )
 void QgsMeasureDialog::restorePosition()
 {
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/Measure/geometry" ) ).toByteArray() );
   int wh;
   if ( mMeasureArea )
     wh = settings.value( QStringLiteral( "Windows/Measure/hNoTable" ), 70 ).toInt();
@@ -263,7 +325,6 @@ void QgsMeasureDialog::restorePosition()
 void QgsMeasureDialog::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/Measure/geometry" ), saveGeometry() );
   const QString &key = mMeasureArea ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
   settings.setValue( key, height() );
 }
@@ -297,21 +358,29 @@ QString QgsMeasureDialog::formatArea( double area, bool convertUnits ) const
 
 void QgsMeasureDialog::updateUi()
 {
-  // Set tooltip to indicate how we calculate measurments
+  // Set tooltip to indicate how we calculate measurements
   QString toolTip = tr( "The calculations are based on:" );
 
-  bool forceCartesian = false;
-  bool convertToDisplayUnits = true;
+  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mConvertToDisplayUnits = true;
 
   if ( mMeasureArea )
   {
-    if ( !mCanvas->mapSettings().destinationCrs().isValid() )
+    if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() )
     {
-      // no CRS => no units, newb!
-      toolTip += "<br> * " + tr( "No map projection set, so area is calculated using Cartesian calculations." );
-      toolTip += "<br> * " + tr( "Units are unknown." );
-      forceCartesian = true;
-      convertToDisplayUnits = false;
+      toolTip += "<br> * ";
+      if ( mCartesian->isChecked() )
+      {
+        toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
+        mConvertToDisplayUnits = true;
+      }
+      else
+      {
+        toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+        toolTip += "<br> * " + tr( "Units are unknown." );
+        mConvertToDisplayUnits = false;
+      }
+      mDa.setEllipsoid( GEO_NONE );
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
@@ -319,8 +388,8 @@ void QgsMeasureDialog::updateUi()
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg(
                    mCanvas->mapSettings().destinationCrs().description() );
-      forceCartesian = true;
-      convertToDisplayUnits = false; //not required since we will be measuring in degrees
+      mDa.setEllipsoid( GEO_NONE );
+      mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else
     {
@@ -375,13 +444,21 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    if ( !mCanvas->mapSettings().destinationCrs().isValid() )
+    if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() )
     {
-      // no CRS => no units, newb!
-      toolTip += "<br> * " + tr( "No map projection set, so distance is calculated using Cartesian calculations." );
-      toolTip += "<br> * " + tr( "Units are unknown." );
-      forceCartesian = true;
-      convertToDisplayUnits = false;
+      toolTip += "<br> * ";
+      if ( mCartesian->isChecked() )
+      {
+        toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
+        mConvertToDisplayUnits = true;
+      }
+      else
+      {
+        toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+        toolTip += "<br> * " + tr( "Units are unknown." );
+        mConvertToDisplayUnits = false;
+      }
+      mDa.setEllipsoid( GEO_NONE );
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
@@ -389,8 +466,8 @@ void QgsMeasureDialog::updateUi()
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
                    mCanvas->mapSettings().destinationCrs().description() );
-      forceCartesian = true;
-      convertToDisplayUnits = false; //not required since we will be measuring in degrees
+      mDa.setEllipsoid( GEO_NONE );
+      mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else
     {
@@ -450,18 +527,25 @@ void QgsMeasureDialog::updateUi()
 
   if ( mMeasureArea )
   {
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mAreaUnits ) );
+    if ( mUseMapUnits )
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit ) );
+    else
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mAreaUnits ) );
   }
   else
   {
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mDistanceUnits ) );
-    if ( mDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+    if ( mUseMapUnits )
     {
-      mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) ) );
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
+      mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mMapDistanceUnits ) ) ) );
     }
     else
     {
-      mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mDistanceUnits ) );
+      if ( mDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+        mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) ) );
+      else
+        mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
     }
   }
 
@@ -472,7 +556,8 @@ void QgsMeasureDialog::updateUi()
     {
       area = mDa.measurePolygon( mTool->points() );
     }
-    mTable->hide(); // Hide the table, only show summary.
+    mTable->hide(); // Hide the table, only show summary
+    mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Expanding );
     editTotal->setText( formatArea( area ) );
   }
   else
@@ -489,16 +574,13 @@ void QgsMeasureDialog::updateUi()
       if ( !b )
       {
         double d = -1;
-        if ( forceCartesian )
+        d = mDa.measureLine( p1, p2 );
+        if ( mConvertToDisplayUnits )
         {
-          //Cartesian calculation forced
-          d = std::sqrt( p2.sqrDist( p1 ) );
-          mTotal += d;
-        }
-        else
-        {
-          d = mDa.measureLine( p1, p2 );
-          d = convertLength( d, mDistanceUnits );
+          if ( mDistanceUnits == QgsUnitTypes::DistanceUnknownUnit && mMapDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+            d = convertLength( d, mMapDistanceUnits );
+          else
+            d = convertLength( d, mDistanceUnits );
         }
 
         QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( d, 'f', mDecimalPlaces ) ) );
@@ -510,10 +592,10 @@ void QgsMeasureDialog::updateUi()
       b = false;
     }
 
-    if ( !forceCartesian )
-      mTotal = mDa.measureLine( mTool->points() );
+    mTotal = mDa.measureLine( mTool->points() );
     mTable->show(); // Show the table with items
-    editTotal->setText( formatDistance( mTotal, convertToDisplayUnits ) );
+    mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Maximum );
+    editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
   }
 }
 

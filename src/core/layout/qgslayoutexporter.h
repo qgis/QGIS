@@ -16,16 +16,18 @@
 #ifndef QGSLAYOUTEXPORTER_H
 #define QGSLAYOUTEXPORTER_H
 
-#include <QPrinter>
 #include "qgis_core.h"
 #include "qgsmargins.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutitem.h"
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
+#include <functional>
 
 #ifndef QT_NO_PRINTER
+#include <QPrinter>
 
 class QgsLayout;
 class QPainter;
@@ -158,7 +160,7 @@ class CORE_EXPORT QgsLayoutExporter
        * set then it will be automatically calculated based on the
        * output dpi and layout size.
        *
-       * If cropToContents is true then imageSize has no effect.
+       * If cropToContents is TRUE then imageSize has no effect.
        *
        * Be careful when specifying manual sizes if pages in the layout
        * have differing sizes! It's likely not going to give a reasonable
@@ -168,14 +170,14 @@ class CORE_EXPORT QgsLayoutExporter
       QSize imageSize;
 
       /**
-       * Set to true if image should be cropped so only parts of the layout
+       * Set to TRUE if image should be cropped so only parts of the layout
        * containing items are exported.
        */
       bool cropToContents = false;
 
       /**
        * Crop to content margins, in pixels. These margins will be added
-       * to the bounds of the exported layout if cropToContents is true.
+       * to the bounds of the exported layout if cropToContents is TRUE.
        */
       QgsMargins cropMargins;
 
@@ -189,7 +191,7 @@ class CORE_EXPORT QgsLayoutExporter
       QList< int > pages;
 
       /**
-       * Set to true to generate an external world file alongside
+       * Set to TRUE to generate an external world file alongside
        * exported images.
        */
       bool generateWorldFile = false;
@@ -207,6 +209,13 @@ class CORE_EXPORT QgsLayoutExporter
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
+
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
 
     };
 
@@ -250,20 +259,27 @@ class CORE_EXPORT QgsLayoutExporter
       double dpi = -1;
 
       /**
-       * Set to true to force whole layout to be rasterized while exporting.
+       * Set to TRUE to force whole layout to be rasterized while exporting.
        *
        * This option is mutually exclusive with forceVectorOutput.
        */
       bool rasterizeWholeImage = false;
 
       /**
-       * Set to true to force vector object exports, even when the resultant appearance will differ
-       * from the layout. If false, some items may be rasterized in order to maintain their
+       * Set to TRUE to force vector object exports, even when the resultant appearance will differ
+       * from the layout. If FALSE, some items may be rasterized in order to maintain their
        * correct appearance in the output.
        *
        * This option is mutually exclusive with rasterizeWholeImage.
        */
       bool forceVectorOutput = false;
+
+      /**
+       * Indicates whether PDF export should append georeference data
+       *
+       * \since QGIS 3.10
+       */
+      bool appendGeoreference = true;
 
       /**
        * Indicates whether PDF export should include metadata generated
@@ -277,6 +293,80 @@ class CORE_EXPORT QgsLayoutExporter
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
+
+      /**
+       * Text rendering format, which controls how text should be rendered in the export (e.g.
+       * as paths or real text objects).
+       *
+       * \since QGIS 3.4.3
+       */
+      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
+      /**
+       * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,
+       * such as vertices which are not visible at the specified dpi of the output.
+       *
+       * \since QGIS 3.10
+       */
+      bool simplifyGeometries = true;
+
+      /**
+       * TRUE if GeoPDF files should be created, instead of normal PDF files.
+       *
+       * Whilst GeoPDF files can include some desirable properties like the ability to interactively
+       * query map features, they also can result in lower-quality output files, or forced rasterization
+       * of layers.
+       *
+       * \note Requires builds based on GDAL 3.0 or greater.
+       *
+       * \since QGIS 3.10
+       */
+      bool writeGeoPdf = false;
+
+      /**
+       * TRUE if ISO3200 extension format georeferencing should be used.
+       *
+       * This is a recommended setting which results in Geospatial PDF files compatible
+       * with the built-in Acrobat geospatial tools.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      bool useIso32000ExtensionFormatGeoreferencing = true;
+
+      /**
+       * TRUE if OGC "best practice" format georeferencing should be used.
+       *
+       * \warning This results in GeoPDF files compatible with the TerraGo suite of tools, but
+       * can break compatibility with the built-in Acrobat geospatial tools (yes, GeoPDF
+       * format is a mess!).
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+      */
+      bool useOgcBestPracticeFormatGeoreferencing = false;
+
+      /**
+       * TRUE if feature vector information (such as attributes) should be exported during GeoPDF exports.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      bool includeGeoPdfFeatures = true;
+
+      /**
+       * Optional list of map themes to export as GeoPDF layer groups.
+       *
+       * If set, map item's which are not assigned a specific map theme will iterate through all listed
+       * themes and a GeoPDF layer group will be created for each.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       */
+      QStringList exportThemes;
+
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
 
     };
 
@@ -332,7 +422,7 @@ class CORE_EXPORT QgsLayoutExporter
       double dpi = -1;
 
       /**
-       * Set to true to force whole layout to be rasterized while exporting.
+       * Set to TRUE to force whole layout to be rasterized while exporting.
        *
        * This option is mutually exclusive with forceVectorOutput.
        */
@@ -342,6 +432,13 @@ class CORE_EXPORT QgsLayoutExporter
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
+
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
 
     };
 
@@ -377,8 +474,8 @@ class CORE_EXPORT QgsLayoutExporter
       double dpi = -1;
 
       /**
-       * Set to true to force vector object exports, even when the resultant appearance will differ
-       * from the layout. If false, some items may be rasterized in order to maintain their
+       * Set to TRUE to force vector object exports, even when the resultant appearance will differ
+       * from the layout. If FALSE, some items may be rasterized in order to maintain their
        * correct appearance in the output.
        *
        * This option is mutually exclusive with rasterizeWholeImage.
@@ -386,23 +483,33 @@ class CORE_EXPORT QgsLayoutExporter
       bool forceVectorOutput = false;
 
       /**
-       * Set to true if image should be cropped so only parts of the layout
+       * Set to TRUE if image should be cropped so only parts of the layout
        * containing items are exported.
        */
       bool cropToContents = false;
 
       /**
        * Crop to content margins, in layout units. These margins will be added
-       * to the bounds of the exported layout if cropToContents is true.
+       * to the bounds of the exported layout if cropToContents is TRUE.
        */
       QgsMargins cropMargins;
 
       /**
-       * Set to true to export as a layered SVG file.
+       * Set to TRUE to export as a layered SVG file.
        * Note that this option is considered experimental, and the generated
        * SVG may differ from the expected appearance of the layout.
        */
       bool exportAsLayers = false;
+
+      /**
+       * Set to TRUE to export labels to separate layers (grouped by map layer)
+       * in layered SVG exports.
+       *
+       * This option is only used if exportAsLayers is TRUE.
+       *
+       * \since QGIS 3.10
+       */
+      bool exportLabelsToSeparateLayers = true;
 
       /**
        * Indicates whether SVG export should include RDF metadata generated
@@ -417,6 +524,28 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
 
+      /**
+       * Text rendering format, which controls how text should be rendered in the export (e.g.
+       * as paths or real text objects).
+       *
+       * \since QGIS 3.4.3
+       */
+      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
+      /**
+       * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,
+       * such as vertices which are not visible at the specified dpi of the output.
+       *
+       * \since QGIS 3.10
+       */
+      bool simplifyGeometries = true;
+
+      /**
+       * A list of predefined scales to use with the layout. This is used
+       * for maps which are set to the predefined atlas scaling mode.
+       * \since QGIS 3.10
+       */
+      QVector<qreal> predefinedMapScales;
     };
 
     /**
@@ -451,7 +580,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Georeferences a \a file (image of PDF) exported from the layout.
      *
-     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as nullptr, the
+     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as NULLPTR, the
      * default layout QgsLayout::referenceMap() will be used.
      *
      * The \a exportRegion argument can be set to a valid rectangle to indicate that only part of the layout was
@@ -459,7 +588,7 @@ class CORE_EXPORT QgsLayoutExporter
      *
      * Similarly, the \a dpi can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
      *
-     * The function will return true if the output was successfully georeferenced.
+     * The function will return TRUE if the output was successfully georeferenced.
      *
      * \see computeWorldFileParameters()
      */
@@ -512,7 +641,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Computes a GDAL style geotransform for georeferencing a layout.
      *
-     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as nullptr, the
+     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as NULLPTR, the
      * default layout QgsLayout::referenceMap() will be used.
      *
      * The \a exportRegion argument can be set to a valid rectangle to indicate that only part of the layout was
@@ -543,16 +672,16 @@ class CORE_EXPORT QgsLayoutExporter
      * Print on a preconfigured printer
      * \param printer QPrinter destination
      * \param painter QPainter source
-     * \param startNewPage set to true to begin the print on a new page
+     * \param startNewPage set to TRUE to begin the print on a new page
      * \param dpi set to a value > 0 to manually override the layout's default dpi
-     * \param rasterize set to true to force print as a raster image
+     * \param rasterize set to TRUE to force print as a raster image
      */
     ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
     static void updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page );
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds,
-                                     const QString &filename, int svgLayerId, const QString &layerName,
+                                     const QString &filename, unsigned int svgLayerId, const QString &layerName,
                                      QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const;
 
     void appendMetadataToSvg( QDomDocument &svg ) const;
@@ -560,7 +689,11 @@ class CORE_EXPORT QgsLayoutExporter
     bool georeferenceOutputPrivate( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
                                     const QRectF &exportRegion = QRectF(), double dpi = -1, bool includeGeoreference = true, bool includeMetadata = false ) const;
 
+    ExportResult handleLayeredExport( const QList<QGraphicsItem *> &items, const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc );
+
+    static QgsVectorSimplifyMethod createExportSimplifyMethod();
     friend class TestQgsLayout;
+    friend class TestQgsLayoutExporter;
 
 };
 

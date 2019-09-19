@@ -27,13 +27,18 @@
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgscameracontroller.h"
+#include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
+#include "qgsgui.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
+#include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dutils.h"
 
 
@@ -41,25 +46,61 @@
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
 {
+  QgsSettings setting;
   setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
 
   QWidget *contentsWidget = new QWidget( this );
 
   QToolBar *toolBar = new QToolBar( contentsWidget );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+
+  QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ),
+                                 tr( "Camera Control" ), this, &Qgs3DMapCanvasDockWidget::cameraControl );
+  actionCameraControl->setCheckable( true );
+
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
-                      tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ),
-                      tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
-  QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
-                        tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
-  actionAnim->setCheckable( true );
+
+  QAction *toggleOnScreenNavigation = toolBar->addAction(
+                                        QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
+                                        tr( "Toggle On-Screen Navigation" ) );
+
+  toggleOnScreenNavigation->setCheckable( true );
+  toggleOnScreenNavigation->setChecked(
+    setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
+  );
+  QObject::connect( toggleOnScreenNavigation, &QAction::toggled, this, &Qgs3DMapCanvasDockWidget::toggleNavigationWidget );
+
+  toolBar->addSeparator();
 
   QAction *actionIdentify = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionIdentify.svg" ) ),
                             tr( "Identify" ), this, &Qgs3DMapCanvasDockWidget::identify );
   actionIdentify->setCheckable( true );
+
+  QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ),
+                                   tr( "Measurement Line" ), this, &Qgs3DMapCanvasDockWidget::measureLine );
+  actionMeasurementTool->setCheckable( true );
+
+  // Create action group to make the action exclusive
+  QActionGroup *actionGroup = new QActionGroup( this );
+  actionGroup->addAction( actionCameraControl );
+  actionGroup->addAction( actionIdentify );
+  actionGroup->addAction( actionMeasurementTool );
+  actionGroup->setExclusive( true );
+  actionCameraControl->setChecked( true );
+
+  QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
+                        tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
+  actionAnim->setCheckable( true );
+
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
+                      tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
+
+  toolBar->addSeparator();
+
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
+                      tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
+
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
@@ -71,6 +112,8 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   } );
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
+
+  mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -127,6 +170,15 @@ void Qgs3DMapCanvasDockWidget::toggleAnimations()
   }
 }
 
+void Qgs3DMapCanvasDockWidget::cameraControl()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( nullptr );
+}
+
 void Qgs3DMapCanvasDockWidget::identify()
 {
   QAction *action = qobject_cast<QAction *>( sender() );
@@ -136,6 +188,20 @@ void Qgs3DMapCanvasDockWidget::identify()
   mCanvas->setMapTool( action->isChecked() ? mMapToolIdentify : nullptr );
 }
 
+void Qgs3DMapCanvasDockWidget::measureLine()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
+}
+
+void Qgs3DMapCanvasDockWidget::toggleNavigationWidget( bool visibility )
+{
+  mCanvas->setOnScreenNavigationVisibility( visibility );
+}
+
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
@@ -143,6 +209,7 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged );
 
   mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
+  mAnimationWidget->setMap( map );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -162,12 +229,16 @@ void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
   dlg.setWindowTitle( tr( "3D Configuration" ) );
+  dlg.setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
+  dlg.setMinimumSize( 380, 460 );
+  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#d-map-view" ) ); } );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( w, 1 );

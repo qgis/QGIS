@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 #include "qgspanelwidget.h"
+#include "qgshelp.h"
 
 #include <QPicture>
 #include <QPainter>
@@ -107,6 +108,11 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   mPresentWidget = nullptr;
 
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
+
+  mEffectsList->setMaximumHeight( static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
+  mEffectsList->setMinimumHeight( mEffectsList->maximumHeight() );
+  lblPreview->setMaximumWidth( mEffectsList->maximumHeight() );
 
   mAddButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   mRemoveButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
@@ -204,7 +210,7 @@ void QgsEffectStackPropertiesWidget::updateUi()
 void QgsEffectStackPropertiesWidget::updatePreview()
 {
   QPainter painter;
-  QImage previewImage( 150, 150, QImage::Format_ARGB32 );
+  QImage previewImage( 100, 100, QImage::Format_ARGB32 );
   previewImage.fill( Qt::transparent );
   painter.begin( &previewImage );
   painter.setRenderHint( QPainter::Antialiasing );
@@ -216,13 +222,13 @@ void QgsEffectStackPropertiesWidget::updatePreview()
     previewPicPainter.begin( &previewPic );
     previewPicPainter.setPen( Qt::red );
     previewPicPainter.setBrush( QColor( 255, 100, 100, 255 ) );
-    previewPicPainter.drawEllipse( QPoint( 75, 75 ), 30, 30 );
+    previewPicPainter.drawEllipse( QPoint( 50, 50 ), 20, 20 );
     previewPicPainter.end();
     mStack->render( previewPic, context );
   }
   else
   {
-    context.painter()->translate( 35, 35 );
+    context.painter()->translate( 20, 20 );
     mStack->render( *mPreviewPicture, context );
   }
   painter.end();
@@ -358,11 +364,15 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect *newEffect )
 //
 
 QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, Qt::WindowFlags f )
-  : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
+  : QgsDialog( parent, f, QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok )
 
 {
   setWindowTitle( tr( "Effect Properties" ) );
   mPropertiesWidget = new QgsEffectStackPropertiesWidget( stack, this );
+
+  QDialogButtonBox *buttonBox = this->findChild<QDialogButtonBox *>( QString(), Qt::FindDirectChildrenOnly );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsEffectStackPropertiesDialog::showHelp );
+
   layout()->addWidget( mPropertiesWidget );
 }
 
@@ -375,6 +385,12 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 {
   mPropertiesWidget->setPreviewPicture( picture );
 }
+
+void QgsEffectStackPropertiesDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#draw-effects" ) );
+}
+
 
 //
 // QgsEffectStackCompactWidget
@@ -453,23 +469,28 @@ void QgsEffectStackCompactWidget::showDialog()
   if ( !mStack )
     return;
 
-  QgsEffectStack *clone = static_cast<QgsEffectStack *>( mStack->clone() );
+  QgsEffectStack *clone = mStack->clone();
   QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
   if ( mPreviewPicture )
   {
     widget->setPreviewPicture( *mPreviewPicture );
   }
-  connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
-  connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
   if ( panel && panel->dockMode() )
   {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
     panel->openPanel( widget );
   }
   else
   {
-    openPanel( widget );
+    QgsEffectStackPropertiesDialog dlg( clone, this );
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      *mStack = *clone;
+      emit changed();
+    }
   }
 }
 

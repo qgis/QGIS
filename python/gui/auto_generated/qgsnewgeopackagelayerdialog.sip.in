@@ -12,7 +12,7 @@
 class QgsNewGeoPackageLayerDialog: QDialog
 {
 %Docstring
-Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers *
+Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers
 %End
 
 %TypeHeaderCode
@@ -72,7 +72,7 @@ The default behavior is to prompt the user for an action to take.
     void setAddToProject( bool addToProject );
 %Docstring
 Sets whether a newly created layer should automatically be added to the current project.
-Defaults to true.
+Defaults to ``True``.
 
 .. versionadded:: 3.6
 %End

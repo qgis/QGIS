@@ -11,6 +11,29 @@
 
 
 
+class QgsLabelBlockingRegion
+{
+%Docstring
+
+Label blocking region (in map coordinates and CRS).
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsmapsettings.h"
+%End
+  public:
+
+    explicit QgsLabelBlockingRegion( const QgsGeometry &geometry );
+%Docstring
+Constructor for a label blocking region
+%End
+
+    QgsGeometry geometry;
+
+};
+
 
 class QgsMapSettings
 {
@@ -51,6 +74,25 @@ Set coordinates of the rectangle which should be rendered.
 The actual visible extent used for rendering could be slightly different
 since the given extent may be expanded in order to fit the aspect ratio
 of output size. Use visibleExtent() to get the resulting extent.
+%End
+
+    double extentBuffer() const;
+%Docstring
+Returns the buffer in map units to use around the visible extent for rendering
+symbols whose corresponding geometries are outside the visible extent.
+
+.. seealso:: :py:func:`setExtentBuffer`
+
+.. versionadded:: 3.10
+%End
+
+    void setExtentBuffer( double buffer );
+%Docstring
+Sets the buffer in map units to use around the visible extent for rendering
+symbols whose corresponding geometries are outside the visible extent. This
+is useful when using tiles to avoid cut symbols at tile boundaries.
+
+.. versionadded:: 3.10
 %End
 
     QSize outputSize() const;
@@ -213,7 +255,7 @@ Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
 retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
-:return: true if ellipsoid was successfully set
+:return: ``True`` if ellipsoid was successfully set
 
 .. seealso:: :py:func:`ellipsoid`
 
@@ -281,6 +323,29 @@ Returns combination of flags used for rendering
     bool testFlag( Flag flag ) const;
 %Docstring
 Check whether a particular flag is enabled
+%End
+
+    QgsRenderContext::TextRenderFormat textRenderFormat() const;
+%Docstring
+Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`setTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+%Docstring
+Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. warning::
+
+   Calling the setLabelingEngineSettings() method will reset the text render format to match the default
+   text render format from the label engine settings.
+
+.. seealso:: :py:func:`textRenderFormat`
+
+.. versionadded:: 3.4.3
 %End
 
     void setOutputImageFormat( QImage::Format format );
@@ -486,16 +551,133 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
 %Docstring
-Sets global configuration of the labeling engine
+Sets the global configuration of the labeling engine.
+
+.. note::
+
+   Calling this method will reset the textRenderFormat() to match the default
+   text render format from the label engine ``settings``.
+
+.. seealso:: :py:func:`labelingEngineSettings`
+
 
 .. versionadded:: 3.0
 %End
 
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 %Docstring
-Returns global configuration of the labeling engine
+Returns the global configuration of the labeling engine.
+
+.. seealso:: :py:func:`setLabelingEngineSettings`
 
 .. versionadded:: 3.0
+%End
+
+    QgsGeometry labelBoundaryGeometry() const;
+%Docstring
+Returns the label boundary geometry, which restricts where in the rendered map labels are permitted to be
+placed. By default this is a null geometry, which indicates that labels can be placed anywhere within
+the map's visiblePolygon().
+
+The geometry is specified using the map's destinationCrs().
+
+.. seealso:: :py:func:`setLabelBoundaryGeometry`
+
+.. seealso:: :py:func:`labelBlockingRegions`
+
+.. versionadded:: 3.6
+%End
+
+    void setLabelBoundaryGeometry( const QgsGeometry &boundary );
+%Docstring
+Sets the label ``boundary`` geometry, which restricts where in the rendered map labels are permitted to be
+placed.
+
+A null ``boundary`` geometry (the default) indicates that labels can be placed anywhere within
+the map's visiblePolygon().
+
+The geometry is specified using the map's destinationCrs().
+
+.. seealso:: :py:func:`labelBoundaryGeometry`
+
+.. seealso:: :py:func:`setLabelBlockingRegions`
+
+.. versionadded:: 3.6
+%End
+
+    void setLabelBlockingRegions( const QList< QgsLabelBlockingRegion > &regions );
+%Docstring
+Sets a list of ``regions`` to avoid placing labels within.
+
+.. seealso:: :py:func:`labelBlockingRegions`
+
+.. seealso:: :py:func:`setLabelBoundaryGeometry`
+
+.. versionadded:: 3.6
+%End
+
+    QList< QgsLabelBlockingRegion > labelBlockingRegions() const;
+%Docstring
+Returns the list of regions to avoid placing labels within.
+
+.. seealso:: :py:func:`setLabelBlockingRegions`
+
+.. seealso:: :py:func:`labelBoundaryGeometry`
+
+.. versionadded:: 3.6
+%End
+
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method );
+%Docstring
+Sets the simplification setting to use when rendering vector layers.
+
+If the simplify ``method`` is enabled, it will override all other layer-specific simplification
+settings and will apply to all vector layers rendered for the map.
+
+This can be used to specify global simplification methods to apply during map exports,
+e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+during PDF exports.
+
+The default is to use no global simplification, and fallback to individual layer's settings instead.
+
+.. seealso:: :py:func:`simplifyMethod`
+
+.. versionadded:: 3.10
+%End
+
+    const QgsVectorSimplifyMethod &simplifyMethod() const;
+%Docstring
+Returns the simplification settings to use when rendering vector layers.
+
+If enabled, it will override all other layer-specific simplification
+settings and will apply to all vector layers rendered for the map.
+
+The default is to use no global simplification, and fallback to individual layer's settings instead.
+
+.. seealso:: :py:func:`setSimplifyMethod`
+
+.. versionadded:: 3.10
+%End
+
+    void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+%Docstring
+Adds a rendered feature ``handler`` to use while rendering the map settings.
+
+Ownership of ``handler`` is NOT transferred, and it is the caller's responsibility to ensure
+that the handler exists for the lifetime of the map render job.
+
+.. seealso:: :py:func:`renderedFeatureHandlers`
+
+.. versionadded:: 3.10
+%End
+
+    QList< QgsRenderedFeatureHandlerInterface * > renderedFeatureHandlers() const;
+%Docstring
+Returns the list of rendered feature handlers to use while rendering the map settings.
+
+.. seealso:: :py:func:`addRenderedFeatureHandler`
+
+.. versionadded:: 3.10
 %End
 
   protected:
@@ -516,7 +698,11 @@ Returns global configuration of the labeling engine
 
 
 
+
+
+
     void updateDerived();
+
 };
 
 QFlags<QgsMapSettings::Flag> operator|(QgsMapSettings::Flag f1, QFlags<QgsMapSettings::Flag> f2);

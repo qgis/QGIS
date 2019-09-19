@@ -53,7 +53,7 @@ class QgsOptionsDialogHighlightWidget;
  * 2) In source file for dialog, inherit this class instead of QDialog, then in constructor:
  *    ...
  *    setupUi( this ); // set up .ui file objects
- *    initOptionsBase( false ); // set up this class to use .ui objects, optionally restoring base ui
+ *    initOptionsBase( FALSE ); // set up this class to use .ui objects, optionally restoring base ui
  *    ...
  *    restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
  */
@@ -90,6 +90,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \param title the window title (it does not need to be defined if previously given to initOptionsBase();
      */
     void restoreOptionsBaseUi( const QString &title = QString() );
+
+    /**
+     * Resizes all tabs when the dialog is resized
+     * \param index current tab index
+     * \since QGIS 3.10
+     */
+    void resizeAlltabs( int index );
 
     /**
      * Determine if the options list is in icon only mode

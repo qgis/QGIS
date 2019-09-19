@@ -45,6 +45,16 @@ to be rendered etc.
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
 
+    enum TextRenderFormat
+    {
+      // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
+      // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
+
+      TextFormatAlwaysOutlines,
+
+      TextFormatAlwaysText,
+    };
+
     void setFlags( QgsRenderContext::Flags flags );
 %Docstring
 Set combination of flags that will be used for rendering.
@@ -99,8 +109,14 @@ Returns the destination QPainter for the render operation.
 
     QgsCoordinateTransform coordinateTransform() const;
 %Docstring
-Returns the current coordinate transform for the context, or an invalid
-transform is no coordinate transformation is required.
+Returns the current coordinate transform for the context.
+
+This represents the coordinate transform required to transform a layer
+which is being rendered back to the CRS of the rendered map. If no coordinate
+transformation is required, or the render context is not associated with
+a map layer render, then an invalid coordinate transformation is returned.
+
+.. seealso:: :py:func:`setCoordinateTransform`
 %End
 
     const QgsDistanceArea &distanceArea() const;
@@ -153,8 +169,45 @@ during rendering operations, e.g. for resolving relative symbol paths.
 %End
 
     const QgsRectangle &extent() const;
+%Docstring
+When rendering a map layer, calling this method returns the "clipping"
+extent for the layer (in the layer's CRS).
+
+This extent is a "worst-case" scenario, which is guaranteed to cover the complete
+visible portion of the layer when it is rendered to a map. It is often larger
+than the actual visible portion of that layer.
+
+.. warning::
+
+   For some layers, depending on the visible extent and the coordinate
+   transforms involved, this extent will represent the entire globe. This method
+   should never be used to determine the actual visible extent of a map render.
+
+.. seealso:: :py:func:`setExtent`
+
+.. seealso:: :py:func:`mapExtent`
+%End
+
+    QgsRectangle mapExtent() const;
+%Docstring
+Returns the original extent of the map being rendered.
+
+Unlike extent(), this extent is always in the final destination CRS for the map
+render and represents the exact bounds of the map being rendered.
+
+.. seealso:: :py:func:`extent`
+
+.. seealso:: :py:func:`setMapExtent`
+
+.. versionadded:: 3.4.8
+%End
 
     const QgsMapToPixel &mapToPixel() const;
+%Docstring
+Returns the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+
+.. seealso:: :py:func:`setMapToPixel`
+%End
 
     double scaleFactor() const;
 %Docstring
@@ -166,12 +219,24 @@ per millimeter.
 %End
 
     bool renderingStopped() const;
+%Docstring
+Returns ``True`` if the rendering operation has been stopped and any ongoing
+rendering should be canceled immediately.
+
+.. seealso:: :py:func:`setRenderingStopped`
+%End
 
     bool forceVectorOutput() const;
+%Docstring
+Returns ``True`` if rendering operations should use vector operations instead
+of any faster raster shortcuts.
+
+.. seealso:: :py:func:`setForceVectorOutput`
+%End
 
     bool useAdvancedEffects() const;
 %Docstring
-Returns true if advanced effects such as blend modes such be used
+Returns ``True`` if advanced effects such as blend modes such be used
 %End
 
     void setUseAdvancedEffects( bool enabled );
@@ -180,6 +245,11 @@ Used to enable or disable advanced effects such as blend modes
 %End
 
     bool drawEditingInformation() const;
+%Docstring
+Returns ``True`` if edit markers should be drawn during the render operation.
+
+.. seealso:: :py:func:`setDrawEditingInformation`
+%End
 
     double rendererScale() const;
 %Docstring
@@ -191,12 +261,17 @@ for the rendered map, eg 1000.0 for a 1:1000 map render.
 
 
     QColor selectionColor() const;
+%Docstring
+Returns the color to use when rendering selected features.
+
+.. seealso:: :py:func:`setSelectionColor`
+%End
 
     bool showSelection() const;
 %Docstring
-Returns true if vector selections should be shown in the rendered map
+Returns ``True`` if vector selections should be shown in the rendered map
 
-:return: true if selections should be shown
+:return: ``True`` if selections should be shown
 
 .. seealso:: :py:func:`setShowSelection`
 
@@ -208,14 +283,66 @@ Returns true if vector selections should be shown in the rendered map
 
     void setCoordinateTransform( const QgsCoordinateTransform &t );
 %Docstring
-Sets coordinate transformation.
+Sets the current coordinate transform for the context.
+
+This represents the coordinate transform required to transform the layer
+which is being rendered back to the CRS of the rendered map.
+
+Set to an invalid QgsCoordinateTransform to indicate that no transformation is required.
+
+.. seealso:: :py:func:`coordinateTransform`
 %End
+
     void setMapToPixel( const QgsMapToPixel &mtp );
+%Docstring
+Sets the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+
+.. seealso:: :py:func:`mapToPixel`
+%End
+
     void setExtent( const QgsRectangle &extent );
+%Docstring
+When rendering a map layer, calling this method sets the "clipping"
+extent for the layer (in the layer's CRS).
+
+This extent should be a "worst-case" scenario, which is guaranteed to
+completely cover the entire visible portion of the layer when it is rendered
+to the map. It may be larger than the actual visible area, but MUST contain at least the
+entire visible area.
+
+.. seealso:: :py:func:`setExtent`
+
+.. seealso:: :py:func:`setMapExtent`
+%End
+
+    void setMapExtent( const QgsRectangle &extent );
+%Docstring
+Sets the original ``extent`` of the map being rendered.
+
+Unlike setExtent(), this extent is always in the final destination CRS for the map
+render and represents the exact bounds of the map being rendered.
+
+.. seealso:: :py:func:`mapExtent`
+
+.. seealso:: :py:func:`setExtent`
+
+.. versionadded:: 3.4.8
+%End
 
     void setDrawEditingInformation( bool b );
+%Docstring
+Sets whether edit markers should be drawn during the render operation.
+
+.. seealso:: :py:func:`drawEditingInformation`
+%End
 
     void setRenderingStopped( bool stopped );
+%Docstring
+Sets whether the rendering operation has been ``stopped`` and any ongoing
+rendering should be canceled immediately.
+
+.. seealso:: :py:func:`renderingStopped`
+%End
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
@@ -252,14 +379,26 @@ of any rendering operations.
 %End
 
     void setForceVectorOutput( bool force );
+%Docstring
+Sets whether rendering operations should use vector operations instead
+of any faster raster shortcuts.
+
+.. seealso:: :py:func:`forceVectorOutput`
+%End
+
 
     void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use when rendering selected features.
+
+.. seealso:: :py:func:`selectionColor`
+%End
 
     void setShowSelection( bool showSelection );
 %Docstring
 Sets whether vector selections should be shown in the rendered map
 
-:param showSelection: set to true if selections should be shown
+:param showSelection: set to ``True`` if selections should be shown
 
 .. seealso:: :py:func:`showSelection`
 
@@ -270,16 +409,36 @@ Sets whether vector selections should be shown in the rendered map
 
     bool useRenderingOptimization() const;
 %Docstring
-Returns true if the rendering optimization (geometry simplification) can be executed
+Returns ``True`` if the rendering optimization (geometry simplification) can be executed
 %End
 
     void setUseRenderingOptimization( bool enabled );
 
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const;
 %Docstring
-Added in QGIS v2.4
+Returns the simplification settings to use when rendering vector layers.
+
+The default is to use no simplification.
+
+.. seealso:: :py:func:`setVectorSimplifyMethod`
+
+.. versionadded:: 2.4
 %End
+
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
+%Docstring
+Sets the simplification setting to use when rendering vector layers.
+
+This can be used to specify simplification methods to apply during map exports and renders,
+e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+during PDF exports or to speed up layer rendering
+
+The default is to use no simplification.
+
+.. seealso:: :py:func:`vectorSimplifyMethod`
+
+.. versionadded:: 2.4
+%End
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
@@ -392,6 +551,42 @@ Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersIn
 When the sourceCrs() is geographic, the center of the Extent will be used
 
 .. versionadded:: 3.0
+%End
+
+    TextRenderFormat textRenderFormat() const;
+%Docstring
+Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`setTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setTextRenderFormat( TextRenderFormat format );
+%Docstring
+Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`textRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    QList<QgsRenderedFeatureHandlerInterface *> renderedFeatureHandlers() const;
+%Docstring
+Returns the list of rendered feature handlers to use while rendering map layers.
+
+.. seealso:: :py:func:`hasRenderedFeatureHandlers`
+
+.. versionadded:: 3.10
+%End
+
+    bool hasRenderedFeatureHandlers() const;
+%Docstring
+Returns ``True`` if the context has any rendered feature handlers.
+
+.. seealso:: :py:func:`renderedFeatureHandlers`
+
+.. versionadded:: 3.10
 %End
 
 };

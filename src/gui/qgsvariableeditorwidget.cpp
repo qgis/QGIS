@@ -17,6 +17,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsexpression.h"
 
 #include <QVBoxLayout>
 #include <QTreeWidget>
@@ -140,7 +141,8 @@ QVariantMap QgsVariableEditorWidget::variablesInActiveScope() const
   }
 
   QgsExpressionContextScope *scope = mContext->scope( mEditableScopeIndex );
-  Q_FOREACH ( const QString &variable, scope->variableNames() )
+  const auto constVariableNames = scope->variableNames();
+  for ( const QString &variable : constVariableNames )
   {
     if ( scope->isReadOnly( variable ) )
       continue;
@@ -184,7 +186,8 @@ void QgsVariableEditorWidget::mRemoveButton_clicked()
   QgsExpressionContextScope *editableScope = mContext->scope( mEditableScopeIndex );
   QList<QTreeWidgetItem *> selectedItems = mTreeWidget->selectedItems();
 
-  Q_FOREACH ( QTreeWidgetItem *item, selectedItems )
+  const auto constSelectedItems = selectedItems;
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
       continue;
@@ -215,7 +218,8 @@ void QgsVariableEditorWidget::selectionChanged()
   QList<QTreeWidgetItem *> selectedItems = mTreeWidget->selectedItems();
 
   bool removeEnabled = true;
-  Q_FOREACH ( QTreeWidgetItem *item, selectedItems )
+  const auto constSelectedItems = selectedItems;
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
     {
@@ -263,7 +267,6 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   setIconSize( QSize( 18, 18 ) );
   setColumnCount( 2 );
   setHeaderLabels( QStringList() << tr( "Variable" ) << tr( "Value" ) );
-  setAlternatingRowColors( true );
   setEditTriggers( QAbstractItemView::AllEditTriggers );
   setRootIsDecorated( false );
   header()->setSectionsMovable( false );
@@ -325,7 +328,8 @@ void QgsVariableEditorTree::refreshTree()
 
   //add all scopes from the context
   int scopeIndex = 0;
-  Q_FOREACH ( QgsExpressionContextScope *scope, mContext->scopes() )
+  const auto constScopes = mContext->scopes();
+  for ( QgsExpressionContextScope *scope : constScopes )
   {
     refreshScopeItems( scope, scopeIndex );
     scopeIndex++;
@@ -478,9 +482,19 @@ void QgsVariableEditorTree::drawRow( QPainter *painter, const QStyleOptionViewIt
   if ( index.parent().isValid() )
   {
     //not a top-level item, so shade row background by context
-    const QColor baseColor = item->data( 0, RowBaseColor ).value<QColor>();
+    QColor baseColor = item->data( 0, RowBaseColor ).value<QColor>();
+    if ( index.row() % 2 == 1 )
+    {
+      baseColor = baseColor.lighter( 110 );
+    }
     painter->fillRect( option.rect, baseColor );
-    opt.palette.setColor( QPalette::AlternateBase, baseColor.lighter( 110 ) );
+
+    //declare custom text color since we've overwritten default background color
+    QPalette pal = opt.palette;
+    pal.setColor( QPalette::Active, QPalette::Text, Qt::black );
+    pal.setColor( QPalette::Inactive, QPalette::Text, Qt::black );
+    pal.setColor( QPalette::Disabled, QPalette::Text, Qt::gray );
+    opt.palette = pal;
   }
   QTreeWidget::drawRow( painter, opt, index );
   QColor color = static_cast<QRgb>( QApplication::style()->styleHint( QStyle::SH_Table_GridLineColor, &opt ) );
@@ -701,7 +715,7 @@ QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem &option,
 void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *model,
     const QModelIndex &index ) const
 {
-  Q_UNUSED( model );
+  Q_UNUSED( model )
 
   if ( !mParentTree )
     return;

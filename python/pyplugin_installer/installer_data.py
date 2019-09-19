@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
                               QLocale, QByteArray)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from qgis.core import Qgis, QgsSettings
+from qgis.core import Qgis, QgsSettings, QgsNetworkRequestParameters
 import sys
 import os
 import codecs
@@ -85,6 +85,7 @@ mPlugins = dict of dicts {id : {
     "downloads" unicode,                        # number of downloads
     "average_vote" unicode,                     # average vote
     "rating_votes" unicode,                     # number of votes
+    "plugin_dependencies" unicode,              # PIP-style comma separated list of plugin dependencies
 }}
 """
 
@@ -322,6 +323,8 @@ class Repositories(QObject):
         # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "Relay")
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
@@ -338,7 +341,7 @@ class Repositories(QObject):
         self.mRepositories[key]["xmlData"].setProperty('reposName', key)
         self.mRepositories[key]["xmlData"].setProperty('redirectionCounter', redirectionCounter)
         self.mRepositories[key]["xmlData"].downloadProgress.connect(self.mRepositories[key]["Relay"].dataReadProgress)
-        self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
+        self.mRepositories[key]["xmlDataFinished"] = self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
 
     # ----------------------------------------- #
     def fetchingInProgress(self):
@@ -352,7 +355,7 @@ class Repositories(QObject):
     def killConnection(self, key):
         """ kill the fetching on demand """
         if self.mRepositories[key]["state"] == 1 and self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
-            self.mRepositories[key]["xmlData"].finished.disconnect()
+            self.mRepositories[key]["xmlData"].finished.disconnect(self.mRepositories[key]["xmlDataFinished"])
             self.mRepositories[key]["xmlData"].abort()
 
     # ----------------------------------------- #
@@ -406,7 +409,9 @@ class Repositories(QObject):
                         trusted = True
                     icon = pluginNodes.item(i).firstChildElement("icon").text().strip()
                     if icon and not icon.startswith("http"):
-                        icon = "http://{}/{}".format(QUrl(self.mRepositories[reposName]["url"]).host(), icon)
+                        url = QUrl(self.mRepositories[reposName]["url"])
+                        if url.scheme() in ('http', 'https'):
+                            icon = "{}://{}/{}".format(url.scheme(), url.host(), icon)
 
                     if pluginNodes.item(i).toElement().hasAttribute("plugin_id"):
                         plugin_id = pluginNodes.item(i).toElement().attribute("plugin_id")
@@ -445,7 +450,8 @@ class Repositories(QObject):
                         "version_installed": "",
                         "zip_repository": reposName,
                         "library": "",
-                        "readonly": False
+                        "readonly": False,
+                        "plugin_dependencies": pluginNodes.item(i).firstChildElement("plugin_dependencies").text().strip(),
                     }
                     qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().strip()
                     if not qgisMinimumVersion:
@@ -673,7 +679,9 @@ class Plugins(QObject):
             "status": "orphan",  # Will be overwritten, if any available version found.
             "error": error,
             "error_details": errorDetails,
-            "readonly": readOnly}
+            "readonly": readOnly,
+            "plugin_dependencies": pluginMetadata("plugin_dependencies"),
+        }
         return plugin
 
     # ----------------------------------------- #
@@ -745,9 +753,9 @@ class Plugins(QObject):
                         # other remote metadata is preferred:
                         for attrib in ["name", "plugin_id", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                                        "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
-                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted"]:
+                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted", "plugin_dependencies"]:
                             if attrib not in translatableAttributes or attrib == "name":  # include name!
-                                if plugin[attrib]:
+                                if plugin.get(attrib, False):
                                     self.mPlugins[key][attrib] = plugin[attrib]
                     # set status
                     #

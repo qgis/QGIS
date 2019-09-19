@@ -27,7 +27,7 @@
 #include "qgis_gui.h"
 #include <QSortFilterProxyModel>
 
-class QgsBrowserModel;
+class QgsBrowserGuiModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
       * \param browserModel instance of the (shared) browser model
       * \param parent parent widget
       */
-    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBrowserDockWidget() override;
 
     /**
@@ -86,8 +86,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     /**
      * Adds the layer corresponding to the specified model \a index.
      *
-     * Returns true if the index was successfully intrepreted as a map layer and loaded, or
-     * false if the index is not a map layer or could not be loaded.
+     * Returns TRUE if the index was successfully intrepreted as a map layer and loaded, or
+     * FALSE if the index is not a map layer or could not be loaded.
      *
      * \deprecated will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
      */
@@ -127,6 +127,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void setCaseSensitive( bool caseSensitive );
     //! Apply filter to the model
     void setFilter();
+    //! Sets the selection to \a index and expand it
+    void setActiveIndex( const QModelIndex &index );
     //! Update project home directory
     void updateProjectHome();
 
@@ -183,7 +185,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     QgsDataItemGuiContext createContext();
 
     QgsDockBrowserTreeView *mBrowserView = nullptr;
-    QgsBrowserModel *mModel = nullptr;
+    QgsBrowserGuiModel *mModel = nullptr;
     QgsBrowserProxyModel *mProxyModel = nullptr;
     QString mInitPath;
     bool mPropertiesWidgetEnabled;

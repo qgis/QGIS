@@ -1,0 +1,317 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbookmarkmanager.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsBookmark
+{
+%Docstring
+
+Represents a spatial bookmark, with a name, CRS and extent.
+
+QgsBookmark objects are typically used alongside the QgsBookmarkManager class,
+which handles storage of a set of bookmarks.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsbookmarkmanager.h"
+%End
+  public:
+
+    QgsBookmark();
+%Docstring
+Default constructor, creates an empty bookmark.
+%End
+
+    QString id() const;
+%Docstring
+Returns the bookmark's unique ID.
+
+.. seealso:: :py:func:`setId`
+%End
+
+    void setId( const QString &id );
+%Docstring
+Sets the bookmark's unique ``id``.
+
+.. seealso:: :py:func:`id`
+%End
+
+    QString name() const;
+%Docstring
+Returns the bookmark's name, which is a user-visible string identifying
+the bookmark.
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the bookmark's ``name``, which is a user-visible string identifying
+the bookmark.
+
+.. seealso:: :py:func:`name`
+%End
+
+    QString group() const;
+%Docstring
+Returns the bookmark's group, which is a user-visible string identifying
+the bookmark's category.
+
+.. seealso:: :py:func:`setGroup`
+%End
+
+    void setGroup( const QString &group );
+%Docstring
+Sets the bookmark's ``group``, which is a user-visible string identifying
+the bookmark's category.
+
+.. seealso:: :py:func:`group`
+%End
+
+    QgsReferencedRectangle extent() const;
+%Docstring
+Returns the bookmark's spatial extent.
+
+.. seealso:: :py:func:`setExtent`
+%End
+
+    void setExtent( const QgsReferencedRectangle &extent );
+%Docstring
+Sets the bookmark's spatial ``extent``.
+
+.. seealso:: :py:func:`extent`
+%End
+
+    static QgsBookmark fromXml( const QDomElement &element, const QDomDocument &doc );
+%Docstring
+Creates a bookmark using the properties from a DOM ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Returns a DOM element representing the bookmark's properties.
+
+.. seealso:: :py:func:`fromXml`
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsBookmark: '%1' (%2 - %3)>" ).arg( sipCpp->name(), sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    bool operator==( const QgsBookmark &other );
+    bool operator!=( const QgsBookmark &other );
+
+};
+
+class QgsBookmarkManager : QObject
+{
+%Docstring
+
+Manages storage of a set of bookmarks.
+
+QgsBookmarkManager handles the storage, serializing and deserializing
+of geographic bookmarks. Usually this class is not constructed directly, but
+rather accessed through a QgsProject via QgsProject.bookmarkManager(), or via
+the application-wide bookmark store at :py:func:`QgsApplication.bookmarkManager()`
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsbookmarkmanager.h"
+%End
+  public:
+
+    static QgsBookmarkManager *createProjectBasedManager( QgsProject *project );
+%Docstring
+Returns a newly created QgsBookmarkManager using a project-based bookmark store, linked to the specified ``project``.
+
+The returned object is parented to the ``project``.
+%End
+
+    explicit QgsBookmarkManager( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBookmarkManager, with the specified ``parent`` object.
+
+This constructor creates a bookmark manager which stores bookmarks in an XML file. A call to
+initialize() is required to initialize the manager and set the corresponding file path.
+%End
+
+    ~QgsBookmarkManager();
+
+    void initialize( const QString &filePath );
+%Docstring
+initialize
+%End
+
+    QString addBookmark( const QgsBookmark &bookmark, bool *ok /Out/ = 0 );
+%Docstring
+Adds a ``bookmark`` to the manager.
+
+:param bookmark: the bookmark to add
+
+:return: - The bookmark's ID (or newly generated ID, if no ID was originally set and one was automatically generated)
+         - ok: will be set to ``True`` if the bookmark was successfully added, or ``False`` if the bookmark could not be added (eg as a result of a duplicate bookmark ID).
+
+
+.. seealso:: :py:func:`removeBookmark`
+
+.. seealso:: :py:func:`bookmarkAdded`
+%End
+
+    bool removeBookmark( const QString &id );
+%Docstring
+Removes the bookmark with matching ``id`` from the manager.
+
+Returns ``True`` if the removal was successful, or ``False`` if the removal failed (eg as a result
+of removing a bookmark which is not contained in the manager).
+
+.. seealso:: :py:func:`addBookmark`
+
+.. seealso:: :py:func:`bookmarkRemoved`
+
+.. seealso:: :py:func:`bookmarkAboutToBeRemoved`
+
+.. seealso:: :py:func:`clear`
+%End
+
+    bool updateBookmark( const QgsBookmark &bookmark );
+%Docstring
+Updates the definition of a ``bookmark`` in the manager.
+
+Replaces the current definition of the bookmark with matching ID in the manager with
+a new definition (new bookmark name or extent).
+
+Returns ``True`` if the bookmark was successfully updated, or
+``False`` if the bookmark could not be updated (eg bookmark is not stored in the manager).
+
+.. seealso:: :py:func:`bookmarkChanged`
+%End
+
+    void clear();
+%Docstring
+Removes and deletes all bookmarks from the manager.
+
+.. seealso:: :py:func:`removeBookmark`
+%End
+
+    QStringList groups() const;
+%Docstring
+Returns a list of all bookmark groups contained in the manager.
+%End
+
+    void renameGroup( const QString &oldName, const QString &newName );
+%Docstring
+Renames an existing group from ``oldName`` to ``newName``. This updates
+all existing bookmarks to reflect the new name.
+%End
+
+    QList< QgsBookmark > bookmarks() const;
+%Docstring
+Returns a list of all bookmarks contained in the manager.
+%End
+
+    QgsBookmark bookmarkById( const QString &id ) const;
+%Docstring
+Returns the bookmark with a matching ``id``, or an empty bookmark if no matching bookmarks
+were found.
+%End
+
+    QList< QgsBookmark > bookmarksByGroup( const QString &group );
+%Docstring
+Returns a list of bookmark with a matching ``group``, or an empty list if no matching bookmarks
+were found.
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc );
+%Docstring
+Reads the manager's state from a DOM element, restoring all bookmarks
+present in the XML document.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Returns a DOM element representing the state of the manager.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool moveBookmark( const QString &id, QgsBookmarkManager *destination );
+%Docstring
+Moves the bookmark with matching ``id`` from this manager to a ``destination`` manager.
+
+Returns ``True`` if the bookmark was successfully moved.
+%End
+
+    static bool exportToFile( const QString &path, const QList<const QgsBookmarkManager *> &managers, const QString &group = QString() );
+%Docstring
+Exports all bookmarks from a list of ``managers`` to an xml file at the specified ``path``.
+
+If ``group`` is set then only bookmarks from the matching group will be exported.
+
+Returns ``True`` if the export was successful.
+
+.. seealso:: :py:func:`importFromFile`
+%End
+
+
+    bool importFromFile( const QString &path );
+%Docstring
+Imports the bookmarks from an xml file at the specified ``path``.
+
+Returns ``True`` if the import was successful.
+
+.. seealso:: :py:func:`exportToFile`
+%End
+
+  signals:
+
+    void bookmarkAboutToBeAdded( const QString &id );
+%Docstring
+Emitted when a bookmark is about to be added to the manager
+%End
+
+    void bookmarkAdded( const QString &id );
+%Docstring
+Emitted when a bookmark has been added to the manager
+%End
+
+    void bookmarkRemoved( const QString &id );
+%Docstring
+Emitted when a bookmark was removed from the manager
+%End
+
+    void bookmarkAboutToBeRemoved( const QString &id );
+%Docstring
+Emitted when a bookmark is about to be removed from the manager
+%End
+
+    void bookmarkChanged( const QString &id );
+%Docstring
+Emitted when a bookmark is changed
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbookmarkmanager.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

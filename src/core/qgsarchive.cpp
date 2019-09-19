@@ -20,7 +20,6 @@
 #include "qgsziputils.h"
 #include "qgsmessagelog.h"
 #include "qgsauxiliarystorage.h"
-#include <iostream>
 
 #include <QStandardPaths>
 #include <QUuid>
@@ -32,7 +31,7 @@ QgsArchive::QgsArchive()
 
 QgsArchive::QgsArchive( const QgsArchive &other )
   : mFiles( other.mFiles )
-  ,  mDir( new QTemporaryDir() )
+  , mDir( new QTemporaryDir() )
 {
 }
 
@@ -114,7 +113,8 @@ QStringList QgsArchive::files() const
 
 QString QgsProjectArchive::projectFile() const
 {
-  Q_FOREACH ( const QString &file, files() )
+  const auto constFiles = files();
+  for ( const QString &file : constFiles )
   {
     QFileInfo fileInfo( file );
     if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 )

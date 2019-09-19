@@ -43,7 +43,6 @@ void QgsVectorLayerDiagramProvider::init()
   mName = mLayerId;
   mPriority = 1 - mSettings.priority() / 10.0; // convert 0..10 --> 1..0
   mPlacement = QgsPalLayerSettings::Placement( mSettings.placement() );
-  mLinePlacementFlags = mSettings.linePlacementFlags();
 }
 
 
@@ -78,8 +77,12 @@ QList<QgsLabelFeature *> QgsVectorLayerDiagramProvider::labelFeatures( QgsRender
   QgsFeatureRequest request;
   request.setFilterRect( layerExtent );
   request.setSubsetOfAttributes( attributeNames, mFields );
+  const QgsFeatureFilterProvider *featureFilterProvider = context.featureFilterProvider();
+  if ( featureFilterProvider )
+  {
+    featureFilterProvider->filterFeatures( qobject_cast<QgsVectorLayer *>( mLayer ), request );
+  }
   QgsFeatureIterator fit = mSource->getFeatures( request );
-
 
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
@@ -98,7 +101,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
   // features are pre-rotated but not scaled/translated,
   // so we only disable rotation here. Ideally, they'd be
   // also pre-scaled/translated, as suggested here:
-  // https://issues.qgis.org/issues/11856
+  // https://github.com/qgis/QGIS/issues/20071
   QgsMapToPixel xform = context.mapToPixel();
   xform.setMapRotation( 0, 0, 0 );
 #else
@@ -144,14 +147,12 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QS
   const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
   if ( context.coordinateTransform().isValid() )
-    // this is context for layer rendering - use its CT as it includes correct datum transform
+    // this is context for layer rendering
     s2.setCoordinateTransform( context.coordinateTransform() );
   else
   {
-    // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
-    Q_NOWARN_DEPRECATED_PUSH
-    s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
-    Q_NOWARN_DEPRECATED_POP
+    // otherwise fall back to creating our own CT
+    s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs(), context.transformContext() ) );
   }
 
   s2.setRenderer( mDiagRenderer );

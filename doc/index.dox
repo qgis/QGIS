@@ -19,7 +19,7 @@ fixes, bug reports, contributed documentation, advocacy and supporting other
 users on our mailing lists and forums. Financial contributions are also
 welcome.
 
-You can also <a href="https://qgis.org/downloads/qgis-api-doc.zip">download</a>
+You can also <a href="https://qgis.org/downloads/qgis-api-doc.7z">download</a>
 this documentation or a <a href="qgis.qch">Qt help file</a>
 for offline use.
 
@@ -32,6 +32,9 @@ See \ref api_break for information about incompatible changes to API between rel
 
 Earlier versions of the documentation are also available on the QGIS
 website:
+<a href="https://qgis.org/api/3.8">3.8</a>,
+<a href="https://qgis.org/api/3.6">3.6</a>,
+<a href="https://qgis.org/api/3.4">3.4 (LTR)</a>,
 <a href="https://qgis.org/api/3.2">3.2</a>,
 <a href="https://qgis.org/api/3.0">3.0</a>,
 <a href="https://qgis.org/api/2.18">2.18 (LTR)</a>,
@@ -59,9 +62,8 @@ users and developers.
 
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a
-href="https://issues.qgis.org/projects/qgis">bug tracker</a>. When reporting bugs,
-please include some contact information in case we need help with replicating
-your issue.
+href="https://github.com/qgis/QGIS/issues">bug tracker</a>. When reporting bugs,
+please be available to follow up on your initial report.
 
 \section index_ircchannel IRC channel
 Some QGIS users and developers can also often be found in the 

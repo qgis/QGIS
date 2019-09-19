@@ -38,6 +38,10 @@
 #include <cstdlib>
 #include <cstdarg>
 
+#if !defined(Q_OS_WIN)
+#include "sigwatch.h"
+#endif
+
 #ifdef WIN32
 // Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
@@ -67,7 +71,8 @@ typedef SInt32 SRefCon;
 #include <limits.h>
 #endif
 
-#if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
+#if defined(__GLIBC__) || defined(__FreeBSD__)
+#define QGIS_CRASH
 #include <unistd.h>
 #include <execinfo.h>
 #include <csignal>
@@ -99,6 +104,8 @@ typedef SInt32 SRefCon;
 #include "qgsziputils.h"
 #include "qgsversionmigration.h"
 #include "qgsfirstrundialog.h"
+#include "qgsproxystyle.h"
+#include "qgsmessagebar.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -108,6 +115,15 @@ typedef SInt32 SRefCon;
 #endif
 
 /**
+ * Print QGIS version
+ */
+void version( )
+{
+  const QString msg = QStringLiteral( "QGIS %1 '%2' (%3)\n" ).arg( VERSION ).arg( RELEASE_NAME ).arg( QGSVERSION );
+  std::cout << msg.toStdString();
+}
+
+/**
  * Print usage text
  */
 void usage( const QString &appName )
@@ -115,11 +131,10 @@ void usage( const QString &appName )
   QStringList msg;
 
   msg
-      << QStringLiteral( "QGIS - " ) << VERSION << QStringLiteral( " '" ) << RELEASE_NAME << QStringLiteral( "' (" )
-      << QGSVERSION << QStringLiteral( ")\n" )
       << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
       << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
       << QStringLiteral( "  OPTION:\n" )
+      << QStringLiteral( "\t[--version]\tdisplay version information and exit\n" )
       << QStringLiteral( "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n" )
       << QStringLiteral( "\t[--width width]\twidth of snapshot to emit\n" )
       << QStringLiteral( "\t[--height height]\theight of snapshot to emit\n" )
@@ -167,7 +182,7 @@ void usage( const QString &appName )
               "QGIS command line options",
               MB_OK );
 #else
-  std::cerr << msg.join( QString() ).toLocal8Bit().constData();
+  std::cout << msg.join( QString() ).toLocal8Bit().constData();
 #endif
 
 } // usage()
@@ -216,7 +231,7 @@ static void dumpBacktrace( unsigned int depth )
   if ( depth == 0 )
     depth = 20;
 
-#if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
+#ifdef QGIS_CRASH
   // Below there is a bunch of operations that are not safe in multi-threaded
   // environment (dup()+close() combo, wait(), juggling with file descriptors).
   // Maybe some problems could be resolved with dup2() and waitpid(), but it seems
@@ -287,11 +302,11 @@ static void dumpBacktrace( unsigned int depth )
 #elif defined(Q_OS_WIN)
   // TODO Replace with incoming QgsStackTrace
 #else
-  Q_UNUSED( depth );
+  Q_UNUSED( depth )
 #endif
 }
 
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#ifdef QGIS_CRASH
 void qgisCrash( int signal )
 {
   fprintf( stderr, "QGIS died on signal %d", signal );
@@ -371,9 +386,13 @@ void myMessageOutput( QtMsgType type, const char *msg )
       break;
     case QtWarningMsg:
     {
-      // Ignore libpng iCPP known incorrect SRGB profile errors
-      // (which are thrown by 3rd party components we have no control over and have low value anyway).
-      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 )
+      /* Ignore:
+       * - libpng iCPP known incorrect SRGB profile errors (which are thrown by 3rd party components
+       *  we have no control over and have low value anyway);
+       * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
+       */
+      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 ||
+           strstr( msg, "Could not add child element to parent element because the types are incorrect" ) )
         break;
 
       myPrint( "Warning: %s\n", msg );
@@ -381,11 +400,21 @@ void myMessageOutput( QtMsgType type, const char *msg )
 #ifdef QGISDEBUG
       // Print all warnings except setNamedColor.
       // Only seems to happen on windows
-      if ( 0 != strncmp( msg, "QColor::setNamedColor: Unknown color name 'param", 48 ) )
+      if ( 0 != strncmp( msg, "QColor::setNamedColor: Unknown color name 'param", 48 )
+           && 0 != strncmp( msg, "Logged warning", 14 ) )
       {
         // TODO: Verify this code in action.
         dumpBacktrace( 20 );
-        QgsMessageLog::logMessage( msg, QStringLiteral( "Qt" ) );
+
+        // also be super obnoxious -- we DON'T want to allow these errors to be ignored!!
+        if ( QgisApp::instance() && QgisApp::instance()->messageBar() && QgisApp::instance()->thread() == QThread::currentThread() )
+        {
+          QgisApp::instance()->messageBar()->pushCritical( QStringLiteral( "Qt" ), msg );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( msg, QStringLiteral( "Qt" ) );
+        }
       }
 #endif
 
@@ -402,7 +431,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       myPrint( "Fatal: %s\n", msg );
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#ifdef QGIS_CRASH
       qgisCrash( -1 );
 #else
       dumpBacktrace( 256 );
@@ -430,6 +459,9 @@ APP_EXPORT
 #endif
 int main( int argc, char *argv[] )
 {
+  //log messages written before creating QgsApplication
+  QStringList preApplicationLogMessages;
+
 #ifdef Q_OS_MACX
   // Increase file resource limits (i.e., number of allowed open files)
   // (from code provided by Larry Biehl, Purdue University, USA, from 'MultiSpec' project)
@@ -460,7 +492,7 @@ int main( int argc, char *argv[] )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
-    Q_UNUSED( oldSoft ); //avoid warnings
+    Q_UNUSED( oldSoft ) //avoid warnings
     QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
                  .arg( oldSoft ).arg( oldHard ) );
   }
@@ -480,7 +512,7 @@ int main( int argc, char *argv[] )
   qInstallMsgHandler( myMessageOutput );
 #endif
 
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#ifdef QGIS_CRASH
   signal( SIGQUIT, qgisCrash );
   signal( SIGILL, qgisCrash );
   signal( SIGFPE, qgisCrash );
@@ -594,7 +626,12 @@ int main( int argc, char *argv[] )
         if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-?" ) )
         {
           usage( args[0] );
-          return 2;
+          return EXIT_SUCCESS;
+        }
+        else if ( arg == QLatin1String( "--version" ) || arg == QLatin1String( "-v" ) )
+        {
+          version();
+          return EXIT_SUCCESS;
         }
         else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
         {
@@ -866,11 +903,11 @@ int main( int argc, char *argv[] )
   {
     if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      preApplicationLogMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
     }
     else
     {
-      QgsMessageLog::logMessage( QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      preApplicationLogMessages << QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
     }
   }
 
@@ -970,6 +1007,10 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag );
 
+  //write the log messages written before creating QgsApplication
+  for ( const QString &preApplicationLogMessage : qgis::as_const( preApplicationLogMessages ) )
+    QgsMessageLog::logMessage( preApplicationLogMessage );
+
   // Settings migration is only supported on the default profile for now.
   if ( profileName == QLatin1String( "default" ) )
   {
@@ -987,6 +1028,10 @@ int main( int argc, char *argv[] )
       if ( !settingsMigrationForce && showWelcome )
       {
         QgsFirstRunDialog dlg;
+        if ( ! QFile::exists( QSettings( "QGIS", "QGIS2" ).fileName() ) )
+        {
+          dlg.hideMigration();
+        }
         dlg.exec();
         runMigration = dlg.migrateSettings();
         migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
@@ -1023,7 +1068,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif
-#ifdef Q_OS_MAC
+#if defined(Q_OS_UNIX)
   // Resulting libraryPaths has critical QGIS plugin paths first, then any Qt plugin paths, then
   // any dev-defined paths (in app's qt.conf) and/or user-defined paths (QT_PLUGIN_PATH env var).
   //
@@ -1031,7 +1076,7 @@ int main( int argc, char *argv[] )
   //       built against a different Qt/QGIS, while still allowing custom C++ plugins to load.
   QStringList libPaths( QCoreApplication::libraryPaths() );
 
-  QgsDebugMsgLevel( QStringLiteral( "Initial macOS QCoreApplication::libraryPaths: %1" )
+  QgsDebugMsgLevel( QStringLiteral( "Initial macOS/UNIX QCoreApplication::libraryPaths: %1" )
                     .arg( libPaths.join( " " ) ), 4 );
 
   // Strip all critical paths that should always be prepended
@@ -1143,7 +1188,8 @@ int main( int argc, char *argv[] )
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
                << appResources.append( "/share/gdal" )
                << appResources.append( "/gdal" );
-    Q_FOREACH ( const QString &gdalShare, gdalShares )
+    const auto constGdalShares = gdalShares;
+    for ( const QString &gdalShare : constGdalShares )
     {
       if ( QFile::exists( gdalShare ) )
       {
@@ -1162,7 +1208,8 @@ int main( int argc, char *argv[] )
     QStringList customVarsList = settings.value( QStringLiteral( "qgis/customEnvVars" ), "" ).toStringList();
     if ( !customVarsList.isEmpty() )
     {
-      Q_FOREACH ( const QString &varStr, customVarsList )
+      const auto constCustomVarsList = customVarsList;
+      for ( const QString &varStr : constCustomVarsList )
       {
         int pos = varStr.indexOf( QLatin1Char( '|' ) );
         if ( pos == -1 )
@@ -1214,14 +1261,18 @@ int main( int argc, char *argv[] )
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
-  QString presetStyle = settings.value( QStringLiteral( "qgis/style" ) ).toString();
-  QString activeStyleName = presetStyle;
-  if ( activeStyleName.isEmpty() ) // not set, using default style
+  QString desiredStyle = settings.value( QStringLiteral( "qgis/style" ) ).toString();
+  const QString theme = settings.value( QStringLiteral( "UI/UITheme" ) ).toString();
+  if ( theme != QLatin1String( "default" ) )
   {
-    //not set, check default
-    activeStyleName = QApplication::style()->metaObject()->className();
+    if ( QStyleFactory::keys().contains( QStringLiteral( "fusion" ), Qt::CaseInsensitive ) )
+    {
+      desiredStyle = QStringLiteral( "fusion" );
+    }
   }
-  if ( activeStyleName.contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
+  const QString activeStyleName = QApplication::style()->metaObject()->className();
+  if ( desiredStyle.contains( QLatin1String( "adwaita" ), Qt::CaseInsensitive )
+       || ( desiredStyle.isEmpty() && activeStyleName.contains( QLatin1String( "adwaita" ), Qt::CaseInsensitive ) ) )
   {
     //never allow Adwaita themes - the Qt variants of these are VERY broken
     //for apps like QGIS. E.g. oversized controls like spinbox widgets prevent actually showing
@@ -1231,13 +1282,21 @@ int main( int argc, char *argv[] )
     //style choices can cause Qt apps to crash...
     if ( QStyleFactory::keys().contains( QStringLiteral( "fusion" ), Qt::CaseInsensitive ) )
     {
-      presetStyle = QStringLiteral( "fusion" );
+      desiredStyle = QStringLiteral( "fusion" );
     }
   }
-  if ( !presetStyle.isEmpty() )
+  if ( !desiredStyle.isEmpty() )
   {
-    QApplication::setStyle( presetStyle );
-    settings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
+    QApplication::setStyle( new QgsAppStyle( desiredStyle ) );
+
+    if ( activeStyleName != desiredStyle )
+      settings.setValue( QStringLiteral( "qgis/style" ), desiredStyle );
+  }
+  else
+  {
+    // even if user has not set a style, we need to override the application style with the QgsAppStyle proxy
+    // based on the default style (or we miss custom style tweaks)
+    QApplication::setStyle( new QgsAppStyle( activeStyleName ) );
   }
 
   // set authentication database directory
@@ -1365,7 +1424,7 @@ int main( int argc, char *argv[] )
     //replace backslashes with forward slashes
     pythonfile.replace( '\\', '/' );
 #endif
-    QgsPythonRunner::run( QStringLiteral( "exec(open('%1').read())" ).arg( pythonfile ) );
+    QgsPythonRunner::run( QStringLiteral( "with open('%1','r') as f: exec(f.read())" ).arg( pythonfile ) );
   }
 
   /////////////////////////////////`////////////////////////////////////
@@ -1406,7 +1465,8 @@ int main( int argc, char *argv[] )
     QList< QgsDxfExport::DxfLayer > layers;
     if ( !dxfMapTheme.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
+      const auto constMapThemeVisibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme );
+      for ( QgsMapLayer *layer : constMapThemeVisibleLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
@@ -1417,7 +1477,8 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      Q_FOREACH ( QgsMapLayer *ml, QgsProject::instance()->mapLayers() )
+      const auto constMapLayers = QgsProject::instance()->mapLayers();
+      for ( QgsMapLayer *ml : constMapLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )
@@ -1498,6 +1559,24 @@ int main( int argc, char *argv[] )
   // fix for Qt Ministro hiding app's menubar in favor of native Android menus
   qgis->menuBar()->setNativeMenuBar( false );
   qgis->menuBar()->setVisible( true );
+#endif
+
+#if !defined(Q_OS_WIN)
+  UnixSignalWatcher sigwatch;
+  sigwatch.watchForSignal( SIGINT );
+
+  QObject::connect( &sigwatch, &UnixSignalWatcher::unixSignal, &myApp, [&myApp ]( int signal )
+  {
+    switch ( signal )
+    {
+      case SIGINT:
+        myApp.exit( 1 );
+        break;
+
+      default:
+        break;
+    }
+  } );
 #endif
 
   int retval = myApp.exec();

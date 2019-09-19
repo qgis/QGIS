@@ -16,7 +16,7 @@
 #ifndef QGSMAPTOOLEDIT_H
 #define QGSMAPTOOLEDIT_H
 
-#include "qgis.h"
+#include "qgswkbtypes.h"
 #include "qgsmaptool.h"
 #include "qgis_gui.h"
 
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *   the QGIS settings. The caller takes ownership of the
      *   returned object
      *   \param geometryType
-     *   \param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. default is false.
+     *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
      */
     QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) SIP_FACTORY;
 
@@ -67,12 +67,26 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     //! Returns the current vector layer of the map canvas or 0
     QgsVectorLayer *currentVectorLayer();
 
+    //! Result of addTopologicalPoints
+    enum TopologicalResult
+    {
+      Success = 0, //!< AddTopologicalPoints was successful
+      InvalidCanvas = 1, //!< AddTopologicalPoints failed due to an invalid canvas
+      InvalidLayer = 2, //!< AddTopologicalPoints failed due to an invalid canvas
+    };
+
     /**
-     * Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
-     * \param geom list of points (in layer coordinate system)
-     * \returns 0 in case of success
+     * Adds a list of \a vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+     * The \a vertices list specifies a set of topological points to add, in the layer's coordinate reference system.
      */
-    int addTopologicalPoints( const QVector<QgsPointXY> &geom );
+    TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &vertices );
+
+    /**
+     * Adds a list of \a vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+     * The \a vertices list specifies a set of topological points to add, in the layer's coordinate reference system.
+     * \since QGIS 3.10
+     */
+    TopologicalResult addTopologicalPoints( const QVector<QgsPoint> &vertices );
 
     //! Display a timed message bar noting the active layer is not vector.
     void notifyNotVectorLayer();

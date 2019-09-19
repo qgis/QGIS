@@ -11,12 +11,13 @@ Required build tools:
 - CMake >= 3.0.0
 - Flex >= 2.5.6
 - Bison >= 2.4
+- Python 3
 -
 
 Required build dependencies:
 
 - Qt >= 5.9.0
-- Proj >= 4.4.x
+- Proj >= 4.9.3
 - GEOS >= 3.4
 - Sqlite3 >= 3.0.0
 - SpatiaLite >= 4.2.0

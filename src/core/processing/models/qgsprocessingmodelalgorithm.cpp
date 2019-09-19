@@ -22,6 +22,10 @@
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
+#include "qgsstringutils.h"
+#include "qgsapplication.h"
+#include "qgsprocessingparametertype.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -95,7 +99,8 @@ QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
 {
   QVariantMap childParams;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, child.algorithm()->parameterDefinitions() )
+  const auto constParameterDefinitions = child.algorithm()->parameterDefinitions();
+  for ( const QgsProcessingParameterDefinition *def : constParameterDefinitions )
   {
     if ( !def->isDestination() )
     {
@@ -106,7 +111,8 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
 
       QString expressionText;
       QVariantList paramParts;
-      Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramSources )
+      const auto constParamSources = paramSources;
+      for ( const QgsProcessingModelChildParameterSource &source : constParamSources )
       {
         switch ( source.source() )
         {
@@ -214,7 +220,8 @@ bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId,
     QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator childParamIt = candidateChildParams.constBegin();
     for ( ; childParamIt != candidateChildParams.constEnd(); ++childParamIt )
     {
-      Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, childParamIt.value() )
+      const auto constValue = childParamIt.value();
+      for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
         if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput
              && source.outputChildId() == childId
@@ -251,7 +258,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   while ( executedAlg && executed.count() < toExecute.count() )
   {
     executedAlg = false;
-    Q_FOREACH ( const QString &childId, toExecute )
+    const auto constToExecute = toExecute;
+    for ( const QString &childId : constToExecute )
     {
       if ( feedback && feedback->isCanceled() )
         break;
@@ -260,7 +268,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         continue;
 
       bool canExecute = true;
-      Q_FOREACH ( const QString &dependency, dependsOnChildAlgorithms( childId ) )
+      const auto constDependsOnChildAlgorithms = dependsOnChildAlgorithms( childId );
+      for ( const QString &dependency : constDependsOnChildAlgorithms )
       {
         if ( !executed.contains( dependency ) )
         {
@@ -351,67 +360,159 @@ void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
   mSourceFile = sourceFile;
 }
 
-QString QgsProcessingModelAlgorithm::asPythonCode() const
+QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const int indentSize ) const
 {
   QStringList lines;
-  lines << QStringLiteral( "##%1=name" ).arg( name() );
+  QString indent = QString( ' ' ).repeated( indentSize );
+  QString currentIndent;
 
-  QMap< QString, QgsProcessingModelParameter >::const_iterator paramIt = mParameterComponents.constBegin();
-  for ( ; paramIt != mParameterComponents.constEnd(); ++paramIt )
-  {
-    QString name = paramIt.value().parameterName();
-    if ( parameterDefinition( name ) )
-    {
-      lines << parameterDefinition( name )->asScriptCode();
-    }
-  }
-
-  auto safeName = []( const QString & name )->QString
+  QMap< QString, QString> friendlyChildNames;
+  QMap< QString, QString> friendlyOutputNames;
+  auto safeName = []( const QString & name, bool capitalize )->QString
   {
     QString n = name.toLower().trimmed();
-    QRegularExpression rx( QStringLiteral( "[^a-z_]" ) );
+    QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
     n.replace( rx, QString() );
-    return n;
+    QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
+    n.replace( rx2, QString() );
+    if ( !capitalize )
+      n = n.replace( ' ', '_' );
+    return capitalize ? QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase ) : n;
   };
 
-  QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
-  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  auto uniqueSafeName = [ &safeName ]( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString
   {
-    if ( !childIt->isActive() || !childIt->algorithm() )
-      continue;
-
-    // look through all outputs for child
-    QMap<QString, QgsProcessingModelOutput> outputs = childIt->modelOutputs();
-    QMap<QString, QgsProcessingModelOutput>::const_iterator outputIt = outputs.constBegin();
-    for ( ; outputIt != outputs.constEnd(); ++outputIt )
+    const QString base = safeName( name, capitalize );
+    QString candidate = base;
+    int i = 1;
+    while ( friendlyNames.contains( candidate ) )
     {
-      const QgsProcessingOutputDefinition *output = childIt->algorithm()->outputDefinition( outputIt->childOutputName() );
-      lines << QStringLiteral( "##%1=output %2" ).arg( safeName( outputIt->name() ), output->type() );
+      i++;
+      candidate = QStringLiteral( "%1_%2" ).arg( base ).arg( i );
     }
-  }
+    return candidate;
+  };
 
-  lines << QStringLiteral( "results={}" );
+  const QString algorithmClassName = safeName( name(), true );
 
   QSet< QString > toExecute;
-  childIt = mChildAlgorithms.constBegin();
-  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  for ( auto childIt = mChildAlgorithms.constBegin(); childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
     if ( childIt->isActive() && childIt->algorithm() )
+    {
       toExecute.insert( childIt->childId() );
+      friendlyChildNames.insert( childIt->childId(), uniqueSafeName( childIt->description().isEmpty() ? childIt->childId() : childIt->description(), !childIt->description().isEmpty(), friendlyChildNames ) );
+    }
   }
+  const int totalSteps = toExecute.count();
+
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      lines << QStringLiteral( "from qgis.core import QgsProcessing" );
+      lines << QStringLiteral( "from qgis.core import QgsProcessingAlgorithm" );
+      lines << QStringLiteral( "from qgis.core import QgsProcessingMultiStepFeedback" );
+      // add specific parameter type imports
+      const auto params = parameterDefinitions();
+      QStringList importLines; // not a set - we need regular ordering
+      importLines.reserve( params.count() );
+      for ( const QgsProcessingParameterDefinition *def : params )
+      {
+        const QString importString = QgsApplication::processingRegistry()->parameterType( def->type() )->pythonImportString();
+        if ( !importString.isEmpty() && !importLines.contains( importString ) )
+          importLines << importString;
+      }
+      lines << importLines;
+      lines << QStringLiteral( "import processing" );
+      lines << QString() << QString();
+
+      lines << QStringLiteral( "class %1(QgsProcessingAlgorithm):" ).arg( algorithmClassName );
+      lines << QString();
+
+      // initAlgorithm, parameter definitions
+      lines << indent + QStringLiteral( "def initAlgorithm(self, config=None):" );
+      lines.reserve( lines.size() + params.size() );
+      for ( const QgsProcessingParameterDefinition *def : params )
+      {
+        std::unique_ptr< QgsProcessingParameterDefinition > defClone( def->clone() );
+
+        if ( defClone->isDestination() )
+        {
+          const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
+          friendlyOutputNames.insert( defClone->name(), friendlyName );
+          defClone->setName( friendlyName );
+        }
+
+        lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( defClone->asPythonString() );
+      }
+
+      lines << QString();
+      lines << indent + QStringLiteral( "def processAlgorithm(self, parameters, context, model_feedback):" );
+      currentIndent = indent + indent;
+
+      lines << currentIndent + QStringLiteral( "# Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the" );
+      lines << currentIndent + QStringLiteral( "# overall progress through the model" );
+      lines << currentIndent + QStringLiteral( "feedback = QgsProcessingMultiStepFeedback(%1, model_feedback)" ).arg( totalSteps );
+      break;
+    }
+#if 0
+    case Script:
+    {
+      QgsStringMap params;
+      QgsProcessingContext context;
+      QMap< QString, QgsProcessingModelParameter >::const_iterator paramIt = mParameterComponents.constBegin();
+      for ( ; paramIt != mParameterComponents.constEnd(); ++paramIt )
+      {
+        QString name = paramIt.value().parameterName();
+        if ( parameterDefinition( name ) )
+        {
+          // TODO - generic value to string method
+          params.insert( name, parameterDefinition( name )->valueAsPythonString( parameterDefinition( name )->defaultValue(), context ) );
+        }
+      }
+
+      if ( !params.isEmpty() )
+      {
+        lines << QStringLiteral( "parameters = {" );
+        for ( auto it = params.constBegin(); it != params.constEnd(); ++it )
+        {
+          lines << QStringLiteral( "  '%1':%2," ).arg( it.key(), it.value() );
+        }
+        lines << QStringLiteral( "}" )
+              << QString();
+      }
+
+      lines << QStringLiteral( "context = QgsProcessingContext()" )
+            << QStringLiteral( "context.setProject(QgsProject.instance())" )
+            << QStringLiteral( "feedback = QgsProcessingFeedback()" )
+            << QString();
+
+      break;
+    }
+#endif
+
+  }
+
+  lines << currentIndent + QStringLiteral( "results = {}" );
+  lines << currentIndent + QStringLiteral( "outputs = {}" );
+  lines << QString();
 
   QSet< QString > executed;
   bool executedAlg = true;
+  int currentStep = 0;
   while ( executedAlg && executed.count() < toExecute.count() )
   {
     executedAlg = false;
-    Q_FOREACH ( const QString &childId, toExecute )
+    const auto constToExecute = toExecute;
+    for ( const QString &childId : constToExecute )
     {
       if ( executed.contains( childId ) )
         continue;
 
       bool canExecute = true;
-      Q_FOREACH ( const QString &dependency, dependsOnChildAlgorithms( childId ) )
+      const auto constDependsOnChildAlgorithms = dependsOnChildAlgorithms( childId );
+      for ( const QString &dependency : constDependsOnChildAlgorithms )
       {
         if ( !executed.contains( dependency ) )
         {
@@ -426,15 +527,112 @@ QString QgsProcessingModelAlgorithm::asPythonCode() const
       executedAlg = true;
 
       const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
-      lines << child.asPythonCode();
 
+      // fill in temporary outputs
+      const QgsProcessingParameterDefinitions childDefs = child.algorithm()->parameterDefinitions();
+      QgsStringMap childParams;
+      for ( const QgsProcessingParameterDefinition *def : childDefs )
+      {
+        if ( def->isDestination() )
+        {
+          const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter * >( def );
+
+          // is destination linked to one of the final outputs from this model?
+          bool isFinalOutput = false;
+          QMap<QString, QgsProcessingModelOutput> outputs = child.modelOutputs();
+          QMap<QString, QgsProcessingModelOutput>::const_iterator outputIt = outputs.constBegin();
+          for ( ; outputIt != outputs.constEnd(); ++outputIt )
+          {
+            if ( outputIt->childOutputName() == destParam->name() )
+            {
+              QString paramName = child.childId() + ':' + outputIt.key();
+              paramName = friendlyOutputNames.value( paramName, paramName );
+              childParams.insert( destParam->name(), QStringLiteral( "parameters['%1']" ).arg( paramName ) );
+              isFinalOutput = true;
+              break;
+            }
+          }
+
+          if ( !isFinalOutput )
+          {
+            // output is temporary
+
+            // check whether it's optional, and if so - is it required?
+            bool required = true;
+            if ( destParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+            {
+              required = childOutputIsRequired( child.childId(), destParam->name() );
+            }
+
+            // not optional, or required elsewhere in model
+            if ( required )
+            {
+
+              childParams.insert( destParam->name(), QStringLiteral( "QgsProcessing.TEMPORARY_OUTPUT" ) );
+            }
+          }
+        }
+      }
+
+      lines << child.asPythonCode( outputType, childParams, currentIndent.size(), indentSize, friendlyChildNames, friendlyOutputNames );
+      currentStep++;
+      if ( currentStep < totalSteps )
+      {
+        lines << QString();
+        lines << currentIndent + QStringLiteral( "feedback.setCurrentStep(%1)" ).arg( currentStep );
+        lines << currentIndent + QStringLiteral( "if feedback.isCanceled():" );
+        lines << currentIndent + indent + QStringLiteral( "return {}" );
+        lines << QString();
+      }
       executed.insert( childId );
     }
   }
 
-  lines << QStringLiteral( "return results" );
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+      lines << currentIndent + QStringLiteral( "return results" );
+      lines << QString();
 
-  return lines.join( '\n' );
+      // name, displayName
+      lines << indent + QStringLiteral( "def name(self):" );
+      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelName );
+      lines << QString();
+      lines << indent + QStringLiteral( "def displayName(self):" );
+      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelName );
+      lines << QString();
+
+      // group, groupId
+      lines << indent + QStringLiteral( "def group(self):" );
+      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelGroup );
+      lines << QString();
+      lines << indent + QStringLiteral( "def groupId(self):" );
+      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelGroupId );
+      lines << QString();
+
+      // help
+      if ( !shortHelpString().isEmpty() )
+      {
+        lines << indent + QStringLiteral( "def shortHelpString(self):" );
+        lines << indent + indent + QStringLiteral( "return \"\"\"%1\"\"\"" ).arg( shortHelpString() );
+        lines << QString();
+      }
+      if ( !helpUrl().isEmpty() )
+      {
+        lines << indent + QStringLiteral( "def helpUrl(self):" );
+        lines << indent + indent + QStringLiteral( "return '%1'" ).arg( helpUrl() );
+        lines << QString();
+      }
+
+      // createInstance
+      lines << indent + QStringLiteral( "def createInstance(self):" );
+      lines << indent + indent + QStringLiteral( "return %1()" ).arg( algorithmClassName );
+      break;
+  }
+
+  lines << QString();
+
+  return lines;
 }
 
 QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingModelAlgorithm::variablesForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters, const QVariantMap &results ) const
@@ -449,13 +647,18 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
   // "static"/single value sources
   QgsProcessingModelChildParameterSources sources = availableSourcesForChild( childId, QStringList() << QgsProcessingParameterNumber::typeName()
+      << QgsProcessingParameterDistance::typeName()
+      << QgsProcessingParameterScale::typeName()
       << QgsProcessingParameterBoolean::typeName()
       << QgsProcessingParameterExpression::typeName()
       << QgsProcessingParameterField::typeName()
-      << QgsProcessingParameterString::typeName(),
+      << QgsProcessingParameterString::typeName()
+      << QgsProcessingParameterAuthConfig::typeName(),
       QStringList() << QgsProcessingOutputNumber::typeName()
-      << QgsProcessingOutputString::typeName() );
-  Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )
+      << QgsProcessingOutputString::typeName()
+      << QgsProcessingOutputBoolean::typeName() );
+
+  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -499,7 +702,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
                                       << QgsProcessingOutputRasterLayer::typeName()
                                       << QgsProcessingOutputMapLayer::typeName() );
 
-  Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )
+  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -557,7 +760,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
   sources = availableSourcesForChild( childId, QStringList()
                                       << QgsProcessingParameterFeatureSource::typeName() );
-  Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )
+  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -614,7 +817,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     }
     if ( !featureSource )
     {
-      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), context, true, QgsProcessingUtils::Vector ) ) )
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
         featureSource = vl;
     }
 
@@ -671,7 +874,8 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
             continue;
 
           bool ok = sourceDef->dataTypes().isEmpty();
-          Q_FOREACH ( int type, sourceDef->dataTypes() )
+          const auto constDataTypes = sourceDef->dataTypes();
+          for ( int type : constDataTypes )
           {
             if ( dataTypes.contains( type ) || type == QgsProcessing::TypeMapLayer || type == QgsProcessing::TypeVector || type == QgsProcessing::TypeVectorAnyGeometry )
             {
@@ -707,7 +911,8 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
     if ( !alg )
       continue;
 
-    Q_FOREACH ( const QgsProcessingOutputDefinition *out, alg->outputDefinitions() )
+    const auto constOutputDefinitions = alg->outputDefinitions();
+    for ( const QgsProcessingOutputDefinition *out : constOutputDefinitions )
     {
       if ( outputTypes.contains( out->type() ) )
       {
@@ -860,11 +1065,14 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   map.insert( QStringLiteral( "parameters" ), paramMap );
 
   QVariantMap paramDefMap;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  const auto constMParameters = mParameters;
+  for ( const QgsProcessingParameterDefinition *def : constMParameters )
   {
     paramDefMap.insert( def->name(), def->toVariantMap() );
   }
   map.insert( QStringLiteral( "parameterDefinitions" ), paramDefMap );
+
+  map.insert( QStringLiteral( "modelVariables" ), mVariables );
 
   return map;
 }
@@ -877,6 +1085,8 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mModelGroup = map.value( QStringLiteral( "model_group" ) ).toString();
   mModelGroupId = map.value( QStringLiteral( "model_group" ) ).toString();
   mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
+
+  mVariables = map.value( QStringLiteral( "modelVariables" ) ).toMap();
 
   mChildAlgorithms.clear();
   QVariantMap childMap = map.value( QStringLiteral( "children" ) ).toMap();
@@ -1032,7 +1242,8 @@ bool QgsProcessingModelAlgorithm::removeChildAlgorithm( const QString &id )
 
 void QgsProcessingModelAlgorithm::deactivateChildAlgorithm( const QString &id )
 {
-  Q_FOREACH ( const QString &child, dependentChildAlgorithms( id ) )
+  const auto constDependentChildAlgorithms = dependentChildAlgorithms( id );
+  for ( const QString &child : constDependentChildAlgorithms )
   {
     childAlgorithm( child ).setActive( false );
   }
@@ -1042,7 +1253,8 @@ void QgsProcessingModelAlgorithm::deactivateChildAlgorithm( const QString &id )
 
 bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id )
 {
-  Q_FOREACH ( const QString &child, dependsOnChildAlgorithms( id ) )
+  const auto constDependsOnChildAlgorithms = dependsOnChildAlgorithms( id );
+  for ( const QString &child : constDependsOnChildAlgorithms )
   {
     if ( !childAlgorithm( child ).isActive() )
       return false;
@@ -1080,7 +1292,8 @@ bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QStrin
     QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = childParams.constBegin();
     for ( ; paramIt != childParams.constEnd(); ++paramIt )
     {
-      Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramIt.value() )
+      const auto constValue = paramIt.value();
+      for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
         if ( source.source() == QgsProcessingModelChildParameterSource::ModelParameter
              && source.parameterName() == name )
@@ -1095,7 +1308,8 @@ bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QStrin
 
 bool QgsProcessingModelAlgorithm::otherParametersDependOnParameter( const QString &name ) const
 {
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  const auto constMParameters = mParameters;
+  for ( const QgsProcessingParameterDefinition *def : constMParameters )
   {
     if ( def->name() == name )
       continue;
@@ -1132,7 +1346,8 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
     QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = childParams.constBegin();
     for ( ; paramIt != childParams.constEnd(); ++paramIt )
     {
-      Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramIt.value() )
+      const auto constValue = paramIt.value();
+      for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
         if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput
              && source.outputChildId() == childId )
@@ -1168,7 +1383,8 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
   const QgsProcessingModelChildAlgorithm &alg = mChildAlgorithms.value( childId );
 
   // add direct dependencies
-  Q_FOREACH ( const QString &c, alg.dependencies() )
+  const auto constDependencies = alg.dependencies();
+  for ( const QString &c : constDependencies )
   {
     if ( !depends.contains( c ) )
     {
@@ -1182,7 +1398,8 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
   QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = childParams.constBegin();
   for ( ; paramIt != childParams.constEnd(); ++paramIt )
   {
-    Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramIt.value() )
+    const auto constValue = paramIt.value();
+    for ( const QgsProcessingModelChildParameterSource &source : constValue )
     {
       if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput && !depends.contains( source.outputChildId() ) )
       {
@@ -1235,6 +1452,13 @@ QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &paramet
   return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
 }
 
+QgsExpressionContext QgsProcessingModelAlgorithm::createExpressionContext( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
+{
+  QgsExpressionContext res = QgsProcessingAlgorithm::createExpressionContext( parameters, context, source );
+  res << QgsExpressionContextUtils::processingModelAlgorithmScope( this, parameters, context );
+  return res;
+}
+
 QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
 {
   QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
@@ -1242,6 +1466,16 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   alg->setProvider( provider() );
   alg->setSourceFilePath( sourceFilePath() );
   return alg;
+}
+
+QVariantMap QgsProcessingModelAlgorithm::variables() const
+{
+  return mVariables;
+}
+
+void QgsProcessingModelAlgorithm::setVariables( const QVariantMap &variables )
+{
+  mVariables = variables;
 }
 
 ///@endcond

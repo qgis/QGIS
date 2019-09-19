@@ -68,20 +68,20 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * \param dockMode True to enable dock mode.
+     * \param dockMode TRUE to enable dock mode.
      */
     virtual void setDockMode( bool dockMode );
 
     /**
      * Returns the dock mode state.
-     * \returns True if in dock mode.  If in dock mode the widget
+     * \returns TRUE if in dock mode.  If in dock mode the widget
      * will emit the showPanel signal to handle panel opening
-     * If false it will open dialogs when openPanel is called.
+     * If FALSE it will open dialogs when openPanel is called.
      */
     bool dockMode() { return mDockMode; }
 
     /**
-     * The the auto delete property on the widget. True by default.
+     * The the auto delete property on the widget. TRUE by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
      * \param autoDelete Enable or disable auto delete on the panel.
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     void setAutoDelete( bool autoDelete ) { mAutoDelete = autoDelete; }
 
     /**
-     * The the auto delete property on the widget. True by default.
+     * The the auto delete property on the widget. TRUE by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
      * \returns The auto delete value for the widget.
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
      * widget.
      * \param widget widget which may be contained within a panel widget
-     * \returns parent panel widget if found, otherwise nullptr
+     * \returns parent panel widget if found, otherwise NULLPTR
      * \since QGIS 3.0
      */
     static QgsPanelWidget *findParentPanel( QWidget *widget );
@@ -138,10 +138,10 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
     /**
      * Open a panel or dialog depending on dock mode setting
-     * If dock mode is true this method will emit the showPanel signal
+     * If dock mode is TRUE this method will emit the showPanel signal
      * for connected slots to handle the open event.
      *
-     * If dock mode is false this method will open a dialog
+     * If dock mode is FALSE this method will open a dialog
      * and block the user.
      *
      * \param panel The panel widget to open.
@@ -193,7 +193,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
 
     /**
      * Returns the internal widget that is wrapped in this panel.
-     * \returns The internal widget. Can be nullptr.
+     * \returns The internal widget. Can be NULLPTR.
      */
     QWidget *widget() { return mWidget; }
 

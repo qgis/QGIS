@@ -40,20 +40,15 @@
 #include "qgsrectangle.h"
 #include "qgsspatialindex.h"
 #include "qgis.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsproviderregistry.h"
-#ifdef HAVE_GUI
-#include "qgssourceselectprovider.h"
-#endif
 
 #include "qgsdelimitedtextfeatureiterator.h"
 #include "qgsdelimitedtextfile.h"
 
-#ifdef HAVE_GUI
-#include "qgsdelimitedtextsourceselect.h"
-#endif
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "delimitedtext" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Delimited text data provider" );
+const QString QgsDelimitedTextProvider::TEXT_PROVIDER_KEY = QStringLiteral( "delimitedtext" );
+const QString QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Delimited text data provider" );
 
 // If more than this fraction of records are not in a subset then use an index to
 // iterate over records rather than simple iterator and filter.
@@ -106,8 +101,14 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
       mGeometryType = QgsWkbTypes::PointGeometry;
       mXFieldName = url.queryItemValue( QStringLiteral( "xField" ) );
       mYFieldName = url.queryItemValue( QStringLiteral( "yField" ) );
+      if ( url.hasQueryItem( QStringLiteral( "zField" ) ) )
+        mZFieldName = url.queryItemValue( QStringLiteral( "zField" ) );
+      if ( url.hasQueryItem( QStringLiteral( "mField" ) ) )
+        mMFieldName = url.queryItemValue( QStringLiteral( "mField" ) );
       QgsDebugMsg( "xField is: " + mXFieldName );
       QgsDebugMsg( "yField is: " + mYFieldName );
+      QgsDebugMsg( "zField is: " + mZFieldName );
+      QgsDebugMsg( "mField is: " + mMFieldName );
 
       if ( url.hasQueryItem( QStringLiteral( "xyDms" ) ) )
       {
@@ -341,11 +342,27 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     mYFieldIndex = mFile->fieldIndex( mYFieldName );
     if ( mXFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "X" ), mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "X" ), mXFieldName ) );
     }
     if ( mYFieldIndex < 0 )
     {
-      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "Y" ), mWktFieldName ) );
+      messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "Y" ), mYFieldName ) );
+    }
+    if ( !mZFieldName.isEmpty() )
+    {
+      mZFieldIndex = mFile->fieldIndex( mZFieldName );
+      if ( mZFieldIndex < 0 )
+      {
+        messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "Z" ), mZFieldName ) );
+      }
+    }
+    if ( !mMFieldName.isEmpty() )
+    {
+      mMFieldIndex = mFile->fieldIndex( mMFieldName );
+      if ( mMFieldIndex < 0 )
+      {
+        messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( QStringLiteral( "M" ), mMFieldName ) );
+      }
     }
   }
   if ( !messages.isEmpty() )
@@ -471,6 +488,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
       QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : QString();
       QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : QString();
+      QString sZ, sM;
+      if ( mZFieldIndex > -1 )
+        sZ = mZFieldIndex < parts.size() ? parts[mZFieldIndex] : QString();
+      if ( mMFieldIndex > -1 )
+        sM = mMFieldIndex < parts.size() ? parts[mMFieldIndex] : QString();
       if ( sX.isEmpty() && sY.isEmpty() )
       {
         nEmptyGeometry++;
@@ -478,11 +500,14 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       }
       else
       {
-        QgsPointXY pt;
+        QgsPoint pt;
         bool ok = pointFromXY( sX, sY, pt, mDecimalPoint, mXyDms );
 
         if ( ok )
         {
+          if ( !sZ.isEmpty() || sM.isEmpty() )
+            appendZM( sZ, sM, pt, mDecimalPoint );
+
           if ( foundFirstGeometry )
           {
             mExtent.combineExtentWith( pt.x(), pt.y() );
@@ -492,6 +517,10 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             // Extent for the first point is just the first point
             mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
             mWkbType = QgsWkbTypes::Point;
+            if ( mZFieldIndex > -1 )
+              mWkbType = QgsWkbTypes::addZ( mWkbType );
+            if ( mMFieldIndex > -1 )
+              mWkbType = QgsWkbTypes::addM( mWkbType );
             mGeometryType = QgsWkbTypes::PointGeometry;
             foundFirstGeometry = true;
           }
@@ -846,7 +875,31 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
   return x;
 }
 
-bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPointXY &pt, const QString &decimalPoint, bool xyDms )
+void QgsDelimitedTextProvider::appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint )
+{
+  if ( ! decimalPoint.isEmpty() )
+  {
+    sZ.replace( decimalPoint, QLatin1String( "." ) );
+    sM.replace( decimalPoint, QLatin1String( "." ) );
+  }
+
+  bool zOk, mOk;
+  double z, m;
+  if ( !sZ.isEmpty() )
+  {
+    z = sZ.toDouble( &zOk );
+    if ( zOk )
+      point.addZValue( z );
+  }
+  if ( !sM.isEmpty() )
+  {
+    m = sM.toDouble( &mOk );
+    if ( mOk )
+      point.addMValue( m );
+  }
+}
+
+bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString &decimalPoint, bool xyDms )
 {
   if ( ! decimalPoint.isEmpty() )
   {
@@ -900,7 +953,8 @@ void QgsDelimitedTextProvider::clearInvalidLines() const
 
 bool QgsDelimitedTextProvider::recordIsEmpty( QStringList &record )
 {
-  Q_FOREACH ( const QString &s, record )
+  const auto constRecord = record;
+  for ( const QString &s : constRecord )
   {
     if ( ! s.isEmpty() )
       return false;
@@ -926,7 +980,8 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
   {
     QString tag( QStringLiteral( "DelimitedText" ) );
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
-    Q_FOREACH ( const QString &message, messages )
+    const auto constMessages = messages;
+    for ( const QString &message : constMessages )
     {
       QgsMessageLog::logMessage( message, tag );
     }
@@ -945,7 +1000,8 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( tr( "Delimited text file errors" ) );
       output->setMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), QgsMessageOutput::MessageText );
-      Q_FOREACH ( const QString &message, messages )
+      const auto constMessages = messages;
+      for ( const QString &message : constMessages )
       {
         output->appendMessage( message );
       }
@@ -1082,6 +1138,7 @@ void QgsDelimitedTextProvider::onFileUpdated()
     messages.append( tr( "The file has been updated by another application - reloading" ) );
     reportErrors( messages );
     mRescanRequired = true;
+    emit dataChanged();
   }
 }
 
@@ -1135,79 +1192,25 @@ QString  QgsDelimitedTextProvider::description() const
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-QGISEXTERN QVariantMap decodeUri( const QString &uri )
+QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri )
 {
   QVariantMap components;
   components.insert( QStringLiteral( "path" ), QUrl( uri ).toLocalFile() );
   return components;
 }
 
-/**
- * Class factory to return a pointer to a newly created
- * QgsDelimitedTextProvider object
- */
-QGISEXTERN QgsDelimitedTextProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsDelimitedTextProvider( *uri, options );
+  return new QgsDelimitedTextProvider( uri, options );
 }
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
+
+QgsDelimitedTextProviderMetadata::QgsDelimitedTextProviderMetadata():
+  QgsProviderMetadata( QgsDelimitedTextProvider::TEXT_PROVIDER_KEY, QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION )
 {
-  return TEXT_PROVIDER_KEY;
 }
 
-/**
- * Required description function
- */
-QGISEXTERN QString description()
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  return TEXT_PROVIDER_DESCRIPTION;
+  return new QgsDelimitedTextProviderMetadata();
 }
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
-}
-
-//! Provider for delimited text source select
-class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "delimitedtext" ); }
-    QString text() const override { return QObject::tr( "Delimited Text" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 30; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsDelimitedTextSourceSelectProvider;
-
-  return providers;
-}
-
-#endif
-
-

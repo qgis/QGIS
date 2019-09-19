@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutobject.h"
+#include "qgsmaplayerref.h"
 
 class QgsLayoutItemMap;
 
@@ -34,6 +35,16 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     Q_OBJECT
 
   public:
+
+    //! Item stacking position, specifies where the in the map's stack the item should be rendered
+    enum StackingPosition
+    {
+      StackBelowMap, //!< Render below all map layers
+      StackBelowMapLayer, //!< Render below a specific map layer (see stackingLayer())
+      StackAboveMapLayer, //!< Render above a specific map layer (see stackingLayer())
+      StackBelowMapLabels, //!< Render above all map layers, but below map labels
+      StackAboveMapLabels, //!< Render above all map layers and labels
+    };
 
     /**
      * Constructor for QgsLayoutItemMapItem, attached to the specified \a map.
@@ -101,10 +112,10 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     QString name() const;
 
     /**
-     * Controls whether the item will be drawn. Set \a enabled to true to enable drawing of the item.
+     * Controls whether the item will be drawn. Set \a enabled to TRUE to enable drawing of the item.
      * \see enabled()
      */
-    void setEnabled( bool enabled );
+    virtual void setEnabled( bool enabled );
 
     /**
      * Returns whether the item will be drawn.
@@ -113,9 +124,72 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     bool enabled() const;
 
     /**
-     * Returns true if the item is drawn using advanced effects, such as blend modes.
+     * Returns TRUE if the item is drawn using advanced effects, such as blend modes.
      */
     virtual bool usesAdvancedEffects() const;
+
+    /**
+     * Returns the item's stacking position, which specifies where the in the map's
+     * stack the item should be rendered.
+     *
+     * \see setStackingPosition()
+     * \see stackingLayer()
+     *
+     * \since QGIS 3.6
+     */
+    StackingPosition stackingPosition() const { return mStackingPosition; }
+
+    /**
+     * Sets the item's stacking \a position, which specifies where the in the map's
+     * stack the item should be rendered.
+     *
+     * \see stackingPosition()
+     * \see setStackingLayer()
+     *
+     * \since QGIS 3.6
+     */
+    void setStackingPosition( StackingPosition position ) { mStackingPosition = position; }
+
+    /**
+     * Returns the item's stacking layer, which specifies where the in the map's
+     * stack the item should be rendered.
+     *
+     * This setting is only used when stackingPosition() is StackBelowMapLayer or
+     * StackAboveMapLayer.
+     *
+     * \see setStackingLayer()
+     * \see stackingPosition()
+     *
+     * \since QGIS 3.6
+     */
+    QgsMapLayer *stackingLayer() const;
+
+    /**
+     * Sets the item's stacking \a layer, which specifies where the in the map's
+     * stack the item should be rendered.
+     *
+     * This setting is only used when stackingPosition() is StackBelowMapLayer or
+     * StackAboveMapLayer.
+     *
+     * \see stackingLayer()
+     * \see setStackingPosition
+     *
+     * \since QGIS 3.6
+     */
+    void setStackingLayer( QgsMapLayer *layer );
+
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the map item.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
 
@@ -131,9 +205,11 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     //! True if item is to be displayed on map
     bool mEnabled;
 
+    StackingPosition mStackingPosition = StackBelowMapLabels;
+
+    QgsMapLayerRef mStackingLayer;
+
 };
-
-
 
 /**
  * \ingroup core
@@ -163,14 +239,14 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
 
     /**
      * Stores the state of the item stack in a DOM node, where \a element is the DOM element corresponding to a 'LayoutMap' tag.
-     * Returns true if write was successful.
+     * Returns TRUE if write was successful.
      * \see readXml()
      */
     virtual bool writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the item stack's state from a DOM document, where \a element is a DOM node corresponding to a 'LayoutMap' tag.
-     * Returns true if read was successful.
+     * Returns TRUE if read was successful.
      * \see writeXml()
      */
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
@@ -187,14 +263,30 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
 
     /**
      * Draws the items from the stack on a specified \a painter.
+     *
+     * If \a ignoreStacking is TRUE, then all items will be drawn, regardless
+     * of their actual stacking position settings. If it is FALSE, only items
+     * which are set to stack above the map item will be drawn.
      */
-    void drawItems( QPainter *painter );
+    void drawItems( QPainter *painter, bool ignoreStacking = true );
 
     /**
      * Returns whether any items within the stack contain advanced effects,
      * such as blending modes.
      */
     bool containsAdvancedEffects() const;
+
+    /**
+     * Returns TRUE if the stack has any currently enabled items.
+     *
+     * \since QGIS 3.10
+     */
+    bool hasEnabledItems() const;
+
+    /**
+     * Returns a reference to the item at the specified \a index within the stack.
+     */
+    QgsLayoutItemMapItem *item( int index ) const;
 
   protected:
 
@@ -236,11 +328,6 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
      * Returns a reference to an item which matching \a itemId within the stack.
      */
     QgsLayoutItemMapItem *item( const QString &itemId ) const;
-
-    /**
-     * Returns a reference to the item at the specified \a index within the stack.
-     */
-    QgsLayoutItemMapItem *item( int index ) const;
 
     /**
      * Returns a reference to an item at the specified \a index within the stack.

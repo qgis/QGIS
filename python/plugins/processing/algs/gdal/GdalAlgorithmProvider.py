@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -70,6 +66,7 @@ from .translate import translate
 from .tpi import tpi
 from .tri import tri
 from .warp import warp
+from .pansharp import pansharp
 
 from .extractprojection import ExtractProjection
 # from .rasterize_over import rasterize_over
@@ -103,18 +100,12 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
                                             self.tr('Activate'), True))
-        ProcessingConfig.addSetting(Setting(
-            self.name(),
-            GdalUtils.GDAL_HELP_PATH,
-            self.tr('Location of GDAL docs'),
-            GdalUtils.gdalHelpPath()))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
 
     def unload(self):
         ProcessingConfig.removeSetting('ACTIVATE_GDAL')
-        ProcessingConfig.removeSetting(GdalUtils.GDAL_HELP_PATH)
 
     def isActive(self):
         return ProcessingConfig.getSetting('ACTIVATE_GDAL')
@@ -180,6 +171,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             tpi(),
             tri(),
             warp(),
+            pansharp(),
             # rasterize(),
             ExtractProjection(),
             # rasterize_over(),

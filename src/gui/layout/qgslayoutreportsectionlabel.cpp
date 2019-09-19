@@ -35,8 +35,8 @@ QgsLayoutReportSectionLabel::QgsLayoutReportSectionLabel( QgsLayout *layout, Qgs
 
 void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-  Q_UNUSED( option );
-  Q_UNUSED( widget );
+  Q_UNUSED( option )
+  Q_UNUSED( widget )
 
   if ( !mLayout || !mLayout->renderContext().isPreviewRender() )
   {

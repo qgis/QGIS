@@ -238,7 +238,7 @@ used if the gradient color type is set to ColorRamp.
 .. seealso:: :py:func:`gradientColorType`
 %End
 
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
 Sets the color ramp used for the gradient fill. This is only
 used if the gradient color type is set to ColorRamp.
@@ -397,7 +397,7 @@ Returns the blur radius, which controls the amount of blurring applied to the fi
 %Docstring
 Sets whether the shapeburst fill should be drawn using the entire shape.
 
-:param useWholeShape: Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
+:param useWholeShape: Set to ``True`` if shapeburst should cover entire shape. If ``False``, setMaxDistance is used to calculate how far from the boundary of the shape should
                       be shaded
 
 .. seealso:: :py:func:`useWholeShape`
@@ -411,7 +411,7 @@ Sets whether the shapeburst fill should be drawn using the entire shape.
 %Docstring
 Returns whether the shapeburst fill is set to cover the entire shape.
 
-:return: True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+:return: ``True`` if shapeburst fill will cover the entire shape. If ``False``, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
 
 .. seealso:: :py:func:`setUseWholeShape`
 
@@ -424,7 +424,7 @@ Returns whether the shapeburst fill is set to cover the entire shape.
 %Docstring
 Sets the maximum distance to shape inside of the shape from the polygon's boundary.
 
-:param maxDistance: distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+:param maxDistance: distance from boundary to shade. setUseWholeShape must be set to ``False`` for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
 
 .. seealso:: :py:func:`maxDistance`
 
@@ -437,7 +437,7 @@ Sets the maximum distance to shape inside of the shape from the polygon's bounda
 
     double maxDistance() const;
 %Docstring
-Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
+Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is ``False``.
 
 :return: the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
 
@@ -515,11 +515,11 @@ or by simply specificing a start and end color.
 .. versionadded:: 2.3
 %End
 
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
-Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
+Sets the color ``ramp`` used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
 
-:param ramp: color ramp to use for shapeburst fill
+Ownership of ``ramp`` is transferred to the fill.
 
 .. seealso:: :py:func:`setColorType`
 
@@ -572,7 +572,7 @@ Returns the color used for the endpoint of the shapeburst fill. This color is on
 Sets whether the shapeburst fill should ignore polygon rings when calculating
 the buffered shading.
 
-:param ignoreRings: Set to true if buffers should ignore interior rings for polygons.
+:param ignoreRings: Set to ``True`` if buffers should ignore interior rings for polygons.
 
 .. seealso:: :py:func:`ignoreRings`
 
@@ -583,7 +583,7 @@ the buffered shading.
 %Docstring
 Returns whether the shapeburst fill is set to ignore polygon interior rings.
 
-:return: True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+:return: ``True`` if the shapeburst fill will ignore interior rings when calculating buffered shading.
 
 .. seealso:: :py:func:`setIgnoreRings`
 
@@ -733,6 +733,8 @@ Returns the stroke width map unit scale.
     virtual Qt::PenStyle dxfPenStyle() const;
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
 
 
   protected:
@@ -1563,6 +1565,8 @@ Returns the map unit scale for the pattern's line offset.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+    virtual bool hasDataDefinedProperties() const;
+
 
   protected:
 
@@ -1618,6 +1622,54 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     double displacementY() const;
     void setDisplacementY( double d );
+
+    void setOffsetX( double offset );
+%Docstring
+Sets the horizontal offset values for points in the pattern.
+
+:param offset: offset value
+
+.. seealso:: :py:func:`offsetX`
+
+.. seealso:: :py:func:`setOffsetY`
+
+.. versionadded:: 3.8
+%End
+
+    double offsetX() const;
+%Docstring
+Returns the horizontal offset values for points in the pattern.
+
+.. seealso:: :py:func:`setOffsetX`
+
+.. seealso:: :py:func:`offsetY`
+
+.. versionadded:: 3.8
+%End
+
+    void setOffsetY( double offset );
+%Docstring
+Sets the vertical offset values for points in the pattern.
+
+:param offset: offset value
+
+.. seealso:: :py:func:`offsetY`
+
+.. seealso:: :py:func:`setOffsetX`
+
+.. versionadded:: 3.8
+%End
+
+    double offsetY() const;
+%Docstring
+Returns the vertical offset values for points in the pattern.
+
+.. seealso:: :py:func:`setOffsetY`
+
+.. seealso:: :py:func:`offsetX`
+
+.. versionadded:: 3.8
+%End
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
@@ -1715,6 +1767,102 @@ Returns the units for the vertical displacement between rows in the pattern.
     void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &displacementYMapUnitScale() const;
 
+    void setOffsetXUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units for the horizontal offset between rows in the pattern.
+
+:param unit: offset units
+
+.. seealso:: :py:func:`offsetXUnit`
+
+.. seealso:: :py:func:`setOffsetYUnit`
+
+.. versionadded:: 3.8
+%End
+
+    QgsUnitTypes::RenderUnit offsetXUnit() const;
+%Docstring
+Returns the units for the horizontal offset for rows in the pattern.
+
+.. seealso:: :py:func:`setOffsetXUnit`
+
+.. seealso:: :py:func:`offsetYUnit`
+
+.. versionadded:: 3.8
+%End
+
+    void setOffsetXMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the unit scale for the horizontal offset for rows in the pattern.
+
+:param scale: offset unit scale
+
+.. seealso:: :py:func:`offsetXMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetYMapUnitScale`
+
+.. versionadded:: 3.8
+%End
+
+    const QgsMapUnitScale &offsetXMapUnitScale() const;
+%Docstring
+Returns the unit scale for the horizontal offset for rows in the pattern.
+
+.. seealso:: :py:func:`setOffsetXMapUnitScale`
+
+.. seealso:: :py:func:`offsetYMapUnitScale`
+
+.. versionadded:: 3.8
+%End
+
+    void setOffsetYUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units for the vertical offset for rows in the pattern.
+
+:param unit: offset units
+
+.. seealso:: :py:func:`offsetYUnit`
+
+.. seealso:: :py:func:`setOffsetXUnit`
+
+.. versionadded:: 3.8
+%End
+
+    QgsUnitTypes::RenderUnit offsetYUnit() const;
+%Docstring
+Returns the units for the vertical offset for rows in the pattern.
+
+.. seealso:: :py:func:`setOffsetYUnit`
+
+.. seealso:: :py:func:`offsetXUnit`
+
+.. versionadded:: 3.8
+%End
+
+    void setOffsetYMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the unit scale for the vertical offset for rows in the pattern.
+
+:param scale: offset unit scale
+
+.. seealso:: :py:func:`offsetYMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetXMapUnitScale`
+
+.. versionadded:: 3.8
+%End
+
+    const QgsMapUnitScale &offsetYMapUnitScale() const;
+%Docstring
+Returns the unit scale for the vertical offset between rows in the pattern.
+
+.. seealso:: :py:func:`setOffsetYMapUnitScale`
+
+.. seealso:: :py:func:`offsetXMapUnitScale`
+
+.. versionadded:: 3.8
+%End
+
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
@@ -1726,6 +1874,8 @@ Returns the units for the vertical displacement between rows in the pattern.
 
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
 
     virtual void setColor( const QColor &c );
 
@@ -1797,6 +1947,8 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
 
 
     void setPointOnSurface( bool pointOnSurface );

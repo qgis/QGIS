@@ -11,14 +11,19 @@ from builtins import range
 __author__ = 'Sebastian Dietrich'
 __date__ = '19/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
+import re
+import ogr
+import codecs
+from io import BytesIO
+from zipfile import ZipFile
+from tempfile import TemporaryDirectory
 
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
+                       QgsCoordinateTransformContext,
                        QgsProjectDirtyBlocker,
                        QgsApplication,
                        QgsUnitTypes,
@@ -27,12 +32,14 @@ from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsRasterLayer,
                        QgsMapLayer,
-                       QgsExpressionContextUtils)
+                       QgsExpressionContextUtils,
+                       QgsProjectColorScheme)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QTemporaryFile
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt import sip
 
 from qgis.testing import start_app, unittest
@@ -194,15 +201,14 @@ class TestQgsProject(unittest.TestCase):
         prj.read(prj_path)
 
         layer_tree_group = prj.layerTreeRoot()
-        layers_ids = layer_tree_group.findLayerIds()
-
-        layers_names = []
-        for layer_id in layers_ids:
+        self.assertEqual(len(layer_tree_group.findLayerIds()), 2)
+        for layer_id in layer_tree_group.findLayerIds():
             name = prj.mapLayer(layer_id).name()
-            layers_names.append(name)
-
-        expected = ['polys', 'lines']
-        self.assertEqual(sorted(layers_names), sorted(expected))
+            self.assertTrue(name in ['polys', 'lines'])
+            if name == 'polys':
+                self.assertTrue(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
+            elif name == 'lines':
+                self.assertFalse(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
 
     def testInstance(self):
         """ test retrieving global instance """
@@ -823,7 +829,7 @@ class TestQgsProject(unittest.TestCase):
         project = QgsProject()
         self.assertTrue(project.read(tmpFile))
         store = project.layerStore()
-        self.assertEquals(set([l.name() for l in store.mapLayers().values()]), set(['lines', 'landsat', 'points']))
+        self.assertEqual(set([l.name() for l in store.mapLayers().values()]), set(['lines', 'landsat', 'points']))
         project.writeEntryBool('Paths', '/Absolute', True)
         tmpFile2 = "{}/project2.qgs".format(tmpDir.path())
         self.assertTrue(project.write(tmpFile2))
@@ -835,6 +841,63 @@ class TestQgsProject(unittest.TestCase):
             self.assertTrue('source="{}/landsat_4326.tif"'.format(tmpDir.path()) in content)
 
         del project
+
+    def testRelativePathsGpkg(self):
+        """
+        Test whether paths to layer sources are stored as relative to the project path with GPKG storage
+        """
+
+        def _check_datasource(_path):
+            # Verify datasource path stored in the project
+
+            ds = ogr.GetDriverByName('GPKG').Open(_path)
+            l = ds.GetLayer(1)
+            self.assertEqual(l.GetName(), 'qgis_projects')
+            self.assertEqual(l.GetFeatureCount(), 1)
+            f = l.GetFeature(1)
+            zip_content = BytesIO(codecs.decode(f.GetFieldAsBinary(2), 'hex'))
+            z = ZipFile(zip_content)
+            qgs = z.read(z.filelist[0])
+            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[0], b'./relative_paths_gh30387.gpkg|layername=some_data')
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, 'relative_paths_gh30387.gpkg')
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+            project = QgsProject()
+            l = QgsVectorLayer(path + '|layername=some_data', 'mylayer', 'ogr')
+            self.assertTrue(l.isValid())
+            self.assertTrue(project.addMapLayers([l]))
+            self.assertEqual(project.count(), 1)
+            # Project URI
+            uri = 'geopackage://{}?projectName=relative_project'.format(path)
+            project.setFileName(uri)
+            self.assertTrue(project.write())
+            # Verify
+            project = QgsProject()
+            self.assertTrue(project.read(uri))
+            self.assertEqual(project.writePath(path), './relative_paths_gh30387.gpkg')
+
+            _check_datasource(path)
+
+            for _, l in project.mapLayers().items():
+                self.assertTrue(l.isValid())
+
+            with TemporaryDirectory() as d2:
+                # Move it!
+                path2 = os.path.join(d2, 'relative_paths_gh30387.gpkg')
+                copyfile(path, path2)
+                # Delete old temporary dir
+                del d
+                # Verify moved
+                project = QgsProject()
+                uri2 = 'geopackage://{}?projectName=relative_project'.format(path2)
+                self.assertTrue(project.read(uri2))
+
+                _check_datasource(path2)
+
+                self.assertEqual(project.count(), 1)
+                for _, l in project.mapLayers().items():
+                    self.assertTrue(l.isValid())
 
     def testSymbolicLinkInProjectPath(self):
         """
@@ -1168,6 +1231,59 @@ class TestQgsProject(unittest.TestCase):
         project.setDirty(False)
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
         self.assertFalse(project.isDirty())
+
+    def testColorScheme(self):
+        p = QgsProject.instance()
+        spy = QSignalSpy(p.projectColorsChanged)
+        p.setProjectColors([[QColor(255, 0, 0), 'red'], [QColor(0, 255, 0), 'green']])
+        self.assertEqual(len(spy), 1)
+        scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]
+        self.assertEqual([[c[0].name(), c[1]] for c in scheme.fetchColors()], [['#ff0000', 'red'], ['#00ff00', 'green']])
+        # except color changed signal when clearing project
+        p.clear()
+        self.assertEqual(len(spy), 2)
+        self.assertEqual([[c[0].name(), c[1]] for c in scheme.fetchColors()], [])
+
+        # should be no signal on project destruction -- can cause a crash
+        p = QgsProject()
+        spy = QSignalSpy(p.projectColorsChanged)
+        p.deleteLater()
+        del p
+        self.assertEqual(len(spy), 0)
+
+    def testTransformContextSignalIsEmitted(self):
+        """Test that when a project transform context changes a transformContextChanged signal is emitted"""
+
+        p = QgsProject()
+        spy = QSignalSpy(p.transformContextChanged)
+        ctx = QgsCoordinateTransformContext()
+        ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        p.setTransformContext(ctx)
+        self.assertEqual(len(spy), 1)
+
+    def testGpkgDirtyingWhenRemovedFromStorage(self):
+        """Test that when a GPKG stored project is removed from the storage it is marked dirty"""
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, 'relative_paths_gh30387.gpkg')
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+            project = QgsProject.instance()
+            # Project URI
+            uri = 'geopackage://{}?projectName=relative_project'.format(path)
+            project.setFileName(uri)
+            self.assertTrue(project.write())
+            # Verify
+            self.assertTrue(project.read(uri))
+            self.assertFalse(project.isDirty())
+            # Remove from storage
+            storage = QgsApplication.projectStorageRegistry().projectStorageFromUri(uri)
+            self.assertTrue(storage.removeProject(uri))
+            self.assertTrue(project.isDirty())
+            # Save it back
+            self.assertTrue(project.write())
+            self.assertFalse(project.isDirty())
+            # Reload
+            self.assertTrue(project.read(uri))
 
 
 if __name__ == '__main__':

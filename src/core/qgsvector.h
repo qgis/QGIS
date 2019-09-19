@@ -16,6 +16,7 @@
 #ifndef QGSVECTOR_H
 #define QGSVECTOR_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include <QtGlobal>
 
@@ -156,6 +157,29 @@ class CORE_EXPORT QgsVector
 
     //! Inequality operator
     bool operator!=( QgsVector other ) const;
+
+
+    /**
+    * Returns a string representation of the vector.
+    * Members will be truncated to the specified \a precision.
+    */
+    QString toString( int precision = 17 ) const
+    {
+      QString str = "Vector (";
+      str += qgsDoubleToString( mX, precision );
+      str += ", ";
+      str += qgsDoubleToString( mY, precision );
+      str += ')';
+      return str;
+    }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsVector: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     double mX = 0.0, mY = 0.0;

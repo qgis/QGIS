@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "gpsdata.h"
 #include "qgsfields.h"
+#include "qgsprovidermetadata.h"
 
 class QgsFeature;
 class QgsField;
@@ -43,7 +44,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsGPXProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsGPXProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
     ~QgsGPXProvider() override;
 
     /* Functions inherited from QgsVectorDataProvider */
@@ -114,6 +115,13 @@ class QgsGPXProvider : public QgsVectorDataProvider
     bool mValid = false;
 
     friend class QgsGPXFeatureSource;
+};
+
+class QgsGpxProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsGpxProviderMetadata();
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
 
 #endif

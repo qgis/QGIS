@@ -23,6 +23,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgspostgresconn.h"
 #include "qgsfields.h"
+#include "qgsprovidermetadata.h"
 #include <memory>
 
 class QgsFeature;
@@ -49,6 +50,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    static const QString POSTGRES_KEY;
+    static const QString POSTGRES_DESCRIPTION;
+
     enum Relkind
     {
       Unknown,
@@ -89,7 +94,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * and query the table.
      * \param options generic data provider options
      */
-    explicit QgsPostgresProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsPostgresProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
 
     ~QgsPostgresProvider() override;
@@ -234,20 +239,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     void setListening( bool isListening ) override;
 
-  signals:
-
-    /**
-     *   This is emitted when this provider is satisfied that all objects
-     *   have had a chance to adjust themselves after they'd been notified that
-     *   the full extent is available.
-     *
-     *   \note  It currently isn't being emitted because we don't have an easy way
-     *          for the overview canvas to only be repainted.  In the meantime
-     *          we are satisfied for the overview to reflect the new extent
-     *          when the user adjusts the extent of the main map canvas.
-     */
-    void repaintRequested();
-
   private:
     Relkind relkind() const;
 
@@ -263,6 +254,16 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      const QgsAttributeList &fetchAttributes );
 
     QString geomParam( int offset ) const;
+
+
+    static QString getNextString( const QString &txt, int &i, const QString &sep );
+    static QVariant parseHstore( const QString &txt );
+    static QVariant parseJson( const QString &txt );
+    static QVariant parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName );
+    static QVariant parseStringArray( const QString &txt );
+    static QVariant parseMultidimensionalArray( const QString &txt );
+    static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName );
+
 
     /**
      * Gets parametrized primary key clause
@@ -289,7 +290,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setEditorWidgets();
 
     //! Convert a QgsField to work with PG
-    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
+    static bool convertField( QgsField &field, const QMap<QString, QVariant> *coordinateTransformContext = nullptr );
 
     /**
      * Parses the enum_range of an attribute and inserts the possible values into a stringlist
@@ -327,6 +328,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsAttrPalIndexNameHash mAttrPalIndexName;
 
     QgsFields mAttributeFields;
+    QHash<int, char> mIdentityFields;
     QString mDataComment;
 
     //! Data source URI struct for this layer
@@ -378,13 +380,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QList<int> mPrimaryKeyAttrs;
     QString mPrimaryKeyDefault;
 
-    QString mGeometryColumn;          //! name of the geometry column
-    mutable QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
+    QString mGeometryColumn;          //!< Name of the geometry column
+    QString mBoundingBoxColumn;       //!< Name of the bounding box column
+    mutable QgsRectangle mLayerExtent;        //!< Rectangle that contains the extent (bounding box) of the layer
 
-    QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //! geometry type detected in the database
-    QgsWkbTypes::Type mRequestedGeomType = QgsWkbTypes::Unknown ; //! geometry type requested in the uri
-    QString mDetectedSrid;            //! Spatial reference detected in the database
-    QString mRequestedSrid;           //! Spatial reference requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //!< Geometry type detected in the database
+    QgsWkbTypes::Type mRequestedGeomType = QgsWkbTypes::Unknown ; //!< Geometry type requested in the uri
+    QString mDetectedSrid;            //!< Spatial reference detected in the database
+    QString mRequestedSrid;           //!< Spatial reference requested in the uri
 
     std::shared_ptr<QgsPostgresSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 
@@ -409,7 +412,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
     bool mUseEstimatedMetadata = false;
 
-    bool mSelectAtIdDisabled = false; //! Disable support for SelectAtId
+    bool mSelectAtIdDisabled = false; //!< Disable support for SelectAtId
 
     struct PGFieldNotFound {}; //! Exception to throw
 
@@ -438,8 +441,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString paramValue( const QString &fieldvalue, const QString &defaultValue ) const;
 
-    QgsPostgresConn *mConnectionRO = nullptr ; //! read-only database connection (initially)
-    QgsPostgresConn *mConnectionRW = nullptr ; //! read-write database connection (on update)
+    QgsPostgresConn *mConnectionRO = nullptr ; //!< Read-only database connection (initially)
+    QgsPostgresConn *mConnectionRW = nullptr ; //!< Read-write database connection (on update)
 
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
@@ -448,6 +451,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     static QString quotedIdentifier( const QString &ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }
+    static QString quotedJsonValue( const QVariant &value ) { return QgsPostgresConn::quotedJsonValue( value ); }
+    static QString quotedByteaValue( const QVariant &value );
 
     friend class QgsPostgresFeatureSource;
 
@@ -469,6 +474,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 class QgsPostgresUtils
 {
   public:
+    static bool deleteLayer( const QString &uri, QString &errCause );
+    static bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade = false );
+
     static QString whereClause( QgsFeatureId featureId,
                                 const QgsFields &fields,
                                 QgsPostgresConn *conn,
@@ -489,7 +497,7 @@ class QgsPostgresUtils
 
     // We shift negative 32bit integers to above the max 32bit
     // positive integer to support the whole range of int32 values
-    // See https://issues.qgis.org/issues/14262
+    // See https://github.com/qgis/QGIS/issues/22258
     static qint64 int32pk_to_fid( qint32 x )
     {
       return x >= 0 ? x : x + INT32PK_OFFSET;
@@ -522,14 +530,49 @@ class QgsPostgresSharedData
     QVariantList lookupKey( QgsFeatureId featureId );
     void clear();
 
+    void clearSupportsEnumValuesCache( );
+    bool fieldSupportsEnumValuesIsSet( int index );
+    bool fieldSupportsEnumValues( int index );
+    void setFieldSupportsEnumValues( int index, bool isSupported );
+
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-    long mFeaturesCounted = -1 ;    //! Number of features in the layer
+    long mFeaturesCounted = -1 ;    //!< Number of features in the layer
 
     QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
+    QMap<int, bool> mFieldSupportsEnumValues;        // map field index to bool flag supports enum values
+};
+
+class QgsPostgresProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsPostgresProviderMetadata();
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
+        const QgsCoordinateReferenceSystem &srs,
+        bool overwrite,
+        QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
+        const QMap<QString, QVariant> *options ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
+                    const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids,
+                    QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    bool deleteStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    QgsTransaction *createTransaction( const QString &connString ) override;
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
+    void initProvider() override;
+    void cleanupProvider() override;
+
 };
 
 // clazy:excludeall=qstring-allocations

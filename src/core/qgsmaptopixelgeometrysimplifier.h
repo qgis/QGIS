@@ -18,9 +18,10 @@
 #define QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometrysimplifier.h"
 #include <QPolygonF>
+#include <memory>
 
 class QgsAbstractGeometry;
 class QgsWkbPtr;
@@ -43,6 +44,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
       Distance    = 0, //!< The simplification uses the distance between points to remove duplicate points
       SnapToGrid  = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
       Visvalingam = 2, //!< The simplification gives each point in a line an importance weighting, so that least important points are removed first
+      SnappedToGridGlobal = 3, //!< Snap to a global grid based on the tolerance. Good for consistent results for incoming vertices, regardless of their feature
     };
 
     //! Constructor

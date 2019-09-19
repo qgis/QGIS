@@ -44,8 +44,18 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
   QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( originVariant.toInt() );
   switch ( origin )
   {
-    case QgsFields::OriginUnknown:
     case QgsFields::OriginJoin:
+    {
+      // show joined fields (e.g. auxiliary fields) only if they have a non-hidden editor widget.
+      // This enables them to be bulk field-calculated when a user needs to, but hides them by default
+      // (since there's often MANY of these, e.g. after using the label properties tool on a layer)
+      if ( sourceModel()->data( index, QgsFieldModel::EditorWidgetType ).toString() == QLatin1String( "Hidden" ) )
+        return true;
+
+      return !sourceModel()->data( index, QgsFieldModel::JoinedFieldIsEditable ).toBool();
+    }
+
+    case QgsFields::OriginUnknown:
     case QgsFields::OriginExpression:
       //read only
       return true;
@@ -85,6 +95,7 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
        ( mFilters.testFlag( Double ) && type == QVariant::Double ) ||
        ( mFilters.testFlag( Date ) && type == QVariant::Date ) ||
        ( mFilters.testFlag( Date ) && type == QVariant::DateTime ) ||
+       ( mFilters.testFlag( DateTime ) && type == QVariant::DateTime ) ||
        ( mFilters.testFlag( Time ) && type == QVariant::Time ) )
     return true;
 

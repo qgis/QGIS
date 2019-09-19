@@ -35,6 +35,13 @@
  */
 #define SIP_TRANSFER
 
+
+/*
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-GetWrapper
+ *
+ */
+#define SIP_GETWRAPPER
+
 /*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferBack
  */
@@ -198,6 +205,14 @@
 #define SIP_DOC_TEMPLATE
 
 /*
+ * Specifies the type of the value returned by the function as it will appear in any
+ * generated docstrings and PEP 484 type hints. It is usually used with results of type
+ * SIP_PYOBJECT to provide a more specific type.
+ * Available for SIP 4.18+
+ */
+#define SIP_TYPEHINT(type)
+
+/*
  * Sip supports the final keyword since version 4.19.0, earlier than that
  * we will have build issues because it tries to override final methods.
  */
@@ -223,5 +238,18 @@
  */
 #define SIP_PYTHON_SPECIAL_BOOL(method_or_code)
 #define SIP_PYTHON_SPECIAL_REPR(method_or_code)
+
+/*
+ * If one reformat an enum to a scope based enum
+ * sipify will take care of monkey patching to keep
+ * API compatibility.
+ * If OUTSIDE_CLASS is defined, the enum has been unnested
+ * from the class, and it will be used for monkey patching
+ * e.g. QgsMapLayer.VectorLayer = QgsMapLayerType.VectorLayer
+ * These macros should be removed in QGIS 4
+ */
+#define SIP_MONKEYPATCH_SCOPEENUM
+#define SIP_MONKEYPATCH_SCOPEENUM_UNNEST(OUTSIDE_CLASS,FORMERNAME)
+
 
 #endif // QGIS_SIP_H

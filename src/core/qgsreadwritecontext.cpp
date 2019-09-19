@@ -14,8 +14,26 @@
  ***************************************************************************/
 #include "qgsreadwritecontext.h"
 
+///@cond PRIVATE
+class DefaultTranslator : public QgsProjectTranslator
+{
+    // QgsProjectTranslator interface
+  public:
+    QString translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const override
+    {
+      Q_UNUSED( context );
+      Q_UNUSED( disambiguation );
+      Q_UNUSED( n );
+      return sourceText;
+    }
+};
+
+///@endcond PRIVATE
+
+static DefaultTranslator sDefaultTranslator;
+
 QgsReadWriteContext::QgsReadWriteContext()
-  : mProjectTranslator( &mDefaultTranslator )
+  : mProjectTranslator( &sDefaultTranslator )
 {
 
 }
@@ -56,22 +74,25 @@ void QgsReadWriteContext::leaveCategory()
     mCategories.pop_back();
 }
 
+QgsCoordinateTransformContext QgsReadWriteContext::transformContext() const
+{
+  return mCoordinateTransformContext;
+}
+
+void QgsReadWriteContext::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  mCoordinateTransformContext = transformContext;
+}
+
 void QgsReadWriteContext::setProjectTranslator( QgsProjectTranslator *projectTranslator )
 {
   mProjectTranslator = projectTranslator;
 }
+
 
 QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages()
 {
   QList<QgsReadWriteContext::ReadWriteMessage > messages = mMessages;
   mMessages.clear();
   return messages;
-}
-
-QString QgsReadWriteContext::DefaultTranslator::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const
-{
-  Q_UNUSED( context );
-  Q_UNUSED( disambiguation );
-  Q_UNUSED( n );
-  return sourceText;
 }

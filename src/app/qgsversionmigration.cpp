@@ -299,13 +299,15 @@ QList<QPair<QString, QString> > Qgs2To3Migration::walk( QString group, QString n
 {
   mOldSettings->beginGroup( group );
   QList<QPair<QString, QString> > foundKeys;
-  Q_FOREACH ( const QString &group, mOldSettings->childGroups() )
+  const auto constChildGroups = mOldSettings->childGroups();
+  for ( const QString &group : constChildGroups )
   {
     QList<QPair<QString, QString> > data = walk( group, newkey );
     foundKeys.append( data );
   }
 
-  Q_FOREACH ( const QString &key, mOldSettings->childKeys() )
+  const auto constChildKeys = mOldSettings->childKeys();
+  for ( const QString &key : constChildKeys )
   {
     QString fullKey = mOldSettings->group() + "/" + key;
     foundKeys.append( transformKey( fullKey, newkey ) );

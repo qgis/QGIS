@@ -12,18 +12,103 @@
 #include <vector>
 #include <map>
 #include <cassert>
+#include <limits>
+#include <algorithm>
 
 #include "mdal_2dm.hpp"
 #include "mdal.h"
 #include "mdal_utils.hpp"
 
-MDAL::Loader2dm::Loader2dm( const std::string &meshFile ):
-  mMeshFile( meshFile )
+#define DRIVER_NAME "2DM"
+
+MDAL::Mesh2dm::Mesh2dm( size_t verticesCount,
+                        size_t facesCount,
+                        size_t faceVerticesMaximumCount,
+                        MDAL::BBox extent,
+                        const std::string &uri,
+                        const std::map<size_t, size_t> vertexIDtoIndex )
+  : MemoryMesh( DRIVER_NAME,
+                verticesCount,
+                facesCount,
+                faceVerticesMaximumCount,
+                extent,
+                uri )
+  , mVertexIDtoIndex( vertexIDtoIndex )
 {
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
+MDAL::Mesh2dm::~Mesh2dm() = default;
+
+bool _parse_vertex_id_gaps( std::map<size_t, size_t> &vertexIDtoIndex, size_t vertexIndex, size_t vertexID, MDAL_Status *status )
 {
+  if ( vertexIndex == vertexID )
+    return false;
+
+  std::map<size_t, size_t>::iterator search = vertexIDtoIndex.find( vertexID );
+  if ( search != vertexIDtoIndex.end() )
+  {
+    if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
+    return true;
+  }
+
+  vertexIDtoIndex[vertexID] = vertexIndex;
+  return false;
+}
+
+size_t MDAL::Mesh2dm::vertexIndex( size_t vertexID ) const
+{
+  auto ni2i = mVertexIDtoIndex.find( vertexID );
+  if ( ni2i != mVertexIDtoIndex.end() )
+  {
+    return  ni2i->second; // convert from ID to index
+  }
+  return vertexID;
+}
+
+size_t MDAL::Mesh2dm::maximumVertexId() const
+{
+  size_t maxIndex = verticesCount() - 1;
+  if ( mVertexIDtoIndex.empty() )
+    return maxIndex;
+  else
+  {
+    // std::map is sorted!
+    size_t maxID = mVertexIDtoIndex.rbegin()->first;
+    return std::max( maxIndex, maxID );
+  }
+}
+
+MDAL::Driver2dm::Driver2dm():
+  Driver( DRIVER_NAME,
+          "2DM Mesh File",
+          "*.2dm",
+          Capability::ReadMesh
+        )
+{
+}
+
+MDAL::Driver2dm *MDAL::Driver2dm::create()
+{
+  return new Driver2dm();
+}
+
+MDAL::Driver2dm::~Driver2dm() = default;
+
+bool MDAL::Driver2dm::canRead( const std::string &uri )
+{
+  std::ifstream in( uri, std::ifstream::in );
+  std::string line;
+  if ( !std::getline( in, line ) || !startsWith( line, "MESH2D" ) )
+  {
+    return false;
+  }
+  return true;
+}
+
+std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, MDAL_Status *status )
+{
+  mMeshFile = meshFile;
+
   if ( status ) *status = MDAL_Status::None;
 
   std::ifstream in( mMeshFile, std::ifstream::in );
@@ -64,6 +149,9 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
   std::vector<Vertex> vertices( vertexCount );
   std::vector<Face> faces( faceCount );
 
+  // Basement 3.x supports definition of elevation for cell centers
+  std::vector<double> elementCenteredElevation;
+
   in.clear();
   in.seekg( 0, std::ios::beg );
 
@@ -71,53 +159,45 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
 
   size_t faceIndex = 0;
   size_t vertexIndex = 0;
-  std::map<size_t, size_t> faceIDtoIndex;
   std::map<size_t, size_t> vertexIDtoIndex;
+  size_t lastVertexID = 0;
 
   while ( std::getline( in, line ) )
   {
-    if ( startsWith( line, "E4Q" ) )
+    if ( startsWith( line, "E4Q" ) ||
+         startsWith( line, "E3T" )
+       )
     {
-      chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+      chunks = split( line,  ' ' );
       assert( faceIndex < faceCount );
 
-      size_t elemID = toSizeT( chunks[1] );
+      const size_t faceVertexCount = MDAL::toSizeT( line[1] );
+      assert( ( faceVertexCount == 3 ) || ( faceVertexCount == 4 ) );
 
-      std::map<size_t, size_t>::iterator search = faceIDtoIndex.find( elemID );
-      if ( search != faceIDtoIndex.end() )
-      {
-        if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
-        continue;
-      }
-      faceIDtoIndex[elemID] = faceIndex;
       Face &face = faces[faceIndex];
-      face.resize( 4 );
+      face.resize( faceVertexCount );
+
+      // chunks format here
+      // E** id vertex_id1, vertex_id2, ... material_id (elevation - optional)
+      // vertex ids are numbered from 1
       // Right now we just store node IDs here - we will convert them to node indices afterwards
-      for ( size_t i = 0; i < 4; ++i )
-        face[i] = toSizeT( chunks[i + 2] );
+      assert( chunks.size() > faceVertexCount + 1 );
 
-      faceIndex++;
-    }
-    else if ( startsWith( line, "E3T" ) )
-    {
-      chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
-      assert( faceIndex < faceCount );
+      for ( size_t i = 0; i < faceVertexCount; ++i )
+        face[i] = MDAL::toSizeT( chunks[i + 2] ) - 1; // 2dm is numbered from 1
 
-      size_t elemID = toSizeT( chunks[1] );
-
-      std::map<size_t, size_t>::iterator search = faceIDtoIndex.find( elemID );
-      if ( search != faceIDtoIndex.end() )
+      // OK, now find out if there is optional cell elevation (BASEMENT 3.x)
+      if ( chunks.size() == faceVertexCount + 4 )
       {
-        if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
-        continue;
-      }
-      faceIDtoIndex[elemID] = faceIndex;
-      Face &face = faces[faceIndex];
-      face.resize( 3 );
-      // Right now we just store node IDs here - we will convert them to node indices afterwards
-      for ( size_t i = 0; i < 3; ++i )
-      {
-        face[i] = toSizeT( chunks[i + 2] );
+
+        // initialize dataset if it is still empty
+        if ( elementCenteredElevation.empty() )
+        {
+          elementCenteredElevation = std::vector<double>( faceCount, std::numeric_limits<double>::quiet_NaN() );
+        }
+
+        // add Bed Elevation (Face) value
+        elementCenteredElevation[faceIndex] = MDAL::toDouble( chunks[ faceVertexCount + 3 ] );
       }
 
       faceIndex++;
@@ -129,34 +209,34 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
               startsWith( line, "E9Q" ) )
     {
       // We do not yet support these elements
-      chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+      chunks = split( line,  ' ' );
       assert( faceIndex < faceCount );
 
-      size_t elemID = toSizeT( chunks[1] );
-
-      std::map<size_t, size_t>::iterator search = faceIDtoIndex.find( elemID );
-      if ( search != faceIDtoIndex.end() )
-      {
-        if ( status ) *status = MDAL_Status::Warn_ElementNotUnique;
-        continue;
-      }
-      faceIDtoIndex[elemID] = faceIndex;
+      //size_t elemID = toSizeT( chunks[1] );
       assert( false ); //TODO mark element as unusable
 
       faceIndex++;
     }
     else if ( startsWith( line, "ND" ) )
     {
-      chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+      chunks = split( line,  ' ' );
       size_t nodeID = toSizeT( chunks[1] );
 
-      std::map<size_t, size_t>::iterator search = vertexIDtoIndex.find( nodeID );
-      if ( search != vertexIDtoIndex.end() )
+      if ( nodeID != 0 )
       {
-        if ( status ) *status = MDAL_Status::Warn_NodeNotUnique;
-        continue;
+        // specification of 2DM states that ID should be positive integer numbered from 1
+        // but it seems some formats do not respect that
+        if ( ( lastVertexID != 0 ) && ( nodeID <= lastVertexID ) )
+        {
+          // the algorithm requires that the file has NDs orderer by index
+          if ( status ) *status = MDAL_Status::Err_InvalidData;
+          return nullptr;
+        }
+        lastVertexID = nodeID;
       }
-      vertexIDtoIndex[nodeID] = vertexIndex;
+      nodeID -= 1; // 2dm is numbered from 1
+
+      _parse_vertex_id_gaps( vertexIDtoIndex, vertexIndex, nodeID, status );
       assert( vertexIndex < vertexCount );
       Vertex &vertex = vertices[vertexIndex];
       vertex.x = toDouble( chunks[2] );
@@ -178,25 +258,31 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
       {
         face[nd] = ni2i->second; // convert from ID to index
       }
-      else
+      else if ( vertices.size() < nodeID )
       {
-        assert( false ); //TODO mark element as unusable
-
         if ( status ) *status = MDAL_Status::Warn_ElementWithInvalidNode;
       }
     }
-
     //TODO check validity of the face
     //check that we have distinct nodes
   }
 
-  std::unique_ptr< Mesh > mesh( new Mesh );
-  mesh->uri = mMeshFile;
+  std::unique_ptr< Mesh2dm > mesh(
+    new Mesh2dm(
+      vertices.size(),
+      faces.size(),
+      4, //maximum quads
+      computeExtent( vertices ),
+      mMeshFile,
+      vertexIDtoIndex
+    )
+  );
   mesh->faces = faces;
   mesh->vertices = vertices;
-  mesh->faceIDtoIndex = faceIDtoIndex;
-  mesh->vertexIDtoIndex = vertexIDtoIndex;
-  mesh->addBedElevationDataset();
 
-  return mesh;
+  // Add Bed Elevations
+  MDAL::addFaceScalarDatasetGroup( mesh.get(), elementCenteredElevation, "Bed Elevation (Face)" );
+  MDAL::addBedElevationDatasetGroup( mesh.get(), vertices );
+
+  return std::unique_ptr<Mesh>( mesh.release() );
 }

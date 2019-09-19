@@ -25,6 +25,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
 #include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#ifdef HAVE_GUI
+#include "qgsproviderguimetadata.h"
+#endif
 
 #include <QVector>
 #include <QQueue>
@@ -37,6 +41,7 @@ class QgsField;
 class QgsGeometry;
 class QgsOracleFeatureIterator;
 class QgsOracleSharedData;
+class QgsOracleTransaction;
 
 enum QgsOraclePrimaryKeyType
 {
@@ -66,10 +71,10 @@ class QgsOracleProvider : public QgsVectorDataProvider
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem *srs,
+      const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
-      QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = nullptr,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
       const QMap<QString, QVariant> *options = nullptr
     );
 
@@ -160,6 +165,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     static bool exec( QSqlQuery &qry, QString sql, const QVariantList &args );
 
     bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    void setTransaction( QgsTransaction *transaction ) override;
+    QgsTransaction *transaction() const override;
 
     /**
      * Switch to oracle workspace
@@ -190,8 +197,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     //! Convert a QgsField to work with Oracle
     static bool convertField( QgsField &field );
 
-    QgsFields mAttributeFields;  //! List of fields
-    QVariantList mDefaultValues; //! List of default values
+    QgsFields mAttributeFields;  //!< List of fields
+    QVariantList mDefaultValues; //!< List of default values
     QString mDataComment;
 
     //! Data source URI struct for this layer
@@ -238,14 +245,14 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QList<int> mPrimaryKeyAttrs;
     QString mPrimaryKeyDefault;
 
-    QString mGeometryColumn;           //! name of the geometry column
-    mutable QgsRectangle mLayerExtent; //! Rectangle that contains the extent (bounding box) of the layer
-    mutable long mFeaturesCounted;     //! Number of features in the layer
-    int mSrid;                         //! srid of column
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //! capabilities of layer
+    QString mGeometryColumn;           //!< Name of the geometry column
+    mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer
+    mutable long mFeaturesCounted;     //!< Number of features in the layer
+    int mSrid;                         //!< Srid of column
+    QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //!< Capabilities of layer
 
-    QgsWkbTypes::Type mDetectedGeomType;   //! geometry type detected in the database
-    QgsWkbTypes::Type mRequestedGeomType;  //! geometry type requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType;   //!< Geometry type detected in the database
+    QgsWkbTypes::Type mRequestedGeomType;  //!< Geometry type requested in the uri
 
     bool getGeometryDetails();
 
@@ -254,6 +261,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     /* Include additional geo attributes */
     bool mIncludeGeoAttributes;
+
+    QgsOracleTransaction *mTransaction = nullptr;
 
     struct OracleFieldNotFound {}; //! Exception to throw
 
@@ -299,14 +308,16 @@ class QgsOracleProvider : public QgsVectorDataProvider
     static QString quotedIdentifier( QString ident ) { return QgsOracleConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid ) { return QgsOracleConn::quotedValue( value, type ); }
 
-    QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
-    QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
-    QgsOracleConn *mConnection = nullptr;
+    QMap<QVariant, QgsFeatureId> mKeyToFid;  //!< Map key values to feature id
+    QMap<QgsFeatureId, QVariant> mFidToKey;  //!< Map feature back to feature id
 
-    bool mHasSpatialIndex;                   //! Geometry column is indexed
-    QString mSpatialIndexName;               //! name of spatial index of geometry column
+    bool mHasSpatialIndex;                   //!< Geometry column is indexed
+    QString mSpatialIndexName;               //!< Name of spatial index of geometry column
 
     std::shared_ptr<QgsOracleSharedData> mShared;
+
+    QgsOracleConn *connectionRW();
+    QgsOracleConn *connectionRO() const;
 
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleFeatureSource;
@@ -358,5 +369,36 @@ class QgsOracleSharedData
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
 };
 
+class QgsOracleProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsOracleProviderMetadata();
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
+                    const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    void cleanupProvider();
+    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
+        const QgsFields &fields, QgsWkbTypes::Type wkbType,
+        const QgsCoordinateReferenceSystem &srs, bool overwrite,
+        QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
+        const QMap<QString, QVariant> *options ) override;
+
+    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+
+    QgsTransaction *createTransaction( const QString &connString ) override;
+};
+
+#ifdef HAVE_GUI
+class QgsOracleProviderGuiMetadata: public QgsProviderGuiMetadata
+{
+  public:
+    QgsOracleProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+    void registerGui( QMainWindow *mainWindow ) override;
+};
+#endif
 
 #endif

@@ -2,6 +2,9 @@
 
 = Building on MacOS X =
 
+This document is outdated and there is currently no up to date documentation for building on mac.
+You might want to consider to read an approach using Homebrew although not up to date either: https://github.com/qgis/QGIS/mac/development.md
+
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 

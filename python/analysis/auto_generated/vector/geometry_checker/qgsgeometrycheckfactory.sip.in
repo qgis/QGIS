@@ -34,7 +34,7 @@ A factory for geometry checks.
 
     virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 /Factory/;
 %Docstring
-Create a new geometry check with ``context`` and ``configuration``.
+Creates a new geometry check with ``context`` and ``configuration``.
 %End
 
     virtual QString id() const = 0;
@@ -66,6 +66,13 @@ The type of this check.
 template<T>
 class QgsGeometryCheckFactoryT : QgsGeometryCheckFactory
 {
+%Docstring
+Template to create a factory for a geometry check.
+
+.. note::
+
+   Not available in Python bindings.
+%End
 
 %TypeHeaderCode
 #include "qgsgeometrycheckfactory.h"

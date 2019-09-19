@@ -22,7 +22,7 @@ The QgsBrowserDockWidget class
 %End
   public:
 
-    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent /TransferThis/ = 0 );
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserDockWidget
 
@@ -65,8 +65,8 @@ Returns the message bar associated with the dock.
 %Docstring
 Adds the layer corresponding to the specified model ``index``.
 
-Returns true if the index was successfully intrepreted as a map layer and loaded, or
-false if the index is not a map layer or could not be loaded.
+Returns ``True`` if the index was successfully intrepreted as a map layer and loaded, or
+``False`` if the index is not a map layer or could not be loaded.
 
 .. deprecated:: will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
 %End
@@ -121,6 +121,10 @@ Sets filter case sensitivity
     void setFilter();
 %Docstring
 Apply filter to the model
+%End
+    void setActiveIndex( const QModelIndex &index );
+%Docstring
+Sets the selection to ``index`` and expand it
 %End
     void updateProjectHome();
 %Docstring

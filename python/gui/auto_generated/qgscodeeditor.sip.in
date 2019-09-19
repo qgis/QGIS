@@ -35,8 +35,8 @@ Construct a new code editor.
 
 :param parent: The parent QWidget
 :param title: The title to show in the code editor dialog
-:param folding: false: Enable folding for code editor
-:param margin: false: Enable margin for code editor
+:param folding: ``False``: Enable folding for code editor
+:param margin: ``False``: Enable margin for code editor
 
 .. versionadded:: 2.6
 %End

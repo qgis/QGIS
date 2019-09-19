@@ -13,11 +13,11 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMULTISURFACEV2_H
-#define QGSMULTISURFACEV2_H
+#ifndef QGSMULTISURFACE_H
+#define QGSMULTISURFACE_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
 
 /**
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     bool fromWkt( const QString &wkt ) override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    QString asJson( int precision = 17 ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
@@ -71,4 +71,4 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSMULTISURFACEV2_H
+#endif // QGSMULTISURFACE_H

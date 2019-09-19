@@ -1,0 +1,31 @@
+version: '3'
+services:
+  postgres:
+    build:
+      dockerfile: Dockerfile-postgis
+      context: ../../../tests/testdata
+    environment:
+      - ALLOW_IP_RANGE="172.18.0.0/16"
+# The following files are added in Dockerfile-postgis
+      - SSL_CERT_FILE=/etc/ssl/certs/postgres_cert.crt
+      - SSL_KEY_FILE=/etc/ssl/private/postgres_key.key
+      - SSL_CA_FILE=/etc/ssl/certs/issuer_ca_cert.pem
+
+# Proving very fragile!
+#  mssql:
+#    image: microsoft/mssql-server-linux:2017-latest
+#    environment:
+#      ACCEPT_EULA: Y
+#      SA_PASSWORD: <YourStrong!Passw0rd>
+
+  qgis-deps:
+    tty: true
+    image: qgis_image
+    volumes:
+      - ${TRAVIS_BUILD_DIR}:/root/QGIS
+    links:
+      - postgres
+    #  - mssql
+    env_file:
+      - docker-variables.env
+

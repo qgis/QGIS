@@ -23,6 +23,7 @@
 
 #include "qgssymbollayer.h"
 #include "qgssymbollayerregistry.h"
+#include "qgspainteffectregistry.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -34,8 +35,10 @@
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
 #include "qgsmapcanvas.h"
+#include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {
@@ -65,11 +68,13 @@ static void _initWidgetFunctions()
 
   _initWidgetFunction( QStringLiteral( "SimpleLine" ), QgsSimpleLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "MarkerLine" ), QgsMarkerLineSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "HashLine" ), QgsHashedLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "ArrowLine" ), QgsArrowSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "SimpleMarker" ), QgsSimpleMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "SvgMarker" ), QgsSvgMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "RasterMarker" ), QgsRasterMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "FontMarker" ), QgsFontMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "EllipseMarker" ), QgsEllipseSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "VectorField" ), QgsVectorFieldSymbolLayerWidget::create );
@@ -128,6 +133,11 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
 
   this->connectChildPanel( mEffectWidget );
 
+  if ( !mLayer->paintEffect() )
+  {
+    mLayer->setPaintEffect( QgsPaintEffectRegistry::defaultStack() );
+    mLayer->paintEffect()->setEnabled( false );
+  }
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 
   registerDataDefinedButton( mEnabledDDBtn, QgsSymbolLayer::PropertyLayerEnabled );
@@ -157,13 +167,15 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
 {
   QStringList symbolLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( mSymbol->type() );
 
-  Q_FOREACH ( const QString &symbolLayerId, symbolLayerIds )
+  const auto constSymbolLayerIds = symbolLayerIds;
+  for ( const QString &symbolLayerId : constSymbolLayerIds )
     cboLayerType->addItem( QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( symbolLayerId )->visibleName(), symbolLayerId );
 
   if ( mSymbol->type() == QgsSymbol::Fill )
   {
     QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( QgsSymbol::Line );
-    Q_FOREACH ( const QString &lineLayerId, lineLayerIds )
+    const auto constLineLayerIds = lineLayerIds;
+    for ( const QString &lineLayerId : constLineLayerIds )
     {
       QgsSymbolLayerAbstractMetadata *layerInfo = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( lineLayerId );
       if ( layerInfo->type() != QgsSymbol::Hybrid )
@@ -245,7 +257,8 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -306,7 +319,17 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
   emit changed();
 
   // also update paint effect preview
-  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 80, 80 ) ) );
+  bool paintEffectToggled = false;
+  if ( mLayer->paintEffect() && mLayer->paintEffect()->enabled() )
+  {
+    mLayer->paintEffect()->setEnabled( false );
+    paintEffectToggled = true;
+  }
+  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 60, 60 ) ) );
+  if ( paintEffectToggled )
+  {
+    mLayer->paintEffect()->setEnabled( true );
+  }
   emit widgetChanged();
 }
 

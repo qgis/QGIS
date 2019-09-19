@@ -24,14 +24,10 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
-
-#ifdef HAVE_GUI
-#include "qgsdb2newconnection.h"
-#include "qgsdb2sourceselect.h"
-#endif
+#include "qgsapplication.h"
+#include "qgsproject.h"
 
 #include <QMessageBox>
-#include <QProgressDialog>
 
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 
@@ -136,7 +132,8 @@ void QgsDb2ConnectionItem::refresh()
   QVector<QgsDataItem *> items = createChildren();
 
   // Add new items
-  Q_FOREACH ( QgsDataItem *item, items )
+  const auto constItems = items;
+  for ( QgsDataItem *item : constItems )
   {
     // Is it present in children?
     int index = findItem( mChildren, item );
@@ -201,7 +198,8 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   while ( db2GC.populateLayerProperty( layer ) )
   {
     QgsDb2SchemaItem *schemaItem = nullptr;
-    Q_FOREACH ( QgsDataItem *child, children )
+    const auto constChildren = children;
+    for ( QgsDataItem *child : constChildren )
     {
       if ( child->name() == layer.schemaName )
       {
@@ -245,75 +243,6 @@ bool QgsDb2ConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsDb2ConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh Connection" ), parent );
-  connect( actionRefresh, &QAction::triggered, this, &QgsDb2ConnectionItem::refreshConnection );
-  lst.append( actionRefresh );
-
-  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsDb2ConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsDb2ConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsDb2ConnectionItem::editConnection()
-{
-  QgsDb2NewConnection nc( nullptr, mName );
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refreshConnections();
-  }
-}
-
-void QgsDb2ConnectionItem::deleteConnection()
-{
-  QString key = "/DB2/connections/" + mName;
-  QgsSettings settings;
-  settings.remove( key + "/service" );
-  settings.remove( key + "/driver" );
-  settings.remove( key + "/port" );
-  settings.remove( key + "/host" );
-  settings.remove( key + "/database" );
-  settings.remove( key + "/username" );
-  settings.remove( key + "/password" );
-  settings.remove( key + "/environment" );
-  settings.remove( key );
-  mParent->refreshConnections();
-}
-
-void QgsDb2ConnectionItem::refreshConnection()
-{
-  QString errMsg;
-  QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errMsg );
-  Q_UNUSED( db );
-  if ( errMsg.isEmpty() )
-  {
-    QgsDebugMsg( QStringLiteral( "successful get db2 connection on refresh" ) );
-  }
-  else
-  {
-    QgsDebugMsg( "failed get db2 connection on refresh " + errMsg + " " + mPath + "/error" );
-  }
-  refresh();
-}
-#endif
-
-
-bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  return handleDrop( data, QString() );
-}
-
 bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
@@ -324,7 +253,8 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     if ( u.layerType != QLatin1String( "vector" ) )
     {
@@ -335,7 +265,8 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
 
     QgsDebugMsg( QStringLiteral( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
     // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey, options );
 
     if ( srcLayer->isValid() )
     {
@@ -414,41 +345,13 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
   QVector<QgsDataItem *> connections;
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
-  Q_FOREACH ( const QString &connName, settings.childGroups() )
+  const auto constChildGroups = settings.childGroups();
+  for ( const QString &connName : constChildGroups )
   {
     connections << new QgsDb2ConnectionItem( this, connName, mPath + "/" + connName );
   }
   return connections;
 }
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsDb2RootItem::actions( QWidget *parent )
-{
-  QList<QAction *> actionList;
-
-  QAction *action = new QAction( tr( "New Connection…" ), parent );
-  connect( action, &QAction::triggered, this, &QgsDb2RootItem::newConnection );
-  actionList.append( action );
-
-  return actionList;
-}
-
-QWidget *QgsDb2RootItem::paramWidget()
-{
-  return nullptr;
-}
-
-void QgsDb2RootItem::newConnection()
-{
-  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; New Connection dialog requested." ) );
-  QgsDb2NewConnection newConnection( nullptr, mName );
-  if ( newConnection.exec() )
-  {
-    refreshConnections();
-  }
-
-}
-#endif
 
 // ---------------------------------------------------------------------------
 QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperty )
@@ -497,7 +400,8 @@ QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
 
   QVector<QgsDataItem *>items;
 
-  Q_FOREACH ( QgsDataItem *child, this->children() )
+  const auto constChildren = this->children();
+  for ( QgsDataItem *child : constChildren )
   {
     items.append( ( ( QgsDb2LayerItem * )child )->createClone() );
   }
@@ -507,7 +411,8 @@ QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
 void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )
 {
   // Add new items
-  Q_FOREACH ( QgsDataItem *child, newLayers->children() )
+  const auto constChildren = newLayers->children();
+  for ( QgsDataItem *child : constChildren )
   {
     // Is it present in children?
     if ( findItem( mChildren, child ) >= 0 )
@@ -517,15 +422,6 @@ void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )
     QgsDb2LayerItem *layer = ( ( QgsDb2LayerItem * )child )->createClone();
     addChildItem( layer, true );
   }
-}
-
-bool QgsDb2SchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  QgsDb2ConnectionItem *conn = qobject_cast<QgsDb2ConnectionItem *>( parent() );
-  if ( !conn )
-    return false;
-
-  return conn->handleDrop( data, mName );
 }
 
 QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
@@ -576,4 +472,21 @@ QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
     addChild( layerItem );
 
   return layerItem;
+}
+
+QString QgsDb2DataItemProvider::name()
+{
+  return QStringLiteral( "DB2" );
+}
+
+int QgsDb2DataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
+QgsDataItem *QgsDb2DataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn );
+  QgsDebugMsgLevel( QStringLiteral( "DB2: Browser Panel; data item detected." ), 2 );
+  return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
 }

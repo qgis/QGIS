@@ -16,12 +16,10 @@
 #include <QSet>
 #include <QStringList>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 
-
-class QgsVertexMarker;
 class QResizeEvent;
 
 /**
@@ -89,7 +87,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     bool showBoundsMap() const;
 
     /**
-     * Returns true if the current selection in the widget is a valid choice. Valid
+     * Returns TRUE if the current selection in the widget is a valid choice. Valid
      * selections include any projection and also the "no/invalid projection" option
      * (if setShowNoProjection() was called). Invalid selections are the group
      * headers (such as "Geographic Coordinate Systems"
@@ -230,6 +228,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     QString selectedProj4String();
 
+    QString selectedWktString();
+
     //! Gets the current QGIS projection identfier
     long selectedCrsId();
 
@@ -287,16 +287,9 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! Hide deprecated CRSes
     void hideDeprecated( QTreeWidgetItem *item );
 
-    QgsRubberBand *mPreviewBand;
-    QgsRubberBand *mPreviewBand2;
-    QgsVertexMarker *mVertexMarker;
-
     bool mShowMap = true;
 
-    QList<QgsMapLayer *> mLayers;
-
-    QgsRectangle mPreviewRect;
-
+    bool mInitialized = false;
 
   private slots:
     //! Gets list of authorities

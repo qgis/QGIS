@@ -12,6 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QApplication>
 #include <QDesktopWidget>
 #include <QString>
 
@@ -22,6 +24,8 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
+#include "qgsapplication.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 #include "qgsquickfeaturelayerpair.h"
 #include "qgsquickmapsettings.h"
@@ -92,11 +96,40 @@ bool QgsQuickUtils::fileExists( const QString &path )
   return ( check_file.exists() && check_file.isFile() );
 }
 
-QString QgsQuickUtils::getFileName( const QString &path )
+QString QgsQuickUtils::getRelativePath( const QString &path, const QString &prefixPath )
 {
-  QFileInfo fileInfo( path );
-  QString filename( fileInfo.fileName() );
-  return filename;
+  QString modPath = path;
+  QString filePrefix( "file://" );
+
+  if ( path.startsWith( filePrefix ) )
+  {
+    modPath = modPath.replace( filePrefix, QString() );
+  }
+
+  if ( prefixPath.isEmpty() ) return modPath;
+
+  // Do not use a canonical path for non-existing path
+  if ( !QFileInfo( path ).exists() )
+  {
+    if ( !prefixPath.isEmpty() && modPath.startsWith( prefixPath ) )
+    {
+      return modPath.replace( prefixPath, QString() );
+    }
+  }
+  else
+  {
+    QDir absoluteDir( modPath );
+    QDir prefixDir( prefixPath );
+    QString canonicalPath = absoluteDir.canonicalPath();
+    QString prefixCanonicalPath = prefixDir.canonicalPath() + "/";
+
+    if ( prefixCanonicalPath.length() > 1 && canonicalPath.startsWith( prefixCanonicalPath ) )
+    {
+      return canonicalPath.replace( prefixCanonicalPath, QString() );
+    }
+  }
+
+  return QString();
 }
 
 void QgsQuickUtils::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
@@ -121,9 +154,11 @@ const QUrl QgsQuickUtils::getEditorComponentSource( const QString &widgetName )
   QString path( "qgsquick%1.qml" );
   QStringList supportedWidgets = { QStringLiteral( "textedit" ),
                                    QStringLiteral( "valuemap" ),
+                                   QStringLiteral( "valuerelation" ),
                                    QStringLiteral( "checkbox" ),
                                    QStringLiteral( "externalresource" ),
-                                   QStringLiteral( "datetime" )
+                                   QStringLiteral( "datetime" ),
+                                   QStringLiteral( "range" )
                                  };
   if ( supportedWidgets.contains( widgetName ) )
   {
@@ -157,6 +192,12 @@ QString QgsQuickUtils::formatDistance( double distance,
   return QStringLiteral( "%1 %2" )
          .arg( QString::number( destDistance, 'f', decimals ) )
          .arg( QgsUnitTypes::toAbbreviatedString( destUnits ) );
+}
+
+bool QgsQuickUtils::removeFile( const QString &filePath )
+{
+  QFile file( filePath );
+  return file.remove( filePath );
 }
 
 
@@ -307,6 +348,31 @@ QString QgsQuickUtils::dumpScreenInfo() const
   msg += tr( "screen size: %1x%2 mm\n" ).arg( QString::number( sizeX, 'f', 0 ), QString::number( sizeY, 'f', 0 ) );
   msg += tr( "screen density: %1" ).arg( mScreenDensity );
   return msg;
+}
+
+QVariantMap QgsQuickUtils::createValueRelationCache( const QVariantMap &config, const QgsFeature &formFeature )
+{
+  QVariantMap valueMap;
+  QgsValueRelationFieldFormatter::ValueRelationCache cache = QgsValueRelationFieldFormatter::createCache( config, formFeature );
+
+  for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( cache ) )
+  {
+    valueMap.insert( item.key.toString(), item.value );
+  }
+  return valueMap;
+}
+
+QString QgsQuickUtils::evaluateExpression( const QgsQuickFeatureLayerPair &pair, QgsProject *activeProject, const QString &expression )
+{
+  QList<QgsExpressionContextScope *> scopes;
+  scopes << QgsExpressionContextUtils::globalScope();
+  scopes << QgsExpressionContextUtils::projectScope( activeProject );
+  scopes << QgsExpressionContextUtils::layerScope( pair.layer() );
+
+  QgsExpressionContext context( scopes );
+  context.setFeature( pair.feature() );
+  QgsExpression expr( expression );
+  return expr.evaluate( &context ).toString();
 }
 
 qreal QgsQuickUtils::screenDensity() const

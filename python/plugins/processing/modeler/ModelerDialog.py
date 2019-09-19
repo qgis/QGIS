@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import codecs
 import sys
 import operator
@@ -46,7 +42,8 @@ from qgis.PyQt.QtCore import (
     pyqtSignal,
     QDataStream,
     QIODevice,
-    QUrl)
+    QUrl,
+    QTimer)
 from qgis.PyQt.QtWidgets import (QGraphicsView,
                                  QTreeWidget,
                                  QMessageBox,
@@ -61,7 +58,9 @@ from qgis.PyQt.QtWidgets import (QGraphicsView,
                                  QVBoxLayout,
                                  QGridLayout,
                                  QFrame,
-                                 QLineEdit)
+                                 QLineEdit,
+                                 QToolButton,
+                                 QAction)
 from qgis.PyQt.QtGui import (QIcon,
                              QImage,
                              QPainter,
@@ -70,21 +69,26 @@ from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.core import (Qgis,
                        QgsApplication,
-                       QgsProcessingAlgorithm,
+                       QgsProcessing,
                        QgsProject,
                        QgsSettings,
                        QgsMessageLog,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
-                       QgsProcessingParameterType
+                       QgsProcessingParameterType,
+                       QgsExpressionContextScope,
+                       QgsExpressionContext
                        )
 from qgis.gui import (QgsMessageBar,
                       QgsDockWidget,
                       QgsScrollArea,
                       QgsFilterLineEdit,
                       QgsProcessingToolboxTreeView,
-                      QgsProcessingToolboxProxyModel)
+                      QgsProcessingToolboxProxyModel,
+                      QgsProcessingParameterDefinitionDialog,
+                      QgsVariableEditorWidget,
+                      QgsProcessingParameterWidgetContext)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -92,6 +96,9 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
+from processing.script.ScriptEditorDialog import ScriptEditorDialog
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.dataobjects import createContext
 from qgis.utils import iface
 
 
@@ -137,6 +144,8 @@ class ModelerDialog(BASE, WIDGET):
 
         self.setupUi(self)
 
+        self._variables_scope = None
+
         # LOTS of bug reports when we include the dock creation in the UI file
         # see e.g. #16428, #19068
         # So just roll it all by hand......!
@@ -178,8 +187,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scrollArea_1.setWidget(self.scrollAreaWidgetContents_1)
         self.verticalDockLayout_1.addWidget(self.scrollArea_1)
         self.propertiesDock.setWidget(propertiesDockContents)
-        self.addDockWidget(Qt.DockWidgetArea(1), self.propertiesDock)
-        self.propertiesDock.setWindowTitle(self.tr("Model properties"))
+        self.propertiesDock.setWindowTitle(self.tr("Model Properties"))
 
         self.inputsDock = QgsDockWidget(self)
         self.inputsDock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
@@ -240,6 +248,22 @@ class ModelerDialog(BASE, WIDGET):
         self.searchBox.setToolTip(self.tr("Enter algorithm name to filter list"))
         self.searchBox.setShowSearchIcon(True)
 
+        self.variables_dock = QgsDockWidget(self)
+        self.variables_dock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
+        self.variables_dock.setObjectName("variablesDock")
+        self.variables_dock_contents = QWidget()
+        vl_v = QVBoxLayout()
+        vl_v.setContentsMargins(0, 0, 0, 0)
+        self.variables_editor = QgsVariableEditorWidget()
+        vl_v.addWidget(self.variables_editor)
+        self.variables_dock_contents.setLayout(vl_v)
+        self.variables_dock.setWidget(self.variables_dock_contents)
+        self.addDockWidget(Qt.DockWidgetArea(1), self.variables_dock)
+        self.variables_dock.setWindowTitle(self.tr("Variables"))
+        self.addDockWidget(Qt.DockWidgetArea(1), self.propertiesDock)
+        self.tabifyDockWidget(self.propertiesDock, self.variables_dock)
+        self.variables_editor.scopeChanged.connect(self.variables_changed)
+
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.centralWidget().layout().insertWidget(0, self.bar)
@@ -252,6 +276,13 @@ class ModelerDialog(BASE, WIDGET):
         if iface is not None:
             self.mToolbar.setIconSize(iface.iconSize())
             self.setStyleSheet(iface.mainWindow().styleSheet())
+
+        self.toolbutton_export_to_script = QToolButton()
+        self.toolbutton_export_to_script.setPopupMode(QToolButton.InstantPopup)
+        self.export_to_script_algorithm_action = QAction(QCoreApplication.translate('ModelerDialog', 'Export as Script Algorithm…'))
+        self.toolbutton_export_to_script.addActions([self.export_to_script_algorithm_action])
+        self.mToolbar.insertWidget(self.mActionExportImage, self.toolbutton_export_to_script)
+        self.export_to_script_algorithm_action.triggered.connect(self.export_as_script_algorithm)
 
         self.mActionOpen.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
@@ -275,8 +306,8 @@ class ModelerDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon('/mActionSaveAsPDF.svg'))
         self.mActionExportSvg.setIcon(
             QgsApplication.getThemeIcon('/mActionSaveAsSVG.svg'))
-        #self.mActionExportPython.setIcon(
-        #    QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
+        self.toolbutton_export_to_script.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
         self.mActionEditHelp.setIcon(
             QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
         self.mActionRun.setIcon(
@@ -287,8 +318,6 @@ class ModelerDialog(BASE, WIDGET):
         self.addDockWidget(Qt.LeftDockWidgetArea, self.algorithmsDock)
         self.tabifyDockWidget(self.inputsDock, self.algorithmsDock)
         self.inputsDock.raise_()
-
-        self.zoom = 1
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint |
@@ -304,6 +333,7 @@ class ModelerDialog(BASE, WIDGET):
         self.view.setScene(self.scene)
         self.view.setAcceptDrops(True)
         self.view.ensureVisible(0, 0, 10, 10)
+        self.view.scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
 
         def _dragEnterEvent(event):
             if event.mimeData().hasText() or event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
@@ -312,19 +342,26 @@ class ModelerDialog(BASE, WIDGET):
                 event.ignore()
 
         def _dropEvent(event):
+            def alg_dropped(algorithm_id, pos):
+                alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm_id)
+                if alg is not None:
+                    self._addAlgorithm(alg, pos)
+                else:
+                    assert False, algorithm_id
+
+            def input_dropped(id, pos):
+                if id in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
+                    self.addInputOfType(itemId, pos)
+
             if event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
                 data = event.mimeData().data('application/x-vnd.qgis.qgis.algorithmid')
                 stream = QDataStream(data, QIODevice.ReadOnly)
                 algorithm_id = stream.readQString()
-                alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm_id)
-                if alg is not None:
-                    self._addAlgorithm(alg, event.pos())
-                else:
-                    assert False, algorithm_id
+                QTimer.singleShot(0, lambda id=algorithm_id, pos=self.view.mapToScene(event.pos()): alg_dropped(id, pos))
+                event.accept()
             elif event.mimeData().hasText():
                 itemId = event.mimeData().text()
-                if itemId in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
-                    self.addInputOfType(itemId, event.pos())
+                QTimer.singleShot(0, lambda id=itemId, pos=self.view.mapToScene(event.pos()): input_dropped(id, pos))
                 event.accept()
             else:
                 event.ignore()
@@ -402,7 +439,10 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmTree.setDragDropMode(QTreeWidget.DragOnly)
         self.algorithmTree.setDropIndicatorShown(True)
 
-        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterModeler)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterModeler)
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        self.algorithmTree.setFilters(filters)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(QCoreApplication.translate('ModelerDialog', 'Search…'))
@@ -445,6 +485,7 @@ class ModelerDialog(BASE, WIDGET):
         else:
             self.model = QgsProcessingModelAlgorithm()
             self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
+        self.update_variables_gui()
 
         self.fillInputsTree()
 
@@ -482,12 +523,24 @@ class ModelerDialog(BASE, WIDGET):
             self.model.setHelpContent(dlg.descriptions)
             self.hasChanged = True
 
+    def update_variables_gui(self):
+        variables_scope = QgsExpressionContextScope(self.tr('Model Variables'))
+        for k, v in self.model.variables().items():
+            variables_scope.setVariable(k, v)
+        variables_context = QgsExpressionContext()
+        variables_context.appendScope(variables_scope)
+        self.variables_editor.setContext(variables_context)
+        self.variables_editor.setEditableScopeIndex(0)
+
+    def variables_changed(self):
+        self.model.setVariables(self.variables_editor.variablesInActiveScope())
+
     def runModel(self):
         if len(self.model.childAlgorithms()) == 0:
             self.bar.pushMessage("", self.tr("Model doesn't contain any algorithm and/or parameter and can't be executed"), level=Qgis.Warning, duration=5)
             return
 
-        dlg = AlgorithmDialog(self.model)
+        dlg = AlgorithmDialog(self.model.create(), parent=iface.mainWindow())
         dlg.exec_()
 
     def save(self):
@@ -539,6 +592,7 @@ class ModelerDialog(BASE, WIDGET):
     def zoomActual(self):
         point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
         self.view.resetTransform()
+        self.view.scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
         self.view.centerOn(point)
 
     def zoomToItems(self):
@@ -712,6 +766,8 @@ class ModelerDialog(BASE, WIDGET):
             self.textName.setText(alg.name())
             self.repaintModel()
 
+            self.update_variables_gui()
+
             self.view.centerOn(0, 0)
             self.hasChanged = False
         else:
@@ -734,18 +790,59 @@ class ModelerDialog(BASE, WIDGET):
         param = item.data(0, Qt.UserRole)
         self.addInputOfType(param)
 
+    def create_widget_context(self):
+        """
+        Returns a new widget context for use in the model editor
+        """
+        widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
+        if iface is not None:
+            widget_context.setMapCanvas(iface.mapCanvas())
+        widget_context.setModel(self.model)
+        return widget_context
+
+    def autogenerate_parameter_name(self, parameter):
+        """
+        Automatically generates and sets a new parameter's name, based on the parameter's
+        description and ensuring that it is unique for the model.
+        """
+        validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        safeName = ''.join(c for c in parameter.description() if c in validChars)
+        name = safeName.lower()
+        i = 2
+        while self.model.parameterDefinition(name):
+            name = safeName.lower() + str(i)
+            i += 1
+        parameter.setName(safeName)
+
     def addInputOfType(self, paramType, pos=None):
-        dlg = ModelerParameterDefinitionDialog(self.model, paramType)
-        dlg.exec_()
-        if dlg.param is not None:
+        new_param = None
+        if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
+            dlg = ModelerParameterDefinitionDialog(self.model, paramType)
+            if dlg.exec_():
+                new_param = dlg.param
+        else:
+            # yay, use new API!
+            context = createContext()
+            widget_context = self.create_widget_context()
+            dlg = QgsProcessingParameterDefinitionDialog(type=paramType,
+                                                         context=context,
+                                                         widgetContext=widget_context,
+                                                         algorithm=self.model)
+            if dlg.exec_():
+                new_param = dlg.createParameter()
+                self.autogenerate_parameter_name(new_param)
+
+        if new_param is not None:
             if pos is None:
                 pos = self.getPositionForParameterItem()
             if isinstance(pos, QPoint):
                 pos = QPointF(pos)
-            component = QgsProcessingModelParameter(dlg.param.name())
-            component.setDescription(dlg.param.name())
+            component = QgsProcessingModelParameter(new_param.name())
+            component.setDescription(new_param.name())
             component.setPosition(pos)
-            self.model.addModelParameter(dlg.param, component)
+            self.model.addModelParameter(new_param, component)
             self.repaintModel()
             # self.view.ensureVisible(self.scene.getLastParameterItem())
             self.hasChanged = True
@@ -814,3 +911,9 @@ class ModelerDialog(BASE, WIDGET):
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
         return QPointF(newX, newY)
+
+    def export_as_script_algorithm(self):
+        dlg = ScriptEditorDialog(None)
+
+        dlg.editor.setText('\n'.join(self.model.asPythonCode(QgsProcessing.PythonQgsProcessingAlgorithmSubclass, 4)))
+        dlg.show()

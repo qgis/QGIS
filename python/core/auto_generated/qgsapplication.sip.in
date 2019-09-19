@@ -503,7 +503,6 @@ Gets application icon
 Returns whether this machine uses big or little endian
 %End
 
-
     static QString reportStyleSheet();
 %Docstring
 Returns a standard css style sheet for reports.
@@ -614,21 +613,21 @@ wide background task handling.
 .. versionadded:: 3.0
 %End
 
-    static QgsColorSchemeRegistry *colorSchemeRegistry();
+    static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
 %Docstring
 Returns the application's color scheme registry, used for managing color schemes.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsPaintEffectRegistry *paintEffectRegistry();
+    static QgsPaintEffectRegistry *paintEffectRegistry() /KeepReference/;
 %Docstring
 Returns the application's paint effect registry, used for managing paint effects.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsRendererRegistry *rendererRegistry();
+    static QgsRendererRegistry *rendererRegistry() /KeepReference/;
 %Docstring
 Returns the application's renderer registry, used for managing vector layer renderers.
 
@@ -636,7 +635,7 @@ Returns the application's renderer registry, used for managing vector layer rend
 %End
 
 
-    static QgsDataItemProviderRegistry *dataItemProviderRegistry();
+    static QgsDataItemProviderRegistry *dataItemProviderRegistry() /KeepReference/;
 %Docstring
 Returns the application's data item provider registry, which keeps a list of data item
 providers that may add items to the browser tree.
@@ -649,42 +648,90 @@ providers that may add items to the browser tree.
 Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
 within SVG files.
 
+.. seealso:: :py:func:`imageCache`
+
 .. versionadded:: 3.0
 %End
 
-    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+    static QgsImageCache *imageCache();
+%Docstring
+Returns the application's image cache, used for caching resampled versions of raster images.
+
+.. seealso:: :py:func:`svgCache`
+
+.. versionadded:: 3.6
+%End
+
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
 %Docstring
 Returns the application's network content registry used for fetching temporary files during QGIS session
 
 .. versionadded:: 3.2
 %End
 
-    static QgsSymbolLayerRegistry *symbolLayerRegistry();
+    static QgsValidityCheckRegistry *validityCheckRegistry() /KeepReference/;
+%Docstring
+Returns the application's validity check registry, used for managing validity checks.
+
+.. versionadded:: 3.6
+%End
+
+    static QgsSymbolLayerRegistry *symbolLayerRegistry() /KeepReference/;
 %Docstring
 Returns the application's symbol layer registry, used for managing symbol layers.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsLayoutItemRegistry *layoutItemRegistry();
+    static QgsCalloutRegistry *calloutRegistry() /KeepReference/;
+%Docstring
+Returns the application's callout registry, used for managing callout types.
+
+.. versionadded:: 3.10
+%End
+
+    static QgsLayoutItemRegistry *layoutItemRegistry() /KeepReference/;
 %Docstring
 Returns the application's layout item registry, used for layout item types.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsGpsConnectionRegistry *gpsConnectionRegistry();
+    static QgsGpsConnectionRegistry *gpsConnectionRegistry() /KeepReference/;
 %Docstring
 Returns the application's GPS connection registry, used for managing GPS connections.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsPluginLayerRegistry *pluginLayerRegistry();
+    static QgsPluginLayerRegistry *pluginLayerRegistry() /KeepReference/;
 %Docstring
 Returns the application's plugin layer registry, used for managing plugin layer types.
 
 .. versionadded:: 3.0
+%End
+
+    static QgsClassificationMethodRegistry *classificationMethodRegistry() /KeepReference/;
+%Docstring
+Returns the application's classification methods registry, used in graduated renderer
+
+.. versionadded:: 3.10
+%End
+
+    static QgsBookmarkManager *bookmarkManager();
+%Docstring
+Returns the application's bookmark manager, used for storing installation-wide bookmarks.
+
+.. versionadded:: 3.10
+%End
+
+    static QgsStyleModel *defaultStyleModel();
+%Docstring
+Returns a shared QgsStyleModel containing the default style library (see QgsStyle.defaultStyle()).
+
+Using this shared model instead of creating a new QgsStyleModel improves performance.
+
+.. versionadded:: 3.10
 %End
 
     static QgsMessageLog *messageLog();
@@ -700,7 +747,7 @@ Returns the application's authentication manager instance
 
 .. note::
 
-   this can be a null pointer if called before initQgis
+   this can be ``None`` if called before initQgis
 
 .. seealso:: :py:func:`initQgis`
 
@@ -715,7 +762,7 @@ algorithms, and various parameters and outputs.
 .. versionadded:: 3.0
 %End
 
-    static QgsPageSizeRegistry *pageSizeRegistry();
+    static QgsPageSizeRegistry *pageSizeRegistry() /KeepReference/;
 %Docstring
 Returns the application's page size registry, used for managing layout page sizes.
 
@@ -723,7 +770,7 @@ Returns the application's page size registry, used for managing layout page size
 %End
 
 
-    static QgsActionScopeRegistry *actionScopeRegistry();
+    static QgsActionScopeRegistry *actionScopeRegistry() /KeepReference/;
 %Docstring
 Returns the action scope registry.
 
@@ -737,19 +784,19 @@ Returns the application runtime profiler.
 .. versionadded:: 3.0
 %End
 
-    static QgsFieldFormatterRegistry *fieldFormatterRegistry();
+    static QgsFieldFormatterRegistry *fieldFormatterRegistry() /KeepReference/;
 %Docstring
 Gets the registry of available field formatters.
 %End
 
-    static Qgs3DRendererRegistry *renderer3DRegistry();
+    static Qgs3DRendererRegistry *renderer3DRegistry() /KeepReference/;
 %Docstring
 Returns registry of available 3D renderers.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsProjectStorageRegistry *projectStorageRegistry();
+    static QgsProjectStorageRegistry *projectStorageRegistry() /KeepReference/;
 %Docstring
 Returns registry of available project storage implementations.
 

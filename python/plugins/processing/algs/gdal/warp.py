@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -38,6 +34,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterExtent,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -59,26 +56,27 @@ class warp(GdalAlgorithm):
     TARGET_EXTENT = 'TARGET_EXTENT'
     TARGET_EXTENT_CRS = 'TARGET_EXTENT_CRS'
     MULTITHREADING = 'MULTITHREADING'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
-
-    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'near'),
+        self.methods = ((self.tr('Nearest Neighbour'), 'near'),
                         (self.tr('Bilinear'), 'bilinear'),
                         (self.tr('Cubic'), 'cubic'),
-                        (self.tr('Cubic spline'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Cubic Spline'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Mode'), 'mode'),
                         (self.tr('Maximum'), 'max'),
                         (self.tr('Minimum'), 'min'),
                         (self.tr('Median'), 'med'),
-                        (self.tr('First quartile'), 'q1'),
-                        (self.tr('Third quartile'), 'q3'))
+                        (self.tr('First Quartile'), 'q1'),
+                        (self.tr('Third Quartile'), 'q3'))
+
+        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterCrs(self.SOURCE_CRS,
@@ -86,7 +84,7 @@ class warp(GdalAlgorithm):
                                                     optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Target CRS'),
-                                                    'EPSG:4326'))
+                                                    optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.RESAMPLING,
                                                      self.tr('Resampling method to use'),
                                                      options=[i[0] for i in self.methods],
@@ -139,6 +137,13 @@ class warp(GdalAlgorithm):
         multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(multithreading_param)
 
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
+
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Reprojected')))
 
@@ -171,6 +176,7 @@ class warp(GdalAlgorithm):
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
@@ -209,11 +215,11 @@ class warp(GdalAlgorithm):
             arguments.append(extent.yMaximum())
 
             extentCrs = self.parameterAsCrs(parameters, self.TARGET_EXTENT_CRS, context)
-            if extentCrs:
+            if extentCrs.isValid():
                 arguments.append('-te_srs')
-                arguments.append(extentCrs.authid())
+                arguments.append(GdalUtils.gdal_crs_string(extentCrs))
 
-        if self.parameterAsBool(parameters, self.MULTITHREADING, context):
+        if self.parameterAsBoolean(parameters, self.MULTITHREADING, context):
             arguments.append('-multi')
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
@@ -221,12 +227,17 @@ class warp(GdalAlgorithm):
             arguments.append('-ot ' + self.TYPES[data_type])
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.append(inLayer.source())
         arguments.append(out)

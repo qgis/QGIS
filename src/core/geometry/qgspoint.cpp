@@ -26,6 +26,9 @@
 #include <cmath>
 #include <QPainter>
 #include <QRegularExpression>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <nlohmann/json.hpp>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -160,6 +163,9 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+    return true;
+
   QRegularExpression rx( QStringLiteral( "\\s" ) );
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
   if ( coordinates.size() < 2 )
@@ -222,13 +228,20 @@ QByteArray QgsPoint::asWkb() const
 
 QString QgsPoint::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
-  wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
-  if ( is3D() )
-    wkt += ' ' + qgsDoubleToString( mZ, precision );
-  if ( isMeasure() )
-    wkt += ' ' + qgsDoubleToString( mM, precision );
-  wkt += ')';
+  QString wkt = wktTypeStr();
+
+  if ( isEmpty() )
+    wkt += QStringLiteral( " EMPTY" );
+  else
+  {
+    wkt += QLatin1String( " (" );
+    wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
+    if ( is3D() )
+      wkt += ' ' + qgsDoubleToString( mZ, precision );
+    if ( isMeasure() )
+      wkt += ' ' + qgsDoubleToString( mM, precision );
+    wkt += ')';
+  }
   return wkt;
 }
 
@@ -273,17 +286,24 @@ QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &n
   return elemPoint;
 }
 
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
 
-QString QgsPoint::asJson( int precision ) const
+json QgsPoint::asJsonObject( int precision ) const
 {
-  return "{\"type\": \"Point\", \"coordinates\": ["
-         + qgsDoubleToString( mX, precision ) + ", " + qgsDoubleToString( mY, precision )
-         + "]}";
+  json j
+  {
+    { "type", "Point" },
+    { "coordinates", json::array() },
+  };
+  if ( ! isEmpty() )
+  {
+    j["coordinates"].push_back( qgsRound( mX, precision ) );
+    j["coordinates"].push_back( qgsRound( mY, precision ) );
+    if ( is3D() )
+    {
+      j["coordinates"].push_back( qgsRound( mZ, precision ) );
+    }
+  }
+  return j;
 }
 
 void QgsPoint::draw( QPainter &p ) const
@@ -293,7 +313,7 @@ void QgsPoint::draw( QPainter &p ) const
 
 void QgsPoint::clear()
 {
-  mX = mY = 0.;
+  mX = mY = std::numeric_limits<double>::quiet_NaN();
   if ( is3D() )
     mZ = 0.;
   else
@@ -306,6 +326,13 @@ void QgsPoint::clear()
 
   clearCache();
 }
+
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsPoint::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
@@ -349,10 +376,15 @@ QgsAbstractGeometry *QgsPoint::boundary() const
   return nullptr;
 }
 
+bool QgsPoint::isValid( QString &, int ) const
+{
+  return true;
+}
+
 bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
-  Q_UNUSED( position );
-  Q_UNUSED( vertex );
+  Q_UNUSED( position )
+  Q_UNUSED( vertex )
   return false;
 }
 
@@ -364,7 +396,7 @@ bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 
 bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
-  Q_UNUSED( position );
+  Q_UNUSED( position )
   clearCache();
   mX = newPos.mX;
   mY = newPos.mY;
@@ -381,18 +413,18 @@ bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 
 bool QgsPoint::deleteVertex( QgsVertexId position )
 {
-  Q_UNUSED( position );
+  Q_UNUSED( position )
   return false;
 }
 
 double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
-  Q_UNUSED( pt );
-  Q_UNUSED( segmentPt );
-  Q_UNUSED( vertexAfter );
+  Q_UNUSED( pt )
+  Q_UNUSED( segmentPt )
+  Q_UNUSED( vertexAfter )
   if ( leftOf )
     *leftOf = 0;
-  Q_UNUSED( epsilon );
+  Q_UNUSED( epsilon )
   return -1;  // no segments - return error
 }
 
@@ -426,7 +458,7 @@ void QgsPoint::adjacentVertices( QgsVertexId, QgsVertexId &previousVertex, QgsVe
 
 double QgsPoint::vertexAngle( QgsVertexId vertex ) const
 {
-  Q_UNUSED( vertex );
+  Q_UNUSED( vertex )
   return 0.0;
 }
 
@@ -669,7 +701,7 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
 
 bool QgsPoint::isEmpty() const
 {
-  return false;
+  return std::isnan( mX ) || std::isnan( mY );
 }
 
 QgsRectangle QgsPoint::boundingBox() const

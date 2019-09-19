@@ -27,6 +27,7 @@ QgsServerRequest::QgsServerRequest( const QString &url, Method method, const Hea
 
 QgsServerRequest::QgsServerRequest( const QUrl &url, Method method, const Headers &headers )
   : mUrl( url )
+  , mOriginalUrl( url )
   , mMethod( method )
   , mHeaders( headers )
 {
@@ -60,6 +61,16 @@ QUrl QgsServerRequest::url() const
   return mUrl;
 }
 
+QUrl QgsServerRequest::originalUrl() const
+{
+  return mOriginalUrl;
+}
+
+void QgsServerRequest::setOriginalUrl( const QUrl &url )
+{
+  mOriginalUrl = url;
+}
+
 QgsServerRequest::Method QgsServerRequest::method() const
 {
   return mMethod;
@@ -86,9 +97,14 @@ void QgsServerRequest::setParameter( const QString &key, const QString &value )
   mUrl.setQuery( mParams.urlQuery() );
 }
 
-QString QgsServerRequest::parameter( const QString &key ) const
+QString QgsServerRequest::parameter( const QString &key, const QString &defaultValue ) const
 {
-  return mParams.value( key );
+  const auto value { mParams.value( key ) };
+  if ( value.isEmpty() )
+  {
+    return defaultValue;
+  }
+  return value;
 }
 
 void QgsServerRequest::removeParameter( const QString &key )
@@ -108,3 +124,13 @@ void QgsServerRequest::setMethod( Method method )
 {
   mMethod = method;
 }
+
+const QString QgsServerRequest::queryParameter( const QString &name, const QString &defaultValue ) const
+{
+  if ( ! mUrl.hasQueryItem( name ) )
+  {
+    return defaultValue;
+  }
+  return QUrl::fromPercentEncoding( mUrl.queryItemValue( name ).toUtf8() );
+}
+

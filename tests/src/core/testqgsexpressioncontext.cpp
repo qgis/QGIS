@@ -21,6 +21,8 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgscolorscheme.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QObject>
 #include "qgstest.h"
 
@@ -55,6 +57,7 @@ class TestQgsExpressionContext : public QObject
 
     void valuesAsMap();
     void description();
+    void readWriteScope();
 
   private:
 
@@ -548,12 +551,14 @@ void TestQgsExpressionContext::highlighted()
   QgsExpressionContext context;
   QVERIFY( !context.isHighlightedFunction( QStringLiteral( "x" ) ) );
   QVERIFY( !context.isHighlightedVariable( QStringLiteral( "x" ) ) );
+  QVERIFY( context.highlightedVariables().isEmpty() );
   context.setHighlightedFunctions( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) );
   QVERIFY( context.isHighlightedFunction( QStringLiteral( "x" ) ) );
   QVERIFY( context.isHighlightedFunction( QStringLiteral( "y" ) ) );
   QVERIFY( !context.isHighlightedFunction( QStringLiteral( "z" ) ) );
   QVERIFY( !context.isHighlightedVariable( QStringLiteral( "x" ) ) );
   context.setHighlightedVariables( QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  QCOMPARE( context.highlightedVariables(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
   QVERIFY( context.isHighlightedVariable( QStringLiteral( "a" ) ) );
   QVERIFY( context.isHighlightedVariable( QStringLiteral( "b" ) ) );
   QVERIFY( !context.isHighlightedVariable( QStringLiteral( "c" ) ) );
@@ -562,6 +567,7 @@ void TestQgsExpressionContext::highlighted()
   context.setHighlightedVariables( QStringList() );
   QVERIFY( !context.isHighlightedFunction( QStringLiteral( "x" ) ) );
   QVERIFY( !context.isHighlightedVariable( QStringLiteral( "a" ) ) );
+  QVERIFY( context.highlightedVariables().isEmpty() );
 }
 
 void TestQgsExpressionContext::globalScope()
@@ -852,6 +858,38 @@ void TestQgsExpressionContext::description()
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ), QVariant(), true, true, QStringLiteral( "my desc" ) ) );
   context << scope;
   QCOMPARE( context.description( "project_title" ), QStringLiteral( "my desc" ) );
+}
+
+void TestQgsExpressionContext::readWriteScope()
+{
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocument doc( documentType );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+
+  QgsExpressionContextScope s1;
+  s1.setVariable( QStringLiteral( "v1" ), "t1" );
+  s1.setVariable( QStringLiteral( "v2" ), 55 );
+  QDomElement e = doc.createElement( QStringLiteral( "scope_test" ) );
+  s1.writeXml( e, doc, QgsReadWriteContext() );
+  doc.appendChild( e );
+
+  QgsExpressionContextScope s2;
+  QCOMPARE( s2.variableCount(), 0 );
+
+  // invalid xml element
+  QDomElement e2 = doc.createElement( QStringLiteral( "empty" ) );
+  s2.readXml( e2, QgsReadWriteContext() );
+  QCOMPARE( s2.variableCount(), 0 );
+
+  // valid element
+  s2.readXml( e, QgsReadWriteContext() );
+  QCOMPARE( s2.variableCount(), 2 );
+  QCOMPARE( s2.variableNames().toSet(), QSet< QString >() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
+  QCOMPARE( s2.variable( QStringLiteral( "v1" ) ).toString(), QStringLiteral( "t1" ) );
+  QCOMPARE( s2.variable( QStringLiteral( "v2" ) ).toInt(), 55 );
 }
 
 QGSTEST_MAIN( TestQgsExpressionContext )

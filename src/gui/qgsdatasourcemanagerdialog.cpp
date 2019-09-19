@@ -26,19 +26,24 @@
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
+#include "qgsmessagebar.h"
 #include "qgsgui.h"
+#include "qgsbrowserguimodel.h"
 
-QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
+QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl )
   , ui( new Ui::QgsDataSourceManagerDialog )
   , mPreviousRow( -1 )
   , mMapCanvas( canvas )
 {
-
   ui->setupUi( this );
   ui->verticalLayout_2->setSpacing( 6 );
   ui->verticalLayout_2->setMargin( 0 );
   ui->verticalLayout_2->setContentsMargins( 0, 0, 0, 0 );
+
+  mMessageBar = new QgsMessageBar( this );
+  mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+  static_cast<QVBoxLayout *>( layout() )->insertWidget( 0, mMessageBar );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -89,11 +94,17 @@ void QgsDataSourceManagerDialog::openPage( const QString &pageName )
   }
 }
 
+QgsMessageBar *QgsDataSourceManagerDialog::messageBar() const
+{
+  return mMessageBar;
+}
+
 void QgsDataSourceManagerDialog::setCurrentPage( int index )
 {
   mPreviousRow = ui->mOptionsStackedWidget->currentIndex();
   ui->mOptionsStackedWidget->setCurrentIndex( index );
   setWindowTitle( tr( "Data Source Manager | %1" ).arg( ui->mOptionsListWidget->currentItem()->text() ) );
+  resizeAlltabs( index );
 }
 
 void QgsDataSourceManagerDialog::setPreviousPage()
@@ -106,6 +117,19 @@ void QgsDataSourceManagerDialog::refresh()
 {
   mBrowserWidget->refresh();
   emit providerDialogsRefreshRequested();
+}
+
+void QgsDataSourceManagerDialog::reset()
+{
+  int pageCount = ui->mOptionsStackedWidget->count();
+  for ( int i = 0; i < pageCount; ++i )
+  {
+    QWidget *widget = ui->mOptionsStackedWidget->widget( i );
+    QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( widget );
+    if ( dataSourceWidget )
+      dataSourceWidget->reset();
+  }
+
 }
 
 void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )

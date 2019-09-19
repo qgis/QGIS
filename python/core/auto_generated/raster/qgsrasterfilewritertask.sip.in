@@ -28,13 +28,30 @@ QGIS interface.
 %End
   public:
 
-    QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe /Transfer/,
-                             int columns, int rows,
-                             const QgsRectangle &outputExtent,
-                             const QgsCoordinateReferenceSystem &crs );
+ QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe /Transfer/,
+        int columns, int rows,
+        const QgsRectangle &outputExtent,
+        const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
 ``columns``, ``rows``, ``outputExtent`` and destination ``crs``.
+Ownership of the ``pipe`` is transferred to the writer task, and will
+be deleted when the task completes.
+
+.. deprecated:: since QGIS 3.8, use version with transformContext instead
+%End
+
+
+    QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe /Transfer/,
+                             int columns, int rows,
+                             const QgsRectangle &outputExtent,
+                             const QgsCoordinateReferenceSystem &crs,
+                             const QgsCoordinateTransformContext &transformContext
+                           );
+%Docstring
+Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
+``columns``, ``rows``, ``outputExtent``, destination ``crs`` and
+coordinate ``transformContext`` .
 Ownership of the ``pipe`` is transferred to the writer task, and will
 be deleted when the task completes.
 %End
@@ -54,6 +71,17 @@ parameter indicates the file path for the written file(s).
 %Docstring
 Emitted when an error occurs which prevented the file being written (or if
 the task is canceled). The writing ``error`` will be reported.
+
+.. deprecated:: since QGIS 3.10. Use errorOccurred(int, const QString&)
+%End
+
+    void errorOccurred( int error, const QString &errorMessage );
+%Docstring
+Emitted when an error occurs which prevented the file being written (or if
+the task is canceled). The writing ``error`` will be reported and a
+``errorMessage`` will be potentially set.
+
+.. versionadded:: 3.10
 %End
 
   protected:

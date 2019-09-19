@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import traceback
 
@@ -58,6 +54,7 @@ from processing.tools import dataobjects
 from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 #from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
@@ -91,6 +88,7 @@ class Processing(object):
             QgisAlgorithmProvider,
             Grass7AlgorithmProvider,
             GdalAlgorithmProvider,
+            OtbAlgorithmProvider,
             SagaAlgorithmProvider,
             ScriptAlgorithmProvider,
             ModelerAlgorithmProvider,

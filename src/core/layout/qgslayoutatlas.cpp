@@ -24,6 +24,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )
@@ -339,7 +340,7 @@ bool QgsLayoutAtlas::endRender()
   return true;
 }
 
-int QgsLayoutAtlas::count()
+int QgsLayoutAtlas::count() const
 {
   return mFeatureIds.size();
 }
@@ -438,7 +439,7 @@ QString QgsLayoutAtlas::currentFilename() const
   return mCurrentFilename;
 }
 
-QgsExpressionContext QgsLayoutAtlas::createExpressionContext()
+QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
 {
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope();
@@ -449,7 +450,7 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext()
   expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
 
   if ( mCoverageLayer )
-    expressionContext.lastScope()->setFields( mCoverageLayer->fields() );
+    expressionContext.appendScope( mCoverageLayer->createExpressionContextScope() );
 
   if ( mLayout && mEnabled )
     expressionContext.lastScope()->setFeature( mCurrentFeature );

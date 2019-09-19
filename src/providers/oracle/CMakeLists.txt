@@ -14,6 +14,7 @@ SET(ORACLE_SRCS
   qgsoraclefeatureiterator.cpp
   qgsoracleconnpool.cpp
   qgsoracleexpressioncompiler.cpp
+  qgsoracletransaction.cpp
 )
 
 SET(ORACLE_MOC_HDRS
@@ -24,6 +25,7 @@ SET(ORACLE_MOC_HDRS
   qgsoracletablemodel.h
   qgsoraclecolumntypethread.h
   qgsoracleconnpool.h
+  qgsoracletransaction.h
 )
 
 IF (WITH_GUI)
@@ -47,10 +49,13 @@ QT5_WRAP_CPP(ORACLE_MOC_SRCS ${ORACLE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -78,6 +83,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (oracleprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(oracleprovider ui)
 ENDIF ()
 
 

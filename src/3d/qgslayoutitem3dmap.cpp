@@ -142,7 +142,6 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     connect( mEngine.get(), &QgsAbstract3DEngine::imageCaptured, this, &QgsLayoutItem3DMap::onImageCaptured );
 
     mEngine->setSize( sizePixelsInt );
-
     mScene = new Qgs3DMapScene( *mSettings, mEngine.get() );
     connect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );
 
@@ -210,7 +209,7 @@ bool QgsLayoutItem3DMap::writePropertiesToElement( QDomElement &element, QDomDoc
 
 bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( document );
+  Q_UNUSED( document )
   QDomElement elemSettings = element.firstChildElement( QStringLiteral( "qgis3d" ) );
   if ( !elemSettings.isNull() )
   {

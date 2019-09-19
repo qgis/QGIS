@@ -19,7 +19,7 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_RETURN_ARG, Q_ARG, QObject, pyqtSlot
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython
@@ -28,7 +28,7 @@ from qgis.gui import QgsMessageBar
 import sys
 
 
-class writeOut(object):
+class writeOut(QObject):
 
     ERROR_COLOR = "#e31a1c"
 
@@ -36,12 +36,20 @@ class writeOut(object):
         """
         This class allows writing to stdout and stderr
         """
+        super().__init__()
         self.sO = shellOut
         self.out = None
         self.style = style
         self.fire_keyboard_interrupt = False
 
+    @pyqtSlot(str)
     def write(self, m):
+
+        # This manage the case when console is called from another thread
+        if QThread.currentThread() != QCoreApplication.instance().thread():
+            QMetaObject.invokeMethod(self, "write", Qt.QueuedConnection, Q_ARG(str, m))
+            return
+
         if self.style == "_traceback":
             # Show errors in red
             stderrColor = QColor(self.sO.settings.value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)))

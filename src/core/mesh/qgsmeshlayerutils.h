@@ -23,14 +23,14 @@
 #include "qgis_core.h"
 #include "qgsrectangle.h"
 #include "qgsmaptopixel.h"
-
-class QgsMeshDataProvider;
-class QgsMeshDatasetIndex;
+#include "qgsmeshdataprovider.h"
 
 #include <QVector>
 #include <QSize>
 
 ///@cond PRIVATE
+
+class QgsMeshTimeSettings;
 
 /**
  * \ingroup core
@@ -44,22 +44,11 @@ class CORE_EXPORT QgsMeshLayerUtils
   public:
 
     /**
-     * Calculates min/max values from the given vector of values.
-     * Ignores any NaN values in the input. Returns NaN for min/max on error.
+     * Calculates magnitude values from the given QgsMeshDataBlock.
+     *
+     * \since QGIS 3.6
      */
-    static void calculateMinimumMaximum( double &min, double &max, const QVector<double> &arr );
-
-    /**
-     * Calculates min/max values for the whole dataset group (considering all datasets within it).
-     * Ignores any NaN values in the input. Returns NaN for min/max on error.
-     */
-    static void calculateMinMaxForDatasetGroup( double &min, double &max, QgsMeshDataProvider *provider, int groupIndex );
-
-    /**
-     * Calculates min/max values for one dataset.
-     * Ignores any NaN values in the input. Returns NaN for min/max on error.
-     */
-    static void calculateMinMaxForDataset( double &min, double &max, QgsMeshDataProvider *provider, QgsMeshDatasetIndex index );
+    static QVector<double> calculateMagnitudes( const QgsMeshDataBlock &block );
 
     /**
      * Transformes the bounding box to rectangle in screen coordinates (in pixels)
@@ -114,6 +103,11 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \returns bounding box of the triangle
      */
     static QgsRectangle triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 );
+
+    /**
+     * Formats hours in human readable string based on settings
+     */
+    static QString formatTime( double hours, const QgsMeshTimeSettings &settings );
 };
 
 ///@endcond

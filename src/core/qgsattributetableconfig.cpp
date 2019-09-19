@@ -99,7 +99,8 @@ void QgsAttributeTableConfig::update( const QgsFields &fields )
 
 bool QgsAttributeTableConfig::actionWidgetVisible() const
 {
-  Q_FOREACH ( const ColumnConfig &columnConfig, mColumns )
+  const auto constMColumns = mColumns;
+  for ( const ColumnConfig &columnConfig : constMColumns )
   {
     if ( columnConfig.type == Action && !columnConfig.hidden )
       return true;
@@ -258,7 +259,8 @@ void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
 
   QDomElement columnsElement  = doc.createElement( QStringLiteral( "columns" ) );
 
-  Q_FOREACH ( const ColumnConfig &column, mColumns )
+  const auto constMColumns = mColumns;
+  for ( const ColumnConfig &column : constMColumns )
   {
     QDomElement columnElement = doc.createElement( QStringLiteral( "column" ) );
 

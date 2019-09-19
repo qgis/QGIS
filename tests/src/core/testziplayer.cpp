@@ -110,7 +110,8 @@ QgsMapLayer *TestZipLayer::getLayer( const QString &myPath, const QString &myNam
 
   if ( myProviderKey == QLatin1String( "ogr" ) )
   {
-    myLayer = new QgsVectorLayer( myPath, fullName, QStringLiteral( "ogr" ) );
+    QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
+    myLayer = new QgsVectorLayer( myPath, fullName, QStringLiteral( "ogr" ), options );
   }
   else if ( myProviderKey == QLatin1String( "gdal" ) )
   {
@@ -244,7 +245,7 @@ int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString
   if ( myLayer && myLayer->isValid() )
   {
     // myTransparency = myLayer->getTransparency();
-    if ( myLayer->type() == QgsMapLayer::RasterLayer )
+    if ( myLayer->type() == QgsMapLayerType::RasterLayer )
     {
       QgsRasterLayer *layer = dynamic_cast<QgsRasterLayer *>( myLayer );
       if ( layer && layer->renderer() )

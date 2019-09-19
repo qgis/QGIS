@@ -29,6 +29,8 @@
 #include <QFileDialog>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
+#include <QDesktopServices>
+#include <QDragEnterEvent>
 
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
@@ -44,10 +46,9 @@
 #include "qgsvectorlayercache.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
-#include <QDesktopServices>
-
-#include <QDragEnterEvent>
-
+#include "qgsapplication.h"
+#include "qgsdataitemguiproviderregistry.h"
+#include "qgsdataitemguiprovider.h"
 
 /// @cond PRIVATE
 
@@ -70,7 +71,7 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString &tex
 
 void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
 {
-  int height = size.height() + 2 * frameWidth();
+  int height = static_cast<int>( size.height() ) + 2 * frameWidth();
   setMinimumHeight( height );
   setMaximumHeight( height );
 }
@@ -87,7 +88,7 @@ void QgsBrowserPropertiesWidget::setWidget( QWidget *paramWidget )
   layout->addWidget( paramWidget );
 }
 
-QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataItem *item, QWidget *parent )
+QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataItem *item, const QgsDataItemGuiContext &context, QWidget *parent )
 {
   QgsBrowserPropertiesWidget *propertiesWidget = nullptr;
   // In general, we would like to show all items' paramWidget, but top level items like
@@ -99,8 +100,24 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
+    // try new infrastructure of creation of layer widgets
+    QWidget *paramWidget = nullptr;
+    const QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
+    for ( QgsDataItemGuiProvider *provider : providers )
+    {
+      paramWidget = provider->createParamWidget( item, context );
+      if ( paramWidget )
+        break;
+    }
+    if ( !paramWidget )
+    {
+      // try old infrastructure
+      Q_NOWARN_DEPRECATED_PUSH
+      paramWidget = item->paramWidget();
+      Q_NOWARN_DEPRECATED_POP
+    }
+
     // prefer item's widget over standard layer widget
-    QWidget *paramWidget = item->paramWidget();
     if ( paramWidget )
     {
       propertiesWidget = new QgsBrowserPropertiesWidget( parent );
@@ -172,7 +189,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
   mNoticeLabel->clear();
 
-  QgsMapLayer::LayerType type = layerItem->mapLayerType();
+  QgsMapLayerType type = layerItem->mapLayerType();
   QString layerMetadata = tr( "Error" );
   QgsCoordinateReferenceSystem layerCrs;
 
@@ -188,26 +205,37 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   // we need to create a temporary layer to get metadata
   // we could use a provider but the metadata is not as complete and "pretty"  and this is easier
   QgsDebugMsg( QStringLiteral( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
-  if ( type == QgsMapLayer::RasterLayer )
+  switch ( type )
   {
-    QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
-    // should copy code from addLayer() to split uri ?
-    mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
-  }
-  else if ( type == QgsMapLayer::MeshLayer )
-  {
-    QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
-    mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
-  }
-  else if ( type == QgsMapLayer::VectorLayer )
-  {
-    QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
-    mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
-  }
-  else if ( type == QgsMapLayer::PluginLayer )
-  {
-    // TODO: support display of properties for plugin layers
-    return;
+    case QgsMapLayerType::RasterLayer:
+    {
+      QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
+      // should copy code from addLayer() to split uri ?
+      mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+      break;
+    }
+
+    case QgsMapLayerType::MeshLayer:
+    {
+      QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
+      const QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      break;
+    }
+
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      break;
+    }
+
+    case QgsMapLayerType::PluginLayer:
+    {
+      // TODO: support display of properties for plugin layers
+      return;
+    }
   }
 
   mAttributeTable->setModel( nullptr );
@@ -228,7 +256,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     mMapCanvas->setLayers( QList< QgsMapLayer * >() << mLayer.get() );
     mMapCanvas->zoomToFullExtent();
 
-    if ( mAttributesTab && mLayer->type() != QgsMapLayer::VectorLayer )
+    if ( mAttributesTab && mLayer->type() != QgsMapLayerType::VectorLayer )
     {
       mTabWidget->removeTab( mTabWidget->indexOf( mAttributesTab ) );
       mAttributesTab = nullptr;
@@ -270,7 +298,7 @@ void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 
 void QgsBrowserLayerProperties::loadAttributeTable()
 {
-  if ( !mLayer || !mLayer->isValid() || mLayer->type() != QgsMapLayer::VectorLayer )
+  if ( !mLayer || !mLayer->isValid() || mLayer->type() != QgsMapLayerType::VectorLayer )
     return;
 
   // Initialize the cache
@@ -327,22 +355,15 @@ QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString &settingsS
   , mSettingsSection( settingsSection )
 {
   setupUi( this );
-  QgsSettings settings;
-  restoreGeometry( settings.value( mSettingsSection + "/propertiesDialog/geometry" ).toByteArray() );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 }
 
-QgsBrowserPropertiesDialog::~QgsBrowserPropertiesDialog()
-{
-  QgsSettings settings;
-  settings.setValue( mSettingsSection + "/propertiesDialog/geometry", saveGeometry() );
-}
-
-void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item )
+void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item, const QgsDataItemGuiContext &context )
 {
   if ( !item )
     return;
 
-  mPropertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, this );
+  mPropertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, context, this );
   mLayout->addWidget( mPropertiesWidget );
   setWindowTitle( item->type() == QgsDataItem::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
 }

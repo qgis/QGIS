@@ -25,8 +25,6 @@ from builtins import range
 __author__ = 'Nyall Dawson'
 __date__ = 'October 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import sys
@@ -52,7 +50,7 @@ from PyQt5.QtWidgets import (QDialog,
 import struct
 import glob
 
-dash_url = 'https://dash.orfeo-toolbox.org'
+dash_url = 'https://cdash.orfeo-toolbox.org'
 
 
 def error(msg):

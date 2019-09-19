@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '17/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
@@ -198,6 +196,45 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertIsInstance(map2, QgsLayoutItemMap)
         label2 = [i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'label'][0]
         self.assertIsInstance(label2, QgsLayoutItemLabel)
+
+    def testContainsAdvancedEffectsAndRasterization(self):
+        layout = QgsLayout(QgsProject.instance())
+        item = QgsLayoutItemLabel(layout)
+
+        self.assertFalse(item.containsAdvancedEffects())
+
+        # item opacity requires that the individual item be flattened to a raster item
+        item.setItemOpacity(0.5)
+        self.assertTrue(item.containsAdvancedEffects())
+        # but not the WHOLE layout
+        self.assertFalse(item.requiresRasterization())
+        item.dataDefinedProperties().setProperty(QgsLayoutObject.Opacity, QgsProperty.fromExpression('100'))
+        item.refresh()
+        self.assertFalse(item.containsAdvancedEffects())
+        self.assertFalse(item.requiresRasterization())
+        item.dataDefinedProperties().setProperty(QgsLayoutObject.Opacity, QgsProperty())
+        item.refresh()
+        self.assertTrue(item.containsAdvancedEffects())
+        self.assertFalse(item.requiresRasterization())
+        item.setItemOpacity(1.0)
+        self.assertFalse(item.containsAdvancedEffects())
+        self.assertFalse(item.requiresRasterization())
+
+        # item blend mode is NOT an advanced effect -- rather it requires that the WHOLE layout be rasterized to achieve
+        item.setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        self.assertFalse(item.containsAdvancedEffects())
+        self.assertTrue(item.requiresRasterization())
+
+        map = QgsLayoutItemMap(layout)
+        # map items are different -- because they override paint, they don't get the auto-flattening and rasterization
+        map.setItemOpacity(0.5)
+        self.assertFalse(map.containsAdvancedEffects())
+        # rather, a map with opacity requires the WHOLE layout to be rasterized
+        self.assertTrue(map.requiresRasterization())
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.Opacity, QgsProperty.fromExpression('100'))
+        map.refresh()
+        self.assertFalse(map.containsAdvancedEffects())
+        self.assertTrue(map.requiresRasterization())
 
 
 if __name__ == '__main__':

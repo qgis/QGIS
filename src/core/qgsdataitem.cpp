@@ -137,7 +137,8 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent, const QSt
 QgsDataItem::~QgsDataItem()
 {
   QgsDebugMsgLevel( QStringLiteral( "mName = %1 mPath = %2 mChildren.size() = %3" ).arg( mName, mPath ).arg( mChildren.size() ), 2 );
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     if ( !child ) // should not happen
       continue;
@@ -175,7 +176,8 @@ void QgsDataItem::deleteLater()
 {
   QgsDebugMsgLevel( "path = " + path(), 3 );
   setParent( nullptr ); // also disconnects parent
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     if ( !child ) // should not happen
       continue;
@@ -196,7 +198,8 @@ void QgsDataItem::deleteLater()
 
 void QgsDataItem::deleteLater( QVector<QgsDataItem *> &items )
 {
-  Q_FOREACH ( QgsDataItem *item, items )
+  const auto constItems = items;
+  for ( QgsDataItem *item : constItems )
   {
     if ( !item ) // should not happen
       continue;
@@ -208,7 +211,8 @@ void QgsDataItem::deleteLater( QVector<QgsDataItem *> &items )
 void QgsDataItem::moveToThread( QThread *targetThread )
 {
   // QObject::moveToThread() cannot move objects with parent, but QgsDataItem is not using paren/children from QObject
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     if ( !child ) // should not happen
       continue;
@@ -280,7 +284,8 @@ QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
   QVector <QgsDataItem *> children = item->createChildren();
   QgsDebugMsgLevel( QStringLiteral( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );
   // Children objects must be pushed to main thread.
-  Q_FOREACH ( QgsDataItem *child, children )
+  const auto constChildren = children;
+  for ( QgsDataItem *child : constChildren )
   {
     if ( !child ) // should not happen
       continue;
@@ -324,7 +329,8 @@ void QgsDataItem::populate( const QVector<QgsDataItem *> &children )
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 3 );
 
-  Q_FOREACH ( QgsDataItem *child, children )
+  const auto constChildren = children;
+  for ( QgsDataItem *child : constChildren )
   {
     if ( !child ) // should not happen
       continue;
@@ -338,7 +344,8 @@ void QgsDataItem::depopulate()
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 3 );
 
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     QgsDebugMsgLevel( "remove " + child->path(), 3 );
     child->depopulate(); // recursive
@@ -390,7 +397,8 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
 
   // Remove no more present children
   QVector<QgsDataItem *> remove;
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     if ( !child ) // should not happen
       continue;
@@ -398,14 +406,16 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
       continue;
     remove.append( child );
   }
-  Q_FOREACH ( QgsDataItem *child, remove )
+  const auto constRemove = remove;
+  for ( QgsDataItem *child : constRemove )
   {
     QgsDebugMsgLevel( "remove " + child->path(), 3 );
     deleteChildItem( child );
   }
 
   // Add new children
-  Q_FOREACH ( QgsDataItem *child, children )
+  const auto constChildren = children;
+  for ( QgsDataItem *child : constChildren )
   {
     if ( !child ) // should not happen
       continue;
@@ -539,7 +549,7 @@ bool QgsDataItem::equal( const QgsDataItem *other )
 
 QList<QAction *> QgsDataItem::actions( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return QList<QAction *>();
 }
 
@@ -591,7 +601,7 @@ void QgsDataItem::setState( State state )
 
 QList<QMenu *> QgsDataItem::menus( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return QList<QMenu *>();
 }
 
@@ -606,18 +616,18 @@ QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QStr
   mIconName = iconName( layerType );
 }
 
-QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
+QgsMapLayerType QgsLayerItem::mapLayerType() const
 {
   switch ( mLayerType )
   {
     case QgsLayerItem::Raster:
-      return QgsMapLayer::RasterLayer;
+      return QgsMapLayerType::RasterLayer;
 
     case QgsLayerItem::Mesh:
-      return QgsMapLayer::MeshLayer;
+      return QgsMapLayerType::MeshLayer;
 
     case QgsLayerItem::Plugin:
-      return QgsMapLayer::PluginLayer;
+      return QgsMapLayerType::PluginLayer;
 
     case QgsLayerItem::NoType:
     case QgsLayerItem::Vector:
@@ -627,17 +637,17 @@ QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
     case QgsLayerItem::TableLayer:
     case QgsLayerItem::Table:
     case QgsLayerItem::Database:
-      return QgsMapLayer::VectorLayer;
+      return QgsMapLayerType::VectorLayer;
   }
 
-  return QgsMapLayer::VectorLayer; // no warnings
+  return QgsMapLayerType::VectorLayer; // no warnings
 }
 
 QgsLayerItem::LayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
     {
       switch ( qobject_cast< QgsVectorLayer * >( layer )->geometryType() )
       {
@@ -660,11 +670,11 @@ QgsLayerItem::LayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
       return Vector; // no warnings
     }
 
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
       return Raster;
-    case QgsMapLayer::PluginLayer:
+    case QgsMapLayerType::PluginLayer:
       return Plugin;
-    case QgsMapLayer::MeshLayer:
+    case QgsMapLayerType::MeshLayer:
       return Mesh;
   }
   return Vector; // no warnings
@@ -701,6 +711,11 @@ QString QgsLayerItem::iconName( QgsLayerItem::LayerType layerType )
   }
 }
 
+bool QgsLayerItem::deleteLayer()
+{
+  return false;
+}
+
 bool QgsLayerItem::equal( const QgsDataItem *other )
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );
@@ -722,16 +737,40 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
 
   switch ( mapLayerType() )
   {
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
       u.layerType = QStringLiteral( "vector" );
+      switch ( mLayerType )
+      {
+        case Point:
+          u.wkbType = QgsWkbTypes::Point;
+          break;
+        case Line:
+          u.wkbType = QgsWkbTypes::LineString;
+          break;
+        case Polygon:
+          u.wkbType = QgsWkbTypes::Polygon;
+          break;
+        case TableLayer:
+          u.wkbType = QgsWkbTypes::NoGeometry;
+          break;
+
+        case Database:
+        case Table:
+        case NoType:
+        case Vector:
+        case Raster:
+        case Plugin:
+        case Mesh:
+          break;
+      }
       break;
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
       u.layerType = QStringLiteral( "raster" );
       break;
-    case QgsMapLayer::MeshLayer:
+    case QgsMapLayerType::MeshLayer:
       u.layerType = QStringLiteral( "mesh" );
       break;
-    case QgsMapLayer::PluginLayer:
+    case QgsMapLayerType::PluginLayer:
       u.layerType = QStringLiteral( "plugin" );
       break;
   }
@@ -758,7 +797,8 @@ QgsDataCollectionItem::~QgsDataCollectionItem()
 
 // Do not delete children, children are deleted by QObject parent
 #if 0
-  Q_FOREACH ( QgsDataItem *i, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *i : constMChildren )
   {
     QgsDebugMsgLevel( QStringLiteral( "delete child = 0x%0" ).arg( static_cast<qlonglong>( i ), 8, 16, QLatin1Char( '0' ) ), 2 );
     delete i;
@@ -824,7 +864,8 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
   const QList<QgsDataItemProvider *> providers = QgsApplication::dataItemProviderRegistry()->providers();
 
   QStringList entries = dir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
-  Q_FOREACH ( const QString &subdir, entries )
+  const auto constEntries = entries;
+  for ( const QString &subdir : constEntries )
   {
     if ( mRefreshLater )
     {
@@ -863,7 +904,8 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
   }
 
   QStringList fileEntries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files, QDir::Name );
-  Q_FOREACH ( const QString &name, fileEntries )
+  const auto constFileEntries = fileEntries;
+  for ( const QString &name : constFileEntries )
   {
     if ( mRefreshLater )
     {
@@ -1016,6 +1058,15 @@ QWidget *QgsDirectoryItem::paramWidget()
   return new QgsDirectoryParamWidget( mPath );
 }
 
+QgsMimeDataUtils::Uri QgsDirectoryItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.layerType = QStringLiteral( "directory" );
+  u.name = mName;
+  u.uri = mDirPath;
+  return u;
+}
+
 QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *parent )
   : QTreeWidget( parent )
 {
@@ -1036,7 +1087,8 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
 
   QDir dir( path );
   QStringList entries = dir.entryList( QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
-  Q_FOREACH ( const QString &name, entries )
+  const auto constEntries = entries;
+  for ( const QString &name : constEntries )
   {
     QFileInfo fi( dir.absoluteFilePath( name ) );
     QStringList texts;
@@ -1107,7 +1159,8 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   // hide columns that are not requested
   QgsSettings settings;
   QList<QVariant> lst = settings.value( QStringLiteral( "dataitem/directoryHiddenColumns" ) ).toList();
-  Q_FOREACH ( const QVariant &colVariant, lst )
+  const auto constLst = lst;
+  for ( const QVariant &colVariant : constLst )
   {
     setColumnHidden( colVariant.toInt(), true );
   }
@@ -1182,7 +1235,7 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, QStringLiteral( "favorites:" ) )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   mCapabilities |= Fast;
   mType = Favorites;
   mIconName = QStringLiteral( "/mIconFavourites.svg" );
@@ -1225,7 +1278,8 @@ void QgsFavoritesItem::addDirectory( const QString &favDir, const QString &n )
   if ( state() == Populated )
   {
     QVector<QgsDataItem *> items = createChildren( favDir, name );
-    Q_FOREACH ( QgsDataItem *item, items )
+    const auto constItems = items;
+    for ( QgsDataItem *item : constItems )
     {
       addChildItem( item, true );
     }
@@ -1301,7 +1355,8 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir, 
 {
   QVector<QgsDataItem *> children;
   QString pathName = pathComponent( favDir );
-  Q_FOREACH ( QgsDataItemProvider *provider, QgsApplication::dataItemProviderRegistry()->providers() )
+  const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
+  for ( QgsDataItemProvider *provider : constProviders )
   {
     int capabilities = provider->capabilities();
 
@@ -1380,7 +1435,8 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
   const QList<QgsDataItemProvider *> providers = QgsApplication::dataItemProviderRegistry()->providers();
 
   // loop over files inside zip
-  Q_FOREACH ( const QString &fileName, mZipFileList )
+  const auto constMZipFileList = mZipFileList;
+  for ( const QString &fileName : constMZipFileList )
   {
     QFileInfo info( fileName );
     tmpPath = mVsiPrefix + mFilePath + '/' + fileName;

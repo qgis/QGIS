@@ -41,7 +41,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
     /**
      * Create a new QgsGeometryOptions object.
      */
-    QgsGeometryOptions() = default;
+    QgsGeometryOptions();
 
     /**
      * Automatically remove duplicate nodes on all geometries which are edited on this layer.

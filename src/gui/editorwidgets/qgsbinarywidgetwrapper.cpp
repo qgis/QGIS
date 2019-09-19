@@ -19,6 +19,7 @@
 #include "qgsfileutils.h"
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
+#include "qgsapplication.h"
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QLabel>
@@ -36,7 +37,7 @@ QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int field
 
 QVariant QgsBinaryWidgetWrapper::value() const
 {
-  return mValue.isEmpty() || mValue.isNull() ? QVariant( QVariant::Invalid ) : mValue;
+  return mValue.isEmpty() || mValue.isNull() ? QVariant( QVariant::ByteArray ) : mValue;
 }
 
 void QgsBinaryWidgetWrapper::showIndeterminateState()
@@ -108,7 +109,7 @@ bool QgsBinaryWidgetWrapper::valid() const
   return mLabel && mButton;
 }
 
-void QgsBinaryWidgetWrapper::setValue( const QVariant &value )
+void QgsBinaryWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   mValue = value.isValid() && !value.isNull() && value.canConvert< QByteArray >() ? value.toByteArray() : QByteArray();
   if ( mValue.length() == 0 )
@@ -177,7 +178,7 @@ void QgsBinaryWidgetWrapper::setContent()
     return;
   }
 
-  setValue( fileSource.readAll() );
+  updateValues( fileSource.readAll() );
   emitValueChanged();
 }
 
@@ -186,7 +187,8 @@ void QgsBinaryWidgetWrapper::clear()
   if ( QMessageBox::question( nullptr, tr( "Clear Contents" ), tr( "Are you sure you want the clear this field's content?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  setValue( QByteArray() );
+  updateValues( QByteArray() );
+  emitValueChanged();
 }
 
 QString QgsBinaryWidgetWrapper::defaultPath()

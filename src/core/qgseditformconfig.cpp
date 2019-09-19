@@ -21,6 +21,7 @@
 #include "qgsrelationmanager.h"
 #include "qgslogger.h"
 #include "qgsxmlutils.h"
+#include "qgsapplication.h"
 
 //#include "qgseditorwidgetregistry.h"
 
@@ -524,7 +525,9 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
 
   if ( elem.tagName() == QLatin1String( "attributeEditorContainer" ) )
   {
-    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ), elem.attribute( QStringLiteral( "name" ) ) ), parent );
+    QColor backgroundColor( elem.attribute( QStringLiteral( "backgroundColor" ), QString() ) );
+    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ),
+        elem.attribute( QStringLiteral( "name" ) ) ), parent, backgroundColor );
     bool ok;
     int cc = elem.attribute( QStringLiteral( "columnCount" ) ).toInt( &ok );
     if ( !ok )
@@ -579,6 +582,12 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     qmlElement->setQmlCode( elem.text() );
     newElement = qmlElement;
   }
+  else if ( elem.tagName() == QLatin1String( "attributeEditorHtmlElement" ) )
+  {
+    QgsAttributeEditorHtmlElement *htmlElement = new QgsAttributeEditorHtmlElement( elem.attribute( QStringLiteral( "name" ) ), parent );
+    htmlElement->setHtmlCode( elem.text() );
+    newElement = htmlElement;
+  }
 
   if ( newElement )
   {
@@ -624,8 +633,10 @@ void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem ) const
   elem.setAttribute( QStringLiteral( "groupBox" ), mIsGroupBox ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "visibilityExpressionEnabled" ), mVisibilityExpression.enabled() ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "visibilityExpression" ), mVisibilityExpression->expression() );
-
-  Q_FOREACH ( QgsAttributeEditorElement *child, mChildren )
+  if ( mBackgroundColor.isValid() )
+    elem.setAttribute( QStringLiteral( "backgroundColor" ), mBackgroundColor.name( ) );
+  const auto constMChildren = mChildren;
+  for ( QgsAttributeEditorElement *child : constMChildren )
   {
     QDomDocument doc = elem.ownerDocument();
     elem.appendChild( child->toDomElement( doc ) );

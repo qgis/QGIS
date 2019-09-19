@@ -135,19 +135,20 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   }
   else if ( mField.type() == QVariant::String )
   {
-    // allow entering the NULL representation, which might be
-    // longer than the actual field
-    if ( !mNullValue.isEmpty() && !s.isEmpty() && s.size() < mNullValue.size() && s == mNullValue.left( s.size() ) )
-      return Intermediate;
-
-    if ( !mDefaultValue.isEmpty() && !s.isEmpty() && s.size() < mDefaultValue.size() && s == mDefaultValue.left( s.size() ) )
-      return Intermediate;
-
     if ( s == mNullValue )
       return Acceptable;
 
+    // allow entering the NULL representation, which might be longer than the actual field
     if ( mField.length() > 0 && s.size() > mField.length() )
+    {
+      if ( !mNullValue.isEmpty() && !s.isEmpty() && s.size() < mNullValue.size() && s == mNullValue.left( s.size() ) )
+        return Intermediate;
+
+      if ( !mDefaultValue.isEmpty() && !s.isEmpty() && s.size() < mDefaultValue.size() && s == mDefaultValue.left( s.size() ) )
+        return Intermediate;
+
       return Invalid;
+    }
   }
   else if ( mField.type() == QVariant::Date )
   {

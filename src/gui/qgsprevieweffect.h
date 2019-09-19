@@ -19,7 +19,7 @@
 #define QGSPREVIEWEFFECT_H
 
 #include <QGraphicsEffect>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 /**

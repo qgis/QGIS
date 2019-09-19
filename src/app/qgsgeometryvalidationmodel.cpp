@@ -18,6 +18,8 @@ email                : matthias@opengis.ch
 #include "qgsvectorlayer.h"
 #include "qgssinglegeometrycheck.h"
 #include "qgsfeatureid.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QIcon>
 
@@ -25,6 +27,7 @@ QgsGeometryValidationModel::QgsGeometryValidationModel( QgsGeometryValidationSer
   : QAbstractItemModel( parent )
   , mGeometryValidationService( geometryValidationService )
 {
+  connect( mGeometryValidationService, &QgsGeometryValidationService::singleGeometryCheckCleared, this, &QgsGeometryValidationModel::onSingleGeometryCheckCleared );
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckCompleted, this, &QgsGeometryValidationModel::onGeometryCheckCompleted );
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckStarted, this, &QgsGeometryValidationModel::onGeometryCheckStarted );
   connect( mGeometryValidationService, &QgsGeometryValidationService::topologyChecksUpdated, this, &QgsGeometryValidationModel::onTopologyChecksUpdated );
@@ -69,10 +72,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
     switch ( role )
     {
       case Qt::DecorationRole:
-        if ( topologyError->status() == QgsGeometryCheckError::StatusFixed )
-          return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
-        else
-          return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) );
+        return topologyError->icon();
 
       case Qt::DisplayRole:
       case DetailsRole:
@@ -94,11 +94,19 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case FeatureExtentRole:
       {
-        const QgsFeatureId fid = topologyError->featureId();
-        if ( FID_IS_NULL( fid ) )
-          return QgsRectangle();
-        const QgsFeature feature = getFeature( fid );
-        return feature.geometry().boundingBox();
+        const QgsRectangle contextBoundingBox = topologyError->contextBoundingBox();
+        if ( !contextBoundingBox.isNull() )
+        {
+          return contextBoundingBox;
+        }
+        else
+        {
+          const QgsFeatureId fid = topologyError->featureId();
+          if ( FID_IS_NULL( fid ) )
+            return QgsRectangle();
+          const QgsFeature feature = getFeature( fid );
+          return feature.geometry().boundingBox();
+        }
       }
 
       case ProblemExtentRole:
@@ -163,13 +171,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case Qt::DecorationRole:
       {
-#if 0
-        if ( mGeometryValidationService->validationActive( mCurrentLayer, featureItem.fid ) )
-          return QgsApplication::getThemeIcon( "/mActionTracing.svg" );
-        else
-          return QVariant();
-#endif
-        break;
+        return QgsApplication::getThemeIcon( "/checks/InvalidGeometry.svg" );
       }
 
       case GeometryCheckErrorRole:
@@ -190,12 +192,18 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case ErrorLocationGeometryRole:
       {
+        if ( featureItem.errors.empty() )
+          return QVariant();
+
         QgsSingleGeometryCheckError *error = featureItem.errors.first().get();
         return error->errorLocation();
       }
 
       case ProblemExtentRole:
       {
+        if ( featureItem.errors.empty() )
+          return QVariant();
+
         QgsSingleGeometryCheckError *error = featureItem.errors.first().get();
         return error->errorLocation().boundingBox();
       }
@@ -248,6 +256,25 @@ void QgsGeometryValidationModel::setCurrentLayer( QgsVectorLayer *currentLayer )
   endResetModel();
 }
 
+void QgsGeometryValidationModel::onSingleGeometryCheckCleared( QgsVectorLayer *layer )
+{
+  auto &layerErrors = mErrorStorage[layer];
+
+  if ( mCurrentLayer == layer && !layerErrors.empty() )
+  {
+    emit aboutToRemoveSingleGeometryCheck();
+    beginRemoveRows( QModelIndex(), 0, layerErrors.size() - 1 );
+  }
+
+  layerErrors.clear();
+
+  if ( mCurrentLayer == layer && !layerErrors.empty() )
+  {
+    endRemoveRows();
+  }
+
+}
+
 void QgsGeometryValidationModel::onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors )
 {
   auto &layerErrors = mErrorStorage[layer];
@@ -258,7 +285,10 @@ void QgsGeometryValidationModel::onGeometryCheckCompleted( QgsVectorLayer *layer
   if ( featureIdx > -1 && errors.empty() ) // && !mGeometryValidationService->validationActive( layer, fid ) )
   {
     if ( mCurrentLayer == layer )
+    {
+      emit aboutToRemoveSingleGeometryCheck();
       beginRemoveRows( QModelIndex(), featureIdx, featureIdx );
+    }
 
     layerErrors.removeAt( featureIdx );
 

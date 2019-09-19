@@ -70,7 +70,7 @@ def __get_test_function(test_module_name):
         test_module = importlib.import_module(test_module_name)
         function_name = 'run_all'
     except ImportError as e:
-        traceback.print_exc(file=sys.stdout)
+        #traceback.print_exc(file=sys.stdout)
         # Strip latest name
         pos = test_module_name.rfind('.')
         if pos <= 0:
@@ -81,7 +81,7 @@ def __get_test_function(test_module_name):
         try:
             test_module = importlib.import_module(test_module_name)
         except ImportError as e:
-            traceback.print_exc(file=sys.stdout)
+            #traceback.print_exc(file=sys.stdout)
             raise e
     return getattr(test_module, function_name, None)
 
@@ -132,7 +132,7 @@ if iface is None:
 else: # We are inside QGIS!
     # Start as soon as the initializationCompleted signal is fired
     from qgis.core import QgsApplication, QgsProjectBadLayerHandler, QgsProject
-    from PyQt.QtCore import QDir
+    from qgis.PyQt.QtCore import QDir
     from qgis.utils import iface
 
     class QgsProjectBadLayerDefaultHandler(QgsProjectBadLayerHandler):

@@ -24,8 +24,7 @@
 #include "qgsstatusbar.h"
 #include "qgsmapmouseevent.h"
 #include "qgssnapindicator.h"
-
-#include <QDoubleSpinBox>
+#include "qgsdoublespinbox.h"
 #include <cmath>
 
 QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
@@ -154,7 +153,7 @@ void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPointXY
 void QgsMapToolCircularStringRadius::createRadiusSpinBox()
 {
   deleteRadiusSpinBox();
-  mRadiusSpinBox = new QDoubleSpinBox();
+  mRadiusSpinBox = new QgsDoubleSpinBox();
   mRadiusSpinBox->setMaximum( 99999999 );
   mRadiusSpinBox->setDecimals( 2 );
   mRadiusSpinBox->setPrefix( tr( "Radius: " ) );

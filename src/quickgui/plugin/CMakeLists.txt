@@ -10,11 +10,15 @@ SET(QGIS_QUICK_PLUGIN_SRC
 )
 
 SET(QGIS_QUICK_PLUGIN_RESOURCES
+  components/qgsquickicontextitem.qml
+  editor/qgsquickeditorwidgetcombobox.qml
   editor/qgsquickcheckbox.qml
   editor/qgsquickdatetime.qml
   editor/qgsquickexternalresource.qml
+  editor/qgsquickrange.qml
   editor/qgsquicktextedit.qml
   editor/qgsquickvaluemap.qml
+  editor/qgsquickvaluerelation.qml
   qgsquickfeatureform.qml
   qgsquickfeatureformstyling.qml
   qgsquickmapcanvas.qml
@@ -25,7 +29,7 @@ SET(QGIS_QUICK_PLUGIN_RESOURCES
 )
 
 IF (IOS)
-  SET(QGIS_QUICK_PLUGIN_RESOURCES ${QGIS_QUICK_PLUGIN_RESOURCES} ios/qmldir qgsquick.qrc )
+  SET(QGIS_QUICK_PLUGIN_RESOURCES ${QGIS_QUICK_PLUGIN_RESOURCES} ios/qmldir ios/qgsquick.qrc )
 ELSE (IOS)
   SET(QGIS_QUICK_PLUGIN_RESOURCES ${QGIS_QUICK_PLUGIN_RESOURCES} qmldir)
 ENDIF (IOS)
@@ -58,11 +62,11 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
+  ${GDAL_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}

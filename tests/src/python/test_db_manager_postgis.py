@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Luigi Pirelli'
 __date__ = '2017-11-02'
 __copyright__ = 'Copyright 2017, Boundless Spatial Inc'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import shutil

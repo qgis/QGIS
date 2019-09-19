@@ -1,0 +1,107 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbookmarkmodel.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsBookmarkManagerModel: QAbstractTableModel
+{
+%Docstring
+
+Implements a model for the contents of QgsBookmarkManager objects.
+
+QgsBookmarkModel provides a Qt table model for displaying and manipulating
+the bookmarks managed by a QgsBookmarkManager object. The model requires
+both a main manager (usually the application bookmark manager, accessed
+via QgsApplication.bookmarkManager()) and a project-based manager. The resultant
+model data is a merge of the bookmarks stored in both managers.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsbookmarkmodel.h"
+%End
+  public:
+
+    enum CustomRoles
+    {
+      RoleExtent,
+      RoleName,
+      RoleId,
+      RoleGroup,
+    };
+
+    enum Columns
+    {
+      ColumnName,
+      ColumnGroup,
+      ColumnXMin,
+      ColumnYMin,
+      ColumnXMax,
+      ColumnYMax,
+      ColumnCrs,
+      ColumnStore,
+    };
+
+    QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBookmarkManagerModel, associated with a main ``manager``
+(usually the application bookmark manager, accessed via QgsApplication.bookmarkManager())
+and a secondary ``projectManager`` (a project based bookmark manager).
+%End
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
+    virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+
+};
+
+class QgsBookmarkManagerProxyModel : QSortFilterProxyModel
+{
+%Docstring
+
+A QSortFilterProxyModel subclass for sorting the entries in a QgsBookmarkManagerModel.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsbookmarkmodel.h"
+%End
+  public:
+
+    QgsBookmarkManagerProxyModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBookmarkManagerProxyModel, associated with a main ``manager``
+(usually the application bookmark manager, accessed via QgsApplication.bookmarkManager())
+and a secondary ``projectManager`` (a project based bookmark manager).
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbookmarkmodel.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

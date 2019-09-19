@@ -104,7 +104,7 @@
            <string>Information</string>
           </property>
           <property name="toolTip">
-           <string>Information</string>
+           <string>General information</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -128,7 +128,7 @@
            <string>Symbology</string>
           </property>
           <property name="toolTip">
-           <string>Symbology</string>
+           <string>Control feature symbology</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -140,7 +140,7 @@
            <string>Labels</string>
           </property>
           <property name="toolTip">
-           <string>Labels</string>
+           <string>Control feature labeling</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -173,10 +173,10 @@
          </item>
          <item>
           <property name="text">
-           <string>Source Fields</string>
+           <string>Fields</string>
           </property>
           <property name="toolTip">
-           <string>Source Fields</string>
+           <string>Manage fields</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -188,7 +188,7 @@
            <string>Attributes Form</string>
           </property>
           <property name="toolTip">
-           <string>Form</string>
+           <string>Manage custom forms and field editor configuration</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -200,7 +200,7 @@
            <string>Joins</string>
           </property>
           <property name="toolTip">
-           <string>Joins</string>
+           <string>Manage joins to other layers</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -210,6 +210,9 @@
          <item>
           <property name="text">
            <string>Auxiliary Storage</string>
+          </property>
+          <property name="toolTip">
+           <string>Manage additional per-project fields associated with the layer</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -221,7 +224,7 @@
            <string>Actions</string>
           </property>
           <property name="toolTip">
-           <string>Actions</string>
+           <string>Manage automated actions</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -268,6 +271,9 @@
           <property name="text">
            <string>Metadata</string>
           </property>
+          <property name="toolTip">
+           <string>Layer metadata</string>
+          </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
@@ -278,7 +284,7 @@
            <string>Dependencies</string>
           </property>
           <property name="toolTip">
-           <string>Dependencies</string>
+           <string>Set dependent layers for automatic update</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -290,7 +296,7 @@
            <string>Legend</string>
           </property>
           <property name="toolTip">
-           <string>Legend</string>
+           <string>Manage the layer's legend</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -312,6 +318,9 @@
          <item>
           <property name="text">
            <string>Digitizing</string>
+          </property>
+          <property name="toolTip">
+           <string>Control geometry and topology constraints for digitizing operations.</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -357,7 +366,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>18</number>
+          <number>17</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -433,8 +442,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>325</width>
-                <height>389</height>
+                <width>653</width>
+                <height>807</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -560,7 +569,7 @@ border-radius: 2px;</string>
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -575,7 +584,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -721,8 +730,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>807</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -907,8 +916,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>104</width>
-                <height>102</height>
+                <width>653</width>
+                <height>807</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1052,7 +1061,7 @@ border-radius: 2px;</string>
                 <property name="checkable">
                  <bool>false</bool>
                 </property>
-                <property name="syncGroup" stdset="0">
+                <property name="syncGroup">
                  <string notr="true">vectormeta</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_11">
@@ -1386,7 +1395,7 @@ border-radius: 2px;</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_50">
                  <item row="0" column="0">
-                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget" native="true">
+                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget">
                    <property name="focusPolicy">
                     <enum>Qt::StrongFocus</enum>
                    </property>
@@ -1450,7 +1459,7 @@ border-radius: 2px;</string>
                   </widget>
                  </item>
                  <item row="1" column="0" colspan="2">
-                  <widget class="QgsFieldExpressionWidget" name="mMapTipExpressionFieldWidget" native="true">
+                  <widget class="QgsFieldExpressionWidget" name="mMapTipExpressionFieldWidget">
                    <property name="focusPolicy">
                     <enum>Qt::StrongFocus</enum>
                    </property>
@@ -1504,8 +1513,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>346</height>
+                <width>695</width>
+                <height>424</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1531,7 +1540,7 @@ border-radius: 2px;</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -1961,8 +1970,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>340</width>
-                <height>630</height>
+                <width>653</width>
+                <height>807</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1983,7 +1992,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Description</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -2125,7 +2134,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Attribution</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -2171,7 +2180,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>MetadataUrl</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -2325,6 +2334,79 @@ border-radius: 2px;</string>
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="mWmsDimensionsGrpBx">
+                 <property name="title">
+                  <string>Dimensions</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_33">
+                  <item>
+                   <widget class="QTreeWidget" name="mWmsDimensionsTreeWidget">
+                    <column>
+                     <property name="text">
+                      <string>Setting</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Value</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_12">
+                    <item>
+                     <widget class="QPushButton" name="mButtonAddWmsDimension">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="mButtonEditWmsDimension">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="mButtonRemoveWmsDimension">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_9">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -2368,7 +2450,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>651</width>
-                <height>804</height>
+                <height>805</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2377,8 +2459,15 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Automatic Fixes</string>
                  </property>
-                 <layout class="QFormLayout" name="formLayout">
-                  <item row="2" column="0">
+                 <layout class="QGridLayout" name="gridLayout">
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QCheckBox" name="mRemoveDuplicateNodesCheckbox">
+                    <property name="text">
+                     <string>Remove duplicate nodes</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
                    <widget class="QLabel" name="label">
                     <property name="toolTip">
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The geometry precision defines the maximum precision to of geometry coordinates that should be stored on this layer. A snap to grid algorithm will be applied on every geometry entering this layer, resulting in coordinates being rounded to multiples of this value. The operation is applied in this layer's coordinate reference system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -2388,14 +2477,7 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QCheckBox" name="mRemoveDuplicateNodesCheckbox">
-                    <property name="text">
-                     <string>Remove duplicate nodes</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
+                  <item row="1" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="0,0">
                     <item>
                      <widget class="QLabel" name="mPrecisionUnitsLabel">
@@ -2435,6 +2517,19 @@ border-radius: 2px;</string>
                   <string>Topology checks</string>
                  </property>
                 </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </widget>
@@ -2498,15 +2593,31 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2521,25 +2632,9 @@ border-radius: 2px;</string>
    <header>qgsscalecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleRangeWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalerangewidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
    <extends>QWidget</extends>
    <header>qgslayertreeembeddedconfigwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2623,35 +2718,6 @@ border-radius: 2px;</string>
   <tabstop>mRemoveDuplicateNodesCheckbox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

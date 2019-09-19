@@ -21,6 +21,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgssymbolslistwidget.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
@@ -41,6 +42,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsimagecache.h"
 
 #include <QAbstractButton>
 #include <QButtonGroup>
@@ -77,7 +79,8 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -96,17 +99,11 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 void QgsSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
-  Q_FOREACH ( QgsUnitSelectionWidget *unitWidget, findChildren<QgsUnitSelectionWidget *>() )
+  const auto unitSelectionWidgets = findChildren<QgsUnitSelectionWidget *>();
+  for ( QgsUnitSelectionWidget *unitWidget : unitSelectionWidgets )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
-#if 0
-  Q_FOREACH ( QgsPropertyOverrideButton *ddButton, findChildren<QgsPropertyOverrideButton *>() )
-  {
-    if ( ddButton->assistant() )
-      ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
-  }
-#endif
 }
 
 QgsSymbolWidgetContext QgsSymbolLayerWidget::context() const
@@ -193,6 +190,8 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select Line Color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
+
+  mColorDDBtn->registerLinkedWidget( btnChangeColor );
 
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
@@ -299,6 +298,11 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mCustomCheckBox->setCheckState( useCustomDashPattern ? Qt::Checked : Qt::Unchecked );
   mCustomCheckBox->blockSignals( false );
 
+  //make sure height of custom dash button looks good under different platforms
+  QSize size = mChangePatternButton->minimumSizeHint();
+  int fontHeight = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4 );
+  mChangePatternButton->setMinimumSize( QSize( size.width(), std::max( size.height(), fontHeight ) ) );
+
   //draw inside polygon?
   const bool drawInsidePolygon = mLayer->drawInsidePolygon();
   whileBlocking( mDrawInsideCheckBox )->setCheckState( drawInsidePolygon ? Qt::Checked : Qt::Unchecked );
@@ -333,7 +337,6 @@ void QgsSimpleLineSymbolLayerWidget::penWidthChanged()
 void QgsSimpleLineSymbolLayerWidget::colorChanged( const QColor &color )
 {
   mLayer->setColor( color );
-  updatePatternIcon();
   emit changed();
 }
 
@@ -342,6 +345,7 @@ void QgsSimpleLineSymbolLayerWidget::penStyleChanged()
   mLayer->setPenStyle( cboPenStyle->penStyle() );
   mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
   mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
+  updatePatternIcon();
   emit changed();
 }
 
@@ -365,7 +369,24 @@ void QgsSimpleLineSymbolLayerWidget::mCustomCheckBox_stateChanged( int state )
 
 void QgsSimpleLineSymbolLayerWidget::mChangePatternButton_clicked()
 {
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsDashSpaceWidget *widget = new QgsDashSpaceWidget( mLayer->customDashVector(), panel );
+    widget->setPanelTitle( tr( "Custom Dash Pattern" ) );
+    widget->setUnit( mDashPatternUnitWidget->unit() );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ this, widget ]()
+    {
+      mLayer->setCustomDashVector( widget->dashDotVector() );
+      updatePatternIcon();
+    } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsSymbolLayerWidget::changed );
+    panel->openPanel( widget );
+    return;
+  }
+
   QgsDashSpaceDialog d( mLayer->customDashVector() );
+  d.setUnit( mDashPatternUnitWidget->unit() );
   if ( d.exec() == QDialog::Accepted )
   {
     mLayer->setCustomDashVector( d.dashDotVector() );
@@ -380,6 +401,7 @@ void QgsSimpleLineSymbolLayerWidget::mPenWidthUnitWidget_changed()
   {
     mLayer->setWidthUnit( mPenWidthUnitWidget->unit() );
     mLayer->setWidthMapUnitScale( mPenWidthUnitWidget->getMapUnitScale() );
+    updatePatternIcon();
     emit changed();
   }
 }
@@ -400,6 +422,7 @@ void QgsSimpleLineSymbolLayerWidget::mDashPatternUnitWidget_changed()
   {
     mLayer->setCustomDashPatternUnit( mDashPatternUnitWidget->unit() );
     mLayer->setCustomDashPatternMapUnitScale( mDashPatternUnitWidget->getMapUnitScale() );
+    updatePatternIcon();
     emit changed();
   }
 }
@@ -418,15 +441,53 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   {
     return;
   }
-  QgsSimpleLineSymbolLayer *layerCopy = mLayer->clone();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > layerCopy( mLayer->clone() );
   if ( !layerCopy )
   {
     return;
   }
+  QColor color = qApp->palette().color( QPalette::WindowText );
+  layerCopy->setColor( color );
+  // reset offset, we don't want to show that in the preview
+  layerCopy->setOffset( 0 );
   layerCopy->setUseCustomDashPattern( true );
-  QIcon buttonIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( layerCopy, QgsUnitTypes::RenderMillimeters, mChangePatternButton->iconSize() );
-  mChangePatternButton->setIcon( buttonIcon );
-  delete layerCopy;
+
+  QSize currentIconSize;
+  //icon size is button size with a small margin
+#ifdef Q_OS_WIN
+  currentIconSize = QSize( mChangePatternButton->width() - 10, mChangePatternButton->height() - 6 );
+#else
+  currentIconSize = QSize( mChangePatternButton->width() - 10, mChangePatternButton->height() - 12 );
+#endif
+
+  if ( !currentIconSize.isValid() || currentIconSize.width() <= 0 || currentIconSize.height() <= 0 )
+  {
+    return;
+  }
+
+  //create an icon pixmap
+  std::unique_ptr< QgsLineSymbol > previewSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << layerCopy.release() );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize );
+  mChangePatternButton->setIconSize( currentIconSize );
+  mChangePatternButton->setIcon( icon );
+
+  // set tooltip
+  // create very large preview image
+  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
+  int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+
+  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
+  QByteArray data;
+  QBuffer buffer( &data );
+  pm.save( &buffer, "PNG", 100 );
+  mChangePatternButton->setToolTip( QStringLiteral( "<img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) ) );
+}
+
+void QgsSimpleLineSymbolLayerWidget::resizeEvent( QResizeEvent *event )
+{
+  QgsSymbolLayerWidget::resizeEvent( event );
+  // redraw custom dash pattern icon -- the button size has changed
+  updatePatternIcon();
 }
 
 
@@ -464,6 +525,9 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   btnChangeColorStroke->setShowNoColor( true );
   btnChangeColorStroke->setNoColorString( tr( "Transparent Stroke" ) );
 
+  mFillColorDDBtn->registerLinkedWidget( btnChangeColorFill );
+  mStrokeColorDDBtn->registerLinkedWidget( btnChangeColorStroke );
+
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
   spinAngle->setClearValue( 0.0 );
@@ -480,7 +544,8 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   lstNames->setIconSize( QSize( size, size ) );
 
   double markerSize = size * 0.8;
-  Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
+  const auto shapes = QgsSimpleMarkerSymbolLayerBase::availableShapes();
+  for ( QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
   {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
     lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
@@ -641,7 +706,7 @@ void QgsSimpleMarkerSymbolLayerWidget::setOffset()
 
 void QgsSimpleMarkerSymbolLayerWidget::mStrokeStyleComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( mLayer )
   {
@@ -757,6 +822,9 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleFillSymbolLayerWidget::strokeStyleChanged );
   connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleFillSymbolLayerWidget::offsetChanged );
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleFillSymbolLayerWidget::offsetChanged );
+
+  mFillColorDDBtn->registerLinkedWidget( btnChangeColor );
+  mStrokeColorDDBtn->registerLinkedWidget( btnChangeStrokeColor );
 }
 
 void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -900,22 +968,27 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
-  QSize size = lstNames->iconSize();
-  double markerSize = DEFAULT_POINT_SIZE * 2;
-  Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
-  {
-    if ( !QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( shape ) )
-      continue;
+  int size = lstNames->iconSize().width();
+  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXX" ) ) ) ) );
+  lstNames->setGridSize( QSize( size * 1.2, size * 1.2 ) );
+  lstNames->setIconSize( QSize( size, size ) );
 
+  double markerSize = size * 0.8;
+  const auto shapes = QgsSimpleMarkerSymbolLayerBase::availableShapes();
+  for ( QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
+  {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
+    lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
+    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
     delete lyr;
   }
+  // show at least 3 rows
+  lstNames->setMinimumHeight( lstNames->gridSize().height() * 3.1 );
 
   connect( lstNames, &QListWidget::currentRowChanged, this, &QgsFilledMarkerSymbolLayerWidget::setShape );
   connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFilledMarkerSymbolLayerWidget::setSize );
@@ -1076,6 +1149,9 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( QgsVectorLay
   btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
+
+  mStartColorDDBtn->registerLinkedWidget( btnChangeColor );
+  mEndColorDDBtn->registerLinkedWidget( btnChangeColor2 );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
@@ -1418,6 +1494,9 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( QgsVecto
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
 
+  mStartColorDDBtn->registerLinkedWidget( btnChangeColor );
+  mEndColorDDBtn->registerLinkedWidget( btnChangeColor2 );
+
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
@@ -1654,12 +1733,15 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   connect( mIntervalUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsMarkerLineSymbolLayerWidget::mIntervalUnitWidget_changed );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsMarkerLineSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mOffsetAlongLineUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsMarkerLineSymbolLayerWidget::mOffsetAlongLineUnitWidget_changed );
+  connect( mAverageAngleUnit, &QgsUnitSelectionWidget::changed, this, &QgsMarkerLineSymbolLayerWidget::averageAngleUnitChanged );
   mIntervalUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOffsetAlongLineUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mAverageAngleUnit->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
@@ -1682,16 +1764,20 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
     mRingsLabel->hide();
   }
 
+  mSpinAverageAngleLength->setClearValue( 4.0 );
+
   connect( spinInterval, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setInterval );
   connect( mSpinOffsetAlongLine, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setOffsetAlongLine );
   connect( chkRotateMarker, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setRotate );
   connect( spinOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setOffset );
+  connect( mSpinAverageAngleLength, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setAverageAngle );
   connect( radInterval, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( radVertex, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( radVertexLast, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( radVertexFirst, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( radCentralPoint, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( radCurvePoint, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( radSegmentCentralPoint, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
 }
 
 void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -1710,21 +1796,23 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mSpinOffsetAlongLine->setValue( mLayer->offsetAlongLine() );
   mSpinOffsetAlongLine->blockSignals( false );
   chkRotateMarker->blockSignals( true );
-  chkRotateMarker->setChecked( mLayer->rotateMarker() );
+  chkRotateMarker->setChecked( mLayer->rotateSymbols() );
   chkRotateMarker->blockSignals( false );
   spinOffset->blockSignals( true );
   spinOffset->setValue( mLayer->offset() );
   spinOffset->blockSignals( false );
-  if ( mLayer->placement() == QgsMarkerLineSymbolLayer::Interval )
+  if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::Interval )
     radInterval->setChecked( true );
-  else if ( mLayer->placement() == QgsMarkerLineSymbolLayer::Vertex )
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::Vertex )
     radVertex->setChecked( true );
-  else if ( mLayer->placement() == QgsMarkerLineSymbolLayer::LastVertex )
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::LastVertex )
     radVertexLast->setChecked( true );
-  else if ( mLayer->placement() == QgsMarkerLineSymbolLayer::CentralPoint )
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::CentralPoint )
     radCentralPoint->setChecked( true );
-  else if ( mLayer->placement() == QgsMarkerLineSymbolLayer::CurvePoint )
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::CurvePoint )
     radCurvePoint->setChecked( true );
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::SegmentCenter )
+    radSegmentCentralPoint->setChecked( true );
   else
     radVertexFirst->setChecked( true );
 
@@ -1742,6 +1830,10 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetAlongLineUnitWidget->setMapUnitScale( mLayer->offsetAlongLineMapUnitScale() );
   mOffsetAlongLineUnitWidget->blockSignals( false );
 
+  whileBlocking( mAverageAngleUnit )->setUnit( mLayer->averageAngleUnit() );
+  whileBlocking( mAverageAngleUnit )->setMapUnitScale( mLayer->averageAngleMapUnitScale() );
+  whileBlocking( mSpinAverageAngleLength )->setValue( mLayer->averageAngleLength() );
+
   whileBlocking( mRingFilterComboBox )->setCurrentIndex( mRingFilterComboBox->findData( mLayer->ringFilter() ) );
 
   setPlacement(); // update gui
@@ -1750,6 +1842,7 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mLineOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
   registerDataDefinedButton( mPlacementDDBtn, QgsSymbolLayer::PropertyPlacement );
   registerDataDefinedButton( mOffsetAlongLineDDBtn, QgsSymbolLayer::PropertyOffsetAlongLine );
+  registerDataDefinedButton( mAverageAngleDDBtn, QgsSymbolLayer::PropertyAverageAngleLength );
 }
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayerWidget::symbolLayer()
@@ -1771,7 +1864,10 @@ void QgsMarkerLineSymbolLayerWidget::setOffsetAlongLine( double val )
 
 void QgsMarkerLineSymbolLayerWidget::setRotate()
 {
-  mLayer->setRotateMarker( chkRotateMarker->isChecked() );
+  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( radInterval->isChecked() || radCentralPoint->isChecked() ) );
+  mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
+
+  mLayer->setRotateSymbols( chkRotateMarker->isChecked() );
   emit changed();
 }
 
@@ -1786,19 +1882,24 @@ void QgsMarkerLineSymbolLayerWidget::setPlacement()
   bool interval = radInterval->isChecked();
   spinInterval->setEnabled( interval );
   mSpinOffsetAlongLine->setEnabled( radInterval->isChecked() || radVertexLast->isChecked() || radVertexFirst->isChecked() );
+  mOffsetAlongLineUnitWidget->setEnabled( mSpinOffsetAlongLine->isEnabled() );
+  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( radInterval->isChecked() || radCentralPoint->isChecked() ) );
+  mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
   //mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayer::Interval : QgsMarkerLineSymbolLayer::Vertex );
   if ( radInterval->isChecked() )
-    mLayer->setPlacement( QgsMarkerLineSymbolLayer::Interval );
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Interval );
   else if ( radVertex->isChecked() )
-    mLayer->setPlacement( QgsMarkerLineSymbolLayer::Vertex );
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Vertex );
   else if ( radVertexLast->isChecked() )
-    mLayer->setPlacement( QgsMarkerLineSymbolLayer::LastVertex );
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::LastVertex );
   else if ( radVertexFirst->isChecked() )
-    mLayer->setPlacement( QgsMarkerLineSymbolLayer::FirstVertex );
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::FirstVertex );
   else if ( radCurvePoint->isChecked() )
-    mLayer->setPlacement( QgsMarkerLineSymbolLayer::CurvePoint );
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CurvePoint );
+  else if ( radSegmentCentralPoint->isChecked() )
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::SegmentCenter );
   else
-    mLayer->setPlacement( QgsMarkerLineSymbolLayer::CentralPoint );
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CentralPoint );
 
   emit changed();
 }
@@ -1831,6 +1932,290 @@ void QgsMarkerLineSymbolLayerWidget::mOffsetAlongLineUnitWidget_changed()
     mLayer->setOffsetAlongLineMapUnitScale( mOffsetAlongLineUnitWidget->getMapUnitScale() );
   }
   emit changed();
+}
+
+void QgsMarkerLineSymbolLayerWidget::averageAngleUnitChanged()
+{
+  if ( mLayer )
+  {
+    mLayer->setAverageAngleUnit( mAverageAngleUnit->unit() );
+    mLayer->setAverageAngleMapUnitScale( mAverageAngleUnit->getMapUnitScale() );
+  }
+  emit changed();
+}
+
+void QgsMarkerLineSymbolLayerWidget::setAverageAngle( double val )
+{
+  if ( mLayer )
+  {
+    mLayer->setAverageAngleLength( val );
+    emit changed();
+  }
+}
+
+
+///////////
+
+QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+{
+  mLayer = nullptr;
+
+  setupUi( this );
+  connect( mIntervalUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsHashedLineSymbolLayerWidget::mIntervalUnitWidget_changed );
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsHashedLineSymbolLayerWidget::mOffsetUnitWidget_changed );
+  connect( mOffsetAlongLineUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsHashedLineSymbolLayerWidget::mOffsetAlongLineUnitWidget_changed );
+  connect( mAverageAngleUnit, &QgsUnitSelectionWidget::changed, this, &QgsHashedLineSymbolLayerWidget::averageAngleUnitChanged );
+  connect( mHashLengthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsHashedLineSymbolLayerWidget::hashLengthUnitWidgetChanged );
+  mIntervalUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetAlongLineUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mAverageAngleUnit->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mHashLengthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
+  connect( mRingFilterComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    if ( mLayer )
+    {
+      mLayer->setRingFilter( static_cast< QgsLineSymbolLayer::RenderRingFilter >( mRingFilterComboBox->currentData().toInt() ) );
+      emit changed();
+    }
+  } );
+
+  spinOffset->setClearValue( 0.0 );
+
+
+  if ( vl && vl->geometryType() != QgsWkbTypes::PolygonGeometry )
+  {
+    mRingFilterComboBox->hide();
+    mRingsLabel->hide();
+  }
+
+  mHashRotationSpinBox->setClearValue( 0 );
+  mSpinAverageAngleLength->setClearValue( 4.0 );
+
+  connect( spinInterval, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHashedLineSymbolLayerWidget::setInterval );
+  connect( mSpinOffsetAlongLine, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHashedLineSymbolLayerWidget::setOffsetAlongLine );
+  connect( mSpinHashLength, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHashedLineSymbolLayerWidget::setHashLength );
+  connect( mHashRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHashedLineSymbolLayerWidget::setHashAngle );
+  connect( chkRotateMarker, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setRotate );
+  connect( spinOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHashedLineSymbolLayerWidget::setOffset );
+  connect( mSpinAverageAngleLength, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHashedLineSymbolLayerWidget::setAverageAngle );
+  connect( radInterval, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( radVertex, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( radVertexLast, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( radVertexFirst, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( radCentralPoint, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( radCurvePoint, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( radSegmentCentralPoint, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+}
+
+void QgsHashedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( layer->layerType() != QLatin1String( "HashLine" ) )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = static_cast<QgsHashedLineSymbolLayer *>( layer );
+
+  // set values
+  spinInterval->blockSignals( true );
+  spinInterval->setValue( mLayer->interval() );
+  spinInterval->blockSignals( false );
+  mSpinOffsetAlongLine->blockSignals( true );
+  mSpinOffsetAlongLine->setValue( mLayer->offsetAlongLine() );
+  mSpinOffsetAlongLine->blockSignals( false );
+  whileBlocking( mSpinHashLength )->setValue( mLayer->hashLength() );
+  whileBlocking( mHashRotationSpinBox )->setValue( mLayer->hashAngle() );
+  chkRotateMarker->blockSignals( true );
+  chkRotateMarker->setChecked( mLayer->rotateSymbols() );
+  chkRotateMarker->blockSignals( false );
+  spinOffset->blockSignals( true );
+  spinOffset->setValue( mLayer->offset() );
+  spinOffset->blockSignals( false );
+  if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::Interval )
+    radInterval->setChecked( true );
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::Vertex )
+    radVertex->setChecked( true );
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::LastVertex )
+    radVertexLast->setChecked( true );
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::CentralPoint )
+    radCentralPoint->setChecked( true );
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::CurvePoint )
+    radCurvePoint->setChecked( true );
+  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::SegmentCenter )
+    radSegmentCentralPoint->setChecked( true );
+  else
+    radVertexFirst->setChecked( true );
+
+  // set units
+  mIntervalUnitWidget->blockSignals( true );
+  mIntervalUnitWidget->setUnit( mLayer->intervalUnit() );
+  mIntervalUnitWidget->setMapUnitScale( mLayer->intervalMapUnitScale() );
+  mIntervalUnitWidget->blockSignals( false );
+  mOffsetUnitWidget->blockSignals( true );
+  mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  mOffsetUnitWidget->blockSignals( false );
+  mOffsetAlongLineUnitWidget->blockSignals( true );
+  mOffsetAlongLineUnitWidget->setUnit( mLayer->offsetAlongLineUnit() );
+  mOffsetAlongLineUnitWidget->setMapUnitScale( mLayer->offsetAlongLineMapUnitScale() );
+  mOffsetAlongLineUnitWidget->blockSignals( false );
+  whileBlocking( mAverageAngleUnit )->setUnit( mLayer->averageAngleUnit() );
+  whileBlocking( mAverageAngleUnit )->setMapUnitScale( mLayer->averageAngleMapUnitScale() );
+  whileBlocking( mSpinAverageAngleLength )->setValue( mLayer->averageAngleLength() );
+  whileBlocking( mHashLengthUnitWidget )->setUnit( mLayer->hashLengthUnit() );
+  whileBlocking( mHashLengthUnitWidget )->setMapUnitScale( mLayer->hashLengthMapUnitScale() );
+
+  whileBlocking( mRingFilterComboBox )->setCurrentIndex( mRingFilterComboBox->findData( mLayer->ringFilter() ) );
+
+  setPlacement(); // update gui
+
+  registerDataDefinedButton( mIntervalDDBtn, QgsSymbolLayer::PropertyInterval );
+  registerDataDefinedButton( mLineOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mPlacementDDBtn, QgsSymbolLayer::PropertyPlacement );
+  registerDataDefinedButton( mOffsetAlongLineDDBtn, QgsSymbolLayer::PropertyOffsetAlongLine );
+  registerDataDefinedButton( mHashLengthDDBtn, QgsSymbolLayer::PropertyLineDistance );
+  registerDataDefinedButton( mHashRotationDDBtn, QgsSymbolLayer::PropertyLineAngle );
+  registerDataDefinedButton( mAverageAngleDDBtn, QgsSymbolLayer::PropertyAverageAngleLength );
+}
+
+QgsSymbolLayer *QgsHashedLineSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsHashedLineSymbolLayerWidget::setInterval( double val )
+{
+  mLayer->setInterval( val );
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::setOffsetAlongLine( double val )
+{
+  mLayer->setOffsetAlongLine( val );
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::setHashLength( double val )
+{
+  mLayer->setHashLength( val );
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::setHashAngle( double val )
+{
+  mLayer->setHashAngle( val );
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::setRotate()
+{
+  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( radInterval->isChecked() || radCentralPoint->isChecked() ) );
+  mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
+
+  mLayer->setRotateSymbols( chkRotateMarker->isChecked() );
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::setOffset()
+{
+  mLayer->setOffset( spinOffset->value() );
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::setPlacement()
+{
+  bool interval = radInterval->isChecked();
+  spinInterval->setEnabled( interval );
+  mSpinOffsetAlongLine->setEnabled( radInterval->isChecked() || radVertexLast->isChecked() || radVertexFirst->isChecked() );
+  mOffsetAlongLineUnitWidget->setEnabled( mSpinOffsetAlongLine->isEnabled() );
+  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( radInterval->isChecked() || radCentralPoint->isChecked() ) );
+  mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
+  //mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayer::Interval : QgsMarkerLineSymbolLayer::Vertex );
+  if ( radInterval->isChecked() )
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Interval );
+  else if ( radVertex->isChecked() )
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Vertex );
+  else if ( radVertexLast->isChecked() )
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::LastVertex );
+  else if ( radVertexFirst->isChecked() )
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::FirstVertex );
+  else if ( radCurvePoint->isChecked() )
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CurvePoint );
+  else if ( radSegmentCentralPoint->isChecked() )
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::SegmentCenter );
+  else
+    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CentralPoint );
+
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::mIntervalUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setIntervalUnit( mIntervalUnitWidget->unit() );
+    mLayer->setIntervalMapUnitScale( mIntervalUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsHashedLineSymbolLayerWidget::mOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
+    mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsHashedLineSymbolLayerWidget::mOffsetAlongLineUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetAlongLineUnit( mOffsetAlongLineUnitWidget->unit() );
+    mLayer->setOffsetAlongLineMapUnitScale( mOffsetAlongLineUnitWidget->getMapUnitScale() );
+  }
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::hashLengthUnitWidgetChanged()
+{
+  if ( mLayer )
+  {
+    mLayer->setHashLengthUnit( mHashLengthUnitWidget->unit() );
+    mLayer->setHashLengthMapUnitScale( mHashLengthUnitWidget->getMapUnitScale() );
+  }
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::averageAngleUnitChanged()
+{
+  if ( mLayer )
+  {
+    mLayer->setAverageAngleUnit( mAverageAngleUnit->unit() );
+    mLayer->setAverageAngleMapUnitScale( mAverageAngleUnit->getMapUnitScale() );
+  }
+  emit changed();
+}
+
+void QgsHashedLineSymbolLayerWidget::setAverageAngle( double val )
+{
+  if ( mLayer )
+  {
+    mLayer->setAverageAngleLength( val );
+    emit changed();
+  }
 }
 
 ///////////
@@ -1867,6 +2252,9 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
   mChangeStrokeColorButton->setAllowOpacity( true );
   mChangeStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
+
+  mFillColorDDBtn->registerLinkedWidget( mChangeColorButton );
+  mStrokeColorDDBtn->registerLinkedWidget( mChangeStrokeColorButton );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
@@ -2103,6 +2491,12 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
+void QgsSvgMarkerSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+  mSvgSourceLineEdit->setMessageBar( context.messageBar() );
+}
+
 void QgsSvgMarkerSymbolLayerWidget::setName( const QModelIndex &idx )
 {
   QString name = idx.data( Qt::UserRole ).toString();
@@ -2305,6 +2699,9 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
   mChangeStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
 
+  mFilColorDDBtn->registerLinkedWidget( mChangeColorButton );
+  mStrokeColorDDBtn->registerLinkedWidget( mChangeStrokeColorButton );
+
   connect( mSvgListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::setFile );
   connect( mSvgTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::populateIcons );
 }
@@ -2363,6 +2760,12 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 QgsSymbolLayer *QgsSVGFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
+}
+
+void QgsSVGFillSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+  mSvgSourceLineEdit->setMessageBar( context.messageBar() );
 }
 
 void QgsSVGFillSymbolLayerWidget::mTextureWidthSpinBox_valueChanged( double d )
@@ -2651,10 +3054,14 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
   connect( mVerticalDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mVerticalDistanceSpinBox_valueChanged );
   connect( mHorizontalDisplacementSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalDisplacementSpinBox_valueChanged );
   connect( mVerticalDisplacementSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementSpinBox_valueChanged );
+  connect( mHorizontalOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalOffsetSpinBox_valueChanged );
+  connect( mVerticalOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mVerticalOffsetSpinBox_valueChanged );
   connect( mHorizontalDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalDistanceUnitWidget_changed );
   connect( mVerticalDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mVerticalDistanceUnitWidget_changed );
   connect( mHorizontalDisplacementUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalDisplacementUnitWidget_changed );
   connect( mVerticalDisplacementUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementUnitWidget_changed );
+  connect( mHorizontalOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalOffsetUnitWidget_changed );
+  connect( mVerticalOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mVerticalOffsetUnitWidget_changed );
   mHorizontalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mVerticalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -2663,6 +3070,10 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mVerticalDisplacementUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mHorizontalOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mVerticalOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 }
 
 
@@ -2674,18 +3085,12 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   }
 
   mLayer = static_cast<QgsPointPatternFillSymbolLayer *>( layer );
-  mHorizontalDistanceSpinBox->blockSignals( true );
-  mHorizontalDistanceSpinBox->setValue( mLayer->distanceX() );
-  mHorizontalDistanceSpinBox->blockSignals( false );
-  mVerticalDistanceSpinBox->blockSignals( true );
-  mVerticalDistanceSpinBox->setValue( mLayer->distanceY() );
-  mVerticalDistanceSpinBox->blockSignals( false );
-  mHorizontalDisplacementSpinBox->blockSignals( true );
-  mHorizontalDisplacementSpinBox->setValue( mLayer->displacementX() );
-  mHorizontalDisplacementSpinBox->blockSignals( false );
-  mVerticalDisplacementSpinBox->blockSignals( true );
-  mVerticalDisplacementSpinBox->setValue( mLayer->displacementY() );
-  mVerticalDisplacementSpinBox->blockSignals( false );
+  whileBlocking( mHorizontalDistanceSpinBox )->setValue( mLayer->distanceX() );
+  whileBlocking( mVerticalDistanceSpinBox )->setValue( mLayer->distanceY() );
+  whileBlocking( mHorizontalDisplacementSpinBox )->setValue( mLayer->displacementX() );
+  whileBlocking( mVerticalDisplacementSpinBox )->setValue( mLayer->displacementY() );
+  whileBlocking( mHorizontalOffsetSpinBox )->setValue( mLayer->offsetX() );
+  whileBlocking( mVerticalOffsetSpinBox )->setValue( mLayer->offsetY() );
 
   mHorizontalDistanceUnitWidget->blockSignals( true );
   mHorizontalDistanceUnitWidget->setUnit( mLayer->distanceXUnit() );
@@ -2703,11 +3108,21 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   mVerticalDisplacementUnitWidget->setUnit( mLayer->displacementYUnit() );
   mVerticalDisplacementUnitWidget->setMapUnitScale( mLayer->displacementYMapUnitScale() );
   mVerticalDisplacementUnitWidget->blockSignals( false );
+  mHorizontalOffsetUnitWidget->blockSignals( true );
+  mHorizontalOffsetUnitWidget->setUnit( mLayer->offsetXUnit() );
+  mHorizontalOffsetUnitWidget->setMapUnitScale( mLayer->offsetXMapUnitScale() );
+  mHorizontalOffsetUnitWidget->blockSignals( false );
+  mVerticalOffsetUnitWidget->blockSignals( true );
+  mVerticalOffsetUnitWidget->setUnit( mLayer->offsetYUnit() );
+  mVerticalOffsetUnitWidget->setMapUnitScale( mLayer->offsetYMapUnitScale() );
+  mVerticalOffsetUnitWidget->blockSignals( false );
 
   registerDataDefinedButton( mHorizontalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceX );
   registerDataDefinedButton( mVerticalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceY );
   registerDataDefinedButton( mHorizontalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementX );
   registerDataDefinedButton( mVerticalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementY );
+  registerDataDefinedButton( mHorizontalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetX );
+  registerDataDefinedButton( mVerticalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetY );
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayerWidget::symbolLayer()
@@ -2747,6 +3162,24 @@ void QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementSpinBox_valueCha
   if ( mLayer )
   {
     mLayer->setDisplacementY( d );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::mHorizontalOffsetSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetX( d );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::mVerticalOffsetSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetY( d );
     emit changed();
   }
 }
@@ -2791,6 +3224,26 @@ void QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementUnitWidget_chang
   }
 }
 
+void QgsPointPatternFillSymbolLayerWidget::mHorizontalOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetXUnit( mHorizontalOffsetUnitWidget->unit() );
+    mLayer->setOffsetXMapUnitScale( mHorizontalOffsetUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::mVerticalOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetYUnit( mVerticalOffsetUnitWidget->unit() );
+    mLayer->setOffsetYMapUnitScale( mVerticalOffsetUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
 /////////////
 
 QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
@@ -2811,8 +3264,10 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  widgetChar = new CharacterWidget;
+
+  widgetChar = new CharacterWidget();
   scrollArea->setWidget( widgetChar );
+  scrollArea->setVerticalOnly( true );
 
   btnColor->setAllowOpacity( true );
   btnColor->setColorDialogTitle( tr( "Select Symbol Fill Color" ) );
@@ -2820,6 +3275,9 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
   btnStrokeColor->setAllowOpacity( true );
   btnStrokeColor->setColorDialogTitle( tr( "Select Symbol Stroke Color" ) );
   btnStrokeColor->setContext( QStringLiteral( "symbology" ) );
+
+  mColorDDBtn->registerLinkedWidget( btnColor );
+  mStrokeColorDDBtn->registerLinkedWidget( btnStrokeColor );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
@@ -2841,6 +3299,8 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
   connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFontMarkerSymbolLayerWidget::setOffset );
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFontMarkerSymbolLayerWidget::setOffset );
   connect( widgetChar, &CharacterWidget::characterSelected, this, &QgsFontMarkerSymbolLayerWidget::setCharacter );
+  connect( mCharLineEdit, &QLineEdit::textChanged, this, &QgsFontMarkerSymbolLayerWidget::setCharacterFromText );
+
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
 
@@ -2863,8 +3323,13 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   widgetChar->blockSignals( true );
   widgetChar->setFont( layerFont );
-  widgetChar->setCharacter( mLayer->character() );
+  if ( mLayer->character().length() == 1 )
+  {
+    widgetChar->setCharacter( mLayer->character().at( 0 ) );
+  }
   widgetChar->blockSignals( false );
+  whileBlocking( mCharLineEdit )->setText( mLayer->character() );
+  mCharPreview->setFont( layerFont );
 
   //block
   whileBlocking( spinOffsetX )->setValue( mLayer->offset().x() );
@@ -2914,6 +3379,7 @@ void QgsFontMarkerSymbolLayerWidget::setFontFamily( const QFont &font )
 {
   mLayer->setFontFamily( font.family() );
   widgetChar->setFont( font );
+  mCharPreview->setFont( font );
   emit changed();
 }
 
@@ -2942,9 +3408,52 @@ void QgsFontMarkerSymbolLayerWidget::setAngle( double angle )
   emit changed();
 }
 
+void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
+{
+  mCharPreview->setText( text );
+
+  if ( text.isEmpty() )
+    return;
+
+  // take the last character of a string for a better experience when users cycle through several characters on their keyboard
+  QString character = text;
+  if ( text.contains( QRegularExpression( QStringLiteral( "^0x[0-9a-fA-F]{1,4}$" ) ) ) )
+  {
+    bool ok = false;
+    unsigned int value = text.toUInt( &ok, 0 );
+    if ( ok )
+    {
+      character = QChar( value );
+      mCharPreview->setText( character );
+    }
+  }
+
+  if ( character != mLayer->character() )
+  {
+    mLayer->setCharacter( character );
+    if ( mLayer->character().length() == 1 )
+    {
+      whileBlocking( widgetChar )->setCharacter( mLayer->character().at( 0 ) );
+    }
+    else
+    {
+      widgetChar->clearCharacter();
+    }
+    emit changed();
+  }
+}
+
 void QgsFontMarkerSymbolLayerWidget::setCharacter( QChar chr )
 {
+  if ( mLayer->character().length() > 1 || QGuiApplication::keyboardModifiers() & Qt::ControlModifier )
+  {
+    mCharLineEdit->insert( chr );
+    return;
+  }
+
   mLayer->setCharacter( chr );
+  whileBlocking( mCharLineEdit )->setText( chr );
+  mCharPreview->setText( chr );
   emit changed();
 }
 
@@ -3072,6 +3581,280 @@ void QgsCentroidFillSymbolLayerWidget::mDrawAllPartsCheckBox_stateChanged( int s
   emit changed();
 }
 
+///////////
+
+QgsRasterMarkerSymbolLayerWidget::QgsRasterMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+{
+  mLayer = nullptr;
+
+  setupUi( this );
+
+  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
+
+  connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterMarkerSymbolLayerWidget::imageSourceChanged );
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
+  connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setAngle );
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterMarkerSymbolLayerWidget::mSizeUnitWidget_changed );
+  connect( mWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setWidth );
+  connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setHeight );
+  connect( mLockAspectRatio, static_cast < void ( QgsRatioLockButton::* )( bool ) > ( &QgsRatioLockButton::lockChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setLockAspectRatio );
+
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  mSpinOffsetX->setClearValue( 0.0 );
+  mSpinOffsetY->setClearValue( 0.0 );
+  mRotationSpinBox->setClearValue( 0.0 );
+
+  connect( mSpinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setOffset );
+  connect( mSpinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setOffset );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsRasterMarkerSymbolLayerWidget::setOpacity );
+
+  connect( mHorizontalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged );
+  connect( mVerticalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged );
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  if ( layer->layerType() != QLatin1String( "RasterMarker" ) )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = static_cast<QgsRasterMarkerSymbolLayer *>( layer );
+
+  // set values
+  whileBlocking( mImageSourceLineEdit )->setSource( mLayer->path() );
+
+  whileBlocking( mWidthSpinBox )->setValue( mLayer->size() );
+  bool preservedAspectRatio = mLayer->preservedAspectRatio();
+  mHeightSpinBox->blockSignals( true );
+  if ( preservedAspectRatio )
+  {
+    mHeightSpinBox->setValue( mLayer->size() );
+  }
+  else
+  {
+    mHeightSpinBox->setValue( mLayer->size() * mLayer->fixedAspectRatio() );
+  }
+  mHeightSpinBox->setEnabled( mLayer->defaultAspectRatio() > 0.0 );
+  mHeightSpinBox->blockSignals( false );
+  whileBlocking( mLockAspectRatio )->setLocked( preservedAspectRatio );
+
+  whileBlocking( mRotationSpinBox )->setValue( mLayer->angle() );
+  whileBlocking( mOpacityWidget )->setOpacity( mLayer->opacity() );
+
+  whileBlocking( mSpinOffsetX )->setValue( mLayer->offset().x() );
+  whileBlocking( mSpinOffsetY )->setValue( mLayer->offset().y() );
+
+  mSizeUnitWidget->blockSignals( true );
+  mSizeUnitWidget->setUnit( mLayer->sizeUnit() );
+  mSizeUnitWidget->setMapUnitScale( mLayer->sizeMapUnitScale() );
+  mSizeUnitWidget->blockSignals( false );
+  mOffsetUnitWidget->blockSignals( true );
+  mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  mOffsetUnitWidget->blockSignals( false );
+
+  //anchor points
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyName );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+
+  updatePreviewImage();
+}
+
+QgsSymbolLayer *QgsRasterMarkerSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+  mImageSourceLineEdit->setMessageBar( context.messageBar() );
+}
+
+void QgsRasterMarkerSymbolLayerWidget::imageSourceChanged( const QString &text )
+{
+  mLayer->setPath( text );
+  updatePreviewImage();
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::updatePreviewImage()
+{
+  bool fitsInCache = false;
+  QImage image = QgsApplication::imageCache()->pathAsImage( mLayer->path(), QSize( 150, 150 ), true, 1.0, fitsInCache );
+  if ( image.isNull() )
+  {
+    mLabelImagePreview->setPixmap( QPixmap() );
+    return;
+  }
+
+  QImage previewImage( 150, 150, QImage::Format_ARGB32 );
+  previewImage.fill( Qt::transparent );
+  QRect imageRect( ( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
+  QPainter p;
+  p.begin( &previewImage );
+  //draw a checkerboard background
+  uchar pixDataRGB[] = { 150, 150, 150, 150,
+                         100, 100, 100, 150,
+                         100, 100, 100, 150,
+                         150, 150, 150, 150
+                       };
+  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
+  QBrush checkerBrush;
+  checkerBrush.setTexture( pix );
+  p.fillRect( imageRect, checkerBrush );
+
+  if ( mLayer->opacity() < 1.0 )
+  {
+    p.setOpacity( mLayer->opacity() );
+  }
+
+  p.drawImage( imageRect.left(), imageRect.top(), image );
+  p.end();
+  mLabelImagePreview->setPixmap( QPixmap::fromImage( previewImage ) );
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setWidth()
+{
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  double fixedAspectRatio = 0.0;
+  mHeightSpinBox->blockSignals( true );
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    mHeightSpinBox->setValue( mWidthSpinBox->value() );
+  }
+  else if ( mLockAspectRatio->locked() )
+  {
+    mHeightSpinBox->setValue( mWidthSpinBox->value() * defaultAspectRatio );
+  }
+  else
+  {
+    fixedAspectRatio = mHeightSpinBox->value() / mWidthSpinBox->value();
+  }
+  mHeightSpinBox->blockSignals( false );
+  mLayer->setSize( mWidthSpinBox->value() );
+  mLayer->setFixedAspectRatio( fixedAspectRatio );
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setHeight()
+{
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  double fixedAspectRatio = 0.0;
+  mWidthSpinBox->blockSignals( true );
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    mWidthSpinBox->setValue( mHeightSpinBox->value() );
+  }
+  else if ( mLockAspectRatio->locked() )
+  {
+    mWidthSpinBox->setValue( mHeightSpinBox->value() / defaultAspectRatio );
+  }
+  else
+  {
+    fixedAspectRatio = mHeightSpinBox->value() / mWidthSpinBox->value();
+  }
+  mWidthSpinBox->blockSignals( false );
+  mLayer->setSize( mWidthSpinBox->value() );
+  mLayer->setFixedAspectRatio( fixedAspectRatio );
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setLockAspectRatio( const bool locked )
+{
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    whileBlocking( mLockAspectRatio )->setLocked( true );
+  }
+  else if ( locked )
+  {
+    mLayer->setFixedAspectRatio( 0.0 );
+    setWidth();
+  }
+  else
+  {
+    mLayer->setFixedAspectRatio( mHeightSpinBox->value() / mWidthSpinBox->value() );
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setAngle()
+{
+  mLayer->setAngle( mRotationSpinBox->value() );
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setOpacity( double value )
+{
+  mLayer->setOpacity( value );
+  emit changed();
+  updatePreviewImage();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setOffset()
+{
+  mLayer->setOffset( QPointF( mSpinOffsetX->value(), mSpinOffsetY->value() ) );
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mSizeUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setSizeUnit( mSizeUnitWidget->unit() );
+    mLayer->setSizeMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
+    mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
 ///////////////
 
 QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
@@ -3079,8 +3862,10 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
 {
   mLayer = nullptr;
   setupUi( this );
-  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsRasterFillSymbolLayerWidget::mBrowseToolButton_clicked );
-  connect( mImageLineEdit, &QLineEdit::editingFinished, this, &QgsRasterFillSymbolLayerWidget::mImageLineEdit_editingFinished );
+
+  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
+  connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterFillSymbolLayerWidget::imageSourceChanged );
+
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterFillSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::mRotationSpinBox_valueChanged );
   connect( mWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterFillSymbolLayerWidget::mWidthUnitWidget_changed );
@@ -3120,9 +3905,7 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  mImageLineEdit->blockSignals( true );
-  mImageLineEdit->setText( mLayer->imageFilePath() );
-  mImageLineEdit->blockSignals( false );
+  whileBlocking( mImageSourceLineEdit )->setSource( mLayer->imageFilePath() );
 
   cboCoordinateMode->blockSignals( true );
   switch ( mLayer->coordinateMode() )
@@ -3136,31 +3919,22 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
       break;
   }
   cboCoordinateMode->blockSignals( false );
-  mOpacityWidget->blockSignals( true );
-  mOpacityWidget->setOpacity( mLayer->opacity() );
-  mOpacityWidget->blockSignals( false );
-  mRotationSpinBox->blockSignals( true );
-  mRotationSpinBox->setValue( mLayer->angle() );
-  mRotationSpinBox->blockSignals( false );
+  whileBlocking( mOpacityWidget )->setOpacity( mLayer->opacity() );
+  whileBlocking( mRotationSpinBox )->setValue( mLayer->angle() );
 
-  mSpinOffsetX->blockSignals( true );
-  mSpinOffsetX->setValue( mLayer->offset().x() );
-  mSpinOffsetX->blockSignals( false );
-  mSpinOffsetY->blockSignals( true );
-  mSpinOffsetY->setValue( mLayer->offset().y() );
-  mSpinOffsetY->blockSignals( false );
+  whileBlocking( mSpinOffsetX )->setValue( mLayer->offset().x() );
+  whileBlocking( mSpinOffsetY )->setValue( mLayer->offset().y() );
   mOffsetUnitWidget->blockSignals( true );
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   mOffsetUnitWidget->blockSignals( false );
 
-  mWidthSpinBox->blockSignals( true );
-  mWidthSpinBox->setValue( mLayer->width() );
-  mWidthSpinBox->blockSignals( false );
+  whileBlocking( mWidthSpinBox )->setValue( mLayer->width() );
   mWidthUnitWidget->blockSignals( true );
   mWidthUnitWidget->setUnit( mLayer->widthUnit() );
   mWidthUnitWidget->setMapUnitScale( mLayer->widthMapUnitScale() );
   mWidthUnitWidget->blockSignals( false );
+
   updatePreviewImage();
 
   registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
@@ -3174,62 +3948,10 @@ QgsSymbolLayer *QgsRasterFillSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
-void QgsRasterFillSymbolLayerWidget::mBrowseToolButton_clicked()
+void QgsRasterFillSymbolLayerWidget::imageSourceChanged( const QString &text )
 {
-  QgsSettings s;
-  QString openDir;
-  QString lineEditText = mImageLineEdit->text();
-  if ( !lineEditText.isEmpty() )
-  {
-    QFileInfo openDirFileInfo( lineEditText );
-    openDir = openDirFileInfo.path();
-  }
-
-  if ( openDir.isEmpty() )
-  {
-    openDir = s.value( QStringLiteral( "/UI/lastRasterFillImageDir" ), QDir::homePath() ).toString();
-  }
-
-  //show file dialog
-  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select Image File" ), openDir );
-  if ( !filePath.isNull() )
-  {
-    //check if file exists
-    QFileInfo fileInfo( filePath );
-    if ( !fileInfo.exists() || !fileInfo.isReadable() )
-    {
-      QMessageBox::critical( nullptr, QStringLiteral( "Select Image File" ), QStringLiteral( "Error, file does not exist or is not readable." ) );
-      return;
-    }
-
-    s.setValue( QStringLiteral( "/UI/lastRasterFillImageDir" ), fileInfo.absolutePath() );
-    mImageLineEdit->setText( filePath );
-    mImageLineEdit_editingFinished();
-  }
-}
-
-void QgsRasterFillSymbolLayerWidget::mImageLineEdit_editingFinished()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QFileInfo fi( mImageLineEdit->text() );
-  if ( !fi.exists() )
-  {
-    QUrl url( mImageLineEdit->text() );
-    if ( !url.isValid() )
-    {
-      return;
-    }
-  }
-
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-  mLayer->setImageFilePath( mImageLineEdit->text() );
+  mLayer->setImageFilePath( text );
   updatePreviewImage();
-  QApplication::restoreOverrideCursor();
-
   emit changed();
 }
 
@@ -3309,24 +4031,14 @@ void QgsRasterFillSymbolLayerWidget::mWidthSpinBox_valueChanged( double d )
   emit changed();
 }
 
-
 void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 {
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QImage image( mLayer->imageFilePath() );
+  bool fitsInCache = false;
+  QImage image = QgsApplication::imageCache()->pathAsImage( mLayer->imageFilePath(), QSize( 150, 150 ), true, 1.0, fitsInCache );
   if ( image.isNull() )
   {
     mLabelImagePreview->setPixmap( QPixmap() );
     return;
-  }
-
-  if ( image.height() > 150 || image.width() > 150 )
-  {
-    image = image.scaled( 150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation );
   }
 
   QImage previewImage( 150, 150, QImage::Format_ARGB32 );

@@ -767,7 +767,7 @@ void GlobePlugin::setupProxy()
       qputenv( "OSGEARTH_CURL_PROXYAUTH", auth.toLocal8Bit() );
     }
     //TODO: settings.value("/proxyType")
-    //TODO: URL exlusions
+    //TODO: URL exclusions
     osgEarth::HTTPClient::setProxySettings( proxySettings );
   }
   settings.endGroup();
@@ -913,7 +913,7 @@ void GlobePlugin::updateLayers()
     {
       if ( mapLayer )
         disconnect( mapLayer, SIGNAL( repaintRequested() ), this, SLOT( layerChanged() ) );
-      if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
+      if ( qobject_cast<QgsVectorLayer *>( mapLayer ) )
         disconnect( static_cast<QgsVectorLayer *>( mapLayer ), SIGNAL( layerTransparencyChanged( int ) ), this, SLOT( layerChanged() ) );
     }
     osgEarth::ModelLayerVector modelLayers;
@@ -927,7 +927,7 @@ void GlobePlugin::updateLayers()
       QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( QString::fromStdString( modelLayer->getName() ) );
       if ( mapLayer )
         disconnect( mapLayer, SIGNAL( repaintRequested() ), this, SLOT( layerChanged() ) );
-      if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
+      if ( qobject_cast<QgsVectorLayer *>( mapLayer ) )
         disconnect( static_cast<QgsVectorLayer *>( mapLayer ), SIGNAL( layerTransparencyChanged( int ) ), this, SLOT( layerChanged() ) );
       if ( !selectedLayerIds.contains( QString::fromStdString( modelLayer->getName() ) ) )
         mMapNode->getMap()->removeModelLayer( modelLayer );
@@ -939,7 +939,7 @@ void GlobePlugin::updateLayers()
       connect( mapLayer, SIGNAL( repaintRequested() ), this, SLOT( layerChanged() ) );
 
       QgsGlobeVectorLayerConfig *layerConfig = 0;
-      if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
+      if ( qobject_cast<QgsVectorLayer *>( mapLayer ) )
       {
         layerConfig = QgsGlobeVectorLayerConfig::getConfig( static_cast<QgsVectorLayer *>( mapLayer ) );
         connect( static_cast<QgsVectorLayer *>( mapLayer ), SIGNAL( layerTransparencyChanged( int ) ), this, SLOT( layerChanged() ) );
@@ -985,7 +985,7 @@ void GlobePlugin::layerChanged( QgsMapLayer *mapLayer )
   if ( mMapNode )
   {
     QgsGlobeVectorLayerConfig *layerConfig = 0;
-    if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
+    if ( qobject_cast<QgsVectorLayer *>( mapLayer ) )
     {
       layerConfig = QgsGlobeVectorLayerConfig::getConfig( static_cast<QgsVectorLayer *>( mapLayer ) );
     }

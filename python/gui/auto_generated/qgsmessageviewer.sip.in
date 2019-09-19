@@ -21,7 +21,6 @@ A generic message view for displaying QGIS messages.
 %End
   public:
     QgsMessageViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool deleteOnClose = true );
-    ~QgsMessageViewer();
 
     virtual void setMessage( const QString &message, MessageType msgType );
 

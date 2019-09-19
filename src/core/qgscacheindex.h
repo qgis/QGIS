@@ -63,16 +63,16 @@ class CORE_EXPORT QgsAbstractCacheIndex
 
     /**
      * Is called, when a feature request is issued on a cached layer.
-     * If this cache index is able to completely answer the feature request, it will return true
+     * If this cache index is able to completely answer the feature request, it will return TRUE
      * and set the iterator to a valid iterator over the cached features. If it is not able
-     * it will return false.
+     * it will return FALSE.
      *
      * \param featureIterator  A reference to a QgsFeatureIterator. A valid featureIterator will
      *                         be assigned in case this index is able to answer the request and the return
-     *                         value is true.
+     *                         value is TRUE.
      * \param featureRequest   The feature request, for which this index is queried.
      *
-     * \returns   True, if this index holds the information to answer the request.
+     * \returns   TRUE, if this index holds the information to answer the request.
      *
      */
     virtual bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest ) = 0;

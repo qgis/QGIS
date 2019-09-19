@@ -43,7 +43,7 @@ Opens an instance of a standard QGIS dialog. Depending on the window manager
 implementation, this may either open a new instance of the dialog or bring an
 existing instance to the foreground.
 
-Returns the dialog if shown, or None if the dialog either could not be
+Returns the dialog if shown, or ``None`` if the dialog either could not be
 created or is not supported by the window manager implementation.
 %End
 

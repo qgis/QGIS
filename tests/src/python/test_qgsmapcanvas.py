@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -349,16 +347,47 @@ class TestQgsMapCanvas(unittest.TestCase):
         print((self.report))
         return result
 
+    def testSaveCanvasVariablesToProject(self):
+        """
+        Ensure that temporary canvas atlas variables are not written to project
+        """
+        c1 = QgsMapCanvas()
+        c1.setObjectName('c1')
+        c1.expressionContextScope().setVariable('atlas_featurenumber', 1111)
+        c1.expressionContextScope().setVariable('atlas_pagename', 'bb')
+        c1.expressionContextScope().setVariable('atlas_feature', QgsFeature(1))
+        c1.expressionContextScope().setVariable('atlas_featureid', 22)
+        c1.expressionContextScope().setVariable('atlas_geometry', QgsGeometry.fromWkt('Point( 1 2 )'))
+        c1.expressionContextScope().setVariable('vara', 1111)
+        c1.expressionContextScope().setVariable('varb', 'bb')
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("qgis")
+        doc.appendChild(elem)
+        c1.writeProject(doc)
+
+        c2 = QgsMapCanvas()
+        c2.setObjectName('c1')
+        c2.readProject(doc)
+
+        self.assertCountEqual(c2.expressionContextScope().variableNames(), ['vara', 'varb'])
+        self.assertEqual(c2.expressionContextScope().variable('vara'), 1111)
+        self.assertEqual(c2.expressionContextScope().variable('varb'), 'bb')
+
     def testSaveMultipleCanvasesToProject(self):
         # test saving/restoring canvas state to project with multiple canvases
         c1 = QgsMapCanvas()
         c1.setObjectName('c1')
         c1.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         c1.setRotation(45)
+        c1.expressionContextScope().setVariable('vara', 1111)
+        c1.expressionContextScope().setVariable('varb', 'bb')
         c2 = QgsMapCanvas()
         c2.setObjectName('c2')
         c2.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         c2.setRotation(65)
+        c2.expressionContextScope().setVariable('vara', 2222)
+        c2.expressionContextScope().setVariable('varc', 'cc')
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("qgis")
@@ -375,8 +404,14 @@ class TestQgsMapCanvas(unittest.TestCase):
 
         self.assertEqual(c3.mapSettings().destinationCrs().authid(), 'EPSG:3111')
         self.assertEqual(c3.rotation(), 45)
+        self.assertEqual(set(c3.expressionContextScope().variableNames()), {'vara', 'varb'})
+        self.assertEqual(c3.expressionContextScope().variable('vara'), 1111)
+        self.assertEqual(c3.expressionContextScope().variable('varb'), 'bb')
         self.assertEqual(c4.mapSettings().destinationCrs().authid(), 'EPSG:4326')
         self.assertEqual(c4.rotation(), 65)
+        self.assertEqual(set(c4.expressionContextScope().variableNames()), {'vara', 'varc'})
+        self.assertEqual(c4.expressionContextScope().variable('vara'), 2222)
+        self.assertEqual(c4.expressionContextScope().variable('varc'), 'cc')
 
 
 if __name__ == '__main__':

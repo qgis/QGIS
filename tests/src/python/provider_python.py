@@ -12,8 +12,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-03-18'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 from qgis.core import (
@@ -424,3 +422,6 @@ class PyProvider(QgsVectorDataProvider):
 
     def crs(self):
         return self._crs
+
+    def handlePostCloneOperations(self, source):
+        self._features = source._features

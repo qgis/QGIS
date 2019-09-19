@@ -2921,7 +2921,7 @@ def my_form_open(dialog, layer, feature):
         <LabelFont style="" description="DejaVu Sans,10,-1,5,50,0,0,0,0,0"/>
         <FontColor red="0" green="0" blue="0"/>
       </LayoutItem>
-      <LayoutItem itemRotation="0" referencePoint="0" drawCanvasItems="true" followPreset="false" position="21.3911,46,mm" positionOnPage="21.3911,46,mm" followPresetName="" frame="false" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" keepLayerSet="false" background="true" positionLock="false" blendMode="0" size="242,104,mm" opacity="1" outlineWidthM="0.3,mm" groupUuid="" zValue="3" excludeFromExports="0" type="65639" templateUuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" frameJoinStyle="miter" visibility="1" mapRotation="0" id="">
+      <LayoutItem itemRotation="0" referencePoint="0" drawCanvasItems="true" followPreset="false" position="21.3911,46,mm" positionOnPage="21.3911,46,mm" followPresetName="" frame="false" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" keepLayerSet="false" background="true" positionLock="false" blendMode="0" size="242,104,mm" opacity="1" outlineWidthM="0.3,mm" groupUuid="" zValue="3" excludeFromExports="0" type="65639" templateUuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" frameJoinStyle="miter" visibility="1" mapRotation="0" mapFlags="1" id="">
         <FrameColor alpha="255" red="0" green="0" blue="0"/>
         <BackgroundColor alpha="255" red="255" green="255" blue="255"/>
         <LayoutObject>

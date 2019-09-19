@@ -17,7 +17,7 @@
 #define QGSDATETIMEEDIT_H
 
 #include <QDateTimeEdit>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 /**
@@ -36,11 +36,23 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
   public:
 
-    //! Constructor for QgsDateTimeEdit
+    /**
+     * Constructor for QgsDateTimeEdit
+     * The current date and time is used by default.
+     * The widget is allowing null by default.
+     */
     explicit QgsDateTimeEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Determines if the widget allows setting null date/time.
+    /**
+     * Determines if the widget allows setting null date/time.
+     * \see allowNull
+     */
     void setAllowNull( bool allowNull );
+
+    /**
+     * If the widget allows setting null date/time.
+     * \see setAllowNull
+     */
     bool allowNull() const {return mAllowNull;}
 
     /**
@@ -51,7 +63,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     /**
      * \brief dateTime returns the date time which can eventually be a null date/time
-     * \note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
+     * \note  You mustn't call date() or time() because they can't return a NULL value.
+     * \note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit
      */
     QDateTime dateTime() const;
 

@@ -20,13 +20,12 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 
-#include <QStringList>
 
 void QgsAccessControl::resolveFilterFeatures( const QList<QgsMapLayer *> &layers )
 {
   for ( QgsMapLayer *l : layers )
   {
-    if ( l->type() == QgsMapLayer::LayerType::VectorLayer )
+    if ( l->type() == QgsMapLayerType::VectorLayer )
     {
       const QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
       mFilterFeaturesExpressions[vl->id()] = resolveFilterFeatures( vl );

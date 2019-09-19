@@ -16,104 +16,26 @@
  ***************************************************************************/
 
 #include "qgsmeshlayerutils.h"
-
-#include "qgsmeshdataprovider.h"
+#include "qgsmeshtimesettings.h"
 
 #include <limits>
+#include <QTime>
+#include <QDateTime>
 
 ///@cond PRIVATE
 
-void QgsMeshLayerUtils::calculateMinimumMaximum( double &min, double &max, const QVector<double> &arr )
+QVector<double> QgsMeshLayerUtils::calculateMagnitudes( const QgsMeshDataBlock &block )
 {
-  bool found = false;
+  Q_ASSERT( QgsMeshDataBlock::ActiveFlagInteger != block.type() );
+  int count = block.count();
+  QVector<double> ret( count );
 
-  min = std::numeric_limits<double>::max();
-  max = std::numeric_limits<double>::min();
-
-  for ( const double val : arr )
-  {
-    if ( !std::isnan( val ) )
-    {
-      found = true;
-      if ( val < min )
-        min = val;
-      if ( val > max )
-        max = val;
-    }
-  }
-
-  if ( !found )
-  {
-    min = std::numeric_limits<double>::quiet_NaN();
-    max = std::numeric_limits<double>::quiet_NaN();
-  }
-}
-
-void QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( double &min, double &max, QgsMeshDataProvider *provider, int groupIndex )
-{
-  if ( groupIndex < 0 || !provider || groupIndex >= provider->datasetGroupCount() )
-  {
-    min = std::numeric_limits<double>::quiet_NaN();
-    max = std::numeric_limits<double>::quiet_NaN();
-    return;
-  }
-
-  min = std::numeric_limits<double>::max();
-  max = std::numeric_limits<double>::min();
-
-  int count = provider->datasetCount( groupIndex );
   for ( int i = 0; i < count; ++i )
   {
-    double dMin, dMax;
-    calculateMinMaxForDataset( dMin, dMax, provider, QgsMeshDatasetIndex( groupIndex, i ) );
-    min = std::min( min, dMin );
-    max = std::max( max, dMax );
+    double mag = block.value( i ).scalar();
+    ret[i] = mag;
   }
-}
-
-void QgsMeshLayerUtils::calculateMinMaxForDataset( double &min, double &max, QgsMeshDataProvider *provider, QgsMeshDatasetIndex index )
-{
-  if ( !index.isValid() || !provider )
-  {
-    min = std::numeric_limits<double>::quiet_NaN();
-    max = std::numeric_limits<double>::quiet_NaN();
-    return;
-  }
-
-  const QgsMeshDatasetGroupMetadata metadata = provider->datasetGroupMetadata( index );
-  bool onVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-  int count;
-  if ( onVertices )
-    count = provider->vertexCount();
-  else
-    count = provider->faceCount();
-
-  bool firstIteration = true;
-  for ( int i = 0; i < count; ++i )
-  {
-    double v = provider->datasetValue( index, i ).scalar();
-
-    if ( std::isnan( v ) )
-      continue;
-    if ( firstIteration )
-    {
-      firstIteration = false;
-      min = v;
-      max = v;
-    }
-    else
-    {
-      if ( v < min )
-      {
-        min = v;
-      }
-      if ( v > max )
-      {
-        max = v;
-      }
-    }
-  }
-
+  return ret;
 }
 
 void QgsMeshLayerUtils::boundingBoxToScreenRectangle( const QgsMapToPixel &mtp,
@@ -201,11 +123,115 @@ double QgsMeshLayerUtils::interpolateFromFacesData( const QgsPointXY &p1, const 
 
 QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
 {
-  QgsRectangle bbox;
-  bbox.combineExtentWith( p1.x(), p1.y() );
-  bbox.combineExtentWith( p2.x(), p2.y() );
-  bbox.combineExtentWith( p3.x(), p3.y() );
+  // p1
+  double xMin = p1.x();
+  double xMax = p1.x();
+  double yMin = p1.y();
+  double yMax = p1.y();
+
+  //p2
+  xMin = ( ( xMin < p2.x() ) ? xMin : p2.x() );
+  xMax = ( ( xMax > p2.x() ) ? xMax : p2.x() );
+  yMin = ( ( yMin < p2.y() ) ? yMin : p2.y() );
+  yMax = ( ( yMax > p2.y() ) ? yMax : p2.y() );
+
+  // p3
+  xMin = ( ( xMin < p3.x() ) ? xMin : p3.x() );
+  xMax = ( ( xMax > p3.x() ) ? xMax : p3.x() );
+  yMin = ( ( yMin < p3.y() ) ? yMin : p3.y() );
+  yMax = ( ( yMax > p3.y() ) ? yMax : p3.y() );
+
+  QgsRectangle bbox( xMin,  yMin,  xMax,  yMax );
   return bbox;
+}
+
+QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &settings )
+{
+  QString ret;
+  if ( settings.useAbsoluteTime() )
+  {
+    QString format( settings.absoluteTimeFormat() );
+    QDateTime dateTime( settings.absoluteTimeReferenceTime() );
+    int seconds = static_cast<int>( hours * 3600.0 );
+    dateTime = dateTime.addSecs( seconds );
+    ret = dateTime.toString( format );
+    if ( ret.isEmpty() ) // error
+      ret = dateTime.toString();
+  }
+  else
+  {
+    QString format( settings.relativeTimeFormat() );
+    format = format.trimmed();
+    hours = hours + settings.relativeTimeOffsetHours();
+    int totalHours = static_cast<int>( hours );
+
+    if ( format == QStringLiteral( "hh:mm:ss.zzz" ) )
+    {
+      int ms = static_cast<int>( hours * 3600.0 * 1000 );
+      int seconds = ms / 1000;
+      int z = ms % 1000;
+      int m = seconds / 60;
+      int s = seconds % 60;
+      int h = m / 60;
+      m = m % 60;
+      ret = QStringLiteral( "%1:%2:%3.%4" ).
+            arg( h, 2, 10, QLatin1Char( '0' ) ).
+            arg( m, 2, 10, QLatin1Char( '0' ) ).
+            arg( s, 2, 10, QLatin1Char( '0' ) ).
+            arg( z, 3, 10, QLatin1Char( '0' ) );
+    }
+    else if ( format == QStringLiteral( "hh:mm:ss" ) )
+    {
+      int seconds = static_cast<int>( hours * 3600.0 );
+      int m = seconds / 60;
+      int s = seconds % 60;
+      int h = m / 60;
+      m = m % 60;
+      ret = QStringLiteral( "%1:%2:%3" ).
+            arg( h, 2, 10, QLatin1Char( '0' ) ).
+            arg( m, 2, 10, QLatin1Char( '0' ) ).
+            arg( s, 2, 10, QLatin1Char( '0' ) );
+
+    }
+    else if ( format == QStringLiteral( "d hh:mm:ss" ) )
+    {
+      int seconds = static_cast<int>( hours * 3600.0 );
+      int m = seconds / 60;
+      int s = seconds % 60;
+      int h = m / 60;
+      m = m % 60;
+      int d = totalHours / 24;
+      h = totalHours % 24;
+      ret = QStringLiteral( "%1 d %2:%3:%4" ).
+            arg( d ).
+            arg( h, 2, 10, QLatin1Char( '0' ) ).
+            arg( m, 2, 10, QLatin1Char( '0' ) ).
+            arg( s, 2, 10, QLatin1Char( '0' ) );
+    }
+    else if ( format == QStringLiteral( "d hh" ) )
+    {
+      int d = totalHours / 24;
+      int h = totalHours % 24;
+      ret = QStringLiteral( "%1 d %2" ).
+            arg( d ).
+            arg( h );
+    }
+    else if ( format == QStringLiteral( "d" ) )
+    {
+      int d = totalHours / 24;
+      ret = QStringLiteral( "%1" ).arg( d );
+    }
+    else if ( format == QStringLiteral( "ss" ) )
+    {
+      int seconds = static_cast<int>( hours * 3600.0 );
+      ret = QStringLiteral( "%1" ).arg( seconds );
+    }
+    else     // "hh"
+    {
+      ret = QStringLiteral( "%1" ).arg( hours );
+    }
+  }
+  return ret;
 }
 
 ///@endcond

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '11/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
@@ -31,6 +29,7 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsRectangle,
                        QgsLayoutItemPage,
                        QgsLayoutItemMap,
+                       QgsLayoutItemScaleBar,
                        QgsLayoutPoint,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
@@ -40,6 +39,7 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsCoordinateReferenceSystem,
                        QgsPrintLayout,
                        QgsSingleSymbolRenderer,
+                       QgsRenderContext,
                        QgsReport)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt, QDateTime, QDate, QTime, QTimeZone
 from qgis.PyQt.QtGui import QImage, QPainter
@@ -463,6 +463,72 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertEqual(metadata['SUBJECT'], 'proj abstract')
         self.assertEqual(metadata['TITLE'], 'proj title')
 
+    def testExportToPdfGeoreference(self):
+        md = QgsProject.instance().metadata()
+        md.setTitle('proj title')
+        md.setAuthor('proj author')
+        md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
+        md.setIdentifier('proj identifier')
+        md.setAbstract('proj abstract')
+        md.setKeywords({'kw': ['kw1', 'kw2'], 'KWx': ['kw3', 'kw4']})
+        QgsProject.instance().setMetadata(md)
+
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add some items
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(30, 60, 200, 100))
+        extent = QgsRectangle(333218, 1167809, 348781, 1180875)
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
+        map.setExtent(extent)
+        l.addLayoutItem(map)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.dpi = 96
+        settings.rasterizeWholeImage = False
+        settings.forceVectorOutput = False
+        settings.appendGeoreference = True
+        settings.exportMetadata = False
+
+        pdf_file_path = os.path.join(self.basetestpath, 'test_exporttopdf_georeference.pdf')
+        self.assertEqual(exporter.exportToPdf(pdf_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(pdf_file_path))
+
+        d = gdal.Open(pdf_file_path)
+
+        # check if georeferencing was successful
+        geoTransform = d.GetGeoTransform()
+        self.assertAlmostEqual(geoTransform[0], 330883.5499999996, 4)
+        self.assertAlmostEqual(geoTransform[1], 13.184029109934016, 4)
+        self.assertAlmostEqual(geoTransform[2], 0.0, 4)
+        self.assertAlmostEqual(geoTransform[3], 1185550.768915511, 4)
+        self.assertAlmostEqual(geoTransform[4], 0.0, 4)
+        self.assertAlmostEqual(geoTransform[5], -13.183886222186642, 4)
+
+        # check that the metadata has _not_ been added to the exported PDF
+        metadata = d.GetMetadata()
+        self.assertFalse('AUTHOR' in metadata)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.dpi = 96
+        settings.rasterizeWholeImage = False
+        settings.forceVectorOutput = False
+        settings.appendGeoreference = False
+        settings.exportMetadata = False
+
+        pdf_file_path = os.path.join(self.basetestpath, 'test_exporttopdf_nogeoreference.pdf')
+        self.assertEqual(exporter.exportToPdf(pdf_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(pdf_file_path))
+
+        d = gdal.Open(pdf_file_path)
+        # check that georeference information has _not_ been added to the exported PDF
+        self.assertEqual(d.GetGeoTransform(), (0.0, 1.0, 0.0, 0.0, 0.0, 1.0))
+
     def testExportToPdfSkipFirstPage(self):
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
@@ -614,6 +680,53 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
         for f in [svg_file_path, svg_file_path_2]:
             checkMetadata(f, False)
+
+    def testExportToSvgTextRenderFormat(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add a map and scalebar
+        mapitem = QgsLayoutItemMap(l)
+        mapitem.attemptSetSceneRect(QRectF(110, 120, 200, 250))
+        mapitem.zoomToExtent(QgsRectangle(1, 1, 10, 10))
+        mapitem.setScale(666)  # unlikely to appear in the SVG by accident... unless... oh no! RUN!
+        l.addItem(mapitem)
+
+        item1 = QgsLayoutItemScaleBar(l)
+        item1.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        item1.setLinkedMap(mapitem)
+        item1.setStyle('Numeric')
+        l.addItem(item1)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.SvgExportSettings()
+        settings.dpi = 80
+        settings.forceVectorOutput = False
+        settings.exportMetadata = True
+        settings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+
+        svg_file_path = os.path.join(self.basetestpath, 'test_exporttosvgtextformattext.svg')
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(svg_file_path))
+
+        # expect svg to contain a text object with the scale
+        with open(svg_file_path, 'r') as f:
+            lines = ''.join(f.readlines())
+        self.assertIn('<text', lines)
+        self.assertIn('>1:666<', lines)
+
+        # force use of outlines
+        os.unlink(svg_file_path)
+        settings.textRenderFormat = QgsRenderContext.TextFormatAlwaysOutlines
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(svg_file_path))
+
+        # expect svg NOT to contain a text object with the scale
+        with open(svg_file_path, 'r') as f:
+            lines = ''.join(f.readlines())
+        self.assertNotIn('<text', lines)
+        self.assertNotIn('>1:666<', lines)
 
     def testPrint(self):
         l = QgsLayout(QgsProject.instance())

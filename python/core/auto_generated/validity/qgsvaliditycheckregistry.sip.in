@@ -1,0 +1,80 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/validity/qgsvaliditycheckregistry.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsValidityCheckRegistry
+{
+%Docstring
+This class keeps a list of QgsAbstractValidityCheck checks which can be used when
+performing validity checks.
+
+QgsValidityCheckRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.validityCheckRegistry()`
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsvaliditycheckregistry.h"
+%End
+  public:
+
+    QgsValidityCheckRegistry();
+
+    ~QgsValidityCheckRegistry();
+
+
+    QList<const QgsAbstractValidityCheck *> checks() const;
+%Docstring
+Returns the list of available checks.
+%End
+
+    QList<const QgsAbstractValidityCheck *> checks( int type ) const;
+%Docstring
+Returns the list of all available checks of the matching ``type``.
+%End
+
+    void addCheck( QgsAbstractValidityCheck *check /Transfer/ );
+%Docstring
+Adds a ``check`` to the registry. Ownership of the check
+is transferred to the registry.
+%End
+
+    void removeCheck( QgsAbstractValidityCheck *check );
+%Docstring
+Removes a ``check`` from the registry.
+The check object is automatically deleted.
+%End
+
+    QList< QgsValidityCheckResult > runChecks( int type, const QgsValidityCheckContext *context, QgsFeedback *feedback ) const;
+%Docstring
+Runs all checks of the specified ``type`` and returns a list of results.
+
+If all checks are "passed" and no warnings or errors are generated, then
+an empty list will be returned.
+
+The ``context`` argument gives the wider in which the check is being run.
+
+The ``feedback`` argument is used to give progress reports and to support
+cancellation of long-running checks.
+
+This is a blocking call, which will run all matching checks in the main
+thread and only return when they have all completed.
+%End
+
+  private:
+    QgsValidityCheckRegistry( const QgsValidityCheckRegistry &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/validity/qgsvaliditycheckregistry.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

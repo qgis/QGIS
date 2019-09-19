@@ -24,11 +24,13 @@
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
 
+#include <nlohmann/json.hpp>
 #include <cmath>
 #include <memory>
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
+#include <QJsonObject>
 
 
 /***************************************************************************
@@ -171,6 +173,73 @@ QgsLineString::QgsLineString( const QgsLineSegment2D &segment )
   mX[1] = segment.endX();
   mY[0] = segment.startY();
   mY[1] = segment.endY();
+}
+
+static double cubicInterpolate( double a, double b,
+                                double A, double B, double C, double D )
+{
+  return A * b * b * b + 3 * B * b * b * a + 3 * C * b * a * a + D * a * a * a;
+}
+
+QgsLineString *QgsLineString::fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments )
+{
+  if ( segments == 0 )
+    return new QgsLineString();
+
+  QVector<double> x;
+  x.resize( segments + 1 );
+  QVector<double> y;
+  y.resize( segments + 1 );
+  QVector<double> z;
+  double *zData = nullptr;
+  if ( start.is3D() && end.is3D() && controlPoint1.is3D() && controlPoint2.is3D() )
+  {
+    z.resize( segments + 1 );
+    zData = z.data();
+  }
+  QVector<double> m;
+  double *mData = nullptr;
+  if ( start.isMeasure() && end.isMeasure() && controlPoint1.isMeasure() && controlPoint2.isMeasure() )
+  {
+    m.resize( segments + 1 );
+    mData = m.data();
+  }
+
+  double *xData = x.data();
+  double *yData = y.data();
+  const double step = 1.0 / segments;
+  double a = 0;
+  double b = 1.0;
+  for ( int i = 0; i < segments; i++, a += step, b -= step )
+  {
+    if ( i == 0 )
+    {
+      *xData++ = start.x();
+      *yData++ = start.y();
+      if ( zData )
+        *zData++ = start.z();
+      if ( mData )
+        *mData++ = start.m();
+    }
+    else
+    {
+      *xData++ = cubicInterpolate( a, b, start.x(), controlPoint1.x(), controlPoint2.x(), end.x() );
+      *yData++ = cubicInterpolate( a, b, start.y(), controlPoint1.y(), controlPoint2.y(), end.y() );
+      if ( zData )
+        *zData++ = cubicInterpolate( a, b, start.z(), controlPoint1.z(), controlPoint2.z(), end.z() );
+      if ( mData )
+        *mData++ = cubicInterpolate( a, b, start.m(), controlPoint1.m(), controlPoint2.m(), end.m() );
+    }
+  }
+
+  *xData = end.x();
+  *yData = end.y();
+  if ( zData )
+    *zData = end.z();
+  if ( mData )
+    *mData = end.m();
+
+  return new QgsLineString( x, y, z, m );
 }
 
 bool QgsLineString::equals( const QgsCurve &other ) const
@@ -335,7 +404,6 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
-
 bool QgsLineString::fromWkt( const QString &wkt )
 {
   clear();
@@ -345,6 +413,9 @@ bool QgsLineString::fromWkt( const QString &wkt )
   if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::LineString )
     return false;
   mWkbType = parts.first;
+
+  if ( parts.second == "EMPTY" )
+    return true;
 
   setPoints( QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() ) );
   return true;
@@ -375,9 +446,15 @@ QByteArray QgsLineString::asWkb() const
 QString QgsLineString::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + ' ';
-  QgsPointSequence pts;
-  points( pts );
-  wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
+
+  if ( isEmpty() )
+    wkt += QStringLiteral( "EMPTY" );
+  else
+  {
+    QgsPointSequence pts;
+    points( pts );
+    wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
+  }
   return wkt;
 }
 
@@ -410,12 +487,15 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   return elemLineString;
 }
 
-QString QgsLineString::asJson( int precision ) const
+json QgsLineString::asJsonObject( int precision ) const
 {
   QgsPointSequence pts;
   points( pts );
-
-  return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
+  return
+  {
+    {  "type",  "LineString" },
+    {  "coordinates",  QgsGeometryUtils::pointsToJson( pts, precision ) }
+  };
 }
 
 /***************************************************************************
@@ -436,6 +516,28 @@ double QgsLineString::length() const
     length += std::sqrt( dx * dx + dy * dy );
   }
   return length;
+}
+
+double QgsLineString::length3D() const
+{
+  if ( is3D() )
+  {
+    double length = 0;
+    int size = mX.size();
+    double dx, dy, dz;
+    for ( int i = 1; i < size; ++i )
+    {
+      dx = mX.at( i ) - mX.at( i - 1 );
+      dy = mY.at( i ) - mY.at( i - 1 );
+      dz = mZ.at( i ) - mZ.at( i - 1 );
+      length += std::sqrt( dx * dx + dy * dy + dz * dz );
+    }
+    return length;
+  }
+  else
+  {
+    return length();
+  }
 }
 
 QgsPoint QgsLineString::startPoint() const
@@ -464,8 +566,8 @@ QgsPoint QgsLineString::endPoint() const
 
 QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  Q_UNUSED( tolerance );
-  Q_UNUSED( toleranceType );
+  Q_UNUSED( tolerance )
+  Q_UNUSED( toleranceType )
   return clone();
 }
 
@@ -568,6 +670,7 @@ void QgsLineString::points( QgsPointSequence &pts ) const
 {
   pts.clear();
   int nPoints = numPoints();
+  pts.reserve( nPoints );
   for ( int i = 0; i < nPoints; ++i )
   {
     pts.push_back( pointN( i ) );

@@ -54,9 +54,9 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Convert QString to Qt::CheckState
     static Qt::CheckState checkStateFromXml( const QString &txt );
 
-    //! Returns true if any of the layers is editable
+    //! Returns TRUE if any of the layers is editable
     static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes );
-    //! Returns true if any of the layers is modified
+    //! Returns TRUE if any of the layers is modified
     static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 
     //! Removes layer nodes that refer to invalid layers
@@ -115,6 +115,15 @@ class CORE_EXPORT QgsLayerTreeUtils
      * \since QGIS 3.4
      */
     static int countMapLayerInTree( QgsLayerTreeNode *tree, QgsMapLayer *layer );
+
+    /**
+     * Returns the first parent which doesn't have the given custom property
+     * or the group itself if it doesn't hold the property
+     * \param group the layer tree group
+     * \param property the property
+     * \since QGIS 3.8
+     */
+    static QgsLayerTreeGroup *firstGroupWithoutCustomProperty( QgsLayerTreeGroup *group, const QString &property );
 };
 
 #endif // QGSLAYERTREEUTILS_H

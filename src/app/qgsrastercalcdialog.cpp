@@ -35,6 +35,13 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  mXMaxSpinBox->setShowClearButton( false );
+  mXMinSpinBox->setShowClearButton( false );
+  mYMaxSpinBox->setShowClearButton( false );
+  mYMinSpinBox->setShowClearButton( false );
+  mNColumnsSpinBox->setShowClearButton( false );
+  mNRowsSpinBox->setShowClearButton( false );
+
   connect( mRasterBandsListWidget, &QListWidget::itemDoubleClicked, this, &QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterCalcDialog::mButtonBox_accepted );
   connect( mCurrentLayerExtentButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked );
@@ -65,7 +72,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   connect( mOrButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOrButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
 
-  if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->dataProvider()->name() == QLatin1String( "gdal" ) )
+  if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->providerType() == QLatin1String( "gdal" ) )
   {
     setExtentSize( rasterLayer->width(), rasterLayer->height(), rasterLayer->extent() );
     mCrsSelector->setCrs( rasterLayer->crs() );
@@ -153,6 +160,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
   return entries;
 }
 
+
 void QgsRasterCalcDialog::setExtentSize( int width, int height, QgsRectangle bbox )
 {
   mNColumnsSpinBox->setValue( width );
@@ -164,31 +172,24 @@ void QgsRasterCalcDialog::setExtentSize( int width, int height, QgsRectangle bbo
   mExtentSizeSet = true;
 }
 
+
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
-  const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
-  QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
-
-  for ( ; layerIt != layers.constEnd(); ++layerIt )
+  mAvailableRasterBands = QgsRasterCalculatorEntry::rasterEntries().toList();
+  mRasterBandsListWidget->clear();
+  for ( const auto &entry : qgis::as_const( mAvailableRasterBands ) )
   {
-    QgsRasterLayer *rlayer = dynamic_cast<QgsRasterLayer *>( layerIt.value() );
-    if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->name() == QLatin1String( "gdal" ) )
+    QgsRasterLayer *rlayer = entry.raster;
+    if ( rlayer && rlayer->dataProvider() && rlayer->providerType() == QLatin1String( "gdal" ) )
     {
       if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
       {
         setExtentSize( rlayer->width(), rlayer->height(), rlayer->extent() );
         mCrsSelector->setCrs( rlayer->crs() );
       }
-      //get number of bands
-      for ( int i = 0; i < rlayer->bandCount(); ++i )
-      {
-        QgsRasterCalculatorEntry entry;
-        entry.raster = rlayer;
-        entry.bandNumber = i + 1;
-        entry.ref = rlayer->name() + '@' + QString::number( i + 1 );
-        mAvailableRasterBands.push_back( entry );
-        mRasterBandsListWidget->addItem( entry.ref );
-      }
+      QListWidgetItem *item = new QListWidgetItem( entry.ref, mRasterBandsListWidget );
+      item->setData( Qt::ToolTipRole, rlayer->publicSource() );
+      mRasterBandsListWidget->addItem( item );
     }
   }
 }
@@ -375,12 +376,12 @@ void QgsRasterCalcDialog::mDividePushButton_clicked()
 
 void QgsRasterCalcDialog::mSqrtButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::sqrt ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " sqrt ( " ) );
 }
 
 void QgsRasterCalcDialog::mCosButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::cos ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " cos ( " ) );
 }
 
 void QgsRasterCalcDialog::mSinButton_clicked()

@@ -198,7 +198,7 @@ string      "'"{str_char}*"'"
 "ELSE"              { return ELSE; }
 "END"               { return END;  }
 
-[()]                { return yytext[0]; }
+[()\[\]]            { return yytext[0]; }
 
 ","                 { return COMMA; }
 

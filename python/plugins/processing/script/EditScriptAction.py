@@ -21,13 +21,9 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import inspect
 
-from qgis.core import QgsProcessingAlgorithm
+from qgis.core import QgsProcessingAlgorithm, QgsMessageLog
 from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
@@ -41,13 +37,14 @@ from processing.script import ScriptUtils
 class EditScriptAction(ContextAction):
 
     def __init__(self):
+        super().__init__()
         self.name = QCoreApplication.translate("EditScriptAction", "Edit Script…")
 
     def isEnabled(self):
         return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"
 
     def execute(self):
-        filePath = ScriptUtils.findAlgorithmSource(self.itemData.__class__.__name__)
+        filePath = ScriptUtils.findAlgorithmSource(self.itemData.name())
         if filePath is not None:
             dlg = ScriptEditorDialog(filePath, iface.mainWindow())
             dlg.show()

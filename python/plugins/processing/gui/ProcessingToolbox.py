@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import operator
 import os
 import warnings
@@ -34,7 +30,7 @@ from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction
 from qgis.utils import iface
 from qgis.core import (QgsWkbTypes,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsApplication,
                        QgsProcessingAlgorithm)
 from qgis.gui import (QgsGui,
@@ -81,11 +77,14 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
                                        QgsGui.instance().processingRecentAlgorithmLog())
-        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        self.algorithmTree.setFilters(filters)
 
         self.searchBox.setShowSearchIcon(True)
 
-        self.searchBox.textChanged.connect(self.algorithmTree.setFilterString)
+        self.searchBox.textChanged.connect(self.set_filter_string)
         self.searchBox.returnPressed.connect(self.activateCurrent)
         self.algorithmTree.customContextMenuRequested.connect(
             self.showPopupMenu)
@@ -114,15 +113,28 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         iface.currentLayerChanged.connect(self.layer_changed)
 
-    def set_in_place_edit_mode(self, enabled):
-        if enabled:
-            self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox | QgsProcessingToolboxProxyModel.FilterInPlace))
+    def set_filter_string(self, string):
+        filters = self.algorithmTree.filters()
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
         else:
-            self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
+            filters &= ~QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        self.algorithmTree.setFilters(filters)
+        self.algorithmTree.setFilterString(string)
+
+    def set_in_place_edit_mode(self, enabled):
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+
+        if enabled:
+            self.algorithmTree.setFilters(filters | QgsProcessingToolboxProxyModel.FilterInPlace)
+        else:
+            self.algorithmTree.setFilters(filters)
         self.in_place_mode = enabled
 
     def layer_changed(self, layer):
-        if layer is None or layer.type() != QgsMapLayer.VectorLayer:
+        if layer is None or layer.type() != QgsMapLayerType.VectorLayer:
             return
         self.algorithmTree.setInPlaceLayer(layer)
 
@@ -192,9 +204,12 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 popupmenu.addSeparator()
             for action in actions:
                 action.setData(alg, self)
-                if action.isEnabled():
+                if action.is_separator:
+                    popupmenu.addSeparator()
+                elif action.isEnabled():
                     contextMenuAction = QAction(action.name,
                                                 popupmenu)
+                    contextMenuAction.setIcon(action.icon())
                     contextMenuAction.triggered.connect(action.execute)
                     popupmenu.addAction(contextMenuAction)
 

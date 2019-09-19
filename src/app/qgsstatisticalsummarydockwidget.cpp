@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QTableWidget>
 #include <QAction>
@@ -248,7 +250,8 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
   QList<double> values;
   bool convertOk;
   int missingValues = 0;
-  Q_FOREACH ( const QVariant &value, variantValues )
+  const auto constVariantValues = variantValues;
+  for ( const QVariant &value : constVariantValues )
   {
     double val = value.toDouble( &convertOk );
     if ( convertOk )
@@ -261,7 +264,8 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
   QgsStatisticalSummary::Statistics statsToCalc = nullptr;
-  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
+  const auto constSDisplayStats = sDisplayStats;
+  for ( QgsStatisticalSummary::Statistic stat : constSDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
     {
@@ -282,7 +286,8 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, statsToDisplay )
+  const auto constStatsToDisplay = statsToDisplay;
+  for ( QgsStatisticalSummary::Statistic stat : constStatsToDisplay )
   {
     double val = stats.statistic( stat );
     addRow( row, QgsStatisticalSummary::displayName( stat ),
@@ -316,7 +321,8 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 
   QList< QgsStringStatisticalSummary::Statistic > statsToDisplay;
   QgsStringStatisticalSummary::Statistics statsToCalc = nullptr;
-  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
+  const auto constSDisplayStringStats = sDisplayStringStats;
+  for ( QgsStringStatisticalSummary::Statistic stat : constSDisplayStringStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
     {
@@ -333,7 +339,8 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, statsToDisplay )
+  const auto constStatsToDisplay = statsToDisplay;
+  for ( QgsStringStatisticalSummary::Statistic stat : constStatsToDisplay )
   {
     addRow( row, QgsStringStatisticalSummary::displayName( stat ),
             stats.statistic( stat ).toString(),
@@ -382,7 +389,7 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 
 void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
 {
-  QAction *action = dynamic_cast<QAction *>( sender() );
+  QAction *action = qobject_cast<QAction *>( sender() );
   int stat = action->data().toInt();
 
   QString settingsKey;
@@ -439,7 +446,8 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
 
   QList< QgsDateTimeStatisticalSummary::Statistic > statsToDisplay;
   QgsDateTimeStatisticalSummary::Statistics statsToCalc = nullptr;
-  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
+  const auto constSDisplayDateTimeStats = sDisplayDateTimeStats;
+  for ( QgsDateTimeStatisticalSummary::Statistic stat : constSDisplayDateTimeStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
     {
@@ -457,7 +465,8 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, statsToDisplay )
+  const auto constStatsToDisplay = statsToDisplay;
+  for ( QgsDateTimeStatisticalSummary::Statistic stat : constStatsToDisplay )
   {
     QString value = ( stat == QgsDateTimeStatisticalSummary::Range
                       ? tr( "%1 seconds" ).arg( stats.range().seconds() )
@@ -502,7 +511,8 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
   {
     case DataType::Numeric:
     {
-      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
+      const auto constSDisplayStats = sDisplayStats;
+      for ( QgsStatisticalSummary::Statistic stat : constSDisplayStats )
       {
         QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
@@ -528,7 +538,8 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
     }
     case DataType::String:
     {
-      Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
+      const auto constSDisplayStringStats = sDisplayStringStats;
+      for ( QgsStringStatisticalSummary::Statistic stat : constSDisplayStringStats )
       {
         QAction *action = new QAction( QgsStringStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
@@ -543,7 +554,8 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
     }
     case DataType::DateTime:
     {
-      Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
+      const auto constSDisplayDateTimeStats = sDisplayDateTimeStats;
+      for ( QgsDateTimeStatisticalSummary::Statistic stat : constSDisplayDateTimeStats )
       {
         QAction *action = new QAction( QgsDateTimeStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );

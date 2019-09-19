@@ -87,6 +87,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
   mIgnoreGetMapUrl = uri.hasParam( QStringLiteral( "IgnoreGetMapUrl" ) );
   mIgnoreGetFeatureInfoUrl = uri.hasParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ) );
+  mIgnoreReportedLayerExtents = uri.hasParam( QStringLiteral( "IgnoreReportedLayerExtents" ) );
   mParserSettings.ignoreAxisOrientation = uri.hasParam( QStringLiteral( "IgnoreAxisOrientation" ) ); // must be before parsing!
   mParserSettings.invertAxisOrientation = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) ); // must be before parsing!
   mSmoothPixmapTransform = uri.hasParam( QStringLiteral( "SmoothPixmapTransform" ) );
@@ -127,7 +128,8 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   if ( uri.hasParam( QStringLiteral( "tileDimensions" ) ) )
   {
     mTiled = true;
-    Q_FOREACH ( const QString &param, uri.param( "tileDimensions" ).split( ';' ) )
+    const auto tileDimensions = uri.param( "tileDimensions" ).split( ';' );
+    for ( const QString &param : tileDimensions )
     {
       QStringList kv = param.split( '=' );
       if ( kv.size() == 1 )
@@ -158,6 +160,12 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
 // ----------------------
 
+
+QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext ):
+  mCoordinateTransformContext( coordinateTransformContext )
+{
+
+}
 
 bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParserSettings settings )
 {
@@ -203,7 +211,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
   }
 
   // get identify formats
-  Q_FOREACH ( const QString &f, mCapabilities.capability.request.getFeatureInfo.format )
+  for ( const QString &f : qgis::as_const( mCapabilities.capability.request.getFeatureInfo.format ) )
   {
     // Don't use mSupportedGetFeatureFormats, there are too many possibilities
     QgsDebugMsg( "supported format = " + f );
@@ -662,6 +670,45 @@ void QgsWmsCapabilities::parseCapability( QDomElement const &e, QgsWmsCapability
     }
   }
 
+  // Layers in a WMS-C Capabilities TileSet do not have layer title or abstract
+  // still those could be present in a Layer list.
+  if ( !mTileLayersSupported.isEmpty() )
+  {
+    QHash<QString, QString> titles;
+    QHash<QString, QString> abstracts;
+
+    // Build layer identifier - title|abstract mapping
+    for ( const QgsWmsLayerProperty &layer : qgis::as_const( mLayersSupported ) )
+    {
+      if ( !layer.name.isEmpty() )
+      {
+        if ( !layer.title.isEmpty() )
+        {
+          titles.insert( layer.name, layer.title );
+        }
+
+        if ( !layer.abstract.isEmpty() )
+        {
+          abstracts.insert( layer.name, layer.abstract );
+        }
+      }
+    }
+
+    // If tile layer title|abstract is empty, try to use one from a matching layer
+    for ( QgsWmtsTileLayer &tileLayer : mTileLayersSupported )
+    {
+      if ( tileLayer.title.isEmpty() && titles.contains( tileLayer.identifier ) )
+      {
+        tileLayer.title = titles.value( tileLayer.identifier );
+      }
+
+      if ( tileLayer.abstract.isEmpty() && abstracts.contains( tileLayer.identifier ) )
+      {
+        tileLayer.abstract = abstracts.value( tileLayer.identifier );
+      }
+    }
+  }
+
   QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
@@ -807,7 +854,8 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
-        Q_FOREACH ( const QString &srs, e1.text().split( QRegExp( "\\s+" ) ) )
+        const QStringList crsList = e1.text().split( QRegExp( "\\s+" ) );
+        for ( const QString &srs : crsList )
         {
           layerProperty.crs.push_back( srs );
         }
@@ -826,17 +874,13 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
           try
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( e1.attribute( QStringLiteral( "SRS" ) ) );
-
             QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
-
-            Q_NOWARN_DEPRECATED_PUSH
-            QgsCoordinateTransform ct( src, dst );
-            Q_NOWARN_DEPRECATED_POP
+            QgsCoordinateTransform ct( src, dst, mCoordinateTransformContext );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
           }
           catch ( QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
         }
       }
@@ -1286,7 +1330,8 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
   mTileLayersSupported.append( l );
 
   int i = 0;
-  Q_FOREACH ( const QString &rS, resolutions )
+  const auto constResolutions = resolutions;
+  for ( const QString &rS : constResolutions )
   {
     double r = rS.toDouble();
     m.identifier = QString::number( i );
@@ -1612,7 +1657,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
           bool isValid = false;
           int matrixWidth = -1, matrixHeight = -1;
-          Q_FOREACH ( const QgsWmtsTileMatrix &m, tms.tileMatrices )
+          for ( const QgsWmtsTileMatrix &m : tms.tileMatrices )
           {
             isValid = m.identifier == id;
             if ( isValid )
@@ -1948,6 +1993,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   mError.clear();
 
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsCapabilitiesDownload" ) );
   if ( !mAuth.setAuthorization( request ) )
   {
     mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
@@ -2016,6 +2062,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
         else
         {
           QNetworkRequest request( toUrl );
+          QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsCapabilitiesDownload" ) );
           if ( !mAuth.setAuthorization( request ) )
           {
             mHttpCapabilitiesResponse.clear();
@@ -2058,7 +2105,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mCapabilitiesReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
-          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+          const auto constRawHeaders = cmd.rawHeaders();
+          for ( const QNetworkCacheMetaData::RawHeader &h : constRawHeaders )
           {
             if ( h.first != "Cache-Control" )
               hl.append( h );

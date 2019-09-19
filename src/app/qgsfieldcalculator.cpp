@@ -28,6 +28,8 @@
 #include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 #include <QMessageBox>
 
@@ -212,11 +214,10 @@ void QgsFieldCalculator::accept()
       }
       else
       {
-        QMap<QString, int>::const_iterator fieldIt = mFieldMap.constFind( mExistingFieldComboBox->currentText() );
-        if ( fieldIt != mFieldMap.constEnd() )
-        {
-          mAttributeId = fieldIt.value();
-        }
+        bool ok = false;
+        int id = mExistingFieldComboBox->currentData().toInt( &ok );
+        if ( ok )
+          mAttributeId = id;
       }
     }
     else
@@ -348,7 +349,26 @@ void QgsFieldCalculator::populateOutputFieldTypes()
   }
 
   mOutputFieldTypeComboBox->blockSignals( true );
-  const QList< QgsVectorDataProvider::NativeType > &typelist = provider->nativeTypes();
+
+  // Standard subset of fields in case of virtual
+  const QList< QgsVectorDataProvider::NativeType > &typelist = mCreateVirtualFieldCheckbox->isChecked() ?
+      ( QList< QgsVectorDataProvider::NativeType >()
+        << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
+        << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
+        << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String )
+        // date time
+        << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+        << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
+        << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+        // string types
+        << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
+        // boolean
+        << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool )
+        // blob
+        << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray ) ) :
+      provider->nativeTypes();
+
+  mOutputFieldTypeComboBox->clear();
   for ( int i = 0; i < typelist.size(); i++ )
   {
     mOutputFieldTypeComboBox->addItem( typelist[i].mTypeDesc );
@@ -417,13 +437,14 @@ void QgsFieldCalculator::mCreateVirtualFieldCheckbox_stateChanged( int state )
   {
     mEditModeAutoTurnOnLabel->setVisible( true );
   }
+  populateOutputFieldTypes();
   mInfoIcon->setVisible( mOnlyVirtualFieldsInfoLabel->isVisible() || mEditModeAutoTurnOnLabel->isVisible() );
 }
 
 
 void QgsFieldCalculator::mOutputFieldNameLineEdit_textChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   setOkButtonState();
 }
 
@@ -449,14 +470,40 @@ void QgsFieldCalculator::populateFields()
   const QgsFields &fields = mVectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( fields.fieldOrigin( idx ) != QgsFields::OriginExpression && fields.fieldOrigin( idx ) != QgsFields::OriginJoin )
+    switch ( fields.fieldOrigin( idx ) )
     {
-      QString fieldName = fields.at( idx ).name();
+      case QgsFields::OriginExpression:
+      case QgsFields::OriginUnknown:
 
-      //insert into field list and field combo box
-      mFieldMap.insert( fieldName, idx );
-      mExistingFieldComboBox->addItem( fieldName );
+        continue; // can't be edited
+
+      case QgsFields::OriginProvider:
+      case QgsFields::OriginEdit:
+        break; // can always be edited
+
+      case QgsFields::OriginJoin:
+      {
+        // show joined fields (e.g. auxiliary fields) only if they have a non-hidden editor widget.
+        // This enables them to be bulk field-calculated when a user needs to, but hides them by default
+        // (since there's often MANY of these, e.g. after using the label properties tool on a layer)
+        if ( fields.at( idx ).editorWidgetSetup().type() == QLatin1String( "Hidden" ) )
+          continue;
+
+        // only show editable joins
+        int srcFieldIndex;
+        const QgsVectorLayerJoinInfo *info = mVectorLayer->joinBuffer()->joinForFieldIndex( idx, fields, srcFieldIndex );
+
+        if ( !info || !info->isEditable() )
+          continue; // join is not editable
+
+        break;
+      }
     }
+
+    QString fieldName = fields.at( idx ).name();
+
+    //insert into field combo box
+    mExistingFieldComboBox->addItem( fields.iconForField( idx ), fieldName, idx );
   }
 
   if ( mVectorLayer->geometryType() != QgsWkbTypes::NullGeometry )
@@ -501,7 +548,7 @@ void QgsFieldCalculator::setPrecisionMinMax()
   bool precisionIsEnabled = minPrecType < maxPrecType;
   mOutputFieldPrecisionSpinBox->setEnabled( precisionIsEnabled );
   // Do not set min/max if it's disabled or we'll loose the default value,
-  // see https://issues.qgis.org/issues/19050 - QGIS saves integer field when
+  // see https://github.com/qgis/QGIS/issues/26880 - QGIS saves integer field when
   // I create a new real field through field calculator (Update field works as intended)
   if ( precisionIsEnabled )
   {

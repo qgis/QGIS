@@ -59,7 +59,8 @@ void QgsTabWidget::setTabVisible( QWidget *tab, bool visible )
 int QgsTabWidget::realTabIndex( QWidget *widget )
 {
   int realIndex = 0;
-  Q_FOREACH ( const TabInformation &info, mTabs )
+  const auto constMTabs = mTabs;
+  for ( const TabInformation &info : constMTabs )
   {
     if ( info.widget == widget )
       return realIndex;
@@ -144,7 +145,8 @@ void QgsTabWidget::synchronizeIndexes()
 
 QgsTabWidget::TabInformation QgsTabWidget::tabInfo( QWidget *widget )
 {
-  Q_FOREACH ( const TabInformation &info, mTabs )
+  const auto constMTabs = mTabs;
+  for ( const TabInformation &info : constMTabs )
   {
     if ( info.widget == widget )
       return info;

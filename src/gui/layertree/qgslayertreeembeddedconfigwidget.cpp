@@ -39,7 +39,8 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
   QStandardItemModel *modelUsed = new QStandardItemModel( this );
 
   // populate available
-  Q_FOREACH ( const QString &providerId, QgsGui::layerTreeEmbeddedWidgetRegistry()->providers() )
+  const auto constProviders = QgsGui::layerTreeEmbeddedWidgetRegistry()->providers();
+  for ( const QString &providerId : constProviders )
   {
     QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId );
     if ( provider->supportsLayer( mLayer ) )

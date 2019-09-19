@@ -146,7 +146,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * If found, the intersection points will be stored in \a intersection1 and \a intersection2.
      *
      * By default this method does not consider any z values and instead treats the circles as 2-dimensional.
-     * If \a useZ is set to true, then an intersection will only occur if the z values of both circles are
+     * If \a useZ is set to TRUE, then an intersection will only occur if the z values of both circles are
      * equal. In this case the points returned for \a intersection1 and \a intersection2 will contain
      * the z value of the circle intersections.
      *
@@ -163,10 +163,10 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      *
      * Note that this method is 2D only and does not consider the z-value of the circle.
      *
-     * \returns true if tangent was found.
+     * \returns TRUE if tangent was found.
      *
      *
-     * \see outerTangents()
+     * \see outerTangents() and innerTangents()
      * \since QGIS 3.2
      */
     bool tangentToPoint( const QgsPointXY &p, QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT ) const;
@@ -189,10 +189,35 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * Note that this method is 2D only and does not consider the z-value of the circle.
      *
      *
-     * \see tangentToPoint()
+     * \see tangentToPoint() and innerTangents()
      * \since QGIS 3.2
      */
     int outerTangents( const QgsCircle &other,
+                       QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
+                       QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT ) const;
+
+    /**
+     * Calculates the inner tangent points between this circle
+     * and an \a other circle.
+     *
+     * The inner tangent points correspond to the points at which the two lines
+     * which are drawn so that they are tangential to both circles but on
+     * different sides, touching the circles and crossing each other.
+     *
+     * The first tangent line is described by the points
+     * stored in \a line1P1 and \a line1P2,
+     * and the second line is described by the points stored in \a line2P1
+     * and \a line2P2.
+     *
+     * Returns the number of tangents (either 0 or 2).
+     *
+     * Note that this method is 2D only and does not consider the z-value of the circle.
+     *
+     *
+     * \see tangentToPoint() and outerTangents()
+     * \since QGIS 3.6
+     */
+    int innerTangents( const QgsCircle &other,
                        QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
                        QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT ) const;
 
@@ -237,11 +262,11 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
     /**
      * Returns a circular string from the circle.
-     * \param oriented If oriented is true the start point is from azimuth instead from north.
+     * \param oriented If oriented is TRUE the start point is from azimuth instead from north.
      */
     QgsCircularString *toCircularString( bool oriented = false ) const;
 
-    //! Returns true if the circle contains the \a point.
+    //! Returns TRUE if the circle contains the \a point.
     bool contains( const QgsPoint &point, double epsilon = 1E-8 ) const;
 
     QgsRectangle boundingBox() const override;

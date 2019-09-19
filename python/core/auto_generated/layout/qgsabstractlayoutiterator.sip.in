@@ -30,7 +30,7 @@ Returns the layout associated with the iterator.
 
     virtual bool beginRender() = 0;
 %Docstring
-Called when rendering begins, before iteration commences. Returns true if successful, false if no iteration
+Called when rendering begins, before iteration commences. Returns ``True`` if successful, ``False`` if no iteration
 is available or required.
 
 .. seealso:: :py:func:`endRender`
@@ -41,14 +41,14 @@ is available or required.
 Ends the render, performing any required cleanup tasks.
 %End
 
-    virtual int count() = 0;
+    virtual int count() const = 0;
 %Docstring
 Returns the number of features to iterate over.
 %End
 
     virtual bool next() = 0;
 %Docstring
-Iterates to next feature, returning false if no more features exist to iterate over.
+Iterates to next feature, returning ``False`` if no more features exist to iterate over.
 %End
 
     virtual QString filePath( const QString &baseFilePath, const QString &extension ) = 0;

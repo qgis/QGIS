@@ -186,6 +186,16 @@ in a specified bearing.
 .. versionadded:: 2.16
 %End
 
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the geometry is empty.
+Unlike :py:class:`QgsPoint`, this class is also used to retrieve graphical coordinates like QPointF.
+It therefore has the default coordinates (0.0).
+A QgsPointXY is considered empty, when the coordinates have not been explicitly filled in.
+
+.. versionadded:: 3.10
+%End
+
     bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const;
 %Docstring
 Compares this point with another point with a fuzzy tolerance
@@ -193,7 +203,7 @@ Compares this point with another point with a fuzzy tolerance
 :param other: point to compare with
 :param epsilon: maximum difference for coordinates between the points
 
-:return: true if points are equal within specified tolerance
+:return: ``True`` if points are equal within specified tolerance
 
 .. versionadded:: 2.9
 %End
@@ -262,7 +272,7 @@ Multiply x and y by the given value
     sipRes = qHash( *sipCpp );
 %End
 
-}; // class QgsPoint
+}; // class QgsPointXY
 
 
 

@@ -85,7 +85,7 @@ ${DIR}/check_spelling.sh -r -l spelling_error.log~ spelling_error.dat~
 ${GP}sort -u -o spelling_error.log~ spelling_error.log~
 DIFF=$(diff spelling_error.log~ spelling_error.expected~)
 
-if [[ ! -z $DIFF ]]; then
+if [[ -n $DIFF ]]; then
   echo "SPELLING TEST FAILED" >&2
 else
   echo "TEST OK"

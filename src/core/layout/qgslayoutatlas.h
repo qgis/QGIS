@@ -20,6 +20,7 @@
 #include "qgsvectorlayerref.h"
 #include "qgslayoutserializableobject.h"
 #include "qgsabstractlayoutiterator.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <QObject>
 
 class QgsLayout;
@@ -37,7 +38,7 @@ class QgsLayout;
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject
+class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -72,7 +73,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     void setEnabled( bool enabled );
 
     /**
-     * Returns true if the atlas is set to hide the coverage layer.
+     * Returns TRUE if the atlas is set to hide the coverage layer.
      * \see setHideCoverage()
      */
     bool hideCoverage() const { return mHideCoverage; }
@@ -94,7 +95,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     /**
      * Sets the filename \a expression used for generating output filenames for each
      * atlas page.
-     * If an invalid expression is passed, false will be returned and \a errorString
+     * If an invalid expression is passed, FALSE will be returned and \a errorString
      * will be set to the expression error.
      * \see filenameExpression()
      * \see currentFilename()
@@ -140,7 +141,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     QString nameForPage( int page ) const;
 
     /**
-     * Returns true if features should be sorted in the atlas.
+     * Returns TRUE if features should be sorted in the atlas.
      * \see setSortFeatures()
      * \see sortAscending()
      * \see sortExpression()
@@ -156,9 +157,9 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     void setSortFeatures( bool enabled ) { mSortFeatures = enabled; }
 
     /**
-     * Returns true if features should be sorted in an ascending order.
+     * Returns TRUE if features should be sorted in an ascending order.
      *
-     * This property has no effect is sortFeatures() is false.
+     * This property has no effect is sortFeatures() is FALSE.
      *
      * \see sortFeatures()
      * \see setSortAscending()
@@ -169,7 +170,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     /**
      * Sets whether features should be sorted in an ascending order.
      *
-     * This property has no effect is sortFeatures() is false.
+     * This property has no effect is sortFeatures() is FALSE.
      *
      * \see setSortFeatures()
      * \see sortAscending()
@@ -180,7 +181,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     /**
      * Returns the expression (or field name) to use for sorting features.
      *
-     * This property has no effect is sortFeatures() is false.
+     * This property has no effect is sortFeatures() is FALSE.
      *
      * \see sortFeatures()
      * \see sortAscending()
@@ -191,7 +192,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     /**
      * Sets the \a expression (or field name) to use for sorting features.
      *
-     * This property has no effect is sortFeatures() is false.
+     * This property has no effect is sortFeatures() is FALSE.
      *
      * \see setSortFeatures()
      * \see setSortAscending()
@@ -200,7 +201,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     void setSortExpression( const QString &expression ) { mSortExpression = expression; }
 
     /**
-     * Returns true if features should be filtered in the coverage layer.
+     * Returns TRUE if features should be filtered in the coverage layer.
      * \see filterExpression()
      * \see setFilterExpression()
      */
@@ -216,7 +217,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     /**
      * Returns the expression used for filtering features in the coverage layer.
      *
-     * This property has no effect is filterFeatures() is false.
+     * This property has no effect is filterFeatures() is FALSE.
      *
      * \see setFilterExpression()
      * \see filterFeatures()
@@ -226,9 +227,9 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     /**
      * Sets the \a expression used for filtering features in the coverage layer.
      *
-     * This property has no effect is filterFeatures() is false.
+     * This property has no effect is filterFeatures() is FALSE.
      *
-     * If an invalid expression is passed, false will be returned and \a errorString
+     * If an invalid expression is passed, FALSE will be returned and \a errorString
      * will be set to the expression error.
      *
      * \see filterExpression()
@@ -244,7 +245,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
 
     bool beginRender() override;
     bool endRender() override;
-    int count() override;
+    int count() const override;
     QString filePath( const QString &baseFilePath, const QString &extension ) override;
 
     /**
@@ -252,12 +253,14 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      */
     int currentFeatureNumber() const { return mCurrentFeatureNo; }
 
+    QgsExpressionContext createExpressionContext() const override;
+
   public slots:
 
     bool next() override;
 
     /**
-     * Iterates to the previous feature, returning false if no previous feature exists.
+     * Iterates to the previous feature, returning FALSE if no previous feature exists.
      * \see next()
      * \see last()
      * \see first()
@@ -266,7 +269,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     bool previous();
 
     /**
-     * Seeks to the last feature, returning false if no feature was found.
+     * Seeks to the last feature, returning FALSE if no feature was found.
      * \see next()
      * \see previous()
      * \see first()
@@ -275,7 +278,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     bool last();
 
     /**
-     * Seeks to the first feature, returning false if no feature was found.
+     * Seeks to the first feature, returning FALSE if no feature was found.
      * \see next()
      * \see previous()
      * \see last()
@@ -317,7 +320,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     //! Emitted when the coverage layer for the atlas changes.
     void coverageLayerChanged( QgsVectorLayer *layer );
 
-    //! Is emitted when the atlas has an updated status bar \a message.
+    //! Emitted when the atlas has an updated status bar \a message.
     void messagePushed( const QString &message );
 
     /**
@@ -325,7 +328,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      */
     void numberFeaturesChanged( int numFeatures );
 
-    //! Is emitted when the current atlas \a feature changes.
+    //! Emitted when the current atlas \a feature changes.
     void featureChanged( const QgsFeature &feature );
 
     //! Emitted when atlas rendering has begun.
@@ -341,20 +344,20 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
 
     /**
      * Updates the filename expression.
-     * \returns true if expression was successfully parsed, false if expression is invalid
+     * \returns TRUE if expression was successfully parsed, FALSE if expression is invalid
      */
     bool updateFilenameExpression( QString &error );
 
     /**
      * Evaluates filename for current feature
-     * \returns true if feature filename was successfully evaluated
+     * \returns TRUE if feature filename was successfully evaluated
      */
     bool evalFeatureFilename( const QgsExpressionContext &context );
 
     /**
      * Prepare the atlas for the given feature. Sets the extent and context variables
      * \param i feature number
-     * \returns true if feature was successfully prepared
+     * \returns TRUE if feature was successfully prepared
      */
     bool prepareForFeature( int i );
 
@@ -390,7 +393,6 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     int mCurrentFeatureNo = -1;
     QgsFeature mCurrentFeature;
 
-    QgsExpressionContext createExpressionContext();
 
     friend class AtlasFeatureSorter;
 };

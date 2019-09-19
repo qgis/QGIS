@@ -54,6 +54,8 @@ namespace QgsWfs
 
       QgsFeatureRequest featureRequest;
 
+      QStringList serverFids;
+
       bool error;
 
       QString errorMsg;
@@ -66,6 +68,8 @@ namespace QgsWfs
       QString handle;
 
       QgsFeatureRequest featureRequest;
+
+      QStringList serverFids;
 
       bool error;
 
@@ -89,19 +93,19 @@ namespace QgsWfs
     /**
      * Transform Update element to transactionUpdate
      */
-    transactionUpdate parseUpdateActionElement( QDomElement &actionElem );
+    transactionUpdate parseUpdateActionElement( QDomElement &actionElem, const QgsProject *project );
 
     /**
      * Transform Delete element to transactionDelete
      */
-    transactionDelete parseDeleteActionElement( QDomElement &actionElem );
+    transactionDelete parseDeleteActionElement( QDomElement &actionElem, const QgsProject *project );
 
     /**
      * Transform RequestBody root element to getFeatureRequest
      */
-    transactionRequest parseTransactionRequestBody( QDomElement &docElem );
+    transactionRequest parseTransactionRequestBody( QDomElement &docElem, const QgsProject *project );
 
-    transactionRequest parseTransactionParameters( QgsServerRequest::Parameters parameters );
+    transactionRequest parseTransactionParameters( QgsServerRequest::Parameters parameters, const QgsProject *project );
 
     /**
      * Transform GML feature nodes to features

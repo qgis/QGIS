@@ -51,7 +51,7 @@
       <item>
        <widget class="QLabel" name="maximumMagLabel">
         <property name="text">
-         <string> Max</string>
+         <string>Max</string>
         </property>
        </widget>
       </item>
@@ -256,7 +256,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="scaleByFactorOfLabel">
             <property name="text">
-             <string>Scale by a Factor of:</string>
+             <string>Scale by a Factor of</string>
             </property>
            </widget>
           </item>

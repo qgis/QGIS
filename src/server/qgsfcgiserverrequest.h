@@ -19,12 +19,9 @@
 #ifndef QGSFCGISERVERREQUEST_H
 #define QGSFCGISERVERREQUEST_H
 
-#define SIP_NO_FILE
-
 
 #include "qgsserverrequest.h"
 
-#include <QBuffer>
 
 /**
  * \ingroup server
@@ -40,7 +37,7 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
     QByteArray data() const override;
 
     /**
-     * Returns true if an error occurred during initialization
+     * Returns TRUE if an error occurred during initialization
      */
     bool hasError() const { return mHasError; }
 
@@ -49,11 +46,11 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 
     // Log request info: print debug infos
     // about the request
-    void printRequestInfos();
+    void printRequestInfos( const QUrl &url );
 
 
     QByteArray mData;
-    bool       mHasError;
+    bool       mHasError = false;
 };
 
 #endif

@@ -18,12 +18,14 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
+#include <QAction>
+#include <QIcon>
+#include <QString>
+#include <QVariant>
+
 #include "qgis_core.h"
 #include "qgslocatorcontext.h"
 #include "qgslogger.h"
-#include <QString>
-#include <QVariant>
-#include <QIcon>
 
 class QgsFeedback;
 class QgsLocatorFilter;
@@ -87,11 +89,49 @@ class CORE_EXPORT QgsLocatorResult
       * If left as empty string, this means that results are all shown without being grouped.
       * If a group is given, the results will be grouped by \a group under a header.
       * \note This should be translated.
-      * \since 3.2
+      * \since QGIS 3.2
       */
     QString group = QString();
 
+    /**
+     * The ResultAction stores basic information for additional
+     * actions to be used in a locator widget for the result.
+     * They could be used in a context menu for instance.
+     * \since QGIS 3.6
+     */
+    struct CORE_EXPORT ResultAction
+    {
+      public:
+        //! Constructor for ResultAction
+        ResultAction() = default;
+
+        /**
+         * Constructor for ResultAction
+         * The \a id used to recognized the action when the result is triggered.
+         * It should be 0 or greater as otherwise, the result will be triggered
+         * normally.
+         */
+        ResultAction( int id, QString text, QString iconPath = QString() )
+          : id( id )
+          , text( text )
+          , iconPath( iconPath )
+        {}
+        int id = -1;
+        QString text;
+        QString iconPath;
+    };
+
+    /**
+      * Additional actions to be used in a locator widget
+      * for the given result. They could be displayed in
+      * a context menu.
+      * \since QGIS 3.6
+      */
+    QList<QgsLocatorResult::ResultAction> actions;
 };
+
+Q_DECLARE_METATYPE( QgsLocatorResult::ResultAction )
+
 
 /**
  * \class QgsLocatorFilter
@@ -180,7 +220,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * tasks are required in order to allow a subsequent search to safely execute
      * on a background thread.
      */
-    virtual void prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ); Q_UNUSED( context ); }
+    virtual void prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ) Q_UNUSED( context ); }
 
     /**
      * Retrieves the filter results for a specified search \a string. The \a context
@@ -210,6 +250,14 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
 
     /**
+     * Triggers a filter \a result from this filter for an entry in the context menu.
+     * The entry is identified by its \a actionId as specified in the result of this filter.
+     * \see triggerResult()
+     * \since QGIS 3.6
+     */
+    virtual void triggerResultFromAction( const QgsLocatorResult &result, const int actionId );
+
+    /**
      * This method will be called on main thread on the original filter (not a clone)
      * before fetching results or before triggering a result to clear any change made
      * by a former call to triggerResult.
@@ -220,7 +268,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     virtual void clearPreviousResults() {}
 
     /**
-     * Returns true if the filter should be used when no prefix
+     * Returns TRUE if the filter should be used when no prefix
      * is entered.
      * \see setUseWithoutPrefix()
      */
@@ -258,7 +306,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     static bool stringMatches( const QString &candidate, const QString &search );
 
     /**
-     * Returns true if the filter is enabled.
+     * Returns TRUE if the filter is enabled.
      * \see setEnabled()
      */
     bool enabled() const;
@@ -270,7 +318,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     void setEnabled( bool enabled );
 
     /**
-     * Should return true if the filter has a configuration widget.
+     * Should return TRUE if the filter has a configuration widget.
      * \see openConfigWidget()
      */
     virtual bool hasConfigWidget() const;
@@ -279,7 +327,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * Opens the configuration widget for the filter (if it has one), with the specified \a parent widget.
      * The base class implementation does nothing. Subclasses can override this to show their own
      * custom configuration widget.
-     * \note hasConfigWidget() must return true to indicate that the filter supports configuration.
+     * \note hasConfigWidget() must return TRUE to indicate that the filter supports configuration.
      */
     virtual void openConfigWidget( QWidget *parent = nullptr );
 

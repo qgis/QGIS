@@ -30,6 +30,8 @@ class QgsResidualPlotItem: public QgsLayoutItem
   public:
     explicit QgsResidualPlotItem( QgsLayout *layout );
 
+    QgsLayoutItem::Flags itemFlags() const override;
+
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 

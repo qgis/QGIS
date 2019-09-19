@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include <gdal.h>
 #include "qgsmessagelog.h"
+#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -47,8 +48,9 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   , mResolutionState( OriginalResolution )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( mRawModeRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled );
-  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
+  connect( mFormatComboBox, &QComboBox::currentTextChanged, this, &QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
   connect( mResolutionRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mResolutionRadioButton_toggled );
   connect( mOriginalResolutionPushButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mOriginalResolutionPushButton_clicked );
   connect( mXResolutionLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mXResolutionLineEdit_textEdited );
@@ -137,7 +139,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // pyramids are not necessarily built every time
 
   mCrsSelector->setLayerCrs( mLayerCrs );
-  //default to layer CRS - see https://issues.qgis.org/issues/14209 for discussion
+  //default to layer CRS - see https://github.com/qgis/QGIS/issues/22211 for discussion
   mCrsSelector->setCrs( mLayerCrs );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged,
@@ -168,7 +170,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   recalcResolutionSize();
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ) ).toByteArray() );
 
   if ( mTileModeCheckBox->isChecked() )
   {
@@ -231,12 +232,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     }
     okButton->setEnabled( tmplFileInfo.absoluteDir().exists() );
   } );
-}
-
-QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ), saveGeometry() );
 }
 
 void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
@@ -666,7 +661,8 @@ void QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked()
   const QgsRasterTransparency *rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
   if ( !rasterTransparency ) return;
 
-  Q_FOREACH ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel, rasterTransparency->transparentSingleValuePixelList() )
+  const auto constTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
+  for ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel : constTransparentSingleValuePixelList )
   {
     if ( transparencyPixel.percentTransparent == 100 )
     {
@@ -733,9 +729,9 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
 
 void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
 
-  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+  QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
   if ( !lineEdit ) return;
   int row = -1;
   int column = -1;
@@ -804,7 +800,7 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
 
 void QgsRasterLayerSaveAsDialog::mPyramidsGroupBox_toggled( bool toggled )
 {
-  Q_UNUSED( toggled );
+  Q_UNUSED( toggled )
   populatePyramidsLevels();
 }
 
@@ -923,19 +919,28 @@ bool QgsRasterLayerSaveAsDialog::validate() const
 
 bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
 {
-  QString uri;
+  QString vectorUri;
+  QString rasterUri;
   if ( outputFormat() == QStringLiteral( "GPKG" ) )
   {
-    uri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
+    rasterUri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
+    vectorUri = QStringLiteral( "%1|layername=%2" ).arg( outputFileName(), outputLayerName() );
   }
   else
   {
-    uri = outputFileName();
+    rasterUri = outputFileName();
   }
 
-  std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
-  std::unique_ptr< QgsVectorLayer > vectLayer( new QgsVectorLayer( uri, "", QStringLiteral( "ogr" ) ) );
-  return ( rastLayer->isValid() || vectLayer->isValid() );
+  QgsRasterLayer rasterLayer( rasterUri, QString( ), QStringLiteral( "gdal" ) );
+  if ( !vectorUri.isEmpty() )
+  {
+    QgsVectorLayer vectorLayer( vectorUri, QString( ), QStringLiteral( "ogr" ) );
+    return rasterLayer.isValid() || vectorLayer.isValid();
+  }
+  else
+  {
+    return rasterLayer.isValid();
+  }
 }
 
 void QgsRasterLayerSaveAsDialog::accept()

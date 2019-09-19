@@ -51,14 +51,14 @@ class QgsStackTrace
 
       /**
       * Check if this stack line is part of QGIS.
-      * \return True if part of QGIS.
+      * \return TRUE if part of QGIS.
       */
       bool isQgisModule() const;
 
       /**
       * Check if this stack line is valid.  Considered valid when the filename and line
       * number are known.
-      * \return True of the line is valid.
+      * \return TRUE of the line is valid.
       */
       bool isValid() const;
     };

@@ -58,7 +58,7 @@ Returns the vector layer cache which is being used to populate the model.
 
     void setInjectNull( bool injectNull );
 %Docstring
-If true is specified, a NULL value will be injected
+If ``True`` is specified, a NULL value will be injected
 
 :param injectNull: state of null value injection
 
@@ -81,7 +81,7 @@ Returns the current state of null value injection
 
 :param expression: A QgsExpression compatible string.
 
-:return: true if the expression could be set, false if there was a parse error.
+:return: ``True`` if the expression could be set, ``False`` if there was a parse error.
          If it fails, the old expression will still be applied. Call parserErrorString()
          for a meaningful error message.
 %End

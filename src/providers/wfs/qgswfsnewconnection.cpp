@@ -35,7 +35,15 @@ QgsWFSNewConnection::~QgsWFSNewConnection()
 void QgsWFSNewConnection::versionDetectButton()
 {
   delete mCapabilities;
-  mCapabilities = new QgsWfsCapabilities( urlTrimmed().toString() );
+
+  // Honor any defined authentication settings
+  QgsDataSourceUri uri = QgsDataSourceUri();
+  uri.setParam( QStringLiteral( "url" ), urlTrimmed().toString() );
+  uri.setUsername( authSettingsWidget()->username() );
+  uri.setPassword( authSettingsWidget()->password() );
+  uri.setAuthConfigId( authSettingsWidget()->configId() );
+
+  mCapabilities = new QgsWfsCapabilities( uri.uri( false ) );
   connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSNewConnection::capabilitiesReplyFinished );
   const bool synchronous = false;
   const bool forceRefresh = true;

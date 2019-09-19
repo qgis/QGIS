@@ -36,6 +36,7 @@ information for an HTTP Server for WMS, etc.
     {
       FlagShowTestConnection,
       FlagHideAuthenticationGroup,
+      FlagShowHttpSettings,
     };
     typedef QFlags<QgsNewHttpConnection::Flag> Flags;
 
@@ -79,7 +80,7 @@ Returns the current connection url.
 
     virtual bool validate();
 %Docstring
-Returns true if dialog settings are valid, or false if current
+Returns ``True`` if dialog settings are valid, or ``False`` if current
 settings are not valid and the dialog should not be acceptable.
 
 .. versionadded:: 3.0
@@ -91,6 +92,7 @@ Returns the "test connection" button.
 
 .. versionadded:: 3.0
 %End
+
 
 
 

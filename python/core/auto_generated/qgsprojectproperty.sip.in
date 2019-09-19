@@ -46,7 +46,7 @@ Dumps out the keys and values
 
     virtual bool isKey() const = 0;
 %Docstring
-Returns true if the property is a QgsProjectPropertyKey.
+Returns ``True`` if the property is a QgsProjectPropertyKey.
 
 .. seealso:: :py:func:`isValue`
 
@@ -55,7 +55,7 @@ Returns true if the property is a QgsProjectPropertyKey.
 
     virtual bool isValue() const = 0;
 %Docstring
-Returns true if the property is a QgsProjectPropertyValue.
+Returns ``True`` if the property is a QgsProjectPropertyValue.
 
 .. seealso:: :py:func:`isKey`
 
@@ -64,7 +64,7 @@ Returns true if the property is a QgsProjectPropertyValue.
 
     virtual bool isLeaf() const = 0;
 %Docstring
-Returns true if property is a leaf node.
+Returns ``True`` if property is a leaf node.
 
 A leaf node is a key node that has either no value or only a single value.
 A non-leaf node would be a key node with key sub-nodes.
@@ -245,7 +245,7 @@ Returns the number of sub-keys contained by this property.
 
     bool isEmpty() const;
 %Docstring
-Returns true if this property contains no sub-keys.
+Returns ``True`` if this property contains no sub-keys.
 %End
 
     virtual bool isKey() const;

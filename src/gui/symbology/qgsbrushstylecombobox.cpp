@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsbrushstylecombobox.h"
+#include "qgsguiutils.h"
 
 #include <QList>
 #include <QPair>
@@ -42,7 +43,8 @@ QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget *parent )
          << qMakePair( Qt::Dense6Pattern, tr( "Dense 6" ) )
          << qMakePair( Qt::Dense7Pattern, tr( "Dense 7" ) );
 
-  setIconSize( QSize( 32, 16 ) );
+  int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  setIconSize( QSize( iconSize * 2, iconSize ) );
 
   for ( int i = 0; i < styles.count(); i++ )
   {

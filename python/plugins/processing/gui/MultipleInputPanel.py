@@ -22,10 +22,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import warnings
 
@@ -83,7 +79,7 @@ class MultipleInputPanel(BASE, WIDGET):
         selectedoptions = []
         selected = [self.options[i] if isinstance(i, int) else i for i in self.selectedoptions]
         for sel in selected:
-            if isinstance(sel, int):
+            if not isinstance(sel, int):
                 try:
                     idx = options.index(sel)
                     selectedoptions.append(idx)

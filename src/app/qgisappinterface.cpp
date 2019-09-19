@@ -83,7 +83,7 @@ QgsLayerTreeView *QgisAppInterface::layerTreeView()
 }
 
 void QgisAppInterface::addCustomActionForLayerType( QAction *action,
-    QString menu, QgsMapLayer::LayerType type, bool allLayers )
+    QString menu, QgsMapLayerType type, bool allLayers )
 {
   QgsAppLayerTreeViewMenuProvider *menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
   if ( !menuProvider )
@@ -564,6 +564,7 @@ QMenu *QgisAppInterface::newLayerMenu() { return qgis->newLayerMenu(); }
 QMenu *QgisAppInterface::addLayerMenu() { return qgis->addLayerMenu(); }
 QMenu *QgisAppInterface::settingsMenu() { return qgis->settingsMenu(); }
 QMenu *QgisAppInterface::pluginMenu() { return qgis->pluginMenu(); }
+QMenu *QgisAppInterface::pluginHelpMenu() { return qgis->pluginHelpMenu(); }
 QMenu *QgisAppInterface::rasterMenu() { return qgis->rasterMenu(); }
 QMenu *QgisAppInterface::vectorMenu() { return qgis->vectorMenu(); }
 QMenu *QgisAppInterface::databaseMenu() { return qgis->databaseMenu(); }
@@ -611,6 +612,7 @@ QAction *QgisAppInterface::actionSimplifyFeature() { return qgis->actionSimplify
 QAction *QgisAppInterface::actionDeleteRing() { return qgis->actionDeleteRing(); }
 QAction *QgisAppInterface::actionDeletePart() { return qgis->actionDeletePart(); }
 QAction *QgisAppInterface::actionVertexTool() { return qgis->actionVertexTool(); }
+QAction *QgisAppInterface::actionVertexToolActiveLayer() { return qgis->actionVertexToolActiveLayer(); }
 
 QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
 QAction *QgisAppInterface::actionPanToSelected() { return qgis->actionPanToSelected(); }
@@ -685,7 +687,7 @@ QAction *QgisAppInterface::actionAbout() { return qgis->actionAbout(); }
 
 bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly, bool showModal )
 {
-  Q_UNUSED( updateFeatureOnly );
+  Q_UNUSED( updateFeatureOnly )
   if ( !vlayer )
     return false;
 
@@ -795,7 +797,12 @@ void QgisAppInterface::takeAppScreenShots( const QString &saveDirectory, const i
   qgis->takeAppScreenShots( saveDirectory, categories );
 }
 
-QgsBrowserModel *QgisAppInterface::browserModel()
+QgsBrowserGuiModel *QgisAppInterface::browserModel()
 {
   return qgis->mBrowserModel;
+}
+
+QgsLayerTreeRegistryBridge::InsertionPoint QgisAppInterface::layerTreeInsertionPoint()
+{
+  return qgis->layerTreeInsertionPoint();
 }

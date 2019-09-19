@@ -29,15 +29,11 @@
 
 #include <QFileInfo>
 #include "qgsrequesthandler.h"
-#include "qgsapplication.h"
 #include "qgsconfigcache.h"
 #include "qgscapabilitiescache.h"
-#include "qgsmapsettings.h"
-#include "qgsmessagelog.h"
 #include "qgsserviceregistry.h"
 #include "qgsserversettings.h"
 #include "qgsserverplugins.h"
-#include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
 #include "qgis_server.h"
 #include "qgsserverrequest.h"
@@ -74,7 +70,7 @@ class SERVER_EXPORT QgsServer
      *
      * \param request a QgsServerRequest holding request parameters
      * \param response a QgsServerResponse for handling response I/O)
-     * \param project a QgsProject or nullptr, if it is nullptr the project
+     * \param project a QgsProject or NULLPTR, if it is NULLPTR the project
      *        is created from the MAP param specified in request or from
      *        the QGIS_PROJECT_FILE setting
      */
@@ -88,7 +84,7 @@ class SERVER_EXPORT QgsServer
 
     /**
      * Initialize Python
-     * Note: not in Python bindings
+     * \note not available in Python bindings
      */
     void initPython();
 #endif
@@ -148,5 +144,8 @@ class SERVER_EXPORT QgsServer
 
     //! cache
     QgsConfigCache *mConfigCache = nullptr;
+
+    //! Initialize locale
+    static void initLocale();
 };
 #endif // QGSSERVER_H

@@ -879,7 +879,7 @@
               </property>
               <item>
                <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0">
-                <item row="4" column="1">
+                <item row="3" column="1" colspan="3">
                  <widget class="QCheckBox" name="cbxXyDms">
                   <property name="toolTip">
                    <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
@@ -957,8 +957,70 @@
                   </property>
                  </widget>
                 </item>
+                <item row="1" column="3">
+                 <widget class="QComboBox" name="cmbZField">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Name of the field containing z values</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Name of the field containing z values</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Name of the field containing z values</string>
+                  </property>
+                  <property name="editable">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QComboBox" name="cmbMField">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Name of the field containing m values</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Name of the field containing m values</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Name of the field containing m values</string>
+                  </property>
+                  <property name="editable">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
                 <item row="1" column="0">
-                 <widget class="QLabel" name="textLabelx">
+                 <widget class="QLabel" name="textLabelX">
                   <property name="enabled">
                    <bool>true</bool>
                   </property>
@@ -974,7 +1036,7 @@
                  </widget>
                 </item>
                 <item row="2" column="0">
-                 <widget class="QLabel" name="textLabely">
+                 <widget class="QLabel" name="textLabelY">
                   <property name="enabled">
                    <bool>true</bool>
                   </property>
@@ -989,6 +1051,44 @@
                   </property>
                   <property name="buddy">
                    <cstring>cmbYField</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QLabel" name="textLabelZ">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>&lt;p align=&quot;left&quot;&gt;Z field&lt;/p&gt;</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>cmbZField</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QLabel" name="textLabelM">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>&lt;p align=&quot;left&quot;&gt;M field&lt;/p&gt;</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>cmbMField</cstring>
                   </property>
                  </widget>
                 </item>

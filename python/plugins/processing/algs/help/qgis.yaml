@@ -24,7 +24,12 @@ qgis:aggregate: >
 
   Output attributes are computed depending on each given aggregate definition.
 
-qgis:barplot:
+qgis:aspect: >
+  This algorithm calculates the aspect of the Digital Terrain Model in input.
+  The final aspect raster layer contains values from 0 to 360 that express the slope direction: starting from North (0°) and continuing clockwise.
+
+qgis:barplot: >
+  This algorithm creates a bar plot from a category and a layer field.
 
 qgis:basicstatisticsforfields: >
   This algorithm generates basic statistics from the analysis of a values in a field in the attribute table of a vector layer. Numeric, date, time and string fields are supported.
@@ -35,6 +40,9 @@ qgis:basicstatisticsforfields: >
 
 qgis:boundary: >
   Returns the closure of the combinatorial boundary of the input geometries (ie the topological boundary of the geometry). For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon. Only valid for polygon or line layers.
+
+qgis:boxplot: >
+  This algorithm creates a box plot from a category and a layer field.
 
 qgis:buildvirtualvector: >
   This algorithm creates a virtual layer that contains a set of vector layer.
@@ -50,6 +58,15 @@ qgis:checkvalidity: >
   This algorithm performs a validity check on the geometries of a vector layer.
 
   The geometries are classified in three groups (valid, invalid and error), and a vector layer is generated with the features in each of these categories.
+
+  By default the algorithm uses the strict OGC definition of polygon validity, where a polygon is marked as invalid if a self-intersecting ring causes an interior hole. If the "Ignore ring self intersections" option is checked, then this rule will be ignored and a more lenient validity check will be performed.
+
+qgis:climbalongline: >
+  This algorithm calculates the total climb and descent along line geometries.
+
+  Input layers must have Z values present. If Z values are not available, the "Drape" (set Z value from raster) algorithm may be used to add Z values from a DEM layer.
+
+  The output layer is a copy of the input layer with additional fields that contain the total climb, total descent, the minimum elevation and the maximum elevation for each line geometry. If the input layer contains fields with the same names as these added fields, they will be renamed (field names will be altered to "name_2", "name_3", etc, finding the first non-duplicate name).
 
 qgis:clip: >
   This algorithm clips a vector layer using the polygons of an additional polygons layer. Only the parts of the features in the input layer that falls within the polygons of the clipping layer will be added to the resulting layer.
@@ -83,27 +100,25 @@ qgis:createattributeindex: >
 qgis:createconstantrasterlayer: >
   Given an input raster layer and a value, this algorithm generates a new layer with the same extent and cell size as the input one, and all cells with the specified value.
 
-qgis:creategridlines: >
-  This algorithm creates a line vector layer with a grid covering a given extent.
+qgis:creategrid: >
+  This algorithm creates a vector layer with a grid covering a given extent. Elements in the grid can be points, lines or polygons.
 
-  The size of each element in the grid is defined using a horizontal and vertical spacing.
-
-  The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS.
-
-qgis:creategridpolygon: >
-  This algorithm creates a polygon vector layer with a grid covering a given extent. The grid shape can be rectangles, diamond or hexagons.
-
-  The size of each element in the grid is defined using a horizontal and vertical spacing.
+  The size and/or placement of each element in the grid is defined using a horizontal and vertical spacing.
 
   The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS.
 
-qgis:createpointsalonglines: >
-  This algorithm creates a points layer, with points distributed along the lines of an input vector layer. the distance between points (measured along the line) is defined as a parameter.
-
-  Start and end points can be defined, so the first and last point do not fall on the line first and last node. Start and end points are defined as distances, measured from the first and last nodes of the lines, in the units of the projection used by the lines layer.
+  The top-left point (minX, maxY) is used as the reference point. That means that, at that point, an element is guaranteed to be placed. Unless the width and height of the selected extent is a multiple of the selected spacing, that is not true for the other points that define that extent.
 
 qgis:createspatialindex: >
   Creates an index to speed up access to the features in a layer based on their spatial location. Support for spatial index creation is dependent on the layer's data provider.
+
+qgis:createpointslayerfromtable: >
+  This algorithm creates points layer from a table with columns that contain coordinates fields. Besides X and Y coordinates you can also specify Z and M fields.
+
+qgis:definecurrentprojection: >
+  This algorithm sets an existing layer's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
+
+  For shapefile datasets, the .prj and .qpj files will be overwritten - or created if missing - to match the provided CRS.
 
 qgis:delaunaytriangulation: >
   This algorithm creates a polygon layer with the delaunay triangulation corresponding to a points layer.
@@ -143,10 +158,15 @@ qgis:dissolve: >
 qgis:distancematrix: >
   This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer.
 
-qgis:distancetonearesthub: >
-  Given a layer with source point and another one representing destination points, this algorithm computes the distance between each source point and the closest destination one.
+qgis:distancetonearesthublinetohub: >
+  Given an origin and a destination layers, this algorithm computes the distance between origin features and their closest destination one. Distance calculations are based on the features center.
 
-  The resulting layer can contain only source points with an additional field indicating the distance to the nearest point and the name of the destination point, or lines linking each source point with its nearest destination point.
+  The resulting layer contains lines linking each origin point with its nearest destination feature.
+
+qgis:distancetonearesthubpoints: >
+  Given an origin and a destination layers, this algorithm computes the distance between origin features and their closest destination one. Distance calculations are based on the features center.
+
+  The resulting layer contains origin features center point with an additional field indicating the identifier of the nearest destination feature and the distance to it.
 
 qgis:eliminateselectedpolygons: >
   This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated.
@@ -178,7 +198,7 @@ qgis:fieldcalculator: >
 qgis:findprojection: >
   This algorithm allows creation of a shortlist of possible candidate coordinate reference systems for a layer with an unknown projection.
 
-  The expected area which the layer should reside in must be specified via the target area parameter. Additionally, the coordinate reference system for this target area must also be set.
+  The expected area which the layer should reside in must be specified via the target area parameter.
 
   The algorithm operates by testing the layer's extent in every known reference system and listing any in which the bounds would fall near the target area if the layer was in this projection.
 
@@ -201,11 +221,17 @@ qgis:geometrybyexpression: >
 
   For help with QGIS expression functions, see the inbuilt help for specific functions which is available in the expression builder.
 
-qgis:generatepointspixelcentroidsalongline:
+qgis:generatepointspixelcentroidsalongline: >
+  This algorithm generates a point vector layer from an input raster and line layer.
+  The points correspond to the pixel centroids that intersect the line layer.
 
+qgis:generatepointspixelcentroidsinsidepolygons: >
+  This algorithm generates a point vector layer from an input raster and polygon layer.
+  The points correspond to the pixel centroids that intersect the polygon layer.
 
-qgis:generatepointspixelcentroidsinsidepolygons:
-
+qgis:hillshade: >
+  This algorithm calculates the hillshade raster layer given a Digital Terrain Model in input.
+  The shading of the layer is calculated according to the sun position (azimuth and elevation).
 
 qgis:hypsometriccurves: >
   This algorithm computes hypsometric curves  for an input Digital Elevation Model. Curves are produced as table files in an output folder specified by the user.
@@ -256,6 +282,7 @@ qgis:listuniquevalues: >
   This algorithm generates a report with information about the unique values found in a given attribute (or attributes) of a vector layer.
 
 qgis:meanandstandarddeviationplot:
+  This algorithm creates a box plot with mean and standard deviation values.
 
 qgis:mergevectorlayers: >
   This algorithm combines multiple vector layers of the same geometry type into a single one.
@@ -304,7 +331,7 @@ qgis:pointsalonglines: >
 
   An optional start and end offset can be specified, which controls how far from the start and end of the geometry the points should be created.
 
-qgis:pointsdisplacement:
+qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 
 qgis:pointslayerfromtable: >
@@ -314,7 +341,7 @@ qgis:pointslayerfromtable: >
 
   The attributes table of the resulting layer will be the input table.
 
-qgis:pointstopath:
+qgis:pointstopath: >
   Converts a point layer to a line layer, by joining points in a defined order.
 
   Points can be grouped by a field to output individual line features per group.
@@ -337,7 +364,7 @@ qgis:polygoncentroids: >
   NOTE: This algorithm is deprecated and the generic "centroids" algorithm (which works for line and multi geometry layers) should be used instead.
 
 qgis:polygonfromlayerextent: >
-  This algorithm takes a map layer and generates a new vector layer with the minimum bounding box (rectangle with N-S orientation) that covers the input layer.
+  This algorithm takes a map layer and generates a new vector layer with the minimum bounding box (rectangle polygon with N-S orientation) that covers the input layer. Optionally, the extent can be enlarged to a rounded value.
 
 qgis:polygonize:  >
   This algorithm takes a lines layer and creates a polygon layer, with polygons generated from the lines in the input layer.
@@ -439,7 +466,20 @@ qgis:refactorfields: >
 
   The original layer is not modified. A new layer is generated, which contains a modified attribute table, according to the provided fields mapping.
 
-qgis:regularpoints:
+qgis:regularpoints: >
+  This algorithm creates a point layer with a given number of regular points, all of them within a given extent.
+
+qgis:relief: >
+  This algorithm creates a shaded relief layer from digital elevation data.
+
+qgis:ruggednessindex: >
+  This algorithm calculates the quantitative measurement of terrain heterogeneity described by Riley et al. (1999).
+  It is calculated for every location, by summarizing the change in elevation within the 3x3 pixel grid.
+
+  Each pixel contains the difference in elevation from a center cell and the 8 cells surrounding it.
+
+qgis:slope: >
+  This algorithm calculates the angle of inclination of the terrain from an input raster layer. The slope is expressed in degrees.
 
 qgis:removenullgeometries: >
   This algorithm removes any features which do not have a geometry from a vector layer. All other features will be copied unchanged.
@@ -449,6 +489,9 @@ qgis:reprojectlayer: >
 
   Attributes are not modified by this algorithm.
 
+qgis:scatter3dplot: >
+  This algorithm creates a 3D scatter plot for a vector layer.
+
 qgis:selectbyattribute: >
   This algorithm creates a selection in a vector layer. The criteria for selected features is defined based on the values of an attribute from the input layer.
 
@@ -456,6 +499,16 @@ qgis:selectbyexpression: >
   This algorithm creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
+
+qgis:serviceareafromlayer: >
+  This algorithm creates a new vector with all the edges or parts of edges of a network line layer that can be reached within a distance or a time, starting from features of a point layer.
+
+  The distance and the time (both referred to as "travel cost") must be specified respectively in the network layer units or in seconds.
+
+qgis:serviceareafrompoint: >
+  This algorithm creates a new vector with all the edges or parts of edges of a network line layer that can be reached within a distance or a time, starting from a point feature.
+
+  The distance and the time (both referred to as "travel cost") must be specified respectively in the network layer units or in seconds.
 
 qgis:setmvalue: >
   This algorithm sets the M value for geometries in a layer.
@@ -501,8 +554,8 @@ qgis:splitvectorlayer: >
 
   The number of files generated is equal to the number of different values found for the specified attribute.
 
-qgis:statisticsbycategories:
-
+qgis:statisticsbycategories: >
+  This algorithm calculates statistics of fields depending on a parent class.
 
 qgis:sumlinelengths: >
   This algorithm takes a polygon layer and a line layer and measures the total length of lines and the total number of them that cross each polygon.
@@ -511,6 +564,13 @@ qgis:sumlinelengths: >
 
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
+
+qgis:tilesxyz: >
+  This algorithm generates raster XYZ tiles of map canvas content.
+
+  Tile images can be saved as individual images in directory structure, or as single file in MBTiles format.
+
+  Tile size is fixed to 256x256.
 
 qgis:topologicalcoloring: >
   This algorithm assigns a color index to polygon features in such a way that no adjacent polygons share the same color index, whilst minimizing the number of colors required.
@@ -536,25 +596,16 @@ qgis:truncatetable: >
 qgis:variabledistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer. The size of the buffer for a given feature is defined by an attribute, so it allows different features to have different buffer sizes.
 
-
-qgis:vectorgrid:
-
-
 qgis:vectorlayerhistogram: >
   This algorithm generates a histogram with the values of the attribute of a vector layer.
 
   The attribute to use for computing the histogram must be a numeric attribute.
 
-qgis:vectorlayerscatterplot:
-
+qgis:vectorlayerscatterplot: >
+  This algorithm creates a simple X - Y scatter plot for a vector layer.
 
 qgis:voronoipolygons: >
   This algorithm takes a points layer and generates a polygon layer containing the voronoi polygons corresponding to those input points.
 
-qgis:zonalstatistics:
-
-
-qgis:definecurrentprojection: >
-  This algorithm sets an existing layer's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
-
-  For shapefile datasets, the .prj and .qpj files will be overwritten - or created if missing - to match the provided CRS.
+qgis:zonalstatistics: >
+  This algorithm calculates statistics of a raster layer for each feature of an overlapping polygon vector layer.

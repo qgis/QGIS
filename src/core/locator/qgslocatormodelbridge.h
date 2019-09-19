@@ -24,6 +24,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 
+class QAction;
+
 class QgsLocatorResult;
 class QgsLocator;
 class QgsLocatorContext;
@@ -55,14 +57,14 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
     //! Returns the proxy model
     Q_INVOKABLE QgsLocatorProxyModel *proxyModel() const;
 
-    //! Returns true if some text to be search is pending in the queue
+    //! Returns TRUE if some text to be search is pending in the queue
     bool hasQueueRequested() const;
 
-    //! Returns true if the a search is currently running
+    //! Returns TRUE if the a search is currently running
     bool isRunning() const;
 
-    //! Triggers the result at given index
-    void triggerResult( const QModelIndex &index );
+    //! Triggers the result at given \a index and with optional \a actionId if an additional action was triggered
+    void triggerResult( const QModelIndex &index,  const int actionId = -1 );
 
   signals:
     //! Emitted when a result is added

@@ -27,6 +27,17 @@
 #include "qgsapplication.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsvectorlayer.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+
+class TestHandler : public QgsRenderedFeatureHandlerInterface
+{
+  public:
+
+    void handleRenderedFeature( const QgsFeature &, const QgsGeometry &, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext & ) override {}
+
+};
 
 class TestQgsMapSettings: public QObject
 {
@@ -35,7 +46,10 @@ class TestQgsMapSettings: public QObject
     void initTestCase();
     void cleanupTestCase();
     void testDefaults();
+    void testGettersSetters();
+    void testLabelingEngineSettings();
     void visibleExtent();
+    void extentBuffer();
     void mapUnitsPerPixel();
     void testDevicePixelRatio();
     void visiblePolygon();
@@ -43,6 +57,9 @@ class TestQgsMapSettings: public QObject
     void testMapLayerListUtils();
     void testXmlReadWrite();
     void testSetLayers();
+    void testLabelBoundary();
+    void testExpressionContext();
+    void testRenderedFeatureHandlers();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -82,6 +99,50 @@ void TestQgsMapSettings::testDefaults()
   QCOMPARE( ms.destinationCrs(), QgsCoordinateReferenceSystem() );
 }
 
+void TestQgsMapSettings::testGettersSetters()
+{
+  // basic getter/setter tests
+  QgsMapSettings ms;
+
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+
+  // must default to no simplification
+  QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QgsVectorSimplifyMethod simplify;
+  simplify.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  ms.setSimplifyMethod( simplify );
+  QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
+}
+
+void TestQgsMapSettings::testLabelingEngineSettings()
+{
+  // test that setting labeling engine settings for QgsMapSettings works
+  QgsMapSettings ms;
+  QgsLabelingEngineSettings les;
+  les.setNumCandidatePositions( 4, 8, 15 ); // 23, 42... ;)
+  ms.setLabelingEngineSettings( les );
+  int c1, c2, c3;
+  ms.labelingEngineSettings().numCandidatePositions( c1, c2, c3 );
+  QCOMPARE( c1, 4 );
+  QCOMPARE( c2, 8 );
+  QCOMPARE( c3, 15 );
+
+  // ensure that setting labeling engine settings also sets text format
+  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  ms.setLabelingEngineSettings( les );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  ms.setLabelingEngineSettings( les );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  // but we should be able to override this manually
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.labelingEngineSettings().defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+}
+
 void TestQgsMapSettings::visibleExtent()
 {
   QgsMapSettings ms;
@@ -115,6 +176,17 @@ void TestQgsMapSettings::visibleExtent()
   QCOMPARE( ms.visibleExtent().toString( 0 ), QString( "-50,-25 : 150,75" ) );
   ms.setRotation( 45 );
   QCOMPARE( ms.visibleExtent().toString( 0 ), QString( "-56,-81 : 156,131" ) );
+}
+
+void TestQgsMapSettings::extentBuffer()
+{
+  QgsMapSettings ms;
+  ms.setExtent( QgsRectangle( 50, 50, 100, 100 ) );
+  ms.setOutputSize( QSize( 50, 50 ) );
+  ms.setExtentBuffer( 10 );
+  QgsRectangle visibleExtent = ms.visibleExtent();
+  visibleExtent.grow( ms.extentBuffer() );
+  QCOMPARE( visibleExtent.toString( 0 ), QString( "40,40 : 110,110" ) );
 }
 
 void TestQgsMapSettings::mapUnitsPerPixel()
@@ -218,12 +290,15 @@ void TestQgsMapSettings::testIsLayerVisible()
   QCOMPARE( r.toBool(), false );
 
   QgsProject::instance()->removeMapLayer( vlA );
+  e.prepare( &context );
   r = e.evaluate( &context );
   QCOMPARE( r.toBool(), false ); // layer is deleted
+  e2.prepare( &context );
   r = e2.evaluate( &context );
   QCOMPARE( r.toBool(), true ); // layer still exists
 
   QgsProject::instance()->removeMapLayer( vlB );
+  e2.prepare( &context );
   r = e2.evaluate( &context );
   QCOMPARE( r.toBool(), false ); // layer is deleted
 
@@ -326,6 +401,116 @@ void TestQgsMapSettings::testSetLayers()
   // non spatial and null layers should be stripped
   ms.setLayers( QList< QgsMapLayer * >() << vlA.get() << nonSpatial.get() << nullptr << vlB.get() );
   QCOMPARE( ms.layers(), QList< QgsMapLayer * >() << vlA.get() << vlB.get() );
+}
+
+void TestQgsMapSettings::testLabelBoundary()
+{
+  QgsMapSettings ms;
+  QVERIFY( ms.labelBoundaryGeometry().isNull() );
+  ms.setLabelBoundaryGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0, 1 1, 0 1, 0 0 ))" ) ) );
+  QCOMPARE( ms.labelBoundaryGeometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
+}
+
+void TestQgsMapSettings::testExpressionContext()
+{
+  QgsMapSettings ms;
+  QgsExpressionContext c;
+  QVariant r;
+
+  ms.setOutputSize( QSize( 5000, 5000 ) );
+  ms.setExtent( QgsRectangle( -1, 0, 2, 2 ) );
+  ms.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  ms.setRotation( -32 );
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+
+  QgsExpression e( QStringLiteral( "@map_scale" ) );
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
+
+  // The old $scale function should silently map to @map_scale, so that older projects work without change
+  e = QgsExpression( QStringLiteral( "$scale" ) );
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
+
+  // no map settings scope -- $scale is meaningless
+  e = QgsExpression( QStringLiteral( "$scale" ) );
+  r = e.evaluate( nullptr );
+  QVERIFY( !r.isValid() );
+
+  e = QgsExpression( QStringLiteral( "@map_id" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "canvas" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_rotation" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), -32.0 );
+
+  ms.setRotation( 0 );
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+
+  e = QgsExpression( QStringLiteral( "geom_to_wkt( @map_extent )" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "Polygon ((-1 -0.5, 2 -0.5, 2 2.5, -1 2.5, -1 -0.5))" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_extent_width" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 3.0 );
+
+  e = QgsExpression( QStringLiteral( "@map_extent_height" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 3.0 );
+
+  e = QgsExpression( QStringLiteral( "geom_to_wkt( @map_extent_center )" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "Point (0.5 1)" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "EPSG:4326" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_definition" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_units" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "degrees" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_description" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "WGS 84" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_acronym" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "longlat" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_proj4" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_wkt" ) );
+  r = e.evaluate( &c );
+  QVERIFY( r.toString().length() > 15 );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_ellipsoid" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "WGS84" ) );
+}
+
+void TestQgsMapSettings::testRenderedFeatureHandlers()
+{
+  std::unique_ptr< TestHandler > testHandler = qgis::make_unique< TestHandler >();
+  std::unique_ptr< TestHandler > testHandler2 = qgis::make_unique< TestHandler >();
+
+  std::unique_ptr< QgsMapSettings> mapSettings = qgis::make_unique< QgsMapSettings >();
+  QVERIFY( mapSettings->renderedFeatureHandlers().isEmpty() );
+  mapSettings->addRenderedFeatureHandler( testHandler.get() );
+  mapSettings->addRenderedFeatureHandler( testHandler2.get() );
+  QCOMPARE( mapSettings->renderedFeatureHandlers(), QList< QgsRenderedFeatureHandlerInterface * >() << testHandler.get() << testHandler2.get() );
+
+  //ownership should NOT be transferred, i.e. it won't delete the registered handlers upon QgsMapSettings destruction
+  mapSettings.reset();
+  // should be no double-delete here
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

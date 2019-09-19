@@ -31,11 +31,7 @@
 #include "qgsnetworkreplyparser.h"
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
-
-#ifdef HAVE_GUI
-#include "qgswcssourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
+#include "qgswcsdataitems.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -58,8 +54,8 @@
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
 #define QGS_ERROR(message) QgsError(message,"WCS provider")
 
-static QString WCS_KEY = QStringLiteral( "wcs" );
-static QString WCS_DESCRIPTION = QStringLiteral( "OGC Web Coverage Service version 1.0/1.1 data provider" );
+QString QgsWcsProvider::WCS_KEY = QStringLiteral( "wcs" );
+QString QgsWcsProvider::WCS_DESCRIPTION = QStringLiteral( "OGC Web Coverage Service version 1.0/1.1 data provider" );
 
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
@@ -355,6 +351,63 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
   QgsDebugMsg( QStringLiteral( "Constructed OK, provider valid." ) );
 }
 
+QgsWcsProvider::QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
+  : QgsRasterDataProvider( other.dataSourceUri(), providerOptions )
+  , mHttpUri( other.mHttpUri )
+  , mBaseUrl( other.mBaseUrl )
+  , mIdentifier( other.mIdentifier )
+  , mTime( other.mTime )
+  , mFormat( other.mFormat )
+  , mValid( other.mValid )
+  , mCapabilities( other.mCapabilities )
+  , mCoverageSummary( other.mCoverageSummary )
+  , mSrid( other.mSrid )
+  , mCoverageExtent( other.mCoverageExtent )
+  , mWidth( other.mWidth )
+  , mHeight( other.mHeight )
+  , mXBlockSize( other.mXBlockSize )
+  , mYBlockSize( other.mYBlockSize )
+  , mHasSize( other.mHasSize )
+  , mBandCount( other.mBandCount )
+  , mGdalDataType( other.mGdalDataType )
+  , mSrcGdalDataType( other.mSrcGdalDataType )
+  , mColorTables( other.mColorTables )
+  , mExtentForLayer( other.mExtentForLayer )
+  , mCrsForLayer( other.mCrsForLayer )
+  , mQueryableForLayer( other.mQueryableForLayer )
+  , mCoverageCrs( other.mCoverageCrs )
+    // intentionally omitted:
+    // - mCachedData
+    // - mCachedMemFilename
+    // - mCachedMemFile
+    // - mCachedGdalDataset
+    // - mCachedError
+    // - mCachedViewExtent
+    // - mCachedViewWidth
+    // - mCachedViewHeight
+  , mMaxWidth( other.mMaxWidth )
+  , mMaxHeight( other.mMaxHeight )
+    // intentionally omitted:
+    // - mErrorCaption
+    // - mError
+    // - mErrorFormat
+  , mCoordinateTransform( other.mCoordinateTransform )
+  , mExtentDirty( other.mExtentDirty )
+  , mGetFeatureInfoUrlBase( other.mGetFeatureInfoUrlBase )
+  , mServiceMetadataURL( other.mServiceMetadataURL )
+  , mAuth( other.mAuth )
+  , mIgnoreGetCoverageUrl( other.mIgnoreGetCoverageUrl )
+  , mIgnoreAxisOrientation( other.mIgnoreAxisOrientation )
+  , mInvertAxisOrientation( other.mInvertAxisOrientation )
+  , mCrs( other.mCrs )
+  , mFixBox( other.mFixBox )
+  , mFixRotate( other.mFixRotate )
+  , mCacheLoadControl( other.mCacheLoadControl )
+{
+  mCachedMemFilename = QStringLiteral( "/vsimem/qgis/wcs/%0.dat" ).arg( reinterpret_cast<std::uintptr_t>( this ) );
+}
+
+
 bool QgsWcsProvider::parseUri( const QString &uriString )
 {
 
@@ -431,7 +484,8 @@ QgsWcsProvider::~QgsWcsProvider()
 QgsWcsProvider *QgsWcsProvider::clone() const
 {
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsWcsProvider *provider = new QgsWcsProvider( dataSourceUri(), providerOptions );
+  providerOptions.transformContext = transformContext();
+  QgsWcsProvider *provider = new QgsWcsProvider( *this, providerOptions );
   provider->copyBaseSettings( *this );
   return provider;
 }
@@ -476,7 +530,7 @@ void QgsWcsProvider::setQueryItem( QUrl &url, const QString &item, const QString
   url.addQueryItem( item, value );
 }
 
-void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
+bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   // TODO: set block to null values, move that to function and call only if fails
   memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) );
@@ -486,7 +540,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   // (higher level checks) but it is better to do check here as well
   if ( !viewExtent.intersects( mCoverageExtent ) )
   {
-    return;
+    return false;
   }
 
   // Can we reuse the previously cached coverage?
@@ -532,7 +586,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
         // If it happens, it would be possible to rescale the portion we get
         // to only part of the data block, but it is better to left it
         // blank, so that the problem may be discovered in its origin.
-        return;
+        return false;
       }
     }
 
@@ -554,7 +608,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
       if ( ! tmpData )
       {
         QgsDebugMsg( QStringLiteral( "Couldn't allocate memory of %1 bytes" ).arg( size ) );
-        return;
+        return false;
       }
       if ( GDALRasterIO( gdalBand, GF_Read, 0, 0, width, height, tmpData, width, height, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 ) != CE_None )
       {
@@ -592,11 +646,12 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
       QgsMessageLog::logMessage( tr( "Received coverage has wrong size %1 x %2 (expected %3 x %4)" ).arg( width ).arg( height ).arg( pixelWidth ).arg( pixelHeight ), tr( "WCS" ) );
     }
   }
+  return true;
 }
 
 void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, QString crs, QgsRasterBlockFeedback *feedback ) const
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   // delete cached data
   clearCache();
 
@@ -795,12 +850,13 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
 
 // For stats only, maybe change QgsRasterDataProvider::bandStatistics() to
 // use standard readBlock with extent
-void QgsWcsProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
+bool QgsWcsProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
 
   QgsDebugMsg( QStringLiteral( "xBlock = %1 yBlock = %2" ).arg( xBlock ).arg( yBlock ) );
 
-  if ( !mHasSize ) return;
+  if ( !mHasSize )
+    return false;
 
   double xRes = mCoverageExtent.width() / mWidth;
   double yRes = mCoverageExtent.height() / mHeight;
@@ -815,7 +871,7 @@ void QgsWcsProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block 
 
   QgsRectangle extent( xMin, yMin, xMax, yMax );
 
-  readBlock( bandNo, extent, mXBlockSize, mYBlockSize, block, nullptr );
+  return readBlock( bandNo, extent, mXBlockSize, mYBlockSize, block, nullptr );
 }
 
 
@@ -1069,9 +1125,7 @@ bool QgsWcsProvider::calculateExtent() const
       //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
       //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
 
-      Q_NOWARN_DEPRECATED_PUSH
-      mCoordinateTransform = QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
-      Q_NOWARN_DEPRECATED_POP
+      mCoordinateTransform = QgsCoordinateTransform( qgisSrsSource, qgisSrsDest, transformContext() );
     }
 
     QgsDebugMsg( "mCoverageSummary.wgs84BoundingBox= " + mCoverageSummary.wgs84BoundingBox.toString() );
@@ -1083,7 +1137,7 @@ bool QgsWcsProvider::calculateExtent() const
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
       return false;
     }
 
@@ -1296,7 +1350,8 @@ QString QgsWcsProvider::htmlMetadata()
 
   // Dialog takes too long to open if there are too many coverages (1000 for example)
   int count = 0;
-  Q_FOREACH ( const QgsWcsCoverageSummary &c, mCapabilities.coverages() )
+  const auto constCoverages = mCapabilities.coverages();
+  for ( const QgsWcsCoverageSummary &c : constCoverages )
   {
     metadata += coverageMetadata( c );
     count++;
@@ -1582,26 +1637,10 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
   return mimes;
 }
 
-QGISEXTERN QgsWcsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWcsProvider( *uri, options );
+  return new QgsWcsProvider( uri, options );
 }
-
-QGISEXTERN QString providerKey()
-{
-  return WCS_KEY;
-}
-
-QGISEXTERN QString description()
-{
-  return WCS_DESCRIPTION;
-}
-
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
 
 // ----------
 
@@ -1626,6 +1665,7 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorizati
   }
 
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsDownloadHandler" ) );
   if ( !mAuth.setAuthorization( request ) )
   {
     QgsMessageLog::logMessage( tr( "Network request update failed for authentication config" ),
@@ -1676,6 +1716,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
 
       QgsDebugMsg( QStringLiteral( "redirected getmap: %1" ).arg( redirect.toString() ) );
       QNetworkRequest request( redirect.toUrl() );
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsDownloadHandler" ) );
       if ( !mAuth.setAuthorization( request ) )
       {
         QgsMessageLog::logMessage( tr( "Network request update failed for authentication config" ),
@@ -1851,6 +1892,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     {
       // Resend request if AlwaysCache
       QNetworkRequest request = mCacheReply->request();
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsDownloadHandler" ) );
       if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
       {
         QgsDebugMsg( QStringLiteral( "Resend request with PreferCache" ) );
@@ -1894,8 +1936,8 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
 
 void QgsWcsDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  Q_UNUSED( bytesReceived );
-  Q_UNUSED( bytesTotal );
+  Q_UNUSED( bytesReceived )
+  Q_UNUSED( bytesTotal )
   QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
 }
 
@@ -1909,31 +1951,18 @@ void QgsWcsDownloadHandler::canceled()
   }
 }
 
-#ifdef HAVE_GUI
 
-//! Provider for WCS layers source select
-class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
+QList< QgsDataItemProvider * > QgsWcsProviderMetadata::dataItemProviders() const
 {
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "wcs" ); }
-    QString text() const override { return QObject::tr( "WCS" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsWCSSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsWcsSourceSelectProvider;
-
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsWcsDataItemProvider;
   return providers;
 }
-#endif
+
+QgsWcsProviderMetadata::QgsWcsProviderMetadata():
+  QgsProviderMetadata( QgsWcsProvider::WCS_KEY, QgsWcsProvider::WCS_DESCRIPTION ) {}
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsWcsProviderMetadata();
+}

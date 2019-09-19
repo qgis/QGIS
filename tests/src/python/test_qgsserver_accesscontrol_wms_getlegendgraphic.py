@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 print('CTEST_FULL_OUTPUT')
 
@@ -23,6 +21,9 @@ from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlWMSGetlegendgraphic(TestQgsServerAccessControl):
+
+    # Set to True to re-generate reference files for this class
+    #regenerate_reference = True
 
     def test_wms_getlegendgraphic_hello(self):
         query_string = "&".join(["%s=%s" % i for i in list({

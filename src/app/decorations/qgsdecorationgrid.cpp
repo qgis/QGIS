@@ -804,12 +804,12 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
     QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "No active layer" ) );
     return false;
   }
-  if ( layer->type() != QgsMapLayer::RasterLayer )
+  if ( layer->type() != QgsMapLayerType::RasterLayer )
   {
     QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Please select a raster layer." ) );
     return false;
   }
-  QgsRasterLayer *rlayer = dynamic_cast<QgsRasterLayer *>( layer );
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !rlayer || rlayer->width() == 0 || rlayer->height() == 0 )
   {
     QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Invalid raster layer" ) );

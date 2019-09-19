@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '19/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
@@ -51,7 +49,8 @@ from qgis.core import (QgsUnitTypes,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsMarkerSymbol,
-                       QgsLayoutItemLegend)
+                       QgsLayoutItemLegend,
+                       QgsLegendStyle)
 from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -368,7 +367,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
             self.assertEqual(self.atlas.currentFilename(), expected)
         self.atlas.endRender()
 
-        # using feature attribute (refs https://issues.qgis.org/issues/19552)
+        # using feature attribute (refs https://github.com/qgis/QGIS/issues/27379)
 
         self.atlas.setFilenameExpression("'output_' || attribute(@atlas_feature,'NAME_1')")
         expected = ['output_Basse-Normandie',
@@ -432,8 +431,8 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Predefined)
 
         scales = [1800000, 5000000]
-        self.layout.reportContext().setPredefinedScales(scales)
-        for i, s in enumerate(self.layout.reportContext().predefinedScales()):
+        self.layout.renderContext().setPredefinedScales(scales)
+        for i, s in enumerate(self.layout.renderContext().predefinedScales()):
             self.assertEqual(s, scales[i])
 
         self.atlas.beginRender()
@@ -554,6 +553,11 @@ class TestQgsLayoutAtlas(unittest.TestCase):
 
         # add a legend
         legend = QgsLayoutItemLegend(self.layout)
+        legend.rstyle(QgsLegendStyle.Title).setFont(QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.rstyle(QgsLegendStyle.Group).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.Subgroup).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.SymbolLabel).setFont(QgsFontUtils.getStandardTestFont('Bold', 14))
+
         legend.setTitle("Legend")
         legend.attemptMove(QgsLayoutPoint(200, 100))
         # sets the legend filter parameter

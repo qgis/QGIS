@@ -19,7 +19,7 @@
 class QgsGenericFeatureSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 #ifdef SIP_RUN

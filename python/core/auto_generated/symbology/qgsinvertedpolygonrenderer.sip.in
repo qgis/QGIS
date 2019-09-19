@@ -33,7 +33,7 @@ during renderFeature() and rendered on stopRender().
 %Docstring
 Constructor
 
-:param embeddedRenderer: optional embeddedRenderer. If null, a default one will be assigned.
+:param embeddedRenderer: optional embeddedRenderer. If ``None``, a default one will be assigned.
                          Ownership will be transferred.
 %End
 
@@ -46,7 +46,7 @@ Direct copies are forbidden. Use clone() instead.
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 
 %Docstring
 Renders a given feature.
@@ -58,7 +58,7 @@ This will here collect features. The actual rendering will be postponed to stopR
 :param selected: whether this feature has been selected (this will add decorations)
 :param drawVertexMarker: whether this feature has vertex markers (in edit mode usually)
 
-:return: true if the rendering was OK
+:return: ``True`` if the rendering was OK
 %End
 
     virtual void stopRender( QgsRenderContext &context );
@@ -70,61 +70,26 @@ Features collected during renderFeature() are rendered using the embedded featur
 
     virtual QString dump() const;
 
-
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
     virtual bool filterNeedsGeometry() const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
-
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
-
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
-
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
-
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
 
     virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
-
     virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
-
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
-
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-%Docstring
-Proxy that will call this method on the embedded renderer.
-%End
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
@@ -148,11 +113,13 @@ Creates a renderer out of an XML, for loading
 
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
     bool preprocessingEnabled() const;
 %Docstring
 
-:return: true if the geometries are to be preprocessed (merged with an union) before rendering.
+:return: ``True`` if the geometries are to be preprocessed (merged with an union) before rendering.
 %End
 
     void setPreprocessingEnabled( bool enabled );

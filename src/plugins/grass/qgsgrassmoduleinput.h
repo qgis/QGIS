@@ -131,7 +131,7 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
   public:
     explicit QgsGrassModuleInputCompleterProxy( QObject *parent = nullptr );
 
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override { Q_UNUSED( parent ); return 1; }
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override { Q_UNUSED( parent ) return 1; }
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;

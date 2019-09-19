@@ -51,12 +51,32 @@ void QgsScaleWidget::setMapCanvas( QgsMapCanvas *canvas )
   mCurrentScaleButton->setVisible( mShowCurrentScaleButton && mCanvas );
 }
 
+bool QgsScaleWidget::isNull() const
+{
+  return mScaleComboBox->isNull();
+}
+
+void QgsScaleWidget::setAllowNull( bool allowNull )
+{
+  mScaleComboBox->setAllowNull( allowNull );
+}
+
+bool QgsScaleWidget::allowNull() const
+{
+  return mScaleComboBox->allowNull();
+}
+
 void QgsScaleWidget::setScaleFromCanvas()
 {
   if ( !mCanvas )
     return;
 
   setScale( mCanvas->scale() );
+}
+
+void QgsScaleWidget::setNull()
+{
+  mScaleComboBox->setNull();
 }
 
 void QgsScaleWidget::setScale( double scale )

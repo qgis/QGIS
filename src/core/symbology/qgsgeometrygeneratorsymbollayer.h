@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
-#define QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
+#ifndef QGSGEOMETRYGENERATORSYMBOLLAYER_H
+#define QGSGEOMETRYGENERATORSYMBOLLAYER_H
 
 #include "qgis_core.h"
 #include "qgssymbollayer.h"
@@ -73,9 +73,10 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
     /**
-     * Will always return true.
+     * Will always return TRUE.
      * This is a hybrid layer, it constructs its own geometry so it does not
      * care about the geometry of its parents.
      */
@@ -114,4 +115,4 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     QgsSymbol::SymbolType mSymbolType;
 };
 
-#endif // QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
+#endif // QGSGEOMETRYGENERATORSYMBOLLAYER_H

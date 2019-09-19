@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import math
 
@@ -116,10 +112,16 @@ class PointDistance(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
+        if QgsWkbTypes.isMultiType(source.wkbType()):
+            raise QgsProcessingException(self.tr('Input point layer is a MultiPoint layer - first convert to single points before using this algorithm.'))
+
         source_field = self.parameterAsString(parameters, self.INPUT_FIELD, context)
         target_source = self.parameterAsSource(parameters, self.TARGET, context)
         if target_source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.TARGET))
+
+        if QgsWkbTypes.isMultiType(target_source.wkbType()):
+            raise QgsProcessingException(self.tr('Target point layer is a MultiPoint layer - first convert to single points before using this algorithm.'))
 
         target_field = self.parameterAsString(parameters, self.TARGET_FIELD, context)
         same_source_and_target = parameters[self.INPUT] == parameters[self.TARGET]

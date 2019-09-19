@@ -1,0 +1,2308 @@
+# See ../README.md for a description of the file format
+
+tests:
+
+  - algorithm: native:projectpointcartesian
+    name: Project points Cartesian
+    params:
+      BEARING: 90.0
+      DISTANCE: 1.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/projected_points.gml
+        type: vector
+
+  - algorithm: native:projectpointcartesian
+    name: Project multipoints Cartesian
+    params:
+      BEARING: -90.0
+      DISTANCE: 0.5
+      INPUT:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/projected_multipoints.gml
+        type: vector
+
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from lines
+    params:
+      INPUT:
+        name: custom/line_duplicate_nodes.gml
+        type: vector
+      TOLERANCE: 1.0e-06
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/removed_duplicated_nodes_line.gml
+        type: vector
+
+  - algorithm: qgis:keepnbiggestparts
+    name: Keep N biggest parts
+    params:
+      PARTS: 1
+      POLYGONS:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/biggest_parts.gml
+        type: vector
+
+  - algorithm: native:multiringconstantbuffer
+    name: Multi-ring buffer with points
+    params:
+      DISTANCE: 0.05
+      INPUT:
+        name: points.gml
+        type: vector
+      RINGS: 3
+    results:
+      OUTPUT:
+        name: expected/multiring_buffer.gml
+        type: vector
+
+  - algorithm: native:multiringconstantbuffer
+    name: Multi-ring negative buffer with polygons
+    params:
+      DISTANCE: -0.05
+      INPUT:
+        name: polys.gml
+        type: vector
+      RINGS: 3
+    results:
+      OUTPUT:
+        name: expected/multiring_negative_buffer.gml
+        type: vector
+
+  - algorithm: native:segmentizebymaxangle
+    name: Segmentize by angle
+    params:
+      ANGLE: 20.0
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/segmentize_by_angle.gml
+        type: vector
+
+  - algorithm: native:segmentizebymaxdistance
+    name: Segmentize by distance
+    params:
+      DISTANCE: 0.2
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/segmentize_by_distance.gml
+        type: vector
+
+  - algorithm: native:rotatefeatures
+    name: Rotate around centroid
+    params:
+      ANGLE: 25.0
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/rotate_around_centroid.gml
+        type: vector
+
+  - algorithm: native:rotatefeatures
+    name: Rotate around point
+    params:
+      ANCHOR: 2.3,3 [EPSG:4326]
+      ANGLE: 25.0
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/rotate_around_point.gml
+        type: vector
+
+  - algorithm: native:importphotos
+    name: Import photos
+    params:
+      FOLDER:
+        name: custom/photos
+        type: file
+      RECURSIVE: false
+    results:
+      INVALID:
+        name: expected/import_photos_invalid.gml
+        type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
+      OUTPUT:
+        name: expected/import_photos.gml
+        type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.3)
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_03.gml
+        type: vector
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.7)
+    params:
+      ALPHA: 0.7
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_07.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Points (k=7)
+    params:
+      KNEIGHBORS: 7
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_points_7.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Group by field
+    params:
+      FIELD: id2
+      INPUT:
+        name: points.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_points_id2.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Lines (k=3)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_lines.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Polys (k=3)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_polys.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - MultiPoints (k=3)
+    params:
+      INPUT:
+        name: multipoints.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_multipoints.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Duplicate Points
+    params:
+      INPUT:
+        name: custom/points_duplicate.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/failure.gml
+        type: vector
+    expectedException: true
+
+  - algorithm: native:swapxy
+    name: Swap XY coordinates
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/swap_xy.gml
+        type: vector
+
+  - algorithm: model:filtertest
+    name: Test (model:filtertest)
+    params:
+      layer:
+        name: points.gml
+        type: vector
+    results:
+      native:filter_1:OUTPUT_small:
+        name: expected/filter_points_small.gml
+        type: vector
+      native:filter_1:OUTPUT_big:
+        name: expected/filter_points_big.gml
+        type: vector
+
+  - algorithm: native:intersection
+    name: Test Intersection (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:intersection
+    name: Test Intersection (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:intersection
+    name: Test Intersection (custom prefix)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY_FIELDS_PREFIX: pre_
+    results:
+      OUTPUT:
+        name: expected/intersection_prefix.gml
+        type: vector
+        pk: [id_a, pre_id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:wedgebuffers
+    name: Wedge buffers
+    params:
+      AZIMUTH: 90.0
+      INNER_RADIUS: 0.5
+      INPUT:
+        name: points.gml
+        type: vector
+      OUTER_RADIUS: 1.0
+      WIDTH: 45.0
+    results:
+      OUTPUT:
+        name: expected/wedge_buffers.gml
+        type: vector
+
+  - algorithm: native:difference
+    name: Test Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_a_b.gml
+        type: vector
+        pk: id_a
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:difference
+    name: Test Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_b_a.gml
+        type: vector
+        pk: id_b
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_a_b.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_b_a.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference B - A (custom prefix)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY_FIELDS_PREFIX: pre_
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference_prefix.gml
+        type: vector
+        pk: [pre_id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union of single layer
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union0.gml
+        type: vector
+        compare:
+          unordered: true
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (custom prefix)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY_FIELDS_PREFIX: pre_
+    results:
+      OUTPUT:
+        name: expected/union_prefix.gml
+        type: vector
+        pk: [id_a, pre_id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:taperedbuffer
+    name: Tapered buffers (lines)
+    params:
+      END_WIDTH: 0.8
+      INPUT:
+        name: lines.gml
+        type: vector
+      SEGMENTS: 3
+      START_WIDTH: 0.4
+    results:
+      OUTPUT:
+        name: expected/tapered_buffer_line.gml
+        type: vector
+
+  - algorithm: native:taperedbuffer
+    name: Tapered buffers (multiline)
+    params:
+      END_WIDTH: 0.8
+      INPUT:
+        name: multilines.gml
+        type: vector
+      SEGMENTS: 3
+      START_WIDTH: 0.4
+    results:
+      OUTPUT:
+        name: expected/tapered_buffer_multiline.gml
+        type: vector
+
+  - algorithm: native:bufferbym
+    name: Variable width buffer by m
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      SEGMENTS: 3
+    results:
+      OUTPUT:
+        name: expected/variable_width_buffer_by_m.gml
+        type: vector
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 850
+      - 3
+      - 850
+      - 1000
+      - 4
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table min <=
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 1
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+      - 843
+      - 1000
+      - 4
+    results:
+      OUTPUT:
+        hash: f055b582e4e5abcfa9cce6a69ceb7fac54791ad0d980003f1a23f4b1
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table use original
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+    results:
+      OUTPUT:
+        hash: 4398ddc5d24b3bf968d9a6e0fbd800344b20880a57915bd50a90e1ba
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table use nodata
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: true
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+    results:
+      OUTPUT:
+        hash: cea558f7e99a0564fef92a96cd8d6b59707d019f1751cb600ab00850
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table infinite ranges
+    params:
+      DATA_TYPE: 5
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - ''
+      - 850
+      - 3
+      - 850
+      - ''
+      - 4
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+  - algorithm: native:reclassifybylayer
+    name: Reclassify by layer
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_TABLE:
+        name: custom/reclassify_layer.gml
+        type: vector
+      MAX_FIELD: max
+      MIN_FIELD: min
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      VALUE_FIELD: value
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+  - algorithm: native:reclassifybylayer
+    name: Reclassify by layer with nulls
+    params:
+      DATA_TYPE: 5
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_TABLE:
+        name: custom/reclassify_layer_nulls.gml
+        type: vector
+      MAX_FIELD: max
+      MIN_FIELD: min
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      VALUE_FIELD: value
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+  - algorithm: native:pixelstopolygons
+    name: Pixels to polygons
+    params:
+      FIELD_NAME: pix_val
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/vectorize.gml
+        type: vector
+
+  - algorithm: native:pixelstopoints
+    name: Pixels to points
+    params:
+      FIELD_NAME: VALUE
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/pixels_to_points.gml
+        type: vector
+
+  - algorithm: native:kmeansclustering
+    name: K means, points, 3 clusters
+    params:
+      CLUSTERS: 3
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/kmeans_points_3.gml
+        type: vector
+
+  - algorithm: native:kmeansclustering
+    name: K means, points, 5 clusters
+    params:
+      CLUSTERS: 5
+      FIELD_NAME: CLUSTER_ID5
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/kmeans_points_5.gml
+        type: vector
+
+  - algorithm: native:kmeansclustering
+    name: K means, lines
+    params:
+      CLUSTERS: 2
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/kmeans_lines.gml
+        type: vector
+
+  - algorithm: native:kmeansclustering
+    name: K means, polys
+    params:
+      CLUSTERS: 2
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/kmeans_polys.gml
+        type: vector
+
+
+  - algorithm: native:dbscanclustering
+    name: DBScan 5/3
+    params:
+      DBSCAN*: false
+      EPS: 3.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      MIN_SIZE: 5
+    results:
+      OUTPUT:
+        name: expected/dbscan_5_2.gml
+        type: vector
+
+  - algorithm: native:dbscanclustering
+    name: DBScan* 5/3
+    params:
+      DBSCAN*: true
+      EPS: 3.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      MIN_SIZE: 5
+    results:
+      OUTPUT:
+        name: expected/dbscan_star_5_2.gml
+        type: vector
+
+  - algorithm: native:dbscanclustering
+    name: DBScan no clusters
+    params:
+      DBSCAN*: false
+      EPS: 1.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      MIN_SIZE: 5
+    results:
+      OUTPUT:
+        name: expected/dbscan_no_clusters.gml
+        type: vector
+
+  - algorithm: native:dbscanclustering
+    name: DBScan multiple clusters
+    params:
+      DBSCAN*: false
+      EPS: 2.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      MIN_SIZE: 3
+    results:
+      OUTPUT:
+        name: expected/dbscan_multiple_clusters.gml
+        type: vector
+
+  - algorithm: qgis:rastersampling
+    name: Single band raster
+    params:
+      COLUMN_PREFIX: rvalue
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      RASTERCOPY:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/sampling_raster.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:filterverticesbym
+    name: Filter by m no max
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MIN: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_m_no_max.shp
+        type: vector
+
+  - algorithm: native:filterverticesbym
+    name: Filter by m no min
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MAX: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_m_no_min.shp
+        type: vector
+
+  - algorithm: native:filterverticesbym
+    name: Filter by m
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MAX: 0.7
+      MIN: 0.4
+    results:
+      OUTPUT:
+        name: expected/filter_by_m.shp
+        type: vector
+
+  - algorithm: native:filterverticesbyz
+    name: Filter by z no max
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MIN: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_z_no_max.shp
+        type: vector
+
+  - algorithm: native:filterverticesbyz
+    name: Filter by z no min
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MAX: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_z_no_min.shp
+        type: vector
+
+  - algorithm: native:filterverticesbyz
+    name: Filter by z
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MAX: 0.7
+      MIN: 0.4
+    results:
+      OUTPUT:
+        name: expected/filter_by_z.shp
+        type: vector
+
+  - algorithm: native:arraytranslatedfeatures
+    name: Array of point features
+    params:
+      COUNT: 3
+      DELTA_M: -0.4
+      DELTA_X: 0.1
+      DELTA_Y: -0.2
+      DELTA_Z: 0.3
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/feature_array.shp
+        type: vector
+
+  - algorithm: native:arrayoffsetlines
+    name: Array of offset (parallel) lines
+    params:
+      COUNT: 3
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: 1
+      MITER_LIMIT: 2.0
+      OFFSET: -0.2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/create_parallel_lines.gml
+        type: vector
+
+  - algorithm: native:setzfromraster
+    name: Drape points to z
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      NODATA: 0.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.2
+    results:
+      OUTPUT:
+        name: expected/drape_points.shp
+        type: vector
+
+  - algorithm: native:setmfromraster
+    name: Drape points to m
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      NODATA: 0.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.2
+    results:
+      OUTPUT:
+        name: expected/drape_points_m.shp
+        type: vector
+
+  - algorithm: native:setzfromraster
+    name: Drape lines to z
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_lines.shp
+        type: vector
+      NODATA: -9999.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+    results:
+      OUTPUT:
+        name: expected/drape_lines.shp
+        type: vector
+
+  - algorithm: native:setmfromraster
+    name: Drape lines to m
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_lines.shp
+        type: vector
+      NODATA: -9999.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+    results:
+      OUTPUT:
+        name: expected/drape_lines_m.shp
+        type: vector
+
+  - algorithm: native:linesubstring
+    name: Line substrings
+    params:
+      END_DISTANCE: 0.8
+      INPUT:
+        name: lines.gml
+        type: vector
+      START_DISTANCE: 0.2
+    results:
+      OUTPUT:
+        name: expected/line_substring.gml
+        type: vector
+
+  - algorithm: native:interpolatepoint
+    name: Interpolate points (line)
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/interpolate_point_lines.gml
+        type: vector
+
+  - algorithm: native:interpolatepoint
+    name: Interpolate points (polygons)
+    params:
+      DISTANCE: 2.0
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/interpolate_point_polys.gml
+        type: vector
+
+  - algorithm: native:mergevectorlayers
+    name: Merge vector layers with conflicting feature ids
+    params:
+      LAYERS:
+        params:
+        - name: custom/pol.gpkg|layername=pol1
+          type: vector
+        - name: custom/pol.gpkg|layername=pol2
+          type: vector
+        - name: custom/pol.gpkg|layername=pol3
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        # If you ever run into this test producing Polygons instead of MultiPolygons as output
+        # that is totally expected and you are invited to replace the file merged_pol.gpkg with
+        # a single polygon version.
+        name: ogr:dbname='expected/merged_pol.gpkg' table="output" (geom) sql=
+        uri: expected/merged_pol.gpkg|layername=merged_pol
+        type: vector
+        compare:
+          fields:
+            path: skip
+
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 1
+    params:
+      FIELDS:
+      - num_field1
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/remove_duplicates1.gml
+        type: vector
+
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 2
+    params:
+      FIELDS:
+      - num_field2
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/remove_duplicates2.gml
+        type: vector
+
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 3
+    params:
+      FIELDS:
+      - num_field2
+      - text_field
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      DUPLICATES:
+        name: expected/remove_duplicates_dupes.gml
+        type: vector
+      OUTPUT:
+        name: expected/remove_duplicates3.gml
+        type: vector
+
+  - algorithm: native:forcerhr
+    name: Force right-hand-rule polys
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/force_rhr_polys.gml
+        type: vector
+
+  - algorithm: native:forcerhr
+    name: Force right-hand-rule multipolys
+    params:
+      INPUT:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/force_rhr_multipolys.gml
+        type: vector
+
+  - algorithm: native:extractzvalues
+    name: Extract z, first value only
+    params:
+      COLUMN_PREFIX: z_
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      SUMMARIES:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/extract_z_first.shp
+        type: vector
+
+  - algorithm: native:extractzvalues
+    name: Extract z, all stats
+    params:
+      COLUMN_PREFIX: zs_
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      SUMMARIES:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    results:
+      OUTPUT:
+        name: expected/extract_z_all.shp
+        type: vector
+
+  - algorithm: native:extractzvalues
+    name: Extract z, points
+    params:
+      COLUMN_PREFIX: z_
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      SUMMARIES:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    results:
+      OUTPUT:
+        name: expected/extract_z_points.shp
+        type: vector
+
+  - algorithm: native:extractzvalues
+    name: Extract z, no z values
+    params:
+      COLUMN_PREFIX: z_
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+      SUMMARIES:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/extract_z_none.shp
+        type: vector
+
+  - algorithm: native:extractmvalues
+    name: Extract m first only
+    params:
+      COLUMN_PREFIX: m_
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      SUMMARIES:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/extract_m_first.shp
+        type: vector
+
+  - algorithm: native:extractmvalues
+    name: Extract m, all stats
+    params:
+      COLUMN_PREFIX: ms_
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      SUMMARIES:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    results:
+      OUTPUT:
+        name: expected/extract_m_all.shp
+        type: vector
+
+  - algorithm: native:extractmvalues
+    name: Extract m, points
+    params:
+      COLUMN_PREFIX: mp_
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      SUMMARIES:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    results:
+      OUTPUT:
+        name: expected/extract_m_points.shp
+        type: vector
+
+  - algorithm: native:extractmvalues
+    name: Extract m, no m values present
+    params:
+      COLUMN_PREFIX: m_
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      SUMMARIES:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/extract_m_none.shp
+        type: vector
+
+  - algorithm: native:splitlinesbylength
+    name: Split multilines by length
+    params:
+      INPUT:
+        name: multilines.gml|layername=multilines
+        type: vector
+      LENGTH: 1.1
+    results:
+      OUTPUT:
+        name: expected/split_multiline_by_length.gml
+        type: vector
+
+  - algorithm: native:splitlinesbylength
+    name: Split lines by length
+    params:
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+      LENGTH: 2.2
+    results:
+      OUTPUT:
+        name: expected/split_lines_by_length.gml
+        type: vector
+
+  - algorithm: native:splitlinesbylength
+    name: Split linesz by length
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      LENGTH: 3.1
+    results:
+      OUTPUT:
+        name: expected/split_linez_by_length.shp
+        type: vector
+
+  - algorithm: qgis:deleteduplicategeometries
+    name: Delete Duplicates with null geometries
+    params:
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/delete_duplicates_with_nulls.gml
+        type: vector
+
+  - algorithm: native:rasterlayerzonalstats
+    name: Raster layer zonal stats, same CRS
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      ZONES:
+        name: custom/dem_zones.tif
+        type: raster
+      ZONES_BAND: 1
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_zonal_stats.csv
+        type: vector
+        pk:
+        - zone
+
+  - algorithm: native:rasterlayerzonalstats
+    name: Raster layer zonal stats, reprojected
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      ZONES:
+        name: custom/dem_zones_crs.tif
+        type: raster
+      ZONES_BAND: 1
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_zonal_stats_reproj.csv
+        type: vector
+        pk:
+        - zone
+        compare:
+          fields:
+            sum:
+              precision: 0
+
+  - algorithm: native:rasterlayerzonalstats
+    name: Raster layer zonal stats, zones ref
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      REF_LAYER: 1
+      ZONES:
+        name: custom/dem_zones.tif
+        type: raster
+      ZONES_BAND: 1
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_zonal_stats_zone_ref.csv
+        type: vector
+        pk:
+        - zone
+
+  - algorithm: native:rasterlayerzonalstats
+    name: Raster layer zonal stats reprojected, zones ref
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      REF_LAYER: 1
+      ZONES:
+        name: custom/dem_zones_crs.tif
+        type: raster
+      ZONES_BAND: 1
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_zonal_stats_zone_crs_ref.csv
+        type: vector
+        pk:
+        - zone
+
+  - algorithm: native:antimeridiansplit
+    name: Antimeridian split, lines
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/antimeridian_lines.gml|layername=antimeridian_lines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/antimeridian_lines_split.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 4
+        pk:
+        - pk
+
+  - algorithm: native:antimeridiansplit
+    name: Antimeridian split, multilines
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/antimeridian_multilines.gml|layername=antimeridian_multilines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/antimeridian_multilines_split.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 4
+        pk:
+        - pk
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume above
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      LEVEL: 100.0
+      METHOD: 0
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_above.html
+        type: regex
+        rules:
+          - 'Volume: 0.064805'
+          - 'Pixel count: 95901'
+          - 'Area: 0.000959'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_above.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume Below
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      LEVEL: 100.0
+      METHOD: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_below.html
+        type: regex
+        rules:
+          - 'Volume: -0.00322225'
+          - 'Pixel count: 34600'
+          - 'Area: 0.00034599'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_below.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume subtract below
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      LEVEL: 100.0
+      METHOD: 2
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_subtract.html
+        type: regex
+        rules:
+          - 'Volume: 0.0615830'
+          - 'Pixel count: 130550'
+          - 'Area: 0.00130549'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_subtract.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume add below
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      LEVEL: 100.0
+      METHOD: 3
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_add.html
+        type: regex
+        rules:
+          - 'Volume: 0.06802752'
+          - 'Pixel count: 130550'
+          - 'Area: 0.00130549'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_add.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume above (meters)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      LEVEL: 150.0
+      METHOD: 0
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_above_crs.html
+        type: regex
+        rules:
+          - 'Volume: 413784918\.'
+          - 'Pixel count: 64692'
+          - 'Area: 11497732\.'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_above_crs.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume below (meters)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      LEVEL: 150.0
+      METHOD: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_below_crs.html
+        type: regex
+        rules:
+          - 'Volume: -479651884\.'
+          - 'Pixel count: 65660'
+          - 'Area: 11669775\.'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_below_crs.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume subtract below (meters)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      LEVEL: 150.0
+      METHOD: 2
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_subtract_crs.html
+        type: regex
+        rules:
+          - 'Volume: -65866966\.'
+          - 'Pixel count: 130550'
+          - 'Area: 23202698\.'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_subtract_crs.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume add below (meters)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      LEVEL: 150.0
+      METHOD: 3
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_add_crs.html
+        type: regex
+        rules:
+          - 'Volume: 893436802\.'
+          - 'Pixel count: 130550'
+          - 'Area: 23202698\.'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_add_crs.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume with gaps
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_gaps.tif
+        type: raster
+      LEVEL: 101.0
+      METHOD: 0
+    results:
+      OUTPUT_TABLE:
+        name: expected/surface_vol_gaps.gml
+        type: vector
+
+  - algorithm: native:dissolve
+    name: Test dissolve with consecutive lines
+    params:
+      INPUT:
+        name: custom/consecutivelines.gml|layername=consecutivelines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolved_consecutive_lines.gml
+        type: vector
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND, nodata
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean1.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 96799caed50406d3e31e05a182a6872231f800f01dea126aa9fbafdd
+        type: rasterhash
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND, nodata as false
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: true
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean1.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: bf225380193226957a2210dc45a9c10dffac5dadcee932459e243456
+        type: rasterhash
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND, resampling
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3_resample.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -999.0
+      REF_LAYER:
+        name: custom/raster_boolean3.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: cdf6edb6afcefc5e80d60fa213df17aae59423019240807f5a49b72d
+        type: rasterhash
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND resample, nodata as false
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3_resample.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: true
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 1de336faba85a6b51684bda85b4f3b954b7e54486632352e05c9fab3
+        type: rasterhash
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND, reference layer
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3_resample.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: dfe0bfc934a9d2a8ab865ad77db4278067830ac8e6f0470a730ad434
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean1.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: d9fe5b26cf76ff58674fd6adeb1933f4b5c9b39ca6f57b876455f167
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR, nodata as false
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: true
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean1.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: de7a8dabce3872e6ef1acd4821f7f550ac41a43d5b5914ab4474cec1
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR resample
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3_resample.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 56c4396468098a6f421e14682e22bb9cbb14027ed97f99cb8f85f953
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR resample, nodata as false
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3_resample.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: true
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: f8f7a412274c3133aee7fc24e3e6df2ddb52c6bc82663dd25154d3be
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR, reference layer
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3_resample.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 6c09e13126e16a267e36c79b0eeba7761422da7bd0387125f4c823e6
+        type: rasterhash
+
+  - algorithm: native:addxyfields
+    name: Add XY 4326
+    params:
+      CRS: EPSG:4326
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/add_xy_4326.gml
+        type: vector
+
+  - algorithm: native:addxyfields
+    name: Add XY 3785
+    params:
+      CRS: EPSG:3785
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      PREFIX: p_
+    results:
+      OUTPUT:
+        name: expected/add_xy_3857.gml
+        type: vector
+        compare:
+          fields:
+            p_x:
+              precision: 6
+
+  - algorithm: native:joinbynearest
+    name: Join by nearest polys to points
+    params:
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_polys.gml|layername=snap_polys
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_polys_to_points.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest polys to points, with options
+    params:
+      FIELDS_TO_COPY:
+      - fid
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_polys.gml|layername=snap_polys
+        type: vector
+      MAX_DISTANCE: 3.5
+      NEIGHBORS: 2
+      PREFIX: j_
+    results:
+      OUTPUT:
+        name: expected/nearest_polys_to_points_options.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest lines to polys
+    params:
+      INPUT:
+        name: snap_polys.gml|layername=snap_polys
+        type: vector
+      INPUT_2:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_lines_to_polys.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest points to lines, with max distance
+    params:
+      INPUT:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      INPUT_2:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      MAX_DISTANCE: 1.5
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_points_to_lines.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest points to lines, reprojected
+    params:
+      INPUT:
+        name: custom/snap_lines_3857.gml|layername=snap_lines_3857
+        type: vector
+      INPUT_2:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_points_to_reproj_lines.gml
+        type: vector
+        compare:
+          fields:
+            distance:
+              precision: 5
+            feature_x:
+              precision: 5
+            nearest_x:
+              precision: 5
+
+  - algorithm: native:joinbynearest
+    name: Nearest lines to points, reprojected
+    params:
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: custom/snap_lines_3857.gml|layername=snap_lines_3857
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_lines_to_points_reprojected.gml
+        type: vector
+        compare:
+          fields:
+            distance:
+              precision: 5
+            nearest_y:
+              precision: 5
+
+  - algorithm: native:joinbynearest
+    name: Join to nearest, self join
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_to_nearest_self.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Join to nearest 2, self join
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      NEIGHBORS: 2
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_to_nearest_self_2.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Join to nearest, discard no matching
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      MAX_DISTANCE: 1.0
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_points_to_layers_discard.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Join by nearest, no matching sink
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      MAX_DISTANCE: 1.0
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      NON_MATCHING:
+        name: expected/join_to_nearest_no_matches.gml
+        type: vector
+
+  - name: Generate XYZ tiles (Directory)
+    algorithm: qgis:tilesxyzdirectory
+    project: ../../../../../tests/testdata/xyztiles.qgs
+    project_crs: EPSG:3857
+    params:
+      EXTENT: -12535000,-9883000,3360000,5349000 [EPSG:3857]
+      ZOOM_MIN: 1
+      ZOOM_MAX: 3
+      TILE_FORMAT: 0     # png
+      TMS_CONVENTION: false
+      TILE_WIDTH: 256
+      TILE_HEIGHT: 256
+
+    results:
+      OUTPUT_DIRECTORY:
+        type: directory
+        name: expected/xyztiles
+
+  - algorithm: native:calculatevectoroverlaps
+    name: Overlap analysis 1
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+      LAYERS:
+        params:
+        - name: custom/overlay1_a.geojson
+          type: vector
+        - name: custom/overlay1_b.geojson
+          type: vector
+        - name: custom/overlay2_a.geojson
+          type: vector
+        - name: custom/overlay2_b.geojson
+          type: vector
+        - name: custom/overlay3_a.geojson
+          type: vector
+        - name: custom/overlay3_b.geojson
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/overlap_analysis_1.gml
+        type: vector
+
+  - algorithm: native:calculatevectoroverlaps
+    name: Overlap analysis reprojected
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/overlay0_4326.gml|layername=overlay0_4326
+        type: vector
+      LAYERS:
+        params:
+        - name: custom/overlay1_a.geojson
+          type: vector
+        - name: custom/overlay1_b.geojson
+          type: vector
+        - name: custom/overlay2_a.geojson
+          type: vector
+        - name: custom/overlay2_b.geojson
+          type: vector
+        - name: custom/overlay3_a.geojson
+          type: vector
+        - name: custom/overlay3_b.geojson
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/overlap_analysis_4326.gml
+        type: vector
+        compare:
+          fields:
+            custom_overlay2_a.geojson_area:
+              precision: 13
+            custom_overlay2_a.geojson_pc:
+              precision: 13
+            custom_overlay2_b.geojson_area:
+              precision: 8
+            custom_overlay2_b.geojson_pc:
+              precision: 7
+
+  - algorithm: native:calculatevectoroverlaps
+    name: Overlap analysis 3, reordered inputs
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+      LAYERS:
+        params:
+        - name: custom/overlay3_b.geojson
+          type: vector
+        - name: custom/overlay1_b.geojson
+          type: vector
+        - name: custom/overlay2_a.geojson
+          type: vector
+        - name: custom/overlay2_b.geojson
+          type: vector
+        - name: custom/overlay1_a.geojson
+          type: vector
+        - name: custom/overlay3_a.geojson
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/overlap_analysis_3.gml
+        type: vector
+        compare:
+          fields:
+            custom_overlay1_a.geojson_area:
+              precision: 8
+            custom_overlay1_a.geojson_pc:
+              precision: 3
+            custom_overlay1_b.geojson_area:
+              precision: 8
+            custom_overlay1_b.geojson_pc:
+              precision: 3
+            custom_overlay2_a.geojson_area:
+              precision: 8
+            custom_overlay2_a.geojson_pc:
+              precision: 3
+            custom_overlay2_b.geojson_area:
+              precision: 8
+            custom_overlay2_b.geojson_pc:
+              precision: 3
+            custom_overlay3_a.geojson_area:
+              precision: 8
+            custom_overlay3_a.geojson_pc:
+              precision: 3
+            custom_overlay3_b.geojson_area:
+              precision: 8
+            custom_overlay3_b.geojson_pc:
+              precision: 3
+
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character
+    params:
+      CHAR: B
+      FIELD: val
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: false
+    results:
+      OUTPUT:
+        name: expected/split_by_char_a.gml
+        type: vector
+
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character 2
+    params:
+      CHAR: aB
+      FIELD: val
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: false
+    results:
+      OUTPUT:
+        name: expected/split_by_char_b.gml
+        type: vector
+
+  - algorithm: native:splitfeaturesbycharacter
+    name: Split features by character regex
+    params:
+      CHAR: \d
+      FIELD: val2
+      INPUT:
+        name: custom/split_points.shp|layername=split_points
+        type: vector
+      REGEX: true
+    results:
+      OUTPUT:
+        name: expected/split_by_char_regex.gml
+        type: vector
+
+# See ../README.md for a description of the file format

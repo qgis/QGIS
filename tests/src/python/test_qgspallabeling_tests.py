@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Larry Shaffer'
 __date__ = '07/16/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -23,7 +21,8 @@ import os
 from qgis.PyQt.QtCore import Qt, QPointF, QSizeF
 from qgis.PyQt.QtGui import QFont
 
-from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings
+from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings, QgsProject, QgsExpressionContextUtils, QgsExpressionContext
+from qgis.core import QgsCoordinateReferenceSystem
 
 from utilities import svgSymbolsPath
 
@@ -97,7 +96,7 @@ class TestPointBase(object):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
         # verify fix for issues
-        #   https://issues.qgis.org/issues/9057
+        #   https://github.com/qgis/QGIS/issues/17705
         #   http://gis.stackexchange.com/questions/86900
 
         format = self.lyr.format()
@@ -306,6 +305,24 @@ class TestLineBase(object):
         # Curved placement, on line
         self.lyr.placement = QgsPalLayerSettings.Curved
         self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+    def test_length_expression(self):
+        # compare length using the ellipsoid in kms and the planimetric distance in meters
+        self.lyr.fieldName = "round($length,5) || ' - ' || round(length($geometry),2)"
+        self.lyr.isExpression = True
+
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem("EPSG:32613"))
+        QgsProject.instance().setEllipsoid("WGS84")
+        QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceKilometers)
+
+        ctxt = QgsExpressionContext()
+        ctxt.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+        ctxt.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
+        self._TestMapSettings.setExpressionContext(ctxt)
+
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.MapOrientation
         self.checkTest()
 
 # noinspection PyPep8Naming

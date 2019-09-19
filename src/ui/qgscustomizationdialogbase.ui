@@ -23,6 +23,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QgsFilterLineEdit" name="mLeFilter">
+      <property name="placeholderText">
+       <string>Search…</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QTreeWidget" name="treeWidget">
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectItems</enum>

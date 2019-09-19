@@ -20,9 +20,16 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgis_gui.h"
-#include "qgssnapindicator.h"
+
 
 class QgsAdvancedDigitizingDockWidget;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsadvanceddigitizingcanvasitem.h>
+% End
+#endif
 
 /**
  * \ingroup gui
@@ -30,22 +37,28 @@ class QgsAdvancedDigitizingDockWidget;
  */
 class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsAdvancedDigitizingCanvasItem *>( sipCpp ) )
+      sipType = sipType_QgsAdvancedDigitizingCanvasItem;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     void paint( QPainter *painter ) override;
 
-  protected:
+  private:
     QPen mLockedPen;
     QPen mConstruction1Pen;
     QPen mConstruction2Pen;
     QPen mSnapPen;
     QPen mSnapLinePen;
     QPen mCursorPen;
-    //! Snapping indicators
-    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
-
-  private:
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
 };
 

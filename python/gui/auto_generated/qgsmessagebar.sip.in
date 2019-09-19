@@ -53,7 +53,7 @@ then display the next one in the stack if any or hide the bar
 
 :param item: item to remove
 
-:return: true if the widget was removed, false otherwise
+:return: ``True`` if the widget was removed, ``False`` otherwise
 %End
 
     static QgsMessageBarItem *createMessage( const QString &text, QWidget *parent = 0 ) /Factory/;
@@ -103,14 +103,14 @@ emitted when a message widget was removed from the bar
 Remove the currently displayed widget from the bar and
 display the next in the stack if any or hide the bar.
 
-:return: true if the widget was removed, false otherwise
+:return: ``True`` if the widget was removed, ``False`` otherwise
 %End
 
     bool clearWidgets();
 %Docstring
 Remove all items from the bar's widget list
 
-:return: true if all items were removed, false otherwise
+:return: ``True`` if all items were removed, ``False`` otherwise
 %End
 
     void pushSuccess( const QString &title, const QString &message );

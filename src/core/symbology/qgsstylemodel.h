@@ -34,6 +34,10 @@ class QgsSymbol;
  * A QAbstractItemModel subclass for showing symbol and color ramp entities contained
  * within a QgsStyle database.
  *
+ * If you are creating a style model for the default application style (see QgsStyle::defaultStyle()),
+ * consider using the shared style model available at QgsApplication::defaultStyleModel() for performance
+ * instead.
+ *
  * \see QgsStyleProxyModel
  *
  * \since QGIS 3.4
@@ -57,6 +61,8 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
       TypeRole = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
       TagRole, //!< String list of tags
       SymbolTypeRole, //!< Symbol type (for symbol entities)
+      IsFavoriteRole, //!< Whether entity is flagged as a favorite
+      LayerTypeRole, //!< Layer type (for label settings entities)
     };
 
     /**
@@ -65,6 +71,13 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
      * The \a style object must exist for the lifetime of this model.
      */
     explicit QgsStyleModel( QgsStyle *style, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the style managed by the model.
+     *
+     * \since QGIS 3.10
+     */
+    QgsStyle *style() { return mStyle; }
 
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -95,6 +108,17 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void onRampRemoved( const QString &name );
     void onRampChanged( const QString &name );
     void onRampRename( const QString &oldName, const QString &newName );
+
+    void onTextFormatAdded( const QString &name );
+    void onTextFormatRemoved( const QString &name );
+    void onTextFormatChanged( const QString &name );
+    void onTextFormatRename( const QString &oldName, const QString &newName );
+
+    void onLabelSettingsAdded( const QString &name );
+    void onLabelSettingsRemoved( const QString &name );
+    void onLabelSettingsChanged( const QString &name );
+    void onLabelSettingsRename( const QString &oldName, const QString &newName );
+
     void onTagsChanged( int entity, const QString &name, const QStringList &tags );
     void rebuildSymbolIcons();
 
@@ -103,10 +127,17 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QgsStyle *mStyle = nullptr;
     QStringList mSymbolNames;
     QStringList mRampNames;
+    QStringList mTextFormatNames;
+    QStringList mLabelSettingsNames;
     QList< QSize > mAdditionalSizes;
+    mutable std::unique_ptr< QgsExpressionContext > mExpressionContext;
 
     mutable QHash< QString, QIcon > mSymbolIconCache;
     mutable QHash< QString, QIcon > mColorRampIconCache;
+    mutable QHash< QString, QIcon > mTextFormatIconCache;
+    mutable QHash< QString, QIcon > mLabelSettingsIconCache;
+
+    QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
 
 };
 
@@ -134,6 +165,13 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     explicit QgsStyleProxyModel( QgsStyle *style, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
+     * Constructor for QgsStyleProxyModel, using the specified source \a model and \a parent object.
+     *
+     * The source \a model object must exist for the lifetime of this model.
+     */
+    explicit QgsStyleProxyModel( QgsStyleModel *model, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
      * Returns the current filter string, if set.
      *
      * \see setFilterString()
@@ -143,7 +181,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Returns the style entity type filter.
      *
-     * \note This filter is only active if entityFilterEnabled() is true.
+     * \note This filter is only active if entityFilterEnabled() is TRUE.
      * \see setEntityFilter()
      */
     QgsStyle::StyleEntity entityFilter() const;
@@ -151,14 +189,25 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Sets the style entity type \a filter.
      *
-     * \note This filter is only active if entityFilterEnabled() is true.
+     * \note This filter is only active if entityFilterEnabled() is TRUE.
      *
      * \see entityFilter()
      */
     void setEntityFilter( QgsStyle::StyleEntity filter );
 
     /**
-     * Returns true if filtering by entity type is enabled.
+     * Sets the style entity type \a filters.
+     *
+     * \note These filters are only active if entityFilterEnabled() is TRUE.
+     * \note Not available in Python bindings
+     *
+     * \see setEntityFilter()
+     * \since QGIS 3.10
+     */
+    void setEntityFilters( const QList<QgsStyle::StyleEntity> &filters ) SIP_SKIP;
+
+    /**
+     * Returns TRUE if filtering by entity type is enabled.
      *
      * \see setEntityFilterEnabled()
      * \see entityFilter()
@@ -168,7 +217,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Sets whether filtering by entity type is \a enabled.
      *
-     * If \a enabled is false, then the value of entityFilter() will have no
+     * If \a enabled is FALSE, then the value of entityFilter() will have no
      * effect on the model filtering.
      *
      * \see entityFilterEnabled()
@@ -179,7 +228,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Returns the symbol type filter.
      *
-     * \note This filter is only active if symbolTypeFilterEnabled() is true, and has
+     * \note This filter is only active if symbolTypeFilterEnabled() is TRUE, and has
      * no effect on non-symbol entities (i.e. color ramps).
      *
      * \see setSymbolType()
@@ -189,14 +238,14 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Sets the symbol \a type filter.
      *
-     * \note This filter is only active if symbolTypeFilterEnabled() is true.
+     * \note This filter is only active if symbolTypeFilterEnabled() is TRUE.
      *
      * \see symbolType()
      */
     void setSymbolType( QgsSymbol::SymbolType type );
 
     /**
-     * Returns true if filtering by symbol type is enabled.
+     * Returns TRUE if filtering by symbol type is enabled.
      *
      * \see setSymbolTypeFilterEnabled()
      * \see symbolType()
@@ -206,7 +255,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Sets whether filtering by symbol type is \a enabled.
      *
-     * If \a enabled is false, then the value of symbolType() will have no
+     * If \a enabled is FALSE, then the value of symbolType() will have no
      * effect on the model filtering. This has
      * no effect on non-symbol entities (i.e. color ramps).
      *
@@ -214,6 +263,24 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * \see setSymbolType()
      */
     void setSymbolTypeFilterEnabled( bool enabled );
+
+    /**
+     * Returns the layer type filter, or QgsWkbTypes::UnknownGeometry if no
+     * layer type filter is present.
+     *
+     * This setting has no effect on non-label settings entities (i.e. color ramps).
+     *
+     * \see setLayerType()
+     */
+    QgsWkbTypes::GeometryType layerType() const;
+
+    /**
+     * Sets the layer \a type filter. Set \a type to QgsWkbTypes::UnknownGeometry if no
+     * layer type filter is desired.
+     *
+     * \see layerType()
+     */
+    void setLayerType( QgsWkbTypes::GeometryType type );
 
     /**
      * Sets a tag \a id to filter style entities by. Only entities with the given
@@ -256,7 +323,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
     /**
-     * Returns true if the model is showing only favorited entities.
+     * Returns TRUE if the model is showing only favorited entities.
      *
      * \see setFavoritesOnly()
      */
@@ -289,6 +356,8 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
 
   private:
 
+    void initialize();
+
     QgsStyleModel *mModel = nullptr;
     QgsStyle *mStyle = nullptr;
 
@@ -301,13 +370,14 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     QStringList mSmartGroupSymbolNames;
 
     bool mFavoritesOnly = false;
-    QStringList mFavoritedSymbolNames;
 
     bool mEntityFilterEnabled = false;
-    QgsStyle::StyleEntity mEntityFilter = QgsStyle::SymbolEntity;
+    QList< QgsStyle::StyleEntity > mEntityFilters = QList< QgsStyle::StyleEntity >() << QgsStyle::SymbolEntity;
 
     bool mSymbolTypeFilterEnabled = false;
     QgsSymbol::SymbolType mSymbolType = QgsSymbol::Marker;
+
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::UnknownGeometry;
 
 };
 

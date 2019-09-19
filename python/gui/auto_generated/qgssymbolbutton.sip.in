@@ -90,6 +90,25 @@ widget to fetch current settings from the map canvas, such as current scale.
 .. seealso:: :py:func:`mapCanvas`
 %End
 
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
+to the appropriate message bar.
+
+.. seealso:: :py:func:`messageBar`
+
+.. versionadded:: 3.6
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the widget.
+
+.. seealso:: :py:func:`setMessageBar`
+
+.. versionadded:: 3.6
+%End
+
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the layer associated with the widget.

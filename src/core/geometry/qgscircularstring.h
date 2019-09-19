@@ -21,7 +21,7 @@
 #include <QVector>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgscurve.h"
 
 
@@ -54,8 +54,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Creates a circular string with a single arc representing
      * the curve from \a p1 to \a p2 with the specified \a center.
      *
-     * If \a useShortestArc is true, then the arc returned will be that corresponding
-     * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
+     * If \a useShortestArc is TRUE, then the arc returned will be that corresponding
+     * to the shorter arc from \a p1 to \a p2. If it is FALSE, the longer arc from \a p1
      * to \a p2 will be used (i.e. winding the other way around the circle).
      *
      * \since QGIS 3.2
@@ -79,8 +79,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    QString asJson( int precision = 17 ) const override;
-
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     bool isEmpty() const override;
     int numPoints() const override;
 
@@ -152,7 +151,10 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCircularString: %1>" ).arg( sipCpp->asWkt() );
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsCircularString: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

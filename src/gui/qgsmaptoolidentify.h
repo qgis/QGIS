@@ -30,9 +30,9 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsMapLayer;
 class QgsMapCanvas;
+class QgsMeshLayer;
 class QgsHighlight;
 class QgsIdentifyMenu;
-class QgsDistanceArea;
 
 /**
  * \ingroup gui
@@ -63,7 +63,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     {
       VectorLayer = 1,
       RasterLayer = 2,
-      AllLayers = VectorLayer | RasterLayer
+      MeshLayer = 4, //!< \since QGIS 3.6
+      AllLayers = VectorLayer | RasterLayer | MeshLayer
     };
     Q_DECLARE_FLAGS( LayerType, Type )
     Q_FLAG( LayerType )
@@ -114,13 +115,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     /**
      * Performs the identification.
-    To avoid being forced to specify IdentifyMode with a list of layers
-    this has been made private and two publics methods are offered
-    \param x x coordinates of mouseEvent
-    \param y y coordinates of mouseEvent
-    \param mode Identification mode. Can use Qgis default settings or a defined mode.
-    \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
-    \returns a list of IdentifyResult*/
+     * To avoid being forced to specify IdentifyMode with a list of layers
+     * this has been made private and two publics methods are offered
+     * \param x x coordinates of mouseEvent
+     * \param y y coordinates of mouseEvent
+     * \param mode Identification mode. Can use Qgis default settings or a defined mode.
+     * \param layerType Only performs identification in a certain type of layers (raster, vector, mesh). Default value is AllLayers.
+     * \returns a list of IdentifyResult
+     */
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
     //! Performs identification based on a geometry (in map coordinates)
@@ -147,14 +149,15 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     /**
      * Performs the identification.
-    To avoid being forced to specify IdentifyMode with a list of layers
-    this has been made private and two publics methods are offered
-    \param x x coordinates of mouseEvent
-    \param y y coordinates of mouseEvent
-    \param mode Identification mode. Can use Qgis default settings or a defined mode.
-    \param layerList Performs the identification within the given list of layers.
-    \param layerType Only performs identification in a certain type of layers (raster, vector).
-    \returns a list of IdentifyResult*/
+     * To avoid being forced to specify IdentifyMode with a list of layers
+     * this has been made private and two publics methods are offered
+     * \param x x coordinates of mouseEvent
+     * \param y y coordinates of mouseEvent
+     * \param mode Identification mode. Can use Qgis default settings or a defined mode.
+     * \param layerList Performs the identification within the given list of layers.
+     * \param layerType Only performs identification in a certain type of layers (raster, vector, mesh).
+     * \returns a list of IdentifyResult
+     */
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
 
     QgsIdentifyMenu *mIdentifyMenu = nullptr;
@@ -164,6 +167,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
+
+    /**
+     * Identifies data from active scalar and vector dataset from the mesh layer
+     *
+     * Works only if layer was already rendered (triangular mesh is created)
+     * \since QGIS 3.6
+     */
+    bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point );
 
     //! Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
     QMap< QString, QString > derivedAttributesForPoint( const QgsPoint &point );
@@ -194,6 +205,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry );
+    bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsGeometry &geometry );
 
     /**
      * Desired units for distance display.

@@ -43,6 +43,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -84,6 +85,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (virtuallayerprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(virtuallayerprovider ui)
 ENDIF ()
 
 INSTALL(TARGETS virtuallayerprovider

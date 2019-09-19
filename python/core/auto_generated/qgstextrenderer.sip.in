@@ -10,7 +10,6 @@
 
 
 
-
 class QgsTextBufferSettings
 {
 %Docstring
@@ -51,7 +50,7 @@ Returns whether the buffer is enabled.
 %Docstring
 Sets whether the text buffer will be drawn.
 
-:param enabled: set to true to draw buffer
+:param enabled: set to ``True`` to draw buffer
 
 .. seealso:: :py:func:`enabled`
 %End
@@ -136,7 +135,7 @@ Sets the color for the buffer.
 
     bool fillBufferInterior() const;
 %Docstring
-Returns whether the interior of the buffer will be filled in. If false, only the stroke
+Returns whether the interior of the buffer will be filled in. If ``False``, only the stroke
 of the text will be drawn as the buffer. The effect of this setting is only visible for
 semi-transparent text.
 
@@ -147,7 +146,7 @@ semi-transparent text.
 %Docstring
 Sets whether the interior of the buffer will be filled in.
 
-:param fill: set to false to drawn only the stroke of the text as the buffer, or true to also
+:param fill: set to ``False`` to drawn only the stroke of the text as the buffer, or ``True`` to also
              shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
 
 .. seealso:: :py:func:`fillBufferInterior`
@@ -242,6 +241,13 @@ Sets the current paint ``effect`` for the buffer.
 .. seealso:: :py:func:`paintEffect`
 %End
 
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 
@@ -268,7 +274,8 @@ Container for settings relating to a text background object.
       ShapeSquare,
       ShapeEllipse,
       ShapeCircle,
-      ShapeSVG
+      ShapeSVG,
+      ShapeMarkerSymbol,
     };
 
     enum SizeType
@@ -308,7 +315,7 @@ Returns whether the background is enabled.
 %Docstring
 Sets whether the text background will be drawn.
 
-:param enabled: set to true to draw background
+:param enabled: set to ``True`` to draw background
 
 .. seealso:: :py:func:`enabled`
 %End
@@ -344,6 +351,34 @@ QgsTextBackgroundSettings.ShapeSVG. The path must be absolute.
 :param file: Absolute SVG file path
 
 .. seealso:: :py:func:`svgFile`
+%End
+
+    QgsMarkerSymbol *markerSymbol() const;
+%Docstring
+Returns the marker symbol to be rendered in the background. Ownership remains with
+the background settings.
+
+.. note::
+
+   This is only used when the type() is QgsTextBackgroundSettings.ShapeMarkerSymbol.
+
+.. seealso:: :py:func:`setMarkerSymbol`
+
+.. versionadded:: 3.10
+%End
+
+    void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+%Docstring
+Sets the current marker ``symbol`` for the background shape. Ownership is transferred
+to the background settings.
+
+.. note::
+
+   This is only used when the type() is QgsTextBackgroundSettings.ShapeMarkerSymbol.
+
+.. seealso:: :py:func:`markerSymbol`
+
+.. versionadded:: 3.10
 %End
 
     SizeType sizeType() const;
@@ -800,6 +835,13 @@ Write settings into a DOM element.
 .. seealso:: :py:func:`readXml`
 %End
 
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 
@@ -851,7 +893,7 @@ Returns whether the shadow is enabled.
 %Docstring
 Sets whether the text shadow will be drawn.
 
-:param enabled: set to true to draw shadow
+:param enabled: set to ``True`` to draw shadow
 
 .. seealso:: :py:func:`enabled`
 %End
@@ -962,7 +1004,7 @@ offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
 
     bool offsetGlobal() const;
 %Docstring
-Returns true if the global shadow offset will be used.
+Returns ``True`` if the global shadow offset will be used.
 
 .. seealso:: :py:func:`setOffsetGlobal`
 %End
@@ -971,7 +1013,7 @@ Returns true if the global shadow offset will be used.
 %Docstring
 Sets whether the global shadow offset should be used.
 
-:param global: set to true to use global shadow offset.
+:param global: set to ``True`` to use global shadow offset.
 %End
 
     double blurRadius() const;
@@ -1047,7 +1089,7 @@ Returns whether only the alpha channel for the shadow will be blurred.
 %Docstring
 Sets whether only the alpha channel for the shadow should be blurred.
 
-:param alphaOnly: set to true to blur only the alpha channel. If false, all channels (including
+:param alphaOnly: set to ``True`` to blur only the alpha channel. If ``False``, all channels (including
                   red, green and blue channel) will be blurred.
 
 .. seealso:: :py:func:`blurAlphaOnly`
@@ -1140,6 +1182,13 @@ Write settings into a DOM element.
 .. seealso:: :py:func:`readXml`
 %End
 
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+
+.. versionadded:: 3.10
+%End
+
 };
 
 
@@ -1160,6 +1209,13 @@ Container for all settings relating to text rendering.
 #include "qgstextrenderer.h"
 %End
   public:
+
+    enum TextOrientation
+    {
+      HorizontalOrientation,
+      VerticalOrientation,
+      RotationBasedOrientation,
+    };
 
     QgsTextFormat();
 
@@ -1422,6 +1478,42 @@ Sets the line height for text.
 .. seealso:: :py:func:`lineHeight`
 %End
 
+    TextOrientation orientation() const;
+%Docstring
+Returns the orientation of the text.
+
+.. seealso:: :py:func:`setOrientation`
+
+.. versionadded:: 3.10
+%End
+
+    void setOrientation( TextOrientation orientation );
+%Docstring
+Sets the ``orientation`` for the text.
+
+.. seealso:: :py:func:`orientation`
+
+.. versionadded:: 3.10
+%End
+
+    QColor previewBackgroundColor() const;
+%Docstring
+Returns the background color for text previews.
+
+.. seealso:: :py:func:`setPreviewBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void setPreviewBackgroundColor( const QColor &color );
+%Docstring
+Sets the background ``color`` that text will be rendered on for previews.
+
+.. seealso:: :py:func:`previewBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
 Reads settings from a layer's custom properties (for QGIS 2.x projects).
@@ -1476,20 +1568,20 @@ from the text format.
     static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
 %Docstring
 Attempts to parse the provided mime ``data`` as a QgsTextFormat.
-If data can be parsed as a text format, ``ok`` will be set to true.
+If data can be parsed as a text format, ``ok`` will be set to ``True``.
 
 .. seealso:: :py:func:`toMimeData`
 %End
 
     bool containsAdvancedEffects() const;
 %Docstring
-Returns true if any component of the font format requires advanced effects
+Returns ``True`` if any component of the font format requires advanced effects
 such as blend modes, which require output in raster formats to be fully respected.
 %End
 
     bool fontFound() const;
 %Docstring
-Returns true if the specified font was found on the system, or false
+Returns ``True`` if the specified font was found on the system, or ``False``
 if the font was not found and a replacement was used instead.
 
 .. seealso:: :py:func:`resolvedFontFamily`
@@ -1502,6 +1594,46 @@ was not found on the system this will return the name of the replacement
 font.
 
 .. seealso:: :py:func:`fontFound`
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the format's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.10
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the format's property collection, used for data defined overrides.
+
+:param collection: property collection. Existing properties will be replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 3.10
+%End
+
+    void updateDataDefinedProperties( QgsRenderContext &context );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+
+.. versionadded:: 3.10
+%End
+
+    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
+%Docstring
+Returns a pixmap preview for a text ``format``.
+
+:param format: text format
+:param size: target pixmap size
+:param previewText: text to render in preview, or empty for default text
+:param padding: space between icon edge and color ramp
+
+.. versionadded:: 3.10
 %End
 
 };
@@ -1555,6 +1687,7 @@ Calculates pixel size (considering output size should be in pixel or map units, 
 :return: font pixel size
 %End
 
+
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
@@ -1567,9 +1700,10 @@ Draws text within a rectangle using the specified settings.
 :param textLines: list of lines of text to draw
 :param context: render context
 :param format: text format
-:param drawAsOutlines: set to false to render text as text. This allows outputs to
+:param drawAsOutlines: set to ``False`` to render text as text. This allows outputs to
                        formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers.
+                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+                       as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
     static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1584,9 +1718,10 @@ Draws text at a point origin using the specified settings.
 :param textLines: list of lines of text to draw
 :param context: render context
 :param format: text format
-:param drawAsOutlines: set to false to render text as text. This allows outputs to
+:param drawAsOutlines: set to ``False`` to render text as text. This allows outputs to
                        formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers.
+                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+                       as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
     static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1604,9 +1739,10 @@ Draws a single component of rendered text using the specified settings.
 :param part: component of text to draw. Note that Shadow parts cannot be drawn
              individually and instead are drawn with their associated part (e.g., drawn together
              with the text or background parts)
-:param drawAsOutlines: set to false to render text as text. This allows outputs to
+:param drawAsOutlines: set to ``False`` to render text as text. This allows outputs to
                        formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers.
+                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+                       as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
     static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1624,9 +1760,10 @@ Draws a single component of rendered text using the specified settings.
 :param part: component of text to draw. Note that Shadow parts cannot be drawn
              individually and instead are drawn with their associated part (e.g., drawn together
              with the text or background parts)
-:param drawAsOutlines: set to false to render text as text. This allows outputs to
+:param drawAsOutlines: set to ``False`` to render text as text. This allows outputs to
                        formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers.
+                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+                       as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
@@ -1662,6 +1799,62 @@ Returns the height of a text based on a given format.
 %End
 
 };
+
+class QgsTextRendererUtils
+{
+%Docstring
+Utility functions for text rendering.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgstextrenderer.h"
+%End
+  public:
+
+    static QgsTextBackgroundSettings::ShapeType decodeShapeType( const QString &string );
+%Docstring
+Decodes a string representation of a background shape type to a type.
+%End
+
+    static QgsTextBackgroundSettings::SizeType decodeBackgroundSizeType( const QString &string );
+%Docstring
+Decodes a string representation of a background size type to a type.
+%End
+
+    static QgsTextBackgroundSettings::RotationType decodeBackgroundRotationType( const QString &string );
+%Docstring
+Decodes a string representation of a background rotation type to a type.
+%End
+
+    static QgsTextShadowSettings::ShadowPlacement decodeShadowPlacementType( const QString &string );
+%Docstring
+Decodes a string representation of a shadow placement type to a type.
+%End
+
+    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+%Docstring
+Encodes a text ``orientation``.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeTextOrientation`
+%End
+
+    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = 0 );
+%Docstring
+Attempts to decode a string representation of a text orientation.
+
+:param name: encoded text orientation name
+:param ok: if specified, will be set to ``True`` if the name was successfully decoded
+
+:return: decoded text orientation
+
+.. seealso:: :py:func:`encodeTextOrientation`
+%End
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

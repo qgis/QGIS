@@ -135,6 +135,17 @@ A base class for objects which belong to a layout.
       MapAtlasMargin,
       MapLayers,
       MapStylePreset,
+      MapLabelMargin,
+      MapGridEnabled,
+      MapGridIntervalX,
+      MapGridIntervalY,
+      MapGridOffsetX,
+      MapGridOffsetY,
+      MapGridFrameSize,
+      MapGridFrameMargin,
+      MapGridLabelDistance,
+      MapGridCrossSize,
+      MapGridFrameLineThickness,
       //composer picture
       PictureSource,
       PictureSvgBackgroundColor,
@@ -197,6 +208,8 @@ Sets the objects's property collection, used for data defined overrides.
 :param collection: property collection. Existing properties will be replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: DataDefinedProperty
 %End
 
 
@@ -285,7 +298,7 @@ Stores object properties within an XML DOM element.
 :param document: DOM document
 :param context: read write context
 
-:return: true if write was successful
+:return: ``True`` if write was successful
 
 .. seealso:: :py:func:`readObjectPropertiesFromElement`
 %End
@@ -298,7 +311,7 @@ Sets object properties from a DOM element
 :param document: DOM document
 :param context: read write context
 
-:return: true if read was successful
+:return: ``True`` if read was successful
 
 .. seealso:: :py:func:`writeObjectPropertiesToElement`
 %End

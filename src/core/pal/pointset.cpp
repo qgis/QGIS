@@ -33,6 +33,7 @@
 #include "geomfunction.h"
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
+#include "qgsgeometryutils.h"
 #include <qglobal.h>
 
 using namespace pal;
@@ -40,18 +41,16 @@ using namespace pal;
 PointSet::PointSet()
 {
   nbPoints = cHullSize = 0;
-  x = nullptr;
-  y = nullptr;
   cHull = nullptr;
   type = -1;
 }
 
 PointSet::PointSet( int nbPoints, double *x, double *y )
-  : cHullSize( 0 )
+  : nbPoints( nbPoints )
+  , type( GEOS_POLYGON )
 {
-  this->nbPoints = nbPoints;
-  this->x = new double[nbPoints];
-  this->y = new double[nbPoints];
+  this->x.resize( nbPoints );
+  this->y.resize( nbPoints );
   int i;
 
   for ( i = 0; i < nbPoints; i++ )
@@ -59,27 +58,22 @@ PointSet::PointSet( int nbPoints, double *x, double *y )
     this->x[i] = x[i];
     this->y[i] = y[i];
   }
-  type = GEOS_POLYGON;
-  cHull = nullptr;
+
 }
 
 PointSet::PointSet( double aX, double aY )
-  : xmin( aX )
+  : type( GEOS_POINT )
+  , xmin( aX )
   , xmax( aY )
   , ymin( aX )
   , ymax( aY )
+
 {
   nbPoints = cHullSize = 1;
-  x = new double[1];
-  y = new double[1];
+  x.resize( 1 );
+  y.resize( 1 );
   x[0] = aX;
   y[0] = aY;
-
-  cHull = nullptr;
-  parent = nullptr;
-  holeOf = nullptr;
-
-  type = GEOS_POINT;
 }
 
 PointSet::PointSet( const PointSet &ps )
@@ -91,10 +85,8 @@ PointSet::PointSet( const PointSet &ps )
   int i;
 
   nbPoints = ps.nbPoints;
-  x = new double[nbPoints];
-  y = new double[nbPoints];
-  memcpy( x, ps.x, sizeof( double )* nbPoints );
-  memcpy( y, ps.y, sizeof( double )* nbPoints );
+  x = ps.x;
+  y = ps.y;
 
   if ( ps.cHull )
   {
@@ -205,10 +197,8 @@ PointSet::~PointSet()
 
 void PointSet::deleteCoords()
 {
-  delete[] x;
-  delete[] y;
-  x = nullptr;
-  y = nullptr;
+  x.clear();
+  y.clear();
 }
 
 PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
@@ -219,8 +209,8 @@ PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int f
   PointSet *newShape = new PointSet();
   newShape->type = GEOS_POLYGON;
   newShape->nbPoints = nbPtSh;
-  newShape->x = new double[newShape->nbPoints];
-  newShape->y = new double[newShape->nbPoints];
+  newShape->x.resize( newShape->nbPoints );
+  newShape->y.resize( newShape->nbPoints );
 
   // new shape # 1 from imin to imax
   for ( j = 0, i = imin; i != ( imax + 1 ) % nbPoints; i = ( i + 1 ) % nbPoints, j++ )
@@ -237,6 +227,11 @@ PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int f
   }
 
   return newShape;
+}
+
+std::unique_ptr<PointSet> PointSet::clone() const
+{
+  return std::unique_ptr< PointSet>( new PointSet( *this ) );
 }
 
 bool PointSet::containsPoint( double x, double y ) const
@@ -272,8 +267,8 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
   int i, j;
 
   int nbp;
-  double *x = nullptr;
-  double *y = nullptr;
+  std::vector< double > x;
+  std::vector< double > y;
 
   int *pts = nullptr;
 
@@ -540,6 +535,93 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
     }
     delete[] pts;
   }
+}
+
+void PointSet::extendLineByDistance( double startDistance, double endDistance, double smoothDistance )
+{
+  if ( nbPoints < 2 )
+    return;
+
+  double x0 = x[0];
+  double y0 = y[0];
+  if ( startDistance > 0 )
+  {
+    // trace forward by smoothDistance
+    double x1 = x[1];
+    double y1 = y[1];
+
+    double distanceConsumed = 0;
+    double lastX = x0;
+    double lastY = y0;
+    for ( int i = 1; i < nbPoints; ++i )
+    {
+      double thisX = x[i];
+      double thisY = y[i];
+      const double thisSegmentLength = std::sqrt( ( thisX - lastX ) * ( thisX - lastX ) + ( thisY - lastY ) * ( thisY - lastY ) );
+      distanceConsumed += thisSegmentLength;
+      if ( distanceConsumed >= smoothDistance )
+      {
+        double c = ( distanceConsumed - smoothDistance ) / thisSegmentLength;
+        x1 = lastX + c * ( thisX - lastX );
+        y1 = lastY + c * ( thisY - lastY );
+        break;
+      }
+      lastX = thisX;
+      lastY = thisY;
+    }
+
+    const double distance = std::sqrt( ( x1 - x0 ) * ( x1 - x0 ) + ( y1 - y0 ) * ( y1 - y0 ) );
+    const double extensionFactor = ( startDistance + distance ) / distance;
+    const QgsPointXY newStart = QgsGeometryUtils::interpolatePointOnLine( x1, y1, x0, y0, extensionFactor );
+    x0 = newStart.x();
+    y0 = newStart.y();
+    // defer actually changing the stored start until we've calculated the new end point
+  }
+
+  if ( endDistance > 0 )
+  {
+    double xend0 = x[nbPoints - 1];
+    double yend0 = y[nbPoints - 1];
+    double xend1 = x[nbPoints - 2];
+    double yend1 = y[nbPoints - 2];
+
+    // trace backward by smoothDistance
+    double distanceConsumed = 0;
+    double lastX = x0;
+    double lastY = y0;
+    for ( int i = nbPoints - 2; i >= 0; --i )
+    {
+      double thisX = x[i];
+      double thisY = y[i];
+      const double thisSegmentLength = std::sqrt( ( thisX - lastX ) * ( thisX - lastX ) + ( thisY - lastY ) * ( thisY - lastY ) );
+      distanceConsumed += thisSegmentLength;
+      if ( distanceConsumed >= smoothDistance )
+      {
+        double c = ( distanceConsumed - smoothDistance ) / thisSegmentLength;
+        xend1 = lastX + c * ( thisX - lastX );
+        yend1 = lastY + c * ( thisY - lastY );
+        break;
+      }
+      lastX = thisX;
+      lastY = thisY;
+    }
+
+    const double distance = std::sqrt( ( xend1 - xend0 ) * ( xend1 - xend0 ) + ( yend1 - yend0 ) * ( yend1 - yend0 ) );
+    const double extensionFactor = ( endDistance + distance ) / distance;
+    const QgsPointXY newEnd = QgsGeometryUtils::interpolatePointOnLine( xend1, yend1, xend0, yend0, extensionFactor );
+    x.emplace_back( newEnd.x() );
+    y.emplace_back( newEnd.y() );
+    nbPoints++;
+  }
+
+  if ( startDistance > 0 )
+  {
+    x.insert( x.begin(), x0 );
+    y.insert( y.begin(), y0 );
+    nbPoints++;
+  }
+
+  invalidateGeos();
 }
 
 CHullBox *PointSet::compute_chull_bbox()

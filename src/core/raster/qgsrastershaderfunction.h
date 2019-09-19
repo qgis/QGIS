@@ -72,7 +72,7 @@ class CORE_EXPORT QgsRasterShaderFunction
      * \param returnGreenValue The green component of the new RGBA value
      * \param returnBlueValue The blue component of the new RGBA value
      * \param returnAlpha The alpha component of the new RGBA value
-     * \return True if the return values are valid otherwise false
+     * \return TRUE if the return values are valid otherwise FALSE
     */
     virtual bool shade( double value,
                         int *returnRedValue SIP_OUT,
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsRasterShaderFunction
      * \param returnGreenValue The green component of the new RGBA value
      * \param returnBlueValue The blue component of the new RGBA value
      * \param returnAlpha The alpha component of the new RGBA value
-     * \return True if the return values are valid otherwise false
+     * \return TRUE if the return values are valid otherwise FALSE
     */
     virtual bool shade( double redValue,
                         double greenValue,
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRasterShaderFunction
     /**
      * Returns legend symbology items if provided by renderer.
      */
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ) }
 
   protected:
     //! \brief User defineable maximum value for the shading function

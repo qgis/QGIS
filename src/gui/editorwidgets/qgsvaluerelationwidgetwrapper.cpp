@@ -25,6 +25,8 @@
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsattributeform.h"
 #include "qgsattributes.h"
+#include "qgsjsonutils.h"
+#include "qgspostgresstringutils.h"
 
 #include <QHeaderView>
 #include <QComboBox>
@@ -32,6 +34,10 @@
 #include <QTableWidget>
 #include <QStringListModel>
 #include <QCompleter>
+
+#include <nlohmann/json.hpp>
+using namespace nlohmann;
+
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -69,7 +75,37 @@ QVariant QgsValueRelationWidgetWrapper::value() const
         }
       }
     }
-    v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
+
+    QVariantList vl;
+    //store as QVariantList because the field type supports data structure
+    for ( const QString &s : qgis::as_const( selection ) )
+    {
+      // Convert to proper type
+      const QVariant::Type type { fkType() };
+      switch ( type )
+      {
+        case QVariant::Type::Int:
+          vl.push_back( s.toInt() );
+          break;
+        case QVariant::Type::LongLong:
+          vl.push_back( s.toLongLong() );
+          break;
+        default:
+          vl.push_back( s );
+          break;
+      }
+    }
+
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
+         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
+    {
+      v = vl;
+    }
+    else
+    {
+      //make string
+      v = QgsPostgresStringUtils::buildArray( vl );
+    }
   }
 
   if ( mLineEdit )
@@ -136,7 +172,13 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mLineEdit )
   {
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); }, Qt::UniqueConnection );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      emit valueChanged( value );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( value );
+    }, Qt::UniqueConnection );
   }
 }
 
@@ -145,11 +187,21 @@ bool QgsValueRelationWidgetWrapper::valid() const
   return mTableWidget || mLineEdit || mComboBox;
 }
 
-void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
+void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mTableWidget )
   {
-    QStringList checkList( QgsValueRelationFieldFormatter::valueToStringList( value ) );
+    QStringList checkList;
+
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map ||
+         layer()->fields().at( fieldIdx() ).type() == QVariant::List )
+    {
+      checkList = value.toStringList();
+    }
+    else
+    {
+      checkList = QgsValueRelationFieldFormatter::valueToStringList( value );
+    }
 
     QTableWidgetItem *lastChangedItem = nullptr;
 
@@ -168,6 +220,8 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
         if ( item )
         {
           item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
+          //re-set enabled state because it's lost after reloading items
+          item->setFlags( mEnabled ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
           lastChangedItem = item;
         }
       }
@@ -180,7 +234,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
   else if ( mComboBox )
   {
     // findData fails to tell a 0 from a NULL
-    // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+    // See: "Value relation, value 0 = NULL" - https://github.com/qgis/QGIS/issues/27803
     int idx = -1; // default to not found
     for ( int i = 0; i < mComboBox->count(); i++ )
     {
@@ -220,7 +274,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     {
       populate();
       // Restore value
-      setValue( value( ) );
+      updateValues( value( ) );
       // If the value has changed as a result of another widget's value change,
       // we need to emit the signal to make sure other dependent widgets are
       // updated.
@@ -240,6 +294,11 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   setFormFeature( feature );
   whileBlocking( this )->populate();
   whileBlocking( this )->setValue( feature.attribute( fieldIdx() ) );
+
+  // As we block any signals, possible depending widgets will not being updated
+  // so we force emit signal once and for all
+  emitValueChanged();
+
   // A bit of logic to set the default value if AllowNull is false and this is a new feature
   // Note that this needs to be here after the cache has been created/updated by populate()
   // and signals unblocked (we want this to propagate to the feature itself)
@@ -252,7 +311,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
     // set in the next, which is typically the "down" in a drill-down
     QTimer::singleShot( 0, this, [ this ]
     {
-      setValue( mCache.at( 0 ).key );
+      updateValues( mCache.at( 0 ).key );
     } );
   }
 }
@@ -260,6 +319,22 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 int QgsValueRelationWidgetWrapper::columnCount() const
 {
   return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
+}
+
+
+QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
+{
+  const QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config(), QgsProject::instance() );
+  if ( layer )
+  {
+    QgsFields fields = layer->fields();
+    int idx { fields.lookupField( config().value( QStringLiteral( "Key" ) ).toString() )  };
+    if ( idx >= 0 )
+    {
+      return fields.at( idx ).type();
+    }
+  }
+  return QVariant::Type::Invalid;
 }
 
 void QgsValueRelationWidgetWrapper::populate( )
@@ -374,10 +449,7 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
         QTableWidgetItem *item = mTableWidget->item( j, i );
         if ( item )
         {
-          if ( enabled )
-            item->setFlags( item->flags() | Qt::ItemIsEnabled );
-          else
-            item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          item->setFlags( enabled ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
         }
       }
     }

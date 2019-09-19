@@ -22,6 +22,8 @@
 #include "qgssettings.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 // Qt includes
 #include <QPoint>
@@ -82,6 +84,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   mWebView->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+  mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
 
   // Disable scrollbars, avoid random resizing issues
   mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
@@ -128,7 +131,6 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   bodyStyle = QString(
                 "background-color: %1;"
                 "margin: 0;"
-                "white-space: nowrap;"
                 "font: %2pt \"%3\";" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily );
 
   containerStyle = QString(

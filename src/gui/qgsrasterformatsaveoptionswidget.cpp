@@ -22,6 +22,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgssettings.h"
+#include "qgsgdalutils.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -60,36 +61,36 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
     // http://linfiniti.com/2011/05/gdal-efficiency-of-various-compression-algorithms/
     // big: no compression | medium: reasonable size/speed tradeoff | small: smallest size
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_1big" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "No compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "No Compression" )
         << QStringLiteral( "COMPRESS=NONE BIGTIFF=IF_NEEDED" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_2medium" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low Compression" )
         << QStringLiteral( "COMPRESS=PACKBITS" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_3small" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High Compression" )
         << QStringLiteral( "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_4jpeg" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG Compression" )
         << QStringLiteral( "COMPRESS=JPEG JPEG_QUALITY=75" ) );
 
     // overview compression schemes for GTiff format, see
     // http://www.gdal.org/gdaladdo.html and http://www.gdal.org/frmt_gtiff.html
     // TODO - should we offer GDAL_TIFF_OVR_BLOCKSIZE option here or in QgsRasterPyramidsOptionsWidget ?
     sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_1big" )] =
-      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "No compression" )
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "No Compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=NONE BIGTIFF_OVERVIEW=IF_NEEDED" ) );
     sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_2medium" )] =
-      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "Low compression" )
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "Low Compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=PACKBITS" ) );
     sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_3small" )] =
-      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "High compression" )
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "High Compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9" ) ); // how to set zlevel?
     sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_4jpeg" )] =
-      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "JPEG compression" )
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "JPEG Compression" )
         << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
-  connect( mProfileComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
+  connect( mProfileComboBox, &QComboBox::currentTextChanged,
            this, &QgsRasterFormatSaveOptionsWidget::updateOptions );
   connect( mOptionsTable, &QTableWidget::cellChanged, this, &QgsRasterFormatSaveOptionsWidget::optionsTableChanged );
   connect( mOptionsHelpButton, &QAbstractButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::helpOptions );
@@ -126,10 +127,12 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   if ( ( type == Table ) || ( type == LineEdit ) )
   {
     // hide all controls, except stacked widget
-    Q_FOREACH ( QWidget *widget, widgets )
+    const auto constWidgets = widgets;
+    for ( QWidget *widget : constWidgets )
       widget->setVisible( false );
     mOptionsStackedWidget->setVisible( true );
-    Q_FOREACH ( QWidget *widget, mOptionsStackedWidget->findChildren<QWidget *>() )
+    const auto children { mOptionsStackedWidget->findChildren<QWidget *>() };
+    for ( QWidget *widget : children )
       widget->setVisible( true );
 
     // show relevant page
@@ -141,7 +144,8 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   else
   {
     // show all widgets, except profile buttons (unless Full)
-    Q_FOREACH ( QWidget *widget, widgets )
+    const auto constWidgets = widgets;
+    for ( QWidget *widget : constWidgets )
       widget->setVisible( true );
     if ( type != Full )
       mProfileButtons->setVisible( false );
@@ -182,7 +186,8 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   mOptionsMap.clear();
   mProfileComboBox->blockSignals( true );
   mProfileComboBox->clear();
-  Q_FOREACH ( const QString &profileKey, profileKeys )
+  const auto constProfileKeys = profileKeys;
+  for ( const QString &profileKey : constProfileKeys )
   {
     QString profileName, profileOptions;
     profileOptions = createOptions( profileKey );
@@ -251,48 +256,27 @@ void QgsRasterFormatSaveOptionsWidget::apply()
   setCreateOptions();
 }
 
-// typedefs for gdal provider function pointers
-typedef QString validateCreationOptionsFormat_t( const QStringList &createOptions, QString format );
-typedef QString helpCreationOptionsFormat_t( QString format );
-
 void QgsRasterFormatSaveOptionsWidget::helpOptions()
 {
   QString message;
 
   if ( mProvider == QLatin1String( "gdal" ) && !mFormat.isEmpty() && ! mPyramids )
   {
-    // get helpCreationOptionsFormat() function ptr for provider
-    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( mProvider ) );
-    if ( library )
-    {
-      helpCreationOptionsFormat_t *helpCreationOptionsFormat =
-        ( helpCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "helpCreationOptionsFormat" ) );
-      if ( helpCreationOptionsFormat )
-      {
-        message = helpCreationOptionsFormat( mFormat );
-      }
-      else
-      {
-        message = library->fileName() + " does not have helpCreationOptionsFormat";
-      }
-    }
-    else
-      message = QStringLiteral( "cannot load provider library %1" ).arg( mProvider );
-
-
+    message = QgsGdalUtils::helpCreationOptionsFormat( mFormat );
     if ( message.isEmpty() )
       message = tr( "Cannot get create options for driver %1" ).arg( mFormat );
   }
   else if ( mProvider == QLatin1String( "gdal" ) && mPyramids )
   {
     message = tr( "For details on pyramids options please see the following pages" );
-    message += QLatin1String( "\n\nhttp://www.gdal.org/gdaladdo.html\n\nhttp://www.gdal.org/frmt_gtiff.html" );
+    message += QLatin1String( "\n\nhttps://gdal.org/programs/gdaladdo.html\n\nhttps://gdal.org/drivers/raster/gtiff.html" );
   }
   else
     message = tr( "No help available" );
 
   // show simple non-modal dialog - should we make the basic xml prettier?
   QgsDialog *dlg = new QgsDialog( this );
+  dlg->setWindowTitle( tr( "Create Options for %1" ).arg( mFormat ) );
   QTextEdit *textEdit = new QTextEdit( dlg );
   textEdit->setReadOnly( true );
   // message = tr( "Create Options:\n\n%1" ).arg( message );
@@ -358,22 +342,8 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     else
     {
       // get validateCreationOptionsFormat() function ptr for provider
-      std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( mProvider ) );
-      if ( library )
-      {
-        validateCreationOptionsFormat_t *validateCreationOptionsFormat =
-          ( validateCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "validateCreationOptionsFormat" ) );
-        if ( validateCreationOptionsFormat )
-        {
-          message = validateCreationOptionsFormat( createOptions, mFormat );
-        }
-        else
-        {
-          message = library->fileName() + " does not have validateCreationOptionsFormat";
-        }
-      }
-      else
-        message = QStringLiteral( "cannot load provider library %1" ).arg( mProvider );
+      message = QgsGdalUtils::validateCreationOptionsFormat( createOptions, mFormat );
+
     }
   }
   else if ( ! createOptions.isEmpty() )
@@ -626,7 +596,7 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
 
 void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
   QgsDebugMsg( QStringLiteral( "done" ) );
 }
@@ -638,7 +608,8 @@ void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )
 
   QStringList values;
   QStringList optionsList = options.trimmed().split( ' ', QString::SkipEmptyParts );
-  Q_FOREACH ( const QString &opt, optionsList )
+  const auto constOptionsList = optionsList;
+  for ( const QString &opt : constOptionsList )
   {
     int rowCount = mOptionsTable->rowCount();
     mOptionsTable->insertRow( rowCount );

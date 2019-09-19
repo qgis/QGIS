@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -41,10 +39,6 @@ class TestQgsMapRenderer(unittest.TestCase):
 
     def setUp(self):
         pass
-
-    def tearDown(self):
-        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
-        QThreadPool.globalInstance().waitForDone()
 
     def checkRendererUseCachedLabels(self, job_type):
         layer = QgsVectorLayer("Point?field=fldtxt:string",

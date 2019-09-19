@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '31/08/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -62,6 +60,15 @@ class TestQgsReferencedGeometry(unittest.TestCase):
         self.assertEqual(r2.xMaximum(), 30.0)
         self.assertEqual(r2.yMaximum(), 40.0)
 
+        # equality
+        rect = QgsReferencedRectangle(QgsRectangle(0.0, 1.0, 20.0, 10.0), QgsCoordinateReferenceSystem('epsg:3111'))
+        rect2 = QgsReferencedRectangle(QgsRectangle(0.0, 1.0, 20.0, 10.0), QgsCoordinateReferenceSystem('epsg:3111'))
+        self.assertEqual(rect, rect2)
+        rect2 = QgsReferencedRectangle(QgsRectangle(0.0, 1.0, 20.0, 10.0), QgsCoordinateReferenceSystem('epsg:4326'))
+        self.assertNotEqual(rect, rect2)
+        rect2 = QgsReferencedRectangle(QgsRectangle(0.0, 1.5, 20.0, 10.0), QgsCoordinateReferenceSystem('epsg:3111'))
+        self.assertNotEqual(rect, rect2)
+
     def testPoint(self):
         point = QgsReferencedPointXY(QgsPointXY(1.0, 2.0), QgsCoordinateReferenceSystem('epsg:3111'))
         self.assertEqual(point.x(), 1.0)
@@ -81,6 +88,15 @@ class TestQgsReferencedGeometry(unittest.TestCase):
         p = QgsPointXY(point)
         self.assertEqual(p.x(), 1.0)
         self.assertEqual(p.y(), 2.0)
+
+        # equality
+        point = QgsReferencedPointXY(QgsPointXY(1.0, 2.0), QgsCoordinateReferenceSystem('epsg:3111'))
+        point2 = QgsReferencedPointXY(QgsPointXY(1.0, 2.0), QgsCoordinateReferenceSystem('epsg:3111'))
+        self.assertEqual(point, point2)
+        point2 = QgsReferencedPointXY(QgsPointXY(1.0, 2.0), QgsCoordinateReferenceSystem('epsg:4326'))
+        self.assertNotEqual(point, point2)
+        point2 = QgsReferencedPointXY(QgsPointXY(1.1, 2.0), QgsCoordinateReferenceSystem('epsg:3111'))
+        self.assertNotEqual(point, point2)
 
 
 if __name__ == '__main__':

@@ -6,18 +6,23 @@
 #ifndef MDAL_GDAL_GRIB_HPP
 #define MDAL_GDAL_GRIB_HPP
 
+#include <string>
+
 #include "mdal_gdal.hpp"
 #include "mdal_data_model.hpp"
 #include "mdal.h"
-#include <string>
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
 
-  class LoaderGdalGrib: public LoaderGdal
+  class DriverGdalGrib: public DriverGdal
   {
     public:
-      LoaderGdalGrib( const std::string &gribFile );
+      DriverGdalGrib();
+      ~DriverGdalGrib() override;
+      DriverGdalGrib *create() override;
+
     private:
       bool parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,
                           const metadata_hash &metadata, std::string &band_name,

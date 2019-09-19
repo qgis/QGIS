@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsexpressioncontextutils.h"
 #include <QtCore>
 
 QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )
@@ -37,13 +38,13 @@ QgsLayoutMultiFrame::~QgsLayoutMultiFrame()
 
 QSizeF QgsLayoutMultiFrame::fixedFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( 0, 0 );
 }
 
 QSizeF QgsLayoutMultiFrame::minFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( 0, 0 );
 }
 
@@ -279,6 +280,13 @@ QgsAbstractLayoutUndoCommand *QgsLayoutMultiFrame::createCommand( const QString 
   return new QgsLayoutMultiFrameUndoCommand( this, text, id, parent );
 }
 
+QgsExpressionContext QgsLayoutMultiFrame::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::multiFrameScope( this ) );
+  return context;
+}
+
 void QgsLayoutMultiFrame::beginCommand( const QString &commandText, QgsLayoutMultiFrame::UndoCommand command )
 {
   if ( !mLayout )
@@ -385,20 +393,23 @@ void QgsLayoutMultiFrame::handlePageChange()
     }
   }
 
-  //page number of the last item
-  QgsLayoutFrame *lastFrame = mFrameItems.last();
-  int lastItemPage = mLayout->pageCollection()->predictPageNumberForPoint( lastFrame->pos() );
-
-  for ( int i = lastItemPage + 1; i < mLayout->pageCollection()->pageCount(); ++i )
+  if ( !mFrameItems.empty() )
   {
-    //copy last frame to current page
-    std::unique_ptr< QgsLayoutFrame > newFrame = qgis::make_unique< QgsLayoutFrame >( mLayout, this );
+    //page number of the last item
+    QgsLayoutFrame *lastFrame = mFrameItems.last();
+    int lastItemPage = mLayout->pageCollection()->predictPageNumberForPoint( lastFrame->pos() );
 
-    newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
-                                           mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
-                                           lastFrame->rect().width(), lastFrame->rect().height() ) );
-    lastFrame = newFrame.get();
-    addFrame( newFrame.release(), false );
+    for ( int i = lastItemPage + 1; i < mLayout->pageCollection()->pageCount(); ++i )
+    {
+      //copy last frame to current page
+      std::unique_ptr< QgsLayoutFrame > newFrame = qgis::make_unique< QgsLayoutFrame >( mLayout, this );
+
+      newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
+                                             mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
+                                             lastFrame->rect().width(), lastFrame->rect().height() ) );
+      lastFrame = newFrame.get();
+      addFrame( newFrame.release(), false );
+    }
   }
 
   recalculateFrameSizes();

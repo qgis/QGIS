@@ -28,7 +28,7 @@ Constructor for QgsSymbolLayerWidget.
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) = 0;
     virtual QgsSymbolLayer *symbolLayer() = 0;
 
-    void setContext( const QgsSymbolWidgetContext &context );
+    virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
@@ -124,6 +124,9 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
   protected:
 
     void updatePatternIcon();
+
+    virtual void resizeEvent( QResizeEvent *event );
+
 
 };
 
@@ -377,6 +380,43 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
 
 
 
+class QgsHashedLineSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring
+Widget for controlling the properties of a :py:class:`QgsHashedLineSymbolLayer`.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsHashedLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsHashedLineSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsHashedLineSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+
+};
+
+
+
 
 class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
@@ -406,10 +446,56 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
     virtual QgsSymbolLayer *symbolLayer();
 
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
   protected:
 
     void populateList();
     void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
+
+
+};
+
+
+
+
+class QgsRasterMarkerSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring
+Widget for configuring QgsRasterMarkerSymbolLayer symbol layers.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsRasterMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRasterMarkerSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsRasterMarkerSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
+  protected:
 
 
 };
@@ -479,6 +565,8 @@ Creates a new QgsSVGFillSymbolLayerWidget.
 
     virtual QgsSymbolLayer *symbolLayer();
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
 
   protected:
     void insertIcons();
@@ -488,7 +576,7 @@ Creates a new QgsSVGFillSymbolLayerWidget.
 Enables or disables svg fill color, stroke color and stroke width based on whether the
 svg file supports custom parameters.
 
-:param resetValues: set to true to overwrite existing layer fill color, stroke color and stroke width
+:param resetValues: set to ``True`` to overwrite existing layer fill color, stroke color and stroke width
                     with default values from svg file
 %End
 
@@ -607,7 +695,22 @@ Set stroke color.
 %End
     void setSize( double size );
     void setAngle( double angle );
+
     void setCharacter( QChar chr );
+%Docstring
+Set the font marker character from char.
+
+:param chr: the char
+%End
+
+    void setCharacterFromText( const QString &text );
+%Docstring
+Set the font marker character from a text string.
+
+:param text: the text string
+
+.. versionadded:: 3.8
+%End
 
   protected:
 

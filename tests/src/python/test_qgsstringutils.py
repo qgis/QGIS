@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '30/08/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -176,6 +174,10 @@ class PyQgsStringUtils(unittest.TestCase):
         self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.ForceFirstLetterToCapital), '    TESTING ABC')
         self.assertEqual(QgsStringUtils.capitalize('    testing abc', QgsStringUtils.ForceFirstLetterToCapital),
                          '    Testing Abc')
+
+    def testSubstituteVerticalCharacters(self):
+        """ test subsitute vertical characters """
+        self.assertEqual(QgsStringUtils.substituteVerticalCharacters('123{[(45654)]}321'), '123︷﹇︵45654︶﹈︸321')
 
 
 if __name__ == '__main__':

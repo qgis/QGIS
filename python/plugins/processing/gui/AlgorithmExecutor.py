@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import sys
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
@@ -34,6 +30,7 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsProcessingException,
                        QgsProcessingFeatureSourceDefinition,
+                       QgsProcessingFeatureSource,
                        QgsProcessingParameters,
                        QgsProject,
                        QgsFeatureRequest,
@@ -93,6 +90,13 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
         feedback = QgsProcessingFeedback()
     if context is None:
         context = dataobjects.createContext(feedback)
+
+    # Only feature based algs have sourceFlags
+    try:
+        if alg.sourceFlags() & QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks:
+            context.setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck)
+    except AttributeError:
+        pass
 
     active_layer = parameters['INPUT']
 
@@ -155,6 +159,13 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
             # Check again for compatibility after prepare
             if not alg.supportInPlaceEdit(active_layer):
                 raise QgsProcessingException(tr("Selected algorithm and parameter configuration are not compatible with in-place modifications."))
+
+            # some algorithms have logic in outputFields/outputCrs/outputWkbType which they require to execute before
+            # they can start processing features
+            _ = alg.outputFields(active_layer.fields())
+            _ = alg.outputWkbType(active_layer.wkbType())
+            _ = alg.outputCrs(active_layer.crs())
+
             field_idxs = range(len(active_layer.fields()))
             iterator_req = QgsFeatureRequest(active_layer.selectedFeatureIds())
             iterator_req.setInvalidGeometryCheck(context.invalidGeometryCheck())
@@ -184,6 +195,12 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
                     active_layer.deleteFeature(f.id())
                     # Get the new ids
                     old_ids = set([f.id() for f in active_layer.getFeatures(req)])
+                    # If multiple new features were created, we need to pass
+                    # them to createFeatures to manage constraints correctly
+                    features_data = []
+                    for f in new_features:
+                        features_data.append(QgsVectorLayerUtils.QgsFeatureData(f.geometry(), dict(enumerate(f.attributes()))))
+                    new_features = QgsVectorLayerUtils.createFeatures(active_layer, features_data, context.expressionContext())
                     if not active_layer.addFeatures(new_features):
                         raise QgsProcessingException(tr("Error adding processed features back into the layer."))
                     new_ids = set([f.id() for f in active_layer.getFeatures(req)])
@@ -327,7 +344,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
 
             o = outputs[out.name()]
             parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
-        feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i, len(sink_list)))
+        feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i + 1, len(sink_list)))
         feedback.setProgress(i * 100 / len(sink_list))
         ret, results = execute(alg, parameters, context, feedback)
         if not ret:

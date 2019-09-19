@@ -114,7 +114,8 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     childItemList << selItem;
     childItemList << sqlItem;
 
-    Q_FOREACH ( QStandardItem *item, childItemList )
+    const auto constChildItemList = childItemList;
+    for ( QStandardItem *item : constChildItemList )
     {
       if ( tip.isEmpty() )
       {
@@ -350,6 +351,6 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri() ) );
-  return uri.uri();
+  QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
+  return uri.uri( false );
 }

@@ -17,11 +17,13 @@
 #define QGSPRESETCOLORRAMPDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgspresetcolorrampwidgetbase.h"
 #include "qgis_gui.h"
+
+class QDialogButtonBox;
 
 /**
  * \ingroup gui
@@ -108,6 +110,12 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
      */
     void setRamp( const QgsPresetSchemeColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
+
   signals:
 
     //! Emitted when the dialog settings change
@@ -116,6 +124,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
   private:
 
     QgsPresetColorRampWidget *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 
   private slots:
 

@@ -25,10 +25,12 @@
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
+#include "qgsapplication.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QSpinBox>
+#include "gdal.h"
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -98,7 +100,7 @@ void QgsVectorLayerSaveAsDialog::setup()
 
   connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged );
-  connect( mSymbologyExportComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged );
+  connect( mSymbologyExportComboBox, &QComboBox::currentTextChanged, this, &QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged );
   connect( mGeometryTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mGeometryTypeComboBox_currentIndexChanged );
   connect( mSelectAllAttributes, &QPushButton::clicked, this, &QgsVectorLayerSaveAsDialog::mSelectAllAttributes_clicked );
   connect( mDeselectAllAttributes, &QPushButton::clicked, this, &QgsVectorLayerSaveAsDialog::mDeselectAllAttributes_clicked );
@@ -219,7 +221,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
         {
           QComboBox *cb = new QComboBox();
           cb->setObjectName( it.key() );
-          Q_FOREACH ( const QString &val, opt->values )
+          for ( const QString &val : qgis::as_const( opt->values ) )
           {
             cb->addItem( val, val );
           }
@@ -390,7 +392,7 @@ void QgsVectorLayerSaveAsDialog::accept()
 
 void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 {
-  Q_UNUSED( idx );
+  Q_UNUSED( idx )
 
   mFilename->setEnabled( true );
   mFilename->setFilter( QgsVectorFileWriter::filterForDriver( format() ) );
@@ -546,7 +548,8 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
       QFormLayout *datasourceLayout = dynamic_cast<QFormLayout *>( mDatasourceOptionsGroupBox->layout() );
 
-      Q_FOREACH ( LabelControlPair control, controls )
+      const auto constControls = controls;
+      for ( LabelControlPair control : constControls )
       {
         datasourceLayout->addRow( control.first, control.second );
       }
@@ -563,7 +566,8 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
       QFormLayout *layerOptionsLayout = dynamic_cast<QFormLayout *>( mLayerOptionsGroupBox->layout() );
 
-      Q_FOREACH ( LabelControlPair control, controls )
+      const auto constControls = controls;
+      for ( LabelControlPair control : constControls )
       {
         layerOptionsLayout->addRow( control.first, control.second );
       }
@@ -595,6 +599,12 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   else
   {
     mEncodingComboBox->setEnabled( true );
+  }
+
+  GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
+  if ( hDriver )
+  {
+    mAddToCanvas->setEnabled( GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr );
   }
 }
 
@@ -867,7 +877,7 @@ QgsAttributeList QgsVectorLayerSaveAsDialog::attributesAsDisplayedValues() const
 
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
 {
-  return mAddToCanvas->isChecked();
+  return mAddToCanvas->isChecked() && mAddToCanvas->isEnabled();
 }
 
 void QgsVectorLayerSaveAsDialog::setAddToCanvas( bool enabled )

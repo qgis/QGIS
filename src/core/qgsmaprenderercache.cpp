@@ -35,7 +35,8 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  Q_FOREACH ( const QgsWeakMapLayerPointer &layer, mConnectedLayers )
+  const auto constMConnectedLayers = mConnectedLayers;
+  for ( const QgsWeakMapLayerPointer &layer : constMConnectedLayers )
   {
     if ( layer.data() )
     {
@@ -51,7 +52,8 @@ void QgsMapRendererCache::dropUnusedConnections()
 {
   QSet< QgsWeakMapLayerPointer > stillDepends = dependentLayers();
   QSet< QgsWeakMapLayerPointer > disconnects = mConnectedLayers.subtract( stillDepends );
-  Q_FOREACH ( const QgsWeakMapLayerPointer &layer, disconnects )
+  const auto constDisconnects = disconnects;
+  for ( const QgsWeakMapLayerPointer &layer : constDisconnects )
   {
     if ( layer.data() )
     {
@@ -69,7 +71,8 @@ QSet<QgsWeakMapLayerPointer > QgsMapRendererCache::dependentLayers() const
   QMap<QString, CacheParameters>::const_iterator it = mCachedImages.constBegin();
   for ( ; it != mCachedImages.constEnd(); ++it )
   {
-    Q_FOREACH ( const QgsWeakMapLayerPointer &l, it.value().dependentLayers )
+    const auto dependentLayers { it.value().dependentLayers };
+    for ( const QgsWeakMapLayerPointer &l : dependentLayers )
     {
       if ( l.data() )
         result << l;
@@ -104,7 +107,8 @@ void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &
   params.cachedImage = image;
 
   // connect to the layer to listen to layer's repaintRequested() signals
-  Q_FOREACH ( QgsMapLayer *layer, dependentLayers )
+  const auto constDependentLayers = dependentLayers;
+  for ( QgsMapLayer *layer : constDependentLayers )
   {
     if ( layer )
     {

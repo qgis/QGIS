@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '05/12/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -132,7 +130,12 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         _test([1, 2, 3], ["1", "2", "3"])
         _test("{1,2,3}", ["1", "2", "3"])
         _test(['1', '2', '3'], ["1", "2", "3"])
-        _test('not an array', ['not an array'])
+        _test('not an array', [])
+        _test('[1,2,3]', ["1", "2", "3"])
+        _test('{1,2,3}', ["1", "2", "3"])
+        _test('{"1","2","3"}', ["1", "2", "3"])
+        _test('["1","2","3"]', ["1", "2", "3"])
+        _test(r'["a string,comma","a string\"quote", "another string[]"]', ['a string,comma', 'a string"quote', 'another string[]'])
 
     def test_expressionRequiresFormScope(self):
 

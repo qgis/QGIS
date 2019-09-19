@@ -13,78 +13,143 @@
 
 class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
 {
+%Docstring
+A simple line symbol layer, which renders lines using a line in a variety of styles (e.g. solid, dotted, dashed).
+%End
 
 %TypeHeaderCode
 #include "qgslinesymbollayer.h"
 %End
   public:
+
     QgsSimpleLineSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
                               double width = DEFAULT_SIMPLELINE_WIDTH,
                               Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
+%Docstring
+Constructor for QgsSimpleLineSymbolLayer. Creates a simple line
+symbol in the specified ``color``, ``width`` (in millimeters)
+and ``penStyle``.
+%End
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsSimpleLineSymbolLayer, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+QgsSimpleLineSymbolLayer.properties() ).
+%End
 
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
+%End
 
     virtual QString layerType() const;
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
-
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
-
 
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-
     virtual QgsStringMap properties() const;
-
 
     virtual QgsSimpleLineSymbolLayer *clone() const /Factory/;
 
-
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
-
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
-
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
-
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
+    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
+
+    virtual Qt::PenStyle dxfPenStyle() const;
+
+    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+
+    virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+
+    virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 
 
     Qt::PenStyle penStyle() const;
+%Docstring
+Returns the pen style used to render the line (e.g. solid, dashed, etc).
+
+.. seealso:: :py:func:`setPenStyle`
+%End
+
     void setPenStyle( Qt::PenStyle style );
+%Docstring
+Sets the pen ``style`` used to render the line (e.g. solid, dashed, etc).
+
+.. seealso:: :py:func:`penStyle`
+%End
 
     Qt::PenJoinStyle penJoinStyle() const;
+%Docstring
+Returns the pen join style used to render the line (e.g. miter, bevel, round, etc).
+
+.. seealso:: :py:func:`setPenJoinStyle`
+%End
+
     void setPenJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Sets the pen join ``style`` used to render the line (e.g. miter, bevel, round, etc).
+
+.. seealso:: :py:func:`penJoinStyle`
+%End
 
     Qt::PenCapStyle penCapStyle() const;
+%Docstring
+Returns the pen cap style used to render the line (e.g. flat, square, round, etc).
+
+.. seealso:: :py:func:`setPenCapStyle`
+%End
+
     void setPenCapStyle( Qt::PenCapStyle style );
+%Docstring
+Sets the pen cap ``style`` used to render the line (e.g. flat, square, round, etc).
+
+.. seealso:: :py:func:`penCapStyle`
+%End
 
     bool useCustomDashPattern() const;
+%Docstring
+Returns ``True`` if the line uses a custom dash pattern.
+
+.. seealso:: :py:func:`setUseCustomDashPattern`
+
+.. seealso:: :py:func:`customDashPatternUnit`
+
+.. seealso:: :py:func:`customDashVector`
+%End
+
     void setUseCustomDashPattern( bool b );
+%Docstring
+Sets whether the line uses a custom dash pattern.
+
+.. seealso:: :py:func:`useCustomDashPattern`
+
+.. seealso:: :py:func:`setCustomDashPatternUnit`
+
+.. seealso:: :py:func:`setCustomDashVector`
+%End
 
     void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for lengths used in the custom dash pattern.
-
-:param unit: length units
+Sets the ``unit`` for lengths used in the custom dash pattern.
 
 .. seealso:: :py:func:`customDashPatternUnit`
 %End
@@ -97,14 +162,54 @@ Returns the units for lengths used in the custom dash pattern.
 %End
 
     const QgsMapUnitScale &customDashPatternMapUnitScale() const;
+%Docstring
+Returns the map unit scale for lengths used in the custom dash pattern.
+
+.. seealso:: :py:func:`setCustomDashPatternMapUnitScale`
+%End
+
     void setCustomDashPatternMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for lengths used in the custom dash pattern.
+
+.. seealso:: :py:func:`customDashPatternMapUnitScale`
+%End
 
     QVector<qreal> customDashVector() const;
+%Docstring
+Returns the custom dash vector, which is the pattern of alternating drawn/skipped lengths
+used while rendering a custom dash pattern.
+
+Units for the vector are specified by customDashPatternUnit()
+
+This setting is only used when useCustomDashPattern() returns ``True``.
+
+.. seealso:: :py:func:`setCustomDashVector`
+
+.. seealso:: :py:func:`customDashPatternUnit`
+
+.. seealso:: :py:func:`useCustomDashPattern`
+%End
+
     void setCustomDashVector( const QVector<qreal> &vector );
+%Docstring
+Sets the custom dash ``vector``, which is the pattern of alternating drawn/skipped lengths
+used while rendering a custom dash pattern.
+
+Units for the vector are specified by customDashPatternUnit()
+
+This setting is only used when useCustomDashPattern() returns ``True``.
+
+.. seealso:: :py:func:`customDashVector`
+
+.. seealso:: :py:func:`setCustomDashPatternUnit`
+
+.. seealso:: :py:func:`setUseCustomDashPattern`
+%End
 
     bool drawInsidePolygon() const;
 %Docstring
-Returns true if the line should only be drawn inside polygons, and any portion
+Returns ``True`` if the line should only be drawn inside polygons, and any portion
 of the line which falls outside the polygon should be clipped away.
 
 This setting only has an effect when the line symbol is being
@@ -124,36 +229,24 @@ used to render polygon rings.
 .. seealso:: :py:func:`drawInsidePolygon`
 %End
 
-    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
-
-    virtual Qt::PenStyle dxfPenStyle() const;
-
-
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
-
-    virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
-
-    virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
-
-
-  protected:
-
-
-
-
 };
 
 
 
-class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
+class QgsTemplatedLineSymbolLayerBase : QgsLineSymbolLayer
 {
+%Docstring
+
+Base class for templated line symbols, e.g. line symbols which draw markers or hash
+lines at intervals along the line feature.
+
+.. versionadded:: 3.8
+%End
 
 %TypeHeaderCode
 #include "qgslinesymbollayer.h"
 %End
   public:
-    QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
-                              double interval = DEFAULT_MARKERLINE_INTERVAL );
 
     enum Placement
     {
@@ -162,87 +255,37 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
       LastVertex,
       FirstVertex,
       CentralPoint,
-      CurvePoint
+      CurvePoint,
+      SegmentCenter,
     };
 
-
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true,
+                                     double interval = 3 );
 %Docstring
-Create a new MarkerLineSymbolLayerV2
+Constructor for QgsTemplatedLineSymbolLayerBase. Creates a template
+line placed at the specified ``interval`` (in millimeters).
 
-:param properties: A property map to deserialize saved information from properties()
-
-:return: A new MarkerLineSymbolLayerV2
+The ``rotateSymbol`` argument specifies whether individual symbols
+should be rotated to match the line segment alignment.
 %End
 
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    bool rotateSymbols() const;
 %Docstring
-Create a new MarkerLineSymbolLayerV2 from SLD
+Returns ``True`` if the repeating symbols be rotated to match their line segment orientation.
 
-:param element: An SLD XML DOM element
-
-:return: A new MarkerLineSymbolLayerV2
+.. seealso:: :py:func:`setRotateSymbols`
 %End
 
-
-    virtual QString layerType() const;
-
-
-    virtual void startRender( QgsSymbolRenderContext &context );
-
-
-    virtual void stopRender( QgsSymbolRenderContext &context );
-
-
-    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
-
-
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
-
-
-    virtual QgsStringMap properties() const;
-
-
-    virtual QgsMarkerLineSymbolLayer *clone() const /Factory/;
-
-
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
-
-
-    virtual void setColor( const QColor &color );
-
-    virtual QColor color() const;
-
-
-    virtual QgsSymbol *subSymbol();
-
-    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
-
-
-    virtual void setWidth( double width );
-
-    virtual double width() const;
-
-
-    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
-
-
-
-    bool rotateMarker() const;
+    void setRotateSymbols( bool rotate );
 %Docstring
-Shall the marker be rotated.
+Sets whether the repeating symbols should be rotated to match their line segment orientation.
 
-:return: True if the marker should be rotated.
-%End
-
-    void setRotateMarker( bool rotate );
-%Docstring
-Shall the marker be rotated.
+.. seealso:: :py:func:`rotateSymbols`
 %End
 
     double interval() const;
 %Docstring
-Returns the interval between individual markers. Units are specified through intervalUnits().
+Returns the interval between individual symbols. Units are specified through intervalUnits().
 
 .. seealso:: :py:func:`setInterval`
 
@@ -251,7 +294,7 @@ Returns the interval between individual markers. Units are specified through int
 
     void setInterval( double interval );
 %Docstring
-Sets the interval between individual markers.
+Sets the interval between individual symbols.
 
 :param interval: interval size. Units are specified through setIntervalUnit()
 
@@ -260,92 +303,9 @@ Sets the interval between individual markers.
 .. seealso:: :py:func:`setIntervalUnit`
 %End
 
-    Placement placement() const;
-%Docstring
-The placement of the markers.
-%End
-
-    void setPlacement( Placement p );
-%Docstring
-The placement of the markers.
-%End
-
-    double offsetAlongLine() const;
-%Docstring
-Returns the offset along the line for the marker placement. For Interval placements, this is the distance
-between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
-distance between the marker and the start of the line or the end of the line respectively.
-This setting has no effect for Vertex or CentralPoint placements.
-
-:return: The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
-
-.. seealso:: :py:func:`setOffsetAlongLine`
-
-.. seealso:: :py:func:`offsetAlongLineUnit`
-
-.. seealso:: :py:func:`placement`
-
-.. versionadded:: 2.3
-%End
-
-    void setOffsetAlongLine( double offsetAlongLine );
-%Docstring
-Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
-between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
-distance between the marker and the start of the line or the end of the line respectively.
-This setting has no effect for Vertex or CentralPoint placements.
-
-:param offsetAlongLine: Distance to offset markers along the line. The offset
-                        unit is set via setOffsetAlongLineUnit.
-
-.. seealso:: :py:func:`offsetAlongLine`
-
-.. seealso:: :py:func:`setOffsetAlongLineUnit`
-
-.. seealso:: :py:func:`setPlacement`
-
-.. versionadded:: 2.3
-%End
-
-    QgsUnitTypes::RenderUnit offsetAlongLineUnit() const;
-%Docstring
-Returns the unit used for calculating the offset along line for markers.
-
-:return: Offset along line unit type.
-
-.. seealso:: :py:func:`setOffsetAlongLineUnit`
-
-.. seealso:: :py:func:`offsetAlongLine`
-%End
-
-    void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the unit used for calculating the offset along line for markers.
-
-:param unit: Offset along line unit type.
-
-.. seealso:: :py:func:`offsetAlongLineUnit`
-
-.. seealso:: :py:func:`setOffsetAlongLine`
-%End
-
-    const QgsMapUnitScale &offsetAlongLineMapUnitScale() const;
-%Docstring
-Returns the map unit scale used for calculating the offset in map units along line for markers.
-
-:return: Offset along line map unit scale.
-%End
-
-    void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale &scale );
-%Docstring
-Sets the map unit scale used for calculating the offset in map units along line for markers.
-
-:param scale: Offset along line map unit scale.
-%End
-
     void setIntervalUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for the interval between markers.
+Sets the units for the interval between symbols.
 
 :param unit: interval units
 
@@ -356,7 +316,7 @@ Sets the units for the interval between markers.
 
     QgsUnitTypes::RenderUnit intervalUnit() const;
 %Docstring
-Returns the units for the interval between markers.
+Returns the units for the interval between symbols.
 
 .. seealso:: :py:func:`setIntervalUnit`
 
@@ -364,35 +324,501 @@ Returns the units for the interval between markers.
 %End
 
     void setIntervalMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the interval between symbols.
+
+.. seealso:: :py:func:`intervalMapUnitScale`
+
+.. seealso:: :py:func:`setIntervalUnit`
+
+.. seealso:: :py:func:`setInterval`
+%End
+
     const QgsMapUnitScale &intervalMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the interval between symbols.
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+.. seealso:: :py:func:`setIntervalMapUnitScale`
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+.. seealso:: :py:func:`intervalUnit`
 
+.. seealso:: :py:func:`interval`
+%End
 
-    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+    Placement placement() const;
+%Docstring
+Returns the placement of the symbols.
 
-    virtual QgsMapUnitScale mapUnitScale() const;
+.. seealso:: :py:func:`setPlacement`
+%End
 
+    void setPlacement( Placement placement );
+%Docstring
+Sets the ``placement`` of the symbols.
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+.. seealso:: :py:func:`placement`
+%End
 
+    double offsetAlongLine() const;
+%Docstring
+Returns the offset along the line for the symbol placement. For Interval placements, this is the distance
+between the start of the line and the first symbol. For FirstVertex and LastVertex placements, this is the
+distance between the symbol and the start of the line or the end of the line respectively.
+This setting has no effect for Vertex or CentralPoint placements.
 
-    virtual void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property );
+:return: The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
 
+.. seealso:: :py:func:`setOffsetAlongLine`
+
+.. seealso:: :py:func:`offsetAlongLineUnit`
+
+.. seealso:: :py:func:`placement`
+%End
+
+    void setOffsetAlongLine( double offsetAlongLine );
+%Docstring
+Sets the the offset along the line for the symbol placement. For Interval placements, this is the distance
+between the start of the line and the first symbol. For FirstVertex and LastVertex placements, this is the
+distance between the symbol and the start of the line or the end of the line respectively.
+This setting has no effect for Vertex or CentralPoint placements.
+
+:param offsetAlongLine: Distance to offset markers along the line. The offset
+                        unit is set via setOffsetAlongLineUnit.
+
+.. seealso:: :py:func:`offsetAlongLine`
+
+.. seealso:: :py:func:`setOffsetAlongLineUnit`
+
+.. seealso:: :py:func:`setPlacement`
+%End
+
+    QgsUnitTypes::RenderUnit offsetAlongLineUnit() const;
+%Docstring
+Returns the unit used for calculating the offset along line for symbols.
+
+:return: Offset along line unit type.
+
+.. seealso:: :py:func:`setOffsetAlongLineUnit`
+
+.. seealso:: :py:func:`offsetAlongLine`
+%End
+
+    void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the unit used for calculating the offset along line for symbols.
+
+:param unit: Offset along line unit type.
+
+.. seealso:: :py:func:`offsetAlongLineUnit`
+
+.. seealso:: :py:func:`setOffsetAlongLine`
+%End
+
+    const QgsMapUnitScale &offsetAlongLineMapUnitScale() const;
+%Docstring
+Returns the map unit scale used for calculating the offset in map units along line for symbols.
+
+.. seealso:: :py:func:`setOffsetAlongLineMapUnitScale`
+%End
+
+    void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` used for calculating the offset in map units along line for symbols.
+
+.. seealso:: :py:func:`offsetAlongLineMapUnitScale`
+%End
+
+    double averageAngleLength() const;
+%Docstring
+Returns the length of line over which the line's direction is averaged when
+calculating individual symbol angles. Longer lengths smooth out angles from jagged lines to a greater extent.
+
+Units are retrieved through averageAngleUnit()
+
+.. seealso:: :py:func:`setAverageAngleLength`
+
+.. seealso:: :py:func:`averageAngleUnit`
+
+.. seealso:: :py:func:`averageAngleMapUnitScale`
+%End
+
+    void setAverageAngleLength( double length );
+%Docstring
+Sets the ``length`` of line over which the line's direction is averaged when
+calculating individual symbol angles. Longer lengths smooth out angles from jagged lines to a greater extent.
+
+Units are set through setAverageAngleUnit()
+
+.. seealso:: :py:func:`averageAngleLength`
+
+.. seealso:: :py:func:`setAverageAngleUnit`
+
+.. seealso:: :py:func:`setAverageAngleMapUnitScale`
+%End
+
+    void setAverageAngleUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the length over which the line's direction is averaged when
+calculating individual symbol angles.
+
+.. seealso:: :py:func:`averageAngleUnit`
+
+.. seealso:: :py:func:`setAverageAngleLength`
+
+.. seealso:: :py:func:`setAverageAngleMapUnitScale`
+%End
+
+    QgsUnitTypes::RenderUnit averageAngleUnit() const;
+%Docstring
+Returns the unit for the length over which the line's direction is averaged when
+calculating individual symbol angles.
+
+.. seealso:: :py:func:`setAverageAngleUnit`
+
+.. seealso:: :py:func:`averageAngleLength`
+
+.. seealso:: :py:func:`averageAngleMapUnitScale`
+%End
+
+    void setAverageAngleMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the length over which the line's direction is averaged when
+calculating individual symbol angles.
+
+.. seealso:: :py:func:`averageAngleMapUnitScale`
+
+.. seealso:: :py:func:`setAverageAngleLength`
+
+.. seealso:: :py:func:`setAverageAngleUnit`
+%End
+
+    const QgsMapUnitScale &averageAngleMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the length over which the line's direction is averaged when
+calculating individual symbol angles.
+
+.. seealso:: :py:func:`setAverageAngleMapUnitScale`
+
+.. seealso:: :py:func:`averageAngleLength`
+
+.. seealso:: :py:func:`averageAngleUnit`
+%End
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) ${SIP_FINAL};
+
+    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) ${SIP_FINAL};
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const ${SIP_FINAL};
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale ) ${SIP_FINAL};
+
+    virtual QgsMapUnitScale mapUnitScale() const ${SIP_FINAL};
+
+    virtual QgsStringMap properties() const;
 
 
   protected:
 
-    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context );
-    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Placement placement = Vertex );
-    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context );
-    double markerAngle( const QPolygonF &points, bool isRing, int vertex );
+    virtual void setSymbolLineAngle( double angle ) = 0;
+%Docstring
+Sets the line ``angle`` modification for the symbol's angle. This angle is added to
+the symbol's rotation and data defined rotation before rendering the symbol, and
+is used for orienting symbols to match the line's angle.
+
+:param angle: Angle in degrees, valid values are between 0 and 360
+%End
+
+    virtual double symbolAngle() const = 0;
+%Docstring
+Returns the symbol's current angle, in degrees clockwise.
+%End
+
+    virtual void setSymbolAngle( double angle ) = 0;
+%Docstring
+Sets the symbol's ``angle``, in degrees clockwise.
+%End
+
+    virtual void renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer = -1, bool selected = false ) = 0;
+%Docstring
+Renders the templated symbol at the specified ``point``, using the given render ``context``.
+
+The ``feature`` argument is used to pass the feature currently being rendered (when available).
+
+If only a single symbol layer from the symbol should be rendered, it should be specified
+in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
+rendered.
+
+If ``selected`` is true then the symbol will be drawn using the "selected feature"
+style and colors instead of the symbol's normal style.
+%End
+
+    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
+%Docstring
+Copies all common properties of this layer to another templated symbol layer.
+%End
+
+    static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QgsStringMap &properties );
+%Docstring
+Sets all common symbol properties in the ``destLayer``, using the settings
+serialized in the ``properties`` map.
+%End
+
+};
+
+class QgsMarkerLineSymbolLayer : QgsTemplatedLineSymbolLayerBase
+{
+%Docstring
+Line symbol layer type which draws repeating marker symbols along a line feature.
+%End
+
+%TypeHeaderCode
+#include "qgslinesymbollayer.h"
+%End
+  public:
+
+    QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
+                              double interval = DEFAULT_MARKERLINE_INTERVAL );
+%Docstring
+Constructor for QgsMarkerLineSymbolLayer. Creates a marker line
+with a default marker symbol, placed at the specified ``interval`` (in millimeters).
+
+The ``rotateMarker`` argument specifies whether individual marker symbols
+should be rotated to match the line segment alignment.
+%End
+
+
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsMarkerLineSymbolLayer, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+QgsMarkerLineSymbolLayer.properties() ).
+%End
+
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM ``element``.
+%End
+
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual QgsMarkerLineSymbolLayer *clone() const /Factory/;
+
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+
+    virtual void setColor( const QColor &color );
+
+    virtual QColor color() const;
+
+    virtual QgsSymbol *subSymbol();
+
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+    virtual void setWidth( double width );
+
+    virtual double width() const;
+
+    virtual double width( const QgsRenderContext &context ) const;
+
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
+
+    virtual void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property );
+
+
+ bool rotateMarker() const /Deprecated/;
+%Docstring
+Shall the marker be rotated.
+
+:return: ``True`` if the marker should be rotated.
+
+.. deprecated:: Use rotateSymbols() instead.
+%End
+
+ void setRotateMarker( bool rotate ) /Deprecated/;
+%Docstring
+Shall the marker be rotated.
+
+.. deprecated:: Use setRotateSymbols() instead.
+%End
+
+  protected:
+
+
+    virtual void setSymbolLineAngle( double angle );
+
+    virtual double symbolAngle() const;
+
+    virtual void setSymbolAngle( double angle );
+
+    virtual void renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer = -1, bool selected = false );
 
 
   private:
     QgsMarkerLineSymbolLayer( const QgsMarkerLineSymbolLayer &other );
+};
+
+
+class QgsHashedLineSymbolLayer : QgsTemplatedLineSymbolLayerBase
+{
+%Docstring
+
+Line symbol layer type which draws repeating line sections along a line feature.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgslinesymbollayer.h"
+%End
+  public:
+
+    QgsHashedLineSymbolLayer( bool rotateSymbol = true,
+                              double interval = 3 );
+%Docstring
+Constructor for QgsHashedLineSymbolLayer. Creates a line
+with a default hash symbol, placed at the specified ``interval`` (in millimeters).
+
+The ``rotateSymbol`` argument specifies whether individual hash symbols
+should be rotated to match the line segment alignment.
+%End
+
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsHashedLineSymbolLayer, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+QgsHashedLineSymbolLayer.properties() ).
+%End
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual QgsStringMap properties() const;
+
+    virtual QgsHashedLineSymbolLayer *clone() const /Factory/;
+
+    virtual void setColor( const QColor &color );
+
+    virtual QColor color() const;
+
+    virtual QgsSymbol *subSymbol();
+
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+    virtual void setWidth( double width );
+
+    virtual double width() const;
+
+    virtual double width( const QgsRenderContext &context ) const;
+
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
+
+    virtual void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property );
+
+
+    double hashAngle() const;
+%Docstring
+Returns the angle to use when drawing the hashed lines sections, in degrees clockwise.
+
+.. seealso:: :py:func:`setHashAngle`
+%End
+
+    void setHashAngle( double angle );
+%Docstring
+Sets the ``angle`` to use when drawing the hashed lines sections, in degrees clockwise.
+
+.. seealso:: :py:func:`hashAngle`
+%End
+
+    double hashLength() const;
+%Docstring
+Returns the length of hash symbols. Units are specified through hashLengthUnits().
+
+.. seealso:: :py:func:`setHashLength`
+
+.. seealso:: :py:func:`hashLengthUnit`
+%End
+
+    void setHashLength( double length );
+%Docstring
+Sets the ``length`` of hash symbols. Units are specified through setHashLengthUnit()
+
+.. seealso:: :py:func:`hashLength`
+
+.. seealso:: :py:func:`setHashLengthUnit`
+%End
+
+    void setHashLengthUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the length of hash symbols.
+
+.. seealso:: :py:func:`hashLengthUnit`
+
+.. seealso:: :py:func:`setHashLength`
+%End
+
+    QgsUnitTypes::RenderUnit hashLengthUnit() const;
+%Docstring
+Returns the units for the length of hash symbols.
+
+.. seealso:: :py:func:`setHashLengthUnit`
+
+.. seealso:: :py:func:`hashLength`
+%End
+
+    void setHashLengthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the hash length.
+
+.. seealso:: :py:func:`hashLengthMapUnitScale`
+
+.. seealso:: :py:func:`setHashLengthUnit`
+
+.. seealso:: :py:func:`setHashLength`
+%End
+
+    const QgsMapUnitScale &hashLengthMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the hash length.
+
+.. seealso:: :py:func:`setHashLengthMapUnitScale`
+
+.. seealso:: :py:func:`hashLengthUnit`
+
+.. seealso:: :py:func:`hashLength`
+%End
+
+  protected:
+
+    virtual void setSymbolLineAngle( double angle );
+
+    virtual double symbolAngle() const;
+
+    virtual void setSymbolAngle( double angle );
+
+    virtual void renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer = -1, bool selected = false );
+
+
+  private:
+    QgsHashedLineSymbolLayer( const QgsHashedLineSymbolLayer &other );
 };
 
 

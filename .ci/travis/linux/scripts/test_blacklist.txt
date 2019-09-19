@@ -1,0 +1,20 @@
+# black list
+PyQgsLocalServer
+PyQgsPalLabelingServer
+qgis_composerutils
+PyQgsAppStartup
+
+# code layout tests are run on separate build
+qgis_spelling
+qgis_sipify
+qgis_sip_include
+qgis_sip_uptodate
+
+# Need a local postgres installation
+PyQgsAuthManagerPKIPostgresTest
+PyQgsAuthManagerOgrPostgresTest
+PyQgsDbManagerPostgis
+
+# Needs an OpenCL device, the library is not enough
+qgis_openclutilstest
+

@@ -39,8 +39,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   addProjectCrsOption();
 
   QgsSettings settings;
-  QString defCrsString = settings.value( QStringLiteral( "Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrsString );
+  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString() );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {
     //only show default CRS option if it's different to the project CRS, avoids
@@ -171,10 +170,13 @@ void QgsProjectionSelectionWidget::selectCrs()
 {
   //find out crs id of current proj4 string
   QgsProjectionSelectionDialog dlg( this );
-  dlg.setMessage( mMessage );
-  if ( mCrs.isValid() )
+  if ( !mMessage.isEmpty() )
+    dlg.setMessage( mMessage );
+  dlg.setCrs( mCrs );
+
+  if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
   {
-    dlg.setCrs( mCrs );
+    dlg.setShowNoProjection( true );
   }
 
   if ( dlg.exec() )
@@ -236,7 +238,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
     if ( !optionVisible( QgsProjectionSelectionWidget::CurrentCrs ) )
       setOptionVisible( QgsProjectionSelectionWidget::CurrentCrs, true );
     mCrsComboBox->setItemText( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ),
-                               currentCrsOptionText( crs ) );
+                               crsOptionText( crs ) );
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
@@ -253,7 +255,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
     else
     {
       mCrsComboBox->setItemText( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ),
-                                 currentCrsOptionText( crs ) );
+                                 crsOptionText( crs ) );
     }
   }
   if ( mCrs != crs )
@@ -303,11 +305,11 @@ void QgsProjectionSelectionWidget::addDefaultCrsOption()
 void QgsProjectionSelectionWidget::addCurrentCrsOption()
 {
   int index = optionVisible( CrsNotSet ) ? 1 : 0;
-  mCrsComboBox->insertItem( index, currentCrsOptionText( mCrs ), QgsProjectionSelectionWidget::CurrentCrs );
+  mCrsComboBox->insertItem( index, crsOptionText( mCrs ), QgsProjectionSelectionWidget::CurrentCrs );
 
 }
 
-QString QgsProjectionSelectionWidget::currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const
+QString QgsProjectionSelectionWidget::crsOptionText( const QgsCoordinateReferenceSystem &crs )
 {
   if ( crs.isValid() )
     return tr( "%1 - %2" ).arg( crs.authid(), crs.description() );
@@ -319,7 +321,8 @@ void QgsProjectionSelectionWidget::addRecentCrs()
 {
   QStringList recentProjections = QgsCoordinateReferenceSystem::recentProjections();
   int i = 0;
-  Q_FOREACH ( const QString &projection, recentProjections )
+  const auto constRecentProjections = recentProjections;
+  for ( const QString &projection : constRecentProjections )
   {
     long srsid = projection.toLong();
 

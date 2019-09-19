@@ -26,6 +26,8 @@
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
 #include "qgsapplication.h"
+#include "qgsdataprovider.h"
+
 
 class QNetworkReply;
 
@@ -339,7 +341,7 @@ struct QgsWmtsTileMatrix
 
   /**
    * Returns range of tiles that intersects with the view extent
-   * (tml may be null)
+   * (\a tml may be NULLPTR)
    */
   void viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits *tml, int &col0, int &row0, int &col1, int &row1 ) const;
 
@@ -423,6 +425,7 @@ struct QgsWmtsTileLayer
   QStringList formats;
   QStringList infoFormats;
   QString defaultStyle;
+  int dpi = -1;   //!< DPI of the tile layer (-1 for unknown DPI)
   //! available dimensions (optional, for multi-dimensional data)
   QHash<QString, QgsWmtsDimension> dimensions;
   QHash<QString, QgsWmtsStyle> styles;
@@ -590,6 +593,7 @@ class QgsWmsSettings
 
     bool mIgnoreGetMapUrl;
     bool mIgnoreGetFeatureInfoUrl;
+    bool mIgnoreReportedLayerExtents = false;
     bool mSmoothPixmapTransform;
     enum QgsWmsDpiMode mDpiMode;
 
@@ -625,7 +629,11 @@ class QgsWmsSettings
 class QgsWmsCapabilities
 {
   public:
-    QgsWmsCapabilities() = default;
+
+    /**
+     * Constructs a QgsWmsCapabilities object with the given \a coordinateTransformContext
+     */
+    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
 
     bool isValid() const { return mValid; }
 
@@ -639,7 +647,7 @@ class QgsWmsCapabilities
     /**
      * \brief   Returns a list of the supported layers of the WMS server
      *
-     * \retval The list of layers will be placed here.
+     * \returns The list of layers will be placed here.
      *
      * \todo Document this better
      */
@@ -656,7 +664,7 @@ class QgsWmsCapabilities
     /**
      * \brief   Returns a list of the supported tile layers of the WMS server
      *
-     * \retval The list of tile sets will be placed here.
+     * \returns The list of tile sets will be placed here.
      */
     QList<QgsWmtsTileLayer> supportedTileLayers() const { return mTileLayersSupported; }
 
@@ -757,6 +765,10 @@ class QgsWmsCapabilities
 
     //temporarily caches invert axis setting for each crs
     QHash<QString, bool> mCrsInvertAxis;
+
+  private:
+
+    QgsCoordinateTransformContext mCoordinateTransformContext;
 
     friend class QgsWmsProvider;
 };

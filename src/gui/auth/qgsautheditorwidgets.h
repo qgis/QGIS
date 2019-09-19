@@ -18,7 +18,7 @@
 #define QGSAUTHEDITORWIDGETS_H
 
 #include <QWidget>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "ui_qgsautheditorwidgets.h"
 #include "ui_qgsauthmethodplugins.h"
 #include "qgis_gui.h"

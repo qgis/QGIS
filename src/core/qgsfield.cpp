@@ -127,6 +127,11 @@ bool QgsField::isNumeric() const
   return d->type == QVariant::Double || d->type == QVariant::Int || d->type == QVariant::UInt || d->type == QVariant::LongLong || d->type == QVariant::ULongLong;
 }
 
+bool QgsField::isDateOrTime() const
+{
+  return d->type == QVariant::Date || d->type == QVariant::Time || d->type == QVariant::DateTime;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.
@@ -254,7 +259,7 @@ QString QgsField::displayString( const QVariant &v ) const
     if ( ok )
       return QLocale().toString( converted );
   }
-  else if ( d->typeName == QLatin1String( "json" ) || d->typeName == QLatin1String( "jsonb" ) )
+  else if ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName == QLatin1String( "jsonb" ) )
   {
     QJsonDocument doc = QJsonDocument::fromVariant( v );
     return QString::fromUtf8( doc.toJson().data() );
@@ -373,6 +378,34 @@ bool QgsField::convertCompatible( QVariant &v ) const
     return true;
   }
 
+  //String representations of doubles in QVariant will return false to convert( QVariant::LongLong )
+  //work around this by first converting to double, and then checking whether the double is convertible to longlong
+  if ( d->type == QVariant::LongLong && v.canConvert( QVariant::Double ) )
+  {
+    //firstly test the conversion to longlong because conversion to double will rounded the value
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      bool ok = false;
+      double dbl = v.toDouble( &ok );
+      if ( !ok )
+      {
+        //couldn't convert to number
+        v = QVariant( d->type );
+        return false;
+      }
+
+      double round = std::round( dbl );
+      if ( round  > std::numeric_limits<long long>::max() || round < -std::numeric_limits<long long>::max() )
+      {
+        //double too large to fit in longlong
+        v = QVariant( d->type );
+        return false;
+      }
+      v = QVariant( static_cast< long long >( std::round( dbl ) ) );
+      return true;
+    }
+  }
 
   if ( !v.convert( d->type ) )
   {

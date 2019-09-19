@@ -10,5 +10,5 @@ QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the n
 *QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
 *QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
 QgsProcessingParameterVectorDestination|output|Network_Salesman
-QgsProcessingParameterFileDestination|sequence|Output file holding node sequence|Html files (*.html)|report.html|True
+QgsProcessingParameterFileDestination|sequence|Output file holding node sequence|CSV files (*.csv)|None|True
 

@@ -17,7 +17,7 @@
 #define QGSMAPCANVASITEM_H
 
 #include <QGraphicsItem>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
 
@@ -53,7 +53,8 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
      * Sets render context parameters
     \param p painter for rendering
     \param context out: configured context
-    \returns true in case of success */
+    \returns true in case of success
+    */
     bool setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const;
 
   public:

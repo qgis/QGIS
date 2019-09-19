@@ -78,7 +78,14 @@ vector layers have been changed. Will request the parent dialog
 to re-synchronize with the variables.
 %End
 
+    void symbolLevelsChanged();
+%Docstring
+Emitted when the symbol levels settings have been changed.
+%End
+
   protected:
+
+
 
 
     virtual QList<QgsSymbol *> selectedSymbols();
@@ -91,7 +98,7 @@ and by connecting the slot contextMenuViewCategories(const QPoint&)*
     QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) /Factory/;
 %Docstring
 Creates widget to setup data-defined size legend.
-Returns newly created panel - may be null if it could not be opened. Ownership is transferred to the caller.
+Returns newly created panel - may be ``None`` if it could not be opened. Ownership is transferred to the caller.
 
 .. versionadded:: 3.0
 %End
@@ -123,8 +130,16 @@ Change marker sizes of selected symbols
 Change marker angles of selected symbols
 %End
 
+
     virtual void copy();
     virtual void paste();
+
+    virtual void pasteSymbolToSelection();
+%Docstring
+Pastes the clipboard symbol over selected items.
+
+.. versionadded:: 3.10
+%End
 
   private:
     virtual void apply();
@@ -156,7 +171,7 @@ Utility classes for "en masse" size definition
 Constructor
 
 :param symbolList: must not be empty
-:param layer: must not be null
+:param layer: must not be ``None``
 :param label: value label
 %End
 

@@ -27,42 +27,19 @@
 // version without notice, or even be removed.
 //
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QGeometryRenderer>
 
-class Qgs3DMapSettings;
-class QgsTessellatedPolygonGeometry;
+#include "qgsfeature3dhandler_p.h"
+
 class QgsLine3DSymbol;
 
-class QgsVectorLayer;
-class QgsFeatureRequest;
-
-
-//! Entity that handles rendering of linestrings
-class QgsLine3DSymbolEntity : public Qt3DCore::QEntity
+namespace Qgs3DSymbolImpl
 {
-  public:
-    QgsLine3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
+  //! factory method for QgsLine3DSymbol
+  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
 
-  private:
-    void addEntityForSelectedLines( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
-    void addEntityForNotSelectedLines( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
-
-    Qt3DExtras::QPhongMaterial *material( const QgsLine3DSymbol &symbol ) const;
-};
-
-class QgsLine3DSymbolEntityNode : public Qt3DCore::QEntity
-{
-  public:
-    QgsLine3DSymbolEntityNode( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
-
-  private:
-    Qt3DRender::QGeometryRenderer *renderer( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &req );
-    Qt3DRender::QGeometryRenderer *rendererSimple( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request );
-
-    QgsTessellatedPolygonGeometry *mGeometry = nullptr;
-};
+  //! convenience function to create a complete entity from QgsPolygon3DSymbol (will run getFeatures() on the layer)
+  Qt3DCore::QEntity *entityForLine3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
+}
 
 /// @endcond
 

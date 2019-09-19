@@ -206,7 +206,7 @@ void QgsAuthPkcs12Edit::clearPkcs12BundlePass()
 
 void QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged( const QString &pass )
 {
-  Q_UNUSED( pass );
+  Q_UNUSED( pass )
   validateConfig();
 }
 

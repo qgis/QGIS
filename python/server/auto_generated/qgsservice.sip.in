@@ -51,7 +51,7 @@ Constructor
 
     virtual bool allowMethod( QgsServerRequest::Method ) const = 0;
 %Docstring
-Returns true if the given method is supported for that
+Returns ``True`` if the given method is supported for that
 service.
 %End
 

@@ -37,7 +37,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
-    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
     void stopRender( QgsRenderContext &context ) override;
     bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     /**
      * Creates a QgsNullSymbolRenderer from an existing renderer.
      * \param renderer renderer to convert from
-     * \returns a new renderer if the conversion was possible, otherwise nullptr.
+     * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
     static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

@@ -22,6 +22,7 @@
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgssnapindicator.h"
+#include "qgsquadrilateral.h"
 
 #include <memory>
 
@@ -69,23 +70,13 @@ void QgsMapToolRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       case 1:
       {
-        if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
-        {
-          double xOffset = fabs( point.x() - mPoints.at( 0 ).x() );
-          double yOffset = fabs( point.y() - mPoints.at( 0 ).y() );
 
-          mRectangle = QgsBox3d( QgsPoint( mPoints.at( 0 ).x() - xOffset, mPoints.at( 0 ).y() - yOffset, mPoints.at( 0 ).z() ), QgsPoint( mPoints.at( 0 ).x() + xOffset, mPoints.at( 0 ).y() + yOffset, mPoints.at( 0 ).z() ) );
+        double dist = mPoints.at( 0 ).distance( point );
+        double angle = mPoints.at( 0 ).azimuth( point );
 
-          mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
-        }
-        else
-        {
-          double dist = mPoints.at( 0 ).distance( point );
-          double angle = mPoints.at( 0 ).azimuth( point );
+        mRectangle = QgsQuadrilateral::rectangleFromExtent( mPoints.at( 0 ).project( -dist, angle ), mPoints.at( 0 ).project( dist, angle ) );
+        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
 
-          mRectangle = QgsBox3d( mPoints.at( 0 ).project( -dist, angle ), mPoints.at( 0 ).project( dist, angle ) );
-          mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
-        }
       }
       break;
       default:

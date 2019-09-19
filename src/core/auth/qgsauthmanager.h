@@ -80,7 +80,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \brief init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
      * \param pluginPath the plugin path
      * \param authDatabasePath the authentication DB path
-     * \return true on success
+     * \return TRUE on success
      * \see QgsApplication::pluginPath
      * \see QgsApplication::qgisAuthDatabaseFilePath
      */
@@ -185,8 +185,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \note This can be called from the slot connected to a previously emitted scheduling signal,
      * so that the slot can ask for another emit later, if the slot noticies the current GUI
      * processing state is not ready for interacting with the user, e.g. project is still loading
-     * \param emitted Setting to false will cause signal to be emitted by the schedule timer.
-     * Setting to true will stop any emitting, but will not stop the schedule timer.
+     * \param emitted Setting to FALSE will cause signal to be emitted by the schedule timer.
+     * Setting to TRUE will stop any emitting, but will not stop the schedule timer.
      */
     void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
 
@@ -644,15 +644,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Password helper enabled getter
-     * \note not available in Python bindings
+     * \note Available in Python bindings since QGIS 3.8.0
      */
-    bool passwordHelperEnabled() const SIP_SKIP;
+    bool passwordHelperEnabled() const;
 
     /**
      * Password helper enabled setter
-     * \note not available in Python bindings
+     * \note Available in Python bindings since QGIS 3.8.0
      */
-    void setPasswordHelperEnabled( bool enabled ) SIP_SKIP;
+    void setPasswordHelperEnabled( bool enabled );
 
     /**
      * Password helper logging enabled getter
@@ -668,9 +668,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Store the password manager into the wallet
-     * \note not available in Python bindings
+     * \note Available in Python bindings since QGIS 3.8.0
      */
-    bool passwordHelperSync() SIP_SKIP;
+    bool passwordHelperSync();
 
     //! The display name of the password helper (platform dependent)
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
@@ -738,7 +738,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * the erase. It relies upon a slot connected to the signal in calling application
      * (the one that initiated the erase) to initiate the erase, when it is ready.
      * Upon activation, a receiving slot should get confimation from the user, then
-     * IMMEDIATELY call setScheduledAuthDatabaseErase( false ) to stop the scheduling timer.
+     * IMMEDIATELY call setScheduledAuthDatabaseErase( FALSE ) to stop the scheduling timer.
      * If receiving slot is NOT ready to initiate the erase, e.g. project is still loading,
      * it can skip the confirmation and request another signal emit from the scheduling timer.
      */
@@ -848,7 +848,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mAuthInit = false;
     QString mAuthDbPath;
 
-    QCA::Initializer *mQcaInitializer = nullptr;
+    std::unique_ptr<QCA::Initializer> mQcaInitializer;
 
     QHash<QString, QString> mConfigAuthMethods;
     QHash<QString, QgsAuthMethod *> mAuthMethods;
@@ -874,6 +874,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QList<QSslCertificate> mTrustedCaCertsCache;
     // cache of SSL errors to be ignored in network connections, per sha-hostport
     QHash<QString, QSet<QSslError::SslError> > mIgnoredSslErrorsCache;
+
+    bool mHasCustomConfigByHost = false;
+    bool mHasCheckedIfCustomConfigByHostExists = false;
+    QMap< QString, QgsAuthConfigSslServer > mCustomConfigByHostCache;
 #endif
 
     //////////////////////////////////////////////////////////////////////////////
@@ -899,6 +903,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     //! password helper folder in the wallets
     static const QLatin1String AUTH_PASSWORD_HELPER_FOLDER_NAME;
+
+    mutable QMap<QThread *, QMetaObject::Connection> mConnectedThreads;
 
     friend class QgsApplication;
 

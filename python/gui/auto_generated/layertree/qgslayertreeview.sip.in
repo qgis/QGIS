@@ -67,30 +67,46 @@ Sets provider for context menu. Takes ownership of the instance
 %End
     QgsLayerTreeViewMenuProvider *menuProvider() const;
 %Docstring
-Returns pointer to the context menu provider. May be null
+Returns pointer to the context menu provider. May be ``None``
 %End
 
     QgsMapLayer *currentLayer() const;
 %Docstring
-Gets currently selected layer. May be null
+Returns the currently selected layer, or ``None`` if no layers is selected.
+
+.. seealso:: :py:func:`setCurrentLayer`
 %End
+
+    void setLayerVisible( QgsMapLayer *layer, bool visible );
+%Docstring
+Convenience methods which sets the visible state of the specified map ``layer``.
+
+.. seealso:: :py:func:`QgsLayerTreeNode.setItemVisibilityChecked`
+
+.. versionadded:: 3.10
+%End
+
     void setCurrentLayer( QgsMapLayer *layer );
 %Docstring
-Sets currently selected layer. Null pointer will deselect any layer.
+Sets the currently selected ``layer``.
+
+If ``layer`` is ``None`` then all layers will be deselected.
+
+.. seealso:: :py:func:`currentLayer`
 %End
 
     QgsLayerTreeNode *currentNode() const;
 %Docstring
-Gets current node. May be null
+Gets current node. May be ``None``
 %End
     QgsLayerTreeGroup *currentGroupNode() const;
 %Docstring
-Gets current group node. If a layer is current node, the function will return parent group. May be null.
+Gets current group node. If a layer is current node, the function will return parent group. May be ``None``.
 %End
 
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 %Docstring
-Gets current legend node. May be null if current node is not a legend node.
+Gets current legend node. May be ``None`` if current node is not a legend node.
 
 .. versionadded:: 2.14
 %End
@@ -99,7 +115,7 @@ Gets current legend node. May be null if current node is not a legend node.
 %Docstring
 Returns list of selected nodes
 
-:param skipInternal: If true, will ignore nodes which have an ancestor in the selection
+:param skipInternal: If ``True``, will ignore nodes which have an ancestor in the selection
 %End
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 %Docstring
@@ -157,6 +173,15 @@ Returns list of indicators associated with a particular layer tree node.
 .. versionadded:: 3.2
 %End
 
+    int layerMarkWidth() const;
+%Docstring
+Returns width of contextual menu mark, at right of layer node items.
+
+.. seealso:: :py:func:`setLayerMarkWidth`
+
+.. versionadded:: 3.8
+%End
+
 
 
   public slots:
@@ -177,6 +202,15 @@ Enhancement of QTreeView.expandAll() that also records expanded state in layer t
 Enhancement of QTreeView.collapseAll() that also records expanded state in layer tree nodes
 
 .. versionadded:: 2.18
+%End
+
+    void setLayerMarkWidth( int width );
+%Docstring
+Set width of contextual menu mark, at right of layer node items.
+
+.. seealso:: :py:func:`layerMarkWidth`
+
+.. versionadded:: 3.8
 %End
 
   signals:
@@ -201,6 +235,9 @@ Emitted when a current layer is changed
     virtual void dropEvent( QDropEvent *event );
 
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
@@ -213,6 +250,7 @@ Emitted when a current layer is changed
     void onModelReset();
 
   protected:
+
 
 };
 
@@ -236,7 +274,7 @@ instance to provide custom context menus (opened upon right-click).
 
     virtual QMenu *createContextMenu() = 0 /Factory/;
 %Docstring
-Returns a newly created menu instance (or null pointer on error)
+Returns a newly created menu instance (or ``None`` on error)
 %End
 };
 

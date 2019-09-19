@@ -19,7 +19,7 @@
 #define QGSFEATUREFILTERPROVIDER_H
 
 #include <QtGlobal>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgis_core.h"
 

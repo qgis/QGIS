@@ -22,12 +22,28 @@ class QgsVectorLayer;
 class QgsVectorLayerUndoPassthroughCommand;
 class QgsTransaction;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsvectorlayereditpassthrough.h>
+% End
+#endif
+
 /**
  * \ingroup core
  * \class QgsVectorLayerEditPassthrough
  */
 class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsVectorLayerEditPassthrough *>( sipCpp ) )
+      sipType = sipType_QgsVectorLayerEditPassthrough;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
     QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
@@ -41,7 +57,7 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
 
     /**
      * Changes values of attributes (but does not commit it).
-     * \returns true if attributes are well updated, false otherwise
+     * \returns TRUE if attributes are well updated, FALSE otherwise
      * \since QGIS 3.0
      */
     bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues ) override;
@@ -59,7 +75,7 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
      * \param sql The SQL query updating data
      * \param name The name of the undo/redo command
      *
-     * \returns true if the undo/redo command is well added to the stack, false otherwise
+     * \returns TRUE if the undo/redo command is well added to the stack, FALSE otherwise
      *
      * \since QGIS 3.0
      */

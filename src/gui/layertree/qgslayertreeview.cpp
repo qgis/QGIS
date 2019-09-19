@@ -26,6 +26,7 @@
 
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QHeaderView>
 
 #include "qgslayertreeviewindicator.h"
 #include "qgslayertreeviewitemdelegate.h"
@@ -43,12 +44,21 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setEditTriggers( EditKeyPressed );
   setExpandsOnDoubleClick( false ); // normally used for other actions
 
+  // Ensure legend graphics are scrollable
+  header()->setStretchLastSection( false );
+  header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+
+  // If vertically scrolling by item, legend graphics can get clipped
+  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
 
   // we need a custom item delegate in order to draw indicators
   setItemDelegate( new QgsLayerTreeViewItemDelegate( this ) );
   setStyle( new QgsLayerTreeViewProxyStyle( this ) );
+
+  setLayerMarkWidth( static_cast< int >( QFontMetricsF( font() ).width( 'l' ) * Qgis::UI_SCALE_FACTOR ) );
 
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
@@ -117,6 +127,15 @@ void QgsLayerTreeView::setCurrentLayer( QgsMapLayer *layer )
   setCurrentIndex( layerTreeModel()->node2index( nodeLayer ) );
 }
 
+void QgsLayerTreeView::setLayerVisible( QgsMapLayer *layer, bool visible )
+{
+  if ( !layer )
+    return;
+  QgsLayerTreeLayer *nodeLayer = layerTreeModel()->rootGroup()->findLayer( layer->id() );
+  if ( !nodeLayer )
+    return;
+  nodeLayer->setItemVisibilityChecked( visible );
+}
 
 void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
 {
@@ -154,7 +173,24 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
         if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
-          setIndexWidget( index, provider->createWidget( layer, i ) );
+          QWidget *wdgt = provider->createWidget( layer, i );
+          // Since column is resized to contents, limit the expanded width of embedded
+          //  widgets, if they are not already limited, e.g. have the default MAX value.
+          // Else, embedded widget may grow very wide due to large legend graphics.
+          // NOTE: This approach DOES NOT work right. It causes horizontal scroll
+          //       bar to disappear if the embedded widget is expanded and part
+          //       of the last layer in the panel, even if much wider legend items
+          //       are expanded above it. The correct width-limiting method should
+          //       be setting fixed-width, hidpi-aware embedded widget items in a
+          //       layout and appending an expanding QSpacerItem to end. This ensures
+          //       full width is always created in the column by the embedded widget.
+          //       See QgsLayerTreeOpacityWidget
+          //if ( wdgt->maximumWidth() == QWIDGETSIZE_MAX )
+          //{
+          //  wdgt->setMaximumWidth( 250 );
+          //}
+
+          setIndexWidget( index, wdgt );
         }
       }
     }
@@ -168,7 +204,8 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
     if ( expandedNodeKeys.isEmpty() )
       return;
 
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ), true ) )
+    const auto constLayerLegendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ), true );
+    for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
       QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
       if ( expandedNodeKeys.contains( ruleKey ) )
@@ -272,7 +309,8 @@ void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode *node )
   QModelIndex idx = layerTreeModel()->node2index( node );
   setExpanded( idx, node->isExpanded() );
 
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
     updateExpandedStateFromNode( child );
 }
 
@@ -338,7 +376,8 @@ QList<QgsLayerTreeNode *> QgsLayerTreeView::selectedNodes( bool skipInternal ) c
 QList<QgsLayerTreeLayer *> QgsLayerTreeView::selectedLayerNodes() const
 {
   QList<QgsLayerTreeLayer *> layerNodes;
-  Q_FOREACH ( QgsLayerTreeNode *node, selectedNodes() )
+  const auto constSelectedNodes = selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     if ( QgsLayerTree::isLayer( node ) )
       layerNodes << QgsLayerTree::toLayer( node );
@@ -349,7 +388,8 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeView::selectedLayerNodes() const
 QList<QgsMapLayer *> QgsLayerTreeView::selectedLayers() const
 {
   QList<QgsMapLayer *> list;
-  Q_FOREACH ( QgsLayerTreeLayer *node, selectedLayerNodes() )
+  const auto constSelectedLayerNodes = selectedLayerNodes();
+  for ( QgsLayerTreeLayer *node : constSelectedLayerNodes )
   {
     if ( node->layer() )
       list << node->layer();
@@ -367,12 +407,20 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayersRecursive() const
 void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
 {
   if ( !mIndicators[node].contains( indicator ) )
+  {
     mIndicators[node].append( indicator );
+    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [ = ]
+    {
+      update();
+    } );
+    update();
+  }
 }
 
 void QgsLayerTreeView::removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
 {
   mIndicators[node].removeOne( indicator );
+  update();
 }
 
 QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNode *node ) const
@@ -402,7 +450,8 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
   QStringList lst;
   if ( expanded )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, model->layerLegendNodes( nodeLayer, true ) )
+    const auto constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
+    for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
       QString parentKey = legendNode->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
       if ( !parentKey.isEmpty() && !lst.contains( parentKey ) )
@@ -415,7 +464,8 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
 
 static void _expandAllNodes( QgsLayerTreeGroup *parent, bool expanded, QgsLayerTreeModel *model )
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, parent->children() )
+  const auto constChildren = parent->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     node->setExpanded( expanded );
     if ( QgsLayerTree::isGroup( node ) )
@@ -473,4 +523,18 @@ void QgsLayerTreeView::dropEvent( QDropEvent *event )
     event->accept();
   }
   QTreeView::dropEvent( event );
+}
+
+void QgsLayerTreeView::resizeEvent( QResizeEvent *event )
+{
+  // Since last column is resized to content (instead of stretched), the active
+  // selection rectangle ends at width of widest visible item in tree,
+  // regardless of which item is selected. This causes layer indicators to
+  // become 'inactive' (not clickable and no tool tip) unless their rectangle
+  // enters the view item's selection (active) rectangle.
+  // Always resetting the minimum section size relative to the viewport ensures
+  // the view item's selection rectangle extends to the right edge of the
+  // viewport, which allows indicators to become active again.
+  header()->setMinimumSectionSize( viewport()->width() );
+  QTreeView::resizeEvent( event );
 }

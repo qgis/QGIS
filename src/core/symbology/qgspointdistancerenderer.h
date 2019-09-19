@@ -47,7 +47,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
          * Constructor for GroupedFeature.
         * \param feature feature
         * \param symbol base symbol for rendering feature (owned by GroupedFeature)
-        * \param isSelected set to true if feature is selected and should be rendered in a selected state
+        * \param isSelected set to TRUE if feature is selected and should be rendered in a selected state
         * \param label optional label text, or empty string for no label
         */
         GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol SIP_TRANSFER, bool isSelected, const QString &label = QString() )
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName = QString() );
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
-    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool filterNeedsGeometry() const override;
     QgsFeatureRenderer::Capabilities capabilities() override;
@@ -105,6 +105,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     bool legendSymbolItemChecked( const QString &key ) override;
     void checkLegendSymbolItem( const QString &key, bool state ) override;
     QString filter( const QgsFields &fields = QgsFields() ) override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
      * Sets the attribute name for labeling points.
@@ -299,7 +300,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     void drawGroup( const ClusteredGroup &group, QgsRenderContext &context );
 
     /**
-     * Returns first symbol from the embedded renderer for a feature or nullptr if none
+     * Returns first symbol from the embedded renderer for a feature or NULLPTR if none
      * \param feature source feature
      * \param context target render context
     */

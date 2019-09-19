@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.core import (QgsProcessingException,
@@ -50,6 +46,7 @@ class aspect(GdalAlgorithm):
     TRIG_ANGLE = 'TRIG_ANGLE'
     ZERO_FLAT = 'ZERO_FLAT'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -59,6 +56,7 @@ class aspect(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterBoolean(self.TRIG_ANGLE,
                                                         self.tr('Return trigonometric angle instead of azimuth'),
@@ -82,6 +80,13 @@ class aspect(GdalAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Aspect')))
 
@@ -109,6 +114,7 @@ class aspect(GdalAlgorithm):
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(out)
+        self.setOutputValue(self.OUTPUT, out)
 
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
@@ -116,21 +122,25 @@ class aspect(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.TRIG_ANGLE, context):
+        if self.parameterAsBoolean(parameters, self.TRIG_ANGLE, context):
             arguments.append('-trigonometric')
 
-        if self.parameterAsBool(parameters, self.ZERO_FLAT, context):
+        if self.parameterAsBoolean(parameters, self.ZERO_FLAT, context):
             arguments.append('-zero_for_flat')
 
-        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        if self.parameterAsBool(parameters, self.ZEVENBERGEN, context):
+        if self.parameterAsBoolean(parameters, self.ZEVENBERGEN, context):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

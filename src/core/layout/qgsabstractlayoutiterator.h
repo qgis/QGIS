@@ -40,7 +40,7 @@ class CORE_EXPORT QgsAbstractLayoutIterator
     virtual QgsLayout *layout() = 0;
 
     /**
-     * Called when rendering begins, before iteration commences. Returns true if successful, false if no iteration
+     * Called when rendering begins, before iteration commences. Returns TRUE if successful, FALSE if no iteration
      * is available or required.
      * \see endRender()
     */
@@ -54,10 +54,10 @@ class CORE_EXPORT QgsAbstractLayoutIterator
     /**
      * Returns the number of features to iterate over.
      */
-    virtual int count() = 0;
+    virtual int count() const = 0;
 
     /**
-     * Iterates to next feature, returning false if no more features exist to iterate over.
+     * Iterates to next feature, returning FALSE if no more features exist to iterate over.
      */
     virtual bool next() = 0;
 

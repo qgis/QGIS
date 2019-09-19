@@ -43,6 +43,7 @@ TARGET_LINK_LIBRARIES (pkipathsauthmethod
   qgis_core
   qgis_gui
 )
+TARGET_COMPILE_DEFINITIONS(pkipathsauthmethod PRIVATE "-DQT_NO_FOREACH")
 
 INSTALL(TARGETS pkipathsauthmethod
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

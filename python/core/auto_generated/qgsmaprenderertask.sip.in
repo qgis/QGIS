@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapRendererTask : QgsTask
 {
 %Docstring
@@ -37,6 +38,9 @@ task. This can be used to draw maps without blocking the QGIS interface.
                         bool forceRaster = false );
 %Docstring
 Constructor for QgsMapRendererTask to render a map to an image file.
+
+If the output ``fileFormat`` is set to PDF, the ``geoPdf`` argument controls whether a GeoPDF file is created.
+See QgsAbstractGeoPdfExporter.geoPDFCreationAvailable() for conditions on GeoPDF creation availability.
 %End
 
     QgsMapRendererTask( const QgsMapSettings &ms,
@@ -45,7 +49,9 @@ Constructor for QgsMapRendererTask to render a map to an image file.
 Constructor for QgsMapRendererTask to render a map to a QPainter object.
 %End
 
-    void addAnnotations( QList< QgsAnnotation * > annotations );
+    ~QgsMapRendererTask();
+
+    void addAnnotations( const QList<QgsAnnotation *> &annotations );
 %Docstring
 Adds ``annotations`` to be rendered on the map.
 %End
@@ -57,7 +63,12 @@ Adds ``decorations`` to be rendered on the map.
 
     void setSaveWorldFile( bool save );
 %Docstring
-Sets whether a world file will be created alongside an image file.
+Sets whether the image file will be georeferenced (embedded or via a world file).
+%End
+
+    void setExportMetadata( bool exportMetadata );
+%Docstring
+Sets whether metadata such as title and subject will be exported whenever possible.
 %End
 
     virtual void cancel();

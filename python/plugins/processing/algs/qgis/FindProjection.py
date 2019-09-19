@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'February 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.core import (QgsGeometry,
@@ -40,7 +36,8 @@ from qgis.core import (QgsGeometry,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterCrs,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterDefinition)
 from qgis.PyQt.QtCore import QVariant
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -72,9 +69,12 @@ class FindProjection(QgisAlgorithm):
                                                               self.tr('Input layer')))
         extent_parameter = QgsProcessingParameterExtent(self.TARGET_AREA,
                                                         self.tr('Target area for layer'))
-        #extent_parameter.skip_crs_check = True
         self.addParameter(extent_parameter)
-        self.addParameter(QgsProcessingParameterCrs(self.TARGET_AREA_CRS, 'Target area CRS'))
+
+        # deprecated
+        crs_param = QgsProcessingParameterCrs(self.TARGET_AREA_CRS, 'Target area CRS', optional=True)
+        crs_param.setFlags(crs_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        self.addParameter(crs_param)
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('CRS candidates')))
@@ -91,7 +91,11 @@ class FindProjection(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         extent = self.parameterAsExtent(parameters, self.TARGET_AREA, context)
-        target_crs = self.parameterAsCrs(parameters, self.TARGET_AREA_CRS, context)
+        target_crs = self.parameterAsExtentCrs(parameters, self.TARGET_AREA, context)
+        if self.TARGET_AREA_CRS in parameters:
+            c = self.parameterAsCrs(parameters, self.TARGET_AREA_CRS, context)
+            if c.isValid():
+                target_crs = c
 
         target_geom = QgsGeometry.fromRect(extent)
 

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-03-25'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import hashlib
 import sys
@@ -219,7 +217,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.addWfsLayer_layer_name = None
         main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
-        self.assertEqual(self.addWfsLayer_uri, ' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=')
+        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # Click on Build Query
@@ -235,7 +233,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
 
         # Click again but with valid DescribeFeatureType
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
@@ -292,7 +290,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.addWfsLayer_layer_name = None
         main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
-        self.assertEqual(self.addWfsLayer_uri, ' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=SELECT * FROM typename WHERE 1 = 1')
+        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'true\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=SELECT * FROM typename WHERE 1 = 1')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # main_dialog.setProperty("hideDialogs", None)

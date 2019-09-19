@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterMultipleLayers,
@@ -33,7 +29,6 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingOutputFolder,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -53,6 +48,7 @@ class retile(GdalAlgorithm):
     FORMAT = 'FORMAT'
     RESAMPLING = 'RESAMPLING'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     DATA_TYPE = 'DATA_TYPE'
     DELIMITER = 'DELIMITER'
     ONLY_PYRAMIDS = 'ONLY_PYRAMIDS'
@@ -66,11 +62,11 @@ class retile(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'near'),
+        self.methods = ((self.tr('Nearest Neighbour'), 'near'),
                         (self.tr('Bilinear'), 'bilinear'),
                         (self.tr('Cubic'), 'cubic'),
-                        (self.tr('Cubic spline'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),)
+                        (self.tr('Cubic Spline'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),)
 
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
                                                                self.tr('Input files'),
@@ -118,6 +114,11 @@ class retile(GdalAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         params.append(options_param)
+
+        params.append(QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True))
 
         params.append(QgsProcessingParameterEnum(self.DATA_TYPE,
                                                  self.tr('Output data type'),
@@ -189,10 +190,14 @@ class retile(GdalAlgorithm):
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 
-        if self.parameterAsBool(parameters, self.DIR_FOR_ROW, context):
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        if self.parameterAsBoolean(parameters, self.DIR_FOR_ROW, context):
             arguments.append('-pyramidOnly')
 
-        if self.parameterAsBool(parameters, self.ONLY_PYRAMIDS, context):
+        if self.parameterAsBoolean(parameters, self.ONLY_PYRAMIDS, context):
             arguments.append('-useDirForEachRow')
 
         csvFile = self.parameterAsFileOutput(parameters, self.OUTPUT_CSV, context)
@@ -210,12 +215,11 @@ class retile(GdalAlgorithm):
         layers = [l.source() for l in self.parameterAsLayerList(parameters, self.INPUT, context)]
         arguments.extend(layers)
 
-        commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = ["python3", "-m", self.commandName()]
         else:
-            commands = [self.commandName() + '.py',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

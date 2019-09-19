@@ -30,7 +30,6 @@ class QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLayoutLegendLa
 
   public:
     QgsLayoutLegendLayersDialog( QWidget *parent = nullptr );
-    ~QgsLayoutLegendLayersDialog() override;
 
     /**
      * Sets a list of visible \a layers, to use for filtering within the dialog.

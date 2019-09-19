@@ -21,9 +21,12 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+
+#include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
+#include <nlohmann/json.hpp>
 
 QgsCompoundCurve::QgsCompoundCurve()
 {
@@ -176,6 +179,9 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+    return true;
+
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
@@ -245,22 +251,28 @@ QByteArray QgsCompoundCurve::asWkb() const
 
 QString QgsCompoundCurve::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
-  for ( const QgsCurve *curve : mCurves )
+  QString wkt = wktTypeStr();
+  if ( isEmpty() )
+    wkt += QStringLiteral( " EMPTY" );
+  else
   {
-    QString childWkt = curve->asWkt( precision );
-    if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+    wkt += QLatin1String( " (" );
+    for ( const QgsCurve *curve : mCurves )
     {
-      // Type names of linear geometries are omitted
-      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      QString childWkt = curve->asWkt( precision );
+      if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+      {
+        // Type names of linear geometries are omitted
+        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      }
+      wkt += childWkt + ',';
     }
-    wkt += childWkt + ',';
+    if ( wkt.endsWith( ',' ) )
+    {
+      wkt.chop( 1 );
+    }
+    wkt += ')';
   }
-  if ( wkt.endsWith( ',' ) )
-  {
-    wkt.chop( 1 );
-  }
-  wkt += ')';
   return wkt;
 }
 
@@ -290,12 +302,11 @@ QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QS
   return compoundCurveElem;
 }
 
-QString QgsCompoundCurve::asJson( int precision ) const
+json QgsCompoundCurve::asJsonObject( int precision ) const
 {
   // GeoJSON does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QString json = line->asJson( precision );
-  return json;
+  return line->asJsonObject( precision );
 }
 
 double QgsCompoundCurve::length() const

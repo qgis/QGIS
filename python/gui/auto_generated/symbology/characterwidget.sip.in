@@ -9,6 +9,8 @@
 
 
 
+
+
 class CharacterWidget : QWidget
 {
 %Docstring
@@ -101,6 +103,15 @@ Sets the currently selected ``character`` in the widget.
 .. seealso:: :py:func:`characterSelected`
 %End
 
+    void clearCharacter();
+%Docstring
+Clears the currently selected character in the widget.
+
+.. seealso:: :py:func:`character`
+
+.. seealso:: :py:func:`setCharacter`
+%End
+
   signals:
 
     void characterSelected( QChar character );
@@ -109,11 +120,15 @@ Emitted when a character is selected in the widget.
 %End
 
   protected:
+    virtual void keyPressEvent( QKeyEvent *event );
+
     virtual void mouseMoveEvent( QMouseEvent *event );
 
     virtual void mousePressEvent( QMouseEvent *event );
 
     virtual void paintEvent( QPaintEvent *event );
+
+    virtual void resizeEvent( QResizeEvent *event );
 
 
 };

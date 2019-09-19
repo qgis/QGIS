@@ -24,7 +24,6 @@
 #include <QSize>
 #include <QStringList>
 
-#include "qgsabstractgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslabelingenginesettings.h"
 #include "qgsmaptopixel.h"
@@ -32,12 +31,38 @@
 #include "qgsscalecalculator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmaplayer.h"
+#include "qgsgeometry.h"
 
 class QPainter;
 
 class QgsCoordinateTransform;
 class QgsScaleCalculator;
 class QgsMapRendererJob;
+class QgsRenderedFeatureHandlerInterface;
+
+/**
+ * \class QgsLabelBlockingRegion
+ * \ingroup core
+ *
+ * Label blocking region (in map coordinates and CRS).
+ *
+ * \since QGIS 3.6
+*/
+class CORE_EXPORT QgsLabelBlockingRegion
+{
+  public:
+
+    /**
+     * Constructor for a label blocking region
+     */
+    explicit QgsLabelBlockingRegion( const QgsGeometry &geometry )
+      : geometry( geometry )
+    {}
+
+    //! Geometry of region to avoid placing labels within (in destination map coordinates and CRS)
+    QgsGeometry geometry;
+
+};
 
 
 /**
@@ -77,6 +102,22 @@ class CORE_EXPORT QgsMapSettings
      * of output size. Use visibleExtent() to get the resulting extent.
      */
     void setExtent( const QgsRectangle &rect, bool magnified = true );
+
+    /**
+     * Returns the buffer in map units to use around the visible extent for rendering
+     * symbols whose corresponding geometries are outside the visible extent.
+     * \see setExtentBuffer()
+     * \since QGIS 3.10
+     */
+    double extentBuffer() const;
+
+    /**
+     * Sets the buffer in map units to use around the visible extent for rendering
+     * symbols whose corresponding geometries are outside the visible extent. This
+     * is useful when using tiles to avoid cut symbols at tile boundaries.
+     * \since QGIS 3.10
+     */
+    void setExtentBuffer( double buffer );
 
     //! Returns the size of the resulting map image
     QSize outputSize() const;
@@ -202,7 +243,7 @@ class CORE_EXPORT QgsMapSettings
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
      * retrieved using QgsEllipsoidUtils::acronyms().
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
-     * \returns true if ellipsoid was successfully set
+     * \returns TRUE if ellipsoid was successfully set
      * \see ellipsoid()
      * \since QGIS 3.0
      */
@@ -252,6 +293,34 @@ class CORE_EXPORT QgsMapSettings
     Flags flags() const;
     //! Check whether a particular flag is enabled
     bool testFlag( Flag flag ) const;
+
+    /**
+     * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see setTextRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    QgsRenderContext::TextRenderFormat textRenderFormat() const
+    {
+      return mTextRenderFormat;
+    }
+
+    /**
+     * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \warning Calling the setLabelingEngineSettings() method will reset the text render format to match the default
+     * text render format from the label engine settings.
+     *
+     * \see textRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+    {
+      mTextRenderFormat = format;
+      // ensure labeling engine setting is also kept in sync, just in case anyone accesses QgsMapSettings::labelingEngineSettings().defaultTextRenderFormat()
+      // instead of correctly calling QgsMapSettings::textRenderFormat(). It can't hurt to be consistent!
+      mLabelingEngineSettings.setDefaultTextRenderFormat( format );
+    }
 
     //! sets format of internal QImage
     void setOutputImageFormat( QImage::Format format ) { mImageFormat = format; }
@@ -411,16 +480,122 @@ class CORE_EXPORT QgsMapSettings
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
     /**
-     * Sets global configuration of the labeling engine
+     * Sets the global configuration of the labeling engine.
+     *
+     * \note Calling this method will reset the textRenderFormat() to match the default
+     * text render format from the label engine \a settings.
+     *
+     * \see labelingEngineSettings()
+     *
      * \since QGIS 3.0
      */
-    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings ) { mLabelingEngineSettings = settings; }
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
+    {
+      mLabelingEngineSettings = settings;
+      mTextRenderFormat = settings.defaultTextRenderFormat();
+    }
 
     /**
-     * Returns global configuration of the labeling engine
+     * Returns the global configuration of the labeling engine.
+     *
+     * \see setLabelingEngineSettings()
+     *
      * \since QGIS 3.0
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const { return mLabelingEngineSettings; }
+
+    /**
+     * Returns the label boundary geometry, which restricts where in the rendered map labels are permitted to be
+     * placed. By default this is a null geometry, which indicates that labels can be placed anywhere within
+     * the map's visiblePolygon().
+     *
+     * The geometry is specified using the map's destinationCrs().
+     *
+     * \see setLabelBoundaryGeometry()
+     * \see labelBlockingRegions()
+     * \since QGIS 3.6
+     */
+    QgsGeometry labelBoundaryGeometry() const;
+
+    /**
+     * Sets the label \a boundary geometry, which restricts where in the rendered map labels are permitted to be
+     * placed.
+     *
+     * A null \a boundary geometry (the default) indicates that labels can be placed anywhere within
+     * the map's visiblePolygon().
+     *
+     * The geometry is specified using the map's destinationCrs().
+     *
+     * \see labelBoundaryGeometry()
+     * \see setLabelBlockingRegions()
+     * \since QGIS 3.6
+     */
+    void setLabelBoundaryGeometry( const QgsGeometry &boundary );
+
+    /**
+     * Sets a list of \a regions to avoid placing labels within.
+     * \see labelBlockingRegions()
+     * \see setLabelBoundaryGeometry()
+     * \since QGIS 3.6
+     */
+    void setLabelBlockingRegions( const QList< QgsLabelBlockingRegion > &regions ) { mLabelBlockingRegions = regions; }
+
+    /**
+     * Returns the list of regions to avoid placing labels within.
+     * \see setLabelBlockingRegions()
+     * \see labelBoundaryGeometry()
+     * \since QGIS 3.6
+     */
+    QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
+
+    /**
+     * Sets the simplification setting to use when rendering vector layers.
+     *
+     * If the simplify \a method is enabled, it will override all other layer-specific simplification
+     * settings and will apply to all vector layers rendered for the map.
+     *
+     * This can be used to specify global simplification methods to apply during map exports,
+     * e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+     * during PDF exports.
+     *
+     * The default is to use no global simplification, and fallback to individual layer's settings instead.
+     *
+     * \see simplifyMethod()
+     *
+     * \since QGIS 3.10
+     */
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method ) { mSimplifyMethod = method; }
+
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * If enabled, it will override all other layer-specific simplification
+     * settings and will apply to all vector layers rendered for the map.
+     *
+     * The default is to use no global simplification, and fallback to individual layer's settings instead.
+     *
+     * \see setSimplifyMethod()
+     * \since QGIS 3.10
+     */
+    const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
+
+    /**
+     * Adds a rendered feature \a handler to use while rendering the map settings.
+     *
+     * Ownership of \a handler is NOT transferred, and it is the caller's responsibility to ensure
+     * that the handler exists for the lifetime of the map render job.
+     *
+     * \see renderedFeatureHandlers()
+     * \since QGIS 3.10
+     */
+    void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+
+    /**
+     * Returns the list of rendered feature handlers to use while rendering the map settings.
+     * \see addRenderedFeatureHandler()
+     * \since QGIS 3.10
+     */
+    QList< QgsRenderedFeatureHandlerInterface * > renderedFeatureHandlers() const;
 
   protected:
 
@@ -430,6 +605,7 @@ class CORE_EXPORT QgsMapSettings
     float mDevicePixelRatio = 1.0;
 
     QgsRectangle mExtent;
+    double mExtentBuffer = 0.0;
 
     double mRotation = 0.0;
     double mMagnificationFactor = 1.0;
@@ -470,11 +646,22 @@ class CORE_EXPORT QgsMapSettings
 
     QgsPathResolver mPathResolver;
 
+    QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
+    QgsGeometry mLabelBoundaryGeometry;
+
+    QgsVectorSimplifyMethod mSimplifyMethod;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
 
     void updateDerived();
+
+  private:
+
+    QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
+    QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )

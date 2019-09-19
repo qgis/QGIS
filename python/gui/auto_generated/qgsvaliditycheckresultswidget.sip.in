@@ -1,0 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsvaliditycheckresultswidget.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsValidityCheckResultsModel : QAbstractItemModel
+{
+%Docstring
+A QAbstractItemModel subclass for displaying the results from a QgsAbtractValidityCheck.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsvaliditycheckresultswidget.h"
+%End
+  public:
+
+    enum Roles
+    {
+      DescriptionRole,
+    };
+
+    QgsValidityCheckResultsModel( const QList< QgsValidityCheckResult > &results, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsValidityCheckResultsModel, showing the specified list of checks ``results``.
+%End
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent ) const;
+
+    virtual QModelIndex parent( const QModelIndex &child ) const;
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+};
+
+class QgsValidityCheckResultsWidget : QWidget
+{
+%Docstring
+A reusable widget which displays a summary of the results from a :py:class:`QgsAbstractValidityCheck` (or checks).
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsvaliditycheckresultswidget.h"
+%End
+  public:
+
+    QgsValidityCheckResultsWidget( QWidget *parent /TransferThis/ );
+%Docstring
+Constructor for QgsValidityCheckResultsWidget, with the specified ``parent`` widget.
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets a ``description`` label to show at the top of the widget, e.g. notifying users of
+why they are being shown the warnings.
+%End
+
+    void setResults( const QList< QgsValidityCheckResult > &results );
+%Docstring
+Sets the list of check ``results`` to show in the dialog.
+%End
+
+    static bool runChecks( int type, const QgsValidityCheckContext *context, const QString &title, const QString &description, QWidget *parent = 0 );
+%Docstring
+Runs all registered validity checks of the given ``type``, and if any warnings or critical
+errors are encountered then displays them to users in a dialog.
+
+The ``context`` argument must specify the correct QgsValidityCheckContext subclass for the
+given check ``type``.
+
+The ``title`` argument is used as the dialog's title, and the ``description`` text will be shown
+to users as an explanation of why the checks are being run.
+
+The ``parent`` argument can be used to give a parent widget for the created dialogs.
+
+If any critical errors are encountered by the checks, then users will not be allowed to click OK
+on the dialog and proceed with the operation. The function will return ``False``.
+
+Returns ``True`` if no warnings were encountered (and no dialog was shown to users), or if only
+warnings were shown and the user clicked OK after being shown these warnings.
+
+This method is a blocking method, and runs all checks in the main thread.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsvaliditycheckresultswidget.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

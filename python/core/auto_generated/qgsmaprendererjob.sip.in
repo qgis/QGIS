@@ -24,6 +24,7 @@ operation is quite important because the rendering can take considerable
 amount of time.
 
 Common use case:
+
 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
 1. create QgsMapRendererJob subclass with QgsMapSettings instance
 2. connect to job's finished() signal
@@ -33,6 +34,7 @@ Common use case:
 It is possible to cancel the rendering job while it is active by calling cancel() function.
 
 The following subclasses are available:
+
 - QgsMapRendererSequentialJob - renders map in one background thread to an image
 - QgsMapRendererParallelJob - renders map in multiple background threads to an image
 - QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
@@ -61,7 +63,7 @@ Does nothing if the rendering is not active.
 
     virtual void cancelWithoutBlocking() = 0;
 %Docstring
-Triggers cancelation of the rendering job without blocking. The render job will continue
+Triggers cancellation of the rendering job without blocking. The render job will continue
 to operate until it is able to cancel, at which stage the finished() signal will be emitted.
 Does nothing if the rendering is not active.
 %End
@@ -78,7 +80,7 @@ Tell whether the rendering job is currently running in background.
 
     virtual bool usedCachedLabels() const = 0;
 %Docstring
-Returns true if the render job was able to use a cached labeling solution.
+Returns ``True`` if the render job was able to use a cached labeling solution.
 If so, any previously stored labeling results (see takeLabelingResults())
 should be retained.
 
@@ -170,6 +172,8 @@ emitted when asynchronous rendering is finished (or canceled).
 %End
 
   protected:
+
+
 
 
 

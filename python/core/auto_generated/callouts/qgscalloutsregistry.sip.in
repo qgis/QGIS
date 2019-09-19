@@ -1,0 +1,184 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/callouts/qgscalloutsregistry.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCalloutWidget /External/;
+
+class QgsCalloutAbstractMetadata
+{
+%Docstring
+Stores metadata about one callout renderer class.
+
+.. note::
+
+   It's necessary to implement createCallout() function.
+   In C++ you can use QgsCalloutMetadata convenience class.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscalloutsregistry.h"
+%End
+  public:
+
+    QgsCalloutAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
+%Docstring
+Constructor for QgsCalloutAbstractMetadata, with the specified ``name``.
+
+The ``visibleName`` argument gives a translated, user friendly string identifying the callout type.
+
+The ``icon`` argument can be used to specify an icon representing the callout.
+%End
+
+    virtual ~QgsCalloutAbstractMetadata();
+
+    QString name() const;
+%Docstring
+Returns the unique name of the callout type. This value is not translated.
+
+.. seealso:: :py:func:`visibleName`
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns a friendly display name of the callout type. This value is translated.
+
+.. seealso:: :py:func:`name`
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns an icon representing the callout.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+    void setIcon( const QIcon &icon );
+%Docstring
+Sets an ``icon`` representing the callout.
+
+.. seealso:: :py:func:`icon`
+%End
+
+    virtual QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) = 0 /Factory/;
+%Docstring
+Create a callout of this type given the map of ``properties``.
+
+Ownership of the callout is transferred to the caller.
+%End
+
+    virtual QgsCalloutWidget *createCalloutWidget( QgsVectorLayer * );
+%Docstring
+Creates a widget for configuring callouts of this type. Can return ``None`` if there's no GUI required.
+
+Ownership of the widget is transferred to the caller.
+%End
+
+  protected:
+};
+
+
+class QgsCalloutMetadata : QgsCalloutAbstractMetadata
+{
+%Docstring
+Convenience metadata class that uses static functions to create callouts and their widgets.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscalloutsregistry.h"
+%End
+  public:
+
+
+
+
+    virtual QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) /Factory/;
+
+    virtual QgsCalloutWidget *createCalloutWidget( QgsVectorLayer *vl ) /Factory/;
+
+
+  protected:
+
+  private:
+    QgsCalloutMetadata();
+};
+
+
+class QgsCalloutRegistry
+{
+%Docstring
+Registry of available callout classes.
+
+QgsCalloutRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.calloutRegistry()`
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscalloutsregistry.h"
+%End
+  public:
+
+    QgsCalloutRegistry();
+    ~QgsCalloutRegistry();
+
+
+    QgsCalloutAbstractMetadata *calloutMetadata( const QString &type ) const;
+%Docstring
+Returns the metadata for specified the specified callout ``type``. Returns ``None`` if no matching callout style was found.
+%End
+
+    bool addCalloutType( QgsCalloutAbstractMetadata *metadata /Transfer/ );
+%Docstring
+Registers a new callout type.
+
+Ownership of ``metadata`` is transferred to the registry.
+%End
+
+    QgsCallout *createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const /Factory/;
+%Docstring
+Creates a new instance of a callout, given the callout ``type`` and ``properties``.
+
+The caller takes ownership of the callout.
+%End
+
+    QgsCallout *createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const /Factory/;
+%Docstring
+Creates a new instance of a callout of the specified ``type``, using the properties from a DOM ``element``.
+
+The caller takes ownership of the callout.
+%End
+
+    QStringList calloutTypes() const;
+%Docstring
+Returns a list of all available callout types.
+%End
+
+    static QgsCallout *defaultCallout() /Factory/;
+%Docstring
+Create a new instance of a callout with default settings.
+
+The caller takes ownership of the callout.
+%End
+
+  private:
+    QgsCalloutRegistry( const QgsCalloutRegistry &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/callouts/qgscalloutsregistry.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

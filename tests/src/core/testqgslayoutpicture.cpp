@@ -60,6 +60,7 @@ class TestQgsLayoutPicture : public QObject
 
     void pictureExpression();
     void pictureInvalidExpression();
+    void valid();
 
 
   private:
@@ -75,6 +76,7 @@ void TestQgsLayoutPicture::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsApplication::showSettings();
 
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
@@ -396,6 +398,7 @@ void TestQgsLayoutPicture::pictureExpression()
   QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mPicture->refreshPicture();
+  QVERIFY( !mPicture->isMissingImage() );
 
   QgsLayoutChecker checker( QStringLiteral( "composerpicture_expression" ), mLayout );
   checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
@@ -413,13 +416,41 @@ void TestQgsLayoutPicture::pictureInvalidExpression()
   QString expr = QStringLiteral( "bad expression" );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mPicture->refreshPicture();
+  QVERIFY( mPicture->isMissingImage() );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_badexpression" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromValue( QString() ) );
+  mPicture->refreshPicture();
+  QVERIFY( !mPicture->isMissingImage() );
 
   mLayout->removeItem( mPicture );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty() );
+}
+
+void TestQgsLayoutPicture::valid()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  QgsLayoutItemPicture *picture = new QgsLayoutItemPicture( &l );
+  l.addItem( picture );
+
+  picture->setPicturePath( mPngImage );
+  QVERIFY( !picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), mPngImage );
+
+  picture->setPicturePath( QStringLiteral( "bad" ) );
+  QVERIFY( picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
+
+  picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( mSvgImage ) ) );
+  picture->refreshPicture();
+  QVERIFY( !picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), mSvgImage );
+
+  picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'bad'" ) ) );
+  picture->refreshPicture();
+  QVERIFY( picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutPicture )

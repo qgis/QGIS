@@ -142,7 +142,7 @@ bool topolTest::testCanceled()
 
 ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
-  Q_UNUSED( layer2 );
+  Q_UNUSED( layer2 )
 
   int i = 0;
   ErrorList errorList;
@@ -253,7 +253,7 @@ ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer 
 
 ErrorList topolTest::checkDuplicates( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
-  Q_UNUSED( layer2 );
+  Q_UNUSED( layer2 )
   //TODO: multilines - check all separate pieces
   int i = 0;
   ErrorList errorList;
@@ -351,7 +351,7 @@ ErrorList topolTest::checkDuplicates( QgsVectorLayer *layer1, QgsVectorLayer *la
 
 ErrorList topolTest::checkOverlaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
-  Q_UNUSED( layer2 );
+  Q_UNUSED( layer2 )
   int i = 0;
   ErrorList errorList;
 
@@ -477,7 +477,7 @@ ErrorList topolTest::checkOverlaps( QgsVectorLayer *layer1, QgsVectorLayer *laye
 
 ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
-  Q_UNUSED( layer2 );
+  Q_UNUSED( layer2 )
 
   int i = 0;
   ErrorList errorList;
@@ -623,7 +623,7 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
 
 ErrorList topolTest::checkPseudos( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
-  Q_UNUSED( layer2 );
+  Q_UNUSED( layer2 )
 
   int i = 0;
   ErrorList errorList;
@@ -734,9 +734,9 @@ ErrorList topolTest::checkPseudos( QgsVectorLayer *layer1, QgsVectorLayer *layer
 
 ErrorList topolTest::checkValid( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
-  Q_UNUSED( layer1 );
-  Q_UNUSED( layer2 );
-  Q_UNUSED( isExtent );
+  Q_UNUSED( layer1 )
+  Q_UNUSED( layer2 )
+  Q_UNUSED( isExtent )
 
   int i = 0;
   ErrorList errorList;
@@ -1190,7 +1190,7 @@ ErrorList topolTest::checkPointInPolygon( QgsVectorLayer *layer1, QgsVectorLayer
 
 ErrorList topolTest::checkPolygonContainsPoint( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
-  Q_UNUSED( isExtent );
+  Q_UNUSED( isExtent )
 
   int i = 0;
   ErrorList errorList;
@@ -1250,9 +1250,9 @@ ErrorList topolTest::checkPolygonContainsPoint( QgsVectorLayer *layer1, QgsVecto
 
 ErrorList topolTest::checkMultipart( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
-  Q_UNUSED( layer2 );
-  Q_UNUSED( layer1 );
-  Q_UNUSED( isExtent );
+  Q_UNUSED( layer2 )
+  Q_UNUSED( layer1 )
+  Q_UNUSED( isExtent )
 
   int i = 0;
   ErrorList errorList;

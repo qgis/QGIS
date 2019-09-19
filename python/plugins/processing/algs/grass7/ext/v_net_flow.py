@@ -21,20 +21,16 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 from .v_net import incorporatePoints, variableOutput
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    params = [u'where', u'cats']
+    params = ['where', 'cats']
     values = []
     for param in params:
-        for i in [u'source', u'sink']:
+        for i in ['source', 'sink']:
             values.append(
                 alg.parameterAsString(
                     parameters,
@@ -46,7 +42,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     if (values[0] or values[2]) and (values[1] or values[3]):
         return True, None
 
-    return False, alg.tr("You need to set at least source/sink_where or source/sink_cats parameters for each set!")
+    return False, alg.tr('You need to set at least source/sink_where or source/sink_cats parameters for each set!')
 
 
 def processCommand(alg, parameters, context, feedback):

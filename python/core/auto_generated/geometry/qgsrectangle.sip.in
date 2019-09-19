@@ -224,17 +224,17 @@ Returns the intersection with the given rectangle.
 
     bool intersects( const QgsRectangle &rect ) const;
 %Docstring
-Returns true when rectangle intersects with other rectangle.
+Returns ``True`` when rectangle intersects with other rectangle.
 %End
 
     bool contains( const QgsRectangle &rect ) const;
 %Docstring
-Returns true when rectangle contains other rectangle.
+Returns ``True`` when rectangle contains other rectangle.
 %End
 
     bool contains( const QgsPointXY &p ) const;
 %Docstring
-Returns true when rectangle contains a point.
+Returns ``True`` when rectangle contains a point.
 %End
 
     void combineExtentWith( const QgsRectangle &rect );
@@ -264,7 +264,7 @@ Expands the rectangle so that it covers both the original rectangle and the give
 
     bool isEmpty() const;
 %Docstring
-Returns true if the rectangle is empty.
+Returns ``True`` if the rectangle is empty.
 An empty rectangle may still be non-null if it contains valid information (e.g. bounding box of a point).
 %End
 
@@ -310,8 +310,8 @@ Returns the rectangle as a polygon.
 
     bool isFinite() const;
 %Docstring
-Returns true if the rectangle has finite boundaries. Will
-return false if any of the rectangle boundaries are NaN or Inf.
+Returns ``True`` if the rectangle has finite boundaries. Will
+return ``False`` if any of the rectangle boundaries are NaN or Inf.
 %End
 
     void invert();

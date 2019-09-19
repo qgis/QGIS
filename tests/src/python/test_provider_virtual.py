@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Hugo Mercier'
 __date__ = '26/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import os
@@ -751,6 +749,65 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         # make sure the 3 layers are loaded back
         self.assertEqual(len(QgsProject.instance().mapLayers()), 3)
 
+    def test_relative_paths(self):
+        """
+        Test whether paths to layer sources are stored as relative to the project path
+        """
+
+        # make a virtual layer with living references and save it to a project
+        QgsProject.instance().clear()
+        l0 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        self.assertEqual(l0.isValid(), True)
+        QgsProject.instance().addMapLayer(l0)
+
+        df = QgsVirtualLayerDefinition()
+        df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr")
+        l1 = QgsVectorLayer(df.toString(), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+
+        self.assertEqual(l1.isValid(), True)
+        QgsProject.instance().addMapLayer(l1)
+
+        temp = os.path.join(self.testDataDir, "qgstestproject_relative_path_test.qgs")
+
+        QgsProject.instance().setFileName(temp)
+        QgsProject.instance().write()
+
+        QgsProject.instance().removeAllMapLayers()
+        QgsProject.instance().clear()
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 0)
+
+        # Check that virtual layer source is stored with relative path
+        percent_path_relative = toPercent("./france_parts.shp")
+        with open(temp, 'r') as f:
+            content = ''.join(f.readlines())
+            print(content)
+            self.assertTrue('<datasource>?layer=ogr:{}'.format(percent_path_relative) in content)
+
+        # Check that project is correctly re-read with all layers
+        QgsProject.instance().setFileName(temp)
+        QgsProject.instance().read()
+        print(QgsProject.instance().mapLayers())
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 2)
+
+        # Store absolute
+        QgsProject.instance().writeEntryBool('Paths', '/Absolute', True)
+        QgsProject.instance().write()
+
+        QgsProject.instance().removeAllMapLayers()
+        QgsProject.instance().clear()
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 0)
+
+        # Check that virtual layer source is stored with absolute path
+        percent_path_absolute = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
+        with open(temp, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('<datasource>?layer=ogr:{}'.format(percent_path_absolute) in content)
+
+        # Check that project is correctly re-read with all layers
+        QgsProject.instance().setFileName(temp)
+        QgsProject.instance().read()
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 2)
+
     def test_qgisExpressionFunctions(self):
         QgsProject.instance().setTitle('project')
         self.assertEqual(QgsProject.instance().title(), 'project')
@@ -974,6 +1031,40 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         req = QgsFeatureRequest().setFilterFids([5, 6, 8])
         a = [(f.id(), f['a']) for f in vl.getFeatures(req)]
         self.assertEqual(a, [(5, 5), (6, 6), (8, 8)])
+
+        QgsProject.instance().removeMapLayer(ml)
+
+    def testUpdatedFields(self):
+        """Test when referenced layer update its fields
+        https://github.com/qgis/QGIS/issues/28712
+        """
+
+        ml = QgsVectorLayer("Point?srid=EPSG:4326&field=a:int", "mem", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        f1 = QgsFeature(ml.fields())
+        f1.setGeometry(QgsGeometry.fromWkt('POINT(2 3)'))
+        ml.addFeatures([f1])
+        ml.commitChanges()
+
+        vl = QgsVectorLayer("?query=select a, geometry from mem", "vl", "virtual")
+        self.assertEqual(vl.isValid(), True)
+
+        # add one more field
+        ml.dataProvider().addAttributes([QgsField('newfield', QVariant.Int)])
+        ml.updateFields()
+
+        self.assertEqual(ml.featureCount(), vl.featureCount())
+        self.assertEqual(vl.fields().count(), 1)
+
+        geometry = next(vl.getFeatures()).geometry()
+        self.assertTrue(geometry)
+
+        point = geometry.asPoint()
+        self.assertEqual(point.x(), 2)
+        self.assertEqual(point.y(), 3)
 
         QgsProject.instance().removeMapLayer(ml)
 

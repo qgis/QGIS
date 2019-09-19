@@ -85,7 +85,7 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
     if ( line != -1 )
     {
 #ifndef _MSC_VER
-      m.prepend( QStringLiteral( ": %1:" ).arg( line ) );
+      m.prepend( QStringLiteral( ":%1 :" ).arg( line ) );
 #else
       m.prepend( QString( "(%1) :" ).arg( line ) );
 #endif
@@ -121,19 +121,19 @@ void QgsLogger::debug( const QString &var, double val, int debuglevel, const cha
 void QgsLogger::warning( const QString &msg )
 {
   logMessageToFile( msg );
-  qWarning( "%s", msg.toLocal8Bit().constData() );
+  qWarning( "Logged warning: %s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::critical( const QString &msg )
 {
   logMessageToFile( msg );
-  qCritical( "%s", msg.toLocal8Bit().constData() );
+  qCritical( "Logged critical: %s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::fatal( const QString &msg )
 {
   logMessageToFile( msg );
-  qFatal( "%s", msg.toLocal8Bit().constData() );
+  qFatal( "Logged fatal: %s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::logMessageToFile( const QString &message )

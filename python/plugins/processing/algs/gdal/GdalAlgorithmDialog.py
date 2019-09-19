@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QWidget,
                                  QVBoxLayout,
@@ -131,6 +127,9 @@ class GdalParametersPanel(ParametersPanel):
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
             for p in self.alg.parameterDefinitions():
+                if p.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    continue
+
                 if (not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
                         or (not p.checkValueIsAcceptable(parameters[p.name()])):
                     # not ready yet
@@ -142,3 +141,5 @@ class GdalParametersPanel(ParametersPanel):
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
             self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description()))
+        except AlgorithmDialogBase.InvalidOutputExtension as e:
+            self.text.setPlainText(e.message)

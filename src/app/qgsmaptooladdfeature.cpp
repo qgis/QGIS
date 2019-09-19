@@ -32,32 +32,38 @@
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
 #include "qgisapp.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
-  : QgsMapToolDigitizeFeature( canvas, canvas->currentLayer(), mode )
+  : QgsMapToolDigitizeFeature( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mCheckGeometryType( true )
 {
+  setLayer( canvas->currentLayer() );
+
   mToolName = tr( "Add feature" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddFeature::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddFeature::stopCapturing );
 }
 
-bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
+bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal )
 {
+  QgsFeature feat( f );
   QgsExpressionContextScope *scope = QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() );
-  QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, QString(), -1, this );
+  QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), feat, vlayer, QString(), -1, this );
+  if ( QgsRubberBand *rb = takeRubberBand() )
+    connect( action, &QgsFeatureAction::addFeatureFinished, rb, &QgsRubberBand::deleteLater );
   bool res = action->addFeature( QgsAttributeMap(), showModal, scope );
   if ( showModal )
     delete action;
   return res;
 }
 
-void QgsMapToolAddFeature::digitized( QgsFeature &f )
+void QgsMapToolAddFeature::digitized( const QgsFeature &f )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  bool res = addFeature( vlayer, &f, false );
+  bool res = addFeature( vlayer, f, false );
 
   if ( res && ( mode() == CaptureLine || mode() == CapturePolygon ) )
   {
@@ -66,11 +72,11 @@ void QgsMapToolAddFeature::digitized( QgsFeature &f )
 
     //use always topological editing for avoidIntersection.
     //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-    QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
-    bool avoidIntersection = !intersectionLayers.isEmpty();
-    if ( avoidIntersection ) //try to add topological points also to background layers
+    const QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
+
+    if ( !intersectionLayers.isEmpty() ) //try to add topological points also to background layers
     {
-      Q_FOREACH ( QgsVectorLayer *vl, intersectionLayers )
+      for ( QgsVectorLayer *vl : intersectionLayers )
       {
         //can only add topological points if background layer is editable...
         if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )

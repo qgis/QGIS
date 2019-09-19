@@ -21,10 +21,6 @@ __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
 __copyright__ = '(C) 2015, Giovanni Manghi'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
@@ -124,6 +120,7 @@ class Dissolve(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
@@ -132,7 +129,7 @@ class Dissolve(GdalAlgorithm):
             if f.name() == geometry:
                 continue
 
-            other_fields.append(f.name())
+            other_fields.append('"{}"'.format(f.name()))
 
         if other_fields:
             other_fields = ',*'
@@ -142,20 +139,21 @@ class Dissolve(GdalAlgorithm):
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append('-nlt PROMOTE_TO_MULTI')
         arguments.append('-dialect')
         arguments.append('sqlite')
         arguments.append('-sql')
 
         tokens = []
-        if self.parameterAsBool(parameters, self.COUNT_FEATURES, context):
-            tokens.append("COUNT({}) AS count".format(geometry))
+        if self.parameterAsBoolean(parameters, self.COUNT_FEATURES, context):
+            tokens.append('COUNT({}) AS count'.format(geometry))
 
-        if self.parameterAsBool(parameters, self.COMPUTE_AREA, context):
-            tokens.append("SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter".format(geometry))
+        if self.parameterAsBoolean(parameters, self.COMPUTE_AREA, context):
+            tokens.append('SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter'.format(geometry))
 
         statsField = self.parameterAsString(parameters, self.STATISTICS_ATTRIBUTE, context)
-        if statsField and self.parameterAsBool(parameters, self.COMPUTE_STATISTICS, context):
-            tokens.append("SUM({0}) AS sum, MIN({0}) AS min, MAX({0}) AS max, AVG({0}) AS avg".format(statsField))
+        if statsField and self.parameterAsBoolean(parameters, self.COMPUTE_STATISTICS, context):
+            tokens.append('SUM("{0}") AS sum, MIN("{0}") AS min, MAX("{0}") AS max, AVG("{0}") AS avg'.format(statsField))
 
         params = ','.join(tokens)
         if params:
@@ -163,17 +161,17 @@ class Dissolve(GdalAlgorithm):
 
         group_by = ''
         if fieldName:
-            group_by = ' GROUP BY {}'.format(fieldName)
+            group_by = ' GROUP BY "{}"'.format(fieldName)
 
-        if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
-            sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, other_fields, params, layerName, group_by)
+        if self.parameterAsBoolean(parameters, self.KEEP_ATTRIBUTES, context):
+            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, other_fields, params, layerName, group_by)
         else:
-            sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, ', ' + fieldName if fieldName else '',
+            sql = 'SELECT ST_Union({}) AS {}{}{} FROM "{}"{}'.format(geometry, geometry, ', "{}"'.format(fieldName) if fieldName else '',
                                                                      params, layerName, group_by)
 
         arguments.append(sql)
 
-        if self.parameterAsBool(parameters, self.EXPLODE_COLLECTIONS, context):
+        if self.parameterAsBoolean(parameters, self.EXPLODE_COLLECTIONS, context):
             arguments.append('-explodecollections')
 
         if options:

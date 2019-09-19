@@ -22,7 +22,7 @@ originally part of the larger QgsRasterLayer class
 #define QGSCOLORRAMPSHADER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QVector>
 #include <memory>
@@ -123,11 +123,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     bool isEmpty() const;
 
     /**
-     * Gets the source color ramp
+     * Returns the source color ramp.
+     *
      * \see setSourceColorRamp()
      * \since QGIS 3.0
      */
-    QgsColorRamp *sourceColorRamp() const SIP_FACTORY;
+    QgsColorRamp *sourceColorRamp() const;
 
     /**
      * Set the source color ramp. Ownership is transferred to the shader.
@@ -187,7 +188,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /**
      * Sets whether the shader should not render values out of range.
-     * \param clip set to true to clip values which are out of range.
+     * \param clip set to TRUE to clip values which are out of range.
      * \see clip()
      */
     void setClip( bool clip ) { mClip = clip; }
@@ -209,8 +210,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * This vector holds the information for classification based on values.
      * Each item holds a value, a label and a color. The member
      * mDiscreteClassification holds if one color is applied for all values
-     * between two class breaks (true) or if the item values are (linearly)
-     * interpolated for values between the item values (false)*/
+     * between two class breaks (TRUE) or if the item values are (linearly)
+     * interpolated for values between the item values (FALSE)*/
     QVector<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
     Type mColorRampType;

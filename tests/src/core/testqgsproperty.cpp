@@ -92,6 +92,7 @@ class TestQgsProperty : public QObject
     void collectionStack(); //test for QgsPropertyCollectionStack
     void curveTransform();
     void asVariant();
+    void isProjectColor();
 
   private:
 
@@ -806,6 +807,13 @@ void TestQgsProperty::genericNumericTransformer()
   QGSCOMPARENEAR( t.value( 150 ), 13.5355, 0.001 );
   QCOMPARE( t.value( 200 ), 20.0 );
 
+  // invalid settings, where minValue = maxValue
+  QgsGenericNumericTransformer invalid( 1.0, 1.0, 0, 1.0 );
+  QCOMPARE( invalid.value( -1 ), 0.0 );
+  QCOMPARE( invalid.value( 0 ), 0.0 );
+  QCOMPARE( invalid.value( 1.0 ), 1.0 );
+  QCOMPARE( invalid.value( 2.0 ), 1.0 );
+
   //as expression
   QgsGenericNumericTransformer t3( 15,
                                    25,
@@ -1251,9 +1259,9 @@ void TestQgsProperty::colorRampTransformer()
                               25,
                               new QgsGradientColorRamp( QColor( 10, 20, 30 ), QColor( 200, 190, 180 ) ),
                               QColor( 100, 150, 200 ) );
-  QCOMPARE( t5.toExpression( "5+6" ), QStringLiteral( "coalesce(ramp_color('custom ramp',scale_linear(5+6, 15, 25, 0, 1), '#6496c8')" ) );
+  QCOMPARE( t5.toExpression( "5+6" ), QStringLiteral( "coalesce(ramp_color('custom ramp',scale_linear(5+6, 15, 25, 0, 1)), '#6496c8')" ) );
   t5.setRampName( QStringLiteral( "my ramp" ) );
-  QCOMPARE( t5.toExpression( "5+6" ), QStringLiteral( "coalesce(ramp_color('my ramp',scale_linear(5+6, 15, 25, 0, 1), '#6496c8')" ) );
+  QCOMPARE( t5.toExpression( "5+6" ), QStringLiteral( "coalesce(ramp_color('my ramp',scale_linear(5+6, 15, 25, 0, 1)), '#6496c8')" ) );
 }
 
 void TestQgsProperty::propertyToTransformer()
@@ -1776,6 +1784,22 @@ void TestQgsProperty::asVariant()
   QCOMPARE( fromVar.propertyType(), QgsProperty::FieldBasedProperty );
   QVERIFY( fromVar.isActive() );
   QCOMPARE( fromVar.field(), QStringLiteral( "field1" ) );
+}
+
+void TestQgsProperty::isProjectColor()
+{
+  QgsProperty p = QgsProperty::fromValue( 3, true );
+  QVERIFY( !p.isProjectColor() );
+  p = QgsProperty::fromField( QStringLiteral( "blah" ), true );
+  QVERIFY( !p.isProjectColor() );
+  p = QgsProperty::fromExpression( QStringLiteral( "1+2" ), true );
+  QVERIFY( !p.isProjectColor() );
+  p = QgsProperty::fromExpression( QStringLiteral( "project_color('mine')" ), true );
+  QVERIFY( p.isProjectColor() );
+  p = QgsProperty::fromExpression( QStringLiteral( "project_color('burnt pineapple Skin 76')" ), true );
+  QVERIFY( p.isProjectColor() );
+  p.setActive( false );
+  QVERIFY( p.isProjectColor() );
 }
 
 void TestQgsProperty::checkCurveResult( const QList<QgsPointXY> &controlPoints, const QVector<double> &x, const QVector<double> &y )

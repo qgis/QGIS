@@ -21,10 +21,7 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
+from qgis.processing import alg as algfactory
 import os
 import inspect
 import importlib
@@ -32,6 +29,7 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeatureBasedAlgorithm,
                        QgsMessageLog
@@ -56,7 +54,7 @@ def scriptsFolders():
     if folder is not None:
         return folder.split(";")
     else:
-        return [ScriptUtils.defaultScriptsFolder()]
+        return [defaultScriptsFolder()]
 
 
 def loadAlgorithm(moduleName, filePath):
@@ -66,20 +64,69 @@ def loadAlgorithm(moduleName, filePath):
         spec = importlib.util.spec_from_file_location(moduleName, filePath)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        for x in dir(module):
-            obj = getattr(module, x)
-            if inspect.isclass(obj) and issubclass(obj, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and obj.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
-                scriptsRegistry[x] = filePath
-                return obj()
+        try:
+            alg = algfactory.instances.pop().createInstance()
+            scriptsRegistry[alg.name()] = filePath
+            return alg
+        except IndexError:
+            for x in dir(module):
+                obj = getattr(module, x)
+                if inspect.isclass(obj) and issubclass(obj, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and obj.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
+                    o = obj()
+                    scriptsRegistry[o.name()] = filePath
+                    return o
     except ImportError as e:
         QgsMessageLog.logMessage(QCoreApplication.translate("ScriptUtils", "Could not import script algorithm '{}' from '{}'\n{}").format(moduleName, filePath, str(e)),
                                  QCoreApplication.translate("ScriptUtils", "Processing"),
                                  Qgis.Critical)
 
 
-def findAlgorithmSource(className):
+def findAlgorithmSource(name):
     global scriptsRegistry
     try:
-        return scriptsRegistry[className]
+        return scriptsRegistry[name]
     except:
         return None
+
+
+def resetScriptFolder(folder):
+    """Check if script folder exist. If not, notify and try to check if it is absolute to another user setting.
+    If so, modify folder to change user setting to the current user setting."""
+
+    newFolder = folder
+    if os.path.exists(newFolder):
+        return newFolder
+
+    QgsMessageLog.logMessage(QgsApplication .translate("loadAlgorithms", "Script folder {} does not exist").format(newFolder),
+                             QgsApplication.translate("loadAlgorithms", "Processing"),
+                             Qgis.Warning)
+
+    if not os.path.isabs(newFolder):
+        return None
+
+    # try to check if folder is absolute to other QgsApplication.qgisSettingsDirPath()
+
+    # isolate "QGIS3/profiles/"
+    appIndex = -4
+    profileIndex = -3
+    currentSettingPath = QgsApplication.qgisSettingsDirPath()
+    paths = currentSettingPath.split(os.sep)
+    commonSettingPath = os.path.join(paths[appIndex], paths[profileIndex])
+
+    if commonSettingPath in newFolder:
+        # strip not common folder part. e.g. preserve the profile path
+        # stripping the heading part that come from another location
+        tail = newFolder[newFolder.find(commonSettingPath):]
+        # tail folder with the actual userSetting path
+        header = os.path.join(os.sep, os.path.join(*paths[:appIndex]))
+        newFolder = os.path.join(header, tail)
+
+        # skip if it does not exist
+        if not os.path.exists(newFolder):
+            return None
+
+        QgsMessageLog.logMessage(QgsApplication .translate("loadAlgorithms", "Script folder changed into {}").format(newFolder),
+                                 QgsApplication.translate("loadAlgorithms", "Processing"),
+                                 Qgis.Warning)
+
+    return newFolder

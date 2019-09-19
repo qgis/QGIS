@@ -61,7 +61,6 @@ Moved Classes        {#qgis_api_break_3_0_moved_classes}
 -------------
 
 <table>
-<caption id="moved_classes">Moved classes</caption>
 <tr><th>class<th>Module 2.X<th>Module 3.x
 <tr><td>QgsMapLayerModel<td>gui<td>core
 <tr><td>QgsMapLayerProxyModel<td>gui<td>core
@@ -72,7 +71,6 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 ---------------
 
 <table>
-<caption id="renamed_classes">Renamed classes</caption>
 <tr><th>API 2.x<th>API 3.X
 <tr><td>QgisGui<td>QgsGuiUtils
 <tr><td>QgsAbstractGeometryV2<td>QgsAbstractGeometry
@@ -230,15 +228,21 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>vertexData<td>QgsInterpolatorVertexData
 </table>
 
+
+Renamed Enum Values        {#qgis_api_break_3_0_renamed_enum_values}
+-------------------
+
 <table>
-<caption id="renamed_enum_values">Renamed enum values</caption>
 <tr><th>class</th><th>API 2.x<th>API 3.X
 <tr><td>QgsLayerTreeModelLegendNode<td>SymbolV2LegacyRuleKeyRole<td>SymbolLegacyRuleKeyRole
 <tr><td>QgsVectorLayer<td>EditorWidgetV2<td>EditorWidget
 </table>
 
+
+Renamed Methods        {#qgis_api_break_3_0_renamed_methods}
+---------------
+
 <table>
-<caption id="renamed_methods">Renamed method names</caption>
 <tr><th>class</th><th>API 2.x<th>API 3.X
 <tr><td>QgsAnnotation<td>mapPositionFixed<td>hasFixedMapPosition
 <tr><td>QgsApplication<td>defaultStyleV2Path<td>defaultStylePath
@@ -1892,7 +1896,7 @@ QgsRasterCalculator     {#qgis_api_break_3_0_QgsRasterCalculator}
 
 - Cancelled (Result enum value) has been renamed to Canceled  <!--#spellok-->
 - processCalculation() now uses an optional QgsFeedback instead of QProgressDialog
-for progress reports and cancelation.
+for progress reports and cancellation.
 
 QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 ---------------------
@@ -2430,6 +2434,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - select() replaced by selectByRect()
 - selectedFeaturesIds() replaced by selectedFeatureIds()
 - selectedFeaturesIterator() was replaced by getSelectedFeatures()
+- setDisplayField() has been removed, and its functionality split between setMapTipTemplate() and setDisplayExpression()
 - setSelectedFeatures() replaced by selectByIds()
 - applyNamedStyle() replaced by importNamedStyle()
 - isReadOnly() use readOnly()
@@ -2576,7 +2581,7 @@ QgsRendererAbstractMetadata   {#qgis_api_break_3_0_QgsRendererAbstractMetadata}
 QgsGraphDirector   {#qgis_api_break_3_0_QgsGraphDirector}
 ----------------
 
-- makeGraph() now uses QgsFeedback for progress reporting and cancelation
+- makeGraph() now uses QgsFeedback for progress reporting and cancellation
 - buildProgress() signal was removed
 - buildMessage() signal was removed
 
@@ -2584,7 +2589,7 @@ QgsVectorLayerDirector   {#qgis_api_break_3_0_QgsVectorLayerDirector}
 ----------------------
 
 - QgsVectorLayerDirector() constructor now expects a reference to QgsFeatureSource as the first argument
-- makeGraph() now uses QgsFeedback for progress reporting and cancelation
+- makeGraph() now uses QgsFeedback for progress reporting and cancellation
 
 Processing        {#qgis_api_break_3_0_Processing}
 ----------

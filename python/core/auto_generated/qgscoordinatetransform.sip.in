@@ -50,7 +50,6 @@ transforms coordinates from the layer's coordinate system to the map canvas.
 Default constructor, creates an invalid QgsCoordinateTransform.
 %End
 
-
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
                                      const QgsCoordinateTransformContext &context );
@@ -123,7 +122,7 @@ Copy constructor
 
     bool isValid() const;
 %Docstring
-Returns true if the coordinate transform is valid, ie both the source and destination
+Returns ``True`` if the coordinate transform is valid, ie both the source and destination
 CRS have been set and are valid.
 
 .. versionadded:: 3.0
@@ -227,7 +226,7 @@ the returned rectangle.
 
 :param rectangle: rectangle to transform
 :param direction: transform direction (defaults to ForwardTransform)
-:param handle180Crossover: set to true if destination CRS is geographic and handling of extents
+:param handle180Crossover: set to ``True`` if destination CRS is geographic and handling of extents
                            crossing the 180 degree longitude line is required
 
 :return: rectangle in destination CRS
@@ -286,10 +285,46 @@ otherwise points are transformed from destination to source CRS.
 
     bool isShortCircuited() const;
 %Docstring
-Returns true if the transform short circuits because the source and destination are equivalent.
+Returns ``True`` if the transform short circuits because the source and destination are equivalent.
 %End
 
-    int sourceDatumTransformId() const;
+    QString coordinateOperation() const;
+%Docstring
+Returns a Proj string representing the coordinate operation which will be used to transform
+coordinates.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+   an empty string, and the deprecated sourceDatumTransformId() or destinationDatumTransformId() methods should be used instead.
+
+.. seealso:: :py:func:`setCoordinateOperation`
+
+.. versionadded:: 3.8
+%End
+
+    void setCoordinateOperation( const QString &operation ) const;
+%Docstring
+Sets a Proj string representing the coordinate ``operation`` which will be used to transform
+coordinates.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that ``operation`` is a valid Proj
+   coordinate operation string.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
+   and the deprecated setSourceDatumTransformId() or setDestinationDatumTransformId() methods should be used instead.
+
+
+.. seealso:: :py:func:`coordinateOperation`
+
+.. versionadded:: 3.8
+%End
+
+ int sourceDatumTransformId() const /Deprecated/;
 %Docstring
 Returns the ID of the datum transform to use when projecting from the source
 CRS.
@@ -302,9 +337,11 @@ but can be manually overwritten by a call to setSourceDatumTransformId().
 .. seealso:: :py:func:`setSourceDatumTransformId`
 
 .. seealso:: :py:func:`destinationDatumTransformId`
+
+.. deprecated:: Unused on builds based on Proj 6.0 or later
 %End
 
-    void setSourceDatumTransformId( int datumId );
+ void setSourceDatumTransformId( int datumId ) /Deprecated/;
 %Docstring
 Sets the ``datumId`` ID of the datum transform to use when projecting from the source
 CRS.
@@ -317,9 +354,11 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`sourceDatumTransformId`
 
 .. seealso:: :py:func:`setDestinationDatumTransformId`
+
+.. deprecated:: Unused on builds based on Proj 6.0 or later
 %End
 
-    int destinationDatumTransformId() const;
+ int destinationDatumTransformId() const /Deprecated/;
 %Docstring
 Returns the ID of the datum transform to use when projecting to the destination
 CRS.
@@ -332,9 +371,11 @@ but can be manually overwritten by a call to setDestinationDatumTransformId().
 .. seealso:: :py:func:`setDestinationDatumTransformId`
 
 .. seealso:: :py:func:`sourceDatumTransformId`
+
+.. deprecated:: Unused on builds based on Proj 6.0 or later
 %End
 
-    void setDestinationDatumTransformId( int datumId );
+ void setDestinationDatumTransformId( int datumId ) /Deprecated/;
 %Docstring
 Sets the ``datumId`` ID of the datum transform to use when projecting to the destination
 CRS.
@@ -347,7 +388,10 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`destinationDatumTransformId`
 
 .. seealso:: :py:func:`setSourceDatumTransformId`
+
+.. deprecated:: Unused on builds based on Proj 6.0 or later
 %End
+
 
     static void invalidateCache();
 %Docstring
@@ -368,6 +412,14 @@ sourceUnits * scaleFactor = destinationUnits
 
 .. versionadded:: 3.4
 %End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCoordinateTransform: %1 to %2>" ).arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : QStringLiteral( "NULL" ),
+                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : QStringLiteral( "NULL" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 
 };
 

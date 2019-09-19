@@ -11,12 +11,13 @@
 #include <stddef.h>
 
 #include "mdal_cf.hpp"
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
 
   /**
-   * Loader of 3Di file format.
+   * Driver of 3Di file format.
    *
    * The result 3Di NetCDF file is based on CF-conventions with some additions.
    * It is unstructured grid with data stored in NetCDF/HDF5 file format.
@@ -35,19 +36,19 @@ namespace MDAL
    *
    * The 1D Mesh is present too, but not parsed yet.
    */
-  class Loader3Di: public LoaderCF
+  class Driver3Di: public DriverCF
   {
     public:
-      Loader3Di( const std::string &fileName );
-      ~Loader3Di() override = default;
+      Driver3Di();
+      ~Driver3Di() override = default;
+      Driver3Di *create() override;
 
     private:
-      CFDimensions populateDimensions() override;
-      void populateFacesAndVertices( MDAL::Mesh *mesh ) override;
-      void addBedElevation( MDAL::Mesh *mesh ) override;
+      CFDimensions populateDimensions( ) override;
+      void populateFacesAndVertices( Vertices &vertices, Faces &faces ) override;
+      void addBedElevation( MemoryMesh *mesh ) override;
       std::string getCoordinateSystemVariableName() override;
       std::set<std::string> ignoreNetCDFVariables() override;
-      std::string nameSuffix( CFDimensions::Type type ) override;
       void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
                                         std::string &name, bool *is_vector, bool *is_x ) override;
 

@@ -113,8 +113,8 @@ bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &param
   mGroupedFieldNames = parameterAsFields( parameters, QStringLiteral( "GROUP_FIELDS" ), context );
 
   mSortExpressionString = parameterAsExpression( parameters, QStringLiteral( "SORT_EXPRESSION" ), context );
-  mSortAscending = parameterAsBool( parameters, QStringLiteral( "SORT_ASCENDING" ), context );
-  mSortNullsFirst = parameterAsBool( parameters, QStringLiteral( "SORT_NULLS_FIRST" ), context );
+  mSortAscending = parameterAsBoolean( parameters, QStringLiteral( "SORT_ASCENDING" ), context );
+  mSortNullsFirst = parameterAsBoolean( parameters, QStringLiteral( "SORT_NULLS_FIRST" ), context );
 
   return true;
 }
@@ -165,7 +165,7 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
 
 bool QgsAddIncrementalFieldAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 

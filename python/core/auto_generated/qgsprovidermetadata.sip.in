@@ -10,6 +10,10 @@
 
 
 
+
+
+
+
 class QgsProviderMetadata
 {
 %Docstring
@@ -34,53 +38,17 @@ library object.
   public:
 
 
-    QgsProviderMetadata( const QString &_key, const QString &_description, const QString &_library );
-
-    QgsProviderMetadata( const QString &key, const QString &description, SIP_PYCALLABLE / AllowNone / );
+    QgsProviderMetadata( const QString &key, const QString &description, const QString &library = QString() );
 %Docstring
-Metadata for provider with direct provider creation function pointer, where
-no library is involved.
+Constructor for provider metadata
 
-.. versionadded:: 3.0
+:param key: provider key
+:param description: provider description
+:param library: plugin library file name (empty if the provider is not loaded from a library)
 %End
-%MethodCode
 
-    // Make sure the callable doesn't get garbage collected, this is needed because refcount for a2 is 0
-    // and the creation function pointer is passed to the metadata and it needs to be kept in memory.
-    Py_INCREF( a2 );
 
-    Py_BEGIN_ALLOW_THREADS
-
-    sipCpp = new QgsProviderMetadata( *a0, *a1, [a2]( const QString &dataSource, const QgsDataProvider::ProviderOptions &providerOptions ) -> QgsDataProvider*
-    {
-      QgsDataProvider *provider;
-      provider = nullptr;
-      PyObject *sipResObj;
-      SIP_BLOCK_THREADS
-
-      sipResObj = sipCallMethod( nullptr, a2, "DD", new QString( dataSource ), sipType_QString, nullptr, new QgsDataProvider::ProviderOptions( providerOptions ), sipType_QgsDataProvider_ProviderOptions, NULL );
-
-      if ( sipResObj )
-      {
-        if ( sipCanConvertToType( sipResObj, sipType_QgsDataProvider, SIP_NOT_NONE ) )
-        {
-          int state0;
-          int sipIsErr = 0;
-          provider = reinterpret_cast<QgsDataProvider *>( sipConvertToType( sipResObj, sipType_QgsDataProvider, nullptr, SIP_NOT_NONE, &state0, &sipIsErr ) );
-          if ( sipIsErr != 0 )
-          {
-            sipReleaseType( provider, sipType_QgsDataProvider, state0 );
-            provider = nullptr;
-          }
-        }
-      }
-      SIP_UNBLOCK_THREADS
-      return provider;
-    } );
-
-    Py_END_ALLOW_THREADS
-
-%End
+    virtual ~QgsProviderMetadata();
 
     QString key() const;
 %Docstring
@@ -96,16 +64,247 @@ This returns descriptive text for the provider
 This is used to provide a descriptive list of available data providers.
 %End
 
-    QString library() const;
+ QString library() const /Deprecated/;
 %Docstring
 This returns the library file name
 
-This is used to QLibrary calls to load the data provider.
+This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
+
+.. deprecated:: QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
 %End
 
 
-};
+    virtual void initProvider();
+%Docstring
+Initialize the provider
 
+.. versionadded:: 3.10
+%End
+
+    virtual void cleanupProvider();
+%Docstring
+Cleanup the provider
+
+.. versionadded:: 3.10
+%End
+
+    enum class FilterType
+    {
+      FilterVector,
+      FilterRaster,
+      FilterMesh,
+      FilterMeshDataset
+    };
+
+    virtual QString filters( FilterType type );
+%Docstring
+Builds the list of file filter strings (supported formats)
+
+Suitable for use in a QFileDialog.getOpenFileNames() call.
+
+.. versionadded:: 3.10
+%End
+
+    virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) /Factory/;
+%Docstring
+Class factory to return a pointer to a newly created QgsDataProvider object
+
+.. versionadded:: 3.10
+%End
+
+
+    virtual QgsRasterDataProvider *createRasterDataProvider(
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
+      const QStringList &createOptions = QStringList() ) /Factory/;
+%Docstring
+Creates a new instance of the raster data provider.
+
+.. versionadded:: 3.10
+%End
+
+    virtual QList<QPair<QString, QString> > pyramidResamplingMethods();
+%Docstring
+Returns pyramid resampling methods available for provider
+
+.. versionadded:: 3.10
+%End
+
+    virtual QVariantMap decodeUri( const QString &uri );
+%Docstring
+Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+
+:param uri: uri string
+
+:return: map containing components. Standard components include "path", "layerName", "url".
+
+.. note::
+
+   this function may not be supported by all providers, an empty map will be returned in such case
+
+.. versionadded:: 3.10
+%End
+
+    virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;
+%Docstring
+Returns data item providers. Caller is responsible for ownership of the item providers
+
+.. seealso:: :py:func:`QgsProviderGuiMetadata.dataItemGuiProviders`
+
+.. note::
+
+   Ownership of created data item providers is passed to the caller.
+
+.. versionadded:: 3.10
+%End
+
+    virtual int listStyles( const QString &uri, QStringList &ids, QStringList &names,
+                            QStringList &descriptions, QString &errCause );
+%Docstring
+Lists stored layer styles in the provider defined by ``uri``
+
+:return: -1 if not implemented by provider, otherwise number of styles stored
+
+.. versionadded:: 3.10
+%End
+
+    virtual QString getStyleById( const QString &uri, QString styleId, QString &errCause );
+%Docstring
+Gets a layer style defined by ``uri``
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool deleteStyleById( const QString &uri, QString styleId, QString &errCause );
+%Docstring
+Deletes a layer style defined by ``styleId``
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                            const QString &styleName, const QString &styleDescription,
+                            const QString &uiFileContent, bool useAsDefault, QString &errCause );
+%Docstring
+Saves a layer style to provider
+
+.. versionadded:: 3.10
+%End
+
+    virtual QString loadStyle( const QString &uri, QString &errCause );
+%Docstring
+Loads a layer style defined by ``uri``
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool createDb( const QString &dbPath, QString &errCause );
+%Docstring
+Creates database by the provider on the path
+
+.. versionadded:: 3.10
+%End
+
+    virtual QgsTransaction *createTransaction( const QString &connString ) /Factory/;
+%Docstring
+Returns new instance of transaction. Ownership is transferred to the caller
+
+.. versionadded:: 3.10
+%End
+
+    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) throw( QgsProviderConnectionException );
+%Docstring
+Returns a dictionary of stored provider connections,
+the dictionary key is the connection identifier.
+Ownership is not transferred.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:param cached: if ``False`` connections will be re-read from the settings
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) throw( QgsProviderConnectionException );
+%Docstring
+Returns a dictionary of database provider connections,
+the dictionary key is the connection identifier.
+Ownership is not transferred.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:param cached: if ``False`` connections will be re-read from the settings
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+    QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true ) throw( QgsProviderConnectionException );
+%Docstring
+Searches and returns a (possibly NULL) connection from the stored provider connections.
+Ownership is not transferred.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:param name: the connection name
+:param cached: if ``False`` connections will be re-read from the settings
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) /Factory/;
+%Docstring
+Creates a new connection from ``uri`` and ``configuration``,
+the newly created connection is not automatically stored in the settings, call
+saveConnection() to save it.
+Ownership is transferred to the caller.
+
+.. seealso:: :py:func:`saveConnection`
+
+.. versionadded:: 3.10
+%End
+
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name );
+%Docstring
+Creates a new connection by loading the connection with the given ``name`` from the settings.
+Ownership is transferred to the caller.
+
+.. seealso:: :py:func:`findConnection`
+%End
+
+    virtual void deleteConnection( const QString &name ) throw( QgsProviderConnectionException );
+%Docstring
+Removes the connection with the given ``name`` from the settings.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
+%Docstring
+Stores the connection in the settings
+
+:param connection: the connection to be stored in the settings
+:param name: the name under which the connection will be stored
+
+.. versionadded:: 3.10
+%End
+
+  protected:
+
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

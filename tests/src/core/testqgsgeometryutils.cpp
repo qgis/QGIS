@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <math.h>
+
 #include "qgstest.h"
 #include <QObject>
 #include "qgsgeometryutils.h"
@@ -64,12 +66,16 @@ class TestQgsGeometryUtils: public QObject
     void testCircleCircleIntersection();
     void testTangentPointAndCircle();
     void testCircleCircleOuterTangents();
+    void testCircleCircleInnerTangents();
     void testGml();
     void testInterpolatePointOnLineQgsPoint();
     void testInterpolatePointOnLine();
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
     void interpolatePointOnArc();
+    void testSegmentizeArcHalfCircle();
+    void testSegmentizeArcHalfCircleOtherDirection();
+    void testSegmentizeArcFullCircle();
 };
 
 
@@ -192,11 +198,12 @@ void TestQgsGeometryUtils::testSegmentMidPoint_data()
   QTest::addColumn<double>( "pt2x" );
   QTest::addColumn<double>( "pt2y" );
   QTest::addColumn<double>( "radius" );
-  QTest::addColumn<bool>( "left" );
+  QTest::addColumn<double>( "mouseX" );
+  QTest::addColumn<double>( "mouseY" );
   QTest::addColumn<double>( "expectedX" );
   QTest::addColumn<double>( "expectedY" );
 
-  QTest::newRow( "testSegmentMidPoint1" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << true << 0.5 << 0.5;
+  QTest::newRow( "testSegmentMidPoint1" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.5 << 1.0 << 0.0 << 0.5 << 0.5;
 }
 
 void TestQgsGeometryUtils::testSegmentMidPoint()
@@ -206,13 +213,14 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
   QFETCH( double, pt2x );
   QFETCH( double, pt2y );
   QFETCH( double, radius );
-  QFETCH( bool, left );
+  QFETCH( double, mouseX );
+  QFETCH( double, mouseY );
   QFETCH( double, expectedX );
   QFETCH( double, expectedY );
 
   QgsPoint midPoint;
   bool ok = QgsGeometryUtils::segmentMidPoint( QgsPoint( pt1x, pt1y ), QgsPoint( pt2x, pt2y ),
-            midPoint, radius, left );
+            midPoint, radius, QgsPoint( mouseX, mouseY ) );
 
   QVERIFY( ok );
   QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * std::numeric_limits<double>::epsilon() );
@@ -543,7 +551,7 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
 void TestQgsGeometryUtils::testSqrDistToLine()
 {
 
-  // See https://issues.qgis.org/issues/13952#note-26
+  // See https://github.com/qgis/QGIS/issues/21967#issuecomment-495853991
   QgsPointXY qp( 771938, 6.95593e+06 );
   QgsPointXY p1( 771946, 6.95593e+06 );
   QgsPointXY p2( 771904, 6.95595e+06 );
@@ -970,6 +978,45 @@ void TestQgsGeometryUtils::testCircleCircleOuterTangents()
   QGSCOMPARENEAR( l2p2.y(), -0.897, 0.01 );
 }
 
+void TestQgsGeometryUtils::testCircleCircleInnerTangents()
+{
+  QgsPointXY l1p1;
+  QgsPointXY l1p2;
+  QgsPointXY l2p1;
+  QgsPointXY l2p2;
+
+  // no tangents, intersecting circles
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 1, 2 ), 4, QgsPointXY( 2, 3 ), 1, l1p1, l1p2, l2p1, l2p2 ), 0 );
+
+  // no tangents, same circles
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 1, 2 ), 4, QgsPointXY( 1, 2 ), 4, l1p1, l1p2, l2p1, l2p2 ), 0 );
+
+  // no tangents, touching circles
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 0, 0 ), 4, QgsPointXY( 0, 8 ), 4, l1p1, l1p2, l2p1, l2p2 ), 0 );
+
+  // tangents
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 1, 2 ), 1, QgsPointXY( 10, 3 ), 4, l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 7.437, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 6.071, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 1.641, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 1.232, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 8.173, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), -0.558, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 1.457, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), 2.89, 0.01 );
+
+  // tangents, larger circle first
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 10, 3 ), 4, QgsPointXY( 1, 2 ), 1, l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 7.437, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 6.071, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 1.641, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 1.232, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 8.173, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), -0.558, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 1.457, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), 2.89, 0.01 );
+}
+
 void TestQgsGeometryUtils::testGml()
 {
   QgsPoint point = QgsPoint( 1, 2 );
@@ -1229,6 +1276,75 @@ void TestQgsGeometryUtils::interpolatePointOnArc()
   p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 3.141592 * 3 );
   QGSCOMPARENEAR( p.x(), 8.0, 0.00001 );
   QGSCOMPARENEAR( p.y(), -2.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcHalfCircle()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 1, yoff + 1 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   points, 0.1,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1 - sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1 + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcHalfCircleOtherDirection()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 1, yoff - 1 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   points, 0.1,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1 - sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + -sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + -1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1 + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + -sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcFullCircle()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   QgsPoint( xoff + 0, yoff + 0 ),
+                                   points, 0.4,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + -1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

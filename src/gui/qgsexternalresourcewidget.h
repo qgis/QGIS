@@ -25,7 +25,7 @@ class QgsPixmapLabel;
 
 #include "qgsfilewidget.h"
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 
 #ifdef SIP_RUN
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     //! returns if the file widget is visible in the widget
     bool fileWidgetVisible() const;
-    //! Sets the visiblity of the file widget in the layout
+    //! Sets the visibility of the file widget in the layout
     void setFileWidgetVisible( bool visible );
 
     //! returns the type of content used in the document viewer

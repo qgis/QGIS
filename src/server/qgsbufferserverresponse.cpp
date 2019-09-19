@@ -18,10 +18,7 @@
  ***************************************************************************/
 
 #include "qgsbufferserverresponse.h"
-#include "qgslogger.h"
 #include "qgsmessagelog.h"
-
-#include <QDebug>
 
 //
 // QgsBufferServerResponse

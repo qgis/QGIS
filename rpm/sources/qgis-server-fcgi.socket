@@ -1,0 +1,14 @@
+# Adapted from http://www.itopen.it/bulk/qgis3-server/#/step-26
+# Path: /etc/systemd/system/qgis-server-fcgi.socket
+# systemctl enable qgis-server-fcgi.socket && systemctl start qgis-server-fcgi.socket
+
+[Unit]
+Description = QGIS Server FastCGI Socket
+PartOf = qgis-server-fcgi.service
+
+[Socket]
+ListenStream = 127.0.0.1:9993
+Accept = yes
+
+[Install]
+WantedBy = sockets.target

@@ -21,10 +21,6 @@ __author__ = 'Matteo Ghetta'
 __date__ = 'March 2017'
 __copyright__ = '(C) 2017, Matteo Ghetta'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import plotly as plt
 import plotly.graph_objs as go
 

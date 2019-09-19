@@ -16,7 +16,7 @@
 #ifndef QGSREPORTSECTIONMODEL_H
 #define QGSREPORTSECTIONMODEL_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsreport.h"
 #include <QAbstractItemModel>
 

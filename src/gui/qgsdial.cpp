@@ -21,6 +21,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRect>
+#include <cmath>
 
 QgsDial::QgsDial( QWidget *parent ) : QDial( parent )
 {

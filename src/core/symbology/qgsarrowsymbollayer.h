@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSARROWSYMBOLLAYERV2_H
-#define QGSARROWSYMBOLLAYERV2_H
+#ifndef QGSARROWSYMBOLLAYER_H
+#define QGSARROWSYMBOLLAYER_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -47,6 +47,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     QgsSymbol *subSymbol() override { return mSymbol.get(); }
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
     //! Gets current arrow width
     double arrowWidth() const { return mArrowWidth; }

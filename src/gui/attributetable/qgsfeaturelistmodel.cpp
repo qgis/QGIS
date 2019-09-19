@@ -18,6 +18,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsattributetablefiltermodel.h"
+#include "qgsapplication.h"
 
 #include <QItemSelection>
 #include <QSettings>

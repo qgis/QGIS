@@ -46,8 +46,7 @@ inline bool nodataValue( double x, double y )
 }
 
 QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
-    const QVector<double> &datasetValuesX,
-    const QVector<double> &datasetValuesY,
+    const QgsMeshDataBlock &datasetValues,
     const QVector<double> &datasetValuesMag,
     double datasetMagMinimumValue,
     double datasetMagMaximumValue,
@@ -55,8 +54,7 @@ QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
     const QgsMeshRendererVectorSettings &settings,
     QgsRenderContext &context, QSize size )
   : mTriangularMesh( m )
-  , mDatasetValuesX( datasetValuesX )
-  , mDatasetValuesY( datasetValuesY )
+  , mDatasetValues( datasetValues )
   , mDatasetValuesMag( datasetValuesMag )
   , mMinMag( datasetMagMinimumValue )
   , mMaxMag( datasetMagMaximumValue )
@@ -70,6 +68,8 @@ QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
   Q_ASSERT( !mDatasetValuesMag.empty() );
   Q_ASSERT( !std::isnan( mMinMag ) );
   Q_ASSERT( !std::isnan( mMaxMag ) );
+  Q_ASSERT( mDatasetValues.isValid() );
+  Q_ASSERT( QgsMeshDataBlock::Vector2DDouble == mDatasetValues.type() );
 
   // we need to expand out the extent so that it includes
   // arrows which start or end up outside of the
@@ -259,8 +259,9 @@ void QgsMeshVectorRenderer::drawVectorDataOnVertices( const QList<int> &triangle
       if ( !mBufferedExtent.contains( vertex ) )
         continue;
 
-      double xVal = mDatasetValuesX[i];
-      double yVal = mDatasetValuesY[i];
+      const QgsMeshDatasetValue val = mDatasetValues.value( i );
+      double xVal = val.x();
+      double yVal = val.y();
       if ( nodataValue( xVal, yVal ) )
         continue;
 
@@ -286,8 +287,9 @@ void QgsMeshVectorRenderer::drawVectorDataOnFaces( const QList<int> &trianglesIn
     if ( !mBufferedExtent.contains( center ) )
       continue;
 
-    double xVal = mDatasetValuesX[i];
-    double yVal = mDatasetValuesY[i];
+    const QgsMeshDatasetValue val = mDatasetValues.value( i );
+    double xVal = val.x();
+    double yVal = val.y();
     if ( nodataValue( xVal, yVal ) )
       continue;
 
@@ -342,36 +344,40 @@ void QgsMeshVectorRenderer::drawVectorDataOnGrid( const QList<int> &trianglesInE
 
         if ( mDataOnVertices )
         {
+          const auto val1 = mDatasetValues.value( v1 );
+          const auto val2 = mDatasetValues.value( v2 );
+          const auto val3 = mDatasetValues.value( v3 );
           val.setX(
             QgsMeshLayerUtils::interpolateFromVerticesData(
               p1, p2, p3,
-              mDatasetValuesX[v1],
-              mDatasetValuesX[v2],
-              mDatasetValuesX[v3],
+              val1.x(),
+              val2.x(),
+              val3.x(),
               p )
           );
           val.setY(
             QgsMeshLayerUtils::interpolateFromVerticesData(
               p1, p2, p3,
-              mDatasetValuesY[v1],
-              mDatasetValuesY[v2],
-              mDatasetValuesY[v3],
+              val1.y(),
+              val2.y(),
+              val3.y(),
               p )
           );
         }
         else
         {
+          const auto val1 = mDatasetValues.value( nativeFaceIndex );
           val.setX(
             QgsMeshLayerUtils::interpolateFromFacesData(
               p1, p2, p3,
-              mDatasetValuesX[nativeFaceIndex],
+              val1.x(),
               p
             )
           );
           val.setY(
             QgsMeshLayerUtils::interpolateFromFacesData(
               p1, p2, p3,
-              mDatasetValuesY[nativeFaceIndex],
+              val1.y(),
               p
             )
           );

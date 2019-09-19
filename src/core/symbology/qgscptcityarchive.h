@@ -170,7 +170,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     void setParent( QgsCptCityDataItem *parent ) { mParent = parent; }
     QVector<QgsCptCityDataItem *> children() const { return mChildren; }
     virtual QIcon icon() { return mIcon; }
-    virtual QIcon icon( QSize size ) { Q_UNUSED( size ) ; return icon(); }
+    virtual QIcon icon( QSize size ) { Q_UNUSED( size ) return icon(); }
     QString name() const { return mName; }
     QString path() const { return mPath; }
     QString info() const { return mInfo; }
@@ -308,7 +308,8 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 
 /**
  * \ingroup core
- * An "All ramps item", which contains all items in a flat hierarchy */
+ * An "All ramps item", which contains all items in a flat hierarchy
+*/
 class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT

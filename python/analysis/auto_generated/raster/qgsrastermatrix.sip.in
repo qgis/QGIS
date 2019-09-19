@@ -58,7 +58,7 @@ Takes ownership of data array
 
     bool isNumber() const;
 %Docstring
-Returns true if matrix is 1x1 (=scalar number)
+Returns ``True`` if matrix is 1x1 (=scalar number)
 %End
     double number() const;
 

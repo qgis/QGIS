@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 import os
 
@@ -52,6 +48,7 @@ class slope(GdalAlgorithm):
     COMPUTE_EDGES = 'COMPUTE_EDGES'
     ZEVENBERGEN = 'ZEVENBERGEN'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -61,6 +58,7 @@ class slope(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterNumber(self.SCALE,
                                                        self.tr('Ratio of vertical units to horizontal'),
@@ -86,6 +84,13 @@ class slope(GdalAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Slope')))
 
@@ -113,6 +118,7 @@ class slope(GdalAlgorithm):
         arguments.append(inLayer.source())
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append(out)
 
         arguments.append('-of')
@@ -124,18 +130,22 @@ class slope(GdalAlgorithm):
         arguments.append('-s')
         arguments.append(str(self.parameterAsDouble(parameters, self.SCALE, context)))
 
-        if self.parameterAsBool(parameters, self.AS_PERCENT, context):
+        if self.parameterAsBoolean(parameters, self.AS_PERCENT, context):
             arguments.append('-p')
 
-        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        if self.parameterAsBool(parameters, self.ZEVENBERGEN, context):
+        if self.parameterAsBoolean(parameters, self.ZEVENBERGEN, context):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

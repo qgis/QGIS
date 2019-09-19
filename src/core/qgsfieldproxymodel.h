@@ -20,7 +20,7 @@
 
 #include "qgis_core.h"
 
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsFieldModel;
 
@@ -46,6 +46,7 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
       Date = 16, //!< Date or datetime fields
       Time = 32, //!< Time fields
       HideReadOnly = 64,  //!< Hide read-only fields
+      DateTime = 128, //!< Datetime fieldss
       AllTypes = Numeric | Date | String | Time, //!< All field types
     };
     Q_DECLARE_FLAGS( Filters, Filter )
@@ -77,7 +78,7 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     Filters mFilters;
     QgsFieldModel *mModel = nullptr;
 
-    //! Returns true if the specified index represents a read only field
+    //! Returns TRUE if the specified index represents a read only field
     bool isReadOnly( const QModelIndex &index ) const;
 
     // QSortFilterProxyModel interface

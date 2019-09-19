@@ -33,6 +33,8 @@ class QgsSymbolLayer
           sipType = sipType_QgsFilledMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "SvgMarker" )
           sipType = sipType_QgsSvgMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterMarker" )
+          sipType = sipType_QgsRasterMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
         else
@@ -121,6 +123,7 @@ class QgsSymbolLayer
       PropertyPlacement,
       PropertyInterval,
       PropertyOffsetAlongLine,
+      PropertyAverageAngleLength,
       PropertyHorizontalAnchor,
       PropertyVerticalAnchor,
       PropertyLayerEnabled,
@@ -130,6 +133,8 @@ class QgsSymbolLayer
       PropertyArrowHeadThickness,
       PropertyArrowHeadType,
       PropertyArrowType,
+      PropertyOffsetX,
+      PropertyOffsetY,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -141,9 +146,11 @@ Returns the symbol layer property definitions.
 
     virtual ~QgsSymbolLayer();
 
+
+
     bool enabled() const;
 %Docstring
-Returns true if symbol layer is enabled and will be drawn.
+Returns ``True`` if symbol layer is enabled and will be drawn.
 
 .. seealso:: :py:func:`setEnabled`
 
@@ -283,7 +290,20 @@ layer may use it to specify the units for the line width.
     virtual QgsMapUnitScale mapUnitScale() const;
 
     void setRenderingPass( int renderingPass );
+%Docstring
+Specifies the rendering pass in which this symbol layer should be rendered.
+The lower the number, the lower the symbol will be rendered.
+0: first pass, 1: second pass, ...
+Defaults to 0
+%End
+
     int renderingPass() const;
+%Docstring
+Specifies the rendering pass in which this symbol layer should be rendered.
+The lower the number, the lower the symbol will be rendered.
+0: first pass, 1: second pass, ...
+Defaults to 0
+%End
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
@@ -297,6 +317,8 @@ Sets a data defined property for the layer. Any existing property with the same 
 will be overwritten.
 
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
 
 .. versionadded:: 3.0
 %End
@@ -384,6 +406,8 @@ Returns a reference to the symbol layer's property collection, used for data def
 
 .. seealso:: :py:func:`setDataDefinedProperties`
 
+.. seealso:: Property
+
 .. versionadded:: 3.0
 %End
 
@@ -397,6 +421,13 @@ Sets the symbol layer's property collection, used for data defined overrides.
 .. seealso:: :py:func:`properties`
 
 .. versionadded:: 3.0
+%End
+
+    virtual bool hasDataDefinedProperties() const;
+%Docstring
+Returns ``True`` if the symbol layer (or any of its sub-symbols) contains data defined properties.
+
+.. versionadded:: 3.4.5
 %End
 
   protected:
@@ -432,6 +463,8 @@ Copies paint effect of this layer to another symbol layer
 .. versionadded:: 2.9
 %End
 
+  private:
+    QgsSymbolLayer( const QgsSymbolLayer &other );
 };
 
 
@@ -460,7 +493,15 @@ Abstract base class for marker symbol layers.
       Bottom,
     };
 
+
+
     virtual void startRender( QgsSymbolRenderContext &context );
+
+%Docstring
+QgsMarkerSymbolLayer cannot be copied
+%End
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
 
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context ) = 0;
@@ -508,7 +549,7 @@ is usually used for orienting symbols to match a line's angle.
 .. versionadded:: 2.9
 %End
 
-    void setSize( double size );
+    virtual void setSize( double size );
 %Docstring
 Sets the symbol size.
 
@@ -751,7 +792,7 @@ any data defined overrides and offsets which are set for the marker layer.
 %Docstring
 Constructor for QgsMarkerSymbolLayer.
 
-:param locked: set to true to lock symbol color
+:param locked: set to ``True`` to lock symbol color
 %End
 
     void markerOffset( QgsSymbolRenderContext &context, double &offsetX, double &offsetY ) const;
@@ -802,6 +843,8 @@ Adjusts a marker offset to account for rotation.
 %End
 
 
+  private:
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other );
 };
 
 class QgsLineSymbolLayer : QgsSymbolLayer
@@ -819,15 +862,154 @@ class QgsLineSymbolLayer : QgsSymbolLayer
       InteriorRingsOnly,
     };
 
+
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+%Docstring
+QgsLineSymbolLayer cannot be copied
+%End
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
+
+    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;
+%Docstring
+Renders the line symbol layer along the line joining ``points``, using the given render ``context``.
+
+.. seealso:: :py:func:`renderPolygonStroke`
+%End
 
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+%Docstring
+Renders the line symbol layer along the outline of polygon, using the given render ``context``.
+
+The exterior ring of the polygon is specified in ``points``. Optionally, interior
+rings are set via the ``rings`` argument.
+
+.. seealso:: :py:func:`renderPolyline`
+%End
 
     virtual void setWidth( double width );
+%Docstring
+Sets the ``width`` of the line symbol layer.
+
+Calling this method updates the width of the line symbol layer, without
+changing the existing width units. It has different effects depending
+on the line symbol layer subclass, e.g. for a simple line layer it
+changes the stroke width of the line, for a marker line layer it
+changes the size of the markers used to draw the line.
+
+.. seealso:: :py:func:`width`
+
+.. warning::
+
+   Since the width units vary, this method is useful for changing the
+   relative width of a line symbol layer only.
+%End
+
     virtual double width() const;
+%Docstring
+Returns the estimated width for the line symbol layer.
+
+.. warning::
+
+   This returned value is inaccurate if the symbol layer has sub-symbols with
+   different width units. Use the overload accepting a :py:class:`QgsRenderContext`
+   argument instead for accurate sizes in this case.
+
+.. seealso:: :py:func:`setWidth`
+%End
+
+    virtual double width( const QgsRenderContext &context ) const;
+%Docstring
+Returns the line symbol layer width, in painter units.
+
+This method returns an accurate width by calculating the actual rendered
+width of the symbol layer using the provided render ``context``.
+
+.. seealso:: :py:func:`setWidth`
+
+.. versionadded:: 3.4.5
+%End
 
     double offset() const;
+%Docstring
+Returns the line's offset.
+
+Offset units can be retrieved by calling offsetUnit().
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`offsetUnit`
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+%End
+
     void setOffset( double offset );
+%Docstring
+Sets the line's ``offset``.
+
+Offset units are set via setOffsetUnit().
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`setOffsetUnit`
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+%End
+
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the line's offset.
+
+.. seealso:: :py:func:`offsetUnit`
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+%End
+
+    QgsUnitTypes::RenderUnit offsetUnit() const;
+%Docstring
+Returns the units for the line's offset.
+
+.. seealso:: :py:func:`setOffsetUnit`
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+%End
+
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the line's offset.
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`setOffsetUnit`
+%End
+
+    const QgsMapUnitScale &offsetMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the line's offset.
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`offsetUnit`
+%End
+
 
     void setWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
@@ -847,41 +1029,6 @@ Returns the units for the line's width.
 
     void setWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &widthMapUnitScale() const;
-
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the units for the line's offset.
-
-:param unit: offset units
-
-.. seealso:: :py:func:`offsetUnit`
-%End
-
-    QgsUnitTypes::RenderUnit offsetUnit() const;
-%Docstring
-Returns the units for the line's offset.
-
-.. seealso:: :py:func:`setOffsetUnit`
-%End
-
-    void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
-    const QgsMapUnitScale &offsetMapUnitScale() const;
-
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
-
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
-
-
-    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
-
-    virtual QgsMapUnitScale mapUnitScale() const;
-
-
-    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
-
-
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
-
 
     RenderRingFilter ringFilter() const;
 %Docstring
@@ -913,6 +1060,9 @@ for a polygon.
     QgsLineSymbolLayer( bool locked = false );
 
 
+
+  private:
+    QgsLineSymbolLayer( const QgsLineSymbolLayer &other );
 };
 
 class QgsFillSymbolLayer : QgsSymbolLayer
@@ -922,7 +1072,13 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 #include "qgssymbollayer.h"
 %End
   public:
+
+
+
     virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
+%Docstring
+QgsFillSymbolLayer cannot be copied
+%End
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
@@ -937,6 +1093,9 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 Default method to render polygon
 %End
 
+
+  private:
+    QgsFillSymbolLayer( const QgsFillSymbolLayer &other );
 };
 
 

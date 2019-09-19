@@ -18,16 +18,45 @@
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsrenderer.h"
 #include "qgsmaplayerlistutils.h"
 
 #include <QtConcurrentRun>
 
-QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter )
+//
+// QgsMapRendererAbstractCustomPainterJob
+//
+
+QgsMapRendererAbstractCustomPainterJob::QgsMapRendererAbstractCustomPainterJob( const QgsMapSettings &settings )
   : QgsMapRendererJob( settings )
+{
+
+}
+
+void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, const QColor &backgroundColor )
+{
+  // clear the background
+  painter->fillRect( 0, 0, mSettings.deviceOutputSize().width(), mSettings.deviceOutputSize().height(), backgroundColor );
+
+  painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
+
+#ifndef QT_NO_DEBUG
+  QPaintDevice *paintDevice = painter->device();
+  QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
+                   .arg( paintDevice->logicalDpiX() )
+                   .arg( mSettings.outputDpi() * mSettings.devicePixelRatio() );
+  Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi() * mSettings.devicePixelRatio() ),
+              "Job::startRender()", errMsg.toLatin1().data() );
+#endif
+}
+
+
+//
+// QgsMapRendererCustomPainterJob
+//
+
+QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter )
+  : QgsMapRendererAbstractCustomPainterJob( settings )
   , mPainter( painter )
   , mActive( false )
   , mRenderSynchronously( false )
@@ -47,7 +76,8 @@ void QgsMapRendererCustomPainterJob::start()
   if ( isActive() )
     return;
 
-  mRenderingStart.start();
+  if ( !mPrepareOnly )
+    mRenderingStart.start();
 
   mActive = true;
 
@@ -59,25 +89,13 @@ void QgsMapRendererCustomPainterJob::start()
   QTime prepareTime;
   prepareTime.start();
 
-  // clear the background
-  mPainter->fillRect( 0, 0, mSettings.deviceOutputSize().width(), mSettings.deviceOutputSize().height(), mSettings.backgroundColor() );
-
-  mPainter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
-
-#ifndef QT_NO_DEBUG
-  QPaintDevice *paintDevice = mPainter->device();
-  QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
-                   .arg( paintDevice->logicalDpiX() )
-                   .arg( mSettings.outputDpi() * mSettings.devicePixelRatio() );
-  Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi() * mSettings.devicePixelRatio() ),
-              "Job::startRender()", errMsg.toLatin1().data() );
-#endif
+  preparePainter( mPainter, mSettings.backgroundColor() );
 
   mLabelingEngineV2.reset();
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-    mLabelingEngineV2.reset( new QgsLabelingEngine() );
+    mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -85,12 +103,15 @@ void QgsMapRendererCustomPainterJob::start()
   mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2.get(), canUseLabelCache );
 
-  QgsDebugMsgLevel( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Rendering prepared in (seconds): %1" ).arg( prepareTime.elapsed() / 1000.0 ), 4 );
 
   if ( mRenderSynchronously )
   {
-    // do the rendering right now!
-    doRender();
+    if ( !mPrepareOnly )
+    {
+      // do the rendering right now!
+      doRender();
+    }
     return;
   }
 
@@ -195,14 +216,35 @@ void QgsMapRendererCustomPainterJob::renderSynchronously()
   mRenderSynchronously = false;
 }
 
+void QgsMapRendererCustomPainterJob::prepare()
+{
+  mRenderSynchronously = true;
+  mPrepareOnly = true;
+  start();
+  mPrepared = true;
+}
+
+void QgsMapRendererCustomPainterJob::renderPrepared()
+{
+  if ( !mPrepared )
+    return;
+
+  doRender();
+  futureFinished();
+  mRenderSynchronously = false;
+  mPrepareOnly = false;
+  mPrepared = false;
+}
 
 void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
-  mRenderingTime = mRenderingStart.elapsed();
+  if ( !mPrepared ) // can't access from other thread
+    mRenderingTime = mRenderingStart.elapsed();
   QgsDebugMsgLevel( QStringLiteral( "QPAINTER futureFinished" ), 5 );
 
-  logRenderingTime( mLayerJobs, mLabelJob );
+  if ( !mPrepared )
+    logRenderingTime( mLayerJobs, mLabelJob );
 
   // final cleanup
   cleanupJobs( mLayerJobs );
@@ -220,12 +262,12 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
   }
   catch ( QgsException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
   catch ( std::exception &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
   }
   catch ( ... )
@@ -295,12 +337,12 @@ void QgsMapRendererCustomPainterJob::doRender()
         mLabelJob.img->fill( 0 );
         painter.begin( mLabelJob.img );
         mLabelJob.context.setPainter( &painter );
-        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2.get(), &painter );
+        drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), &painter );
         painter.end();
       }
       else
       {
-        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2.get(), mPainter );
+        drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), mPainter );
       }
 
       mLabelJob.complete = true;
@@ -315,63 +357,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     mPainter->drawImage( 0, 0, *mLabelJob.img );
   }
 
-  QgsDebugMsgLevel( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Rendering completed in (seconds): %1" ).arg( renderTime.elapsed() / 1000.0 ), 2 );
 }
 
-
-void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )
-{
-  QgsDebugMsgLevel( QStringLiteral( "Draw labeling start" ), 5 );
-
-  QTime t;
-  t.start();
-
-  // Reset the composition mode before rendering the labels
-  painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
-
-  // TODO: this is not ideal - we could override rendering stopped flag that has been set in meanwhile
-  renderContext = QgsRenderContext::fromMapSettings( settings );
-  renderContext.setPainter( painter );
-
-  if ( labelingEngine2 )
-  {
-    // set correct extent
-    renderContext.setExtent( settings.visibleExtent() );
-    renderContext.setCoordinateTransform( QgsCoordinateTransform() );
-
-    labelingEngine2->run( renderContext );
-  }
-
-  QgsDebugMsg( QStringLiteral( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
-}
-
-
-bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
-{
-  if ( ml->type() == QgsMapLayer::VectorLayer )
-  {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( vl->renderer() && vl->renderer()->forceRasterRender() )
-    {
-      //raster rendering is forced for this layer
-      return true;
-    }
-    if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
-         ( ( vl->blendMode() != QPainter::CompositionMode_SourceOver )
-           || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-           || ( !qgsDoubleNear( vl->opacity(), 1.0 ) ) ) )
-    {
-      //layer properties require rasterization
-      return true;
-    }
-  }
-  else if ( ml->type() == QgsMapLayer::RasterLayer )
-  {
-    // preview of intermediate raster rendering results requires a temporary output image
-    if ( mSettings.testFlag( QgsMapSettings::RenderPartialOutput ) )
-      return true;
-  }
-
-  return false;
-}
 

@@ -133,6 +133,15 @@ void TestQgsLayoutGui::itemTypeComboBox()
   QCOMPARE( spy1.count(), expectedSpy1Count ); // must be unchanged from earlier
   QCOMPARE( spy2.count(), expectedSpy2Count );
 
+  item3->setId( "a" );
+  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "a" ) );
+  QCOMPARE( cb->itemText( 1 ), QStringLiteral( "item 1" ) );
+  QCOMPARE( cb->itemText( 2 ), QStringLiteral( "item 2" ) );
+  item3->setId( "item 3" );
+  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "item 1" ) );
+  QCOMPARE( cb->itemText( 1 ), QStringLiteral( "item 2" ) );
+  QCOMPARE( cb->itemText( 2 ), QStringLiteral( "item 3" ) );
+
   //manually change item
   cb->setItem( item3 );
   expectedSpy1Count++;

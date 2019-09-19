@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlutils.h"
+#include <QStringList>
 
 QString QgsHtmlUtils::buildBulletList( const QStringList &values )
 {

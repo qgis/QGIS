@@ -59,7 +59,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
                                 const QgsCoordinateReferenceSystem &currentCrs,
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                 Qt::WindowFlags f = nullptr );
-    ~QgsRasterLayerSaveAsDialog() override;
 
     Mode mode() const;
     int nColumns() const;
@@ -71,7 +70,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     bool tileMode() const;
 
     /**
-     * Returns true if the "add to canvas" checkbox is checked.
+     * Returns TRUE if the "add to canvas" checkbox is checked.
      *
      * \see setAddToCanvas()
      */
@@ -163,6 +162,8 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     bool outputLayerExists() const;
 
     void insertAvailableOutputFormats();
+
+    friend class TestQgsRasterLayerSaveAsDialog;
 };
 
 

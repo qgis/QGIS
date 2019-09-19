@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetcherregistry.h"
+#include "qgsnetworkreply.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpression.h"
 #include "qgsactionscoperegistry.h"
@@ -30,13 +31,17 @@
 #include "qgstaskmanager.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgssvgcache.h"
+#include "qgsimagecache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
+#include "qgssymbollayerutils.h"
+#include "callouts/qgscalloutsregistry.h"
 #include "qgspluginlayerregistry.h"
+#include "classification/qgsclassificationmethodregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
@@ -48,6 +53,11 @@
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
+#include "qgsprojutils.h"
+#include "qgsvaliditycheckregistry.h"
+#include "qgsnewsfeedparser.h"
+#include "qgsbookmarkmanager.h"
+#include "qgsstylemodel.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -66,6 +76,7 @@
 #include <QPixmap>
 #include <QThreadPool>
 #include <QLocale>
+#include <QStyle>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -85,6 +96,11 @@
 #include <ogr_api.h>
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
+
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#endif
+
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
@@ -125,6 +141,7 @@ const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
 const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
+QgsAuthManager *QgsApplication::sAuthManager = nullptr;
 
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
@@ -170,8 +187,7 @@ void QgsApplication::init( QString profileFolder )
   {
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
     {
-      QString envProfileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
-      profileFolder = envProfileFolder + QDir::separator() + "profiles";
+      profileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
     }
     else
     {
@@ -202,6 +218,12 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
   qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
   qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
+  qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
+  qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
+  qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+  qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
+  qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
+  qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
 
   ( void ) resolvePkgPath();
 
@@ -287,6 +309,24 @@ void QgsApplication::init( QString profileFolder )
   }
   ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 
+#if PROJ_VERSION_MAJOR>=6
+  // append local user-writable folder as a proj search path
+  QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
+  currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
+  char **newPaths = new char *[currentProjSearchPaths.length()];
+  for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
+  {
+    newPaths[i] = CPLStrdup( currentProjSearchPaths.at( i ).toUtf8().constData() );
+  }
+  proj_context_set_search_paths( nullptr, currentProjSearchPaths.count(), newPaths );
+  for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
+  {
+    CPLFree( newPaths[i] );
+  }
+  delete [] newPaths;
+#endif
+
+
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
 
@@ -298,6 +338,9 @@ void QgsApplication::init( QString profileFolder )
   colorSchemeRegistry()->addDefaultSchemes();
   colorSchemeRegistry()->initStyleScheme();
 
+  bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
+  members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
+
   ABISYM( mInitialized ) = true;
 }
 
@@ -307,6 +350,21 @@ QgsApplication::~QgsApplication()
   delete mApplicationMembers;
   delete mQgisTranslator;
   delete mQtTranslator;
+
+  // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
+  // and there's just a *chance* that someone hasn't properly called exitQgis prior to
+  // this destructor...
+  invalidateCaches();
+}
+
+void QgsApplication::invalidateCaches()
+{
+  // invalidate coordinate cache while the PROJ context held by the thread-locale
+  // QgsProjContextStore object is still alive. Otherwise if this later object
+  // is destroyed before the static variables of the cache, we might use freed memory.
+  QgsCoordinateTransform::invalidateCache( true );
+  QgsCoordinateReferenceSystem::invalidateCache( true );
+  QgsEllipsoidUtils::invalidateCache( true );
 }
 
 QgsApplication *QgsApplication::instance()
@@ -405,7 +463,7 @@ void QgsApplication::setFileOpenEventReceiver( QObject *receiver )
 void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPaths )
 {
   ABISYM( mPrefixPath ) = prefixPath;
-#if defined(_MSC_VER)
+#if defined(Q_OS_WIN)
   if ( ABISYM( mPrefixPath ).endsWith( "/bin" ) )
   {
     ABISYM( mPrefixPath ).chop( 4 );
@@ -453,6 +511,7 @@ void QgsApplication::setAuthDatabaseDirPath( const QString &authDbDirPath )
 
 QString QgsApplication::prefixPath()
 {
+#if 0
   if ( ABISYM( mRunningFromBuildDir ) )
   {
     static bool sOnce = true;
@@ -464,6 +523,7 @@ QString QgsApplication::prefixPath()
     }
     sOnce = false;
   }
+#endif
 
   return ABISYM( mPrefixPath );
 }
@@ -651,7 +711,8 @@ QString QgsApplication::resolvePkgPath()
     // check if QGIS is run from build directory (not the install directory)
     QFile f;
     // "/../../.." is for Mac bundled app in build directory
-    Q_FOREACH ( const QString &path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
+    static const QStringList paths { QStringList() << QString() << QStringLiteral( "/.." ) << QStringLiteral( "/bin" ) << QStringLiteral( "/../../.." ) };
+    for ( const QString &path : paths )
     {
       f.setFileName( prefix + path + "/qgisbuildpath.txt" );
       if ( f.exists() )
@@ -684,12 +745,12 @@ QString QgsApplication::resolvePkgPath()
     prefixPath = dir.absolutePath();
 #else
 
-#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACX)
     prefixPath = appPath;
-#if defined(_MSC_VER)
+#elif defined(Q_OS_WIN)
+    prefixPath = appPath;
     if ( prefixPath.endsWith( "/bin" ) )
       prefixPath.chop( 4 );
-#endif
 #else
     QDir dir( appPath );
     // Fix for server which is one level deeper in /usr/lib/cgi-bin
@@ -727,22 +788,22 @@ void QgsApplication::setUITheme( const QString &themeName )
 
   QString path = themes.value( themeName );
   QString stylesheetname = path + "/style.qss";
-  QString autostylesheet = stylesheetname + ".auto";
 
   QFile file( stylesheetname );
   QFile variablesfile( path + "/variables.qss" );
-  QFile fileout( autostylesheet );
 
   QFileInfo variableInfo( variablesfile );
 
-  if ( variableInfo.exists() && variablesfile.open( QIODevice::ReadOnly ) )
+  if ( !file.open( QIODevice::ReadOnly ) || ( variableInfo.exists() && !variablesfile.open( QIODevice::ReadOnly ) ) )
   {
-    if ( !file.open( QIODevice::ReadOnly ) || !fileout.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
-    {
-      return;
-    }
+    return;
+  }
 
-    QString styledata = file.readAll();
+  QString styledata = file.readAll();
+  styledata.replace( QStringLiteral( "@theme_path" ), path );
+
+  if ( variableInfo.exists() )
+  {
     QTextStream in( &variablesfile );
     while ( !in.atEnd() )
     {
@@ -757,16 +818,49 @@ void QgsApplication::setUITheme( const QString &themeName )
       }
     }
     variablesfile.close();
-    QTextStream out( &fileout );
-    out << styledata;
-    fileout.close();
-    file.close();
-    stylesheetname = autostylesheet;
+  }
+  file.close();
+
+  if ( Qgis::UI_SCALE_FACTOR != 1.0 )
+  {
+    // apply OS-specific UI scale factor to stylesheet's em values
+    int index = 0;
+    QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
+    QRegularExpressionMatch match = regex.match( styledata, index );
+    while ( match.hasMatch() )
+    {
+      index = match.capturedStart();
+      styledata.remove( index, match.captured( 0 ).length() );
+      QString number = QString::number( match.captured( 0 ).toDouble() * Qgis::UI_SCALE_FACTOR );
+      styledata.insert( index, number );
+      index += number.length();
+      match = regex.match( styledata, index );
+    }
   }
 
-  QString styleSheet = QStringLiteral( "file:///" );
-  styleSheet.append( stylesheetname );
-  qApp->setStyleSheet( styleSheet );
+  qApp->setStyleSheet( styledata );
+
+  QFile palettefile( path + "/palette.txt" );
+  QFileInfo paletteInfo( palettefile );
+  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
+  {
+    QPalette pal = qApp->palette();
+    QTextStream in( &palettefile );
+    while ( !in.atEnd() )
+    {
+      QString line = in.readLine();
+      QStringList parts = line.split( ':' );
+      if ( parts.count() == 2 )
+      {
+        int role = parts.at( 0 ).trimmed().toInt();
+        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
+        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
+      }
+    }
+    palettefile.close();
+    qApp->setPalette( pal );
+  }
+
   setThemeName( themeName );
 }
 
@@ -775,11 +869,13 @@ QHash<QString, QString> QgsApplication::uiThemes()
   QStringList paths = QStringList() << userThemesFolder() << defaultThemesFolder();
   QHash<QString, QString> mapping;
   mapping.insert( QStringLiteral( "default" ), QString() );
-  Q_FOREACH ( const QString &path, paths )
+  const auto constPaths = paths;
+  for ( const QString &path : constPaths )
   {
     QDir folder( path );
     QFileInfoList styleFiles = folder.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
-    Q_FOREACH ( const QFileInfo &info, styleFiles )
+    const auto constStyleFiles = styleFiles;
+    for ( const QFileInfo &info : constStyleFiles )
     {
       QFileInfo styleFile( info.absoluteFilePath() + "/style.qss" );
       if ( !styleFile.exists() )
@@ -874,11 +970,19 @@ QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
+#if PROJ_VERSION_MAJOR>=6
+    QString tempCopy = QDir::tempPath() + "/srs6.db";
+#else
     QString tempCopy = QDir::tempPath() + "/srs.db";
+#endif
 
     if ( !QFile( tempCopy ).exists() )
     {
+#if PROJ_VERSION_MAJOR>=6
+      QFile f( pkgDataPath() + "/resources/srs6.db" );
+#else
       QFile f( pkgDataPath() + "/resources/srs.db" );
+#endif
       if ( !f.copy( tempCopy ) )
       {
         qFatal( "Could not create temporary copy" );
@@ -902,12 +1006,13 @@ QStringList QgsApplication::svgPaths()
 
   // maintain user set order while stripping duplicates
   QStringList paths;
-  Q_FOREACH ( const QString &path, pathList )
+  const auto constPathList = pathList;
+  for ( const QString &path : constPathList )
   {
     if ( !paths.contains( path ) )
       paths.append( path );
   }
-  Q_FOREACH ( const QString &path, ABISYM( mDefaultSvgPaths ) )
+  for ( const QString &path : qgis::as_const( ABISYM( mDefaultSvgPaths ) ) )
   {
     if ( !paths.contains( path ) )
       paths.append( path );
@@ -947,7 +1052,7 @@ QString QgsApplication::userLoginName()
 
   if ( GetUserName( ( TCHAR * )name, &size ) )
   {
-    sUserName = QString( name );
+    sUserName = QString::fromLocal8Bit( name );
   }
 
 #elif QT_CONFIG(process)
@@ -983,7 +1088,7 @@ QString QgsApplication::userFullName()
   //note - this only works for accounts connected to domain
   if ( GetUserNameEx( NameDisplay, ( TCHAR * )name, &size ) )
   {
-    sUserFullName = QString( name );
+    sUserFullName = QString::fromLocal8Bit( name );
   }
 
   //fall back to login name
@@ -1015,6 +1120,14 @@ QString QgsApplication::osName()
   return QLatin1String( "windows" );
 #elif defined(Q_OS_LINUX)
   return QStringLiteral( "linux" );
+#elif defined(Q_OS_FREEBSD)
+  return QStringLiteral( "freebsd" );
+#elif defined(Q_OS_OPENBSD)
+  return QStringLiteral( "openbsd" );
+#elif defined(Q_OS_NETBSD)
+  return QStringLiteral( "netbsd" );
+#elif defined(Q_OS_UNIX)
+  return QLatin1String( "unix" );
 #else
   return QLatin1String( "unknown" );
 #endif
@@ -1127,7 +1240,6 @@ QgsAuthManager *QgsApplication::authManager()
   else
   {
     // no QgsApplication instance
-    static QgsAuthManager *sAuthManager = nullptr;
     if ( !sAuthManager )
       sAuthManager = QgsAuthManager::instance();
     return sAuthManager;
@@ -1137,7 +1249,14 @@ QgsAuthManager *QgsApplication::authManager()
 
 void QgsApplication::exitQgis()
 {
-  delete QgsApplication::authManager();
+  // make sure all threads are done before exiting
+  QThreadPool::globalInstance()->waitForDone();
+
+  // don't create to delete
+  if ( instance() )
+    delete instance()->mAuthManager;
+  else
+    delete sAuthManager;
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
@@ -1149,12 +1268,11 @@ void QgsApplication::exitQgis()
 
   delete QgsProject::instance();
 
-  delete QgsProviderRegistry::instance();
+  // avoid creating instance just to delete it!
+  if ( QgsProviderRegistry::exists() )
+    delete QgsProviderRegistry::instance();
 
-  // invalidate coordinate cache while the PROJ context held by the thread-locale
-  // QgsProjContextStore object is still alive. Otherwise if this later object
-  // is destroyed before the static variables of the cache, we might use freed memory.
-  QgsCoordinateTransform::invalidateCache();
+  invalidateCaches();
 
   QgsStyle::cleanDefaultStyle();
 
@@ -1465,14 +1583,16 @@ void QgsApplication::copyPath( const QString &src, const QString &dst )
   if ( ! dir.exists() )
     return;
 
-  Q_FOREACH ( const QString &d, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  const auto subDirectories = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+  for ( const QString &d : subDirectories )
   {
     QString dst_path = dst + QDir::separator() + d;
     dir.mkpath( dst_path );
     copyPath( src + QDir::separator() + d, dst_path );
   }
 
-  Q_FOREACH ( const QString &f, dir.entryList( QDir::Files ) )
+  const auto files = dir.entryList( QDir::Files );
+  for ( const QString &f : files )
   {
     QFile::copy( src + QDir::separator() + f, dst + QDir::separator() + f );
   }
@@ -1772,14 +1892,29 @@ QgsSvgCache *QgsApplication::svgCache()
   return members()->mSvgCache;
 }
 
+QgsImageCache *QgsApplication::imageCache()
+{
+  return members()->mImageCache;
+}
+
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
   return members()->mNetworkContentFetcherRegistry;
 }
 
+QgsValidityCheckRegistry *QgsApplication::validityCheckRegistry()
+{
+  return members()->mValidityCheckRegistry;
+}
+
 QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
 {
   return members()->mSymbolLayerRegistry;
+}
+
+QgsCalloutRegistry *QgsApplication::calloutRegistry()
+{
+  return members()->mCalloutRegistry;
 }
 
 QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
@@ -1795,6 +1930,21 @@ QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 QgsPluginLayerRegistry *QgsApplication::pluginLayerRegistry()
 {
   return members()->mPluginLayerRegistry;
+}
+
+QgsClassificationMethodRegistry *QgsApplication::classificationMethodRegistry()
+{
+  return members()->mClassificationMethodRegistry;
+}
+
+QgsBookmarkManager *QgsApplication::bookmarkManager()
+{
+  return members()->mBookmarkManager;
+}
+
+QgsStyleModel *QgsApplication::defaultStyleModel()
+{
+  return members()->mStyleModel;
 }
 
 QgsMessageLog *QgsApplication::messageLog()
@@ -1842,9 +1992,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mActionScopeRegistry = new QgsActionScopeRegistry();
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
   mSvgCache = new QgsSvgCache();
+  mImageCache = new QgsImageCache();
   mColorSchemeRegistry = new QgsColorSchemeRegistry();
   mPaintEffectRegistry = new QgsPaintEffectRegistry();
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+  mCalloutRegistry = new QgsCalloutRegistry();
   mRendererRegistry = new QgsRendererRegistry();
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
   mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
@@ -1857,10 +2009,15 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   m3DRendererRegistry = new Qgs3DRendererRegistry();
   mProjectStorageRegistry = new QgsProjectStorageRegistry();
   mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
+  mValidityCheckRegistry = new QgsValidityCheckRegistry();
+  mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
+  mBookmarkManager = new QgsBookmarkManager( nullptr );
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
+  delete mStyleModel;
+  delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
   delete mAnnotationRegistry;
@@ -1878,9 +2035,13 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
   delete mSvgCache;
+  delete mImageCache;
+  delete mCalloutRegistry;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
+  delete mClassificationMethodRegistry;
+  delete mBookmarkManager;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

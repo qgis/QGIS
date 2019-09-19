@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckerror.h"
+#include "qgsapplication.h"
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     const QString &layerId,
@@ -53,7 +54,8 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 {
   if ( vidx.part != -1 )
   {
-    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry().constGet(), vidx.part )->clone() );
+    const QgsGeometry geom = layerFeature.geometry();
+    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom.constGet(), vidx.part )->clone() );
   }
   else
   {
@@ -70,7 +72,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
         mGeometry.transform( ct );
         mErrorLocation = ct.transform( mErrorLocation );
       }
-      catch ( const QgsCsException &e )
+      catch ( const QgsCsException & )
       {
         QgsDebugMsg( QStringLiteral( "Can not show error in current map coordinate reference system" ) );
       }
@@ -81,6 +83,11 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 QgsGeometry QgsGeometryCheckError::geometry() const
 {
   return mGeometry;
+}
+
+QgsRectangle QgsGeometryCheckError::contextBoundingBox() const
+{
+  return QgsRectangle();
 }
 
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
@@ -178,6 +185,19 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
     }
   }
   return true;
+}
+
+QMap<QString, QgsFeatureIds> QgsGeometryCheckError::involvedFeatures() const
+{
+  return QMap<QString, QSet<QgsFeatureId> >();
+}
+
+QIcon QgsGeometryCheckError::icon() const
+{
+  if ( status() == QgsGeometryCheckError::StatusFixed )
+    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+  else
+    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) );
 }
 
 void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )

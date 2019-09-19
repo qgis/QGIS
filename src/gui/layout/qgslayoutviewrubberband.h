@@ -135,8 +135,8 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
 
     /**
      * Calculates an updated bounding box rectangle from a original \a start position
-     * and new \a position. If \a constrainSquare is true then the bounding box will be
-     * forced to a square shape. If \a fromCenter is true then the original \a start
+     * and new \a position. If \a constrainSquare is TRUE then the bounding box will be
+     * forced to a square shape. If \a fromCenter is TRUE then the original \a start
      * position will form the center point of the returned rectangle.
      */
     QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );

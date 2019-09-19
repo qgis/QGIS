@@ -5,7 +5,9 @@
 %Include auto_generated/qgsdetaileditemdata.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
 %Include auto_generated/qgsgeometryrubberband.sip
-%Include auto_generated/qgsgui.sip
+%Include auto_generated/qgsproviderguimetadata.sip
+%Include auto_generated/qgsproviderguiregistry.sip
+%Include auto_generated/qgsprojectstorageguiregistry.sip
 %Include auto_generated/qgshelp.sip
 %Include auto_generated/qgshighlight.sip
 %Include auto_generated/qgsmapcanvasitem.sip
@@ -24,6 +26,7 @@
 %Include auto_generated/qgssourceselectprovider.sip
 %Include auto_generated/qgssourceselectproviderregistry.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
+%Include auto_generated/qgsprojectstorageguiprovider.sip
 %Include auto_generated/attributetable/qgsfeaturemodel.sip
 %Include auto_generated/auth/qgsauthauthoritieseditor.sip
 %Include auto_generated/auth/qgsauthcertificateinfo.sip
@@ -54,7 +57,9 @@
 %Include auto_generated/qgisinterface.sip
 %Include auto_generated/qgsactionmenu.sip
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip
+%Include auto_generated/qgsadvanceddigitizingfloater.sip
 %Include auto_generated/qgsaggregatetoolbutton.sip
+%Include auto_generated/qgsalignmentcombobox.sip
 %Include auto_generated/qgsattributedialog.sip
 %Include auto_generated/qgsattributeform.sip
 %Include auto_generated/qgsattributeformeditorwidget.sip
@@ -62,6 +67,7 @@
 %Include auto_generated/qgsattributeformwidget.sip
 %Include auto_generated/qgsattributetypeloaddialog.sip
 %Include auto_generated/qgsblendmodecombobox.sip
+%Include auto_generated/qgsbrowserguimodel.sip
 %Include auto_generated/qgsbrowsertreeview.sip
 %Include auto_generated/qgsbusyindicatordialog.sip
 %Include auto_generated/qgscharacterselectordialog.sip
@@ -94,6 +100,7 @@
 %Include auto_generated/qgscolorwidgets.sip
 %Include auto_generated/qgscompoundcolorwidget.sip
 %Include auto_generated/qgsconfigureshortcutsdialog.sip
+%Include auto_generated/qgscoordinateboundspreviewmapwidget.sip
 %Include auto_generated/qgscredentialdialog.sip
 %Include auto_generated/qgscurveeditorwidget.sip
 %Include auto_generated/qgscustomdrophandler.sip
@@ -113,9 +120,11 @@
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
 %Include auto_generated/qgsfieldexpressionwidget.sip
+%Include auto_generated/qgsfindfilesbypatternwidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfieldvalidator.sip
 %Include auto_generated/qgsfieldvalueslineedit.sip
+%Include auto_generated/qgsfilecontentsourcelineedit.sip
 %Include auto_generated/qgsfilewidget.sip
 %Include auto_generated/qgsfilterlineedit.sip
 %Include auto_generated/qgsfloatingwidget.sip
@@ -125,6 +134,7 @@
 %Include auto_generated/qgsgradientcolorrampdialog.sip
 %Include auto_generated/qgsgradientstopeditor.sip
 %Include auto_generated/qgsgroupwmsdatadialog.sip
+%Include auto_generated/qgsgui.sip
 %Include auto_generated/qgshistogramwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
@@ -145,6 +155,7 @@
 %Include auto_generated/qgsmaptooladvanceddigitizing.sip
 %Include auto_generated/qgsmaptoolcapture.sip
 %Include auto_generated/qgsmaptooledit.sip
+%Include auto_generated/qgsmaptooldigitizefeature.sip
 %Include auto_generated/qgsmaptoolemitpoint.sip
 %Include auto_generated/qgsmaptoolextent.sip
 %Include auto_generated/qgsmaptoolidentify.sip
@@ -201,9 +212,9 @@
 %Include auto_generated/qgsslider.sip
 %Include auto_generated/qgssnaptogridcanvasitem.sip
 %Include auto_generated/qgsstatusbar.sip
+%Include auto_generated/qgsstyleitemslistwidget.sip
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip
-%Include auto_generated/qgssvgsourcelineedit.sip
 %Include auto_generated/qgssymbolbutton.sip
 %Include auto_generated/qgstablewidgetbase.sip
 %Include auto_generated/qgstabwidget.sip
@@ -212,10 +223,12 @@
 %Include auto_generated/qgstextpreview.sip
 %Include auto_generated/qgstreewidgetitem.sip
 %Include auto_generated/qgsunitselectionwidget.sip
+%Include auto_generated/qgsvaliditycheckresultswidget.sip
 %Include auto_generated/qgsvariableeditorwidget.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgsfiledownloaderdialog.sip
 %Include auto_generated/qgsattributeeditorcontext.sip
+%Include auto_generated/callouts/qgscalloutwidget.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip
 %Include auto_generated/raster/qgspalettedrendererwidget.sip
@@ -286,6 +299,7 @@
 %Include auto_generated/editorwidgets/qgsdatetimesearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsdefaultsearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsdoublespinbox.sip
+%Include auto_generated/editorwidgets/qgshtmlwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsmultiedittoolbutton.sip
 %Include auto_generated/editorwidgets/qgsrelationreferencesearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsrelationreferencewidget.sip
@@ -301,6 +315,7 @@
 %Include auto_generated/layertree/qgslayertreeview.sip
 %Include auto_generated/layertree/qgslayertreeviewdefaultactions.sip
 %Include auto_generated/layertree/qgslayertreeviewindicator.sip
+%Include auto_generated/layout/qgslayoutcombobox.sip
 %Include auto_generated/layout/qgslayoutcustomdrophandler.sip
 %Include auto_generated/layout/qgslayoutdesignerinterface.sip
 %Include auto_generated/layout/qgslayoutitemcombobox.sip
@@ -325,7 +340,10 @@
 %Include auto_generated/locator/qgslocatorwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
+%Include auto_generated/processing/qgsprocessingmaplayercombobox.sip
 %Include auto_generated/processing/qgsprocessingmodelerparameterwidget.sip
+%Include auto_generated/processing/qgsprocessingmultipleselectiondialog.sip
+%Include auto_generated/processing/qgsprocessingparameterdefinitionwidget.sip
 %Include auto_generated/processing/qgsprocessingrecentalgorithmlog.sip
 %Include auto_generated/processing/qgsprocessingtoolboxmodel.sip
 %Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip

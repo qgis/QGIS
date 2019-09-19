@@ -15,19 +15,21 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsRulebasedRenderer -V
+
 """
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'September 2015'
 __copyright__ = '(C) 2015, Matthiasd Kuhn'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import Qt, QSize
+from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsVectorLayer,
                        QgsMapSettings,
@@ -41,7 +43,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsRendererRange,
-                       QgsRenderContext
+                       QgsRenderContext,
+                       QgsSymbolLayer,
+                       QgsSimpleMarkerSymbolLayer,
+                       QgsProperty
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -56,7 +61,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'rectangles.shp')
-        layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
+        layer = QgsVectorLayer(myShpFile, 'Rectangles', 'ogr')
         QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
@@ -150,12 +155,12 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         vl.setRenderer(QgsRuleBasedRenderer(rootrule))
         renderer = vl.renderer()
 
-        # Reunder with else rule and all activated
+        # Render with else rule and all activated
         renderer.startRender(ctx, vl.fields())
         self.assertTrue(renderer.willRenderFeature(ft, ctx))
         renderer.stopRender(ctx)
 
-        # Reunder with else rule where else is deactivated
+        # Render with else rule where else is deactivated
         renderer.rootRule().children()[1].setActive(False)
         renderer.startRender(ctx, vl.fields())
         self.assertFalse(renderer.willRenderFeature(ft, ctx))
@@ -261,35 +266,44 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         cats.append(QgsRendererCategory('a\nb', QgsMarkerSymbol(), "id a\\nb"))
         cats.append(QgsRendererCategory('a\\b', QgsMarkerSymbol(), "id a\\\\b"))
         cats.append(QgsRendererCategory('a\tb', QgsMarkerSymbol(), "id a\\tb"))
+        cats.append(QgsRendererCategory(['c', 'd'], QgsMarkerSymbol(), "c/d"))
         c = QgsCategorizedSymbolRenderer("id", cats)
 
         r = QgsRuleBasedRenderer.convertFromRenderer(c)
+        self.assertEqual(len(r.rootRule().children()), 7)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
         self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" = \'a\'\'b\'')
         self.assertEqual(r.rootRule().children()[3].filterExpression(), '"id" = \'a\\nb\'')
         self.assertEqual(r.rootRule().children()[4].filterExpression(), '"id" = \'a\\\\b\'')
         self.assertEqual(r.rootRule().children()[5].filterExpression(), '"id" = \'a\\tb\'')
+        self.assertEqual(r.rootRule().children()[6].filterExpression(), '"id" IN (\'c\',\'d\')')
 
         # Next try with an expression based category
         cats = []
         cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
         cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        cats.append(QgsRendererCategory([3, 4], QgsMarkerSymbol(), "result 3/4"))
         c = QgsCategorizedSymbolRenderer("id + 1", cats)
 
         r = QgsRuleBasedRenderer.convertFromRenderer(c)
+        self.assertEqual(len(r.rootRule().children()), 3)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), 'id + 1 = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), 'id + 1 = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), 'id + 1 IN (3,4)')
 
         # Last try with an expression which is just a quoted field name
         cats = []
         cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
         cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        cats.append(QgsRendererCategory([3, 4], QgsMarkerSymbol(), "result 3/4"))
         c = QgsCategorizedSymbolRenderer('"id"', cats)
 
         r = QgsRuleBasedRenderer.convertFromRenderer(c)
+        self.assertEqual(len(r.rootRule().children()), 3)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" IN (3,4)')
 
     def testConvertFromGraduatedRenderer(self):
         # Test converting graduated renderer to rule based
@@ -323,6 +337,121 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         r = QgsRuleBasedRenderer.convertFromRenderer(g)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
+
+    def testWillRenderFeatureTwoElse(self):
+        """Regression #21287, also test rulesForFeature since there were no tests any where and I've found a couple of issues"""
+
+        vl = self.mapsettings.layers()[0]
+        ft = vl.getFeature(0) # 'id' = 1
+
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+        ctx.expressionContext().setFeature(ft)
+
+        # Create rulebased style
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
+        sym4 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': 'black'})
+
+        self.rx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 200')
+        self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 1000, 100000000, 'ELSE') # <<< - match this!
+        self.rx4 = QgsRuleBasedRenderer.Rule(sym4, 0.1, 999, 'ELSE')
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.rx2)
+        rootrule.appendChild(self.rx3)
+        rootrule.appendChild(self.rx4)  # <- failed in regression #21287
+
+        vl.setRenderer(QgsRuleBasedRenderer(rootrule))
+        renderer = vl.renderer()
+
+        # Render with else rule and all activated
+        renderer.startRender(ctx, vl.fields())
+        self.assertTrue(renderer.willRenderFeature(ft, ctx))
+
+        # No context? All rules
+        self.assertEqual(len(rootrule.rulesForFeature(ft)), 2)
+        self.assertTrue(set(rootrule.rulesForFeature(ft)), set([self.rx3, self.rx4]))
+
+        # With context: only the matching one
+        self.assertEqual(len(rootrule.rulesForFeature(ft, ctx)), 1)
+        self.assertEqual(rootrule.rulesForFeature(ft, ctx)[0], self.rx3)
+        renderer.stopRender(ctx)
+
+    def testUsedAttributes(self):
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+
+        # Create rulebased style
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
+
+        self.rx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 200')
+        self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 1000, 100000000, 'ELSE')
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.rx2)
+        rootrule.appendChild(self.rx3)
+
+        renderer = QgsRuleBasedRenderer(rootrule)
+
+        self.assertCountEqual(renderer.usedAttributes(ctx), {'id'})
+
+    def testPointsUsedAttributes(self):
+        points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
+        points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
+        QgsProject.instance().addMapLayer(points_layer)
+
+        # Create rulebased style
+        sym1 = QgsMarkerSymbol()
+        l1 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l1.setColor(QColor(255, 0, 0))
+        l1.setStrokeStyle(Qt.NoPen)
+        l1.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym1.changeSymbolLayer(0, l1)
+
+        sym2 = QgsMarkerSymbol()
+        l2 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l2.setColor(QColor(0, 255, 0))
+        l2.setStrokeStyle(Qt.NoPen)
+        l2.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym2.changeSymbolLayer(0, l2)
+
+        sym3 = QgsMarkerSymbol()
+        l3 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
+        l3.setColor(QColor(0, 0, 255))
+        l3.setStrokeStyle(Qt.NoPen)
+        l3.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        sym3.changeSymbolLayer(0, l3)
+
+        r1 = QgsRuleBasedRenderer.Rule(sym1, 0, 0, '"Class" = \'B52\'')
+        r2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"Class" = \'Biplane\'')
+        r3 = QgsRuleBasedRenderer.Rule(sym3, 0, 0, '"Class" = \'Jet\'')
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(r1)
+        rootrule.appendChild(r2)
+        rootrule.appendChild(r3)
+
+        renderer = QgsRuleBasedRenderer(rootrule)
+
+        points_layer.setRenderer(renderer)
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([points_layer])
+
+        ctx = QgsRenderContext.fromMapSettings(ms)
+        ctx.expressionContext().appendScope(points_layer.createExpressionContextScope())
+
+        # for symbol layer
+        self.assertCountEqual(l1.usedAttributes(ctx), {'Heading'})
+        # for symbol
+        self.assertCountEqual(sym1.usedAttributes(ctx), {'Heading'})
+        # for symbol renderer
+        self.assertCountEqual(renderer.usedAttributes(ctx), {'Class', 'Heading'})
+
+        QgsProject.instance().removeMapLayer(points_layer)
 
 
 if __name__ == '__main__':

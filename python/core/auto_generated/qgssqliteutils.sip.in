@@ -1,0 +1,63 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssqliteutils.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsSqliteUtils
+{
+%Docstring
+Contains utilities for working with Sqlite data sources.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgssqliteutils.h"
+%End
+  public:
+
+    static QString quotedString( const QString &value );
+%Docstring
+Returns a quoted string ``value``, surround by ' characters and with special
+characters correctly escaped.
+%End
+
+    static QString quotedIdentifier( const QString &identifier );
+%Docstring
+Returns a properly quoted version of ``identifier``.
+
+.. versionadded:: 3.6
+%End
+
+    static QString quotedValue( const QVariant &value );
+%Docstring
+Returns a properly quoted and escaped version of ``value``
+for use in SQL strings.
+
+.. versionadded:: 3.6
+%End
+
+    static QStringList systemTables();
+%Docstring
+Returns a string list of SQLite (and spatialite) system tables
+
+.. versionadded:: 3.8
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssqliteutils.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

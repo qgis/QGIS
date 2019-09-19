@@ -26,7 +26,7 @@ Point geometry type, with support for z-dimension and m-values.
 
   public:
 
-    QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
 %Docstring
 Construct a point with the provided initial coordinate values.
 
@@ -53,8 +53,28 @@ based on the following rules:
        pt.wkbType() # QgsWkbTypes.PointZ
 %End
 %MethodCode
+    double x;
+    double y;
     double z;
     double m;
+
+    if ( a0 == Py_None )
+    {
+      x = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      x = PyFloat_AsDouble( a0 );
+    }
+
+    if ( a1 == Py_None )
+    {
+      y = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      y = PyFloat_AsDouble( a1 );
+    }
 
     if ( a2 == Py_None )
     {
@@ -74,7 +94,7 @@ based on the following rules:
       m = PyFloat_AsDouble( a3 );
     }
 
-    sipCpp = new sipQgsPoint( a0, a1, z, m, a4 );
+    sipCpp = new sipQgsPoint( x, y, z, m, a4 );
 %End
 
     explicit QgsPoint( const QgsPointXY &p );
@@ -187,7 +207,7 @@ Returns the point as a QPointF.
 
     double distance( double x, double y ) const;
 %Docstring
-Returns the distance between this point and a specified x, y coordinate. In certain
+Returns the Cartesian 2D distance between this point and a specified x, y coordinate. In certain
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
@@ -198,7 +218,7 @@ when comparing distances.
 
     double distance( const QgsPoint &other ) const;
 %Docstring
-Returns the 2D distance between this point and another point. In certain
+Returns the Cartesian 2D distance between this point and another point. In certain
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
@@ -207,7 +227,7 @@ when comparing distances.
 
     double distanceSquared( double x, double y ) const;
 %Docstring
-Returns the squared distance between this point a specified x, y coordinate. Calling
+Returns the Cartesian 2D squared distance between this point a specified x, y coordinate. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
@@ -218,7 +238,7 @@ distances where the extra expense of calling distance() is not required.
 
     double distanceSquared( const QgsPoint &other ) const;
 %Docstring
-Returns the squared distance between this point another point. Calling
+Returns the Cartesian 2D squared distance between this point another point. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
@@ -229,7 +249,7 @@ distances where the extra expense of calling distance() is not required.
 
     double distance3D( double x, double y, double z ) const;
 %Docstring
-Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
+Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
@@ -240,7 +260,7 @@ when comparing distances.
 
     double distance3D( const QgsPoint &other ) const;
 %Docstring
-Returns the 3D distance between this point and another point. In certain
+Returns the Cartesian 3D distance between this point and another point. In certain
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
@@ -249,7 +269,7 @@ when comparing distances.
 
     double distanceSquared3D( double x, double y, double z ) const;
 %Docstring
-Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
+Returns the Cartesian 3D squared distance between this point a specified x, y, z coordinate. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
@@ -260,7 +280,7 @@ distances where the extra expense of calling distance() is not required.
 
     double distanceSquared3D( const QgsPoint &other ) const;
 %Docstring
-Returns the 3D squared distance between this point another point. Calling
+Returns the Cartesian 3D squared distance between this point another point. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
@@ -271,14 +291,14 @@ distances where the extra expense of calling distance() is not required.
 
     double azimuth( const QgsPoint &other ) const;
 %Docstring
-Calculates azimuth between this point and other one (clockwise in degree, starting from north)
+Calculates Cartesian azimuth between this point and other one (clockwise in degree, starting from north)
 
 .. versionadded:: 3.0
 %End
 
     double inclination( const QgsPoint &other ) const;
 %Docstring
-Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
+Calculates Cartesian inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
 Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
 
 .. versionadded:: 3.0
@@ -287,7 +307,7 @@ Returns 90.0 if the distance between this point and other one is equal to 0 (sam
     QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const;
 %Docstring
 Returns a new point which correspond to this point projected by a specified distance
-with specified angles (azimuth and inclination).
+with specified angles (azimuth and inclination), using Cartesian mathematics.
 M value is preserved.
 
 :param distance: distance to project
@@ -355,8 +375,6 @@ M value is preserved.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
-
     virtual void draw( QPainter &p ) const;
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
@@ -370,6 +388,8 @@ M value is preserved.
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );

@@ -205,6 +205,23 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 }
 
+void QgsOptionsDialogBase::resizeAlltabs( int index )
+{
+  // Adjust size (GH issue #31449)
+  // make the stacked widget size to the current page only
+  for ( int i = 0; i < mOptStackedWidget->count(); ++i )
+  {
+    // determine the vertical size policy
+    QSizePolicy::Policy policy = QSizePolicy::Ignored;
+    if ( i == index )
+      policy = QSizePolicy::MinimumExpanding;
+
+    // update the size policy
+    mOptStackedWidget->widget( i )->setSizePolicy( policy, policy );
+  }
+  mOptStackedWidget->adjustSize();
+}
+
 void QgsOptionsDialogBase::searchText( const QString &text )
 {
   const int minimumTextLength = 3;
@@ -256,11 +273,12 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
 
   for ( int i = 0; i < mOptStackedWidget->count(); i++ )
   {
-    Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
+    const auto constWidget = mOptStackedWidget->widget( i )->findChildren<QWidget *>();
+    for ( QWidget *w : constWidget )
     {
 
       // get custom highlight widget in user added pages
-      QMap<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets = QMap<QWidget *, QgsOptionsDialogHighlightWidget *>();
+      QMap<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets;
       QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
       if ( opw )
       {

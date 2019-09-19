@@ -76,6 +76,17 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. seealso:: :py:func:`setScale`
 %End
 
+    bool isNull() const;
+%Docstring
+Returns true if the widget is currently set to a "null" value.
+
+.. seealso:: :py:func:`setAllowNull`
+
+.. seealso:: :py:func:`setNull`
+
+.. versionadded:: 3.8
+%End
+
     double minScale() const;
 %Docstring
 Returns the minimum scale, or 0 if no minimum scale set.
@@ -98,9 +109,35 @@ The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
 %Docstring
 Helper function to convert a scale ``string`` to double.
 The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
+If specified, ``ok`` will be set to ``True`` if the string was successfully interpreted as a scale.
 
 .. seealso:: :py:func:`toString`
+%End
+
+    void setAllowNull( bool allowNull );
+%Docstring
+Sets whether the scale widget can be set to a NULL value.
+
+.. seealso:: :py:func:`allowNull`
+
+.. seealso:: :py:func:`isNull`
+
+.. seealso:: :py:func:`setNull`
+
+.. versionadded:: 3.8
+%End
+
+    bool allowNull() const;
+%Docstring
+Returns ``True`` if the widget can be set to a NULL value.
+
+.. seealso:: :py:func:`setAllowNull`
+
+.. seealso:: :py:func:`isNull`
+
+.. seealso:: :py:func:`setNull`
+
+.. versionadded:: 3.8
 %End
 
   public slots:
@@ -132,6 +169,19 @@ Set the minimum allowed ``scale``. Set to 0 to disable the minimum scale.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Any scale lower than the minimum scale will automatically be converted to the minimum scale.
 Except for 0 which is always allowed.
+%End
+
+    void setNull();
+%Docstring
+Sets the widget to the null value.
+
+This only has an effect if allowNull() is true.
+
+.. seealso:: :py:func:`allowNull`
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 3.8
 %End
 
   signals:

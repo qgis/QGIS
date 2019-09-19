@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -52,15 +48,17 @@ class translate(GdalAlgorithm):
     NODATA = 'NODATA'
     COPY_SUBDATASETS = 'COPY_SUBDATASETS'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     DATA_TYPE = 'DATA_TYPE'
     OUTPUT = 'OUTPUT'
-
-    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+
+        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Override the projection for the output file'),
@@ -84,6 +82,13 @@ class translate(GdalAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
                                                     self.tr('Output data type'),
@@ -120,6 +125,7 @@ class translate(GdalAlgorithm):
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
             nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         else:
@@ -136,7 +142,7 @@ class translate(GdalAlgorithm):
             arguments.append('-a_nodata')
             arguments.append(nodata)
 
-        if self.parameterAsBool(parameters, self.COPY_SUBDATASETS, context):
+        if self.parameterAsBoolean(parameters, self.COPY_SUBDATASETS, context):
             arguments.append('-sds')
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
@@ -149,6 +155,10 @@ class translate(GdalAlgorithm):
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.append(inLayer.source())
         arguments.append(out)

@@ -17,6 +17,7 @@
 #define QGSTEST_H
 
 #include <QtTest/QtTest>
+#include "qgsrectangle.h"
 #include "qgsapplication.h"
 
 #define QGSTEST_MAIN(TestObject) \
@@ -78,11 +79,25 @@
 namespace QgsTest
 {
 
-  //! Returns true if test is running on Travis infrastructure
+  //! Returns TRUE if test is running on Travis infrastructure
   bool isTravis()
   {
     return qgetenv( "TRAVIS" ) == QStringLiteral( "true" );
   }
+
+  bool runFlakyTests()
+  {
+    return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
+  }
 }
+
+/**
+ * Formatting QgsRectangle for QCOMPARE pretty printing
+ */
+char *toString( const QgsRectangle &r )
+{
+  return QTest::toString( QStringLiteral( "QgsRectangle(%1, %2, %3, %4)" ).arg( QString::number( r.xMinimum() ), QString::number( r.yMinimum() ), QString::number( r.xMaximum() ), QString::number( r.yMaximum() ) ) );
+}
+
 
 #endif // QGSTEST_H

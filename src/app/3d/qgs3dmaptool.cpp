@@ -25,17 +25,17 @@ Qgs3DMapTool::Qgs3DMapTool( Qgs3DMapCanvas *canvas )
 
 void Qgs3DMapTool::mousePressEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 }
 
 void Qgs3DMapTool::mouseReleaseEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 }
 
 void Qgs3DMapTool::mouseMoveEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 }
 
 void Qgs3DMapTool::activate()
@@ -49,4 +49,9 @@ void Qgs3DMapTool::deactivate()
 QCursor Qgs3DMapTool::cursor() const
 {
   return Qt::CrossCursor;
+}
+
+Qgs3DMapCanvas *Qgs3DMapTool::canvas()
+{
+  return mCanvas;
 }

@@ -92,7 +92,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     if ( settings.contains( key + "/save" ) )
     {
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
-      mAuthSettings->setStoreUsernameChecked( ! mAuthSettings->username().isEmpty() );
+      mAuthSettings->setStoreUsernameChecked( !mAuthSettings->username().isEmpty() );
 
       if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
         mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
@@ -115,6 +115,7 @@ void QgsPgNewConnection::accept()
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
+  testConnection();
 
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
@@ -207,6 +208,17 @@ void QgsPgNewConnection::testConnection()
 
   if ( conn )
   {
+    if ( conn->pgVersion() < 90500 )
+    {
+      cb_projectsInDatabase->setEnabled( false );
+      cb_projectsInDatabase->setToolTip( tr( "Saving projects in databases not available for PostgreSQL databases earlier than 9.5" ) );
+    }
+    else
+    {
+      cb_projectsInDatabase->setEnabled( true );
+      cb_projectsInDatabase->setToolTip( QString() );
+    }
+
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
                       Qgis::Info );

@@ -16,12 +16,14 @@
 #define QGSFONTBUTTON_H
 
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgstextrenderer.h"
 
 #include <QToolButton>
 
+class QgsExpressionContextGenerator;
 class QgsMapCanvas;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -110,6 +112,21 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the appropriate message bar.
+     * \see messageBar()
+     * \since QGIS 3.10
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the widget.
+     * \see setMessageBar()
+     * \since QGIS 3.10
+     */
+    QgsMessageBar *messageBar() const;
+
+    /**
      * Returns the current text formatting set by the widget.
      * This is only used when mode() is ModeTextRenderer.
      * \see setTextFormat()
@@ -123,6 +140,28 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     QFont currentFont() const;
 
+    /**
+     * Returns the layer associated with the widget.
+     * \see setLayer()
+     * \since QGIS 3.10
+     */
+    QgsVectorLayer *layer() const;
+
+    /**
+     * Sets a \a layer to associate with the widget. This allows the
+     * widget to setup layer related settings within the text settings dialog,
+     * such as correctly populating data defined override buttons.
+     * \see layer()
+     * \since QGIS 3.10
+     */
+    void setLayer( QgsVectorLayer *layer );
+
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the button when required.
+     * \since QGIS 3.10
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
   public slots:
 
@@ -227,16 +266,21 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     QFont mFont;
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QPoint mDragStartPosition;
 
     QMenu *mMenu = nullptr;
 
+    QPointer< QgsVectorLayer > mLayer;
+
     QSize mIconSize;
+
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
     /**
      * Attempts to parse \a mimeData as a text format.
-     * \returns true if mime data could be intrepreted as a format
+     * \returns TRUE if mime data could be intrepreted as a format
      * \param mimeData mime data
      * \param resultFormat destination for text format
      * \see colorFromMimeData
@@ -246,7 +290,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     /**
      * Attempts to parse \a mimeData as a QFont.
-     * \returns true if mime data could be intrepreted as a QFont
+     * \returns TRUE if mime data could be intrepreted as a QFont
      * \param mimeData mime data
      * \param resultFont destination for font
      * \see formatFromMimeData
@@ -256,10 +300,10 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     /**
      * Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
-     * \returns true if mime data could be intrepreted as a color
+     * \returns TRUE if mime data could be intrepreted as a color
      * \param mimeData mime data
      * \param resultColor QColor to store evaluated color
-     * \param hasAlpha will be set to true if mime data also included an alpha component
+     * \param hasAlpha will be set to TRUE if mime data also included an alpha component
      * \see formatFromMimeData
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor, bool &hasAlpha );

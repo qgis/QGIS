@@ -141,6 +141,8 @@ Constructor for ImageExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QVector<qreal> predefinedMapScales;
+
     };
 
     ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
@@ -184,9 +186,27 @@ Constructor for PdfExportSettings
 
       bool forceVectorOutput;
 
+      bool appendGeoreference;
+
       bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
+
+      QgsRenderContext::TextRenderFormat textRenderFormat;
+
+      bool simplifyGeometries;
+
+      bool writeGeoPdf;
+
+      bool useIso32000ExtensionFormatGeoreferencing;
+
+      bool useOgcBestPracticeFormatGeoreferencing;
+
+      bool includeGeoPdfFeatures;
+
+      QStringList exportThemes;
+
+      QVector<qreal> predefinedMapScales;
 
     };
 
@@ -243,6 +263,8 @@ Constructor for PrintExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QVector<qreal> predefinedMapScales;
+
     };
 
     ExportResult print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings );
@@ -282,10 +304,17 @@ Constructor for SvgExportSettings
 
       bool exportAsLayers;
 
+      bool exportLabelsToSeparateLayers;
+
       bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
 
+      QgsRenderContext::TextRenderFormat textRenderFormat;
+
+      bool simplifyGeometries;
+
+      QVector<qreal> predefinedMapScales;
     };
 
     ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );
@@ -322,7 +351,7 @@ an export.
 %Docstring
 Georeferences a ``file`` (image of PDF) exported from the layout.
 
-The ``referenceMap`` argument specifies a map item to use for georeferencing. If left as None, the
+The ``referenceMap`` argument specifies a map item to use for georeferencing. If left as ``None``, the
 default layout QgsLayout.referenceMap() will be used.
 
 The ``exportRegion`` argument can be set to a valid rectangle to indicate that only part of the layout was
@@ -330,7 +359,7 @@ exported.
 
 Similarly, the ``dpi`` can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
 
-The function will return true if the output was successfully georeferenced.
+The function will return ``True`` if the output was successfully georeferenced.
 
 .. seealso:: :py:func:`computeWorldFileParameters`
 %End

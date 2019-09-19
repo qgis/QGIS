@@ -22,6 +22,13 @@ class QgsSymbolLayerUtils
 %End
   public:
 
+    enum VertexMarkerType
+    {
+      SemiTransparentCircle,
+      Cross,
+      NoMarker
+    };
+
     static QString encodeColor( const QColor &color );
     static QColor decodeColor( const QString &str );
 
@@ -87,6 +94,23 @@ Decodes a QSizeF from a string.
 .. seealso:: :py:func:`decodeSize`
 %End
 
+    static QPointF toPoint( const QVariant &value, bool *ok /Out/ = 0 );
+%Docstring
+Converts a ``value`` to a point.
+
+:param value: value to convert
+
+:return: - converted point
+         - ok: will be set to ``True`` if value was successfully converted
+
+
+.. seealso:: :py:func:`decodePoint`
+
+.. seealso:: :py:func:`toSize`
+
+.. versionadded:: 3.10
+%End
+
     static QString encodeSize( QSizeF size );
 %Docstring
 Encodes a QSizeF to a string.
@@ -107,6 +131,23 @@ Decodes a QSizeF from a string.
 .. seealso:: :py:func:`decodePoint`
 
 .. versionadded:: 3.0
+%End
+
+    static QSizeF toSize( const QVariant &value, bool *ok /Out/ = 0 );
+%Docstring
+Converts a ``value`` to a size.
+
+:param value: value to convert
+
+:return: - converted size
+         - ok: will be set to ``True`` if value was successfully converted
+
+
+.. seealso:: :py:func:`decodeSize`
+
+.. seealso:: :py:func:`toPoint`
+
+.. versionadded:: 3.10
 %End
 
     static QString encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale );
@@ -159,7 +200,7 @@ Returns the size scaled in pixels according to the uom attribute.
 
     static QPainter::CompositionMode decodeBlendMode( const QString &s );
 
-    static QIcon symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding = 0 );
+    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0 );
 %Docstring
 Returns an icon preview for a color ramp.
 
@@ -170,7 +211,8 @@ Returns an icon preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewPixmap`
 %End
 
-    static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0 );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0, bool selected = false,
+                                        const QgsExpressionContext *expressionContext = 0 );
 %Docstring
 Returns a pixmap preview for a color ramp.
 
@@ -178,15 +220,25 @@ Returns a pixmap preview for a color ramp.
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
 :param customContext: render context to use when rendering symbol
+:param selected: set to ``True`` to render the symbol in a selected state
+:param expressionContext: optional custom expression context
 
 .. note::
 
    Parameter customContext added in QGIS 2.6
 
+.. note::
+
+   Parameter selected added in QGIS 3.10
+
+.. note::
+
+   Parameter expressionContext added in QGIS 3.10
+
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End
 
-    static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 %Docstring
 Draws a symbol layer preview to a QPicture
 
@@ -202,7 +254,7 @@ Draws a symbol layer preview to a QPicture
 .. versionadded:: 2.9
 %End
 
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 %Docstring
 Draws a symbol layer preview to an icon.
 
@@ -240,6 +292,13 @@ Returns a pixmap preview for a color ramp.
 
     static void drawStippledBackground( QPainter *painter, QRect rect );
 
+    static void drawVertexMarker( double x, double y, QPainter &p, QgsSymbolLayerUtils::VertexMarkerType type, int markerSize );
+%Docstring
+Draws a vertex symbol at (painter) coordinates x, y. (Useful to assist vertex editing.)
+
+.. versionadded:: 3.4.5
+%End
+
     static double estimateMaxSymbolBleed( QgsSymbol *symbol, const QgsRenderContext &context );
 %Docstring
 Returns the maximum estimated bleed for the symbol
@@ -260,7 +319,7 @@ Attempts to load a symbol from a DOM element
 %Docstring
 Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
 %End
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
+    static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
 Writes a symbol definition to XML
 %End
@@ -404,7 +463,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
-    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) /Factory/;
+    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) /Factory/;
 %Docstring
 Creates new mime data from a ``symbol``.
 This also sets the mime color data to match the symbol's color, so that copied symbols
@@ -505,7 +564,7 @@ mime data's text with the color's hex code.
 Attempts to parse mime data as a color
 
 :param data: mime data to parse
-:param hasAlpha: will be set to true if mime data was interpreted as a color containing
+:param hasAlpha: will be set to ``True`` if mime data was interpreted as a color containing
                  an explicit alpha value
 
 :return: valid color if mimedata could be interpreted as a color, otherwise an
@@ -530,7 +589,7 @@ Attempts to parse mime data as a list of named colors
 Creates mime data from a list of named colors
 
 :param colorList: list of named colors
-:param allFormats: set to true to include additional mime formats, include text/plain and application/x-color
+:param allFormats: set to ``True`` to include additional mime formats, include text/plain and application/x-color
 
 :return: mime data containing encoded colors
 
@@ -545,7 +604,7 @@ Exports colors to a gpl GIMP palette file
 :param paletteName: name of palette, which is stored in gpl file
 :param colors: colors to export
 
-:return: true if export was successful
+:return: ``True`` if export was successful
 
 .. seealso:: :py:func:`importColorsFromGpl`
 %End
@@ -555,7 +614,7 @@ Exports colors to a gpl GIMP palette file
 Imports colors from a gpl GIMP palette file
 
 :param file: source gpl file
-:param ok: will be true if file was successfully read
+:param ok: will be ``True`` if file was successfully read
 :param name: will be set to palette name from gpl file, if present
 
 :return: list of imported colors
@@ -569,7 +628,7 @@ Attempts to parse a string as a color using a variety of common formats, includi
 codes, rgb and rgba strings.
 
 :param colorStr: string representing the color
-:param strictEval: set to true for stricter color parsing rules
+:param strictEval: set to ``True`` for stricter color parsing rules
 
 :return: parsed color
 
@@ -582,8 +641,8 @@ Attempts to parse a string as a color using a variety of common formats, includi
 codes, rgb and rgba strings.
 
 :param colorStr: string representing the color
-:param containsAlpha: if colorStr contains an explicit alpha value then containsAlpha will be set to true
-:param strictEval: set to true for stricter color parsing rules
+:param containsAlpha: if colorStr contains an explicit alpha value then containsAlpha will be set to ``True``
+:param strictEval: set to ``True`` for stricter color parsing rules
 
 :return: parsed color
 
@@ -647,9 +706,9 @@ Determines an SVG symbol's name from its ``path``.
 Calculate the centroid point of a QPolygonF
 %End
 
-    static QPointF polygonPointOnSurface( const QPolygonF &points );
+    static QPointF polygonPointOnSurface( const QPolygonF &points, QList<QPolygonF> *rings = 0 );
 %Docstring
-Calculate a point within of a QPolygonF
+Calculate a point on the surface of a QPolygonF
 %End
 
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
@@ -661,7 +720,7 @@ Calculate whether a point is within of a QPolygonF
 %Docstring
 Returns a new valid expression instance for given field or expression string.
 If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
-If the string is empty, returns null pointer.
+If the string is empty, returns ``None``.
 This is useful when accepting input which could be either a non-quoted field name or expression.
 
 .. versionadded:: 2.2

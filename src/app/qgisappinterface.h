@@ -18,9 +18,11 @@
 #ifndef QGISIFACE_H
 #define QGISIFACE_H
 
+#include "qgis_app.h"
 #include "qgisinterface.h"
 #include "qgsapppluginmanagerinterface.h"
-#include "qgis_app.h"
+
+class QTimer;
 
 class QgisApp;
 
@@ -54,7 +56,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsLayerTreeView *layerTreeView() override;
 
     void addCustomActionForLayerType( QAction *action, QString menu,
-                                      QgsMapLayer::LayerType type, bool allLayers ) override;
+                                      QgsMapLayerType type, bool allLayers ) override;
     void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) override;
     bool removeCustomActionForLayerType( QAction *action ) override;
 
@@ -153,6 +155,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QMenu *addLayerMenu() override;
     QMenu *settingsMenu() override;
     QMenu *pluginMenu() override;
+    QMenu *pluginHelpMenu() override;
     QMenu *rasterMenu() override;
     QMenu *vectorMenu() override;
     QMenu *databaseMenu() override;
@@ -197,6 +200,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionDeleteRing() override;
     QAction *actionDeletePart() override;
     QAction *actionVertexTool() override;
+    QAction *actionVertexToolActiveLayer() override;
     QAction *actionPan() override;
     QAction *actionPanToSelected() override;
     QAction *actionZoomIn() override;
@@ -274,7 +278,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void invalidateLocatorResults() override;
     bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) override;
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) override;
-    QgsBrowserModel *browserModel() override;
+    QgsBrowserGuiModel *browserModel() override;
+    QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
+
 
   private slots:
 

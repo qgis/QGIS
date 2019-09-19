@@ -102,7 +102,8 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add drives
-  Q_FOREACH ( const QFileInfo &drive, QDir::drives() )
+  const auto drives { QDir::drives() };
+  for ( const QFileInfo &drive : drives )
   {
     const QString path = drive.absolutePath();
 
@@ -126,7 +127,8 @@ void QgsBrowserModel::addRootItems()
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
   QMap<int, QgsDataItem *> providerMap;
 
-  Q_FOREACH ( QgsDataItemProvider *pr, QgsApplication::dataItemProviderRegistry()->providers() )
+  const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
+  for ( QgsDataItemProvider *pr : constProviders )
   {
     int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )
@@ -147,7 +149,8 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add as sorted groups by QgsDataProvider::DataCapability enum
-  Q_FOREACH ( int key, providerMap.uniqueKeys() )
+  const auto constUniqueKeys = providerMap.uniqueKeys();
+  for ( int key : constUniqueKeys )
   {
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )
@@ -155,7 +158,8 @@ void QgsBrowserModel::addRootItems()
       std::sort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
     }
 
-    Q_FOREACH ( QgsDataItem *ditem, providerGroup )
+    const auto constProviderGroup = providerGroup;
+    for ( QgsDataItem *ditem : constProviderGroup )
     {
       mRootItems << ditem;
     }
@@ -164,7 +168,8 @@ void QgsBrowserModel::addRootItems()
 
 void QgsBrowserModel::removeRootItems()
 {
-  Q_FOREACH ( QgsDataItem *item, mRootItems )
+  const auto constMRootItems = mRootItems;
+  for ( QgsDataItem *item : constMRootItems )
   {
     delete item;
   }
@@ -173,12 +178,16 @@ void QgsBrowserModel::removeRootItems()
   mDriveItems.clear();
 }
 
+QMap<QString, QgsDirectoryItem *> QgsBrowserModel::driveItems() const
+{
+  return mDriveItems;
+}
+
+
 void QgsBrowserModel::initialize()
 {
   if ( ! mInitialized )
   {
-    connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
-    connect( QgsProject::instance(), &QgsProject::projectSaved, this, &QgsBrowserModel::updateProjectHome );
     connect( QgsProject::instance(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome );
     addRootItems();
     mInitialized = true;
@@ -197,8 +206,10 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
   if ( ptr->hasDragEnabled() )
     flags |= Qt::ItemIsDragEnabled;
 
+  Q_NOWARN_DEPRECATED_PUSH
   if ( ptr->acceptDrop() )
     flags |= Qt::ItemIsDropEnabled;
+  Q_NOWARN_DEPRECATED_POP
 
   if ( ptr->capabilities2() & QgsDataItem::Rename )
     flags |= Qt::ItemIsEditable;
@@ -271,7 +282,9 @@ bool QgsBrowserModel::setData( const QModelIndex &index, const QVariant &value, 
   {
     case Qt::EditRole:
     {
+      Q_NOWARN_DEPRECATED_PUSH
       return item->rename( value.toString() );
+      Q_NOWARN_DEPRECATED_POP
     }
   }
   return false;
@@ -279,7 +292,7 @@ bool QgsBrowserModel::setData( const QModelIndex &index, const QVariant &value, 
 
 QVariant QgsBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  Q_UNUSED( section );
+  Q_UNUSED( section )
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     return QVariant( "header" );
@@ -317,7 +330,7 @@ bool QgsBrowserModel::hasChildren( const QModelIndex &parent ) const
 
 int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 
@@ -366,6 +379,30 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   return QModelIndex(); // not found
 }
 
+QModelIndex QgsBrowserModel::findUri( const QString &uri, QModelIndex index )
+{
+  for ( int i = 0; i < this->rowCount( index ); i++ )
+  {
+    QModelIndex idx = this->index( i, 0, index );
+
+    if ( qobject_cast<QgsLayerItem *>( dataItem( idx ) ) )
+    {
+      QString itemUri = qobject_cast<QgsLayerItem *>( dataItem( idx ) )->uri();
+
+      if ( itemUri == uri )
+      {
+        QgsDebugMsgLevel( "Arrived " + itemUri, 4 );
+        return idx; // we have found the item we have been looking for
+      }
+    }
+
+    QModelIndex childIdx = findUri( uri, idx );
+    if ( childIdx.isValid() )
+      return childIdx;
+  }
+  return QModelIndex();
+}
+
 void QgsBrowserModel::connectItem( QgsDataItem * )
 {
   // deprecated, no use
@@ -401,7 +438,7 @@ void QgsBrowserModel::refreshDrives()
       continue;
 
     // drive has been removed, remove corresponding item
-    if ( QgsDataItem *driveItem = mDriveItems.value( drivePath ) )
+    if ( QgsDirectoryItem *driveItem = mDriveItems.value( drivePath ) )
       removeRootItem( driveItem );
   }
 
@@ -528,7 +565,7 @@ void QgsBrowserModel::setupItemConnections( QgsDataItem *item )
            this, &QgsBrowserModel::itemStateChanged );
 
   // if it's a collection item, also forwards connectionsChanged
-  QgsDataCollectionItem *collectionItem = dynamic_cast<QgsDataCollectionItem *>( item );
+  QgsDataCollectionItem *collectionItem = qobject_cast<QgsDataCollectionItem *>( item );
   if ( collectionItem )
     connect( collectionItem, &QgsDataCollectionItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
 }
@@ -545,7 +582,8 @@ QStringList QgsBrowserModel::mimeTypes() const
 QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( index.isValid() )
     {
@@ -558,11 +596,8 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
   return QgsMimeDataUtils::encodeUriList( lst );
 }
 
-bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
-
   QgsDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
@@ -570,7 +605,9 @@ bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
     return false;
   }
 
+  Q_NOWARN_DEPRECATED_PUSH
   return destItem->handleDrop( data, action );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
@@ -628,7 +665,7 @@ void QgsBrowserModel::addFavoriteDirectory( const QString &directory, const QStr
 
 void QgsBrowserModel::removeFavorite( const QModelIndex &index )
 {
-  QgsDirectoryItem *item = dynamic_cast<QgsDirectoryItem *>( dataItem( index ) );
+  QgsDirectoryItem *item = qobject_cast<QgsDirectoryItem *>( dataItem( index ) );
   if ( !item )
     return;
 
@@ -674,9 +711,10 @@ void QgsBrowserModel::removeRootItem( QgsDataItem *item )
   int i = mRootItems.indexOf( item );
   beginRemoveRows( QModelIndex(), i, i );
   mRootItems.remove( i );
-  if ( !mDriveItems.key( item ).isEmpty() )
+  QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( item );
+  if ( !mDriveItems.key( dirItem ).isEmpty() )
   {
-    mDriveItems.remove( mDriveItems.key( item ) );
+    mDriveItems.remove( mDriveItems.key( dirItem ) );
   }
   item->deleteLater();
   endRemoveRows();

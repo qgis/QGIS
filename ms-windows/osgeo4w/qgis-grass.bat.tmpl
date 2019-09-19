@@ -1,10 +1,10 @@
 @echo off
 call "%~dp0\o4w_env.bat"
-call "%OSGEO4W_ROOT%\apps\grass\grass-@grassversion@\etc\env.bat"
+call "%OSGEO4W_ROOT%\apps\grass\@grasspath@\etc\env.bat"
 call qt5_env.bat
 call py3_env.bat
 @echo off
-path %OSGEO4W_ROOT%\apps\@package@\bin;%OSGEO4W_ROOT%\apps\grass\grass-@grassversion@\lib;%OSGEO4W_ROOT%\apps\grass\grass-@grassversion@\bin;%PATH%
+path %OSGEO4W_ROOT%\apps\@package@\bin;%OSGEO4W_ROOT%\apps\grass\@grasspath@\lib;%OSGEO4W_ROOT%\apps\grass\@grasspath@\bin;%PATH%
 set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/@package@
 set GDAL_FILENAME_IS_UTF8=YES
 rem Set VSI cache to be used as buffer, see #6448

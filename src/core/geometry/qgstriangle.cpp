@@ -165,6 +165,9 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   mWkbType = parts.first;
 
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+    return true;
+
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
@@ -251,14 +254,14 @@ void QgsTriangle::addInteriorRing( QgsCurve *ring )
 
 bool QgsTriangle::deleteVertex( QgsVertexId position )
 {
-  Q_UNUSED( position );
+  Q_UNUSED( position )
   return false;
 }
 
 bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
-  Q_UNUSED( position );
-  Q_UNUSED( vertex );
+  Q_UNUSED( position )
+  Q_UNUSED( vertex )
   return false;
 }
 

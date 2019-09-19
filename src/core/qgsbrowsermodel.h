@@ -61,6 +61,12 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
  * QgsBrowserModel models are not initially populated and use a deferred initialization
  * approach. After constructing a QgsBrowserModel, a call must be made
  * to initialize() in order to populate the model.
+ *
+ * \note Since QGIS 3.10 it is recommended to use QgsBrowserGuiModel from GUI library.
+ * Implementation of data items used from QgsBrowserModel should not trigger any GUI
+ * operations such as opening of widgets/dialogs or showing message boxes. Such actions
+ * should be implemented in a new QgsDataItemGuiProvider subclass which is used
+ * by QgsBrowserGuiModel (but not by QgsBrowserModel).
  */
 class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 {
@@ -113,7 +119,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = nullptr ) const;
 
     /**
-     * Returns the data item at the specified index, or a nullptr if no item
+     * Returns the data item at the specified index, or NULLPTR if no item
      * exists at the index.
      */
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
@@ -130,11 +136,23 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \param path item path
      * \param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
      *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
-     * \returns model index, invalid if item not found */
+     * \returns model index, invalid if item not found
+    */
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     //! \note not available in Python bindings
     static QModelIndex findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly ) SIP_SKIP;
+
+    /**
+     * Returns index of layer item with given uri. It only searches in currently fetched
+     * items, i.e. it does not fetch children.
+     * \param uri item uri
+     * \param index the current index of the parent (to search for children)
+     * \returns model index, invalid if item not found
+     *
+     * \since QGIS 3.6
+     */
+    QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
 
     /**
      * \deprecated Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
@@ -142,13 +160,24 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     Q_DECL_DEPRECATED void connectItem( QgsDataItem *item ) SIP_DEPRECATED;
 
     /**
-     * Returns true if the model has been initialized.
+     * Returns TRUE if the model has been initialized.
      *
      * \see initialize()
      */
     bool initialized() const { return mInitialized;  }
 
+    /**
+     * Returns a map of the root drive items shown in the browser.
+     *
+     * These correspond to the top-level directory items shown, e.g. on Windows the C:\, D:\, etc,
+     * and on Linux the "/" root directory.
+     *
+     * \since QGIS 3.6
+     */
+    QMap<QString, QgsDirectoryItem *> driveItems() const;
+
   signals:
+
     //! Emitted when item children fetch was finished
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 
@@ -214,6 +243,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      */
     void initialize();
 
+
   protected:
     //! Populates the model
     void addRootItems();
@@ -225,7 +255,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
   private:
     bool mInitialized = false;
-    QMap< QString, QgsDataItem * > mDriveItems;
+    QMap< QString, QgsDirectoryItem * > mDriveItems;
 
     void setupItemConnections( QgsDataItem *item );
 

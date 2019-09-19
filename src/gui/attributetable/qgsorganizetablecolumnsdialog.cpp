@@ -42,7 +42,7 @@
 #include "qgsgui.h"
 
 
-QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QgsAttributeTableConfig config, QWidget *parent, Qt::WindowFlags flags )
+QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setupUi( this );
@@ -58,7 +58,8 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 
     mFieldsList->clear();
 
-    Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
+    const auto constColumns = mConfig.columns();
+    for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
     {
       QListWidgetItem *item = nullptr;
       if ( columnConfig.type == QgsAttributeTableConfig::Action )
@@ -99,10 +100,12 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
   }
 }
 
+///@cond PRIVATE
 QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent, Qt::WindowFlags flags )
   : QgsOrganizeTableColumnsDialog( vl, vl->attributeTableConfig(), parent, flags )
 {
 }
+///@endcond
 
 QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
 {

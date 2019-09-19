@@ -21,26 +21,25 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+from pathlib import Path
 
 from qgis.PyQt.QtCore import pyqtSignal, QCoreApplication
 from qgis.PyQt.QtWidgets import QWidget, QHBoxLayout, QMenu, QPushButton, QLineEdit, QSizePolicy, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
 
 from qgis.core import (QgsMapLayer,
+                       QgsRasterLayer,
                        QgsSettings,
                        QgsProject,
                        QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterFeatureSource)
+                       QgsProcessingParameterMeshLayer,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterMapLayer)
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
@@ -84,28 +83,39 @@ class BatchInputSelectionPanel(QWidget):
     def showPopupMenu(self):
         popupmenu = QMenu()
 
-        if not (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                self.param.layerType == dataobjects.TYPE_FILE):
+        if not (isinstance(self.param, QgsProcessingParameterMultipleLayers)
+                and self.param.layerType == dataobjects.TYPE_FILE):
             selectLayerAction = QAction(
                 QCoreApplication.translate('BatchInputSelectionPanel', 'Select from Open Layers…'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
             popupmenu.addAction(selectLayerAction)
 
         selectFileAction = QAction(
-            QCoreApplication.translate('BatchInputSelectionPanel', 'Select from File System…'), self.pushButton)
+            QCoreApplication.translate('BatchInputSelectionPanel', 'Select Files…'), self.pushButton)
         selectFileAction.triggered.connect(self.showFileSelectionDialog)
         popupmenu.addAction(selectFileAction)
+
+        selectDirectoryAction = QAction(
+            QCoreApplication.translate('BatchInputSelectionPanel', 'Select Directory…'), self.pushButton)
+        selectDirectoryAction.triggered.connect(self.showDirectorySelectionDialog)
+        popupmenu.addAction(selectDirectoryAction)
 
         popupmenu.exec_(QCursor.pos())
 
     def showLayerSelectionDialog(self):
         layers = []
-        if (isinstance(self.param, QgsProcessingParameterRasterLayer) or
-                (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                 self.param.layerType() == QgsProcessing.TypeRaster)):
+        if (isinstance(self.param, QgsProcessingParameterRasterLayer)
+            or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
+                self.param.layerType() == QgsProcessing.TypeRaster)):
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.param, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
+        elif isinstance(self.param, QgsProcessingParameterMapLayer):
+            layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
+        elif (isinstance(self.param, QgsProcessingParameterMeshLayer)
+              or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
+                  self.param.layerType() == QgsProcessing.TypeMesh)):
+            layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
         else:
             datatypes = [QgsProcessing.TypeVectorAnyGeometry]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
@@ -145,23 +155,55 @@ class BatchInputSelectionPanel(QWidget):
                                                  self.col).setValue(generate_layer_id(layers[layeridx]))
 
     def showFileSelectionDialog(self):
+        self.showFileDialog(seldir=False)
+
+    def showDirectorySelectionDialog(self):
+        self.showFileDialog(seldir=True)
+
+    def showFileDialog(self, seldir):
         settings = QgsSettings()
         text = str(self.text.text())
         if os.path.isdir(text):
             path = text
-        elif os.path.isdir(os.path.dirname(text)):
+        elif not seldir and os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
         elif settings.contains('/Processing/LastInputPath'):
             path = str(settings.value('/Processing/LastInputPath'))
         else:
             path = ''
 
-        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select Files'), path,
-                                                            getFileFilter(self.param))
+        if not seldir:
+            ret, selected_filter = QFileDialog.getOpenFileNames(
+                self, self.tr('Select Files'), path, getFileFilter(self.param)
+            )
+        else:
+            ret = QFileDialog.getExistingDirectory(self, self.tr('Select Directory'), path)
+
         if ret:
-            files = list(ret)
-            settings.setValue('/Processing/LastInputPath',
-                              os.path.dirname(str(files[0])))
+            if seldir:
+                settings.setValue('/Processing/LastInputPath', ret)
+
+                files = []
+                for pp in Path(ret).rglob("*"):
+                    if not pp.is_file():
+                        continue
+
+                    p = pp.as_posix()
+
+                    if ((isinstance(self.param, QgsProcessingParameterRasterLayer)
+                         or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster)) and
+                            not QgsRasterLayer.isValidRasterFileName(p)):
+                        continue
+
+                    files.append(p)
+
+                if not files:
+                    return
+
+            else:
+                files = list(ret)
+                settings.setValue('/Processing/LastInputPath', os.path.dirname(str(files[0])))
+
             for i, filename in enumerate(files):
                 files[i] = dataobjects.getRasterSublayer(filename, self.param)
             if len(files) == 1:
@@ -182,7 +224,7 @@ class BatchInputSelectionPanel(QWidget):
         self._value = self.text.text()
         self.valueChanged.emit()
 
-    def value(self):
+    def getValue(self):
         return self._value if self._value else None
 
     def setValue(self, value):

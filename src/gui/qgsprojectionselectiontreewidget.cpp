@@ -21,10 +21,6 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptoolpan.h"
-#include "qgsvertexmarker.h"
 
 //qt includes
 #include <QFileInfo>
@@ -37,6 +33,10 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 {
   setupUi( this );
 
+  QFont f = teProjection->font();
+  f.setPointSize( f.pointSize() - 2 );
+  teProjection->setFont( f );
+
   leSearch->setShowSearchIcon( true );
 
   connect( lstCoordinateSystems, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked );
@@ -46,27 +46,6 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( cbxHideDeprecated, &QCheckBox::stateChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
   connect( leSearch, &QgsFilterLineEdit::textChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
 
-  mPreviewBand = new QgsRubberBand( mAreaCanvas, QgsWkbTypes::PolygonGeometry );
-  mPreviewBand->setWidth( 4 );
-
-  mPreviewBand2 = new QgsRubberBand( mAreaCanvas, QgsWkbTypes::PolygonGeometry );
-  mPreviewBand2->setWidth( 4 );
-  QColor rectColor = QColor( 185, 84, 210, 60 );
-  mPreviewBand2->setColor( rectColor );
-
-  mVertexMarker = new QgsVertexMarker( mAreaCanvas );
-  mVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-  mVertexMarker->setColor( QColor( 185, 84, 210 ) );
-  mVertexMarker->setPenWidth( 3 );
-
-  QgsCoordinateReferenceSystem srs( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mAreaCanvas->setDestinationCrs( srs );
-
-  QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
-  mLayers << new QgsVectorLayer( layerPath );
-  mAreaCanvas->setLayers( mLayers );
-  mAreaCanvas->setMapTool( new QgsMapToolPan( mAreaCanvas ) );
-  mAreaCanvas->setPreviewJobsEnabled( true );
   mAreaCanvas->setVisible( mShowMap );
 
   if ( QDialog *dlg = qobject_cast<QDialog *>( parent ) )
@@ -95,17 +74,19 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
 
   mCheckBoxNoProjection->setHidden( true );
+  mCheckBoxNoProjection->setEnabled( false );
   connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, &QgsProjectionSelectionTreeWidget::crsSelected );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, mFrameProjections, &QFrame::setDisabled );
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( mCheckBoxNoProjection->isEnabled() )
+    {
+      mFrameProjections->setDisabled( checked );
+    }
+  } );
 }
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
 {
-  qDeleteAll( mLayers );
-  delete mPreviewBand;
-  delete mPreviewBand2;
-  delete mVertexMarker;
-
   if ( !mPushProjectionToFront )
   {
     return;
@@ -125,7 +106,7 @@ QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
     mRecentProjections.removeLast();
   }
 
-  // Save to file *** Should be removed sometims in the future ***
+  // Save to file *** Should be removed sometime in the future ***
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/UI/recentProjections" ), mRecentProjections );
 
@@ -162,6 +143,9 @@ void QgsProjectionSelectionTreeWidget::resizeEvent( QResizeEvent *event )
 
 void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent *event )
 {
+  if ( mInitialized )
+    return;
+
   // ensure the projection list view is actually populated
   // before we show this widget
   loadCrsList( &mCrsFilter );
@@ -181,6 +165,7 @@ void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent *event )
 
   // Pass up the inheritance hierarchy
   QWidget::showEvent( event );
+  mInitialized = true;
 }
 
 QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<QString> *crsFilter )
@@ -209,7 +194,8 @@ QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<Q
 
   // iterate through all incoming CRSs
 
-  Q_FOREACH ( const QString &auth_id, *crsFilter )
+  const auto authIds { *crsFilter };
+  for ( const QString &auth_id : authIds )
   {
     QStringList parts = auth_id.split( ':' );
 
@@ -277,7 +263,6 @@ void QgsProjectionSelectionTreeWidget::applySelection( int column, QString value
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
     teProjection->clear();
-    teSelected->clear();
   }
 }
 
@@ -319,16 +304,12 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
 
 void QgsProjectionSelectionTreeWidget::setPreviewRect( const QgsRectangle &rect )
 {
-  mPreviewRect = rect;
-  mPreviewBand2->setToGeometry( QgsGeometry::fromRect( mPreviewRect ), nullptr );
-  mPreviewBand2->show();
-  mVertexMarker->setCenter( rect.center() );
-  mVertexMarker->show();
+  mAreaCanvas->setCanvasRect( rect );
 }
 
 QgsRectangle QgsProjectionSelectionTreeWidget::previewRect() const
 {
-  return mPreviewRect;
+  return mAreaCanvas->canvasRect();
 }
 
 // Returns the whole proj4 string for the selected projection node
@@ -344,60 +325,20 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
   if ( !item || item->text( QgisCrsIdColumn ).isEmpty() )
     return QString();
 
-  QString srsId = item->text( QgisCrsIdColumn );
+  long srsId = item->text( QgisCrsIdColumn ).toLong();
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsId );
+  return crs.toProj4();
+}
 
-  QgsDebugMsgLevel( "srsId = " + srsId, 4 );
-  QgsDebugMsgLevel( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ), 4 );
-
-  //
-  // Determine if this is a user projection or a system on
-  // user projection defs all have srs_id >= 100000
-  //
-  QString databaseFileName;
-  if ( srsId.toLong() >= USER_CRS_START_ID )
-  {
-    databaseFileName = QgsApplication::qgisUserDatabaseFilePath();
-    if ( !QFileInfo::exists( databaseFileName ) ) //its unlikely that this condition will ever be reached
-      return QString();
-  }
-  else //must be a system projection then
-  {
-    databaseFileName = mSrsDatabaseFileName;
-  }
-
-  QgsDebugMsgLevel( "db = " + databaseFileName, 4 );
-
-  sqlite3 *database = nullptr;
-  int rc = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
-  if ( rc )
-  {
-    showDBMissingWarning( databaseFileName );
+QString QgsProjectionSelectionTreeWidget::selectedWktString()
+{
+  QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
+  if ( !item || item->text( QgisCrsIdColumn ).isEmpty() )
     return QString();
-  }
 
-  // prepare the sql statement
-  const char *tail = nullptr;
-  sqlite3_stmt *stmt = nullptr;
-  QString sql = QStringLiteral( "select parameters from tbl_srs where srs_id=%1" ).arg( srsId );
-
-  QgsDebugMsgLevel( "Selection sql: " + sql, 4 );
-
-  rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
-  // XXX Need to free memory from the error msg if one is set
-  QString projString;
-  if ( rc == SQLITE_OK && sqlite3_step( stmt ) == SQLITE_ROW )
-  {
-    projString = QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 0 ) );
-  }
-
-  // close the statement
-  sqlite3_finalize( stmt );
-  // close the database
-  sqlite3_close( database );
-
-  Q_ASSERT( !projString.isEmpty() );
-
-  return projString;
+  long srsId = item->text( QgisCrsIdColumn ).toLong();
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsId );
+  return crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2015, true );
 }
 
 QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &expression ) const
@@ -474,7 +415,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 {
-  if ( mCheckBoxNoProjection->isChecked() )
+  if ( mCheckBoxNoProjection->isEnabled() && mCheckBoxNoProjection->isChecked() )
     return QgsCoordinateReferenceSystem();
 
   int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
@@ -486,14 +427,18 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 
 void QgsProjectionSelectionTreeWidget::setShowNoProjection( bool show )
 {
-  mCheckBoxNoProjection->setHidden( !show );
+  mCheckBoxNoProjection->setVisible( show );
+  mCheckBoxNoProjection->setEnabled( show );
+  if ( show )
+  {
+    mFrameProjections->setDisabled( mCheckBoxNoProjection->isChecked() );
+  }
 }
 
 void QgsProjectionSelectionTreeWidget::setShowBoundsMap( bool show )
 {
   mShowMap = show;
   mAreaCanvas->setVisible( show );
-
 }
 
 bool QgsProjectionSelectionTreeWidget::showNoProjection() const
@@ -700,6 +645,9 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
         // This is a projected srs
         QTreeWidgetItem *node = nullptr;
         QString srsType = QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 4 ) );
+        if ( srsType.isEmpty() )
+          srsType = tr( "Other" );
+
         // Find the node for this type and add the projection to it
         // If the node doesn't exist, create it
         if ( srsType == previousSrsType )
@@ -772,7 +720,6 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
     // Found a real CRS
     emit crsSelected();
 
-    teSelected->setText( selectedName() );
     updateBoundsPreview();
 
     QList<QTreeWidgetItem *> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
@@ -790,17 +737,16 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
   }
   else
   {
-    // Not an CRS - remove the highlight so the user doesn't get too confused
+    // Not a CRS - remove the highlight so the user doesn't get too confused
     current->setSelected( false );
     teProjection->clear();
-    teSelected->clear();
     lstRecent->clearSelection();
   }
 }
 
 void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
@@ -835,7 +781,7 @@ void QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged( QTreeWidget
 
 void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
@@ -872,7 +818,6 @@ void QgsProjectionSelectionTreeWidget::updateFilter()
           {
             ( *itr )->setSelected( false );
             teProjection->clear();
-            teSelected->clear();
           }
         }
         else if ( ( *itr )->text( NameColumn ).contains( re )
@@ -996,43 +941,21 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
     return;
 
   QgsRectangle rect = currentCrs.bounds();
+  QString extentString = tr( "Extent not known" );
+  mAreaCanvas->setPreviewRect( rect );
   if ( !qgsDoubleNear( rect.area(), 0.0 ) )
   {
-    QgsGeometry geom;
-    if ( rect.xMinimum() > rect.xMaximum() )
-    {
-      QgsRectangle rect1 = QgsRectangle( -180, rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
-      QgsRectangle rect2 = QgsRectangle( rect.xMinimum(), rect.yMinimum(), 180, rect.yMaximum() );
-      geom = QgsGeometry::fromRect( rect1 );
-      geom.addPart( QgsGeometry::fromRect( rect2 ) );
-    }
-    else
-    {
-      geom = QgsGeometry::fromRect( rect );
-    }
-    mPreviewBand->setToGeometry( geom, nullptr );
-    mPreviewBand->setColor( QColor( 255, 0, 0, 65 ) );
-    QgsRectangle extent = geom.boundingBox();
-    extent.scale( 1.1 );
-    mAreaCanvas->setExtent( extent );
-    mAreaCanvas->refresh();
-    mPreviewBand->show();
-    QString extentString = tr( "Extent: %1, %2, %3, %4" )
-                           .arg( rect.xMinimum(), 0, 'f', 2 )
-                           .arg( rect.yMinimum(), 0, 'f', 2 )
-                           .arg( rect.xMaximum(), 0, 'f', 2 )
-                           .arg( rect.yMaximum(), 0, 'f', 2 );
-    QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
-    teProjection->setText( extentString + "\n" + proj4String );
+    extentString = QStringLiteral( "%1, %2, %3, %4" )
+                   .arg( rect.xMinimum(), 0, 'f', 2 )
+                   .arg( rect.yMinimum(), 0, 'f', 2 )
+                   .arg( rect.xMaximum(), 0, 'f', 2 )
+                   .arg( rect.yMaximum(), 0, 'f', 2 );
   }
-  else
-  {
-    mPreviewBand->hide();
-    mAreaCanvas->zoomToFullExtent();
-    QString extentString = tr( "Extent: Extent not known" );
-    QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
-    teProjection->setText( extentString + "\n" + proj4String );
-  }
+
+  const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
+  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), selectedWktString().replace( '\n', QStringLiteral( "<br>" ) ).replace( ' ', QStringLiteral( "&nbsp;" ) ) );
+  const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), selectedProj4String() );
+  teProjection->setText( QStringLiteral( "<div style=\"font-size: smaller\"><h3>%1</h3><dl>" ).arg( selectedName() ) + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
 }
 
 QStringList QgsProjectionSelectionTreeWidget::authorities()

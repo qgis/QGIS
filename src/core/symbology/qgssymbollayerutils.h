@@ -55,6 +55,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
 {
   public:
 
+    //! Editing vertex markers
+    enum VertexMarkerType
+    {
+      SemiTransparentCircle,
+      Cross,
+      NoMarker
+    };
+
     static QString encodeColor( const QColor &color );
     static QColor decodeColor( const QString &str );
 
@@ -115,6 +123,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QPointF decodePoint( const QString &string );
 
     /**
+     * Converts a \a value to a point.
+     *
+     * \param value value to convert
+     * \param ok if specified, will be set to TRUE if value was successfully converted
+     *
+     * \returns converted point
+     *
+     * \see decodePoint()
+     * \see toSize()
+     * \since QGIS 3.10
+     */
+    static QPointF toPoint( const QVariant &value, bool *ok SIP_OUT = nullptr );
+
+    /**
      * Encodes a QSizeF to a string.
      * \see decodeSize()
      * \see encodePoint()
@@ -129,6 +151,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.0
      */
     static QSizeF decodeSize( const QString &string );
+
+    /**
+     * Converts a \a value to a size.
+     *
+     * \param value value to convert
+     * \param ok if specified, will be set to TRUE if value was successfully converted
+     *
+     * \returns converted size
+     *
+     * \see decodeSize()
+     * \see toPoint()
+     * \since QGIS 3.10
+     */
+    static QSizeF toSize( const QVariant &value, bool *ok SIP_OUT = nullptr );
 
     static QString encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale );
     static QgsMapUnitScale decodeMapUnitScale( const QString &str );
@@ -178,7 +214,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param padding space between icon edge and symbol
      * \see symbolPreviewPixmap()
      */
-    static QIcon symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding = 0 );
+    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0 );
 
     /**
      * Returns a pixmap preview for a color ramp.
@@ -186,10 +222,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
      * \param customContext render context to use when rendering symbol
+     * \param selected set to TRUE to render the symbol in a selected state
+     * \param expressionContext optional custom expression context
      * \note Parameter customContext added in QGIS 2.6
+     * \note Parameter selected added in QGIS 3.10
+     * \note Parameter expressionContext added in QGIS 3.10
      * \see symbolPreviewIcon()
      */
-    static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false,
+                                        const QgsExpressionContext *expressionContext = nullptr );
 
     /**
      * Draws a symbol layer preview to a QPicture
@@ -201,7 +242,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolLayerPreviewIcon()
      * \since QGIS 2.9
      */
-    static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
     /**
      * Draws a symbol layer preview to an icon.
@@ -212,7 +253,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns icon containing symbol layer preview
      * \see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
     /**
      * Returns an icon preview for a color ramp.
@@ -233,6 +274,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0 );
 
     static void drawStippledBackground( QPainter *painter, QRect rect );
+
+    /**
+     * Draws a vertex symbol at (painter) coordinates x, y. (Useful to assist vertex editing.)
+     * \since QGIS 3.4.5
+     */
+    static void drawVertexMarker( double x, double y, QPainter &p, QgsSymbolLayerUtils::VertexMarkerType type, int markerSize );
 
     //! Returns the maximum estimated bleed for the symbol
     static double estimateMaxSymbolBleed( QgsSymbol *symbol, const QgsRenderContext &context );
@@ -273,7 +320,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
     static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     //! Writes a symbol definition to XML
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
+    static QDomElement saveSymbol( const QString &symbolName, const QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
      * Returns a string representing the symbol. Can be used to test for equality
@@ -410,7 +457,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolFromMimeData()
      * \since QGIS 3.0
      */
-    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) SIP_FACTORY;
+    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) SIP_FACTORY;
 
     /**
      * Attempts to parse \a mime data as a symbol. A new symbol instance will be returned
@@ -483,7 +530,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Attempts to parse mime data as a color
      * \param data mime data to parse
-     * \param hasAlpha will be set to true if mime data was interpreted as a color containing
+     * \param hasAlpha will be set to TRUE if mime data was interpreted as a color containing
      * an explicit alpha value
      * \returns valid color if mimedata could be interpreted as a color, otherwise an
      * invalid color
@@ -502,7 +549,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Creates mime data from a list of named colors
      * \param colorList list of named colors
-     * \param allFormats set to true to include additional mime formats, include text/plain and application/x-color
+     * \param allFormats set to TRUE to include additional mime formats, include text/plain and application/x-color
      * \returns mime data containing encoded colors
      * \since QGIS 2.5
      */
@@ -513,7 +560,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param file destination file
      * \param paletteName name of palette, which is stored in gpl file
      * \param colors colors to export
-     * \returns true if export was successful
+     * \returns TRUE if export was successful
      * \see importColorsFromGpl
      */
     static bool saveColorsToGpl( QFile &file, const QString &paletteName, const QgsNamedColorList &colors );
@@ -521,7 +568,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Imports colors from a gpl GIMP palette file
      * \param file source gpl file
-     * \param ok will be true if file was successfully read
+     * \param ok will be TRUE if file was successfully read
      * \param name will be set to palette name from gpl file, if present
      * \returns list of imported colors
      * \see saveColorsToGpl
@@ -532,7 +579,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * \param colorStr string representing the color
-     * \param strictEval set to true for stricter color parsing rules
+     * \param strictEval set to TRUE for stricter color parsing rules
      * \returns parsed color
      * \since QGIS 2.3
      */
@@ -542,8 +589,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * \param colorStr string representing the color
-     * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
-     * \param strictEval set to true for stricter color parsing rules
+     * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to TRUE
+     * \param strictEval set to TRUE for stricter color parsing rules
      * \returns parsed color
      * \since QGIS 2.3
      */
@@ -591,8 +638,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
 
-    //! Calculate a point within of a QPolygonF
-    static QPointF polygonPointOnSurface( const QPolygonF &points );
+    //! Calculate a point on the surface of a QPolygonF
+    static QPointF polygonPointOnSurface( const QPolygonF &points, QList<QPolygonF> *rings = nullptr );
 
     //! Calculate whether a point is within of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
@@ -600,7 +647,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Returns a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
-     * If the string is empty, returns null pointer.
+     * If the string is empty, returns NULLPTR.
      * This is useful when accepting input which could be either a non-quoted field name or expression.
      * \since QGIS 2.2
      */

@@ -207,7 +207,7 @@ void QgsCollapsibleGroupBoxBasic::clearModifiers()
 
 void QgsCollapsibleGroupBoxBasic::checkToggled( bool chkd )
 {
-  Q_UNUSED( chkd );
+  Q_UNUSED( chkd )
   mCollapseButton->setEnabled( true ); // always keep enabled
 }
 
@@ -261,7 +261,8 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
       QgsDebugMsg( "found sync parent: " + mSyncParent->objectName() );
 
       bool thisCollapsed = mCollapsed; // get state of current box before its changed
-      Q_FOREACH ( QgsCollapsibleGroupBoxBasic *grpbox, mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic *>() )
+      const auto groupBoxes {mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic *>()};
+      for ( QgsCollapsibleGroupBoxBasic *grpbox : groupBoxes )
       {
         if ( grpbox->syncGroup() == syncGroup() && grpbox->isEnabled() )
         {
@@ -304,8 +305,6 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   setUpdatesEnabled( false );
 
   QgsSettings settings;
-  // NOTE: QGIS-Style groupbox styled in app stylesheet
-  bool usingQgsStyle = settings.value( QStringLiteral( "qgis/stylesheet/groupBoxCustom" ), QVariant( false ) ).toBool();
 
   QStyleOptionGroupBox box;
   initStyleOption( &box );
@@ -317,8 +316,8 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   int marginLeft = 20;  // title margin for disclosure triangle
   int marginRight = 5;  // a little bit of space on the right, to match space on the left
   int offsetLeft = 0;   // offset for oxygen theme
-  int offsetStyle = QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) ? ( usingQgsStyle ? 1 : 8 ) : 0;
-  int topBuffer = ( usingQgsStyle ? 3 : 1 ) + offsetStyle; // space between top of title or triangle and widget above
+  int offsetStyle = QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) ? 8 : 0;
+  int topBuffer = 1 + offsetStyle; // space between top of title or triangle and widget above
   int offsetTop = topBuffer;
   int offsetTopTri = topBuffer; // offset for triangle
 
@@ -366,10 +365,10 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 
   // customize style sheet for collapse/expand button and force left-aligned title
   QString ss;
-  if ( usingQgsStyle || QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) )
+  if ( QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) )
   {
     ss += QLatin1String( "QgsCollapsibleGroupBoxBasic, QgsCollapsibleGroupBox {" );
-    ss += QStringLiteral( "  margin-top: %1px;" ).arg( topBuffer + ( usingQgsStyle ? rectTitle.height() + 5 : rectFrame.top() ) );
+    ss += QStringLiteral( "  margin-top: %1px;" ).arg( topBuffer + rectFrame.top() );
     ss += '}';
   }
   ss += QLatin1String( "QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {" );
@@ -454,7 +453,8 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
       setStyleSheet( ss );
     }
 
-    Q_FOREACH ( QObject *child, children() )
+    const auto constChildren = children();
+    for ( QObject *child : constChildren )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
       if ( w && w != mCollapseButton )
@@ -472,7 +472,8 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
       setStyleSheet( ss );
     }
 
-    Q_FOREACH ( QObject *child, children() )
+    const auto constChildren = children();
+    for ( QObject *child : constChildren )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
       if ( w && w != mCollapseButton )

@@ -20,13 +20,14 @@
 
 #include "qgsrectangle.h"
 #include "qgswfsrequest.h"
+#include "qgsdataprovider.h"
 
 //! Manages the GetCapabilities request
 class QgsWfsCapabilities : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWfsCapabilities( const QString &uri );
+    explicit QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
     //! start network connection to get capabilities
     bool requestCapabilities( bool synchronous, bool forceRefresh );
@@ -107,6 +108,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
 
       void clear();
       QString addPrefixIfNeeded( const QString &name ) const;
+      QString getNamespaceForTypename( const QString &name ) const;
+      QString getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const;
     };
 
     //! Returns parsed capabilities - requestCapabilities() must be called before
@@ -125,6 +128,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
 
   private:
     Capabilities mCaps;
+
+    QgsDataProvider::ProviderOptions mOptions;
 
     //! Takes <Operations> element and updates the capabilities
     void parseSupportedOperations( const QDomElement &operationsElem,

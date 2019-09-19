@@ -47,7 +47,7 @@ Returns the snap tolerance (in pixels) to use when snapping.
 
     bool snapToGrid() const;
 %Docstring
-Returns true if snapping to grid is enabled.
+Returns ``True`` if snapping to grid is enabled.
 
 .. seealso:: :py:func:`setSnapToGrid`
 %End
@@ -61,7 +61,7 @@ Sets whether snapping to grid is ``enabled``.
 
     bool snapToGuides() const;
 %Docstring
-Returns true if snapping to guides is enabled.
+Returns ``True`` if snapping to guides is enabled.
 
 .. seealso:: :py:func:`setSnapToGuides`
 %End
@@ -75,7 +75,7 @@ Sets whether snapping to guides is ``enabled``.
 
     bool snapToItems() const;
 %Docstring
-Returns true if snapping to items is enabled.
+Returns ``True`` if snapping to items is enabled.
 
 .. seealso:: :py:func:`setSnapToItems`
 %End
@@ -91,7 +91,7 @@ Sets whether snapping to items is ``enabled``.
                        QGraphicsLineItem *verticalSnapLine = 0,
                        const QList< QgsLayoutItem * > *ignoreItems = 0 ) const;
 %Docstring
-Snaps a layout coordinate ``point``. If ``point`` was snapped, ``snapped`` will be set to true.
+Snaps a layout coordinate ``point``. If ``point`` was snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
@@ -111,7 +111,7 @@ A list of items to ignore during the snapping can be specified via the ``ignoreI
                      QGraphicsLineItem *verticalSnapLine = 0,
                      const QList< QgsLayoutItem * > *ignoreItems = 0 ) const;
 %Docstring
-Snaps a layout coordinate ``rect``. If ``rect`` was snapped, ``snapped`` will be set to true.
+Snaps a layout coordinate ``rect``. If ``rect`` was snapped, ``snapped`` will be set to ``True``.
 
 Snapping occurs by moving the rectangle alone. The rectangle will not be resized
 as a result of the snap operation.
@@ -133,8 +133,8 @@ A list of items to ignore during the snapping can be specified via the ``ignoreI
     QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX /Out/, bool &snappedY /Out/ ) const;
 %Docstring
 Snaps a layout coordinate ``point`` to the grid. If ``point``
-was snapped horizontally, ``snappedX`` will be set to true. If ``point``
-was snapped vertically, ``snappedY`` will be set to true.
+was snapped horizontally, ``snappedX`` will be set to ``True``. If ``point``
+was snapped vertically, ``snappedY`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
@@ -149,7 +149,7 @@ unchanged.
     QPointF snapPointsToGrid( const QList< QPointF > &points, double scaleFactor, bool &snappedX /Out/, bool &snappedY /Out/ ) const;
 %Docstring
 Snaps a set of ``points`` to the grid. If the points
-were snapped, ``snapped`` will be set to true.
+were snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
@@ -166,7 +166,7 @@ one of the points to the grid.
     double snapPointToGuides( double original, Qt::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
 %Docstring
 Snaps an ``original`` layout coordinate to the guides. If the point
-was snapped, ``snapped`` will be set to true.
+was snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
@@ -181,7 +181,7 @@ unchanged.
     double snapPointsToGuides( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
 %Docstring
 Snaps a set of ``points`` to the guides. If the points
-were snapped, ``snapped`` will be set to true.
+were snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
@@ -199,7 +199,7 @@ one of the points to a guide.
                              QGraphicsLineItem *snapLine = 0 ) const;
 %Docstring
 Snaps an ``original`` layout coordinate to the item bounds. If the point
-was snapped, ``snapped`` will be set to true.
+was snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
@@ -220,7 +220,7 @@ based on the result of the snap, and position it at the correct location for the
                               QGraphicsLineItem *snapLine = 0 ) const;
 %Docstring
 Snaps a set of ``points`` to the item bounds. If the points
-were snapped, ``snapped`` will be set to true.
+were snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the

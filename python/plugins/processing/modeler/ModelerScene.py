@@ -22,10 +22,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
@@ -103,8 +99,14 @@ class ModelerScene(QGraphicsScene):
         for input_name in list(model.parameterComponents().keys()):
             idx = 0
             parameter_def = model.parameterDefinition(input_name)
+            parent_name = None
             if hasattr(parameter_def, 'parentLayerParameterName') and parameter_def.parentLayerParameterName():
                 parent_name = parameter_def.parentLayerParameterName()
+            if hasattr(parameter_def, 'parentLayoutParameterName') and parameter_def.parentLayoutParameterName():
+                parent_name = parameter_def.parentLayoutParameterName()
+            elif hasattr(parameter_def, 'parentParameterName') and parameter_def.parentParameterName():
+                parent_name = parameter_def.parentParameterName()
+            if parent_name:
                 if input_name in self.paramItems and parent_name in self.paramItems:
                     input_item = self.paramItems[input_name]
                     parent_item = self.paramItems[parent_name]

@@ -123,7 +123,7 @@ QString QgsFilterVerticesByM::name() const
 
 QString QgsFilterVerticesByM::displayName() const
 {
-  return QObject::tr( "Filter vertices by m value" );
+  return QObject::tr( "Filter vertices by M value" );
 }
 
 QStringList QgsFilterVerticesByM::tags() const
@@ -173,7 +173,7 @@ QString QgsFilterVerticesByZ::name() const
 
 QString QgsFilterVerticesByZ::displayName() const
 {
-  return QObject::tr( "Filter vertices by z value" );
+  return QObject::tr( "Filter vertices by Z value" );
 }
 
 QStringList QgsFilterVerticesByZ::tags() const

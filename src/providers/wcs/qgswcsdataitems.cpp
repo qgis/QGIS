@@ -21,7 +21,6 @@
 
 #ifdef HAVE_GUI
 #include "qgswcssourceselect.h"
-#include "qgsnewhttpconnection.h"
 #endif
 
 #include <QFileInfo>
@@ -41,7 +40,7 @@ QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
 
   QgsDataSourceUri uri;
   uri.setEncodedUri( mUri );
-  QgsDebugMsg( "mUri = " + mUri );
+  QgsDebugMsgLevel( "mUri = " + mUri, 2 );
 
   mWcsCapabilities.setUri( uri );
 
@@ -56,7 +55,7 @@ QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
   Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mWcsCapabilities.capabilities().contents.coverageSummary )
   {
     // Attention, the name may be empty
-    QgsDebugMsg( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title );
+    QgsDebugMsgLevel( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title, 2 );
     QString pathName = coverageSummary.identifier.isEmpty() ? QString::number( coverageSummary.orderId ) : coverageSummary.identifier;
 
     QgsWCSLayerItem *layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mWcsCapabilities.capabilities(), uri, coverageSummary );
@@ -81,41 +80,6 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
-#ifdef HAVE_GUI
-QList<QAction *> QgsWCSConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
-  connect( actionEdit, &QAction::triggered, this, &QgsWCSConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
-  connect( actionDelete, &QAction::triggered, this, &QgsWCSConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsWCSConnectionItem::editConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "qgis/connections-wcs/" ), mName );
-
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refreshConnections();
-  }
-}
-
-void QgsWCSConnectionItem::deleteConnection()
-{
-  QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), mName );
-  // the parent should be updated
-  mParent->refreshConnections();
-}
-#endif
-
 
 // ---------------------------------------------------------------------------
 
@@ -126,13 +90,13 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString pat
   , mCoverageSummary( coverageSummary )
 {
   mSupportedCRS = mCoverageSummary.supportedCrs;
-  QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
+  QgsDebugMsgLevel( "uri = " + mDataSourceUri.encodedUri(), 2 );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
   Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mCoverageSummary.coverageSummary )
   {
     // Attention, the name may be empty
-    QgsDebugMsg( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title );
+    QgsDebugMsgLevel( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title, 2 );
     QString pathName = coverageSummary.identifier.isEmpty() ? QString::number( coverageSummary.orderId ) : coverageSummary.identifier;
     QgsWCSLayerItem *layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mCapabilities, mDataSourceUri, coverageSummary );
     mChildren.append( layer );
@@ -171,7 +135,8 @@ QString QgsWCSLayerItem::createUri()
   }
   else
   {
-    Q_FOREACH ( const QString &f, mimes )
+    const auto constMimes = mimes;
+    for ( const QString &f : constMimes )
     {
       if ( mCoverageSummary.supportedFormat.indexOf( f ) >= 0 )
       {
@@ -234,17 +199,6 @@ QVector<QgsDataItem *>QgsWCSRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWCSRootItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsWCSRootItem::newConnection );
-  lst.append( actionNew );
-
-  return lst;
-}
-
 
 QWidget *QgsWCSRootItem::paramWidget()
 {
@@ -258,27 +212,22 @@ void QgsWCSRootItem::onConnectionsChanged()
   refresh();
 }
 
-void QgsWCSRootItem::newConnection()
-{
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "qgis/connections-wcs/" ) );
-
-  if ( nc.exec() )
-  {
-    refreshConnections();
-  }
-}
 #endif
 
 // ---------------------------------------------------------------------------
-
-QGISEXTERN int dataCapabilities()
+QString QgsWcsDataItemProvider::name()
 {
-  return  QgsDataProvider::Net;
+  return QStringLiteral( "WCS" );
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
+int QgsWcsDataItemProvider::capabilities() const
 {
-  QgsDebugMsg( "thePath = " + path );
+  return QgsDataProvider::Net;
+}
+
+QgsDataItem *QgsWcsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  QgsDebugMsgLevel( "thePath = " + path, 2 );
   if ( path.isEmpty() )
   {
     // Top level WCS
@@ -298,10 +247,3 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   return nullptr;
 }
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsWCSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsWCSSourceSelect( parent, fl, widgetMode );
-}
-#endif

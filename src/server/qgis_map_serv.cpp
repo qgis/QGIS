@@ -19,13 +19,14 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
-#include "qgslogger.h"
-#include "qgsserverlogger.h"
 #include "qgsfcgiserverresponse.h"
 #include "qgsfcgiserverrequest.h"
+#include "qgsapplication.h"
 
 #include <fcgi_stdio.h>
 #include <cstdlib>
+
+#include <QString>
 
 int fcgi_accept()
 {

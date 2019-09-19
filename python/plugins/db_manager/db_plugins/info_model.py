@@ -381,7 +381,7 @@ class VectorTableInfo(TableInfo):
         if self.table.geomDim:
             tbl.append((QApplication.translate("DBManagerPlugin", "Dimension:"), self.table.geomDim))
 
-        srid = self.table.srid if self.table.srid is not None else -1
+        srid = self.table.srid if self.table.srid not in (None, 0) else -1
         sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else QApplication.translate(
             "DBManagerPlugin", "Undefined")
         if sr_info:

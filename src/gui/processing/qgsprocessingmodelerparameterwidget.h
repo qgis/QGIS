@@ -148,6 +148,13 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      */
     virtual QgsProcessingModelChildParameterSource value() const;
 
+    /**
+     * Sets the parent \a dialog in which the widget is shown.
+     *
+     * \since QGIS 3.8
+     */
+    void setDialog( QDialog *dialog );
+
     QgsExpressionContext createExpressionContext() const override;
 
   private slots:

@@ -17,7 +17,7 @@
 
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
 #include "qgsvectorlayer.h"
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Splits parts cut by the given line
      * \param splitLine line that splits the layer feature parts
-     * \param topologicalEditing true if topological editing is enabled
+     * \param topologicalEditing TRUE if topological editing is enabled
      * \returns  - QgsGeometry::InvalidBaseGeometry
      *  - QgsGeometry::Success
      *  - QgsGeometry::InvalidInput
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Splits features cut by the given line
      * \param splitLine line that splits the layer features
-     * \param topologicalEditing true if topological editing is enabled
+     * \param topologicalEditing TRUE if topological editing is enabled
      * \returns 0 in case of success,
      *  4 if there is a selection but no feature split
      */
@@ -167,20 +167,29 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     int addTopologicalPoints( const QgsGeometry &geom );
 
     /**
-     * Adds a vertex to segments which intersect point p but don't
+     * Adds a vertex to segments which intersect point \a p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
      * no additional vertex is inserted. This method is useful for topological
      * editing.
-     * \param p position of the vertex
      * \return 0 in case of success
      */
     int addTopologicalPoints( const QgsPointXY &p );
+
+    /**
+     * Adds a vertex to segments which intersect point \a p but don't
+     * already have a vertex there. If a feature already has a vertex at position p,
+     * no additional vertex is inserted. This method is useful for topological
+     * editing.
+     * \return 0 in case of success
+     * \since QGIS 3.10
+     */
+    int addTopologicalPoints( const QgsPoint &p );
 
   private:
 
     /**
      * Little helper function that gives bounding box from a list of points.
-     * \returns True in case of success
+     * \returns TRUE in case of success
      */
     bool boundingBoxFromPointList( const QVector<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
 

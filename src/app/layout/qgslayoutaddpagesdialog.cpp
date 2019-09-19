@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgslayoutpagecollection.h"
+#include "qgshelp.h"
 
 QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -29,7 +30,8 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
   mPageOrientationComboBox->addItem( tr( "Landscape" ), QgsLayoutItemPage::Landscape );
   mPageOrientationComboBox->setCurrentIndex( 1 );
 
-  Q_FOREACH ( const QgsPageSize &size, QgsApplication::pageSizeRegistry()->entries() )
+  const auto constEntries = QgsApplication::pageSizeRegistry()->entries();
+  for ( const QgsPageSize &size : constEntries )
   {
     mPageSizeComboBox->addItem( size.displayName, size.name );
   }
@@ -52,6 +54,8 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
 
   connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutAddPagesDialog::showHelp );
 }
 
 void QgsLayoutAddPagesDialog::setLayout( QgsLayout *layout )
@@ -156,4 +160,9 @@ void QgsLayoutAddPagesDialog::setToCustomSize()
   mPageOrientationComboBox->setEnabled( false );
   mLockAspectRatio->setEnabled( true );
   mSizeUnitsComboBox->setEnabled( true );
+}
+
+void QgsLayoutAddPagesDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#working-with-the-page-properties" ) );
 }

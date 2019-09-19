@@ -17,7 +17,7 @@
 #define QGSELLIPSOIDUTILS_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QStringList>
 
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsEllipsoidUtils
      */
     struct EllipsoidDefinition
     {
-      //! Acronym for ellipsoid
+      //! authority:code for QGIS builds with proj version 6 or greater, or custom acronym for ellipsoid for earlier proj builds
       QString acronym;
       //! Description of ellipsoid
       QString description;
@@ -89,6 +89,19 @@ class CORE_EXPORT QgsEllipsoidUtils
      * \see definitions()
      */
     static QStringList acronyms();
+
+#ifndef SIP_RUN
+
+    /**
+     * Clears the internal cache used.
+     *
+     * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
+     * argument is for internal use only.
+     *
+     * \since QGIS 3.10
+     */
+    static void invalidateCache( bool disableCache = false );
+#endif
 
   private:
 

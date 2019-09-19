@@ -62,7 +62,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     QgsBrowserModel *browserModel() { return mModel; }
 
     /**
-     * Returns the data item at the specified proxy \a index, or a nullptr if no item
+     * Returns the data item at the specified proxy \a index, or NULLPTR if no item
      * exists at the index.
      */
     QgsDataItem *dataItem( const QModelIndex &index ) const;
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     Qt::CaseSensitivity caseSensitivity() const;
 
     /**
-     * Returns true if the model is filtered by map layer type.
+     * Returns TRUE if the model is filtered by map layer type.
      *
      * \see layerType()
      * \see setFilterByLayerType()
@@ -127,21 +127,21 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
 
     /**
      * Returns the layer type to filter the model by. This is only used if
-     * filterByLayerType() is true.
+     * filterByLayerType() is TRUE.
      *
      * \see setLayerType()
      * \see filterByLayerType()
      */
-    QgsMapLayer::LayerType layerType() const;
+    QgsMapLayerType layerType() const;
 
     /**
      * Sets the layer \a type to filter the model by. This is only used if
-     * filterByLayerType() is true.
+     * filterByLayerType() is TRUE.
      *
      * \see layerType()
      * \see setFilterByLayerType()
      */
-    void setLayerType( QgsMapLayer::LayerType type );
+    void setLayerType( QgsMapLayerType type );
 
   protected:
 
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     Qt::CaseSensitivity mCaseSensitivity = Qt::CaseInsensitive;
 
     bool mFilterByLayerType = false;
-    QgsMapLayer::LayerType mLayerType = QgsMapLayer::VectorLayer;
+    QgsMapLayerType mLayerType = QgsMapLayerType::VectorLayer;
 
     //! Update filter
     void updateFilter();
@@ -165,10 +165,10 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     //! Filter accepts string
     bool filterAcceptsString( const QString &value ) const;
 
-    //! Returns true if at least one ancestor is accepted by filter
+    //! Returns TRUE if at least one ancestor is accepted by filter
     bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
 
-    //! Returns true if at least one descendant s accepted by filter
+    //! Returns TRUE if at least one descendant s accepted by filter
     bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
 
     //! Filter accepts item name

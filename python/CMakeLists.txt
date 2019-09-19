@@ -66,6 +66,7 @@ ENDIF ()
 ADD_SUBDIRECTORY(PyQt)
 ADD_SUBDIRECTORY(ext-libs)
 ADD_SUBDIRECTORY(testing)
+ADD_SUBDIRECTORY(processing)
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${PYTHON_INCLUDE_PATH}
@@ -76,6 +77,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_QTSVG_INCLUDE_DIR}
   ${QT_QTXML_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
@@ -93,6 +95,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/callouts
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/diagram
@@ -115,7 +118,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/classification
+  ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
   ${CMAKE_BINARY_DIR}/src/core
@@ -126,6 +132,7 @@ INCLUDE_DIRECTORIES(
 IF (WITH_GUI)
   INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/gui
+    ${CMAKE_SOURCE_DIR}/src/gui/callouts
     ${CMAKE_SOURCE_DIR}/src/gui/symbology
     ${CMAKE_SOURCE_DIR}/src/gui/raster
     ${CMAKE_SOURCE_DIR}/src/gui/attributetable
@@ -249,6 +256,7 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
   INCLUDE_DIRECTORIES(
     ../src/server
    ${CMAKE_BINARY_DIR}/src/server
+   ${CMAKE_SOURCE_DIR}/external
   )
 
   SET(PY_MODULES ${PY_MODULES} server)
@@ -272,6 +280,7 @@ INCLUDE_DIRECTORIES(BEFORE
   ${CMAKE_SOURCE_DIR}/src/analysis/processing
   ${CMAKE_SOURCE_DIR}/src/analysis/vector
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
+  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/network
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
@@ -279,6 +288,7 @@ INCLUDE_DIRECTORIES(BEFORE
 
   ${CMAKE_BINARY_DIR}/src/analysis/processing
   ${CMAKE_BINARY_DIR}/src/analysis/vector
+  ${CMAKE_BINARY_DIR}/src/analysis/mesh
   ${CMAKE_BINARY_DIR}/src/analysis/raster
   ${CMAKE_BINARY_DIR}/src/analysis/network
   ${CMAKE_BINARY_DIR}/src/analysis/interpolation

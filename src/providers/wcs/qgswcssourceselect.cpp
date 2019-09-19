@@ -226,7 +226,6 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
 
 QStringList QgsWCSSourceSelect::selectedLayersCrses()
 {
-
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
 

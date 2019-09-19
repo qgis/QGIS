@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import qgis  # NOQA
@@ -22,6 +20,9 @@ from qgis.core import (QgsReadWriteContext,
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtCore import QTemporaryDir
+from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 start_app()
 
@@ -115,6 +116,27 @@ class TestQgsMapLayer(unittest.TestCase):
         _, result = layer.saveNamedStyle(style_path)
         self.assertTrue(result)
         self.assertTrue(os.path.exists(style_path))
+
+    def testStyleUri(self):
+        # shapefile
+        layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'points.shp'), "layer", "ogr")
+        uri = layer.styleURI()
+        self.assertEqual(uri, os.path.join(TEST_DATA_DIR, 'points.qml'))
+
+        # geopackage without and with layername
+        layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'provider', 'bug_17795.gpkg'), "layer", "ogr")
+        uri = layer.styleURI()
+        self.assertEqual(uri, os.path.join(TEST_DATA_DIR, 'provider', 'bug_17795.qml'))
+
+        layer = QgsVectorLayer("{}|layername=bug_17795".format(os.path.join(TEST_DATA_DIR, 'provider', 'bug_17795.gpkg')), "layer", "ogr")
+        uri = layer.styleURI()
+        self.assertEqual(uri, os.path.join(TEST_DATA_DIR, 'provider', 'bug_17795.qml'))
+
+        # delimited text
+        uri = 'file://{}?type=csv&detectTypes=yes&geomType=none'.format(os.path.join(TEST_DATA_DIR, 'delimitedtext', 'test.csv'))
+        layer = QgsVectorLayer(uri, "layer", "delimitedtext")
+        uri = layer.styleURI()
+        self.assertEqual(uri, os.path.join(TEST_DATA_DIR, 'delimitedtext', 'test.qml'))
 
 
 if __name__ == '__main__':

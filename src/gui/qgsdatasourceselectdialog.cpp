@@ -16,24 +16,26 @@
 
 #include "qgsdatasourceselectdialog.h"
 #include "ui_qgsdatasourceselectdialog.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
+
 #include "qgis.h"
 #include "qgsbrowsermodel.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
 #include <QMenu>
 
 QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
-  QgsBrowserModel *browserModel,
+  QgsBrowserGuiModel *browserModel,
   bool setFilterByLayerType,
-  const QgsMapLayer::LayerType &layerType,
+  QgsMapLayerType layerType,
   QWidget *parent )
   : QDialog( parent )
 {
   if ( ! browserModel )
   {
-    mBrowserModel = qgis::make_unique<QgsBrowserModel>();
+    mBrowserModel = qgis::make_unique<QgsBrowserGuiModel>();
     mBrowserModel->initialize();
     mOwnModel = true;
   }
@@ -96,14 +98,17 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
 
   mBrowserTreeView->setExpandsOnDoubleClick( false );
 
-  connect( mActionRefresh, &QAction::triggered, [ = ] { refreshModel( QModelIndex() ); } );
+  connect( mActionRefresh, &QAction::triggered, this, [ = ] { refreshModel( QModelIndex() ); } );
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, &QgsDataSourceSelectDialog::onLayerSelected );
+  connect( mBrowserTreeView, &QgsBrowserTreeView::doubleClicked, this, &QgsDataSourceSelectDialog::itemDoubleClicked );
   connect( mActionCollapse, &QAction::triggered, mBrowserTreeView, &QgsBrowserTreeView::collapseAll );
   connect( mActionShowFilter, &QAction::triggered, this, &QgsDataSourceSelectDialog::showFilterWidget );
   connect( mLeFilter, &QgsFilterLineEdit::returnPressed, this, &QgsDataSourceSelectDialog::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsDataSourceSelectDialog::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsDataSourceSelectDialog::setFilter );
   connect( group, &QActionGroup::triggered, this, &QgsDataSourceSelectDialog::setFilterSyntax );
+
+  mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   if ( QgsSettings().value( QStringLiteral( "datasourceSelectFilterVisible" ), false, QgsSettings::Section::Gui ).toBool() )
   {
@@ -127,7 +132,7 @@ void QgsDataSourceSelectDialog::showEvent( QShowEvent *e )
   {
     QModelIndexList items = mBrowserProxyModel.match(
                               mBrowserProxyModel.index( 0, 0 ),
-                              QgsBrowserModel::PathRole,
+                              QgsBrowserGuiModel::PathRole,
                               QVariant::fromValue( lastSelectedPath ),
                               1,
                               Qt::MatchRecursive );
@@ -155,6 +160,30 @@ void QgsDataSourceSelectDialog::showFilterWidget( bool visible )
   else
   {
     mLeFilter->setFocus();
+  }
+}
+
+void QgsDataSourceSelectDialog::setDescription( const QString &description )
+{
+  if ( !description.isEmpty() )
+  {
+    if ( !mDescriptionLabel )
+    {
+      mDescriptionLabel = new QLabel();
+      mDescriptionLabel->setWordWrap( true );
+      mDescriptionLabel->setMargin( 4 );
+      verticalLayout->insertWidget( 1, mDescriptionLabel );
+    }
+    mDescriptionLabel->setText( description );
+  }
+  else
+  {
+    if ( mDescriptionLabel )
+    {
+      verticalLayout->removeWidget( mDescriptionLabel );
+      delete mDescriptionLabel;
+      mDescriptionLabel = nullptr;
+    }
   }
 }
 
@@ -218,7 +247,7 @@ void QgsDataSourceSelectDialog::setCaseSensitive( bool caseSensitive )
   mBrowserProxyModel.setFilterCaseSensitivity( caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
 }
 
-void QgsDataSourceSelectDialog::setLayerTypeFilter( QgsMapLayer::LayerType layerType )
+void QgsDataSourceSelectDialog::setLayerTypeFilter( QgsMapLayerType layerType )
 {
   mBrowserProxyModel.setFilterByLayerType( true );
   mBrowserProxyModel.setLayerType( layerType );
@@ -248,10 +277,17 @@ void QgsDataSourceSelectDialog::onLayerSelected( const QModelIndex &index )
         isLayerCompatible = true;
         mUri = layerItem->mimeUri();
         // Store last viewed item
-        QgsSettings().setValue( QStringLiteral( "datasourceSelectLastSelectedItem" ),  mBrowserProxyModel.data( index, QgsBrowserModel::PathRole ).toString(), QgsSettings::Section::Gui );
+        QgsSettings().setValue( QStringLiteral( "datasourceSelectLastSelectedItem" ),  mBrowserProxyModel.data( index, QgsBrowserGuiModel::PathRole ).toString(), QgsSettings::Section::Gui );
       }
     }
   }
   buttonBox->button( QDialogButtonBox::StandardButton::Ok )->setEnabled( isLayerCompatible );
+}
+
+void QgsDataSourceSelectDialog::itemDoubleClicked( const QModelIndex &index )
+{
+  onLayerSelected( index );
+  if ( buttonBox->button( QDialogButtonBox::StandardButton::Ok )->isEnabled() )
+    accept();
 }
 

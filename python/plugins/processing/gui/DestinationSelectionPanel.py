@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import re
 import os
 import warnings
@@ -34,7 +30,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QDir, pyqtSignal, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog, QInputDialog
 from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingSelectionDialog
-from qgis.core import (QgsDataSourceUri,
+from qgis.core import (QgsProcessing,
+                       QgsDataSourceUri,
                        QgsCredentials,
                        QgsExpression,
                        QgsSettings,
@@ -105,56 +102,61 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.destinationChanged.emit()
 
     def selectOutput(self):
-        if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
-            self.selectDirectory()
-        else:
-            popupMenu = QMenu()
+        popupMenu = QMenu()
 
-            if not self.default_selection:
-                if self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                    actionSkipOutput = QAction(
-                        self.tr('Skip Output'), self.btnSelect)
-                    actionSkipOutput.triggered.connect(self.skipOutput)
-                    popupMenu.addAction(actionSkipOutput)
-
-                if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
-                        and self.parameter.supportsNonFileBasedOutput():
-                    # use memory layers for temporary layers if supported
-                    actionSaveToTemp = QAction(
-                        self.tr('Create Temporary Layer'), self.btnSelect)
-                else:
-                    actionSaveToTemp = QAction(
-                        self.tr('Save to a Temporary File'), self.btnSelect)
-                actionSaveToTemp.triggered.connect(self.saveToTemporary)
-                popupMenu.addAction(actionSaveToTemp)
-
-            actionSaveToFile = QAction(
-                QCoreApplication.translate('DestinationSelectionPanel', 'Save to File…'), self.btnSelect)
-            actionSaveToFile.triggered.connect(self.selectFile)
-            popupMenu.addAction(actionSaveToFile)
+        if not self.default_selection:
+            if self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                actionSkipOutput = QAction(
+                    self.tr('Skip Output'), self.btnSelect)
+                actionSkipOutput.triggered.connect(self.skipOutput)
+                popupMenu.addAction(actionSkipOutput)
 
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.parameter.supportsNonFileBasedOutput():
-                actionSaveToGpkg = QAction(
-                    QCoreApplication.translate('DestinationSelectionPanel', 'Save to GeoPackage…'), self.btnSelect)
-                actionSaveToGpkg.triggered.connect(self.saveToGeopackage)
-                popupMenu.addAction(actionSaveToGpkg)
-                actionSaveToPostGIS = QAction(
-                    QCoreApplication.translate('DestinationSelectionPanel', 'Save to PostGIS Table…'), self.btnSelect)
-                actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
-                settings = QgsSettings()
-                settings.beginGroup('/PostgreSQL/connections/')
-                names = settings.childGroups()
-                settings.endGroup()
-                actionSaveToPostGIS.setEnabled(bool(names))
-                popupMenu.addAction(actionSaveToPostGIS)
+                # use memory layers for temporary layers if supported
+                actionSaveToTemp = QAction(
+                    self.tr('Create Temporary Layer'), self.btnSelect)
+            elif isinstance(self.parameter, QgsProcessingParameterFolderDestination):
+                actionSaveToTemp = QAction(
+                    self.tr('Save to a Temporary Directory'), self.btnSelect)
+            else:
+                actionSaveToTemp = QAction(
+                    self.tr('Save to a Temporary File'), self.btnSelect)
+            actionSaveToTemp.triggered.connect(self.saveToTemporary)
+            popupMenu.addAction(actionSaveToTemp)
 
-            actionSetEncoding = QAction(
-                QCoreApplication.translate('DestinationSelectionPanel', 'Change File Encoding ({})…').format(self.encoding), self.btnSelect)
-            actionSetEncoding.triggered.connect(self.selectEncoding)
-            popupMenu.addAction(actionSetEncoding)
+        if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
+            actionSaveToFile = QAction(
+                QCoreApplication.translate('DestinationSelectionPanel', 'Save to Directory…'), self.btnSelect)
+            actionSaveToFile.triggered.connect(self.selectDirectory)
+        else:
+            actionSaveToFile = QAction(
+                QCoreApplication.translate('DestinationSelectionPanel', 'Save to File…'), self.btnSelect)
+            actionSaveToFile.triggered.connect(self.selectFile)
+        popupMenu.addAction(actionSaveToFile)
 
-            popupMenu.exec_(QCursor.pos())
+        if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
+                and self.parameter.supportsNonFileBasedOutput():
+            actionSaveToGpkg = QAction(
+                QCoreApplication.translate('DestinationSelectionPanel', 'Save to GeoPackage…'), self.btnSelect)
+            actionSaveToGpkg.triggered.connect(self.saveToGeopackage)
+            popupMenu.addAction(actionSaveToGpkg)
+            actionSaveToPostGIS = QAction(
+                QCoreApplication.translate('DestinationSelectionPanel', 'Save to PostGIS Table…'), self.btnSelect)
+            actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
+            settings = QgsSettings()
+            settings.beginGroup('/PostgreSQL/connections/')
+            names = settings.childGroups()
+            settings.endGroup()
+            actionSaveToPostGIS.setEnabled(bool(names))
+            popupMenu.addAction(actionSaveToPostGIS)
+
+        actionSetEncoding = QAction(
+            QCoreApplication.translate('DestinationSelectionPanel', 'Change File Encoding ({})…').format(self.encoding), self.btnSelect)
+        actionSetEncoding.triggered.connect(self.selectEncoding)
+        popupMenu.addAction(actionSetEncoding)
+
+        popupMenu.exec_(QCursor.pos())
 
     def saveToTemporary(self):
         if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.supportsNonFileBasedOutput():
@@ -302,7 +304,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             else:
                 self.saveToTemporary()
         else:
-            if value == 'memory:':
+            if value in ('memory:', QgsProcessing.TEMPORARY_OUTPUT):
                 self.saveToTemporary()
             elif isinstance(value, QgsProcessingOutputLayerDefinition):
                 if value.sink.staticValue() in ('memory:', ''):
@@ -322,16 +324,17 @@ class DestinationSelectionPanel(BASE, WIDGET):
     def getValue(self):
         key = None
         if self.use_temporary and isinstance(self.parameter, QgsProcessingParameterFeatureSink):
-            key = 'memory:'
+            key = QgsProcessing.TEMPORARY_OUTPUT
         elif self.use_temporary and not self.default_selection:
-            key = self.parameter.generateTemporaryDestination()
+            key = QgsProcessing.TEMPORARY_OUTPUT
         else:
             key = self.leText.text()
 
         if not key and self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
             return None
 
-        if key and not key.startswith('memory:') \
+        if key and not key == QgsProcessing.TEMPORARY_OUTPUT \
+                and not key.startswith('memory:') \
                 and not key.startswith('ogr:') \
                 and not key.startswith('postgres:') \
                 and not key.startswith('postgis:'):

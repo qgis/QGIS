@@ -21,19 +21,17 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsRasterFileWriter,
                        QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools.system import isWindows
@@ -50,6 +48,8 @@ class fillnodata(GdalAlgorithm):
     ITERATIONS = 'ITERATIONS'
     NO_MASK = 'NO_MASK'
     MASK_LAYER = 'MASK_LAYER'
+    OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -59,6 +59,7 @@ class fillnodata(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
                                                        self.tr('Maximum distance (in pixels) to search out for values to interpolate'),
@@ -76,6 +77,23 @@ class fillnodata(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,
                                                             self.tr('Validity mask'),
                                                             optional=True))
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Filled')))
 
@@ -110,7 +128,7 @@ class fillnodata(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.NO_MASK, context):
+        if self.parameterAsBoolean(parameters, self.NO_MASK, context):
             arguments.append('-nomask')
 
         mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
@@ -118,6 +136,7 @@ class fillnodata(GdalAlgorithm):
             arguments.append('-mask {}'.format(mask.source()))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
@@ -125,15 +144,22 @@ class fillnodata(GdalAlgorithm):
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
         arguments.append(raster.source())
         arguments.append(out)
 
-        commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = ["python3", "-m", self.commandName()]
         else:
-            commands = [self.commandName() + '.py',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

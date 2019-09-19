@@ -12,8 +12,6 @@
 
 
 
-
-
 class QgsProviderRegistry
 {
 %Docstring
@@ -37,8 +35,11 @@ ogr and postgres.
 
     enum WidgetMode
     {
+
       None,
+
       Embedded,
+
       Manager,
     };
 
@@ -49,12 +50,14 @@ Means of accessing canonical single instance
 
     virtual ~QgsProviderRegistry();
 
-    QString library( const QString &providerKey ) const;
+ QString library( const QString &providerKey ) const /Deprecated/;
 %Docstring
 Returns path for the library of the provider.
 
 If the provider uses direct provider function pointers instead of a library an empty string will
 be returned.
+
+.. deprecated:: QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
 %End
 
     QString pluginList( bool asHtml = false ) const;
@@ -82,16 +85,46 @@ Creates a new instance of a provider.
 :param dataSource: string containing data source for the provider
 :param options: provider options
 
-:return: new instance of provider or NULL on error
+:return: new instance of provider or ``None`` on error
+
+.. seealso:: :py:func:`createRasterDataProvider`
 %End
 
-    int providerCapabilities( const QString &providerKey ) const;
+ int providerCapabilities( const QString &providerKey ) const /Deprecated/;
 %Docstring
 Returns the provider capabilities
 
 :param providerKey: identifier of the provider
 
 .. versionadded:: 2.6
+
+.. deprecated:: QGIS 3.10 (use instead capabilities() method of individual data item provider)
+%End
+
+
+    virtual QgsRasterDataProvider *createRasterDataProvider(
+      const QString &providerKey,
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width, int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
+      const QStringList &createOptions = QStringList() ) /Factory/;
+%Docstring
+Creates new instance of raster data provider
+
+.. seealso:: :py:func:`createProvider`
+
+.. versionadded:: 3.10
+%End
+
+    QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
+%Docstring
+Returns list of raster pyramid resampling methods
+
+.. versionadded:: 3.10
 %End
 
     QVariantMap decodeUri( const QString &providerKey, const QString &uri );
@@ -110,35 +143,106 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 .. versionadded:: 3.4
 %End
 
-    QWidget *createSelectionWidget( const QString &providerKey,
-                                    QWidget *parent = 0,
-                                    Qt::WindowFlags fl = Qt::WindowFlags(),
-                                    QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+ QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None ) /Deprecated/;
 %Docstring
 Returns a new widget for selecting layers from a provider.
 Either the ``parent`` widget must be set or the caller becomes
 responsible for deleting the returned widget.
+
+.. deprecated:: QGIS 3.10 - use QgsGui.providerGuiRegistry()->createDataSourceWidget() instead
 %End
 
-    QFunctionPointer function( const QString &providerKey,
-                               const QString &functionName );
+    QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const /Factory/;
+%Docstring
+Returns list of data item providers of the provider
+
+.. note::
+
+   Ownership of created data item providers is passed to the caller.
+
+.. versionadded:: 3.10
+%End
+
+    int listStyles( const QString &providerKey,
+                    const QString &uri,
+                    QStringList &ids,
+                    QStringList &names,
+                    QStringList &descriptions,
+                    QString &errCause );
+%Docstring
+Lists stored layer styles in the provider defined by ``providerKey`` and ``uri``
+
+:return: -1 if not implemented by provider, otherwise number of styles stored
+
+.. versionadded:: 3.10
+%End
+
+    QString getStyleById( const QString &providerKey,  const QString &uri, QString styleId, QString &errCause );
+%Docstring
+Gets a layer style defined by ``styleId``
+
+.. versionadded:: 3.10
+%End
+
+    bool deleteStyleById( const QString &providerKey,  const QString &uri, QString styleId, QString &errCause );
+%Docstring
+Deletes a layer style defined by ``styleId``
+
+.. versionadded:: 3.10
+%End
+
+    bool saveStyle( const QString &providerKey,  const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                    const QString &styleName, const QString &styleDescription,
+                    const QString &uiFileContent, bool useAsDefault, QString &errCause );
+%Docstring
+Saves a layer style to provider
+
+.. versionadded:: 3.10
+%End
+
+    QString loadStyle( const QString &providerKey,  const QString &uri, QString &errCause );
+%Docstring
+Loads a layer style defined by ``uri``
+
+.. versionadded:: 3.10
+%End
+
+    bool createDb( const QString &providerKey, const QString &dbPath, QString &errCause );
+%Docstring
+Creates database by the provider on the path
+
+.. versionadded:: 3.10
+%End
+
+    QgsTransaction *createTransaction( const QString &providerKey, const QString &connString ) /Factory/;
+%Docstring
+Returns new instance of transaction. Ownership is transferred to the caller
+
+.. versionadded:: 3.10
+%End
+
+ QFunctionPointer function( const QString &providerKey, const QString &functionName ) /Deprecated/;
 %Docstring
 Gets pointer to provider function
 
 :param providerKey: identifier of the provider
 :param functionName: name of function
 
-:return: pointer to function or NULL on error. If the provider uses direct provider
-         function pointers instead of a library None will be returned.
+:return: pointer to function or ``None`` on error. If the provider uses direct provider
+         function pointers instead of a library ``None`` will be returned.
+
+.. deprecated:: QGIS 3.10 - any provider functionality should be accessed through QgsProviderMetadata
 %End
 
-    QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory/;
+ QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory,Deprecated/;
 %Docstring
 Returns a new QLibrary for the specified ``providerKey``. Ownership of the returned
 object is transferred to the caller and the caller is responsible for deleting it.
 
-If the provider uses direct provider function pointers instead of a library None will
+If the provider uses direct provider function pointers instead of a library ``None`` will
 be returned.
+
+.. deprecated:: QGIS 3.10 - providers may not need to be loaded from a library
 %End
 
     QStringList providerList() const;
@@ -146,9 +250,9 @@ be returned.
 Returns list of available providers by their keys
 %End
 
-    const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
+    QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 %Docstring
-Returns metadata of the provider or NULL if not found
+Returns metadata of the provider or ``None`` if not found
 %End
 
     virtual QString fileVectorFilters() const;
@@ -181,6 +285,36 @@ buildSupportedRasterFileFilter to a string, which is then returned.
    This replaces :py:func:`QgsRasterLayer.buildSupportedRasterFileFilter()`
 %End
 
+    virtual QString fileMeshFilters() const;
+%Docstring
+Returns mesh file filter string
+
+Returns a string suitable for a QFileDialog of mesh file formats
+supported by all data providers.
+
+This walks through all data providers appending calls to their
+fileMeshFilters to a string, which is then returned.
+
+.. seealso:: :py:func:`fileMeshDatasetFilters`
+
+.. versionadded:: 3.6
+%End
+
+    virtual QString fileMeshDatasetFilters() const;
+%Docstring
+Returns mesh's dataset file filter string
+
+Returns a string suitable for a QFileDialog of mesh datasets file formats
+supported by all data providers.
+
+This walks through all data providers appending calls to their
+fileMeshFilters to a string, which is then returned.
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. versionadded:: 3.6
+%End
+
     virtual QString databaseDrivers() const;
 %Docstring
 Returns a string containing the available database drivers
@@ -194,13 +328,17 @@ Returns a string containing the available directory drivers
 Returns a string containing the available protocol drivers
 %End
 
-    void registerGuis( QWidget *widget );
+ void registerGuis( QWidget *widget ) /Deprecated/;
+%Docstring
+
+.. deprecated:: since QGIS 3.10 - does nothing - use QgsGui.providerGuiRegistry()
+%End
 
     bool registerProvider( QgsProviderMetadata *providerMetadata /Transfer/ );
 %Docstring
 register a new vector data provider from its ``providerMetadata``
 
-:return: true on success, false if a provider with the same key was already registered
+:return: ``True`` on success, ``False`` if a provider with the same key was already registered
 
 .. note::
 
@@ -208,7 +346,6 @@ register a new vector data provider from its ``providerMetadata``
 
 .. versionadded:: 3.2
 %End
-
 
 
   private:

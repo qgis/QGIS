@@ -171,7 +171,7 @@ QString QgsDrapeToZAlgorithm::name() const
 
 QString QgsDrapeToZAlgorithm::displayName() const
 {
-  return QObject::tr( "Drape (set z-value from raster)" );
+  return QObject::tr( "Drape (set Z value from raster)" );
 }
 
 QStringList QgsDrapeToZAlgorithm::tags() const
@@ -234,7 +234,7 @@ QString QgsDrapeToMAlgorithm::name() const
 
 QString QgsDrapeToMAlgorithm::displayName() const
 {
-  return QObject::tr( "Set m-value from raster" );
+  return QObject::tr( "Set M value from raster" );
 }
 
 QStringList QgsDrapeToMAlgorithm::tags() const
@@ -244,14 +244,14 @@ QStringList QgsDrapeToMAlgorithm::tags() const
 
 QString QgsDrapeToMAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sets the m-value for every vertex in the feature geometry to a value sampled from a band within a raster layer." )
+  return QObject::tr( "This algorithm sets the M value for every vertex in the feature geometry to a value sampled from a band within a raster layer." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "The raster values can optionally be scaled by a preset amount." );
 }
 
 QString QgsDrapeToMAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Sets the m-value for vertices to values sampled from a raster layer." );
+  return QObject::tr( "Sets the M value for vertices to values sampled from a raster layer." );
 }
 
 QgsDrapeToMAlgorithm *QgsDrapeToMAlgorithm::createInstance() const

@@ -19,6 +19,7 @@
 #include <QSettings>
 
 #include "qgsgraduatedsymbolrenderer.h"
+#include "qgsclassificationequalinterval.h"
 #include "qgssymbollayerutils.h"
 
 /**
@@ -176,7 +177,7 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
         // with astride = false
         astride = false;
         breaks = unchanged_breaks;
-        QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
+        QgsClassificationMethod::makeBreaksSymmetric( breaks, symmetryPoint, astride );
         QCOMPARE( breaks.count() % 2, 0 );
         // because the minimum is not in the breaks
         int newPosOfSymmetryPoint = breaks.count() / 2;
@@ -185,7 +186,7 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
         // with astride = true
         astride = true;
         breaks = unchanged_breaks;
-        QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
+        QgsClassificationMethod::makeBreaksSymmetric( breaks, symmetryPoint, astride );
         QCOMPARE( breaks.count() % 2, 1 );
         QVERIFY( !breaks.contains( symmetryPoint ) );
       }
@@ -195,7 +196,10 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
 
       // with astride = false
       astride = false;
-      breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum[valTest], maximum[valTest], nclasses, useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      QgsClassificationEqualInterval method;
+      method.setSymmetricMode( useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      QList<QgsClassificationRange> ranges = method.classes( minimum[valTest], maximum[valTest], nclasses );
+      breaks = QgsClassificationMethod::rangesToBreaks( ranges );
       QCOMPARE( breaks.count() % 2, 0 );
       // because the minimum is not in the breaks
       newPosOfSymmetryPoint = breaks.count() / 2 ;
@@ -203,7 +207,9 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
 
       // with astride = true
       astride = true;
-      breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum[valTest], maximum[valTest], nclasses, useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      method.setSymmetricMode( useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      ranges = method.classes( minimum[valTest], maximum[valTest], nclasses );
+      breaks = QgsClassificationMethod::rangesToBreaks( ranges );
       QCOMPARE( breaks.count() % 2, 1 );
       QVERIFY( !breaks.contains( symmetryPointForEqualInterval[valTest] ) );
     }

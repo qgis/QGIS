@@ -17,7 +17,7 @@
 #define QGSLAYERTREELAYER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
 #include "qgsreadwritecontext.h"
@@ -64,9 +64,9 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     /**
      * Returns the map layer associated with this node.
      *
-     * \warning This can be (and often is!) a nullptr, e.g. in the case of a layer node representing a layer
+     * \warning This can be (and often is!) NULLPTR, e.g. in the case of a layer node representing a layer
      * which has not yet been fully loaded into a project, or a layer node representing a layer
-     * with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing a nullptr.
+     * with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing NULLPTR.
      *
      * \see layerId()
      */
@@ -89,6 +89,19 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      * \since QGIS 3.0
      */
     void setName( const QString &n ) override;
+
+    /**
+     * Uses the layer's name if \a use is true, or the name manually set if
+     * false.
+     * \since QGIS 3.8
+     */
+    void setUseLayerName( bool use = true );
+
+    /**
+     * Returns whether the layer's name is used, or the name manually set.
+     * \since QGIS 3.8
+     */
+    bool useLayerName() const;
 
     /**
      * Read layer node from XML. Returns new instance.
@@ -115,6 +128,20 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
+    /**
+     * set the expression to evaluate
+     *
+     * \since QGIS 3.10
+     */
+    void setLabelExpression( const QString &expression );
+
+    /**
+     * Returns the expression member of the LayerTreeNode
+     *
+     * \since QGIS 3.10
+     */
+    QString labelExpression() const { return mLabelExpression; }
+
   signals:
 
     /**
@@ -133,8 +160,13 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     //! Weak reference to the layer (or just it's ID if the reference is not resolved yet)
     QgsMapLayerRef mRef;
-    //! Layer name - only used if layer does not exist
+    //! Layer name - only used if layer does not exist or if mUseLayerName is false
     QString mLayerName;
+    //! Expression to evaluate in the legend
+    QString mLabelExpression;
+
+    //!
+    bool mUseLayerName = true;
 
   private slots:
 

@@ -55,8 +55,8 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTest );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &rulesDialog::showHelp );
 
-  connect( mLayer1Box, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::updateRuleItems );
-  connect( mRuleBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::showControls );
+  connect( mLayer1Box, &QComboBox::currentTextChanged, this, &rulesDialog::updateRuleItems );
+  connect( mRuleBox, &QComboBox::currentTextChanged, this, &rulesDialog::showControls );
 
   mRuleBox->setCurrentIndex( 0 );
 
@@ -174,7 +174,7 @@ void rulesDialog::showControls( const QString &testName )
       }
 
 
-      if ( v1->type() == QgsMapLayer::VectorLayer )
+      if ( v1->type() == QgsMapLayerType::VectorLayer )
       {
         if ( topologyRule.layer2AcceptsType( v1->geometryType() ) )
         {
@@ -317,7 +317,7 @@ void rulesDialog::initGui()
     qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes
-    if ( v1->type() == QgsMapLayer::VectorLayer )
+    if ( v1->type() == QgsMapLayerType::VectorLayer )
     {
       mLayer1Box->addItem( v1->name(), v1->id() );
     }
@@ -336,5 +336,5 @@ void rulesDialog::clearRules()
 
 void rulesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_topology_checker.html" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_topology_checker.html" ) );
 }
