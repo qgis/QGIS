@@ -410,11 +410,12 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
       for ( const QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
       {
+        const QRectF fullCell( currentX, currentY, mMaxColumnWidthMap[col] + 2 * mCellMargin, rowHeight );
         //draw background
         p->save();
         p->setPen( Qt::NoPen );
         p->setBrush( backgroundColor( row, col ) );
-        p->drawRect( QRectF( currentX, currentY, mMaxColumnWidthMap[col] + 2 * mCellMargin, rowHeight ) );
+        p->drawRect( fullCell );
         p->restore();
 
         // currentY = gridSize;
@@ -423,21 +424,19 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
         QVariant cellContents = mTableContents.at( row ).at( col );
         QString str = cellContents.toString();
 
-        Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
-        if ( column->width() <= 0 && mWrapBehavior == TruncateText )
-        {
-          //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
-          //which may slightly exceed the calculated width
-          //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
-          textFlag = Qt::TextDontClip;
-        }
-        else if ( textRequiresWrapping( str, column->width(), mContentFont ) )
+        // disable text clipping to target text rectangle, because we manually clip to the full cell bounds below
+        // and it's ok if text overlaps into the margin (e.g. extenders or italicized text)
+        Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( Qt::TextDontClip );
+        if ( ( mWrapBehavior != TruncateText || column->width() > 0 ) && textRequiresWrapping( str, column->width(), mContentFont ) )
         {
           str = wrappedText( str, column->width(), mContentFont );
         }
 
-        cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], rowHeight );
-        QgsLayoutUtils::drawText( p, cell, str, mContentFont, mContentFontColor, column->hAlignment(), column->vAlignment(), textFlag );
+        p->save();
+        p->setClipRect( fullCell );
+        const QRectF textCell = QRectF( currentX, currentY + mCellMargin, mMaxColumnWidthMap[col], rowHeight - 2 * mCellMargin );
+        QgsLayoutUtils::drawText( p, textCell, str, mContentFont, mContentFontColor, column->hAlignment(), column->vAlignment(), textFlag );
+        p->restore();
 
         currentX += mMaxColumnWidthMap[ col ];
         currentX += mCellMargin;
