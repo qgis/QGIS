@@ -49,7 +49,8 @@ from qgis.core import (QgsUnitTypes,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsMarkerSymbol,
-                       QgsLayoutItemLegend)
+                       QgsLayoutItemLegend,
+                       QgsLegendStyle)
 from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -552,6 +553,11 @@ class TestQgsLayoutAtlas(unittest.TestCase):
 
         # add a legend
         legend = QgsLayoutItemLegend(self.layout)
+        legend.rstyle(QgsLegendStyle.Title).setFont(QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.rstyle(QgsLegendStyle.Group).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.Subgroup).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.SymbolLabel).setFont(QgsFontUtils.getStandardTestFont('Bold', 14))
+
         legend.setTitle("Legend")
         legend.attemptMove(QgsLayoutPoint(200, 100))
         # sets the legend filter parameter
