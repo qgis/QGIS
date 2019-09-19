@@ -257,7 +257,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;
     friend class LayoutContextPreviewSettingRestorer;
-
+    friend class TestQgsLayoutLabel;
 };
 
 Q_DECLARE_METATYPE( QgsLayoutRenderContext::Flags )
