@@ -69,7 +69,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsApplication)
 
 
 def _log(*args, **kw):
@@ -134,7 +135,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
             raise NotImplementedError()
 
     # Wrapper logic
-    def define(self, name, label, group, group_label, help=None, icon=None):
+    def define(self, name, label, group, group_label, help=None, icon=QgsApplication.iconPath("processingScript.svg")):
         self._name = name
         self._display = label
         self._group = group_label
