@@ -4993,12 +4993,77 @@ static QVariant fcnFileSize( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnHash( const QString str, const QCryptographicHash::Algorithm algorithm )
 {
+
   return QString( QCryptographicHash::hash( str.toUtf8(), algorithm ).toHex() );
 }
 
-static QVariant fcnHashMd4( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGenericHash( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Md4 );
+  QVariant hash;
+  QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  QString method = QgsExpressionUtils::getStringValue( values.at( 1 ), parent ).toLower();
+
+  if ( method == QString( "md4" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Md4 );
+  }
+  else if ( method == QString( "md5" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Md5 );
+  }
+  else if ( method == QString( "sha1" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha1 );
+  }
+  else if ( method == QString( "sha224" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha224 );
+  }
+  else if ( method == QString( "sha256" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha256 );
+  }
+  else if ( method == QString( "sha384" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha384 );
+  }
+  else if ( method == QString( "sha512" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha512 );
+  }
+  else if ( method == QString( "sha3_224" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha3_224 );
+  }
+  else if ( method == QString( "sha3_256" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha3_256 );
+  }
+  else if ( method == QString( "sha3_384" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha3_384 );
+  }
+  else if ( method == QString( "sha3_512" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Sha3_512 );
+  }
+  else if ( method == QString( "keccak_224" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Keccak_224 );
+  }
+  else if ( method == QString( "keccak_256" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Keccak_256 );
+  }
+  else if ( method == QString( "keccak_384" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Keccak_384 );
+  }
+  else if ( method == QString( "keccak_512" ) )
+  {
+    hash = fcnHash( str, QCryptographicHash::Keccak_512 );
+  }
+  return hash;
 }
 
 static QVariant fcnHashMd5( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5006,69 +5071,9 @@ static QVariant fcnHashMd5( const QVariantList &values, const QgsExpressionConte
   return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Md5 );
 }
 
-static QVariant fcnHashSha1( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha1 );
-}
-
-static QVariant fcnHashSha224( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha224 );
-}
-
 static QVariant fcnHashSha256( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha256 );
-}
-
-static QVariant fcnHashSha384( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha384 );
-}
-
-static QVariant fcnHashSha512( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha512 );
-}
-
-static QVariant fcnHashSha3_224( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha3_224 );
-}
-
-static QVariant fcnHashSha3_256( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha3_256 );
-}
-
-static QVariant fcnHashSha3_384( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha3_384 );
-}
-
-static QVariant fcnHashSha3_512( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha3_512 );
-}
-
-static QVariant fcnHashKeccak_224( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Keccak_224 );
-}
-
-static QVariant fcnHashKeccak_256( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Keccak_256 );
-}
-
-static QVariant fcnHashKeccak_384( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Keccak_384 );
-}
-
-static QVariant fcnHashKeccak_512( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Keccak_512 );
 }
 
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
@@ -5366,36 +5371,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnFileSize, QStringLiteral( "Files and Paths" ) )
 
         // hash
-        << new QgsStaticExpressionFunction( QStringLiteral( "md4" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashMd4, QStringLiteral( "Hash" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "hash" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "method" ) ),
+                                            fcnGenericHash, QStringLiteral( "Conversions" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "md5" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashMd5, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "sha1" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha1, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "sha224" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha224, QStringLiteral( "Hash" ) )
+                                            fcnHashMd5, QStringLiteral( "Conversions" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "sha256" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha256, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "sha384" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha384, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "sha512" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha512, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "sha3_224" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha3_224, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "sha3_256" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha3_256, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "sha3_384" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha3_384, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "sha3_512" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashSha3_512, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "keccak_224" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashKeccak_224, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "keccak_256" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashKeccak_256, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "keccak_384" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashKeccak_384, QStringLiteral( "Hash" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "keccak_512" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
-                                            fcnHashKeccak_512, QStringLiteral( "Hash" ) )
+                                            fcnHashSha256, QStringLiteral( "Conversions" ) )
 
         // deprecated stuff - hidden from users
         << new QgsStaticExpressionFunction( QStringLiteral( "$scale" ), QgsExpressionFunction::ParameterList(), fcnMapScale, QStringLiteral( "deprecated" ) );
