@@ -25,6 +25,7 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslayertreeregistrybridge.h"
 
 class QAction;
 class QDialog;
@@ -42,6 +43,7 @@ class QgsLayoutCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
+class QgsLayerTreeGroup;
 class QgsLayout;
 class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
@@ -560,6 +562,14 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.4
      */
     virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ) Q_UNUSED( categories );}
+
+    /**
+     * Returns the insertion point.
+     * This represents the current layer tree group and index where newly added map layers should be inserted into.
+     * \since QGIS 3.10
+     */
+    virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
+
 
   public slots: // TODO: do these functions really need to be slots?
 

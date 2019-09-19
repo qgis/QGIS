@@ -801,3 +801,8 @@ QgsBrowserGuiModel *QgisAppInterface::browserModel()
 {
   return qgis->mBrowserModel;
 }
+
+QgsLayerTreeRegistryBridge::InsertionPoint QgisAppInterface::layerTreeInsertionPoint()
+{
+  return qgis->layerTreeInsertionPoint();
+}

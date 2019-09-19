@@ -153,6 +153,7 @@ class QgsNetworkRequestParameters;
 #include "qgsrecentprojectsitemsmodel.h"
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgsattributetablefiltermodel.h"
@@ -711,6 +712,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @param categories an int as a flag value of QgsAppScreenShots::Categories
      */
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
+
+    QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() const;
 
   public slots:
     //! save current vector layer

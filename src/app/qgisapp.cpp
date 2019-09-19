@@ -4249,24 +4249,32 @@ void QgisApp::setupLayerTreeViewFromSettings()
 
 void QgisApp::updateNewLayerInsertionPoint()
 {
+  QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
+  QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
+}
+
+QgsLayerTreeRegistryBridge::InsertionPoint QgisApp::layerTreeInsertionPoint() const
+{
   // defaults
   QgsLayerTreeGroup *insertGroup = mLayerTreeView->layerTreeModel()->rootGroup();
   QModelIndex current = mLayerTreeView->currentIndex();
+
   int index = 0;
 
   if ( current.isValid() )
   {
     index = current.row();
 
-    if ( QgsLayerTreeNode *currentNode = mLayerTreeView->currentNode() )
+    QgsLayerTreeNode *currentNode = mLayerTreeView->currentNode();
+    if ( currentNode )
     {
       // if the insertion point is actually a group, insert new layers into the group
       if ( QgsLayerTree::isGroup( currentNode ) )
       {
         // if the group is embedded go to the first non-embedded group, at worst the top level item
         QgsLayerTreeGroup *insertGroup = QgsLayerTreeUtils::firstGroupWithoutCustomProperty( QgsLayerTree::toGroup( currentNode ), QStringLiteral( "embedded" ) );
-        QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertGroup, 0 );
-        return;
+
+        return QgsLayerTreeRegistryBridge::InsertionPoint( insertGroup, 0 );
       }
 
       // otherwise just set the insertion point in front of the current node
@@ -4281,8 +4289,7 @@ void QgisApp::updateNewLayerInsertionPoint()
       }
     }
   }
-
-  QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertGroup, index );
+  return QgsLayerTreeRegistryBridge::InsertionPoint( insertGroup, index );
 }
 
 void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer *> layers )

@@ -632,6 +632,15 @@ Take screenshots for user documentation
 .. versionadded:: 3.4
 %End
 
+    virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
+%Docstring
+Returns the insertion point.
+This represents the current layer tree group and index where newly added map layers should be inserted into.
+
+.. versionadded:: 3.10
+%End
+
+
   public slots: // TODO: do these functions really need to be slots?
 
 
