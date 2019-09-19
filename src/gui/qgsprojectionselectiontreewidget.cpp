@@ -955,7 +955,14 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
   const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), selectedWktString().replace( '\n', QStringLiteral( "<br>" ) ).replace( ' ', QStringLiteral( "&nbsp;" ) ) );
   const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), selectedProj4String() );
-  teProjection->setText( QStringLiteral( "<div style=\"font-size: smaller\"><h3>%1</h3><dl>" ).arg( selectedName() ) + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
+
+#ifdef Q_OS_WIN
+  const int smallerPointSize = td::max( font().pointSize() - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
+#else
+  const int smallerPointSize = std::max( font().pointSize() - 2, 6 );
+#endif
+
+  teProjection->setText( QStringLiteral( "<div style=\"font-size: %1pt\"><h3>%2</h3><dl>" ).arg( smallerPointSize ).arg( selectedName() ) + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
 }
 
 QStringList QgsProjectionSelectionTreeWidget::authorities()
