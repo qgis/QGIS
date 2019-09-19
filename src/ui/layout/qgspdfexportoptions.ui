@@ -64,7 +64,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="mGeoPDFGroupBox">
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
      <property name="title">
       <string>Create Geospatial PDF (GeoPDF)</string>
      </property>
