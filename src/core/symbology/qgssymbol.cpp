@@ -528,13 +528,21 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
       // line symbol layer would normally draw just a line
       // so we override this case to force it to draw a polygon stroke
       QgsLineSymbolLayer *lsl = dynamic_cast<QgsLineSymbolLayer *>( layer );
-
       if ( lsl )
       {
         // from QgsFillSymbolLayer::drawPreviewIcon()
         QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width() - 1, size.height() - 1 ) );
         lsl->startRender( symbolContext );
-        lsl->renderPolygonStroke( poly, nullptr, symbolContext );
+        QgsPaintEffect *effect = lsl->paintEffect();
+        if ( effect && effect->enabled() )
+        {
+          QgsEffectPainter p( symbolContext.renderContext(), effect );
+          lsl->renderPolygonStroke( poly, nullptr, symbolContext );
+        }
+        else
+        {
+          lsl->renderPolygonStroke( poly, nullptr, symbolContext );
+        }
         lsl->stopRender( symbolContext );
       }
     }
