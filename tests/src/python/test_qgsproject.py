@@ -1261,6 +1261,30 @@ class TestQgsProject(unittest.TestCase):
         p.setTransformContext(ctx)
         self.assertEqual(len(spy), 1)
 
+    def testGpkgDirtyingWhenRemovedFromStorage(self):
+        """Test that when a GPKG stored project is removed from the storage it is marked dirty"""
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, 'relative_paths_gh30387.gpkg')
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+            project = QgsProject.instance()
+            # Project URI
+            uri = 'geopackage://{}?projectName=relative_project'.format(path)
+            project.setFileName(uri)
+            self.assertTrue(project.write())
+            # Verify
+            self.assertTrue(project.read(uri))
+            self.assertFalse(project.isDirty())
+            # Remove from storage
+            storage = QgsApplication.projectStorageRegistry().projectStorageFromUri(uri)
+            self.assertTrue(storage.removeProject(uri))
+            self.assertTrue(project.isDirty())
+            # Save it back
+            self.assertTrue(project.write())
+            self.assertFalse(project.isDirty())
+            # Reload
+            self.assertTrue(project.read(uri))
+
 
 if __name__ == '__main__':
     unittest.main()
