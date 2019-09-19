@@ -911,7 +911,7 @@ void QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished( )
 void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 {
 
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();
   int nclasses = spinGraduatedClasses->value();
 
@@ -955,7 +955,6 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   {
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Apply Classification" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
     {
-      QApplication::restoreOverrideCursor();
       return;
     }
   }
@@ -966,7 +965,6 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     if ( !ramp )
     {
       QMessageBox::critical( this, tr( "Apply Classification" ), tr( "No color ramp defined." ) );
-      QApplication::restoreOverrideCursor();
       return;
     }
     mRenderer->setSourceColorRamp( ramp.release() );
@@ -982,7 +980,6 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     mRenderer->setSymbolSizes( minSizeSpinBox->value(), maxSizeSpinBox->value() );
 
   mRenderer->calculateLabelPrecision();
-  QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
   updateUiFromRenderer( false );
