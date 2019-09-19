@@ -57,7 +57,7 @@
       </widget>
      </item>
      <item row="9" column="0" colspan="2">
-      <widget class="QGroupBox" name="mGeoPDFGroupBox">
+      <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
        <property name="title">
         <string>Create Geospatial PDF (GeoPDF)</string>
        </property>
@@ -369,6 +369,12 @@ Rasterizing the map is recommended when such effects are used.</string>
  <customwidgets>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
