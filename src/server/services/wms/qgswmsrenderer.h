@@ -77,7 +77,7 @@ namespace QgsWms
           QgsConfigParser and QgsCapabilitiesCache*/
       QgsRenderer( QgsServerInterface *serverIface,
                    const QgsProject *project,
-                   const QgsWmsParameters &parameters );
+                   QgsWmsParameters &parameters );
 
       ~QgsRenderer();
 
@@ -307,7 +307,7 @@ namespace QgsWms
        */
       int width() const;
 
-      const QgsWmsParameters &mWmsParameters;
+      QgsWmsParameters &mWmsParameters;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       //! The access control helper

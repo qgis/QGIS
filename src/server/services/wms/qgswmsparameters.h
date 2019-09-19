@@ -1208,6 +1208,10 @@ namespace QgsWms
       QMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
       QMap<QString, QMap<QString, QString> > mExternalWMSParameters;
       QList<QgsProjectVersion> mVersions;
+
+      // Temporary workaround to be able to set defaults for SRCHEIGHT and SRCWIDTH in case of
+      // contextual (BBOX) GetLegendGraphics, not necessary from 3.8
+      friend class QgsRenderer;
   };
 }
 

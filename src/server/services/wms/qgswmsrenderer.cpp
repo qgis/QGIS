@@ -128,7 +128,7 @@ namespace QgsWms
 
   QgsRenderer::QgsRenderer( QgsServerInterface *serverIface,
                             const QgsProject *project,
-                            const QgsWmsParameters &parameters )
+                            QgsWmsParameters &parameters )
     : mWmsParameters( parameters )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     , mAccessControl( serverIface->accessControls() )
@@ -158,6 +158,20 @@ namespace QgsWms
     if ( mWmsParameters.format() == QgsWmsParameters::Format::NONE )
       throw QgsBadRequestException( QStringLiteral( "FormatNotSpecified" ),
                                     QStringLiteral( "FORMAT is mandatory for GetLegendGraphic operation" ) );
+
+    // Temporary workaround for backport of https://github.com/qgis/QGIS/issues/31846
+    // Since 3.8 we have a better approach to parameters checking
+    if ( ! mWmsParameters.bbox().isEmpty() )
+    {
+      if ( mWmsParameters.width().isEmpty() && mWmsParameters.srcWidth().isEmpty() )
+      {
+        mWmsParameters.mWmsParameters.insert( QgsWmsParameter::SRCWIDTH, QgsWmsParameter( QgsWmsParameter::SRCWIDTH, QVariant::Int, 800 ) );
+      }
+      if ( mWmsParameters.height().isEmpty() && mWmsParameters.srcHeight().isEmpty() )
+      {
+        mWmsParameters.mWmsParameters.insert( QgsWmsParameter::SRCHEIGHT, QgsWmsParameter( QgsWmsParameter::SRCHEIGHT, QVariant::Int, 600 ) );
+      }
+    }
 
     double scaleDenominator = -1;
     if ( ! mWmsParameters.scale().isEmpty() )
