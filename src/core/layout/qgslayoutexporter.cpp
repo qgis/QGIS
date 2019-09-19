@@ -1335,16 +1335,24 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
 {
   const QgsProjectMetadata &metadata = mLayout->project()->metadata();
   QDomElement metadataElement = svg.createElement( QStringLiteral( "metadata" ) );
-  metadataElement.setAttribute( QStringLiteral( "id" ), QStringLiteral( "qgismetadata" ) );
   QDomElement rdfElement = svg.createElement( QStringLiteral( "rdf:RDF" ) );
+  rdfElement.setAttribute( QStringLiteral( "xmlns:rdf" ), QStringLiteral( "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ) );
+  rdfElement.setAttribute( QStringLiteral( "xmlns:rdfs" ), QStringLiteral( "http://www.w3.org/2000/01/rdf-schema#" ) );
+  rdfElement.setAttribute( QStringLiteral( "xmlns:dc" ), QStringLiteral( "http://purl.org/dc/elements/1.1/" ) );
+  QDomElement descriptionElement = svg.createElement( QStringLiteral( "rdf:Description" ) );
   QDomElement workElement = svg.createElement( QStringLiteral( "cc:Work" ) );
+  workElement.setAttribute( QStringLiteral( "rdf:about" ), QString() );
 
-  auto addTextNode = [&workElement, &svg]( const QString & tag, const QString & value )
+  auto addTextNode = [&workElement, &descriptionElement, &svg]( const QString & tag, const QString & value )
   {
+    // inkscape compatible
     QDomElement element = svg.createElement( tag );
     QDomText t = svg.createTextNode( value );
     element.appendChild( t );
     workElement.appendChild( element );
+
+    // svg spec compatible
+    descriptionElement.setAttribute( tag, value );
   };
 
   addTextNode( QStringLiteral( "dc:format" ), QStringLiteral( "image/svg+xml" ) );
@@ -1353,16 +1361,28 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
   addTextNode( QStringLiteral( "dc:identifier" ), metadata.identifier() );
   addTextNode( QStringLiteral( "dc:description" ), metadata.abstract() );
 
-  auto addAgentNode = [&workElement, &svg]( const QString & tag, const QString & value )
+  auto addAgentNode = [&workElement, &descriptionElement, &svg]( const QString & tag, const QString & value )
   {
-    QDomElement element = svg.createElement( tag );
+    // inkscape compatible
+    QDomElement inkscapeElement = svg.createElement( tag );
     QDomElement agentElement = svg.createElement( QStringLiteral( "cc:Agent" ) );
     QDomElement titleElement = svg.createElement( QStringLiteral( "dc:title" ) );
     QDomText t = svg.createTextNode( value );
     titleElement.appendChild( t );
     agentElement.appendChild( titleElement );
-    element.appendChild( agentElement );
-    workElement.appendChild( element );
+    inkscapeElement.appendChild( agentElement );
+    workElement.appendChild( inkscapeElement );
+
+    // svg spec compatible
+    QDomElement bagElement = svg.createElement( QStringLiteral( "rdf:Bag" ) );
+    QDomElement liElement = svg.createElement( QStringLiteral( "rdf:li" ) );
+    t = svg.createTextNode( value );
+    liElement.appendChild( t );
+    bagElement.appendChild( liElement );
+
+    QDomElement element = svg.createElement( tag );
+    element.appendChild( bagElement );
+    descriptionElement.appendChild( element );
   };
 
   addAgentNode( QStringLiteral( "dc:creator" ), metadata.author() );
@@ -1386,11 +1406,14 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
     }
     element.appendChild( bagElement );
     workElement.appendChild( element );
+    descriptionElement.appendChild( element );
   }
 
+  rdfElement.appendChild( descriptionElement );
   rdfElement.appendChild( workElement );
   metadataElement.appendChild( rdfElement );
   svg.documentElement().appendChild( metadataElement );
+  svg.documentElement().setAttribute( QStringLiteral( "xmlns:cc" ), QStringLiteral( "http://creativecommons.org/ns#" ) );
 }
 
 std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, const QRectF &region, double dpi ) const
