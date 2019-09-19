@@ -157,7 +157,10 @@ void QgsLayoutItemLabel::contentChanged()
       //For very basic html labels with no external assets, the html load will already be
       //complete before we even get a chance to start the QEventLoop. Make sure we check
       //this before starting the loop
-      if ( !mHtmlLoaded )
+
+      // important -- we CAN'T do this when it's a render inside the designer, otherwise the
+      // event loop will mess with the paint event and cause it to be deleted, and BOOM!
+      if ( !mHtmlLoaded && ( !mLayout || !mLayout->renderContext().isPreviewRender() ) )
       {
         //Setup event loop and timeout for rendering html
         QEventLoop loop;
@@ -185,6 +188,8 @@ void QgsLayoutItemLabel::loadingHtmlFinished( bool result )
 {
   Q_UNUSED( result )
   mHtmlLoaded = true;
+  invalidateCache();
+  update();
 }
 
 double QgsLayoutItemLabel::htmlUnitsToLayoutUnits()
