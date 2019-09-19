@@ -564,8 +564,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ) Q_UNUSED( categories );}
 
     /**
-     * Returns the insertion group with its insertion index
-     * In Python, returns a tuple (insertionGroup, insertionIndex)
+     * Returns the insertion point.
+     * This represents the current layer tree group and index where newly added map layers should be inserted into.
      * \since QGIS 3.10
      */
     virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;

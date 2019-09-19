@@ -634,8 +634,8 @@ Take screenshots for user documentation
 
     virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
 %Docstring
-Returns the insertion group with its insertion index
-In Python, returns a tuple (insertionGroup, insertionIndex)
+Returns the insertion point.
+This represents the current layer tree group and index where newly added map layers should be inserted into.
 
 .. versionadded:: 3.10
 %End
