@@ -299,6 +299,7 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
 {
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
+  l.renderContext().mIsPreviewRender = false;
   QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
   label->setMargin( 1 );
   l.addLayoutItem( label );
