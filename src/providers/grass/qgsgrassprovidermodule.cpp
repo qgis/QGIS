@@ -56,7 +56,7 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
 {
   QList<QAction *> list;
 
-  QAction *optionsAction = new QAction( tr( "GRASS Options" ), parent );
+  QAction *optionsAction = new QAction( tr( "GRASS Options…" ), parent );
   connect( optionsAction, &QAction::triggered, QgsGrass::instance(), &QgsGrass::openOptions );
   list << optionsAction;
 
@@ -66,14 +66,14 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
   // TODO: check ownership
   if ( mGrassObject.type() == QgsGrassObject::Location )
   {
-    QAction *newMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_new_mapset.png" ) ), tr( "New mapset" ), parent );
+    QAction *newMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_new_mapset.png" ) ), tr( "New Mapset…" ), parent );
     connect( newMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::newMapset );
     list << newMapsetAction;
   }
 
   if ( mGrassObject.type() == QgsGrassObject::Mapset && isMapsetOwner )
   {
-    QAction *openMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_open_mapset.png" ) ), tr( "Open mapset" ), parent );
+    QAction *openMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_open_mapset.png" ) ), tr( "Open Mapset" ), parent );
     connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::openMapset );
     list << openMapsetAction;
   }
@@ -83,13 +83,13 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
   {
     if ( !QgsGrass::instance()->isMapsetInSearchPath( mGrassObject.mapset() ) )
     {
-      QAction *openMapsetAction = new QAction( tr( "Add mapset to search path" ), parent );
+      QAction *openMapsetAction = new QAction( tr( "Add Mapset to Search Path" ), parent );
       connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::addMapsetToSearchPath );
       list << openMapsetAction;
     }
     else
     {
-      QAction *openMapsetAction = new QAction( tr( "Remove mapset from search path" ), parent );
+      QAction *openMapsetAction = new QAction( tr( "Remove Mapset from Search Path" ), parent );
       connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::removeMapsetFromSearchPath );
       list << openMapsetAction;
     }
@@ -98,11 +98,11 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
   if ( ( mGrassObject.type() == QgsGrassObject::Raster || mGrassObject.type() == QgsGrassObject::Vector
          ||  mGrassObject.type() == QgsGrassObject::Group ) && isMapsetOwner )
   {
-    QAction *renameAction = new QAction( tr( "Rename" ), parent );
+    QAction *renameAction = new QAction( tr( "Rename…" ), parent );
     connect( renameAction, &QAction::triggered, this, &QgsGrassItemActions::renameGrassObject );
     list << renameAction;
 
-    QAction *deleteAction = new QAction( tr( "Delete" ), parent );
+    QAction *deleteAction = new QAction( tr( "Delete…" ), parent );
     connect( deleteAction, &QAction::triggered, this, &QgsGrassItemActions::deleteGrassObject );
     list << deleteAction;
   }
@@ -111,15 +111,15 @@ QList<QAction *> QgsGrassItemActions::actions( QWidget *parent )
        && mValid && isMapsetOwner )
   {
     // TODO: disable new layer actions on maps currently being edited
-    QAction *newPointAction = new QAction( tr( "New Point Layer" ), parent );
+    QAction *newPointAction = new QAction( tr( "New Point Layer…" ), parent );
     connect( newPointAction, &QAction::triggered, this, &QgsGrassItemActions::newPointLayer );
     list << newPointAction;
 
-    QAction *newLineAction = new QAction( tr( "New Line Layer" ), parent );
+    QAction *newLineAction = new QAction( tr( "New Line Layer…" ), parent );
     connect( newLineAction, &QAction::triggered, this, &QgsGrassItemActions::newLineLayer );
     list << newLineAction;
 
-    QAction *newPolygonAction = new QAction( tr( "New Polygon Layer" ), parent );
+    QAction *newPolygonAction = new QAction( tr( "New Polygon Layer…" ), parent );
     connect( newPolygonAction, &QAction::triggered, this, &QgsGrassItemActions::newPolygonLayer );
     list << newPolygonAction;
   }
