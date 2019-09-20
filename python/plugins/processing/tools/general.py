@@ -168,7 +168,7 @@ def createAlgorithmDialog(algOrName, parameters={}):
         alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
 
     if alg is None:
-        return False
+        return None
 
     dlg = alg.createCustomParametersWidget(iface.mainWindow())
 
