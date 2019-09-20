@@ -465,6 +465,13 @@ QgsSymbolList QgsInvertedPolygonRenderer::originalSymbolsForFeature( const QgsFe
   return mSubRenderer->originalSymbolsForFeature( feature, context );
 }
 
+QSet<QString> QgsInvertedPolygonRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+{
+  if ( !mSubRenderer )
+    return QSet<QString>();
+  return mSubRenderer->legendKeysForFeature( feature, context );
+}
+
 QgsSymbolList QgsInvertedPolygonRenderer::symbols( QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )
