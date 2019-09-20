@@ -184,6 +184,14 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     //! emitted as soon as the current file or directory is changed
     void fileChanged( const QString & );
 
+    /**
+     * Emitted before and after showing the file dialog.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    void blockEvents( bool ) SIP_SKIP;
+
   private slots:
     void openFileDialog();
     void textEdited( const QString &path );
