@@ -147,6 +147,10 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     void changeEvent( QEvent *event ) override;
     void paintEvent( QPaintEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
+    // This is required because private implementation of
+    // QAbstractSpinBoxPrivate may trigger a second
+    // undesired event from the auto-repeat mouse timer
+    void timerEvent( QTimerEvent *event ) override;
 
   private slots:
     void changed( int value );

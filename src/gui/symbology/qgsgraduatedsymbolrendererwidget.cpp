@@ -486,6 +486,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   spinPrecision->setMinimum( QgsClassificationMethod::MIN_PRECISION );
   spinPrecision->setMaximum( QgsClassificationMethod::MAX_PRECISION );
 
+  spinGraduatedClasses->setShowClearButton( false );
+
   btnColorRamp->setShowRandomColorRamp( true );
 
   // set project default color ramp
@@ -610,14 +612,14 @@ void QgsGraduatedSymbolRendererWidget::setContext( const QgsSymbolWidgetContext 
 // Connect/disconnect event handlers which trigger updating renderer
 void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 {
-  connect( spinGraduatedClasses, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
-  connect( cboGraduatedMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( spinGraduatedClasses, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( cboGraduatedMode, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGraduatedSymbolRendererWidget::reapplyColorRamp );
-  connect( spinPrecision, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
+  connect( spinPrecision, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
   connect( cbxTrimTrailingZeroes, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
   connect( txtLegendFormat, &QLineEdit::textChanged, this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
-  connect( minSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
-  connect( maxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
+  connect( minSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
+  connect( maxSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
 
   connect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
@@ -631,14 +633,14 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 // Connect/disconnect event handlers which trigger updating renderer
 void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 {
-  disconnect( spinGraduatedClasses, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
-  disconnect( cboGraduatedMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( spinGraduatedClasses, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( cboGraduatedMode, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGraduatedSymbolRendererWidget::reapplyColorRamp );
-  disconnect( spinPrecision, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
+  disconnect( spinPrecision, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
   disconnect( cbxTrimTrailingZeroes, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
   disconnect( txtLegendFormat, &QLineEdit::textChanged, this, &QgsGraduatedSymbolRendererWidget::labelFormatChanged );
-  disconnect( minSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
-  disconnect( maxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
+  disconnect( minSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
+  disconnect( maxSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::reapplySizes );
 
   disconnect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
   disconnect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
@@ -684,7 +686,9 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   // Only update class count if different - otherwise typing value gets very messy
   int nclasses = ranges.count();
   if ( nclasses && updateCount )
+  {
     spinGraduatedClasses->setValue( ranges.count() );
+  }
 
   // set column
   QString attrName = mRenderer->classAttribute();
@@ -906,6 +910,8 @@ void QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished( )
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 {
+
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();
   int nclasses = spinGraduatedClasses->value();
 
@@ -948,7 +954,9 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   if ( method && method->codeComplexity() > 1 && mLayer->featureCount() > 50000 )
   {
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Apply Classification" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
+    {
       return;
+    }
   }
 
   if ( methodComboBox->currentData() == ColorMode )
@@ -966,15 +974,12 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     mRenderer->setSourceColorRamp( nullptr );
   }
 
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
   mRenderer->updateClasses( mLayer, nclasses );
 
   if ( methodComboBox->currentData() == SizeMode )
     mRenderer->setSymbolSizes( minSizeSpinBox->value(), maxSizeSpinBox->value() );
 
   mRenderer->calculateLabelPrecision();
-  QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
   updateUiFromRenderer( false );
