@@ -457,6 +457,12 @@ class Database(DbItemObject):
                 parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to edit."),
                                            Qgis.Info, parent.iface.messageTimeout())
                 return
+
+            if isinstance(item, RasterTable):
+                parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Editing of raster tables is not supported."),
+                                           Qgis.Info, parent.iface.messageTimeout())
+                return
+
             from ..dlg_table_properties import DlgTableProperties
 
             DlgTableProperties(item, parent).exec_()
