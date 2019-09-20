@@ -28,6 +28,7 @@ from qgis.core import (QgsApplication,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
+                       QgsProcessingParameterEnum,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputFolder,
                        QgsProcessingException,
@@ -37,6 +38,7 @@ from qgis.core import (QgsApplication,
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools.system import mkdir
+from collections import OrderedDict
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -45,6 +47,7 @@ class VectorSplit(QgisAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
+    FORMAT = 'FORMAT'
     OUTPUT = 'OUTPUT'
     OUTPUT_LAYERS = 'OUTPUT_LAYERS'
 
@@ -60,10 +63,16 @@ class VectorSplit(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
-
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Unique ID field'), None, self.INPUT))
-
+        self.FORMATS = OrderedDict([('Geopackage', 'gpkg'),
+                                       ('ESRI Shapefile', 'shp'),
+                                       ('GeoJSON', 'geojson'),
+                                       ('Keyhole Markdown Language [KML]', 'kml')])
+        self.addParameter(QgsProcessingParameterEnum(self.FORMAT,
+                                                     self.tr('Output format'),
+                                                     options=list(self.FORMATS.keys()),
+                                                     defaultValue=0))
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
                                                                   self.tr('Output directory')))
         self.addOutput(QgsProcessingOutputMultipleLayers(self.OUTPUT_LAYERS, self.tr('Output layers')))
@@ -87,12 +96,14 @@ class VectorSplit(QgisAlgorithm):
 
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         directory = self.parameterAsString(parameters, self.OUTPUT, context)
+        fileFormat = self.parameterAsEnum(parameters, self.FORMAT, context)
 
         mkdir(directory)
 
         fieldIndex = source.fields().lookupField(fieldName)
         uniqueValues = source.uniqueValues(fieldIndex)
         baseName = os.path.join(directory, '{0}'.format(fieldName))
+        values = list(self.FORMATS.values())
 
         fields = source.fields()
         crs = source.sourceCrs()
@@ -104,7 +115,7 @@ class VectorSplit(QgisAlgorithm):
         for current, i in enumerate(uniqueValues):
             if feedback.isCanceled():
                 break
-            fName = '{0}_{1}.gpkg'.format(baseName, str(i).strip())
+            fName = '{0}_{1}.{2}'.format(baseName, str(i).strip(),values[fileFormat])
             feedback.pushInfo(self.tr('Creating layer: {}').format(fName))
 
             sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)
