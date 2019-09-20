@@ -147,6 +147,10 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     //! emitteed as soon as the current document changes
     void valueChanged( const QString & );
 
+  protected:
+    // Needed to block events when showing a dialog
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+
   private slots:
     void loadDocument( const QString &path );
 

@@ -189,6 +189,7 @@ the appearance and behavior of the line edit portion of the widget.
 emitted as soon as the current file or directory is changed
 %End
 
+
 };
 
 
