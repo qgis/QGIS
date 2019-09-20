@@ -21,6 +21,7 @@
 #include "qgsgraduatedsymbolrenderer.h"
 
 #include "qgsattributes.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgscolorramp.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsexpression.h"
@@ -795,12 +796,23 @@ QgsSymbol *QgsGraduatedSymbolRenderer::sourceSymbol()
 {
   return mSourceSymbol.get();
 }
+
+const QgsSymbol *QgsGraduatedSymbolRenderer::sourceSymbol() const
+{
+  return mSourceSymbol.get();
+}
+
 void QgsGraduatedSymbolRenderer::setSourceSymbol( QgsSymbol *sym )
 {
   mSourceSymbol.reset( sym );
 }
 
 QgsColorRamp *QgsGraduatedSymbolRenderer::sourceColorRamp()
+{
+  return mSourceColorRamp.get();
+}
+
+const QgsColorRamp *QgsGraduatedSymbolRenderer::sourceColorRamp() const
 {
   return mSourceColorRamp.get();
 }
@@ -1208,22 +1220,39 @@ void QgsGraduatedSymbolRenderer::setAstride( bool astride ) SIP_DEPRECATED
 
 QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  QgsGraduatedSymbolRenderer *r = nullptr;
+  std::unique_ptr< QgsGraduatedSymbolRenderer > r;
   if ( renderer->type() == QLatin1String( "graduatedSymbol" ) )
   {
-    r = dynamic_cast<QgsGraduatedSymbolRenderer *>( renderer->clone() );
+    r.reset( static_cast<QgsGraduatedSymbolRenderer *>( renderer->clone() ) );
+  }
+  else if ( renderer->type() == QLatin1String( "categorizedSymbol" ) )
+  {
+    const QgsCategorizedSymbolRenderer *categorizedSymbolRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer );
+    if ( categorizedSymbolRenderer )
+    {
+      r = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
+      r->setSourceSymbol( categorizedSymbolRenderer->sourceSymbol()->clone() );
+      if ( categorizedSymbolRenderer->sourceColorRamp() )
+      {
+        bool isRandom = dynamic_cast<const QgsRandomColorRamp *>( categorizedSymbolRenderer->sourceColorRamp() ) ||
+                        dynamic_cast<const QgsLimitedRandomColorRamp *>( categorizedSymbolRenderer->sourceColorRamp() );
+        if ( !isRandom )
+          r->setSourceColorRamp( categorizedSymbolRenderer->sourceColorRamp()->clone() );
+      }
+      r->setClassAttribute( categorizedSymbolRenderer->classAttribute() );
+    }
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) || renderer->type() == QLatin1String( "pointCluster" ) )
   {
     const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
     if ( pointDistanceRenderer )
-      r = convertFromRenderer( pointDistanceRenderer->embeddedRenderer() );
+      r.reset( convertFromRenderer( pointDistanceRenderer->embeddedRenderer() ) );
   }
   else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
     const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
     if ( invertedPolygonRenderer )
-      r = convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+      r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
@@ -1231,7 +1260,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
 
   if ( !r )
   {
-    r = new QgsGraduatedSymbolRenderer( QString(), QgsRangeList() );
+    r = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
     QgsRenderContext context;
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
@@ -1243,7 +1272,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
   r->setOrderBy( renderer->orderBy() );
   r->setOrderByEnabled( renderer->orderByEnabled() );
 
-  return r;
+  return r.release();
 }
 
 void QgsGraduatedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )

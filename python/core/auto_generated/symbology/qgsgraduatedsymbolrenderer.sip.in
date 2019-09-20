@@ -347,6 +347,7 @@ the classes' color.
 .. seealso:: :py:func:`sourceColorRamp`
 %End
 
+
     void setSourceSymbol( QgsSymbol *sym /Transfer/ );
 %Docstring
 Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
@@ -367,6 +368,7 @@ Returns the source color ramp, from which each classes' color is derived.
 
 .. seealso:: :py:func:`sourceSymbol`
 %End
+
 
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
