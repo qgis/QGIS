@@ -150,16 +150,17 @@ elif [ $action = pull ]; then
 	fi
 fi
 
-echo Updating python translations
-(
-	cd python
-	pylupdate5 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
-	perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
-	rm python-i18n.ts
-)
-for i in python/plugins/*/CMakeLists.txt; do
-	cd ${i%/*}
-	cat <<EOF >python-i18n.pro
+if [ -d "$builddir" ]; then
+	echo Updating python translations
+	(
+		cd python
+		pylupdate5 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
+		perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
+		rm python-i18n.ts
+	)
+	for i in python/plugins/*/CMakeLists.txt; do
+		cd ${i%/*}
+		cat <<EOF >python-i18n.pro
 SOURCES = $(find . -type f -name "*.py" -printf "	%p \
 ")
 
@@ -169,30 +170,31 @@ FORMS = $(find . -type f -name "*.ui" -printf "	%p \
 TRANSLATIONS = python-i18n.ts
 EOF
 
-	pylupdate5 -tr-function trAlgorithm python-i18n.pro
-	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
-	rm python-i18n.ts python-i18n.pro
-	cd ../../..
-done
+		pylupdate5 -tr-function trAlgorithm python-i18n.pro
+		perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
+		rm python-i18n.ts python-i18n.pro
+		cd ../../..
+	done
 
-echo Updating GRASS module translations
-perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
+	echo Updating GRASS module translations
+	perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
 
-echo Updating processing translations
-perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
+	echo Updating processing translations
+	perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
 
-echo Updating appinfo files
-python scripts/appinfo2cpp.py >src/app/appinfo-i18n.cpp
+	echo Updating appinfo files
+	python scripts/appinfo2cpp.py >src/app/appinfo-i18n.cpp
 
-echo Creating qmake project file
-$QMAKE -project -o qgis_ts.pro -nopwd $PWD/src $PWD/python $PWD/i18n $textcpp
+	echo Creating qmake project file
+	$QMAKE -project -o qgis_ts.pro -nopwd $PWD/src $PWD/python $PWD/i18n $textcpp
 
-echo "TR_EXCLUDE = $(qmake -query QT_INSTALL_HEADERS)/*" >>qgis_ts.pro
+	echo "TR_EXCLUDE = $(qmake -query QT_INSTALL_HEADERS)/*" >>qgis_ts.pro
 
-echo Updating translations
-$LUPDATE -no-obsolete -locations absolute -verbose qgis_ts.pro
+	echo Updating translations
+	$LUPDATE -no-obsolete -locations absolute -verbose qgis_ts.pro
 
-perl -i.bak -ne 'print unless /^\s+<location.*(qgs(expression|contexthelp)_texts|.*-i18n)\.cpp.*$/;' i18n/qgis_*.ts
+	perl -i.bak -ne 'print unless /^\s+<location.*(qgs(expression|contexthelp)_texts|.*-i18n)\.cpp.*$/;' i18n/qgis_*.ts
+fi
 
 if [ $action = push ]; then
 	cp i18n/qgis_en.ts /tmp/qgis_en.ts-uploading
