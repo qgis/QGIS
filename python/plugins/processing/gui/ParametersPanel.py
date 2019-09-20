@@ -41,6 +41,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
+                       QgsProcessingOutputLayerDefinition,
                        QgsProject,
                        QgsProcessingModelAlgorithm)
 from qgis.gui import (QgsProcessingContextGenerator,
