@@ -248,7 +248,7 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
   }
   sql = sql.arg( QgsSqliteUtils::quotedIdentifier( projectUri.projectName ),
                  QgsSqliteUtils::quotedValue( metadataExpr ),
-                 QgsSqliteUtils::quotedValue( QString::fromAscii( content.toHex() ) )
+                 QgsSqliteUtils::quotedValue( QString::fromLatin1( content.toHex() ) )
                );
 
   errCause = _executeSql( projectUri.database, sql );
