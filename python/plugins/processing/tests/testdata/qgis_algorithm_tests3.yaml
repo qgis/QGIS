@@ -1890,9 +1890,11 @@ tests:
     results:
       OUTPUT:
         name: expected/vrt_lines.vrt
-        type: vector
-        compare:
-          ignore_crs_check: true
-
+        type: regex
+        rules:
+          - '<SrcDataSource>.*\/lines\.gml</SrcDataSource>'
+          - '<SrcLayer>lines</SrcLayer>'
+          - '<SrcDataSource>.*\/multilines\.gml</SrcDataSource>'
+          - '<SrcLayer>multilines</SrcLayer>'
 
 # See ../README.md for a description of the file format
