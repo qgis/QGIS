@@ -957,7 +957,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), selectedProj4String() );
 
 #ifdef Q_OS_WIN
-  const int smallerPointSize = td::max( font().pointSize() - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
+  const int smallerPointSize = std::max( font().pointSize() - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
 #else
   const int smallerPointSize = std::max( font().pointSize() - 2, 6 );
 #endif
