@@ -395,18 +395,18 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
   json j;
   if ( val.type() == QVariant::Type::Map )
   {
-    const auto vMap = val.toMap();
-    auto jMap = json::object();
+    const QVariantMap &vMap = val.toMap();
+    json jMap = json::object();
     for ( auto it = vMap.constBegin(); it != vMap.constEnd(); it++ )
     {
       jMap[ it.key().toStdString() ] = jsonFromVariant( it.value() );
     }
     j = jMap;
   }
-  else if ( val.type() == QVariant::Type::List )
+  else if ( val.type() == QVariant::Type::List || val.type() == QVariant::Type::StringList )
   {
-    const auto vList = val.toList();
-    auto jList = json::array();
+    const QVariantList &vList = val.toList();
+    json jList = json::array();
     for ( const auto &v : vList )
     {
       jList.push_back( jsonFromVariant( v ) );
