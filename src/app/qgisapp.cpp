@@ -4648,7 +4648,7 @@ void QgisApp::about()
     QString versionString = QStringLiteral( "<html><body><div align='center'><table width='100%'>" );
 
     versionString += QLatin1String( "<tr>" );
-    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + Qgis::QGIS_VERSION + "</td><td>";
+    versionString += "<td>" + tr( "QGIS version" ) + "</td><td>" + Qgis::QGIS_VERSION + "</td><td>";
 
 
     if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
@@ -4675,6 +4675,11 @@ void QgisApp::about()
 
     versionString += "<td>" + tr( "Compiled against GEOS" ) + "</td><td>" + GEOS_CAPI_VERSION + "</td>";
     versionString += "<td>" + tr( "Running against GEOS" ) + "</td><td>" + GEOSversion() + "</td>";
+
+    versionString += QLatin1String( "</tr><tr>" );
+
+    versionString += "<td>" + tr( "Compiled against SQLite" ) + "</td><td>" + SQLITE_VERSION + "</td>";
+    versionString += "<td>" + tr( "Running against SQLite" ) + "</td><td>" + sqlite3_libversion() + "</td>";
 
     versionString += QLatin1String( "</tr><tr>" );
 
@@ -4705,13 +4710,19 @@ void QgisApp::about()
     versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td colspan=3>" + QString::number( PJ_VERSION ) + "</td>";
 #endif
 
-#ifdef QGISDEBUG
-    versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
-#endif
-
     versionString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "OS Version" ) + "</td><td>" + QSysInfo::prettyProductName() + "</td>";
+    versionString += "<td>" + tr( "OS Version" ) + "</td><td";
+
+#ifndef QGISDEBUG
+    versionString += " colspan=3";
+#endif
+
+    versionString += ">" + QSysInfo::prettyProductName() + "</td>";
+
+#ifdef QGISDEBUG
+    versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
+#endif
 
     versionString += QLatin1String( "</tr></table></div></body></html>" );
 
