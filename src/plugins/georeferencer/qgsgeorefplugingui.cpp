@@ -1113,6 +1113,8 @@ void QgsGeorefPluginGui::removeOldLayer()
       ( QStringList() << mLayer->id() ) );
     mLayer = nullptr;
   }
+  mCanvas->setLayers( QList<QgsMapLayer *>() );
+  mCanvas->clearCache();
   mCanvas->refresh();
 }
 
