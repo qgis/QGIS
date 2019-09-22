@@ -531,11 +531,23 @@ IF (PEDANTIC)
   ELSE (MSVC)
     # add warnings via flags (not as definitions as on Mac -Wall can not be overridden per language )
     SET(_warnings "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing")
+
     SET(WERROR FALSE CACHE BOOL "Treat build warnings as errors.")
     IF (WERROR)
       SET(_warnings "${_warnings} -Werror")
     ENDIF(WERROR)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
+
+    # c++ only warnings
+
+    # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
+    SET(_warnings "${_warnings} -Wno-redundant-move")
+
+    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+      # heaps of these thrown by Qt headers at the moment (sep 2019)
+      SET(_warnings "${_warnings} -Wno-deprecated-copy")
+    ENDIF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
 
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
