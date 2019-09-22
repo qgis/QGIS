@@ -264,7 +264,7 @@
       "limit" : {
         "name" : "limit",
         "in" : "query",
-        "description" : "The optional limit parameter limits the number of items that are presented in the response document.\\\nOnly items are counted that are on the first level of the collection in the response document.  Nested objects contained within the explicitly requested items shall not be counted.\\\nMinimum = 1.\\\nMaximum = 10000.\\\nDefault = 10.",
+        "description" : "The optional limit parameter limits the number of items that are presented in the response document.\nOnly items are counted that are on the first level of the collection in the response document.  Nested objects contained within the explicitly requested items shall not be counted.\nMinimum = 1.\nMaximum = 10000.\nDefault = 10.",
         "required" : false,
         "style" : "form",
         "explode" : false,
@@ -279,7 +279,7 @@
       "offset" : {
         "name" : "offset",
         "in" : "query",
-        "description" : "The optional offset parameter indicates the index within the result set from which the server shall begin presenting results in the response document. The first element has an index of 0.\\\nMinimum = 0.\\\nDefault = 0.",
+        "description" : "The optional offset parameter indicates the index within the result set from which the server shall begin presenting results in the response document. The first element has an index of 0.\nMinimum = 0.\nDefault = 0.",
         "required" : false,
         "style" : "form",
         "explode" : false,
@@ -320,7 +320,7 @@
       "resultType" : {
         "name" : "resultType",
         "in" : "query",
-        "description" : "This service will respond to a query in one of two ways (excluding an exception response). It may either generate a complete response document containing resources that satisfy the operation or it may simply generate an empty response container that indicates the count of the total number of resources that the operation would return. Which of these two responses is generated is determined by the value of the optional resultType parameter.\\\nThe allowed values for this parameter are \"results\" and \"hits\".\\\nIf the value of the resultType parameter is set to \"results\", the server will generate a complete response document containing resources that satisfy the operation.\\\nIf the value of the resultType attribute is set to \"hits\", the server will generate an empty response document containing no resource instances.\\\nDefault = \"results\".",
+        "description" : "This service will respond to a query in one of two ways (excluding an exception response). It may either generate a complete response document containing resources that satisfy the operation or it may simply generate an empty response container that indicates the count of the total number of resources that the operation would return. Which of these two responses is generated is determined by the value of the optional resultType parameter.\nThe allowed values for this parameter are \"results\" and \"hits\".\nIf the value of the resultType parameter is set to \"results\", the server will generate a complete response document containing resources that satisfy the operation.\nIf the value of the resultType attribute is set to \"hits\", the server will generate an empty response document containing no resource instances.\nDefault = \"results\".",
         "required" : false,
         "style" : "form",
         "explode" : false,

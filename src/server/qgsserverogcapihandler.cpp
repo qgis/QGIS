@@ -78,7 +78,7 @@ QList<QgsServerOgcApi::ContentType> QgsServerOgcApiHandler::contentTypes() const
 
 void QgsServerOgcApiHandler::handleRequest( const QgsServerApiContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   throw QgsServerApiNotImplementedException( QStringLiteral( "Subclasses must implement handleRequest" ) );
 }
 
@@ -170,9 +170,13 @@ std::string QgsServerOgcApiHandler::href( const QgsServerApiContext &context, co
 
 void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType ) const
 {
-  QDateTime time { QDateTime::currentDateTime() };
-  time.setTimeSpec( Qt::TimeSpec::UTC );
-  data["timeStamp"] = time.toString( Qt::DateFormat::ISODate ).toStdString() ;
+  // Do not append timestamp to openapi
+  if ( contentType != QgsServerOgcApi::contentTypeMimes().value( QgsServerOgcApi::ContentType::OPENAPI3 ) )
+  {
+    QDateTime time { QDateTime::currentDateTime() };
+    time.setTimeSpec( Qt::TimeSpec::UTC );
+    data["timeStamp"] = time.toString( Qt::DateFormat::ISODate ).toStdString() ;
+  }
   context.response()->setStatusCode( 200 );
   context.response()->setHeader( QStringLiteral( "Content-Type" ), contentType );
 #ifdef QGISDEBUG
@@ -184,7 +188,7 @@ void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &co
 
 json QgsServerOgcApiHandler::schema( const QgsServerApiContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   return nullptr;
 }
 
@@ -478,27 +482,23 @@ json QgsServerOgcApiHandler::defaultResponse()
 {
   static json defRes =
   {
+    { "description", "An error occurred." },
     {
-      "default", {
-        { "description", "An error occurred." },
+      "content", {
         {
-          "content", {
+          "application/json", {
             {
-              "application/json", {
-                {
-                  "schema", {
-                    { "$ref", "#/components/schemas/exception" }
-                  }
-                },
-                {
-                  "text/html", {
-                    {
-                      "schema", {
-                        { "type", "string" }
-                      }
-                    }
-                  }
-                }
+              "schema", {
+                { "$ref", "#/components/schemas/exception" }
+              }
+            }
+          }
+        },
+        {
+          "text/html", {
+            {
+              "schema", {
+                { "type", "string" }
               }
             }
           }

@@ -60,7 +60,6 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   const QgsProjectMetadata metadata { context.project()->metadata() };
   json data
   {
-    { "links", links( context ) },
     { "openapi", "3.0.1" },
     {
       "tags", {{
@@ -98,8 +97,6 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
       }
     }
   };
-
-  assert( data.is_object() );
 
   // Gather path information from handlers
   json paths = json::array();
@@ -147,7 +144,7 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
 json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
-  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "api" ), context.request()->url() ).toStdString() };
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/api" ), context.request()->url() ).toStdString() };
   data[ path ] =
   {
     {
@@ -185,7 +182,7 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
                 }
               }
             },
-            defaultResponse()
+            { "default", defaultResponse() }
           }
         }
       }
@@ -326,7 +323,7 @@ json QgsWfs3LandingPageHandler::schema( const QgsServerApiContext &context ) con
                     {
                       "application/json", {
                         {
-                          "schema",  {
+                          "schema", {
                             { "$ref", "#/components/schemas/root" }
                           }
                         }
@@ -345,7 +342,7 @@ json QgsWfs3LandingPageHandler::schema( const QgsServerApiContext &context ) con
                 }
               }
             },
-            defaultResponse()
+            { "default", defaultResponse() }
           }
         }
       }
@@ -420,7 +417,7 @@ json QgsWfs3ConformanceHandler::schema( const QgsServerApiContext &context ) con
                 }
               }
             },
-            defaultResponse()
+            { "default", defaultResponse() }
           }
         }
       }
@@ -563,7 +560,7 @@ json QgsWfs3CollectionsHandler::schema( const QgsServerApiContext &context ) con
                 }
               }
             },
-            defaultResponse()
+            { "default", defaultResponse() }
           }
         }
       }
@@ -675,7 +672,7 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
     // Use layer id for operationId
     const QString layerId { mapLayer->id() };
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
-    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "collections/%1" ).arg( shortName ), context.request()->url() ).toStdString() };
+    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     data[ path ] =
     {
@@ -714,13 +711,13 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
                   }
                 }
               },
-              defaultResponse()
+              { "default", defaultResponse() }
             }
           }
         }
       }
     };
-  }
+  } // end for loop
   return data;
 }
 
@@ -840,11 +837,11 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     json parameters = {{
-        {{ "$ref", "#/components/parameters/limit" }},
-        {{ "$ref", "#/components/parameters/offset" }},
-        {{ "$ref", "#/components/parameters/resultType" }},
-        {{ "$ref", "#/components/parameters/bbox" }},
-        {{ "$ref", "#/components/parameters/bbox-crs" }},
+        { "$ref", "#/components/parameters/limit" },
+        { "$ref", "#/components/parameters/offset" },
+        { "$ref", "#/components/parameters/resultType" },
+        { "$ref", "#/components/parameters/bbox" },
+        { "$ref", "#/components/parameters/bbox-crs" },
         // TODO: {{ "$ref", "#/components/parameters/time" }},
       }
     };
@@ -894,13 +891,13 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
                   }
                 }
               },
-              defaultResponse()
+              { "default", defaultResponse() }
             }
           }
         }
       }
     };
-  }
+  } // end for loop
   return data;
 }
 
@@ -1266,7 +1263,7 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
     // Use layer id for operationId
     const QString layerId { mapLayer->id() };
     const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
-    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "collections/%1/items/{featureId}" ).arg( shortName ), context.request()->url() ).toStdString() };
+    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/collections/%1/items/{featureId}" ).arg( shortName ), context.request()->url() ).toStdString() };
 
     data[ path ] =
     {
@@ -1276,6 +1273,13 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
           { "summary", "Retrieve a single feature from the '" + title + "' feature collection"},
           { "description", description() },
           { "operationId", operationId() + '_' + layerId.toStdString() },
+          {
+            "parameters", {{ // array of objects
+                { "$ref", "#/components/parameters/featureId" }
+              }
+            }
+          },
+          // TODO: relations
           {
             "responses", {
               {
@@ -1305,13 +1309,13 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                   }
                 }
               },
-              defaultResponse()
+              { "default", defaultResponse() }
             }
           }
         }
       }
     };
-  }
+  } // end for loop
   return data;
 }
 
