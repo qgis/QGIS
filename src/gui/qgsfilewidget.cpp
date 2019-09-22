@@ -255,6 +255,7 @@ void QgsFileWidget::openFileDialog()
   QStringList fileNames;
   QString title;
 
+  emit blockEvents( true );
   switch ( mStorageMode )
   {
     case GetFile:
@@ -287,6 +288,7 @@ void QgsFileWidget::openFileDialog()
     }
     break;
   }
+  emit blockEvents( false );
 
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
     return;

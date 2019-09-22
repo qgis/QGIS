@@ -175,8 +175,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
     }
     if ( cfg.contains( QStringLiteral( "FileWidgetButton" ) ) )
     {
-      // Prevent from showing the button in the attribute table, see https://github.com/qgis/QGIS/issues/26948
-      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( cfg.value( QStringLiteral( "FileWidgetButton" ) ).toBool() && context().formMode() != QgsAttributeEditorContext::Popup );
+      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( cfg.value( QStringLiteral( "FileWidgetButton" ) ).toBool() );
     }
     if ( cfg.contains( QStringLiteral( "DocumentViewer" ) ) )
     {
