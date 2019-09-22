@@ -71,15 +71,13 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         fld.notNull = not self.chkNull.isChecked()
         fld.default = self.editDefault.text()
         fld.hasDefault = fld.default != ""
-        # Get the comment from the LineEdit
         fld.comment = self.editCom.text()
-        try:
-            modifier = int(self.editLength.text())
-        except ValueError:
-            ok = False
+        # length field also used for geometry definition, so we should
+        # not cast its value to int
+        if self.editLength.text() != "":
+            fld.modifier = self.editLength.text()
         else:
-            ok = True
-        fld.modifier = modifier if ok else None
+            fld.modifier = None
         return fld
 
     def onOK(self):

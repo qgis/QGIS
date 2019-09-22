@@ -1179,7 +1179,6 @@ class TableField(TableSubItemObject):
         if self.default2String() == new_default_str:
             new_default_str = None
         if self.comment == new_comment:
-            # Update also a new_comment
             new_comment = None
         ret = self.table().database().connector.updateTableColumn((self.table().schemaName(), self.table().name),
                                                                   self.name, new_name, new_type_str,
