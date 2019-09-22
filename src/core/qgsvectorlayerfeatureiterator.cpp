@@ -357,7 +357,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 
   static QThreadStorage<QStack<QString>> sStack;
 
-  QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 255 );
+  QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 4 );
 
   if ( guard.hasStackOverflow() )
   {
@@ -698,7 +698,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 {
   static QThreadStorage<QStack<QString>> sStack;
 
-  QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 255 );
+  QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 4 );
 
   if ( guard.hasStackOverflow() )
   {
