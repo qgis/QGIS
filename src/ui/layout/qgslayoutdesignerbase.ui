@@ -374,6 +374,7 @@
     <property name="title">
      <string>Report</string>
     </property>
+    <addaction name="mActionPrintReport"/>
     <addaction name="mActionExportReportAsImage"/>
     <addaction name="mActionExportReportAsSVG"/>
     <addaction name="mActionExportReportAsPDF"/>
