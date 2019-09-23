@@ -19,6 +19,8 @@
 #include "qgslayout.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutmousehandles.h"
+#include "qgslayoutitemgroup.h"
+
 
 QgsLayoutViewToolSelect::QgsLayoutViewToolSelect( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Select" ) )
@@ -102,6 +104,15 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     //select topmost item at position of event
     selectedItem = layout()->layoutItemAt( event->layoutPoint(), true );
   }
+
+  // if selected item is in a group, we actually get the top-level group it's part of
+  QgsLayoutItemGroup *group = selectedItem ? selectedItem->parentGroup() : nullptr;
+  while ( group && group->parentGroup() )
+  {
+    group = group->parentGroup();
+  }
+  if ( group )
+    selectedItem = group;
 
   if ( !selectedItem )
   {
