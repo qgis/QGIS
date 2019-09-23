@@ -966,6 +966,16 @@ QMenu *QgsLayoutDesignerDialog::createPopupMenu()
   return menu;
 }
 
+QgsLayoutGuideWidget *QgsLayoutDesignerDialog::guideWidget()
+{
+  return mGuideWidget;
+}
+
+void QgsLayoutDesignerDialog::showGuideDock( bool show )
+{
+  mGuideDock->setUserVisible( show );
+}
+
 QgsLayout *QgsLayoutDesignerDialog::currentLayout()
 {
   return mLayout;
@@ -3791,9 +3801,9 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
   mLayoutPropertiesWidget->setDockMode( true );
   mGeneralPropertiesStack->setMainPanel( mLayoutPropertiesWidget );
 
-  QgsLayoutGuideWidget *guideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );
-  guideWidget->setDockMode( true );
-  mGuideStack->setMainPanel( guideWidget );
+  mGuideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );
+  mGuideWidget->setDockMode( true );
+  mGuideStack->setMainPanel( mGuideWidget );
 }
 
 void QgsLayoutDesignerDialog::createAtlasWidget()
