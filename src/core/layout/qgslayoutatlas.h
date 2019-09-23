@@ -132,7 +132,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Sets the \a expression (or field name) used for calculating the page name.
      * \see pageNameExpression()
      */
-    void setPageNameExpression( const QString &expression ) { mPageNameExpression = expression; }
+    void setPageNameExpression( const QString &expression );
 
     /**
      * Returns the calculated name for a specified atlas \a page number. Page numbers start at 0.
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setSortAscending()
      * \see setSortExpression()
      */
-    void setSortFeatures( bool enabled ) { mSortFeatures = enabled; }
+    void setSortFeatures( bool enabled );
 
     /**
      * Returns TRUE if features should be sorted in an ascending order.
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see sortAscending()
      * \see setSortExpression()
      */
-    void setSortAscending( bool ascending ) { mSortAscending = ascending; }
+    void setSortAscending( bool ascending );
 
     /**
      * Returns the expression (or field name) to use for sorting features.
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setSortAscending()
      * \see sortExpression()
      */
-    void setSortExpression( const QString &expression ) { mSortExpression = expression; }
+    void setSortExpression( const QString &expression );
 
     /**
      * Returns TRUE if features should be filtered in the coverage layer.
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see filterFeatures()
      * \see setFilterExpression()
      */
-    void setFilterFeatures( bool filtered ) { mFilterFeatures = filtered; }
+    void setFilterFeatures( bool filtered );
 
     /**
      * Returns the expression used for filtering features in the coverage layer.
