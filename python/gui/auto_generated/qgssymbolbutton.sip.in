@@ -203,6 +203,10 @@ Emitted when the symbol's settings are changed.
 
     virtual void mouseMoveEvent( QMouseEvent *e );
 
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
+    virtual void keyPressEvent( QKeyEvent *e );
+
     virtual void dragEnterEvent( QDragEnterEvent *e );
 
 
