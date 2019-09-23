@@ -16,7 +16,7 @@
 #ifndef QGSFEATURESELECTIONDLG_H
 #define QGSFEATURESELECTIONDLG_H
 
-class QgsGenericFeatureSelectionManager;
+class QgsVectorLayerSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
 #include "qgis_sip.h"
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     void setSelectedFeatures( const QgsFeatureIds &ids );
 
   private:
-    QgsGenericFeatureSelectionManager *mFeatureSelection = nullptr;
+    QgsVectorLayerSelectionManager *mFeatureSelection = nullptr;
     QgsVectorLayer *mVectorLayer = nullptr;
 
     // QWidget interface
