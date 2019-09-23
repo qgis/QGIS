@@ -26,7 +26,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingOutputString,
+                       QgsProcessingOutputString
                        )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -95,9 +95,8 @@ class Datasources2Vrt(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            uri = layer.source()
-            basePath = uri.split('|')[0]
-            layerName = GdalUtils.ogrLayerName(uri)
+            basePath = GdalUtils.ogrConnectionStringFromLayer(layer)
+            layerName = GdalUtils.ogrLayerName(layer.source())
 
             vrt += '<OGRVRTLayer name="{}">'.format(self.escape(layerName))
             vrt += '<SrcDataSource>{}</SrcDataSource>'.format(self.escape(basePath))
