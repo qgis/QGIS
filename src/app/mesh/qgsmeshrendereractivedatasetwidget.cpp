@@ -16,6 +16,7 @@
 #include "qgsmeshrendereractivedatasetwidget.h"
 
 #include <QDateTime>
+#include <QIcon>
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"
@@ -36,11 +37,22 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
   connect( mPreviousDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onPreviousTimeClicked );
   connect( mNextDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onNextTimeClicked );
   connect( mLastDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onLastTimeClicked );
+  connect( mDatasetPlaybackButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onDatasetPlaybackClicked );
 
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeScalarGroupChanged,
            this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeVectorGroupChanged,
            this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
+
+  mDatasetPlaybackTimer = new QTimer( this );
+  connect( mDatasetPlaybackTimer, &QTimer::timeout,
+           this,  qgis::overload<>::of( &QgsMeshRendererActiveDatasetWidget::datasetPlaybackTick ) );
+
+  mDatasetPlaybackButton->setIcon( QIcon::fromTheme( "media-playback-start" ) );
+  mFirstDatasetButton->setIcon( QIcon::fromTheme( "go-first" ) );
+  mPreviousDatasetButton->setIcon( QIcon::fromTheme( "go-previous" ) );
+  mNextDatasetButton->setIcon( QIcon::fromTheme( "go-next" ) );
+  mLastDatasetButton->setIcon( QIcon::fromTheme( "go-last" ) );
 }
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
@@ -131,6 +143,7 @@ void QgsMeshRendererActiveDatasetWidget::enableTimeControls()
   mPreviousDatasetButton->setEnabled( isTimeVarying );
   mNextDatasetButton->setEnabled( isTimeVarying );
   mLastDatasetButton->setEnabled( isTimeVarying );
+  mDatasetPlaybackButton->setEnabled( isTimeVarying );
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged( int groupIndex )
@@ -228,6 +241,53 @@ void QgsMeshRendererActiveDatasetWidget::onNextTimeClicked()
 void QgsMeshRendererActiveDatasetWidget::onLastTimeClicked()
 {
   mTimeComboBox->setCurrentIndex( mTimeComboBox->count() - 1 );
+}
+
+void QgsMeshRendererActiveDatasetWidget::onDatasetPlaybackClicked()
+{
+  if ( mDatasetIsPlaying )
+  {
+    // stop playing
+    mDatasetIsPlaying = false;
+    mTimeComboBox->setEnabled( true );
+    mTimeFormatButton->setEnabled( true );
+    mDatasetSlider->setEnabled( true );
+    mFirstDatasetButton->setEnabled( true );
+    mPreviousDatasetButton->setEnabled( true );
+    mNextDatasetButton->setEnabled( true );
+    mLastDatasetButton->setEnabled( true );
+    mDatasetPlaybackTimer->stop();
+    mDatasetPlaybackButton->setIcon( QIcon::fromTheme( "media-playback-start" ) );
+  }
+  else
+  {
+    // start
+    mDatasetIsPlaying = true;
+    mTimeComboBox->setEnabled( false );
+    mTimeFormatButton->setEnabled( false );
+    mDatasetSlider->setEnabled( false );
+    mFirstDatasetButton->setEnabled( false );
+    mPreviousDatasetButton->setEnabled( false );
+    mNextDatasetButton->setEnabled( false );
+    mLastDatasetButton->setEnabled( false );
+    int intervalMs = 3000;
+    if ( mMeshLayer )
+    {
+      intervalMs = static_cast<int>( mMeshLayer->timeSettings().datasetPlaybackInterval() * 1000 );
+    }
+    datasetPlaybackTick();
+    mDatasetPlaybackTimer->start( intervalMs );
+    mDatasetPlaybackButton->setIcon( QIcon::fromTheme( "media-playback-stop" ) );
+  }
+}
+
+void QgsMeshRendererActiveDatasetWidget::datasetPlaybackTick()
+{
+  int nextIdx = mTimeComboBox->currentIndex() + 1;
+  if ( nextIdx >= mTimeComboBox->count() )
+    nextIdx = 0;
+
+  mTimeComboBox->setCurrentIndex( nextIdx );
 }
 
 void QgsMeshRendererActiveDatasetWidget::updateMetadata()
