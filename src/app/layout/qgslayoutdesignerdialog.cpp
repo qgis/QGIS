@@ -1025,6 +1025,16 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
   if ( dynamic_cast< QgsReport * >( layout ) )
   {
     createReportWidget();
+    mLayoutMenu->removeAction( mActionExportAsPDF );
+    mLayoutMenu->removeAction( mActionExportAsSVG );
+    mLayoutMenu->removeAction( mActionExportAsImage );
+    mLayoutMenu->removeAction( mActionPrint );
+    mLayoutToolbar->removeAction( mActionExportAsPDF );
+    mLayoutToolbar->removeAction( mActionExportAsSVG );
+    mLayoutToolbar->removeAction( mActionExportAsImage );
+    mLayoutToolbar->removeAction( mActionPrint );
+    // remove useless dangling separator
+    mLayoutToolbar->removeAction( mLayoutToolbar->actions().constLast() );
   }
   else
   {
