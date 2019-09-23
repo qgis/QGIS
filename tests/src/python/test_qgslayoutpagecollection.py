@@ -173,8 +173,10 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.pageCount(), 2)
         self.assertEqual(len(page_about_to_be_removed_spy), 0)
 
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF(0.0, 0.0, 210.0, 517.0))
         collection.deletePage(page)
         self.assertEqual(collection.pageCount(), 1)
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF(0.0, 0.0, 148.0, 210.0))
         self.assertFalse(page in collection.pages())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
@@ -184,6 +186,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         collection.deletePage(page2)
         self.assertEqual(collection.pageCount(), 0)
         self.assertFalse(collection.pages())
+        self.assertEqual(l.layoutBounds(ignorePages=False), QRectF())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page2))
         self.assertEqual(len(page_about_to_be_removed_spy), 2)

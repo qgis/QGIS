@@ -664,6 +664,9 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   beginPageSizeChange();
   mPages.removeAll( page );
   page->deleteLater();
+  // remove immediately from scene -- otherwise immediately calculation of layout bounds (such as is done
+  // in reflow) will still consider the page, at least until it's actually deleted at the next event loop
+  mLayout->removeItem( page );
   reflow();
 
   // bump stored page numbers to account
