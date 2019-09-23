@@ -55,8 +55,8 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   connect( mClearAllButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::clearAll );
   connect( mApplyToAllButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::applyToAll );
 
-  connect( layoutView, &QgsLayoutView::pageChanged, this, &QgsLayoutGuideWidget::pageChanged );
-  pageChanged( 0 );
+  connect( layoutView, &QgsLayoutView::pageChanged, this, &QgsLayoutGuideWidget::setCurrentPage );
+  setCurrentPage( 0 );
 }
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
@@ -97,7 +97,7 @@ void QgsLayoutGuideWidget::deleteVerticalGuide()
   mLayout->undoStack()->endMacro();
 }
 
-void QgsLayoutGuideWidget::pageChanged( int page )
+void QgsLayoutGuideWidget::setCurrentPage( int page )
 {
   mPage = page;
 

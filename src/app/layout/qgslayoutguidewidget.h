@@ -32,6 +32,13 @@ class QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWid
   public:
     QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, QgsLayoutView *layoutView );
 
+  public slots:
+
+    /**
+     * Sets the current page number to manage the guides for.
+     */
+    void setCurrentPage( int page );
+
   private slots:
 
     void addHorizontalGuide();
@@ -39,8 +46,6 @@ class QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWid
 
     void deleteHorizontalGuide();
     void deleteVerticalGuide();
-
-    void pageChanged( int page );
 
     void clearAll();
 
