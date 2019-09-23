@@ -184,7 +184,9 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   mIsSelecting = false;
   bool wasClick = !isClickAndDrag( mMousePressStartPos, event->pos() );
 
-  QRectF rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
+  // important -- we don't pass the event modifiers here, because we use them for a different meaning!
+  // (modifying how the selection interacts with the items, rather than modifying the selection shape)
+  QRectF rect = mRubberBand->finish( event->layoutPoint() );
 
   bool subtractingSelection = false;
   if ( event->modifiers() & Qt::ShiftModifier )
