@@ -24,6 +24,7 @@
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgsguiutils.h"
+#include "qgsgui.h"
 
 #include <QPainter>
 #include <QMouseEvent>
@@ -282,7 +283,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 {
   if ( mPickingColor )
   {
-    setButtonBackground( sampleColor( e->globalPos() ) );
+    setButtonBackground( QgsGui::sampleColor( e->globalPos() ) );
     e->accept();
     return;
   }
@@ -343,7 +344,7 @@ void QgsColorButton::stopPicking( QPoint eventPos, bool samplingColor )
     return;
   }
 
-  setColor( sampleColor( eventPos ) );
+  setColor( QgsGui::sampleColor( eventPos ) );
   addRecentColor( mColor );
 }
 
@@ -422,30 +423,6 @@ void QgsColorButton::dropEvent( QDropEvent *e )
     setColor( mimeColor );
     addRecentColor( mimeColor );
   }
-}
-
-QColor QgsColorButton::sampleColor( QPoint point ) const
-{
-  QScreen *screen = findScreenAt( point );
-  if ( ! screen )
-  {
-    return QColor();
-  }
-  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
-  QImage snappedImage = snappedPixmap.toImage();
-  return snappedImage.pixel( 0, 0 );
-}
-
-QScreen *QgsColorButton::findScreenAt( QPoint pos )
-{
-  for ( QScreen *screen : QGuiApplication::screens() )
-  {
-    if ( screen->geometry().contains( pos ) )
-    {
-      return screen;
-    }
-  }
-  return nullptr;
 }
 
 void QgsColorButton::setValidColor( const QColor &newColor )
