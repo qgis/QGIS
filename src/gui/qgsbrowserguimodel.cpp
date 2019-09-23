@@ -37,7 +37,13 @@ Qt::ItemFlags QgsBrowserGuiModel::flags( const QModelIndex &index ) const
     return Qt::ItemFlags();
 
   Qt::ItemFlags flags = QgsBrowserModel::flags( index );
-  QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
+  QgsDataItem *ptr = dataItem( index );
+
+  if ( !ptr )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "FLAGS PROBLEM!" ), 4 );
+    return Qt::ItemFlags();
+  }
 
   Q_NOWARN_DEPRECATED_PUSH
   bool legacyAcceptDrop = ptr->acceptDrop();

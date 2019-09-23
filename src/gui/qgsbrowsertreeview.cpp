@@ -143,7 +143,7 @@ bool QgsBrowserTreeView::treeExpanded( const QModelIndex &index )
 
 bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex &index ) const
 {
-  if ( !model() )
+  if ( !model() || !index.isValid() )
     return false;
 
   for ( int i = 0; i < model()->rowCount( index ); i++ )
