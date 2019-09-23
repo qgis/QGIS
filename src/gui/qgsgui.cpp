@@ -50,6 +50,9 @@
 #include "qgsproviderguiregistry.h"
 #include "qgsprojectstorageguiregistry.h"
 
+#include <QScreen>
+#include <QDesktopWidget>
+
 QgsGui *QgsGui::instance()
 {
   static QgsGui *sInstance( new QgsGui() );
@@ -163,6 +166,31 @@ QgsGui::~QgsGui()
   delete mWidgetStateHelper;
   delete mProjectStorageGuiRegistry;
   delete mProviderGuiRegistry;
+}
+
+QColor QgsGui::sampleColor( QPoint point )
+{
+  QScreen *screen = findScreenAt( point );
+  if ( ! screen )
+  {
+    return QColor();
+  }
+  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
+  QImage snappedImage = snappedPixmap.toImage();
+  return snappedImage.pixel( 0, 0 );
+}
+
+QScreen *QgsGui::findScreenAt( QPoint point )
+{
+  const QList< QScreen * > screens = QGuiApplication::screens();
+  for ( QScreen *screen : screens )
+  {
+    if ( screen->geometry().contains( point ) )
+    {
+      return screen;
+    }
+  }
+  return nullptr;
 }
 
 QgsGui::QgsGui()

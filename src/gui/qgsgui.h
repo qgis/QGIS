@@ -178,6 +178,20 @@ class GUI_EXPORT QgsGui : public QObject
 
     ~QgsGui();
 
+    /**
+     * Samples the color on screen at the specified global \a point (pixel).
+     *
+     * \since QGIS 3.10
+     */
+    static QColor sampleColor( QPoint point );
+
+    /**
+     * Returns the screen at the given global \a point (pixel).
+     *
+     * \since QGIS 3.10
+     */
+    static QScreen *findScreenAt( QPoint point );
+
   private:
 
     QgsGui();
