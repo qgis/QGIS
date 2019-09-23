@@ -5,7 +5,32 @@ a { color: green; }
     height: 400px;
 }
 
-
 .card-header span.small {
    font-size: 70%;
+}
+
+.path-button {
+    text-transform: uppercase;
+}
+
+.path-path {
+    font-weight: bold;
+}
+
+.model-toggle {
+    font-weight: bold;
+}
+
+.model-toggle::after {
+    display: inline-block;
+    vertical-align: bottom;
+    width: 20px;
+    height: 20px;
+    content: "";
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/%3E%3C/svg%3E") 50% no-repeat;
+    background-size: 100%;
+}
+
+.top-buffer {
+    margin-top:20px;
 }

@@ -98,6 +98,12 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
     }
   };
 
+  // Add links only if not OPENAPI3 to avoid validation errors
+  if ( QgsServerOgcApiHandler::contentTypeFromRequest( context.request() ) != QgsServerOgcApi::ContentType::OPENAPI3 )
+  {
+    data["links"] = links( context );
+  }
+
   // Gather path information from handlers
   json paths = json::array();
   for ( const auto &h : mApi->handlers() )
