@@ -22,7 +22,7 @@
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
 #include "qgslayoutitemlabel.h"
-
+#include "qgslayoutitemgroup.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QList>
@@ -58,6 +58,7 @@ class TestQgsLayoutModel : public QObject
     void reorderDownWithRemoved(); //test reordering down with removed items
     void reorderToTopWithRemoved(); //test reordering to top with removed items
     void reorderToBottomWithRemoved(); //test reordering to bottom with removed items
+    void groupSelection();
 
     void proxy();
     void proxyCrash();
@@ -903,6 +904,53 @@ void TestQgsLayoutModel::reorderToBottomWithRemoved()
   QCOMPARE( layout.itemsModel()->mItemsInScene.size(), 2 );
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 0 ), item1 );
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 1 ), item2 );
+}
+
+void TestQgsLayoutModel::groupSelection()
+{
+  QgsLayout layout( QgsProject::instance() );
+
+  //some items in layout
+  QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item1 );
+  QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item2 );
+
+  QgsLayoutItemGroup *group = new QgsLayoutItemGroup( &layout );
+  group->addItem( item1 );
+  group->addItem( item2 );
+  layout.addLayoutItem( group );
+
+  QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item3 );
+  QgsLayoutItemGroup *group2 = new QgsLayoutItemGroup( &layout );
+  group2->addItem( group );
+  group2->addItem( item3 );
+  layout.addLayoutItem( group2 );
+
+  // selecting an item in a group should actually select the topmost parent group
+  QSignalSpy spy( &layout, &QgsLayout::selectedItemChanged );
+  layout.itemsModel()->setSelected( layout.itemsModel()->indexForItem( item3 ) );
+  QVERIFY( !item3->isSelected() );
+  QVERIFY( group2->isSelected() );
+  QCOMPARE( spy.count(), 1 );
+  // but the actual selected item signal should be the originally selected item, so
+  // that it can be tweaked in the properties dialog
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QObject * >(), item3 );
+
+  layout.itemsModel()->setSelected( layout.itemsModel()->indexForItem( item1 ) );
+  QVERIFY( !item1->isSelected() );
+  QVERIFY( !group->isSelected() );
+  QVERIFY( group2->isSelected() );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QObject * >(), item1 );
+
+  layout.itemsModel()->setSelected( layout.itemsModel()->indexForItem( item2 ) );
+  QVERIFY( !item2->isSelected() );
+  QVERIFY( !group->isSelected() );
+  QVERIFY( group2->isSelected() );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.at( 2 ).at( 0 ).value< QObject * >(), item2 );
 }
 
 void TestQgsLayoutModel::proxy()
