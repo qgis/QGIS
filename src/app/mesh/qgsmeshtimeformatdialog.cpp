@@ -32,9 +32,12 @@ QgsMeshTimeFormatDialog::QgsMeshTimeFormatDialog( QgsMeshLayer *meshLayer, QWidg
 
   connect( mUseTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mReferenceDateTimeEdit, &QDateTimeEdit::timeChanged, this, &QgsMeshTimeFormatDialog::saveSettings );
-  connect( mAbsoluteTimeFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );  connect( mUseTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
+  connect( mAbsoluteTimeFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
+  connect( mUseTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mRelativeTimeFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
   connect( mOffsetHoursSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
+  connect( mPlaybackIntervalSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsMeshTimeFormatDialog::saveSettings );
+
 }
 
 void QgsMeshTimeFormatDialog::loadSettings()
@@ -71,6 +74,7 @@ void QgsMeshTimeFormatDialog::loadSettings()
   mRelativeTimeFormatComboBox->setCurrentIndex( index );
 
   mOffsetHoursSpinBox->setValue( settings.relativeTimeOffsetHours() );
+  mPlaybackIntervalSpinBox->setValue( settings.datasetPlaybackInterval() );
 }
 
 void QgsMeshTimeFormatDialog::saveSettings()
@@ -81,6 +85,7 @@ void QgsMeshTimeFormatDialog::saveSettings()
   settings.setAbsoluteTimeFormat( mAbsoluteTimeFormatComboBox->currentText() );
   settings.setRelativeTimeOffsetHours( mOffsetHoursSpinBox->value() );
   settings.setRelativeTimeFormat( mRelativeTimeFormatComboBox->currentText() );
+  settings.setDatasetPlaybackInterval( mPlaybackIntervalSpinBox->value() );
   enableGroups( settings.useAbsoluteTime() ) ;
   mLayer->setTimeSettings( settings );
 }

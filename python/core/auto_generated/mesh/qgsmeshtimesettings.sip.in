@@ -63,6 +63,20 @@ Returns number of offset hours for relative time formatting
 Sets number of offset hours for relative time formatting
 %End
 
+    double datasetPlaybackInterval() const;
+%Docstring
+Returns number of seconds used as interval for dataset playback
+
+.. versionadded:: 3.12
+%End
+
+    void setDatasetPlaybackInterval( double seconds );
+%Docstring
+Sets number of seconds used as interval for dataset playback
+
+.. versionadded:: 3.12
+%End
+
     QString relativeTimeFormat() const;
 %Docstring
 Returns format used for relative time
