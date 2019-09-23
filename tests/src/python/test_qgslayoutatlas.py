@@ -675,6 +675,51 @@ class TestQgsLayoutAtlas(unittest.TestCase):
 
         QgsProject.instance().removeMapLayer(polygonLayer)
 
+    def testChangedSignal(self):
+        layout = QgsPrintLayout(QgsProject.instance())
+        atlas = layout.atlas()
+        s = QSignalSpy(atlas.changed)
+
+        atlas.setPageNameExpression('1+2')
+        self.assertEqual(len(s), 1)
+        atlas.setPageNameExpression('1+2')
+        self.assertEqual(len(s), 1)
+
+        atlas.setSortFeatures(True)
+        self.assertEqual(len(s), 2)
+        atlas.setSortFeatures(True)
+        self.assertEqual(len(s), 2)
+
+        atlas.setSortAscending(False)
+        self.assertEqual(len(s), 3)
+        atlas.setSortAscending(False)
+        self.assertEqual(len(s), 3)
+
+        atlas.setSortExpression('1+2')
+        self.assertEqual(len(s), 4)
+        atlas.setSortExpression('1+2')
+        self.assertEqual(len(s), 4)
+
+        atlas.setFilterFeatures(True)
+        self.assertEqual(len(s), 5)
+        atlas.setFilterFeatures(True)
+        self.assertEqual(len(s), 5)
+
+        atlas.setFilterExpression('1+2')
+        self.assertEqual(len(s), 6)
+        atlas.setFilterExpression('1+2')
+        self.assertEqual(len(s), 6)
+
+        atlas.setHideCoverage(True)
+        self.assertEqual(len(s), 7)
+        atlas.setHideCoverage(True)
+        self.assertEqual(len(s), 7)
+
+        atlas.setFilenameExpression('1+2')
+        self.assertEqual(len(s), 8)
+        atlas.setFilenameExpression('1+2')
+        self.assertEqual(len(s), 8)
+
 
 if __name__ == '__main__':
     unittest.main()

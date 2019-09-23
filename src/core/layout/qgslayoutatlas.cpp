@@ -162,6 +162,15 @@ void QgsLayoutAtlas::setCoverageLayer( QgsVectorLayer *layer )
   emit coverageLayerChanged( layer );
 }
 
+void QgsLayoutAtlas::setPageNameExpression( const QString &expression )
+{
+  if ( mPageNameExpression == expression )
+    return;
+
+  mPageNameExpression = expression;
+  emit changed();
+}
+
 QString QgsLayoutAtlas::nameForPage( int pageNumber ) const
 {
   if ( pageNumber < 0 || pageNumber >= mFeatureIds.count() )
@@ -170,12 +179,51 @@ QString QgsLayoutAtlas::nameForPage( int pageNumber ) const
   return mFeatureIds.at( pageNumber ).second;
 }
 
+void QgsLayoutAtlas::setSortFeatures( bool enabled )
+{
+  if ( mSortFeatures == enabled )
+    return;
+
+  mSortFeatures = enabled;
+  emit changed();
+}
+
+void QgsLayoutAtlas::setSortAscending( bool ascending )
+{
+  if ( mSortAscending == ascending )
+    return;
+
+  mSortAscending = ascending;
+  emit changed();
+}
+
+void QgsLayoutAtlas::setSortExpression( const QString &expression )
+{
+  if ( mSortExpression == expression )
+    return;
+
+  mSortExpression = expression;
+  emit changed();
+}
+
+void QgsLayoutAtlas::setFilterFeatures( bool filtered )
+{
+  if ( mFilterFeatures == filtered )
+    return;
+
+  mFilterFeatures = filtered;
+  emit changed();
+}
+
 bool QgsLayoutAtlas::setFilterExpression( const QString &expression, QString &errorString )
 {
   errorString.clear();
+  const bool hasChanged = mFilterExpression != expression;
   mFilterExpression = expression;
 
   QgsExpression filterExpression( mFilterExpression );
+  if ( hasChanged )
+    emit changed();
   if ( filterExpression.hasParserError() )
   {
     errorString = filterExpression.parserErrorString();
@@ -422,15 +470,23 @@ void QgsLayoutAtlas::refreshCurrentFeature()
 
 void QgsLayoutAtlas::setHideCoverage( bool hide )
 {
-  mHideCoverage = hide;
-
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, hide );
+  if ( hide == mHideCoverage )
+    return;
+
+  mHideCoverage = hide;
   mLayout->refresh();
+  emit changed();
 }
 
 bool QgsLayoutAtlas::setFilenameExpression( const QString &pattern, QString &errorString )
 {
+  const bool hasChanged = mFilenameExpressionString != pattern;
   mFilenameExpressionString = pattern;
+
+  if ( hasChanged )
+    emit changed();
+
   return updateFilenameExpression( errorString );
 }
 
