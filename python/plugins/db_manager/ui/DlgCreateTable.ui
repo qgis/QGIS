@@ -202,19 +202,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2" rowspan="2">
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>50</width>
-         <height>51</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
@@ -226,9 +213,9 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLineEdit" name="editGeomSrid">
-       <property name="text">
-        <string notr="true">0</string>
+      <widget class="QgsProjectionSelectionWidget" name="widgetTargetSrid" native="true">
+       <property name="enabled">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -263,6 +250,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cboSchema</tabstop>
   <tabstop>editName</tabstop>
@@ -276,7 +271,6 @@
   <tabstop>cboGeomType</tabstop>
   <tabstop>editGeomColumn</tabstop>
   <tabstop>spinGeomDim</tabstop>
-  <tabstop>editGeomSrid</tabstop>
   <tabstop>chkSpatialIndex</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

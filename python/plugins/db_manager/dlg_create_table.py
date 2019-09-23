@@ -28,6 +28,7 @@ from qgis.PyQt.QtCore import Qt, QModelIndex
 from qgis.PyQt.QtWidgets import QItemDelegate, QComboBox, QDialog, QPushButton, QDialogButtonBox, QMessageBox, QApplication
 from qgis.PyQt.QtCore import QItemSelectionModel, pyqtSignal
 
+from qgis.core import QgsProject
 from qgis.utils import OverrideCursor
 
 from .db_plugins.data_model import TableFieldsModel
@@ -107,6 +108,8 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         b = QPushButton(self.tr("&Create"))
         self.buttonBox.addButton(b, QDialogButtonBox.ActionRole)
 
+        self.widgetTargetSrid.setCrs(QgsProject.instance().crs())
+
         self.btnAddField.clicked.connect(self.addField)
         self.btnDeleteField.clicked.connect(self.deleteField)
         self.btnFieldUp.clicked.connect(self.fieldUp)
@@ -143,7 +146,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         self.cboGeomType.setEnabled(useGeom)
         self.editGeomColumn.setEnabled(useGeom)
         self.spinGeomDim.setEnabled(useGeom)
-        self.editGeomSrid.setEnabled(useGeom)
+        self.widgetTargetSrid.setEnabled(useGeom)
         self.chkSpatialIndex.setEnabled(useGeom)
 
     def updateUiFields(self):
@@ -288,7 +291,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
             geomType = self.GEOM_TYPES[self.cboGeomType.currentIndex()]
             geomDim = self.spinGeomDim.value()
             try:
-                geomSrid = int(self.editGeomSrid.text())
+                geomSrid = self.widgetTargetSrid.crs().postgisSrid()
             except ValueError:
                 geomSrid = 0
             useSpatialIndex = self.chkSpatialIndex.isChecked()
@@ -309,6 +312,20 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
             except (ConnectionError, DbError) as e:
                 DlgDbError.showError(e, self)
-            return
+                return
+
+        # clear UI
+        self.editName.clear()
+        self.fields.model().removeRows(0, self.fields.model().rowCount())
+        self.cboPrimaryKey.clear()
+        self.chkGeomColumn.setChecked(False)
+        self.chkSpatialIndex.setChecked(False)
+        self.widgetTargetSrid.setCrs(QgsProject.instance().crs())
+
+        self.cboGeomType.setEnabled(False)
+        self.editGeomColumn.setEnabled(False)
+        self.spinGeomDim.setEnabled(False)
+        self.widgetTargetSrid.setEnabled(False)
+        self.chkSpatialIndex.setEnabled(False)
 
         QMessageBox.information(self, self.tr("DB Manager"), self.tr("Table created successfully."))
