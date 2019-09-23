@@ -397,6 +397,20 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   mFilename->setEnabled( true );
   mFilename->setFilter( QgsVectorFileWriter::filterForDriver( format() ) );
 
+  // if output filename already defined we need to replace old suffix
+  // to avoid double extensions like .gpkg.shp
+  if ( !mFilename->filePath().isEmpty() )
+  {
+    QRegularExpression rx( "\\.(.*?)[\\s]" );
+    QString ext;
+    ext = rx.match( QgsVectorFileWriter::filterForDriver( format() ) ).captured( 1 );
+    if ( !ext.isEmpty() )
+    {
+      QFileInfo fi( mFilename->filePath() );
+      mFilename->setFilePath( QStringLiteral( "%1/%2.%3" ).arg( fi.path() ).arg( fi.baseName() ).arg( ext ) );
+    }
+  }
+
   bool selectAllFields = true;
   bool fieldsAsDisplayedValues = false;
 
