@@ -11,7 +11,7 @@
 class QgsCheckBoxFieldFormatter : QgsFieldFormatter
 {
 %Docstring
-Field formatter for a check box field.
+Field formatter for a checkbox field.
 
 .. versionadded:: 3.10
 %End
