@@ -261,7 +261,10 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
       QImageReader ir( resolvedPath );
       ir.setAutoTransform( true );
       QPixmap pm = QPixmap::fromImage( ir.read() );
-      mPixmapLabel->setPixmap( pm );
+      if ( !pm.isNull() )
+        mPixmapLabel->setPixmap( pm );
+      else
+        mPixmapLabel->clear();
       updateDocumentViewer();
     }
   }
