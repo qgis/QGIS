@@ -51,6 +51,8 @@ class QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWid
 
     void applyToAll();
 
+    void updatePageCount();
+
   private:
 
     QgsLayout *mLayout = nullptr;
