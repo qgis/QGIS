@@ -274,6 +274,12 @@ bool LabelPosition::isInConflict( LabelPosition *lp )
 
 bool LabelPosition::isInConflictSinglePart( LabelPosition *lp )
 {
+  if ( qgsDoubleNear( alpha, 0 ) && qgsDoubleNear( lp->alpha, 0 ) )
+  {
+    // simple case -- both candidates are oriented to axis, so shortcut with easy calculation
+    return boundingBoxIntersects( lp );
+  }
+
   if ( !mGeos )
     createGeosGeom();
 

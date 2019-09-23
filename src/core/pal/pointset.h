@@ -148,6 +148,12 @@ namespace pal
         max[1] = ymax;
       }
 
+      /**
+       * Returns TRUE if the bounding box of this pointset intersects the bounding box
+       * of another pointset.
+       */
+      bool boundingBoxIntersects( const PointSet *other ) const;
+
       //! Returns NULLPTR if this isn't a hole. Otherwise returns pointer to parent pointset.
       PointSet *getHoleOf() { return holeOf; }
 

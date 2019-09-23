@@ -858,6 +858,17 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
   }
 }
 
+bool PointSet::boundingBoxIntersects( const PointSet *other ) const
+{
+  double x1 = ( xmin > other->xmin ? xmin : other->xmin );
+  double x2 = ( xmax < other->xmax ? xmax : other->xmax );
+  if ( x1 > x2 )
+    return false;
+  double y1 = ( ymin > other->ymin ? ymin : other->ymin );
+  double y2 = ( ymax < other->ymax ? ymax : other->ymax );
+  return y1 <= y2;
+}
+
 void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py )
 {
   int i;
