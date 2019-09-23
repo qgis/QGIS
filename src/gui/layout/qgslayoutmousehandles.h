@@ -209,7 +209,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     void hideAlignItems();
 
     //! Collects all items from a list of \a items, exploring for any group members and adding them too
-    void collectItems( QList< QgsLayoutItem * > items, QList< QgsLayoutItem * > &collected );
+    void collectItems( const QList< QgsLayoutItem * > &items, QList< QgsLayoutItem * > &collected );
 
 };
 

@@ -743,14 +743,14 @@ void QgsLayoutMouseHandles::hideAlignItems()
   mVerticalSnapLine->hide();
 }
 
-void QgsLayoutMouseHandles::collectItems( const QList<QgsLayoutItem *> items, QList<QgsLayoutItem *> &collected )
+void QgsLayoutMouseHandles::collectItems( const QList<QgsLayoutItem *> &items, QList<QgsLayoutItem *> &collected )
 {
   for ( QgsLayoutItem *item : items )
   {
     if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
     {
       // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
-      collectItems( static_cast< QgsLayoutItemGroup * >( item )->items(), collected );
+      collected.append( static_cast< QgsLayoutItemGroup * >( item )->items() );
     }
     else
     {
