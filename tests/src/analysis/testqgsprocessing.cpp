@@ -8456,6 +8456,12 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   // default implementation should return first supported format for provider
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
+
+  // a default context should use reasonable defaults
+  QgsProcessingContext context;
+  QCOMPARE( context.preferredVectorFormat(), QStringLiteral( "gpkg" ) );
+  QCOMPARE( context.preferredRasterFormat(), QStringLiteral( "tif" ) );
+
   // unless the user has set a default format, which IS supported by that provider
   QgsSettings settings;
 
@@ -8464,6 +8470,11 @@ void TestQgsProcessing::defaultExtensionsForProvider()
 
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
+
+  // context should respect these as preferred formats
+  QgsProcessingContext context2;
+  QCOMPARE( context2.preferredVectorFormat(), QStringLiteral( "tab" ) );
+  QCOMPARE( context2.preferredRasterFormat(), QStringLiteral( "sdat" ) );
 
   // but if default is not supported by provider, we use a supported format
   settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "gpkg" ) ) );
