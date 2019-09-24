@@ -258,9 +258,11 @@ QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( const QList<Q
 QgsConditionalStyle QgsConditionalStyle::compressStyles( const QList<QgsConditionalStyle> &styles )
 {
   QgsConditionalStyle style;
-  const auto constStyles = styles;
-  for ( const QgsConditionalStyle &s : constStyles )
+  for ( const QgsConditionalStyle &s : styles )
   {
+    if ( !s.isValid() )
+      continue;
+
     style.setFont( s.font() );
     if ( s.backgroundColor().isValid() && s.backgroundColor().alpha() != 0 )
       style.setBackgroundColor( s.backgroundColor() );
