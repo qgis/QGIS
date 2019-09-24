@@ -31,10 +31,15 @@ QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceMo
 
 void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceModel )
 {
+  if ( mSourceLayer )
+    disconnect( mSourceLayer->conditionalStyles(), &QgsConditionalLayerStyles::changed, this, &QgsFeatureListModel::conditionalStylesChanged );
+
   QSortFilterProxyModel::setSourceModel( sourceModel );
   mExpressionContext = sourceModel->layer()->createExpressionContext();
   mFilterModel = sourceModel;
 
+  mSourceLayer = sourceModel->layer();
+  connect( mSourceLayer->conditionalStyles(), &QgsConditionalLayerStyles::changed, this, &QgsFeatureListModel::conditionalStylesChanged );
 }
 
 QgsVectorLayerCache *QgsFeatureListModel::layerCache()
@@ -263,6 +268,12 @@ void QgsFeatureListModel::onEndInsertRows( const QModelIndex &parent, int first,
   Q_UNUSED( first )
   Q_UNUSED( last )
   endInsertRows();
+}
+
+void QgsFeatureListModel::conditionalStylesChanged()
+{
+  mRowStylesMap.clear();
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
 }
 
 bool QgsFeatureListModel::sortByDisplayExpression() const
