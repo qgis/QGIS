@@ -103,6 +103,9 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     }
   }
 
+  QStringList styleIdentifiers;
+  QStringList linkIdentifiers;
+
   QList<QgsWmtsTileLayer> tileLayers = caps.supportedTileLayers();
   if ( !tileLayers.isEmpty() )
   {
@@ -127,16 +130,29 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
         if ( layerItem == this )
           styleName = title;  // just one style so no need to display it
 
-        QgsDataItem *styleItem = l.setLinks.size() == 1 ? layerItem : new QgsDataCollectionItem( layerItem, styleName, layerItem->path() + '/' + style.identifier );
+        // Ensure style path is unique
+        QString stylePathIdentifier { style.identifier };
+        int i = 0;
+        while ( styleIdentifiers.contains( stylePathIdentifier ) )
+        {
+          stylePathIdentifier = QStringLiteral( "%1_%2" ).arg( style.identifier ).arg( ++i );
+        }
+        styleIdentifiers.push_back( stylePathIdentifier );
+
+        QgsDataItem *styleItem = l.setLinks.size() == 1 ? layerItem : new QgsDataCollectionItem( layerItem, styleName, layerItem->path() + '/' + stylePathIdentifier );
         if ( styleItem != layerItem )
         {
           styleItem->setCapabilities( styleItem->capabilities2() & ~QgsDataItem::Fertile );
           styleItem->setState( QgsDataItem::Populated );
           styleItem->setToolTip( styleName );
           if ( layerItem == this )
+          {
             children << styleItem;
+          }
           else
+          {
             layerItem->addChildItem( styleItem );
+          }
         }
 
         for ( const QgsWmtsTileMatrixSetLink &setLink : qgis::as_const( l.setLinks ) )
@@ -145,16 +161,30 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
           if ( styleItem == layerItem )
             linkName = styleName;  // just one link so no need to display it
 
-          QgsDataItem *linkItem = l.formats.size() == 1 ? styleItem : new QgsDataCollectionItem( styleItem, linkName, styleItem->path() + '/' + setLink.tileMatrixSet );
+          // Ensure link path is unique
+          QString linkPathIdentifier { linkName };
+          int i = 0;
+          while ( linkIdentifiers.contains( linkPathIdentifier ) )
+          {
+            linkPathIdentifier = QStringLiteral( "%1_%2" ).arg( linkName ).arg( ++i );
+          }
+          linkIdentifiers.push_back( linkPathIdentifier );
+
+
+          QgsDataItem *linkItem = l.formats.size() == 1 ? styleItem : new QgsDataCollectionItem( styleItem, linkName, styleItem->path() + '/' + linkPathIdentifier );
           if ( linkItem != styleItem )
           {
             linkItem->setCapabilities( linkItem->capabilities2() & ~QgsDataItem::Fertile );
             linkItem->setState( QgsDataItem::Populated );
             linkItem->setToolTip( linkName );
             if ( styleItem == this )
+            {
               children << linkItem;
+            }
             else
+            {
               styleItem->addChildItem( linkItem );
+            }
           }
 
           for ( const QString &format : qgis::as_const( l.formats ) )
@@ -167,9 +197,13 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
                 l.identifier, format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[ setLink.tileMatrixSet ].crs, title );
             tileLayerItem->setToolTip( name );
             if ( linkItem == this )
+            {
               children << tileLayerItem;
+            }
             else
+            {
               linkItem->addChildItem( tileLayerItem );
+            }
           }
         }
       }
