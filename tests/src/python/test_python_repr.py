@@ -17,7 +17,8 @@ from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
-    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark
+    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
+    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes
 
 start_app()
 
@@ -199,6 +200,18 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (0 0, 0 0 - )>")
         b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (1 2, 3 4 - EPSG:3111)>")
+
+    def testQgsLayoutPoint(self):
+        b = QgsLayoutPoint(1, 2, QgsUnitTypes.LayoutInches)
+        self.assertEqual(b.__repr__(), "<QgsLayoutPoint: 1, 2 in >")
+
+    def testQgsLayoutMeasurement(self):
+        b = QgsLayoutMeasurement(3, QgsUnitTypes.LayoutPoints)
+        self.assertEqual(b.__repr__(), "<QgsLayoutMeasurement: 3 pt >")
+
+    def testQgsLayoutSize(self):
+        b = QgsLayoutSize(10, 20, QgsUnitTypes.LayoutInches)
+        self.assertEqual(b.__repr__(), "<QgsLayoutSize: 10 x 20 in >")
 
 
 if __name__ == "__main__":
