@@ -779,7 +779,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   return s;
 }
 
-QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString *layerName )
 {
   bool requiresTranslation = false;
 
@@ -813,8 +813,17 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
 
       // if the layer name doesn't match the filename, we need to convert the layer. This method can only return
       // a filename, and cannot handle layernames as well as file paths
-      const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
-      requiresTranslation = requiresTranslation || ( !layerName.isEmpty() && layerName != fi.baseName() );
+      const QString srcLayerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      if ( layerName )
+      {
+        // differing layer names are acceptable
+        *layerName = srcLayerName;
+      }
+      else
+      {
+        // differing layer names are NOT acceptable
+        requiresTranslation = requiresTranslation || ( !srcLayerName.isEmpty() && srcLayerName != fi.baseName() );
+      }
     }
     else
     {
@@ -847,6 +856,17 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   {
     return diskPath;
   }
+}
+
+QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  return convertToCompatibleFormatInternal( vl, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, nullptr );
+}
+
+QString QgsProcessingUtils::convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString &layerName )
+{
+  layerName.clear();
+  return convertToCompatibleFormatInternal( layer, selectedFeaturesOnly, baseName, compatibleFormats, preferredFormat, context, feedback, &layerName );
 }
 
 QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix )

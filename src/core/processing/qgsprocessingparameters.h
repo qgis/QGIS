@@ -793,9 +793,44 @@ class CORE_EXPORT QgsProcessingParameters
      *
      * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
      * layer export is required. This defaults to shapefiles, because shapefiles are the future (don't believe the geopackage hype!).
+     *
+     * When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
+     * to use parameterAsCompatibleSourceLayerPathAndLayerName() which may avoid conversion in more situations.
      */
     static QString parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
         QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a source vector layer file path and layer name of compatible format.
+     *
+     * If the parameter is evaluated to an existing layer, and that layer is not of the format listed in the
+     * \a compatibleFormats argument, then the layer will first be exported to a compatible format
+     * in a temporary location. The function will then return the path to that temporary file.
+     *
+     * \a compatibleFormats should consist entirely of lowercase file extensions, e.g. 'shp'.
+     *
+     * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
+     * layer export is required. This defaults to shapefiles, because shapefiles are the future (don't believe the geopackage hype!).
+     *
+     * This method should be preferred over parameterAsCompatibleSourceLayerPath() when an algorithm is able
+     * to correctly handle files with multiple layers. Unlike parameterAsCompatibleSourceLayerPath(), it will not force
+     * a conversion in this case and will return the target layer name in the \a layerName argument.
+     *
+     * \param definition associated parameter definition
+     * \param parameters input parameter value map
+     * \param context processing context
+     * \param compatibleFormats a list of lowercase file extensions compatible with the algorithm
+     * \param preferredFormat preferred format extension to use if conversion if required
+     * \param feedback feedback object
+     * \param layerName will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+     *
+     * \returns path to source layer, or nearly converted compatible layer
+     *
+     * \see parameterAsCompatibleSourceLayerPath()
+     * \since QGIS 3.10
+     */
+    static QString parameterAsCompatibleSourceLayerPathAndLayerName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr, QString *layerName SIP_OUT = nullptr );
 
     /**
      * Evaluates the parameter with matching \a definition to a map layer.
