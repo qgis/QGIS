@@ -158,7 +158,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
 
   mGeometryOptions = qgis::make_unique<QgsGeometryOptions>();
   mActions = new QgsActionManager( this );
-  mConditionalStyles = new QgsConditionalLayerStyles();
+  mConditionalStyles = new QgsConditionalLayerStyles( this );
   mStoredExpressionManager = new QgsStoredExpressionManager();
   mStoredExpressionManager->setParent( this );
 

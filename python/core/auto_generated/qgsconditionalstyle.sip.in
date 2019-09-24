@@ -12,7 +12,7 @@
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 
-class QgsConditionalLayerStyles
+class QgsConditionalLayerStyles : QObject
 {
 %Docstring
 The QgsConditionalLayerStyles class holds conditional style information
@@ -23,43 +23,64 @@ for a layer. This includes field styles and full row styles.
 #include "qgsconditionalstyle.h"
 %End
   public:
-    QgsConditionalLayerStyles();
 
-    QList<QgsConditionalStyle> rowStyles();
-
-    void setRowStyles( const QList<QgsConditionalStyle> &styles );
+    QgsConditionalLayerStyles( QObject *parent = 0 );
 %Docstring
-Set the conditional styles that apply to full rows of data in the attribute table.
+Constructor for QgsConditionalLayerStyles, with the specified ``parent`` object.
+%End
+
+    QgsConditionalStyles rowStyles() const;
+%Docstring
+Returns a list of row styles associated with the layer.
+
+.. seealso:: :py:func:`setRowStyles`
+%End
+
+    void setRowStyles( const QgsConditionalStyles &styles );
+%Docstring
+Sets the conditional ``styles`` that apply to full rows of data in the attribute table.
 Each row will check be checked against each rule.
 
-:param styles: The styles to assign to all the rows
+.. seealso:: :py:func:`rowStyles`
 
 .. versionadded:: 2.12
 %End
 
     void setFieldStyles( const QString &fieldName, const QList<QgsConditionalStyle> &styles );
 %Docstring
-Set the conditional styles for the field UI properties.
+Set the conditional ``styles`` for a field, with the specified ``fieldName``.
 
-:param fieldName: name of field
-:param styles:
+.. seealso:: :py:func:`fieldStyles`
 %End
 
-    QList<QgsConditionalStyle> fieldStyles( const QString &fieldName );
+    QList<QgsConditionalStyle> fieldStyles( const QString &fieldName ) const;
 %Docstring
-Returns the conditional styles set for the field UI properties
+Returns the conditional styles set for the field with matching ``fieldName``.
 
-:return: A list of conditional styles that have been set.
+.. seealso:: :py:func:`setFieldStyles`
 %End
 
     bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 %Docstring
-Reads field ui properties specific state from Dom node.
+Reads the condition styles state from a DOM node.
+
+.. seealso:: :py:func:`writeXml`
 %End
 
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-Write field ui properties specific state from Dom node.
+Writes the condition styles state to a DOM node.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the conditional styles are changed.
+
+.. versionadded:: 3.10
 %End
 
 };

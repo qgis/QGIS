@@ -25,7 +25,6 @@
 %Include auto_generated/qgscolorramp.sip
 %Include auto_generated/qgscolorscheme.sip
 %Include auto_generated/qgscolorschemeregistry.sip
-%Include auto_generated/qgsconditionalstyle.sip
 %Include auto_generated/qgscoordinateformatter.sip
 %Include auto_generated/qgscoordinatetransform.sip
 %Include auto_generated/qgscoordinatetransformcontext.sip
@@ -346,6 +345,7 @@
 %Include auto_generated/qgsbookmarkmodel.sip
 %Include auto_generated/qgsbrowsermodel.sip
 %Include auto_generated/qgsbrowserproxymodel.sip
+%Include auto_generated/qgsconditionalstyle.sip
 %Include auto_generated/qgscoordinatereferencesystem.sip
 %Include auto_generated/qgscredentials.sip
 %Include auto_generated/qgsdataitem.sip

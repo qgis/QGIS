@@ -660,6 +660,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsbookmarkmodel.h
   qgsbrowsermodel.h
   qgsbrowserproxymodel.h
+  qgsconditionalstyle.h
   qgscoordinatereferencesystem.h
   qgscoordinateutils.h
   qgscredentials.h
@@ -931,7 +932,6 @@ SET(QGIS_CORE_HDRS
   qgscolorscheme.h
   qgscolorschemeregistry.h
   qgsconnectionpool.h
-  qgsconditionalstyle.h
   qgscoordinateformatter.h
   qgscoordinatetransform.h
   qgscoordinatetransformcontext.h
