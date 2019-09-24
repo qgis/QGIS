@@ -43,6 +43,14 @@ class TestPyQgsConditionalStyle(unittest.TestCase):
         context = QgsExpressionContextUtils.createFeatureBasedContext(feature, fields)
         return context
 
+    def testDefaultStyle(self):
+        style = QgsConditionalStyle()
+        self.assertFalse(style.isValid())
+        style.setName('x')
+        self.assertTrue(style.isValid())
+        self.assertFalse(style.textColor().isValid())
+        self.assertFalse(style.backgroundColor().isValid())
+
     def test_MatchesReturnsTrueForSimpleMatch(self):
         style = QgsConditionalStyle("@value > 10")
         context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), QgsFields())
