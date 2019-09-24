@@ -258,7 +258,7 @@ class CORE_EXPORT QgsProcessingUtils
     static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
 
     /**
-     * Converts a source vector \a layer to a file path to a vector layer of compatible format.
+     * Converts a source vector \a layer to a file path of a vector layer of compatible format.
      *
      * If the specified \a layer is not of the format listed in the
      * \a compatibleFormats argument, then the layer will first be exported to a compatible format
@@ -268,6 +268,11 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
      * layer export is required. This defaults to shapefiles.
+     *
+     * When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
+     * to use convertToCompatibleFormatAndLayerName() which may avoid conversion in more situations.
+     *
+     * \see convertToCompatibleFormatAndLayerName()
      */
     static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
         bool selectedFeaturesOnly,
@@ -276,6 +281,45 @@ class CORE_EXPORT QgsProcessingUtils
         const QString &preferredFormat,
         QgsProcessingContext &context,
         QgsProcessingFeedback *feedback );
+
+    /**
+     * Converts a source vector \a layer to a file path and layer name of a vector layer of compatible format.
+     *
+     * If the specified \a layer is not of the format listed in the
+     * \a compatibleFormats argument, then the layer will first be exported to a compatible format
+     * in a temporary location using \a baseName. The function will then return the path to that temporary file.
+     *
+     * \a compatibleFormats should consist entirely of lowercase file extensions, e.g. 'shp'.
+     *
+     * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
+     * layer export is required. This defaults to shapefiles.
+     *
+     * This method should be preferred over convertToCompatibleFormat() when an algorithm is able
+     * to correctly handle files with multiple layers. Unlike convertToCompatibleFormat(), it will not force
+     * a conversion in this case and will return the target layer name in the \a layerName argument.
+     *
+     * \param layer source layer to convert (if required)
+     * \param selectedFeaturesOnly TRUE if only selected features from the layer should be used
+     * \param baseName base file name for converted layer, if required
+     * \param compatibleFormats a list of lowercase file extensions compatible with the algorithm
+     * \param preferredFormat preferred format extension to use if conversion if required
+     * \param context processing context
+     * \param feedback feedback object
+     * \param layerName will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+     *
+     * \returns path to source layer, or nearly converted compatible layer
+     *
+     * \see convertToCompatibleFormat()
+     * \since QGIS 3.10
+     */
+    static QString convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer,
+        bool selectedFeaturesOnly,
+        const QString &baseName,
+        const QStringList &compatibleFormats,
+        const QString &preferredFormat,
+        QgsProcessingContext &context,
+        QgsProcessingFeedback *feedback,
+        QString &layerName SIP_OUT );
 
     /**
      * Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
