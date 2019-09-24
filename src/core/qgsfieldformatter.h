@@ -40,6 +40,10 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsFieldFormatter
 {
   public:
+
+    /**
+      * Default constructor
+      */
     QgsFieldFormatter() = default;
 
     virtual ~QgsFieldFormatter() = default;

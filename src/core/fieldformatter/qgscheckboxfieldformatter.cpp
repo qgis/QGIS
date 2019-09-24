@@ -18,6 +18,7 @@
 
 #include "qgscheckboxfieldformatter.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 
 QString QgsCheckBoxFieldFormatter::id() const
@@ -27,21 +28,37 @@ QString QgsCheckBoxFieldFormatter::id() const
 
 QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIndex )
   Q_UNUSED( cache )
-  Q_UNUSED( config )
 
 
-  if ( value.isNull() || !value.canConvert<bool>() )
+  enum BoolValue {_FALSE, _TRUE, _NULL};
+  BoolValue boolValue = _NULL;
+
+  const QVariant::Type fieldType = layer->fields().at( fieldIndex ).type();
+  if ( fieldType == QVariant::Bool )
   {
-    return QgsApplication::nullRepresentation();
+    if ( value.toBool() )
+      boolValue = _TRUE;
+    else
+      boolValue = _FALSE;
+  }
+  else
+  {
+    if ( config.contains( QStringLiteral( "CheckedState" ) ) && value == config[ QStringLiteral( "CheckedState" ) ] )
+      boolValue = _TRUE;
+    else if ( config.contains( QStringLiteral( "UncheckedState" ) ) && value == config[ QStringLiteral( "UncheckedState" ) ] )
+      boolValue = _FALSE;
+    else
+      boolValue = _NULL;
   }
 
-  const bool boolValue = value.toBool();
-
-  if ( boolValue )
-    return QObject::tr( "true" );
-  else
-    return QObject::tr( "false" );
+  switch ( boolValue )
+  {
+    case _NULL:
+      return QgsApplication::nullRepresentation();
+    case _TRUE:
+      return QObject::tr( "true" );
+    case _FALSE:
+      return QObject::tr( "false" );
+  }
 }
