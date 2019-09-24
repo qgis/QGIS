@@ -458,6 +458,9 @@ class CORE_EXPORT QgsProcessingContext
 
     QPointer< QgsProcessingFeedback > mFeedback;
 
+    QString mPreferredVectorFormat;
+    QString mPreferredRasterFormat;
+
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );
 #endif

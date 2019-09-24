@@ -302,6 +302,30 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
 
+    /**
+     * Returns the default vector extension to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns the user-set default extension from the processing settings, or
+     * a fallback value of "gpkg".
+     *
+     * \see defaultRasterExtension()
+     * \since QGIS 3.10
+     */
+    static QString defaultVectorExtension();
+
+    /**
+     * Returns the default raster extension to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns the user-set default extension from the processing settings, or
+     * a fallback value of "tif".
+     *
+     * \see defaultVectorExtension()
+     * \since QGIS 3.10
+     */
+    static QString defaultRasterExtension();
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );

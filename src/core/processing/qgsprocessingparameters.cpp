@@ -4491,10 +4491,9 @@ QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
   }
   else
   {
-    QgsSettings settings;
     if ( hasGeometry() )
     {
-      return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+      return QgsProcessingUtils::defaultVectorExtension();
     }
     else
     {
@@ -4712,8 +4711,7 @@ QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
   }
   else
   {
-    QgsSettings settings;
-    return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+    return QgsProcessingUtils::defaultRasterExtension();
   }
 }
 
@@ -5128,10 +5126,9 @@ QString QgsProcessingParameterVectorDestination::defaultFileExtension() const
   }
   else
   {
-    QgsSettings settings;
     if ( hasGeometry() )
     {
-      return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+      return QgsProcessingUtils::defaultVectorExtension();
     }
     else
     {

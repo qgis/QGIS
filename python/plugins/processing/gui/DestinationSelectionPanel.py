@@ -40,7 +40,8 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingParameterFolderDestination)
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterVectorDestination)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
 from processing.gui.PostgisTableSelector import PostgisTableSelector
@@ -231,12 +232,12 @@ class DestinationSelectionPanel(BASE, WIDGET):
     def selectFile(self):
         file_filter = getFileFilter(self.parameter)
         settings = QgsSettings()
-        if isinstance(self.parameter, QgsProcessingParameterFeatureSink):
+        if isinstance(self.parameter, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
             last_ext_path = '/Processing/LastVectorOutputExt'
-            last_ext = settings.value(last_ext_path, '.gpkg')
+            last_ext = settings.value(last_ext_path, '.{}'.format(self.parameter.defaultFileExtension()))
         elif isinstance(self.parameter, QgsProcessingParameterRasterDestination):
             last_ext_path = '/Processing/LastRasterOutputExt'
-            last_ext = settings.value(last_ext_path, '.tif')
+            last_ext = settings.value(last_ext_path, '.{}'.format(self.parameter.defaultFileExtension()))
         else:
             last_ext_path = None
             last_ext = None
@@ -245,7 +246,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         filters = file_filter.split(';;')
         try:
             last_filter = [f for f in filters if '*{}'.format(last_ext) in f.lower()][0]
-        except:
+        except IndexError:
             last_filter = None
 
         if settings.contains('/Processing/LastOutputPath'):

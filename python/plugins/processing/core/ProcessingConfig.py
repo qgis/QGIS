@@ -58,6 +58,8 @@ class ProcessingConfig:
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
     SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
     MAX_THREADS = 'MAX_THREADS'
+    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
 
     settings = {}
     settingIcons = {}
@@ -144,6 +146,24 @@ class ProcessingConfig:
             ProcessingConfig.MAX_THREADS,
             ProcessingConfig.tr('Max Threads'), threads,
             valuetype=Setting.INT))
+
+        extensions = QgsVectorFileWriter.supportedFormatExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
+            ProcessingConfig.tr('Default output vector layer extension'),
+            'gpkg',
+            valuetype=Setting.SELECTION,
+            options=extensions))
+
+        extensions = QgsRasterFileWriter.supportedFormatExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
+            ProcessingConfig.tr('Default output raster layer extension'),
+            'tif',
+            valuetype=Setting.SELECTION,
+            options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):
