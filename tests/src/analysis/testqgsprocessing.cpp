@@ -1253,6 +1253,13 @@ void TestQgsProcessing::algorithm()
   QVERIFY( !r.algorithmById( "p1:alg3" ) );
   QVERIFY( !r.algorithmById( "px:alg1" ) );
 
+  // alias support
+  QVERIFY( !r.algorithmById( QStringLiteral( "fake:fakealg" ) ) );
+  r.addAlgorithmAlias( QStringLiteral( "fake:fakealg" ), QStringLiteral( "nope:none" ) );
+  QVERIFY( !r.algorithmById( QStringLiteral( "fake:fakealg" ) ) );
+  r.addAlgorithmAlias( QStringLiteral( "fake:fakealg" ), QStringLiteral( "p1:alg1" ) );
+  QCOMPARE( r.algorithmById( QStringLiteral( "fake:fakealg" ) ), p->algorithm( "alg1" ) );
+
   // test that algorithmById can transparently map 'qgis' algorithms across to matching 'native' algorithms
   // this allows us the freedom to convert qgis python algs to c++ without breaking api or existing models
   QCOMPARE( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "qgis:dissolve" ) )->id(), QStringLiteral( "native:dissolve" ) );
