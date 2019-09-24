@@ -388,7 +388,7 @@ class TestQgsCheckBoxFieldFormatter(unittest.TestCase):
         # test with string
         self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'yeah'), 'true')
         self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'nooh'), 'false')
-        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'oops'), ("oops"))
+        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'oops'), "(oops)")
 
 
 if __name__ == '__main__':

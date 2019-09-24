@@ -31,7 +31,7 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   Q_UNUSED( cache )
 
   /*
-  This foillows this logic:
+  This follows this logic:
 
   if field type is bool:
     NULL => nullRepresentation
