@@ -21,6 +21,8 @@ __author__ = 'Luigi Pirelli'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Luigi Pirelli'
 
+import html
+
 from qgis.core import (QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterMultipleLayers,
@@ -98,9 +100,9 @@ class Datasources2Vrt(QgisAlgorithm):
             basePath = GdalUtils.ogrConnectionStringFromLayer(layer)
             layerName = GdalUtils.ogrLayerName(layer.source())
 
-            vrt += '<OGRVRTLayer name="{}">'.format(self.escape(layerName))
-            vrt += '<SrcDataSource>{}</SrcDataSource>'.format(self.escape(basePath))
-            vrt += '<SrcLayer>{}</SrcLayer>'.format(self.escape(layerName))
+            vrt += '<OGRVRTLayer name="{}">'.format(html.escape(layerName, True))
+            vrt += '<SrcDataSource>{}</SrcDataSource>'.format(html.escape(basePath, True))
+            vrt += '<SrcLayer>{}</SrcLayer>'.format(html.escape(layerName, True))
             vrt += '</OGRVRTLayer>'
 
             feedback.setProgress(int(current * total))
@@ -113,11 +115,3 @@ class Datasources2Vrt(QgisAlgorithm):
             f.write(vrt)
 
         return {self.OUTPUT: vrtPath, self.VRT_STRING: vrt}
-
-    def escape(self, text):
-        text = text.replace('&', '&amp;')
-        text = text.replace('<', '&lt;')
-        text = text.replace('>', '&gt;')
-        text = text.replace('"', '&quot;')
-        text = text.replace('\'', '&apos;')
-        return text
