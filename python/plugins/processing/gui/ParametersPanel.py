@@ -39,7 +39,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputLayerDefinition,
                        QgsProject,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsVectorFileWriter)
 from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParameterWidgetContext)
 from qgis.utils import iface
@@ -49,12 +50,13 @@ from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
                                  QLabel, QCheckBox, QSizePolicy)
 from qgis.PyQt.QtGui import QIcon
+from osgeo import gdal
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.tools.dataobjects import createContext
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]\
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -230,7 +232,8 @@ class ParametersPanel(BASE, WIDGET):
 
                     # Do not try to open formats that are write-only.
                     value = widget.getValue()
-                    if value and isinstance(value, QgsProcessingOutputLayerDefinition):
+                    if value and isinstance(value, QgsProcessingOutputLayerDefinition) and isinstance(output, (
+                            QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                         filename = value.sink.staticValue()
                         if filename not in ('memory:', ''):
                             path, ext = os.path.splitext(filename)
