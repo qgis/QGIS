@@ -20,32 +20,36 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbollayer.h"
 
-QgsConditionalLayerStyles::QgsConditionalLayerStyles()
-  : mRowStyles( QList<QgsConditionalStyle>() )
+QgsConditionalLayerStyles::QgsConditionalLayerStyles( QObject *parent )
+  : QObject( parent )
 {}
 
-QList<QgsConditionalStyle> QgsConditionalLayerStyles::rowStyles()
+QgsConditionalStyles QgsConditionalLayerStyles::rowStyles() const
 {
   return mRowStyles;
 }
 
-void QgsConditionalLayerStyles::setRowStyles( const QList<QgsConditionalStyle> &styles )
+void QgsConditionalLayerStyles::setRowStyles( const QgsConditionalStyles &styles )
 {
+  if ( styles == mRowStyles )
+    return;
+
   mRowStyles = styles;
+  emit changed();
 }
 
 void QgsConditionalLayerStyles::setFieldStyles( const QString &fieldName, const QList<QgsConditionalStyle> &styles )
 {
+  if ( mFieldStyles.value( fieldName ) == styles )
+    return;
+
   mFieldStyles.insert( fieldName, styles );
+  emit changed();
 }
 
-QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( const QString &fieldName )
+QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( const QString &fieldName ) const
 {
-  if ( mFieldStyles.contains( fieldName ) )
-  {
-    return mFieldStyles[fieldName];
-  }
-  return QList<QgsConditionalStyle>();
+  return mFieldStyles.value( fieldName );
 }
 
 bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const

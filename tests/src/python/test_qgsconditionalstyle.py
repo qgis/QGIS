@@ -46,17 +46,17 @@ class TestPyQgsConditionalStyle(unittest.TestCase):
     def test_MatchesReturnsTrueForSimpleMatch(self):
         style = QgsConditionalStyle("@value > 10")
         context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), QgsFields())
-        assert style.matches(20, context)
+        self.assertTrue(style.matches(20, context))
 
     def test_MatchesReturnsTrueForComplexMatch(self):
         style = QgsConditionalStyle("@value > 10 and @value = 20")
         context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), QgsFields())
-        assert style.matches(20, context)
+        self.assertTrue(style.matches(20, context))
 
     def test_MatchesTrueForFields(self):
         style = QgsConditionalStyle('"testfield" = @value')
         context = self.new_context()
-        assert style.matches(20, context)
+        self.assertTrue(style.matches(20, context))
 
     def test_MatchingStylesReturnsListOfCorrectStyles(self):
         styles = []
@@ -119,6 +119,29 @@ class TestPyQgsConditionalStyle(unittest.TestCase):
         c.setSymbol(None)
         self.assertNotEqual(c, c2)
         self.assertTrue(c != c2)
+
+    def testLayerStyles(self):
+        styles = QgsConditionalLayerStyles()
+        self.assertFalse(styles.rowStyles())
+        self.assertFalse(styles.fieldStyles('test'))
+        spy = QSignalSpy(styles.changed)
+
+        styles.setRowStyles([QgsConditionalStyle("@value > 10"), QgsConditionalStyle("@value > 20")])
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(styles.rowStyles(), [QgsConditionalStyle("@value > 10"), QgsConditionalStyle("@value > 20")])
+        styles.setRowStyles(styles.rowStyles())
+        self.assertEqual(len(spy), 1)
+
+        styles.setFieldStyles('test', [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")])
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(styles.fieldStyles('test'), [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")])
+        styles.setFieldStyles('test', styles.fieldStyles('test'))
+        self.assertEqual(len(spy), 2)
+        self.assertFalse(styles.fieldStyles('test2'))
+        styles.setFieldStyles('test2', [QgsConditionalStyle("@value > 50")])
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(styles.fieldStyles('test'), [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")])
+        self.assertEqual(styles.fieldStyles('test2'), [QgsConditionalStyle("@value > 50")])
 
 
 if __name__ == '__main__':

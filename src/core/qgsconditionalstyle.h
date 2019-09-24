@@ -35,47 +35,73 @@ typedef QList<QgsConditionalStyle> QgsConditionalStyles;
  * \brief The QgsConditionalLayerStyles class holds conditional style information
  * for a layer. This includes field styles and full row styles.
  */
-class CORE_EXPORT QgsConditionalLayerStyles
+class CORE_EXPORT QgsConditionalLayerStyles : public QObject
 {
-  public:
-    QgsConditionalLayerStyles();
+    Q_OBJECT
 
-    QList<QgsConditionalStyle> rowStyles();
+  public:
 
     /**
-     * \brief Set the conditional styles that apply to full rows of data in the attribute table.
+     * Constructor for QgsConditionalLayerStyles, with the specified \a parent object.
+     */
+    QgsConditionalLayerStyles( QObject *parent = nullptr );
+
+    /**
+     * Returns a list of row styles associated with the layer.
+     *
+     * \see setRowStyles()
+     */
+    QgsConditionalStyles rowStyles() const;
+
+    /**
+     * Sets the conditional \a styles that apply to full rows of data in the attribute table.
      * Each row will check be checked against each rule.
-     * \param styles The styles to assign to all the rows
+     *
+     * \see rowStyles()
      * \since QGIS 2.12
      */
-    void setRowStyles( const QList<QgsConditionalStyle> &styles );
+    void setRowStyles( const QgsConditionalStyles &styles );
 
     /**
-     * \brief Set the conditional styles for the field UI properties.
-     * \param fieldName name of field
-     * \param styles
+     * Set the conditional \a styles for a field, with the specified \a fieldName.
+     *
+     * \see fieldStyles()
      */
     void setFieldStyles( const QString &fieldName, const QList<QgsConditionalStyle> &styles );
 
     /**
-     * \brief Returns the conditional styles set for the field UI properties
-     * \returns A list of conditional styles that have been set.
+     * Returns the conditional styles set for the field with matching \a fieldName.
+     *
+     * \see setFieldStyles()
      */
-    QList<QgsConditionalStyle> fieldStyles( const QString &fieldName );
+    QList<QgsConditionalStyle> fieldStyles( const QString &fieldName ) const;
 
     /**
-     * Reads field ui properties specific state from Dom node.
+     * Reads the condition styles state from a DOM node.
+     *
+     * \see writeXml()
      */
     bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
     /**
-     * Write field ui properties specific state from Dom node.
+     * Writes the condition styles state to a DOM node.
+     *
+     * \see readXml()
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+  signals:
+
+    /**
+     * Emitted when the conditional styles are changed.
+     *
+     * \since QGIS 3.10
+     */
+    void changed();
+
   private:
     QHash<QString, QgsConditionalStyles> mFieldStyles;
-    QList<QgsConditionalStyle> mRowStyles;
+    QgsConditionalStyles mRowStyles;
 };
 
 /**
