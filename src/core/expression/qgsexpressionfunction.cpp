@@ -5003,63 +5003,63 @@ static QVariant fcnGenericHash( const QVariantList &values, const QgsExpressionC
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString method = QgsExpressionUtils::getStringValue( values.at( 1 ), parent ).toLower();
 
-  if ( method == QString( "md4" ) )
+  if ( method == QLatin1String( "md4" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Md4 );
   }
-  else if ( method == QString( "md5" ) )
+  else if ( method == QLatin1String( "md5" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Md5 );
   }
-  else if ( method == QString( "sha1" ) )
+  else if ( method == QLatin1String( "sha1" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha1 );
   }
-  else if ( method == QString( "sha224" ) )
+  else if ( method == QLatin1String( "sha224" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha224 );
   }
-  else if ( method == QString( "sha256" ) )
+  else if ( method == QLatin1String( "sha256" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha256 );
   }
-  else if ( method == QString( "sha384" ) )
+  else if ( method == QLatin1String( "sha384" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha384 );
   }
-  else if ( method == QString( "sha512" ) )
+  else if ( method == QLatin1String( "sha512" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha512 );
   }
-  else if ( method == QString( "sha3_224" ) )
+  else if ( method == QLatin1String( "sha3_224" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha3_224 );
   }
-  else if ( method == QString( "sha3_256" ) )
+  else if ( method == QLatin1String( "sha3_256" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha3_256 );
   }
-  else if ( method == QString( "sha3_384" ) )
+  else if ( method == QLatin1String( "sha3_384" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha3_384 );
   }
-  else if ( method == QString( "sha3_512" ) )
+  else if ( method == QLatin1String( "sha3_512" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Sha3_512 );
   }
-  else if ( method == QString( "keccak_224" ) )
+  else if ( method == QLatin1String( "keccak_224" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Keccak_224 );
   }
-  else if ( method == QString( "keccak_256" ) )
+  else if ( method == QLatin1String( "keccak_256" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Keccak_256 );
   }
-  else if ( method == QString( "keccak_384" ) )
+  else if ( method == QLatin1String( "keccak_384" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Keccak_384 );
   }
-  else if ( method == QString( "keccak_512" ) )
+  else if ( method == QLatin1String( "keccak_512" ) )
   {
     hash = fcnHash( str, QCryptographicHash::Keccak_512 );
   }
