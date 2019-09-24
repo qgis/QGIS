@@ -249,6 +249,17 @@ class CORE_EXPORT QgsConditionalStyle
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str;
+    if ( !sipCpp->name().isEmpty() )
+      str = QStringLiteral( "<QgsConditionalStyle: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->rule() );
+    else
+      str = QStringLiteral( "<QgsConditionalStyle: %2>" ).arg( sipCpp->rule() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
 

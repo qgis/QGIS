@@ -258,6 +258,15 @@ Reads vector conditional style specific state from layer Dom node.
 Write vector conditional style specific state from layer Dom node.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str;
+    if ( !sipCpp->name().isEmpty() )
+      str = QStringLiteral( "<QgsConditionalStyle: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->rule() );
+    else
+      str = QStringLiteral( "<QgsConditionalStyle: %2>" ).arg( sipCpp->rule() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 

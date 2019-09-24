@@ -15,13 +15,18 @@ from qgis.core import (QgsConditionalStyle,
                        QgsFeature,
                        QgsFields,
                        QgsField,
-                       QgsExpressionContextUtils
+                       QgsExpressionContextUtils,
+                       QgsConditionalLayerStyles,
+                       QgsMarkerSymbol
                        )
 from qgis.testing import (start_app,
                           unittest,
                           )
 from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QFont, QColor
+from qgis.PyQt.QtTest import QSignalSpy
+
 #
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
