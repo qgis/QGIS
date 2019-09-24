@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    __init__.py
+    Datasources2Vrt.py
     ---------------------
     Date                 : May 2015
     Copyright            : (C) 2015 by Luigi Pirelli
@@ -21,27 +21,22 @@ __author__ = 'Luigi Pirelli'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Luigi Pirelli'
 
-import codecs
-import xml.sax.saxutils
+import html
 
-import warnings
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
-    from osgeo import ogr
-from qgis.core import (QgsProcessingFeedback,
+from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterBoolean,
-                       QgsProcessing,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingOutputString,
-                       QgsProcessingException)
+                       QgsProcessingOutputString
+                       )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class Datasources2Vrt(QgisAlgorithm):
     INPUT = 'INPUT'
     UNIONED = 'UNIONED'
-
     OUTPUT = 'OUTPUT'
     VRT_STRING = 'VRT_STRING'
 
@@ -50,6 +45,12 @@ class Datasources2Vrt(QgisAlgorithm):
 
     def groupId(self):
         return 'vectorgeneral'
+
+    def name(self):
+        return 'buildvirtualvector'
+
+    def displayName(self):
+        return self.tr('Build virtual vector')
 
     def __init__(self):
         super().__init__()
@@ -82,151 +83,35 @@ class Datasources2Vrt(QgisAlgorithm):
         self.addOutput(QgsProcessingOutputString(self.VRT_STRING,
                                                  self.tr('Virtual string')))
 
-    def name(self):
-        return 'buildvirtualvector'
-
-    def displayName(self):
-        return self.tr('Build virtual vector')
-
     def processAlgorithm(self, parameters, context, feedback):
         input_layers = self.parameterAsLayerList(parameters, self.INPUT, context)
         unioned = self.parameterAsBoolean(parameters, self.UNIONED, context)
         vrtPath = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        vrtString = self.mergeDataSources2Vrt(input_layers,
-                                              vrtPath,
-                                              union=unioned,
-                                              relative=False,
-                                              schema=False,
-                                              feedback=feedback)
-        return {self.OUTPUT: vrtPath, self.VRT_STRING: vrtString}
-
-    def mergeDataSources2Vrt(self, dataSources, outFile, union=False, relative=False,
-                             schema=False, feedback=None):
-        '''Function to do the work of merging datasources in a single vrt format
-
-        @param data_sources: Array of path strings
-        @param outfile: the output vrt file to generate
-        @param relative: Write relative flag. DOES NOT relativise paths. They have to be already relative
-        @param schema: Schema flag
-        @return: vrt in string format
-        '''
-        if feedback is None:
-            feedback = QgsProcessingFeedback()
-
         vrt = '<OGRVRTDataSource>'
-        if union:
+        if unioned:
             vrt += '<OGRVRTUnionLayer name="UnionedLayer">'
 
-        total = 100.0 / len(dataSources) if dataSources else 1
-        for current, layer in enumerate(dataSources):
+        total = 100.0 / len(input_layers) if input_layers else 0
+        for current, layer in enumerate(input_layers):
             if feedback.isCanceled():
                 break
 
+            basePath = GdalUtils.ogrConnectionStringFromLayer(layer)
+            layerName = GdalUtils.ogrLayerName(layer.source())
+
+            vrt += '<OGRVRTLayer name="{}">'.format(html.escape(layerName, True))
+            vrt += '<SrcDataSource>{}</SrcDataSource>'.format(html.escape(basePath, True))
+            vrt += '<SrcLayer>{}</SrcLayer>'.format(html.escape(layerName, True))
+            vrt += '</OGRVRTLayer>'
+
             feedback.setProgress(int(current * total))
 
-            inFile = layer.source()
-            srcDS = ogr.Open(inFile, 0)
-            if srcDS is None:
-                raise QgsProcessingException(
-                    self.tr('Invalid datasource: {}'.format(inFile)))
-
-            if schema:
-                inFile = '@dummy@'
-
-            for layer in srcDS:
-                layerDef = layer.GetLayerDefn()
-                layerName = layerDef.GetName()
-
-                vrt += '<OGRVRTLayer name="{}">'.format(self.XmlEsc(layerName))
-                vrt += '<SrcDataSource relativeToVRT="{}" shared="{}">{}</SrcDataSource>'.format(1 if relative else 0, not schema, self.XmlEsc(inFile))
-                if schema:
-                    vrt += '<SrcLayer>@dummy@</SrcLayer>'
-                else:
-                    vrt += '<SrcLayer>{}</SrcLayer>'.format(self.XmlEsc(layerName))
-
-                vrt += '<GeometryType>{}</GeometryType>'.format(self.GeomType2Name(layerDef.GetGeomType()))
-
-                crs = layer.GetSpatialRef()
-                if crs is not None:
-                    vrt += '<LayerSRS>{}</LayerSRS>'.format(self.XmlEsc(crs.ExportToWkt()))
-
-                # Process all the fields.
-                for fieldIdx in range(layerDef.GetFieldCount()):
-                    fieldDef = layerDef.GetFieldDefn(fieldIdx)
-                    vrt += '<Field name="{}" type="{}"'.format(self.XmlEsc(fieldDef.GetName()), self.fieldType2Name(fieldDef.GetType()))
-                    if not schema:
-                        vrt += ' src="{}"'.format(self.XmlEsc(fieldDef.GetName()))
-                    if fieldDef.GetWidth() > 0:
-                        vrt += ' width="{}"'.format(fieldDef.GetWidth())
-                    if fieldDef.GetPrecision() > 0:
-                        vrt += ' precision="{}"'.format(fieldDef.GetPrecision())
-                    vrt += '/>'
-
-                vrt += '</OGRVRTLayer>'
-
-            srcDS.Destroy()
-
-        if union:
+        if unioned:
             vrt += '</OGRVRTUnionLayer>'
-
         vrt += '</OGRVRTDataSource>'
 
-        #TODO: pretty-print XML
+        with open(vrtPath, 'w', encoding='utf-8') as f:
+            f.write(vrt)
 
-        if outFile is not None:
-            with codecs.open(outFile, 'w') as f:
-                f.write(vrt)
-
-        return vrt
-
-    def GeomType2Name(self, geomType):
-        if geomType == ogr.wkbUnknown:
-            return 'wkbUnknown'
-        elif geomType == ogr.wkbPoint:
-            return 'wkbPoint'
-        elif geomType == ogr.wkbLineString:
-            return 'wkbLineString'
-        elif geomType == ogr.wkbPolygon:
-            return 'wkbPolygon'
-        elif geomType == ogr.wkbMultiPoint:
-            return 'wkbMultiPoint'
-        elif geomType == ogr.wkbMultiLineString:
-            return 'wkbMultiLineString'
-        elif geomType == ogr.wkbMultiPolygon:
-            return 'wkbMultiPolygon'
-        elif geomType == ogr.wkbGeometryCollection:
-            return 'wkbGeometryCollection'
-        elif geomType == ogr.wkbNone:
-            return 'wkbNone'
-        elif geomType == ogr.wkbLinearRing:
-            return 'wkbLinearRing'
-        else:
-            return 'wkbUnknown'
-
-    def fieldType2Name(self, fieldType):
-        if fieldType == ogr.OFTInteger:
-            return 'Integer'
-        elif fieldType == ogr.OFTString:
-            return 'String'
-        elif fieldType == ogr.OFTReal:
-            return 'Real'
-        elif fieldType == ogr.OFTStringList:
-            return 'StringList'
-        elif fieldType == ogr.OFTIntegerList:
-            return 'IntegerList'
-        elif fieldType == ogr.OFTRealList:
-            return 'RealList'
-        elif fieldType == ogr.OFTBinary:
-            return 'Binary'
-        elif fieldType == ogr.OFTDate:
-            return 'Date'
-        elif fieldType == ogr.OFTTime:
-            return 'Time'
-        elif fieldType == ogr.OFTDateTime:
-            return 'DateTime'
-        else:
-            return 'String'
-
-    def XmlEsc(self, text):
-        return xml.sax.saxutils.escape(text)
+        return {self.OUTPUT: vrtPath, self.VRT_STRING: vrt}

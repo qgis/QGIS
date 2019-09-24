@@ -1876,5 +1876,25 @@ tests:
             __all__:
               precision: 7
 
+  - algorithm: qgis:buildvirtualvector
+    name: Build virtual vector
+    params:
+      INPUT:
+        params:
+        - name: lines.gml|layername=lines
+          type: vector
+        - name: multilines.gml|layername=multilines
+          type: vector
+        type: multi
+      UNIONED: true
+    results:
+      OUTPUT:
+        name: expected/vrt_lines.vrt
+        type: regex
+        rules:
+          - '<SrcDataSource>.*\/lines\.gml</SrcDataSource>'
+          - '<SrcLayer>lines</SrcLayer>'
+          - '<SrcDataSource>.*\/multilines\.gml</SrcDataSource>'
+          - '<SrcLayer>multilines</SrcLayer>'
 
 # See ../README.md for a description of the file format
