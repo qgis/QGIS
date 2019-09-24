@@ -30,6 +30,7 @@ class APP_EXPORT QgsDecorationImageDialog : public QDialog, private Ui::QgsDecor
 
   private:
     void drawImage();
+    void updateEnabledColorButtons();
     void updateImagePath( const QString &imagePath );
     void resizeEvent( QResizeEvent * ) override; //overloads qwidget
 
