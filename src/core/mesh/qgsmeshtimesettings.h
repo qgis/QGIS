@@ -61,13 +61,13 @@ class CORE_EXPORT QgsMeshTimeSettings
      * Returns number of seconds used as interval for dataset playback
      * \since QGIS 3.12
      */
-    double datasetPlaybackInterval() const;
+    double datasetPlaybackInterval() const; SIP_SKIP
 
     /**
      * Sets number of seconds used as interval for dataset playback
      * \since QGIS 3.12
      */
-    void setDatasetPlaybackInterval( double seconds );
+    void setDatasetPlaybackInterval( double seconds ); SIP_SKIP
 
     //! Returns format used for relative time
     QString relativeTimeFormat() const;
