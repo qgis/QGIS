@@ -18,6 +18,18 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
 
+QgsProcessingContext::QgsProcessingContext()
+  : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
+  , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterExtension() )
+{
+  auto callback = [ = ]( const QgsFeature & feature )
+  {
+    if ( mFeedback )
+      mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
+  };
+  mTransformErrorCallback = callback;
+}
+
 QgsProcessingContext::~QgsProcessingContext()
 {
   for ( auto it = mLayersToLoadOnCompletion.constBegin(); it != mLayersToLoadOnCompletion.constEnd(); ++it )
