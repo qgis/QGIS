@@ -62,6 +62,7 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
 
   // enabled
   grpEnable->setChecked( mDeco.enabled() );
+  connect( grpEnable, &QGroupBox::toggled, this, [ = ] { updateEnabledColorButtons(); } );
 
   wgtImagePath->setFilePath( mDeco.imagePath() );
   connect( wgtImagePath, &QgsFileWidget::fileChanged, this, &QgsDecorationImageDialog::updateImagePath );
@@ -110,10 +111,8 @@ void QgsDecorationImageDialog::apply()
   mDeco.update();
 }
 
-void QgsDecorationImageDialog::updateImagePath( const QString &imagePath )
+void QgsDecorationImageDialog::updateEnabledColorButtons()
 {
-  if ( mDeco.imagePath() != imagePath )
-    mDeco.setImagePath( imagePath );
 
   if ( mDeco.mImageFormat == QgsDecorationImage::FormatSVG )
   {
@@ -121,13 +120,13 @@ void QgsDecorationImageDialog::updateImagePath( const QString &imagePath )
     double defaultStrokeWidth, defaultFillOpacity, defaultStrokeOpacity;
     bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultStrokeColor, hasDefaultStrokeWidth, hasDefaultStrokeOpacity;
     bool hasFillParam, hasFillOpacityParam, hasStrokeParam, hasStrokeWidthParam, hasStrokeOpacityParam;
-    QgsApplication::svgCache()->containsParams( imagePath, hasFillParam, hasDefaultFillColor, defaultFill,
+    QgsApplication::svgCache()->containsParams( mDeco.imagePath(), hasFillParam, hasDefaultFillColor, defaultFill,
         hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
         hasStrokeParam, hasDefaultStrokeColor, defaultStroke,
         hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
         hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
 
-    pbnChangeColor->setEnabled( hasFillParam );
+    pbnChangeColor->setEnabled( grpEnable->isChecked() && hasFillParam );
     pbnChangeColor->setAllowOpacity( hasFillOpacityParam );
     if ( hasFillParam )
     {
@@ -135,7 +134,7 @@ void QgsDecorationImageDialog::updateImagePath( const QString &imagePath )
       fill.setAlphaF( hasFillOpacityParam && hasDefaultFillOpacity ? defaultFillOpacity : 1.0 );
       pbnChangeColor->setColor( fill );
     }
-    pbnChangeOutlineColor->setEnabled( hasStrokeParam );
+    pbnChangeOutlineColor->setEnabled( grpEnable->isChecked() && hasStrokeParam );
     pbnChangeOutlineColor->setAllowOpacity( hasStrokeOpacityParam );
     if ( hasStrokeParam )
     {
@@ -149,7 +148,14 @@ void QgsDecorationImageDialog::updateImagePath( const QString &imagePath )
     pbnChangeColor->setEnabled( false );
     pbnChangeOutlineColor->setEnabled( false );
   }
+}
 
+void QgsDecorationImageDialog::updateImagePath( const QString &imagePath )
+{
+  if ( mDeco.imagePath() != imagePath )
+    mDeco.setImagePath( imagePath );
+
+  updateEnabledColorButtons();
   drawImage();
 }
 
