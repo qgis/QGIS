@@ -7,7 +7,7 @@
 --indent-labels
 --indent-namespaces
 --indent-switches
---max-instatement-indent=40
+--max-instatement-indent=80
 --min-conditional-indent=-1
 --suffix=none
 --break-after-logical
