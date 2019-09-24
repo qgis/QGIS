@@ -70,6 +70,17 @@ QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem &option, 
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
+  const bool isEditSelection = mEditSelectionModel && mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
+
+  QStyleOptionViewItem textOption = option;
+  textOption.state |= QStyle::State_Enabled;
+  if ( isEditSelection )
+  {
+    textOption.state |= QStyle::State_Selected;
+  }
+  drawBackground( painter, textOption, index );
+
+
   static QPixmap sSelectedIcon;
   if ( sSelectedIcon.isNull() )
     sSelectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconSelected.svg" ) );
@@ -79,8 +90,6 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
-
-  bool isEditSelection = mEditSelectionModel && mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
 
   // Icon layout options
   QStyleOptionViewItem iconOption;
@@ -95,14 +104,32 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
     icon = icon.scaledToHeight( option.rect.height(), Qt::SmoothTransformation );
   }
 
+  drawDecoration( painter, iconOption, iconLayoutBounds, icon );
+
+  // if conditional style also has an icon, draw that too
+  const QVariant conditionalIcon = index.model()->data( index, Qt::DecorationRole );
+  if ( conditionalIcon.isValid() )
+  {
+    const QPixmap pixmap = conditionalIcon.value< QPixmap >();
+    iconLayoutBounds.moveLeft( iconLayoutBounds.x() + icon.width() + QFontMetrics( textOption.font ).width( 'X' ) );
+    iconLayoutBounds.setTop( option.rect.y() + ( option.rect.height() - pixmap.height() ) / 2.0 );
+    iconLayoutBounds.setHeight( pixmap.height() );
+    drawDecoration( painter, iconOption, iconLayoutBounds, pixmap );
+  }
+
   // Text layout options
   QRect textLayoutBounds( iconLayoutBounds.x() + iconLayoutBounds.width(), option.rect.y(), option.rect.width() - ( iconLayoutBounds.x() + iconLayoutBounds.width() ), option.rect.height() );
 
-  QStyleOptionViewItem textOption = option;
-  textOption.state |= QStyle::State_Enabled;
-  if ( isEditSelection )
+  // start with font and foreground color from model's FontRole
+  const QVariant font = index.model()->data( index, Qt::FontRole );
+  if ( font.isValid() )
   {
-    textOption.state |= QStyle::State_Selected;
+    textOption.font = font.value< QFont >();
+  }
+  const QVariant textColor = index.model()->data( index, Qt::TextColorRole );
+  if ( textColor.isValid() )
+  {
+    textOption.palette.setColor( QPalette::Text, textColor.value< QColor >() );
   }
 
   if ( featInfo.isNew )
@@ -119,5 +146,4 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
   }
 
   drawDisplay( painter, textOption, textLayoutBounds, text );
-  drawDecoration( painter, iconOption, iconLayoutBounds, icon );
 }

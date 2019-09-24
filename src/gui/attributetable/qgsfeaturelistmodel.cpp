@@ -151,11 +151,11 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     if ( style.isValid() )
     {
       if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
-        return style.backgroundColor();
+        return style.backgroundColor().isValid() ? style.backgroundColor() : QVariant();
       if ( role == Qt::TextColorRole && style.validTextColor() )
-        return style.textColor();
+        return style.textColor().isValid() ? style.textColor() : QVariant();
       if ( role == Qt::DecorationRole )
-        return style.icon();
+        return style.icon().isNull() ? QVariant() : style.icon();
       if ( role == Qt::FontRole )
         return style.font();
     }
