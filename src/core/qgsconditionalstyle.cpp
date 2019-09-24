@@ -292,6 +292,23 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc, const Qgs
   return true;
 }
 
+bool QgsConditionalStyle::operator==( const QgsConditionalStyle &other ) const
+{
+  return mValid == other.mValid
+         && mName == other.mName
+         && mRule == other.mRule
+         && mFont == other.mFont
+         && mBackColor == other.mBackColor
+         && mTextColor == other.mTextColor
+         && static_cast< bool >( mSymbol ) == static_cast< bool >( other.mSymbol )
+         && ( ! mSymbol || QgsSymbolLayerUtils::symbolProperties( mSymbol.get() ) == QgsSymbolLayerUtils::symbolProperties( other.mSymbol.get() ) );
+}
+
+bool QgsConditionalStyle::operator!=( const QgsConditionalStyle &other ) const
+{
+  return !( *this == other );
+}
+
 bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {
   QDomElement styleElm = node.toElement();
