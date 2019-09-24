@@ -189,8 +189,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
 QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) const
 {
   QgsSettings settings;
-  const QString defaultExtension = hasGeometry ? QStringLiteral( "shp" ) : QStringLiteral( "dbf" );
-  const QString userDefault = settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), defaultExtension, QgsSettings::Core ).toString();
+  const QString userDefault = QgsProcessingUtils::defaultVectorExtension();
 
   const QStringList supportedExtensions = supportedOutputVectorLayerExtensions();
   if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
@@ -206,15 +205,14 @@ QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) co
   {
     // who knows? provider says it has no file support at all...
     // let's say shp. even MapInfo supports shapefiles.
-    return defaultExtension;
+    return hasGeometry ? QStringLiteral( "shp" ) : QStringLiteral( "dbf" );
   }
 }
 
 QString QgsProcessingProvider::defaultRasterFileExtension() const
 {
   QgsSettings settings;
-  const QString defaultExtension = QStringLiteral( "tif" );
-  const QString userDefault = settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), defaultExtension, QgsSettings::Core ).toString();
+  const QString userDefault = QgsProcessingUtils::defaultRasterExtension();
 
   const QStringList supportedExtensions = supportedOutputRasterLayerExtensions();
   if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
@@ -229,7 +227,7 @@ QString QgsProcessingProvider::defaultRasterFileExtension() const
   else
   {
     // who knows? provider says it has no file support at all...
-    return defaultExtension;
+    return QStringLiteral( "tif" );
   }
 }
 

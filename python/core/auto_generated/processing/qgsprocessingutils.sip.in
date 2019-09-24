@@ -273,6 +273,32 @@ Returns a subset of fields based on the indices of desired fields.
 .. versionadded:: 3.2
 %End
 
+    static QString defaultVectorExtension();
+%Docstring
+Returns the default vector extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns the user-set default extension from the processing settings, or
+a fallback value of "gpkg".
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. versionadded:: 3.10
+%End
+
+    static QString defaultRasterExtension();
+%Docstring
+Returns the default raster extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns the user-set default extension from the processing settings, or
+a fallback value of "tif".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. versionadded:: 3.10
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

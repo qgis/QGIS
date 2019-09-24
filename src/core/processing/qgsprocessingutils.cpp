@@ -32,6 +32,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsmeshlayer.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsrasterfilewriter.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -913,6 +914,24 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
   for ( int i : indices )
     fieldsSubset.append( fields.at( i ) );
   return fieldsSubset;
+}
+
+QString QgsProcessingUtils::defaultVectorExtension()
+{
+  QgsSettings settings;
+  const int setting = settings.value( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), -1 ).toInt();
+  if ( setting == -1 )
+    return QStringLiteral( "gpkg" );
+  return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
+}
+
+QString QgsProcessingUtils::defaultRasterExtension()
+{
+  QgsSettings settings;
+  const int setting = settings.value( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), -1 ).toInt();
+  if ( setting == -1 )
+    return QStringLiteral( "tif" );
+  return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );
 }
 
 //

@@ -45,6 +45,7 @@
 #include "qgslayoutmanager.h"
 #include "qgslayoutitemlabel.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsrasterfilewriter.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -143,11 +144,11 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
       // default vector format extension
       QgsProcessingParameterFeatureSink *sinkParam = new QgsProcessingParameterFeatureSink( "sink" );
-      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "gpkg" ) ); // before alg is accessible
       QVERIFY( !sinkParam->algorithm() );
       QVERIFY( !sinkParam->provider() );
       QVERIFY( addParameter( sinkParam ) );
-      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "gpkg" ) );
       QCOMPARE( sinkParam->algorithm(), this );
       QVERIFY( !sinkParam->provider() );
 
@@ -171,7 +172,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     {
       // default vector format extension, taken from provider
       QgsProcessingParameterFeatureSink *sinkParam = new QgsProcessingParameterFeatureSink( "sink2" );
-      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "gpkg" ) ); // before alg is accessible
       QVERIFY( !sinkParam->algorithm() );
       QVERIFY( !sinkParam->provider() );
       QVERIFY( addParameter( sinkParam ) );
@@ -439,7 +440,7 @@ class DummyProvider3 : public QgsProcessingProvider
 
     QStringList supportedOutputRasterLayerExtensions() const override
     {
-      return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "asc" );
+      return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "sdat" );
     }
 
     void loadAlgorithms() override
@@ -612,8 +613,7 @@ void TestQgsProcessing::initTestCase()
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   QgsSettings settings;
-  settings.remove( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QgsSettings::Core );
-  settings.remove( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QgsSettings::Core );
+  settings.clear();
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
@@ -5294,10 +5294,10 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
 
-  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "shp" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "gpkg" ) );
   QCOMPARE( def->generateTemporaryDestination(), QStringLiteral( "memory:" ) );
   def->setSupportsNonFileBasedOutput( false );
-  QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".shp" ) ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".gpkg" ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVariantMap map = def->toVariantMap();
@@ -5460,8 +5460,8 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
 
-  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "shp" ) );
-  QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".shp" ) ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "gpkg" ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".gpkg" ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVariantMap map = def->toVariantMap();
@@ -5570,12 +5570,12 @@ void TestQgsProcessing::parameterVectorOut()
 
   QgsProcessingContext context3;
   params.insert( QStringLiteral( "x" ), QgsProcessing::TEMPORARY_OUTPUT );
-  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context3 ).right( 6 ), QStringLiteral( "/x.shp" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context3 ).right( 6 ), QStringLiteral( "x.gpkg" ) );
 
   QgsProcessingContext context4;
   fs.sink = QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT );
   params.insert( QStringLiteral( "x" ), QVariant::fromValue( fs ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context4 ).right( 6 ), QStringLiteral( "/x.shp" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context4 ).right( 6 ), QStringLiteral( "x.gpkg" ) );
 
   // test supported output vector layer extensions
 
@@ -8458,14 +8458,16 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
   // unless the user has set a default format, which IS supported by that provider
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "tab" ), QgsSettings::Core );
-  settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "asc" ), QgsSettings::Core );
+
+  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "tab" ) ) );
+  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsRasterFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "sdat" ) ) );
+
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
-  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "asc" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
 
   // but if default is not supported by provider, we use a supported format
-  settings.setValue( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "gpkg" ), QgsSettings::Core );
-  settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "ecw" ), QgsSettings::Core );
+  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "gpkg" ) ) );
+  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsRasterFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "ecw" ) ) );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }
