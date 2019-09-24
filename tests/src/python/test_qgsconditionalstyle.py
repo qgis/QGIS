@@ -81,6 +81,30 @@ class TestPyQgsConditionalStyle(unittest.TestCase):
         out = QgsConditionalStyle.matchingConditionalStyles(styles, 20, context)
         self.assertEqual([o.name() for o in out], ["1", "2"])
 
+    def testStyleCompression(self):
+        style = QgsConditionalStyle.compressStyles([])
+        self.assertFalse(style.isValid())
+        # invalid styles should not be compressed
+        style = QgsConditionalStyle.compressStyles([QgsConditionalStyle(), QgsConditionalStyle()])
+        self.assertFalse(style.isValid())
+
+        c = QgsConditionalStyle()
+        c.setBackgroundColor(QColor(255, 0, 0))
+        c2 = QgsConditionalStyle()
+        c2.setTextColor(QColor(0, 255, 0))
+        style = QgsConditionalStyle.compressStyles([c])
+        self.assertTrue(style.isValid())
+        self.assertEqual(style.backgroundColor(), QColor(255, 0, 0))
+        self.assertFalse(style.textColor().isValid())
+        style = QgsConditionalStyle.compressStyles([c2])
+        self.assertTrue(style.isValid())
+        self.assertFalse(style.backgroundColor().isValid())
+        self.assertEqual(style.textColor(), QColor(0, 255, 0))
+        style = QgsConditionalStyle.compressStyles([c, c2])
+        self.assertTrue(style.isValid())
+        self.assertEqual(style.backgroundColor(), QColor(255, 0, 0))
+        self.assertEqual(style.textColor(), QColor(0, 255, 0))
+
     def testEquality(self):
         c = QgsConditionalStyle()
         c2 = QgsConditionalStyle()
